@@ -8,11 +8,11 @@
         "node": "6.9.4"
     },
     "scripts": {
-        "postinstall": "gulp",
-        "start": "gulp && node .",
+        "start": "node server.js",
         "test": "gulp build test",
         "snyk-protect": "snyk protect",
         "lint": "gulp lint",
+        "build": "gulp",
         "record-build-info": "node ./bin/record-build-info",
         "wait-for-deploy": "node ./bin/wait-for-deploy",
         "prepublish": "npm run snyk-protect"
