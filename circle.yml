@@ -4,7 +4,7 @@ machine:
 general:
   branches:
     ignore:
-        - azure
+        - deploy-to-mock
         - deploy-to-preprod
 dependencies:
   post:
