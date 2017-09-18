@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+/* eslint-disable no-console, comma-dangle */
+
+const pollEndpointFor = require('poll-endpoint-for');
+
+pollEndpointFor(
+  {
+    healthy: true,
+    build: {
+      gitRef: process.env.GIT_REF,
+    },
+  },
+  {
+    url: process.env.APP_BASE_URL,
+    initialWait: process.env.WAIT_DURATION,
+    requestInterval: 5000,
+    retryCount: 60,
+    onSuccess: () => {
+      console.log('Success');
+      process.exit(0);
+    },
+    onError: () => {
+      console.log(`Failed all checks on ${process.env.APP_BASE_URL}`);
+      process.exit(1);
+    },
+  }
+);

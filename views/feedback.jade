@@ -1,0 +1,17 @@
+extends layout
+
+block content
+
+    div.grid-row
+        div.column-two-thirds
+            h1.heading-xlarge Feedback
+
+            span Please email
+            =" "
+            a(href="mailto:someone") someone@digital.justice.gov.uk
+            =" "
+            | with any queries or feedback
+
+        div.column-two-thirds
+            div.back-link-container
+                a.link-back(href="#{returnURL}") Back

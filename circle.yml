@@ -1,0 +1,47 @@
+machine:
+  node:
+    version: 6.9.4
+general:
+  branches:
+    ignore:
+        - azure
+        - deploy-to-preprod
+dependencies:
+  post:
+    - npm run postinstall
+test:
+  override:
+    - gulp build set-test-env unittestreport
+    - npm run snyk-protect
+  post:
+    - mv test-results.xml $CIRCLE_TEST_REPORTS/test-results.xml
+    - mkdir $CIRCLE_ARTIFACTS/test-coverage-html
+    - mv build/reports/coverage/lcov-report/** $CIRCLE_ARTIFACTS/test-coverage-html
+
+deployment:
+  dev:
+    branch: master
+    commands:
+        # Create version info
+        - npm run record-build-info:
+            environment:
+                BUILD_NUMBER: $CIRCLE_BUILD_NUM
+                GIT_REF: $CIRCLE_SHA1
+        - git add --force --verbose build-info.json
+        - git config user.name "Circle CI"
+        - git config user.email "circle@circleci.com"
+        - |
+            CI_MESSAGE=$(git log --format=%B -n 1 $CIRCLE_SHA1)
+            git commit -m "Deployment of build $CIRCLE_BUILD_NUM" -m "$CI_MESSAGE" -m "From gitref $CIRCLE_SHA1"
+        # Push the Dev Branch to Azure
+        - git push --force origin HEAD:azure
+        - npm run wait-for-deploy:
+            environment:
+                GIT_REF: $CIRCLE_SHA1
+                APP_BASE_URL: https://licences-mock.hmpps.dsd.io/health
+                WAIT_DURATION: 45000
+
+        # Trigger feature tests
+        - curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
+
+
