@@ -34,7 +34,7 @@ deployment:
             CI_MESSAGE=$(git log --format=%B -n 1 $CIRCLE_SHA1)
             git commit -m "Deployment of build $CIRCLE_BUILD_NUM" -m "$CI_MESSAGE" -m "From gitref $CIRCLE_SHA1"
         # Push the Dev Branch to Azure
-        - git push --force origin HEAD:azure
+        - git push --force origin HEAD:deploy-to-mock
         - npm run wait-for-deploy:
             environment:
                 GIT_REF: $CIRCLE_SHA1
