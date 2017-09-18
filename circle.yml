@@ -6,9 +6,6 @@ general:
     ignore:
         - deploy-to-mock
         - deploy-to-preprod
-dependencies:
-  post:
-    - npm run postinstall
 test:
   override:
     - gulp build set-test-env unittestreport
