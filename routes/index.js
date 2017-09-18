@@ -10,7 +10,7 @@ let router = express.Router();
 
 router.get('/', function(req, res) {
     logger.info('GET / - Authenticated: ' + req.isAuthenticated());
-    return res.redirect('/loggedin');
+    return res.render('index');
 });
 
 const oauth = passport.authenticate('oauth2', {

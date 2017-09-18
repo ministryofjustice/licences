@@ -20,7 +20,6 @@ const csurf = require('csurf');
 const compression = require('compression');
 
 const index = require('../routes/index');
-const loggedin = require('../routes/loggedin');
 
 const config = require('../server/config');
 const healthcheck = require('../server/healthcheck');
@@ -163,11 +162,11 @@ app.get('/health', (req, res, next) => {
 
 app.use('/', index);
 
-if (!testMode) {
-    app.use(authRequired);
-    app.use(addTemplateVariables);
-}
-app.use('/loggedin/', loggedin);
+// if (!testMode) {
+//     app.use(authRequired);
+//     app.use(addTemplateVariables);
+// }
+// app.use('/loggedin/', loggedin);
 
 // Error Handler
 app.use(function(req, res, next) {
