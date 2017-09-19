@@ -19,7 +19,8 @@ const helmet = require('helmet');
 const csurf = require('csurf');
 const compression = require('compression');
 
-const index = require('../routes/index');
+const index = require('./routes/index');
+const sassMiddleware = require('node-sass-middleware');
 
 const config = require('../server/config');
 const healthcheck = require('../server/healthcheck');
@@ -38,7 +39,7 @@ app.set('json spaces', 2);
 app.set('trust proxy', true);
 
 // View Engine Configuration
-app.set('views', path.join(__dirname, '..', 'views'));
+app.set('views', path.join(__dirname, '../server/views'));
 app.set('view engine', 'jade');
 
 // Server Configuration
@@ -98,18 +99,35 @@ if (production) {
     });
 }
 
+if (!production) {
+    app.use('/public', sassMiddleware({
+        src: path.join(__dirname, '../assets/sass'),
+        dest: path.join(__dirname, '../assets/stylesheets'),
+        debug: true,
+        outputStyle: 'compressed',
+        prefix: '/stylesheets/',
+        includePaths: [
+            'node_modules/govuk_frontend_toolkit/stylesheets',
+            'node_modules/govuk_template_jinja/assets/stylesheets',
+            'node_modules/govuk-elements-sass/public/sass'
+        ]
+    }));
+}
+
 //  Static Resources Configuration
 const cacheControl = {maxAge: config.staticResourceCacheDuration * 1000};
 
-['../public',
-    '../govuk_modules/govuk_template/assets',
-    '../govuk_modules/govuk_frontend_toolkit'
+[
+    '../public',
+    '../assets',
+    '../node_modules/govuk_template_jinja/assets',
+    '../node_modules/govuk_frontend_toolkit'
 ].forEach(dir => {
     app.use('/public', express.static(path.join(__dirname, dir), cacheControl));
 });
 
 [
-    '../govuk_modules/govuk_frontend_toolkit/images'
+    '../node_modules/govuk_frontend_toolkit/images'
 ].forEach(dir => {
     app.use('/public/images/icons', express.static(path.join(__dirname, dir), cacheControl));
 });
@@ -170,8 +188,7 @@ app.use('/', index);
 
 // Error Handler
 app.use(function(req, res, next) {
-    let error = new Error('Not Found');
-    error.status = 404;
+    res.status(404);
     res.render('notfound');
 });
 
@@ -195,19 +212,19 @@ function renderErrors(error, req, res, next) {
 }
 
 //  SSO utility methods
-function authRequired(req, res, next) {
-    if (!req.user) {
-        logger.info('Authorisation required - redirecting to login');
-        return res.redirect('/login');
-    }
-    res.locals.nav = true;
-    next();
-}
-
-function addTemplateVariables(req, res, next) {
-    res.locals.profile = req.user;
-    next();
-}
+// function authRequired(req, res, next) {
+//     if (!req.user) {
+//         logger.info('Authorisation required - redirecting to login');
+//         return res.redirect('/login');
+//     }
+//     res.locals.nav = true;
+//     next();
+// }
+//
+// function addTemplateVariables(req, res, next) {
+//     res.locals.profile = req.user;
+//     next();
+// }
 
 function dummyUserProfile(req, res, next) {
     req.user = {
