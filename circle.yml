@@ -24,7 +24,8 @@ deployment:
             environment:
                 BUILD_NUMBER: $CIRCLE_BUILD_NUM
                 GIT_REF: $CIRCLE_SHA1
-        - git add --force --verbose public/* build-info.json
+        - git add --force --verbose build-info.json
+        - git add --force ./public/*
         - git config user.name "Circle CI"
         - git config user.email "circle@circleci.com"
         - |
