@@ -9,8 +9,10 @@ general:
 test:
   override:
     - npm run lint
-    - npm run test
     - npm run snyk-protect
+    - npm run test -- --reporter mocha-junit-reporter:
+        environment:
+            MOCHA_FILE: $CIRCLE_TEST_REPORTS/test-results.xml
 
 deployment:
   dev:
