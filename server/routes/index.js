@@ -2,7 +2,7 @@
 
 let passport = require('passport');
 let express = require('express');
-let logger = require('../log.js');
+let logger = require('../../log.js');
 
 
 // eslint-disable-next-line

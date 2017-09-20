@@ -26,7 +26,7 @@ describe('searchController', () => {
         const healthcheckProxy = (dummy = dummyStub) => {
             return proxyquire('../../server/healthcheck', {
                 '../data/healthcheck': {
-                    'dummy': dummy
+                    dummy: dummy
                 }
             });
         };

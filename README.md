@@ -22,21 +22,18 @@
    Or, for development, run inspections, tests, watch for changes and start the server:
    
   ```   
-  $ gulp dev
+  $ npm run dev
   ```
   
 4. Visit [localhost:3000](http://localhost:3000/)
 
 ## Developer Commands
 
- - `gulp lint` -> style checks using eslint
- - `gulp test` -> runs all unit tests
+ - `npm run  lint` -> style checks using eslint
+ - `npm run test` -> runs all unit tests
  (Note that tests run with authentication disabled and sending logs to file in iis-ui.log)
- - `gulp clean` -> cleans previously generated files
- - `gulp build` -> cleans and regenerates assets. This is also the default gulp task
- 
- Gulp tasks are defined in individual files under/gulp.
- Coordinating tasks such as `dev`, `test` etc are defined in `/gulp/tasks.js`
+ - `npm run clean` -> cleans previously generated files
+ - `npm run build` -> cleans and regenerates assets.
  
 
 # SSO

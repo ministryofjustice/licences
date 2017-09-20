@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 6.9.4
+    version: 8.4.0
 general:
   branches:
     ignore:
@@ -8,12 +8,9 @@ general:
         - deploy-to-preprod
 test:
   override:
-    - gulp build set-test-env unittestreport
+    - npm run lint
+    - npm run test
     - npm run snyk-protect
-  post:
-    - mv test-results.xml $CIRCLE_TEST_REPORTS/test-results.xml
-    - mkdir $CIRCLE_ARTIFACTS/test-coverage-html
-    - mv build/reports/coverage/lcov-report/** $CIRCLE_ARTIFACTS/test-coverage-html
 
 deployment:
   dev:
@@ -24,7 +21,7 @@ deployment:
             environment:
                 BUILD_NUMBER: $CIRCLE_BUILD_NUM
                 GIT_REF: $CIRCLE_SHA1
-        - git add --force --verbose public build-info.json
+        - git add --force --verbose assets/stylesheets build-info.json
         - git config user.name "Circle CI"
         - git config user.email "circle@circleci.com"
         - |
