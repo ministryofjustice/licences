@@ -31,7 +31,6 @@
 
  - `npm run  lint` -> style checks using eslint
  - `npm run test` -> runs all unit tests
- (Note that tests run with authentication disabled and sending logs to file in iis-ui.log)
  - `npm run clean` -> cleans previously generated files
  - `npm run build` -> cleans and regenerates assets.
  
