@@ -1,0 +1,39 @@
+extends ../layout
+
+block content
+
+    h1.heading-large Upcoming releases
+    h2.heading-medium Information required
+    table
+        thead
+            tr
+                th Name
+                th NOMS ID
+                th Establishment
+                th Discharge date
+                th
+        tbody
+            each prisoner in required
+                tr
+                    td.requiredName
+                        if prisoner.name
+                            |#{prisoner.name}
+
+                    td.requiredNomisId
+                        if prisoner.nomsId
+                            | #{prisoner.nomsId}
+
+                    td.requiredEstablishment
+                        if prisoner.establishment
+                            | #{prisoner.establishment}
+
+                    td.requiredDischargeDate
+                        if prisoner.dischargeDate
+                            | #{prisoner.dischargeDate}
+
+                    td.requiredButton
+                        a.button.button-secondary(href="summary/"+prisoner.nomsId role="button")
+                            if prisoner.inProgress
+                                |Continue
+                            else
+                                |Start

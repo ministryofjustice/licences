@@ -25,6 +25,8 @@ const sassMiddleware = require('node-sass-middleware');
 const config = require('../server/config');
 const healthcheck = require('../server/healthcheck');
 
+const dashboard = require('../server/routes/dashboard');
+
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
 const testMode = process.env.NODE_ENV === 'test';
@@ -40,7 +42,7 @@ app.set('trust proxy', true);
 
 // View Engine Configuration
 app.set('views', path.join(__dirname, '../server/views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 // Server Configuration
 app.set('port', process.env.PORT || 3000);
@@ -120,6 +122,7 @@ const cacheControl = {maxAge: config.staticResourceCacheDuration * 1000};
 [
     '../public',
     '../assets',
+    '../assets/stylesheets',
     '../node_modules/govuk_template_jinja/assets',
     '../node_modules/govuk_frontend_toolkit'
 ].forEach(dir => {
@@ -179,6 +182,7 @@ app.get('/health', (req, res, next) => {
 });
 
 app.use('/', index);
+app.use('/dashboard/', dashboard);
 
 // if (!testMode) {
 //     app.use(authRequired);
