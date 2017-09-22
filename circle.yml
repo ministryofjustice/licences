@@ -6,10 +6,17 @@ general:
     ignore:
         - deploy-to-mock
         - deploy-to-preprod
+
+dependencies:
+    override:
+        - yarn --frozen-lockfile
+    cache_directories:
+        - ~/.cache/yarn
+
 test:
   override:
-    - npm run lint
-    - npm run snyk-protect
+    - yarn run lint
+    - yarn run snyk-protect
     - npm run test -- --reporter mocha-junit-reporter:
         environment:
             MOCHA_FILE: $CIRCLE_TEST_REPORTS/test-results.xml
@@ -18,8 +25,8 @@ deployment:
   dev:
     branch: master
     commands:
-        - npm run build
-        - npm run record-build-info:
+        - yarn run build
+        - yarn run record-build-info:
             environment:
                 BUILD_NUMBER: $CIRCLE_BUILD_NUM
                 GIT_REF: $CIRCLE_SHA1
@@ -31,7 +38,7 @@ deployment:
             git commit -m "Deployment of build $CIRCLE_BUILD_NUM" -m "$CI_MESSAGE" -m "From gitref $CIRCLE_SHA1"
         # Push the Dev Branch to Azure
         - git push --force origin HEAD:deploy-to-mock
-        - npm run wait-for-deploy:
+        - yarn run wait-for-deploy:
             environment:
                 GIT_REF: $CIRCLE_SHA1
                 APP_BASE_URL: https://licences-mock.hmpps.dsd.io/health
