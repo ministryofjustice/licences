@@ -2,7 +2,7 @@ exports.up = knex =>
     Promise.all([
         knex.schema.createTableIfNotExists('AUDIT', table => {
             table.increments('ID').primary('PK_AUDIT');
-            table.date('TIMESTAMP').notNullable();
+            table.date('TIMESTAMP').notNullable().defaultTo(knex.fn.now());
             table.string('USER', 50).notNullable();
             table.string('ACTION', 50).notNullable();
             table.string('DETAILS').notNullable();
