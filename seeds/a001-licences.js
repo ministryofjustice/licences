@@ -1,4 +1,4 @@
-exports.seed = (knex) =>
+exports.seed = knex =>
     knex('LICENCES').delete()
         .then(
             () => knex('LICENCES').insert([
@@ -19,7 +19,7 @@ exports.seed = (knex) =>
                     '"dischargeDate": "2017-07-10", ' +
                     '"inProgress": true' +
                     '}'
-                },
+                }
             ])
         );
 

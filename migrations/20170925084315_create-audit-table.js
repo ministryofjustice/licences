@@ -8,7 +8,8 @@ exports.up = knex =>
             table.string('DETAILS').notNullable();
         }),
         knex.raw('ALTER TABLE [AUDIT] ALTER COLUMN [DETAILS] [NVARCHAR](2056) NULL'),
-        knex.raw('ALTER TABLE [AUDIT] ADD CONSTRAINT [AUDIT.DETAILS should be formatted as JSON] CHECK (ISJSON(DETAILS) > 0)')
+        knex.raw('ALTER TABLE [AUDIT] ADD CONSTRAINT [AUDIT.DETAILS should be formatted as JSON] ' +
+         'CHECK (ISJSON(DETAILS) > 0)')
     ]);
 
 exports.down = knex =>

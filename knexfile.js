@@ -8,8 +8,8 @@ module.exports = {
         password: config.db.password,
         database: config.db.database,
         options: {
-            encrypt: true,
-        },
+            encrypt: true
+        }
     },
-    acquireConnectionTimeout: 5000,
+    acquireConnectionTimeout: 5000
 };

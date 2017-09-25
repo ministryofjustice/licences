@@ -81,13 +81,13 @@ Migrations are managed using [knex](http://knexjs.org/#Migrations-CLI) and [knex
 Execute migration
 
 ```
-npm run migrate
+yarn migrate
 ```
 
 Other migration commands
 
 ```
-npm run knex-migrate <command>
+yarn run knex-migrate <command>
 ```
 
 Commands
@@ -101,7 +101,7 @@ Commands
 Create a new migration script
 
 ```
-npm run knex migrate:make <script-name>
+yarn run knex migrate:make <script-name>
 ```
 
 ## Seed data
@@ -109,13 +109,13 @@ npm run knex migrate:make <script-name>
 Execute seed scripts to populate DB with test data
 
 ```
-npm run seed
+yarn seed
 ```
 
 Create a new seed file
 
 ```
-npm run knex seed:make <script-name>
+yarn run knex seed:make <script-name>
 ```
 
 ## Local database set up
