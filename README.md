@@ -8,7 +8,7 @@
 1. Install the dependencies required to run the service:
 
   ```
-  $ npm install
+  $ yarn
   ```  
 2. Supply environment variables. The required environment variables are defined in server/config.js.
 
@@ -16,24 +16,23 @@
 3. Start the server
 
   ```   
-  $ npm start
+  $ yarn run start
   ```
 
    Or, for development, run inspections, tests, watch for changes and start the server:
    
   ```   
-  $ npm run dev
+  $ yarn run dev
   ```
   
 4. Visit [localhost:3000](http://localhost:3000/)
 
 ## Developer Commands
 
- - `npm run  lint` -> style checks using eslint
- - `npm run test` -> runs all unit tests
- (Note that tests run with authentication disabled and sending logs to file in iis-ui.log)
- - `npm run clean` -> cleans previously generated files
- - `npm run build` -> cleans and regenerates assets.
+ - `yarn run lint` -> style checks using eslint
+ - `yarn run test` -> runs all unit tests
+ - `yarn run clean` -> cleans previously generated files
+ - `yarn run build` -> cleans and regenerates assets.
  
 
 # SSO
