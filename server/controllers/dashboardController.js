@@ -2,47 +2,54 @@ const logger = require('../../log');
 
 const audit = require('../data/audit');
 const {getLicences} = require('../data/licences');
+const {getOffenders} = require('../data/delius');
+const {getReleases} = require('../data/nomis');
 
 exports.getIndex = function(req, res) {
 
-    logger.debug('GET /dashboard');
     audit.record('VIEW_DASHBOARD', 'anonymous', {todo: 'data'});
 
-
-    // Get the ID of the current loged in offender manager user
-    // const user = 'someone';
+    // Get the ID of the current logged in offender manager user
+    const user = '1';
 
     // Ask Delius database for the list of offenders related to this offender manager
-    // const nomisIds = ['A1235HG', 'A6627JH', 'three', 'four'];
+    return getOffenders(user)
+        .then(offenders => {
+            return getUpcomingReleasesData(res, offenders.nomisIds);
+        }).catch(error => {
+            logger.error('Error during get delius offender list request: ', error.message);
+            renderErrorPage(res, error);
+        });
+};
+
+function getUpcomingReleasesData(res, nomisIds) {
 
     // Ask the Nomis API for the upcoming releases for that list of offenders
-    const upcoming =
-        [
-            {
-                name: 'Andrews, Mark',
-                nomisId: 'A1235HG',
-                establishment: 'HMP Manchester',
-                dischargeDate: '2017-11-01'
-            },
-            {
-                name: 'Bryanston, David',
-                nomisId: 'A6627JH',
-                establishment: 'HMP Birmingham',
-                dischargeDate: '2017-07-10'
+    return getReleases(nomisIds)
+        .then(upcoming => {
+            if(upcoming && upcoming.length > 0) {
+                const upcomingIds = upcoming.map(offender => offender.nomisId);
+                return getActiveLicencesAndRender(res, upcoming, upcomingIds);
             }
-        ];
+
+            return res.render('dashboard/index');
+        }).catch(error => {
+            logger.error('Error during get delius offender list request: ', error.message);
+            renderErrorPage(res, error);
+        });
+}
+
+function getActiveLicencesAndRender(res, upcoming, upcomingIds) {
 
     // Find licence records for that list of releases
-    const upcomingIds = upcoming.map(offender => offender.nomisId);
-
     return getLicences(upcomingIds)
         .then(activeLicences => {
             return res.render('dashboard/index', parseDashboardInfo(upcoming, activeLicences));
         }).catch(error => {
-            logger.error('Error during get dashboard info request: ', error.message);
+            logger.error('Error during get active licences request: ', error.message);
             renderErrorPage(res, error);
         });
-};
+}
 
 function parseDashboardInfo(upcoming, activeLicences) {
 

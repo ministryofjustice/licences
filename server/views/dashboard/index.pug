@@ -3,37 +3,42 @@ extends ../layout
 block content
 
     h1.heading-large Upcoming releases
-    h2.heading-medium Information required
-    table
-        thead
-            tr
-                th Name
-                th NOMS ID
-                th Establishment
-                th Discharge date
-                th
-        tbody
-            each entry in required
-                tr.infoRequired
-                    td.requiredName
-                        if entry.name
-                            |#{entry.name}
 
-                    td.requiredNomisId
-                        if entry.nomisId
-                            | #{entry.nomisId}
+        if required
 
-                    td.requiredEstablishment
-                        if entry.establishment
-                            | #{entry.establishment}
+            h2.heading-medium Information required
+            table
+                thead
+                    tr
+                        th Name
+                        th NOMS ID
+                        th Establishment
+                        th Discharge date
+                        th
+                tbody
+                    each entry in required
+                        tr.infoRequired
+                            td.requiredName
+                                if entry.name
+                                    |#{entry.name}
 
-                    td.requiredDischargeDate
-                        if entry.dischargeDate
-                            | #{moment(entry.dischargeDate).format('DD/MM/YYYY')}
+                            td.requiredNomisId
+                                if entry.nomisId
+                                    | #{entry.nomisId}
 
-                    td.requiredButton
-                        a.button.button-secondary(href="details/"+entry.nomsId role="button")
-                            if entry.inProgress
-                                |Continue
-                            else
-                                |Start
+                            td.requiredEstablishment
+                                if entry.establishment
+                                    | #{entry.establishment}
+
+                            td.requiredDischargeDate
+                                if entry.dischargeDate
+                                    | #{moment(entry.dischargeDate).format('DD/MM/YYYY')}
+
+                            td.requiredButton
+                                a.button.button-secondary(href="details/"+entry.nomsId role="button")
+                                    if entry.inProgress
+                                        |Continue
+                                    else
+                                        |Start
+        else
+            h2.heading-medium No upcoming releases
