@@ -4,40 +4,76 @@ block content
     h1.heading-large Planned discharge address
     p The following addresses have been requested by the offender.
 
-    div.grid-row
-        div.column-two-thirds
-            div.grid-row
-                div.column-one-third
-                    |Address one
-                    if (line1)
-                        span.block.bold #{line1}
-                    if (line2)
-                        span.block.bold #{line2}
-                    if (line3)
-                        span.block.bold #{line3}
-                    if (postCode)
-                        span.block.bold #{postCode}
+    div.grid-row.largeMarginBottom
+        div.column-two-thirds.boxPanel
+            div.column-one-third.midMarginBottom
+                |Address one
+                if (line1)
+                    span.block.bold #{line1}
+                if (line2)
+                    span.block.bold #{line2}
+                if (line3)
+                    span.block.bold #{line3}
+                if (postCode)
+                    span.block.bold #{postCode}
 
-                div.column-one-third
-                    if (contact)
-                        span.block
-                            | Contact name
-                            span.block.bold #{contact}
+            div.column-one-third.midMarginBottom
+                if (contact)
+                    span.block.midMarginBottom
+                        | Contact name
+                        span.block.bold #{contact}
 
-                    if (contactNumber)
-                        span.block
-                            | Contact number
-                            span.block.bold #{contactNumber}
+                if (contactNumber)
+                    span.block.midMarginBottom
+                        | Contact number
+                        span.block.bold #{contactNumber}
 
-                    span.block
-                        | Home address?
-                        span.block.bold
-                            if (homeAddress)
-                                | Yes
-                            else
-                                | No
+                span.block
+                    | Home address?
+                    span.block.bold
+                        if (homeAddress)
+                            | Yes
+                        else
+                            | No
 
-                div.column-one-third
-                    | Reason for request
-                    if (reason)
-                        span.block.bold #{reason}
+            div.column-one-third.midMarginBottom
+                | Reason for request
+                if (reason)
+                    span.block.bold #{reason}
+
+    form
+        div.form-group
+            fieldset.inline
+                legend.midMarginBottom Is this address acceptable?
+
+                div.multiple-choice
+                    input(id="radio-yes" type="radio" name="acceptable-address" value="Yes")
+                    label(for="radio-yes") Yes
+
+                div.multiple-choice(data-target="address-form")
+                    input(id="radio-no" type="radio" name="acceptable-address" value="No")
+                    label(for="radio-no") No
+
+                div#address-form.panel.panel-border-narrow.js-hidden
+                    div.form-group
+                        label.form-label(for="building") Building and street
+                        input#building.midMarginBottom.form-control(name="building" type="text")
+                        input#street.form-control.block(name="street" type="text")
+
+                    div.form-group
+                        label.form-label(for="town") Town or city
+                        input#town.form-control(name="town" type="text")
+
+                    div.form-group
+                        label.form-label(for="postcode") Postcode
+                        input#postcode.form-control.small(name="postcode" type="text")
+
+                    div.form-group
+                        label.form-label(for="telephone") Telephone
+                        input#telephone.form-control.small(name="telephone" type="text")
+
+        div#continueBtns.inlineButtons
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="licenceNumber" value=licenceNumber)
+            input.button(type="submit" value="Continue")
+            a.button.button-secondary(href="/dashboard" role="button") Back to dashboard

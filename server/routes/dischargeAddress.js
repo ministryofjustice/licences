@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {getIndex} = require('../controllers/dischargeAddressController');
+const {getIndex, postAddress} = require('../controllers/dischargeAddressController');
 
 router.use(function(req, res, next) {
     if (typeof req.csrfToken === 'function') {
@@ -10,5 +10,6 @@ router.use(function(req, res, next) {
 });
 
 router.get('/:licenceId', getIndex);
+router.post('/:licenceId', postAddress);
 
 module.exports = router;
