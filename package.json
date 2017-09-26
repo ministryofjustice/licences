@@ -83,6 +83,7 @@
     "require-dir": "^0.3.0",
     "run-sequence": "^1.2.2",
     "snyk": "^1.36.2",
+    "superagent": "^3.6.0",
     "tedious": "^2.0.0",
     "util": "^0.10.3",
     "uuid": "^3.0.1",
