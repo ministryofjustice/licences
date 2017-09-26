@@ -21,13 +21,13 @@ describe('dashboardController', () => {
 
         getLicencesStub = sandbox.stub().returnsPromise().resolves([
             {
-                "nomisId": "A6627JH",
-                "id": 1,
-                "licence": {
-                    "name": "Bryanston, David",
-                    "nomisId": "A6627JH",
-                    "establishment": "HMP Birmingham",
-                    "dischargeDate": "2017-07-10"
+                nomisId: 'A6627JH',
+                id: 1,
+                licence: {
+                    name: 'Bryanston, David',
+                    nomisId: 'A6627JH',
+                    establishment: 'HMP Birmingham',
+                    dischargeDate: '2017-07-10'
                 }
             }
         ]);

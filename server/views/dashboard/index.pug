@@ -32,8 +32,8 @@ block content
                             | #{moment(entry.dischargeDate).format('DD/MM/YYYY')}
 
                     td.requiredButton
-                        a.button.button-secondary(href="details/"+prisoner.nomsId role="button")
-                            if prisoner.inProgress
+                        a.button.button-secondary(href="details/"+entry.nomsId role="button")
+                            if entry.inProgress
                                 |Continue
                             else
                                 |Start
