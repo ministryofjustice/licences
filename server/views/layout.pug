@@ -7,7 +7,7 @@ html(lang="en")
         title Licences Application
 
 
-        <!--[if gt IE 8]><!--><link href="/public/stylesheets/govuk-template.css?#{version}" media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
+        <!--[if gt IE 8]><!--><link href="/public/stylesheets/govuk-template.css?"+version media="screen" rel="stylesheet" type="text/css" /><!--<![endif]-->
 
         <!--[if gte IE 9]><!--><link href="/public/stylesheets/fonts.css?0.19.2" media="all" rel="stylesheet" /><!--<![endif]-->
         <!--[if IE 8]><link href="/public/stylesheets/govuk-template-ie8.css?0.19.2" media="screen" rel="stylesheet" /><!--<![endif]-->
@@ -21,10 +21,10 @@ html(lang="en")
         link(rel="apple-touch-icon-precomposed", sizes="76x76", href="/public/images/apple-touch-icon-76x76.png?0.19.2")
         link(rel="apple-touch-icon-precomposed", sizes="76x76", href="/public/images/apple-touch-icon-60x60.png?0.19.2")
         <!--[if gt IE 8]><!-->
-        link(href="public/stylesheets/application.css?#{version}", media="screen", rel="stylesheet", type="text/css")
+        link(href="/public/stylesheets/application.css?"+version, media="screen", rel="stylesheet", type="text/css")
         <!--<![endif]-->
         <!--[if lt IE 9]>
-        link(href="/stylesheets/application-oldie.css?#{version}", media="screen", rel="stylesheet", type="text/css")
+        link(href="/stylesheets/application-oldie.css?"+version, media="screen", rel="stylesheet", type="text/css")
         <![endif]-->
     body
         script.
@@ -92,14 +92,14 @@ html(lang="en")
         div(id="global-app-error", class="app-error hidden")
 
         script(src="/public/javascripts/govuk-template.js?0.19.2")
-        script(src="/public/javascripts/jquery-1.11.3.js?#{version}")
+        script(src="/public/javascripts/jquery-1.11.3.js?"+version)
 
         <!-- gov_frontend_toolkit -->
-        script(src="/public/javascripts/govuk/shim-links-with-button-role.js?#{version}")
-        script(src="/public/javascripts/govuk/show-hide-content.js?#{version}")
+        script(src="/public/javascripts/govuk/shim-links-with-button-role.js?"+version)
+        script(src="/public/javascripts/govuk/show-hide-content.js?"+version)
 
-        script(src="/public/javascripts/details.polyfill.js?#{version}")
-        script(src="/public/javascripts/application.js?#{version}")
+        script(src="/public/javascripts/details.polyfill.js?"+version)
+        script(src="/public/javascripts/application.js?"+version)
 
 
 
