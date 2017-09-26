@@ -2,6 +2,16 @@
 const request = require('supertest');
 const app = require('../server/app');
 
+const nock = require('nock');
+
+
+beforeEach(() => {
+    nock('http://localhost:9090')
+        .get('/api/v2/releases')
+        .query({nomisId: ['A1235HG', 'A6627JH']})
+        .reply(200, []);
+});
+
 describe('routes', () => {
 
     describe('dashboard route', () => {
