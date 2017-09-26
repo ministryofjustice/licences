@@ -62,3 +62,64 @@ The following environment variables are used and values should be supplied for c
 The following environment variables are used and a value MUST be supplied in production.
 
 * SESSION_SECRET - Secure session configuration
+
+
+
+# Database
+
+The following environment variables are used
+
+* DB_USER - username for DB access
+* DB_PASS - password for DB access
+* DB_SERVER - DB server host
+* DB_NAME - DB name
+
+## Migrations
+
+Migrations are managed using [knex](http://knexjs.org/#Migrations-CLI) and [knex-migrate](https://github.com/sheerun/knex-migrate)
+
+Execute migration
+
+```
+yarn migrate
+```
+
+Other migration commands
+
+```
+yarn run knex-migrate <command>
+```
+
+Commands
+* pending   Lists all pending migrations
+* list      Lists all executed migrations
+* up        Performs all pending migrations
+* down      Rollbacks last migration
+* rollback  Rollbacks last batch of migrations
+* redo      Rollbacks last batch and performs all migrations
+
+Create a new migration script
+
+```
+yarn run knex migrate:make <script-name>
+```
+
+## Seed data
+
+Execute seed scripts to populate DB with test data
+
+```
+yarn seed
+```
+
+Create a new seed file
+
+```
+yarn run knex seed:make <script-name>
+```
+
+## Local database set up
+
+```
+CREATE DATABASE licences CONTAINMENT = PARTIAL
+``` 
