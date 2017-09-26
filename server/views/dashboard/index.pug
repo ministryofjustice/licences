@@ -13,27 +13,27 @@ block content
                 th Discharge date
                 th
         tbody
-            each prisoner in required
-                tr
+            each entry in required
+                tr.infoRequired
                     td.requiredName
-                        if prisoner.name
-                            |#{prisoner.name}
+                        if entry.name
+                            |#{entry.name}
 
                     td.requiredNomisId
-                        if prisoner.nomsId
-                            | #{prisoner.nomsId}
+                        if entry.nomisId
+                            | #{entry.nomisId}
 
                     td.requiredEstablishment
-                        if prisoner.establishment
-                            | #{prisoner.establishment}
+                        if entry.establishment
+                            | #{entry.establishment}
 
                     td.requiredDischargeDate
-                        if prisoner.dischargeDate
-                            | #{prisoner.dischargeDate}
+                        if entry.dischargeDate
+                            | #{moment(entry.dischargeDate).format('DD/MM/YYYY')}
 
                     td.requiredButton
-                        a.button.button-secondary(href="summary/"+prisoner.nomsId role="button")
-                            if prisoner.inProgress
+                        a.button.button-secondary(href="summary/"+entry.nomisId role="button")
+                            if entry.inProgress
                                 |Continue
                             else
                                 |Start
