@@ -1,0 +1,43 @@
+extends ../layout
+
+block content
+    h1.heading-large Planned discharge address
+    p The following addresses have been requested by the offender.
+
+    div.grid-row
+        div.column-two-thirds
+            div.grid-row
+                div.column-one-third
+                    |Address one
+                    if (line1)
+                        span.block.bold #{line1}
+                    if (line2)
+                        span.block.bold #{line2}
+                    if (line3)
+                        span.block.bold #{line3}
+                    if (postCode)
+                        span.block.bold #{postCode}
+
+                div.column-one-third
+                    if (contact)
+                        span.block
+                            | Contact name
+                            span.block.bold #{contact}
+
+                    if (contactNumber)
+                        span.block
+                            | Contact number
+                            span.block.bold #{contactNumber}
+
+                    span.block
+                        | Home address?
+                        span.block.bold
+                            if (homeAddress)
+                                | Yes
+                            else
+                                | No
+
+                div.column-one-third
+                    | Reason for request
+                    if (reason)
+                        span.block.bold #{reason}
