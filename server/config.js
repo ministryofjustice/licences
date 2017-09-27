@@ -24,18 +24,17 @@ module.exports = {
         database: get('DB_NAME', 'licences')
     },
 
+    nomis: {
+        apiUrl: get('NOMIS_API_URL', 'http://localhost:9090'),
+        timeout: {
+            response: 2000,
+            deadline: 2500
+        }
+    },
+
     https: production,
     staticResourceCacheDuration: 365 * oneDay,
     healthcheckInterval: Number(get('HEALTHCHECK_INTERVAL', 0)),
 
-    sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', {requireInProduction: true}),
-
-    sso: {
-        CLIENT_ID: get('CLIENT_ID', '123'),
-        CLIENT_SECRET: get('CLIENT_SECRET', '123'),
-        TOKEN_HOST: get('TOKEN_HOST', 'http://localhost:3001'),
-        AUTHORIZE_PATH: get('AUTHORIZE_PATH', '/oauth/authorize'),
-        TOKEN_PATH: get('TOKEN_PATH', '/oauth/token'),
-        USER_DETAILS_PATH: get('USER_DETAILS_PATH', '/api/user_details')
-    }
+    sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', {requireInProduction: true})
 };

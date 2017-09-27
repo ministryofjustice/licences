@@ -3,21 +3,12 @@ exports.seed = knex =>
         .then(
             () => knex('LICENCES').insert([
                 {
-                    licence: '{' +
-                    '"name": "Andrews, Mark", ' +
-                    '"nomsId": "A1235HG", ' +
-                    '"establishment": "HMP Manchester", ' +
-                    '"dischargeDate": "2017-11-01", ' +
-                    '"inProgress": false' +
-                    '}'
-                },
-                {
-                    licence: '{' +
+                    NOMIS_ID: "A6627JH",
+                    LICENCE: '{' +
                     '"name": "Bryanston, David", ' +
-                    '"nomsId": "A6627JH", ' +
+                    '"nomisId": "A6627JH", ' +
                     '"establishment": "HMP Birmingham", ' +
-                    '"dischargeDate": "2017-07-10", ' +
-                    '"inProgress": true' +
+                    '"dischargeDate": "2017-07-10"' +
                     '}'
                 }
             ])
