@@ -1,0 +1,98 @@
+extends ../layout
+
+block content
+
+    h1.heading-large Check prisoner details
+    h2.heading-medium Personal details
+
+    div#personalDetails.grid-row.borderBottom.paddingBottom
+        div.column-one-quarter
+            if(image.name)
+                img(src= "/public/images/"+image.name)
+            if(image.uploadedDate)
+                span.subText Uploaded: #{image.uploadedDate}
+
+        div.column-one-quarter
+            div.midMarginBottom
+                |Name
+                if(name)
+                    span#prisonerName.block.bold #{name}
+
+            div.midMarginBottom
+                | Aliases
+                if(aliases)
+                    span#prisonerAliases.block.bold #{aliases}
+
+            div.midMarginBottom
+                | Prison number
+                if(prisonNumber)
+                    span#prisonerPrisonNumber.block.bold #{prisonNumber}
+
+        div.column-one-quarter
+            div.midMarginBottom
+                | Date of birth
+                if(dateOfBirth)
+                    span#prisonerDob.block.bold #{dateOfBirth}
+
+            div.midMarginBottom
+                | Sex
+                if(sex)
+                    span#prisonerSex.block.bold #{sex}
+
+            div.midMarginBottom
+                | Location
+                if(location)
+                    span#prisonerLocation.block.bold
+                        if (location.block)
+                            |#{location.block}
+                        if (location.landing)
+                            |&nbsp;| #{location.landing}
+                        if (location.cell)
+                            |&nbsp;| #{location.cell}
+                    if (location.prison)
+                        span.block.bold #{location.prison}
+
+    h2.heading-medium Key dates
+
+    div#keyDates.grid-row.paddingBottom
+        div.column-one-quarter
+            div.midMarginBottom
+                | Sentence expires
+                span#sentenceExpires.block.bold
+                    if (dates.sentenceExpiry)
+                        | #{dates.sentenceExpiry}
+                    else
+                        | N/A
+
+        div.column-one-quarter
+            div.midMarginBottom
+                | HDC eligibility date
+                span#hdcEligibility.block.bold
+                    if (dates.hdcEligibility)
+                        | #{dates.hdcEligibility}
+                    else
+                        | N/A
+
+        div.column-one-quarter
+            div.midMarginBottom
+                | Supervision commences
+                span#supervisionStart.block.bold
+                    if (dates.supervisionStart)
+                        | #{dates.supervisionStart}
+                    else
+                        | N/A
+
+            div.midMarginBottom
+                | Supervision ends
+                span#supervisionEnd.block.bold
+                    if (dates.supervisionEnd)
+                        | #{dates.supervisionEnd}
+                    else
+                        | N/A
+
+    div#continueBtns.inlineButtons
+        form(method="post", name="formPrint")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="prisonNumber" value=prisonNumber)
+            input.requiredButton.button(type="submit" value="Continue")
+        a.requiredButton.button.button-secondary(href="/dashboard" role="button") Back to dashboard
