@@ -5,11 +5,11 @@ block content
     p The following addresses have been requested by the offender.
 
     div.grid-row.largeMarginBottom
-        div.column-two-thirds.boxPanel
-            div.column-one-third.midMarginBottom
+        div#addressDetails.column-two-thirds.boxPanel
+            div#address.column-one-third.midMarginBottom
                 |Address one
                 if (line1)
-                    span.block.bold #{line1}
+                    span#address1.block.bold #{line1}
                 if (line2)
                     span.block.bold #{line2}
                 if (line3)
@@ -21,16 +21,16 @@ block content
                 if (contact)
                     span.block.midMarginBottom
                         | Contact name
-                        span.block.bold #{contact}
+                        span#contact.block.bold #{contact}
 
                 if (contactNumber)
                     span.block.midMarginBottom
                         | Contact number
-                        span.block.bold #{contactNumber}
+                        span#contactNumber.block.bold #{contactNumber}
 
                 span.block
                     | Home address?
-                    span.block.bold
+                    span#homeAddress.block.bold
                         if (homeAddress)
                             | Yes
                         else
@@ -39,22 +39,22 @@ block content
             div.column-one-third.midMarginBottom
                 | Reason for request
                 if (reason)
-                    span.block.bold #{reason}
+                    span#reason.block.bold #{reason}
 
-    form
+    form#acceptanceForm
         div.form-group
             fieldset.inline
                 legend.midMarginBottom Is this address acceptable?
 
                 div.multiple-choice
-                    input(id="radio-yes" type="radio" name="acceptable-address" value="Yes")
-                    label(for="radio-yes") Yes
+                    input(id="radioYes" type="radio" name="acceptable-address" value="Yes")
+                    label(for="radioYes") Yes
 
-                div.multiple-choice(data-target="address-form")
-                    input(id="radio-no" type="radio" name="acceptable-address" value="No")
-                    label(for="radio-no") No
+                div.multiple-choice(data-target="addressForm")
+                    input(id="radioNo" type="radio" name="acceptable-address" value="No")
+                    label(for="radioNo") No
 
-                div#address-form.panel.panel-border-narrow.js-hidden
+                div#addressForm.panel.panel-border-narrow.js-hidden
                     div.form-group
                         label.form-label(for="building") Building and street
                         input#building.midMarginBottom.form-control(name="building" type="text")
@@ -75,5 +75,5 @@ block content
         div#continueBtns.inlineButtons
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="licenceNumber" value=licenceNumber)
-            input.button(type="submit" value="Continue")
-            a.button.button-secondary(href="/dashboard" role="button") Back to dashboard
+            input.requiredButton.button(type="submit" value="Continue")
+            a.requiredButton.button.button-secondary(href="/dashboard" role="button") Back to dashboard
