@@ -5,7 +5,7 @@ block content
     h1.heading-large Check prisoner details
     h2.heading-medium Personal details
 
-    div.grid-row.borderBottom.paddingBottom
+    div#personalDetails.grid-row.borderBottom.paddingBottom
         div.column-one-quarter
             if(image.name)
                 img(src= "/public/images/"+image.name)
@@ -16,33 +16,33 @@ block content
             div.midMarginBottom
                 |Name
                 if(name)
-                    span.block.bold #{name}
+                    span#prisonerName.block.bold #{name}
 
             div.midMarginBottom
                 | Aliases
                 if(aliases)
-                    span.block.bold #{aliases}
+                    span#prisonerAliases.block.bold #{aliases}
 
             div.midMarginBottom
                 | Prison number
                 if(prisonNumber)
-                    span.block.bold #{prisonNumber}
+                    span#prisonerPrisonNumber.block.bold #{prisonNumber}
 
         div.column-one-quarter
             div.midMarginBottom
                 | Date of birth
                 if(dateOfBirth)
-                    span.block.bold #{dateOfBirth}
+                    span#prisonerDob.block.bold #{dateOfBirth}
 
             div.midMarginBottom
                 | Sex
                 if(sex)
-                    span.block.bold #{sex}
+                    span#prisonerSex.block.bold #{sex}
 
             div.midMarginBottom
                 | Location
                 if(location)
-                    span.block.bold
+                    span#prisonerLocation.block.bold
                         if (location.block)
                             |#{location.block}
                         if (location.landing)
@@ -54,11 +54,11 @@ block content
 
     h2.heading-medium Key dates
 
-    div.grid-row.paddingBottom
+    div#keyDates.grid-row.paddingBottom
         div.column-one-quarter
             div.midMarginBottom
                 | Sentence expires
-                span.block.bold
+                span#sentenceExpires.block.bold
                     if (dates.sentenceExpiry)
                         | #{dates.sentenceExpiry}
                     else
@@ -67,7 +67,7 @@ block content
         div.column-one-quarter
             div.midMarginBottom
                 | HDC eligibility date
-                span.block.bold
+                span#hdcEligibility.block.bold
                     if (dates.hdcEligibility)
                         | #{dates.hdcEligibility}
                     else
@@ -76,7 +76,7 @@ block content
         div.column-one-quarter
             div.midMarginBottom
                 | Supervision commences
-                span.block.bold
+                span#supervisionStart.block.bold
                     if (dates.supervisionStart)
                         | #{dates.supervisionStart}
                     else
@@ -84,7 +84,7 @@ block content
 
             div.midMarginBottom
                 | Supervision ends
-                span.block.bold
+                span#supervisionEnd.block.bold
                     if (dates.supervisionEnd)
                         | #{dates.supervisionEnd}
                     else
@@ -94,5 +94,5 @@ block content
         form(method="post", name="formPrint")
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="prisonNumber" value=prisonNumber)
-            input.button(type="submit" value="Continue")
-        a.button.button-secondary(href="/dashboard" role="button") Back to dashboard
+            input.requiredButton.button(type="submit" value="Continue")
+        a.requiredButton.button.button-secondary(href="/dashboard" role="button") Back to dashboard
