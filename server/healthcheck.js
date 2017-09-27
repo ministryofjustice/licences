@@ -1,11 +1,22 @@
+const {
+    dbCheck,
+    nomisApiCheck
+} = require('./data/healthcheck');
 
-function dummy() {
-    return {name: 'dummy', status: 'ok', message: 'ok'};
+function db() {
+    return dbCheck()
+        .then(() => ({name: 'db', status: 'ok', message: 'OK'}))
+        .catch(err => ({name: 'db', status: 'ERROR', message: err.message}));
 }
 
+function nomis() {
+    return nomisApiCheck()
+        .then(result => ({name: 'nomis', status: 'ok', message: result}))
+        .catch(err => ({name: 'nomis', status: 'ERROR', message: err}));
+}
 
 module.exports = function healthcheck(callback) {
-    const checks = [dummy];
+    const checks = [db, nomis];
 
     return Promise
         .all(checks.map(fn => fn()))
