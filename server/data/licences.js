@@ -1,6 +1,7 @@
 'use strict';
 
 const {getCollection} = require('./dataAccess/licencesData');
+const {resolveJsonResponse} = require('./dataAccess/azureJson');
 
 exports.getLicences = function(nomisIds) {
     return new Promise((resolve, reject) => {
@@ -16,20 +17,4 @@ exports.getLicences = function(nomisIds) {
     });
 };
 
-const resolveJsonResponse = resolve => response => {
-    if(response === 0) {
-        return resolve([]);
-    }
 
-    const concatenatedResponse = response.map(valueOfJsonSegment).join('');
-    resolve(JSON.parse(concatenatedResponse));
-};
-
-const valueOfJsonSegment = responseSegment => {
-    return Object.keys(responseSegment).reduce((segmentString, segmentKey) => {
-        if (segmentKey.includes('JSON')) {
-            return segmentString.concat(responseSegment[segmentKey].value);
-        }
-        return segmentString;
-    }, '');
-};
