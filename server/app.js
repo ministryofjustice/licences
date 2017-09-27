@@ -26,6 +26,8 @@ const config = require('../server/config');
 const healthcheck = require('../server/healthcheck');
 
 const dashboard = require('../server/routes/dashboard');
+const details = require('../server/routes/details');
+const dischargeAddress = require('../server/routes/dischargeAddress');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -183,6 +185,8 @@ app.get('/health', (req, res, next) => {
 
 app.use('/', index);
 app.use('/dashboard/', dashboard);
+app.use('/details/', details);
+app.use('/dischargeAddress/', dischargeAddress);
 
 // if (!testMode) {
 //     app.use(authRequired);

@@ -12,3 +12,46 @@ a.button.button-secondary {
     min-width: 120px;
     text-align: center;
 }
+
+.block {
+    display: block;
+}
+
+.midMarginBottom {
+    margin-bottom: 20px;
+}
+
+.largeMarginBottom {
+    margin-bottom: 30px;
+}
+
+.paddingBottom {
+    padding-bottom: 30px;
+}
+
+.borderBottom {
+    border-bottom: solid $grey-1 2px;
+}
+
+.subText {
+    font-size: 80%;
+}
+
+#continueBtns a{
+    margin-right: 15px;
+}
+
+.inlineButtons > a, .inlineButtons > form, .inlineButtons > input {
+    margin-right: 15px;
+    float: left;
+}
+
+.boxPanel {
+    border: solid $grey-1 2px;
+    padding: 20px 0 0 0;
+    margin-left: 15px;
+}
+
+input.small {
+    max-width: 275px;
+}
