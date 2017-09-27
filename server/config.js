@@ -37,13 +37,4 @@ module.exports = {
     healthcheckInterval: Number(get('HEALTHCHECK_INTERVAL', 0)),
 
     sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', {requireInProduction: true}),
-
-    sso: {
-        CLIENT_ID: get('CLIENT_ID', '123'),
-        CLIENT_SECRET: get('CLIENT_SECRET', '123'),
-        TOKEN_HOST: get('TOKEN_HOST', 'http://localhost:3001'),
-        AUTHORIZE_PATH: get('AUTHORIZE_PATH', '/oauth/authorize'),
-        TOKEN_PATH: get('TOKEN_PATH', '/oauth/token'),
-        USER_DETAILS_PATH: get('USER_DETAILS_PATH', '/api/user_details')
-    }
 };
