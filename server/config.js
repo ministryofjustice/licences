@@ -36,5 +36,5 @@ module.exports = {
     staticResourceCacheDuration: 365 * oneDay,
     healthcheckInterval: Number(get('HEALTHCHECK_INTERVAL', 0)),
 
-    sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', {requireInProduction: true}),
+    sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', {requireInProduction: true})
 };

@@ -3,15 +3,12 @@
 const logger = require('../log.js');
 const expressWinston = require('express-winston');
 const addRequestId = require('express-request-id')();
-const uuidV1 = require('uuid/v1');
 const moment = require('moment');
 
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const express = require('express');
 const path = require('path');
-
-const request = require('request');
 
 const helmet = require('helmet');
 const csurf = require('csurf');

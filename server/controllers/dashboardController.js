@@ -9,7 +9,7 @@ exports.getIndex = function(req, res) {
 
     const user = getLoggedInUserId();
 
-    audit.record('VIEW_DASHBOARD', user, {todo: 'data'});
+    audit.record('VIEW_DASHBOARD', user);
 
     return getDashboardDetail(res, user);
 };
