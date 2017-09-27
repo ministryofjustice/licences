@@ -1,59 +1,62 @@
 const logger = require('../../log');
-
 const audit = require('../data/audit');
-const {getLicences} = require('../data/licences');
+
 const {getOffenders} = require('../data/delius');
-const {getReleases} = require('../data/nomis');
+const {getUpcomingReleases} = require('../data/nomis');
+const {getLicences} = require('../data/licences');
 
 exports.getIndex = function(req, res) {
 
-    audit.record('VIEW_DASHBOARD', 'anonymous', {todo: 'data'});
+    const user = getLoggedInUserId();
 
-    // Get the ID of the current logged in offender manager user
-    const user = '1';
+    audit.record('VIEW_DASHBOARD', user, {todo: 'data'});
 
-    // Ask Delius database for the list of offenders related to this offender manager
-    return getOffenders(user)
-        .then(offenders => {
-            return getUpcomingReleasesData(res, offenders.nomisIds);
-        }).catch(error => {
-            logger.error('Error during get delius offender list request: ', error.message);
-            renderErrorPage(res, error);
-        });
+    return getDashboardDetail(res, user);
 };
 
-function getUpcomingReleasesData(res, nomisIds) {
+function getLoggedInUserId() {
+    // todo
+    return '1';
+}
 
-    // Ask the Nomis API for the upcoming releases for that list of offenders
-    return getReleases(nomisIds)
-        .then(upcoming => {
-            if(upcoming && upcoming.length > 0) {
-                const upcomingIds = upcoming.map(offender => offender.nomisId);
-                return getActiveLicencesAndRender(res, upcoming, upcomingIds);
-            }
+async function getDashboardDetail(res, user) {
 
+    try {
+        const offenders = await getOffenders(user);
+
+        if (isEmpty(offenders)) {
             return res.render('dashboard/index');
-        }).catch(error => {
-            logger.error('Error during get delius offender list request: ', error.message);
-            renderErrorPage(res, error);
-        });
+        }
+
+        const upcomingReleases = await getUpcomingReleases(offenders.nomisIds);
+
+        if (isEmpty(upcomingReleases)) {
+            return res.render('dashboard/index');
+        }
+
+        const activeLicences = await getLicences(getOffenderNomisIds(upcomingReleases));
+        const dashboardInfo = parseDashboardInfo(upcomingReleases, activeLicences);
+
+        return res.render('dashboard/index', dashboardInfo);
+
+
+    } catch (error) {
+        logger.error('Error during getDashboardDetail: ', error.message);
+        return renderErrorPage(res, error);
+    }
 }
 
-function getActiveLicencesAndRender(res, upcoming, upcomingIds) {
-
-    // Find licence records for that list of releases
-    return getLicences(upcomingIds)
-        .then(activeLicences => {
-            return res.render('dashboard/index', parseDashboardInfo(upcoming, activeLicences));
-        }).catch(error => {
-            logger.error('Error during get active licences request: ', error.message);
-            renderErrorPage(res, error);
-        });
+function isEmpty(candidateArray) {
+    return !candidateArray || candidateArray.length <= 0;
 }
 
-function parseDashboardInfo(upcoming, activeLicences) {
+function getOffenderNomisIds(releases) {
+    return releases.map(offender => offender.nomisId);
+}
 
-    const required = upcoming.map(offender => {
+function parseDashboardInfo(upcomingReleases, activeLicences) {
+
+    const required = upcomingReleases.map(offender => {
         const licence = activeLicences.find(licence => licence.nomisId === offender.nomisId);
         return licence ? Object.assign(offender, {inProgress: true, licenceId: licence.id}) : offender;
     });

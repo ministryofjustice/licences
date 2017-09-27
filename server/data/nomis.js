@@ -14,10 +14,10 @@ const timeoutSpec = {
 const queryUrl = url.resolve(`${config.nomis.apiUrl}`, 'api/v2/releases');
 
 module.exports = {
-    getReleases
+    getUpcomingReleases
 };
 
-function getReleases(nomisIds) {
+function getUpcomingReleases(nomisIds) {
     return new Promise((resolve, reject) => {
 
         const queryParams = {nomisId: nomisIds};
