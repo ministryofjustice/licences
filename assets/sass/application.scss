@@ -41,7 +41,17 @@ a.button.button-secondary {
     margin-right: 15px;
 }
 
-.inlineButtons > a, .inlineButtons > form {
-    padding-right: 15px;
+.inlineButtons > a, .inlineButtons > form, .inlineButtons > input {
+    margin-right: 15px;
     float: left;
+}
+
+.boxPanel {
+    border: solid $grey-1 2px;
+    padding: 20px 0 0 0;
+    margin-left: 15px;
+}
+
+input.small {
+    max-width: 275px;
 }

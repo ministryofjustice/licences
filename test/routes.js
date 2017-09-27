@@ -23,4 +23,14 @@ describe('routes', () => {
                 .end(done);
         });
     });
+
+    describe('discharge address route', () => {
+
+        it('should return 200 and html', done => {
+            request(app).get('/dischargeAddress/1')
+                .expect(200)
+                .expect('Content-Type', /text\/html/)
+                .end(done);
+        });
+    });
 });

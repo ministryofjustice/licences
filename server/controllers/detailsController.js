@@ -35,5 +35,5 @@ exports.createLicence = function(req, res) {
     logger.debug('POST /createLicence');
     logger.info('POST /createLicence');
 
-    return res.render('details/index', detailsInfo);
+    return res.redirect('/dischargeAddress/AB111111');
 };
