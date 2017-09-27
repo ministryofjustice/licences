@@ -58,7 +58,9 @@ function parseDashboardInfo(upcomingReleases, activeLicences) {
 
     const required = upcomingReleases.map(offender => {
         const licence = activeLicences.find(licence => licence.nomisId === offender.nomisId);
-        return licence ? Object.assign(offender, {inProgress: true, licenceId: licence.id}) : offender;
+
+        const licenceLocator = {inProgress: true, licenceId: licence.id};
+        return licence ? {...offender, ...licenceLocator} : offender;
     });
 
     return {
