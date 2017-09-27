@@ -1,6 +1,6 @@
 'use strict';
 
-const {getCollection} = require('./dataAccess/licencesData');
+const {getCollection} = require('./dataAccess/dbData');
 const {resolveJsonResponse} = require('./dataAccess/azureJson');
 
 exports.getLicences = function(nomisIds) {

@@ -9,20 +9,19 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 const sandbox = sinon.sandbox.create();
-const TYPES = require('tedious').TYPES;
 
 describe('getLicences', function() {
 
     const standardResponse = [{
         JSON1: {
             value: JSON.stringify([{
-                "nomisId": "A6627JH",
-                "id": 4,
-                "licence": {
-                    "name": "Bryanston, David",
-                    "nomisId": "A6627JH",
-                    "establishment": "HMP Birmingham",
-                    "dischargeDate": "2017-07-10"
+                nomisId: 'A6627JH',
+                id: 4,
+                licence: {
+                    name: 'Bryanston, David',
+                    nomisId: 'A6627JH',
+                    establishment: 'HMP Birmingham',
+                    dischargeDate: '2017-07-10'
                 }
             }])
         }
@@ -32,20 +31,20 @@ describe('getLicences', function() {
 
     const licencesProxy = (getCollection = getCollectionStub) => {
         return proxyquire('../../server/data/licences', {
-            './dataAccess/licencesData': {
-                'getCollection': getCollection,
+            './dataAccess/dbData': {
+                getCollection: getCollection
             }
         });
     };
 
     const expectedReturnValue = [{
-        "nomisId": "A6627JH",
-        "id": 4,
-        "licence": {
-            "name": "Bryanston, David",
-            "nomisId": "A6627JH",
-            "establishment": "HMP Birmingham",
-            "dischargeDate": "2017-07-10"
+        nomisId: 'A6627JH',
+        id: 4,
+        licence: {
+            name: 'Bryanston, David',
+            nomisId: 'A6627JH',
+            establishment: 'HMP Birmingham',
+            dischargeDate: '2017-07-10'
         }
     }];
 
@@ -69,7 +68,7 @@ describe('getLicences', function() {
     it('should return recordset as an array', () => {
         const result = licencesProxy().getLicences(['ABC123']);
 
-        return result.then((data) => {
+        return result.then(data => {
             expect(data).to.be.an('array');
         });
     });
@@ -93,7 +92,5 @@ describe('getLicences', function() {
         const sql = getCollectionStub.getCalls()[0].args[0];
         expect(sql).to.eql(expectedSql);
     });
-
-
 
 });
