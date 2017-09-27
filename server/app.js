@@ -3,17 +3,12 @@
 const logger = require('../log.js');
 const expressWinston = require('express-winston');
 const addRequestId = require('express-request-id')();
-const uuidV1 = require('uuid/v1');
 const moment = require('moment');
 
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const express = require('express');
 const path = require('path');
-
-const passport = require('passport');
-const OAuth2Strategy = require('passport-oauth2').Strategy;
-const request = require('request');
 
 const helmet = require('helmet');
 const csurf = require('csurf');
@@ -76,13 +71,6 @@ app.use(cookieSession({
     sameSite: 'lax'
 }));
 
-if (testMode) {
-    logger.info('Authentication disabled - using default test user profile');
-    app.use(dummyUserProfile);
-} else {
-    logger.info('Authentication enabled');
-    enableSSO();
-}
 
 // Request Processing Configuration
 app.use(bodyParser.json());
@@ -188,12 +176,6 @@ app.use('/dashboard/', dashboard);
 app.use('/details/', details);
 app.use('/dischargeAddress/', dischargeAddress);
 
-// if (!testMode) {
-//     app.use(authRequired);
-//     app.use(addTemplateVariables);
-// }
-// app.use('/loggedin/', loggedin);
-
 // Error Handler
 app.use(function(req, res, next) {
     res.status(404);
@@ -217,92 +199,6 @@ function renderErrors(error, req, res, next) {
     res.status(error.status || 500);
 
     res.render('error');
-}
-
-//  SSO utility methods
-// function authRequired(req, res, next) {
-//     if (!req.user) {
-//         logger.info('Authorisation required - redirecting to login');
-//         return res.redirect('/login');
-//     }
-//     res.locals.nav = true;
-//     next();
-// }
-//
-// function addTemplateVariables(req, res, next) {
-//     res.locals.profile = req.user;
-//     next();
-// }
-
-function dummyUserProfile(req, res, next) {
-    req.user = {
-        id: 1,
-        email: 'test@test.com',
-        firstName: 'Test',
-        lastName: 'Tester',
-        profileLink: '/profile',
-        logoutLink: '/logout'
-    };
-    res.locals.profile = req.user;
-    next();
-}
-
-function enableSSO() {
-    const ssoConfig = config.sso;
-
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    passport.use(new OAuth2Strategy({
-            authorizationURL: ssoConfig.TOKEN_HOST + ssoConfig.AUTHORIZE_PATH,
-            tokenURL: ssoConfig.TOKEN_HOST + ssoConfig.TOKEN_PATH,
-            clientID: ssoConfig.CLIENT_ID,
-            clientSecret: ssoConfig.CLIENT_SECRET,
-            proxy: true // trust upstream proxy
-        },
-        function(accessToken, refreshToken, profile, cb) {
-            logger.info('Passport authentication invoked');
-
-            let options = {
-                uri: ssoConfig.TOKEN_HOST + ssoConfig.USER_DETAILS_PATH,
-                qs: {access_token: accessToken},
-                json: true
-            };
-            request(options, function(error, response, userDetails) {
-                if (!error && response.statusCode === 200) {
-                    logger.info('User authentication success');
-                    return cb(null, userFor(userDetails));
-                } else {
-                    logger.error('Authentication failure:' + error);
-                    return cb(error);
-                }
-            });
-        })
-    );
-
-    function userFor(userDetails) {
-        return {
-            id: userDetails.id,
-            email: userDetails.email,
-            firstName: userDetails.first_name,
-            lastName: userDetails.last_name,
-            profileLink: userDetails.links.profile,
-            logoutLink: userDetails.links.logout,
-            sessionTag: uuidV1()
-        };
-    }
-
-
-    passport.serializeUser(function(user, done) {
-        // Not used but required for Passport
-        done(null, user);
-    });
-
-    passport.deserializeUser(function(user, done) {
-        // Not used but required for Passport
-        done(null, user);
-    });
-
 }
 
 module.exports = app;
