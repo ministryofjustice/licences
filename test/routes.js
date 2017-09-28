@@ -43,4 +43,14 @@ describe('routes', () => {
                 .end(done);
         });
     });
+
+    describe('additional conditions route', () => {
+
+        it('should return 200 and html', done => {
+            request(app).get('/additionalConditions/1')
+                .expect(200)
+                .expect('Content-Type', /text\/html/)
+                .end(done);
+        });
+    });
 });

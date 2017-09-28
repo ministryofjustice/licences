@@ -40,7 +40,7 @@ describe('dashboardController', () => {
         nockResponse();
 
         getOffendersStub = sandbox.stub().returnsPromise().resolves(
-            ['A1235HG', 'A6627JH']
+            {nomisIds: ['A1235HG', 'A6627JH']}
         );
 
         getLicencesStub = sandbox.stub().returnsPromise().resolves([
@@ -102,7 +102,7 @@ describe('dashboardController', () => {
 
         });
 
-        it('should pass a data object to the view', done => {
+        it('should pass a data object to the dashboard view', done => {
             getIndex()(reqMock, resMock).then(() => {
                 expect(resMock.render).to.have.callCount(1);
                 const payload = resMock.render.getCalls()[0].args[1];

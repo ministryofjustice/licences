@@ -1,4 +1,4 @@
-const {getIndex} = require('../../server/controllers/dischargeAddressController');
+const {getIndex} = require('../../server/controllers/additionalConditionsController');
 
 const chai = require('chai');
 const sinon = require('sinon');
@@ -7,12 +7,12 @@ const expect = chai.expect;
 chai.use(sinonChai);
 const sandbox = sinon.sandbox.create();
 
-describe('dischargeAddressController', () => {
+describe('additionalConditionsController', () => {
     let reqMock;
     let resMock;
 
     beforeEach(() => {
-        reqMock = {};
+        reqMock = {params: {licenceId: '111'}};
         resMock = {render: sandbox.spy(), redirect: sandbox.spy()};
     });
 
@@ -22,14 +22,21 @@ describe('dischargeAddressController', () => {
 
     describe('getIndex', () => {
 
-        it('should render the discharge address', () => {
+        it('should render the additional conditions view', () => {
             getIndex(reqMock, resMock);
             expect(resMock.render).to.have.callCount(1);
             const view = resMock.render.getCalls()[0].args[0];
-            expect(view).to.eql('dischargeAddress/index');
+            expect(view).to.eql('additionalConditions/index');
         });
 
-        it('should pass a data object to the discharge address view', () => {
+        it('should pass the licenceid to the view', () => {
+            getIndex(reqMock, resMock);
+            expect(resMock.render).to.have.callCount(1);
+            const payload = resMock.render.getCalls()[0].args[1];
+            expect(payload.licenceId).to.eql('111');
+        });
+
+        it('should pass a data object to the additional conditions view', () => {
             getIndex(reqMock, resMock);
             const payload = resMock.render.getCalls()[0].args[1];
             expect(payload).to.be.an('object');

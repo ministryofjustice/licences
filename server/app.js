@@ -23,6 +23,7 @@ const healthcheck = require('../server/healthcheck');
 const dashboard = require('../server/routes/dashboard');
 const details = require('../server/routes/details');
 const dischargeAddress = require('../server/routes/dischargeAddress');
+const additionalConditions = require('../server/routes/additionalConditions');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -175,6 +176,7 @@ app.use('/', index);
 app.use('/dashboard/', dashboard);
 app.use('/details/', details);
 app.use('/dischargeAddress/', dischargeAddress);
+app.use('/additionalConditions/', additionalConditions);
 
 // Error Handler
 app.use(function(req, res, next) {
