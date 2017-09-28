@@ -28,7 +28,7 @@ async function getDashboardDetail(res, user) {
             return res.render('dashboard/index');
         }
 
-        const upcomingReleases = await getUpcomingReleases(offenders.nomisIds);
+        const upcomingReleases = await getUpcomingReleases(offenders);
 
         if (isEmpty(upcomingReleases)) {
             return res.render('dashboard/index');

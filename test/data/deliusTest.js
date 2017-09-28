@@ -12,11 +12,10 @@ const sandbox = sinon.sandbox.create();
 
 describe('getOffenders', function() {
 
-    const standardResponse = [{
-        JSON1: {
-            value: JSON.stringify({offenders: ['A1235HG', 'A6627JH']})
-        }
-    }];
+    const standardResponse = [
+        {NOMS_NO: {value: 'A1235HG'}},
+        {NOMS_NO: {value: 'A6627JH'}}
+    ];
 
     let getCollectionStub = sandbox.stub().callsArgWith(2, standardResponse);
 
@@ -28,7 +27,7 @@ describe('getOffenders', function() {
         });
     };
 
-    const expectedReturnValue = {offenders: ['A1235HG', 'A6627JH']};
+    const expectedReturnValue = ['A1235HG', 'A6627JH'];
 
     afterEach(() => {
         sandbox.reset();
@@ -48,10 +47,8 @@ describe('getOffenders', function() {
 
     it('should pass in the correct sql', () => {
 
-        const expectedSql = `SELECT JSON_QUERY(OFFENDERS) AS nomisIds
-                     FROM DELIUS
-                     WHERE OM_ID LIKE 'someUserId'
-                     FOR JSON PATH, WITHOUT_ARRAY_WRAPPER`;
+        const expectedSql = `SELECT NOMS_NO FROM DELIUS
+                        WHERE STAFF_ID like 'someUserId'`;
 
         deliusProxy().getOffenders(['someUserId']);
         const sql = getCollectionStub.getCalls()[0].args[0];

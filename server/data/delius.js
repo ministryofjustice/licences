@@ -1,15 +1,22 @@
 'use strict';
 
 const {getCollection} = require('./dataAccess/dbData');
-const {resolveJsonResponse} = require('./dataAccess/azureJson');
 
 exports.getOffenders = function(offenderManagerId) {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT JSON_QUERY(OFFENDERS) AS nomisIds
-                     FROM DELIUS
-                     WHERE OM_ID LIKE '${offenderManagerId}'
-                     FOR JSON PATH, WITHOUT_ARRAY_WRAPPER`;
+        const sql = `SELECT NOMS_NO FROM DELIUS
+                        WHERE STAFF_ID like '${offenderManagerId}'`;
 
-        getCollection(sql, null, resolveJsonResponse(resolve), reject);
+        getCollection(sql, null, parseSearchResponse(resolve), reject);
     });
+};
+
+
+const parseSearchResponse = resolve => dbRows => {
+
+    if(dbRows === 0) {
+        return resolve([]);
+    }
+
+    resolve(dbRows.map(dbRow => dbRow.NOMS_NO.value));
 };
