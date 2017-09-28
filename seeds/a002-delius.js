@@ -3,9 +3,25 @@ exports.seed = knex =>
         .then(
             () => knex('DELIUS').insert([
                 {
-                    OM_ID: "1",
-                    OFFENDERS: '["A1235HG", "A6627JH"]'
-                }
+                    STAFF_ID: "1",
+                    STAFF_NAME: 'LASTA,FIRSTA',
+                    TEAM: 'TEAMA',
+                    PROVIDER: 'PROVIDERA',
+                    SURNAME: 'ANDREWS',
+                    FIRST_NAME: 'MARK',
+                    NOMS_NO: "A1235HG",
+                    CRN: 'CRN1'
+                },
+                {
+                    STAFF_ID: "1",
+                    STAFF_NAME: 'LASTA,FIRSTA',
+                    TEAM: 'TEAMA',
+                    PROVIDER: 'PROVIDERA',
+                    SURNAME: 'BRYANSTON',
+                    FIRST_NAME: 'DAVID',
+                    NOMS_NO: "A6627JH",
+                    CRN: 'CRN2'
+                },
             ])
         );
 

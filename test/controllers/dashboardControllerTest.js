@@ -40,7 +40,7 @@ describe('dashboardController', () => {
         nockResponse();
 
         getOffendersStub = sandbox.stub().returnsPromise().resolves(
-            {nomisIds: ['A1235HG', 'A6627JH']}
+            ['A1235HG', 'A6627JH']
         );
 
         getLicencesStub = sandbox.stub().returnsPromise().resolves([
