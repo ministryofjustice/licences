@@ -131,6 +131,7 @@ selectNodeVersion
 installYarn
 
 echo "Installing npm packages via yarn"
+yarn.cmd install --frozen-lockfile
 exitWithMessageOnError "yarn install failed"
 
 cd - > /dev/null
