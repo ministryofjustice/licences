@@ -29,7 +29,7 @@ describe('detailsController', () => {
             expect(view).to.eql('details/index');
         });
 
-        it('should pass a data object to the view', () => {
+        it('should pass a data object to the details view', () => {
             getIndex(reqMock, resMock);
             const payload = resMock.render.getCalls()[0].args[1];
             expect(payload).to.be.an('object');

@@ -11,7 +11,7 @@ exports.postAddress = (req, res) => {
     logger.debug('POST /dischargeAddress');
     // TODO add address info to licence redirect to conditions page
 
-    return res.render('dischargeAddress/index', addressInfo);
+    return res.redirect('/additionalConditions/'+req.params.licenceId);
 };
 
 const addressInfo = {
