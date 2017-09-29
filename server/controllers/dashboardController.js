@@ -77,6 +77,7 @@ function parseDashboardInfo(upcomingReleases, activeLicences) {
 
 function renderErrorPage(res, err) {
     logger.error('Error getting dashboard info ', {error: err});
+    res.status(500);
     res.render('dashboard/index', {
         err: {
             title: 'Unable to talk to the database',
