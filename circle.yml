@@ -17,7 +17,7 @@ test:
   override:
     - yarn run lint
     - yarn run snyk-protect
-    - yarn run test -- --reporter mocha-junit-reporter:
+    - yarn run test -- --reporter mocha-junit-reporter
         environment:
             MOCHA_FILE: $CIRCLE_TEST_REPORTS/test-results.xml
 
