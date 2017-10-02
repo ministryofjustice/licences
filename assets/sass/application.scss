@@ -29,8 +29,34 @@ a.button.button-secondary {
     padding-bottom: 30px;
 }
 
+.smallPaddingBottom {
+    padding-bottom: 10px;
+}
+
+.smallPaddingTop {
+    padding-top: 10px;
+}
+
+.smallPaddingTopBottom {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .borderBottom {
     border-bottom: solid $grey-1 2px;
+}
+
+.borderBottomLight {
+    border-bottom: solid $grey-2 1px;
+}
+
+.borderTop {
+    border-top: solid $grey-1 2px;
+}
+
+.separatorTitle {
+    padding-top: 1.875em;
+    margin-top: 0;
 }
 
 .subText {
