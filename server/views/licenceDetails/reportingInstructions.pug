@@ -1,0 +1,43 @@
+h2.heading-medium.borderBottom.separatorTitle Reporting instructions
+div.grid-row
+    div.column-two-thirds
+        div.grid-row
+
+            div.column-full
+                div.borderBottomLight.smallPaddingTopBottom
+                    div.grid-row
+                        div.column-one-third Name of person
+                        div.column-two-thirds
+                            if reporting.name
+                                | #{reporting.name}
+
+            div.column-full
+                div.borderBottomLight.smallPaddingTopBottom
+                    div.grid-row
+                        div.column-one-third Address
+                        div.column-two-thirds
+                            if reporting.address.line1
+                                span.block #{reporting.address.line1}
+                            if reporting.address.line2
+                                span.block #{reporting.address.line2}
+                            if reporting.address.line3
+                                span.block #{reporting.address.line3}
+                            if reporting.address.postCode
+                                span.block #{reporting.address.postCode}
+
+
+            div.column-full
+                div.borderBottomLight.smallPaddingTopBottom
+                    div.grid-row
+                        div.column-one-third Contact number
+                        div.column-two-thirds
+                            if reporting.contactNumber
+                                | #{reporting.contactNumber}
+
+            div.column-full
+                div.borderBottomLight.smallPaddingTopBottom
+                    div.grid-row
+                        div.column-one-third Date and time
+                        div.column-two-thirds
+                            if reporting.dateTime
+                                | #{reporting.dateTime}

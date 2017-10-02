@@ -1,0 +1,51 @@
+h2.heading-medium.borderBottom.separatorTitle Planned discharge address
+div.grid-row
+    div.column-two-thirds
+        div.grid-row
+            div.column-full
+                div.borderBottomLight.smallPaddingTopBottom
+                    div.grid-row
+                        div.column-one-third Address
+                        div.column-two-thirds
+                            if dischargeAddress.line1
+                                span.block #{dischargeAddress.line1}
+                            if dischargeAddress.line2
+                                span.block #{dischargeAddress.line2}
+                            if dischargeAddress.line3
+                                span.block #{dischargeAddress.line3}
+                            if dischargeAddress.postCode
+                                span.block #{dischargeAddress.postCode}
+
+            div.column-full
+                div.borderBottomLight.smallPaddingTopBottom
+                    div.grid-row
+                        div.column-one-third Contact name
+                        div.column-two-thirds
+                            if dischargeAddress.contact
+                                | #{dischargeAddress.contact}
+
+            div.column-full
+                div.borderBottomLight.smallPaddingTopBottom
+                    div.grid-row
+                        div.column-one-third Contact number
+                        div.column-two-thirds
+                            if dischargeAddress.contactNumber
+                                | #{dischargeAddress.contactNumber}
+
+            div.column-full
+                div.borderBottomLight.smallPaddingTopBottom
+                    div.grid-row
+                        div.column-one-third Home address?
+                        div.column-two-thirds
+                            if dischargeAddress.homeAddress
+                                | Yes
+                            else
+                                | No
+
+            div.column-full
+                div.borderBottomLight.smallPaddingTopBottom
+                    div.grid-row
+                        div.column-one-third Reason for request
+                        div.column-two-thirds
+                            if dischargeAddress.reason
+                                | #{dischargeAddress.reason}

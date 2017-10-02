@@ -24,6 +24,7 @@ const dashboard = require('../server/routes/dashboard');
 const details = require('../server/routes/details');
 const dischargeAddress = require('../server/routes/dischargeAddress');
 const additionalConditions = require('../server/routes/additionalConditions');
+const licenceDetails = require('../server/routes/licenceDetails');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -177,6 +178,7 @@ app.use('/dashboard/', dashboard);
 app.use('/details/', details);
 app.use('/dischargeAddress/', dischargeAddress);
 app.use('/additionalConditions/', additionalConditions);
+app.use('/licenceDetails/', licenceDetails);
 
 // Error Handler
 app.use(function(req, res, next) {
