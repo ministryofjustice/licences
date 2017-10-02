@@ -1,39 +1,57 @@
 const logger = require('../../log');
+const audit = require('../data/audit');
+
+const {getPrisonerInfo} = require('../data/nomis');
 
 exports.getIndex = function(req, res) {
-    logger.debug('GET /details');
 
-    return res.render('details/index', detailsInfo);
+    const user = getLoggedInUserId();
+    const nomisId = req.params.nomisId;
+
+    audit.record('VIEW_PRISONER_DETAILS', user, {nomisId});
+
+    return getDetailsInfo(res, nomisId);
 };
 
-const detailsInfo = {
-    name: 'Andrews, Mark',
-    aliases: 'Marky Mark',
-    prisonNumber: 'A1235HG',
-    dateOfBirth: '22/10/1989',
-    sex: 'Male',
-    location: {
-        prison: 'HMP Forest Bank',
-        cell: 'Cell 3',
-        block: 'HB1',
-        landing: 'L2'
-    },
-    dates: {
-        sentenceExpiry: '08/02/2018',
-        hdcEligibility: null,
-        supervisionStart: '09/07/2017',
-        supervisionEnd: '09/07/2018'
-    },
-    image: {
-        name: 'mark_andrews.png',
-        uploadedDate: '09/04/2017'
+function getLoggedInUserId() {
+    // todo
+    return '1';
+}
+
+async function getDetailsInfo(res, nomisId) {
+
+    try {
+        const prisonerInfo = await getPrisonerInfo(nomisId);
+
+        if(!prisonerInfo.nomsId) {
+            logger.error('Error during getDetailsInfo: empty response');
+            return renderErrorPage(res, {});
+        }
+
+        const pageData= {
+            prisonerInfo,
+            moment: require('moment')
+        };
+
+        return res.render('details/index', pageData);
+
+    } catch (error) {
+        logger.error('Error during getDetailsInfo: ', error.message);
+        return renderErrorPage(res, error);
     }
-};
+}
+
+function renderErrorPage(res, err) {
+    logger.error('Error getting prisoner details ', {error: err});
+    res.status(500);
+    res.render('details/index', {
+        err: {
+            title: 'Unable to talk to the database',
+            desc: 'Please try again'
+        }
+    });
+}
 
 exports.createLicence = function(req, res) {
-    // TODO create licence in db, call to Delius to get discharge address info, load view
-    logger.debug('POST /createLicence');
-    logger.info('POST /createLicence');
-
     return res.redirect('/dischargeAddress/AB111111');
 };

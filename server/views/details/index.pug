@@ -5,94 +5,100 @@ block content
     h1.heading-large Check prisoner details
     h2.heading-medium Personal details
 
-    div#personalDetails.grid-row.borderBottom.paddingBottom
-        div.column-one-quarter
-            if(image.name)
-                img(src= "/public/images/"+image.name)
-            if(image.uploadedDate)
-                span.subText Uploaded: #{image.uploadedDate}
+    if !prisonerInfo
 
-        div.column-one-quarter
-            div.midMarginBottom
-                |Name
-                if(name)
-                    span#prisonerName.block.bold #{name}
+        p No prisoner details found
 
-            div.midMarginBottom
-                | Aliases
-                if(aliases)
-                    span#prisonerAliases.block.bold #{aliases}
+    else
 
-            div.midMarginBottom
-                | Prison number
-                if(prisonNumber)
-                    span#prisonerPrisonNumber.block.bold #{prisonNumber}
+        div#personalDetails.grid-row.borderBottom.paddingBottom
+            div.column-one-quarter
+                if(prisonerInfo.image.name)
+                    img(src= "/public/images/"+prisonerInfo.image.name)
+                if(prisonerInfo.image.uploadedDate)
+                    span.subText Uploaded: #{moment(prisonerInfo.image.uploadedDate).format('DD/MM/YYYY')}
 
-        div.column-one-quarter
-            div.midMarginBottom
-                | Date of birth
-                if(dateOfBirth)
-                    span#prisonerDob.block.bold #{dateOfBirth}
+            div.column-one-quarter
+                div.midMarginBottom
+                    |Name
+                    if(prisonerInfo.firstName || prisonerInfo.lastName)
+                        span#prisonerName.block.bold #{prisonerInfo.lastName}, #{prisonerInfo.firstName}
 
-            div.midMarginBottom
-                | Sex
-                if(sex)
-                    span#prisonerSex.block.bold #{sex}
+                div.midMarginBottom
+                    | Aliases
+                    if(prisonerInfo.aliases)
+                        span#prisonerAliases.block.bold #{prisonerInfo.aliases}
 
-            div.midMarginBottom
-                | Location
-                if(location)
-                    span#prisonerLocation.block.bold
-                        if (location.block)
-                            |#{location.block}
-                        if (location.landing)
-                            |&nbsp;| #{location.landing}
-                        if (location.cell)
-                            |&nbsp;| #{location.cell}
-                    if (location.prison)
-                        span.block.bold #{location.prison}
+                div.midMarginBottom
+                    | Nomis number
+                    if(prisonerInfo.nomsId)
+                        span#prisonerPrisonNumber.block.bold #{prisonerInfo.nomsId}
 
-    h2.heading-medium Key dates
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Date of birth
+                    if(prisonerInfo.dateOfBirth)
+                        span#prisonerDob.block.bold #{moment(prisonerInfo.dateOfBirth).format('DD/MM/YYYY')}
 
-    div#keyDates.grid-row.paddingBottom
-        div.column-one-quarter
-            div.midMarginBottom
-                | Sentence expires
-                span#sentenceExpires.block.bold
-                    if (dates.sentenceExpiry)
-                        | #{dates.sentenceExpiry}
-                    else
-                        | N/A
+                div.midMarginBottom
+                    | Gender
+                    if(prisonerInfo.gender)
+                        span#prisonerSex.block.bold #{prisonerInfo.gender}
 
-        div.column-one-quarter
-            div.midMarginBottom
-                | HDC eligibility date
-                span#hdcEligibility.block.bold
-                    if (dates.hdcEligibility)
-                        | #{dates.hdcEligibility}
-                    else
-                        | N/A
+                div.midMarginBottom
+                    | Location
+                    if(prisonerInfo.location)
+                        span#prisonerLocation.block.bold
+                            if (prisonerInfo.location.block)
+                                |#{prisonerInfo.location.block}
+                            if (prisonerInfo.location.landing)
+                                |&nbsp;| #{prisonerInfo.location.landing}
+                            if (prisonerInfo.location.cell)
+                                |&nbsp;| #{prisonerInfo.location.cell}
+                        if (prisonerInfo.location.prison)
+                            span.block.bold #{prisonerInfo.location.prison}
 
-        div.column-one-quarter
-            div.midMarginBottom
-                | Supervision commences
-                span#supervisionStart.block.bold
-                    if (dates.supervisionStart)
-                        | #{dates.supervisionStart}
-                    else
-                        | N/A
+        h2.heading-medium Key dates
 
-            div.midMarginBottom
-                | Supervision ends
-                span#supervisionEnd.block.bold
-                    if (dates.supervisionEnd)
-                        | #{dates.supervisionEnd}
-                    else
-                        | N/A
+        div#keyDates.grid-row.paddingBottom
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Sentence expires
+                    span#sentenceExpires.block.bold
+                        if (prisonerInfo.dates.sentenceExpiry)
+                            | #{moment(prisonerInfo.dates.sentenceExpiry).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+            div.column-one-quarter
+                div.midMarginBottom
+                    | HDC eligibility date
+                    span#hdcEligibility.block.bold
+                        if (prisonerInfo.dates.hdcEligibility)
+                            | #{moment(prisonerInfo.dates.hdcEligibility).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Supervision commences
+                    span#supervisionStart.block.bold
+                        if (prisonerInfo.dates.supervisionStart)
+                            | #{moment(prisonerInfo.dates.supervisionStart).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+                div.midMarginBottom
+                    | Supervision ends
+                    span#supervisionEnd.block.bold
+                        if (prisonerInfo.dates.supervisionEnd)
+                            | #{moment(prisonerInfo.dates.supervisionEnd).format('DD/MM/YYYY')}
+                        else
+                            | N/A
 
     div#continueBtns.inlineButtons
         form(method="post", name="formPrint")
             input(type="hidden" name="_csrf" value=csrfToken)
-            input(type="hidden" name="prisonNumber" value=prisonNumber)
+            input(type="hidden" name="nomisId" value=nomisId)
             input.requiredButton.button(type="submit" value="Continue")
         a.requiredButton.button.button-secondary(href="/dashboard" role="button") Back to dashboard
