@@ -2,11 +2,15 @@ const logger = require('../../log');
 const db = require('./dataAccess/auditData');
 const TYPES = require('tedious').TYPES;
 
-const keys = ['VIEW_DASHBOARD'];
+const keys = [
+    'VIEW_DASHBOARD',
+    'VIEW_PRISONER_DETAILS',
+    'VIEW_ADDRESS_DETAILS'
+];
 
 exports.record = function record(key, user, data) {
 
-    if(!keys.includes(key)) {
+    if (!keys.includes(key)) {
         throw new Error(`Unknown audit key: ${key}`);
     }
 

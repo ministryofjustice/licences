@@ -9,7 +9,7 @@ router.use(function(req, res, next) {
     next();
 });
 
-router.get('/:prisonNumber', getIndex);
-router.post('/:prisonNumber', createLicence);
+router.get('/:nomisId', getIndex);
+router.post('/:nomisId', createLicence);
 
 module.exports = router;
