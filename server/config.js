@@ -24,8 +24,8 @@ module.exports = {
         database: get('DB_NAME', 'licences')
     },
 
-    nomis: {
-        apiUrl: get('NOMIS_API_URL', 'http://localhost:9090'),
+    licences: {
+        apiUrl: get('LICENCES_API_URL', 'http://localhost:9091'),
         timeout: {
             response: 2000,
             deadline: 2500
