@@ -15,10 +15,9 @@ describe('dashboardController', () => {
     let reqMock;
     let resMock;
     let auditSpy;
-    let getOffendersStub;
     let getLicencesStub;
 
-    const nomisResponse = [
+    const releasesResponse = [
         {
             name: 'Andrews, Mark',
             nomisId: 'A1235HG',
@@ -38,10 +37,6 @@ describe('dashboardController', () => {
         resMock = {render: sandbox.spy(), redirect: sandbox.spy()};
 
         nock.cleanAll();
-
-        getOffendersStub = sandbox.stub().returnsPromise().resolves(
-            ['A1235HG', 'A6627JH']
-        );
 
         getLicencesStub = sandbox.stub().returnsPromise().resolves([
             {
@@ -63,23 +58,19 @@ describe('dashboardController', () => {
     });
 
     function nockResponse() {
-        nock('http://localhost:9090')
-            .get('/api/v2/releases')
-            .query({nomisId: ['A1235HG', 'A6627JH']})
-            .reply(200, nomisResponse);
+        nock('http://localhost:9091')
+            .get('/api/releases')
+            .query({staffId: '1'})
+            .reply(200, releasesResponse);
     }
 
 
     const getIndex = ({
-                          getLicences = getLicencesStub,
-                          getOffenders = getOffendersStub
+                          getLicences = getLicencesStub
                       } = {}) => {
         return proxyquire('../../server/controllers/dashboardController', {
             '../data/licences': {
                 getLicences: getLicences
-            },
-            '../data/delius': {
-                getOffenders: getOffenders
             },
             '../data/audit': {
                 record: auditSpy

@@ -1,8 +1,7 @@
 const logger = require('../../log');
 const audit = require('../data/audit');
 
-const {getOffenders} = require('../data/delius');
-const {getUpcomingReleases} = require('../data/nomis');
+const {getUpcomingReleases} = require('../data/api');
 const {getLicences} = require('../data/licences');
 
 exports.getIndex = function(req, res) {
@@ -22,13 +21,7 @@ function getLoggedInUserId() {
 async function getDashboardDetail(res, user) {
 
     try {
-        const offenders = await getOffenders(user);
-
-        if (isEmpty(offenders)) {
-            return res.render('dashboard/index');
-        }
-
-        const upcomingReleases = await getUpcomingReleases(offenders);
+        const upcomingReleases = await getUpcomingReleases(user);
 
         if (isEmpty(upcomingReleases)) {
             return res.render('dashboard/index');

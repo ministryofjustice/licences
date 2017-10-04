@@ -7,45 +7,44 @@ const superagent = require('superagent');
 const url = require('url');
 
 const timeoutSpec = {
-    response: config.nomis.timeout.response,
-    deadline: config.nomis.timeout.deadline
+    response: config.licences.timeout.response,
+    deadline: config.licences.timeout.deadline
 };
 
-const endpoint = config.nomis.apiUrl;
+const endpoint = config.licences.apiUrl;
 
 module.exports = {
     getUpcomingReleases,
     getPrisonerInfo
 };
 
-function getUpcomingReleases(nomisIds) {
+function getUpcomingReleases(staffId) {
 
-    const path = url.resolve(`${endpoint}`, 'api/v2/releases');
-    const query = {nomisId: nomisIds};
+    const path = url.resolve(`${endpoint}`, 'api/releases');
+    const query = {staffId: staffId};
 
-    return callNomis(path, query);
+    return callApi(path, query);
 }
 
 function getPrisonerInfo(nomisId) {
 
-    const path = url.resolve(`${endpoint}`, 'api/v2/prisoners');
+    const path = url.resolve(`${endpoint}`, 'api/prisoners');
     const query = {nomisId: nomisId};
 
-    return callNomis(path, query);
+    return callApi(path, query);
 }
 
-function callNomis(path, query) {
+function callApi(path, query) {
     return new Promise((resolve, reject) => {
         superagent
             .get(path)
             .query(query)
             .set('Accept', 'application/json')
-            .set('Authorization', 'token')
             .timeout(timeoutSpec)
             .end((error, res) => {
                 try {
                     if (error) {
-                        logger.error('Error querying NOMIS: ' + error);
+                        logger.error('Error querying API: ' + error);
                         return reject(error);
                     }
 
@@ -53,11 +52,11 @@ function callNomis(path, query) {
                         return resolve(res.body);
                     }
 
-                    logger.error('Invalid nomis search response');
+                    logger.error('Invalid API search response');
                     return reject({message: 'invalid search response', status: 500});
 
                 } catch (exception) {
-                    logger.error('Exception querying NOMIS: ' + exception);
+                    logger.error('Exception querying API: ' + exception);
                     return reject(exception);
                 }
             });

@@ -1,7 +1,7 @@
 const logger = require('../../log');
 const audit = require('../data/audit');
 
-const {getPrisonerInfo} = require('../data/nomis');
+const {getPrisonerInfo} = require('../data/api');
 
 exports.getIndex = function(req, res) {
 

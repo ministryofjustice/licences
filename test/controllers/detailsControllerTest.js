@@ -16,7 +16,7 @@ describe('detailsController', () => {
     let resMock;
     let auditSpy;
 
-    const nomisResponse = {
+    const prisonerDetailsResponse = {
         dateOfBirth: '1989-1022',
         firstName: 'Mark',
         lastName: 'Andrews',
@@ -61,10 +61,10 @@ describe('detailsController', () => {
 
 
     function nockResponse() {
-        nock('http://localhost:9090')
-            .get('/api/v2/prisoners')
+        nock('http://localhost:9091')
+            .get('/api/prisoners')
             .query({nomisId: 'A1235HG'})
-            .reply(200, nomisResponse);
+            .reply(200, prisonerDetailsResponse);
     }
 
     const getIndex = () => {
