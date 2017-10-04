@@ -1,24 +1,17 @@
-const request = require('supertest');
-const sinon = require('sinon');
-const express = require('express');
-const path = require('path');
-const sinonChai = require('sinon-chai');
-const chai = require('chai');
-const expect = chai.expect;
-chai.use(sinonChai);
+const {
+    request,
+    sinon,
+    expect,
+    appSetup
+} = require('./supertestSetup');
+
 const createReportingInstructionRoute = require('../../server/routes/reportingInstructions');
 
-const app = express();
-
-const getInputsStub = sinon.stub().returns({foo: 'bar'});
-
-const stub = {
-    getExistingInputs: getInputsStub
+const serviceStub = {
+    getExistingInputs: sinon.stub()
 };
 
-app.use(createReportingInstructionRoute({reportingInstructionService: stub}));
-app.set('views', path.join(__dirname, '../../server/views'));
-app.set('view engine', 'pug');
+const app = appSetup(createReportingInstructionRoute({reportingInstructionService: serviceStub}));
 
 describe('GET /reporting/:prisonNumber', () => {
     it('getExistingInputs from reportingInstructionsService', () => {
@@ -27,9 +20,8 @@ describe('GET /reporting/:prisonNumber', () => {
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {
-                expect(getInputsStub.callCount).to.equal(1);
+                expect(serviceStub.getExistingInputs.callCount).to.equal(1);
             });
 
     });
 });
-

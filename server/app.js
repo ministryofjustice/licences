@@ -24,14 +24,16 @@ const dashboard = require('../server/routes/dashboard');
 const details = require('../server/routes/details');
 const dischargeAddress = require('../server/routes/dischargeAddress');
 const additionalConditions = require('../server/routes/additionalConditions');
-const licenceDetails = require('../server/routes/licenceDetails');
+const createLicenceDetailsRouter = require('../server/routes/licenceDetails');
 const createReportingRouter = require('../server/routes/reportingInstructions');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
 const testMode = process.env.NODE_ENV === 'test';
 
-module.exports = function createApp({reportingInstructionService}) {
+module.exports = function createApp({logger,
+                                     reportingInstructionService,
+                                     licenceDetailsService}) {
     const app = express();
     app.set('json spaces', 2);
 
@@ -179,7 +181,7 @@ module.exports = function createApp({reportingInstructionService}) {
     app.use('/details/', details);
     app.use('/dischargeAddress/', dischargeAddress);
     app.use('/additionalConditions/', additionalConditions);
-    app.use('/licenceDetails/', licenceDetails);
+    app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceDetailsService}));
     app.use('/reporting/', createReportingRouter({reportingInstructionService}));
 
     // Error Handler

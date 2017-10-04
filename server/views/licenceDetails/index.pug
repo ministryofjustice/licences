@@ -6,12 +6,14 @@ block content
 
     div.grid-row.largeMarginBottom
         div.column-full
-            if additionalConditions.length > 0
+            if additionalConditions && additionalConditions.length > 0
                 include ./additionalConditions
 
-            include ./dischargeAddress
+            if dischargeAddress
+                include ./dischargeAddress
 
-            include ./reportingInstructions
+            if reporting
+                include ./reportingInstructions
 
 
     div#continueBtns.inlineButtons

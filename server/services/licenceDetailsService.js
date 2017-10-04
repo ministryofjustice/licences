@@ -1,12 +1,4 @@
-const logger = require('../../log');
-
-exports.getIndex = (req, res) => {
-    logger.debug('GET /licenceDetails');
-
-    return res.render('licenceDetails/index', viewModel);
-};
-
-const viewModel = {
+const licenceDetails = {
     additionalConditions: [
 
     ],
@@ -31,4 +23,10 @@ const viewModel = {
         contactNumber: '0121 248 6400',
         dateTime: ''
     }
+};
+
+module.exports = function createLicenceDetailsService() {
+    return {
+        getLicenceDetails: () => licenceDetails
+    };
 };
