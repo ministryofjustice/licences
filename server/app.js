@@ -22,7 +22,7 @@ const healthcheck = require('../server/healthcheck');
 
 const dashboard = require('../server/routes/dashboard');
 const details = require('../server/routes/details');
-const dischargeAddress = require('../server/routes/dischargeAddress');
+const createDischargeAddressRouter = require('../server/routes/dischargeAddress');
 const additionalConditions = require('../server/routes/additionalConditions');
 const createLicenceDetailsRouter = require('../server/routes/licenceDetails');
 const createReportingRouter = require('../server/routes/reportingInstructions');
@@ -33,7 +33,9 @@ const testMode = process.env.NODE_ENV === 'test';
 
 module.exports = function createApp({logger,
                                      reportingInstructionService,
-                                     licenceDetailsService}) {
+                                     licenceDetailsService,
+                                     dischargeAddressService
+                                    }) {
     const app = express();
     app.set('json spaces', 2);
 
@@ -179,7 +181,7 @@ module.exports = function createApp({logger,
     app.use('/', index);
     app.use('/dashboard/', dashboard);
     app.use('/details/', details);
-    app.use('/dischargeAddress/', dischargeAddress);
+    app.use('/dischargeAddress/', createDischargeAddressRouter({logger, dischargeAddressService}));
     app.use('/additionalConditions/', additionalConditions);
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceDetailsService}));
     app.use('/reporting/', createReportingRouter({reportingInstructionService}));
