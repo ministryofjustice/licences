@@ -1,7 +1,14 @@
 const express = require('express');
-const router = express.Router();
-const {getIndex} = require('../controllers/licenceDetailsController');
 
-router.get('/:licenceId', getIndex);
+module.exports = function({logger, licenceDetailsService}) {
+    const router = express.Router();
 
-module.exports = router;
+    router.get('/:licenceId', (req, res) => {
+        logger.debug('GET /licenceDetails');
+        const details = licenceDetailsService.getLicenceDetails();
+
+        res.render('licenceDetails/index', details);
+    });
+
+    return router;
+};
