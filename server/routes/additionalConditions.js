@@ -1,14 +1,13 @@
 const express = require('express');
-const router = express.Router();
-const {getIndex} = require('../controllers/additionalConditionsController');
 
-router.use(function(req, res, next) {
-    if (typeof req.csrfToken === 'function') {
-        res.locals.csrfToken = req.csrfToken();
-    }
-    next();
-});
+module.exports = function({logger}) {
+    const router = express.Router();
 
-router.get('/:licenceId', getIndex);
+    router.get('/:licenceId', (req, res) => {
+        logger.debug('GET /additionalConditions');
 
-module.exports = router;
+        return res.render('additionalConditions/index', {licenceId: req.params.licenceId});
+    });
+
+    return router;
+};

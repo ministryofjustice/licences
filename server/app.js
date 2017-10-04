@@ -23,7 +23,7 @@ const healthcheck = require('../server/healthcheck');
 const dashboard = require('../server/routes/dashboard');
 const details = require('../server/routes/details');
 const createDischargeAddressRouter = require('../server/routes/dischargeAddress');
-const additionalConditions = require('../server/routes/additionalConditions');
+const createAdditionalConditionsRouter = require('../server/routes/additionalConditions');
 const createLicenceDetailsRouter = require('../server/routes/licenceDetails');
 const createReportingRouter = require('../server/routes/reportingInstructions');
 
@@ -182,7 +182,7 @@ module.exports = function createApp({logger,
     app.use('/dashboard/', dashboard);
     app.use('/details/', details);
     app.use('/dischargeAddress/', createDischargeAddressRouter({logger, dischargeAddressService}));
-    app.use('/additionalConditions/', additionalConditions);
+    app.use('/additionalConditions/', createAdditionalConditionsRouter({logger}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceDetailsService}));
     app.use('/reporting/', createReportingRouter({reportingInstructionService}));
 
