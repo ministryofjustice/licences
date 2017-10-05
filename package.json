@@ -22,7 +22,8 @@
     "knex": "knex",
     "knex-migrate": "knex-migrate",
     "migrate": "knex migrate:latest",
-    "seed": "knex seed:run"
+    "seed": "knex seed:run",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -83,7 +84,7 @@
     "request-promise": "^4.1.1",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.2.2",
-    "snyk": "^1.36.2",
+    "snyk": "^1.42.3",
     "superagent": "^3.6.0",
     "tedious": "^2.0.0",
     "util": "^0.10.3",
