@@ -48,7 +48,7 @@ describe('searchController', () => {
                 expect(calledWith.healthy).to.eql(true);
 
                 expect(calledWith.checks.db).to.eql('OK');
-                expect(calledWith.checks.nomis).to.eql('OK');
+                expect(calledWith.checks.licences).to.eql('OK');
             });
         });
 
@@ -62,7 +62,7 @@ describe('searchController', () => {
                 expect(callback).to.have.callCount(1);
                 expect(calledWith.healthy).to.eql(false);
                 expect(calledWith.checks.db).to.eql('rubbish');
-                expect(calledWith.checks.nomis).to.eql('OK');
+                expect(calledWith.checks.licences).to.eql('OK');
             });
         });
 
@@ -77,7 +77,7 @@ describe('searchController', () => {
                 expect(callback).to.have.callCount(1);
                 expect(calledWith.healthy).to.eql(false);
                 expect(calledWith.checks.db).to.eql('OK');
-                expect(calledWith.checks.nomis).to.eql(404);
+                expect(calledWith.checks.licences).to.eql(404);
             });
         });
     });
