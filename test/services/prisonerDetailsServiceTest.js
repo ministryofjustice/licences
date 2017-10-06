@@ -1,14 +1,8 @@
 const createPrisonerDetailsService = require('../../server/services/prisonerDetailsService');
-const chai = require('chai');
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-chai.use(sinonChai);
-chai.use(require('chai-as-promised'));
-chai.use(require('dirty-chai'));
-const expect = chai.expect;
-const sinonStubPromise = require('sinon-stub-promise');
-sinonStubPromise(sinon);
-const sandbox = sinon.sandbox.create();
+const {
+    sandbox,
+    expect
+} = require('./testSetup');
 
 describe('prisonerDetailsService', () => {
 

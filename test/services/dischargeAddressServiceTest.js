@@ -1,7 +1,6 @@
 const createLicenceDetailsService = require('../../server/services/dischargeAddressService');
 const service = createLicenceDetailsService();
-const chai = require('chai');
-const expect = chai.expect;
+const {expect} = require('./testSetup');
 
 describe('dischargeAddressService', () => {
 
