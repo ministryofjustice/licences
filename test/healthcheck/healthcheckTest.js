@@ -22,23 +22,23 @@ describe('searchController', () => {
 
     describe('healthcheck', () => {
         let dbCheckStub;
-        let nomisApiCheckStub;
+        let licencesApiCheckStub;
 
         beforeEach(() => {
             dbCheckStub = sandbox.stub().returnsPromise().resolves([{totalRows: {value: 0}}]);
-            nomisApiCheckStub = sandbox.stub().returnsPromise().resolves('OK');
+            licencesApiCheckStub = sandbox.stub().returnsPromise().resolves('OK');
         });
 
-        const healthcheckProxy = (dbCheck = dbCheckStub, nomisApiCheck = nomisApiCheckStub) => {
+        const healthcheckProxy = (dbCheck = dbCheckStub, licencesApiCheck = licencesApiCheckStub) => {
             return proxyquire('../../server/healthcheck', {
                 './data/healthcheck': {
                     dbCheck: dbCheck,
-                    nomisApiCheck: nomisApiCheck
+                    licencesApiCheck: licencesApiCheck
                 }
             });
         };
 
-        it('should return healthy if db and nomis checks resolve OK', () => {
+        it('should return healthy if db and licences checks resolve OK', () => {
 
             return healthcheckProxy()(callback).then(() => {
 
@@ -66,11 +66,11 @@ describe('searchController', () => {
             });
         });
 
-        it('should return unhealthy if nomis rejects promise', () => {
+        it('should return unhealthy if licences rejects promise', () => {
 
-            const nomisApiCheckStubReject = sandbox.stub().returnsPromise().rejects(404);
+            const licencesApiCheckStubReject = sandbox.stub().returnsPromise().rejects(404);
 
-            return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject)(callback).then(() => {
+            return healthcheckProxy(dbCheckStub, licencesApiCheckStubReject)(callback).then(() => {
 
                 const calledWith = callback.getCalls()[0].args[1];
 
