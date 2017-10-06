@@ -3,6 +3,9 @@ const sinon = require('sinon');
 const express = require('express');
 const path = require('path');
 const chai = require('chai');
+const sinonChai = require('sinon-chai');
+chai.use(require('dirty-chai'));
+chai.use(sinonChai);
 const expect = chai.expect;
 
 module.exports = {
