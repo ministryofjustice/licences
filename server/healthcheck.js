@@ -11,8 +11,8 @@ function db() {
 
 function licencesApi() {
     return licencesApiCheck()
-        .then(result => ({name: 'nomis', status: 'ok', message: result}))
-        .catch(err => ({name: 'nomis', status: 'ERROR', message: err}));
+        .then(result => ({name: 'licences', status: 'ok', message: result}))
+        .catch(err => ({name: 'licences', status: 'ERROR', message: err}));
 }
 
 module.exports = function healthcheck(callback) {

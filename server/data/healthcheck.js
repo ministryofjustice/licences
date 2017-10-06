@@ -20,7 +20,7 @@ function licencesApiCheck() {
     return new Promise((resolve, reject) => {
 
         superagent
-            .get(url.resolve(`${config.licences.apiUrl}`, '/api/health'))
+            .get(url.resolve(`${config.licences.apiUrl}`, '/health'))
             .timeout({
                 response: 2000,
                 deadline: 2500
