@@ -1,4 +1,4 @@
-const config = require('../../server/config.js');
+const config = require('../config.js');
 const {getCollection} = require('./dataAccess/dbData');
 const logger = require('../../log.js');
 

@@ -9,6 +9,8 @@ proxyquire.noCallThru();
 const sinonStubPromise = require('sinon-stub-promise');
 sinonStubPromise(sinon);
 
+const config = require('../../server/config.js');
+
 const nock = require('nock');
 
 describe('dashboardController', () => {
@@ -58,7 +60,7 @@ describe('dashboardController', () => {
     });
 
     function nockResponse() {
-        nock('http://localhost:9091')
+        nock(config.licences.apiUrl)
             .get('/api/releases')
             .query({staffId: '1'})
             .reply(200, releasesResponse);
