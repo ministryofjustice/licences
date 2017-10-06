@@ -2,8 +2,10 @@ const request = require('supertest');
 const sinon = require('sinon');
 const express = require('express');
 const path = require('path');
-const chai = require('chai');
-const expect = chai.expect;
+
+const {
+    expect
+} = require('../services/testSetup');
 
 module.exports = {
     sinon,

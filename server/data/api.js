@@ -35,30 +35,17 @@ function getPrisonerInfo(nomisId) {
 }
 
 function callApi(path, query) {
-    return new Promise((resolve, reject) => {
-        superagent
-            .get(path)
-            .query(query)
-            .set('Accept', 'application/json')
-            .timeout(timeoutSpec)
-            .end((error, res) => {
-                try {
-                    if (error) {
-                        logger.error('Error querying API: ' + error);
-                        return reject(error);
-                    }
+    return superagent
+        .get(path)
+        .query(query)
+        .set('Accept', 'application/json')
+        .timeout(timeoutSpec)
+        .then(res => {
+            if (res.body) {
+                return res.body;
+            }
 
-                    if (res.body) {
-                        return resolve(res.body);
-                    }
-
-                    logger.error('Invalid API search response');
-                    return reject({message: 'invalid search response', status: 500});
-
-                } catch (exception) {
-                    logger.error('Exception querying API: ' + exception);
-                    return reject(exception);
-                }
-            });
-    });
+            logger.error('Invalid API search response');
+            throw new Error('invalid search response');
+        });
 }

@@ -21,7 +21,7 @@ const config = require('../server/config');
 const healthcheck = require('../server/healthcheck');
 
 const dashboard = require('../server/routes/dashboard');
-const details = require('../server/routes/details');
+const createDetailsRouter = require('../server/routes/details');
 const createDischargeAddressRouter = require('../server/routes/dischargeAddress');
 const createAdditionalConditionsRouter = require('../server/routes/additionalConditions');
 const createLicenceDetailsRouter = require('../server/routes/licenceDetails');
@@ -34,7 +34,8 @@ const testMode = process.env.NODE_ENV === 'test';
 module.exports = function createApp({logger,
                                      reportingInstructionService,
                                      licenceDetailsService,
-                                     dischargeAddressService
+                                     dischargeAddressService,
+                                     prisonerDetailsService
                                     }) {
     const app = express();
     app.set('json spaces', 2);
@@ -180,7 +181,7 @@ module.exports = function createApp({logger,
 
     app.use('/', index);
     app.use('/dashboard/', dashboard);
-    app.use('/details/', details);
+    app.use('/details/', createDetailsRouter({logger, prisonerDetailsService}));
     app.use('/dischargeAddress/', createDischargeAddressRouter({logger, dischargeAddressService}));
     app.use('/additionalConditions/', createAdditionalConditionsRouter({logger}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceDetailsService}));
@@ -192,18 +193,25 @@ module.exports = function createApp({logger,
         res.render('notfound');
     });
 
-    app.use(logErrors);
+    app.use(handleKnownErrors);
     app.use(renderErrors);
 
     return app;
 };
 
-function logErrors(error, req, res, next) {
-    logger.error('Unhandled error: ' + error.stack);
-    next(error);
+function handleKnownErrors(err, req, res, next) {
+    // TODO handle any error types that will be handled globally
+
+    // if (err.code === 'not-found') {
+    //     res.status(404);
+    //     return res.render('not-found');
+    // }
+    return next(err);
 }
 
 function renderErrors(error, req, res, next) {
+    logger.error('Unhandled error: ' + error.stack);
+
     res.locals.error = error;
     res.locals.stack = production ? null : error.stack;
     res.locals.message = production ?

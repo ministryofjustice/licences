@@ -1,7 +1,6 @@
 const createLicenceDetailsService = require('../../server/services/licenceDetailsService');
 const service = createLicenceDetailsService();
-const chai = require('chai');
-const expect = chai.expect;
+const {expect} = require('./testSetup');
 
 describe('licenceDetailsService', () => {
 
