@@ -14,13 +14,12 @@ const helmet = require('helmet');
 const csurf = require('csurf');
 const compression = require('compression');
 
-const index = require('./routes/index');
 const sassMiddleware = require('node-sass-middleware');
 
 const config = require('../server/config');
 const healthcheck = require('../server/healthcheck');
 
-const dashboard = require('../server/routes/dashboard');
+const createTasklistRouter = require('../server/routes/tasklist');
 const createDetailsRouter = require('../server/routes/details');
 const createDischargeAddressRouter = require('../server/routes/dischargeAddress');
 const createAdditionalConditionsRouter = require('../server/routes/additionalConditions');
@@ -35,7 +34,10 @@ module.exports = function createApp({logger,
                                      reportingInstructionService,
                                      licenceDetailsService,
                                      dischargeAddressService,
-                                     prisonerDetailsService
+                                     prisonerDetailsService,
+                                     tasklistService,
+                                     audit,
+                                     userManager
                                     }) {
     const app = express();
     app.set('json spaces', 2);
@@ -179,8 +181,7 @@ module.exports = function createApp({logger,
         });
     });
 
-    app.use('/', index);
-    app.use('/dashboard/', dashboard);
+    app.use('/', createTasklistRouter({logger, tasklistService, audit, userManager}));
     app.use('/details/', createDetailsRouter({logger, prisonerDetailsService}));
     app.use('/dischargeAddress/', createDischargeAddressRouter({logger, dischargeAddressService}));
     app.use('/additionalConditions/', createAdditionalConditionsRouter({logger}));

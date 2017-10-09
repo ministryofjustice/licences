@@ -4,11 +4,13 @@ const express = require('express');
 const path = require('path');
 
 const {
-    expect
+    expect,
+    sandbox
 } = require('../services/testSetup');
 
 module.exports = {
     sinon,
+    sandbox,
     request,
     expect,
     appSetup: function(route) {
