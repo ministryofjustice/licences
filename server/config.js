@@ -25,7 +25,7 @@ module.exports = {
     },
 
     licences: {
-        apiUrl: get('LICENCES_API_URL', 'http://localhost:9091'),
+        apiUrl: get('LICENCES_API_URL', 'http://localhost:3001'),
         timeout: {
             response: 2000,
             deadline: 2500
