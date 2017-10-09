@@ -29,7 +29,7 @@ module.exports = function({logger, prisonerDetailsService}) {
     router.post('/:nomisId', (req, res) => {
         logger.debug('POST /details');
 
-        res.redirect('/additionalConditions/'+req.params.licenceId);
+        res.redirect('/dischargeAddress/'+req.params.licenceId);
     });
 
     return router;
