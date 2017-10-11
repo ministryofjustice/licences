@@ -1,15 +1,18 @@
-module.exports = function createLicenceDetailsService(api, db) {
+module.exports = function createLicenceDetailsService(deliusClient, nomisClient, dbClient) {
     async function getDashboardDetail(userId) {
         try {
-            const upcomingReleases = await api.getUpcomingReleases(userId);
+
+            const prisonerIds = await deliusClient.getPrisonersFor(userId);
+
+            const upcomingReleases = await nomisClient.getUpcomingReleasesFor(prisonerIds);
 
             if (isEmpty(upcomingReleases)) {
                 return {};
             }
 
-            const activeLicences = await db.getLicences(getOffenderNomisIds(upcomingReleases));
+            const activeLicences = await dbClient.getLicences(getOffenderNomisIds(upcomingReleases));
 
-            return parseDashboardInfo(upcomingReleases, activeLicences);
+            return parseTasklistInfo(upcomingReleases, activeLicences);
 
         } catch (error) {
 
@@ -30,7 +33,7 @@ function getOffenderNomisIds(releases) {
     return releases.map(offender => offender.nomisId);
 }
 
-function parseDashboardInfo(upcomingReleases, activeLicences) {
+function parseTasklistInfo(upcomingReleases, activeLicences) {
 
     return upcomingReleases.map(offender => {
         const licence = activeLicences.find(licence => licence.nomisId === offender.nomisId);

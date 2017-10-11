@@ -2,7 +2,7 @@ const {
     request,
     sinon,
     appSetup
-} = require('./supertestSetup');
+} = require('../supertestSetup');
 
 const createAdditionalConditionsRoute = require('../../server/routes/additionalConditions');
 

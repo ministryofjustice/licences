@@ -30,8 +30,8 @@ describe('Subject data', function() {
     let getCollectionStub = sandbox.stub().callsArgWith(2, standardResponse);
 
     const licencesProxy = (getCollection = getCollectionStub) => {
-        return proxyquire('../../../server/data/licences', {
-            './dataAccess/dbData': {
+        return proxyquire('../../../server/data/dbClient', {
+            './dataAccess/db': {
                 getCollection: getCollection
             }
         });
