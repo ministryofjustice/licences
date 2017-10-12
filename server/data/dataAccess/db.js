@@ -2,7 +2,9 @@ const util = require('util');
 const logger = require('../../../log.js');
 
 module.exports = {
-    getCollection
+    getCollection,
+    connect,
+    addParams
 };
 
 function connect() {

@@ -1,7 +1,7 @@
-module.exports = function createLicenceDetailsService(api) {
+module.exports = function createPrisonerDetailsService(nomisClient) {
     async function getPrisonerDetails(id) {
         try {
-            return await api.getPrisonerInfo(id);
+            return await nomisClient.getPrisonerInfo(id);
         } catch (error) {
 
             // TODO more specific api failure handling

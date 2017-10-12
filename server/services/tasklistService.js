@@ -1,4 +1,4 @@
-module.exports = function createLicenceDetailsService(deliusClient, nomisClient, dbClient) {
+module.exports = function createTasklistService(deliusClient, nomisClient, dbClient) {
     async function getDashboardDetail(userId) {
         try {
 
