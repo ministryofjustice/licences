@@ -18,7 +18,7 @@ module.exports = {
     version: 0.1,
 
     db: {
-        username: get('DB_USER'),
+        username: get('DB_USER', 'user'),
         password: get('DB_PASS', 'password'),
         server: get('DB_SERVER', 'server'),
         database: get('DB_NAME', 'licences')
