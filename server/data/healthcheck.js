@@ -6,7 +6,7 @@ const url = require('url');
 const superagent = require('superagent');
 
 module.exports = {
-    licencesApiCheck,
+    nomisApiCheck,
     dbCheck
 };
 
@@ -16,11 +16,11 @@ function dbCheck() {
     });
 }
 
-function licencesApiCheck() {
+function nomisApiCheck() {
     return new Promise((resolve, reject) => {
 
         superagent
-            .get(url.resolve(`${config.licences.apiUrl}`, '/health'))
+            .get(url.resolve(`${config.nomis.apiUrl}`, '/api/info/health'))
             .timeout({
                 response: 2000,
                 deadline: 2500
@@ -28,7 +28,7 @@ function licencesApiCheck() {
             .end((error, result) => {
                 try {
                     if (error) {
-                        logger.error(error, 'Error calling Licences API');
+                        logger.error(error, 'Error calling Nomis API');
                         return reject(error.status);
                     }
 
@@ -38,7 +38,7 @@ function licencesApiCheck() {
 
                     return reject(result.status);
                 } catch (exception) {
-                    logger.error(exception, 'Exception calling Licences API');
+                    logger.error(exception, 'Exception calling Nomis API');
                     return reject(exception);
                 }
             });

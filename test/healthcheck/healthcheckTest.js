@@ -22,18 +22,18 @@ describe('searchController', () => {
 
     describe('healthcheck', () => {
         let dbCheckStub;
-        let licencesApiCheckStub;
+        let nomisApiCheckStub;
 
         beforeEach(() => {
             dbCheckStub = sandbox.stub().returnsPromise().resolves([{totalRows: {value: 0}}]);
-            licencesApiCheckStub = sandbox.stub().returnsPromise().resolves('OK');
+            nomisApiCheckStub = sandbox.stub().returnsPromise().resolves('OK');
         });
 
-        const healthcheckProxy = (dbCheck = dbCheckStub, licencesApiCheck = licencesApiCheckStub) => {
+        const healthcheckProxy = (dbCheck = dbCheckStub, nomisApiCheck = nomisApiCheckStub) => {
             return proxyquire('../../server/healthcheck', {
                 './data/healthcheck': {
                     dbCheck: dbCheck,
-                    licencesApiCheck: licencesApiCheck
+                    nomisApiCheck: nomisApiCheck
                 }
             });
         };
@@ -48,7 +48,7 @@ describe('searchController', () => {
                 expect(calledWith.healthy).to.eql(true);
 
                 expect(calledWith.checks.db).to.eql('OK');
-                expect(calledWith.checks.licences).to.eql('OK');
+                expect(calledWith.checks.nomis).to.eql('OK');
             });
         });
 
@@ -62,22 +62,22 @@ describe('searchController', () => {
                 expect(callback).to.have.callCount(1);
                 expect(calledWith.healthy).to.eql(false);
                 expect(calledWith.checks.db).to.eql('rubbish');
-                expect(calledWith.checks.licences).to.eql('OK');
+                expect(calledWith.checks.nomis).to.eql('OK');
             });
         });
 
-        it('should return unhealthy if licences rejects promise', () => {
+        it('should return unhealthy if nomis rejects promise', () => {
 
-            const licencesApiCheckStubReject = sandbox.stub().returnsPromise().rejects(404);
+            const nomisApiCheckStubReject = sandbox.stub().returnsPromise().rejects(404);
 
-            return healthcheckProxy(dbCheckStub, licencesApiCheckStubReject)(callback).then(() => {
+            return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject)(callback).then(() => {
 
                 const calledWith = callback.getCalls()[0].args[1];
 
                 expect(callback).to.have.callCount(1);
                 expect(calledWith.healthy).to.eql(false);
                 expect(calledWith.checks.db).to.eql('OK');
-                expect(calledWith.checks.licences).to.eql(404);
+                expect(calledWith.checks.nomis).to.eql(404);
             });
         });
     });
