@@ -30,14 +30,15 @@ const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
 const testMode = process.env.NODE_ENV === 'test';
 
-module.exports = function createApp({logger,
-                                     reportingInstructionService,
-                                     licenceDetailsService,
-                                     dischargeAddressService,
-                                     prisonerDetailsService,
-                                     tasklistService,
-                                     audit,
-                                     userManager
+module.exports = function createApp({
+                                        logger,
+                                        reportingInstructionService,
+                                        licenceDetailsService,
+                                        dischargeAddressService,
+                                        prisonerDetailsService,
+                                        tasklistService,
+                                        audit,
+                                        userManager
                                     }) {
     const app = express();
     app.set('json spaces', 2);
@@ -179,6 +180,10 @@ module.exports = function createApp({logger,
 
             res.json(result);
         });
+    });
+
+    app.get('/feedback', (req, res) => {
+        return res.render('feedback', {returnURL: req.get('referer')});
     });
 
     app.use('/', createTasklistRouter({logger, tasklistService, audit, userManager}));
