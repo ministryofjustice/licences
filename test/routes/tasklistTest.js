@@ -3,7 +3,7 @@ const {
     sandbox,
     expect,
     appSetup
-} = require('./supertestSetup');
+} = require('../supertestSetup');
 
 const createTasklistRoute = require('../../server/routes/tasklist');
 

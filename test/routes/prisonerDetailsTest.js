@@ -3,7 +3,7 @@ const {
     sinon,
     expect,
     appSetup
-} = require('./supertestSetup');
+} = require('../supertestSetup');
 
 const createPrisonerDetailsRoute = require('../../server/routes/details');
 

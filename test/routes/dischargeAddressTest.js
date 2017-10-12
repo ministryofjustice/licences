@@ -3,7 +3,7 @@ const {
     sinon,
     expect,
     appSetup
-} = require('./supertestSetup');
+} = require('../supertestSetup');
 
 const createDischargeAddressRoute = require('../../server/routes/dischargeAddress');
 

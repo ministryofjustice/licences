@@ -30,8 +30,8 @@ describe('getLicences', function() {
     let getCollectionStub = sandbox.stub().callsArgWith(2, standardResponse);
 
     const licencesProxy = (getCollection = getCollectionStub) => {
-        return proxyquire('../../server/data/licences', {
-            './dataAccess/dbData': {
+        return proxyquire('../../server/data/dbClient', {
+            './dataAccess/db': {
                 getCollection: getCollection
             }
         });
@@ -75,22 +75,20 @@ describe('getLicences', function() {
 
     it('should pass in the correct sql for multiple nomis IDs', () => {
 
-        const expectedSql = `SELECT NOMIS_ID as nomisId, ID as id, JSON_QUERY(LICENCE) AS licence
-                     FROM LICENCES WHERE NOMIS_ID IN ('ABC123','DEF456','XYZ789') FOR JSON PATH`;
+        const expectedClause = 'WHERE NOMIS_ID IN (\'ABC123\',\'DEF456\',\'XYZ789\')';
 
         licencesProxy().getLicences(['ABC123', 'DEF456', 'XYZ789']);
         const sql = getCollectionStub.getCalls()[0].args[0];
-        expect(sql).to.eql(expectedSql);
+        expect(sql).includes(expectedClause);
     });
 
     it('should pass in the correct sql for a single nomis ID', () => {
 
-        const expectedSql = `SELECT NOMIS_ID as nomisId, ID as id, JSON_QUERY(LICENCE) AS licence
-                     FROM LICENCES WHERE NOMIS_ID IN ('ABC123') FOR JSON PATH`;
+        const expectedClause = `WHERE NOMIS_ID IN ('ABC123') FOR JSON PATH`;
 
         licencesProxy().getLicences(['ABC123']);
         const sql = getCollectionStub.getCalls()[0].args[0];
-        expect(sql).to.eql(expectedSql);
+        expect(sql).includes(expectedClause);
     });
 
 });

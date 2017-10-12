@@ -1,6 +1,6 @@
 const createReportingService = require('../../server/services/reportingInstructionsService');
 const service = createReportingService();
-const {expect} = require('./testSetup');
+const {expect} = require('../testSetup');
 
 describe('reportingInstructionsService', () => {
 

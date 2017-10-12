@@ -1,9 +1,12 @@
 const createApp = require('./app');
 const licencesApi = require('../server/data/api');
-const database = require('../server/data/licences');
 const logger = require('../log');
 const audit = require('../server/data/audit');
 const userManager = {getUser: () => 1};
+const dbClient = require('./data/dbClient');
+const deliusClient = require('./data/deliusClient');
+const nomisClient = require('./data/nomisClient');
+
 
 const createReportService = require('./services/reportingInstructionsService');
 const createLicenceDetailsService = require('./services/licenceDetailsService');
@@ -16,7 +19,7 @@ const reportingInstructionService = createReportService();
 const licenceDetailsService = createLicenceDetailsService();
 const dischargeAddressService = createDischargeAddressService();
 const prisonerDetailsService = createPrisonerDetailsService(licencesApi);
-const tasklistService = createTasklistService(licencesApi, database);
+const tasklistService = createTasklistService(deliusClient, nomisClient, dbClient);
 
 const app = createApp({
     logger,

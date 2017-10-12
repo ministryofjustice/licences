@@ -2,7 +2,7 @@ const createPrisonerDetailsService = require('../../server/services/prisonerDeta
 const {
     sandbox,
     expect
-} = require('./testSetup');
+} = require('../testSetup');
 
 describe('prisonerDetailsService', () => {
 

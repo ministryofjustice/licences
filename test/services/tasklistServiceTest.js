@@ -2,67 +2,87 @@ const createPrisonerDetailsService = require('../../server/services/tasklistServ
 const {
     sandbox,
     expect
-} = require('./testSetup');
+} = require('../testSetup');
 
 describe('prisonerDetailsService', () => {
 
-    const apiMock = {
-        getUpcomingReleases: sandbox.stub().returnsPromise()
+    const deliusClient = {
+        getPrisonersFor: sandbox.stub().returnsPromise()
     };
 
-    const dbMock = {
-        getLicences: sandbox.stub().returnsPromise()
+    const nomisClient = {
+        getUpcomingReleasesFor: sandbox.stub().returnsPromise()
     };
 
-    const service = createPrisonerDetailsService(apiMock, dbMock);
+    const dbClient = {
+        getLicences: sandbox.stub().returnsPromise().returnsPromise().resolves()
+    };
+
+    const service = createPrisonerDetailsService(deliusClient, nomisClient, dbClient);
+
+    beforeEach(() => {
+        deliusClient.getPrisonersFor.resolves('1, 2');
+        nomisClient.getUpcomingReleasesFor.resolves([{nomisId: '1'}, {nomisId: '2'}]);
+        dbClient.getLicences.resolves([{nomisId: '2', id: 'ab'}]);
+    });
 
     afterEach(() => {
         sandbox.reset();
     });
 
     describe('getDashboardDetail', () => {
-        it('should call the api with the user id', () => {
+        it('should get the prisoners for the user from delius', () => {
             service.getDashboardDetail('123');
 
-            expect(apiMock.getUpcomingReleases).to.be.calledOnce();
-            expect(apiMock.getUpcomingReleases).to.be.calledWith('123');
+            expect(deliusClient.getPrisonersFor).to.be.calledOnce();
+            expect(deliusClient.getPrisonersFor).to.be.calledWith('123');
+        });
+
+        it('should request upcoming releases from nomis', async () => {
+            await service.getDashboardDetail('123');
+
+            expect(nomisClient.getUpcomingReleasesFor).to.be.calledOnce();
+            expect(nomisClient.getUpcomingReleasesFor).to.be.calledWith('1, 2');
         });
 
         it('should return an empty object if there are no upcoming releases', () => {
-            apiMock.getUpcomingReleases.resolves(([]));
+            nomisClient.getUpcomingReleasesFor.resolves(([]));
 
             return expect(service.getDashboardDetail('123'))
                 .to.eventually.eql({});
         });
 
-        it('should call db.getLicences if candidates returned', () => {
-            apiMock.getUpcomingReleases.resolves(([{nomisId: '1'}, {nomisId: '2'}]));
-            dbMock.getLicences.resolves(([{nomisId: '1'}, {nomisId: '2'}]));
+        it('should call dbClient.getLicences if candidates returned', async () => {
+            await service.getDashboardDetail('123');
 
-            return service.getDashboardDetail('123').then(() => {
-                expect(dbMock.getLicences).to.be.calledOnce();
-                expect(dbMock.getLicences).to.be.calledWith(['1', '2']);
-            });
+            expect(dbClient.getLicences).to.be.calledOnce();
+            expect(dbClient.getLicences).to.be.calledWith(['1', '2']);
+
         });
 
         it('should add licence details if licence is in db for prisoner', () => {
-            apiMock.getUpcomingReleases.resolves(([{nomisId: '1'}, {nomisId: '2'}]));
-            dbMock.getLicences.resolves(([{nomisId: '2', id: 'ab'}]));
-
             return expect(service.getDashboardDetail('123'))
                 .to.eventually.eql([{nomisId: '1'}, {nomisId: '2', inProgress: true, licenceId: 'ab'}]);
 
         });
 
-        it('should throw if error in api', () => {
-            apiMock.getUpcomingReleases.rejects(new Error('dead'));
+        it('should throw if delius client fails', () => {
+
+            deliusClient.getPrisonersFor.rejects(new Error('dead'));
+
+            return expect(service.getDashboardDetail('123')).to.be.rejected();
+        });
+
+        it('should throw if nomis client fails', () => {
+
+            nomisClient.getUpcomingReleasesFor.rejects(new Error('dead'));
 
             return expect(service.getDashboardDetail('123')).to.be.rejected();
         });
 
         it('should throw if error in db', () => {
-            apiMock.getUpcomingReleases.resolves(([{nomisId: '1'}, {nomisId: '2'}]));
-            dbMock.getLicences.rejects(new Error('dead'));
+
+            dbClient.getLicences.rejects(new Error('dead'));
 
             return expect(service.getDashboardDetail('123')).to.be.rejected();
         });
