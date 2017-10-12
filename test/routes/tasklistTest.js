@@ -6,6 +6,8 @@ const {
 } = require('../supertestSetup');
 
 const createTasklistRoute = require('../../server/routes/tasklist');
+const auth = require('../mockAuthentication');
+const authenticationMiddleware = auth.authenticationMiddleware;
 
 const loggerStub = {
     debug: sandbox.stub()
@@ -22,7 +24,8 @@ const audit = {
     record: sandbox.stub()
 };
 
-const app = appSetup(createTasklistRoute({tasklistService: serviceStub, logger: loggerStub, audit, userManager}));
+const app = appSetup(createTasklistRoute(
+    {tasklistService: serviceStub, logger: loggerStub, audit, userManager, authenticationMiddleware}));
 
 describe('GET /', () => {
 

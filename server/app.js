@@ -19,6 +19,11 @@ const sassMiddleware = require('node-sass-middleware');
 const config = require('../server/config');
 const healthcheck = require('../server/healthcheck');
 
+const passport = require('passport');
+const auth = require('./authentication/auth');
+const authenticationMiddleware = auth.authenticationMiddleware;
+
+const createSignInRouter = require('./routes/signIn');
 const createTasklistRouter = require('../server/routes/tasklist');
 const createDetailsRouter = require('../server/routes/details');
 const createDischargeAddressRouter = require('../server/routes/dischargeAddress');
@@ -32,6 +37,7 @@ const testMode = process.env.NODE_ENV === 'test';
 
 module.exports = function createApp({
                                         logger,
+                                        signInService,
                                         reportingInstructionService,
                                         licenceDetailsService,
                                         dischargeAddressService,
@@ -41,8 +47,11 @@ module.exports = function createApp({
                                         userManager
                                     }) {
     const app = express();
-    app.set('json spaces', 2);
 
+    auth.init(signInService);
+
+
+    app.set('json spaces', 2);
 
     // Configure Express for running behind proxies
     // https://expressjs.com/en/guide/behind-proxies.html
@@ -82,6 +91,8 @@ module.exports = function createApp({
         sameSite: 'lax'
     }));
 
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     // Request Processing Configuration
     app.use(bodyParser.json());
@@ -186,9 +197,12 @@ module.exports = function createApp({
         return res.render('feedback', {returnURL: req.get('referer')});
     });
 
-    app.use('/', createTasklistRouter({logger, tasklistService, audit, userManager}));
-    app.use('/details/', createDetailsRouter({logger, prisonerDetailsService}));
-    app.use('/dischargeAddress/', createDischargeAddressRouter({logger, dischargeAddressService}));
+    app.use('/signin', createSignInRouter(passport));
+
+    app.use('/', createTasklistRouter({logger, tasklistService, audit, userManager, authenticationMiddleware}));
+    app.use('/details/', createDetailsRouter({logger, prisonerDetailsService, authenticationMiddleware}));
+    app.use('/dischargeAddress/',
+        createDischargeAddressRouter({logger, dischargeAddressService, authenticationMiddleware}));
     app.use('/additionalConditions/', createAdditionalConditionsRouter({logger}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceDetailsService}));
     app.use('/reporting/', createReportingRouter({reportingInstructionService}));

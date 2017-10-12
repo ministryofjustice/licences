@@ -1,0 +1,14 @@
+extends layout.pug
+
+block content
+    form(action='/signin', method='POST', class='form')
+        input(type="hidden" name="_csrf" value=csrfToken)
+        h1(class='form-title heading-large') Sign in
+        .form-group
+            label.form-label(for='username') Username
+            input#username.form-control(name='username', type='text', data-element-id='username')
+        .form-group
+            label.form-label(for='password') Password
+            input#password.form-control(name='password', type='password', data-element-id='password')
+
+        button.button(type='submit', role='button', data-element-id="continue-button") Sign in

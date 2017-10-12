@@ -6,14 +6,14 @@ const dbClient = require('./data/dbClient');
 const deliusClient = require('./data/deliusClient');
 const nomisClient = require('./data/nomisClient');
 
-
+const createSignInService = require('./authentication/signIn');
 const createReportService = require('./services/reportingInstructionsService');
 const createLicenceDetailsService = require('./services/licenceDetailsService');
 const createDischargeAddressService = require('./services/dischargeAddressService');
 const createPrisonerDetailsService = require('./services/prisonerDetailsService');
 const createTasklistService = require('./services/tasklistService');
 
-// TODO inject API/DB dependencies into services
+const signInService = createSignInService();
 const reportingInstructionService = createReportService();
 const licenceDetailsService = createLicenceDetailsService();
 const dischargeAddressService = createDischargeAddressService();
@@ -22,6 +22,7 @@ const tasklistService = createTasklistService(deliusClient, nomisClient, dbClien
 
 const app = createApp({
     logger,
+    signInService,
     reportingInstructionService,
     licenceDetailsService,
     dischargeAddressService,

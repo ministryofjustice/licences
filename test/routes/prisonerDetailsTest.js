@@ -6,6 +6,8 @@ const {
 } = require('../supertestSetup');
 
 const createPrisonerDetailsRoute = require('../../server/routes/details');
+const auth = require('../mockAuthentication');
+const authenticationMiddleware = auth.authenticationMiddleware;
 
 const loggerStub = {
     debug: sinon.stub()
@@ -14,7 +16,8 @@ const serviceStub = {
     getPrisonerDetails: sinon.stub()
 };
 
-const app = appSetup(createPrisonerDetailsRoute({prisonerDetailsService: serviceStub, logger: loggerStub}));
+const app = appSetup(createPrisonerDetailsRoute(
+    {prisonerDetailsService: serviceStub, logger: loggerStub, authenticationMiddleware}));
 
 describe('GET /licenceDetails/:prisonNumber', () => {
     it('calls getLicenceDetails from licenceDetailsService', () => {

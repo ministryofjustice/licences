@@ -34,6 +34,8 @@ module.exports = {
 
     nomis: {
         apiUrl: get('NOMIS_API_URL', 'http://localhost:9090'),
+        apiGatewayToken: get('NOMIS_GW_TOKEN', 'dummy'),
+        apiGatewayPrivateKey: new Buffer(get('NOMIS_GW_KEY', 'dummy'), 'base64').toString('ascii'),
         timeout: {
             response: 2000,
             deadline: 2500
