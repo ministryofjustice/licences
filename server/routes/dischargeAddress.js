@@ -1,7 +1,8 @@
 const express = require('express');
 
-module.exports = function({logger, dischargeAddressService}) {
+module.exports = function({logger, dischargeAddressService, authenticationMiddleware}) {
     const router = express.Router();
+    router.use(authenticationMiddleware());
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {

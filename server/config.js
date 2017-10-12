@@ -18,7 +18,7 @@ module.exports = {
     version: 0.1,
 
     db: {
-        username: get('DB_USER', 'user'),
+        username: get('DB_USER'),
         password: get('DB_PASS', 'password'),
         server: get('DB_SERVER', 'server'),
         database: get('DB_NAME', 'licences')
@@ -34,6 +34,8 @@ module.exports = {
 
     nomis: {
         apiUrl: get('NOMIS_API_URL', 'http://localhost:9090'),
+        apiGatewayToken: get('NOMIS_GW_TOKEN'),
+        apiGatewayPrivateKey: new Buffer(get('NOMIS_GW_KEY'), 'base64').toString('ascii'),
         timeout: {
             response: 2000,
             deadline: 2500

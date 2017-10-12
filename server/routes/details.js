@@ -1,8 +1,9 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 
-module.exports = function({logger, prisonerDetailsService}) {
+module.exports = function({logger, prisonerDetailsService, authenticationMiddleware}) {
     const router = express.Router();
+    router.use(authenticationMiddleware());
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {

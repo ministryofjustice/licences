@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const sinon = require('sinon');
 const sinonStubPromise = require('sinon-stub-promise');
 sinonStubPromise(sinon);
