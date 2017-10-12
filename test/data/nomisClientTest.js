@@ -33,3 +33,29 @@ describe('getUpcomingReleasesFor', () => {
     });
 
 });
+
+describe('getPrisonerInfo', () => {
+    afterEach(() => {
+        nock.cleanAll();
+        sandbox.reset();
+    });
+
+    it('should return data from api', () => {
+        fakeNomis
+            .get('/api/v2/prisoners?nomisId=a')
+            .reply(200, {key: 'value'});
+
+        return expect(nomisClient.getPrisonerInfo('a')).to.eventually.eql({key: 'value'});
+
+    });
+
+    it('should reject if api fails', () => {
+        fakeNomis
+            .get('/api/v2/prisoners?nomisId=a')
+            .reply(500);
+
+        return expect(nomisClient.getPrisonerInfo('a')).to.be.rejected();
+
+    });
+
+});

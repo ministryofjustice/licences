@@ -1,5 +1,4 @@
 const createApp = require('./app');
-const licencesApi = require('../server/data/api');
 const logger = require('../log');
 const audit = require('../server/data/audit');
 const userManager = {getUser: () => 1};
@@ -18,7 +17,7 @@ const createTasklistService = require('./services/tasklistService');
 const reportingInstructionService = createReportService();
 const licenceDetailsService = createLicenceDetailsService();
 const dischargeAddressService = createDischargeAddressService();
-const prisonerDetailsService = createPrisonerDetailsService(licencesApi);
+const prisonerDetailsService = createPrisonerDetailsService(nomisClient);
 const tasklistService = createTasklistService(deliusClient, nomisClient, dbClient);
 
 const app = createApp({

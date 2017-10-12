@@ -19,6 +19,14 @@ module.exports = {
         const query = {nomisId: nomisIds};
 
         return callNomis(path, query);
+    },
+
+    getPrisonerInfo: function(nomisId) {
+
+        const path = url.resolve(`${endpoint}`, 'api/v2/prisoners');
+        const query = {nomisId: nomisId};
+
+        return callNomis(path, query);
     }
 };
 
