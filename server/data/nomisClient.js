@@ -15,6 +15,7 @@ module.exports = {
     getUpcomingReleasesFor: function(nomisIds) {
 
         const path = url.resolve(`${endpoint}`, 'api/v2/releases');
+        logger.info(path);
         const query = {nomisId: nomisIds};
 
         return callNomis(path, query);
