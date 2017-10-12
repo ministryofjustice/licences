@@ -33,7 +33,7 @@ module.exports = {
     },
 
     nomis: {
-        apiUrl: get('NOMIS_API_URL', 'http://localhost:9090'),
+        apiUrl: get('NOMIS_API_URL', 'https://licences-nomis-mocks.herokuapp.com'),
         timeout: {
             response: 2000,
             deadline: 2500
