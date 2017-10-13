@@ -41,34 +41,15 @@ html(lang="en")
             div(class="header-wrapper")
                 div(class="header-global")
                     div(class="header-logo")
-                        a(href="https://www.gov.uk", title="Go to the GOV.UK homepage", id="logo", class="content")
-                            img(src="/public/images/gov.uk_logotype_crown_invert_trans.png?0.19.2", width="36", height="32", alt="")
-                            span  GOV.UK
-
-                div(class="header-proposition")
-                    div(class="content")
-                        a(href="#proposition-links", class="js-header-toggle menu") Menu
-                        nav(id="proposition-menu")
-                            a(href="/", id="proposition-name") Licences Application
-                            //if nav
-                            ul#proposition-links
-                                if profile
-                                    li
-                                        | Signed in as: "#{profile.firstName} #{profile.lastName}", staff id = #{profile.staffId}
-                                    li
-                                        a(href="/logout") Logout
-        div#global-header-bar
+                        a(href="https://www.gov.uk", title="Go to the GOV.UK homepage", id="logo", class="content hmppslogo")
+                            img(src="/public/images/govuk-crest-2x.png", width="54", height="48", alt="")
+                            span  HMPPS
+                if profile
+                    div(id="header-user")
+                        span.bold #{profile.firstName}, #{profile.lastName} &nbsp;&nbsp;|&nbsp;&nbsp;
+                        a(href="/logout") Logout
 
         main#content(role="main")
-            div.phase-banner
-                p
-                    strong.phase-tag PRIVATE BETA
-                    span This is a new service – your
-                        =" "
-                        a(href="/feedback") feedback
-                        =" "
-                        | will help us to improve it.
-
             block content
 
         footer(class="group js-footer", id="footer", role="contentinfo")
