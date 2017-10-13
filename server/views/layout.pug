@@ -41,36 +41,18 @@ html(lang="en")
             div(class="header-wrapper")
                 div(class="header-global")
                     div(class="header-logo")
-                        a(href="https://www.gov.uk", title="Go to the GOV.UK homepage", id="logo", class="content")
-                            img(src="/public/images/gov.uk_logotype_crown_invert_trans.png?0.19.2", width="36", height="32", alt="")
-                            span  GOV.UK
+                        a(href="https://www.gov.uk", title="Go to the GOV.UK homepage", id="logo", class="content hmppslogo")
+                            img(src="/public/images/govuk-crest-2x.png", width="54", height="48", alt="")
+                            span  HMPPS
+                if user && user.surname && user.forename
+                    div(id="header-user")
+                        span.bold #{user.surname}, #{user.forename}
+                            // temp name
+                            if user.establishment
+                                | | #{user.establishment}
 
-                div(class="header-proposition")
-                    div(class="content")
-                        a(href="#proposition-links", class="js-header-toggle menu") Menu
-                        nav(id="proposition-menu")
-                            a(href="/", id="proposition-name") Licences Application
-                            if nav
-                                ul#proposition-links
-                                    li
-                                        if profile
-                                            | Signed in as
-                                            =" "
-                                            a(href=profile.profileLink) #{profile.firstName} #{profile.lastName}
-                                    li
-                                        a(href="/logout") Exit Licences
-
-        div#global-header-bar
 
         main#content(role="main")
-            div.phase-banner
-                p
-                    strong.phase-tag PRIVATE BETA
-                    span This is a new service – your
-                        =" "
-                        a(href="/feedback") feedback
-                        =" "
-                        | will help us to improve it.
 
             block content
 
