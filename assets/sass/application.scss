@@ -6,6 +6,8 @@ $path: "/public/images";
 // Take a look in /govuk-modules/_govuk-elements.scss to see which files are imported.
 @import 'govuk-elements';
 
+#proposition-links li { color: $grey-4; }
+
 a.button.button-secondary {
     color: $black;
     background-color: $grey-2;

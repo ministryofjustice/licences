@@ -150,6 +150,14 @@ module.exports = function createApp({
     // GovUK Template Configuration
     app.locals.asset_path = '/public/';
 
+    function addTemplateVariables(req, res, next) {
+        console.log(req.user);
+        res.locals.profile = req.user;
+        next();
+    }
+
+    app.use(addTemplateVariables);
+
     // Don't cache dynamic resources
     app.use(helmet.noCache());
 
@@ -197,7 +205,16 @@ module.exports = function createApp({
         return res.render('feedback', {returnURL: req.get('referer')});
     });
 
-    app.use('/signin', createSignInRouter(passport));
+    app.use('/login', createSignInRouter(passport));
+
+    app.use('/logout', (req, res) => {
+        if (req.user) {
+            req.logout();
+            res.redirect('/login');
+        } else {
+            res.redirect('/login');
+        }
+    });
 
     app.use('/', createTasklistRouter({logger, tasklistService, audit, userManager, authenticationMiddleware}));
     app.use('/details/', createDetailsRouter({logger, prisonerDetailsService, authenticationMiddleware}));

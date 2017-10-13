@@ -50,16 +50,13 @@ html(lang="en")
                         a(href="#proposition-links", class="js-header-toggle menu") Menu
                         nav(id="proposition-menu")
                             a(href="/", id="proposition-name") Licences Application
-                            if nav
-                                ul#proposition-links
+                            //if nav
+                            ul#proposition-links
+                                if profile
                                     li
-                                        if profile
-                                            | Signed in as
-                                            =" "
-                                            a(href=profile.profileLink) #{profile.firstName} #{profile.lastName}
+                                        | Signed in as: "#{profile.firstName} #{profile.lastName}", staff id = #{profile.staffId}
                                     li
-                                        a(href="/logout") Exit Licences
-
+                                        a(href="/logout") Logout
         div#global-header-bar
 
         main#content(role="main")
