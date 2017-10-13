@@ -13,14 +13,14 @@ module.exports = function createRouter() {
     });
 
     router.get('/', (req, res) => {
-        res.render('signin');
+        res.render('login');
     });
 
     router.use(bodyParser.urlencoded({extended: true}));
 
     router.post('/', passport.authenticate('local', {
         successRedirect: '/',
-        failureRedirect: '/signin'
+        failureRedirect: '/login'
     }));
 
     return router;
