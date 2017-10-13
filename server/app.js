@@ -179,6 +179,11 @@ module.exports = function createApp({
         requestWhitelist: ['url', 'method', 'originalUrl', 'query', 'body']
     }));
 
+    app.use(function(req, res, next) {
+        res.locals.user = req.user;
+        next();
+    });
+
     // Express Routing Configuration
     app.get('/health', (req, res, next) => {
         healthcheck((err, result) => {
