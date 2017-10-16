@@ -24,8 +24,6 @@ function signIn(username, password) {
                     }
 
                     const eliteAuthorisationToken = res.body.token;
-                    console.log('Got eliteAuthorisationToken:');
-                    console.log(eliteAuthorisationToken);
                     superagent.get(url.resolve(`${config.nomis.apiUrl}`, '/api/users/me'))
                         .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
                         .set('Elite-Authorization', eliteAuthorisationToken)
@@ -35,8 +33,6 @@ function signIn(username, password) {
                             }
                             logger.info(`Sign in to Elite 2 for [${username}] successful`);
                             const user = res2.body;
-                            console.log('Got user details: ');
-                            console.log(user);
                             resolve(user);
                         });
                 } catch (exception) {
