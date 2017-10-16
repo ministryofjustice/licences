@@ -34,13 +34,10 @@ function signIn(username, password) {
                                 logger.error(error2);
                             }
                             logger.info(`Sign in to Elite 2 for [${username}] successful`);
+                            const user = res2.body;
                             console.log('Got user details: ');
-                            console.log(res2.body.firstName);
-                            resolve({
-                                forename: res2.body.firstName,
-                                surname: res2.body.lastName,
-                                eliteAuthorisationToken
-                            });
+                            console.log(user);
+                            resolve(user);
                         });
                 } catch (exception) {
                     logger.error(`Sign in to Elite 2 failed for [${username}] with exception:`);

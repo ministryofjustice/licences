@@ -6,6 +6,8 @@ $path: "/public/images";
 // Take a look in /govuk-modules/_govuk-elements.scss to see which files are imported.
 @import 'govuk-elements';
 
+#proposition-links li { color: $grey-4; }
+
 a.button.button-secondary {
     color: $black;
     background-color: $grey-2;
@@ -93,4 +95,27 @@ input.verySmall {
 .padLeftRight5 {
     padding-left: 5px;
     padding-right: 5px;
+}
+
+#global-header #logo.hmppslogo {
+    background: url($path+'/hmpps_logo_small.png') no-repeat;
+    background-size: 54px 48px;
+    background-position: 0 0;
+    line-height: normal;
+}
+
+#global-header .header-wrapper{
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+#header-user {
+    float: right;
+    color: $white;
+    background-color: $govuk-blue;
+    padding: 15px;
+
+    a {
+        color: white
+    }
 }

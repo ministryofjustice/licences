@@ -7,15 +7,18 @@ function authenticationMiddleware() {
         if (req.isAuthenticated()) {
             return next();
         }
-        res.redirect('/signin');
+        res.redirect('/login');
     };
 }
 
-passport.serializeUser(({forename, surname}, done) => done(null, `${forename} ${surname}`));
+passport.serializeUser(function(user, done) {
+    // Not used but required for Passport
+    done(null, user);
+});
 
-passport.deserializeUser((username, done) => {
-    const name = username.split(' ');
-    done(null, {forename: name[0], surname: name[1]});
+passport.deserializeUser(function(user, done) {
+    // Not used but required for Passport
+    done(null, user);
 });
 
 function init(signInService) {
