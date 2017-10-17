@@ -9,24 +9,35 @@ const timeoutSpec = {
     deadline: config.nomis.timeout.deadline
 };
 
-const endpoint = config.nomis.apiUrl;
+const apiUrl = config.nomis.apiUrl;
+const apiRoot = config.nomis.apiRoot;
 
 module.exports = {
     getUpcomingReleasesFor: function(nomisIds) {
-
-        const path = url.resolve(`${endpoint}`, 'api/v2/releases');
-        logger.info(path);
+        const path = url.resolve(`${apiUrl}`, `${apiRoot}/releases`);
         const query = {nomisId: nomisIds};
-
         return callNomis(path, query);
     },
 
-    getPrisonerInfo: function(nomisId) {
-
-        const path = url.resolve(`${endpoint}`, 'api/v2/prisoners');
-        const query = {nomisId: nomisId};
-
+    getBookings: function(nomisId) {
+        const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings`);
+        const query = {query: `offenderNo:eq:${nomisId}`};
         return callNomis(path, query);
+    },
+
+    getBooking: function(bookingId) {
+        const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings/${bookingId}`);
+        return callNomis(path, '');
+    },
+
+    getSentenceDetail: function(bookingId) {
+        const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings/${bookingId}/sentenceDetail`);
+        return callNomis(path, '');
+    },
+
+    getImageInfo: function(imageId) {
+        const path = url.resolve(`${apiUrl}`, `${apiRoot}/images/${imageId}`);
+        return callNomis(path, '');
     }
 };
 
