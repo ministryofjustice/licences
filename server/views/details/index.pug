@@ -14,7 +14,7 @@ block content
         div#personalDetails.grid-row.borderBottom.paddingBottom
             div.column-one-quarter
                 if(prisonerInfo.image.name)
-                    img(src= "/public/images/"+prisonerInfo.image.name)
+                    img(src= "/public/images/placeholder.png")
                 if(prisonerInfo.image.uploadedDate)
                     span.subText Uploaded: #{moment(prisonerInfo.image.uploadedDate).format('DD/MM/YYYY')}
 
@@ -48,53 +48,9 @@ block content
                 div.midMarginBottom
                     | Location
                     if(prisonerInfo.location)
-                        span#prisonerLocation.block.bold
-                            if (prisonerInfo.location.block)
-                                |#{prisonerInfo.location.block}
-                            if (prisonerInfo.location.landing)
-                                |&nbsp;| #{prisonerInfo.location.landing}
-                            if (prisonerInfo.location.cell)
-                                |&nbsp;| #{prisonerInfo.location.cell}
-                        if (prisonerInfo.location.prison)
-                            span.block.bold #{prisonerInfo.location.prison}
+                        span#prisonerLocation.block.bold #{prisonerInfo.location}
 
-        h2.heading-medium Key dates
-
-        div#keyDates.grid-row.paddingBottom
-            div.column-one-quarter
-                div.midMarginBottom
-                    | Sentence expires
-                    span#sentenceExpires.block.bold
-                        if (prisonerInfo.dates.sentenceExpiry)
-                            | #{moment(prisonerInfo.dates.sentenceExpiry).format('DD/MM/YYYY')}
-                        else
-                            | N/A
-
-            div.column-one-quarter
-                div.midMarginBottom
-                    | HDC eligibility date
-                    span#hdcEligibility.block.bold
-                        if (prisonerInfo.dates.hdcEligibility)
-                            | #{moment(prisonerInfo.dates.hdcEligibility).format('DD/MM/YYYY')}
-                        else
-                            | N/A
-
-            div.column-one-quarter
-                div.midMarginBottom
-                    | Supervision commences
-                    span#supervisionStart.block.bold
-                        if (prisonerInfo.dates.supervisionStart)
-                            | #{moment(prisonerInfo.dates.supervisionStart).format('DD/MM/YYYY')}
-                        else
-                            | N/A
-
-                div.midMarginBottom
-                    | Supervision ends
-                    span#supervisionEnd.block.bold
-                        if (prisonerInfo.dates.supervisionEnd)
-                            | #{moment(prisonerInfo.dates.supervisionEnd).format('DD/MM/YYYY')}
-                        else
-                            | N/A
+        h2.heading-medium
 
     div#continueBtns.inlineButtons
         form(method="post", name="formPrint")
