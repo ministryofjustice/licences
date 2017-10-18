@@ -6,7 +6,7 @@ const {
 
 describe('prisonerDetailsService', () => {
 
-   const bookingResponse = [{
+    const bookingResponse = [{
         bookingId: 1,
         facialImageId: 2,
         dateOfBirth: 'dob',
@@ -20,7 +20,7 @@ describe('prisonerDetailsService', () => {
 
     const bookingDetailResponse = {physicalAttributes: {gender: 'male'}};
 
-    const imageinfoResponse = {
+    const imageInfoResponse = {
         imageId: 'imgId',
         captureDate: 'imgDate'
     };
@@ -31,28 +31,13 @@ describe('prisonerDetailsService', () => {
         getBookings: sandbox.stub().returnsPromise().resolves(bookingResponse),
         getBooking: sandbox.stub().returnsPromise().resolves(bookingDetailResponse),
         getSentenceDetail: sandbox.stub().returnsPromise().resolves(sentenceDetailResponse),
-        getImageInfo: sandbox.stub().returnsPromise().resolves(imageinfoResponse)
+        getImageInfo: sandbox.stub().returnsPromise().resolves(imageInfoResponse)
     };
 
     const nomisClientBuilder = sandbox.stub().returns(nomisClientMock);
 
-    const prisonerInfoResponse = {
-        dateOfBirth: 'dob',
-        firstName: 'f',
-        middleName: 'm',
-        lastName: 'l',
-        nomsId: 'noms',
-        aliases: 'alias',
-        gender: 'male',
-        location: 'loc',
-        image: {
-            name: 'imgId',
-            uploadedDate: 'imgDate'
-        },
-        dates: {
-            date: '123'
-        }
-    };
+    const prisonerInfoResponse =
+        {...bookingDetailResponse, ...bookingResponse[0], ...imageInfoResponse, ...sentenceDetailResponse};
 
     const service = createPrisonerDetailsService(nomisClientBuilder);
 

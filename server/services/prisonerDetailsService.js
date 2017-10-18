@@ -21,21 +21,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const image = await nomisClient.getImageInfo(booking.facialImageId);
             logger.info(`got image detail for facialImageId id: ${booking.facialImageId}`);
 
-            return {
-                dateOfBirth: booking.dateOfBirth,
-                firstName: booking.firstName,
-                middleName: booking.middleName,
-                lastName: booking.lastName,
-                nomsId: booking.offenderNo,
-                aliases: booking.aliases,
-                gender: bookingDetail.physicalAttributes.gender,
-                location: booking.assignedLivingUnitDesc,
-                image: {
-                    name: image.imageId,
-                    uploadedDate: image.captureDate
-                },
-                dates: sentenceDetail
-            };
+            return {...bookingDetail, ...booking, ...image, ...sentenceDetail};
 
         } catch (error) {
             // TODO more specific api failure handling

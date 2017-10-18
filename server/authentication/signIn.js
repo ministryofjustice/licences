@@ -32,7 +32,7 @@ function signIn(username, password) {
                                 logger.error(error2);
                             }
                             logger.info(`Sign in to Elite 2 for [${username}] successful`);
-                            const user = Object.assign({}, res2.body, {token: eliteAuthorisationToken});
+                            const user = {...res2.body, ...{token: eliteAuthorisationToken}};
                             resolve(user);
                         });
                 } catch (exception) {

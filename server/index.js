@@ -15,7 +15,7 @@ const signInService = createSignInService();
 const reportingInstructionService = createReportService();
 const licenceService = createLicenceService(licenceClient);
 const dischargeAddressService = createDischargeAddressService();
-const prisonerDetailsService = createPrisonerDetailsService(nomisClient);
+const prisonerDetailsService = createPrisonerDetailsService(nomisClientBuilder);
 const tasklistService = createTasklistService(deliusClient, nomisClientBuilder, licenceClient);
 
 const app = createApp({

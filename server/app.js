@@ -213,7 +213,8 @@ module.exports = function createApp({
     });
 
     app.use('/', createTasklistRouter({logger, tasklistService, authenticationMiddleware}));
-    app.use('/details/', createDetailsRouter({logger, prisonerDetailsService, licenceService, authenticationMiddleware}));
+    app.use('/details/',
+        createDetailsRouter({logger, prisonerDetailsService, licenceService, authenticationMiddleware}));
     app.use('/dischargeAddress/',
         createDischargeAddressRouter({logger, dischargeAddressService, authenticationMiddleware}));
     app.use('/additionalConditions/', createAdditionalConditionsRouter({logger}));
