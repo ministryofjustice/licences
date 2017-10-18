@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 
-module.exports = function({logger, prisonerDetailsService, authenticationMiddleware}) {
+module.exports = function({logger, prisonerDetailsService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -27,11 +27,21 @@ module.exports = function({logger, prisonerDetailsService, authenticationMiddlew
         res.render('details/index', details);
     }));
 
-    router.post('/:nomisId', (req, res) => {
+    router.post('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('POST /details');
 
-        res.redirect('/dischargeAddress/'+req.params.licenceId);
-    });
+        // TODO extract data from form and use to create licence
+
+        const nomisId = req.params.nomisId;
+
+        const existingLicence = await licenceService.getLicence(nomisId);
+
+        if (existingLicence.length === 0) {
+            await licenceService.createLicence(nomisId);
+        }
+
+        res.redirect('/dischargeAddress/'+nomisId);
+    }));
 
     return router;
 };

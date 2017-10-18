@@ -1,29 +1,28 @@
 const createApp = require('./app');
 const logger = require('../log');
-// const audit = require('../server/data/audit');
-const dbClient = require('./data/dbClient');
+const licenceClient = require('./data/licenceClient');
 const deliusClient = require('./data/deliusClient');
 const nomisClientBuilder = require('./data/nomisClientBuilder');
 
 const createSignInService = require('./authentication/signIn');
 const createReportService = require('./services/reportingInstructionsService');
-const createLicenceDetailsService = require('./services/licenceDetailsService');
+const createLicenceService = require('./services/licenceService');
 const createDischargeAddressService = require('./services/dischargeAddressService');
 const createPrisonerDetailsService = require('./services/prisonerDetailsService');
 const createTasklistService = require('./services/tasklistService');
 
 const signInService = createSignInService();
 const reportingInstructionService = createReportService();
-const licenceDetailsService = createLicenceDetailsService();
+const licenceService = createLicenceService(licenceClient);
 const dischargeAddressService = createDischargeAddressService();
-const prisonerDetailsService = createPrisonerDetailsService(nomisClientBuilder);
-const tasklistService = createTasklistService(deliusClient, nomisClientBuilder, dbClient);
+const prisonerDetailsService = createPrisonerDetailsService(nomisClient);
+const tasklistService = createTasklistService(deliusClient, nomisClientBuilder, licenceClient);
 
 const app = createApp({
     logger,
     signInService,
     reportingInstructionService,
-    licenceDetailsService,
+    licenceService,
     dischargeAddressService,
     prisonerDetailsService,
     tasklistService

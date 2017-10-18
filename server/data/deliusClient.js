@@ -1,4 +1,4 @@
-const {getCollection} = require('./dataAccess/db');
+const {getCollection} = require('./dataAccess/dbMethods');
 
 module.exports = {
     getPrisonersFor: async function(userId) {
