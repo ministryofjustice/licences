@@ -15,6 +15,9 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const bookingDetail = await nomisClient.getBooking(booking.bookingId);
             logger.info(`got booking detail for booking id: ${booking.bookingId}`);
 
+            const sentenceDetail = await nomisClient.getSentenceDetail(booking.bookingId);
+            logger.info(`got sentence detail for booking id: ${booking.bookingId}`);
+
             const image = await nomisClient.getImageInfo(booking.facialImageId);
             logger.info(`got image detail for facialImageId id: ${booking.facialImageId}`);
 
@@ -30,7 +33,8 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
                 image: {
                     name: image.imageId,
                     uploadedDate: image.captureDate
-                }
+                },
+                dates: sentenceDetail
             };
 
         } catch (error) {

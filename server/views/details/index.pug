@@ -50,7 +50,36 @@ block content
                     if(prisonerInfo.location)
                         span#prisonerLocation.block.bold #{prisonerInfo.location}
 
-        h2.heading-medium
+        h2.heading-medium Key dates
+
+        div#keyDates.grid-row.paddingBottom
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Release date
+                    span#releaseDate.block.bold
+                        if (prisonerInfo.dates.conditionalReleaseDate)
+                            | #{moment(prisonerInfo.dates.conditionalReleaseDate).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Licence expires
+                    span#licenceExpires.block.bold
+                        if (prisonerInfo.dates.licenceExpiryDate)
+                            | #{moment(prisonerInfo.dates.licenceExpiryDate).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+        div#keyDates.grid-row.paddingBottom
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Sentence expires
+                    span#sentenceExpires.block.bold
+                        if (prisonerInfo.dates.sentenceExpiryDate)
+                            | #{moment(prisonerInfo.dates.sentenceExpiryDate).format('DD/MM/YYYY')}
+                        else
+                            | N/A
 
     div#continueBtns.inlineButtons
         form(method="post", name="formPrint")
