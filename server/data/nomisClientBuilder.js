@@ -46,12 +46,15 @@ module.exports = function(token) {
 };
 
 function callNomis(path, query, token) {
+
+    const gwToken = process.env.NODE_ENV === 'production' ? `Bearer ${generateApiGatewayToken()}` : 'dummy';
+
     return new Promise((resolve, reject) => {
         superagent
             .get(path)
             .query(query)
             .set('Accept', 'application/json')
-            .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
+            .set('Authorization', gwToken)
             .set('Elite-Authorization', token)
             .timeout(timeoutSpec)
             .end((error, res) => {

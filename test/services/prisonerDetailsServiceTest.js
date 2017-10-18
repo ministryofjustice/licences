@@ -17,15 +17,20 @@ describe('prisonerDetailsService', () => {
         aliases: 'alias',
         assignedLivingUnitDesc: 'loc'
     }];
+
     const bookingDetailResponse = {physicalAttributes: {gender: 'male'}};
+
     const imageinfoResponse = {
         imageId: 'imgId',
         captureDate: 'imgDate'
     };
 
+    const sentenceDetailResponse = {date: '123'};
+
     const nomisClientMock = {
         getBookings: sandbox.stub().returnsPromise().resolves(bookingResponse),
         getBooking: sandbox.stub().returnsPromise().resolves(bookingDetailResponse),
+        getSentenceDetail: sandbox.stub().returnsPromise().resolves(sentenceDetailResponse),
         getImageInfo: sandbox.stub().returnsPromise().resolves(imageinfoResponse)
     };
 
@@ -43,6 +48,9 @@ describe('prisonerDetailsService', () => {
         image: {
             name: 'imgId',
             uploadedDate: 'imgDate'
+        },
+        dates: {
+            date: '123'
         }
     };
 
@@ -59,10 +67,12 @@ describe('prisonerDetailsService', () => {
 
             expect(nomisClientMock.getBookings).to.be.calledOnce();
             expect(nomisClientMock.getBooking).to.be.calledOnce();
+            expect(nomisClientMock.getSentenceDetail).to.be.calledOnce();
             expect(nomisClientMock.getImageInfo).to.be.calledOnce();
 
             expect(nomisClientMock.getBookings).to.be.calledWith('123');
             expect(nomisClientMock.getBooking).to.be.calledWith(1);
+            expect(nomisClientMock.getSentenceDetail).to.be.calledWith(1);
             expect(nomisClientMock.getImageInfo).to.be.calledWith(2);
         });
 
