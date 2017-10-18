@@ -29,6 +29,8 @@ describe('prisonerDetailsService', () => {
         getImageInfo: sandbox.stub().returnsPromise().resolves(imageinfoResponse)
     };
 
+    const nomisClientBuilder = sandbox.stub().returns(nomisClientMock);
+
     const prisonerInfoResponse = {
         dateOfBirth: 'dob',
         firstName: 'f',
@@ -44,7 +46,7 @@ describe('prisonerDetailsService', () => {
         }
     };
 
-    const service = createPrisonerDetailsService(nomisClientMock);
+    const service = createPrisonerDetailsService(nomisClientBuilder);
 
     afterEach(() => {
         sandbox.reset();

@@ -9,14 +9,27 @@ const {
     sandbox
 } = require('./testSetup');
 
+const testUser = {
+    firstName: 'first',
+    lastName: 'last',
+    staffId: 'id',
+    token: 'token'
+};
+
 module.exports = {
     sinon,
     sandbox,
     request,
     expect,
     nock,
-    appSetup: function(route) {
+    appSetup: function(route, user = testUser) {
+
         const app = express();
+
+        app.use((req, res, next) => {
+            req.user = user;
+            next();
+        });
 
         app.use(route);
         app.set('views', path.join(__dirname, '../server/views'));

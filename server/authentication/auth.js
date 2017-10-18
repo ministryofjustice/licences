@@ -26,7 +26,9 @@ function init(signInService) {
         signInService
             .signIn(username, password)
             .then(user => done(null, user))
-            .catch(done);
+            .catch(error => {
+                done(null, false);
+            });
     });
 
     passport.use(strategy);

@@ -42,14 +42,11 @@ module.exports = function createApp({
                                         licenceDetailsService,
                                         dischargeAddressService,
                                         prisonerDetailsService,
-                                        tasklistService,
-                                        audit,
-                                        userManager
+                                        tasklistService
                                     }) {
     const app = express();
 
     auth.init(signInService);
-
 
     app.set('json spaces', 2);
 
@@ -215,7 +212,7 @@ module.exports = function createApp({
         }
     });
 
-    app.use('/', createTasklistRouter({logger, tasklistService, audit, userManager, authenticationMiddleware}));
+    app.use('/', createTasklistRouter({logger, tasklistService, authenticationMiddleware}));
     app.use('/details/', createDetailsRouter({logger, prisonerDetailsService, authenticationMiddleware}));
     app.use('/dischargeAddress/',
         createDischargeAddressRouter({logger, dischargeAddressService, authenticationMiddleware}));

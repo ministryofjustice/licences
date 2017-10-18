@@ -17,7 +17,7 @@ module.exports = function({logger, prisonerDetailsService, authenticationMiddlew
 
         const nomisId = req.params.nomisId;
 
-        const prisonerInfo = await prisonerDetailsService.getPrisonerDetails(nomisId);
+        const prisonerInfo = await prisonerDetailsService.getPrisonerDetails(nomisId, req.user.token);
 
         const details = {
             prisonerInfo,

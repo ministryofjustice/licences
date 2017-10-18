@@ -4,14 +4,16 @@ const {
     sandbox
 } = require('../supertestSetup');
 const config = require('../../server/config');
-const nomisClient = require('../../server/data/nomisClient');
+const nomisClientBuilder = require('../../server/data/nomisClientBuilder');
 
 const fakeNomis = nock(`${config.nomis.apiUrl}`);
 
+const nomisClient = nomisClientBuilder('token');
 
 describe('nomisClient', function() {
 
     describe('getUpcomingReleasesFor', () => {
+
         afterEach(() => {
             nock.cleanAll();
             sandbox.reset();
@@ -22,7 +24,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/releases?nomisId=a')
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getUpcomingReleasesFor('a')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getUpcomingReleasesFor('a', 'token')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -30,7 +32,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/releases?nomisId=a')
                 .reply(500);
 
-            return expect(nomisClient.getUpcomingReleasesFor('a')).to.be.rejected();
+            return expect(nomisClient.getUpcomingReleasesFor('a', 'token')).to.be.rejected();
         });
     });
 
@@ -45,7 +47,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/bookings?query=offenderNo%3Aeq%3AA1235HG')
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getBookings('A1235HG')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getBookings('A1235HG', 'token')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -53,7 +55,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/bookings?query=offenderNo%3Aeq%3AA1235HG')
                 .reply(500);
 
-            return expect(nomisClient.getBookings('A1235HG')).to.be.rejected();
+            return expect(nomisClient.getBookings('A1235HG', 'token')).to.be.rejected();
         });
     });
 
@@ -68,7 +70,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/bookings/1')
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getBooking('1')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getBooking('1', 'token')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -76,7 +78,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/bookings/1')
                 .reply(500);
 
-            return expect(nomisClient.getBooking('1')).to.be.rejected();
+            return expect(nomisClient.getBooking('1', 'token')).to.be.rejected();
         });
     });
 
@@ -91,7 +93,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/bookings/1/sentenceDetail')
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getSentenceDetail('1')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getSentenceDetail('1', 'token')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -99,7 +101,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/bookings/1/sentenceDetail')
                 .reply(500);
 
-            return expect(nomisClient.getSentenceDetail('1')).to.be.rejected();
+            return expect(nomisClient.getSentenceDetail('1', 'token')).to.be.rejected();
         });
     });
 
@@ -114,7 +116,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/images/1')
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getImageInfo('1')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getImageInfo('1', 'token')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -122,7 +124,7 @@ describe('nomisClient', function() {
                 .get('/api/v2/images/1')
                 .reply(500);
 
-            return expect(nomisClient.getImageInfo('1')).to.be.rejected();
+            return expect(nomisClient.getImageInfo('1', 'token')).to.be.rejected();
         });
     });
 

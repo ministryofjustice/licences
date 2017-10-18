@@ -1,9 +1,11 @@
 const logger = require('../../log.js');
 
-module.exports = function createPrisonerDetailsService(nomisClient) {
-    async function getPrisonerDetails(nomisId) {
+module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
+    async function getPrisonerDetails(nomisId, token) {
         try {
             logger.info(`getPrisonerDetail: ${nomisId}`);
+
+            const nomisClient = nomisClientBuilder(token);
 
             const bookings = await nomisClient.getBookings(nomisId);
             logger.info(`got bookings size: ${bookings.length}`);
