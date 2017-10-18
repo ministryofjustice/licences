@@ -1,10 +1,10 @@
-const createPrisonerDetailsService = require('../../server/services/tasklistService');
+const createTasklistService = require('../../server/services/tasklistService');
 const {
     sandbox,
     expect
 } = require('../testSetup');
 
-describe('prisonerDetailsService', () => {
+describe('taskListService', () => {
 
     const deliusClient = {
         getPrisonersFor: sandbox.stub().returnsPromise()
@@ -14,11 +14,13 @@ describe('prisonerDetailsService', () => {
         getUpcomingReleasesFor: sandbox.stub().returnsPromise()
     };
 
+    const nomisClientBuilder = sandbox.stub().returns(nomisClient);
+
     const dbClient = {
         getLicences: sandbox.stub().returnsPromise().returnsPromise().resolves()
     };
 
-    const service = createPrisonerDetailsService(deliusClient, nomisClient, dbClient);
+    const service = createTasklistService(deliusClient, nomisClientBuilder, dbClient);
 
     beforeEach(() => {
         deliusClient.getPrisonersFor.resolves('1, 2');

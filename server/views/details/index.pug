@@ -13,10 +13,10 @@ block content
 
         div#personalDetails.grid-row.borderBottom.paddingBottom
             div.column-one-quarter
-                if(prisonerInfo.image.name)
-                    img(src= "/public/images/"+prisonerInfo.image.name)
-                if(prisonerInfo.image.uploadedDate)
-                    span.subText Uploaded: #{moment(prisonerInfo.image.uploadedDate).format('DD/MM/YYYY')}
+                if(prisonerInfo.imageId)
+                    img(src= "/public/images/placeholder.png")
+                if(prisonerInfo.captureDate)
+                    span.subText Uploaded: #{moment(prisonerInfo.captureDate).format('DD/MM/YYYY')}
 
             div.column-one-quarter
                 div.midMarginBottom
@@ -31,8 +31,8 @@ block content
 
                 div.midMarginBottom
                     | Nomis number
-                    if(prisonerInfo.nomsId)
-                        span#prisonerPrisonNumber.block.bold #{prisonerInfo.nomsId}
+                    if(prisonerInfo.offenderNo)
+                        span#prisonerPrisonNumber.block.bold #{prisonerInfo.offenderNo}
 
             div.column-one-quarter
                 div.midMarginBottom
@@ -42,57 +42,42 @@ block content
 
                 div.midMarginBottom
                     | Gender
-                    if(prisonerInfo.gender)
-                        span#prisonerSex.block.bold #{prisonerInfo.gender}
+                    if(prisonerInfo.physicalAttributes.gender)
+                        span#prisonerSex.block.bold #{prisonerInfo.physicalAttributes.gender}
 
                 div.midMarginBottom
                     | Location
-                    if(prisonerInfo.location)
-                        span#prisonerLocation.block.bold
-                            if (prisonerInfo.location.block)
-                                |#{prisonerInfo.location.block}
-                            if (prisonerInfo.location.landing)
-                                |&nbsp;| #{prisonerInfo.location.landing}
-                            if (prisonerInfo.location.cell)
-                                |&nbsp;| #{prisonerInfo.location.cell}
-                        if (prisonerInfo.location.prison)
-                            span.block.bold #{prisonerInfo.location.prison}
+                    if(prisonerInfo.assignedLivingUnitDesc)
+                        span#prisonerLocation.block.bold #{prisonerInfo.assignedLivingUnitDesc}
 
         h2.heading-medium Key dates
 
         div#keyDates.grid-row.paddingBottom
             div.column-one-quarter
                 div.midMarginBottom
+                    | Release date
+                    span#releaseDate.block.bold
+                        if (prisonerInfo.conditionalReleaseDate)
+                            | #{moment(prisonerInfo.conditionalReleaseDate).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Licence expires
+                    span#licenceExpires.block.bold
+                        if (prisonerInfo.licenceExpiryDate)
+                            | #{moment(prisonerInfo.licenceExpiryDate).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+        div#keyDates.grid-row.paddingBottom
+            div.column-one-quarter
+                div.midMarginBottom
                     | Sentence expires
                     span#sentenceExpires.block.bold
-                        if (prisonerInfo.dates.sentenceExpiry)
-                            | #{moment(prisonerInfo.dates.sentenceExpiry).format('DD/MM/YYYY')}
-                        else
-                            | N/A
-
-            div.column-one-quarter
-                div.midMarginBottom
-                    | HDC eligibility date
-                    span#hdcEligibility.block.bold
-                        if (prisonerInfo.dates.hdcEligibility)
-                            | #{moment(prisonerInfo.dates.hdcEligibility).format('DD/MM/YYYY')}
-                        else
-                            | N/A
-
-            div.column-one-quarter
-                div.midMarginBottom
-                    | Supervision commences
-                    span#supervisionStart.block.bold
-                        if (prisonerInfo.dates.supervisionStart)
-                            | #{moment(prisonerInfo.dates.supervisionStart).format('DD/MM/YYYY')}
-                        else
-                            | N/A
-
-                div.midMarginBottom
-                    | Supervision ends
-                    span#supervisionEnd.block.bold
-                        if (prisonerInfo.dates.supervisionEnd)
-                            | #{moment(prisonerInfo.dates.supervisionEnd).format('DD/MM/YYYY')}
+                        if (prisonerInfo.sentenceExpiryDate)
+                            | #{moment(prisonerInfo.sentenceExpiryDate).format('DD/MM/YYYY')}
                         else
                             | N/A
 

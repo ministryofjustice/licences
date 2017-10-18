@@ -13,6 +13,7 @@ module.exports = function({logger, dischargeAddressService, authenticationMiddle
 
     router.get('/:licenceId', (req, res) => {
         logger.debug('GET /dischargeAddress');
+
         const details = dischargeAddressService.getDischargeAddress();
 
         res.render('dischargeAddress/index', details);

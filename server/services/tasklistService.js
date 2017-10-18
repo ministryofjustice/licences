@@ -1,7 +1,10 @@
-module.exports = function createTasklistService(deliusClient, nomisClient, dbClient) {
-    async function getDashboardDetail(userId) {
-        try {
+module.exports = function createTasklistService(deliusClient, nomisClientBuilder, dbClient) {
 
+    async function getDashboardDetail(userId, token) {
+
+        const nomisClient = nomisClientBuilder(token);
+
+        try {
             const prisonerIds = await deliusClient.getPrisonersFor(userId);
 
             const upcomingReleases = await nomisClient.getUpcomingReleasesFor(prisonerIds);
