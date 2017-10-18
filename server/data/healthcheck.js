@@ -1,5 +1,5 @@
 const config = require('../config.js');
-const {getCollection} = require('./dataAccess/db');
+const {getCollection} = require('./dataAccess/dbMethods');
 const logger = require('../../log.js');
 
 const url = require('url');
