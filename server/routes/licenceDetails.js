@@ -1,11 +1,11 @@
 const express = require('express');
 
-module.exports = function({logger, licenceDetailsService}) {
+module.exports = function({logger, licenceService}) {
     const router = express.Router();
 
-    router.get('/:licenceId', (req, res) => {
+    router.get('/:nomisId', (req, res) => {
         logger.debug('GET /licenceDetails');
-        const details = licenceDetailsService.getLicenceDetails();
+        const details = licenceService.getLicence(req.params.nomisId);
 
         res.render('licenceDetails/index', details);
     });

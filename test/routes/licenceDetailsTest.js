@@ -11,10 +11,10 @@ const loggerStub = {
     debug: sinon.stub()
 };
 const serviceStub = {
-    getLicenceDetails: sinon.stub()
+    getLicence: sinon.stub()
 };
 
-const app = appSetup(createLicenceDetailsRoute({licenceDetailsService: serviceStub, logger: loggerStub}));
+const app = appSetup(createLicenceDetailsRoute({licenceService: serviceStub, logger: loggerStub}));
 
 describe('GET /licenceDetails/:prisonNumber', () => {
     it('calls getLicenceDetails from licenceDetailsService', () => {
@@ -23,7 +23,7 @@ describe('GET /licenceDetails/:prisonNumber', () => {
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {
-                expect(serviceStub.getLicenceDetails.callCount).to.equal(1);
+                expect(serviceStub.getLicence.callCount).to.equal(1);
             });
 
     });

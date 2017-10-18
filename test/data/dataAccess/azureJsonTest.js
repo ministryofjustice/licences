@@ -1,14 +1,10 @@
-process.env.NODE_ENV = 'test';
-
 const proxyquire = require('proxyquire');
 proxyquire.noCallThru();
 
-const chai = require('chai');
-const expect = chai.expect;
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-chai.use(sinonChai);
-const sandbox = sinon.sandbox.create();
+const {
+    expect,
+    sandbox
+} = require('../../testSetup');
 
 describe('Subject data', function() {
 
@@ -30,8 +26,8 @@ describe('Subject data', function() {
     let getCollectionStub = sandbox.stub().callsArgWith(2, standardResponse);
 
     const licencesProxy = (getCollection = getCollectionStub) => {
-        return proxyquire('../../../server/data/dbClient', {
-            './dataAccess/db': {
+        return proxyquire('../../../server/data/licenceClient', {
+            './dataAccess/dbMethods': {
                 getCollection: getCollection
             }
         });

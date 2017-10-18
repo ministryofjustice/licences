@@ -1,6 +1,6 @@
 const {
     request,
-    sinon,
+    sandbox,
     expect,
     appSetup
 } = require('../supertestSetup');
@@ -10,17 +10,26 @@ const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
 const loggerStub = {
-    debug: sinon.stub()
+    debug: sandbox.stub()
 };
 const serviceStub = {
-    getPrisonerDetails: sinon.stub()
+    getPrisonerDetails: sandbox.stub()
 };
 
-const app = appSetup(createPrisonerDetailsRoute(
-    {prisonerDetailsService: serviceStub, logger: loggerStub, authenticationMiddleware}));
+const licenceServiceStub = {
+    getLicence: sandbox.stub().returnsPromise(),
+    createLicence: sandbox.stub().returnsPromise()
+};
+
+const app = appSetup(createPrisonerDetailsRoute({
+    prisonerDetailsService: serviceStub,
+    licenceService: licenceServiceStub,
+    logger: loggerStub,
+    authenticationMiddleware}
+));
 
 describe('GET /licenceDetails/:prisonNumber', () => {
-    it('calls getLicenceDetails from licenceDetailsService', () => {
+    it('should call getLicenceDetails from licenceDetailsService', () => {
         return request(app)
             .get('/123')
             .expect(200)
@@ -28,6 +37,33 @@ describe('GET /licenceDetails/:prisonNumber', () => {
             .expect(res => {
                 expect(serviceStub.getPrisonerDetails).to.be.calledOnce();
                 expect(serviceStub.getPrisonerDetails).to.be.calledWith('123');
+            });
+
+    });
+
+    it('should redirect to dischargeAddress if a licence already exists', () => {
+        licenceServiceStub.getLicence.resolves(['1']);
+        return request(app)
+            .post('/123')
+            .expect(302)
+            .expect(res => {
+                expect(licenceServiceStub.getLicence).to.be.calledOnce();
+                expect(licenceServiceStub.getLicence).to.be.calledWith('123');
+                expect(licenceServiceStub.createLicence).to.not.be.called();
+                expect(res.header['location']).to.include('/dischargeAddress');
+            });
+
+    });
+
+    it('should create a new licence if a licence does not already exists', () => {
+        licenceServiceStub.getLicence.resolves([]);
+        licenceServiceStub.createLicence.resolves();
+        return request(app)
+            .post('/123')
+            .expect(302)
+            .expect(res => {
+                expect(licenceServiceStub.createLicence).to.be.called();
+                expect(res.header['location']).to.include('/dischargeAddress');
             });
 
     });
