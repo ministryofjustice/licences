@@ -1,9 +1,9 @@
 const logger = require('../../log');
-const db = require('./dataAccess/auditData');
+const {addRow} = require('./dataAccess/dbMethods');
 const TYPES = require('tedious').TYPES;
 
 const keys = [
-    'VIEW_DASHBOARD',
+    'VIEW_TASKLIST',
     'VIEW_PRISONER_DETAILS',
     'VIEW_ADDRESS_DETAILS'
 ];
@@ -37,7 +37,6 @@ function addItem(key, user, data) {
             {column: 'details', type: TYPES.VarChar, value: data ? JSON.stringify(data) : null}
         ];
 
-        db.addRow(sql, parameters, resolve, reject);
+        addRow(sql, parameters, resolve, reject);
     });
 }
-

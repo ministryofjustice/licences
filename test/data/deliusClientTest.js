@@ -11,7 +11,7 @@ describe('deliusClient', () => {
     const result = [{NOMS_NO: '65'}, {NOMS_NO: '92'}];
     const collectionStub = sandbox.stub().returnsPromise().resolves(result);
     const deliusClient = proxyquire('../../server/data/deliusClient', {
-        './dataAccess/db': {
+        './dataAccess/dbMethods': {
             getCollection: collectionStub
         }
     });

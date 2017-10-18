@@ -52,7 +52,7 @@ describe('GET /', () => {
             .expect('Content-Type', /html/)
             .expect(res => {
                 expect(audit.record).to.be.calledOnce();
-                expect(audit.record).to.be.calledWith('VIEW_DASHBOARD', 'a1');
+                expect(audit.record).to.be.calledWith('VIEW_TASKLIST', 'a1');
             });
 
     });

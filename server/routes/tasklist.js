@@ -16,7 +16,7 @@ module.exports = function({logger, tasklistService, userManager, audit, authenti
             moment: require('moment')
         };
 
-        audit.record('VIEW_DASHBOARD', user);
+        audit.record('VIEW_TASKLIST', user);
 
         res.render('tasklist/index', viewData);
     }));

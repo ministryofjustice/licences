@@ -39,7 +39,7 @@ module.exports = function createApp({
                                         logger,
                                         signInService,
                                         reportingInstructionService,
-                                        licenceDetailsService,
+                                        licenceService,
                                         dischargeAddressService,
                                         prisonerDetailsService,
                                         tasklistService,
@@ -216,11 +216,16 @@ module.exports = function createApp({
     });
 
     app.use('/', createTasklistRouter({logger, tasklistService, audit, userManager, authenticationMiddleware}));
-    app.use('/details/', createDetailsRouter({logger, prisonerDetailsService, authenticationMiddleware}));
+    app.use('/details/', createDetailsRouter({
+        logger,
+        prisonerDetailsService,
+        licenceService,
+        authenticationMiddleware}
+    ));
     app.use('/dischargeAddress/',
         createDischargeAddressRouter({logger, dischargeAddressService, authenticationMiddleware}));
     app.use('/additionalConditions/', createAdditionalConditionsRouter({logger}));
-    app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceDetailsService}));
+    app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService}));
     app.use('/reporting/', createReportingRouter({reportingInstructionService}));
 
     // Error Handler
