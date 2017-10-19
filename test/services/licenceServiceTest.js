@@ -40,6 +40,13 @@ describe('licenceDetailsService', () => {
             expect(licenceClient.createLicence).to.be.calledWith('123', {});
         });
 
+        it('should pass in a valid licence', () => {
+            service.createLicence('123', {firstName: 'M', bad: '1'});
+
+            expect(licenceClient.createLicence).to.be.calledOnce();
+            expect(licenceClient.createLicence).to.be.calledWith('123', {firstName: 'M'});
+        });
+
         it('should return returned id', () => {
             return expect(service.createLicence('123')).to.eventually.eql('abc');
         });

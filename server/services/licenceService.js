@@ -1,3 +1,5 @@
+const {createLicenceObject} = require('../utils/licenceFactory');
+
 module.exports = function createLicenceService(licenceClient) {
     async function getLicence(nomisId) {
         try {
@@ -7,7 +9,10 @@ module.exports = function createLicenceService(licenceClient) {
         }
     }
 
-    async function createLicence(nomisId, licence = {}) {
+    async function createLicence(nomisId, data = {}) {
+
+        const licence = createLicenceObject(data);
+
         try {
             return await licenceClient.createLicence(nomisId, licence);
         } catch(error) {

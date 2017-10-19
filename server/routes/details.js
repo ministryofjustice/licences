@@ -30,14 +30,12 @@ module.exports = function({logger, prisonerDetailsService, licenceService, authe
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('POST /details');
 
-        // TODO extract data from form and use to create licence
-
-        const nomisId = req.params.nomisId;
+        const nomisId = req.body.nomisId;
 
         const existingLicence = await licenceService.getLicence(nomisId);
 
         if (existingLicence.length === 0) {
-            await licenceService.createLicence(nomisId);
+            await licenceService.createLicence(nomisId, req.body);
         }
 
         res.redirect('/dischargeAddress/'+nomisId);
