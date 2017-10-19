@@ -3,6 +3,7 @@ const sinon = require('sinon');
 const express = require('express');
 const path = require('path');
 const nock = require('nock');
+const bodyParser = require('body-parser');
 
 const {
     expect,
@@ -30,7 +31,8 @@ module.exports = {
             req.user = user;
             next();
         });
-
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({extended: false}));
         app.use(route);
         app.set('views', path.join(__dirname, '../server/views'));
         app.set('view engine', 'pug');

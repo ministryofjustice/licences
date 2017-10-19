@@ -44,7 +44,10 @@ describe('GET /licenceDetails/:prisonNumber', () => {
     it('should redirect to dischargeAddress if a licence already exists', () => {
         licenceServiceStub.getLicence.resolves(['1']);
         return request(app)
-            .post('/123')
+            .post('/1233456')
+            .send({
+                nomisId: '123'
+            })
             .expect(302)
             .expect(res => {
                 expect(licenceServiceStub.getLicence).to.be.calledOnce();
@@ -56,16 +59,22 @@ describe('GET /licenceDetails/:prisonNumber', () => {
     });
 
     it('should create a new licence if a licence does not already exists', () => {
+        const formResponse = {
+            nomisId: '123',
+            extra: 'field'
+        };
+
         licenceServiceStub.getLicence.resolves([]);
         licenceServiceStub.createLicence.resolves();
         return request(app)
-            .post('/123')
+            .post('/1233456')
+            .send(formResponse)
             .expect(302)
             .expect(res => {
                 expect(licenceServiceStub.createLicence).to.be.called();
+                expect(licenceServiceStub.createLicence).to.be.calledWith('123', formResponse);
                 expect(res.header['location']).to.include('/dischargeAddress');
             });
-
     });
 });
 
