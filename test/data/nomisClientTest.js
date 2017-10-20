@@ -12,12 +12,12 @@ const nomisClient = nomisClientBuilder('token');
 
 describe('nomisClient', function() {
 
-    describe('getUpcomingReleasesFor', () => {
+    afterEach(() => {
+        nock.cleanAll();
+        sandbox.reset();
+    });
 
-        afterEach(() => {
-            nock.cleanAll();
-            sandbox.reset();
-        });
+    describe('getUpcomingReleasesFor', () => {
 
         it('should return data from api', () => {
             fakeNomis
@@ -37,10 +37,6 @@ describe('nomisClient', function() {
     });
 
     describe('getBookings', () => {
-        afterEach(() => {
-            nock.cleanAll();
-            sandbox.reset();
-        });
 
         it('should return data from api', () => {
             fakeNomis
@@ -60,10 +56,6 @@ describe('nomisClient', function() {
     });
 
     describe('getBooking', () => {
-        afterEach(() => {
-            nock.cleanAll();
-            sandbox.reset();
-        });
 
         it('should return data from api', () => {
             fakeNomis
@@ -83,10 +75,6 @@ describe('nomisClient', function() {
     });
 
     describe('getSentenceDetail', () => {
-        afterEach(() => {
-            nock.cleanAll();
-            sandbox.reset();
-        });
 
         it('should return data from api', () => {
             fakeNomis
@@ -106,10 +94,6 @@ describe('nomisClient', function() {
     });
 
     describe('getImageInfo', () => {
-        afterEach(() => {
-            nock.cleanAll();
-            sandbox.reset();
-        });
 
         it('should return data from api', () => {
             fakeNomis
@@ -125,6 +109,25 @@ describe('nomisClient', function() {
                 .reply(500);
 
             return expect(nomisClient.getImageInfo('1', 'token')).to.be.rejected();
+        });
+    });
+
+    describe('getDischargeAddress', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get('/api/v2/dischargeAddress?nomisId=a')
+                .reply(200, {key: 'value'});
+
+            return expect(nomisClient.getDischargeAddress('a', 'token')).to.eventually.eql({key: 'value'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get('/api/v2/dischargeAddress?nomisId=a')
+                .reply(500);
+
+            return expect(nomisClient.getDischargeAddress('a', 'token')).to.be.rejected();
         });
     });
 

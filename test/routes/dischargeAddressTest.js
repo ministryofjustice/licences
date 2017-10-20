@@ -1,6 +1,6 @@
 const {
     request,
-    sinon,
+    sandbox,
     expect,
     appSetup
 } = require('../supertestSetup');
@@ -10,27 +10,71 @@ const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
 const loggerStub = {
-    debug: sinon.stub()
+    debug: sandbox.stub()
 };
 
 const serviceStub = {
-    getDischargeAddress: sinon.stub()
+    getDischargeAddress: sandbox.stub().returnsPromise().resolves([{}])
 };
 
-const app = appSetup(createDischargeAddressRoute(
-    {dischargeAddressService: serviceStub, logger: loggerStub, authenticationMiddleware}));
+const licenceServiceStub = {
+    getLicence: sandbox.stub().returnsPromise().resolves([{}])
+};
+
+const testUser = {
+    staffId: 'my-staff-id',
+    token: 'my-token'
+};
+
+const app = appSetup(createDischargeAddressRoute({
+    dischargeAddressService: serviceStub,
+    licenceService: licenceServiceStub,
+    logger: loggerStub,
+    authenticationMiddleware}), testUser);
 
 describe('GET /dischargeAddress/:prisonNumber', () => {
-    it('calls getDischargeAddress from dischargeAddressService', () => {
+
+    afterEach(() => {
+        sandbox.reset();
+    });
+
+    it('calls getLicence from licenceService', () => {
         return request(app)
             .get('/1')
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {
-                expect(serviceStub.getDischargeAddress.callCount).to.equal(1);
+                expect(licenceServiceStub.getLicence).to.be.calledOnce();
+                expect(licenceServiceStub.getLicence).to.be.calledWith('1');
             });
 
     });
+
+    it('calls getDischargeAddress from dischargeAddressService if a licence is returned', () => {
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(serviceStub.getDischargeAddress).to.be.calledOnce();
+                expect(serviceStub.getDischargeAddress).to.be.calledWith('1', 'my-token');
+            });
+
+    });
+
+    it('does not call getDischargeAddress from dischargeAddressService if a licence is not returned', () => {
+        licenceServiceStub.getLicence.resolves([]);
+
+        return request(app)
+            .get('/1')
+            .expect(302)
+            .expect(res => {
+                expect(res.header['location']).to.include('/details/1');
+                expect(serviceStub.getDischargeAddress).to.not.be.called();
+            });
+
+    });
+
 });
 
 describe('POST /dischargeAddress/:prisonNumber', () => {

@@ -216,7 +216,7 @@ module.exports = function createApp({
     app.use('/details/',
         createDetailsRouter({logger, prisonerDetailsService, licenceService, authenticationMiddleware}));
     app.use('/dischargeAddress/',
-        createDischargeAddressRouter({logger, dischargeAddressService, authenticationMiddleware}));
+        createDischargeAddressRouter({logger, dischargeAddressService, licenceService, authenticationMiddleware}));
     app.use('/additionalConditions/', createAdditionalConditionsRouter({logger}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService}));
     app.use('/reporting/', createReportingRouter({reportingInstructionService}));
