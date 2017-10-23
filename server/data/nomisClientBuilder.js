@@ -24,7 +24,7 @@ module.exports = function(token) {
 
         getBookings: function(nomisId) {
             const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings`);
-            const query = {query: `offenderNo:eq:${nomisId}`};
+            const query = {query: `offenderNo:eq:'${nomisId}'`};
             return callNomis(path, query, token);
         },
 
@@ -53,7 +53,7 @@ module.exports = function(token) {
 
 function callNomis(path, query, token) {
 
-    const gwToken = process.env.NODE_ENV === 'production' ? `Bearer ${generateApiGatewayToken()}` : 'dummy';
+    const gwToken = process.env.NODE_ENV === 'test' ? 'dummy' : `Bearer ${generateApiGatewayToken()}`;
 
     return new Promise((resolve, reject) => {
         superagent

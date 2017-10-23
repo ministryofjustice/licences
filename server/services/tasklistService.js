@@ -1,3 +1,5 @@
+const logger = require('../../log.js');
+
 module.exports = function createTasklistService(deliusClient, nomisClientBuilder, dbClient) {
 
     async function getDashboardDetail(userId, token) {
@@ -6,14 +8,23 @@ module.exports = function createTasklistService(deliusClient, nomisClientBuilder
 
         try {
             const prisonerIds = await deliusClient.getPrisonersFor(userId);
+            logger.info(`Got Delius prisoner ids for ${userId}: ${prisonerIds}`);
+
+            if (isEmpty(prisonerIds)) {
+                logger.info('No prisoner IDs');
+                return {};
+            }
 
             const upcomingReleases = await nomisClient.getUpcomingReleasesFor(prisonerIds);
+            logger.info(`Got upcoming releases: ${upcomingReleases}`);
 
             if (isEmpty(upcomingReleases)) {
+                logger.info('No upcoming releases');
                 return {};
             }
 
             const activeLicences = await dbClient.getLicences(getOffenderNomisIds(upcomingReleases));
+            logger.info(`Got active licences: ${activeLicences}`);
 
             return parseTasklistInfo(upcomingReleases, activeLicences);
 

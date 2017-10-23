@@ -40,7 +40,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get('/api/v2/bookings?query=offenderNo%3Aeq%3AA1235HG')
+                .get('/api/v2/bookings?query=offenderNo%3Aeq%3A%27A1235HG%27')
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getBookings('A1235HG', 'token')).to.eventually.eql({key: 'value'});

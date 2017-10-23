@@ -18,7 +18,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const sentenceDetail = await nomisClient.getSentenceDetail(booking.bookingId);
             logger.info(`got sentence detail for booking id: ${booking.bookingId}`);
 
-            const image = await nomisClient.getImageInfo(booking.facialImageId);
+            const image = booking.facialImageId ? await nomisClient.getImageInfo(booking.facialImageId): null;
             logger.info(`got image detail for facialImageId id: ${booking.facialImageId}`);
 
             return {...bookingDetail, ...booking, ...image, ...sentenceDetail};
