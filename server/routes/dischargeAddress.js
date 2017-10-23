@@ -1,6 +1,7 @@
 const express = require('express');
+const asyncMiddleware = require('../utils/asyncMiddleware');
 
-module.exports = function({logger, dischargeAddressService, authenticationMiddleware}) {
+module.exports = function({logger, dischargeAddressService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -11,18 +12,25 @@ module.exports = function({logger, dischargeAddressService, authenticationMiddle
         next();
     });
 
-    router.get('/:licenceId', (req, res) => {
+    router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /dischargeAddress');
 
-        const details = dischargeAddressService.getDischargeAddress();
+        const nomisId = req.params.nomisId;
+        const licence = await licenceService.getLicence(nomisId);
 
-        res.render('dischargeAddress/index', details);
-    });
+        if(licence.length < 1) {
+            return res.redirect(`/details/${nomisId}`);
+        }
 
-    router.post('/:licenceId', (req, res) => {
+        const addresses = await dischargeAddressService.getDischargeAddress(nomisId, req.user.token);
+
+        res.render('dischargeAddress/index', {nomisId, addresses});
+    }));
+
+    router.post('/:nomisId', (req, res) => {
         logger.debug('POST /dischargeAddress');
 
-        res.redirect('/additionalConditions/'+req.params.licenceId);
+        res.redirect('/additionalConditions/'+req.body.nomisId);
     });
 
     return router;

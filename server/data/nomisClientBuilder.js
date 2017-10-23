@@ -41,6 +41,12 @@ module.exports = function(token) {
         getImageInfo: function(imageId) {
             const path = url.resolve(`${apiUrl}`, `${apiRoot}/images/${imageId}`);
             return callNomis(path, '', token);
+        },
+
+        getDischargeAddress: function(nomisId) {
+            const path = url.resolve(`${apiUrl}`, `${apiRoot}/dischargeAddress`);
+            const query = {nomisId: `${nomisId}`};
+            return callNomis(path, query, token);
         }
     };
 };
