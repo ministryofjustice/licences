@@ -18,7 +18,8 @@ const serviceStub = {
 };
 
 const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves([{}])
+    getLicence: sandbox.stub().returnsPromise().resolves([{}]),
+    updateAddress: sandbox.stub().returnsPromise().resolves()
 };
 
 const testUser = {
@@ -78,6 +79,25 @@ describe('GET /dischargeAddress/:prisonNumber', () => {
 });
 
 describe('POST /dischargeAddress/:prisonNumber', () => {
+
+    const formResponse = {
+        nomisId: '123',
+        address1: 'add1',
+        address2: 'add2',
+        postCode: 'pc'
+    };
+
+    it('calls updateAddress from licenceService', () => {
+        return request(app)
+            .post('/1')
+            .send(formResponse)
+            .expect(() => {
+                expect(licenceServiceStub.updateAddress).to.be.calledOnce();
+                expect(licenceServiceStub.updateAddress).to.be.calledWith(formResponse);
+            });
+
+    });
+
     it('redirects to additional conditions', () => {
         return request(app)
             .post('/1')

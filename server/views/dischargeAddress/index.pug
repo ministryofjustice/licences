@@ -70,5 +70,9 @@ block content
         div#continueBtns.inlineButtons
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="nomisId" value=nomisId)
+            input(type="hidden" name="address1" value=addresses[0].address1)
+            input(type="hidden" name="address2" value=addresses[0].address2)
+            input(type="hidden" name="address3" value=addresses[0].address3)
+            input(type="hidden" name="postCode" value=addresses[0].postCode)
             input.requiredButton.button(type="submit" value="Continue")
             a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
