@@ -1,4 +1,4 @@
-const {createLicenceObject} = require('../utils/licenceFactory');
+const {createLicenceObject, createAddressObject} = require('../utils/licenceFactory');
 
 module.exports = function createLicenceService(licenceClient) {
     async function getLicence(nomisId) {
@@ -20,5 +20,18 @@ module.exports = function createLicenceService(licenceClient) {
         }
     }
 
-    return {getLicence, createLicence};
+    async function updateAddress(data = {}) {
+
+        const nomisId = data.nomisId;
+        const address = createAddressObject(data);
+
+        try {
+            return await licenceClient.updateSection('dischargeAddress', nomisId, address);
+        } catch(error) {
+            console.error(error, 'Error during update address');
+            throw error;
+        }
+    }
+
+    return {getLicence, createLicence, updateAddress};
 };

@@ -24,12 +24,27 @@ module.exports = {
     createLicence: function(nomisId, licence = {}) {
         return new Promise((resolve, reject) => {
             const sql = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE) ' +
-                        'OUTPUT inserted.id ' +
                         'VALUES (@nomisId, @licence)';
 
             const parameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId},
                 {column: 'licence', type: TYPES.VarChar, value: JSON.stringify(licence)}
+            ];
+
+            addRow(sql, parameters, resolve, reject);
+        });
+    },
+
+    updateSection: function(section, nomisId, object) {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE LICENCES 
+                         SET LICENCE = JSON_MODIFY(LICENCE, @section, @object) 
+                         WHERE NOMIS_ID=@nomisId`;
+
+            const parameters = [
+                {column: 'section', type: TYPES.VarChar, value: '$.'+section},
+                {column: 'object', type: TYPES.VarChar, value: JSON.stringify(object)},
+                {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
             ];
 
             addRow(sql, parameters, resolve, reject);

@@ -26,7 +26,7 @@ module.exports = {
                 logger.debug('Closing DB connection');
                 connection.close();
 
-                return successCallback(searchId[0].id.value);
+                return successCallback();
             });
 
             if (params) {

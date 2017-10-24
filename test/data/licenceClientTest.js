@@ -98,16 +98,11 @@ describe('licenceClient', () => {
 
     describe('createLicence', () => {
 
-        addRowStub.callsArgWith(2, 'abc');
-
-        it('should return expected data', () => {
-            return expect(licencesProxy().createLicence('ABC123')).to.eventually.eql('abc');
-        });
+        addRowStub.callsArg(2);
 
         it('should pass in the correct sql', () => {
 
             const expectedClause = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE) ' +
-                'OUTPUT inserted.id ' +
                 'VALUES (@nomisId, @licence)';
 
             licencesProxy().createLicence('ABC123');
@@ -138,6 +133,35 @@ describe('licenceClient', () => {
             const sql = addRowStub.getCalls()[0].args[1];
             expect(sql).to.eql(expectedParameters);
         });
+    });
+
+    describe('updateSection', () => {
+        addRowStub.callsArgWith(2);
+
+        it('should pass in the correct sql', () => {
+
+            const expectedUpdate = 'SET LICENCE = JSON_MODIFY(LICENCE, @section, @object)';
+            const expectedWhere = 'WHERE NOMIS_ID=@nomisId';
+
+            licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
+            const sql = addRowStub.getCalls()[0].args[0];
+            expect(sql).to.include(expectedUpdate);
+            expect(sql).to.include(expectedWhere);
+        });
+
+        it('should pass in the correct parameters', () => {
+
+            const expectedParameters = [
+                {column: 'section', type: TYPES.VarChar, value: '$.section'},
+                {column: 'object', type: TYPES.VarChar, value: JSON.stringify({hi: 'ho'})},
+                {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'}
+            ];
+
+            licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
+            const params = addRowStub.getCalls()[0].args[1];
+            expect(params).to.eql(expectedParameters);
+        });
+
     });
 });
 

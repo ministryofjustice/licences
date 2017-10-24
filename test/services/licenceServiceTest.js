@@ -5,7 +5,8 @@ describe('licenceDetailsService', () => {
 
     const licenceClient = {
         getLicence: sandbox.stub().returnsPromise().resolves({a: 'b'}),
-        createLicence: sandbox.stub().returnsPromise().resolves('abc')
+        createLicence: sandbox.stub().returnsPromise().resolves('abc'),
+        updateSection: sandbox.stub().returnsPromise().resolves()
     };
 
     const service = createLicenceService(licenceClient);
@@ -54,6 +55,25 @@ describe('licenceDetailsService', () => {
         it('should throw if error getting licence', () => {
             licenceClient.createLicence.rejects();
             return expect(service.createLicence('123')).to.eventually.be.rejected();
+        });
+    });
+
+    describe('updatesAddress', () => {
+        it('should call updateAddress from the licence client', () => {
+            service.updateAddress({nomisId: 'ab1', address1: 'Scotland Street'});
+
+            expect(licenceClient.updateSection).to.be.calledOnce();
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'dischargeAddress',
+                'ab1',
+                {address1: 'Scotland Street'}
+            );
+        });
+
+        it('should throw if error updating licence', () => {
+            licenceClient.updateSection.rejects();
+            const args = {nomisId: 'ab1', address1: 'Scotland Street'};
+            return expect(service.updateAddress(args)).to.eventually.be.rejected();
         });
     });
 });
