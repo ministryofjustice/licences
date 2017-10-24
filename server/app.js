@@ -233,14 +233,15 @@ module.exports = function createApp({
     return app;
 };
 
-function handleKnownErrors(err, req, res, next) {
-    // TODO handle any error types that will be handled globally
-
-    // if (err.code === 'not-found') {
-    //     res.status(404);
-    //     return res.render('not-found');
-    // }
-    return next(err);
+function handleKnownErrors(error, req, res, next) {
+    switch (error.status) {
+        case 401:
+            return res.render('login');
+        case 403:
+            return res.render('login');
+        default:
+            next(error);
+    }
 }
 
 function renderErrors(error, req, res, next) {

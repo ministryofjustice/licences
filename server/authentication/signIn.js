@@ -4,44 +4,34 @@ const config = require('../config');
 const generateApiGatewayToken = require('./apiGateway');
 const logger = require('../../log');
 
-function signIn(username, password) {
-    logger.info(`Signing in user: ${username}`);
-    return new Promise((resolve, reject) => {
-        superagent
+async function signIn(username, password) {
+
+    logger.info(`Log in for: ${username}`);
+
+    try {
+
+        const loginResult = await superagent
             .post(url.resolve(`${config.nomis.apiUrl}`, '/api/users/login'))
             .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
             .send({username, password})
-            .timeout({
-                response: 2000,
-                deadline: 2500
-            })
-            .end((error, res) => {
-                try {
-                    if (error) {
-                        logger.error(`Sign in to Elite 2 failed for [${username}] with error:`);
-                        logger.error(error);
-                        reject(error);
-                    }
+            .timeout({response: 2000, deadline: 2500});
 
-                    const eliteAuthorisationToken = res.body.token;
-                    superagent.get(url.resolve(`${config.nomis.apiUrl}`, '/api/users/me'))
-                        .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
-                        .set('Elite-Authorization', eliteAuthorisationToken)
-                        .end((error2, res2) => {
-                            if (error2) {
-                                logger.error(error2);
-                            }
-                            logger.info(`Sign in to Elite 2 for [${username}] successful`);
-                            const user = {...res2.body, ...{token: eliteAuthorisationToken}};
-                            resolve(user);
-                        });
-                } catch (exception) {
-                    logger.error(`Sign in to Elite 2 failed for [${username}] with exception:`);
-                    logger.error(exception);
-                    reject(exception);
-                }
-            });
-    });
+        logger.info(`Elite2 login success for [${username}]`);
+        const eliteAuthorisationToken = loginResult.body.token;
+
+        const profileResult = await superagent
+            .get(url.resolve(`${config.nomis.apiUrl}`, '/api/users/me'))
+            .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
+            .set('Elite-Authorization', eliteAuthorisationToken);
+
+        logger.info(`Elite2 profile success for [${username}]`);
+        return {...profileResult.body, ...{token: eliteAuthorisationToken}};
+
+    } catch (exception) {
+        logger.error(`Elite 2 login error [${username}]:`);
+        logger.error(exception);
+        throw exception;
+    }
 }
 
 function signInFor(username, password) {

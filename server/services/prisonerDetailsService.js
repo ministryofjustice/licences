@@ -24,7 +24,6 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             return {...bookingDetail, ...booking, ...image, ...sentenceDetail};
 
         } catch (error) {
-            // TODO more specific api failure handling
             logger.error('Error getting prisoner info');
             logger.error(error);
             throw error;
