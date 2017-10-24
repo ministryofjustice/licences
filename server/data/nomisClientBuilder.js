@@ -19,68 +19,55 @@ module.exports = function(token) {
         getUpcomingReleasesFor: function(nomisIds) {
             const path = url.resolve(`${apiUrl}`, `${apiRoot}/releases`);
             const query = {nomisId: nomisIds};
-            return callNomis(path, query, token);
+            return nomisGet(path, query, token);
         },
 
         getBookings: function(nomisId) {
             const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings`);
             const query = {query: `offenderNo:eq:'${nomisId}'`};
-            return callNomis(path, query, token);
+            return nomisGet(path, query, token);
         },
 
         getBooking: function(bookingId) {
             const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings/${bookingId}`);
-            return callNomis(path, '', token);
+            return nomisGet(path, '', token);
         },
 
         getSentenceDetail: function(bookingId) {
             const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings/${bookingId}/sentenceDetail`);
-            return callNomis(path, '', token);
+            return nomisGet(path, '', token);
         },
 
         getImageInfo: function(imageId) {
             const path = url.resolve(`${apiUrl}`, `${apiRoot}/images/${imageId}`);
-            return callNomis(path, '', token);
+            return nomisGet(path, '', token);
         },
 
         getDischargeAddress: function(nomisId) {
             const path = url.resolve(`${apiUrl}`, `${apiRoot}/dischargeAddress`);
             const query = {nomisId: `${nomisId}`};
-            return callNomis(path, query, token);
+            return nomisGet(path, query, token);
         }
     };
 };
 
-function callNomis(path, query, token) {
+async function nomisGet(path, query, token) {
 
-    const gwToken = process.env.NODE_ENV === 'test' ? 'dummy' : `Bearer ${generateApiGatewayToken()}`;
+    try {
+        const gwToken = process.env.NODE_ENV === 'test' ? 'dummy' : `Bearer ${generateApiGatewayToken()}`;
 
-    return new Promise((resolve, reject) => {
-        superagent
+        const result = await superagent
             .get(path)
             .query(query)
             .set('Accept', 'application/json')
             .set('Authorization', gwToken)
             .set('Elite-Authorization', token)
-            .timeout(timeoutSpec)
-            .end((error, res) => {
-                try {
-                    if (error) {
-                        logger.error('Error querying NOMIS: ' + error);
-                        return reject(error);
-                    }
+            .timeout(timeoutSpec);
 
-                    if (res.body) {
-                        return resolve(res.body);
-                    }
+        return result.body;
 
-                    logger.error('Invalid nomis search response');
-                    return reject({message: 'invalid search response', status: 500});
-
-                } catch (exception) {
-                    logger.error('Exception querying NOMIS: ' + exception);
-                    return reject(exception);
-                }
-            });
-    });
+    } catch(exception) {
+        logger.error('Error from NOMIS: ' + exception);
+        throw exception;
+    }
 }
