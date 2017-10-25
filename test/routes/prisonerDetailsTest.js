@@ -5,7 +5,7 @@ const {
     appSetup
 } = require('../supertestSetup');
 
-const createPrisonerDetailsRoute = require('../../server/routes/details');
+const createPrisonerDetailsRoute = require('../../server/routes/prisonerDetails');
 const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 

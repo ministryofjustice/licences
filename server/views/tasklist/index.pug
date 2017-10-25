@@ -19,23 +19,25 @@ block content
                     each entry in required
                         tr.infoRequired
                             td.requiredName
-                                if entry.name
-                                    |#{entry.name}
+                                if entry.lastName
+                                    |#{entry.lastName}
+                                    if entry.firstName
+                                        | , #{entry.firstName}
 
                             td.requiredNomisId
-                                if entry.nomisId
-                                    | #{entry.nomisId}
+                                if entry.offenderNo
+                                    | #{entry.offenderNo}
 
                             td.requiredEstablishment
-                                if entry.establishment
-                                    | #{entry.establishment}
+                                if entry.assignedLivingUnit && entry.assignedLivingUnit.description
+                                    | #{entry.assignedLivingUnit.description}
 
                             td.requiredDischargeDate
-                                if entry.dischargeDate
-                                    | #{moment(entry.dischargeDate).format('DD/MM/YYYY')}
+                                if entry.releaseDate
+                                    | #{moment(entry.releaseDate).format('DD/MM/YYYY')}
 
                             td.requiredButton
-                                a.button.button-secondary(href="details/"+entry.nomisId role="button")
+                                a.button.button-secondary(href="details/"+entry.offenderNo role="button")
                                     if entry.inProgress
                                         |Continue
                                     else
