@@ -1,6 +1,7 @@
 module.exports = {
     createLicenceObject,
-    createAddressObject
+    createAddressObject,
+    createReportingInstructionsObject
 };
 
 function createLicenceObject(object) {
@@ -12,6 +13,12 @@ function createLicenceObject(object) {
 
 function createAddressObject(object) {
     const acceptedAttributes = Object.keys(licenceModel.dischargeAddress);
+
+    return filteredToAttributes(object, acceptedAttributes);
+}
+
+function createReportingInstructionsObject(object) {
+    const acceptedAttributes = Object.keys(licenceModel.reporting);
 
     return filteredToAttributes(object, acceptedAttributes);
 }
@@ -28,29 +35,26 @@ const filteredToAttributes = (input, acceptedKeys) => {
 
 // licence structure example
 const licenceModel = {
-    firstName: 'David',
-    lastName: 'Bryanston',
-    nomisId: 'A6627JH',
-    establishment: 'HMP birmingham',
-    dischargeDate: '2017-07-10',
-    additionalConditions: [
-
-    ],
+    firstName: '',
+    lastName: '',
+    nomisId: '',
+    establishment: '',
+    dischargeDate: '',
+    additionalConditions: [],
     dischargeAddress: {
-        address1: '19 Grantham Road',
-        address2: 'Sparbrook',
+        address1: '',
+        address2: '',
         address3: '',
-        postCode: 'B11 1LX'
+        postCode: ''
     },
     reporting: {
         name: '',
-        address: {
-            line1: '19 Grantham Road',
-            line2: 'Sparbrook',
-            line3: '',
-            postCode: 'B11 1LX'
-        },
-        contactNumber: '0121 248 6400',
-        dateTime: ''
+        address1: '',
+        address2: '',
+        address3: '',
+        postCode: '',
+        contactNumber: '',
+        date: '',
+        time: ''
     }
 };

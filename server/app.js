@@ -38,7 +38,6 @@ const testMode = process.env.NODE_ENV === 'test';
 module.exports = function createApp({
                                         logger,
                                         signInService,
-                                        reportingInstructionService,
                                         licenceService,
                                         dischargeAddressService,
                                         prisonerDetailsService,
@@ -219,7 +218,7 @@ module.exports = function createApp({
         createDischargeAddressRouter({logger, dischargeAddressService, licenceService, authenticationMiddleware}));
     app.use('/additionalConditions/', createAdditionalConditionsRouter({logger}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService}));
-    app.use('/reporting/', createReportingRouter({reportingInstructionService}));
+    app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
 
     // Error Handler
     app.use(function(req, res, next) {
@@ -234,6 +233,11 @@ module.exports = function createApp({
 };
 
 function handleKnownErrors(error, req, res, next) {
+
+    if (error.code === 'EBADCSRFTOKEN') {
+        logger.error('Bad csurf token: ' + error.stack);
+    }
+
     switch (error.status) {
         case 401:
             return res.render('login');

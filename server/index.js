@@ -5,14 +5,12 @@ const deliusClient = require('./data/deliusClient');
 const nomisClientBuilder = require('./data/nomisClientBuilder');
 
 const createSignInService = require('./authentication/signIn');
-const createReportService = require('./services/reportingInstructionsService');
 const createLicenceService = require('./services/licenceService');
 const createDischargeAddressService = require('./services/dischargeAddressService');
 const createPrisonerDetailsService = require('./services/prisonerDetailsService');
 const createTasklistService = require('./services/tasklistService');
 
 const signInService = createSignInService();
-const reportingInstructionService = createReportService();
 const licenceService = createLicenceService(licenceClient);
 const dischargeAddressService = createDischargeAddressService(nomisClientBuilder, licenceClient);
 const prisonerDetailsService = createPrisonerDetailsService(nomisClientBuilder);
@@ -21,7 +19,6 @@ const tasklistService = createTasklistService(deliusClient, nomisClientBuilder, 
 const app = createApp({
     logger,
     signInService,
-    reportingInstructionService,
     licenceService,
     dischargeAddressService,
     prisonerDetailsService,
