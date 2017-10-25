@@ -44,13 +44,13 @@ function isEmpty(candidateArray) {
 }
 
 function getOffenderNomisIds(releases) {
-    return releases.map(offender => offender.nomisId);
+    return releases.map(offender => offender.offenderNo);
 }
 
 function parseTasklistInfo(upcomingReleases, activeLicences) {
 
     return upcomingReleases.map(offender => {
-        const licence = activeLicences.find(licence => licence.nomisId === offender.nomisId);
+        const licence = activeLicences.find(licence => licence.nomisId === offender.offenderNo);
 
         if(licence) {
             const licenceLocator = {inProgress: true, licenceId: licence.id};
