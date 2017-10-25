@@ -11,7 +11,8 @@ module.exports = function({logger, tasklistService, authenticationMiddleware}) {
         const upcomingReleases = await tasklistService.getDashboardDetail(req.user.staffId, req.user.token);
 
         const viewData = {
-            required: upcomingReleases,
+            required: upcomingReleases ? upcomingReleases.required : [],
+            sent: upcomingReleases ? upcomingReleases.sent : [],
             moment: require('moment')
         };
 

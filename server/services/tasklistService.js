@@ -1,4 +1,5 @@
 const logger = require('../../log.js');
+const licenceStates = require('../data/licenceStates.js');
 
 module.exports = function createTasklistService(deliusClient, nomisClientBuilder, dbClient) {
 
@@ -8,7 +9,7 @@ module.exports = function createTasklistService(deliusClient, nomisClientBuilder
 
         try {
             const prisonerIds = await deliusClient.getPrisonersFor(userId);
-            logger.info(`Got Delius prisoner ids for ${userId}: ${prisonerIds}`);
+            logger.info(`Got Delius prisoner ids for [${userId}]: [${prisonerIds}]`);
 
             if (isEmpty(prisonerIds)) {
                 logger.info('No prisoner IDs');
@@ -16,22 +17,22 @@ module.exports = function createTasklistService(deliusClient, nomisClientBuilder
             }
 
             const upcomingReleases = await nomisClient.getUpcomingReleasesFor(prisonerIds);
-            logger.info(`Got upcoming releases: ${upcomingReleases}`);
+            logger.info('Got upcoming releases:');
+            logger.info(upcomingReleases);
 
             if (isEmpty(upcomingReleases)) {
                 logger.info('No upcoming releases');
                 return {};
             }
 
-            const activeLicences = await dbClient.getLicences(getOffenderNomisIds(upcomingReleases));
-            logger.info(`Got active licences: ${activeLicences}`);
+            const licences = await dbClient.getLicences(getOffenderNomisIds(upcomingReleases));
+            logger.info('Got active licences:');
+            logger.info(licences);
 
-            return parseTasklistInfo(upcomingReleases, activeLicences);
+            return parseTasklistInfo(upcomingReleases, licences);
 
         } catch (error) {
-
-            // TODO more specific api failure handling
-            console.error('Error during getDashboardDetail: ', error.message);
+            logger.error('Error during getDashboardDetail: ', error.message);
             throw error;
         }
     }
@@ -44,20 +45,25 @@ function isEmpty(candidateArray) {
 }
 
 function getOffenderNomisIds(releases) {
-    return releases.map(offender => offender.nomisId);
+    return releases.map(offender => offender.offenderNo);
 }
 
-function parseTasklistInfo(upcomingReleases, activeLicences) {
+function parseTasklistInfo(upcomingReleases, licences) {
 
-    return upcomingReleases.map(offender => {
-        const licence = activeLicences.find(licence => licence.nomisId === offender.nomisId);
+    const allReleases = upcomingReleases.map(offender => {
+        const licence = licences.find(licence => licence.nomisId === offender.offenderNo);
 
         if(licence) {
-            const licenceLocator = {inProgress: true, licenceId: licence.id};
+            const licenceLocator = {status: licence.status, licenceId: licence.id};
             return {...offender, ...licenceLocator};
         }
 
-        return offender;
+        return {...offender, ...{status: 'UNSTARTED'}};
     });
+
+    const required = allReleases.filter(release => licenceStates.REQUIRED_STATES.includes(release.status));
+    const sent = allReleases.filter(release => licenceStates.SENT_STATES.includes(release.status));
+
+    return {required, sent};
 }
 

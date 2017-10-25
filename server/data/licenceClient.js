@@ -5,7 +5,7 @@ const TYPES = require('tedious').TYPES;
 module.exports = {
     getLicences: function(nomisIds) {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT NOMIS_ID as nomisId, ID as id, JSON_QUERY(LICENCE) AS licence 
+            const sql = `SELECT NOMIS_ID as nomisId, ID as id, STATUS as status, JSON_QUERY(LICENCE) AS licence 
                          FROM LICENCES WHERE NOMIS_ID IN (${nomisIds.map(id => `'${id}'`).join(',')}) FOR JSON PATH`;
 
             getCollection(sql, null, resolveJsonResponse(resolve), reject);
@@ -21,14 +21,15 @@ module.exports = {
         });
     },
 
-    createLicence: function(nomisId, licence = {}) {
+    createLicence: function(nomisId, licence = {}, status = 'STARTED') {
         return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE) ' +
-                        'VALUES (@nomisId, @licence)';
+            const sql = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STATUS) ' +
+                        'VALUES (@nomisId, @licence, @status)';
 
             const parameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId},
-                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify(licence)}
+                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify(licence)},
+                {column: 'status', type: TYPES.VarChar, value: status}
             ];
 
             addRow(sql, parameters, resolve, reject);

@@ -9,7 +9,8 @@ exports.seed = knex =>
                     '"nomisId": "A6627JH", ' +
                     '"establishment": "HMP Birmingham", ' +
                     '"dischargeDate": "2017-07-10"' +
-                    '}'
+                    '}',
+                    STATUS: 'STARTED'
                 }
             ])
         );

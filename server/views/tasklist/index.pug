@@ -38,7 +38,7 @@ block content
 
                             td.requiredButton
                                 a.button.button-secondary(href="details/"+entry.offenderNo role="button")
-                                    if entry.inProgress
+                                    if entry.status === 'STARTED'
                                         |Continue
                                     else
                                         |Start
