@@ -25,7 +25,7 @@ const authenticationMiddleware = auth.authenticationMiddleware;
 
 const createSignInRouter = require('./routes/signIn');
 const createTasklistRouter = require('../server/routes/tasklist');
-const createDetailsRouter = require('../server/routes/details');
+const createDetailsRouter = require('../server/routes/prisonerDetails');
 const createDischargeAddressRouter = require('../server/routes/dischargeAddress');
 const createAdditionalConditionsRouter = require('../server/routes/additionalConditions');
 const createLicenceDetailsRouter = require('../server/routes/licenceDetails');

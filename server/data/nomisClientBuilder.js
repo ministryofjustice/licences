@@ -17,8 +17,8 @@ const apiRoot = config.nomis.apiRoot;
 module.exports = function(token) {
     return {
         getUpcomingReleasesFor: function(nomisIds) {
-            const path = url.resolve(`${apiUrl}`, `${apiRoot}/releases`);
-            const query = {nomisId: nomisIds};
+            const path = url.resolve(`${apiUrl}`, `${apiRoot}/offender-releases`);
+            const query = {offenderNo: nomisIds};
             return nomisGet(path, query, token);
         },
 

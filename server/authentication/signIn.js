@@ -11,7 +11,7 @@ async function signIn(username, password) {
     try {
 
         const loginResult = await superagent
-            .post(url.resolve(`${config.nomis.apiUrl}`, '/api/users/login'))
+            .post(url.resolve(`${config.nomis.apiUrl}`, `/${config.nomis.apiRoot}/users/login`))
             .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
             .send({username, password})
             .timeout({response: 2000, deadline: 2500});
@@ -20,7 +20,7 @@ async function signIn(username, password) {
         const eliteAuthorisationToken = loginResult.body.token;
 
         const profileResult = await superagent
-            .get(url.resolve(`${config.nomis.apiUrl}`, '/api/users/me'))
+            .get(url.resolve(`${config.nomis.apiUrl}`, `/${config.nomis.apiRoot}/users/me`))
             .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
             .set('Elite-Authorization', eliteAuthorisationToken);
 
