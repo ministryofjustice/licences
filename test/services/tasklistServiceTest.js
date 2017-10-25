@@ -24,7 +24,7 @@ describe('taskListService', () => {
 
     beforeEach(() => {
         deliusClient.getPrisonersFor.resolves('1, 2');
-        nomisClient.getUpcomingReleasesFor.resolves([{nomisId: '1'}, {nomisId: '2'}]);
+        nomisClient.getUpcomingReleasesFor.resolves([{offenderNo: '1'}, {offenderNo: '2'}]);
         dbClient.getLicences.resolves([{nomisId: '2', id: 'ab'}]);
     });
 
@@ -64,7 +64,7 @@ describe('taskListService', () => {
 
         it('should add licence details if licence is in db for prisoner', () => {
             return expect(service.getDashboardDetail('123'))
-                .to.eventually.eql([{nomisId: '1'}, {nomisId: '2', inProgress: true, licenceId: 'ab'}]);
+                .to.eventually.eql([{offenderNo: '1'}, {offenderNo: '2', inProgress: true, licenceId: 'ab'}]);
 
         });
 
