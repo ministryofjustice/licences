@@ -9,9 +9,11 @@ const createLicenceService = require('./services/licenceService');
 const createDischargeAddressService = require('./services/dischargeAddressService');
 const createPrisonerDetailsService = require('./services/prisonerDetailsService');
 const createTasklistService = require('./services/tasklistService');
+const createConditionsService = require('./services/conditionsService');
 
 const signInService = createSignInService();
 const licenceService = createLicenceService(licenceClient);
+const conditionsService = createConditionsService(licenceClient);
 const dischargeAddressService = createDischargeAddressService(nomisClientBuilder, licenceClient);
 const prisonerDetailsService = createPrisonerDetailsService(nomisClientBuilder);
 const tasklistService = createTasklistService(deliusClient, nomisClientBuilder, licenceClient);
@@ -22,7 +24,8 @@ const app = createApp({
     licenceService,
     dischargeAddressService,
     prisonerDetailsService,
-    tasklistService
+    tasklistService,
+    conditionsService
 });
 
 module.exports = app;

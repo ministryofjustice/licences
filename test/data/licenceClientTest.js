@@ -43,8 +43,6 @@ describe('licenceClient', () => {
             }
         }];
 
-        getCollectionStub.callsArgWith(2, standardResponse);
-
         const expectedReturnValue = [{
             nomisId: 'A6627JH',
             id: 4,
@@ -57,10 +55,8 @@ describe('licenceClient', () => {
         }];
 
         it('should return expected data', () => {
-            const result = licencesProxy().getLicences(['ABC123']);
-            return result.then(data => {
-                expect(data).to.deep.equal(expectedReturnValue);
-            });
+            getCollectionStub.callsArgWith(2, standardResponse);
+            return expect(licencesProxy().getLicences(['ABC123'])).to.eventually.eql(expectedReturnValue);
         });
 
         it('should call getCollection', () => {
@@ -69,11 +65,8 @@ describe('licenceClient', () => {
         });
 
         it('should return recordset as an array', () => {
-            const result = licencesProxy().getLicences(['ABC123']);
-
-            return result.then(data => {
-                expect(data).to.be.an('array');
-            });
+            getCollectionStub.callsArgWith(2, standardResponse);
+            return expect(licencesProxy().getLicences(['ABC123'])).to.eventually.be.an('array');
         });
 
         it('should pass in the correct sql for multiple nomis IDs', () => {
@@ -177,6 +170,36 @@ describe('licenceClient', () => {
             expect(params).to.eql(expectedParameters);
         });
 
+    });
+
+    describe('getStandardConditions', () => {
+        const standardConditions = [
+            {
+                ID: '1',
+                TIMESTAMP: '2017-10-26',
+                TYPE: 'STANDARD',
+                TEXT: 'Text'
+            },
+            {
+                ID: '2',
+                TIMESTAMP: '2017-10-26',
+                TYPE: 'STANDARD',
+                TEXT: 'Text2'
+            }
+        ];
+
+        it('should return expected conditions data', () => {
+            getCollectionStub.callsArgWith(2, standardConditions);
+            const result = licencesProxy().getStandardConditions();
+            return result.then(data => {
+                expect(data).to.deep.equal(standardConditions);
+            });
+        });
+
+        it('should call getStandardConditions', () => {
+            licencesProxy().getStandardConditions();
+            expect(getCollectionStub).to.have.callCount(1);
+        });
     });
 });
 

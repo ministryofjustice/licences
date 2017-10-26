@@ -50,5 +50,13 @@ module.exports = {
 
             addRow(sql, parameters, resolve, reject);
         });
+    },
+
+    getStandardConditions: function() {
+        return new Promise((resolve, reject) => {
+            const sql = 'select * from CONDITIONS Where TYPE = \'STANDARD\'';
+
+            getCollection(sql, null, resolve, reject);
+        });
     }
 };

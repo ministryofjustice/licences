@@ -41,7 +41,8 @@ module.exports = function createApp({
                                         licenceService,
                                         dischargeAddressService,
                                         prisonerDetailsService,
-                                        tasklistService
+                                        tasklistService,
+                                        conditionsService
                                     }) {
     const app = express();
 
@@ -216,7 +217,7 @@ module.exports = function createApp({
         createDetailsRouter({logger, prisonerDetailsService, licenceService, authenticationMiddleware}));
     app.use('/dischargeAddress/',
         createDischargeAddressRouter({logger, dischargeAddressService, licenceService, authenticationMiddleware}));
-    app.use('/additionalConditions/', createAdditionalConditionsRouter({logger}));
+    app.use('/additionalConditions/', createAdditionalConditionsRouter({logger, conditionsService}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService}));
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
 
