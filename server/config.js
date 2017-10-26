@@ -1,5 +1,4 @@
-'use strict';
-
+require('dotenv').config();
 const production = process.env.NODE_ENV === 'production';
 const oneDay = 24 * 60 * 60;
 

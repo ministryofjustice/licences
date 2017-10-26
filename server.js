@@ -1,6 +1,3 @@
-'use strict';
-
-require('dotenv').config();
 const appInsights = require('./azure-appinsights');
 const logger = require('./log');
 const config = require('./server/config');
