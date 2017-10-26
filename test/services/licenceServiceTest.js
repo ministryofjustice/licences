@@ -76,4 +76,23 @@ describe('licenceDetailsService', () => {
             return expect(service.updateAddress(args)).to.eventually.be.rejected();
         });
     });
+
+    describe('updatesReportingInstructions', () => {
+        it('should call updatesReportingInstructions from the licence client', () => {
+            service.updateReportingInstructions({nomisId: 'ab1', address1: 'Scotland Street'});
+
+            expect(licenceClient.updateSection).to.be.calledOnce();
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'reportingInstructions',
+                'ab1',
+                {address1: 'Scotland Street'}
+            );
+        });
+
+        it('should throw if error updating licence', () => {
+            licenceClient.updateSection.rejects();
+            const args = {nomisId: 'ab1', address1: 'Scotland Street'};
+            return expect(service.updateReportingInstructions(args)).to.eventually.be.rejected();
+        });
+    });
 });
