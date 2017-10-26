@@ -95,7 +95,6 @@ describe('taskListService', () => {
                         ]
                     }
                 );
-
         });
 
         it('should throw if delius client fails', () => {

@@ -5,7 +5,6 @@ block content
     h1.heading-large Reporting instructions
     p Enter the details of where the licensee should report
 
-
     form#reportingForm(method='POST')
         div.form-group
             div#address.borderBottom.largeMarginBottom.midPaddingBottom
@@ -15,16 +14,16 @@ block content
 
                 div.form-group
                     label.form-label(for="building") Building and street
-                    input#building.midMarginBottom.form-control(name="building" type="text")
-                    input#street.form-control.block(name="street" type="text")
+                    input#building.midMarginBottom.form-control(name="address1" type="text")
+                    input#street.form-control.block(name="address2" type="text")
 
                 div.form-group
                     label.form-label(for="town") Town or city
-                    input#town.form-control(name="town" type="text")
+                    input#town.form-control(name="address3" type="text")
 
                 div.form-group
                     label.form-label(for="postcode") Postcode
-                    input#postcode.form-control.small(name="postcode" type="text")
+                    input#postcode.form-control.small(name="postCode" type="text")
 
                 div.form-group
                     label.form-label(for="telephone") Telephone
@@ -36,15 +35,12 @@ block content
                     input#date.form-control.small(name="date" type="text")
 
                 div.form-group
-                    label.form-label(for="minute") Time
+                    label.form-label(for="time") Time
                     div.inline
-                        input#minute.form-control.verySmall(name="minute" type="text")
-                        span.padLeftRight5 :
-                        input#second.form-control.verySmall(name="second" type="text")
-
+                        input#time.form-control.small(name="time" type="text")
 
         div#continueBtns.inlineButtons
             input(type="hidden" name="_csrf" value=csrfToken)
-            input(type="hidden" name="licenceNumber" value=licenceNumber)
+            input(type="hidden" name="nomisId" value=nomisId)
             input.requiredButton.button(type="submit" value="Continue")
             a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

@@ -1,4 +1,8 @@
-const {createLicenceObject, createAddressObject} = require('../utils/licenceFactory');
+const {
+    createLicenceObject,
+    createAddressObject,
+    createReportingInstructionsObject
+} = require('../utils/licenceFactory');
 
 module.exports = function createLicenceService(licenceClient) {
     async function getLicence(nomisId) {
@@ -16,6 +20,7 @@ module.exports = function createLicenceService(licenceClient) {
         try {
             return await licenceClient.createLicence(nomisId, licence, 'STARTED');
         } catch(error) {
+            console.error(error, 'Error during create licence');
             throw error;
         }
     }
@@ -33,5 +38,18 @@ module.exports = function createLicenceService(licenceClient) {
         }
     }
 
-    return {getLicence, createLicence, updateAddress};
+    async function updateReportingInstructions(data = {}) {
+
+        const nomisId = data.nomisId;
+        const instructions = createReportingInstructionsObject(data);
+
+        try {
+            return await licenceClient.updateSection('reportingInstructions', nomisId, instructions);
+        } catch(error) {
+            console.error(error, 'Error during update reporting instructions');
+            throw error;
+        }
+    }
+
+    return {getLicence, createLicence, updateAddress, updateReportingInstructions};
 };

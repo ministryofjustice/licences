@@ -53,6 +53,7 @@ function parseTasklistInfo(upcomingReleases, licences) {
     const allReleases = upcomingReleases.map(offender => {
         const licence = licences.find(licence => licence.nomisId === offender.offenderNo);
 
+
         if(licence) {
             const licenceLocator = {status: licence.status, licenceId: licence.id};
             return {...offender, ...licenceLocator};
