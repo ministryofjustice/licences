@@ -105,10 +105,19 @@ installYarn () {
       echo "Yarn is installed"
     else
       echo "Installing yarn..."
-      curl -L "https://yarnpkg.com/install.sh" -o yarn-installer.sh
-      # Ensure the yarn installer uses the yarn.cmd executable to run yarn
-      sed -i'.bak' -e 's/yarn -/yarn.cmd -/' yarn-installer.sh
-      YARN_GPG=no bash -x yarn-installer.sh
+
+      # Cribbed from https://yarnpkg.com/install.sh yarn_get_tarball
+      set -xe
+      pushd ~
+      umask
+      rm -rf ~/.yarn ~/.yarn-install
+      mkdir -p ~/.yarn
+      mkdir -p ~/.yarn-install
+      curl --fail -L -o ~/.yarn-install/yarn.tar.gz https://yarnpkg.com/latest.tar.gz
+      tar zxf ~/.yarn-install/yarn.tar.gz -C ~/.yarn-install
+      cp -R ~/.yarn-install/yarn-v*/* ~/.yarn
+      popd
+      set +xe
     fi
   fi
 }
