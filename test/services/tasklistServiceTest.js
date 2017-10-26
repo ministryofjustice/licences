@@ -23,9 +23,18 @@ describe('taskListService', () => {
     const service = createTasklistService(deliusClient, nomisClientBuilder, dbClient);
 
     beforeEach(() => {
-        deliusClient.getPrisonersFor.resolves('1, 2');
-        nomisClient.getUpcomingReleasesFor.resolves([{offenderNo: '1'}, {offenderNo: '2'}]);
-        dbClient.getLicences.resolves([{nomisId: '2', id: 'ab'}]);
+        deliusClient.getPrisonersFor.resolves('1, 2, 3');
+
+        nomisClient.getUpcomingReleasesFor.resolves([
+            {offenderNo: '1'},
+            {offenderNo: '2'},
+            {offenderNo: '3'}
+        ]);
+
+        dbClient.getLicences.resolves([
+            {nomisId: '2', id: 'ab', status: 'STARTED'},
+            {nomisId: '3', id: 'cd', status: 'SENT'}
+        ]);
     });
 
     afterEach(() => {
@@ -44,7 +53,7 @@ describe('taskListService', () => {
             await service.getDashboardDetail('123');
 
             expect(nomisClient.getUpcomingReleasesFor).to.be.calledOnce();
-            expect(nomisClient.getUpcomingReleasesFor).to.be.calledWith('1, 2');
+            expect(nomisClient.getUpcomingReleasesFor).to.be.calledWith('1, 2, 3');
         });
 
         it('should return an empty object if there are no upcoming releases', () => {
@@ -58,14 +67,34 @@ describe('taskListService', () => {
             await service.getDashboardDetail('123');
 
             expect(dbClient.getLicences).to.be.calledOnce();
-            expect(dbClient.getLicences).to.be.calledWith(['1', '2']);
+            expect(dbClient.getLicences).to.be.calledWith(['1', '2', '3']);
 
         });
 
         it('should add licence details if licence is in db for prisoner', () => {
             return expect(service.getDashboardDetail('123'))
-                .to.eventually.eql([{offenderNo: '1'}, {offenderNo: '2', inProgress: true, licenceId: 'ab'}]);
-
+                .to.eventually.eql(
+                    {
+                        required: [
+                            {
+                                offenderNo: '1',
+                                status: 'UNSTARTED'
+                            },
+                            {
+                                licenceId: 'ab',
+                                offenderNo: '2',
+                                status: 'STARTED'
+                            }
+                        ],
+                        sent: [
+                            {
+                                licenceId: 'cd',
+                                offenderNo: '3',
+                                status: 'SENT'
+                            }
+                        ]
+                    }
+                );
         });
 
         it('should throw if delius client fails', () => {

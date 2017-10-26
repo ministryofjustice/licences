@@ -102,8 +102,8 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedClause = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE) ' +
-                'VALUES (@nomisId, @licence)';
+            const expectedClause = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STATUS) ' +
+                'VALUES (@nomisId, @licence, @status)';
 
             licencesProxy().createLicence('ABC123');
             const sql = addRowStub.getCalls()[0].args[0];
@@ -114,7 +114,8 @@ describe('licenceClient', () => {
 
             const expectedParameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
-                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({})}
+                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({})},
+                {column: 'status', type: TYPES.VarChar, value: 'STARTED'}
             ];
 
             licencesProxy().createLicence('ABC123');
@@ -126,10 +127,24 @@ describe('licenceClient', () => {
 
             const expectedParameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
-                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({a: 'b'})}
+                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({a: 'b'})},
+                {column: 'status', type: TYPES.VarChar, value: 'STARTED'}
             ];
 
             licencesProxy().createLicence('ABC123', {a: 'b'});
+            const sql = addRowStub.getCalls()[0].args[1];
+            expect(sql).to.eql(expectedParameters);
+        });
+
+        it('should pass in the correct parameters if status passed in', () => {
+
+            const expectedParameters = [
+                {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
+                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({a: 'b'})},
+                {column: 'status', type: TYPES.VarChar, value: 'SENT'}
+            ];
+
+            licencesProxy().createLicence('ABC123', {a: 'b'}, 'SENT');
             const sql = addRowStub.getCalls()[0].args[1];
             expect(sql).to.eql(expectedParameters);
         });

@@ -18,7 +18,7 @@ module.exports = function createLicenceService(licenceClient) {
         const licence = createLicenceObject(data);
 
         try {
-            return await licenceClient.createLicence(nomisId, licence);
+            return await licenceClient.createLicence(nomisId, licence, 'STARTED');
         } catch(error) {
             console.error(error, 'Error during create licence');
             throw error;
