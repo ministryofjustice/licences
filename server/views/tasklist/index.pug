@@ -29,8 +29,8 @@ block content
                                     | #{entry.offenderNo}
 
                             td.requiredEstablishment
-                                if entry.assignedLivingUnit && entry.assignedLivingUnit.description
-                                    | #{entry.assignedLivingUnit.description}
+                                if entry.agencyLocationDesc
+                                    | #{entry.agencyLocationDesc}
 
                             td.requiredDischargeDate
                                 if entry.releaseDate
