@@ -10,7 +10,7 @@ $path: "/public/images";
 
 a.button.button-secondary {
     color: $black;
-    background-color: $grey-2;
+    background-color: $grey-3;
     min-width: 120px;
     text-align: center;
 }
@@ -118,4 +118,9 @@ input.verySmall {
     a {
         color: white
     }
+}
+
+.numberedList {
+    list-style-type: decimal;
+    padding-left: 15px;
 }

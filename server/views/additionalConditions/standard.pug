@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+    div.back-link-container
+        a.link-back(href="/additionalConditions/"+nomisId) Back
+
+    h1.heading-large The standard conditions
+
+    div.grid-row.paddingBottom
+        div.column-two-thirds
+            P The following conditions are included on the licence as a baseline.
+
+            p An offender must:
+
+            ol.numberedList
+                for condition in conditions
+                    li.midPaddingBottom #{condition.TEXT.value}
+
+    a.button.button-secondary(href="/additionalConditions/"+nomisId role="button") Back to dashboard
