@@ -5,6 +5,8 @@ const logger = require('../../log.js');
 const url = require('url');
 const superagent = require('superagent');
 
+const generateApiGatewayToken = require('../authentication/apiGateway');
+
 module.exports = {
     nomisApiCheck,
     dbCheck
@@ -19,8 +21,11 @@ function dbCheck() {
 function nomisApiCheck() {
     return new Promise((resolve, reject) => {
 
+        const gwToken = process.env.NODE_ENV === 'test' ? 'dummy' : `Bearer ${generateApiGatewayToken()}`;
+
         superagent
             .get(url.resolve(`${config.nomis.apiUrl}`, '/api/info/health'))
+            .set('Authorization', gwToken)
             .timeout({
                 response: 2000,
                 deadline: 2500
