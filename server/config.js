@@ -23,14 +23,6 @@ module.exports = {
         database: get('DB_NAME', 'licences')
     },
 
-    licences: {
-        apiUrl: get('LICENCES_API_URL', 'http://localhost:3001'),
-        timeout: {
-            response: 2000,
-            deadline: 2500
-        }
-    },
-
     nomis: {
         apiUrl: get('NOMIS_API_URL', 'http://localhost:9090/elite2api'),
         apiGatewayToken: get('NOMIS_GW_TOKEN', 'dummy'),
