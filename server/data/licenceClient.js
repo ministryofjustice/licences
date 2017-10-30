@@ -39,7 +39,7 @@ module.exports = {
     updateSection: function(section, nomisId, object) {
         return new Promise((resolve, reject) => {
             const sql = `UPDATE LICENCES 
-                         SET LICENCE = JSON_MODIFY(LICENCE, @section, @object) 
+                         SET LICENCE = JSON_MODIFY(LICENCE, @section, JSON_QUERY(@object)) 
                          WHERE NOMIS_ID=@nomisId`;
 
             const parameters = [

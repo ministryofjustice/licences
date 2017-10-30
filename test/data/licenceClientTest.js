@@ -148,7 +148,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedUpdate = 'SET LICENCE = JSON_MODIFY(LICENCE, @section, @object)';
+            const expectedUpdate = 'SET LICENCE = JSON_MODIFY(LICENCE, @section, JSON_QUERY(@object))';
             const expectedWhere = 'WHERE NOMIS_ID=@nomisId';
 
             licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});

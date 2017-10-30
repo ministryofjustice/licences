@@ -2,77 +2,28 @@ extends ../layout
 
 block content
     h1.heading-large Planned discharge address
-    p The following addresses have been requested by the offender.
-
-    div.grid-row.largeMarginBottom
-        div#addressDetails.column-two-thirds.boxPanel
-            div#address.column-one-third.midMarginBottom
-                for address in addresses
-                    div
-                        |Address
-                        if (address.address1)
-                            span#address1.block.bold #{address.address1}
-                        if (address.address2)
-                            span.block.bold #{address.address2}
-                        if (address.address3)
-                            span.block.bold #{address.address3}
-                        if (address.postCode)
-                            span.block.bold #{address.postCode}
-
-            div.column-one-third.midMarginBottom
-                if (contact)
-                    span.block.midMarginBottom
-                        | Contact name
-                        span#contact.block.bold #{contact}
-
-                if (contactNumber)
-                    span.block.midMarginBottom
-                        | Contact number
-                        span#contactNumber.block.bold #{contactNumber}
-
-
-            if (reason)
-                div.column-one-third.midMarginBottom
-                    | Reason for request
-                    span#reason.block.bold #{reason}
+    p Enter the address
 
     form#acceptanceForm(method='POST')
-        //div.form-group
-        //    fieldset.inline
-        //        legend.midMarginBottom Is this address acceptable?
-        //
-        //        div.multiple-choice
-        //            input(id="radioYes" type="radio" name="acceptable-address" value="Yes")
-        //            label(for="radioYes") Yes
-        //
-        //        div.multiple-choice(data-target="addressForm")
-        //            input(id="radioNo" type="radio" name="acceptable-address" value="No")
-        //            label(for="radioNo") No
-        //
-        //        div#addressForm.panel.panel-border-narrow.js-hidden
-        //            div.form-group
-        //                label.form-label(for="building") Building and street
-        //                input#building.midMarginBottom.form-control(name="building" type="text")
-        //                input#street.form-control.block(name="street" type="text")
-        //
-        //            div.form-group
-        //                label.form-label(for="town") Town or city
-        //                input#town.form-control(name="town" type="text")
-        //
-        //            div.form-group
-        //                label.form-label(for="postcode") Postcode
-        //                input#postcode.form-control.small(name="postcode" type="text")
-        //
-        //            div.form-group
-        //                label.form-label(for="telephone") Telephone
-        //                input#telephone.form-control.small(name="telephone" type="text")
+        div.form-group
+            fieldset.inline
+
+                div#addressForm.panel.panel-border-narrow
+                    div.form-group
+                        label.form-label(for="building") Building and street
+                        input#building.midMarginBottom.form-control(name="address1" type="text")
+                        input#street.form-control.block(name="address2" type="text")
+
+                    div.form-group
+                        label.form-label(for="town") Town or city
+                        input#town.form-control(name="address3" type="text")
+
+                    div.form-group
+                        label.form-label(for="postcode") Postcode
+                        input#postcode.form-control.small(name="postcode" type="text")
 
         div#continueBtns.inlineButtons
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="nomisId" value=nomisId)
-            input(type="hidden" name="address1" value=addresses[0].address1)
-            input(type="hidden" name="address2" value=addresses[0].address2)
-            input(type="hidden" name="address3" value=addresses[0].address3)
-            input(type="hidden" name="postCode" value=addresses[0].postCode)
             input.requiredButton.button(type="submit" value="Continue")
             a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
