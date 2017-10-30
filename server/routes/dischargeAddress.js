@@ -22,9 +22,10 @@ module.exports = function({logger, dischargeAddressService, licenceService, auth
             return res.redirect(`/details/${nomisId}`);
         }
 
-        const addresses = await dischargeAddressService.getDischargeAddress(nomisId, req.user.token);
+        // const addresses = await dischargeAddressService.getDischargeAddress(nomisId, req.user.token);
+        // res.render('dischargeAddress/index', {nomisId, addresses});
 
-        res.render('dischargeAddress/index', {nomisId, addresses});
+        res.render('dischargeAddress/index', {nomisId});
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
