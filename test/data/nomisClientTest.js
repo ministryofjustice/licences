@@ -21,7 +21,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/offender-releases?offenderNo=a`)
+                .get(`/offender-releases?offenderNo=a`)
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getUpcomingReleasesFor('a', 'token')).to.eventually.eql({key: 'value'});
@@ -29,7 +29,7 @@ describe('nomisClient', function() {
 
         it('should set the page-count header to match the number of offenders', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/offender-releases?offenderNo=a&offenderNo=b&offenderNo=c`)
+                .get(`/offender-releases?offenderNo=a&offenderNo=b&offenderNo=c`)
                 .reply(function(uri, requestBody) {
                     // The documented way to specify request headers doesn't work so this is a workaround
                     if (this.req.headers['page-count'] === 3) { // eslint-disable-line
@@ -44,7 +44,7 @@ describe('nomisClient', function() {
 
         it('should reject if api fails', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/offender-releases?offenderNo=a`)
+                .get(`/offender-releases?offenderNo=a`)
                 .reply(500);
 
             return expect(nomisClient.getUpcomingReleasesFor('a', 'token')).to.be.rejected();
@@ -55,7 +55,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/bookings?query=offenderNo%3Aeq%3A%27A1235HG%27`)
+                .get(`/bookings?query=offenderNo%3Aeq%3A%27A1235HG%27`)
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getBookings('A1235HG', 'token')).to.eventually.eql({key: 'value'});
@@ -63,7 +63,7 @@ describe('nomisClient', function() {
 
         it('should reject if api fails', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/bookings?query=offenderNo%3Aeq%3AA1235HG`)
+                .get(`/bookings?query=offenderNo%3Aeq%3AA1235HG`)
                 .reply(500);
 
             return expect(nomisClient.getBookings('A1235HG', 'token')).to.be.rejected();
@@ -74,7 +74,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/bookings/1`)
+                .get(`/bookings/1`)
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getBooking('1', 'token')).to.eventually.eql({key: 'value'});
@@ -82,7 +82,7 @@ describe('nomisClient', function() {
 
         it('should reject if api fails', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/bookings/1`)
+                .get(`/bookings/1`)
                 .reply(500);
 
             return expect(nomisClient.getBooking('1', 'token')).to.be.rejected();
@@ -93,7 +93,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/bookings/1/sentenceDetail`)
+                .get(`/bookings/1/sentenceDetail`)
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getSentenceDetail('1', 'token')).to.eventually.eql({key: 'value'});
@@ -101,7 +101,7 @@ describe('nomisClient', function() {
 
         it('should reject if api fails', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/bookings/1/sentenceDetail`)
+                .get(`/bookings/1/sentenceDetail`)
                 .reply(500);
 
             return expect(nomisClient.getSentenceDetail('1', 'token')).to.be.rejected();
@@ -112,7 +112,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/images/1`)
+                .get(`/images/1`)
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getImageInfo('1', 'token')).to.eventually.eql({key: 'value'});
@@ -120,7 +120,7 @@ describe('nomisClient', function() {
 
         it('should reject if api fails', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/images/1`)
+                .get(`/images/1`)
                 .reply(500);
 
             return expect(nomisClient.getImageInfo('1', 'token')).to.be.rejected();
@@ -131,7 +131,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/dischargeAddress?nomisId=a`)
+                .get(`/dischargeAddress?nomisId=a`)
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getDischargeAddress('a', 'token')).to.eventually.eql({key: 'value'});
@@ -139,7 +139,7 @@ describe('nomisClient', function() {
 
         it('should reject if api fails', () => {
             fakeNomis
-                .get(`/${config.nomis.apiRoot}/dischargeAddress?nomisId=a`)
+                .get(`/dischargeAddress?nomisId=a`)
                 .reply(500);
 
             return expect(nomisClient.getDischargeAddress('a', 'token')).to.be.rejected();
