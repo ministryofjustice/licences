@@ -19,7 +19,8 @@ module.exports = function(token) {
         getUpcomingReleasesFor: function(nomisIds) {
             const path = url.resolve(`${apiUrl}`, `${apiRoot}/offender-releases`);
             const query = {offenderNo: nomisIds};
-            return nomisGet(path, query, token);
+            const headers = {'Page-Count': nomisIds.length};
+            return nomisGet(path, query, token, headers);
         },
 
         getBookings: function(nomisId) {
@@ -51,7 +52,7 @@ module.exports = function(token) {
     };
 };
 
-async function nomisGet(path, query, token) {
+async function nomisGet(path, query, token, headers = {}) {
 
     try {
         const gwToken = process.env.NODE_ENV === 'test' ? 'dummy' : `Bearer ${generateApiGatewayToken()}`;
@@ -62,6 +63,7 @@ async function nomisGet(path, query, token) {
             .set('Accept', 'application/json')
             .set('Authorization', gwToken)
             .set('Elite-Authorization', token)
+            .set(headers)
             .timeout(timeoutSpec);
 
         return result.body;
