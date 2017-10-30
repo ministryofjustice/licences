@@ -1,3 +1,5 @@
+const inputMeta = require('../data/meta/additionalConditionsMeta');
+
 module.exports = function createConditionsService(licenceClient) {
 
     async function getStandardConditions() {
@@ -10,7 +12,10 @@ module.exports = function createConditionsService(licenceClient) {
 
     async function getAdditionalConditions() {
         try {
-            return await licenceClient.getAdditionalConditions();
+            const rawConditions = await licenceClient.getAdditionalConditions();
+
+            return addUserInputDataTo(rawConditions);
+
         } catch(error) {
             throw error;
         }
@@ -18,3 +23,25 @@ module.exports = function createConditionsService(licenceClient) {
 
     return {getStandardConditions, getAdditionalConditions};
 };
+
+function addUserInputDataTo(rawConditions) {
+    return rawConditions.map(condition => {
+        const uiItemsInConditions = getUiItemsFrom(condition.VALUE);
+
+        if(!uiItemsInConditions) {
+            return condition;
+        }
+
+        const itemsInCondition = uiItemsInConditions.map(item => {
+            return inputMeta.get(item);
+        });
+
+        return {...condition, FORM_ITEMS: itemsInCondition};
+    });
+}
+
+const betweenBrackets = /\[[^\]]*]/g;
+
+function getUiItemsFrom(condition) {
+    return condition.match(betweenBrackets) || null;
+}
