@@ -6,13 +6,18 @@ block content
 
     div#conditionsInstructions.grid-row.paddingBottom.largeMarginBottom
         div.column-two-thirds
-            p If the offender requires additional conditions adding to their licence select them below.
-            span.block
-                a(href="./standard/"+nomisId) View the seven standard conditions
+            div.paddingBottom.borderBottom.midMarginBottom
+                p If the offender requires additional conditions adding to their licence select them below.
+                span.block.smallPaddingBottom
+                    a(href="./standard/"+nomisId) View the seven standard conditions
 
-        div.column-one-third
-            a.button.button-secondary(href="/reporting/"+nomisId role="button") No additional conditions required
+                a.button.button-secondary(href="/reporting/"+nomisId role="button") No additional conditions required
 
+            for condition in conditions
+                div.multiple-choice.conditionSelector.column-full
+                    div
+                        input(type="checkbox" id="check-"+condition.ID.value value=condition.ID.value name="additionalConditions")
+                        label(for="check-"+condition.ID.value) #{condition.TEXT.value}
 
     div#continueBtns.inlineButtons
 

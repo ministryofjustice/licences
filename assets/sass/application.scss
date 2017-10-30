@@ -124,3 +124,15 @@ input.verySmall {
     list-style-type: decimal;
     padding-left: 15px;
 }
+
+.conditionSelector {
+    border: solid $grey-1 2px;
+    margin: 10px 0;
+    padding: 15px;
+    div {
+        position: relative;
+    }
+    label {
+        padding: 5px 0 0 50px;
+    }
+}

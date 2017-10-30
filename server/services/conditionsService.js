@@ -8,5 +8,13 @@ module.exports = function createConditionsService(licenceClient) {
         }
     }
 
-    return {getStandardConditions};
+    async function getAdditionalConditions() {
+        try {
+            return await licenceClient.getAdditionalConditions();
+        } catch(error) {
+            throw error;
+        }
+    }
+
+    return {getStandardConditions, getAdditionalConditions};
 };
