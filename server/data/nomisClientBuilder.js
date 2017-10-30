@@ -2,7 +2,6 @@ const config = require('../config');
 const logger = require('../../log.js');
 
 const superagent = require('superagent');
-const url = require('url');
 
 const generateApiGatewayToken = require('../authentication/apiGateway');
 
@@ -12,40 +11,39 @@ const timeoutSpec = {
 };
 
 const apiUrl = config.nomis.apiUrl;
-const apiRoot = config.nomis.apiRoot;
 
 module.exports = function(token) {
     return {
         getUpcomingReleasesFor: function(nomisIds) {
-            const path = url.resolve(`${apiUrl}`, `${apiRoot}/offender-releases`);
+            const path = `${apiUrl}/offender-releases`;
             const query = {offenderNo: nomisIds};
             const headers = {'Page-Count': nomisIds.length};
             return nomisGet(path, query, token, headers);
         },
 
         getBookings: function(nomisId) {
-            const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings`);
+            const path = `${apiUrl}/bookings`;
             const query = {query: `offenderNo:eq:'${nomisId}'`};
             return nomisGet(path, query, token);
         },
 
         getBooking: function(bookingId) {
-            const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings/${bookingId}`);
+            const path = `${apiUrl}/bookings/${bookingId}`;
             return nomisGet(path, '', token);
         },
 
         getSentenceDetail: function(bookingId) {
-            const path = url.resolve(`${apiUrl}`, `${apiRoot}/bookings/${bookingId}/sentenceDetail`);
+            const path = `${apiUrl}/bookings/${bookingId}/sentenceDetail`;
             return nomisGet(path, '', token);
         },
 
         getImageInfo: function(imageId) {
-            const path = url.resolve(`${apiUrl}`, `${apiRoot}/images/${imageId}`);
+            const path = `${apiUrl}/images/${imageId}`;
             return nomisGet(path, '', token);
         },
 
         getDischargeAddress: function(nomisId) {
-            const path = url.resolve(`${apiUrl}`, `${apiRoot}/dischargeAddress`);
+            const path = `${apiUrl}/dischargeAddress`;
             const query = {nomisId: `${nomisId}`};
             return nomisGet(path, query, token);
         }

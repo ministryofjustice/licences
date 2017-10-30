@@ -1,5 +1,4 @@
 const superagent = require('superagent');
-const url = require('url');
 const config = require('../config');
 const generateApiGatewayToken = require('./apiGateway');
 const logger = require('../../log');
@@ -9,9 +8,8 @@ async function signIn(username, password) {
     logger.info(`Log in for: ${username}`);
 
     try {
-
         const loginResult = await superagent
-            .post(url.resolve(`${config.nomis.apiUrl}`, `/${config.nomis.apiRoot}/users/login`))
+            .post(`${config.nomis.apiUrl}/users/login`)
             .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
             .send({username, password})
             .timeout({response: 2000, deadline: 2500});
@@ -20,7 +18,7 @@ async function signIn(username, password) {
         const eliteAuthorisationToken = loginResult.body.token;
 
         const profileResult = await superagent
-            .get(url.resolve(`${config.nomis.apiUrl}`, `/${config.nomis.apiRoot}/users/me`))
+            .get(`${config.nomis.apiUrl}/users/me`)
             .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
             .set('Elite-Authorization', eliteAuthorisationToken);
 
