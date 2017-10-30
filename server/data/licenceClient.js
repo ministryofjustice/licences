@@ -58,5 +58,13 @@ module.exports = {
 
             getCollection(sql, null, resolve, reject);
         });
+    },
+
+    getAdditionalConditions: function() {
+        return new Promise((resolve, reject) => {
+            const sql = 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\'';
+
+            getCollection(sql, null, resolve, reject);
+        });
     }
 };

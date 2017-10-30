@@ -4,13 +4,14 @@ const asyncMiddleware = require('../utils/asyncMiddleware');
 module.exports = function({logger, conditionsService}) {
     const router = express.Router();
 
-    router.get('/:nomisId', (req, res) => {
+    router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /additionalConditions');
 
         const nomisId = req.params.nomisId;
+        const conditions = await conditionsService.getAdditionalConditions();
 
-        return res.render('additionalConditions/index', {nomisId});
-    });
+        return res.render('additionalConditions/index', {nomisId, conditions});
+    }));
 
     router.get('/standard/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /additionalConditions/standard');

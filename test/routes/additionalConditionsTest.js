@@ -12,7 +12,8 @@ const loggerStub = {
 };
 
 const conditionsServiceStub = {
-    getStandardConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'hi'}}])
+    getStandardConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'hi'}}]),
+    getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'hi'}, ID: {value: 'ho'}}])
 };
 
 const app = appSetup(createAdditionalConditionsRoute({logger: loggerStub, conditionsService: conditionsServiceStub}));
@@ -22,7 +23,11 @@ describe('GET /additionalConditions/:prisonNumber', () => {
         return request(app)
             .get('/1')
             .expect(200)
-            .expect('Content-Type', /html/);
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(conditionsServiceStub.getAdditionalConditions).to.be.calledOnce();
+                expect(conditionsServiceStub.getStandardConditions).to.not.be.calledOnce();
+            });
     });
 });
 

@@ -4,7 +4,8 @@ const {expect, sandbox} = require('../testSetup');
 describe('licenceDetailsService', () => {
 
     const licenceClient = {
-        getStandardConditions: sandbox.stub().returnsPromise().resolves({a: 'b'})
+        getStandardConditions: sandbox.stub().returnsPromise().resolves({a: 'b'}),
+        getAdditionalConditions: sandbox.stub().returnsPromise().resolves({b: 'c'})
     };
 
     const service = createConditionsService(licenceClient);
@@ -13,7 +14,7 @@ describe('licenceDetailsService', () => {
         sandbox.reset();
     });
 
-    describe('getLicence', () => {
+    describe('getStandardConditions', () => {
         it('should request standard conditions from client', () => {
             service.getStandardConditions();
 
@@ -27,6 +28,23 @@ describe('licenceDetailsService', () => {
         it('should throw if error getting conditions', () => {
             licenceClient.getStandardConditions.rejects();
             return expect(service.getStandardConditions()).to.eventually.be.rejected();
+        });
+    });
+
+    describe('getAdditionalConditions', () => {
+        it('should request additional conditions from client', () => {
+            service.getAdditionalConditions();
+
+            expect(licenceClient.getAdditionalConditions).to.be.calledOnce();
+        });
+
+        it('should return the conditions', () => {
+            return expect(service.getAdditionalConditions()).to.eventually.eql({b: 'c'});
+        });
+
+        it('should throw if error getting conditions', () => {
+            licenceClient.getAdditionalConditions.rejects();
+            return expect(service.getAdditionalConditions()).to.eventually.be.rejected();
         });
     });
 

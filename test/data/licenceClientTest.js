@@ -201,5 +201,35 @@ describe('licenceClient', () => {
             expect(getCollectionStub).to.have.callCount(1);
         });
     });
+
+    describe('getAdditionalConditions', () => {
+        const additionalConditions = [
+            {
+                ID: '1',
+                TIMESTAMP: '2017-10-26',
+                TYPE: 'ADDITIONAL',
+                TEXT: 'Text'
+            },
+            {
+                ID: '2',
+                TIMESTAMP: '2017-10-26',
+                TYPE: 'ADDITIONAL',
+                TEXT: 'Text2'
+            }
+        ];
+
+        it('should return expected additional conditions data', () => {
+            getCollectionStub.callsArgWith(2, additionalConditions);
+            const result = licencesProxy().getAdditionalConditions();
+            return result.then(data => {
+                expect(data).to.deep.equal(additionalConditions);
+            });
+        });
+
+        it('should call get collection from dbMethods', () => {
+            licencesProxy().getAdditionalConditions();
+            expect(getCollectionStub).to.have.callCount(1);
+        });
+    });
 });
 
