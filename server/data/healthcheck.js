@@ -23,7 +23,7 @@ function nomisApiCheck() {
         const gwToken = process.env.NODE_ENV === 'test' ? 'dummy' : `Bearer ${generateApiGatewayToken()}`;
 
         superagent
-            .get(`${config.nomis.apiUrl}/api/info/health`)
+            .get(`${config.nomis.apiUrl}/info/health`)
             .set('Authorization', gwToken)
             .timeout({
                 response: 4000,
