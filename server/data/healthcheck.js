@@ -33,7 +33,7 @@ function nomisApiCheck() {
                 try {
                     if (error) {
                         logger.error(error, 'Error calling Nomis API');
-                        return reject(`${error.status} | ${error.code}`);
+                        return reject(`${error.status} | ${error.code} | ${error.errno}`);
                     }
 
                     if (result.status === 200) {
