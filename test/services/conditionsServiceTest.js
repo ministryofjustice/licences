@@ -5,7 +5,7 @@ describe('licenceDetailsService', () => {
 
     const licenceClient = {
         getStandardConditions: sandbox.stub().returnsPromise().resolves({a: 'b'}),
-        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{VALUE: 'v'}])
+        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'v'}}])
     };
 
     const service = createConditionsService(licenceClient);
@@ -39,7 +39,7 @@ describe('licenceDetailsService', () => {
         });
 
         it('should return the conditions', () => {
-            return expect(service.getAdditionalConditions()).to.eventually.eql([{VALUE: 'v'}]);
+            return expect(service.getAdditionalConditions()).to.eventually.eql([{TEXT: {value: 'v'}}]);
         });
 
         it('should throw if error getting conditions', () => {
@@ -48,10 +48,10 @@ describe('licenceDetailsService', () => {
         });
 
         it('should add UI data to a condition', () => {
-            licenceClient.getAdditionalConditions.resolves([{VALUE: 'text [INSERT NAME]'}]);
+            licenceClient.getAdditionalConditions.resolves([{TEXT: {value: 'text [INSERT NAME]'}}]);
 
             const expected = [{
-                VALUE: 'text [INSERT NAME]',
+                TEXT: {value: 'text [INSERT NAME]'},
                 FORM_ITEMS: [{label: 'Name', type: 'FREE_TEXT'}]
             }];
 
@@ -59,10 +59,12 @@ describe('licenceDetailsService', () => {
         });
 
         it('should add each UI data to condition ', () => {
-            licenceClient.getAdditionalConditions.resolves([{VALUE: 'text [INSERT NAME] more text [INSERT AGE]'}]);
+            licenceClient.getAdditionalConditions.resolves([
+                {TEXT: {value: 'text [INSERT NAME] more text [INSERT AGE]'}}
+            ]);
 
             const expected = [{
-                VALUE: 'text [INSERT NAME] more text [INSERT AGE]',
+                TEXT: {value: 'text [INSERT NAME] more text [INSERT AGE]'},
                 FORM_ITEMS: [{label: 'Name', type: 'FREE_TEXT'}, {label: 'Age', type: 'NUMBER'}]
             }];
 
@@ -71,19 +73,19 @@ describe('licenceDetailsService', () => {
 
         it('should add UI data to each condition ', () => {
             licenceClient.getAdditionalConditions.resolves([
-                {VALUE: 'text [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT]'},
-                {VALUE: 'text [QUANTITY HERE], f [WOMEN / MEN / WOMEN OR MEN] text'}
+                {TEXT: {value: 'text [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT]'}},
+                {TEXT: {value: 'text [QUANTITY HERE], f [WOMEN / MEN / WOMEN OR MEN] text'}}
             ]);
 
             const expected = [
                 {
-                    VALUE: 'text [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT]',
+                    TEXT: {value: 'text [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT]'},
                     FORM_ITEMS: [
                         {label: 'Name of social services dept', type: 'FREE_TEXT'}
                     ]
                 },
                 {
-                    VALUE: 'text [QUANTITY HERE], f [WOMEN / MEN / WOMEN OR MEN] text',
+                    TEXT: {value: 'text [QUANTITY HERE], f [WOMEN / MEN / WOMEN OR MEN] text'},
                     FORM_ITEMS: [
                         {label: 'Quantity', type: 'NUMBER'},
                         {type: 'RADIO', options: ['WOMEN', 'MEN', 'WOMEN OR MEN']}

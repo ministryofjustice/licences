@@ -26,7 +26,7 @@ module.exports = function createConditionsService(licenceClient) {
 
 function addUserInputDataTo(rawConditions) {
     return rawConditions.map(condition => {
-        const uiItemsInConditions = getUiItemsFrom(condition.VALUE);
+        const uiItemsInConditions = getUiItemsFrom(condition.TEXT.value);
 
         if(!uiItemsInConditions) {
             return condition;
