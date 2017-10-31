@@ -39,10 +39,6 @@ function addParams(params, request) {
     params.forEach(function(param) {
         let paramValue = param.value;
 
-        if (isNaN(paramValue)) {
-            paramValue = paramValue.toUpperCase();
-        }
-
         request.addParameter(
             param.column,
             param.type,
