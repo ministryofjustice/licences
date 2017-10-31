@@ -43,7 +43,7 @@ block content
                                     else
                                         |Start
 
-        if sent
+        if sent && sent.length >0
 
             h2.heading-medium Sent to OMU
             table
@@ -55,7 +55,7 @@ block content
                         th Discharge date
                         th
                 tbody
-                    each entry in required
+                    each entry in sent
                         tr.infoRequired
                             td.requiredName
                                 if entry.lastName
