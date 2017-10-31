@@ -42,5 +42,38 @@ block content
                                         |Continue
                                     else
                                         |Start
-        else
+
+        if sent
+
+            h2.heading-medium Sent to OMU
+            table
+                thead
+                    tr
+                        th Name
+                        th NOMS ID
+                        th Establishment
+                        th Discharge date
+                        th
+                tbody
+                    each entry in required
+                        tr.infoRequired
+                            td.requiredName
+                                if entry.lastName
+                                    | #{entry.lastName}
+                                    if entry.firstName
+                                        | , #{entry.firstName}
+
+                            td.requiredNomisId
+                                if entry.offenderNo
+                                    | #{entry.offenderNo}
+
+                            td.requiredEstablishment
+                                if entry.agencyLocationDesc
+                                    | #{entry.agencyLocationDesc}
+
+                            td.requiredDischargeDate
+                                if entry.releaseDate
+                                    | #{moment(entry.releaseDate).format('DD/MM/YYYY')}
+
+        if !required && !sent
             h2.heading-medium No upcoming releases

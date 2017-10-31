@@ -66,5 +66,19 @@ module.exports = {
 
             getCollection(sql, null, resolve, reject);
         });
+    },
+
+    updateStatus: function(nomisId, status) {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE LICENCES SET STATUS = @status 
+                         WHERE NOMIS_ID = @nomisId`;
+
+            const parameters = [
+                {column: 'status', type: TYPES.VarChar, value: status},
+                {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
+            ];
+
+            addRow(sql, parameters, resolve, reject);
+        });
     }
 };
