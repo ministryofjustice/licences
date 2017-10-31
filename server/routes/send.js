@@ -23,8 +23,6 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
 
         const nomisId = req.body.nomisId;
 
-        console.log(nomisId)
-
         const existingLicence = await licenceService.getLicence(nomisId);
 
         if (existingLicence.length === 0) {
