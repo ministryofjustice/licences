@@ -1,6 +1,6 @@
 const {
     request,
-    sinon,
+    sandbox,
     expect,
     appSetup
 } = require('../supertestSetup');
@@ -8,13 +8,14 @@ const {
 const createLicenceDetailsRoute = require('../../server/routes/licenceDetails');
 
 const loggerStub = {
-    debug: sinon.stub()
-};
-const serviceStub = {
-    getLicence: sinon.stub()
+    debug: sandbox.stub()
 };
 
-const app = appSetup(createLicenceDetailsRoute({licenceService: serviceStub, logger: loggerStub}));
+const licenceServiceStub = {
+    getLicence: sandbox.stub().returnsPromise().resolves([{}])
+};
+
+const app = appSetup(createLicenceDetailsRoute({licenceService: licenceServiceStub, logger: loggerStub}));
 
 describe('GET /licenceDetails/:prisonNumber', () => {
     it('calls getLicenceDetails from licenceDetailsService', () => {
@@ -23,7 +24,7 @@ describe('GET /licenceDetails/:prisonNumber', () => {
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {
-                expect(serviceStub.getLicence.callCount).to.equal(1);
+                expect(licenceServiceStub.getLicence.callCount).to.equal(1);
             });
 
     });
