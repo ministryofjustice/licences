@@ -2,7 +2,6 @@ const config = require('../config.js');
 const {getCollection} = require('./dataAccess/dbMethods');
 const logger = require('../../log.js');
 
-const url = require('url');
 const superagent = require('superagent');
 
 const generateApiGatewayToken = require('../authentication/apiGateway');
