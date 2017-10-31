@@ -7,7 +7,7 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Name of person
-                        div.column-two-thirds
+                        div#reportName.column-two-thirds
                             if reportingInstructions.name
                                 | #{reportingInstructions.name}
 
@@ -15,7 +15,7 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Address
-                        div.column-two-thirds
+                        div#reportAddress.column-two-thirds
                             if reportingInstructions.address1
                                 span.block #{reportingInstructions.address1}
                             if reportingInstructions.address2
@@ -30,7 +30,7 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Contact number
-                        div.column-two-thirds
+                        div#reportContactNumber.column-two-thirds
                             if reportingInstructions.telephone
                                 | #{reportingInstructions.telephone}
 
@@ -38,7 +38,7 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Date and time
-                        div.column-two-thirds
+                        div#reportDateTime.column-two-thirds
                             if reportingInstructions.date
                                 | #{reportingInstructions.date}
                             if reportingInstructions.time
