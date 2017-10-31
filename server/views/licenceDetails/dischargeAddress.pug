@@ -6,7 +6,7 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Address
-                        div.column-two-thirds
+                        div#dischargeAddress.column-two-thirds
                             if dischargeAddress.address1
                                 span.block #{dischargeAddress.address1}
                             if dischargeAddress.address2
@@ -20,7 +20,7 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Contact name
-                        div.column-two-thirds
+                        div#dischargeContactName.column-two-thirds
                             if dischargeAddress.contact
                                 | #{dischargeAddress.contact}
 
@@ -28,7 +28,7 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Contact number
-                        div.column-two-thirds
+                        div#dischargeContactNumber.column-two-thirds
                             if dischargeAddress.contactNumber
                                 | #{dischargeAddress.contactNumber}
 
@@ -36,7 +36,7 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Home address?
-                        div.column-two-thirds
+                        div#dischargeHomeAddress.column-two-thirds
                             if dischargeAddress.homeAddress
                                 | #{dischargeAddress.homeAddress}
 
@@ -44,6 +44,6 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Reason for request
-                        div.column-two-thirds
+                        div#dischargeReason.column-two-thirds
                             if dischargeAddress.reason
                                 | #{dischargeAddress.reason}
