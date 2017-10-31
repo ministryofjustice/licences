@@ -53,7 +53,7 @@ const licenceModel = {
         address2: '',
         address3: '',
         postCode: '',
-        contactNumber: '',
+        telephone: '',
         date: '',
         time: ''
     }
