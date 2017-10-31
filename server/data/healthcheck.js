@@ -2,6 +2,7 @@ const config = require('../config.js');
 const {getCollection} = require('./dataAccess/dbMethods');
 const logger = require('../../log.js');
 
+const url = require('url');
 const superagent = require('superagent');
 
 const generateApiGatewayToken = require('../authentication/apiGateway');
@@ -23,17 +24,17 @@ function nomisApiCheck() {
         const gwToken = process.env.NODE_ENV === 'test' ? 'dummy' : `Bearer ${generateApiGatewayToken()}`;
 
         superagent
-            .get(`${config.nomis.apiUrl}/info/health`)
+            .get(`${config.nomis.apiUrl}/api/info/health`)
             .set('Authorization', gwToken)
             .timeout({
-                response: 2000,
-                deadline: 2500
+                response: 4000,
+                deadline: 4500
             })
             .end((error, result) => {
                 try {
                     if (error) {
                         logger.error(error, 'Error calling Nomis API');
-                        return reject(error.status);
+                        return reject(`${error.status} | ${error.code}`);
                     }
 
                     if (result.status === 200) {
