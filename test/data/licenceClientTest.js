@@ -231,5 +231,33 @@ describe('licenceClient', () => {
             expect(getCollectionStub).to.have.callCount(1);
         });
     });
+
+    describe('updateStatus', () => {
+        addRowStub.callsArgWith(2);
+
+        it('should pass in the correct sql', () => {
+
+            const expectedUpdate = 'SET STATUS = @status';
+            const expectedWhere = 'WHERE NOMIS_ID = @nomisId';
+
+            licencesProxy().updateStatus('ABC123', 'NEW_STATUS');
+            const sql = addRowStub.getCalls()[0].args[0];
+            expect(sql).to.include(expectedUpdate);
+            expect(sql).to.include(expectedWhere);
+        });
+
+        it('should pass in the correct parameters', () => {
+
+            const expectedParameters = [
+                {column: 'status', type: TYPES.VarChar, value: 'NEW_STATUS'},
+                {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'}
+            ];
+
+            licencesProxy().updateStatus('ABC123', 'NEW_STATUS');
+            const params = addRowStub.getCalls()[0].args[1];
+            expect(params).to.eql(expectedParameters);
+        });
+
+    });
 });
 

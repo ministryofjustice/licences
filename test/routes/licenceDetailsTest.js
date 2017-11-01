@@ -6,6 +6,8 @@ const {
 } = require('../supertestSetup');
 
 const createLicenceDetailsRoute = require('../../server/routes/licenceDetails');
+const auth = require('../mockAuthentication');
+const authenticationMiddleware = auth.authenticationMiddleware;
 
 const loggerStub = {
     debug: sandbox.stub()
@@ -15,7 +17,11 @@ const licenceServiceStub = {
     getLicence: sandbox.stub().returnsPromise().resolves([{}])
 };
 
-const app = appSetup(createLicenceDetailsRoute({licenceService: licenceServiceStub, logger: loggerStub}));
+const app = appSetup(createLicenceDetailsRoute({
+    licenceService: licenceServiceStub,
+    logger: loggerStub,
+    authenticationMiddleware
+}));
 
 describe('GET /licenceDetails/:prisonNumber', () => {
     it('calls getLicenceDetails from licenceDetailsService', () => {

@@ -30,6 +30,7 @@ const createDischargeAddressRouter = require('../server/routes/dischargeAddress'
 const createAdditionalConditionsRouter = require('../server/routes/additionalConditions');
 const createLicenceDetailsRouter = require('../server/routes/licenceDetails');
 const createReportingRouter = require('../server/routes/reportingInstructions');
+const createSendRouter = require('../server/routes/send');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -218,8 +219,9 @@ module.exports = function createApp({
     app.use('/dischargeAddress/',
         createDischargeAddressRouter({logger, dischargeAddressService, licenceService, authenticationMiddleware}));
     app.use('/additionalConditions/', createAdditionalConditionsRouter({logger, conditionsService}));
-    app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService}));
+    app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
+    app.use('/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));
 
     // Error Handler
     app.use(function(req, res, next) {

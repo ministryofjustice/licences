@@ -51,5 +51,14 @@ module.exports = function createLicenceService(licenceClient) {
         }
     }
 
-    return {getLicence, createLicence, updateAddress, updateReportingInstructions};
+    async function send(nomisId) {
+        try {
+            return await licenceClient.updateStatus(nomisId, 'SENT');
+        } catch(error) {
+            console.error(error, 'Error during send licence');
+            throw error;
+        }
+    }
+
+    return {getLicence, createLicence, updateAddress, updateReportingInstructions, send};
 };
