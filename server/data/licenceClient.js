@@ -24,7 +24,7 @@ module.exports = {
     createLicence: function(nomisId, licence = {}, status = 'STARTED') {
         return new Promise((resolve, reject) => {
             const sql = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STATUS) ' +
-                        'VALUES (@nomisId, @licence, @status)';
+                'VALUES (@nomisId, @licence, @status)';
 
             const parameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId},
@@ -43,7 +43,7 @@ module.exports = {
                          WHERE NOMIS_ID=@nomisId`;
 
             const parameters = [
-                {column: 'section', type: TYPES.VarChar, value: '$.'+section},
+                {column: 'section', type: TYPES.VarChar, value: '$.' + section},
                 {column: 'object', type: TYPES.VarChar, value: JSON.stringify(object)},
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
             ];
@@ -70,8 +70,7 @@ module.exports = {
 
     updateStatus: function(nomisId, status) {
         return new Promise((resolve, reject) => {
-            const sql = `UPDATE LICENCES SET STATUS = @status 
-                         WHERE NOMIS_ID = @nomisId`;
+            const sql = 'UPDATE LICENCES SET STATUS = @status WHERE NOMIS_ID = @nomisId';
 
             const parameters = [
                 {column: 'status', type: TYPES.VarChar, value: status},
