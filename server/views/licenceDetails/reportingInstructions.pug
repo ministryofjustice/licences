@@ -7,37 +7,39 @@ div.grid-row
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Name of person
-                        div.column-two-thirds
-                            if reporting.name
-                                | #{reporting.name}
+                        div#reportName.column-two-thirds
+                            if reportingInstructions.name
+                                | #{reportingInstructions.name}
 
             div.column-full
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Address
-                        div.column-two-thirds
-                            if reporting.address.line1
-                                span.block #{reporting.address.line1}
-                            if reporting.address.line2
-                                span.block #{reporting.address.line2}
-                            if reporting.address.line3
-                                span.block #{reporting.address.line3}
-                            if reporting.address.postCode
-                                span.block #{reporting.address.postCode}
+                        div#reportAddress.column-two-thirds
+                            if reportingInstructions.address1
+                                span.block #{reportingInstructions.address1}
+                            if reportingInstructions.address2
+                                span.block #{reportingInstructions.address2}
+                            if reportingInstructions.address3
+                                span.block #{reportingInstructions.address3}
+                            if reportingInstructions.postCode
+                                span.block #{reportingInstructions.postCode}
 
 
             div.column-full
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Contact number
-                        div.column-two-thirds
-                            if reporting.contactNumber
-                                | #{reporting.contactNumber}
+                        div#reportContactNumber.column-two-thirds
+                            if reportingInstructions.telephone
+                                | #{reportingInstructions.telephone}
 
             div.column-full
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
                         div.column-one-third Date and time
-                        div.column-two-thirds
-                            if reporting.dateTime
-                                | #{reporting.dateTime}
+                        div#reportDateTime.column-two-thirds
+                            if reportingInstructions.date
+                                | #{reportingInstructions.date}
+                            if reportingInstructions.time
+                                |  #{reportingInstructions.time}
