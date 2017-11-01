@@ -22,12 +22,12 @@ block content
                 div.midMarginBottom
                     |Name
                     if(prisonerInfo.firstName || prisonerInfo.lastName)
-                        span#prisonerName.block.bold #{prisonerInfo.lastName}, #{prisonerInfo.firstName}
+                        span#prisonerName.block.bold #{setCase.capital(prisonerInfo.lastName)}, #{setCase.capital(prisonerInfo.firstName)}
 
                 div.midMarginBottom
                     | Aliases
                     if(prisonerInfo.aliases)
-                        span#prisonerAliases.block.bold #{prisonerInfo.aliases}
+                        span#prisonerAliases.block.bold #{setCase.capital(prisonerInfo.aliases)}
 
                 div.midMarginBottom
                     | Nomis number
@@ -43,12 +43,12 @@ block content
                 div.midMarginBottom
                     | Gender
                     if(prisonerInfo.physicalAttributes.gender)
-                        span#prisonerSex.block.bold #{prisonerInfo.physicalAttributes.gender}
+                        span#prisonerSex.block.bold #{setCase.capital(prisonerInfo.physicalAttributes.gender)}
 
                 div.midMarginBottom
                     | Location
                     if(prisonerInfo.assignedLivingUnitDesc)
-                        span#prisonerLocation.block.bold #{prisonerInfo.assignedLivingUnitDesc}
+                        span#prisonerLocation.block.bold #{setCase.capital(prisonerInfo.assignedLivingUnitDesc)}
 
         h2.heading-medium Key dates
 
