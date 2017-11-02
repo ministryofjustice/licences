@@ -34,7 +34,7 @@ module.exports = {
     },
 
     establishments: {
-        apiUrl: get('ESTABLISHMENTS_API_URL', 'http://localhost:9090'),
+        apiUrl: get('ESTABLISHMENTS_API_URL', 'http://licences-nomis-mocks.herokuapp.com'),
         timeout: {
             response: 2000,
             deadline: 2500
