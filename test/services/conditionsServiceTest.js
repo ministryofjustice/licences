@@ -5,7 +5,7 @@ describe('licenceDetailsService', () => {
 
     const licenceClient = {
         getStandardConditions: sandbox.stub().returnsPromise().resolves({a: 'b'}),
-        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'v'}}])
+        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'v'}, USER_INPUT: {}}])
     };
 
     const service = createConditionsService(licenceClient);
@@ -39,62 +39,19 @@ describe('licenceDetailsService', () => {
         });
 
         it('should return the conditions', () => {
-            return expect(service.getAdditionalConditions()).to.eventually.eql([{TEXT: {value: 'v'}}]);
+            const expected = [
+                {
+                    TEXT: {value: 'v'},
+                    USER_INPUT: {}
+                }
+            ];
+
+            return expect(service.getAdditionalConditions()).to.eventually.eql(expected);
         });
 
         it('should throw if error getting conditions', () => {
             licenceClient.getAdditionalConditions.rejects();
             return expect(service.getAdditionalConditions()).to.eventually.be.rejected();
         });
-
-        it('should add UI data to a condition', () => {
-            licenceClient.getAdditionalConditions.resolves([{TEXT: {value: 'text [INSERT NAME]'}}]);
-
-            const expected = [{
-                TEXT: {value: 'text [INSERT NAME]'},
-                FORM_ITEMS: [{label: 'Name', type: 'FREE_TEXT'}]
-            }];
-
-            return expect(service.getAdditionalConditions()).to.eventually.eql(expected);
-        });
-
-        it('should add each UI data to condition ', () => {
-            licenceClient.getAdditionalConditions.resolves([
-                {TEXT: {value: 'text [INSERT NAME] more text [INSERT AGE]'}}
-            ]);
-
-            const expected = [{
-                TEXT: {value: 'text [INSERT NAME] more text [INSERT AGE]'},
-                FORM_ITEMS: [{label: 'Name', type: 'FREE_TEXT'}, {label: 'Age', type: 'NUMBER'}]
-            }];
-
-            return expect(service.getAdditionalConditions()).to.eventually.eql(expected);
-        });
-
-        it('should add UI data to each condition ', () => {
-            licenceClient.getAdditionalConditions.resolves([
-                {TEXT: {value: 'text [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT]'}},
-                {TEXT: {value: 'text [QUANTITY HERE], f [WOMEN / MEN / WOMEN OR MEN] text'}}
-            ]);
-
-            const expected = [
-                {
-                    TEXT: {value: 'text [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT]'},
-                    FORM_ITEMS: [
-                        {label: 'Name of social services dept', type: 'FREE_TEXT'}
-                    ]
-                },
-                {
-                    TEXT: {value: 'text [QUANTITY HERE], f [WOMEN / MEN / WOMEN OR MEN] text'},
-                    FORM_ITEMS: [
-                        {label: 'Quantity', type: 'NUMBER'},
-                        {type: 'RADIO', options: ['WOMEN', 'MEN', 'WOMEN OR MEN']}
-                    ]
-                }
-            ];
-
-            return expect(service.getAdditionalConditions()).to.eventually.eql(expected);
-        });
     });
-
 });

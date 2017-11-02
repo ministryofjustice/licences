@@ -13,7 +13,13 @@ const loggerStub = {
 
 const conditionsServiceStub = {
     getStandardConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'hi'}}]),
-    getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'hi'}, ID: {value: 'ho'}}])
+    getAdditionalConditions: sandbox.stub().returnsPromise().resolves([
+        {
+            TEXT: {value: 'hi'},
+            ID: {value: 'ho'},
+            USER_INPUT: {}
+        }
+    ])
 };
 
 const app = appSetup(createAdditionalConditionsRoute({logger: loggerStub, conditionsService: conditionsServiceStub}));

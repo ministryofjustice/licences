@@ -39,6 +39,10 @@ a.button.button-secondary {
     padding-top: 10px;
 }
 
+.smallMarginTop {
+    margin-top: 10px;
+}
+
 .smallPaddingTopBottom {
     padding-top: 10px;
     padding-bottom: 10px;
@@ -82,6 +86,10 @@ a.button.button-secondary {
     border: solid $grey-1 2px;
     padding: 20px 0 0 0;
     margin-left: 15px;
+}
+
+.noLeftPaddingColumn {
+    padding: 0px 15px 0px 0px;
 }
 
 input.small {
@@ -129,10 +137,57 @@ input.verySmall {
     border: solid $grey-1 2px;
     margin: 10px 0;
     padding: 15px;
+
     div {
         position: relative;
     }
+
     label {
         padding: 5px 0 0 50px;
+        margin-right: 20px;
     }
+
+    [type=checkbox]+label::before {
+        top: 15px;
+        left: 15px;
+    }
+
+}
+
+.conditionForm {
+    background-color: $light-blue-25;
+    padding-left: 7px;
+    padding-right: 7px;
+
+    .form-control {
+        width: 100%;
+    }
+
+    .multiple-choice [type=radio]+label::before, .multiple-choice [type=checkbox]+label::before {
+        background-color: white;
+    }
+
+    label {
+        font-size: medium;
+    }
+
+    .multiple-choice label {
+        padding: 10px 10px 9px 5px;
+    }
+
+    .multiple-choice {
+        margin-right: 0px;
+        margin-bottom: 10px;
+    }
+
+    .inlineFormItem input {
+        width: 30%;
+        margin-left: 10px;
+
+    }
+
+    .linePaddingTop {
+        padding-top: 24px;
+    }
+
 }
