@@ -14,8 +14,8 @@ module.exports = {
     findById: function(agencyId) {
         const path = `${apiUrl}/establishments/${agencyId}`;
         return doGet(path);
-        }
-    };
+    }
+};
 
 async function doGet(path, query = {}, headers = {}) {
 
@@ -29,7 +29,7 @@ async function doGet(path, query = {}, headers = {}) {
 
         return result.body;
 
-    } catch(exception) {
+    } catch (exception) {
         logger.error('Error from ESTABLISHMENTS API: ' + exception);
         throw exception;
     }
