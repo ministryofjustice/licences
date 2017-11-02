@@ -39,6 +39,7 @@ const licenceModel = {
     lastName: '',
     nomisId: '',
     establishment: '',
+    agencyLocationId: '',
     dischargeDate: '',
     additionalConditions: [],
     dischargeAddress: {

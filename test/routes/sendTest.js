@@ -36,19 +36,19 @@ describe('POST /send/:nomisId', () => {
             .send({nomisId: 123})
             .expect(() => {
                 expect(licenceServiceStub.getLicence).to.be.calledOnce();
-                expect(licenceServiceStub.getLicence).to.be.calledWith(123);
+                expect(licenceServiceStub.getLicence).to.be.calledWith('123');
                 expect(licenceServiceStub.send).to.be.calledOnce();
-                expect(licenceServiceStub.send).to.be.calledWith(123);
+                expect(licenceServiceStub.send).to.be.calledWith('123');
             });
 
     });
 
-    it('redirects to tasklist', () => {
+    it('shows sent confirmation', () => {
         return request(app)
             .post('/1')
             .expect(302)
             .expect(res => {
-                expect(res.header['location']).to.eql('/');
+                expect(res.header['location']).to.eql('/sent/1');
             });
 
     });

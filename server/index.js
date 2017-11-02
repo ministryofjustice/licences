@@ -3,6 +3,7 @@ const logger = require('../log');
 const licenceClient = require('./data/licenceClient');
 const deliusClient = require('./data/deliusClient');
 const nomisClientBuilder = require('./data/nomisClientBuilder');
+const establishmentsClient = require('./data/establishmentsClient');
 
 const createSignInService = require('./authentication/signIn');
 const createLicenceService = require('./services/licenceService');
@@ -12,7 +13,7 @@ const createTasklistService = require('./services/tasklistService');
 const createConditionsService = require('./services/conditionsService');
 
 const signInService = createSignInService();
-const licenceService = createLicenceService(licenceClient);
+const licenceService = createLicenceService(licenceClient, establishmentsClient);
 const conditionsService = createConditionsService(licenceClient);
 const dischargeAddressService = createDischargeAddressService(nomisClientBuilder, licenceClient);
 const prisonerDetailsService = createPrisonerDetailsService(nomisClientBuilder);

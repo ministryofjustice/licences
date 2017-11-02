@@ -4,11 +4,12 @@ const {
     createReportingInstructionsObject
 } = require('../utils/licenceFactory');
 
-module.exports = function createLicenceService(licenceClient) {
+module.exports = function createLicenceService(licenceClient, establishmentsClient) {
+
     async function getLicence(nomisId) {
         try {
             return await licenceClient.getLicence(nomisId);
-        } catch(error) {
+        } catch (error) {
             throw error;
         }
     }
@@ -19,7 +20,7 @@ module.exports = function createLicenceService(licenceClient) {
 
         try {
             return await licenceClient.createLicence(nomisId, licence, 'STARTED');
-        } catch(error) {
+        } catch (error) {
             console.error(error, 'Error during create licence');
             throw error;
         }
@@ -32,7 +33,7 @@ module.exports = function createLicenceService(licenceClient) {
 
         try {
             return await licenceClient.updateSection('dischargeAddress', nomisId, address);
-        } catch(error) {
+        } catch (error) {
             console.error(error, 'Error during update address');
             throw error;
         }
@@ -45,7 +46,7 @@ module.exports = function createLicenceService(licenceClient) {
 
         try {
             return await licenceClient.updateSection('reportingInstructions', nomisId, instructions);
-        } catch(error) {
+        } catch (error) {
             console.error(error, 'Error during update reporting instructions');
             throw error;
         }
@@ -54,11 +55,30 @@ module.exports = function createLicenceService(licenceClient) {
     async function send(nomisId) {
         try {
             return await licenceClient.updateStatus(nomisId, 'SENT');
-        } catch(error) {
+        } catch (error) {
             console.error(error, 'Error during send licence');
             throw error;
         }
     }
 
-    return {getLicence, createLicence, updateAddress, updateReportingInstructions, send};
+    async function getEstablishment(nomisId) {
+        try {
+            const record = await licenceClient.getLicence(nomisId);
+
+            return await establishmentsClient.findById(record.licence.agencyLocationId);
+
+        } catch (error) {
+            console.error(error, 'Error during send licence');
+            throw error;
+        }
+    }
+
+    return {
+        getLicence,
+        createLicence,
+        updateAddress,
+        updateReportingInstructions,
+        send,
+        getEstablishment
+    };
 };

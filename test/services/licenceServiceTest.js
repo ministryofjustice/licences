@@ -3,6 +3,8 @@ const {expect, sandbox} = require('../testSetup');
 
 describe('licenceDetailsService', () => {
 
+    const aLicence = {a: 'b', licence: {agencyLocationId: '123'}};
+
     const licenceClient = {
         getLicence: sandbox.stub().returnsPromise().resolves({a: 'b'}),
         createLicence: sandbox.stub().returnsPromise().resolves('abc'),
@@ -10,7 +12,11 @@ describe('licenceDetailsService', () => {
         updateStatus: sandbox.stub().returnsPromise().resolves()
     };
 
-    const service = createLicenceService(licenceClient);
+    const establishmentsClient = {
+        findById: sandbox.stub().returnsPromise().resolves({a: 'b'})
+    };
+
+    const service = createLicenceService(licenceClient, establishmentsClient);
 
     afterEach(() => {
         sandbox.reset();
@@ -108,6 +114,25 @@ describe('licenceDetailsService', () => {
         it('should throw if error during update status', () => {
             licenceClient.updateStatus.rejects();
             return expect(service.send('ab1')).to.eventually.be.rejected();
+        });
+    });
+
+    describe('getEstablishment', () => {
+        it('should call getEstablishment from the establishments client', async () => {
+
+            licenceClient.getLicence.resolves(aLicence);
+
+            await service.getEstablishment('ab1');
+
+            expect(licenceClient.getLicence).to.be.calledOnce();
+            expect(licenceClient.getLicence).to.be.calledWith('ab1');
+            expect(establishmentsClient.findById).to.be.calledOnce();
+            expect(establishmentsClient.findById).to.be.calledWith('123');
+        });
+
+        it('should throw if error during findById', () => {
+            establishmentsClient.findById.rejects();
+            return expect(service.getEstablishment('ab1')).to.eventually.be.rejected();
         });
     });
 });
