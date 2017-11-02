@@ -26,9 +26,9 @@ describe('taskListService', () => {
         deliusClient.getPrisonersFor.resolves('1, 2, 3');
 
         nomisClient.getUpcomingReleasesFor.resolves([
-            {offenderNo: '1'},
-            {offenderNo: '2'},
-            {offenderNo: '3'}
+            {offenderNo: '1', releaseDate: '1'},
+            {offenderNo: '2', releaseDate: '1'},
+            {offenderNo: '3', releaseDate: '1'}
         ]);
 
         dbClient.getLicences.resolves([
@@ -78,11 +78,13 @@ describe('taskListService', () => {
                         required: [
                             {
                                 offenderNo: '1',
+                                releaseDate: '1',
                                 status: 'UNSTARTED'
                             },
                             {
                                 licenceId: 'ab',
                                 offenderNo: '2',
+                                releaseDate: '1',
                                 status: 'STARTED'
                             }
                         ],
@@ -90,6 +92,7 @@ describe('taskListService', () => {
                             {
                                 licenceId: 'cd',
                                 offenderNo: '3',
+                                releaseDate: '1',
                                 status: 'SENT'
                             }
                         ]

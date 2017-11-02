@@ -10,6 +10,10 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const bookings = await nomisClient.getBookings(nomisId);
             logger.info(`got bookings size: ${bookings.length}`);
 
+            if(bookings.length <= 0) {
+                throw new Error(`No bookings found for ${nomisId}`);
+            }
+
             const booking = bookings[0];
 
             const bookingDetail = await nomisClient.getBooking(booking.bookingId);

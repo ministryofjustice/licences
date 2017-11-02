@@ -243,9 +243,9 @@ function handleKnownErrors(error, req, res, next) {
 
     switch (error.status) {
         case 401:
-            return res.render('login');
+            return res.redirect('/logout');
         case 403:
-            return res.render('login');
+            return res.redirect('/logout');
         default:
             next(error);
     }

@@ -20,16 +20,20 @@ module.exports = function createTasklistService(deliusClient, nomisClientBuilder
             logger.info('Got upcoming releases:');
             logger.info(upcomingReleases);
 
-            if (isEmpty(upcomingReleases)) {
+            const filteredUpcomingReleases = upcomingReleases.filter(release => {
+               return release.releaseDate && true; // && todo filter by date;
+            });
+
+            if (isEmpty(filteredUpcomingReleases)) {
                 logger.info('No upcoming releases');
                 return {};
             }
 
-            const licences = await dbClient.getLicences(getOffenderNomisIds(upcomingReleases));
+            const licences = await dbClient.getLicences(getOffenderNomisIds(filteredUpcomingReleases));
             logger.info('Got active licences:');
             logger.info(licences);
 
-            return parseTasklistInfo(upcomingReleases, licences);
+            return parseTasklistInfo(filteredUpcomingReleases, licences);
 
         } catch (error) {
             logger.error('Error during getDashboardDetail: ', error.message);

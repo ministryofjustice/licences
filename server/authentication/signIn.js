@@ -14,6 +14,14 @@ async function signIn(username, password) {
             .send({username, password})
             .timeout({response: 2000, deadline: 2500});
 
+        logger.info(`Elite2 login result: [${loginResult.status}]`);
+
+        if(loginResult.status !== 200 && loginResult.status !== 201) {
+            logger.info(`Elite2 login failed for [${username}]`);
+            logger.warn(loginResult.body);
+            throw new Error('Login error');
+        }
+
         logger.info(`Elite2 login success for [${username}]`);
         const eliteAuthorisationToken = loginResult.body.token;
 
