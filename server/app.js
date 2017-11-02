@@ -31,6 +31,7 @@ const createAdditionalConditionsRouter = require('../server/routes/additionalCon
 const createLicenceDetailsRouter = require('../server/routes/licenceDetails');
 const createReportingRouter = require('../server/routes/reportingInstructions');
 const createSendRouter = require('../server/routes/send');
+const createSentRouter = require('../server/routes/sent');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -222,6 +223,7 @@ module.exports = function createApp({
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));
+    app.use('/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
 
     // Error Handler
     app.use(function(req, res, next) {

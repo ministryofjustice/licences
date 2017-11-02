@@ -56,22 +56,22 @@ block content
                         th
                 tbody
                     each entry in sent
-                        tr.infoRequired
-                            td.requiredName
+                        tr.awaitingApproval
+                            td.awaitingName
                                 if entry.lastName
                                     | #{entry.lastName}
                                     if entry.firstName
                                         | , #{entry.firstName}
 
-                            td.requiredNomisId
+                            td.awaitingNomisId
                                 if entry.offenderNo
                                     | #{entry.offenderNo}
 
-                            td.requiredEstablishment
+                            td.awaitingEstablishment
                                 if entry.agencyLocationDesc
                                     | #{entry.agencyLocationDesc}
 
-                            td.requiredDischargeDate
+                            td.awaitingDischargeDate
                                 if entry.releaseDate
                                     | #{moment(entry.releaseDate).format('DD/MM/YYYY')}
 

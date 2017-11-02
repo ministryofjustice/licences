@@ -13,26 +13,13 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
     });
 
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /send');
+        logger.debug('GET /sent');
 
-        res.render('send/index', {nomisId: req.params.nomisId});
+        const agency = await licenceService.getEstablishment(req.params.nomisId);
+
+        res.render('confirmation/index', {agency});
     }));
 
-    router.post('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('POST /send');
-
-        const nomisId = req.params.nomisId;
-
-        const existingLicence = await licenceService.getLicence(nomisId);
-
-        if (existingLicence.length === 0) {
-            throw new Error('No such licence');
-        }
-
-        await licenceService.send(nomisId);
-
-        res.redirect('/sent/'+nomisId);
-    }));
 
     return router;
 };

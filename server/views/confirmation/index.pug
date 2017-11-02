@@ -1,0 +1,17 @@
+extends ../layout
+
+block content
+    p
+    div.column-two-thirds
+        div.confirm-banner
+            div.heading-large Discharge information sent
+
+        p The information has been sent to:
+
+        div#agencyDetails.block.bold Offender Management Unit
+            div#agencyName #{agency.name}
+            div#agencyTel Tel: #{agency.telephone}
+        p
+        a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+
+
