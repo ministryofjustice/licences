@@ -32,7 +32,7 @@ describe('nomisClient', function() {
                 .get(`/offender-releases?offenderNo=a&offenderNo=b&offenderNo=c`)
                 .reply(function(uri, requestBody) {
                     // The documented way to specify request headers doesn't work so this is a workaround
-                    if (this.req.headers['page-count'] === 3) { // eslint-disable-line
+                    if (this.req.headers['page-limit'] === 3) { // eslint-disable-line
                         return 200, {key: 'value'};
                     }
                     return null;

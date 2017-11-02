@@ -17,7 +17,7 @@ module.exports = function(token) {
         getUpcomingReleasesFor: function(nomisIds) {
             const path = `${apiUrl}/offender-releases`;
             const query = {offenderNo: nomisIds};
-            const headers = {'Page-Count': nomisIds.length};
+            const headers = {'Page-Limit': nomisIds.length};
             return nomisGet(path, query, token, headers);
         },
 
