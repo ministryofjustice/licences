@@ -4,8 +4,8 @@ block content
 
     h1.heading-large Additional conditions
 
-    div#conditionsInstructions.grid-row.paddingBottom.largeMarginBottom
-        div.column-two-thirds
+    div#conditionsInstructions.paddingBottom.largeMarginBottom
+        div.grid-row
             div.paddingBottom.borderBottom.midMarginBottom
                 p If the offender requires additional conditions adding to their licence select them below.
                 span.block.smallPaddingBottom
@@ -13,11 +13,17 @@ block content
 
                 a.button.button-secondary(href="/reporting/"+nomisId role="button") No additional conditions required
 
-            for condition in conditions
-                div.multiple-choice.conditionSelector.column-full
-                    div
+        for condition in conditions
+            div.grid-row
+                div.column-two-thirds.noLeftPaddingColumn
+                    div.multiple-choice.conditionSelector.column-full.noLeftPaddingColumn
                         input(type="checkbox" id="check-"+condition.ID.value value=condition.ID.value name="additionalConditions")
                         label(for="check-"+condition.ID.value) #{condition.TEXT.value}
+
+                if condition.USER_INPUT.value
+                    div.column-one-third.conditionForm.smallMarginTop.smallPaddingTop
+                        include ./formBuilder
+
 
     div#continueBtns.inlineButtons
 

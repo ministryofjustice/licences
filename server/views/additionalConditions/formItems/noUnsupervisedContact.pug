@@ -1,0 +1,20 @@
+div.form-group.inline
+    div.multiple-choice
+        input(id="unsupervisedContactAny" type="radio" name="femaleMaleGroup" value="Any")
+        label(for="unsupervisedContactAny") Any
+
+    div.multiple-choice
+        input(id="unsupervisedContactFemale" type="radio" name="femaleMaleGroup" value="Female")
+        label(for="unsupervisedContactFemale") Female
+
+    div.multiple-choice
+        input(id="unsupervisedContactMale" type="radio" name="femaleMaleGroup" value="Male")
+        label(for="unsupervisedContactMale") Male
+
+div.form-group.inlineFormItem
+    label(for='unsupervisedContactAge') Age
+    input(type='number' name='unsupervisedContactAge' id='unsupervisedContactAge' class='form-control')
+
+div.form-group
+    label(for='unsupervisedContactSocial') Social services dept.
+    input(type='text' name='unsupervisedContactSocial' id='unsupervisedContactSocial' class='form-control')

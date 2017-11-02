@@ -1,0 +1,26 @@
+div.form-group
+    label(for='reportingAddress') Approved premises / police stations address
+    textarea(name='reportingAddress' id='reportingAddress' class='form-control' rows='3')
+
+div.grid-row
+    div.column-one-half
+        label(for='reportingTime') At (time)
+        input(type='text' name='reportingTime' id='reportingTime' class='form-control')
+
+    div.column-one-quarter.form-group.linePaddingTop
+        div.multiple-choice
+            input(id='reportingDaily' name='reportingDaily' type='checkbox' value='yes')
+            label(for='reportingDaily') Daily
+
+div.form-group.inline
+    div.multiple-choice
+        input(id="reportingWeekly" type="radio" name="reportingFrequencyGroup" value="Weekly")
+        label(for="reportingWeekly") Weekly
+
+    div.multiple-choice
+        input(id="reportingMonthly" type="radio" name="reportingFrequencyGroup" value="Monthly")
+        label(for="reportingMonthly") Monthly
+
+    div.multiple-choice
+        input(id="reportingOther" type="radio" name="reportingFrequencyGroup" value="Other")
+        label(for="reportingOther") Other

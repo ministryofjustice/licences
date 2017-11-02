@@ -47,15 +47,18 @@ exports.seed = knex =>
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Attend all appointments arranged for you with [INSERT NAME], a psychiatrist / psychologist / medical practitioner"
+                    TEXT: "Attend all appointments arranged for you with [INSERT NAME], a psychiatrist / psychologist / medical practitioner",
+                    USER_INPUT: "appointmentName"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Receive home visits from [INSERT NAME] Mental Health Worker"
+                    TEXT: "Receive home visits from [INSERT NAME] Mental Health Worker",
+                    USER_INPUT: "mentalHealthName"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug"
+                    TEXT: "Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug",
+                    USER_INPUT: "appointmentDetails"
                 },
                 {
                     TYPE: "ADDITIONAL",
@@ -63,15 +66,19 @@ exports.seed = knex =>
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to seek to approach or communicate with [INSERT NAME OF VICTIM AND / OR FAMILY MEMBERS] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT]."
+                    TEXT: "Not to seek to approach or communicate with [INSERT NAME OF VICTIM AND / OR FAMILY MEMBERS] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT].",
+                    USER_INPUT: "victimDetails"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to have unsupervised contact with  [ANY / ANY FEMALE / ANY MALE] children under the age of [INSERT AGE] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT] except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life."
+                    TEXT: "Not to have unsupervised contact with  [ANY / ANY FEMALE / ANY MALE] children under the age of [INSERT AGE] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT] except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.",
+                    USER_INPUT: "noUnsupervisedContact"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to contact or associate with [NAMED OFFENDER(S) / NAMED INDIVIDUAL(S)] without the prior approval of your supervising officer."
+                    TEXT: "Not to contact or associate with [NAMED OFFENDER(S) / NAMED INDIVIDUAL(S)] without the prior approval of your supervising officer.",
+                    USER_INPUT: "noContactOffenders"
+
                 },
                 {
                     TYPE: "ADDITIONAL",
@@ -83,15 +90,18 @@ exports.seed = knex =>
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to associate with any person currently or formerly associated with [NAME OR DESCRIBE SPECIFIC GROUPS OR ORGANISATIONS] without the prior approval of your supervising officer."
+                    TEXT: "Not to associate with any person currently or formerly associated with [NAME OR DESCRIBE SPECIFIC GROUPS OR ORGANISATIONS] without the prior approval of your supervising officer.",
+                    USER_INPUT: "groupsOrOrganisations"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your alcohol / sexual / violent / gambling / solvent abuse / anger / debt / prolific / offending behaviour problems at the [NAME OF COURSE / CENTRE]."
+                    TEXT: "To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your alcohol / sexual / violent / gambling / solvent abuse / anger / debt / prolific / offending behaviour problems at the [NAME OF COURSE / CENTRE].",
+                    USER_INPUT: "courseOrCentre"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to undertake work or other organised activity which will involve a person under the age of [INSERT AGE], either on a paid or unpaid basis without the prior approval of your supervising officer"
+                    TEXT: "Not to undertake work or other organised activity which will involve a person under the age of [INSERT AGE], either on a paid or unpaid basis without the prior approval of your supervising officer,",
+                    USER_INPUT: "noWorkWithAge"
                 },
                 {
                     TYPE: "ADDITIONAL",
@@ -123,19 +133,23 @@ exports.seed = knex =>
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to own or possess any [SPECIFIC ITEMS] without the prior permission of your supervising officer."
+                    TEXT: "Not to own or possess any [SPECIFIC ITEMS] without the prior permission of your supervising officer.",
+                    USER_INPUT: "noSpecificItems"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to have in your possession cash (in any currency) in excess of [QUANTITY HERE] without the prior permission of your supervising officer."
+                    TEXT: "Not to have in your possession cash (in any currency) in excess of [QUANTITY HERE] without the prior permission of your supervising officer.",
+                    USER_INPUT: "noCurrencyQuantity"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Provide your supervising officer with details [SUCH AS MAKE, MODEL, COLOUR, REGISTRATION] of any vehicle you own, hire for more than a short journey or have regular use of, prior to any journey taking place."
+                    TEXT: "Provide your supervising officer with details [SUCH AS MAKE, MODEL, COLOUR, REGISTRATION] of any vehicle you own, hire for more than a short journey or have regular use of, prior to any journey taking place.",
+                    USER_INPUT: "vehicleDetails"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Notify your supervising officer of any developing intimate relationships with [WOMEN / MEN / WOMEN OR MEN]."
+                    TEXT: "Notify your supervising officer of any developing intimate relationships with [WOMEN / MEN / WOMEN OR MEN].",
+                    USER_INPUT: "intimateGender"
                 },
                 {
                     TYPE: "ADDITIONAL",
@@ -167,23 +181,28 @@ exports.seed = knex =>
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately."
+                    TEXT: "Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.",
+                    USER_INPUT: "confinedDetails"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Confine yourself to remain at [CURFEW ADDRESS] initially from [START OF CURFEW HOURS] until [END OF CURFEW HOURS] each day, and, thereafter, for such a period as may be reasonably notified to you by your supervising officer; and comply with such arrangements as may be reasonably put in place and notified to you by your supervising officer so as to allow for your whereabouts and your compliance with your curfew requirement be monitored [WHETHER BY ELECTRONIC MEANS INVOLVING YOUR WEARING AN ELECTRONIC TAG OR OTHERWISE]."
+                    TEXT: "Confine yourself to remain at [CURFEW ADDRESS] initially from [START OF CURFEW HOURS] until [END OF CURFEW HOURS] each day, and, thereafter, for such a period as may be reasonably notified to you by your supervising officer; and comply with such arrangements as may be reasonably put in place and notified to you by your supervising officer so as to allow for your whereabouts and your compliance with your curfew requirement be monitored [WHETHER BY ELECTRONIC MEANS INVOLVING YOUR WEARING AN ELECTRONIC TAG OR OTHERWISE].",
+                    USER_INPUT: "curfewDetails"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to enter the area of [CLEARLY SPECIFIED AREA], as defined by the attached map without the prior approval of your supervising officer."
+                    TEXT: "Not to enter the area of [CLEARLY SPECIFIED AREA], as defined by the attached map without the prior approval of your supervising officer.",
+                    USER_INPUT: "exclusionArea"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to enter [NAME/TYPE OF PREMISES / ADDRESS / ROAD] without the prior approval of your supervising officer."
+                    TEXT: "Not to enter [NAME/TYPE OF PREMISES / ADDRESS / ROAD] without the prior approval of your supervising officer.",
+                    USER_INPUT: "noEnterPlace"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to enter or remain in sight of any [CHILDREN’S PLAY AREA, SWIMMING BATHS, SCHOOL ETC] without the prior approval of your supervising officer."
+                    TEXT: "Not to enter or remain in sight of any [CHILDREN’S PLAY AREA, SWIMMING BATHS, SCHOOL ETC] without the prior approval of your supervising officer.",
+                    USER_INPUT: "notInSightOf"
                 },
                 {
                     TYPE: "ADDITIONAL",
@@ -191,11 +210,13 @@ exports.seed = knex =>
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] at [TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately."
+                    TEXT: "Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] at [TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.",
+                    USER_INPUT: "reportingDetails"
                 },
                 {
                     TYPE: "ADDITIONAL",
-                    TEXT: "Not to consume alcohol [in volumes that exceed a specified limit] without the prior approval of the supervising officer."
+                    TEXT: "Not to consume alcohol [in volumes that exceed a specified limit] without the prior approval of the supervising officer.",
+                    USER_INPUT: "alcoholLimit"
                 }
 
             ])
