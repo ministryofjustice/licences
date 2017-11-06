@@ -1,7 +1,8 @@
 const {
     createLicenceObject,
     createAddressObject,
-    createReportingInstructionsObject
+    createReportingInstructionsObject,
+    createConditionsObject
 } = require('../utils/licenceFactory');
 
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
@@ -52,6 +53,19 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
+    async function updateLicenceConditions(data = {}) {
+        try {
+            const nomisId = data.nomisId;
+            const selectedConditions = await licenceClient.getAdditionalConditions(data.additionalConditions);
+            const conditions = createConditionsObject(selectedConditions, data);
+
+            return await licenceClient.updateSection('additionalConditions', nomisId, conditions);
+        } catch (error) {
+            console.error(error, 'Error during update additional conditions');
+            throw error;
+        }
+    }
+
     async function send(nomisId) {
         try {
             return await licenceClient.updateStatus(nomisId, 'SENT');
@@ -78,6 +92,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         createLicence,
         updateAddress,
         updateReportingInstructions,
+        updateLicenceConditions,
         send,
         getEstablishment
     };

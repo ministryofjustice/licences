@@ -20,9 +20,18 @@ const conditionsServiceStub = {
             USER_INPUT: {}
         }
     ])
+
 };
 
-const app = appSetup(createAdditionalConditionsRoute({logger: loggerStub, conditionsService: conditionsServiceStub}));
+const licenceServiceStub = {
+    updateLicenceConditions: sandbox.stub().returnsPromise().resolves()
+};
+
+const app = appSetup(createAdditionalConditionsRoute({
+    logger: loggerStub,
+    conditionsService: conditionsServiceStub,
+    licenceService: licenceServiceStub
+}));
 
 describe('GET /additionalConditions/:prisonNumber', () => {
     it('renders and HTML output', () => {
@@ -45,6 +54,28 @@ describe('GET /additionalConditions/standard/:prisonNumber', () => {
             .expect('Content-Type', /html/)
             .expect(res => {
                 expect(conditionsServiceStub.getStandardConditions).to.be.calledOnce();
+            });
+
+    });
+});
+
+describe('POST /additionalConditions/:prisonNumber', () => {
+
+    const formResponse = {
+        nomisId: '123',
+        additionalConditions: ['mentalHealthName'],
+        mentalHealthName: 'response'
+    };
+
+    it('calls updateLicenceConditions from licenceService', () => {
+        return request(app)
+            .post('/1')
+            .send(formResponse)
+            .expect(302)
+            .expect(res => {
+                expect(licenceServiceStub.updateLicenceConditions).to.be.calledOnce();
+                expect(licenceServiceStub.updateLicenceConditions).to.be.calledWith(formResponse);
+                expect(res.header['location']).to.include('reporting');
             });
 
     });

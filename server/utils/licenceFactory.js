@@ -1,7 +1,8 @@
 module.exports = {
     createLicenceObject,
     createAddressObject,
-    createReportingInstructionsObject
+    createReportingInstructionsObject,
+    createConditionsObject
 };
 
 function createLicenceObject(object) {
@@ -33,6 +34,30 @@ const filteredToAttributes = (input, acceptedKeys) => {
     }, {});
 };
 
+function createConditionsObject(selectedConditions, formInputs) {
+
+    return selectedConditions.reduce((conditions, condition) => {
+
+        const conditionAttributes = formObjects.get(condition.USER_INPUT.value);
+        if (!conditionAttributes) {
+            return {...conditions, [condition.ID.value]: {}};
+        }
+
+        return {...conditions, [condition.ID.value]: inputsFor(conditionAttributes, formInputs)};
+
+    }, {});
+}
+
+const inputsFor = (conditionAttributes, formInputs) => {
+
+    return conditionAttributes.reduce((conditionDataObject, formItem) => {
+        return {
+            ...conditionDataObject,
+            [formItem]: formInputs[formItem]
+        };
+    }, {});
+};
+
 // licence structure example
 const licenceModel = {
     firstName: '',
@@ -59,3 +84,28 @@ const licenceModel = {
         time: ''
     }
 };
+
+// form items for condition
+const formObjects = new Map([
+    ['appointmentName', ['appointmentName']],
+    ['mentalHealthName', ['mentalHealthName']],
+    ['appointmentDetails', ['appointmentDate', 'appointmentTime']],
+    ['victimDetails', ['victimFamilyMembers', 'socialServicesDept']],
+    ['noUnsupervisedContact', ['unsupervisedContactGender', 'unsupervisedContactAge', 'unsupervisedContactSocial']],
+    ['noContactOffenders', ['noContactOffenders']],
+    ['groupsOrOrganisations', ['groupsOrOrganisation']],
+    ['courseOrCentre', ['courseOrCentre']],
+    ['noWorkWithAge', ['noWorkWithAge']],
+    ['noSpecificItems', ['noSpecificItems']],
+    ['noCurrencyQuantity', ['cashQuantity']],
+    ['vehicleDetails', ['vehicleDetails']],
+    ['intimateGender', ['intimateGender']],
+    ['confinedDetails', ['confinedTo', 'confinedFrom', 'confinedReviewFrequency']],
+    ['curfewDetails', ['curfewAddress', 'curfewFrom', 'curfewTo', 'curfewTagRequired']],
+    ['exclusionArea', ['exclusionArea']],
+    ['noEnterPlace', ['noEnterPlace']],
+    ['notInSightOf', ['notInSightOf']],
+    ['reportingDetails', ['reportingAddress', 'reportingTime', 'reportingDaily', 'reportingFrequency']],
+    ['alcoholLimit', ['alcoholLimit']]
+]);
+
