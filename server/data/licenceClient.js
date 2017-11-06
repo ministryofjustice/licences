@@ -62,10 +62,10 @@ module.exports = {
 
     getAdditionalConditions: function(ids = []) {
 
-        const {sql, parameters} = additionalConditionsSql(ids);
+        const sql = additionalConditionsSql(ids);
 
         return new Promise((resolve, reject) => {
-            getCollection(sql, parameters, resolve, reject);
+            getCollection(sql, null, resolve, reject);
         });
     },
 
@@ -87,14 +87,8 @@ const additionalConditionsSql = ids => {
     const idArray = Array.isArray(ids) ? ids : [ids];
 
     if (idArray.length === 0) {
-        return {
-            sql: 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\'',
-            parameters: null
-        };
+        return 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\'';
     }
 
-    return {
-        sql: 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\' AND ID IN (@conditionIds)',
-        parameters: [{column: 'conditionIds', type: TYPES.Int, value: `${idArray.join(', ')}`}]
-    };
+    return 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\' AND ID IN (' + idArray.join(',') + ')';
 };
