@@ -218,7 +218,7 @@ describe('licenceClient', () => {
             }
         ];
 
-        it('should return expected additional conditions data', () => {
+        it('it should return expected additional conditions data', () => {
             getCollectionStub.callsArgWith(2, additionalConditions);
             const result = licencesProxy().getAdditionalConditions();
             return result.then(data => {
@@ -229,6 +229,46 @@ describe('licenceClient', () => {
         it('should call get collection from dbMethods', () => {
             licencesProxy().getAdditionalConditions();
             expect(getCollectionStub).to.have.callCount(1);
+        });
+
+        describe('when no ids are passed in', () => {
+
+            it('should use sql without IN clause', () => {
+                licencesProxy().getAdditionalConditions();
+
+                const sql = getCollectionStub.getCalls()[0].args[0];
+                const expectedSql = 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\'';
+                expect(sql).to.eql(expectedSql);
+            });
+
+            it('should not pass parameters to get collection', () => {
+                licencesProxy().getAdditionalConditions();
+
+                const params = getCollectionStub.getCalls()[0].args[1];
+                expect(params).to.be.null();
+            });
+
+        });
+
+        describe('when ids are passed in', () => {
+
+            it('should use sql with IN clause', () => {
+                licencesProxy().getAdditionalConditions(['1', '2']);
+
+                const sql = getCollectionStub.getCalls()[0].args[0];
+                const expectedSql = 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\' AND ID IN (@conditionIds)';
+                expect(sql).to.eql(expectedSql);
+            });
+
+
+            it('should pass parameters to get collection if some selected', () => {
+                licencesProxy().getAdditionalConditions(['1', '2']);
+
+                const params = getCollectionStub.getCalls()[0].args[1];
+                const expectedParams = [{column: 'conditionIds', type: TYPES.VarChar, value: '1, 2'}];
+                expect(params).to.eql(expectedParams);
+            });
+
         });
     });
 

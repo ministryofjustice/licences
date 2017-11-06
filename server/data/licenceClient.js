@@ -60,11 +60,12 @@ module.exports = {
         });
     },
 
-    getAdditionalConditions: function() {
-        return new Promise((resolve, reject) => {
-            const sql = 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\'';
+    getAdditionalConditions: function(ids = []) {
 
-            getCollection(sql, null, resolve, reject);
+        const {sql, parameters} = additionalConditionsSql(ids);
+
+        return new Promise((resolve, reject) => {
+            getCollection(sql, parameters, resolve, reject);
         });
     },
 
@@ -80,4 +81,20 @@ module.exports = {
             addRow(sql, parameters, resolve, reject);
         });
     }
+};
+
+const additionalConditionsSql = ids => {
+    const idArray = Array.isArray(ids) ? ids : [ids];
+
+    if (idArray.length === 0) {
+        return {
+            sql: 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\'',
+            parameters: null
+        };
+    }
+
+    return {
+        sql: 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\' AND ID IN (@conditionIds)',
+        parameters: [{column: 'conditionIds', type: TYPES.Int, value: `${idArray.join(', ')}`}]
+    };
 };
