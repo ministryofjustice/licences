@@ -3,7 +3,7 @@ const licenceStates = require('../data/licenceStates.js');
 
 module.exports = function createTasklistService(deliusClient, nomisClientBuilder, dbClient) {
 
-    async function getDashboardDetail(userId, token) {
+    async function getUpcomingReleasesByDeliusOffenderList(userId, token) {
 
         const nomisClient = nomisClientBuilder(token);
 
@@ -13,15 +13,41 @@ module.exports = function createTasklistService(deliusClient, nomisClientBuilder
 
             if (isEmpty(prisonerIds)) {
                 logger.info('No prisoner IDs');
-                return {};
+                return [];
             }
 
-            const upcomingReleases = await nomisClient.getUpcomingReleasesFor(prisonerIds);
-            logger.info('Got upcoming releases:');
+            const upcomingReleases = await nomisClient.getUpcomingReleasesByOffenders(prisonerIds);
+            logger.info('Got upcoming releases for offender list:');
             logger.info(upcomingReleases);
 
+            return upcomingReleases;
+        } catch (error) {
+            logger.error('Error during getUpcomingReleasesByDeliusOffenderList: ', error.message);
+            throw error;
+        }
+    }
+
+    async function getUpcomingReleasesByUser(userId, token) {
+
+        const nomisClient = nomisClientBuilder(token);
+
+        try {
+            const upcomingReleases = await nomisClient.getUpcomingReleasesByUser();
+            logger.info('Got upcoming releases for user:');
+            logger.info(upcomingReleases);
+
+            return upcomingReleases;
+        } catch (error) {
+            logger.error('Error during getUpcomingReleasesByUser: ', error.message);
+            throw error;
+        }
+    }
+
+    async function getDashboardDetail(upcomingReleases) {
+
+        try {
             const filteredUpcomingReleases = upcomingReleases.filter(release => {
-               return release.releaseDate && true; // && todo filter by date;
+                return release.releaseDate && true; // todo is this going to be needed or is it just bad test data?
             });
 
             if (isEmpty(filteredUpcomingReleases)) {
@@ -41,7 +67,11 @@ module.exports = function createTasklistService(deliusClient, nomisClientBuilder
         }
     }
 
-    return {getDashboardDetail};
+    return {
+        getUpcomingReleasesByDeliusOffenderList,
+        getUpcomingReleasesByUser,
+        getDashboardDetail
+    };
 };
 
 function isEmpty(candidateArray) {
@@ -58,7 +88,7 @@ function parseTasklistInfo(upcomingReleases, licences) {
         const licence = licences.find(licence => licence.nomisId === offender.offenderNo);
 
 
-        if(licence) {
+        if (licence) {
             const licenceLocator = {status: licence.status, licenceId: licence.id};
             return {...offender, ...licenceLocator};
         }
@@ -68,7 +98,16 @@ function parseTasklistInfo(upcomingReleases, licences) {
 
     const required = allReleases.filter(release => licenceStates.REQUIRED_STATES.includes(release.status));
     const sent = allReleases.filter(release => licenceStates.SENT_STATES.includes(release.status));
+    const checking = allReleases.filter(release => licenceStates.CHECKING_STATES.includes(release.status));
+    const checkSent = allReleases.filter(release => licenceStates.CHECK_SENT_STATES.includes(release.status));
+    const approved = allReleases.filter(release => licenceStates.APPROVED_STATES.includes(release.status));
 
-    return {required, sent};
+    return {
+        required,
+        sent,
+        checking,
+        checkSent,
+        approved
+    };
 }
 

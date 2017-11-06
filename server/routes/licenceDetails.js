@@ -9,7 +9,7 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         logger.debug('GET /licenceDetails');
         const details = await licenceService.getLicence(req.params.nomisId);
 
-        res.render('licenceDetails/index', details.licence);
+        res.render('licenceDetails/index', details.licence, details.status);
     }));
 
     return router;

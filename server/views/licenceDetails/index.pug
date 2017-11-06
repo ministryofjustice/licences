@@ -2,7 +2,10 @@ extends ../layout
 
 block content
 
-    h1.heading-large Check the details
+    if status === 'STARTED'
+        h1.heading-large Check the details
+    else
+        h1.heading-large Licence details
 
     div.grid-row.largeMarginBottom
         div.column-full
@@ -17,6 +20,7 @@ block content
 
 
     div#continueBtns.inlineButtons
+        if status === 'STARTED'
+            a.requiredButton.button(href="/send/"+nomisId role="button") Continue
 
-        a.requiredButton.button(href="/send/"+nomisId role="button") Continue
         a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

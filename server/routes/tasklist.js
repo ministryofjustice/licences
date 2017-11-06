@@ -8,16 +8,28 @@ module.exports = function({logger, tasklistService, authenticationMiddleware}) {
     router.get('/', asyncMiddleware(async (req, res, next) => {
         logger.debug('GET /tasklist');
 
-        const upcomingReleases = await tasklistService.getDashboardDetail(req.user.staffId, req.user.token);
+        const upcomingReleases = await getUpcomingReleases(req.user);
+        const dashboardDetail = await tasklistService.getDashboardDetail(upcomingReleases);
 
         const viewData = {
-            required: upcomingReleases ? upcomingReleases.required : [],
-            sent: upcomingReleases ? upcomingReleases.sent : [],
+            dashboardDetail,
             moment: require('moment')
         };
 
-        res.render('tasklist/index', viewData);
+        res.render(`tasklist/${req.user.roleCode}`, viewData);
     }));
+
+    async function getUpcomingReleases(user) {
+        switch (user.roleCode) {
+            case 'OM':
+                return tasklistService.getUpcomingReleasesByDeliusOffenderList(user.staffId, user.token);
+            case 'OMU':
+            case 'PM':
+                return tasklistService.getUpcomingReleasesByUser(user.staffId, user.token);
+            default:
+                throw new Error('Invalid user role');
+        }
+    }
 
     return router;
 };

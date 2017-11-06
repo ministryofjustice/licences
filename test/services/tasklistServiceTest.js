@@ -11,7 +11,8 @@ describe('taskListService', () => {
     };
 
     const nomisClient = {
-        getUpcomingReleasesFor: sandbox.stub().returnsPromise()
+        getUpcomingReleasesByOffenders: sandbox.stub().returnsPromise(),
+        getUpcomingReleasesByUser: sandbox.stub().returnsPromise()
     };
 
     const nomisClientBuilder = sandbox.stub().returns(nomisClient);
@@ -22,14 +23,18 @@ describe('taskListService', () => {
 
     const service = createTasklistService(deliusClient, nomisClientBuilder, dbClient);
 
+    const upcomingReleases = [
+        {offenderNo: '1', releaseDate: '1'},
+        {offenderNo: '2', releaseDate: '1'},
+        {offenderNo: '3', releaseDate: '1'}
+    ];
+
     beforeEach(() => {
         deliusClient.getPrisonersFor.resolves('1, 2, 3');
 
-        nomisClient.getUpcomingReleasesFor.resolves([
-            {offenderNo: '1', releaseDate: '1'},
-            {offenderNo: '2', releaseDate: '1'},
-            {offenderNo: '3', releaseDate: '1'}
-        ]);
+        nomisClient.getUpcomingReleasesByOffenders.resolves(upcomingReleases);
+
+        nomisClient.getUpcomingReleasesByUser.resolves(upcomingReleases);
 
         dbClient.getLicences.resolves([
             {nomisId: '2', id: 'ab', status: 'STARTED'},
@@ -41,30 +46,30 @@ describe('taskListService', () => {
         sandbox.reset();
     });
 
-    describe('getDashboardDetail', () => {
+    describe('getUpcomingReleasesByDeliusOffenderList', () => {
         it('should get the prisoners for the user from delius', () => {
-            service.getDashboardDetail('123');
+            service.getUpcomingReleasesByDeliusOffenderList('123');
 
             expect(deliusClient.getPrisonersFor).to.be.calledOnce();
             expect(deliusClient.getPrisonersFor).to.be.calledWith('123');
         });
 
         it('should request upcoming releases from nomis', async () => {
-            await service.getDashboardDetail('123');
+            await service.getUpcomingReleasesByDeliusOffenderList('123');
 
-            expect(nomisClient.getUpcomingReleasesFor).to.be.calledOnce();
-            expect(nomisClient.getUpcomingReleasesFor).to.be.calledWith('1, 2, 3');
+            expect(nomisClient.getUpcomingReleasesByOffenders).to.be.calledOnce();
+            expect(nomisClient.getUpcomingReleasesByOffenders).to.be.calledWith('1, 2, 3');
         });
 
-        it('should return an empty object if there are no upcoming releases', () => {
-            nomisClient.getUpcomingReleasesFor.resolves(([]));
+        it('should return an empty list if there are no upcoming releases', () => {
+            nomisClient.getUpcomingReleasesByOffenders.resolves(([]));
 
-            return expect(service.getDashboardDetail('123'))
-                .to.eventually.eql({});
+            return expect(service.getUpcomingReleasesByDeliusOffenderList('123'))
+                .to.eventually.eql([]);
         });
 
         it('should call dbClient.getLicences if candidates returned', async () => {
-            await service.getDashboardDetail('123');
+            await service.getDashboardDetail(upcomingReleases);
 
             expect(dbClient.getLicences).to.be.calledOnce();
             expect(dbClient.getLicences).to.be.calledWith(['1', '2', '3']);
@@ -72,7 +77,7 @@ describe('taskListService', () => {
         });
 
         it('should add licence details if licence is in db for prisoner', () => {
-            return expect(service.getDashboardDetail('123'))
+            return expect(service.getDashboardDetail(upcomingReleases))
                 .to.eventually.eql(
                     {
                         required: [
@@ -95,7 +100,17 @@ describe('taskListService', () => {
                                 releaseDate: '1',
                                 status: 'SENT'
                             }
-                        ]
+                        ],
+                        checking: [
+                            {
+                                licenceId: 'cd',
+                                offenderNo: '3',
+                                releaseDate: '1',
+                                status: 'SENT'
+                            }
+                        ],
+                        checkSent: [],
+                        approved: []
                     }
                 );
         });
@@ -109,9 +124,9 @@ describe('taskListService', () => {
 
         it('should throw if nomis client fails', () => {
 
-            nomisClient.getUpcomingReleasesFor.rejects(new Error('dead'));
+            nomisClient.getUpcomingReleasesByOffenders.rejects(new Error('dead'));
 
-            return expect(service.getDashboardDetail('123')).to.be.rejected();
+            return expect(service.getUpcomingReleasesByDeliusOffenderList('123')).to.be.rejected();
         });
 
         it('should throw if error in db', () => {
