@@ -2,7 +2,8 @@ module.exports = {
     createLicenceObject,
     createAddressObject,
     createReportingInstructionsObject,
-    createConditionsObject
+    createConditionsObject,
+    addAdditionalConditions
 };
 
 function createLicenceObject(object) {
@@ -48,6 +49,44 @@ function createConditionsObject(selectedConditions, formInputs) {
     }, {});
 }
 
+function addAdditionalConditions(rawLicence, selectedConditions) {
+    const additionalConditions = Object.keys(rawLicence.additionalConditions).map(condition => {
+
+        const selectedCondition = selectedConditions.find(selected => selected.ID.value == condition);
+        const userInputName = selectedCondition.USER_INPUT.value;
+
+        if(userInputName) {
+            const fieldNames = formObjects.get(userInputName);
+            const userInput = rawLicence.additionalConditions[condition];
+
+            return injectUserInputInto(selectedCondition, fieldNames, userInput);
+        }
+
+        return selectedCondition.TEXT.value;
+    });
+
+    return {...rawLicence, additionalConditions};
+}
+
+function injectUserInputInto(condition, fieldNames, userInput) {
+
+    const conditionText = condition.TEXT.value;
+    const placeHolders = getPlaceholdersFrom(conditionText);
+
+    return placeHolders.reduce((text, placeHolder, index) => {
+
+        const inputtedData = userInput[fieldNames[index]];
+        return text.replace(placeHolder, inputtedData);
+
+    }, conditionText);
+}
+
+const betweenBrackets = /\[[^\]]*]/g;
+
+function getPlaceholdersFrom(condition) {
+    return condition.match(betweenBrackets) || null;
+}
+
 const inputsFor = (conditionAttributes, formInputs) => {
 
     return conditionAttributes.reduce((conditionDataObject, formItem) => {
@@ -66,7 +105,7 @@ const licenceModel = {
     establishment: '',
     agencyLocationId: '',
     dischargeDate: '',
-    additionalConditions: [],
+    additionalConditions: {},
     dischargeAddress: {
         address1: '',
         address2: '',
@@ -108,4 +147,3 @@ const formObjects = new Map([
     ['reportingDetails', ['reportingAddress', 'reportingTime', 'reportingDaily', 'reportingFrequency']],
     ['alcoholLimit', ['alcoholLimit']]
 ]);
-
