@@ -35,7 +35,7 @@ module.exports = function({logger, prisonerDetailsService, licenceService, authe
 
         const existingLicence = await licenceService.getLicence(nomisId);
 
-        if (existingLicence.length === 0) {
+        if (!existingLicence) {
             await licenceService.createLicence(nomisId, req.body);
         }
 
