@@ -83,4 +83,3 @@ function parseTasklistInfo(upcomingReleases, licences) {
         approved
     };
 }
-

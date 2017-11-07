@@ -18,5 +18,5 @@ block content
 
     div#continueBtns.inlineButtons
         if status === 'SENT' || status === 'CHECK_STARTED'
-            a.requiredButton.button(href="/send/"+licence.nomisId role="button") Continue
-        a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+            a#continueBtn.requiredButton.button(href="/send/"+licence.nomisId role="button") Continue
+        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

@@ -9,5 +9,5 @@ block content
         form#acceptanceForm(method='POST', action='/send/omu')
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="nomisId" value=nomisId)
-            input.requiredButton.button(type="submit" value="Send")
-        a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+            input#continueBtn.requiredButton.button(type="submit" value="Send")
+        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

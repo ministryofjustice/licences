@@ -21,6 +21,6 @@ block content
 
     div#continueBtns.inlineButtons
         if status === 'STARTED'
-            a.requiredButton.button(href="/send/"+licence.nomisId role="button") Continue
+            a#continueBtn.requiredButton.button(href="/send/"+licence.nomisId role="button") Continue
 
-        a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

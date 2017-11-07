@@ -19,3 +19,4 @@ module.exports = {
     APPROVAL_REQUIRED_STATES,
     APPROVED_STATES
 };
+

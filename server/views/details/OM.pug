@@ -89,5 +89,5 @@ block content
                 input(type="hidden" name="firstName" value=prisonerInfo.firstName || '')
                 input(type="hidden" name="lastName" value=prisonerInfo.lastName || '')
                 input(type="hidden" name="agencyLocationId" value=prisonerInfo.agencyId || '')
-            input.requiredButton.button(type="submit" value="Continue")
-        a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+            input#continueBtn.requiredButton.button(type="submit" value="Continue")
+        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

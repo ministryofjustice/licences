@@ -82,6 +82,6 @@ block content
                             | N/A
 
     div#continueBtns.inlineButtons
-        a.requiredButton.button(href="/licenceDetails/" + prisonerInfo.offenderNo role="button")
+        a#continueBtn.requiredButton.button(href="/licenceDetails/" + prisonerInfo.offenderNo role="button")
             | Continue
-        a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
