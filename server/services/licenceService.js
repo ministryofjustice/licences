@@ -105,10 +105,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
 
     async function getEstablishment(nomisId) {
         try {
-            console.log(nomisId);
             const record = await licenceClient.getLicence(nomisId);
-
-            console.log(record);
 
             return await establishmentsClient.findById(record.licence.agencyLocationId);
 
