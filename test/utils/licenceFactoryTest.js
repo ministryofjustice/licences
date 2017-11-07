@@ -2,7 +2,8 @@ const {expect} = require('../testSetup');
 const {
     createLicenceObject,
     createAddressObject,
-    createConditionsObject
+    createConditionsObject,
+    addAdditionalConditions
 } = require('../../server/utils/licenceFactory');
 
 describe('licenceFactory', () => {
@@ -102,6 +103,105 @@ describe('licenceFactory', () => {
             const output = createConditionsObject(selectedConditions, formInputs);
 
             expect(output).to.eql(expectedOutput);
+        });
+    });
+
+    describe('addAdditionalConditions', () => {
+        it('should add text to licence if selected and has no user input', () => {
+            const rawLicence = {additionalConditions: {1: {}}};
+            const selectedConditions = [
+                {
+                    ID: {value: 1},
+                    USER_INPUT: {value: null},
+                    TEXT: {value: 'The condition'}
+                }
+            ];
+
+            const output = addAdditionalConditions(rawLicence, selectedConditions);
+
+            const expectedOutput = {
+                additionalConditions: [
+                    'The condition'
+                ]
+            };
+
+            expect(output).to.eql(expectedOutput);
+
+        });
+
+        it('should replace placeholder text', () => {
+            const rawLicence = {additionalConditions: {1: {appointmentName: 'injected'}}};
+            const selectedConditions = [
+                {
+                    ID: {value: 1},
+                    USER_INPUT: {value: 'appointmentName'},
+                    TEXT: {value: 'The condition [placeholder] with input'}
+                }
+            ];
+
+            const output = addAdditionalConditions(rawLicence, selectedConditions);
+
+            const expectedOutput = {
+                additionalConditions: [
+                    'The condition injected with input'
+                ]
+            };
+
+            expect(output).to.eql(expectedOutput);
+
+        });
+
+        it('should replace placeholder text when multiple items', () => {
+            const rawLicence = {additionalConditions: {1: {appointmentDate: 'injected', appointmentTime: 'injected2'}}};
+            const selectedConditions = [
+                {
+                    ID: {value: 1},
+                    USER_INPUT: {value: 'appointmentDetails'},
+                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'}
+                }
+            ];
+
+            const output = addAdditionalConditions(rawLicence, selectedConditions);
+
+            const expectedOutput = {
+                additionalConditions: [
+                    'The condition injected with input injected2 and another'
+                ]
+            };
+
+            expect(output).to.eql(expectedOutput);
+
+        });
+
+        it('should replace placeholder text when multiple conditions', () => {
+            const rawLicence = {additionalConditions: {
+                1: {appointmentDate: 'injected', appointmentTime: 'injected2'},
+                2: {groupsOrOrganisation: 'injected3'}
+            }};
+            const selectedConditions = [
+                {
+                    ID: {value: 1},
+                    USER_INPUT: {value: 'appointmentDetails'},
+                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'}
+                },
+                {
+                    ID: {value: 2},
+                    USER_INPUT: {value: 'groupsOrOrganisations'},
+                    TEXT: {value: 'The condition [placeholder]'}
+                }
+            ];
+
+            const output = addAdditionalConditions(rawLicence, selectedConditions);
+
+            const expectedOutput = {
+                additionalConditions: [
+                    'The condition injected with input injected2 and another',
+                    'The condition injected3'
+                ]
+            };
+
+            expect(output).to.eql(expectedOutput);
+
         });
     });
 });

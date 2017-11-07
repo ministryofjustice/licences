@@ -6,7 +6,7 @@ describe('licenceDetailsService', () => {
     const aLicence = {a: 'b', licence: {agencyLocationId: '123'}};
 
     const licenceClient = {
-        getLicence: sandbox.stub().returnsPromise().resolves({a: 'b'}),
+        getLicence: sandbox.stub().returnsPromise().resolves({licence: {a: 'b'}}),
         createLicence: sandbox.stub().returnsPromise().resolves('abc'),
         updateSection: sandbox.stub().returnsPromise().resolves(),
         updateStatus: sandbox.stub().returnsPromise().resolves(),
@@ -33,6 +33,16 @@ describe('licenceDetailsService', () => {
 
         it('should return licence', () => {
             return expect(service.getLicence('123')).to.eventually.eql({a: 'b'});
+        });
+
+        it('should addAdditionalConditions if they are present in licence', () => {
+            licenceClient.getLicence.resolves({licence: {additionalConditions: {1: {}}}});
+            licenceClient.getAdditionalConditions.resolves([{
+                ID: {value: 1},
+                USER_INPUT: {value: null},
+                TEXT: {value: 'The condition'}}]);
+
+            return expect(service.getLicence('123')).to.eventually.eql({additionalConditions: ['The condition']});
         });
 
         it('should throw if error getting licence', () => {

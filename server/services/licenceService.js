@@ -2,14 +2,26 @@ const {
     createLicenceObject,
     createAddressObject,
     createReportingInstructionsObject,
-    createConditionsObject
+    createConditionsObject,
+    addAdditionalConditions
 } = require('../utils/licenceFactory');
 
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
 
     async function getLicence(nomisId) {
         try {
-            return await licenceClient.getLicence(nomisId);
+            const rawLicence = await licenceClient.getLicence(nomisId);
+            const {licence} = rawLicence;
+
+            if(licence.additionalConditions && licence.additionalConditions !== {}) {
+                const conditionIdsSelected = Object.keys(licence.additionalConditions);
+                const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
+
+                return addAdditionalConditions(licence, conditionsSelected);
+            }
+
+            return licence;
+
         } catch (error) {
             throw error;
         }
