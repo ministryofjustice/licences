@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+
+    h1.heading-large Send for approval
+    p The licence is ready to be sent for approval or you can return to your dashboard and send it later.
+
+    div#continueBtns.inlineButtons
+        form#acceptanceForm(method='POST', action='/send/pm')
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="nomisId" value=nomisId)
+            input.requiredButton.button(type="submit" value="Send")
+        a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

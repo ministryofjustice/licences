@@ -8,7 +8,7 @@ module.exports = function({logger, tasklistService, authenticationMiddleware}) {
     router.get('/', asyncMiddleware(async (req, res, next) => {
         logger.debug('GET /tasklist');
 
-        const dashboardDetail = await tasklistService.getDashboardDetail(user);
+        const dashboardDetail = await tasklistService.getDashboardDetail(req.user);
 
         const viewData = {
             dashboardDetail,

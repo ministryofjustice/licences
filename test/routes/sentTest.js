@@ -17,13 +17,19 @@ const licenceServiceStub = {
     getEstablishment: sandbox.stub().returnsPromise().resolves([{}])
 };
 
+const testUser = {
+    staffId: 'my-staff-id',
+    token: 'my-token',
+    roleCode: 'OM'
+};
+
 const app = appSetup(createSendRoute({
     licenceService: licenceServiceStub,
     logger: loggerStub,
     authenticationMiddleware
-}));
+}), testUser);
 
-describe('POST /send/:nomisId', () => {
+describe('GET sent', () => {
 
     afterEach(() => {
         sandbox.reset();
@@ -38,6 +44,5 @@ describe('POST /send/:nomisId', () => {
             });
 
     });
-
 });
 

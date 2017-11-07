@@ -14,7 +14,7 @@ module.exports = {
 
     getLicence: function(nomisId) {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT NOMIS_ID as nomisId, ID as id, JSON_QUERY(LICENCE) AS licence 
+            const sql = `SELECT NOMIS_ID as nomisId, ID as id, STATUS as status, JSON_QUERY(LICENCE) AS licence 
                          FROM LICENCES WHERE NOMIS_ID = '${nomisId}' FOR JSON PATH, WITHOUT_ARRAY_WRAPPER`;
 
             getCollection(sql, null, resolveJsonResponse(resolve), reject);

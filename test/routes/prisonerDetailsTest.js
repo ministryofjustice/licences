@@ -21,15 +21,22 @@ const licenceServiceStub = {
     createLicence: sandbox.stub().returnsPromise()
 };
 
+const testUser = {
+    staffId: 'my-staff-id',
+    token: 'my-token',
+    roleCode: 'OM'
+};
+
 const app = appSetup(createPrisonerDetailsRoute({
     prisonerDetailsService: serviceStub,
     licenceService: licenceServiceStub,
     logger: loggerStub,
     authenticationMiddleware}
-));
+), testUser);
 
 describe('GET /licenceDetails/:prisonNumber', () => {
-    it('should call getLicenceDetails from licenceDetailsService', () => {
+
+    it('should call getPrisonerDetails from prisonerDetailsService', () => {
         return request(app)
             .get('/123')
             .expect(200)

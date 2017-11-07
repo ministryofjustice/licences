@@ -1,0 +1,87 @@
+extends ../layout
+
+block content
+
+    h1.heading-large Check prisoner details
+    h2.heading-medium Personal details
+
+    if !prisonerInfo
+
+        p No prisoner details found
+
+    else
+
+        div#personalDetails.grid-row.borderBottom.paddingBottom
+            div.column-one-quarter
+                if(prisonerInfo.imageId)
+                    img(src= "/public/images/placeholder.png")
+                if(prisonerInfo.captureDate)
+                    span.subText Uploaded: #{moment(prisonerInfo.captureDate).format('DD/MM/YYYY')}
+
+            div.column-one-quarter
+                div.midMarginBottom
+                    |Name
+                    if(prisonerInfo.firstName || prisonerInfo.lastName)
+                        span#prisonerName.block.bold #{setCase.capital(prisonerInfo.lastName)}, #{setCase.capital(prisonerInfo.firstName)}
+
+                div.midMarginBottom
+                    | Aliases
+                    if(prisonerInfo.aliases)
+                        span#prisonerAliases.block.bold #{setCase.capital(prisonerInfo.aliases)}
+
+                div.midMarginBottom
+                    | Nomis number
+                    if(prisonerInfo.offenderNo)
+                        span#prisonerPrisonNumber.block.bold #{prisonerInfo.offenderNo}
+
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Date of birth
+                    if(prisonerInfo.dateOfBirth)
+                        span#prisonerDob.block.bold #{moment(prisonerInfo.dateOfBirth).format('DD/MM/YYYY')}
+
+                div.midMarginBottom
+                    | Gender
+                    if(prisonerInfo.physicalAttributes.gender)
+                        span#prisonerSex.block.bold #{setCase.capital(prisonerInfo.physicalAttributes.gender)}
+
+                div.midMarginBottom
+                    | Location
+                    if(prisonerInfo.assignedLivingUnitDesc)
+                        span#prisonerLocation.block.bold #{setCase.capital(prisonerInfo.assignedLivingUnitDesc)}
+
+        h2.heading-medium Key dates
+
+        div#keyDates.grid-row.paddingBottom
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Release date
+                    span#releaseDate.block.bold
+                        if (prisonerInfo.conditionalReleaseDate)
+                            | #{moment(prisonerInfo.conditionalReleaseDate).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Licence expires
+                    span#licenceExpires.block.bold
+                        if (prisonerInfo.licenceExpiryDate)
+                            | #{moment(prisonerInfo.licenceExpiryDate).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+        div#keyDates.grid-row.paddingBottom
+            div.column-one-quarter
+                div.midMarginBottom
+                    | Sentence expires
+                    span#sentenceExpires.block.bold
+                        if (prisonerInfo.sentenceExpiryDate)
+                            | #{moment(prisonerInfo.sentenceExpiryDate).format('DD/MM/YYYY')}
+                        else
+                            | N/A
+
+    div#continueBtns.inlineButtons
+        a.requiredButton.button(href="/licenceDetails/" + prisonerInfo.offenderNo role="button")
+            | Continue
+        a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

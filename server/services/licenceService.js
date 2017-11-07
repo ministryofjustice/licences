@@ -52,9 +52,18 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
-    async function send(nomisId) {
+    async function sendToOmu(nomisId) {
         try {
             return await licenceClient.updateStatus(nomisId, 'SENT');
+        } catch (error) {
+            console.error(error, 'Error during send licence');
+            throw error;
+        }
+    }
+
+    async function sendToPm(nomisId) {
+        try {
+            return await licenceClient.updateStatus(nomisId, 'CHECK_SENT');
         } catch (error) {
             console.error(error, 'Error during send licence');
             throw error;
@@ -78,7 +87,8 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         createLicence,
         updateAddress,
         updateReportingInstructions,
-        send,
+        sendToOmu,
+        sendToPm,
         getEstablishment
     };
 };

@@ -2,25 +2,21 @@ extends ../layout
 
 block content
 
-    if status === 'STARTED'
-        h1.heading-large Check the details
-    else
-        h1.heading-large Licence details
+    h1.heading-large Check the details
 
     div.grid-row.largeMarginBottom
         div.column-full
-            if additionalConditions && additionalConditions.length > 0
+            if licence.additionalConditions && licence.additionalConditions.length > 0
                 include ./additionalConditions
 
-            if dischargeAddress
+            if licence.dischargeAddress
                 include ./dischargeAddress
 
-            if reportingInstructions
+            if licence.reportingInstructions
                 include ./reportingInstructions
 
 
     div#continueBtns.inlineButtons
-        if status === 'STARTED'
+        if status === 'SENT' || status === 'CHECK_STARTED'
             a.requiredButton.button(href="/send/"+nomisId role="button") Continue
-
         a.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

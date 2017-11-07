@@ -5,22 +5,18 @@ module.exports = function createTasklistService(deliusClient, nomisClientBuilder
 
     async function getDashboardDetail(user) {
 
-        const nomisClient = nomisClientBuilder(user.token);
-        const upcomingReleases = await getUserSpecificDataFor(user, deliusClient, nomisClient);
-
         try {
-            const filteredUpcomingReleases = upcomingReleases.filter(release => {
-                return release.releaseDate && true; // todo is this going to be needed or is it just bad test data?
-            });
+            const nomisClient = nomisClientBuilder(user.token);
+            const upcomingReleases = await getUpcomingReleases(nomisClient, deliusClient, user);
 
-            if (isEmpty(filteredUpcomingReleases)) {
+            if (isEmpty(upcomingReleases)) {
                 logger.info('No upcoming releases');
                 return {};
             }
 
-            const licences = await dbClient.getLicences(getOffenderNomisIds(filteredUpcomingReleases));
+            const licences = await dbClient.getLicences(getOffenderIds(upcomingReleases));
 
-            return parseTasklistInfo(filteredUpcomingReleases, licences);
+            return parseTasklistInfo(upcomingReleases, licences);
 
         } catch (error) {
             logger.error('Error during getDashboardDetail: ', error.message);
@@ -31,54 +27,31 @@ module.exports = function createTasklistService(deliusClient, nomisClientBuilder
     return {getDashboardDetail};
 };
 
-async function getUserSpecificDataFor(user, deliusClient, nomisClient) {
+async function getUpcomingReleases(nomisClient, deliusClient, user) {
+
     const releasesRetrievalMethod = {
-        OM: upcomingReleasesByOffender(deliusClient, nomisClient),
-        OMU: upcomingReleasesByOffender(deliusClient, nomisClient),
-        PM: upcomingReleasesByUser(nomisClient)
+        OM: offendersByDeliusUser(nomisClient, deliusClient, user),
+        OMU: offendersByCaseLoad(nomisClient),
+        PM: offendersByCaseLoad(nomisClient)
     };
 
-    return await releasesRetrievalMethod[user.role](user);
+    return await releasesRetrievalMethod[user.roleCode]();
 }
 
-const upcomingReleasesByOffender = async (deliusClient, nomisClient) => async user => {
-    const token = user.token;
-    const userId = user.staffId;
-
-    try {
-        const prisonerIds = await deliusClient.getPrisonersFor(userId, token);
-
-        if (isEmpty(prisonerIds)) {
-            logger.info('No prisoner IDs');
-            return [];
-        }
-
-        return await nomisClient.getUpcomingReleasesByOffenders(prisonerIds);
-
-    } catch (error) {
-        logger.error('Error getting upcomingReleasesByOffender: ', error.message);
-        throw error;
-    }
+const offendersByDeliusUser = (nomisClient, deliusClient, user) => async () => {
+    const offenderList = await deliusClient.getPrisonersFor(user.staffId);
+    return await nomisClient.getUpcomingReleasesByOffenders(offenderList);
 };
 
-const upcomingReleasesByUser = async nomisClient => async user => {
-
-    try {
-        const upcomingReleases = await nomisClient.getUpcomingReleasesByUser();
-        logger.info('Got upcoming releases for user: ', user.staffId);
-        logger.info(upcomingReleases);
-
-    } catch (error) {
-        logger.error('Error during getUpcomingReleasesByUser: ', error.message);
-        throw error;
-    }
+const offendersByCaseLoad = nomisClient => async () => {
+    return nomisClient.getUpcomingReleasesByUser();
 };
 
 function isEmpty(candidateArray) {
     return !candidateArray || candidateArray.length <= 0;
 }
 
-function getOffenderNomisIds(releases) {
+function getOffenderIds(releases) {
     return releases.map(offender => offender.offenderNo);
 }
 

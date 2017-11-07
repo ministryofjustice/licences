@@ -15,21 +15,25 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /send');
 
-        res.render('send/index', {nomisId: req.params.nomisId});
+        res.render(`send/${req.user.roleCode}`, {nomisId: req.params.nomisId});
     }));
 
-    router.post('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('POST /send');
+    router.post('/omu/', asyncMiddleware(async (req, res) => {
+        logger.debug('POST /send/omu');
 
-        const nomisId = req.params.nomisId;
+        const nomisId = req.body.nomisId;
 
-        const existingLicence = await licenceService.getLicence(nomisId);
+        await licenceService.sendToOmu(nomisId);
 
-        if (existingLicence.length === 0) {
-            throw new Error('No such licence');
-        }
+        res.redirect('/sent/'+nomisId);
+    }));
 
-        await licenceService.send(nomisId);
+    router.post('/pm/', asyncMiddleware(async (req, res) => {
+        logger.debug('POST /send/pm');
+
+        const nomisId = req.body.nomisId;
+
+        await licenceService.sendToPm(nomisId);
 
         res.redirect('/sent/'+nomisId);
     }));

@@ -6,7 +6,7 @@ block content
     p The licence is ready to be sent to the OMU team or you can return to your dashboard and send it later.
 
     div#continueBtns.inlineButtons
-        form#acceptanceForm(method='POST')
+        form#acceptanceForm(method='POST', action='/send/omu')
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="nomisId" value=nomisId)
             input.requiredButton.button(type="submit" value="Send")

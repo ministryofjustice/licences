@@ -13,7 +13,6 @@ const loggerStub = {
     debug: sandbox.stub()
 };
 const serviceStub = {
-    getUpcomingReleasesByDeliusOffenderList: sandbox.stub().returnsPromise(),
     getDashboardDetail: sandbox.stub().returnsPromise()
 };
 
@@ -32,25 +31,23 @@ const app = appSetup(createTasklistRoute(
 
 describe('GET /', () => {
 
+    beforeEach(() => {
+        serviceStub.getDashboardDetail.resolves({});
+    });
+
     afterEach(() => {
         sandbox.reset();
     });
 
     it('should call getDashboardDetail from tasklistService', () => {
-
-        serviceStub.getUpcomingReleasesByDeliusOffenderList.resolves({});
-        serviceStub.getDashboardDetail.resolves({});
-
         return request(app)
             .get('/')
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {
-                expect(serviceStub.getUpcomingReleasesByDeliusOffenderList).to.be.calledOnce();
-                expect(serviceStub.getUpcomingReleasesByDeliusOffenderList).to.be.calledWith('my-staff-id', 'my-token');
                 expect(serviceStub.getDashboardDetail).to.be.calledOnce();
+                expect(serviceStub.getDashboardDetail).to.be.calledWith(testUser);
             });
-
     });
 });
 
