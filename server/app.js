@@ -219,7 +219,7 @@ module.exports = function createApp({
         createDetailsRouter({logger, prisonerDetailsService, licenceService, authenticationMiddleware}));
     app.use('/dischargeAddress/',
         createDischargeAddressRouter({logger, dischargeAddressService, licenceService, authenticationMiddleware}));
-    app.use('/additionalConditions/', createAdditionalConditionsRouter({logger, conditionsService}));
+    app.use('/additionalConditions/', createAdditionalConditionsRouter({logger, conditionsService, licenceService}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));

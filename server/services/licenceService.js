@@ -1,14 +1,27 @@
 const {
     createLicenceObject,
     createAddressObject,
-    createReportingInstructionsObject
+    createReportingInstructionsObject,
+    createConditionsObject,
+    addAdditionalConditions
 } = require('../utils/licenceFactory');
 
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
 
     async function getLicence(nomisId) {
         try {
-            return await licenceClient.getLicence(nomisId);
+            const rawLicence = await licenceClient.getLicence(nomisId);
+            const {licence} = rawLicence;
+
+            if(licence.additionalConditions && licence.additionalConditions !== {}) {
+                const conditionIdsSelected = Object.keys(licence.additionalConditions);
+                const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
+
+                return addAdditionalConditions(licence, conditionsSelected);
+            }
+
+            return licence;
+
         } catch (error) {
             throw error;
         }
@@ -52,6 +65,19 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
+    async function updateLicenceConditions(data = {}) {
+        try {
+            const nomisId = data.nomisId;
+            const selectedConditions = await licenceClient.getAdditionalConditions(data.additionalConditions);
+            const conditions = createConditionsObject(selectedConditions, data);
+
+            return await licenceClient.updateSection('additionalConditions', nomisId, conditions);
+        } catch (error) {
+            console.error(error, 'Error during update additional conditions');
+            throw error;
+        }
+    }
+
     async function sendToOmu(nomisId) {
         try {
             return await licenceClient.updateStatus(nomisId, 'SENT');
@@ -87,6 +113,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         createLicence,
         updateAddress,
         updateReportingInstructions,
+        updateLicenceConditions,
         sendToOmu,
         sendToPm,
         getEstablishment

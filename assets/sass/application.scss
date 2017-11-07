@@ -152,6 +152,10 @@ input.verySmall {
         left: 15px;
     }
 
+    input:checked + label::after {
+        top: 25px;
+        left: 23px;
+    }
 }
 
 .conditionForm {
@@ -163,7 +167,7 @@ input.verySmall {
         width: 100%;
     }
 
-    .multiple-choice [type=radio]+label::before, .multiple-choice [type=checkbox]+label::before {
+    .multiple-choice [type=radio] + label::before, .multiple-choice [type=checkbox] + label::before {
         background-color: white;
     }
 

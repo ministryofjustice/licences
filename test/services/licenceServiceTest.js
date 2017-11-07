@@ -6,10 +6,11 @@ describe('licenceDetailsService', () => {
     const aLicence = {a: 'b', licence: {agencyLocationId: '123'}};
 
     const licenceClient = {
-        getLicence: sandbox.stub().returnsPromise().resolves({a: 'b'}),
+        getLicence: sandbox.stub().returnsPromise().resolves({licence: {a: 'b'}}),
         createLicence: sandbox.stub().returnsPromise().resolves('abc'),
         updateSection: sandbox.stub().returnsPromise().resolves(),
-        updateStatus: sandbox.stub().returnsPromise().resolves()
+        updateStatus: sandbox.stub().returnsPromise().resolves(),
+        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{USER_INPUT: {value: 1}, ID: {value: 1}}])
     };
 
     const establishmentsClient = {
@@ -32,6 +33,16 @@ describe('licenceDetailsService', () => {
 
         it('should return licence', () => {
             return expect(service.getLicence('123')).to.eventually.eql({a: 'b'});
+        });
+
+        it('should addAdditionalConditions if they are present in licence', () => {
+            licenceClient.getLicence.resolves({licence: {additionalConditions: {1: {}}}});
+            licenceClient.getAdditionalConditions.resolves([{
+                ID: {value: 1},
+                USER_INPUT: {value: null},
+                TEXT: {value: 'The condition'}}]);
+
+            return expect(service.getLicence('123')).to.eventually.eql({additionalConditions: ['The condition']});
         });
 
         it('should throw if error getting licence', () => {
@@ -100,6 +111,33 @@ describe('licenceDetailsService', () => {
             licenceClient.updateSection.rejects();
             const args = {nomisId: 'ab1', address1: 'Scotland Street'};
             return expect(service.updateReportingInstructions(args)).to.eventually.be.rejected();
+        });
+    });
+
+    describe('updateLicenceConditions', () => {
+
+        it('should get the selected licence conditions', () => {
+            service.updateLicenceConditions({nomisId: 'ab1', additionalConditions: ['Scotland Street']});
+
+            expect(licenceClient.getAdditionalConditions).to.be.calledOnce();
+            expect(licenceClient.getAdditionalConditions).to.be.calledWith(['Scotland Street']);
+        });
+
+        it('should call update section with additional conditions from the licence client', async () => {
+            await service.updateLicenceConditions({nomisId: 'ab1', additionalConditions: ['Scotland Street']});
+
+            expect(licenceClient.updateSection).to.be.calledOnce();
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'additionalConditions',
+                'ab1',
+                {1: {}}
+            );
+        });
+
+        it('should throw if error updating licence', () => {
+            licenceClient.updateSection.rejects();
+            const args = {nomisId: 'ab1', additionalConditions: ['Scotland Street']};
+            return expect(service.updateLicenceConditions(args)).to.eventually.be.rejected();
         });
     });
 
