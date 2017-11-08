@@ -1,7 +1,7 @@
 const createLicenceService = require('../../server/services/licenceService');
 const {expect, sandbox} = require('../testSetup');
 
-describe('licenceDetailsService', () => {
+describe('licenceService', () => {
 
     const aLicence = {a: 'b', licence: {agencyLocationId: '123'}};
 
@@ -32,7 +32,7 @@ describe('licenceDetailsService', () => {
         });
 
         it('should return licence', () => {
-            return expect(service.getLicence('123')).to.eventually.eql({a: 'b'});
+            return expect(service.getLicence('123')).to.eventually.eql({licence: {a: 'b'}, status: undefined});
         });
 
         it('should addAdditionalConditions if they are present in licence', () => {
@@ -40,9 +40,14 @@ describe('licenceDetailsService', () => {
             licenceClient.getAdditionalConditions.resolves([{
                 ID: {value: 1},
                 USER_INPUT: {value: null},
-                TEXT: {value: 'The condition'}}]);
+                TEXT: {value: 'The condition'}
+            }]);
 
-            return expect(service.getLicence('123')).to.eventually.eql({additionalConditions: ['The condition']});
+            return expect(service.getLicence('123')).to.eventually.eql({
+                licence: {
+                    additionalConditions: ['The condition']
+                }, status: undefined
+            });
         });
 
         it('should throw if error getting licence', () => {

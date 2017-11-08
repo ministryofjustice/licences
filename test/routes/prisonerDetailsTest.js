@@ -28,13 +28,14 @@ const testUser = {
 };
 
 const app = appSetup(createPrisonerDetailsRoute({
-    prisonerDetailsService: serviceStub,
-    licenceService: licenceServiceStub,
-    logger: loggerStub,
-    authenticationMiddleware}
+        prisonerDetailsService: serviceStub,
+        licenceService: licenceServiceStub,
+        logger: loggerStub,
+        authenticationMiddleware
+    }
 ), testUser);
 
-describe('GET /licenceDetails/:prisonNumber', () => {
+describe('GET /details/:prisonNumber', () => {
 
     it('should call getPrisonerDetails from prisonerDetailsService', () => {
         return request(app)
@@ -64,14 +65,17 @@ describe('GET /licenceDetails/:prisonNumber', () => {
             });
 
     });
+});
 
-    it('should create a new licence if a licence does not already exists', () => {
+describe('POST /details/:prisonNumber', () => {
+
+    it('should create a new licence if a licence does not already exist', () => {
         const formResponse = {
             nomisId: '123',
             extra: 'field'
         };
 
-        licenceServiceStub.getLicence.resolves([]);
+        licenceServiceStub.getLicence.resolves();
         licenceServiceStub.createLicence.resolves();
         return request(app)
             .post('/1233456')
