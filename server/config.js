@@ -33,8 +33,6 @@ module.exports = {
         }
     },
 
-    roles: ['Licences OM', 'Licences OMU', 'Licences PM'],
-
     establishments: {
         apiUrl: get('ESTABLISHMENTS_API_URL', 'http://licences-nomis-mocks.herokuapp.com'),
         timeout: {

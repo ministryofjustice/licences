@@ -31,29 +31,15 @@ async function signIn(username, password) {
             .set('Elite-Authorization', eliteAuthorisationToken);
 
         const role = await getRole(eliteAuthorisationToken);
-        const roleCode = getRoleCode(role.roleName);
+        const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') +1);
 
-        logger.info(`Elite2 profile success for [${username}] with role [${role.roleName}]`);
+        logger.info(`Elite2 profile success for [${username}] with role  [${roleCode}]`);
         return {...profileResult.body, ...{token: eliteAuthorisationToken}, ...{role}, ...{roleCode}};
 
     } catch (exception) {
         logger.error(`Elite 2 login error [${username}]:`);
         logger.error(exception);
         throw exception;
-    }
-}
-
-// todo this is temporary until we know what the real role IDs are and can use them
-function getRoleCode(roleName) {
-    switch (roleName) {
-        case 'Licences OM':
-            return 'OM';
-        case 'Licences OMU':
-            return 'OMU';
-        case 'Licences PM':
-            return 'PM';
-        default:
-            return null;
     }
 }
 
@@ -67,7 +53,7 @@ async function getRole(eliteAuthorisationToken) {
 
     if (roles && roles.length > 0) {
         const role = roles.find(role => {
-            return config.roles.includes(role.roleName);
+            return role.roleCode.includes('LICENCES');
         });
 
         if (role) return role;
