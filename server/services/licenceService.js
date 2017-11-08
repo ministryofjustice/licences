@@ -12,11 +12,11 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         try {
             const rawLicence = await licenceClient.getLicence(nomisId);
 
+            const {licence} = rawLicence;
+
             if(!rawLicence.licence) {
                 return null;
             }
-
-            const {licence} = rawLicence;
 
             if(licence && licence.additionalConditions && licence.additionalConditions !== {}) {
                 const conditionIdsSelected = Object.keys(licence.additionalConditions);

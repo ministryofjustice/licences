@@ -10,7 +10,8 @@ describe('licenceService', () => {
         createLicence: sandbox.stub().returnsPromise().resolves('abc'),
         updateSection: sandbox.stub().returnsPromise().resolves(),
         updateStatus: sandbox.stub().returnsPromise().resolves(),
-        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{USER_INPUT: {value: 1}, ID: {value: 1}}])
+        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([
+            {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}])
     };
 
     const establishmentsClient = {
@@ -40,8 +41,8 @@ describe('licenceService', () => {
             licenceClient.getAdditionalConditions.resolves([{
                 ID: {value: 1},
                 USER_INPUT: {value: null},
-                TEXT: {value: 'The condition'}
-            }]);
+                TEXT: {value: 'The condition'},
+                FIELD_POSITION: {value: null}}]);
 
             return expect(service.getLicence('123')).to.eventually.eql({
                 licence: {
@@ -129,6 +130,9 @@ describe('licenceService', () => {
         });
 
         it('should call update section with additional conditions from the licence client', async () => {
+            licenceClient.getAdditionalConditions.resolves([
+                {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}]);
+
             await service.updateLicenceConditions({nomisId: 'ab1', additionalConditions: ['Scotland Street']});
 
             expect(licenceClient.updateSection).to.be.calledOnce();

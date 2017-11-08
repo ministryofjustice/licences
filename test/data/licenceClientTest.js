@@ -203,23 +203,43 @@ describe('licenceClient', () => {
     });
 
     describe('getAdditionalConditions', () => {
-        const additionalConditions = [
+
+        const additionalConditionsResponse = [
             {
                 ID: '1',
                 TIMESTAMP: '2017-10-26',
                 TYPE: 'ADDITIONAL',
-                TEXT: 'Text'
+                TEXT: 'Text',
+                FIELD_POSITION: {value: '{"a": "Text2"}'}
             },
             {
                 ID: '2',
                 TIMESTAMP: '2017-10-26',
                 TYPE: 'ADDITIONAL',
-                TEXT: 'Text2'
+                TEXT: 'Text2',
+                FIELD_POSITION: {value: '{"a": "Text2"}'}
+            }
+        ];
+
+        const additionalConditions = [
+            {
+                ID: '1',
+                TIMESTAMP: '2017-10-26',
+                TYPE: 'ADDITIONAL',
+                TEXT: 'Text',
+                FIELD_POSITION: {value: {a: 'Text2'}}
+            },
+            {
+                ID: '2',
+                TIMESTAMP: '2017-10-26',
+                TYPE: 'ADDITIONAL',
+                TEXT: 'Text2',
+                FIELD_POSITION: {value: {a: 'Text2'}}
             }
         ];
 
         it('it should return expected additional conditions data', () => {
-            getCollectionStub.callsArgWith(2, additionalConditions);
+            getCollectionStub.callsArgWith(2, additionalConditionsResponse);
             const result = licencesProxy().getAdditionalConditions();
             return result.then(data => {
                 expect(data).to.deep.equal(additionalConditions);
@@ -244,8 +264,8 @@ describe('licenceClient', () => {
                 licencesProxy().getAdditionalConditions();
 
                 const sql = getCollectionStub.getCalls()[0].args[0];
-                const expectedSql = 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\'';
-                expect(sql).to.eql(expectedSql);
+                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\'';
+                expect(sql).to.contain(expectedSql);
             });
         });
 
@@ -255,16 +275,16 @@ describe('licenceClient', () => {
                 licencesProxy().getAdditionalConditions(['1', '2']);
 
                 const sql = getCollectionStub.getCalls()[0].args[0];
-                const expectedSql = 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\' AND ID IN (1,2)';
-                expect(sql).to.eql(expectedSql);
+                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (1,2)';
+                expect(sql).to.contain(expectedSql);
             });
 
             it('should use sql with IN clause when there is 1 id', () => {
                 licencesProxy().getAdditionalConditions('1');
 
                 const sql = getCollectionStub.getCalls()[0].args[0];
-                const expectedSql = 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\' AND ID IN (1)';
-                expect(sql).to.eql(expectedSql);
+                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (1)';
+                expect(sql).to.contain(expectedSql);
             });
         });
     });

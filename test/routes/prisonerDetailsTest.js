@@ -75,7 +75,7 @@ describe('POST /details/:prisonNumber', () => {
             extra: 'field'
         };
 
-        licenceServiceStub.getLicence.resolves();
+        licenceServiceStub.getLicence.resolves(undefined);
         licenceServiceStub.createLicence.resolves();
         return request(app)
             .post('/1233456')
