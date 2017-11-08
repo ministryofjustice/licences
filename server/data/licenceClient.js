@@ -1,4 +1,4 @@
-const {resolveJsonResponse} = require('./dataAccess/azureJson');
+const {resolveJsonResponse, resolveJsonColumn} = require('./dataAccess/azureJson');
 const {getCollection, addRow} = require('./dataAccess/dbMethods');
 const TYPES = require('tedious').TYPES;
 
@@ -65,7 +65,7 @@ module.exports = {
         const sql = additionalConditionsSql(ids);
 
         return new Promise((resolve, reject) => {
-            getCollection(sql, null, resolve, reject);
+            getCollection(sql, null, resolveJsonColumn(resolve, 'FIELD_POSITION'), reject);
         });
     },
 
@@ -87,8 +87,14 @@ const additionalConditionsSql = ids => {
     const idArray = Array.isArray(ids) ? ids : [ids];
 
     if (idArray.length === 0) {
-        return 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\'';
+        return 'SELECT CONDITIONS.ID, CONDITIONS.TEXT, CONDITIONS.USER_INPUT, CONDITIONS_UI.FIELD_POSITION ' +
+               'FROM CONDITIONS ' +
+               'LEFT JOIN CONDITIONS_UI ON CONDITIONS.USER_INPUT = CONDITIONS_UI.UI_ID ' +
+               'WHERE CONDITIONS.TYPE = \'ADDITIONAL\'';
     }
 
-    return 'select * from CONDITIONS Where TYPE = \'ADDITIONAL\' AND ID IN (' + idArray.join(',') + ')';
+    return 'SELECT CONDITIONS.ID, CONDITIONS.TEXT, CONDITIONS.USER_INPUT, CONDITIONS_UI.FIELD_POSITION ' +
+           'FROM CONDITIONS ' +
+           'LEFT JOIN CONDITIONS_UI ON CONDITIONS.USER_INPUT = CONDITIONS_UI.UI_ID ' +
+           'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (' + idArray.join(',') + ')';
 };

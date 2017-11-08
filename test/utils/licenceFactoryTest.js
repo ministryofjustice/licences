@@ -31,8 +31,13 @@ describe('licenceFactory', () => {
         it('should return an object for each selected item', () => {
 
             const selectedConditions = [
-                {ID: {value: 1}, USER_INPUT: {value: 'appointmentName'}},
-                {ID: {value: 2}, USER_INPUT: {value: 'confinedDetails'}}
+                {ID: {value: 1}, USER_INPUT: {value: 'appointmentName'}, FIELD_POSITION: {value: {appointmentName: 0}}},
+                {ID: {value: 2}, USER_INPUT: {value: 'confinedDetails'},
+                    FIELD_POSITION: {value: {
+                        confinedTo: 0,
+                        confinedFrom: 1,
+                        confinedReviewFrequency: 2
+                    }}}
             ];
 
             const formInputs = {additionalConditions: ['appointmentName', 'confinedDetails']};
@@ -54,8 +59,14 @@ describe('licenceFactory', () => {
         it('should add form data to the objects', () => {
 
             const selectedConditions = [
-                {ID: {value: 1}, USER_INPUT: {value: 'notInSightOf'}},
-                {ID: {value: 2}, USER_INPUT: {value: 'curfewDetails'}}
+                {ID: {value: 1}, USER_INPUT: {value: 'notInSightOf'}, FIELD_POSITION: {value: {notInSightOf: 0}}},
+                {ID: {value: 2}, USER_INPUT: {value: 'curfewDetails'},
+                    FIELD_POSITION: {value: {
+                        curfewFrom: 0,
+                        curfewTo: 1,
+                        curfewTagRequired: 3,
+                        curfewAddress: 2
+                    }}}
             ];
 
             const formInputs = {
@@ -86,8 +97,8 @@ describe('licenceFactory', () => {
         it('should return empty object for conditions with no input', () => {
 
             const selectedConditions = [
-                {ID: {value: 1}, USER_INPUT: {value: 'notInSightOf'}},
-                {ID: {value: 2}, USER_INPUT: {value: 'null'}}
+                {ID: {value: 1}, USER_INPUT: {value: 'notInSightOf'}, FIELD_POSITION: {value: {notInSightOf: 0}}},
+                {ID: {value: 2}, USER_INPUT: {value: 'null'}, FIELD_POSITION: {value: null}}
             ];
 
             const formInputs = {
@@ -135,7 +146,8 @@ describe('licenceFactory', () => {
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: 'appointmentName'},
-                    TEXT: {value: 'The condition [placeholder] with input'}
+                    TEXT: {value: 'The condition [placeholder] with input'},
+                    FIELD_POSITION: {value: {appointmentName: 0}}
                 }
             ];
 
@@ -157,7 +169,31 @@ describe('licenceFactory', () => {
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: 'appointmentDetails'},
-                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'}
+                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
+                    FIELD_POSITION: {value: {appointmentDate: 0, appointmentTime: 1}}
+                }
+            ];
+
+            const output = addAdditionalConditions(rawLicence, selectedConditions);
+
+            const expectedOutput = {
+                additionalConditions: [
+                    'The condition injected with input injected2 and another'
+                ]
+            };
+
+            expect(output).to.eql(expectedOutput);
+
+        });
+
+        it('should replace placeholder text when multiple items in wrong order', () => {
+            const rawLicence = {additionalConditions: {1: {appointmentDate: 'injected', appointmentTime: 'injected2'}}};
+            const selectedConditions = [
+                {
+                    ID: {value: 1},
+                    USER_INPUT: {value: 'appointmentDetails'},
+                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
+                    FIELD_POSITION: {value: {appointmentTime: 1, appointmentDate: 0}}
                 }
             ];
 
@@ -182,12 +218,14 @@ describe('licenceFactory', () => {
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: 'appointmentDetails'},
-                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'}
+                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
+                    FIELD_POSITION: {value: {appointmentDate: 0, appointmentTime: 1}}
                 },
                 {
                     ID: {value: 2},
                     USER_INPUT: {value: 'groupsOrOrganisations'},
-                    TEXT: {value: 'The condition [placeholder]'}
+                    TEXT: {value: 'The condition [placeholder]'},
+                    FIELD_POSITION: {value: {groupsOrOrganisation: 0}}
                 }
             ];
 

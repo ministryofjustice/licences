@@ -10,10 +10,9 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
 
     async function getLicence(nomisId) {
         try {
-            const rawLicence = await licenceClient.getLicence(nomisId);
-            const {licence} = rawLicence;
+            const {licence} = await licenceClient.getLicence(nomisId);
 
-            if(licence.additionalConditions && licence.additionalConditions !== {}) {
+            if(licence && licence.additionalConditions && licence.additionalConditions !== {}) {
                 const conditionIdsSelected = Object.keys(licence.additionalConditions);
                 const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
 
