@@ -39,7 +39,7 @@ function createConditionsObject(selectedConditions, formInputs) {
 
     return selectedConditions.reduce((conditions, condition) => {
 
-        const conditionAttributes = formObjects.get(condition.USER_INPUT.value);
+        const conditionAttributes = condition.FIELD_POSITION.value;
         if (!conditionAttributes) {
             return {...conditions, [condition.ID.value]: {}};
         }
@@ -56,10 +56,9 @@ function addAdditionalConditions(rawLicence, selectedConditions) {
         const userInputName = selectedCondition.USER_INPUT.value;
 
         if(userInputName) {
-            const fieldNames = formObjects.get(userInputName);
             const userInput = rawLicence.additionalConditions[condition];
 
-            return injectUserInputInto(selectedCondition, fieldNames, userInput);
+            return injectUserInputInto(selectedCondition, userInput);
         }
 
         return selectedCondition.TEXT.value;
@@ -68,14 +67,17 @@ function addAdditionalConditions(rawLicence, selectedConditions) {
     return {...rawLicence, additionalConditions};
 }
 
-function injectUserInputInto(condition, fieldNames, userInput) {
+function injectUserInputInto(condition, userInput) {
 
+    const fieldPositionObject = condition.FIELD_POSITION.value;
+    const fieldNames = Object.keys(fieldPositionObject);
     const conditionText = condition.TEXT.value;
     const placeHolders = getPlaceholdersFrom(conditionText);
 
     return placeHolders.reduce((text, placeHolder, index) => {
 
-        const inputtedData = userInput[fieldNames[index]];
+        const fieldNameForPlaceholder = fieldNames.find(field => fieldPositionObject[field] == index);
+        const inputtedData = userInput[fieldNameForPlaceholder];
         return text.replace(placeHolder, inputtedData);
 
     }, conditionText);
@@ -87,7 +89,9 @@ function getPlaceholdersFrom(condition) {
     return condition.match(betweenBrackets) || null;
 }
 
-const inputsFor = (conditionAttributes, formInputs) => {
+const inputsFor = (fieldPositions, formInputs) => {
+
+    const conditionAttributes = Object.keys(fieldPositions);
 
     return conditionAttributes.reduce((conditionDataObject, formItem) => {
         return {
@@ -123,27 +127,3 @@ const licenceModel = {
         time: ''
     }
 };
-
-// form items for condition
-const formObjects = new Map([
-    ['appointmentName', ['appointmentName']],
-    ['mentalHealthName', ['mentalHealthName']],
-    ['appointmentDetails', ['appointmentDate', 'appointmentTime']],
-    ['victimDetails', ['victimFamilyMembers', 'socialServicesDept']],
-    ['noUnsupervisedContact', ['unsupervisedContactGender', 'unsupervisedContactAge', 'unsupervisedContactSocial']],
-    ['noContactOffenders', ['noContactOffenders']],
-    ['groupsOrOrganisations', ['groupsOrOrganisation']],
-    ['courseOrCentre', ['courseOrCentre']],
-    ['noWorkWithAge', ['noWorkWithAge']],
-    ['noSpecificItems', ['noSpecificItems']],
-    ['noCurrencyQuantity', ['cashQuantity']],
-    ['vehicleDetails', ['vehicleDetails']],
-    ['intimateGender', ['intimateGender']],
-    ['confinedDetails', ['confinedTo', 'confinedFrom', 'confinedReviewFrequency']],
-    ['curfewDetails', ['curfewAddress', 'curfewFrom', 'curfewTo', 'curfewTagRequired']],
-    ['exclusionArea', ['exclusionArea']],
-    ['noEnterPlace', ['noEnterPlace']],
-    ['notInSightOf', ['notInSightOf']],
-    ['reportingDetails', ['reportingAddress', 'reportingTime', 'reportingDaily', 'reportingFrequency']],
-    ['alcoholLimit', ['alcoholLimit']]
-]);
