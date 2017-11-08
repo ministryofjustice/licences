@@ -17,14 +17,9 @@ module.exports = function({licenceService, logger, authenticationMiddleware}) {
     });
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('POST /dischargeAddress');
+        logger.debug('POST /reportingInstructions');
 
         const nomisId = req.params.nomisId;
-        const licence = await licenceService.getLicence(nomisId);
-
-        if(licence.length < 1) {
-            return res.redirect(`/details/${nomisId}`);
-        }
 
         await licenceService.updateReportingInstructions(req.body);
 
