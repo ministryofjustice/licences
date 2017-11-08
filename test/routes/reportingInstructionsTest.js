@@ -59,17 +59,4 @@ describe('POST /dischargeAddress/:prisonNumber', () => {
             });
 
     });
-
-    it('does redirects to prisoner details if no licence exists', () => {
-        licenceServiceStub.getLicence.resolves([]);
-        return request(app)
-            .post('/1')
-            .send(formResponse)
-            .expect(302)
-            .expect(res => {
-                expect(licenceServiceStub.updateReportingInstructions).to.not.be.called();
-                expect(res.header['location']).to.include('/details/');
-            });
-
-    });
 });

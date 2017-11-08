@@ -8,15 +8,14 @@ module.exports = function({logger, tasklistService, authenticationMiddleware}) {
     router.get('/', asyncMiddleware(async (req, res, next) => {
         logger.debug('GET /tasklist');
 
-        const upcomingReleases = await tasklistService.getDashboardDetail(req.user.staffId, req.user.token);
+        const dashboardDetail = await tasklistService.getDashboardDetail(req.user);
 
         const viewData = {
-            required: upcomingReleases ? upcomingReleases.required : [],
-            sent: upcomingReleases ? upcomingReleases.sent : [],
+            dashboardDetail,
             moment: require('moment')
         };
 
-        res.render('tasklist/index', viewData);
+        res.render(`tasklist/${req.user.roleCode}`, viewData);
     }));
 
     return router;

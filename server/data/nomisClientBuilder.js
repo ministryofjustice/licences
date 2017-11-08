@@ -14,11 +14,18 @@ const apiUrl = config.nomis.apiUrl;
 
 module.exports = function(token) {
     return {
-        getUpcomingReleasesFor: function(nomisIds) {
+        getUpcomingReleasesByOffenders: function(nomisIds) {
             const path = `${apiUrl}/offender-releases`;
-            const query = {offenderNo: nomisIds};
+            const query = {offenderNo: nomisIds}; // todo add cutoff date
             const headers = {'Page-Limit': nomisIds.length};
             return nomisGet(path, query, token, headers);
+        },
+
+        getUpcomingReleasesByUser: function() {
+            const path = `${apiUrl}/users/me/offender-releases`;
+            // todo add cutoff date
+            const headers = {'Page-Limit': 50}; // todo pagination?
+            return nomisGet(path, '', token, headers);
         },
 
         getBookings: function(nomisId) {

@@ -21,15 +21,23 @@ const licenceServiceStub = {
     createLicence: sandbox.stub().returnsPromise()
 };
 
-const app = appSetup(createPrisonerDetailsRoute({
-    prisonerDetailsService: serviceStub,
-    licenceService: licenceServiceStub,
-    logger: loggerStub,
-    authenticationMiddleware}
-));
+const testUser = {
+    staffId: 'my-staff-id',
+    token: 'my-token',
+    roleCode: 'OM'
+};
 
-describe('GET /licenceDetails/:prisonNumber', () => {
-    it('should call getLicenceDetails from licenceDetailsService', () => {
+const app = appSetup(createPrisonerDetailsRoute({
+        prisonerDetailsService: serviceStub,
+        licenceService: licenceServiceStub,
+        logger: loggerStub,
+        authenticationMiddleware
+    }
+), testUser);
+
+describe('GET /details/:prisonNumber', () => {
+
+    it('should call getPrisonerDetails from prisonerDetailsService', () => {
         return request(app)
             .get('/123')
             .expect(200)
@@ -57,8 +65,11 @@ describe('GET /licenceDetails/:prisonNumber', () => {
             });
 
     });
+});
 
-    it('should create a new licence if a licence does not already exists', () => {
+describe('POST /details/:prisonNumber', () => {
+
+    it('should create a new licence if a licence does not already exist', () => {
         const formResponse = {
             nomisId: '123',
             extra: 'field'

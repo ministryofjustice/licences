@@ -3,37 +3,20 @@ const licenceStates = require('../data/licenceStates.js');
 
 module.exports = function createTasklistService(deliusClient, nomisClientBuilder, dbClient) {
 
-    async function getDashboardDetail(userId, token) {
-
-        const nomisClient = nomisClientBuilder(token);
+    async function getDashboardDetail(user) {
 
         try {
-            const prisonerIds = await deliusClient.getPrisonersFor(userId);
-            logger.info(`Got Delius prisoner ids for [${userId}]: [${prisonerIds}]`);
+            const nomisClient = nomisClientBuilder(user.token);
+            const upcomingReleases = await getUpcomingReleases(nomisClient, deliusClient, user);
 
-            if (isEmpty(prisonerIds)) {
-                logger.info('No prisoner IDs');
-                return {};
-            }
-
-            const upcomingReleases = await nomisClient.getUpcomingReleasesFor(prisonerIds);
-            logger.info('Got upcoming releases:');
-            logger.info(upcomingReleases);
-
-            const filteredUpcomingReleases = upcomingReleases.filter(release => {
-               return release.releaseDate && true; // && todo filter by date;
-            });
-
-            if (isEmpty(filteredUpcomingReleases)) {
+            if (isEmpty(upcomingReleases)) {
                 logger.info('No upcoming releases');
                 return {};
             }
 
-            const licences = await dbClient.getLicences(getOffenderNomisIds(filteredUpcomingReleases));
-            logger.info('Got active licences:');
-            logger.info(licences);
+            const licences = await dbClient.getLicences(getOffenderIds(upcomingReleases));
 
-            return parseTasklistInfo(filteredUpcomingReleases, licences);
+            return parseTasklistInfo(upcomingReleases, licences);
 
         } catch (error) {
             logger.error('Error during getDashboardDetail: ', error.message);
@@ -44,11 +27,31 @@ module.exports = function createTasklistService(deliusClient, nomisClientBuilder
     return {getDashboardDetail};
 };
 
+async function getUpcomingReleases(nomisClient, deliusClient, user) {
+
+    const releasesRetrievalMethod = {
+        OM: offendersByDeliusUser(nomisClient, deliusClient, user),
+        OMU: offendersByCaseLoad(nomisClient),
+        PM: offendersByCaseLoad(nomisClient)
+    };
+
+    return await releasesRetrievalMethod[user.roleCode]();
+}
+
+const offendersByDeliusUser = (nomisClient, deliusClient, user) => async () => {
+    const offenderList = await deliusClient.getPrisonersFor(user.staffId);
+    return await nomisClient.getUpcomingReleasesByOffenders(offenderList);
+};
+
+const offendersByCaseLoad = nomisClient => async () => {
+    return nomisClient.getUpcomingReleasesByUser();
+};
+
 function isEmpty(candidateArray) {
     return !candidateArray || candidateArray.length <= 0;
 }
 
-function getOffenderNomisIds(releases) {
+function getOffenderIds(releases) {
     return releases.map(offender => offender.offenderNo);
 }
 
@@ -58,7 +61,7 @@ function parseTasklistInfo(upcomingReleases, licences) {
         const licence = licences.find(licence => licence.nomisId === offender.offenderNo);
 
 
-        if(licence) {
+        if (licence) {
             const licenceLocator = {status: licence.status, licenceId: licence.id};
             return {...offender, ...licenceLocator};
         }
@@ -68,7 +71,15 @@ function parseTasklistInfo(upcomingReleases, licences) {
 
     const required = allReleases.filter(release => licenceStates.REQUIRED_STATES.includes(release.status));
     const sent = allReleases.filter(release => licenceStates.SENT_STATES.includes(release.status));
+    const checking = allReleases.filter(release => licenceStates.CHECKING_STATES.includes(release.status));
+    const checkSent = allReleases.filter(release => licenceStates.CHECK_SENT_STATES.includes(release.status));
+    const approved = allReleases.filter(release => licenceStates.APPROVED_STATES.includes(release.status));
 
-    return {required, sent};
+    return {
+        required,
+        sent,
+        checking,
+        checkSent,
+        approved
+    };
 }
-

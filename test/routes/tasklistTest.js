@@ -13,7 +13,7 @@ const loggerStub = {
     debug: sandbox.stub()
 };
 const serviceStub = {
-    getDashboardDetail: sandbox.stub()
+    getDashboardDetail: sandbox.stub().returnsPromise()
 };
 
 const audit = {
@@ -22,13 +22,18 @@ const audit = {
 
 const testUser = {
     staffId: 'my-staff-id',
-    token: 'my-token'
+    token: 'my-token',
+    roleCode: 'OM'
 };
 
 const app = appSetup(createTasklistRoute(
     {tasklistService: serviceStub, logger: loggerStub, audit, authenticationMiddleware}), testUser);
 
 describe('GET /', () => {
+
+    beforeEach(() => {
+        serviceStub.getDashboardDetail.resolves({});
+    });
 
     afterEach(() => {
         sandbox.reset();
@@ -41,9 +46,8 @@ describe('GET /', () => {
             .expect('Content-Type', /html/)
             .expect(res => {
                 expect(serviceStub.getDashboardDetail).to.be.calledOnce();
-                expect(serviceStub.getDashboardDetail).to.be.calledWith('my-staff-id', 'my-token');
+                expect(serviceStub.getDashboardDetail).to.be.calledWith(testUser);
             });
-
     });
 });
 

@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+
+    h1.heading-large Check the details
+
+    div.grid-row.largeMarginBottom
+        div.column-full
+            if licence.additionalConditions && licence.additionalConditions.length > 0
+                include ./additionalConditions
+
+            if licence.dischargeAddress
+                include ./dischargeAddress
+
+            if licence.reportingInstructions
+                include ./reportingInstructions
+
+
+    div#continueBtns.inlineButtons
+        if status === 'SENT' || status === 'CHECK_STARTED'
+            a#continueBtn.requiredButton.button(href="/send/"+licence.nomisId role="button") Continue
+        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

@@ -10,16 +10,24 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
 
     async function getLicence(nomisId) {
         try {
-            const {licence} = await licenceClient.getLicence(nomisId);
+            const rawLicence = await licenceClient.getLicence(nomisId);
+
+            const {licence} = rawLicence;
+
+            if(!rawLicence.licence) {
+                return null;
+            }
 
             if(licence && licence.additionalConditions && licence.additionalConditions !== {}) {
                 const conditionIdsSelected = Object.keys(licence.additionalConditions);
                 const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
 
-                return addAdditionalConditions(licence, conditionsSelected);
+                return {
+                    licence: addAdditionalConditions(licence, conditionsSelected),
+                    status: rawLicence.status};
             }
 
-            return licence;
+            return {licence, status: rawLicence.status};
 
         } catch (error) {
             throw error;
@@ -77,9 +85,18 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
-    async function send(nomisId) {
+    async function sendToOmu(nomisId) {
         try {
             return await licenceClient.updateStatus(nomisId, 'SENT');
+        } catch (error) {
+            console.error(error, 'Error during send licence');
+            throw error;
+        }
+    }
+
+    async function sendToPm(nomisId) {
+        try {
+            return await licenceClient.updateStatus(nomisId, 'CHECK_SENT');
         } catch (error) {
             console.error(error, 'Error during send licence');
             throw error;
@@ -104,7 +121,8 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         updateAddress,
         updateReportingInstructions,
         updateLicenceConditions,
-        send,
+        sendToOmu,
+        sendToPm,
         getEstablishment
     };
 };

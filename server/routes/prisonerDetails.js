@@ -25,7 +25,7 @@ module.exports = function({logger, prisonerDetailsService, licenceService, authe
             setCase: require('case')
         };
 
-        res.render('details/index', details);
+        res.render(`details/${req.user.roleCode}`, details);
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {

@@ -1,7 +1,7 @@
 const createLicenceService = require('../../server/services/licenceService');
 const {expect, sandbox} = require('../testSetup');
 
-describe('licenceDetailsService', () => {
+describe('licenceService', () => {
 
     const aLicence = {a: 'b', licence: {agencyLocationId: '123'}};
 
@@ -33,7 +33,7 @@ describe('licenceDetailsService', () => {
         });
 
         it('should return licence', () => {
-            return expect(service.getLicence('123')).to.eventually.eql({a: 'b'});
+            return expect(service.getLicence('123')).to.eventually.eql({licence: {a: 'b'}, status: undefined});
         });
 
         it('should addAdditionalConditions if they are present in licence', () => {
@@ -44,7 +44,11 @@ describe('licenceDetailsService', () => {
                 TEXT: {value: 'The condition'},
                 FIELD_POSITION: {value: null}}]);
 
-            return expect(service.getLicence('123')).to.eventually.eql({additionalConditions: ['The condition']});
+            return expect(service.getLicence('123')).to.eventually.eql({
+                licence: {
+                    additionalConditions: ['The condition']
+                }, status: undefined
+            });
         });
 
         it('should throw if error getting licence', () => {
@@ -146,9 +150,9 @@ describe('licenceDetailsService', () => {
         });
     });
 
-    describe('send', () => {
+    describe('sendToOmu', () => {
         it('should call updateStatus from the licence client', () => {
-            service.send('ab1');
+            service.sendToOmu('ab1');
 
             expect(licenceClient.updateStatus).to.be.calledOnce();
             expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'SENT');
@@ -156,7 +160,21 @@ describe('licenceDetailsService', () => {
 
         it('should throw if error during update status', () => {
             licenceClient.updateStatus.rejects();
-            return expect(service.send('ab1')).to.eventually.be.rejected();
+            return expect(service.sendToOmu('ab1')).to.eventually.be.rejected();
+        });
+    });
+
+    describe('sendToPm', () => {
+        it('should call updateStatus from the licence client', () => {
+            service.sendToPm('ab1');
+
+            expect(licenceClient.updateStatus).to.be.calledOnce();
+            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'CHECK_SENT');
+        });
+
+        it('should throw if error during update status', () => {
+            licenceClient.updateStatus.rejects();
+            return expect(service.sendToPm('ab1')).to.eventually.be.rejected();
         });
     });
 

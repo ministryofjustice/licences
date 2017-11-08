@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+
+    if status === 'STARTED'
+        h1.heading-large Check the details
+    else
+        h1.heading-large Licence details
+
+    div.grid-row.largeMarginBottom
+        div.column-full
+            if licence.additionalConditions && licence.additionalConditions.length > 0
+                include ./additionalConditions
+
+            if licence.dischargeAddress
+                include ./dischargeAddress
+
+            if licence.reportingInstructions
+                include ./reportingInstructions
+
+
+    div#continueBtns.inlineButtons
+        if status === 'STARTED'
+            a#continueBtn.requiredButton.button(href="/send/"+licence.nomisId role="button") Continue
+
+        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

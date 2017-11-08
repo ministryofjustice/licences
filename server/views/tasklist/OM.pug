@@ -4,7 +4,7 @@ block content
 
     h1#pageHeading.heading-large Upcoming releases
 
-        if required
+        if dashboardDetail.required && dashboardDetail.required.length > 0
 
             h2.heading-medium Information required
             table
@@ -16,8 +16,8 @@ block content
                         th Discharge date
                         th
                 tbody
-                    each entry in required
-                        tr.infoRequired
+                    each entry in dashboardDetail.required
+                        tr.required
                             td.requiredName
                                 if entry.lastName
                                     |#{entry.lastName}
@@ -43,9 +43,9 @@ block content
                                     else
                                         |Start
 
-        if sent && sent.length >0
+        if dashboardDetail.sent && dashboardDetail.sent.length > 0
 
-            h2.heading-medium Sent to OMU
+            h2.heading-medium Information sent to OMU teams
             table
                 thead
                     tr
@@ -55,25 +55,29 @@ block content
                         th Discharge date
                         th
                 tbody
-                    each entry in sent
-                        tr.awaitingApproval
-                            td.awaitingName
+                    each entry in dashboardDetail.sent
+                        tr.sent
+                            td.sentName
                                 if entry.lastName
                                     | #{entry.lastName}
                                     if entry.firstName
                                         | , #{entry.firstName}
 
-                            td.awaitingNomisId
+                            td.sentNomisId
                                 if entry.offenderNo
                                     | #{entry.offenderNo}
 
-                            td.awaitingEstablishment
+                            td.sentEstablishment
                                 if entry.agencyLocationDesc
                                     | #{entry.agencyLocationDesc}
 
-                            td.awaitingDischargeDate
+                            td.sentDischargeDate
                                 if entry.releaseDate
                                     | #{moment(entry.releaseDate).format('DD/MM/YYYY')}
 
-        if !required && !sent
+                            td.sentButton
+                                a.button.button-secondary(href="licenceDetails/" + entry.offenderNo role="button")
+                                    | View
+
+        if !dashboardDetail.required && !dashboardDetail.sent
             h2.heading-medium No upcoming releases
