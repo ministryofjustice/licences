@@ -30,8 +30,10 @@ async function signIn(username, password) {
             .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
             .set('Elite-Authorization', eliteAuthorisationToken);
 
+        logger.info(`Elite2 profile success for [${username}]`);
+
         const role = await getRole(eliteAuthorisationToken);
-        const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') +1);
+        const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
 
         logger.info(`Elite2 profile success for [${username}] with role  [${roleCode}]`);
         return {...profileResult.body, ...{token: eliteAuthorisationToken}, ...{role}, ...{roleCode}};
@@ -49,6 +51,8 @@ async function getRole(eliteAuthorisationToken) {
         .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
         .set('Elite-Authorization', eliteAuthorisationToken);
 
+
+    logger.info(`Elite2 get roles success with [${rolesResult.body}]`);
     const roles = rolesResult.body.roles;
 
     if (roles && roles.length > 0) {
@@ -56,6 +60,7 @@ async function getRole(eliteAuthorisationToken) {
             return role.roleCode.includes('LICENCES');
         });
 
+        logger.info(`Selected role: ${role.roleCode}`);
         if (role) return role;
     }
 
