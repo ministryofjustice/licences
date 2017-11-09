@@ -13,14 +13,11 @@ const loggerStub = {
 
 const conditionsServiceStub = {
     getStandardConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'hi'}}]),
-    getAdditionalConditions: sandbox.stub().returnsPromise().resolves([
-        {
-            TEXT: {value: 'hi'},
-            ID: {value: 'ho'},
-            USER_INPUT: {}
+    getAdditionalConditions: sandbox.stub().returnsPromise().resolves({
+        base: {
+            base: [{TEXT: {value: 'hi'}, ID: {value: 'ho'}, USER_INPUT: {}}]
         }
-    ])
-
+    })
 };
 
 const licenceServiceStub = {
