@@ -10,8 +10,10 @@ module.exports = function createConditionsService(licenceClient) {
 
     async function getAdditionalConditions() {
         try {
-            return await licenceClient.getAdditionalConditions();
+            const conditions = await licenceClient.getAdditionalConditions();
 
+
+            return splitIntoGroups(conditions);
         } catch(error) {
             throw error;
         }
@@ -19,3 +21,20 @@ module.exports = function createConditionsService(licenceClient) {
 
     return {getStandardConditions, getAdditionalConditions};
 };
+
+
+function splitIntoGroups(conditions) {
+    return conditions.reduce((conditionObject, condition) => {
+        const groupName = condition.GROUP_NAME.value || 'base';
+        const subgroupName = condition.SUBGROUP_NAME.value || 'base';
+
+        const group = conditionObject[groupName] || {};
+        const subgroup = group[subgroupName] || [];
+
+        const newSubgroup = [...subgroup, condition];
+        const newGroup = {...group, [subgroupName]: newSubgroup};
+
+        return {...conditionObject, [groupName]: newGroup};
+
+    }, {});
+}
