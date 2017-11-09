@@ -52,8 +52,12 @@ async function getRole(eliteAuthorisationToken) {
         .set('Elite-Authorization', eliteAuthorisationToken);
 
 
-    logger.info(`Elite2 get roles success with [${rolesResult.body}]`);
-    const roles = rolesResult.body.roles;
+    logger.info(`Elite2 get roles success with body ${rolesResult.body}`);
+    logger.info(`Elite2 get roles success with body.roles ${rolesResult.body.roles}`);
+
+    const roles = rolesResult.body.roles ? rolesResult.body.role : rolesResult.body;
+
+    logger.info(`Elite2 get roles - resulting roless ${roles}`);
 
     if (roles && roles.length > 0) {
         const role = roles.find(role => {
