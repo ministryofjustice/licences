@@ -6,6 +6,8 @@ exports.up = knex =>
             table.string('TYPE', 50).notNullable();
             table.string('TEXT').notNullable();
             table.string('USER_INPUT');
+            table.integer('GROUP');
+            table.integer('SUBGROUP');
         }),
         knex.raw(`CREATE INDEX CONDITION_BY_TYPE ON CONDITIONS (TYPE) INCLUDE (ID, TIMESTAMP, TEXT, USER_INPUT)
                 WITH (ONLINE = ON);`)
