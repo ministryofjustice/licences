@@ -345,6 +345,7 @@ exports.seed = knex =>
                     ID: 46,
                     TYPE: "ADDITIONAL",
                     TEXT: "Not to reside (not even to stay for one night) in the same household as [ANY / ANY FEMALE / ANY MALE] child under the age of [INSERT AGE] without the prior approval of your supervising officer.",
+                    USER_INPUT: "notToReside",
                     GROUP: 1,
                     SUBGROUP: 8,
                     ACTIVE: 1
