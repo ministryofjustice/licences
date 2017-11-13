@@ -16,7 +16,7 @@ block content
                 if(prisonerInfo.imageId)
                     img(src= "/public/images/placeholder.png")
                 if(prisonerInfo.captureDate)
-                    span.subText Uploaded: #{moment(prisonerInfo.captureDate).format('DD/MM/YYYY')}
+                    span.subText Uploaded: #{prisonerInfo.captureDate}
 
             div.column-one-quarter
                 div.midMarginBottom
@@ -38,7 +38,7 @@ block content
                 div.midMarginBottom
                     | Date of birth
                     if(prisonerInfo.dateOfBirth)
-                        span#prisonerDob.block.bold #{moment(prisonerInfo.dateOfBirth).format('DD/MM/YYYY')}
+                        span#prisonerDob.block.bold #{prisonerInfo.dateOfBirth}
 
                 div.midMarginBottom
                     | Gender
@@ -58,7 +58,7 @@ block content
                     | Release date
                     span#releaseDate.block.bold
                         if (prisonerInfo.conditionalReleaseDate)
-                            | #{moment(prisonerInfo.conditionalReleaseDate).format('DD/MM/YYYY')}
+                            | #{prisonerInfo.conditionalReleaseDate}
                         else
                             | N/A
 
@@ -67,7 +67,7 @@ block content
                     | Licence expires
                     span#licenceExpires.block.bold
                         if (prisonerInfo.licenceExpiryDate)
-                            | #{moment(prisonerInfo.licenceExpiryDate).format('DD/MM/YYYY')}
+                            | #{prisonerInfo.licenceExpiryDate}
                         else
                             | N/A
 
@@ -77,7 +77,7 @@ block content
                     | Sentence expires
                     span#sentenceExpires.block.bold
                         if (prisonerInfo.sentenceExpiryDate)
-                            | #{moment(prisonerInfo.sentenceExpiryDate).format('DD/MM/YYYY')}
+                            | #{prisonerInfo.sentenceExpiryDate}
                         else
                             | N/A
 

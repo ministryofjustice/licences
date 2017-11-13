@@ -21,7 +21,6 @@ module.exports = function({logger, prisonerDetailsService, licenceService, authe
 
         const details = {
             prisonerInfo,
-            moment: require('moment'),
             setCase: require('case')
         };
 

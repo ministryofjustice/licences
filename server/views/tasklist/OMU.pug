@@ -108,7 +108,7 @@ block content
 
                             td.checkSentDischargeDate
                                 if entry.releaseDate
-                                    | #{moment(entry.releaseDate).format('DD/MM/YYYY')}
+                                    | #{entry.releaseDate}
 
                             td.checkSentButton
                                 a.button.button-secondary(href="licenceDetails/" + entry.offenderNo role="button")
