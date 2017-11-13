@@ -133,6 +133,13 @@ exports.seed = knex =>
                     FIELD_POSITION: '{' +
                     '"alcoholLimit": "0"' +
                     '}'
+                },
+                {
+                    UI_ID: "notToReside",
+                    FIELD_POSITION: '{' +
+                    '"notResideWithGender": "0",' +
+                    '"notResideWithAge": "1"' +
+                    '}'
                 }
 
             ])
