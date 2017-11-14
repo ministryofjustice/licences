@@ -19,12 +19,7 @@ module.exports = function({logger, prisonerDetailsService, licenceService, authe
 
         const prisonerInfo = await prisonerDetailsService.getPrisonerDetails(nomisId, req.user.token);
 
-        const details = {
-            prisonerInfo,
-            setCase: require('case')
-        };
-
-        res.render(`details/${req.user.roleCode}`, details);
+        res.render(`details/${req.user.roleCode}`, {prisonerInfo});
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {

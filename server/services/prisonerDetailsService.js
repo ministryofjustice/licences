@@ -1,5 +1,5 @@
 const logger = require('../../log.js');
-const {formatDates} = require('./utils/dateFormatter');
+const {formatObjectForView} = require('./utils/formatForView');
 
 module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
     async function getPrisonerDetails(nomisId, token) {
@@ -39,6 +39,14 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
 };
 
 function formatResponse(object) {
+    const nameFields = [
+        'lastName',
+        'firstName',
+        'middleName',
+        'aliases',
+        'gender',
+        'assignedLivingUnitDesc'
+    ];
     const dateFields = [
         'captureDate',
         'dateOfBirth',
@@ -46,5 +54,5 @@ function formatResponse(object) {
         'licenceExpiryDate',
         'sentenceExpiryDate'];
 
-    return formatDates(object, dateFields);
+    return formatObjectForView(object, {dates: dateFields, capitalise: nameFields});
 }
