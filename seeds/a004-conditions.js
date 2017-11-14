@@ -325,7 +325,8 @@ exports.seed = knex =>
                     ID: 43,
                     TYPE: "ADDITIONAL",
                     TEXT: "On release to be escorted by police to Approved Premises",
-                    ACTIVE: 1
+                    ACTIVE: 1,
+                    GROUP: 3
                 },
                 {
                     ID: 44,
