@@ -10,12 +10,7 @@ module.exports = function({logger, tasklistService, authenticationMiddleware}) {
 
         const dashboardDetail = await tasklistService.getDashboardDetail(req.user);
 
-        const viewData = {
-            dashboardDetail,
-            moment: require('moment')
-        };
-
-        res.render(`tasklist/${req.user.roleCode}`, viewData);
+        res.render(`tasklist/${req.user.roleCode}`, {dashboardDetail});
     }));
 
     return router;

@@ -1,5 +1,6 @@
 const logger = require('../../log.js');
 const licenceStates = require('../data/licenceStates.js');
+const {formatObjectForView} = require('./utils/formatForView');
 
 module.exports = function createTasklistService(deliusClient, nomisClientBuilder, dbClient) {
 
@@ -59,14 +60,14 @@ function parseTasklistInfo(upcomingReleases, licences) {
 
     const allReleases = upcomingReleases.map(offender => {
         const licence = licences.find(licence => licence.nomisId === offender.offenderNo);
-
+        const formattedOffender = formatObjectForView(offender, {dates: ['releaseDate']});
 
         if (licence) {
             const licenceLocator = {status: licence.status, licenceId: licence.id};
-            return {...offender, ...licenceLocator};
+            return {...formattedOffender, ...licenceLocator};
         }
 
-        return {...offender, ...{status: 'UNSTARTED'}};
+        return {...formattedOffender, status: 'UNSTARTED'};
     });
 
     const required = allReleases.filter(release => licenceStates.REQUIRED_STATES.includes(release.status));

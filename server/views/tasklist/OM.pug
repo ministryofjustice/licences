@@ -34,7 +34,7 @@ block content
 
                             td.requiredDischargeDate
                                 if entry.releaseDate
-                                    | #{moment(entry.releaseDate).format('DD/MM/YYYY')}
+                                    | #{entry.releaseDate}
 
                             td.requiredButton
                                 a.button.button-secondary(href="details/"+entry.offenderNo role="button")
@@ -73,7 +73,7 @@ block content
 
                             td.sentDischargeDate
                                 if entry.releaseDate
-                                    | #{moment(entry.releaseDate).format('DD/MM/YYYY')}
+                                    | #{entry.releaseDate}
 
                             td.sentButton
                                 a.button.button-secondary(href="licenceDetails/" + entry.offenderNo role="button")

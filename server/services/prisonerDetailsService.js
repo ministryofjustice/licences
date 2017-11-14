@@ -1,4 +1,5 @@
 const logger = require('../../log.js');
+const {formatObjectForView} = require('./utils/formatForView');
 
 module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
     async function getPrisonerDetails(nomisId, token) {
@@ -25,7 +26,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const image = booking.facialImageId ? await nomisClient.getImageInfo(booking.facialImageId): null;
             logger.info(`got image detail for facialImageId id: ${booking.facialImageId}`);
 
-            return {...bookingDetail, ...booking, ...image, ...sentenceDetail};
+            return formatResponse({...bookingDetail, ...booking, ...image, ...sentenceDetail});
 
         } catch (error) {
             logger.error('Error getting prisoner info');
@@ -36,3 +37,22 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
 
     return {getPrisonerDetails};
 };
+
+function formatResponse(object) {
+    const nameFields = [
+        'lastName',
+        'firstName',
+        'middleName',
+        'aliases',
+        'gender',
+        'assignedLivingUnitDesc'
+    ];
+    const dateFields = [
+        'captureDate',
+        'dateOfBirth',
+        'conditionalReleaseDate',
+        'licenceExpiryDate',
+        'sentenceExpiryDate'];
+
+    return formatObjectForView(object, {dates: dateFields, capitalise: nameFields});
+}

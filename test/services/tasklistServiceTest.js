@@ -32,9 +32,9 @@ describe('taskListService', () => {
     const service = createTasklistService(deliusClient, nomisClientBuilder, dbClient);
 
     const upcomingReleases = [
-        {offenderNo: '1', releaseDate: '1'},
-        {offenderNo: '2', releaseDate: '1'},
-        {offenderNo: '3', releaseDate: '1'}
+        {offenderNo: '1', releaseDate: '1985-12-03'},
+        {offenderNo: '2', releaseDate: '1985-12-04'},
+        {offenderNo: '3', releaseDate: '1985-12-05'}
     ];
 
     beforeEach(() => {
@@ -144,13 +144,13 @@ describe('taskListService', () => {
                         required: [
                             {
                                 offenderNo: '1',
-                                releaseDate: '1',
+                                releaseDate: '03/12/1985',
                                 status: 'UNSTARTED'
                             },
                             {
                                 licenceId: 'ab',
                                 offenderNo: '2',
-                                releaseDate: '1',
+                                releaseDate: '04/12/1985',
                                 status: 'STARTED'
                             }
                         ],
@@ -158,7 +158,7 @@ describe('taskListService', () => {
                             {
                                 licenceId: 'cd',
                                 offenderNo: '3',
-                                releaseDate: '1',
+                                releaseDate: '05/12/1985',
                                 status: 'SENT'
                             }
                         ],
@@ -166,7 +166,7 @@ describe('taskListService', () => {
                             {
                                 licenceId: 'cd',
                                 offenderNo: '3',
-                                releaseDate: '1',
+                                releaseDate: '05/12/1985',
                                 status: 'SENT'
                             }
                         ],
