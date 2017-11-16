@@ -1,4 +1,4 @@
-extends ../layout
+extends ../layout-grid
 
 block content
 
@@ -11,14 +11,14 @@ block content
 
     else
 
-        div#personalDetails.grid-row.borderBottom.paddingBottom
-            div.column-one-quarter
+        div#personalDetails.pure-g.borderBottom.paddingBottom
+            div.pure-u-1.pure-u-md-1-4
                 if(prisonerInfo.imageId)
                     img(src= "/public/images/placeholder.png")
                 if(prisonerInfo.captureDate)
-                    span.subText Uploaded: #{prisonerInfo.captureDate}
+                    span.block.subText Uploaded: #{prisonerInfo.captureDate}
 
-            div.column-one-quarter
+            div.pure-u-1.pure-u-md-1-4
                 div.midMarginBottom
                     |Name
                     if(prisonerInfo.firstName || prisonerInfo.lastName)
@@ -34,7 +34,7 @@ block content
                     if(prisonerInfo.offenderNo)
                         span#prisonerPrisonNumber.block.bold #{prisonerInfo.offenderNo}
 
-            div.column-one-quarter
+            div.pure-u-1.pure-u-md-1-4
                 div.midMarginBottom
                     | Date of birth
                     if(prisonerInfo.dateOfBirth)
@@ -52,8 +52,8 @@ block content
 
         h2.heading-medium Key dates
 
-        div#keyDates.grid-row.paddingBottom
-            div.column-one-quarter
+        div#keyDates.pure-g.paddingBottom
+            div.pure-u-1.pure-u-md-1-4
                 div.midMarginBottom
                     | Release date
                     span#releaseDate.block.bold
@@ -62,7 +62,7 @@ block content
                         else
                             | N/A
 
-            div.column-one-quarter
+            div.pure-u-1.pure-u-md-1-4
                 div.midMarginBottom
                     | Licence expires
                     span#licenceExpires.block.bold
@@ -71,8 +71,8 @@ block content
                         else
                             | N/A
 
-        div#keyDates.grid-row.paddingBottom
-            div.column-one-quarter
+        div.pure-g.paddingBottom
+            div.pure-u-1.pure-u-md-1-4
                 div.midMarginBottom
                     | Sentence expires
                     span#sentenceExpires.block.bold
@@ -81,7 +81,8 @@ block content
                         else
                             | N/A
 
-    div#continueBtns.inlineButtons
-        a#continueBtn.requiredButton.button(href="/licenceDetails/" + prisonerInfo.offenderNo role="button")
-            | Continue
-        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+    div#continueBtns.pure-g.paddingBottom
+        div.pure-u-1.inlineButtons
+            a#continueBtn.requiredButton.button(href="/licenceDetails/" + prisonerInfo.offenderNo role="button")
+                | Continue
+            a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard

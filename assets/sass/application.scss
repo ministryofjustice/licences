@@ -97,14 +97,6 @@ a.button.button-secondary {
     padding: 0px 15px 0px 0px;
 }
 
-input.small {
-    max-width: 275px;
-}
-
-input.verySmall {
-    max-width: 50px;
-}
-
 .padLeftRight5 {
     padding-left: 5px;
     padding-right: 5px;
@@ -167,10 +159,6 @@ input.verySmall {
     background-color: $light-blue-25;
     padding-left: 7px;
     padding-right: 7px;
-
-    .form-control {
-        width: 100%;
-    }
 
     .multiple-choice [type=radio] + label::before, .multiple-choice [type=checkbox] + label::before {
         background-color: white;
