@@ -1,29 +1,32 @@
-extends ../layout
+extends ../layout-grid
 
 block content
     h1.heading-large Planned discharge address
     p Enter the address
 
-    form#acceptanceForm(method='POST')
-        div.form-group
-            fieldset.inline
+    div.pure-g
+        div.pure-u-1.pure-u-md-1-3
+            form#acceptanceForm(method='POST')
+                div.form-group
+                    fieldset.inline
 
-                div#addressForm
-                    div.form-group
-                        label.form-label(for="building") Building and street
-                        input#building.midMarginBottom.form-control(name="address1" type="text")
-                        input#street.form-control.block(name="address2" type="text")
+                        div#addressForm.pure-g
+                            div.form-group.pure-u-1
+                                label.form-label(for="building") Building and street
+                                input#building.midMarginBottom.form-control(name="address1" type="text")
+                                input#street.form-control.block(name="address2" type="text")
 
-                    div.form-group
-                        label.form-label(for="town") Town or city
-                        input#town.form-control(name="address3" type="text")
+                            div.form-group.pure-u-1
+                                label.form-label(for="town") Town or city
+                                input#town.form-control(name="address3" type="text")
 
-                    div.form-group
-                        label.form-label(for="postcode") Postcode
-                        input#postcode.form-control.small(name="postCode" type="text")
+                            div.form-group.pure-u-1.pure-u-md-2-3
+                                label.form-label(for="postcode") Postcode
+                                input#postcode.form-control.small(name="postCode" type="text")
 
-        div#continueBtns.inlineButtons
-            input(type="hidden" name="_csrf" value=csrfToken)
-            input(type="hidden" name="nomisId" value=nomisId)
-            input#continueBtn.requiredButton.button(type="submit" value="Continue")
-            a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+                div#continueBtns.pure-g.paddingBottom
+                    div.pure-u-1.inlineButtons
+                        input(type="hidden" name="_csrf" value=csrfToken)
+                        input(type="hidden" name="nomisId" value=nomisId)
+                        input#continueBtn.requiredButton.button(type="submit" value="Continue")
+                        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
