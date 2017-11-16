@@ -52,34 +52,35 @@ block content
 
         h2.heading-medium Key dates
 
-        div#keyDates.pure-g.paddingBottom
-            div.pure-u-1.pure-u-md-1-4
-                div.midMarginBottom
-                    | Release date
-                    span#releaseDate.block.bold
-                        if (prisonerInfo.conditionalReleaseDate)
-                            | #{prisonerInfo.conditionalReleaseDate}
-                        else
-                            | N/A
+        div#keyDates.paddingBottom
+            div.pure-g
+                div.pure-u-1.pure-u-md-1-4
+                    div.midMarginBottom
+                        | Release date
+                        span#releaseDate.block.bold
+                            if (prisonerInfo.conditionalReleaseDate)
+                                | #{prisonerInfo.conditionalReleaseDate}
+                            else
+                                | N/A
 
-            div.pure-u-1.pure-u-md-1-4
-                div.midMarginBottom
-                    | Licence expires
-                    span#licenceExpires.block.bold
-                        if (prisonerInfo.licenceExpiryDate)
-                            | #{prisonerInfo.licenceExpiryDate}
-                        else
-                            | N/A
+                div.pure-u-1.pure-u-md-1-4
+                    div.midMarginBottom
+                        | Licence expires
+                        span#licenceExpires.block.bold
+                            if (prisonerInfo.licenceExpiryDate)
+                                | #{prisonerInfo.licenceExpiryDate}
+                            else
+                                | N/A
 
-        div.pure-g.paddingBottom
-            div.pure-u-1.pure-u-md-1-4
-                div.midMarginBottom
-                    | Sentence expires
-                    span#sentenceExpires.block.bold
-                        if (prisonerInfo.sentenceExpiryDate)
-                            | #{prisonerInfo.sentenceExpiryDate}
-                        else
-                            | N/A
+            div.pure-g.paddingBottom
+                div.pure-u-1.pure-u-md-1-4
+                    div.midMarginBottom
+                        | Sentence expires
+                        span#sentenceExpires.block.bold
+                            if (prisonerInfo.sentenceExpiryDate)
+                                | #{prisonerInfo.sentenceExpiryDate}
+                            else
+                                | N/A
 
     div#continueBtns.pure-g.paddingBottom
         div.pure-u-1.inlineButtons
