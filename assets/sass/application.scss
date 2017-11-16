@@ -102,6 +102,18 @@ a.button.button-secondary {
     padding-right: 5px;
 }
 
+.padRight15 {
+    padding-right: 15px;
+}
+
+.padRight7 {
+    padding-right: 7px;
+}
+
+.padLeft7 {
+    padding-left: 7px;
+}
+
 #global-header #logo.hmppslogo {
     background: url($path+'/hmpps_logo_small.png') no-repeat;
     background-size: 54px 48px;
@@ -132,7 +144,7 @@ a.button.button-secondary {
 
 .conditionSelector {
     border: solid $grey-1 2px;
-    margin: 10px 0;
+    margin-bottom: 10px;
     padding: 15px;
 
     div {
@@ -156,9 +168,6 @@ a.button.button-secondary {
 }
 
 .conditionForm {
-    background-color: $light-blue-25;
-    padding-left: 7px;
-    padding-right: 7px;
 
     .multiple-choice [type=radio] + label::before, .multiple-choice [type=checkbox] + label::before {
         background-color: white;
@@ -178,17 +187,30 @@ a.button.button-secondary {
     }
 
     .inlineFormItem input {
-        width: 30%;
+        width: 80px;
         margin-left: 10px;
 
     }
 
-    .linePaddingTop {
-        padding-top: 24px;
+    .lineMarginTop {
+        margin-top: 25px;
     }
 
-}
+    .form-group {
+        margin-bottom: 0px;
+    }
 
+    .conditionForm {
+        background-color: $light-blue-25;
+        padding: 10px;
+        margin-left: 15px;
+    }
+
+    .inlineText {
+        float: left;
+        padding: 30px 7px 0 7px;
+    }
+}
 
 .confirm-banner {
     color: $white;
@@ -200,4 +222,8 @@ a.button.button-secondary {
 
 td.spacer {
     min-width: 120px;
+}
+
+.center {
+    text-align: center;
 }

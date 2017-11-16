@@ -1,14 +1,14 @@
-extends ../layout
+extends ../layout-grid
 
 block content
 
-    h1.grid-row.heading-large Additional conditions
+    h1.heading-large Additional conditions
 
     form#additionalConditions(method='POST')
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId)
         div#conditionsInstructions.paddingBottom.largeMarginBottom
-            div.grid-row
+            div.pure-g
                 div.paddingBottom.borderBottom.midMarginBottom
                     p If the offender requires additional conditions adding to their licence select them below.
                     span.block.smallPaddingBottom
@@ -16,7 +16,7 @@ block content
 
                     a.button.button-secondary(href="/reporting/"+nomisId role="button") No additional conditions required
 
-            div.grid-row
+            div.pure-g
                 for group, groupName in conditions
                     div.borderBottom.paddingBottom
                         if groupName !== 'base'
@@ -27,16 +27,18 @@ block content
                             for condition in subgroup
 
                                 - var conditionId = condition.ID.value
-                                div.grid-row.noMargin
-                                    div.column-two-thirds.noLeftPaddingColumn
-                                        div.multiple-choice.conditionSelector.column-full.noLeftPaddingColumn(data-target=condition.USER_INPUT.value+'_form')
+                                div.pure-g.smallPaddingBottom
+                                    div.pure-u-1.pure-u-md-2-3.pure-g
+                                        div.pure-u-1.multiple-choice.conditionSelector.noLeftPaddingColumn(data-target=condition.USER_INPUT.value+'_form')
                                             input(type="checkbox" id="check-"+conditionId value=condition.ID.value name="additionalConditions")
                                             label(for="check-"+conditionId) #{condition.TEXT.value}
 
                                     if condition.USER_INPUT.value
-                                        div.column-one-third.conditionForm.smallMarginTop.smallPaddingTop.js-hidden(id=condition.USER_INPUT.value+'_form')
-                                            include ./formBuilder
+                                        div.pure-u-1.pure-u-md-1-3.conditionForm.js-hidden(id=condition.USER_INPUT.value+'_form')
+                                            div.conditionForm
+                                                include ./formBuilder
 
-        div#continueBtns.inlineButtons
-            input#continueBtn.requiredButton.button(type="submit" value="Continue")
-            a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+        div#continueBtns.pure-g.paddingBottom
+            div.pure-u-1.inlineButtons
+                input#continueBtn.requiredButton.button(type="submit" value="Continue")
+                a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
