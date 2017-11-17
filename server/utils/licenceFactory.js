@@ -124,6 +124,7 @@ const licenceModel = {
         postCode: '',
         telephone: '',
         date: '',
-        time: ''
+        hour: '',
+        minute: ''
     }
 };
