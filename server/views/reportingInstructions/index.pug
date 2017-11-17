@@ -1,4 +1,4 @@
-extends ../layout
+extends ../layout-grid
 
 block content
 
@@ -6,8 +6,8 @@ block content
     p Enter the details of where the licensee should report
 
     form#reportingForm(method='POST')
-        div.form-group
-            div#address.borderBottom.largeMarginBottom.midPaddingBottom
+        div#address.pure-g.borderBottom.largeMarginBottom.midPaddingBottom
+            div.pure-u-1.pure-u-md-4-12
                 div.form-group
                     label.form-label(for="name") Name of person
                     input#name.form-control(name="name" type="text")
@@ -21,26 +21,30 @@ block content
                     label.form-label(for="town") Town or city
                     input#town.form-control(name="address3" type="text")
 
-                div.form-group
+                div.form-group.pure-u-md-7-12
                     label.form-label(for="postcode") Postcode
                     input#postcode.form-control.small(name="postCode" type="text")
 
-                div.form-group
+                div.form-group.pure-u-md-7-12
                     label.form-label(for="telephone") Telephone
                     input#telephone.form-control.small(name="telephone" type="text")
-
-            div#dateTime
-                div.form-group
+        div#dateTime.pure-g.paddingBottom
+            div.pure-u-md-1-6
+                div.pure-u-1.form-group
                     label.form-label(for="date") Date
                     input#date.form-control.small(name="date" type="text")
 
-                div.form-group
-                    label.form-label(for="time") Time
-                    div.inline
-                        input#time.form-control.small(name="time" type="text")
+                div.pure-u-1.pure-g.inline.form-group.inline
+                    div.pure-u-1-2.padRight7
+                        label(for='hour') Hour
+                        input(type='text' name='hour' id='hour' class='form-control')
+                    div.pure-u-1-2.padLeft7
+                        label(for='minute') Minute
+                        input(type='text' name='minute' id='minute' class='form-control')
 
-        div#continueBtns.inlineButtons
-            input(type="hidden" name="_csrf" value=csrfToken)
-            input(type="hidden" name="nomisId" value=nomisId)
-            input#continueBtn.requiredButton.button(type="submit" value="Continue")
-            a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+        div#continueBtns.pure-g.paddingBottom
+            div.pure-u-1.inlineButtons
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="nomisId" value=nomisId)
+                input#continueBtn.requiredButton.button(type="submit" value="Continue")
+                a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
