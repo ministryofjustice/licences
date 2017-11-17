@@ -2,12 +2,16 @@ extends ../layout
 
 block content
 
-    h1.heading-large Send for approval
-    p The licence is ready to be sent for approval or you can return to your dashboard and send it later.
+    div.pure-g
+        div.pure-u-2-3
 
-    div#continueBtns.inlineButtons
-        form#acceptanceForm(method='POST', action='/send/pm')
-            input(type="hidden" name="_csrf" value=csrfToken)
-            input(type="hidden" name="nomisId" value=nomisId)
-            input#continueBtn.requiredButton.button(type="submit" value="Send")
-        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+            h1.heading-large Send for approval
+            p The licence is ready to be sent for approval or you can return to your dashboard and send it later.
+
+    div#continueBtns.pure-g.paddingBottom
+        div.pure-u-1
+            form#acceptanceForm(method='POST', action='/send/pm')
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="nomisId" value=nomisId)
+                input#continueBtn.requiredButton.button.midMarginBottom(type="submit" value="Send")
+            a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
