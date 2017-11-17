@@ -1,21 +1,21 @@
 h2.heading-medium.borderBottom.separatorTitle Reporting instructions
-div.grid-row
-    div.column-two-thirds
-        div.grid-row
+div.pure-g
+    div.pure-u-2-3
+        div.pure-g
             -var reportingInstructions= licence.reportingInstructions
-            div.column-full
+            div.pure-u-1
                 div.borderBottomLight.smallPaddingTopBottom
-                    div.grid-row
-                        div.column-one-third Name of person
-                        div#reportName.column-two-thirds
+                    div.pure-g
+                        div.pure-u-1-3 Name of person
+                        div#reportName.pure-u-2-3
                             if reportingInstructions.name
                                 | #{reportingInstructions.name}
 
-            div.column-full
+            div.pure-u-1
                 div.borderBottomLight.smallPaddingTopBottom
-                    div.grid-row
-                        div.column-one-third Address
-                        div#reportAddress.column-two-thirds
+                    div.pure-g
+                        div.pure-u-1-3 Address
+                        div#reportAddress.pure-u-2-3
                             if reportingInstructions.address1
                                 span.block #{reportingInstructions.address1}
                             if reportingInstructions.address2
@@ -26,20 +26,20 @@ div.grid-row
                                 span.block #{reportingInstructions.postCode}
 
 
-            div.column-full
+            div.pure-u-1
                 div.borderBottomLight.smallPaddingTopBottom
-                    div.grid-row
-                        div.column-one-third Contact number
-                        div#reportContactNumber.column-two-thirds
+                    div.pure-g
+                        div.pure-u-1-3 Contact number
+                        div#reportContactNumber.pure-u-2-3
                             if reportingInstructions.telephone
                                 | #{reportingInstructions.telephone}
 
-            div.column-full
+            div.pure-u-1
                 div.borderBottomLight.smallPaddingTopBottom
-                    div.grid-row
-                        div.column-one-third Date and time
-                        div#reportDateTime.column-two-thirds
+                    div.pure-g
+                        div.pure-u-1-3 Date and time
+                        div#reportDateTime.pure-u-2-3
                             if reportingInstructions.date
                                 | #{reportingInstructions.date}
-                            if reportingInstructions.time
-                                |  #{reportingInstructions.time}
+                            if reportingInstructions.hour
+                                |  #{reportingInstructions.hour}:#{reportingInstructions.minute}

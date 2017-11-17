@@ -1,11 +1,11 @@
-extends ../layout
+extends ../layout-grid
 
 block content
 
     h1.heading-large Check the details
 
-    div.grid-row.largeMarginBottom
-        div.column-full
+    div.pure-g.largeMarginBottom
+        div.pure-u-1
             if licence.additionalConditions && licence.additionalConditions.length > 0
                 include ./additionalConditions
 
@@ -16,7 +16,9 @@ block content
                 include ./reportingInstructions
 
 
-    div#continueBtns.inlineButtons
-        if status === 'SENT' || status === 'CHECK_STARTED'
-            a#continueBtn.requiredButton.button(href="/send/"+licence.nomisId role="button") Continue
-        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+    div#continueBtns.pure-g.paddingBottom
+        div.pure-u-1.inlineButtons
+            if status === 'STARTED'
+                a#continueBtn.requiredButton.button(href="/send/"+licence.nomisId role="button") Continue
+
+            a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
