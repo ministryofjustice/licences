@@ -1,13 +1,13 @@
 h2.heading-medium.borderBottom.separatorTitle Planned discharge address
 div.grid-row
     div.column-two-thirds
-        div.grid-row
+        div.pure-g
             -var dischargeAddress = licence.dischargeAddress
             div.column-full
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
-                        div.column-one-third Address
-                        div#dischargeAddress.column-two-thirds
+                        div.pure-u-1-3 Address
+                        div#dischargeAddress.pure-u-2-3
                             if dischargeAddress.address1
                                 span.block #{dischargeAddress.address1}
                             if dischargeAddress.address2
@@ -20,31 +20,31 @@ div.grid-row
             div.column-full
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
-                        div.column-one-third Contact name
-                        div#dischargeContactName.column-two-thirds
+                        div.pure-u-1-3 Contact name
+                        div#dischargeContactName.pure-u-2-3
                             if dischargeAddress.contact
                                 | #{dischargeAddress.contact}
 
             div.column-full
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
-                        div.column-one-third Contact number
-                        div#dischargeContactNumber.column-two-thirds
+                        div.pure-u-1-3 Contact number
+                        div#dischargeContactNumber.pure-u-2-3
                             if dischargeAddress.contactNumber
                                 | #{dischargeAddress.contactNumber}
 
             div.column-full
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
-                        div.column-one-third Home address?
-                        div#dischargeHomeAddress.column-two-thirds
+                        div.pure-u-1-3 Home address?
+                        div#dischargeHomeAddress.pure-u-2-3
                             if dischargeAddress.homeAddress
                                 | #{dischargeAddress.homeAddress}
 
             div.column-full
                 div.borderBottomLight.smallPaddingTopBottom
                     div.grid-row
-                        div.column-one-third Reason for request
-                        div#dischargeReason.column-two-thirds
+                        div.pure-u-1-3 Reason for request
+                        div#dischargeReason.pure-u-2-3
                             if dischargeAddress.reason
                                 | #{dischargeAddress.reason}
