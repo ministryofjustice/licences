@@ -21,9 +21,11 @@ html(lang="en")
         link(rel="apple-touch-icon-precomposed", sizes="76x76", href="/public/images/apple-touch-icon-76x76.png?0.19.2")
         link(rel="apple-touch-icon-precomposed", sizes="76x76", href="/public/images/apple-touch-icon-60x60.png?0.19.2")
         <!--[if gt IE 8]><!-->
+        link(href="/public/stylesheets/grid.css?"+version, media="screen", rel="stylesheet", type="text/css")
         link(href="/public/stylesheets/application.css?"+version, media="screen", rel="stylesheet", type="text/css")
         <!--<![endif]-->
         <!--[if lt IE 9]>
+        link(href="/public/stylesheets/grid-old-ie.css?"+version, media="screen", rel="stylesheet", type="text/css")
         link(href="/stylesheets/application-oldie.css?"+version, media="screen", rel="stylesheet", type="text/css")
         <![endif]-->
     body
@@ -38,7 +40,7 @@ html(lang="en")
             p GOV.UK uses cookies to make the site simpler.
                 a(href="https://www.gov.uk/help/cookies", target="_blank", title="Find out more about cookies") Find out more about cookies
         header(role="banner", id="global-header", class="with-proposition")
-            div(class="header-wrapper")
+            div(class="header-wrapper pure-g")
                 div(class="header-global")
                     div(class="header-logo")
                         a(href="https://www.gov.uk", title="Go to the GOV.UK homepage", id="logo", class="content hmppslogo")
@@ -49,8 +51,9 @@ html(lang="en")
                         span.bold #{profile.firstName}, #{profile.lastName} &nbsp;&nbsp;|&nbsp;&nbsp;
                         a(href="/logout") Logout
 
-        main#content(role="main")
-            block content
+        main.pure-g(role="main")
+            div.pure-u-1
+                block content
 
         footer(class="group js-footer", id="footer", role="contentinfo")
             div(class="footer-wrapper")
