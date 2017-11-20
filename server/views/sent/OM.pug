@@ -1,17 +1,19 @@
-extends ../layout
+extends ../layout-grid
 
 block content
 
-    div.column-two-thirds
-        div.confirm-banner
-            div.heading-large Discharge information sent
+    div.pure-g
+        div.pure-u-2-3
 
-        p The information has been sent to:
+            div.confirm-banner
+                div.heading-large Discharge information sent
 
-        div#agencyDetails.block.bold Offender Management Unit
+            p The information has been sent to:
+
+        div#agencyDetails.block.bold.paddingBottom Offender Management Unit
             div#agencyName #{agency.name}
             div#agencyTel Tel: #{agency.telephone}
 
-        a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+        a#backBtn.requiredButton.button.button-secondary.largeMarginBottom(href="/" role="button") Back to dashboard
 
 
