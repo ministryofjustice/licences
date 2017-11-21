@@ -175,4 +175,71 @@ describe('licenceDetailsService', () => {
         });
 
     });
+
+    describe('validateInput', () => {
+        it('should return validation object if it does validate', () => {
+            const inputObject = {
+                additionalConditions: ['1'],
+                a: 'hi',
+                b: 'hi'
+            };
+
+            licenceClient.getAdditionalConditions.resolves([
+                {
+                    ID: '1',
+                    TEXT: {value: 'v'},
+                    FIELD_POSITION: {value: {a: '0', b: '1'}},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'}
+                },
+                {
+                    ID: '2',
+                    TEXT: {value: 'v'},
+                    FIELD_POSITION: {value: {c: '0'}},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'}
+                }
+            ]);
+
+            return expect(service.validateInput(inputObject)).to.eventually.equal({validates: true});
+        });
+
+        it('should return conditions with error info if it does not verify', () => {
+            const inputObject = {
+                additionalConditions: ['1', '2'],
+                a: 'hi',
+                b: 'hi'
+            };
+
+            licenceClient.getAdditionalConditions.resolves([
+                {
+                    ID: '1',
+                    TEXT: {value: 'v'},
+                    USER_INPUT: 'inputName',
+                    FIELD_POSITION: {value: {a: '0', b: '1'}},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'}
+                },
+                {
+                    ID: '2',
+                    TEXT: {value: 'v'},
+                    USER_INPUT: 'inputName2',
+                    FIELD_POSITION: {value: {c: '0'}},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'}
+                }
+            ]);
+
+            const expectedOutput = {
+                g1: {
+                    s1: [
+                        {ID: '1', TEXT: {value: 'g'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}},
+                        {ID: '2', TEXT: {value: 'g'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}}
+                    ]
+                },
+            };
+
+            return expect(service.validateInput(inputObject)).to.eventually.equal({validates: true});
+        });
+    });
 });
