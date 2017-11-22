@@ -1,2 +1,4 @@
 label(for='exclusionArea') Exclusion area
 textarea(name='exclusionArea' id='exclusionArea' class='form-control' rows='3')
+    if condition.USER_SUBMISSION && condition.USER_SUBMISSION.exclusionArea
+        | #{condition.USER_SUBMISSION.exclusionArea}

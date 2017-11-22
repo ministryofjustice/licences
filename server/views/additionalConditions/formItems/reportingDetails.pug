@@ -1,30 +1,32 @@
 div.smallPaddingBottom
     label(for='reportingAddress') Approved premises / police stations address
     textarea(name='reportingAddress' id='reportingAddress' class='form-control' rows='3')
+        if condition.USER_SUBMISSION && condition.USER_SUBMISSION.reportingAddress
+            | #{condition.USER_SUBMISSION.reportingAddress}
 
 div.pure-g.smallPaddingBottom
     div.pure-u-6-12
         label(for='reportingTime') At (time)
-        input(type='text' name='reportingTime' id='reportingTime' class='form-control')
+        input(type='text' name='reportingTime' id='reportingTime' class='form-control' value=condition.USER_SUBMISSION && condition.USER_SUBMISSION.reportingTime)
 
     div.pure-u-6-12
         div.pure-g.lineMarginTop
             p.center.pure-u-1-6 or
             div.pure-u-6-12
                 div.multiple-choice
-                  input(id='reportingDaily' name='reportingDaily' type='checkbox' value='yes')
+                  input(id='reportingDaily' name='reportingDaily' type='checkbox' value='yes' checked=condition.USER_SUBMISSION && condition.USER_SUBMISSION.reportingDaily === 'yes')
                   label(for='reportingDaily') Daily
 
 
 div.inline
     div.multiple-choice
-        input(id='reportingWeekly' type='radio' name='reportingFrequency' value='Weekly')
+        input(id='reportingWeekly' type='radio' name='reportingFrequency' value='Weekly' checked=condition.USER_SUBMISSION && condition.USER_SUBMISSION.reportingFrequency === 'Weekly')
         label(for='reportingWeekly') Weekly
 
     div.multiple-choice
-        input(id='reportingMonthly' type='radio' name='reportingFrequency' value='Monthly')
+        input(id='reportingMonthly' type='radio' name='reportingFrequency' value='Monthly' checked=condition.USER_SUBMISSION && condition.USER_SUBMISSION.reportingFrequency === 'Monthly')
         label(for='reportingMonthly') Monthly
 
     div.multiple-choice
-        input(id='reportingOther' type='radio' name='reportingFrequency' value='Other')
+        input(id='reportingOther' type='radio' name='reportingFrequency' value='Other' checked=condition.USER_SUBMISSION && condition.USER_SUBMISSION.reportingFrequency === 'Other')
         label(for='reportingOther') Other

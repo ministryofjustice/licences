@@ -8,7 +8,7 @@ const {
 
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
 
-    async function getLicence(nomisId) {
+    async function getLicence(nomisId, {populateConditions = false} = {}) {
         try {
             const rawLicence = await licenceClient.getLicence(nomisId);
 
@@ -18,7 +18,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
                 return null;
             }
 
-            if(licence && licence.additionalConditions && licence.additionalConditions !== {}) {
+            if(populateConditions && licence && licence.additionalConditions && licence.additionalConditions !== {}) {
                 const conditionIdsSelected = Object.keys(licence.additionalConditions);
                 const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
 

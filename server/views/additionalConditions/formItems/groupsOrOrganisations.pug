@@ -1,3 +1,5 @@
 label(for='groupsOrOrganisation') Names of groups and/or organisations
 textarea(name='groupsOrOrganisation' id='groupsOrOrganisation' class='form-control' rows='4')
+    if condition.USER_SUBMISSION && condition.USER_SUBMISSION.groupsOrOrganisation
+        | #{condition.USER_SUBMISSION.groupsOrOrganisation}
 
