@@ -21,7 +21,8 @@ const conditionsServiceStub = {
 };
 
 const licenceServiceStub = {
-    updateLicenceConditions: sandbox.stub().returnsPromise().resolves()
+    updateLicenceConditions: sandbox.stub().returnsPromise().resolves(),
+    getLicence: sandbox.stub().returnsPromise().resolves(null)
 };
 
 const app = appSetup(createAdditionalConditionsRoute({
@@ -31,6 +32,11 @@ const app = appSetup(createAdditionalConditionsRoute({
 }));
 
 describe('GET /additionalConditions/:prisonNumber', () => {
+
+    afterEach(() => {
+        sandbox.reset();
+    });
+
     it('renders and HTML output', () => {
         return request(app)
             .get('/1')
@@ -39,6 +45,19 @@ describe('GET /additionalConditions/:prisonNumber', () => {
             .expect(res => {
                 expect(conditionsServiceStub.getAdditionalConditions).to.be.calledOnce();
                 expect(conditionsServiceStub.getStandardConditions).to.not.be.calledOnce();
+            });
+    });
+
+    it('passes the licence into getAdditionalConditions if one exists', () => {
+        licenceServiceStub.getLicence.resolves({licence: {additionalConditions: {a: '1'}}});
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(conditionsServiceStub.getAdditionalConditions).to.be.calledOnce();
+                expect(conditionsServiceStub.getAdditionalConditions).to.be.calledWith(
+                    {additionalConditions: {a: '1'}});
             });
     });
 });

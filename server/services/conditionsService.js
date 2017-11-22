@@ -8,12 +8,18 @@ module.exports = function createConditionsService(licenceClient) {
         }
     }
 
-    async function getAdditionalConditions() {
+    async function getAdditionalConditions(licence = null) {
         try {
             const conditions = await licenceClient.getAdditionalConditions();
 
+            if (licence && licence.additionalConditions) {
 
-            return splitIntoGroups(conditions);
+                return conditions
+                    .map(populateUserSubmission(licence.additionalConditions))
+                    .reduce(splitIntoGroupedObject, {});
+            }
+
+            return conditions.reduce(splitIntoGroupedObject, {});
         } catch(error) {
             throw error;
         }
@@ -22,19 +28,27 @@ module.exports = function createConditionsService(licenceClient) {
     return {getStandardConditions, getAdditionalConditions};
 };
 
+function splitIntoGroupedObject(conditionObject, condition) {
+    const groupName = condition.GROUP_NAME.value || 'base';
+    const subgroupName = condition.SUBGROUP_NAME.value || 'base';
 
-function splitIntoGroups(conditions) {
-    return conditions.reduce((conditionObject, condition) => {
-        const groupName = condition.GROUP_NAME.value || 'base';
-        const subgroupName = condition.SUBGROUP_NAME.value || 'base';
+    const group = conditionObject[groupName] || {};
+    const subgroup = group[subgroupName] || [];
 
-        const group = conditionObject[groupName] || {};
-        const subgroup = group[subgroupName] || [];
+    const newSubgroup = [...subgroup, condition];
+    const newGroup = {...group, [subgroupName]: newSubgroup};
 
-        const newSubgroup = [...subgroup, condition];
-        const newGroup = {...group, [subgroupName]: newSubgroup};
+    return {...conditionObject, [groupName]: newGroup};
+}
 
-        return {...conditionObject, [groupName]: newGroup};
+function populateUserSubmission(inputtedConditions) {
 
-    }, {});
+    const populatedConditionIds = Object.keys(inputtedConditions);
+
+    return condition => {
+        const submission = inputtedConditions[condition.ID.value] || {};
+        const selected = populatedConditionIds.includes(String(condition.ID.value));
+
+        return {...condition, SELECTED: selected, USER_SUBMISSION: submission};
+    };
 }

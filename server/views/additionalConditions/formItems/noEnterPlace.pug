@@ -1,2 +1,5 @@
 label(for='noEnterPlace') Name / type of premises / address / road
 textarea(name='noEnterPlace' id='noEnterPlace' class='form-control' rows='2')
+    if condition.USER_SUBMISSION && condition.USER_SUBMISSION.noEnterPlace
+        | #{condition.USER_SUBMISSION.noEnterPlace}
+

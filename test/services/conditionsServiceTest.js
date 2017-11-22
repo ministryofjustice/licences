@@ -130,5 +130,49 @@ describe('licenceDetailsService', () => {
 
             return expect(service.getAdditionalConditions()).to.eventually.eql(expectedOutput);
         });
+
+        it('should populate inputs if licence is passed in', () => {
+
+            const licence = {additionalConditions: {12: {victimFamilyMembers: 'a', socialServicesDept: 'd'}}};
+
+            licenceClient.getAdditionalConditions.resolves([
+                {ID: {value: '12'}, TEXT: {value: 'v'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
+                    USER_INPUT: {value: 'additionalConditions'}},
+                {ID: {value: '13'}, TEXT: {value: 'g'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
+                    USER_INPUT: {}},
+                {ID: {value: '14'}, TEXT: {value: 'a'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
+                    USER_INPUT: {}},
+                {ID: {value: '15'}, TEXT: {value: 's'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
+                    USER_INPUT: {}}
+            ]);
+
+            const expectedOutput = {
+                base: {
+                    base: [
+                        {ID: {value: '12'}, TEXT: {value: 'v'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
+                            USER_INPUT: {value: 'additionalConditions'},
+                            SELECTED: true,
+                            USER_SUBMISSION: {victimFamilyMembers: 'a', socialServicesDept: 'd'}
+                        },
+                        {ID: {value: '13'}, TEXT: {value: 'g'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
+                            USER_INPUT: {},
+                            SELECTED: false,
+                            USER_SUBMISSION: {}},
+                        {ID: {value: '14'}, TEXT: {value: 'a'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
+                            USER_INPUT: {},
+                            SELECTED: false,
+                            USER_SUBMISSION: {}},
+                        {ID: {value: '15'}, TEXT: {value: 's'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
+                            USER_INPUT: {},
+                            SELECTED: false,
+                            USER_SUBMISSION: {}}
+                    ]
+                }
+            };
+
+            return expect(service.getAdditionalConditions(licence)).to.eventually.eql(expectedOutput);
+
+        });
+
     });
 });

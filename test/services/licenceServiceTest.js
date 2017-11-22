@@ -36,7 +36,22 @@ describe('licenceService', () => {
             return expect(service.getLicence('123')).to.eventually.eql({licence: {a: 'b'}, status: undefined});
         });
 
-        it('should addAdditionalConditions if they are present in licence', () => {
+        it('should addAdditionalConditions if they are present in licence and requested', () => {
+            licenceClient.getLicence.resolves({licence: {additionalConditions: {1: {}}}});
+            licenceClient.getAdditionalConditions.resolves([{
+                ID: {value: 1},
+                USER_INPUT: {value: null},
+                TEXT: {value: 'The condition'},
+                FIELD_POSITION: {value: null}}]);
+
+            return expect(service.getLicence('123', {populateConditions: true})).to.eventually.eql({
+                licence: {
+                    additionalConditions: ['The condition']
+                }, status: undefined
+            });
+        });
+
+        it('should not addAdditionalConditions if they are present in licence but not requested', () => {
             licenceClient.getLicence.resolves({licence: {additionalConditions: {1: {}}}});
             licenceClient.getAdditionalConditions.resolves([{
                 ID: {value: 1},
@@ -46,7 +61,7 @@ describe('licenceService', () => {
 
             return expect(service.getLicence('123')).to.eventually.eql({
                 licence: {
-                    additionalConditions: ['The condition']
+                    additionalConditions: {1: {}}
                 }, status: undefined
             });
         });

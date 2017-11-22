@@ -1,7 +1,11 @@
 div
     label(for='victimFamilyMembers') Names(s) of victim(s) and/or family members
     textarea(name='victimFamilyMembers' id='victimFamilyMembers' class='form-control' rows='2')
+        if condition.USER_SUBMISSION && condition.USER_SUBMISSION.victimFamilyMembers
+            |#{condition.USER_SUBMISSION.victimFamilyMembers}
 
 div
     label(for='socialServicesDept') Social services dept.
     textarea(name='socialServicesDept' id='socialServicesDept' class='form-control' rows='2')
+        if condition.USER_SUBMISSION && condition.USER_SUBMISSION.socialServicesDept
+            | #{condition.USER_SUBMISSION.socialServicesDept}
