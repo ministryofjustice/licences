@@ -15,7 +15,9 @@ module.exports = function({logger, conditionsService, licenceService}) {
         logger.debug('GET /additionalConditions');
 
         const nomisId = req.params.nomisId;
-        const conditions = await conditionsService.getAdditionalConditions();
+        const existingLicence = await licenceService.getLicence(req.params.nomisId);
+        const licence = existingLicence ? existingLicence.licence : null;
+        const conditions = await conditionsService.getAdditionalConditions(licence);
 
         return res.render('additionalConditions/index', {nomisId, conditions});
     }));

@@ -30,7 +30,7 @@ block content
                                 div.pure-g.smallPaddingBottom
                                     div.pure-u-1.pure-u-md-2-3.pure-g
                                         div.pure-u-1.multiple-choice.conditionSelector.noLeftPaddingColumn(data-target=condition.USER_INPUT.value+'_form')
-                                            input(type="checkbox" id="check-"+conditionId value=condition.ID.value name="additionalConditions")
+                                            input(type="checkbox" id="check-"+conditionId value=condition.ID.value name="additionalConditions" checked=condition.SELECTED)
                                             label(for="check-"+conditionId) #{condition.TEXT.value}
 
                                     if condition.USER_INPUT.value

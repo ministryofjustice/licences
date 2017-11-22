@@ -1,3 +1,5 @@
 label(for='courseOrCentre') Name of course/centre
 textarea(name='courseOrCentre' id='courseOrCentre' class='form-control' rows='2')
+    if condition.USER_SUBMISSION && condition.USER_SUBMISSION.courseOrCentre
+        | #{condition.USER_SUBMISSION.courseOrCentre}
 

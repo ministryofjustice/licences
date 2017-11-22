@@ -1,17 +1,17 @@
 div.pure-g
     div.pure-u-1.inline
         div.multiple-choice
-            input(id='notToResideAny' type='radio' name='notResideWithGender' value='any')
+            input(id='notToResideAny' type='radio' name='notResideWithGender' value='any' checked=condition.USER_SUBMISSION && condition.USER_SUBMISSION.notResideWithGender === 'any')
             label(for='notToResideAny') Any
 
         div.multiple-choice
-            input(id='notToResideFemale' type='radio' name='notResideWithGender' value='any female')
+            input(id='notToResideFemale' type='radio' name='notResideWithGender' value='any female' checked=condition.USER_SUBMISSION && condition.USER_SUBMISSION.notResideWithGender === 'any female')
             label(for='notToResideFemale') Any female
 
         div.multiple-choice
-            input(id='notToResideMale' type='radio' name='notResideWithGender' value='any male')
+            input(id='notToResideMale' type='radio' name='notResideWithGender' value='any male' checked=condition.USER_SUBMISSION && condition.USER_SUBMISSION.notResideWithGender === 'any male')
             label(for='notToResideMale') Any male
 
 div.inlineFormItem
     label(for='notResideWithAge') Age
-    input(type='number' name='notResideWithAge' id='notResideWithAge' class='form-control')
+    input(type='number' name='notResideWithAge' id='notResideWithAge' class='form-control' value=condition.USER_SUBMISSION && condition.USER_SUBMISSION.notResideWithAge)

@@ -16,16 +16,16 @@ module.exports = function({logger, dischargeAddressService, licenceService, auth
         logger.debug('GET /dischargeAddress');
 
         const nomisId = req.params.nomisId;
-        const licence = await licenceService.getLicence(nomisId);
+        const rawLicence = await licenceService.getLicence(nomisId);
+        const licence = rawLicence && rawLicence.licence || null;
 
-        if(licence.length < 1) {
+        if(!licence) {
             return res.redirect(`/details/${nomisId}`);
         }
 
-        // const addresses = await dischargeAddressService.getDischargeAddress(nomisId, req.user.token);
-        // res.render('dischargeAddress/index', {nomisId, addresses});
+        const {dischargeAddress} = licence;
 
-        res.render('dischargeAddress/index', {nomisId});
+        res.render('dischargeAddress/index', {nomisId, dischargeAddress});
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {

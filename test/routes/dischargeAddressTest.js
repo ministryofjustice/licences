@@ -18,7 +18,7 @@ const serviceStub = {
 };
 
 const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves([{}]),
+    getLicence: sandbox.stub().returnsPromise().resolves({licence: {}}),
     updateAddress: sandbox.stub().returnsPromise().resolves()
 };
 
@@ -47,6 +47,19 @@ describe('GET /dischargeAddress/:prisonNumber', () => {
             .expect(res => {
                 expect(licenceServiceStub.getLicence).to.be.calledOnce();
                 expect(licenceServiceStub.getLicence).to.be.calledWith('1');
+            });
+
+    });
+
+    it('redirects to tasklist if no licence exits', () => {
+
+        licenceServiceStub.getLicence.resolves(null);
+
+        return request(app)
+            .get('/1')
+            .expect(302)
+            .expect(res => {
+                expect(res.header['location']).to.include('/details/');
             });
 
     });
