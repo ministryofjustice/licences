@@ -39,19 +39,46 @@ describe('GET /dischargeAddress/:prisonNumber', () => {
         sandbox.reset();
     });
 
-    it('calls getLicence from licenceService', () => {
+    it('renders discharge address page if licence exists', () => {
+
         return request(app)
             .get('/1')
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {
-                expect(licenceServiceStub.getLicence).to.be.calledOnce();
-                expect(licenceServiceStub.getLicence).to.be.calledWith('1');
+                expect(res.text).to.contain('Planned discharge address</h1\>');
             });
-
     });
 
-    it('redirects to tasklist if no licence exits', () => {
+    it('doesnt pre-populates input if it doesnt exist on licence', () => {
+
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(res.text).to.contain(
+                    'name="address1" type="text">');
+                expect(res.text).to.not.contain(
+                    'name="address1" type="text" value="sbc">');
+            });
+    });
+
+    it('pre-populates input if it exists on licence', () => {
+
+        licenceServiceStub.getLicence.resolves({licence: {dischargeAddress: {address1: 'sbc'}}});
+
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(res.text).to.contain(
+                    'name="address1" type="text" value="sbc">');
+            });
+    });
+
+    it('redirects to details page if no licence exits', () => {
 
         licenceServiceStub.getLicence.resolves(null);
 
@@ -61,34 +88,7 @@ describe('GET /dischargeAddress/:prisonNumber', () => {
             .expect(res => {
                 expect(res.header['location']).to.include('/details/');
             });
-
     });
-
-    it.skip('calls getDischargeAddress from dischargeAddressService if a licence is returned', () => {
-        return request(app)
-            .get('/1')
-            .expect(200)
-            .expect('Content-Type', /html/)
-            .expect(res => {
-                expect(serviceStub.getDischargeAddress).to.be.calledOnce();
-                expect(serviceStub.getDischargeAddress).to.be.calledWith('1', 'my-token');
-            });
-
-    });
-
-    it.skip('does not call getDischargeAddress from dischargeAddressService if a licence is not returned', () => {
-        licenceServiceStub.getLicence.resolves([]);
-
-        return request(app)
-            .get('/1')
-            .expect(302)
-            .expect(res => {
-                expect(res.header['location']).to.include('/details/1');
-                expect(serviceStub.getDischargeAddress).to.not.be.called();
-            });
-
-    });
-
 });
 
 describe('POST /dischargeAddress/:prisonNumber', () => {

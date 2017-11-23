@@ -10,7 +10,7 @@ const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
 const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves([{}]),
+    getLicence: sandbox.stub().returnsPromise().resolves({licence: {}}),
     updateAddress: sandbox.stub().returnsPromise().resolves(),
     updateReportingInstructions: sandbox.stub().returnsPromise().resolves()
 };
@@ -26,11 +26,68 @@ const app = appSetup(createReportingInstructionRoute({
 }));
 
 describe('GET /reporting/:prisonNumber', () => {
+
+    afterEach(() => {
+        sandbox.reset();
+    });
+
     it('load html', () => {
         return request(app)
             .get('/1')
             .expect(200)
             .expect('Content-Type', /html/);
+    });
+
+    it('renders reporting instructions page if licence exists', () => {
+
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(res.text).to.contain('Reporting instructions</h1\>');
+            });
+    });
+
+    it('doesnt pre-populates input if it doesnt exist on licence', () => {
+
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(res.text).to.contain(
+                    '<input class="form-control block" id="street" name="address2" type="text">');
+                expect(res.text).to.not.contain(
+                    '<input class="form-control block" id="street" name="address2" type="text" value="abc">');
+            });
+    });
+
+    it('pre-populates input if it exists on licence', () => {
+
+        licenceServiceStub.getLicence.resolves({licence: {reportingInstructions: {address2: 'abc'}}});
+
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(res.text).to.contain(
+                    '<input class="form-control block" id="street" name="address2" type="text" value="abc">');
+            });
+    });
+
+    it('redirects to details page if no licence exits', () => {
+
+        licenceServiceStub.getLicence.resolves(null);
+
+        return request(app)
+            .get('/1')
+            .expect(302)
+            .expect(res => {
+                expect(res.header['location']).to.include('/details/');
+            });
+
     });
 });
 
