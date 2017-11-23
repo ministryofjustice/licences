@@ -51,7 +51,7 @@ describe('GET /dischargeAddress/:prisonNumber', () => {
 
     });
 
-    it('redirects to tasklist if no licence exits', () => {
+    it('redirects to details page if no licence exits', () => {
 
         licenceServiceStub.getLicence.resolves(null);
 

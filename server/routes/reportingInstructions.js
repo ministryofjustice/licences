@@ -1,5 +1,6 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
+const {getIn} = require('../utils/functionalHelpers');
 
 module.exports = function({licenceService, logger, authenticationMiddleware}) {
     const router = express.Router();
@@ -12,9 +13,20 @@ module.exports = function({licenceService, logger, authenticationMiddleware}) {
         next();
     });
 
-    router.get('/:nomisId', (req, res) => {
-        res.render('reportingInstructions/index', {nomisId: req.params.nomisId});
-    });
+    router.get('/:nomisId', asyncMiddleware(async (req, res) => {
+
+        const nomisId = req.params.nomisId;
+        const rawLicence = await licenceService.getLicence(nomisId);
+        const licence = getIn(rawLicence, ['licence']);
+
+        if(!licence) {
+            return res.redirect(`/details/${nomisId}`);
+        }
+
+        const {reportingInstructions} = licence;
+
+        res.render('reportingInstructions/index', {nomisId, reportingInstructions});
+    }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('POST /reportingInstructions');
