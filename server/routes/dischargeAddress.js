@@ -1,5 +1,6 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
+const {getIn} = require('../utils/functionalHelpers');
 
 module.exports = function({logger, dischargeAddressService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -17,7 +18,7 @@ module.exports = function({logger, dischargeAddressService, licenceService, auth
 
         const nomisId = req.params.nomisId;
         const rawLicence = await licenceService.getLicence(nomisId);
-        const licence = rawLicence && rawLicence.licence || null;
+        const licence = getIn(rawLicence, ['licence']);
 
         if(!licence) {
             return res.redirect(`/details/${nomisId}`);
