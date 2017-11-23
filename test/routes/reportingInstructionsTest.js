@@ -38,16 +38,43 @@ describe('GET /reporting/:prisonNumber', () => {
             .expect('Content-Type', /html/);
     });
 
-    it('calls getLicence from licenceService', () => {
+    it('renders reporting instructions page if licence exists', () => {
+
         return request(app)
             .get('/1')
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {
-                expect(licenceServiceStub.getLicence).to.be.calledOnce();
-                expect(licenceServiceStub.getLicence).to.be.calledWith('1');
+                expect(res.text).to.contain('Reporting instructions</h1\>');
             });
+    });
 
+    it('doesnt pre-populates input if it doesnt exist on licence', () => {
+
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(res.text).to.contain(
+                    '<input class="form-control block" id="street" name="address2" type="text">');
+                expect(res.text).to.not.contain(
+                    '<input class="form-control block" id="street" name="address2" type="text" value="abc">');
+            });
+    });
+
+    it('pre-populates input if it exists on licence', () => {
+
+        licenceServiceStub.getLicence.resolves({licence: {reportingInstructions: {address2: 'abc'}}});
+
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(res.text).to.contain(
+                    '<input class="form-control block" id="street" name="address2" type="text" value="abc">');
+            });
     });
 
     it('redirects to details page if no licence exits', () => {
