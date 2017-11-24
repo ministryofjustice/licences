@@ -20,19 +20,25 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {a: 0, b: ''}}}
+            {FIELD_POSITION: {value: {a: 0, b: 1, c: 2}}}
         ];
 
-        expect(validate(inputObject, conditionsSelected).missing).to.eql(['a']);
+        const expectedErrors = {
+            a: ['missing'],
+            c: ['missing']
+        };
+
+        expect(validate(inputObject, conditionsSelected).errors).to.eql(expectedErrors);
     });
 
     it('should return an error if an item is selected with empty input', () => {
         const inputObject = {
-            a: 'hi'
+            a: 'hi',
+            b: ''
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {a: 0, b: ''}}}
+            {FIELD_POSITION: {value: {a: 0, b: 1}}}
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(false);
@@ -40,14 +46,19 @@ describe('conditionsValidator', () => {
 
     it('should return a list of empty inputs', () => {
         const inputObject = {
-            a: 'hi'
+            a: 'hi',
+            b: ''
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {a: 0, b: ''}}}
+            {FIELD_POSITION: {value: {a: 0, b: 2}}}
         ];
 
-        expect(validate(inputObject, conditionsSelected).missing).to.eql(['b']);
+        const expectedErrors = {
+            b: ['missing']
+        };
+
+        expect(validate(inputObject, conditionsSelected).errors).to.eql(expectedErrors);
     });
 
     it('should return true if inputs are present for each selected', () => {
@@ -58,6 +69,16 @@ describe('conditionsValidator', () => {
 
         const conditionsSelected = [
             {FIELD_POSITION: {value: {a: 0, b: 1}}}
+        ];
+
+        expect(validate(inputObject, conditionsSelected).validates).to.eql(true);
+    });
+
+    it('should not break if selection has no inputs', () => {
+        const inputObject = {};
+
+        const conditionsSelected = [
+            {FIELD_POSITION: {value: null}}
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(true);

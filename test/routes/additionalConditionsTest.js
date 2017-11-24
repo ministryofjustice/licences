@@ -17,7 +17,9 @@ const conditionsServiceStub = {
         base: {
             base: [{TEXT: {value: 'hi'}, ID: {value: 'ho'}, USER_INPUT: {}}]
         }
-    })
+    }),
+    validateConditionInputs: sandbox.stub().returnsPromise().resolves({validates: true}),
+    getAdditionalConditionsWithErrors: sandbox.stub().returnsPromise().resolves({})
 };
 
 const licenceServiceStub = {
@@ -83,15 +85,66 @@ describe('POST /additionalConditions/:prisonNumber', () => {
         mentalHealthName: 'response'
     };
 
-    it('calls updateLicenceConditions from licenceService', () => {
+    it('redirects to reporting page if no validation errors', () => {
         return request(app)
             .post('/1')
             .send(formResponse)
             .expect(302)
             .expect(res => {
-                expect(licenceServiceStub.updateLicenceConditions).to.be.calledOnce();
-                expect(licenceServiceStub.updateLicenceConditions).to.be.calledWith(formResponse);
                 expect(res.header['location']).to.include('reporting');
+            });
+
+    });
+
+    it('renders conditions page if it does not validate', () => {
+        conditionsServiceStub.validateConditionInputs.resolves({validates: false});
+
+        return request(app)
+            .post('/1')
+            .send(formResponse)
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('Additional conditions</h1>');
+            });
+
+    });
+
+    it('renders an error message if it does not validate', () => {
+        conditionsServiceStub.validateConditionInputs.resolves({validates: false});
+
+        return request(app)
+            .post('/1')
+            .send(formResponse)
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('id="submissionError"');
+            });
+
+    });
+
+    it('renders an error message on the condition if it is missing an input', () => {
+        conditionsServiceStub.validateConditionInputs.resolves({validates: false});
+        conditionsServiceStub.getAdditionalConditionsWithErrors.resolves({base: {base: [
+            {
+                ID: {value: 'b'},
+                TEXT: {value: 'v'},
+                USER_INPUT: {value: 'appointmentDetails'},
+                GROUP_NAME: {value: 'g1'},
+                SUBGROUP_NAME: {value: 's1'},
+                FIELD_POSITION: {value: {address3: '0', address4: '1'}},
+                SELECTED: true,
+                USER_SUBMISSION: {address3: 'Birmingham'},
+                ERRORS: ['MISSING_INPUT']
+            }
+        ]}});
+
+
+        return request(app)
+            .post('/1')
+            .send(formResponse)
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('missing-b');
             });
 
     });
