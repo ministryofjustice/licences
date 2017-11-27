@@ -26,8 +26,14 @@ module.exports = function({logger, conditionsService, licenceService}) {
         logger.debug('POST /additionalConditions');
 
         const nomisId = req.body.nomisId;
-        await licenceService.updateLicenceConditions(req.body);
+        const validatedInput = await conditionsService.validateConditionInputs(req.body);
 
+        if (!validatedInput.validates) {
+            const conditions = await conditionsService.getAdditionalConditionsWithErrors(validatedInput);
+            return res.render('additionalConditions/index', {nomisId, conditions, submissionError: 'MISSING_INPUTS'});
+        }
+
+        await licenceService.updateLicenceConditions(req.body);
         return res.redirect('/reporting/'+nomisId);
     }));
 

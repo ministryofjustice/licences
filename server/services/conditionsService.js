@@ -1,9 +1,13 @@
+const {validate} = require('./utils/conditionsValidator');
+const {getIntersection} = require('../utils/functionalHelpers');
+
 module.exports = function createConditionsService(licenceClient) {
 
     async function getStandardConditions() {
         try {
             return await licenceClient.getStandardConditions();
         } catch(error) {
+            // TODO error handling
             throw error;
         }
     }
@@ -15,17 +19,43 @@ module.exports = function createConditionsService(licenceClient) {
             if (licence && licence.additionalConditions) {
 
                 return conditions
-                    .map(populateUserSubmission(licence.additionalConditions))
+                    .map(populateFromSavedLicence(licence.additionalConditions))
                     .reduce(splitIntoGroupedObject, {});
             }
 
             return conditions.reduce(splitIntoGroupedObject, {});
         } catch(error) {
+            // TODO error handling
             throw error;
         }
     }
 
-    return {getStandardConditions, getAdditionalConditions};
+    async function validateConditionInputs(requestBody) {
+        const conditionsSelected = await licenceClient.getAdditionalConditions(requestBody.additionalConditions);
+
+        return validate(requestBody, conditionsSelected);
+    }
+
+    async function getAdditionalConditionsWithErrors(validatedInput) {
+        try {
+            const conditions = await licenceClient.getAdditionalConditions();
+
+            return conditions
+                .map(populateFromFormSubmission(validatedInput))
+                .reduce(splitIntoGroupedObject, {});
+
+        } catch(error) {
+            // TODO error handling
+            throw error;
+        }
+    }
+
+    return {
+        getStandardConditions,
+        getAdditionalConditions,
+        validateConditionInputs,
+        getAdditionalConditionsWithErrors
+    };
 };
 
 function splitIntoGroupedObject(conditionObject, condition) {
@@ -41,7 +71,7 @@ function splitIntoGroupedObject(conditionObject, condition) {
     return {...conditionObject, [groupName]: newGroup};
 }
 
-function populateUserSubmission(inputtedConditions) {
+function populateFromSavedLicence(inputtedConditions) {
 
     const populatedConditionIds = Object.keys(inputtedConditions);
 
@@ -51,4 +81,55 @@ function populateUserSubmission(inputtedConditions) {
 
         return {...condition, SELECTED: selected, USER_SUBMISSION: submission};
     };
+}
+
+function populateFromFormSubmission(validatedInput) {
+    return condition => {
+
+        if(!conditionSelected(validatedInput, condition)) {
+            return {...condition};
+        }
+
+        if(!conditionHasInputFields(condition, validatedInput)) {
+            return {...condition, SELECTED: true};
+        }
+
+        const conditionFieldKeys = Object.keys(condition.FIELD_POSITION.value);
+        const userInputsForCondition = getUserInputsForCondition(validatedInput, conditionFieldKeys);
+        const validationErrors = getValidationErrors(validatedInput, conditionFieldKeys);
+
+        return {
+            ...condition,
+            SELECTED: true,
+            USER_SUBMISSION: userInputsForCondition,
+            ERRORS: validationErrors};
+    };
+}
+
+function conditionSelected(input, condition) {
+    const selectedConditions = input.additionalConditions;
+    return selectedConditions.includes(String(condition.ID.value));
+}
+
+function conditionHasInputFields(condition) {
+    return !!condition.FIELD_POSITION.value;
+}
+
+function getUserInputsForCondition(input, conditionInputFields) {
+    return Object.keys(input)
+        .filter(formInputFieldKey => conditionInputFields.includes(formInputFieldKey))
+        .reduce((object, formInputFieldKey) => {
+            return {...object, [formInputFieldKey]: input[formInputFieldKey]};
+        }, {});
+}
+
+function getValidationErrors(validationObject, conditionFieldKeys) {
+
+    // TODO make generic for other types of error when required
+
+    const missingFields = Object.keys(validationObject.errors);
+    if(getIntersection(missingFields, conditionFieldKeys).length > 0) {
+        return ['MISSING_INPUT'];
+    }
+    return null;
 }

@@ -2,6 +2,13 @@ extends ../layout
 
 block content
 
+    if submissionError && submissionError === "MISSING_INPUTS"
+        div.pure-g
+            div#submissionError.pure-u-2-3.error-summary(role="alert" aria-labelledby="error-summary-missing-input" tabindex="-1")
+                h2#error-summary-missing-input.heading-medium.error-summary-heading
+                    |Not all required information was submitted
+                p Please correct the form where indicated below
+
     h1.heading-large Additional conditions
 
     form#additionalConditions(method='POST')
@@ -36,6 +43,8 @@ block content
                                     if condition.USER_INPUT.value
                                         div.pure-u-1.pure-u-md-1-3.conditionForm.js-hidden(id=condition.USER_INPUT.value+'_form')
                                             div.conditionForm
+                                                if condition.ERRORS && condition.ERRORS.indexOf('MISSING_INPUT') > -1
+                                                    span.error-message(class='missing-'+condition.ID.value) Please supply information
                                                 include ./formBuilder
 
         div#continueBtns.pure-g.paddingBottom
