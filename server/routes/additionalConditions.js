@@ -24,10 +24,13 @@ module.exports = function({logger, conditionsService, licenceService}) {
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('POST /additionalConditions');
-
         const nomisId = req.body.nomisId;
-        const validatedInput = await conditionsService.validateConditionInputs(req.body);
 
+        if(!req.body.additionalConditions) {
+            return res.redirect('/reporting/'+nomisId);
+        }
+
+        const validatedInput = await conditionsService.validateConditionInputs(req.body);
         if (!validatedInput.validates) {
             const conditions = await conditionsService.getAdditionalConditionsWithErrors(validatedInput);
             return res.render('additionalConditions/index', {nomisId, conditions, submissionError: 'MISSING_INPUTS'});
