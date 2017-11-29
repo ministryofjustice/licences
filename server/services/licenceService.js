@@ -5,29 +5,27 @@ const {
     createConditionsObject,
     addAdditionalConditions
 } = require('../utils/licenceFactory');
+const {formatObjectForView} = require('./utils/formatForView');
+const {DATE_FIELD} = require('./utils/conditionsValidator');
+const {getIn, isEmpty} = require('../utils/functionalHelpers');
 
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
 
     async function getLicence(nomisId, {populateConditions = false} = {}) {
         try {
             const rawLicence = await licenceClient.getLicence(nomisId);
-
-            const {licence} = rawLicence;
-
-            if(!rawLicence.licence) {
+            const licence = getIn(rawLicence, ['licence']);
+            if(!licence) {
                 return null;
             }
+            const formattedLicence = formatObjectForView(licence, {dates: [DATE_FIELD]});
+            const status = getIn(rawLicence, ['status']);
 
-            if(populateConditions && licence && licence.additionalConditions && licence.additionalConditions !== {}) {
-                const conditionIdsSelected = Object.keys(licence.additionalConditions);
-                const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
-
-                return {
-                    licence: addAdditionalConditions(licence, conditionsSelected),
-                    status: rawLicence.status};
+            if(populateConditions && !isEmpty(formattedLicence.additionalConditions)) {
+                return await populateLicenceWithCondtions(formattedLicence, status);
             }
 
-            return {licence, status: rawLicence.status};
+            return {licence: formattedLicence, status};
 
         } catch (error) {
             throw error;
@@ -115,6 +113,16 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
+    async function populateLicenceWithCondtions(licence, status) {
+        const conditionIdsSelected = Object.keys(licence.additionalConditions);
+        const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
+
+        return {
+            licence: addAdditionalConditions(licence, conditionsSelected),
+            status
+        };
+    }
+
     return {
         getLicence,
         createLicence,
@@ -126,3 +134,4 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         getEstablishment
     };
 };
+

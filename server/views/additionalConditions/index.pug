@@ -2,11 +2,11 @@ extends ../layout
 
 block content
 
-    if submissionError && submissionError === "MISSING_INPUTS"
+    if submissionError
         div.pure-g
             div#submissionError.pure-u-2-3.error-summary(role="alert" aria-labelledby="error-summary-missing-input" tabindex="-1")
                 h2#error-summary-missing-input.heading-medium.error-summary-heading
-                    |Not all required information was submitted
+                    |Not all required information was submitted correctly
                 p Please correct the form where indicated below
 
     h1.heading-large Additional conditions
@@ -45,9 +45,17 @@ block content
                                             div.conditionForm
                                                 if condition.ERRORS && condition.ERRORS.indexOf('MISSING_INPUT') > -1
                                                     span.error-message(class='missing-'+condition.ID.value) Please supply information
+                                                if condition.ERRORS && condition.ERRORS.indexOf('INVALID_DATE') > -1
+                                                    span.error-message(class='missing-'+condition.ID.value) Date must be in the format DD/MM/YYYY
                                                 include ./formBuilder
 
         div#continueBtns.pure-g.paddingBottom
             div.pure-u-1.inlineButtons
                 input#continueBtn.requiredButton.button(type="submit" value="Continue")
                 a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+
+
+block append scripts
+    script(src="/public/javascripts/datepicker.js")
+    script(src="/public/javascripts/additionalConditionsClient.js?"+version)
+

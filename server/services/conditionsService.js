@@ -1,5 +1,6 @@
-const {validate} = require('./utils/conditionsValidator');
-const {getIntersection} = require('../utils/functionalHelpers');
+const {validate, DATE_FIELD} = require('./utils/conditionsValidator');
+const {getIntersection, flatten} = require('../utils/functionalHelpers');
+const moment = require('moment');
 
 module.exports = function createConditionsService(licenceClient) {
 
@@ -72,7 +73,6 @@ function splitIntoGroupedObject(conditionObject, condition) {
 }
 
 function populateFromSavedLicence(inputtedConditions) {
-
     const populatedConditionIds = Object.keys(inputtedConditions);
 
     return condition => {
@@ -102,7 +102,8 @@ function populateFromFormSubmission(validatedInput) {
             ...condition,
             SELECTED: true,
             USER_SUBMISSION: userInputsForCondition,
-            ERRORS: validationErrors};
+            ERRORS: validationErrors
+        };
     };
 }
 
@@ -119,17 +120,29 @@ function getUserInputsForCondition(input, conditionInputFields) {
     return Object.keys(input)
         .filter(formInputFieldKey => conditionInputFields.includes(formInputFieldKey))
         .reduce((object, formInputFieldKey) => {
+            if(formInputFieldKey === DATE_FIELD) {
+                return {...object, [formInputFieldKey]: formatDateField(input[formInputFieldKey])};
+            }
             return {...object, [formInputFieldKey]: input[formInputFieldKey]};
         }, {});
 }
 
 function getValidationErrors(validationObject, conditionFieldKeys) {
+    const fieldsWithErrors = Object.keys(validationObject.errors);
+    const conditionFieldsWithErrors = getIntersection(fieldsWithErrors, conditionFieldKeys);
 
-    // TODO make generic for other types of error when required
-
-    const missingFields = Object.keys(validationObject.errors);
-    if(getIntersection(missingFields, conditionFieldKeys).length > 0) {
-        return ['MISSING_INPUT'];
+    if(conditionFieldsWithErrors.length === 0) {
+        return null;
     }
-    return null;
+
+    return flatten(conditionFieldsWithErrors.map(field => {
+        return validationObject.errors[field];
+    }));
+}
+
+function formatDateField(input) {
+    if(moment(input).isValid()) {
+        return moment(input).format('DD/MM/YYYY');
+    }
+    return '';
 }

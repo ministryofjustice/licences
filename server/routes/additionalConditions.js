@@ -33,10 +33,10 @@ module.exports = function({logger, conditionsService, licenceService}) {
         const validatedInput = await conditionsService.validateConditionInputs(req.body);
         if (!validatedInput.validates) {
             const conditions = await conditionsService.getAdditionalConditionsWithErrors(validatedInput);
-            return res.render('additionalConditions/index', {nomisId, conditions, submissionError: 'MISSING_INPUTS'});
+            return res.render('additionalConditions/index', {nomisId, conditions, submissionError: true});
         }
 
-        await licenceService.updateLicenceConditions(req.body);
+        await licenceService.updateLicenceConditions(validatedInput);
         return res.redirect('/reporting/'+nomisId);
     }));
 
