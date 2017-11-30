@@ -163,12 +163,36 @@ describe('licenceFactory', () => {
 
         });
 
+        it('should replace placeholder text for appointment conditons', () => {
+            const rawLicence = {additionalConditions: {1:
+                {appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'}}};
+            const selectedConditions = [
+                {
+                    ID: {value: 1},
+                    USER_INPUT: {value: 'appointmentDetails'},
+                    TEXT: {value: 'The condition [placeholder] with input'},
+                    FIELD_POSITION: {value: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2}}
+                }
+            ];
+
+            const output = addAdditionalConditions(rawLicence, selectedConditions);
+
+            const expectedOutput = {
+                additionalConditions: [
+                    'The condition Address 1 on 21/01/2018 at 15:30 with input'
+                ]
+            };
+
+            expect(output).to.eql(expectedOutput);
+
+        });
+
         it('should replace placeholder text when multiple items', () => {
             const rawLicence = {additionalConditions: {1: {field: 'injected', appointmentTime: 'injected2'}}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
-                    USER_INPUT: {value: 'appointmentDetails'},
+                    USER_INPUT: {value: 'standardCondition'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
                     FIELD_POSITION: {value: {field: 0, appointmentTime: 1}}
                 }
@@ -191,7 +215,7 @@ describe('licenceFactory', () => {
             const selectedConditions = [
                 {
                     ID: {value: 1},
-                    USER_INPUT: {value: 'appointmentDetails'},
+                    USER_INPUT: {value: 'standardCondition'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
                     FIELD_POSITION: {value: {appointmentTime: 1, field: 0}}
                 }
@@ -217,7 +241,7 @@ describe('licenceFactory', () => {
             const selectedConditions = [
                 {
                     ID: {value: 1},
-                    USER_INPUT: {value: 'appointmentDetails'},
+                    USER_INPUT: {value: 'standardCondition'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
                     FIELD_POSITION: {value: {field: 0, appointmentTime: 1}}
                 },
