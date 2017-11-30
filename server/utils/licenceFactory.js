@@ -68,18 +68,33 @@ function addAdditionalConditions(rawLicence, selectedConditions) {
 
 function injectUserInputInto(condition, userInput) {
 
-    const fieldPositionObject = condition.FIELD_POSITION.value;
-    const fieldNames = Object.keys(fieldPositionObject);
+    const conditionName = condition.USER_INPUT.value;
     const conditionText = condition.TEXT.value;
+    const fieldPositionObject = condition.FIELD_POSITION.value;
     const placeHolders = getPlaceholdersFrom(conditionText);
 
-    return placeHolders.reduce((text, placeHolder, index) => {
+    if(conditionName === 'appointmentDetails') {
+        return injectUserInputAppointment(userInput, conditionText, placeHolders);
+    }
 
+    return injectUserInputStandard(userInput, conditionText, placeHolders, fieldPositionObject);
+}
+
+function injectUserInputStandard(userInput, conditionText, placeHolders, fieldPositionObject) {
+
+    const fieldNames = Object.keys(fieldPositionObject);
+
+    return placeHolders.reduce((text, placeHolder, index) => {
         const fieldNameForPlaceholder = fieldNames.find(field => fieldPositionObject[field] == index);
         const inputtedData = userInput[fieldNameForPlaceholder];
         return text.replace(placeHolder, inputtedData);
-
     }, conditionText);
+}
+
+function injectUserInputAppointment(userInput, conditionText, placeHolder) {
+    const {appointmentAddress, appointmentDate, appointmentTime} = userInput;
+    const string = `${appointmentAddress} on ${appointmentDate} at ${appointmentTime}`;
+    return conditionText.replace(placeHolder, string);
 }
 
 const betweenBrackets = /\[[^\]]*]/g;

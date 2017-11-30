@@ -5,3 +5,7 @@ div.pure-g
     div.pure-u-1-2.padLeft7
         label(for='appointmentTime') Time
         input(type='text' name='appointmentTime' id='appointmentTime' class='form-control' value=condition.USER_SUBMISSION && condition.USER_SUBMISSION.appointmentTime)
+    label(for='appointmentAddress') Address
+        textarea(name='appointmentAddress' id='appointmentAddress' class='form-control' rows='2')
+            if condition.USER_SUBMISSION && condition.USER_SUBMISSION.appointmentAddress
+                | #{condition.USER_SUBMISSION.appointmentAddress}

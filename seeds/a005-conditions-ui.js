@@ -18,7 +18,8 @@ exports.seed = knex =>
                     UI_ID: "appointmentDetails",
                     FIELD_POSITION: '{' +
                     '"appointmentDate": "0",' +
-                    '"appointmentTime": "1"' +
+                    '"appointmentTime": "1",' +
+                    '"appointmentAddress": "2"' +
                     '}'
                 },
                 {
