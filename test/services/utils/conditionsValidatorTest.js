@@ -14,7 +14,7 @@ describe('conditionsValidator', () => {
         expect(validate(inputObject, conditionsSelected).validates).to.eql(false);
     });
 
-    it('should return a list of missing inputs', () => {
+    it('should return a map showing missing inputs', () => {
         const inputObject = {
             b: 'hi'
         };
@@ -24,8 +24,60 @@ describe('conditionsValidator', () => {
         ];
 
         const expectedErrors = {
-            a: ['missing'],
-            c: ['missing']
+            a: ['MISSING_INPUT'],
+            c: ['MISSING_INPUT']
+        };
+
+        expect(validate(inputObject, conditionsSelected).errors).to.eql(expectedErrors);
+    });
+
+    it('should return invalid if not a date', () => {
+        const inputObject = {
+            appointmentDate: 'hi'
+        };
+
+        const conditionsSelected = [
+            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+        ];
+
+        expect(validate(inputObject, conditionsSelected).validates).to.eql(false);
+    });
+
+    it('should not validate if contains incorrectly formatted date', () => {
+        const inputObject = {
+            appointmentDate: '12/23/2017'
+        };
+
+        const conditionsSelected = [
+            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+        ];
+
+        expect(validate(inputObject, conditionsSelected).validates).to.eql(false);
+    });
+
+    it('should validate if date is valid', () => {
+        const inputObject = {
+            appointmentDate: '23/12/2017'
+        };
+
+        const conditionsSelected = [
+            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+        ];
+
+        expect(validate(inputObject, conditionsSelected).validates).to.eql(true);
+    });
+
+    it('should display invalid dates', () => {
+        const inputObject = {
+            appointmentDate: 'hi'
+        };
+
+        const conditionsSelected = [
+            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+        ];
+
+        const expectedErrors = {
+            appointmentDate: ['INVALID_DATE']
         };
 
         expect(validate(inputObject, conditionsSelected).errors).to.eql(expectedErrors);
@@ -55,7 +107,7 @@ describe('conditionsValidator', () => {
         ];
 
         const expectedErrors = {
-            b: ['missing']
+            b: ['MISSING_INPUT']
         };
 
         expect(validate(inputObject, conditionsSelected).errors).to.eql(expectedErrors);
@@ -82,5 +134,17 @@ describe('conditionsValidator', () => {
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(true);
+    });
+
+    it('should reformat date fields to iso date', () => {
+        const inputObject = {
+            appointmentDate: '23/12/2017'
+        };
+
+        const conditionsSelected = [
+            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+        ];
+
+        expect(validate(inputObject, conditionsSelected).appointmentDate).to.eql('2017-12-23');
     });
 });

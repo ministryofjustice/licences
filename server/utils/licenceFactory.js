@@ -5,6 +5,8 @@ module.exports = {
     createConditionsObject,
     addAdditionalConditions
 };
+const {DATE_FIELD} = require('../services/utils/conditionsValidator');
+const {formatObjectForView} = require('../services/utils/formatForView');
 
 function createLicenceObject(object) {
 
@@ -56,8 +58,7 @@ function addAdditionalConditions(rawLicence, selectedConditions) {
         const userInputName = selectedCondition.USER_INPUT.value;
 
         if(userInputName) {
-            const userInput = rawLicence.additionalConditions[condition];
-
+            const userInput = formatObjectForView(rawLicence.additionalConditions[condition], {dates: [DATE_FIELD]});
             return injectUserInputInto(selectedCondition, userInput);
         }
 
@@ -90,7 +91,6 @@ function getPlaceholdersFrom(condition) {
 }
 
 const inputsFor = (fieldPositions, formInputs) => {
-
     const conditionAttributes = Object.keys(fieldPositions);
 
     return conditionAttributes.reduce((conditionDataObject, formItem) => {

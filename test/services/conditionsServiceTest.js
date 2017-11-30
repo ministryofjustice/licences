@@ -192,7 +192,7 @@ describe('licenceDetailsService', () => {
             const validatedInput = {
                 validates: false,
                 errors: {
-                    address1: ['missing']
+                    address1: ['MISSING_INPUT']
                 },
                 additionalConditions: 'a',
                 address1: '5 Fleet Street',
@@ -211,6 +211,49 @@ describe('licenceDetailsService', () => {
                             FIELD_POSITION: {value: {address1: '0', address2: '1'}},
                             SELECTED: true,
                             USER_SUBMISSION: {address1: '5 Fleet Street', address2: 'London'},
+                            ERRORS: ['MISSING_INPUT']
+                        }
+                    ]
+                }
+            };
+
+            return expect(service.getAdditionalConditionsWithErrors(validatedInput))
+                .to.eventually.eql(expectedOutput);
+        });
+
+        it('should format date fields', () => {
+            licenceClient.getAdditionalConditions.resolves([
+                {
+                    ID: {value: 'a'},
+                    TEXT: {value: 'v'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'},
+                    FIELD_POSITION: {value: {appointmentDate: '0', b: '1'}}
+                }
+            ]);
+
+            const validatedInput = {
+                validates: false,
+                errors: {
+                    b: ['MISSING_INPUT']
+                },
+                additionalConditions: 'a',
+                appointmentDate: '2017-11-13'
+            };
+
+            const expectedOutput = {
+                g1: {
+                    s1: [
+                        {
+                            ID: {value: 'a'},
+                            TEXT: {value: 'v'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'},
+                            FIELD_POSITION: {value: {appointmentDate: '0', b: '1'}},
+                            SELECTED: true,
+                            USER_SUBMISSION: {appointmentDate: '13/11/2017'},
                             ERRORS: ['MISSING_INPUT']
                         }
                     ]
@@ -286,7 +329,7 @@ describe('licenceDetailsService', () => {
             const validatedInput = {
                 validates: false,
                 errors: {
-                    address3: ['missing']
+                    address3: ['MISSING_INPUT']
                 },
                 additionalConditions: ['a', 'b'],
                 address1: '5 Fleet Street',
@@ -350,7 +393,7 @@ describe('licenceDetailsService', () => {
             const validatedInput = {
                 validates: false,
                 errors: {
-                    address3: ['missing']
+                    address3: ['MISSING_INPUT']
                 },
                 additionalConditions: ['a', 'b'],
                 address3: 'Birmingham'
@@ -378,6 +421,128 @@ describe('licenceDetailsService', () => {
                             SELECTED: true,
                             USER_SUBMISSION: {address3: 'Birmingham'},
                             ERRORS: ['MISSING_INPUT']
+                        }
+                    ]
+                }
+            };
+
+            return expect(service.getAdditionalConditionsWithErrors(validatedInput))
+                .to.eventually.eql(expectedOutput);
+        });
+
+        it('should be able to handle multiple errors for same condition', () => {
+            licenceClient.getAdditionalConditions.resolves([
+                {
+                    ID: {value: 'a'},
+                    TEXT: {value: 'v'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'},
+                    FIELD_POSITION: {value: null}
+                },
+                {
+                    ID: {value: 'b'},
+                    TEXT: {value: 'v'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'},
+                    FIELD_POSITION: {value: {address3: '0', address4: '1'}}
+                }
+            ]);
+
+            const validatedInput = {
+                validates: false,
+                errors: {
+                    address3: ['MISSING_INPUT'],
+                    address4: ['TOO_LONG']
+                },
+                additionalConditions: ['a', 'b'],
+                address3: 'Birmingham'
+            };
+
+            const expectedOutput = {
+                g1: {
+                    s1: [
+                        {
+                            ID: {value: 'a'},
+                            TEXT: {value: 'v'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'},
+                            FIELD_POSITION: {value: null},
+                            SELECTED: true
+                        },
+                        {
+                            ID: {value: 'b'},
+                            TEXT: {value: 'v'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'},
+                            FIELD_POSITION: {value: {address3: '0', address4: '1'}},
+                            SELECTED: true,
+                            USER_SUBMISSION: {address3: 'Birmingham'},
+                            ERRORS: ['MISSING_INPUT', 'TOO_LONG']
+                        }
+                    ]
+                }
+            };
+
+            return expect(service.getAdditionalConditionsWithErrors(validatedInput))
+                .to.eventually.eql(expectedOutput);
+        });
+
+        it('should be able to handle multiple errors for same field', () => {
+            licenceClient.getAdditionalConditions.resolves([
+                {
+                    ID: {value: 'a'},
+                    TEXT: {value: 'v'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'},
+                    FIELD_POSITION: {value: null}
+                },
+                {
+                    ID: {value: 'b'},
+                    TEXT: {value: 'v'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'},
+                    FIELD_POSITION: {value: {address3: '0', address4: '1'}}
+                }
+            ]);
+
+            const validatedInput = {
+                validates: false,
+                errors: {
+                    address3: ['MISSING_INPUT'],
+                    address4: ['TOO_LONG', 'INVALID_DATE']
+                },
+                additionalConditions: ['a', 'b'],
+                address3: 'Birmingham'
+            };
+
+            const expectedOutput = {
+                g1: {
+                    s1: [
+                        {
+                            ID: {value: 'a'},
+                            TEXT: {value: 'v'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'},
+                            FIELD_POSITION: {value: null},
+                            SELECTED: true
+                        },
+                        {
+                            ID: {value: 'b'},
+                            TEXT: {value: 'v'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'},
+                            FIELD_POSITION: {value: {address3: '0', address4: '1'}},
+                            SELECTED: true,
+                            USER_SUBMISSION: {address3: 'Birmingham'},
+                            ERRORS: ['MISSING_INPUT', 'TOO_LONG', 'INVALID_DATE']
                         }
                     ]
                 }

@@ -164,13 +164,13 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple items', () => {
-            const rawLicence = {additionalConditions: {1: {appointmentDate: 'injected', appointmentTime: 'injected2'}}};
+            const rawLicence = {additionalConditions: {1: {field: 'injected', appointmentTime: 'injected2'}}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: 'appointmentDetails'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {appointmentDate: 0, appointmentTime: 1}}
+                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}}
                 }
             ];
 
@@ -187,13 +187,13 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple items in wrong order', () => {
-            const rawLicence = {additionalConditions: {1: {appointmentDate: 'injected', appointmentTime: 'injected2'}}};
+            const rawLicence = {additionalConditions: {1: {field: 'injected', appointmentTime: 'injected2'}}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: 'appointmentDetails'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {appointmentTime: 1, appointmentDate: 0}}
+                    FIELD_POSITION: {value: {appointmentTime: 1, field: 0}}
                 }
             ];
 
@@ -211,7 +211,7 @@ describe('licenceFactory', () => {
 
         it('should replace placeholder text when multiple conditions', () => {
             const rawLicence = {additionalConditions: {
-                1: {appointmentDate: 'injected', appointmentTime: 'injected2'},
+                1: {field: 'injected', appointmentTime: 'injected2'},
                 2: {groupsOrOrganisation: 'injected3'}
             }};
             const selectedConditions = [
@@ -219,7 +219,7 @@ describe('licenceFactory', () => {
                     ID: {value: 1},
                     USER_INPUT: {value: 'appointmentDetails'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {appointmentDate: 0, appointmentTime: 1}}
+                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}}
                 },
                 {
                     ID: {value: 2},

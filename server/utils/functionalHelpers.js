@@ -3,7 +3,8 @@ const R = require('ramda');
 module.exports = {
     getIn,
     getIntersection,
-    isEmpty
+    isEmpty,
+    flatten
 };
 
 // pass in your object and a path in array format
@@ -17,5 +18,9 @@ function getIntersection(array1, array2) {
 }
 
 function isEmpty(item) {
-    return R.isEmpty(item);
+    return R.isEmpty(item) || R.isNil(item);
+}
+
+function flatten(array) {
+    return R.flatten(array);
 }
