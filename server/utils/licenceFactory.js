@@ -3,7 +3,8 @@ module.exports = {
     createAddressObject,
     createReportingInstructionsObject,
     createConditionsObject,
-    addAdditionalConditions
+    addAdditionalConditionsAsObject,
+    addAdditionalConditionsAsString
 };
 
 function createLicenceObject(object) {
@@ -49,7 +50,12 @@ function createConditionsObject(selectedConditions, formInputs) {
     }, {});
 }
 
-function addAdditionalConditions(rawLicence, selectedConditions, {asString = false} = {}) {
+// For html page
+function addAdditionalConditionsAsObject(rawLicence, selectedConditions) {
+    return addAdditionalConditions(rawLicence, selectedConditions, injectUserInputAsObject);
+}
+
+function addAdditionalConditions(rawLicence, selectedConditions, injectorMethod) {
     const additionalConditions = Object.keys(rawLicence.additionalConditions).map(condition => {
 
         const selectedCondition = selectedConditions.find(selected => selected.ID.value == condition);
@@ -57,7 +63,7 @@ function addAdditionalConditions(rawLicence, selectedConditions, {asString = fal
 
         if(userInputName) {
             const userInput = rawLicence.additionalConditions[condition];
-            return injectUserInputInto(selectedCondition, userInput, asString);
+            return injectorMethod(selectedCondition, userInput);
         }
 
         return selectedCondition.TEXT.value;
@@ -66,40 +72,24 @@ function addAdditionalConditions(rawLicence, selectedConditions, {asString = fal
     return {...rawLicence, additionalConditions};
 }
 
-function injectUserInputInto(condition, userInput, asString) {
+function injectUserInputAsObject(condition, userInput) {
 
     const conditionName = condition.USER_INPUT.value;
     const conditionText = condition.TEXT.value;
     const fieldPositionObject = condition.FIELD_POSITION.value;
-    const placeHolders = getPlaceholdersFrom(conditionText);
 
     if(conditionName === 'appointmentDetails') {
-        return injectUserInputAppointment(userInput, conditionText, placeHolders, asString);
+        return injectUserInputAppointmentAsObject(userInput, conditionText);
     }
 
-    return injectUserInputStandard(userInput, conditionText, placeHolders, fieldPositionObject, asString);
+    return injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject);
 }
 
-function injectUserInputStandard(userInput, conditionText, placeHolders, fieldPositionObject, asString) {
-
+function injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject) {
     const fieldNames = Object.keys(fieldPositionObject);
-
-    if(asString) {
-        const reducer = injectVariablesIntoString(fieldNames, fieldPositionObject, userInput);
-        return placeHolders.reduce(reducer, conditionText);
-    }
-
     const splitConditionText = conditionText.split(betweenBrackets).filter(text => text);
     const reducer = injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput);
     return splitConditionText.reduce(reducer, []);
-}
-
-function injectVariablesIntoString(fieldNames, fieldPositionObject, userInput) {
-    return (text, placeHolder, index) => {
-        const fieldNameForPlaceholder = fieldNames.find(field => fieldPositionObject[field] == index);
-        const inputtedData = userInput[fieldNameForPlaceholder];
-        return text.replace(placeHolder, inputtedData);
-    };
 }
 
 function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput) {
@@ -114,20 +104,56 @@ function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInpu
 }
 
 // Special case, doesn't follow normal rules
-function injectUserInputAppointment(userInput, conditionText, placeHolder, asString) {
+function injectUserInputAppointmentAsObject(userInput, conditionText) {
     const {appointmentAddress, appointmentDate, appointmentTime} = userInput;
     const string = `${appointmentAddress} on ${appointmentDate} at ${appointmentTime}`;
-
-    if(asString) {
-        return conditionText.replace(placeHolder, string);
-    }
-
     const splitConditionText = conditionText.split(betweenBrackets).filter(text => text);
     return [
         {text: splitConditionText[0]},
         {variable: string},
         {text: splitConditionText[1]}
     ];
+}
+
+// For pdf
+function addAdditionalConditionsAsString(rawLicence, selectedConditions) {
+    return addAdditionalConditions(rawLicence, selectedConditions, injectUserInputAsString);
+}
+
+function injectUserInputAsString(condition, userInput) {
+
+    const conditionName = condition.USER_INPUT.value;
+    const conditionText = condition.TEXT.value;
+    const fieldPositionObject = condition.FIELD_POSITION.value;
+    const placeHolders = getPlaceholdersFrom(conditionText);
+
+    if(conditionName === 'appointmentDetails') {
+        return injectUserInputAppointmentAsString(userInput, conditionText, placeHolders);
+    }
+
+    return injectUserInputStandardAsString(userInput, conditionText, placeHolders, fieldPositionObject);
+}
+
+function injectUserInputStandardAsString(userInput, conditionText, placeHolders, fieldPositionObject) {
+    const fieldNames = Object.keys(fieldPositionObject);
+    const reducer = injectVariablesIntoString(fieldNames, fieldPositionObject, userInput);
+    return placeHolders.reduce(reducer, conditionText);
+}
+
+function injectVariablesIntoString(fieldNames, fieldPositionObject, userInput) {
+    return (text, placeHolder, index) => {
+        const fieldNameForPlaceholder = fieldNames.find(field => fieldPositionObject[field] == index);
+        const inputtedData = userInput[fieldNameForPlaceholder];
+        return text.replace(placeHolder, inputtedData);
+    };
+}
+
+// Special case, doesn't follow normal rules
+function injectUserInputAppointmentAsString(userInput, conditionText, placeHolder) {
+    const {appointmentAddress, appointmentDate, appointmentTime} = userInput;
+    const string = `${appointmentAddress} on ${appointmentDate} at ${appointmentTime}`;
+
+    return conditionText.replace(placeHolder, string);
 }
 
 const betweenBrackets = /\[[^\]]*]/g;
