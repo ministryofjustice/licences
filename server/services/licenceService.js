@@ -3,7 +3,7 @@ const {
     createAddressObject,
     createReportingInstructionsObject,
     createConditionsObject,
-    addAdditionalConditions
+    addAdditionalConditionsAsObject
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {DATE_FIELD} = require('./utils/conditionsValidator');
@@ -118,7 +118,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
 
         return {
-            licence: addAdditionalConditions(licence, conditionsSelected),
+            licence: addAdditionalConditionsAsObject(licence, conditionsSelected),
             status
         };
     }

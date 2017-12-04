@@ -3,8 +3,13 @@ div.pure-g
     div.pure-u-2-3
         div.borderBottomLight
             h3.heading-small Conditions
-                for condition in licence.additionalConditions
-                    p #{condition}
+            for condition in licence.additionalConditions
+                p
+                    for item in condition
+                        if item.text
+                            | #{item.text}
+                        if item.variable
+                            span(class="bold") #{item.variable}
 
     //
     //        h3.heading-small Condition one
