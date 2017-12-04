@@ -49,7 +49,7 @@ function createConditionsObject(selectedConditions, formInputs) {
     }, {});
 }
 
-function addAdditionalConditions(rawLicence, selectedConditions) {
+function addAdditionalConditions(rawLicence, selectedConditions, {asString = false} = {}) {
     const additionalConditions = Object.keys(rawLicence.additionalConditions).map(condition => {
 
         const selectedCondition = selectedConditions.find(selected => selected.ID.value == condition);
@@ -57,7 +57,7 @@ function addAdditionalConditions(rawLicence, selectedConditions) {
 
         if(userInputName) {
             const userInput = rawLicence.additionalConditions[condition];
-            return injectUserInputInto(selectedCondition, userInput);
+            return injectUserInputInto(selectedCondition, userInput, asString);
         }
 
         return selectedCondition.TEXT.value;
@@ -66,7 +66,7 @@ function addAdditionalConditions(rawLicence, selectedConditions) {
     return {...rawLicence, additionalConditions};
 }
 
-function injectUserInputInto(condition, userInput) {
+function injectUserInputInto(condition, userInput, asString) {
 
     const conditionName = condition.USER_INPUT.value;
     const conditionText = condition.TEXT.value;
@@ -74,27 +74,60 @@ function injectUserInputInto(condition, userInput) {
     const placeHolders = getPlaceholdersFrom(conditionText);
 
     if(conditionName === 'appointmentDetails') {
-        return injectUserInputAppointment(userInput, conditionText, placeHolders);
+        return injectUserInputAppointment(userInput, conditionText, placeHolders, asString);
     }
 
-    return injectUserInputStandard(userInput, conditionText, placeHolders, fieldPositionObject);
+    return injectUserInputStandard(userInput, conditionText, placeHolders, fieldPositionObject, asString);
 }
 
-function injectUserInputStandard(userInput, conditionText, placeHolders, fieldPositionObject) {
+function injectUserInputStandard(userInput, conditionText, placeHolders, fieldPositionObject, asString) {
 
     const fieldNames = Object.keys(fieldPositionObject);
 
-    return placeHolders.reduce((text, placeHolder, index) => {
+    if(asString) {
+        const reducer = injectVariablesIntoString(fieldNames, fieldPositionObject, userInput);
+        return placeHolders.reduce(reducer, conditionText);
+    }
+
+    const splitConditionText = conditionText.split(betweenBrackets).filter(text => text);
+    const reducer = injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput);
+    return splitConditionText.reduce(reducer, []);
+}
+
+function injectVariablesIntoString(fieldNames, fieldPositionObject, userInput) {
+    return (text, placeHolder, index) => {
         const fieldNameForPlaceholder = fieldNames.find(field => fieldPositionObject[field] == index);
         const inputtedData = userInput[fieldNameForPlaceholder];
         return text.replace(placeHolder, inputtedData);
-    }, conditionText);
+    };
 }
 
-function injectUserInputAppointment(userInput, conditionText, placeHolder) {
+function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput) {
+    return (conditionArray, textSegment, index) => {
+        const fieldNameForPlaceholder = fieldNames.find(field => fieldPositionObject[field] == index);
+        if(!fieldNameForPlaceholder) {
+            return [...conditionArray, {text: textSegment}];
+        }
+        const inputtedData = userInput[fieldNameForPlaceholder];
+        return [...conditionArray, {text: textSegment}, {variable: inputtedData}];
+    };
+}
+
+// Special case, doesn't follow normal rules
+function injectUserInputAppointment(userInput, conditionText, placeHolder, asString) {
     const {appointmentAddress, appointmentDate, appointmentTime} = userInput;
     const string = `${appointmentAddress} on ${appointmentDate} at ${appointmentTime}`;
-    return conditionText.replace(placeHolder, string);
+
+    if(asString) {
+        return conditionText.replace(placeHolder, string);
+    }
+
+    const splitConditionText = conditionText.split(betweenBrackets).filter(text => text);
+    return [
+        {text: splitConditionText[0]},
+        {variable: string},
+        {text: splitConditionText[1]}
+    ];
 }
 
 const betweenBrackets = /\[[^\]]*]/g;
