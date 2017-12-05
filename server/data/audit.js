@@ -1,5 +1,5 @@
 const logger = require('../../log');
-const {addRow} = require('./dataAccess/dbMethods');
+const {execSql} = require('./dataAccess/dbMethods');
 const TYPES = require('tedious').TYPES;
 
 const keys = [
@@ -37,6 +37,6 @@ function addItem(key, user, data) {
             {column: 'details', type: TYPES.VarChar, value: data ? JSON.stringify(data) : null}
         ];
 
-        addRow(sql, parameters, resolve, reject);
+        execSql(sql, parameters, resolve, reject);
     });
 }

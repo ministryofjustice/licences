@@ -11,13 +11,13 @@ const {
 describe('licenceClient', () => {
 
     const getCollectionStub = sandbox.stub();
-    const addRowStub = sandbox.stub();
+    const execSqlStub = sandbox.stub();
 
-    const licencesProxy = (getCollection = getCollectionStub, addRow = addRowStub) => {
+    const licencesProxy = (getCollection = getCollectionStub, execSql = execSqlStub) => {
         return proxyquire('../../server/data/licenceClient', {
             './dataAccess/dbMethods': {
                 getCollection,
-                addRow
+                execSql
             }
         });
     };
@@ -91,7 +91,7 @@ describe('licenceClient', () => {
 
     describe('createLicence', () => {
 
-        addRowStub.callsArg(2);
+        execSqlStub.callsArg(2);
 
         it('should pass in the correct sql', () => {
 
@@ -99,7 +99,7 @@ describe('licenceClient', () => {
                 'VALUES (@nomisId, @licence, @status)';
 
             licencesProxy().createLicence('ABC123');
-            const sql = addRowStub.getCalls()[0].args[0];
+            const sql = execSqlStub.getCalls()[0].args[0];
             expect(sql).to.eql(expectedClause);
         });
 
@@ -112,7 +112,7 @@ describe('licenceClient', () => {
             ];
 
             licencesProxy().createLicence('ABC123');
-            const sql = addRowStub.getCalls()[0].args[1];
+            const sql = execSqlStub.getCalls()[0].args[1];
             expect(sql).to.eql(expectedParameters);
         });
 
@@ -125,7 +125,7 @@ describe('licenceClient', () => {
             ];
 
             licencesProxy().createLicence('ABC123', {a: 'b'});
-            const sql = addRowStub.getCalls()[0].args[1];
+            const sql = execSqlStub.getCalls()[0].args[1];
             expect(sql).to.eql(expectedParameters);
         });
 
@@ -138,13 +138,13 @@ describe('licenceClient', () => {
             ];
 
             licencesProxy().createLicence('ABC123', {a: 'b'}, 'SENT');
-            const sql = addRowStub.getCalls()[0].args[1];
+            const sql = execSqlStub.getCalls()[0].args[1];
             expect(sql).to.eql(expectedParameters);
         });
     });
 
     describe('updateSection', () => {
-        addRowStub.callsArgWith(2);
+        execSqlStub.callsArgWith(2);
 
         it('should pass in the correct sql', () => {
 
@@ -152,7 +152,7 @@ describe('licenceClient', () => {
             const expectedWhere = 'WHERE NOMIS_ID=@nomisId';
 
             licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
-            const sql = addRowStub.getCalls()[0].args[0];
+            const sql = execSqlStub.getCalls()[0].args[0];
             expect(sql).to.include(expectedUpdate);
             expect(sql).to.include(expectedWhere);
         });
@@ -166,7 +166,7 @@ describe('licenceClient', () => {
             ];
 
             licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
-            const params = addRowStub.getCalls()[0].args[1];
+            const params = execSqlStub.getCalls()[0].args[1];
             expect(params).to.eql(expectedParameters);
         });
 
@@ -290,7 +290,7 @@ describe('licenceClient', () => {
     });
 
     describe('updateStatus', () => {
-        addRowStub.callsArgWith(2);
+        execSqlStub.callsArgWith(2);
 
         it('should pass in the correct sql', () => {
 
@@ -298,7 +298,7 @@ describe('licenceClient', () => {
             const expectedWhere = 'WHERE NOMIS_ID = @nomisId';
 
             licencesProxy().updateStatus('ABC123', 'NEW_STATUS');
-            const sql = addRowStub.getCalls()[0].args[0];
+            const sql = execSqlStub.getCalls()[0].args[0];
             expect(sql).to.include(expectedUpdate);
             expect(sql).to.include(expectedWhere);
         });
@@ -311,7 +311,7 @@ describe('licenceClient', () => {
             ];
 
             licencesProxy().updateStatus('ABC123', 'NEW_STATUS');
-            const params = addRowStub.getCalls()[0].args[1];
+            const params = execSqlStub.getCalls()[0].args[1];
             expect(params).to.eql(expectedParameters);
         });
 

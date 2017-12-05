@@ -1,8 +1,16 @@
 const {resolveJsonResponse, resolveJsonColumn} = require('./dataAccess/azureJson');
-const {getCollection, addRow} = require('./dataAccess/dbMethods');
+const {getCollection, execSql} = require('./dataAccess/dbMethods');
 const TYPES = require('tedious').TYPES;
 
 module.exports = {
+
+    deleteAll: function() {
+        return new Promise((resolve, reject) => {
+            const sql = 'DELETE FROM LICENCES';
+            execSql(sql, null, resolve, reject);
+        });
+    },
+
     getLicences: function(nomisIds) {
         return new Promise((resolve, reject) => {
             const sql = `SELECT NOMIS_ID as nomisId, ID as id, STATUS as status, JSON_QUERY(LICENCE) AS licence 
@@ -32,7 +40,7 @@ module.exports = {
                 {column: 'status', type: TYPES.VarChar, value: status}
             ];
 
-            addRow(sql, parameters, resolve, reject);
+            execSql(sql, parameters, resolve, reject);
         });
     },
 
@@ -48,7 +56,7 @@ module.exports = {
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
             ];
 
-            addRow(sql, parameters, resolve, reject);
+            execSql(sql, parameters, resolve, reject);
         });
     },
 
@@ -78,7 +86,7 @@ module.exports = {
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
             ];
 
-            addRow(sql, parameters, resolve, reject);
+            execSql(sql, parameters, resolve, reject);
         });
     }
 };
