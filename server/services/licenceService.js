@@ -11,6 +11,16 @@ const {getIn, isEmpty} = require('../utils/functionalHelpers');
 
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
 
+    async function reset() {
+
+        try {
+            await licenceClient.deleteAll();
+        } catch (error) {
+            console.error(error, 'Error during reset licences');
+            throw error;
+        }
+    }
+
     async function getLicence(nomisId, {populateConditions = false} = {}) {
         try {
             const rawLicence = await licenceClient.getLicence(nomisId);
@@ -124,6 +134,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
     }
 
     return {
+        reset,
         getLicence,
         createLicence,
         updateAddress,

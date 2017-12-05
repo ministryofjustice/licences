@@ -10,7 +10,7 @@ const Request = require('tedious').Request;
 
 module.exports = {
 
-    addRow: function(sql, params, successCallback, errorCallback) {
+    execSql: function(sql, params, successCallback, errorCallback) {
 
         const connection = connect();
         connection.on('connect', error => {

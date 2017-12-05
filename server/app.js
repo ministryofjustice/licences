@@ -32,6 +32,8 @@ const createLicenceDetailsRouter = require('../server/routes/licenceDetails');
 const createReportingRouter = require('../server/routes/reportingInstructions');
 const createSendRouter = require('../server/routes/send');
 const createSentRouter = require('../server/routes/sent');
+const createUtilsRouter = require('../server/routes/utils');
+
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -198,6 +200,10 @@ module.exports = function createApp({
             res.json(result);
         });
     });
+
+    if (!production) {
+        app.use('/utils/', createUtilsRouter({logger, licenceService}));
+    }
 
     app.get('/feedback', (req, res) => {
         return res.render('feedback', {returnURL: req.get('referer')});

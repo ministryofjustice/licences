@@ -10,12 +10,12 @@ const {
 
 describe('Audit', () => {
 
-    let addRowStub = sandbox.stub().callsArgWith(2, 14);
+    let execSqlStub = sandbox.stub().callsArgWith(2, 14);
 
-    const record = (addRow = addRowStub) => {
+    const record = (execSql = execSqlStub) => {
         return proxyquire('../../server/data/audit', {
             './dataAccess/dbMethods': {
-                addRow: addRow
+                execSql: execSql
             }
         }).record;
     };
@@ -29,11 +29,11 @@ describe('Audit', () => {
 
     });
 
-    it('should call auditData.addRow', () => {
+    it('should call auditData.execSql', () => {
         const result = record()('VIEW_TASKLIST', 'a@y.com', {data: 'data'});
 
         return result.then(data => {
-            expect(addRowStub).to.have.callCount(1);
+            expect(execSqlStub).to.have.callCount(1);
         });
     });
 
@@ -46,7 +46,7 @@ describe('Audit', () => {
         ];
 
         return result.then(data => {
-            expect(addRowStub.getCall(0).args[1]).to.eql(expectedParameters);
+            expect(execSqlStub.getCall(0).args[1]).to.eql(expectedParameters);
         });
     });
 });
