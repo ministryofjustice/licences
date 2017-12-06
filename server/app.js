@@ -201,7 +201,7 @@ module.exports = function createApp({
         });
     });
 
-    if (!production) {
+    if (config.enableTestUtils) {
         app.use('/utils/', createUtilsRouter({logger, licenceService}));
     }
 
