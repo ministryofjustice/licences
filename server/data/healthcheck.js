@@ -20,7 +20,7 @@ function dbCheck() {
 function nomisApiCheck() {
     return new Promise((resolve, reject) => {
 
-        const gwToken = process.env.NODE_ENV === 'test' ? 'dummy' : `Bearer ${generateApiGatewayToken()}`;
+        const gwToken = `Bearer ${generateApiGatewayToken()}`;
 
         superagent
             .get(`${config.nomis.apiUrl}/info/health`)
