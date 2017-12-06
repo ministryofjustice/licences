@@ -60,7 +60,7 @@ module.exports = function(token) {
 async function nomisGet(path, query, token, headers = {}) {
 
     try {
-        const gwToken = process.env.NODE_ENV === 'test' ? 'dummy' : `Bearer ${generateApiGatewayToken()}`;
+        const gwToken = `Bearer ${generateApiGatewayToken()}`;
 
         const result = await superagent
             .get(path)
