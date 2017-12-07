@@ -16,6 +16,8 @@ module.exports = {
 
     version: 0.1,
 
+    enableTestUtils: get('ENABLE_TEST_UTILS', false),
+
     db: {
         username: get('DB_USER', 'user'),
         password: get('DB_PASS', 'password'),
