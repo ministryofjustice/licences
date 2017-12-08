@@ -42,12 +42,18 @@ describe('licenceService', () => {
                 ID: {value: 1},
                 USER_INPUT: {value: null},
                 TEXT: {value: 'The condition'},
-                FIELD_POSITION: {value: null}}]);
+                FIELD_POSITION: {value: null},
+                GROUP_NAME: {value: 'group'},
+                SUBGROUP_NAME: {value: 'subgroup'}}]);
 
             return expect(service.getLicence('123', {populateConditions: true})).to.eventually.eql({
                 licence: {
-                    additionalConditions: ['The condition']
-                }, status: undefined
+                    additionalConditions: [{content: [{text: 'The condition'}],
+                    group: 'group',
+                    subgroup: 'subgroup'}]
+                },
+
+                status: undefined
             });
         });
 

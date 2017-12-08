@@ -37,16 +37,16 @@ const filteredToAttributes = (input, acceptedKeys) => {
 };
 
 function createConditionsObject(selectedConditions, formInputs) {
-
     return selectedConditions.reduce((conditions, condition) => {
-
         const conditionAttributes = condition.FIELD_POSITION.value;
-        if (!conditionAttributes) {
-            return {...conditions, [condition.ID.value]: {}};
-        }
+        const userInputs = conditionAttributes ? inputsFor(conditionAttributes, formInputs) : {};
 
-        return {...conditions, [condition.ID.value]: inputsFor(conditionAttributes, formInputs)};
-
+        return {
+            ...conditions,
+            [condition.ID.value]: {
+                ...userInputs
+            }
+        };
     }, {});
 }
 
@@ -55,21 +55,29 @@ function addAdditionalConditionsAsObject(rawLicence, selectedConditions) {
     return addAdditionalConditions(rawLicence, selectedConditions, injectUserInputAsObject);
 }
 
-function addAdditionalConditions(rawLicence, selectedConditions, injectorMethod) {
+function addAdditionalConditions(rawLicence, selectedConditions, injectUserInputMethod) {
     const additionalConditions = Object.keys(rawLicence.additionalConditions).map(condition => {
 
         const selectedCondition = selectedConditions.find(selected => selected.ID.value == condition);
-        const userInputName = selectedCondition.USER_INPUT.value;
+        const userInput = rawLicence.additionalConditions[condition];
+        const content = getContentForCondition(selectedCondition, userInput, injectUserInputMethod);
 
-        if(userInputName) {
-            const userInput = rawLicence.additionalConditions[condition];
-            return injectorMethod(selectedCondition, userInput);
-        }
-
-        return selectedCondition.TEXT.value;
+        return {
+            content,
+            group: selectedCondition.GROUP_NAME.value,
+            subgroup: selectedCondition.SUBGROUP_NAME.value
+        };
     });
 
     return {...rawLicence, additionalConditions};
+}
+
+function getContentForCondition(selectedCondition, userInput, injectUserInputMethod) {
+    const userInputName = selectedCondition.USER_INPUT.value;
+
+    return userInputName ?
+        injectUserInputMethod(selectedCondition, userInput) :
+        [{text: selectedCondition.TEXT.value}];
 }
 
 function injectUserInputAsObject(condition, userInput) {
@@ -78,11 +86,9 @@ function injectUserInputAsObject(condition, userInput) {
     const conditionText = condition.TEXT.value;
     const fieldPositionObject = condition.FIELD_POSITION.value;
 
-    if(conditionName === 'appointmentDetails') {
-        return injectUserInputAppointmentAsObject(userInput, conditionText);
-    }
-
-    return injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject);
+    return conditionName === 'appointmentDetails' ?
+        injectUserInputAppointmentAsObject(userInput, conditionText) :
+        injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject);
 }
 
 function injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject) {

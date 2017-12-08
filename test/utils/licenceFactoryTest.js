@@ -125,7 +125,9 @@ describe('licenceFactory', () => {
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: null},
-                    TEXT: {value: 'The condition'}
+                    TEXT: {value: 'The condition'},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 }
             ];
 
@@ -133,7 +135,11 @@ describe('licenceFactory', () => {
 
             const expectedOutput = {
                 additionalConditions: [
-                    'The condition'
+                    {
+                        content: [{text: 'The condition'}],
+                        group: 'g',
+                        subgroup: 'sg'
+                    }
                 ]
             };
 
@@ -141,40 +147,16 @@ describe('licenceFactory', () => {
 
         });
 
-        it('should return object for view if asString is false', () => {
+        it('should return object for view containing condition sections', () => {
             const rawLicence = {additionalConditions: {1: {appointmentName: 'injected'}}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: 'appointmentName'},
                     TEXT: {value: 'The condition [placeholder] with input'},
-                    FIELD_POSITION: {value: {appointmentName: 0}}
-                }
-            ];
-
-            const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
-
-            const expectedOutput = {
-                additionalConditions: [[
-                    {text: 'The condition '},
-                    {variable: 'injected'},
-                    {text: ' with input'}
-                ]]
-            };
-
-            expect(output).to.eql(expectedOutput);
-
-        });
-
-        it('should replace placeholder text for appointment conditions for view', () => {
-            const rawLicence = {additionalConditions: {1:
-                {appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'}}};
-            const selectedConditions = [
-                {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'appointmentDetails'},
-                    TEXT: {value: 'The condition [placeholder] with input'},
-                    FIELD_POSITION: {value: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2}}
+                    FIELD_POSITION: {value: {appointmentName: 0}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 }
             ];
 
@@ -182,12 +164,50 @@ describe('licenceFactory', () => {
 
             const expectedOutput = {
                 additionalConditions: [
-                    [
+                    {
+                        content: [
+                            {text: 'The condition '},
+                            {variable: 'injected'},
+                            {text: ' with input'}
+                        ],
+                        group: 'g',
+                        subgroup: 'sg'
+                    }
+
+                ]};
+
+            expect(output).to.eql(expectedOutput);
+
+        });
+
+        it('should replace placeholder text for appointment conditions for view', () => {
+            const rawLicence = {additionalConditions: {1: {
+                    appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
+                }
+            }};
+            const selectedConditions = [
+                {
+                    ID: {value: 1},
+                    USER_INPUT: {value: 'appointmentDetails'},
+                    TEXT: {value: 'The condition [placeholder] with input'},
+                    FIELD_POSITION: {value: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
+                }
+            ];
+
+            const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
+
+            const expectedOutput = {
+                additionalConditions: [{
+                    content: [
                         {text: 'The condition '},
                         {variable: 'Address 1 on 21/01/2018 at 15:30'},
                         {text: ' with input'}
-                    ]
-                ]
+                    ],
+                    group: 'g',
+                    subgroup: 'sg'
+                }]
             };
 
             expect(output).to.eql(expectedOutput);
@@ -202,20 +222,26 @@ describe('licenceFactory', () => {
                     ID: {value: 1},
                     USER_INPUT: {value: 'standardCondition'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}}
+                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 }
             ];
 
             const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
 
             const expectedOutput = {
-                additionalConditions: [[
-                    {text: 'The condition '},
-                    {variable: 'injected'},
-                    {text: ' with input '},
-                    {variable: 'injected2'},
-                    {text: ' and another'}
-                ]]
+                additionalConditions: [{
+                    content: [
+                        {text: 'The condition '},
+                        {variable: 'injected'},
+                        {text: ' with input '},
+                        {variable: 'injected2'},
+                        {text: ' and another'}
+                    ],
+                    group: 'g',
+                    subgroup: 'sg'
+                }]
             };
 
             expect(output).to.eql(expectedOutput);
@@ -229,20 +255,26 @@ describe('licenceFactory', () => {
                     ID: {value: 1},
                     USER_INPUT: {value: 'standardCondition'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {appointmentTime: 1, field: 0}}
+                    FIELD_POSITION: {value: {appointmentTime: 1, field: 0}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 }
             ];
 
             const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
 
             const expectedOutput = {
-                additionalConditions: [[
-                    {text: 'The condition '},
-                    {variable: 'injected'},
-                    {text: ' with input '},
-                    {variable: 'injected2'},
-                    {text: ' and another'}
-                ]]
+                additionalConditions: [{
+                    content: [
+                        {text: 'The condition '},
+                        {variable: 'injected'},
+                        {text: ' with input '},
+                        {variable: 'injected2'},
+                        {text: ' and another'}
+                    ],
+                    group: 'g',
+                    subgroup: 'sg'
+                }]
             };
 
             expect(output).to.eql(expectedOutput);
@@ -252,20 +284,23 @@ describe('licenceFactory', () => {
         it('should replace placeholder text when multiple conditions for view', () => {
             const rawLicence = {additionalConditions: {
                 1: {field: 'injected', appointmentTime: 'injected2'},
-                2: {groupsOrOrganisation: 'injected3'}
-            }};
+                2: {groupsOrOrganisation: 'injected3'}}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: 'standardCondition'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}}
+                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 },
                 {
                     ID: {value: 2},
                     USER_INPUT: {value: 'groupsOrOrganisations'},
                     TEXT: {value: 'The condition [placeholder]'},
-                    FIELD_POSITION: {value: {groupsOrOrganisation: 0}}
+                    FIELD_POSITION: {value: {groupsOrOrganisation: 0}},
+                    GROUP_NAME: {value: 'g2'},
+                    SUBGROUP_NAME: {value: 'sg2'}
                 }
             ];
 
@@ -273,18 +308,25 @@ describe('licenceFactory', () => {
 
             const expectedOutput = {
                 additionalConditions: [
-                    [
-                        {text: 'The condition '},
-                        {variable: 'injected'},
-                        {text: ' with input '},
-                        {variable: 'injected2'},
-                        {text: ' and another'}
-                    ],
-                    [
-                        {text: 'The condition '},
-                        {variable: 'injected3'}
-                    ]
-                ]
+                    {
+                        content: [
+                            {text: 'The condition '},
+                            {variable: 'injected'},
+                            {text: ' with input '},
+                            {variable: 'injected2'},
+                            {text: ' and another'}
+                        ],
+                        group: 'g',
+                        subgroup: 'sg'
+                    },
+                    {
+                        content: [
+                            {text: 'The condition '},
+                            {variable: 'injected3'}
+                        ],
+                        group: 'g2',
+                        subgroup: 'sg2'
+                    }]
             };
 
             expect(output).to.eql(expectedOutput);
@@ -301,7 +343,9 @@ describe('licenceFactory', () => {
                     ID: {value: 1},
                     USER_INPUT: {value: 'appointmentName'},
                     TEXT: {value: 'The condition [placeholder] with input'},
-                    FIELD_POSITION: {value: {appointmentName: 0}}
+                    FIELD_POSITION: {value: {appointmentName: 0}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 }
             ];
 
@@ -309,7 +353,11 @@ describe('licenceFactory', () => {
 
             const expectedOutput = {
                 additionalConditions: [
-                    'The condition injected with input'
+                    {
+                        content: 'The condition injected with input',
+                        group: 'g',
+                        subgroup: 'sg'
+                    }
                 ]
             };
 
@@ -318,14 +366,17 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text for appointment conditions for string', () => {
-            const rawLicence = {additionalConditions: {1:
-                {appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'}}};
+            const rawLicence = {additionalConditions: {1: {
+                appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'}
+            }};
             const selectedConditions = [
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: 'appointmentDetails'},
                     TEXT: {value: 'The condition [placeholder] with input'},
-                    FIELD_POSITION: {value: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2}}
+                    FIELD_POSITION: {value: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 }
             ];
 
@@ -333,7 +384,11 @@ describe('licenceFactory', () => {
 
             const expectedOutput = {
                 additionalConditions: [
-                    'The condition Address 1 on 21/01/2018 at 15:30 with input'
+                    {
+                        content: 'The condition Address 1 on 21/01/2018 at 15:30 with input',
+                        group: 'g',
+                        subgroup: 'sg'
+                    }
                 ]
             };
 
@@ -348,7 +403,9 @@ describe('licenceFactory', () => {
                     ID: {value: 1},
                     USER_INPUT: {value: 'standardCondition'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}}
+                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 }
             ];
 
@@ -356,7 +413,11 @@ describe('licenceFactory', () => {
 
             const expectedOutput = {
                 additionalConditions: [
-                    'The condition injected with input injected2 and another'
+                    {
+                        content: 'The condition injected with input injected2 and another',
+                        group: 'g',
+                        subgroup: 'sg'
+                    }
                 ]
             };
 
@@ -371,7 +432,9 @@ describe('licenceFactory', () => {
                     ID: {value: 1},
                     USER_INPUT: {value: 'standardCondition'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {appointmentTime: 1, field: 0}}
+                    FIELD_POSITION: {value: {appointmentTime: 1, field: 0}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 }
             ];
 
@@ -379,7 +442,11 @@ describe('licenceFactory', () => {
 
             const expectedOutput = {
                 additionalConditions: [
-                    'The condition injected with input injected2 and another'
+                    {
+                        content: 'The condition injected with input injected2 and another',
+                        group: 'g',
+                        subgroup: 'sg'
+                    }
                 ]
             };
 
@@ -390,20 +457,23 @@ describe('licenceFactory', () => {
         it('should replace placeholder text when multiple conditions as string', () => {
             const rawLicence = {additionalConditions: {
                 1: {field: 'injected', appointmentTime: 'injected2'},
-                2: {groupsOrOrganisation: 'injected3'}
-            }};
+                2: {groupsOrOrganisation: 'injected3'}}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
                     USER_INPUT: {value: 'standardCondition'},
                     TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}}
+                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 },
                 {
                     ID: {value: 2},
                     USER_INPUT: {value: 'groupsOrOrganisations'},
                     TEXT: {value: 'The condition [placeholder]'},
-                    FIELD_POSITION: {value: {groupsOrOrganisation: 0}}
+                    FIELD_POSITION: {value: {groupsOrOrganisation: 0}},
+                    GROUP_NAME: {value: 'g'},
+                    SUBGROUP_NAME: {value: 'sg'}
                 }
             ];
 
@@ -411,8 +481,16 @@ describe('licenceFactory', () => {
 
             const expectedOutput = {
                 additionalConditions: [
-                    'The condition injected with input injected2 and another',
-                    'The condition injected3'
+                    {
+                        content: 'The condition injected with input injected2 and another',
+                        group: 'g',
+                        subgroup: 'sg'
+                    },
+                    {
+                        content: 'The condition injected3',
+                        group: 'g',
+                        subgroup: 'sg'
+                    }
                 ]
             };
 

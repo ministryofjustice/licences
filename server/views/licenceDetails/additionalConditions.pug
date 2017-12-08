@@ -4,8 +4,13 @@ div.pure-g
         div.borderBottomLight
             h3.heading-small Conditions
             for condition in licence.additionalConditions
+                if condition.group
+                    h3.heading-small #{condition.group}
+                        if condition.subgroup
+                            |  -- #{condition.subgroup}
+
                 p
-                    for item in condition
+                    for item in condition.content
                         if item.text
                             | #{item.text}
                         if item.variable
