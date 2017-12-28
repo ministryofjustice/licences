@@ -18,3 +18,5 @@ iis-ui-audit.log
 tests.log
 build-info.json
 .env
+coverage
+.nyc_output

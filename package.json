@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "mocha",
+    "test-with-coverage": "nyc --reporter=text --check-coverage --lines 85 mocha",
+    "test-with-coverage-ci": "nyc --reporter=html --check-coverage --lines 85 mocha --reporter mocha-junit-reporter",
     "snyk-protect": "snyk protect",
     "lint": "eslint .",
     "record-build-info": "node ./bin/record-build-info",
@@ -111,6 +112,7 @@
     "mocha": "^3.2.0",
     "mocha-junit-reporter": "^1.13.0",
     "nock": "^9.0.2",
+    "nyc": "^11.4.1",
     "proxyquire": "^1.7.11",
     "sinon": "^1.17.7",
     "sinon-as-promised": "^4.0.3",
