@@ -2,3 +2,4 @@ assets/javascripts/details.polyfill.js
 public/
 govuk_modules/
 seeds/
+coverage/

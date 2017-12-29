@@ -6,6 +6,8 @@ general:
     ignore:
         - deploy-to-mock
         - deploy-to-preprod
+  artifacts:
+    - "coverage"
 
 dependencies:
     override:
@@ -17,7 +19,7 @@ test:
   override:
     - yarn run lint
     - yarn run snyk-protect
-    - yarn run test -- --reporter mocha-junit-reporter:
+    - yarn run test-with-coverage-ci:
         environment:
             MOCHA_FILE: $CIRCLE_TEST_REPORTS/test-results.xml
 

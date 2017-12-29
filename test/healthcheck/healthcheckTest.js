@@ -9,7 +9,7 @@ proxyquire.noCallThru();
 const sinonStubPromise = require('sinon-stub-promise');
 sinonStubPromise(sinon);
 
-describe('searchController', () => {
+describe('healthcheck', () => {
     let callback;
 
     beforeEach(() => {
