@@ -53,6 +53,23 @@ module.exports = function(token) {
             const path = `${apiUrl}/dischargeAddress`;
             const query = {nomisId: `${nomisId}`};
             return nomisGet(path, query, token);
+        },
+
+        getHdcEligiblePrisoners: function() {
+            return [
+                {
+                    bookingId: 0,
+                    offenderNo: 'A12345',
+                    firstName: 'Mark',
+                    middleNames: '',
+                    lastName: 'Andrews',
+                    agencyLocationDesc: 'HMP Berwin',
+                    internalLocationDesc: 'A-C-2-002',
+                    hdced: '2017-09-07',
+                    crd: '2017-12-15',
+                    receptionDate: '2018-01-03'
+                }
+            ];
         }
     };
 };
