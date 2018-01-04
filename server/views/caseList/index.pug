@@ -1,0 +1,50 @@
+extends ../layout
+
+block content
+    h1#pageHeading.heading-large HDC eligible prisoners
+
+    table#hdcEligiblePrisoners.largeMarginBottom
+        thead
+            tr
+                th Name
+                th NOMS ID
+                th Location
+                th HDCED
+                th CRD
+                th Current status
+                th
+        tbody
+            if hdcEligible && hdcEligible.length > 0
+                each prisoner in hdcEligible
+                    tr
+                        td.requiredName
+                            if prisoner.lastName
+                                | #{prisoner.lastName}
+                                if prisoner.firstName
+                                    | , #{prisoner.firstName}
+
+                        td.requiredNomisId
+                            if prisoner.offenderNo
+                                | #{prisoner.offenderNo}
+
+                        td.requiredLocation
+                            if prisoner.internalLocationDesc
+                                | #{prisoner.internalLocationDesc}
+                                if prisoner.agencyLocationDesc
+                                    |  - #{prisoner.agencyLocationDesc}
+
+                        td.requiredHdced
+                            if prisoner.hdced
+                                | #{prisoner.hdced}
+
+                        td.requiredCrd
+                            if prisoner.crd
+                                | #{prisoner.crd}
+
+                        td.requiredStatus
+                            if prisoner.status
+                                | #{prisoner.status}
+
+                        td.requiredButton
+                            a.button.button-secondary(href="taskList/" + prisoner.offenderNo role="button")
+                                | View

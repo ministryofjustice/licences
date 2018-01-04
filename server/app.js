@@ -33,7 +33,7 @@ const createReportingRouter = require('../server/routes/reportingInstructions');
 const createSendRouter = require('../server/routes/send');
 const createSentRouter = require('../server/routes/sent');
 const createUtilsRouter = require('../server/routes/utils');
-
+const createCaseListRouter = require('../server/routes/caseList');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -46,7 +46,8 @@ module.exports = function createApp({
                                         dischargeAddressService,
                                         prisonerDetailsService,
                                         tasklistService,
-                                        conditionsService
+                                        conditionsService,
+                                        caseListService
                                     }) {
     const app = express();
 
@@ -230,6 +231,7 @@ module.exports = function createApp({
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
+    app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
 
     // Error Handler
     app.use(function(req, res, next) {
