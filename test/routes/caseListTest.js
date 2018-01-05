@@ -6,6 +6,8 @@ const {
 } = require('../supertestSetup');
 
 const createCaseListRoute = require('../../server/routes/caseList');
+const auth = require('../mockAuthentication');
+const authenticationMiddleware = auth.authenticationMiddleware;
 
 const loggerStub = {
     debug: sandbox.stub()
@@ -17,7 +19,8 @@ const serviceStub = {
 
 const app = appSetup(createCaseListRoute({
     logger: loggerStub,
-    caseListService: serviceStub
+    caseListService: serviceStub,
+    authenticationMiddleware
 }));
 
 describe('GET /caseList', () => {
