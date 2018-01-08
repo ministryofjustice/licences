@@ -5,12 +5,14 @@ exports.seed = knex =>
                 {
                     NOMIS_ID: "1",
                     STAFF_ID: "1",
-                    STAFF_NAME: 'LASTA,FIRSTA'
+                    FIRST_NAME: 'FIRSTA',
+                    LAST_NAME: 'LASTA'
                 },
                 {
                     NOMIS_ID: "15689",
                     STAFF_ID: "15689",
-                    STAFF_NAME: 'LASTA,FIRSTA'
+                    FIRST_NAME: 'FIRSTA',
+                    LAST_NAME: 'LASTA'
                 }
             ])
         );
