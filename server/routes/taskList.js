@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 
-module.exports = function({logger, prisonerDetailsService, licenceService, authenticationMiddleware}) {
+module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -17,9 +17,9 @@ module.exports = function({logger, prisonerDetailsService, licenceService, authe
 
         const nomisId = req.params.nomisId;
 
-        const prisonerInfo = await prisonerDetailsService.getPrisonerDetails(nomisId, req.user.token);
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
-        res.render(`details/${req.user.roleCode}`, {prisonerInfo});
+        res.render(`taskList/index`, {prisonerInfo});
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
