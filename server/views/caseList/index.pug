@@ -16,35 +16,35 @@ block content
         tbody
             if hdcEligible && hdcEligible.length > 0
                 each prisoner in hdcEligible
-                    tr
-                        td.requiredName
+                    tr.hdcEligible
+                        td.name
                             if prisoner.lastName
                                 | #{prisoner.lastName}
                                 if prisoner.firstName
                                     | , #{prisoner.firstName}
 
-                        td.requiredNomisId
+                        td.offenderNo
                             if prisoner.offenderNo
                                 | #{prisoner.offenderNo}
 
-                        td.requiredLocation
+                        td.location
                             //if prisoner.internalLocationDesc
                             //    | #{prisoner.internalLocationDesc}
                             if prisoner.agencyLocationDesc
                                 | #{prisoner.agencyLocationDesc}
 
-                        td.requiredHdced
+                        td.hdced
                             if prisoner.homeDetentionCurfewEligibilityDate
                                 | #{prisoner.homeDetentionCurfewEligibilityDate}
 
-                        td.requiredCrd
+                        td.crd
                             if prisoner.conditionalReleaseDate
                                 | #{prisoner.conditionalReleaseDate}
 
-                        td.requiredStatus
+                        td.status
                             if prisoner.status
                                 | #{prisoner.status}
 
-                        td.requiredButton
+                        td
                             a.button.button-secondary(href="taskList/" + prisoner.offenderNo role="button")
                                 | View
