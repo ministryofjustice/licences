@@ -24,7 +24,6 @@ const auth = require('./authentication/auth');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
 const createSignInRouter = require('./routes/signIn');
-const createTasklistRouter = require('../server/routes/tasklist');
 const createDetailsRouter = require('../server/routes/prisonerDetails');
 const createDischargeAddressRouter = require('../server/routes/dischargeAddress');
 const createAdditionalConditionsRouter = require('../server/routes/additionalConditions');
@@ -45,7 +44,6 @@ module.exports = function createApp({
                                         licenceService,
                                         dischargeAddressService,
                                         prisonerDetailsService,
-                                        tasklistService,
                                         conditionsService,
                                         caseListService
                                     }) {
@@ -221,7 +219,6 @@ module.exports = function createApp({
         }
     });
 
-    app.use('/', createTasklistRouter({logger, tasklistService, authenticationMiddleware}));
     app.use('/details/',
         createDetailsRouter({logger, prisonerDetailsService, licenceService, authenticationMiddleware}));
     app.use('/dischargeAddress/',
@@ -231,7 +228,7 @@ module.exports = function createApp({
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
-    app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
+    app.use(['/caseList/', '/'], createCaseListRouter({logger, caseListService, authenticationMiddleware}));
 
     // Error Handler
     app.use(function(req, res, next) {

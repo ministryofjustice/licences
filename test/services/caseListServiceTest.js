@@ -15,8 +15,8 @@ describe('caseListService', () => {
                 lastName: 'Andrews',
                 agencyLocationDesc: 'HMP Berwin',
                 internalLocationDesc: 'A-C-2-002',
-                hdced: '2017-09-07',
-                crd: '2017-12-15',
+                homeDetentionCurfewEligibilityDate: '2017-09-07',
+                conditionalReleaseDate: '2017-12-15',
                 receptionDate: '2018-01-03'
             }
         ])
@@ -46,8 +46,8 @@ describe('caseListService', () => {
         it('should format dates', async () => {
             const result = await service.getHdcCaseList(user);
 
-            expect(result[0].hdced).to.eql('07/09/2017');
-            expect(result[0].crd).to.eql('15/12/2017');
+            expect(result[0].homeDetentionCurfewEligibilityDate).to.eql('07/09/2017');
+            expect(result[0].conditionalReleaseDate).to.eql('15/12/2017');
         });
 
         it('should capitalise names', async () => {

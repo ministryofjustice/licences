@@ -27,7 +27,7 @@ module.exports = function createCaseListService(nomisClientBuilder) {
 
 function formatPrisonerDetails(prisoner) {
     const formattingOptions = {
-        dates: ['hdced', 'crd'],
+        dates: ['homeDetentionCurfewEligibilityDate', 'conditionalReleaseDate'],
         capitalise: ['firstName', 'lastName']
     };
     const formattedPrisoner = formatObjectForView(prisoner, formattingOptions);
