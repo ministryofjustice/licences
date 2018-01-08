@@ -1,4 +1,4 @@
-const createPrisonerDetailsService = require('../../server/services/prisonerDetailsService');
+const createPrisonerService = require('../../server/services/prisonerService');
 const {
     sandbox,
     expect
@@ -52,7 +52,7 @@ describe('prisonerDetailsService', () => {
         sentenceExpiryDate: '03/12/1985'
     };
 
-    const service = createPrisonerDetailsService(nomisClientBuilder);
+    const service = createPrisonerService(nomisClientBuilder);
 
     afterEach(() => {
         sandbox.reset();

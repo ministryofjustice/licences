@@ -24,8 +24,7 @@ const auth = require('./authentication/auth');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
 const createSignInRouter = require('./routes/signIn');
-const createDetailsRouter = require('../server/routes/prisonerDetails');
-const createDischargeAddressRouter = require('../server/routes/dischargeAddress');
+const createTaskListRouter = require('./routes/taskList');
 const createAdditionalConditionsRouter = require('../server/routes/additionalConditions');
 const createLicenceDetailsRouter = require('../server/routes/licenceDetails');
 const createReportingRouter = require('../server/routes/reportingInstructions');
@@ -42,8 +41,7 @@ module.exports = function createApp({
                                         logger,
                                         signInService,
                                         licenceService,
-                                        dischargeAddressService,
-                                        prisonerDetailsService,
+                                        prisonerService,
                                         conditionsService,
                                         caseListService
                                     }) {
@@ -219,16 +217,14 @@ module.exports = function createApp({
         }
     });
 
-    app.use('/details/',
-        createDetailsRouter({logger, prisonerDetailsService, licenceService, authenticationMiddleware}));
-    app.use('/dischargeAddress/',
-        createDischargeAddressRouter({logger, dischargeAddressService, licenceService, authenticationMiddleware}));
+    app.use(['/caseList/', '/'], createCaseListRouter({logger, caseListService, authenticationMiddleware}));
+    app.use('/hdc/taskList/',
+        createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware}));
     app.use('/additionalConditions/', createAdditionalConditionsRouter({logger, conditionsService, licenceService}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
-    app.use(['/caseList/', '/'], createCaseListRouter({logger, caseListService, authenticationMiddleware}));
 
     // Error Handler
     app.use(function(req, res, next) {
