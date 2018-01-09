@@ -170,6 +170,33 @@ describe('licenceClient', () => {
             expect(params).to.eql(expectedParameters);
         });
 
+        it('should pass in the correct sql when new status requested', () => {
+
+            const expectedUpdate = 'SET LICENCE = JSON_MODIFY(LICENCE, @section, JSON_QUERY(@object))';
+            const expectedStatus = ' STATUS = @status';
+            const expectedWhere = 'WHERE NOMIS_ID=@nomisId';
+
+            licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'}, 'NEW');
+            const sql = execSqlStub.getCalls()[0].args[0];
+            expect(sql).to.include(expectedUpdate);
+            expect(sql).to.include(expectedStatus);
+            expect(sql).to.include(expectedWhere);
+        });
+
+        it('should pass in the correct parameters when new status requested', () => {
+
+            const expectedParameters = [
+                {column: 'section', type: TYPES.VarChar, value: '$.section'},
+                {column: 'object', type: TYPES.VarChar, value: JSON.stringify({hi: 'ho'})},
+                {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
+                {column: 'status', type: TYPES.VarChar, value: 'NEW'}
+            ];
+
+            licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'}, 'NEW');
+            const params = execSqlStub.getCalls()[0].args[1];
+            expect(params).to.eql(expectedParameters);
+        });
+
     });
 
     describe('getStandardConditions', () => {

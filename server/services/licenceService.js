@@ -3,6 +3,7 @@ const {
     createAddressObject,
     createReportingInstructionsObject,
     createConditionsObject,
+    createEligibilityObject,
     addAdditionalConditionsAsObject
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
@@ -93,6 +94,18 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
+    async function updateEligibility(data = {}) {
+        try {
+            const nomisId = data.nomisId;
+            const eligibilityData = createEligibilityObject(data);
+
+            return await licenceClient.updateSection('eligibility', nomisId, eligibilityData, 'ELIGIBILITY_CHECKED');
+        } catch (error) {
+            console.error(error, 'Error during update eligibility');
+            throw error;
+        }
+    }
+
     async function sendToOmu(nomisId) {
         try {
             return await licenceClient.updateStatus(nomisId, 'SENT');
@@ -140,6 +153,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         updateAddress,
         updateReportingInstructions,
         updateLicenceConditions,
+        updateEligibility,
         sendToOmu,
         sendToPm,
         getEstablishment

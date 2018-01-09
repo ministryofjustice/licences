@@ -93,3 +93,6 @@ block content
                     input(type="hidden" name="agencyLocationId" value=prisonerInfo.agencyId || '')
                 input#continueBtn.requiredButton.button(type="submit" value="Continue")
             a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+
+            if prisonerInfo
+                a#eligibilityCheckStart.requiredButton.button(href="/hdc/eligibility/"+prisonerInfo.offenderNo role="button") Start

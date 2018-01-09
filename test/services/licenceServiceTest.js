@@ -171,6 +171,26 @@ describe('licenceService', () => {
         });
     });
 
+    describe('updateEligibility', () => {
+        it('should call updateEligibility from the licence client', () => {
+            service.updateEligibility({nomisId: 'ab1', excluded: 'true'});
+
+            expect(licenceClient.updateSection).to.be.calledOnce();
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'eligibility',
+                'ab1',
+                {excluded: 'true'},
+                'ELIGIBILITY_CHECKED'
+            );
+        });
+
+        it('should throw if error updating licence', () => {
+            licenceClient.updateSection.rejects();
+            const args = {nomisId: 'ab1', excluded: 'true'};
+            return expect(service.updateEligibility(args)).to.eventually.be.rejected();
+        });
+    });
+
     describe('sendToOmu', () => {
         it('should call updateStatus from the licence client', () => {
             service.sendToOmu('ab1');
