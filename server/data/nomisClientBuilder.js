@@ -58,11 +58,16 @@ module.exports = function(token) {
         getHdcEligiblePrisoners: function() {
             const path = `${apiUrl}/users/me/hdc-eligible`;
             return nomisGet(path, '', token);
+        },
+
+        getImageData: async function(id) {
+            const path = `${apiUrl}/images/${id}/data`;
+            return nomisGet(path, '', token, {}, 'blob');
         }
     };
 };
 
-async function nomisGet(path, query, token, headers = {}) {
+async function nomisGet(path, query, token, headers = {}, responseType = '') {
 
     try {
         const gwToken = `Bearer ${generateApiGatewayToken()}`;
@@ -70,16 +75,17 @@ async function nomisGet(path, query, token, headers = {}) {
         const result = await superagent
             .get(path)
             .query(query)
-            .set('Accept', 'application/json')
             .set('Authorization', gwToken)
             .set('Elite-Authorization', token)
             .set(headers)
+            .responseType(responseType)
             .timeout(timeoutSpec);
 
         return result.body;
 
     } catch(exception) {
-        logger.error('Error from NOMIS: ' + exception);
+        logger.error('Error from NOMIS: ');
+        logger.error(exception);
         throw exception;
     }
 }

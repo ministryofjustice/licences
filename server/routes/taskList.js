@@ -36,5 +36,13 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         res.redirect('/dischargeAddress/'+nomisId);
     }));
 
+    router.get('/image/:imageId', asyncMiddleware(async (req, res) => {
+        logger.debug('GET /image');
+
+        const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, req.user.token);
+
+        res.send({...prisonerImage});
+    }));
+
     return router;
 };
