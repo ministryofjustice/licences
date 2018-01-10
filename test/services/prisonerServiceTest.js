@@ -25,13 +25,16 @@ describe('prisonerDetailsService', () => {
         captureDate: '1971-11-23'
     };
 
+    const imageDataResponse = new Buffer('image');
+
     const sentenceDetailResponse = {sentenceExpiryDate: '1985-12-03'};
 
     const nomisClientMock = {
         getBookings: sandbox.stub().returnsPromise().resolves(bookingResponse),
         getBooking: sandbox.stub().returnsPromise().resolves(bookingDetailResponse),
         getSentenceDetail: sandbox.stub().returnsPromise().resolves(sentenceDetailResponse),
-        getImageInfo: sandbox.stub().returnsPromise().resolves(imageInfoResponse)
+        getImageInfo: sandbox.stub().returnsPromise().resolves(imageInfoResponse),
+        getImageData: sandbox.stub().returnsPromise().resolves(imageDataResponse)
     };
 
     const nomisClientBuilder = sandbox.stub().returns(nomisClientMock);
@@ -83,6 +86,51 @@ describe('prisonerDetailsService', () => {
             nomisClientMock.getBookings.rejects(new Error('dead'));
 
             return expect(service.getPrisonerDetails('123')).to.be.rejected();
+        });
+
+        it('it should return false for imageId of no image', async () => {
+
+            const bookingResponse2 = [{
+                bookingId: 1,
+                facialImageId: null,
+                dateOfBirth: '1971-12-23',
+                firstName: 'f',
+                middleName: 'm',
+                lastName: 'l',
+                offenderNo: 'noms',
+                aliases: 'alias',
+                assignedLivingUnitDesc: 'loc'
+            }];
+
+            nomisClientMock.getBookings.resolves(bookingResponse2);
+
+            const result = await service.getPrisonerDetails('123');
+            return expect(result.imageId).to.eql(false);
+        });
+    });
+
+    describe('getPrisonerImage', () => {
+        it('should call getImageData with the imageId', async () => {
+            await service.getPrisonerImage('123', 'token');
+
+            expect(nomisClientMock.getImageData).to.be.calledOnce();
+            expect(nomisClientMock.getImageData).to.be.calledWith('123');
+        });
+
+        it('should return a base64 encoded image', async () => {
+            const base64Buffer = imageDataResponse.toString('base64');
+            const expectedOutput = {image: `data:image/jpeg;base64,${base64Buffer}`};
+            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql(expectedOutput);
+        });
+
+        it('should return null if no image', async () => {
+            nomisClientMock.getImageData.resolves(null);
+            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql({image: null});
+        });
+
+        it('should return null if no image', async () => {
+            nomisClientMock.getImageData.rejects({message: 'not found'});
+            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql({image: null});
         });
     });
 });

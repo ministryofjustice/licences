@@ -9,11 +9,28 @@ const createPrisonerDetailsRoute = require('../../server/routes/taskList');
 const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
+const prisonerInfoResponse = {
+    bookingId: 1,
+    facialImageId: 2,
+    dateOfBirth: '23/12/1971',
+    firstName: 'F',
+    middleName: 'M',
+    lastName: 'L',
+    offenderNo: 'noms',
+    aliases: 'Alias',
+    assignedLivingUnitDesc: 'Loc',
+    physicalAttributes: {gender: 'Male'},
+    imageId: 'imgId',
+    captureDate: '23/11/1971',
+    sentenceExpiryDate: '03/12/1985'
+};
+
 const loggerStub = {
     debug: sandbox.stub()
 };
 const serviceStub = {
-    getPrisonerDetails: sandbox.stub()
+    getPrisonerDetails: sandbox.stub().returnsPromise().resolves(prisonerInfoResponse),
+    getPrisonerImage: sandbox.stub().returnsPromise().resolves({image: 'image'})
 };
 
 const licenceServiceStub = {
@@ -86,6 +103,16 @@ describe('POST /details/:prisonNumber', () => {
                 expect(licenceServiceStub.createLicence).to.be.calledWith('123', formResponse);
                 expect(res.header['location']).to.include('/dischargeAddress');
             });
+    });
+});
+
+describe('GET /image/:imageId', () => {
+
+    it('should return an image', () => {
+        return request(app)
+            .get('/image/123')
+            .expect(200)
+            .expect({image: 'image'});
     });
 });
 

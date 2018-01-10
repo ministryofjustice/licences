@@ -6,6 +6,7 @@ module.exports = {
         "browser": true
     },
     "rules": {
-        "no-var": "off"
+        "no-var": "off",
+        "no-unused-vars": "off"
     }
 }

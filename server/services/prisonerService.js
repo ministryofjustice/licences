@@ -23,7 +23,10 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const sentenceDetail = await nomisClient.getSentenceDetail(booking.bookingId);
             logger.info(`got sentence detail for booking id: ${booking.bookingId}`);
 
-            const image = booking.facialImageId ? await nomisClient.getImageInfo(booking.facialImageId): null;
+            const image = booking.facialImageId ?
+                await nomisClient.getImageInfo(booking.facialImageId) :
+                {imageId: false};
+
             logger.info(`got image detail for facialImageId id: ${booking.facialImageId}`);
 
             return formatResponse({...bookingDetail, ...booking, ...image, ...sentenceDetail});
@@ -35,7 +38,27 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
         }
     }
 
-    return {getPrisonerDetails};
+    async function getPrisonerImage(imageId, token) {
+        try {
+            logger.info(`getPrisonerImage: ${imageId}`);
+
+            const nomisClient = nomisClientBuilder(token);
+            const imageData = await nomisClient.getImageData(imageId);
+
+            if(!imageData) {
+                return {image: null};
+            }
+
+            const bufferBase64 = imageData.toString('base64');
+            return {image: `data:image/jpeg;base64,${bufferBase64}`};
+        } catch (error) {
+            logger.info('Error getting prisoner image', error);
+
+            return {image: null};
+        }
+    }
+
+    return {getPrisonerDetails, getPrisonerImage};
 };
 
 function formatResponse(object) {
