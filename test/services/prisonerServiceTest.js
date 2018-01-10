@@ -128,9 +128,9 @@ describe('prisonerDetailsService', () => {
             return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql({image: null});
         });
 
-        it('should throw if error occurs', async () => {
-            nomisClientMock.getImageData.rejects(new Error());
-            return expect(service.getPrisonerImage('123', 'token')).to.be.rejected();
+        it('should return null if no image', async () => {
+            nomisClientMock.getImageData.rejects({message: 'not found'});
+            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql({image: null});
         });
     });
 });

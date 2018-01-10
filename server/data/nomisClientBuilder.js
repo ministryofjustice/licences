@@ -61,24 +61,13 @@ module.exports = function(token) {
         },
 
         getImageData: async function(id) {
-            try {
-                const result = await superagent
-                    .get(`${apiUrl}/images/${id}/data`)
-                    .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
-                    .set('Elite-Authorization', token)
-                    .responseType('blob');
-
-                return result.body;
-
-            } catch (error) {
-                logger.info('Error collecting image for imageId: ' + id, error);
-                return null;
-            }
+            const path = `${apiUrl}/images/${id}/data`;
+            return nomisGet(path, '', token, {}, 'blob');
         }
     };
 };
 
-async function nomisGet(path, query, token, headers = {}) {
+async function nomisGet(path, query, token, headers = {}, responseType = '') {
 
     try {
         const gwToken = `Bearer ${generateApiGatewayToken()}`;
@@ -86,10 +75,10 @@ async function nomisGet(path, query, token, headers = {}) {
         const result = await superagent
             .get(path)
             .query(query)
-            .set('Accept', 'application/json')
             .set('Authorization', gwToken)
             .set('Elite-Authorization', token)
             .set(headers)
+            .responseType(responseType)
             .timeout(timeoutSpec);
 
         return result.body;

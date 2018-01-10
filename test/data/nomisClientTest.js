@@ -156,20 +156,20 @@ describe('nomisClient', function() {
             return expect(nomisClient.getImageData('1')).to.eventually.eql(new Buffer('image'));
         });
 
-        it('should return null if not found', () => {
+        it('should throw if not found', () => {
             fakeNomis
                 .get(`/images/1`)
                 .reply(404);
 
-            return expect(nomisClient.getImageData('1')).to.eventually.eql(null);
+            return expect(nomisClient.getImageData('1')).to.be.rejected();
         });
 
-        it('should return null if api fails', () => {
+        it('should throw if api fails', () => {
             fakeNomis
                 .get(`/images/1`)
                 .reply(500);
 
-            return expect(nomisClient.getImageData('1')).to.eventually.eql(null);
+            return expect(nomisClient.getImageData('1')).to.be.rejected();
         });
     });
 
