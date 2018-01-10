@@ -146,5 +146,32 @@ describe('nomisClient', function() {
         });
     });
 
+    describe('getImageData', () => {
+
+        it('should return a buffer', () => {
+            fakeNomis
+                .get(`/images/1/data`)
+                .reply(200, 'image');
+
+            return expect(nomisClient.getImageData('1')).to.eventually.eql(new Buffer('image'));
+        });
+
+        it('should return null if not found', () => {
+            fakeNomis
+                .get(`/images/1`)
+                .reply(404);
+
+            return expect(nomisClient.getImageData('1')).to.eventually.eql(null);
+        });
+
+        it('should return null if api fails', () => {
+            fakeNomis
+                .get(`/images/1`)
+                .reply(500);
+
+            return expect(nomisClient.getImageData('1')).to.eventually.eql(null);
+        });
+    });
+
 });
 

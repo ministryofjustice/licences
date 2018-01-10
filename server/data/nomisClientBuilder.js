@@ -58,6 +58,22 @@ module.exports = function(token) {
         getHdcEligiblePrisoners: function() {
             const path = `${apiUrl}/users/me/hdc-eligible`;
             return nomisGet(path, '', token);
+        },
+
+        getImageData: async function(id) {
+            try {
+                const result = await superagent
+                    .get(`${apiUrl}/images/${id}/data`)
+                    .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
+                    .set('Elite-Authorization', token)
+                    .responseType('blob');
+
+                return result.body;
+
+            } catch (error) {
+                logger.info('Error collecting image for imageId: ' + id, error);
+                return null;
+            }
         }
     };
 };
@@ -79,7 +95,8 @@ async function nomisGet(path, query, token, headers = {}) {
         return result.body;
 
     } catch(exception) {
-        logger.error('Error from NOMIS: ' + exception);
+        logger.error('Error from NOMIS: ');
+        logger.error(exception);
         throw exception;
     }
 }
