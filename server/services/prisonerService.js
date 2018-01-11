@@ -8,28 +8,18 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
 
             const nomisClient = nomisClientBuilder(token);
 
-            const bookings = await nomisClient.getBookings(nomisId);
-            logger.info(`got bookings size: ${bookings.length}`);
+            const prisoner = await nomisClient.getHdcEligiblePrisoner(nomisId);
 
-            if(bookings.length <= 0) {
-                throw new Error(`No bookings found for ${nomisId}`);
-            }
+            const sentence = await nomisClient.getSentenceDetail(prisoner.bookingId);
+            const aliases = await nomisClient.getAliases(prisoner.bookingId);
+            const offence = await nomisClient.getMainOffence(prisoner.bookingId);
+            const com = await nomisClient.getComRelation(prisoner.bookingId);
 
-            const booking = bookings[0];
-
-            const bookingDetail = await nomisClient.getBooking(booking.bookingId);
-            logger.info(`got booking detail for booking id: ${booking.bookingId}`);
-
-            const sentenceDetail = await nomisClient.getSentenceDetail(booking.bookingId);
-            logger.info(`got sentence detail for booking id: ${booking.bookingId}`);
-
-            const image = booking.facialImageId ?
-                await nomisClient.getImageInfo(booking.facialImageId) :
+            const image = prisoner.facialImageId ?
+                await nomisClient.getImageInfo(prisoner.facialImageId) :
                 {imageId: false};
 
-            logger.info(`got image detail for facialImageId id: ${booking.facialImageId}`);
-
-            return formatResponse({...bookingDetail, ...booking, ...image, ...sentenceDetail});
+            return formatResponse({...prisoner, ...sentence, ...offence[0], ...image, com, aliases});
 
         } catch (error) {
             logger.error('Error getting prisoner info');
@@ -45,7 +35,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const nomisClient = nomisClientBuilder(token);
             const imageData = await nomisClient.getImageData(imageId);
 
-            if(!imageData) {
+            if (!imageData) {
                 return {image: null};
             }
 
@@ -66,7 +56,6 @@ function formatResponse(object) {
         'lastName',
         'firstName',
         'middleName',
-        'aliases',
         'gender',
         'assignedLivingUnitDesc'
     ];
@@ -75,7 +64,8 @@ function formatResponse(object) {
         'dateOfBirth',
         'conditionalReleaseDate',
         'licenceExpiryDate',
-        'sentenceExpiryDate'];
+        'sentenceExpiryDate'
+    ];
 
     return formatObjectForView(object, {dates: dateFields, capitalise: nameFields});
 }
