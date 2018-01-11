@@ -44,17 +44,23 @@ module.exports = {
         });
     },
 
-    updateSection: function(section, nomisId, object) {
+    updateSection: function(section, nomisId, object, status) {
         return new Promise((resolve, reject) => {
-            const sql = `UPDATE LICENCES 
-                         SET LICENCE = JSON_MODIFY(LICENCE, @section, JSON_QUERY(@object)) 
-                         WHERE NOMIS_ID=@nomisId`;
+
+            const updateStatus = status ? ', STATUS = @status' : '';
+            const sql = 'UPDATE LICENCES SET LICENCE = JSON_MODIFY(LICENCE, @section, JSON_QUERY(@object))' +
+                updateStatus +
+                ' WHERE NOMIS_ID=@nomisId';
 
             const parameters = [
                 {column: 'section', type: TYPES.VarChar, value: '$.' + section},
                 {column: 'object', type: TYPES.VarChar, value: JSON.stringify(object)},
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
             ];
+
+            if (status) {
+                parameters.push({column: 'status', type: TYPES.VarChar, value: status});
+            }
 
             execSql(sql, parameters, resolve, reject);
         });
@@ -96,27 +102,27 @@ const additionalConditionsSql = ids => {
 
     if (idArray.length === 0) {
         return 'SELECT ' +
-               '  CONDITIONS.*, ' +
-               '  CONDITIONS_UI.FIELD_POSITION, ' +
-               '  GROUPS.NAME AS GROUP_NAME, ' +
-               '  SUBGROUPS.NAME AS SUBGROUP_NAME ' +
-               'FROM CONDITIONS ' +
-               'LEFT JOIN CONDITIONS_UI ON CONDITIONS.USER_INPUT = CONDITIONS_UI.UI_ID ' +
-               'LEFT JOIN CONDITIONS_GROUPS GROUPS ON CONDITIONS.[GROUP] = GROUPS.ID ' +
-               'LEFT JOIN CONDITIONS_GROUPS SUBGROUPS ON CONDITIONS.SUBGROUP = SUBGROUPS.ID ' +
-               'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND ACTIVE = 1' +
-               'ORDER BY CONDITIONS.[GROUP], CONDITIONS.SUBGROUP';
+            '  CONDITIONS.*, ' +
+            '  CONDITIONS_UI.FIELD_POSITION, ' +
+            '  GROUPS.NAME AS GROUP_NAME, ' +
+            '  SUBGROUPS.NAME AS SUBGROUP_NAME ' +
+            'FROM CONDITIONS ' +
+            'LEFT JOIN CONDITIONS_UI ON CONDITIONS.USER_INPUT = CONDITIONS_UI.UI_ID ' +
+            'LEFT JOIN CONDITIONS_GROUPS GROUPS ON CONDITIONS.[GROUP] = GROUPS.ID ' +
+            'LEFT JOIN CONDITIONS_GROUPS SUBGROUPS ON CONDITIONS.SUBGROUP = SUBGROUPS.ID ' +
+            'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND ACTIVE = 1' +
+            'ORDER BY CONDITIONS.[GROUP], CONDITIONS.SUBGROUP';
     }
 
     return 'SELECT ' +
-           '  CONDITIONS.*, ' +
-           '  CONDITIONS_UI.FIELD_POSITION, ' +
-           '  GROUPS.NAME AS GROUP_NAME, ' +
-           '  SUBGROUPS.NAME AS SUBGROUP_NAME ' +
-           'FROM CONDITIONS ' +
-           'LEFT JOIN CONDITIONS_UI ON CONDITIONS.USER_INPUT = CONDITIONS_UI.UI_ID ' +
-           'LEFT JOIN CONDITIONS_GROUPS GROUPS ON CONDITIONS.[GROUP] = GROUPS.ID ' +
-           'LEFT JOIN CONDITIONS_GROUPS SUBGROUPS ON CONDITIONS.SUBGROUP = SUBGROUPS.ID ' +
-           'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (' + idArray.join(',') + ') AND ACTIVE = 1' +
-           'ORDER BY CONDITIONS.[GROUP], CONDITIONS.SUBGROUP';
+        '  CONDITIONS.*, ' +
+        '  CONDITIONS_UI.FIELD_POSITION, ' +
+        '  GROUPS.NAME AS GROUP_NAME, ' +
+        '  SUBGROUPS.NAME AS SUBGROUP_NAME ' +
+        'FROM CONDITIONS ' +
+        'LEFT JOIN CONDITIONS_UI ON CONDITIONS.USER_INPUT = CONDITIONS_UI.UI_ID ' +
+        'LEFT JOIN CONDITIONS_GROUPS GROUPS ON CONDITIONS.[GROUP] = GROUPS.ID ' +
+        'LEFT JOIN CONDITIONS_GROUPS SUBGROUPS ON CONDITIONS.SUBGROUP = SUBGROUPS.ID ' +
+        'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (' + idArray.join(',') + ') AND ACTIVE = 1' +
+        'ORDER BY CONDITIONS.[GROUP], CONDITIONS.SUBGROUP';
 };

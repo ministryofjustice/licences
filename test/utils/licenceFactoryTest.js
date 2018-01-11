@@ -3,6 +3,7 @@ const {
     createLicenceObject,
     createAddressObject,
     createConditionsObject,
+    createEligibilityObject,
     addAdditionalConditionsAsString,
     addAdditionalConditionsAsObject
 } = require('../../server/utils/licenceFactory');
@@ -12,9 +13,9 @@ describe('licenceFactory', () => {
     describe('createLicenceObject', () => {
 
         it('should filter out any unacceptable data', () => {
-           const input = {firstName: 'Matt', bad: 'yes'};
+            const input = {firstName: 'Matt', bad: 'yes'};
 
-           expect(createLicenceObject(input)).to.eql({firstName: 'Matt'});
+            expect(createLicenceObject(input)).to.eql({firstName: 'Matt'});
         });
     });
 
@@ -33,12 +34,16 @@ describe('licenceFactory', () => {
 
             const selectedConditions = [
                 {ID: {value: 1}, USER_INPUT: {value: 'appointmentName'}, FIELD_POSITION: {value: {appointmentName: 0}}},
-                {ID: {value: 2}, USER_INPUT: {value: 'confinedDetails'},
-                    FIELD_POSITION: {value: {
-                        confinedTo: 0,
-                        confinedFrom: 1,
-                        confinedReviewFrequency: 2
-                    }}}
+                {
+                    ID: {value: 2}, USER_INPUT: {value: 'confinedDetails'},
+                    FIELD_POSITION: {
+                        value: {
+                            confinedTo: 0,
+                            confinedFrom: 1,
+                            confinedReviewFrequency: 2
+                        }
+                    }
+                }
             ];
 
             const formInputs = {additionalConditions: ['appointmentName', 'confinedDetails']};
@@ -61,13 +66,17 @@ describe('licenceFactory', () => {
 
             const selectedConditions = [
                 {ID: {value: 1}, USER_INPUT: {value: 'notInSightOf'}, FIELD_POSITION: {value: {notInSightOf: 0}}},
-                {ID: {value: 2}, USER_INPUT: {value: 'curfewDetails'},
-                    FIELD_POSITION: {value: {
-                        curfewFrom: 0,
-                        curfewTo: 1,
-                        curfewTagRequired: 3,
-                        curfewAddress: 2
-                    }}}
+                {
+                    ID: {value: 2}, USER_INPUT: {value: 'curfewDetails'},
+                    FIELD_POSITION: {
+                        value: {
+                            curfewFrom: 0,
+                            curfewTo: 1,
+                            curfewTagRequired: 3,
+                            curfewAddress: 2
+                        }
+                    }
+                }
             ];
 
             const formInputs = {
@@ -174,17 +183,21 @@ describe('licenceFactory', () => {
                         subgroup: 'sg'
                     }
 
-                ]};
+                ]
+            };
 
             expect(output).to.eql(expectedOutput);
 
         });
 
         it('should replace placeholder text for appointment conditions for view', () => {
-            const rawLicence = {additionalConditions: {1: {
-                    appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
+            const rawLicence = {
+                additionalConditions: {
+                    1: {
+                        appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
+                    }
                 }
-            }};
+            };
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -282,9 +295,12 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple conditions for view', () => {
-            const rawLicence = {additionalConditions: {
-                1: {field: 'injected', appointmentTime: 'injected2'},
-                2: {groupsOrOrganisation: 'injected3'}}};
+            const rawLicence = {
+                additionalConditions: {
+                    1: {field: 'injected', appointmentTime: 'injected2'},
+                    2: {groupsOrOrganisation: 'injected3'}
+                }
+            };
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -366,9 +382,13 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text for appointment conditions for string', () => {
-            const rawLicence = {additionalConditions: {1: {
-                appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'}
-            }};
+            const rawLicence = {
+                additionalConditions: {
+                    1: {
+                        appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
+                    }
+                }
+            };
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -455,9 +475,12 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple conditions as string', () => {
-            const rawLicence = {additionalConditions: {
-                1: {field: 'injected', appointmentTime: 'injected2'},
-                2: {groupsOrOrganisation: 'injected3'}}};
+            const rawLicence = {
+                additionalConditions: {
+                    1: {field: 'injected', appointmentTime: 'injected2'},
+                    2: {groupsOrOrganisation: 'injected3'}
+                }
+            };
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -496,6 +519,31 @@ describe('licenceFactory', () => {
 
             expect(output).to.eql(expectedOutput);
 
+        });
+    });
+
+    describe('createEligibilityObject', () => {
+
+        it('should filter out any unacceptable data', () => {
+            const input = {excluded: 'true', bad: 'yes'};
+            expect(createEligibilityObject(input)).to.eql({excluded: 'true'});
+        });
+
+        it('should remove excludedReasons when excluded is false', () => {
+            const input = {excluded: 'false', excludedReasons: ['blah', 'blah']};
+            expect(createEligibilityObject(input)).to.eql({excluded: 'false'});
+        });
+
+        it('should remove unsuitableReasons when unsuitable is false', () => {
+            const input = {unsuitable: 'false', unsuitableReasons: ['blah', 'blah']};
+            expect(createEligibilityObject(input)).to.eql({unsuitable: 'false'});
+        });
+
+        it('should not remove unsuitableReasons when excluded is false', () => {
+            const input = {unsuitable: 'true', excluded: 'false', unsuitableReasons: ['blah', 'blah']};
+            expect(createEligibilityObject(input)).to.eql({
+                unsuitable: 'true', excluded: 'false', unsuitableReasons: ['blah', 'blah']
+            });
         });
     });
 });
