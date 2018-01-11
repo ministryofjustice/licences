@@ -10,13 +10,15 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
 
             const prisoner = await nomisClient.getHdcEligiblePrisoner(nomisId);
 
-            const sentence = await nomisClient.getSentenceDetail(prisoner.bookingId);
-            const aliasesList = await nomisClient.getAliases(prisoner.bookingId);
-            const offences = await nomisClient.getMainOffence(prisoner.bookingId);
-            const com = await nomisClient.getComRelation(prisoner.bookingId);
+            const bookingId = prisoner[0].bookingId;
+
+            const sentence = await nomisClient.getSentenceDetail(bookingId);
+            const aliasesList = await nomisClient.getAliases(bookingId);
+            const offences = await nomisClient.getMainOffence(bookingId);
+            const com = await nomisClient.getComRelation(bookingId);
 
             const image = prisoner.facialImageId ?
-                await nomisClient.getImageInfo(prisoner.facialImageId) :
+                await nomisClient.getImageInfo(prisoner[0].facialImageId) :
                 {imageId: false};
 
             const offenceDescription = formatOffenceDescription(offences);
