@@ -56,8 +56,14 @@ module.exports = function(token) {
         },
 
         getHdcEligiblePrisoners: function() {
-            const path = `${apiUrl}/users/me/hdc-eligible`;
-            return nomisGet(path, '', token);
+            const path = `${apiUrl}/offender-sentences`;
+            const query =
+                {query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`};
+            const headers = {
+                'Sort-Field': 'homeDetentionCurfewEligibilityDate,conditionalReleaseDate',
+                'Sort-Order': 'ASC'
+                };
+            return nomisGet(path, query, token, headers);
         },
 
         getImageData: async function(id) {
