@@ -52,21 +52,20 @@ function createConditionsObject(selectedConditions, formInputs) {
 }
 
 function createEligibilityObject(object) {
-    const acceptedAttributes = Object.keys(licenceModel.eligibility);
+    const acceptedSelectors = Object.keys(licenceModel.eligibility);
+    const acceptedAttributes = acceptedSelectors.reduce(addReasonIfSelected(object), []);
 
-    const filterIfUnwanted = {
-        excludedReasons: 'excluded',
-        unsuitableReasons: 'unsuitable'
-    };
-
-    const filteredAcceptedAttributes = acceptedAttributes.filter(attribute => {
-        const decider = filterIfUnwanted[attribute];
-        return !decider || object[decider] == 'true';
-    });
-
-    return filteredToAttributes(object, filteredAcceptedAttributes);
+    return filteredToAttributes(object, acceptedAttributes);
 }
 
+function addReasonIfSelected(formInput) {
+    return (attributes, selector) => {
+        if (formInput[selector] === 'true') {
+            return [...attributes, selector, licenceModel.eligibility[selector].reason];
+        }
+        return [...attributes, selector];
+    };
+}
 
 // For html page
 function addAdditionalConditionsAsObject(rawLicence, selectedConditions) {
@@ -224,10 +223,12 @@ const licenceModel = {
         minute: ''
     },
     eligibility: {
-        excluded: '',
-        excludedReasons: '',
-        unsuitable: '',
-        unsuitableReasons: '',
+        excluded: {
+            reason: 'excludedReasons'
+        },
+        unsuitable: {
+            reason: 'unsuitableReasons'
+        },
         investigation: ''
     }
 };
