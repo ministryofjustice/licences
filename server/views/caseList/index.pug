@@ -28,18 +28,20 @@ block content
                                 | #{prisoner.offenderNo}
 
                         td.location
-                            //if prisoner.internalLocationDesc
-                            //    | #{prisoner.internalLocationDesc}
+                            if prisoner.internalLocationDesc
+                                | #{prisoner.internalLocationDesc}
+                            if prisoner.internalLocationDesc && prisoner.agencyLocationDesc
+                                =" - "
                             if prisoner.agencyLocationDesc
                                 | #{prisoner.agencyLocationDesc}
 
                         td.hdced
-                            if prisoner.homeDetentionCurfewEligibilityDate
-                                | #{prisoner.homeDetentionCurfewEligibilityDate}
+                            if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
+                                | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
 
                         td.crd
-                            if prisoner.conditionalReleaseDate
-                                | #{prisoner.conditionalReleaseDate}
+                            if prisoner.sentenceDetail.conditionalReleaseDate
+                                | #{prisoner.sentenceDetail.conditionalReleaseDate}
 
                         td.status
                             if prisoner.status

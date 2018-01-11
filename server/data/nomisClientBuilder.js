@@ -23,7 +23,6 @@ module.exports = function(token) {
 
         getUpcomingReleasesByUser: function() {
             const path = `${apiUrl}/users/me/offender-releases`;
-            // todo add cutoff date
             const headers = {'Page-Limit': 50}; // todo pagination?
             return nomisGet(path, '', token, headers);
         },
@@ -44,6 +43,22 @@ module.exports = function(token) {
             return nomisGet(path, '', token);
         },
 
+        getAliases: function(bookingId) {
+            const path = `${apiUrl}/bookings/${bookingId}/aliases`;
+            return nomisGet(path, '', token);
+        },
+
+        getMainOffence: function(bookingId) {
+            const path = `${apiUrl}/bookings/${bookingId}/mainOffence`;
+            return nomisGet(path, '', token);
+        },
+
+        getComRelation: function(bookingId) {
+            const path = `${apiUrl}/bookings/${bookingId}/relationships`;
+            const query = {query: `relationshipType:eq:'COM'`};
+            return nomisGet(path, query, token);
+        },
+
         getImageInfo: function(imageId) {
             const path = `${apiUrl}/images/${imageId}`;
             return nomisGet(path, '', token);
@@ -61,8 +76,9 @@ module.exports = function(token) {
                 {query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`};
             const headers = {
                 'Sort-Field': 'homeDetentionCurfewEligibilityDate,conditionalReleaseDate',
-                'Sort-Order': 'ASC'
-                };
+                'Sort-Order': 'ASC',
+                'Page-Limit': 100
+            };
             return nomisGet(path, query, token, headers);
         },
 
@@ -89,7 +105,7 @@ async function nomisGet(path, query, token, headers = {}, responseType = '') {
 
         return result.body;
 
-    } catch(exception) {
+    } catch (exception) {
         logger.error('Error from NOMIS: ');
         logger.error(exception);
         throw exception;
