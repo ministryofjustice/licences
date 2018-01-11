@@ -3,6 +3,7 @@ module.exports = {
     createAddressObject,
     createReportingInstructionsObject,
     createConditionsObject,
+    createEligibilityObject,
     addAdditionalConditionsAsObject,
     addAdditionalConditionsAsString
 };
@@ -28,7 +29,7 @@ function createReportingInstructionsObject(object) {
 
 const filteredToAttributes = (input, acceptedKeys) => {
     return Object.keys(input).reduce((objectBuilt, key) => {
-        if(acceptedKeys.includes(key)) {
+        if (acceptedKeys.includes(key)) {
             const value = input[key] || '';
             return {...objectBuilt, ...{[key]: value}};
         }
@@ -48,6 +49,22 @@ function createConditionsObject(selectedConditions, formInputs) {
             }
         };
     }, {});
+}
+
+function createEligibilityObject(object) {
+    const acceptedSelectors = Object.keys(licenceModel.eligibility);
+    const acceptedAttributes = acceptedSelectors.reduce(addReasonIfSelected(object), []);
+
+    return filteredToAttributes(object, acceptedAttributes);
+}
+
+function addReasonIfSelected(formInput) {
+    return (attributes, selector) => {
+        if (formInput[selector] === 'true') {
+            return [...attributes, selector, licenceModel.eligibility[selector].reason];
+        }
+        return [...attributes, selector];
+    };
 }
 
 // For html page
@@ -101,7 +118,7 @@ function injectUserInputStandardAsObject(userInput, conditionText, fieldPosition
 function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput) {
     return (conditionArray, textSegment, index) => {
         const fieldNameForPlaceholder = fieldNames.find(field => fieldPositionObject[field] == index);
-        if(!fieldNameForPlaceholder) {
+        if (!fieldNameForPlaceholder) {
             return [...conditionArray, {text: textSegment}];
         }
         const inputtedData = userInput[fieldNameForPlaceholder];
@@ -133,7 +150,7 @@ function injectUserInputAsString(condition, userInput) {
     const fieldPositionObject = condition.FIELD_POSITION.value;
     const placeHolders = getPlaceholdersFrom(conditionText);
 
-    if(conditionName === 'appointmentDetails') {
+    if (conditionName === 'appointmentDetails') {
         return injectUserInputAppointmentAsString(userInput, conditionText, placeHolders);
     }
 
@@ -204,5 +221,14 @@ const licenceModel = {
         date: '',
         hour: '',
         minute: ''
+    },
+    eligibility: {
+        excluded: {
+            reason: 'excludedReasons'
+        },
+        unsuitable: {
+            reason: 'unsuitableReasons'
+        },
+        investigation: ''
     }
 };

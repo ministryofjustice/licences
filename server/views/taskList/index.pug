@@ -16,7 +16,7 @@ block content
 
                 img#prisonerImage(src= "/public/images/placeholder.png")
                 if(prisonerInfo.captureDate)
-                    span.block.subText Uploaded: #{prisonerInfo.captureDate}
+                    span.block.subText#prisonerPhotoDate Uploaded: #{prisonerInfo.captureDate}
 
             div.pure-u-1.pure-u-md-1-4
                 div.midMarginBottom
@@ -94,6 +94,9 @@ block content
                 input#continueBtn.requiredButton.button(type="submit" value="Continue")
             a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
 
+            if prisonerInfo
+                a#eligibilityCheckStart.requiredButton.button(href="/hdc/eligibility/"+prisonerInfo.offenderNo role="button") Start
+
 block append scripts
     script(src="/public/javascripts/getImage.js?"+version)
     script(type='text/javascript').
@@ -102,3 +105,4 @@ block append scripts
                 getAndReplaceImage(#{prisonerInfo.imageId});
             }
         });
+

@@ -1,0 +1,103 @@
+extends ../layout
+
+block content
+
+    - var exclusionValue = eligibility ? eligibility.excluded : null;
+    - var unsuitableValue = eligibility ? eligibility.unsuitable: null;
+    - var investigationValue = eligibility ? eligibility.investigation: null;
+
+    div.pure-g.pure-u-1
+        div.back-link-container.smallPaddingTop
+            a.link-back(href="javascript: window.history.back();") Back
+
+        h2.heading-large HDC eligibility and suitability check
+
+    form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=nomisId || '')
+        div.smallPaddingTop.paddingBottom.largeMarginBottom
+
+            div.form-group.inline
+                p Is the offender excluded from HDC?
+                if exclusionValue == 'true'
+                    div.multiple-choice(data-target="excludedForm")
+                        input#excludedYes(type="radio" checked name="excluded" value="true")
+                        label(for="excludedYes") Yes
+                    div.multiple-choice
+                        input#excludedNo(type="radio" name="excluded" value="false")
+                        label(for="excludedNo") No
+                else if exclusionValue == 'false'
+                    div.multiple-choice(data-target="excludedForm")
+                        input#excludedYes(type="radio" name="excluded" value="true")
+                        label(for="excludedYes") Yes
+                    div.multiple-choice
+                        input#excludedNo(type="radio" checked name="excluded" value="false")
+                        label(for="excludedNo") No
+                else
+                    div.multiple-choice(data-target="excludedForm")
+                        input#excludedYes(type="radio" name="excluded" value="true")
+                        label(for="excludedYes") Yes
+                    div.multiple-choice
+                        input#excludedNo(type="radio" name="excluded" value="false")
+                        label(for="excludedNo") No
+
+            div#excludedForm.panel.panel-border-narrow.js-hidden
+                include ./excluded
+
+            div.form-group.inline.smallPaddingTop
+                p Is the offender presumed unsuitable?
+                if unsuitableValue == 'true'
+                    div.multiple-choice(data-target="unsuitableForm")
+                        input#unsuitableYes(type="radio" checked name="unsuitable" value="true")
+                        label(for="unsuitableYes") Yes
+                    div.multiple-choice
+                        input#unsuitableNo(type="radio" name="unsuitable" value="false")
+                        label(for="unsuitableNo") No
+                else if unsuitableValue == 'false'
+                    div.multiple-choice(data-target="unsuitableForm")
+                        input#unsuitableYes(type="radio" name="unsuitable" value="true")
+                        label(for="unsuitableYes") Yes
+                    div.multiple-choice
+                        input#unsuitableNo(type="radio" checked name="unsuitable" value="false")
+                        label(for="unsuitableNo") No
+                else
+                    div.multiple-choice(data-target="unsuitableForm")
+                        input#unsuitableYes(type="radio" name="unsuitable" value="true")
+                        label(for="unsuitableYes") Yes
+                    div.multiple-choice
+                        input#unsuitableNo(type="radio" name="unsuitable" value="false")
+                        label(for="unsuitableNo") No
+
+            div#unsuitableForm.panel.panel-border-narrow.js-hidden
+                include ./unsuitable
+
+
+            div.form-group.inline.smallPaddingTop.pure-u-1-2
+                p Is the offender under investigation for a serious offence committed during the sentence
+                    | (referral to independent adjudicator/police)?
+                if investigationValue == 'true'
+                    div.multiple-choice
+                        input#investigationYes(type="radio" checked name="investigation" value="true")
+                        label(for="investigationYes") Yes
+                    div.multiple-choice
+                        input#investigationNo(type="radio" name="investigation" value="false")
+                        label(for="investigationNo") No
+                else if investigationValue == 'false'
+                    div.multiple-choice
+                        input#investigationYes(type="radio" name="investigation" value="true")
+                        label(for="investigationYes") Yes
+                    div.multiple-choice
+                        input#investigationNo(type="radio" checked name="investigation" value="false")
+                        label(for="investigationNo") No
+                else
+                    div.multiple-choice
+                        input#investigationYes(type="radio" name="investigation" value="true")
+                        label(for="investigationYes") Yes
+                    div.multiple-choice
+                        input#investigationNo(type="radio" name="investigation" value="false")
+                        label(for="investigationNo") No
+
+            div.paddingBottom
+                div.pure-u-1.inlineButtons
+                    input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to tasklist
