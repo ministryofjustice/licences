@@ -9,9 +9,9 @@ describe('prisonerDetailsService', () => {
     const prisonerResponse = {bookingId: 1, facialImageId: 2};
 
     const sentenceDetailResponse = {sentenceExpiryDate: '1985-12-03'};
-    const aliasesResponse = [{firstName: 'Marky', lastName: 'Mark'}];
+    const aliasesResponse = [{firstName: 'ALIAS', lastName: 'One'}, {firstName: 'AKA', lastName: 'Two'}];
     const mainOffenceResponse = [{offenceDescription: 'Robbery, conspiracy to rob'}];
-    const comRelationResponse = [{lastName: 'comName'}];
+    const comRelationResponse = [{firstName: 'COMFIRST', lastName: 'comLast'}];
 
     const imageInfoResponse = {imageId: 'imgId', captureDate: '1971-11-23'};
     const imageDataResponse = new Buffer('image');
@@ -34,9 +34,9 @@ describe('prisonerDetailsService', () => {
         imageId: 'imgId',
         captureDate: '23/11/1971',
         sentenceExpiryDate: '03/12/1985',
-        aliases: [{firstName: 'Marky', lastName: 'Mark'}],
+        aliases: 'Alias One, Aka Two',
         offenceDescription: 'Robbery, conspiracy to rob',
-        com: [{lastName: 'comName'}]
+        comName: 'Comfirst Comlast'
     };
 
     const service = createPrisonerService(nomisClientBuilder);

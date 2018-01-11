@@ -11,15 +11,19 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const prisoner = await nomisClient.getHdcEligiblePrisoner(nomisId);
 
             const sentence = await nomisClient.getSentenceDetail(prisoner.bookingId);
-            const aliases = await nomisClient.getAliases(prisoner.bookingId);
-            const offence = await nomisClient.getMainOffence(prisoner.bookingId);
+            const aliasesList = await nomisClient.getAliases(prisoner.bookingId);
+            const offences = await nomisClient.getMainOffence(prisoner.bookingId);
             const com = await nomisClient.getComRelation(prisoner.bookingId);
 
             const image = prisoner.facialImageId ?
                 await nomisClient.getImageInfo(prisoner.facialImageId) :
                 {imageId: false};
 
-            return formatResponse({...prisoner, ...sentence, ...offence[0], ...image, com, aliases});
+            const offenceDescription = formatOffenceDescription(offences);
+            const comName = formatComName(com);
+            const aliases = formatAliases(aliasesList);
+
+            return formatResponse({...prisoner, ...sentence, offenceDescription, ...image, comName, aliases});
 
         } catch (error) {
             logger.error('Error getting prisoner info');
@@ -51,13 +55,29 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
     return {getPrisonerDetails, getPrisonerImage};
 };
 
+function formatOffenceDescription(offences) {
+    return offences[0].offenceDescription;
+}
+
+function formatComName(com) {
+    return [com[0].firstName, com[0].lastName].join(' ');
+}
+
+function formatAliases(aliasesList) {
+return aliasesList.map(alias => {
+    return [alias.firstName, alias.lastName].join(' ');
+}).join(', ');
+}
+
 function formatResponse(object) {
     const nameFields = [
         'lastName',
         'firstName',
         'middleName',
         'gender',
-        'assignedLivingUnitDesc'
+        'assignedLivingUnitDesc',
+        'comName',
+        'aliases'
     ];
     const dateFields = [
         'captureDate',
