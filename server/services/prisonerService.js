@@ -52,7 +52,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const bufferBase64 = imageData.toString('base64');
             return {image: `data:image/jpeg;base64,${bufferBase64}`};
         } catch (error) {
-            logger.info('Error getting prisoner image', error);
+            logger.error('Error getting prisoner image', error);
 
             return {image: null};
         }
