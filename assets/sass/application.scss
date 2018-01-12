@@ -65,6 +65,10 @@ a.button.button-secondary {
     border-top: solid $grey-1 2px;
 }
 
+.borderTopLight {
+    border-top: solid $grey-2 2px;
+}
+
 .noMargin {
     margin: 0;
 }
@@ -226,4 +230,9 @@ td.spacer {
 
 .center {
     text-align: center;
+}
+
+.taskListAction {
+    width: 66%;
+    margin-top: -0.5em;
 }

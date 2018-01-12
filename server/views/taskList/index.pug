@@ -2,6 +2,9 @@ extends ../layout
 
 block content
 
+    div.back-link-container
+        a.link-back(href="/") Back
+
     h1.heading-large Check prisoner details
     h2.heading-medium Personal details
 
@@ -52,7 +55,7 @@ block content
 
         h2.heading-medium Key dates
 
-        div#keyDates.paddingBottom
+        div#keyDates.paddingBottom.borderBottom
             div.pure-g
                 div.pure-u-1.pure-u-md-1-4
                     div.midMarginBottom
@@ -82,20 +85,7 @@ block content
                             else
                                 | N/A
 
-    div#continueBtns.pure-g.paddingBottom
-        div.pure-u-1.inlineButtons
-            form(method="post", name="formPrint")
-                input(type="hidden" name="_csrf" value=csrfToken)
-                if prisonerInfo
-                    input(type="hidden" name="nomisId" value=prisonerInfo.offenderNo || '')
-                    input(type="hidden" name="firstName" value=prisonerInfo.firstName || '')
-                    input(type="hidden" name="lastName" value=prisonerInfo.lastName || '')
-                    input(type="hidden" name="agencyLocationId" value=prisonerInfo.agencyId || '')
-                input#continueBtn.requiredButton.button(type="submit" value="Continue")
-            a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
-
-            if prisonerInfo
-                a#eligibilityCheckStart.requiredButton.button(href="/hdc/eligibility/"+prisonerInfo.offenderNo role="button") Start
+        include eligibilitySummary
 
 block append scripts
     script(src="/public/javascripts/getImage.js?"+version)

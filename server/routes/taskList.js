@@ -18,8 +18,20 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const nomisId = req.params.nomisId;
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
+        const licence = await licenceService.getLicence(nomisId);
+        const eligibility = licence ? licence.licence.eligibility : null;
 
-        res.render(`taskList/index`, {prisonerInfo});
+        res.render(`taskList/index`, {prisonerInfo, eligibility});
+    }));
+
+    router.post('/eligibilityStart', asyncMiddleware(async (req, res, next) => {
+        logger.debug('POST /eligibilityStart');
+
+        const nomisId = req.body.nomisId;
+
+        // todo create licence and save personal details
+
+        res.redirect(`/hdc/eligibility/${nomisId}`);
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
