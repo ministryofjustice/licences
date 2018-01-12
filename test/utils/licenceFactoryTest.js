@@ -525,24 +525,24 @@ describe('licenceFactory', () => {
     describe('createEligibilityObject', () => {
 
         it('should filter out any unacceptable data', () => {
-            const input = {excluded: 'true', bad: 'yes'};
-            expect(createEligibilityObject(input)).to.eql({excluded: 'true'});
+            const input = {excluded: 'Yes', bad: 'yes'};
+            expect(createEligibilityObject(input)).to.eql({excluded: 'Yes'});
         });
 
-        it('should remove excludedReasons when excluded is false', () => {
-            const input = {excluded: 'false', excludedReasons: ['blah', 'blah']};
-            expect(createEligibilityObject(input)).to.eql({excluded: 'false'});
+        it('should remove excludedReasons when excluded is No', () => {
+            const input = {excluded: 'No', excludedReasons: ['blah', 'blah']};
+            expect(createEligibilityObject(input)).to.eql({excluded: 'No'});
         });
 
-        it('should remove unsuitableReasons when unsuitable is false', () => {
-            const input = {unsuitable: 'false', unsuitableReasons: ['blah', 'blah']};
-            expect(createEligibilityObject(input)).to.eql({unsuitable: 'false'});
+        it('should remove unsuitableReasons when unsuitable is No', () => {
+            const input = {unsuitable: 'No', unsuitableReasons: ['blah', 'blah']};
+            expect(createEligibilityObject(input)).to.eql({unsuitable: 'No'});
         });
 
-        it('should not remove unsuitableReasons when excluded is false', () => {
-            const input = {unsuitable: 'true', excluded: 'false', unsuitableReasons: ['blah', 'blah']};
+        it('should not remove unsuitableReasons when excluded is No', () => {
+            const input = {unsuitable: 'Yes', excluded: 'No', unsuitableReasons: ['blah', 'blah']};
             expect(createEligibilityObject(input)).to.eql({
-                unsuitable: 'true', excluded: 'false', unsuitableReasons: ['blah', 'blah']
+                unsuitable: 'Yes', excluded: 'No', unsuitableReasons: ['blah', 'blah']
             });
         });
     });

@@ -1,0 +1,44 @@
+div.largeMarginBottom
+    h2.heading-medium HDC eligibility and suitability check
+    div.pure-g
+        if !eligibility
+            div.pure-u-9-12
+                | Questions not completed
+            div.pure-u-1-4
+                form(method="post", name="eligibilityStart", action='/hdc/taskList/eligibilityStart/')
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    if prisonerInfo
+                        // TODO add personal details
+                        input(type="hidden" name="nomisId" value=prisonerInfo.offenderNo || '')
+                        input(type="hidden" name="firstName" value=prisonerInfo.firstName || '')
+                        input(type="hidden" name="lastName" value=prisonerInfo.lastName || '')
+                        input(type="hidden" name="agencyLocationId" value=prisonerInfo.agencyId || '')
+                    input#eligibilityCheckStart.taskListAction.requiredButton.button(type="submit" value="Start")
+
+        else
+            div.pure-g
+                div.pure-u-1-2
+                    div.pure-g.borderTopLight.smallPaddingTopBottom
+                        div.pure-u-3-4.padRight15
+                            | Is the offender excluded from HDC?
+                        div#excludedAnswer.pure-u-1-4.center.bold
+                            if eligibility.excluded
+                                |#{eligibility.excluded}
+                    div.pure-g.borderTopLight.smallPaddingTopBottom
+                        div.pure-u-3-4.padRight15
+                            | Is the offender presumed unsuitable?
+                        div#unsuitableAnswer.pure-u-1-4.center.bold
+                            if eligibility.unsuitable
+                                | #{eligibility.unsuitable}
+                    div.pure-g.borderTopLight.smallPaddingTopBottom
+                        div.pure-u-3-4.padRight15
+                            | Is the offender under investigation for a serious offence committed during the sentence?
+                        div#investigationAnswer.pure-u-1-4.center.bold
+                            if eligibility.investigation
+                                | #{eligibility.investigation}
+
+                div.pure-u-1-2.center
+                    a#eligibilityCheckUpdate(href='/hdc/eligibility/'+prisonerInfo.offenderNo) Change these answers
+
+                div.pure-u-1.borderTopLight
+                    // TODO Form printed
