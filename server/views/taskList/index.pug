@@ -99,10 +99,10 @@ block content
 
 block append scripts
     script(src="/public/javascripts/getImage.js?"+version)
-    //script(type='text/javascript').
-    //    $(document).ready(function() {
-    //        if(#{prisonerInfo.imageId}) {
-    //            getAndReplaceImage(#{prisonerInfo.imageId});
-    //        }
-    //    });
+    script(type='text/javascript').
+        $(document).ready(function() {
+            if(#{prisonerInfo.imageId}) {
+                getAndReplaceImage(#{prisonerInfo.imageId});
+            }
+        });
 
