@@ -60,7 +60,7 @@ function createEligibilityObject(object) {
 
 function addReasonIfSelected(formInput) {
     return (attributes, selector) => {
-        if (formInput[selector] === 'true') {
+        if (formInput[selector] === 'Yes') {
             return [...attributes, selector, licenceModel.eligibility[selector].reason];
         }
         return [...attributes, selector];

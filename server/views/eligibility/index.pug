@@ -19,26 +19,26 @@ block content
 
             div.form-group.inline
                 p Is the offender excluded from HDC?
-                if exclusionValue == 'true'
+                if exclusionValue == 'Yes'
                     div.multiple-choice(data-target="excludedForm")
-                        input#excludedYes(type="radio" checked name="excluded" value="true")
+                        input#excludedYes(type="radio" checked name="excluded" value="Yes")
                         label(for="excludedYes") Yes
                     div.multiple-choice
-                        input#excludedNo(type="radio" name="excluded" value="false")
+                        input#excludedNo(type="radio" name="excluded" value="No")
                         label(for="excludedNo") No
-                else if exclusionValue == 'false'
+                else if exclusionValue == 'No'
                     div.multiple-choice(data-target="excludedForm")
-                        input#excludedYes(type="radio" name="excluded" value="true")
+                        input#excludedYes(type="radio" name="excluded" value="Yes")
                         label(for="excludedYes") Yes
                     div.multiple-choice
-                        input#excludedNo(type="radio" checked name="excluded" value="false")
+                        input#excludedNo(type="radio" checked name="excluded" value="No")
                         label(for="excludedNo") No
                 else
                     div.multiple-choice(data-target="excludedForm")
-                        input#excludedYes(type="radio" name="excluded" value="true")
+                        input#excludedYes(type="radio" name="excluded" value="Yes")
                         label(for="excludedYes") Yes
                     div.multiple-choice
-                        input#excludedNo(type="radio" name="excluded" value="false")
+                        input#excludedNo(type="radio" name="excluded" value="No")
                         label(for="excludedNo") No
 
             div#excludedForm.panel.panel-border-narrow.js-hidden
@@ -46,26 +46,26 @@ block content
 
             div.form-group.inline.smallPaddingTop
                 p Is the offender presumed unsuitable?
-                if unsuitableValue == 'true'
+                if unsuitableValue == 'Yes'
                     div.multiple-choice(data-target="unsuitableForm")
-                        input#unsuitableYes(type="radio" checked name="unsuitable" value="true")
+                        input#unsuitableYes(type="radio" checked name="unsuitable" value="Yes")
                         label(for="unsuitableYes") Yes
                     div.multiple-choice
-                        input#unsuitableNo(type="radio" name="unsuitable" value="false")
+                        input#unsuitableNo(type="radio" name="unsuitable" value="No")
                         label(for="unsuitableNo") No
-                else if unsuitableValue == 'false'
+                else if unsuitableValue == 'No'
                     div.multiple-choice(data-target="unsuitableForm")
-                        input#unsuitableYes(type="radio" name="unsuitable" value="true")
+                        input#unsuitableYes(type="radio" name="unsuitable" value="Yes")
                         label(for="unsuitableYes") Yes
                     div.multiple-choice
-                        input#unsuitableNo(type="radio" checked name="unsuitable" value="false")
+                        input#unsuitableNo(type="radio" checked name="unsuitable" value="No")
                         label(for="unsuitableNo") No
                 else
                     div.multiple-choice(data-target="unsuitableForm")
-                        input#unsuitableYes(type="radio" name="unsuitable" value="true")
+                        input#unsuitableYes(type="radio" name="unsuitable" value="Yes")
                         label(for="unsuitableYes") Yes
                     div.multiple-choice
-                        input#unsuitableNo(type="radio" name="unsuitable" value="false")
+                        input#unsuitableNo(type="radio" name="unsuitable" value="No")
                         label(for="unsuitableNo") No
 
             div#unsuitableForm.panel.panel-border-narrow.js-hidden
@@ -75,26 +75,26 @@ block content
             div.form-group.inline.smallPaddingTop.pure-u-1-2
                 p Is the offender under investigation for a serious offence committed during the sentence
                     | (referral to independent adjudicator/police)?
-                if investigationValue == 'true'
+                if investigationValue == 'Yes'
                     div.multiple-choice
-                        input#investigationYes(type="radio" checked name="investigation" value="true")
+                        input#investigationYes(type="radio" checked name="investigation" value="Yes")
                         label(for="investigationYes") Yes
                     div.multiple-choice
-                        input#investigationNo(type="radio" name="investigation" value="false")
+                        input#investigationNo(type="radio" name="investigation" value="No")
                         label(for="investigationNo") No
-                else if investigationValue == 'false'
+                else if investigationValue == 'No'
                     div.multiple-choice
-                        input#investigationYes(type="radio" name="investigation" value="true")
+                        input#investigationYes(type="radio" name="investigation" value="Yes")
                         label(for="investigationYes") Yes
                     div.multiple-choice
-                        input#investigationNo(type="radio" checked name="investigation" value="false")
+                        input#investigationNo(type="radio" checked name="investigation" value="No")
                         label(for="investigationNo") No
                 else
                     div.multiple-choice
-                        input#investigationYes(type="radio" name="investigation" value="true")
+                        input#investigationYes(type="radio" name="investigation" value="Yes")
                         label(for="investigationYes") Yes
                     div.multiple-choice
-                        input#investigationNo(type="radio" name="investigation" value="false")
+                        input#investigationNo(type="radio" name="investigation" value="No")
                         label(for="investigationNo") No
 
             div.paddingBottom

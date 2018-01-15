@@ -34,7 +34,7 @@ const serviceStub = {
 };
 
 const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise(),
+    getLicence: sandbox.stub().returnsPromise().resolves(),
     createLicence: sandbox.stub().returnsPromise()
 };
 
@@ -52,7 +52,11 @@ const app = appSetup(createPrisonerDetailsRoute({
     }
 ), testUser);
 
-describe('GET /details/:prisonNumber', () => {
+describe('GET /taskList/:prisonNumber', () => {
+
+    afterEach(() => {
+       sandbox.reset();
+    });
 
     it('should call getPrisonerDetails from prisonerDetailsService', () => {
         return request(app)
@@ -66,25 +70,29 @@ describe('GET /details/:prisonNumber', () => {
 
     });
 
-    it('should redirect to dischargeAddress if a licence already exists', () => {
-        licenceServiceStub.getLicence.resolves(['1']);
+    it('should return the eligibility', () => {
+        licenceServiceStub.getLicence.resolves({licence: {eligibility: {key: 'value'}}});
         return request(app)
-            .post('/1233456')
-            .send({
-                nomisId: '123'
-            })
-            .expect(302)
+            .get('/1233456')
+            .expect(200)
             .expect(res => {
-                expect(licenceServiceStub.getLicence).to.be.calledOnce();
-                expect(licenceServiceStub.getLicence).to.be.calledWith('123');
-                expect(licenceServiceStub.createLicence).to.not.be.called();
-                expect(res.header['location']).to.include('/dischargeAddress');
+                expect(res.text).to.not.include('id="eligibilityCheckStart"');
             });
 
     });
+
+    it('should handle no eligibility', () => {
+        licenceServiceStub.getLicence.resolves({licence: {}});
+        return request(app)
+            .get('/1233456')
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('id="eligibilityCheckStart"');
+            });
+    });
 });
 
-describe('POST /details/:prisonNumber', () => {
+describe('POST /taskList/:prisonNumber', () => {
 
     it('should create a new licence if a licence does not already exist', () => {
         const formResponse = {
