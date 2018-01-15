@@ -13,7 +13,7 @@ const signInService = createSignInService();
 const licenceService = createLicenceService(licenceClient);
 const conditionsService = createConditionsService(licenceClient);
 const prisonerService = createPrisonerDetailsService(nomisClientBuilder);
-const caseListService = createCaseListService(nomisClientBuilder);
+const caseListService = createCaseListService(nomisClientBuilder, licenceClient);
 
 const app = createApp({
     logger,

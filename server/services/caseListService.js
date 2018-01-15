@@ -1,8 +1,8 @@
 const logger = require('../../log.js');
-const {isEmpty} = require('../utils/functionalHelpers');
+const {isEmpty, getIn} = require('../utils/functionalHelpers');
 const {formatObjectForView} = require('./utils/formatForView');
 
-module.exports = function createCaseListService(nomisClientBuilder) {
+module.exports = function createCaseListService(nomisClientBuilder, licenceClient) {
     async function getHdcCaseList(user) {
         try {
             const nomisClient = nomisClientBuilder(user.token);
@@ -13,7 +13,8 @@ module.exports = function createCaseListService(nomisClientBuilder) {
                 return [];
             }
 
-            return hdcEligibleReleases.map(formatPrisonerDetails);
+            const licences = await licenceClient.getLicences(getOffenderIds(hdcEligibleReleases));
+            return hdcEligibleReleases.map(decoratePrisonerDetails(licences));
 
         } catch (error) {
             logger.error('Error during getHdcEligiblePrisoners: ', error.message);
@@ -24,12 +25,27 @@ module.exports = function createCaseListService(nomisClientBuilder) {
     return {getHdcCaseList};
 };
 
-
-function formatPrisonerDetails(prisoner) {
+function decoratePrisonerDetails(licences) {
     const formattingOptions = {
         dates: ['homeDetentionCurfewEligibilityDate', 'conditionalReleaseDate'],
         capitalise: ['firstName', 'lastName']
     };
-    const formattedPrisoner = formatObjectForView(prisoner, formattingOptions);
-    return {...formattedPrisoner, status: 'Not started'};
+
+    return prisoner => {
+        const formattedPrisoner = formatObjectForView(prisoner, formattingOptions);
+        return {...formattedPrisoner, status: getStatus(prisoner, licences)};
+    };
+}
+
+function getOffenderIds(releases) {
+    return releases.map(offender => offender.offenderNo);
+}
+
+function getStatus(prisoner, licences) {
+    const licenceForPrisoner = licences.find(rawLicence => {
+        const licenceObject = getIn(rawLicence, ['licence']);
+        return prisoner.offenderNo === licenceObject.nomisId;
+    });
+
+    return licenceForPrisoner ? 'Started' : 'Not started';
 }
