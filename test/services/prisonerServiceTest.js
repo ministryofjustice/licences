@@ -6,7 +6,7 @@ const {
 
 describe('prisonerDetailsService', () => {
 
-    const prisonerResponse = {bookingId: 1, facialImageId: 2};
+    const prisonerResponse = [{bookingId: 1, facialImageId: 2}];
 
     const sentenceDetailResponse = {sentenceExpiryDate: '1985-12-03'};
     const aliasesResponse = [{firstName: 'ALIAS', lastName: 'One'}, {firstName: 'AKA', lastName: 'Two'}];
@@ -78,7 +78,7 @@ describe('prisonerDetailsService', () => {
 
         it('it should return false for imageId of no image', async () => {
 
-            const prisonerResponse2 = {bookingId: 1, facialImageId: null};
+            const prisonerResponse2 = [{bookingId: 1, facialImageId: null}];
 
             nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse2);
 

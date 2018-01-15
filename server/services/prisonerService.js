@@ -17,7 +17,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const offences = await nomisClient.getMainOffence(bookingId);
             const com = await nomisClient.getComRelation(bookingId);
 
-            const image = prisoner.facialImageId ?
+            const image = prisoner[0].facialImageId ?
                 await nomisClient.getImageInfo(prisoner[0].facialImageId) :
                 {imageId: false};
 
@@ -25,7 +25,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const comName = formatComName(com);
             const aliases = formatAliases(aliasesList);
 
-            return formatResponse({...prisoner, ...sentence, offenceDescription, ...image, comName, aliases});
+            return formatResponse({...prisoner[0], ...sentence, offenceDescription, ...image, comName, aliases});
 
         } catch (error) {
             logger.error('Error getting prisoner info');
@@ -85,6 +85,7 @@ function formatResponse(object) {
         'captureDate',
         'dateOfBirth',
         'conditionalReleaseDate',
+        'homeDetentionCurfewEligibilityDate',
         'licenceExpiryDate',
         'sentenceExpiryDate'
     ];
