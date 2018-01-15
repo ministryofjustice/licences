@@ -9,9 +9,9 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const nomisClient = nomisClientBuilder(token);
 
             const prisoner = await nomisClient.getHdcEligiblePrisoner(nomisId);
-
             const bookingId = prisoner[0].bookingId;
 
+            // todo could make this use promise.all, but wait until we know the API is stable and details are right
             const sentence = await nomisClient.getSentenceDetail(bookingId);
             const aliasesList = await nomisClient.getAliases(bookingId);
             const offences = await nomisClient.getMainOffence(bookingId);
