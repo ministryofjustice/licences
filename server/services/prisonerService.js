@@ -8,28 +8,24 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
 
             const nomisClient = nomisClientBuilder(token);
 
-            const bookings = await nomisClient.getBookings(nomisId);
-            logger.info(`got bookings size: ${bookings.length}`);
+            const prisoner = await nomisClient.getHdcEligiblePrisoner(nomisId);
+            const bookingId = prisoner[0].bookingId;
 
-            if(bookings.length <= 0) {
-                throw new Error(`No bookings found for ${nomisId}`);
-            }
+            // todo could make this use promise.all, but wait until we know the API is stable and details are right
+            const sentence = await nomisClient.getSentenceDetail(bookingId);
+            const aliasesList = await nomisClient.getAliases(bookingId);
+            const offences = await nomisClient.getMainOffence(bookingId);
+            const com = await nomisClient.getComRelation(bookingId);
 
-            const booking = bookings[0];
-
-            const bookingDetail = await nomisClient.getBooking(booking.bookingId);
-            logger.info(`got booking detail for booking id: ${booking.bookingId}`);
-
-            const sentenceDetail = await nomisClient.getSentenceDetail(booking.bookingId);
-            logger.info(`got sentence detail for booking id: ${booking.bookingId}`);
-
-            const image = booking.facialImageId ?
-                await nomisClient.getImageInfo(booking.facialImageId) :
+            const image = prisoner[0].facialImageId ?
+                await nomisClient.getImageInfo(prisoner[0].facialImageId) :
                 {imageId: false};
 
-            logger.info(`got image detail for facialImageId id: ${booking.facialImageId}`);
+            const offenceDescription = formatOffenceDescription(offences);
+            const comName = formatComName(com);
+            const aliases = formatAliases(aliasesList);
 
-            return formatResponse({...bookingDetail, ...booking, ...image, ...sentenceDetail});
+            return formatResponse({...prisoner[0], ...sentence, offenceDescription, ...image, comName, aliases});
 
         } catch (error) {
             logger.error('Error getting prisoner info');
@@ -45,7 +41,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const nomisClient = nomisClientBuilder(token);
             const imageData = await nomisClient.getImageData(imageId);
 
-            if(!imageData) {
+            if (!imageData) {
                 return {image: null};
             }
 
@@ -61,21 +57,38 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
     return {getPrisonerDetails, getPrisonerImage};
 };
 
+function formatOffenceDescription(offences) {
+    return offences[0].offenceDescription;
+}
+
+function formatComName(com) {
+    return [com[0].firstName, com[0].lastName].join(' ');
+}
+
+function formatAliases(aliasesList) {
+return aliasesList.map(alias => {
+    return [alias.firstName, alias.lastName].join(' ');
+}).join(', ');
+}
+
 function formatResponse(object) {
     const nameFields = [
         'lastName',
         'firstName',
         'middleName',
-        'aliases',
         'gender',
-        'assignedLivingUnitDesc'
+        'assignedLivingUnitDesc',
+        'comName',
+        'aliases'
     ];
     const dateFields = [
         'captureDate',
         'dateOfBirth',
         'conditionalReleaseDate',
+        'homeDetentionCurfewEligibilityDate',
         'licenceExpiryDate',
-        'sentenceExpiryDate'];
+        'sentenceExpiryDate'
+    ];
 
     return formatObjectForView(object, {dates: dateFields, capitalise: nameFields});
 }

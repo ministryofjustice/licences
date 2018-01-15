@@ -6,33 +6,22 @@ const {
 
 describe('prisonerDetailsService', () => {
 
-    const bookingResponse = [{
-        bookingId: 1,
-        facialImageId: 2,
-        dateOfBirth: '1971-12-23',
-        firstName: 'f',
-        middleName: 'm',
-        lastName: 'l',
-        offenderNo: 'noms',
-        aliases: 'alias',
-        assignedLivingUnitDesc: 'loc'
-    }];
-
-    const bookingDetailResponse = {physicalAttributes: {gender: 'male'}};
-
-    const imageInfoResponse = {
-        imageId: 'imgId',
-        captureDate: '1971-11-23'
-    };
-
-    const imageDataResponse = new Buffer('image');
+    const prisonerResponse = [{bookingId: 1, facialImageId: 2}];
 
     const sentenceDetailResponse = {sentenceExpiryDate: '1985-12-03'};
+    const aliasesResponse = [{firstName: 'ALIAS', lastName: 'One'}, {firstName: 'AKA', lastName: 'Two'}];
+    const mainOffenceResponse = [{offenceDescription: 'Robbery, conspiracy to rob'}];
+    const comRelationResponse = [{firstName: 'COMFIRST', lastName: 'comLast'}];
+
+    const imageInfoResponse = {imageId: 'imgId', captureDate: '1971-11-23'};
+    const imageDataResponse = new Buffer('image');
 
     const nomisClientMock = {
-        getBookings: sandbox.stub().returnsPromise().resolves(bookingResponse),
-        getBooking: sandbox.stub().returnsPromise().resolves(bookingDetailResponse),
+        getHdcEligiblePrisoner: sandbox.stub().returnsPromise().resolves(prisonerResponse),
         getSentenceDetail: sandbox.stub().returnsPromise().resolves(sentenceDetailResponse),
+        getAliases: sandbox.stub().returnsPromise().resolves(aliasesResponse),
+        getMainOffence: sandbox.stub().returnsPromise().resolves(mainOffenceResponse),
+        getComRelation: sandbox.stub().returnsPromise().resolves(comRelationResponse),
         getImageInfo: sandbox.stub().returnsPromise().resolves(imageInfoResponse),
         getImageData: sandbox.stub().returnsPromise().resolves(imageDataResponse)
     };
@@ -42,17 +31,12 @@ describe('prisonerDetailsService', () => {
     const prisonerInfoResponse = {
         bookingId: 1,
         facialImageId: 2,
-        dateOfBirth: '23/12/1971',
-        firstName: 'F',
-        middleName: 'M',
-        lastName: 'L',
-        offenderNo: 'noms',
-        aliases: 'Alias',
-        assignedLivingUnitDesc: 'Loc',
-        physicalAttributes: {gender: 'Male'},
         imageId: 'imgId',
         captureDate: '23/11/1971',
-        sentenceExpiryDate: '03/12/1985'
+        sentenceExpiryDate: '03/12/1985',
+        aliases: 'Alias One, Aka Two',
+        offenceDescription: 'Robbery, conspiracy to rob',
+        comName: 'Comfirst Comlast'
     };
 
     const service = createPrisonerService(nomisClientBuilder);
@@ -66,14 +50,18 @@ describe('prisonerDetailsService', () => {
         it('should call the api with the nomis id', async () => {
             await service.getPrisonerDetails('123');
 
-            expect(nomisClientMock.getBookings).to.be.calledOnce();
-            expect(nomisClientMock.getBooking).to.be.calledOnce();
+            expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledOnce();
             expect(nomisClientMock.getSentenceDetail).to.be.calledOnce();
+            expect(nomisClientMock.getAliases).to.be.calledOnce();
+            expect(nomisClientMock.getMainOffence).to.be.calledOnce();
+            expect(nomisClientMock.getComRelation).to.be.calledOnce();
             expect(nomisClientMock.getImageInfo).to.be.calledOnce();
 
-            expect(nomisClientMock.getBookings).to.be.calledWith('123');
-            expect(nomisClientMock.getBooking).to.be.calledWith(1);
+            expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledWith('123');
             expect(nomisClientMock.getSentenceDetail).to.be.calledWith(1);
+            expect(nomisClientMock.getAliases).to.be.calledWith(1);
+            expect(nomisClientMock.getMainOffence).to.be.calledWith(1);
+            expect(nomisClientMock.getComRelation).to.be.calledWith(1);
             expect(nomisClientMock.getImageInfo).to.be.calledWith(2);
         });
 
@@ -83,26 +71,16 @@ describe('prisonerDetailsService', () => {
         });
 
         it('should throw if error in api', () => {
-            nomisClientMock.getBookings.rejects(new Error('dead'));
+            nomisClientMock.getHdcEligiblePrisoner.rejects(new Error('dead'));
 
             return expect(service.getPrisonerDetails('123')).to.be.rejected();
         });
 
         it('it should return false for imageId of no image', async () => {
 
-            const bookingResponse2 = [{
-                bookingId: 1,
-                facialImageId: null,
-                dateOfBirth: '1971-12-23',
-                firstName: 'f',
-                middleName: 'm',
-                lastName: 'l',
-                offenderNo: 'noms',
-                aliases: 'alias',
-                assignedLivingUnitDesc: 'loc'
-            }];
+            const prisonerResponse2 = [{bookingId: 1, facialImageId: null}];
 
-            nomisClientMock.getBookings.resolves(bookingResponse2);
+            nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse2);
 
             const result = await service.getPrisonerDetails('123');
             return expect(result.imageId).to.eql(false);

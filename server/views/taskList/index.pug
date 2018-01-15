@@ -44,46 +44,30 @@ block content
                         span#prisonerDob.block.bold #{prisonerInfo.dateOfBirth}
 
                 div.midMarginBottom
-                    | Gender
-                    if(prisonerInfo.physicalAttributes.gender)
-                        span#prisonerSex.block.bold #{prisonerInfo.physicalAttributes.gender}
+                    | Location
+                    if(prisonerInfo.agencyLocationDesc)
+                        span#prisonerLocation.block.bold #{prisonerInfo.agencyLocationDesc}
 
                 div.midMarginBottom
-                    | Location
-                    if(prisonerInfo.assignedLivingUnitDesc)
-                        span#prisonerLocation.block.bold #{prisonerInfo.assignedLivingUnitDesc}
+                    | Type of offence(s)
+                    if(prisonerInfo.offenceDescription)
+                        span#offenceDescription.block.bold #{prisonerInfo.offenceDescription}
 
-        h2.heading-medium Key dates
+            div.pure-u-1.pure-u-md-1-4
+                div.midMarginBottom
+                    | CRD
+                    if (prisonerInfo.conditionalReleaseDate)
+                         span#conditionalReleaseDate.block.bold  #{prisonerInfo.conditionalReleaseDate}
 
-        div#keyDates.paddingBottom.borderBottom
-            div.pure-g
-                div.pure-u-1.pure-u-md-1-4
-                    div.midMarginBottom
-                        | Release date
-                        span#releaseDate.block.bold
-                            if (prisonerInfo.conditionalReleaseDate)
-                                | #{prisonerInfo.conditionalReleaseDate}
-                            else
-                                | N/A
+                div.midMarginBottom
+                    | HDCED
+                    if (prisonerInfo.homeDetentionCurfewEligibilityDate)
+                        span#homeDetentionCurfewEligibilityDate.block.bold  #{prisonerInfo.homeDetentionCurfewEligibilityDate}
 
-                div.pure-u-1.pure-u-md-1-4
-                    div.midMarginBottom
-                        | Licence expires
-                        span#licenceExpires.block.bold
-                            if (prisonerInfo.licenceExpiryDate)
-                                | #{prisonerInfo.licenceExpiryDate}
-                            else
-                                | N/A
-
-            div.pure-g.paddingBottom
-                div.pure-u-1.pure-u-md-1-4
-                    div.midMarginBottom
-                        | Sentence expires
-                        span#sentenceExpires.block.bold
-                            if (prisonerInfo.sentenceExpiryDate)
-                                | #{prisonerInfo.sentenceExpiryDate}
-                            else
-                                | N/A
+                div.midMarginBottom
+                    | Name of COM
+                    if (prisonerInfo.comName)
+                        span#comName.block.bold  #{prisonerInfo.comName}
 
         include eligibilitySummary
 

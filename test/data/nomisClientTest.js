@@ -173,5 +173,150 @@ describe('nomisClient', function() {
         });
     });
 
+    describe('getHdcEligiblePrisoners', () => {
+
+        const url = '/offender-sentences?query=homeDetentionCurfewEligibilityDate%3Ais%3Anot%20null%2Cand%3A' +
+            'conditionalReleaseDate%3Ais%3Anot%20null';
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get(url)
+                .reply(200, {key: 'value'});
+
+            return expect(nomisClient.getHdcEligiblePrisoners('token')).to.eventually.eql({key: 'value'});
+        });
+
+        it('should set the headers to sort ascending', () => {
+            fakeNomis
+                .get(url)
+                .reply(function(uri, requestBody) {
+                    // The documented way to specify request headers doesn't work so this is a workaround
+                    if (this.req.headers['sort-order'] === 'ASC') { // eslint-disable-line
+                        return 200, {key: 'value'};
+                    }
+                    return null;
+                });
+
+            return expect(nomisClient.getHdcEligiblePrisoners('token'))
+                .to.eventually.eql({key: 'value'});
+        });
+
+        it('should set the headers to sort by hdced then crd', () => {
+            const sortFields = 'homeDetentionCurfewEligibilityDate,conditionalReleaseDate';
+            fakeNomis
+                .get(url)
+                .reply(function(uri, requestBody) {
+                    // The documented way to specify request headers doesn't work so this is a workaround
+                    if (this.req.headers['sort-field'] === sortFields) { // eslint-disable-line
+                        return 200, {key: 'value'};
+                    }
+                    return null;
+                });
+
+            return expect(nomisClient.getHdcEligiblePrisoners('token'))
+                .to.eventually.eql({key: 'value'});
+        });
+
+        it('should set the headers to control result count', () => {
+            fakeNomis
+                .get(url)
+                .reply(function(uri, requestBody) {
+                    // The documented way to specify request headers doesn't work so this is a workaround
+                    if (this.req.headers['page-limit'] === 100) { // eslint-disable-line
+                        return 200, {key: 'value'};
+                    }
+                    return null;
+                });
+
+            return expect(nomisClient.getHdcEligiblePrisoners('token'))
+                .to.eventually.eql({key: 'value'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get(url)
+                .reply(500);
+
+            return expect(nomisClient.getHdcEligiblePrisoners('token')).to.be.rejected();
+        });
+    });
+
+    describe('getHdcEligiblePrisoner', () => {
+
+        const url = '/offender-sentences?offenderNo=1';
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get(url)
+                .reply(200, {key: 'value'});
+
+            return expect(nomisClient.getHdcEligiblePrisoner('1', 'token')).to.eventually.eql({key: 'value'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get(url)
+                .reply(500);
+
+            return expect(nomisClient.getHdcEligiblePrisoner('1', 'token')).to.be.rejected();
+        });
+    });
+
+    describe('getAliases', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get(`/bookings/1/aliases`)
+                .reply(200, {key: 'value'});
+
+            return expect(nomisClient.getAliases('1', 'token')).to.eventually.eql({key: 'value'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get(`/bookings/1/aliases`)
+                .reply(500);
+
+            return expect(nomisClient.getAliases('1', 'token')).to.be.rejected();
+        });
+    });
+
+    describe('getMainOffence', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get(`/bookings/1/mainOffence`)
+                .reply(200, {key: 'value'});
+
+            return expect(nomisClient.getMainOffence('1', 'token')).to.eventually.eql({key: 'value'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get(`/bookings/1/mainOffence`)
+                .reply(500);
+
+            return expect(nomisClient.getMainOffence('1', 'token')).to.be.rejected();
+        });
+    });
+
+    describe('getComRelation', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get(`/bookings/1/relationships?query=relationshipType%3Aeq%3A%27COM%27`)
+                .reply(200, {key: 'value'});
+
+            return expect(nomisClient.getComRelation('1', 'token')).to.eventually.eql({key: 'value'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get(`/bookings/1/relationships?query=relationshipType%3Aeq%3A%27COM%27`)
+                .reply(500);
+
+            return expect(nomisClient.getComRelation('1', 'token')).to.be.rejected();
+        });
+    });
 });
 

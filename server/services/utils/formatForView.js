@@ -14,7 +14,7 @@ function formatObjectForView(object, options) {
         }
 
         if (options.capitalise && options.capitalise.includes(itemKey)) {
-            return {...builtObject, [itemKey]: setCase.capital(object[itemKey])};
+            return {...builtObject, [itemKey]: setCase.capital(object[itemKey].toLowerCase())};
         }
 
         return {...builtObject, [itemKey]: object[itemKey]};

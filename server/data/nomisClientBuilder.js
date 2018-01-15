@@ -82,6 +82,12 @@ module.exports = function(token) {
             return nomisGet(path, query, token, headers);
         },
 
+        getHdcEligiblePrisoner: function(nomisId) {
+            const path = `${apiUrl}/offender-sentences`;
+            const query = {offenderNo: nomisId};
+            return nomisGet(path, query, token);
+        },
+
         getImageData: async function(id) {
             const path = `${apiUrl}/images/${id}/data`;
             return nomisGet(path, '', token, {}, 'blob');
