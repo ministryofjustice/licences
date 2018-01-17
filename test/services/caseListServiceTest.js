@@ -24,6 +24,10 @@ describe('caseListService', () => {
         ])
     };
 
+    const licenceClient = {
+        getLicences: sandbox.stub().returnsPromise().resolves([])
+    };
+
     const user = {
         staffId: '123',
         token: 'token',
@@ -32,7 +36,7 @@ describe('caseListService', () => {
 
     const nomisClientBuilder = sandbox.stub().returns(nomisClient);
 
-    const service = createCaseListService(nomisClientBuilder);
+    const service = createCaseListService(nomisClientBuilder, licenceClient);
 
     afterEach(() => {
         sandbox.reset();
@@ -63,6 +67,17 @@ describe('caseListService', () => {
             const result = await service.getHdcCaseList(user);
 
             expect(result[0].status).to.eql('Not started');
+        });
+
+        it('should add a started status to the prisoners if licence exists', async () => {
+            licenceClient.getLicences.resolves([{
+                licence: {
+                    nomisId: 'A12345'
+                }
+            }]);
+            const result = await service.getHdcCaseList(user);
+
+            expect(result[0].status).to.eql('Started');
         });
 
         it('should return empty array if no results', () => {
