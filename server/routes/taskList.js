@@ -1,5 +1,6 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
+const path = require('path');
 
 module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -53,7 +54,13 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
 
         const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, req.user.token);
 
-        res.send({...prisonerImage});
+        if (!prisonerImage) {
+            const placeHolder = path.join(__dirname, '../../assets/images/placeholder.png');
+            res.status(302);
+            return res.sendFile(placeHolder);
+        }
+        res.contentType('image/jpeg');
+        res.send(prisonerImage);
     }));
 
     return router;

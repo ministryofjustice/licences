@@ -95,20 +95,18 @@ describe('prisonerDetailsService', () => {
             expect(nomisClientMock.getImageData).to.be.calledWith('123');
         });
 
-        it('should return a base64 encoded image', async () => {
-            const base64Buffer = imageDataResponse.toString('base64');
-            const expectedOutput = {image: `data:image/jpeg;base64,${base64Buffer}`};
-            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql(expectedOutput);
+        it('should return the image', async () => {
+            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql(imageDataResponse);
         });
 
         it('should return null if no image', async () => {
             nomisClientMock.getImageData.resolves(null);
-            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql({image: null});
+            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql(null);
         });
 
         it('should return null if no image', async () => {
             nomisClientMock.getImageData.rejects({message: 'not found'});
-            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql({image: null});
+            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql(null);
         });
     });
 });

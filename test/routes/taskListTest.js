@@ -120,7 +120,15 @@ describe('GET /image/:imageId', () => {
         return request(app)
             .get('/image/123')
             .expect(200)
-            .expect({image: 'image'});
+            .expect('Content-Type', /image/);
+    });
+
+    it('should return placeholder if no image returned from nomis', () => {
+        serviceStub.getPrisonerImage.resolves(null);
+        return request(app)
+            .get('/image/123')
+            .expect(302)
+            .expect('Content-Type', /image/);
     });
 });
 
