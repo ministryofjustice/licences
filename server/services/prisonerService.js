@@ -39,18 +39,11 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             logger.info(`getPrisonerImage: ${imageId}`);
 
             const nomisClient = nomisClientBuilder(token);
-            const imageData = await nomisClient.getImageData(imageId);
-
-            if (!imageData) {
-                return {image: null};
-            }
-
-            const bufferBase64 = imageData.toString('base64');
-            return {image: `data:image/jpeg;base64,${bufferBase64}`};
+            return await nomisClient.getImageData(imageId);
         } catch (error) {
             logger.error('Error getting prisoner image', error);
 
-            return {image: null};
+            return null;
         }
     }
 
@@ -62,7 +55,7 @@ function formatOffenceDescription(offences) {
 }
 
 function formatComName(com) {
-    return [com[0].firstName, com[0].lastName].join(' ');
+    return com[0] ? [com[0].firstName, com[0].lastName].join(' ') : '';
 }
 
 function formatAliases(aliasesList) {
