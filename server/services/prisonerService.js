@@ -41,7 +41,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             const nomisClient = nomisClientBuilder(token);
             return await nomisClient.getImageData(imageId);
         } catch (error) {
-            logger.error('Error getting prisoner image', error);
+            logger.error('Error getting prisoner image');
 
             return null;
         }
