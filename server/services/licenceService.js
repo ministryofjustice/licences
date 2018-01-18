@@ -13,11 +13,10 @@ const {getIn, isEmpty} = require('../utils/functionalHelpers');
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
 
     async function reset() {
-
         try {
             await licenceClient.deleteAll();
         } catch (error) {
-            console.error(error, 'Error during reset licences');
+            console.error('Error during reset licences', error.stack);
             throw error;
         }
     }
@@ -33,12 +32,13 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
             const status = getIn(rawLicence, ['status']);
 
             if(populateConditions && !isEmpty(formattedLicence.additionalConditions)) {
-                return await populateLicenceWithCondtions(formattedLicence, status);
+                return await populateLicenceWithConditions(formattedLicence, status);
             }
 
             return {licence: formattedLicence, status};
 
         } catch (error) {
+            console.error('Error during getLicence', error.stack);
             throw error;
         }
     }
@@ -50,7 +50,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         try {
             return await licenceClient.createLicence(nomisId, licence, 'STARTED');
         } catch (error) {
-            console.error(error, 'Error during create licence');
+            console.error('Error during createLicence', error.stack);
             throw error;
         }
     }
@@ -63,7 +63,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         try {
             return await licenceClient.updateSection('dischargeAddress', nomisId, address);
         } catch (error) {
-            console.error(error, 'Error during update address');
+            console.error('Error during updateAddress', error.stack);
             throw error;
         }
     }
@@ -76,7 +76,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         try {
             return await licenceClient.updateSection('reportingInstructions', nomisId, instructions);
         } catch (error) {
-            console.error(error, 'Error during update reporting instructions');
+            console.error('Error during updateReportingInstructions', error.stack);
             throw error;
         }
     }
@@ -89,7 +89,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
 
             return await licenceClient.updateSection('additionalConditions', nomisId, conditions);
         } catch (error) {
-            console.error(error, 'Error during update additional conditions');
+            console.error('Error during updateAdditionalConditions', error.stack);
             throw error;
         }
     }
@@ -101,7 +101,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
 
             return await licenceClient.updateSection('eligibility', nomisId, eligibilityData, 'ELIGIBILITY_CHECKED');
         } catch (error) {
-            console.error(error, 'Error during update eligibility');
+            console.error('Error during updateEligibility', error.stack);
             throw error;
         }
     }
@@ -110,7 +110,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         try {
             return await licenceClient.updateStatus(nomisId, 'SENT');
         } catch (error) {
-            console.error(error, 'Error during send licence');
+            console.error('Error during sendToOmu', error.stack);
             throw error;
         }
     }
@@ -119,7 +119,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         try {
             return await licenceClient.updateStatus(nomisId, 'CHECK_SENT');
         } catch (error) {
-            console.error(error, 'Error during send licence');
+            console.error('Error during sendToPm', error.stack);
             throw error;
         }
     }
@@ -131,19 +131,24 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
             return await establishmentsClient.findById(record.licence.agencyLocationId);
 
         } catch (error) {
-            console.error(error, 'Error during send licence');
+            console.error('Error during getEstablishment', error.stack);
             throw error;
         }
     }
 
-    async function populateLicenceWithCondtions(licence, status) {
-        const conditionIdsSelected = Object.keys(licence.additionalConditions);
-        const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
+    async function populateLicenceWithConditions(licence, status) {
+        try {
+            const conditionIdsSelected = Object.keys(licence.additionalConditions);
+            const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
 
-        return {
-            licence: addAdditionalConditionsAsObject(licence, conditionsSelected),
-            status
-        };
+            return {
+                licence: addAdditionalConditionsAsObject(licence, conditionsSelected),
+                status
+            };
+        } catch (error) {
+            console.error('Error during populateLicenceWithConditions');
+            throw error;
+        }
     }
 
     return {

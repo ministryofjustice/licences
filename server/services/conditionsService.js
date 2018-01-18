@@ -1,6 +1,7 @@
 const {validate, DATE_FIELD} = require('./utils/conditionsValidator');
 const {getIntersection, flatten} = require('../utils/functionalHelpers');
 const moment = require('moment');
+const logger = require('../../log.js');
 
 module.exports = function createConditionsService(licenceClient) {
 
@@ -8,7 +9,7 @@ module.exports = function createConditionsService(licenceClient) {
         try {
             return await licenceClient.getStandardConditions();
         } catch(error) {
-            // TODO error handling
+            logger.error('Error during getStandardConditions', error.stack);
             throw error;
         }
     }
@@ -26,7 +27,7 @@ module.exports = function createConditionsService(licenceClient) {
 
             return conditions.reduce(splitIntoGroupedObject, {});
         } catch(error) {
-            // TODO error handling
+            logger.error('Error during getStandardConditions', error.stack);
             throw error;
         }
     }
@@ -46,7 +47,7 @@ module.exports = function createConditionsService(licenceClient) {
                 .reduce(splitIntoGroupedObject, {});
 
         } catch(error) {
-            // TODO error handling
+            logger.error('Error during getAdditionalConditionsWithErrors', error.stack);
             throw error;
         }
     }

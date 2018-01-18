@@ -28,8 +28,7 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             return formatResponse({...prisoner[0], ...sentence, offenceDescription, ...image, comName, aliases});
 
         } catch (error) {
-            logger.error('Error getting prisoner info');
-            logger.error(error);
+            logger.error('Error getting prisoner info', error.stack);
             throw error;
         }
     }
@@ -42,7 +41,6 @@ module.exports = function createPrisonerDetailsService(nomisClientBuilder) {
             return await nomisClient.getImageData(imageId);
         } catch (error) {
             logger.error('Error getting prisoner image');
-
             return null;
         }
     }
