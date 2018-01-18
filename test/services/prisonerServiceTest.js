@@ -1,4 +1,4 @@
-const createPrisonerService = require('../../server/services/prisonerService');
+const {createPrisonerService} = require('../../server/services/prisonerService');
 const {
     sandbox,
     expect
@@ -35,8 +35,8 @@ describe('prisonerDetailsService', () => {
         captureDate: '23/11/1971',
         sentenceExpiryDate: '03/12/1985',
         aliases: 'Alias One, Aka Two',
-        offenceDescription: 'Robbery, conspiracy to rob',
-        comName: 'Comfirst Comlast'
+        offences: 'Robbery, conspiracy to rob',
+        com: 'Comfirst Comlast'
     };
 
     const service = createPrisonerService(nomisClientBuilder);
