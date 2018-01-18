@@ -49,10 +49,10 @@ module.exports = {
             connected = true;
 
             const Request = require('tedious').Request;
-            const request = new Request(sql, function(err, rowCount, rows) {
+            const request = new Request(sql, function(error, rowCount, rows) {
 
-                if (err) {
-                    return finish(err);
+                if (error) {
+                    return finish(error);
                 }
                 if (rowCount === 0) {
                     return finish(null, rowCount);
@@ -69,7 +69,7 @@ module.exports = {
             connection.execSql(request);
         });
 
-        function finish(err, result) {
+        function finish(error, result) {
             if (connected) {
                 logger.debug('DB collection connection finish - disconnecting');
                 disconnect(connection);
@@ -77,9 +77,9 @@ module.exports = {
                 logger.debug('DB collection connection finish - not connected');
             }
 
-            if (err) {
-                logger.error('Error during collection query: ' + err);
-                return errorCallback(err);
+            if (error) {
+                logger.error('Error during collection query: ' + error.stack);
+                return errorCallback(error);
             }
             return successCallback(result);
         }

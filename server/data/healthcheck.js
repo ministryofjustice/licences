@@ -41,9 +41,9 @@ function nomisApiCheck() {
                     }
 
                     return reject(result.status);
-                } catch (exception) {
-                    logger.error(exception, 'Exception calling Nomis API');
-                    return reject(exception);
+                } catch (error) {
+                    logger.error(error, 'Exception calling Nomis API');
+                    return reject(error);
                 }
             });
     });

@@ -38,10 +38,9 @@ async function signIn(username, password) {
         logger.info(`Elite2 profile success for [${username}] with role  [${roleCode}]`);
         return {...profileResult.body, ...{token: eliteAuthorisationToken}, ...{role}, ...{roleCode}};
 
-    } catch (exception) {
-        logger.error(`Elite 2 login error [${username}]:`);
-        logger.error(exception);
-        throw exception;
+    } catch (error) {
+        logger.error(`Elite 2 login error [${username}]:`, error.stack);
+        throw error;
     }
 }
 

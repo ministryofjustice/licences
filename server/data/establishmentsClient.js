@@ -29,8 +29,8 @@ async function doGet(path, query = {}, headers = {}) {
 
         return result.body;
 
-    } catch (exception) {
-        logger.error('Error from ESTABLISHMENTS API: ' + exception);
-        throw exception;
+    } catch (error) {
+        logger.error('Error from ESTABLISHMENTS API: ' + error.stack);
+        throw error;
     }
 }

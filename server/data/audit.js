@@ -21,7 +21,7 @@ exports.record = function record(key, user, data) {
             logger.info('Audit item inserted', id);
         })
         .catch(error => {
-            logger.error('Error during audit insertion ', error);
+            logger.error('Error during audit insertion ', error.stack);
         });
 };
 

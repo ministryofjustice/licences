@@ -111,8 +111,8 @@ async function nomisGet(path, query, token, headers = {}, responseType = '') {
 
         return result.body;
 
-    } catch (exception) {
-        logger.error('Error from NOMIS: ', exception.stack);
-        throw exception;
+    } catch (error) {
+        logger.error('Error from NOMIS: ', error.stack);
+        throw error;
     }
 }

@@ -17,7 +17,7 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
             return hdcEligibleReleases.map(decoratePrisonerDetails(licences));
 
         } catch (error) {
-            logger.error('Error during getHdcEligiblePrisoners: ', error.message);
+            logger.error('Error during getHdcCaseList: ', error.stack);
             throw error;
         }
     }
