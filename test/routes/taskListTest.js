@@ -5,7 +5,7 @@ const {
     appSetup
 } = require('../supertestSetup');
 
-const createPrisonerDetailsRoute = require('../../server/routes/taskList');
+const createTaskListRoute = require('../../server/routes/taskList');
 const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
@@ -44,7 +44,7 @@ const testUser = {
     roleCode: 'OM'
 };
 
-const app = appSetup(createPrisonerDetailsRoute({
+const app = appSetup(createTaskListRoute({
         prisonerService: serviceStub,
         licenceService: licenceServiceStub,
         logger: loggerStub,

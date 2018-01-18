@@ -26,13 +26,8 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
 };
 
 function decoratePrisonerDetails(licences) {
-    const formattingOptions = {
-        dates: ['homeDetentionCurfewEligibilityDate', 'conditionalReleaseDate'],
-        capitalise: ['firstName', 'lastName']
-    };
-
-    return prisoner => {
-        const formattedPrisoner = formatObjectForView(prisoner, formattingOptions);
+     return prisoner => {
+        const formattedPrisoner = formatObjectForView(prisoner);
         return {...formattedPrisoner, status: getStatus(prisoner, licences)};
     };
 }

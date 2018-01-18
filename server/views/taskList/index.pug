@@ -52,8 +52,8 @@ block content
 
                 div.midMarginBottom
                     | Type of offence(s)
-                    if(prisonerInfo.offenceDescription)
-                        span#prisonerOffences.block.bold #{prisonerInfo.offenceDescription}
+                    if(prisonerInfo.offences)
+                        span#prisonerOffences.block.bold #{prisonerInfo.offences}
 
             div.pure-u-1.pure-u-md-1-4
                 div.midMarginBottom
@@ -68,7 +68,7 @@ block content
 
                 div.midMarginBottom
                     | Name of COM
-                    if (prisonerInfo.comName)
-                        span#prisonerComName.block.bold  #{prisonerInfo.comName}
+                    if (prisonerInfo.com)
+                        span#prisonerComName.block.bold  #{prisonerInfo.com}
 
         include eligibilitySummary
