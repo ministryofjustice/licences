@@ -53,22 +53,22 @@ block content
                 div.midMarginBottom
                     | Type of offence(s)
                     if(prisonerInfo.offenceDescription)
-                        span#offenceDescription.block.bold #{prisonerInfo.offenceDescription}
+                        span#prisonerOffences.block.bold #{prisonerInfo.offenceDescription}
 
             div.pure-u-1.pure-u-md-1-4
                 div.midMarginBottom
                     | CRD
                     if (prisonerInfo.conditionalReleaseDate)
-                         span#conditionalReleaseDate.block.bold  #{prisonerInfo.conditionalReleaseDate}
+                         span#prisonerCrd.block.bold  #{prisonerInfo.conditionalReleaseDate}
 
                 div.midMarginBottom
                     | HDCED
                     if (prisonerInfo.homeDetentionCurfewEligibilityDate)
-                        span#homeDetentionCurfewEligibilityDate.block.bold  #{prisonerInfo.homeDetentionCurfewEligibilityDate}
+                        span#prisonerHdced.block.bold  #{prisonerInfo.homeDetentionCurfewEligibilityDate}
 
                 div.midMarginBottom
                     | Name of COM
                     if (prisonerInfo.comName)
-                        span#comName.block.bold  #{prisonerInfo.comName}
+                        span#prisonerComName.block.bold  #{prisonerInfo.comName}
 
         include eligibilitySummary
