@@ -184,6 +184,32 @@ describe('licenceService', () => {
             );
         });
 
+        it('should merge eligibility object with exosting data', () => {
+            const input = {nomisId: 'ab1', crdTime: 'No', unsuitable: 'No'};
+            const existingObject = {excluded: 'Yes'};
+            service.updateEligibility(input, existingObject);
+
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'eligibility',
+                'ab1',
+                {crdTime: 'No', excluded: 'Yes', unsuitable: 'No'},
+                'ELIGIBILITY_CHECKED'
+            );
+        });
+
+        it('should overwrite changed values', () => {
+            const input = {nomisId: 'ab1', excluded: 'No'};
+            const existingObject = {excluded: 'Yes'};
+            service.updateEligibility(input, existingObject);
+
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'eligibility',
+                'ab1',
+                {excluded: 'No'},
+                'ELIGIBILITY_CHECKED'
+            );
+        });
+
         it('should throw if error updating licence', () => {
             licenceClient.updateSection.rejects();
             const args = {nomisId: 'ab1', excluded: 'true'};

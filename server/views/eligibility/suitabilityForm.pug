@@ -1,0 +1,34 @@
+extends ../layout
+
+block content
+
+    - var unsuitableValue = eligibility ? eligibility.unsuitable: null;
+
+    div.pure-g.pure-u-1
+        div.back-link-container.smallPaddingTop
+            a.link-back(href="javascript: window.history.back();") Back
+
+        h2.heading-large HDC presumed suitability
+
+    form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=nomisId || '')
+        div.smallPaddingTop.paddingBottom.largeMarginBottom
+            div.largePaddingBottom
+                div.form-group.inline.smallPaddingTop
+                    p Is the offender presumed unsuitable?
+
+                    div.multiple-choice(data-target="unsuitableForm")
+                        input#unsuitableYes(type="radio" checked=unsuitableValue === 'Yes' name="unsuitable" value="Yes")
+                        label(for="unsuitableYes") Yes
+                    div.multiple-choice
+                        input#unsuitableNo(type="radio" checked=unsuitableValue === 'No' name="unsuitable" value="No")
+                        label(for="unsuitableNo") No
+
+                div#unsuitableForm.panel.panel-border-narrow.js-hidden
+                    include ./unsuitable
+
+            div.paddingBottom.smallPaddingTop
+                div.pure-u-1.inlineButtons
+                    input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to tasklist

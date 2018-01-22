@@ -94,10 +94,10 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
-    async function updateEligibility(data = {}) {
+    async function updateEligibility(data = {}, existingData = {}) {
         try {
             const nomisId = data.nomisId;
-            const eligibilityData = createEligibilityObject(data);
+            const eligibilityData = {...existingData, ...createEligibilityObject(data)};
 
             return await licenceClient.updateSection('eligibility', nomisId, eligibilityData, 'ELIGIBILITY_CHECKED');
         } catch (error) {
