@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:8.4.0
     working_directory: ~/noms-digital-studio/licences
     branches:
       ignore:
@@ -16,9 +16,7 @@ jobs:
             - node_modules
             - yarn-cache
       - run:
-          command: echo "New Build"
           command: node -v
-          command: npm -v
       - run:
           name: yarn install
           command: yarn --frozen-lockfile
@@ -38,7 +36,7 @@ jobs:
           command: yarn run snyk-protect
   test:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:8.4.0
     steps:
       - run:
           name: unit tests with coverage
@@ -53,7 +51,7 @@ jobs:
           destination: coverage
   deploy:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:8.4.0
     steps:
       - run:
           name: build deployment package
