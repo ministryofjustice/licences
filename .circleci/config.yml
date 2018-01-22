@@ -2,54 +2,54 @@ version: 2
 jobs:
   build:
     docker:
-    - image: circleci/node:8.4.0
+      - image: circleci/node:8.4.0
     working_directory: ~/noms-digital-studio/licences
     branches:
       ignore:
         - /deploy-to.*/
     steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
-        - node_modules-{{ checksum "package.json" }}
-        - node_modules
-        - yarn-cache
-    - run:
+      - checkout
+      - restore_cache:
+          keys:
+            - node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+            - node_modules-{{ checksum "package.json" }}
+            - node_modules
+            - yarn-cache
+      - run:
         name: yarn install
         command: yarn --frozen-lockfile
-    - save_cache:
+      - save_cache:
         key: node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
         paths:
           - ./node_modules
-    - save_cache:
+      - save_cache:
         key: yarn-cache
         paths:
           - ~/.cache/yarn
-    - run:
+      - run:
         name: Linter check
         command: yarn run lint
-    - run:
+      - run:
         name: Security check
         command: yarn run snyk-protect
   test:
     docker:
-    - image: circleci/node:8.4.0
+      - image: circleci/node:8.4.0
     steps:
-    - run:
+      - run:
         name: unit tests with coverage
         command: yarn run test-with-coverage-ci
         environment:
           MOCHA_FILE: test-results.xml
-    - store_artifacts:
+      - store_artifacts:
         path: test-results.xml
         destination: tests
-    - store_artifacts:
+      - store_artifacts:
         path: coverage
         destination: coverage
   deploy:
     docker:
-    - image: circleci/node:8.4.0
+      - image: circleci/node:8.4.0
     steps:
       - run:
           name: build deployment package
@@ -84,14 +84,14 @@ workflows:
   version: 2
   build_test_deploy:
     jobs:
-      - build
+      - build:
       - test:
-        filters:
-          branches:
-            only: master
-        requires:
-          - build
-      -deploy:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build
+      - deploy:
         requires:
           - test
 
