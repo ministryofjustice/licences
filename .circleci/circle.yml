@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8.4.0
+      - image: circleci/node:8
     working_directory: ~/noms-digital-studio/licences
     branches:
       ignore:
@@ -34,7 +34,7 @@ jobs:
           command: yarn run snyk-protect
   test:
     docker:
-      - image: circleci/node:8.4.0
+      - image: circleci/node:8
     steps:
       - run:
           name: unit tests with coverage
@@ -49,7 +49,7 @@ jobs:
           destination: coverage
   deploy:
     docker:
-      - image: circleci/node:8.4.0
+      - image: circleci/node:8
     steps:
       - run:
           name: build deployment package
