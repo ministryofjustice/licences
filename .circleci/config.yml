@@ -34,6 +34,7 @@ jobs:
   test:
     docker:
       - image: circleci/node:8.4.0
+    working_directory: ~/noms-digital-studio/licences
     steps:
       - run:
           name: unit tests with coverage
@@ -49,6 +50,7 @@ jobs:
   deploy:
     docker:
       - image: circleci/node:8.4.0
+    working_directory: ~/noms-digital-studio/licences
     steps:
       - run:
           name: build deployment package
