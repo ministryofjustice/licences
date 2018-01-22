@@ -25,7 +25,7 @@ block content
 
             div.pure-u-1.pure-u-md-1-4
                 div.midMarginBottom
-                    |Name
+                    | Name
                     if(prisonerInfo.firstName || prisonerInfo.lastName)
                         span#prisonerName.block.bold #{prisonerInfo.lastName}, #{prisonerInfo.firstName}
 
@@ -35,7 +35,7 @@ block content
                         span#prisonerAliases.block.bold #{prisonerInfo.aliases}
 
                 div.midMarginBottom
-                    | Nomis number
+                    | Prison number
                     if(prisonerInfo.offenderNo)
                         span#prisonerPrisonNumber.block.bold #{prisonerInfo.offenderNo}
 
@@ -67,7 +67,7 @@ block content
                         span#prisonerHdced.block.bold  #{prisonerInfo.homeDetentionCurfewEligibilityDate}
 
                 div.midMarginBottom
-                    | Name of COM
+                    | Responsible officer
                     if (prisonerInfo.com)
                         span#prisonerComName.block.bold  #{prisonerInfo.com}
 
