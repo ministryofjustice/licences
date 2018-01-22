@@ -16,6 +16,10 @@ jobs:
             - node_modules
             - yarn-cache
       - run:
+          command: echo "New Build"
+          command: node -v
+          command: npm -v
+      - run:
           name: yarn install
           command: yarn --frozen-lockfile
       - save_cache:
