@@ -32,10 +32,10 @@ div.largeMarginBottom
                                 | #{eligibility.unsuitable}
                     div.pure-g.borderTopLight.smallPaddingTopBottom
                         div.pure-u-3-4.padRight15
-                            | Is the offender under investigation for a serious offence committed during the sentence?
-                        div#investigationAnswer.pure-u-1-4.center.bold
-                            if eligibility.investigation
-                                | #{eligibility.investigation}
+                            | Is there less than 4 weeks to go to the offender's CRD?
+                        div#crdTimeAnswer.pure-u-1-4.center.bold
+                            if eligibility.crdTime
+                                | #{eligibility.crdTime}
 
                 div.pure-u-1-2.center
                     a#eligibilityCheckUpdate(href='/hdc/eligibility/'+prisonerInfo.offenderNo) Change these answers

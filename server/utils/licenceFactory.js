@@ -229,6 +229,6 @@ const licenceModel = {
         unsuitable: {
             reason: 'unsuitableReasons'
         },
-        investigation: ''
+        crdTime: ''
     }
 };
