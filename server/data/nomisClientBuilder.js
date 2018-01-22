@@ -70,10 +70,13 @@ module.exports = function(token) {
             return nomisGet(path, query, token);
         },
 
-        getHdcEligiblePrisoners: function() {
+        getHdcEligiblePrisoners: function(nomisIds) {
             const path = `${apiUrl}/offender-sentences`;
-            const query =
-                {query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`};
+            const query = {
+                    query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`,
+                    offenderNo: nomisIds
+            };
+
             const headers = {
                 'Sort-Field': 'homeDetentionCurfewEligibilityDate,conditionalReleaseDate',
                 'Sort-Order': 'ASC',
@@ -91,6 +94,11 @@ module.exports = function(token) {
         getImageData: async function(id) {
             const path = `${apiUrl}/images/${id}/data`;
             return nomisGet(path, '', token, {}, 'blob');
+        },
+
+        getROPrisoners: async function(deliusUserName) {
+            const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/com`;
+            return nomisGet(path, '', token);
         }
     };
 };

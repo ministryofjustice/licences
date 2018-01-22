@@ -32,7 +32,7 @@ describe('GET /caseList', () => {
 
     });
 
-    it('renders the hdc eligable prisoners page', () => {
+    it('renders the hdc eligible prisoners page', () => {
         return request(app)
             .get('/')
             .expect(200)

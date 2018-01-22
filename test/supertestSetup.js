@@ -14,7 +14,8 @@ const testUser = {
     firstName: 'first',
     lastName: 'last',
     staffId: 'id',
-    token: 'token'
+    token: 'token',
+    roleCode: 'CA'
 };
 
 module.exports = {

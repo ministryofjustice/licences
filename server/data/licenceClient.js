@@ -94,6 +94,18 @@ module.exports = {
 
             execSql(sql, parameters, resolve, reject);
         });
+    },
+
+    getDeliusUserName: function(nomisUserName) {
+        const sql = 'SELECT STAFF_ID FROM STAFF_IDS WHERE NOMIS_ID = @nomisUserName';
+
+        return new Promise((resolve, reject) => {
+            const parameters = [
+                {column: 'nomisUserName', type: TYPES.VarChar, value: nomisUserName}
+            ];
+
+            getCollection(sql, parameters, resolve, reject);
+        });
     }
 };
 
