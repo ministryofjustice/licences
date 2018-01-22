@@ -84,9 +84,10 @@ workflows:
   build_test_deploy:
     jobs:
       - build:
-          branches:
-            ignore:
-              - /deploy-to.*/
+          filters:
+            branches:
+              ignore:
+                - /deploy-to.*/
       - test:
           requires:
             - build
