@@ -65,6 +65,9 @@ jobs:
             - node_modules-{{ checksum "package.json" }}
             - node_modules
             - yarn-cache
+      - add_ssh_keys:
+          fingerprints:
+            - "ce:dc:1a:a6:a5:39:ba:eb:ac:9d:ca:9a:46:e3:74:99"
       - run:
           name: build deployment package
           command: |
