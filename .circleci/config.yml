@@ -48,9 +48,8 @@ jobs:
           command: yarn run test-with-coverage-ci
           environment:
             MOCHA_FILE: test-results.xml
-      - store_artifacts:
+      - store_test_results:
           path: test-results.xml
-          destination: tests
       - store_artifacts:
           path: coverage
           destination: coverage
