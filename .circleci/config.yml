@@ -79,9 +79,6 @@ jobs:
               -m "Deployment of build $CIRCLE_BUILD_NUM" \
               -m "$(git log --format=%B -n 1 $CIRCLE_SHA1)" \
               -m "From gitref $CIRCLE_SHA1"
-      - run:
-          name: trigger azure deployment
-          command: |
             git push --force origin HEAD:deploy-to-mock
       - run:
           name: wait for deployment to complete
