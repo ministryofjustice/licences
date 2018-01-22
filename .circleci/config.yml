@@ -1,0 +1,97 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: circleci/node:8.4.0
+    working_directory: ~/noms-digital-studio/licences
+    branches:
+      ignore:
+        - /deploy-to.*/
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+        - node_modules-{{ checksum "package.json" }}
+        - node_modules
+        - yarn-cache
+    - run:
+        name: yarn install
+        command: yarn --frozen-lockfile
+    - save_cache:
+        key: node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+        paths:
+          - ./node_modules
+    - save_cache:
+        key: yarn-cache
+        paths:
+          - ~/.cache/yarn
+    - run:
+        name: Linter check
+        command: yarn run lint
+    - run:
+        name: Security check
+        command: yarn run snyk-protect
+  test:
+    docker:
+    - image: circleci/node:8.4.0
+    steps:
+    - run:
+        name: unit tests with coverage
+        command: yarn run test-with-coverage-ci
+        environment:
+          MOCHA_FILE: test-results.xml
+    - store_artifacts:
+        path: test-results.xml
+        destination: tests
+    - store_artifacts:
+        path: coverage
+        destination: coverage
+  deploy:
+    docker:
+    - image: circleci/node:8.4.0
+    steps:
+      - run:
+          name: build deployment package
+          command: |
+            yarn run build
+            export BUILD_NUMBER="$CIRCLE_BUILD_NUM"
+            export GIT_REF="$CIRCLE_SHA1"
+            yarn run record-build-info
+            git add --force --verbose assets/stylesheets build-info.json
+            git config user.name "Circle CI"
+            git config user.email "circle@circleci.com"
+            git commit \
+              -m "Deployment of build $CIRCLE_BUILD_NUM" \
+              -m "$(git log --format=%B -n 1 $CIRCLE_SHA1)" \
+              -m "From gitref $CIRCLE_SHA1"
+      - run:
+          name: trigger azure deployment
+          command: |
+            git push --force origin HEAD:deploy-to-mock
+      - run:
+          name: wait for deployment to complete
+          command: |
+            export GIT_REF="$CIRCLE_SHA1"
+            export APP_BASE_URL="https://licences-mock.hmpps.dsd.io/health"
+            export WAIT_DURATION="45000"
+            yarn run wait-for-deploy
+      - run:
+          name: execute feature tests
+          command: |
+            curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build
+      - test:
+        filters:
+          branches:
+            only: master
+        requires:
+          - build
+      -deploy:
+        requires:
+          - test
+
