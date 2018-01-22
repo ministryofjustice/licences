@@ -28,9 +28,9 @@ jobs:
       - run:
           name: Linter check
           command: yarn run lint
-      - run:
-          name: Security check
-          command: yarn run snyk-protect
+#      - run:
+#          name: Security check
+#          command: yarn run snyk-protect
   test:
     docker:
       - image: circleci/node:8.4.0
@@ -47,9 +47,9 @@ jobs:
           name: unit tests with coverage
           command: yarn run test-with-coverage-ci
           environment:
-            MOCHA_FILE: test-results.xml
+            MOCHA_FILE: ./reports/test-results.xml
       - store_test_results:
-          path: test-results.xml
+          path: ./reports
       - store_artifacts:
           path: coverage
           destination: coverage
