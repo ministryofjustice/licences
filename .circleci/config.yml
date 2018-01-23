@@ -93,8 +93,7 @@ jobs:
       - run:
           name: execute feature tests - mock
           command: |
-            curl -v -X POST --data build_parameters[CIRCLE_JOB]=accept_mock \
-              https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
+            curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
   accept_stage:
     docker:
       - image: circleci/node:8.4.0
@@ -133,8 +132,8 @@ workflows:
             - build
           filters:
             branches:
-              ignore:
-                - /deploy-to.*/
+              only:
+                - master
       - deploy_and_accept_mock:
           requires:
             - test
