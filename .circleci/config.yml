@@ -53,7 +53,7 @@ jobs:
       - store_artifacts:
           path: coverage
           destination: coverage
-  deploy:
+  deploy_and_test_mock:
     docker:
       - image: circleci/node:8.4.0
     working_directory: ~/noms-digital-studio/licences
@@ -84,17 +84,34 @@ jobs:
               -m "From gitref $CIRCLE_SHA1"
             git push --force origin HEAD:deploy-to-mock
       - run:
-          name: wait for deployment to complete
+          name: wait for mock deployment to complete
           command: |
             export GIT_REF="$CIRCLE_SHA1"
             export APP_BASE_URL="https://licences-mock.hmpps.dsd.io/health"
             export WAIT_DURATION="45000"
             yarn run wait-for-deploy
       - run:
-          name: execute feature tests
+          name: execute feature tests - mock
           command: |
             curl -v -X POST --data build_parameters[CIRCLE_JOB]=accept_mock \
               https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
+    deploy_stage:
+      docker:
+        - image: circleci/node:8.4.0
+      working_directory: ~/noms-digital-studio/licences
+      steps:
+        - run:
+            name: wait for stage deployment to complete
+            command: |
+                export GIT_REF="$CIRCLE_SHA1"
+                export APP_BASE_URL="https://licences-stage.hmpps.dsd.io/health"
+                export WAIT_DURATION="45000"
+                yarn run wait-for-deploy
+        - run:
+            name: execute feature tests - stage
+            command: |
+              curl -v -X POST --data build_parameters[CIRCLE_JOB]=accept_stage \
+                https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
 workflows:
   version: 2
   build_test_deploy:
@@ -102,12 +119,20 @@ workflows:
       - build:
           filters:
             branches:
-              ignore:
-                - /deploy-to.*/
+              only:
+                - master
       - test:
           requires:
             - build
-      - deploy:
+      - deploy_and_test_mock:
           requires:
             - test
-
+          filters:
+            branches:
+              only:
+                - master
+      - deploy_stage:
+          filters:
+            branches:
+              only:
+                - deploy-to-stage
