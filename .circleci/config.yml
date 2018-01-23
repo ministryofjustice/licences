@@ -86,7 +86,7 @@ jobs:
       - run:
           name: wait for mock deployment to complete
           command: |
-            export GIT_REF=git rev-parse "$CIRCLE_SHA1"^
+            export GIT_REF="$CIRCLE_SHA1"
             export APP_BASE_URL="https://licences-mock.hmpps.dsd.io/health"
             export WAIT_DURATION="45000"
             yarn run wait-for-deploy
@@ -110,7 +110,7 @@ jobs:
       - run:
           name: wait for stage deployment to complete
           command: |
-              export GIT_REF="$CIRCLE_SHA1"
+              export GIT_REF=git rev-parse "$CIRCLE_SHA1"^
               export APP_BASE_URL="https://licences-stage.hmpps.dsd.io/health"
               export WAIT_DURATION="45000"
               yarn run wait-for-deploy
@@ -131,6 +131,10 @@ workflows:
       - test:
           requires:
             - build
+          filters:
+            branches:
+              ignore:
+                - /deploy-to.*/
       - deploy_and_accept_mock:
           requires:
             - test
