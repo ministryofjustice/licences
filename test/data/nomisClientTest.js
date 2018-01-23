@@ -183,7 +183,7 @@ describe('nomisClient', function() {
                 .get(url)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getHdcEligiblePrisoners('token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql({key: 'value'});
         });
 
         it('should set the headers to sort ascending', () => {
@@ -197,14 +197,18 @@ describe('nomisClient', function() {
                     return null;
                 });
 
-            return expect(nomisClient.getHdcEligiblePrisoners('token'))
+            return expect(nomisClient.getHdcEligiblePrisoners())
                 .to.eventually.eql({key: 'value'});
         });
 
         it('should set the headers to sort by hdced then crd', () => {
             const sortFields = 'homeDetentionCurfewEligibilityDate,conditionalReleaseDate';
+            const nomisIds = ['1'];
+            const urlWithIds = '/offender-sentences?query=homeDetentionCurfewEligibilityDate%3Ais%3Anot%20null' +
+                '%2Cand%3AconditionalReleaseDate%3Ais%3Anot%20null&offenderNo=1';
+
             fakeNomis
-                .get(url)
+                .get(urlWithIds)
                 .reply(function(uri, requestBody) {
                     // The documented way to specify request headers doesn't work so this is a workaround
                     if (this.req.headers['sort-field'] === sortFields) { // eslint-disable-line
@@ -213,7 +217,7 @@ describe('nomisClient', function() {
                     return null;
                 });
 
-            return expect(nomisClient.getHdcEligiblePrisoners('token'))
+            return expect(nomisClient.getHdcEligiblePrisoners(nomisIds))
                 .to.eventually.eql({key: 'value'});
         });
 
@@ -228,7 +232,7 @@ describe('nomisClient', function() {
                     return null;
                 });
 
-            return expect(nomisClient.getHdcEligiblePrisoners('token'))
+            return expect(nomisClient.getHdcEligiblePrisoners())
                 .to.eventually.eql({key: 'value'});
         });
 
@@ -237,7 +241,7 @@ describe('nomisClient', function() {
                 .get(url)
                 .reply(500);
 
-            return expect(nomisClient.getHdcEligiblePrisoners('token')).to.be.rejected();
+            return expect(nomisClient.getHdcEligiblePrisoners()).to.be.rejected();
         });
     });
 
@@ -318,5 +322,27 @@ describe('nomisClient', function() {
             return expect(nomisClient.getComRelation('1', 'token')).to.be.rejected();
         });
     });
+
+    describe('getROPrisoners', () => {
+
+        const url = '/offender-relationships/externalRef/1/com';
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get(url)
+                .reply(200, {key: 'value'});
+
+            return expect(nomisClient.getROPrisoners('1', 'token')).to.eventually.eql({key: 'value'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get(url)
+                .reply(500);
+
+            return expect(nomisClient.getROPrisoners('1', 'token')).to.be.rejected();
+        });
+    });
+
 });
 

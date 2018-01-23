@@ -36,7 +36,7 @@ async function signIn(username, password) {
         const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
 
         logger.info(`Elite2 profile success for [${username}] with role  [${roleCode}]`);
-        return {...profileResult.body, ...{token: eliteAuthorisationToken}, ...{role}, ...{roleCode}};
+        return {...profileResult.body, token: eliteAuthorisationToken, role, roleCode, username};
 
     } catch (error) {
         logger.error(`Elite 2 login error [${username}]:`, error.stack);

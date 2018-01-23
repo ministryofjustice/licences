@@ -6,7 +6,7 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
     async function getHdcCaseList(user) {
         try {
             const nomisClient = nomisClientBuilder(user.token);
-            const hdcEligibleReleases = await nomisClient.getHdcEligiblePrisoners();
+            const hdcEligibleReleases = await getCaseList(nomisClient, licenceClient, user);
 
             if (isEmpty(hdcEligibleReleases)) {
                 logger.info('No hdc eligible prisoners');
@@ -24,6 +24,26 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
 
     return {getHdcCaseList};
 };
+
+async function getCaseList(nomisClient, licenceClient, user) {
+    const asyncCaseRetrievalMethod = {
+        CA: nomisClient.getHdcEligiblePrisoners,
+        RO: getROCaseList(nomisClient, licenceClient, user)
+    };
+
+    return asyncCaseRetrievalMethod[user.roleCode]();
+}
+
+function getROCaseList(nomisClient, licenceClient, user) {
+    return async () => {
+        const deliusUserName = await licenceClient.getDeliusUserName(user.username);
+
+        const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName[0].STAFF_ID.value);
+        const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
+
+        return nomisClient.getHdcEligiblePrisoners(requiredIDs);
+    };
+}
 
 function decoratePrisonerDetails(licences) {
      return prisoner => {

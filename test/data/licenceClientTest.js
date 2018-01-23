@@ -215,12 +215,11 @@ describe('licenceClient', () => {
             }
         ];
 
-        it('should return expected conditions data', () => {
+        it('should return expected conditions data', async () => {
             getCollectionStub.callsArgWith(2, standardConditions);
-            const result = licencesProxy().getStandardConditions();
-            return result.then(data => {
-                expect(data).to.deep.equal(standardConditions);
-            });
+            const result = await licencesProxy().getStandardConditions();
+
+            return expect(result).to.deep.equal(standardConditions);
         });
 
         it('should call getStandardConditions', () => {
@@ -265,12 +264,11 @@ describe('licenceClient', () => {
             }
         ];
 
-        it('it should return expected additional conditions data', () => {
+        it('it should return expected additional conditions data', async () => {
             getCollectionStub.callsArgWith(2, additionalConditionsResponse);
-            const result = licencesProxy().getAdditionalConditions();
-            return result.then(data => {
-                expect(data).to.deep.equal(additionalConditions);
-            });
+            const result = await licencesProxy().getAdditionalConditions();
+
+            return expect(result).to.deep.equal(additionalConditions);
         });
 
         it('should call get collection from dbMethods', () => {
@@ -342,6 +340,32 @@ describe('licenceClient', () => {
             expect(params).to.eql(expectedParameters);
         });
 
+    });
+
+    describe('getDeliusUserName', () => {
+
+        const deliusUserName = [{ID: '1'}];
+
+        it('it should return expected deliusUserName', async () => {
+            getCollectionStub.callsArgWith(2, deliusUserName);
+            const result = await licencesProxy().getDeliusUserName(5);
+
+            return expect(result).to.deep.equal(deliusUserName);
+        });
+
+        it('should call get collection from dbMethods', () => {
+            licencesProxy().getDeliusUserName(5);
+            expect(getCollectionStub).to.have.callCount(1);
+        });
+
+        it('should pass parameters to get collection', () => {
+            licencesProxy().getDeliusUserName(5);
+
+            const params = getCollectionStub.getCalls()[0].args[1];
+            expect(params).to.eql([
+                {column: 'nomisUserName', type: TYPES.VarChar, value: 5}
+            ]);
+        });
     });
 });
 

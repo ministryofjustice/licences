@@ -9,8 +9,9 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
         logger.debug('GET /caseList');
         const hdcEligible = await caseListService.getHdcCaseList(req.user);
 
-        return res.render('caseList/index', {hdcEligible});
+        return res.render('caseList/index', {hdcEligible, role: req.user.roleCode});
     }));
 
     return router;
 };
+

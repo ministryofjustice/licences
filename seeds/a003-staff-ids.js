@@ -3,14 +3,8 @@ exports.seed = knex =>
         .then(
             () => knex('STAFF_IDS').insert([
                 {
-                    NOMIS_ID: "1",
-                    STAFF_ID: "1",
-                    FIRST_NAME: 'FIRSTA',
-                    LAST_NAME: 'LASTA'
-                },
-                {
-                    NOMIS_ID: "15689",
-                    STAFF_ID: "15689",
+                    NOMIS_ID: "RO_USER",
+                    STAFF_ID: "DELIUS_ID",
                     FIRST_NAME: 'FIRSTA',
                     LAST_NAME: 'LASTA'
                 }

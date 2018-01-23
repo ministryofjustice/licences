@@ -21,17 +21,35 @@ describe('caseListService', () => {
                     receptionDate: '2018-01-03'
                 }
             }
+        ]),
+        getROPrisoners: sandbox.stub().returnsPromise().resolves([
+            {
+                offenderNo: 'A'
+            },
+            {
+                offenderNo: 'B'
+            },
+            {
+                offenderNo: 'C'
+            }
         ])
     };
 
     const licenceClient = {
-        getLicences: sandbox.stub().returnsPromise().resolves([])
+        getLicences: sandbox.stub().returnsPromise().resolves([]),
+        getDeliusUserName: sandbox.stub().returnsPromise().resolves([{STAFF_ID: {value: 'xxx'}}])
     };
 
     const user = {
         staffId: '123',
         token: 'token',
         roleCode: 'CA'
+    };
+
+    const ROUser = {
+        staffId: '123',
+        token: 'token',
+        roleCode: 'RO'
     };
 
     const nomisClientBuilder = sandbox.stub().returns(nomisClient);
@@ -43,11 +61,6 @@ describe('caseListService', () => {
     });
 
     describe('getHdcCaseList', () => {
-        it('should call getHdcEligiblePrisoners from nomisClient', () => {
-            service.getHdcCaseList(user);
-
-            expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
-        });
 
         it('should format dates', async () => {
             const result = await service.getHdcCaseList(user);
@@ -90,6 +103,24 @@ describe('caseListService', () => {
             nomisClient.getHdcEligiblePrisoners.resolves(null);
 
             return expect(service.getHdcCaseList(user)).to.eventually.eql([]);
+        });
+
+        context('when user is a CA', () => {
+            it('should call getHdcEligiblePrisoners from nomisClient', () => {
+                service.getHdcCaseList(user);
+
+                expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
+                expect(nomisClient.getHdcEligiblePrisoners.firstCall.args.length).to.eql(0);
+            });
+        });
+
+        context('when user is a RO', () => {
+            it('should call getHdcEligiblePrisoners from nomisClient', async () => {
+                await service.getHdcCaseList(ROUser);
+
+                expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
+                expect(nomisClient.getHdcEligiblePrisoners).to.be.calledWith(['A', 'B', 'C']);
+            });
         });
     });
 });
