@@ -28,7 +28,8 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
 async function getCaseList(nomisClient, licenceClient, user) {
     const asyncCaseRetrievalMethod = {
         CA: nomisClient.getHdcEligiblePrisoners,
-        RO: getROCaseList(nomisClient, licenceClient, user)
+        RO: getROCaseList(nomisClient, licenceClient, user),
+        DM: nomisClient.getHdcEligiblePrisoners
     };
 
     return asyncCaseRetrievalMethod[user.roleCode]();
