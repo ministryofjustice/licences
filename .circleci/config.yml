@@ -100,6 +100,13 @@ jobs:
       - image: circleci/node:8.4.0
     working_directory: ~/noms-digital-studio/licences
     steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+            - node_modules-{{ checksum "package.json" }}
+            - node_modules
+            - yarn-cache
       - run:
           name: wait for stage deployment to complete
           command: |
