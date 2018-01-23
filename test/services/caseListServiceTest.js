@@ -110,6 +110,7 @@ describe('caseListService', () => {
                 service.getHdcCaseList(user);
 
                 expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
+                expect(nomisClient.getHdcEligiblePrisoners.firstCall.args.length).to.eql(0);
             });
         });
 

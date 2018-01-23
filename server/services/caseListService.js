@@ -28,14 +28,14 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
 async function getCaseList(nomisClient, licenceClient, user) {
     const asyncCaseRetrievalMethod = {
         CA: nomisClient.getHdcEligiblePrisoners,
-        RO: getROCaseList(nomisClient, licenceClient)
+        RO: getROCaseList(nomisClient, licenceClient, user)
     };
 
-    return asyncCaseRetrievalMethod[user.roleCode](user);
+    return asyncCaseRetrievalMethod[user.roleCode]();
 }
 
-function getROCaseList(nomisClient, licenceClient) {
-    return async user => {
+function getROCaseList(nomisClient, licenceClient, user) {
+    return async () => {
         const deliusUserName = await licenceClient.getDeliusUserName(user.username);
 
         const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName[0].STAFF_ID.value);
