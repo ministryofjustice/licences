@@ -125,15 +125,15 @@ workflows:
       - build:
           filters:
             branches:
-              only:
-                - master
+              ignore:
+                - /deploy-to.*/
       - test:
           requires:
             - build
           filters:
             branches:
-              only:
-                - master
+              ignore:
+                - /deploy-to.*/
       - deploy_and_accept_mock:
           requires:
             - test
