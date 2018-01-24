@@ -112,8 +112,6 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
             const nomisId = data.nomisId;
             const bassReferralData = createBassReferralObject(data);
 
-            console.log(bassReferralData);
-
             return await licenceClient.updateSection('bassReferral', nomisId, bassReferralData);
         } catch (error) {
             console.error('Error during setBassReferral', error.stack);
