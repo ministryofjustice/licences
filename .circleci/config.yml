@@ -100,6 +100,9 @@ jobs:
     working_directory: ~/noms-digital-studio/licences
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "ce:dc:1a:a6:a5:39:ba:eb:ac:9d:ca:9a:46:e3:74:99"
       - run:
           name: Deploy latest mock deployment into stage
           command: |
