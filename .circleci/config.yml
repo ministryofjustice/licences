@@ -94,6 +94,18 @@ jobs:
           name: execute feature tests - mock
           command: |
             curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
+  deploy_stage:
+    docker:
+      - image: circleci/node:8.4.0
+    working_directory: ~/noms-digital-studio/licences
+    steps:
+      - checkout
+      - run:
+          name: Deploy latest mock deployment into stage
+          command: |
+            git config user.name "Circle CI"
+            git config user.email "circle@circleci.com"
+            git push --force origin HEAD:deploy-to-stage
   accept_stage:
     docker:
       - image: circleci/node:8.4.0
@@ -141,6 +153,19 @@ workflows:
             branches:
               only:
                 - master
+      - hold:
+          type: approval
+          filters:
+            branches:
+              only:
+                - deploy-to-mock
+      - deploy_stage:
+          filters:
+            branches:
+              only:
+                - deploy-to-mock
+          requires:
+            - hold
       - accept_stage:
           filters:
             branches:
