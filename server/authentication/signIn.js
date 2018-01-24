@@ -57,7 +57,7 @@ async function getRole(eliteAuthorisationToken) {
 
     if (roles && roles.length > 0) {
         const role = roles.find(role => {
-            return role.roleCode.includes('LICENCES');
+            return role.roleCode.includes(config.nomis.licenceRolePrefix);
         });
 
         logger.info(`Selected role: ${role.roleCode}`);

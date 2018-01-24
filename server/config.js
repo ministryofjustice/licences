@@ -32,7 +32,8 @@ module.exports = {
         timeout: {
             response: 2000,
             deadline: 2500
-        }
+        },
+        licenceRolePrefix: 'LICENCE'
     },
 
     establishments: {
