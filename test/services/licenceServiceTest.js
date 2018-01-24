@@ -263,4 +263,23 @@ describe('licenceService', () => {
             return expect(service.getEstablishment('ab1')).to.eventually.be.rejected();
         });
     });
+
+    describe('updatesOptOut', () => {
+        it('should call updateOptOut from the licence client', () => {
+            service.updateOptOut({nomisId: 'ab1', decision: 'Yes', reason: 'Scotland Street'});
+
+            expect(licenceClient.updateSection).to.be.calledOnce();
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'optOut',
+                'ab1',
+                {decision: 'Yes', reason: 'Scotland Street'}
+            );
+        });
+
+        it('should throw if error updating licence', () => {
+            licenceClient.updateSection.rejects();
+            const args = {nomisId: 'ab1', decision: 'Yes', reason: 'Scotland Street'};
+            return expect(service.updateAddress(args)).to.eventually.be.rejected();
+        });
+    });
 });

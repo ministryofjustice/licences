@@ -3,8 +3,15 @@ if eligible
         h2.heading-medium Proposed address / opt out request
         div.pure-g
             div.pure-u-9-12
-                | Information not yet entered
+                if !optOut
+                    | Information not yet entered
+                else
+                    | Information has been entered
             div.pure-u-1-4
-                a.taskListAction.center.button(href="/hdc/optOut/"+prisonerInfo.offenderNo) Start
+                a.taskListAction.center.button(href="/hdc/proposedAddress/optOut/"+prisonerInfo.offenderNo)
+                    if !optOut
+                        | Start
+                    else
+                        | Continue
 
 

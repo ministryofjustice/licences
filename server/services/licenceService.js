@@ -1,14 +1,13 @@
 const {
-    createLicenceObject,
-    createAddressObject,
-    createReportingInstructionsObject,
+    createLicenceObjectFrom,
     createConditionsObject,
-    createEligibilityObject,
+    createInputWithReasonObject,
     addAdditionalConditionsAsObject
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {DATE_FIELD} = require('./utils/conditionsValidator');
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
+const {licenceModel} = require('../models/models');
 
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
 
@@ -32,7 +31,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
             const status = getIn(rawLicence, ['status']);
 
             if(populateConditions && !isEmpty(formattedLicence.additionalConditions)) {
-                return await populateLicenceWithConditions(formattedLicence, status);
+                return populateLicenceWithConditions(formattedLicence, status);
             }
 
             return {licence: formattedLicence, status};
@@ -45,10 +44,10 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
 
     async function createLicence(nomisId, data = {}) {
 
-        const licence = createLicenceObject(data);
+        const licence = createLicenceObjectFrom({licenceModel, inputObject: data});
 
         try {
-            return await licenceClient.createLicence(nomisId, licence, 'STARTED');
+            return licenceClient.createLicence(nomisId, licence, 'STARTED');
         } catch (error) {
             console.error('Error during createLicence', error.stack);
             throw error;
@@ -58,10 +57,10 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
     async function updateAddress(data = {}) {
 
         const nomisId = data.nomisId;
-        const address = createAddressObject(data);
+        const address = createLicenceObjectFrom({licenceModel: licenceModel.dischargeAddress, inputObject: data});
 
         try {
-            return await licenceClient.updateSection('dischargeAddress', nomisId, address);
+            return licenceClient.updateSection('dischargeAddress', nomisId, address);
         } catch (error) {
             console.error('Error during updateAddress', error.stack);
             throw error;
@@ -71,10 +70,10 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
     async function updateReportingInstructions(data = {}) {
 
         const nomisId = data.nomisId;
-        const instructions = createReportingInstructionsObject(data);
+        const instructions = createLicenceObjectFrom({licenceModel: licenceModel.reporting, inputObject: data});
 
         try {
-            return await licenceClient.updateSection('reportingInstructions', nomisId, instructions);
+            return licenceClient.updateSection('reportingInstructions', nomisId, instructions);
         } catch (error) {
             console.error('Error during updateReportingInstructions', error.stack);
             throw error;
@@ -87,7 +86,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
             const selectedConditions = await licenceClient.getAdditionalConditions(data.additionalConditions);
             const conditions = createConditionsObject(selectedConditions, data);
 
-            return await licenceClient.updateSection('additionalConditions', nomisId, conditions);
+            return licenceClient.updateSection('additionalConditions', nomisId, conditions);
         } catch (error) {
             console.error('Error during updateAdditionalConditions', error.stack);
             throw error;
@@ -97,18 +96,33 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
     async function updateEligibility(data = {}, existingData = {}) {
         try {
             const nomisId = data.nomisId;
-            const eligibilityData = {...existingData, ...createEligibilityObject(data)};
 
-            return await licenceClient.updateSection('eligibility', nomisId, eligibilityData, 'ELIGIBILITY_CHECKED');
+            const eligibilityModel = getIn(licenceModel, ['eligibility']);
+            const eligibilityData = {...existingData, ...createInputWithReasonObject(data, eligibilityModel)};
+
+            return licenceClient.updateSection('eligibility', nomisId, eligibilityData, 'ELIGIBILITY_CHECKED');
         } catch (error) {
             console.error('Error during updateEligibility', error.stack);
             throw error;
         }
     }
 
+    async function updateOptOut(data = {}) {
+
+        const nomisId = data.nomisId;
+        const optOut = createInputWithReasonObject(data, getIn(licenceModel, ['optOut']));
+
+        try {
+            return licenceClient.updateSection('optOut', nomisId, optOut);
+        } catch (error) {
+            console.error('Error during updateOptOut', error.stack);
+            throw error;
+        }
+    }
+
     async function sendToOmu(nomisId) {
         try {
-            return await licenceClient.updateStatus(nomisId, 'SENT');
+            return licenceClient.updateStatus(nomisId, 'SENT');
         } catch (error) {
             console.error('Error during sendToOmu', error.stack);
             throw error;
@@ -117,7 +131,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
 
     async function sendToPm(nomisId) {
         try {
-            return await licenceClient.updateStatus(nomisId, 'CHECK_SENT');
+            return licenceClient.updateStatus(nomisId, 'CHECK_SENT');
         } catch (error) {
             console.error('Error during sendToPm', error.stack);
             throw error;
@@ -128,8 +142,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         try {
             const record = await licenceClient.getLicence(nomisId);
 
-            return await establishmentsClient.findById(record.licence.agencyLocationId);
-
+            return establishmentsClient.findById(record.licence.agencyLocationId);
         } catch (error) {
             console.error('Error during getEstablishment', error.stack);
             throw error;
@@ -161,7 +174,8 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         updateEligibility,
         sendToOmu,
         sendToPm,
-        getEstablishment
+        getEstablishment,
+        updateOptOut
     };
 };
 

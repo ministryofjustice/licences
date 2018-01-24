@@ -1,37 +1,25 @@
 module.exports = {
-    createLicenceObject,
-    createAddressObject,
-    createReportingInstructionsObject,
+    createLicenceObjectFrom,
     createConditionsObject,
-    createEligibilityObject,
     addAdditionalConditionsAsObject,
-    addAdditionalConditionsAsString
+    addAdditionalConditionsAsString,
+    createInputWithReasonObject
 };
 
-function createLicenceObject(object) {
-
+function createLicenceObjectFrom({licenceModel, inputObject}) {
     const acceptedAttributes = Object.keys(licenceModel);
 
-    return filteredToAttributes(object, acceptedAttributes);
+    return filteredToAttributes(inputObject, acceptedAttributes);
 }
 
-function createAddressObject(object) {
-    const acceptedAttributes = Object.keys(licenceModel.dischargeAddress);
-
-    return filteredToAttributes(object, acceptedAttributes);
-}
-
-function createReportingInstructionsObject(object) {
-    const acceptedAttributes = Object.keys(licenceModel.reporting);
-
-    return filteredToAttributes(object, acceptedAttributes);
-}
-
-const filteredToAttributes = (input, acceptedKeys) => {
+const filteredToAttributes = (input, acceptedKeys, notAcceptedKeys = []) => {
     return Object.keys(input).reduce((objectBuilt, key) => {
         if (acceptedKeys.includes(key)) {
             const value = input[key] || '';
             return {...objectBuilt, ...{[key]: value}};
+        }
+        if(notAcceptedKeys.includes(key)) {
+            return {...objectBuilt, ...{[key]: null}};
         }
         return objectBuilt;
     }, {});
@@ -51,19 +39,26 @@ function createConditionsObject(selectedConditions, formInputs) {
     }, {});
 }
 
-function createEligibilityObject(object) {
-    const acceptedSelectors = Object.keys(licenceModel.eligibility);
-    const acceptedAttributes = acceptedSelectors.reduce(addReasonIfSelected(object), []);
+function createInputWithReasonObject(object, licenceSection) {
+    const acceptedSelectors = Object.keys(licenceSection);
+    const reducer = addReasonIfSelected(object, licenceSection);
+    const {accepted, notAccepted} = acceptedSelectors.reduce(reducer, {accepted: [], notAccepted: []});
 
-    return filteredToAttributes(object, acceptedAttributes);
+    return filteredToAttributes(object, accepted, notAccepted);
 }
 
-function addReasonIfSelected(formInput) {
+function addReasonIfSelected(formInput, licenceSection) {
     return (attributes, selector) => {
-        if (formInput[selector] === 'Yes') {
-            return [...attributes, selector, licenceModel.eligibility[selector].reason];
-        }
-        return [...attributes, selector];
+
+        const accepted = formInput[selector] === 'Yes' ?
+            [...attributes.accepted, selector, licenceSection[selector].reason] :
+            [...attributes.accepted, selector];
+
+        const notAccepted = formInput[selector] === 'No' ?
+            [...attributes.notAccepted, licenceSection[selector].reason] :
+            attributes.notAccepted;
+
+        return {accepted, notAccepted};
     };
 }
 
@@ -194,41 +189,4 @@ const inputsFor = (fieldPositions, formInputs) => {
             [formItem]: formInputs[formItem]
         };
     }, {});
-};
-
-// licence structure example
-const licenceModel = {
-    firstName: '',
-    lastName: '',
-    nomisId: '',
-    establishment: '',
-    agencyLocationId: '',
-    dischargeDate: '',
-    additionalConditions: {},
-    dischargeAddress: {
-        address1: '',
-        address2: '',
-        address3: '',
-        postCode: ''
-    },
-    reporting: {
-        name: '',
-        address1: '',
-        address2: '',
-        address3: '',
-        postCode: '',
-        telephone: '',
-        date: '',
-        hour: '',
-        minute: ''
-    },
-    eligibility: {
-        excluded: {
-            reason: 'excludedReasons'
-        },
-        unsuitable: {
-            reason: 'unsuitableReasons'
-        },
-        crdTime: ''
-    }
 };

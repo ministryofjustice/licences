@@ -23,8 +23,9 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const licence = await licenceService.getLicence(nomisId);
         const eligibility = getIn(licence, ['licence', 'eligibility']);
         const eligible = isEligible(eligibility);
+        const optOut = getIn(licence, ['licence', 'optOut']);
 
-        res.render(`taskList/index`, {prisonerInfo, eligibility, eligible});
+        res.render(`taskList/index`, {prisonerInfo, eligibility, eligible, optOut});
     }));
 
     router.post('/eligibilityStart', asyncMiddleware(async (req, res, next) => {
