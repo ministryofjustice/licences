@@ -122,6 +122,25 @@ describe('licenceService', () => {
         });
     });
 
+    describe('updatesBassReferral', () => {
+        it('should call updateBassReferral from the licence client', () => {
+            service.updateBassReferral({nomisId: 'ab1', bassReferralRequested: 'No'});
+
+            expect(licenceClient.updateSection).to.be.calledOnce();
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'bassReferral',
+                'ab1',
+                {bassReferralRequested: 'No'}
+            );
+        });
+
+        it('should throw if error updating licence', () => {
+            licenceClient.updateSection.rejects();
+            const args = {nomisId: 'ab1', bassReferralRequest: 'No'};
+            return expect(service.updateBassReferral(args)).to.eventually.be.rejected();
+        });
+    });
+
     describe('updatesReportingInstructions', () => {
         it('should call updatesReportingInstructions from the licence client', () => {
             service.updateReportingInstructions({nomisId: 'ab1', address1: 'Scotland Street'});
@@ -184,7 +203,7 @@ describe('licenceService', () => {
             );
         });
 
-        it('should merge eligibility object with exosting data', () => {
+        it('should merge eligibility object with existing data', () => {
             const input = {nomisId: 'ab1', crdTime: 'No', unsuitable: 'No'};
             const existingObject = {excluded: 'Yes'};
             service.updateEligibility(input, existingObject);

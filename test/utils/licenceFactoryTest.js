@@ -4,6 +4,7 @@ const {
     createAddressObject,
     createConditionsObject,
     createEligibilityObject,
+    createBassReferralObject,
     addAdditionalConditionsAsString,
     addAdditionalConditionsAsObject
 } = require('../../server/utils/licenceFactory');
@@ -544,6 +545,19 @@ describe('licenceFactory', () => {
             expect(createEligibilityObject(input)).to.eql({
                 unsuitable: 'Yes', excluded: 'No', unsuitableReasons: ['blah', 'blah']
             });
+        });
+    });
+
+    describe('createBassReferralObject', () => {
+
+        it('should filter out any unacceptable data', () => {
+            const input = {bassReferralRequested: 'Yes', bad: 'yes'};
+            expect(createBassReferralObject(input)).to.eql({bassReferralRequested: 'Yes'});
+        });
+
+        it('should remove children when excluded is No', () => {
+            const input = {bassReferralRequested: 'No', proposedTown: 'blah'};
+            expect(createBassReferralObject(input)).to.eql({bassReferralRequested: 'No'});
         });
     });
 });

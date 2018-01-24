@@ -4,6 +4,7 @@ module.exports = {
     createReportingInstructionsObject,
     createConditionsObject,
     createEligibilityObject,
+    createBassReferralObject,
     addAdditionalConditionsAsObject,
     addAdditionalConditionsAsString
 };
@@ -62,6 +63,22 @@ function addReasonIfSelected(formInput) {
     return (attributes, selector) => {
         if (formInput[selector] === 'Yes') {
             return [...attributes, selector, licenceModel.eligibility[selector].reason];
+        }
+        return [...attributes, selector];
+    };
+}
+
+function createBassReferralObject(object) {
+    const acceptedSelectors = Object.keys(licenceModel.bassReferral);
+    const acceptedAttributes = acceptedSelectors.reduce(addChildKeysIfSelected(object), []);
+    return filteredToAttributes(object, acceptedAttributes);
+}
+
+function addChildKeysIfSelected(formInput) {
+    return (attributes, selector) => {
+        if (formInput[selector] === 'Yes') {
+            const children = Object.keys(licenceModel.bassReferral[selector]);
+            return [...attributes, selector, ...children];
         }
         return [...attributes, selector];
     };
@@ -230,5 +247,11 @@ const licenceModel = {
             reason: 'unsuitableReasons'
         },
         crdTime: ''
+    },
+    bassReferral: {
+        bassReferralRequested: {
+            proposedTown: '',
+            proposedCounty: ''
+        }
     }
 };
