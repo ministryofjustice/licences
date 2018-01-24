@@ -90,6 +90,67 @@ describe('GET /taskList/:prisonNumber', () => {
                 expect(res.text).to.include('id="eligibilityCheckStart"');
             });
     });
+
+    context('when prisoner is not excluded', () => {
+        it('should display opt out form link', () => {
+            licenceServiceStub.getLicence.resolves({licence: {eligibility: {
+                excluded: 'No',
+                unsuitable: 'No'
+            }}});
+
+            return request(app)
+                .get('/1233456')
+                .expect(200)
+                .expect(res => {
+                    expect(res.text).to.include('/hdc/optOut/');
+                });
+        });
+    });
+
+    context('when prisoner is ineligible', () => {
+        it('should not display link to opt out when excluded', () => {
+            licenceServiceStub.getLicence.resolves({licence: {eligibility: {
+                excluded: 'No',
+                unsuitable: 'Yes'
+            }}});
+
+            return request(app)
+                .get('/1233456')
+                .expect(200)
+                .expect(res => {
+                    expect(res.text).to.not.include('/hdc/optOut/');
+                });
+        });
+
+        it('should not display link to opt out when unsuitable', () => {
+            licenceServiceStub.getLicence.resolves({licence: {eligibility: {
+                excluded: 'Yes',
+                unsuitable: 'No'
+            }}});
+
+            return request(app)
+                .get('/1233456')
+                .expect(200)
+                .expect(res => {
+                    expect(res.text).to.not.include('/hdc/optOut/');
+                });
+        });
+
+        it('should not display link to opt out when unsuitable and excluded', () => {
+            licenceServiceStub.getLicence.resolves({licence: {eligibility: {
+                excluded: 'Yes',
+                unsuitable: 'Yes'
+            }}});
+
+            return request(app)
+                .get('/1233456')
+                .expect(200)
+                .expect(res => {
+                    expect(res.text).to.not.include('/hdc/optOut/');
+                });
+        });
+    });
+
 });
 
 describe('POST /taskList/:prisonNumber', () => {
