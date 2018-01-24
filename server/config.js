@@ -33,7 +33,7 @@ module.exports = {
             response: 2000,
             deadline: 2500
         },
-        licenceRolePrefix: 'LICENCE'
+        licenceRolePrefix: get('LICENCE_ROLE_PREFIX', 'LICENCE')
     },
 
     establishments: {
