@@ -95,6 +95,15 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         return licenceClient.updateSection('optOut', nomisId, optOut);
     }
 
+    function updateBassReferral(data = {}) {
+
+        const nomisId = data.nomisId;
+        const bassReferral = createInputWithReasonObject({inputObject: data, model: licenceModel.bassReferral});
+
+        return licenceClient.updateSection('bassReferral', nomisId, bassReferral);
+    }
+
+
     function sendToOmu(nomisId) {
         return licenceClient.updateStatus(nomisId, 'SENT');
     }
@@ -140,7 +149,8 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         sendToOmu,
         sendToPm,
         getEstablishment,
-        updateOptOut
+        updateOptOut,
+        updateBassReferral
     };
 };
 

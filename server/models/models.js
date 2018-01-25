@@ -36,6 +36,9 @@ const licenceModel = {
         decision: {
             reason: 'reason'
         }
+    },
+    bassReferral: {
+        decision: {}
     }
 };
 

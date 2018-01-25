@@ -545,5 +545,14 @@ describe('licenceFactory', () => {
                 expect(createInputWithReasonObject({inputObject: input, model})).to.eql({decision: 'No', reason: null});
             });
         });
+
+        it('should work without a reason', () => {
+            const modelWithNullReason = { decision: {} };
+            const input = {decision: 'No'};
+            expect(createInputWithReasonObject({
+                inputObject: input,
+                model: modelWithNullReason
+            })).to.eql({decision: 'No'});
+        });
     });
 });
