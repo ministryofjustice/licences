@@ -6,7 +6,7 @@ module.exports = {
 
     deleteAll: function() {
         return new Promise((resolve, reject) => {
-            const sql = 'DELETE FROM LICENCES';
+            const sql = `DELETE FROM LICENCES WHERE NOMIS_ID NOT LIKE '%XX'`;
             execSql(sql, null, resolve, reject);
         });
     },
