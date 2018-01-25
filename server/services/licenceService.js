@@ -42,42 +42,27 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
-    async function createLicence(nomisId, data = {}) {
+    function createLicence(nomisId, data = {}) {
 
-        const licence = createLicenceObjectFrom({licenceModel, inputObject: data});
+        const licence = createLicenceObjectFrom({model: licenceModel, inputObject: data});
 
-        try {
-            return licenceClient.createLicence(nomisId, licence, 'STARTED');
-        } catch (error) {
-            console.error('Error during createLicence', error.stack);
-            throw error;
-        }
+        return licenceClient.createLicence(nomisId, licence, 'STARTED');
     }
 
-    async function updateAddress(data = {}) {
+    function updateAddress(data = {}) {
 
         const nomisId = data.nomisId;
-        const address = createLicenceObjectFrom({licenceModel: licenceModel.dischargeAddress, inputObject: data});
+        const address = createLicenceObjectFrom({model: licenceModel.dischargeAddress, inputObject: data});
 
-        try {
-            return licenceClient.updateSection('dischargeAddress', nomisId, address);
-        } catch (error) {
-            console.error('Error during updateAddress', error.stack);
-            throw error;
-        }
+        return licenceClient.updateSection('dischargeAddress', nomisId, address);
     }
 
-    async function updateReportingInstructions(data = {}) {
+    function updateReportingInstructions(data = {}) {
 
         const nomisId = data.nomisId;
-        const instructions = createLicenceObjectFrom({licenceModel: licenceModel.reporting, inputObject: data});
+        const instructions = createLicenceObjectFrom({model: licenceModel.reporting, inputObject: data});
 
-        try {
-            return licenceClient.updateSection('reportingInstructions', nomisId, instructions);
-        } catch (error) {
-            console.error('Error during updateReportingInstructions', error.stack);
-            throw error;
-        }
+        return licenceClient.updateSection('reportingInstructions', nomisId, instructions);
     }
 
     async function updateLicenceConditions(data = {}) {
@@ -93,49 +78,29 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
-    async function updateEligibility(data = {}, existingData = {}) {
-        try {
-            const nomisId = data.nomisId;
+    function updateEligibility(data = {}, existingData = {}) {
+        const nomisId = data.nomisId;
 
-            const eligibilityModel = getIn(licenceModel, ['eligibility']);
-            const eligibilityData = {...existingData, ...createInputWithReasonObject(data, eligibilityModel)};
+        const inputObject = createInputWithReasonObject({inputObject: data, model: licenceModel.eligibility});
+        const eligibilityData = {...existingData, ...inputObject};
 
-            return licenceClient.updateSection('eligibility', nomisId, eligibilityData, 'ELIGIBILITY_CHECKED');
-        } catch (error) {
-            console.error('Error during updateEligibility', error.stack);
-            throw error;
-        }
+        return licenceClient.updateSection('eligibility', nomisId, eligibilityData, 'ELIGIBILITY_CHECKED');
     }
 
-    async function updateOptOut(data = {}) {
+    function updateOptOut(data = {}) {
 
         const nomisId = data.nomisId;
-        const optOut = createInputWithReasonObject(data, getIn(licenceModel, ['optOut']));
+        const optOut = createInputWithReasonObject({inputObject: data, model: licenceModel.optOut});
 
-        try {
-            return licenceClient.updateSection('optOut', nomisId, optOut);
-        } catch (error) {
-            console.error('Error during updateOptOut', error.stack);
-            throw error;
-        }
+        return licenceClient.updateSection('optOut', nomisId, optOut);
     }
 
-    async function sendToOmu(nomisId) {
-        try {
-            return licenceClient.updateStatus(nomisId, 'SENT');
-        } catch (error) {
-            console.error('Error during sendToOmu', error.stack);
-            throw error;
-        }
+    function sendToOmu(nomisId) {
+        return licenceClient.updateStatus(nomisId, 'SENT');
     }
 
-    async function sendToPm(nomisId) {
-        try {
-            return licenceClient.updateStatus(nomisId, 'CHECK_SENT');
-        } catch (error) {
-            console.error('Error during sendToPm', error.stack);
-            throw error;
-        }
+    function sendToPm(nomisId) {
+        return licenceClient.updateStatus(nomisId, 'CHECK_SENT');
     }
 
     async function getEstablishment(nomisId) {

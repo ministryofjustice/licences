@@ -30,7 +30,7 @@ describe('licenceFactory', () => {
         it('should filter out any unacceptable data', () => {
             const input = {firstName: 'Matt', bad: 'yes'};
 
-            expect(createLicenceObjectFrom({licenceModel: model, inputObject: input})).to.eql({firstName: 'Matt'});
+            expect(createLicenceObjectFrom({model, inputObject: input})).to.eql({firstName: 'Matt'});
         });
     });
 
@@ -537,12 +537,12 @@ describe('licenceFactory', () => {
 
         it('should filter out any unacceptable data', () => {
             const input = {decision: 'Yes', reason: 'Yes', bad: 'yes'};
-            expect(createInputWithReasonObject(input, model)).to.eql({decision: 'Yes', reason: 'Yes'});
+            expect(createInputWithReasonObject({inputObject: input, model})).to.eql({decision: 'Yes', reason: 'Yes'});
         });
         context('When answer is changed to No from Yes', () => {
             it('should remove reason', () => {
                 const input = {decision: 'No', reason: 'Reason'};
-                expect(createInputWithReasonObject(input, model)).to.eql({decision: 'No', reason: null});
+                expect(createInputWithReasonObject({inputObject: input, model})).to.eql({decision: 'No', reason: null});
             });
         });
     });
