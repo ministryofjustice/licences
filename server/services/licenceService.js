@@ -4,6 +4,7 @@ const {
     createReportingInstructionsObject,
     createConditionsObject,
     createEligibilityObject,
+    createBassReferralObject,
     addAdditionalConditionsAsObject
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
@@ -106,6 +107,18 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
+    async function updateBassReferral(data = {}) {
+        try {
+            const nomisId = data.nomisId;
+            const bassReferralData = createBassReferralObject(data);
+
+            return await licenceClient.updateSection('bassReferral', nomisId, bassReferralData);
+        } catch (error) {
+            console.error('Error during setBassReferral', error.stack);
+            throw error;
+        }
+    }
+
     async function sendToOmu(nomisId) {
         try {
             return await licenceClient.updateStatus(nomisId, 'SENT');
@@ -159,6 +172,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         updateReportingInstructions,
         updateLicenceConditions,
         updateEligibility,
+        updateBassReferral,
         sendToOmu,
         sendToPm,
         getEstablishment
