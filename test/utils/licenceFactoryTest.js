@@ -1,33 +1,38 @@
 const {expect} = require('../testSetup');
 const {
-    createLicenceObject,
-    createAddressObject,
+    createLicenceObjectFrom,
     createConditionsObject,
-    createEligibilityObject,
     addAdditionalConditionsAsString,
-    addAdditionalConditionsAsObject
+    addAdditionalConditionsAsObject,
+    createInputWithReasonObject
 } = require('../../server/utils/licenceFactory');
+
+const model = {
+    firstName: '',
+    lastName: '',
+    nomisId: '',
+    establishment: '',
+    agencyLocationId: '',
+    dischargeDate: '',
+    additionalConditions: {},
+    dischargeAddress: {
+        address1: '',
+        address2: '',
+        address3: '',
+        postCode: ''
+    }
+};
 
 describe('licenceFactory', () => {
 
-    describe('createLicenceObject', () => {
+    describe('createLicenceObjectFrom', () => {
 
         it('should filter out any unacceptable data', () => {
             const input = {firstName: 'Matt', bad: 'yes'};
 
-            expect(createLicenceObject(input)).to.eql({firstName: 'Matt'});
+            expect(createLicenceObjectFrom({licenceModel: model, inputObject: input})).to.eql({firstName: 'Matt'});
         });
     });
-
-    describe('createAddressObject', () => {
-
-        it('should filter out any unacceptable data', () => {
-            const input = {firstName: 'Matt', address1: 'yes'};
-
-            expect(createAddressObject(input)).to.eql({address1: 'yes'});
-        });
-    });
-
 
     describe('createConditionsObject', () => {
         it('should return an object for each selected item', () => {
@@ -522,27 +527,22 @@ describe('licenceFactory', () => {
         });
     });
 
-    describe('createEligibilityObject', () => {
+    describe('createInputWithReasonObject', () => {
+
+        const model = {
+            decision: {
+                reason: 'reason'
+            }
+        };
 
         it('should filter out any unacceptable data', () => {
-            const input = {excluded: 'Yes', bad: 'yes'};
-            expect(createEligibilityObject(input)).to.eql({excluded: 'Yes'});
+            const input = {decision: 'Yes', reason: 'Yes', bad: 'yes'};
+            expect(createInputWithReasonObject(input, model)).to.eql({decision: 'Yes', reason: 'Yes'});
         });
-
-        it('should remove excludedReasons when excluded is No', () => {
-            const input = {excluded: 'No', excludedReasons: ['blah', 'blah']};
-            expect(createEligibilityObject(input)).to.eql({excluded: 'No'});
-        });
-
-        it('should remove unsuitableReasons when unsuitable is No', () => {
-            const input = {unsuitable: 'No', unsuitableReasons: ['blah', 'blah']};
-            expect(createEligibilityObject(input)).to.eql({unsuitable: 'No'});
-        });
-
-        it('should not remove unsuitableReasons when excluded is No', () => {
-            const input = {unsuitable: 'Yes', excluded: 'No', unsuitableReasons: ['blah', 'blah']};
-            expect(createEligibilityObject(input)).to.eql({
-                unsuitable: 'Yes', excluded: 'No', unsuitableReasons: ['blah', 'blah']
+        context('When answer is changed to No from Yes', () => {
+            it('should remove reason', () => {
+                const input = {decision: 'No', reason: 'Reason'};
+                expect(createInputWithReasonObject(input, model)).to.eql({decision: 'No', reason: null});
             });
         });
     });

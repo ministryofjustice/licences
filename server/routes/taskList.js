@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const path = require('path');
+const {getIn} = require('../utils/functionalHelpers');
 
 module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -20,9 +21,11 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
         const licence = await licenceService.getLicence(nomisId);
-        const eligibility = licence ? licence.licence.eligibility : null;
+        const eligibility = getIn(licence, ['licence', 'eligibility']);
+        const eligible = isEligible(eligibility);
+        const optOut = getIn(licence, ['licence', 'optOut']);
 
-        res.render(`taskList/index`, {prisonerInfo, eligibility});
+        res.render(`taskList/index`, {prisonerInfo, eligibility, eligible, optOut});
     }));
 
     router.post('/eligibilityStart', asyncMiddleware(async (req, res, next) => {
@@ -65,3 +68,10 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
 
     return router;
 };
+
+function isEligible(eligibilityObject) {
+    if(!eligibilityObject) {
+        return false;
+    }
+    return eligibilityObject.excluded === 'No' && eligibilityObject.unsuitable === 'No';
+}
