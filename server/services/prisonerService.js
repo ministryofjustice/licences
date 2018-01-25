@@ -40,7 +40,8 @@ function createPrisonerService(nomisClientBuilder) {
             logger.info(`getPrisonerImage: ${imageId}`);
 
             const nomisClient = nomisClientBuilder(token);
-            return await nomisClient.getImageData(imageId);
+            const image = await nomisClient.getImageData(imageId);
+            return image;
         } catch (error) {
             logger.error('Error getting prisoner image');
             return null;

@@ -5,13 +5,8 @@ const logger = require('../../log.js');
 
 module.exports = function createConditionsService(licenceClient) {
 
-    async function getStandardConditions() {
-        try {
-            return await licenceClient.getStandardConditions();
-        } catch(error) {
-            logger.error('Error during getStandardConditions', error.stack);
-            throw error;
-        }
+    function getStandardConditions() {
+        return licenceClient.getStandardConditions();
     }
 
     async function getAdditionalConditions(licence = null) {

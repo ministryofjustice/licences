@@ -72,9 +72,11 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
 
 async function updateEligibilityFromSubmission(nomisId, body, licenceService) {
     const existingLicence = await licenceService.getLicence(nomisId);
-    if (!existingLicence) await licenceService.createLicence(nomisId, body);
+    if (!existingLicence) {
+        await licenceService.createLicence(nomisId, body);
+    }
 
-    await licenceService.updateEligibility(body, getIn(existingLicence, ['licence', 'eligibility']));
+    return licenceService.updateEligibility(body, getIn(existingLicence, ['licence', 'eligibility']));
 }
 
 async function getEligibilityFromLicence(nomisId, licenceService) {

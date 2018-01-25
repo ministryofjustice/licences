@@ -6,8 +6,8 @@ module.exports = {
     createInputWithReasonObject
 };
 
-function createLicenceObjectFrom({licenceModel, inputObject}) {
-    const acceptedAttributes = Object.keys(licenceModel);
+function createLicenceObjectFrom({model, inputObject}) {
+    const acceptedAttributes = Object.keys(model);
 
     return filteredToAttributes(inputObject, acceptedAttributes);
 }
@@ -39,12 +39,12 @@ function createConditionsObject(selectedConditions, formInputs) {
     }, {});
 }
 
-function createInputWithReasonObject(object, licenceSection) {
-    const acceptedSelectors = Object.keys(licenceSection);
-    const reducer = addReasonIfSelected(object, licenceSection);
+function createInputWithReasonObject({model, inputObject}) {
+    const acceptedSelectors = Object.keys(model);
+    const reducer = addReasonIfSelected(inputObject, model);
     const {accepted, notAccepted} = acceptedSelectors.reduce(reducer, {accepted: [], notAccepted: []});
 
-    return filteredToAttributes(object, accepted, notAccepted);
+    return filteredToAttributes(inputObject, accepted, notAccepted);
 }
 
 function addReasonIfSelected(formInput, licenceSection) {
