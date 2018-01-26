@@ -39,7 +39,20 @@ const licenceModel = {
     },
     bassReferral: {
         decision: {}
+    },
+
+    proposedAddress: {
+        optOpt: {
+            decision: '',
+            reason: ''
+        },
+        bassReferral: {
+            decision: '',
+            proposedCounty: '',
+            proposedTown: ''
+        }
     }
+
 };
 
 

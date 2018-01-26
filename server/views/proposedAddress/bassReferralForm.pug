@@ -8,7 +8,7 @@ block content
 
         h2.heading-large BASS referral
 
-    form(method="post")
+    form(method="post").pure-u-1-3
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
         div.smallPaddingTop.paddingBottom.largeMarginBottom
@@ -16,12 +16,20 @@ block content
                 div.form-group.inline.smallPaddingTop
                     p Has the prisoner requested a BASS referral?
 
-                    div.multiple-choice
+                    div.multiple-choice(data-target="bassFollowUps")
                         input#yes(type="radio" checked=data && data.decision === 'Yes' name="decision" value="Yes")
                         label(for="yes") Yes
                     div.multiple-choice
                         input#no(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
                         label(for="no") No
+
+                div#bassFollowUps.panel.panel-border-narrow.js-hidden
+                    div.form-group
+                        label(for='proposedTown') Proposed town
+                        input(type='text' name='proposedTown' id='proposedTown' class='form-control' value=data && data.proposedTown)
+                    div.form-group
+                        label(for='proposedCounty') Proposed county
+                        input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=data && data.proposedCounty)
 
             div.paddingBottom.smallPaddingTop
                 div.pure-u-1.inlineButtons

@@ -138,6 +138,36 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
+    function getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName}) {
+
+        const answers = fieldMap.reduce((answersAccumulator, field) => {
+
+            const fieldName = Object.keys(field)[0];
+            const fieldObject = field[fieldName];
+            const dependantOn = userInput[fieldObject.dependantOn];
+            const predicateResponse = fieldObject.predicate;
+
+            const dependantMatchesPredicate = fieldObject.dependantOn && dependantOn === predicateResponse;
+
+            if (!dependantOn || dependantMatchesPredicate) {
+                return {...answersAccumulator, [fieldName]: userInput[fieldName]};
+            }
+
+            return answersAccumulator;
+
+        }, {});
+
+        return {...licence, [licenceSection]: {...licence[licenceSection], [formName]: answers}};
+    }
+
+    async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName}) {
+        const updatedLicence = getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName});
+
+        await licenceClient.updateLicence(nomisId, updatedLicence);
+
+        return updatedLicence;
+    }
+
     return {
         reset,
         getLicence,
@@ -150,7 +180,8 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         sendToPm,
         getEstablishment,
         updateOptOut,
-        updateBassReferral
+        updateBassReferral,
+        update
     };
 };
 

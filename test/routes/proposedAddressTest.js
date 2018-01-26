@@ -31,42 +31,48 @@ const app = appSetup(createProposedAddressRoute({
     authenticationMiddleware
 }), testUser);
 
-const form1Response = {
-    eligibility: {
-        excluded: 'yes',
-        excludedReasons: ['sexOffenderRegister', 'convictedSexOffences']
-    }
-};
-
-const form2Response = {
-    eligibility: {
-        unsuitable: 'No'
-    }
-};
-
-
 describe('/hdc/proposedAddress', () => {
 
     afterEach(() => {
         sandbox.reset();
     });
 
-    describe('GET /proposedAddress/:nomisId', () => {
+    describe('GET /proposedAddress/optOut/:nomisId', () => {
 
         it('returns html', () => {
             return request(app)
-                .get('/1')
+                .get('/optOut/1')
                 .expect(200)
                 .expect('Content-Type', /html/);
         });
 
-        it('renders proposedAddress check page', () => {
+        it('renders out out page', () => {
             return request(app)
-                .get('/1')
+                .get('/optOut/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.contain('HDC eligibility check');
+                    expect(res.text).to.contain('HDC opt out decision');
+                });
+        });
+    });
+
+    describe('GET /proposedAddress/bassReferral/:nomisId', () => {
+
+        it('returns html', () => {
+            return request(app)
+                .get('/bassReferral/1')
+                .expect(200)
+                .expect('Content-Type', /html/);
+        });
+
+        it('renders out out page', () => {
+            return request(app)
+                .get('/bassReferral/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('BASS referral');
                 });
         });
     });

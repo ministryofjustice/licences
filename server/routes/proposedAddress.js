@@ -1,35 +1,7 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const {getIn} = require('../utils/functionalHelpers');
-
-const nextPaths = {
-    optOut: {
-        decision: {
-            field: 'decision',
-            Yes: '/hdc/taskList/',
-            No: '/hdc/proposedAddress/bassReferral/'
-        }
-    },
-    bassReferral: {
-        constant: '/hdc/taskList/'
-    }
-};
-
-const decidePath = (decisionInfo, data) => {
-    const decidingValue = data[decisionInfo.field];
-    return decisionInfo[decidingValue];
-};
-
-const pathFor = (path, body) => {
-    if (nextPaths[path].constant) {
-        return nextPaths[path].constant;
-    }
-    if (nextPaths[path].decision) {
-        return decidePath(nextPaths[path].decision, body);
-    }
-    return path(body);
-};
-
+const formConfig = require('./config/proposedAddress');
 
 module.exports = function({logger, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -47,7 +19,7 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         logger.debug(`GET proposedAddress/${formName}/${nomisId}`);
 
         const rawLicence = await licenceService.getLicence(nomisId);
-        const data = getIn(rawLicence, ['licence', formName]);
+        const data = getIn(rawLicence, ['licence', 'proposedAddress', formName]);
 
         res.render(`proposedAddress/${formName}Form`, {nomisId, data});
     }));
@@ -56,19 +28,35 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         const {nomisId, formName} = req.params;
         logger.debug(`POST proposedAddress/${formName}/${nomisId}`);
 
-        await update(licenceService, formName, req.body);
+        const rawLicence = await licenceService.getLicence(nomisId);
+        const nextPath = getPathFor(formName, req.body);
 
-        res.redirect(pathFor(formName, req.body) + nomisId);
+        await licenceService.update({
+            licence: rawLicence.licence,
+            nomisId: nomisId,
+            fieldMap: formConfig[formName].fields,
+            userInput: req.body,
+            licenceSection: 'proposedAddress',
+            formName: formName
+        });
+
+        res.redirect(`${nextPath}${nomisId}`);
     }));
 
     return router;
 };
 
-function update(licenceService, formName, body) {
-    const updateFunction = {
-        optOut: licenceService.updateOptOut,
-        bassReferral: licenceService.updateBassReferral
-    };
+function decidePath(decisionInfo, data) {
+    const decidingValue = data[decisionInfo.fieldToDecideOn];
+    return decisionInfo[decidingValue];
+}
 
-    return updateFunction[formName](body);
+function getPathFor(formName, body) {
+    if (formConfig[formName].nextPath) {
+        return formConfig[formName].nextPath;
+    }
+    if (formConfig[formName].nextPathDecision) {
+        return decidePath(formConfig[formName].nextPathDecision, body);
+    }
+    return formName(body);
 }
