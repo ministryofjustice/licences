@@ -50,15 +50,15 @@ block content
                 div.pure-g
                     div.form-group.pure-u-sm-5-12
                         label.form-label(for="occupierName") Name of main occupier
-                        input.form-control#occupierName(name="occupierName" value=data && data.occupierName)
+                        input.form-control#occupierName(name="occupier[name]" value=data.occupier && data.occupier.name)
 
                     div.form-group.pure-u-sm-1-6.padLeftRight15
                         label.form-label(for="occupierAge") Age
-                        input.form-control#occupierAge(name="occupierAge" value=data && data.occupierAge)
+                        input.form-control#occupierAge(name="occupier[age]" value=data.occupier && data.occupier.age)
 
                     div.form-group.pure-u-sm-5-12
                         label.form-label(for="occupierRelationship") Relation to prisoner
-                        input.form-control#occupierRelationship(name="occupierRelationship" value=data && data.occupierRelationship)
+                        input.form-control#occupierRelationship(name="occupier[relationship]" value=data.occupier && data.occupier.relationship)
 
                     include includes/otherResidents
 

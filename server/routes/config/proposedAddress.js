@@ -27,9 +27,7 @@ module.exports = {
             {postCode: {}},
             {telephone: {}},
             {electricity: {}},
-            {occupierName: {}},
-            {occupierAge: {}},
-            {occupierRelationship: {}},
+            {occupier: {}},
             {residents: {}},
             {cautionedAgainstResident: {}}
         ]
