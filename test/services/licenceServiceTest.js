@@ -11,7 +11,8 @@ describe('licenceService', () => {
         updateSection: sandbox.stub().returnsPromise().resolves(),
         updateStatus: sandbox.stub().returnsPromise().resolves(),
         getAdditionalConditions: sandbox.stub().returnsPromise().resolves([
-            {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}])
+            {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}]),
+        updateLicence: sandbox.stub().returnsPromise().resolves()
     };
 
     const establishmentsClient = {
@@ -280,6 +281,271 @@ describe('licenceService', () => {
             licenceClient.updateSection.rejects();
             const args = {nomisId: 'ab1', decision: 'Yes', reason: 'Scotland Street'};
             return expect(service.updateAddress(args)).to.eventually.be.rejected();
+        });
+    });
+
+    describe('update', () => {
+
+        const nomisId = 'ab1';
+
+        const baseLicence = {
+            section1: '',
+            section2: '',
+            section3: {},
+            section4: {
+                form1: {},
+                form2: {answer: 'answer'}
+            }
+        };
+
+        context('When there are dependants', () => {
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4,
+                    form3: {
+                        decision: '',
+                        followUp1: '',
+                        followUp2: ''
+                    }
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}},
+                {followUp1: {
+                    dependantOn: 'decision',
+                    predicate: 'Yes'}
+                },
+                {followUp2: {
+                    dependantOn: 'decision',
+                    predicate: 'Yes'}
+                }
+
+            ];
+
+            it('should store dependants if predicate matches', async () => {
+                const userInput = {
+                    decision: 'Yes',
+                    followUp1: 'County',
+                    followUp2: 'Town'
+                };
+
+                const licenceSection = 'section4';
+                const formName= 'form3';
+
+                const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+
+                expect(output).to.eql({
+                    ...licence,
+                    section4: {
+                        ...licence.section4,
+                        form3: {
+                            decision: 'Yes',
+                            followUp1: 'County',
+                            followUp2: 'Town'
+                        }
+                    }
+                });
+            });
+
+            it('should remove dependants if predicate does not match', async () => {
+                const userInput = {
+                    decision: 'No',
+                    followUp1: 'County',
+                    followUp2: 'Town'
+                };
+
+                const licenceSection = 'section4';
+                const formName = 'form3';
+
+                const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+
+                expect(output).to.eql({
+                    ...licence,
+                    section4: {
+                        ...licence.section4,
+                        form3: {
+                            decision: 'No'
+                        }
+                    }
+                });
+            });
+        });
+
+        context('When there are no dependants', () => {
+
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4,
+                    form3: {
+                        decision: '',
+                        followUp1: '',
+                        followUp2: ''
+                    }
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}},
+                {followUp1: {}},
+                {followUp2: {}}
+            ];
+
+            it('should store everything', async () => {
+                const userInput = {
+                    decision: 'Yes',
+                    followUp1: 'County',
+                    followUp2: 'Town'
+                };
+
+                const licenceSection = 'section4';
+                const formName = 'form3';
+
+                const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+
+                expect(output).to.eql({
+                    ...licence,
+                    section4: {
+                        ...licence.section4,
+                        form3: {
+                            decision: 'Yes',
+                            followUp1: 'County',
+                            followUp2: 'Town'
+                        }
+                    }
+                });
+            });
+        });
+        it('should call updateLicence and pass in the licence', async() => {
+
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4,
+                    form3: {
+                        decision: '',
+                        followUp1: '',
+                        followUp2: ''
+                    }
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}},
+                {followUp1: {}},
+                {followUp2: {}}
+            ];
+
+            const userInput = {
+                decision: 'Yes',
+                followUp1: 'County',
+                followUp2: 'Town'
+            };
+
+            const licenceSection = 'section4';
+            const formName = 'form3';
+
+            await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+
+            const expectedLicence = {
+                ...licence,
+                section4: {
+                    ...licence.section4,
+                    form3: {
+                        decision: 'Yes',
+                        followUp1: 'County',
+                        followUp2: 'Town'
+                    }
+                }
+            };
+            expect(licenceClient.updateLicence).to.be.calledOnce();
+            expect(licenceClient.updateLicence).to.be.calledWith('ab1', expectedLicence);
+        });
+
+        it('should add new form to the licence', async() => {
+
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}},
+                {followUp1: {}},
+                {followUp2: {}}
+            ];
+
+            const userInput = {
+                decision: 'Yes',
+                followUp1: 'County',
+                followUp2: 'Town'
+            };
+
+            const licenceSection = 'section4';
+            const formName = 'form3';
+
+            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+
+            const expectedLicence = {
+                ...licence,
+                section4: {
+                    ...licence.section4,
+                    form3: {
+                        decision: 'Yes',
+                        followUp1: 'County',
+                        followUp2: 'Town'
+                    }
+                }
+            };
+            expect(output).to.eql(expectedLicence);
+        });
+
+        it('should add new section to the licence', async() => {
+
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}},
+                {followUp1: {}},
+                {followUp2: {}}
+            ];
+
+            const userInput = {
+                decision: 'Yes',
+                followUp1: 'County',
+                followUp2: 'Town'
+            };
+
+            const licenceSection = 'section5';
+            const formName = 'form3';
+
+            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+
+            const expectedLicence = {
+                ...licence,
+                section5: {
+                    form3: {
+                        decision: 'Yes',
+                        followUp1: 'County',
+                        followUp2: 'Town'
+                    }
+                }
+            };
+            expect(output).to.eql(expectedLicence);
         });
     });
 });

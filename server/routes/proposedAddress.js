@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const {getIn} = require('../utils/functionalHelpers');
+const formConfig = require('./config/proposedAddress');
 
 module.exports = function({logger, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -13,25 +14,49 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         next();
     });
 
-    router.get('/optOut/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET proposedAddress/optOut/:nomisId');
+    router.get('/:formName/:nomisId', asyncMiddleware(async (req, res) => {
+        const {nomisId, formName} = req.params;
+        logger.debug(`GET proposedAddress/${formName}/${nomisId}`);
 
-        const nomisId = req.params.nomisId;
         const rawLicence = await licenceService.getLicence(nomisId);
-        const optOut = getIn(rawLicence, ['licence', 'optOut']);
+        const data = getIn(rawLicence, ['licence', 'proposedAddress', formName]);
 
-        res.render('proposedAddress/optOutForm', {nomisId, optOut});
+        res.render(`proposedAddress/${formName}Form`, {nomisId, data});
     }));
 
-    router.post('/optOut/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET proposedAddress/optOut/:nomisId');
+    router.post('/:formName/:nomisId', asyncMiddleware(async (req, res) => {
+        const {nomisId, formName} = req.params;
+        logger.debug(`POST proposedAddress/${formName}/${nomisId}`);
 
-        const {nomisId} = req.body;
-        await licenceService.updateOptOut(req.body);
+        const rawLicence = await licenceService.getLicence(nomisId);
+        const nextPath = getPathFor(formName, req.body);
 
-        res.redirect('/hdc/taskList/' + nomisId);
+        await licenceService.update({
+            licence: rawLicence.licence,
+            nomisId: nomisId,
+            fieldMap: formConfig[formName].fields,
+            userInput: req.body,
+            licenceSection: 'proposedAddress',
+            formName: formName
+        });
+
+        res.redirect(`${nextPath}${nomisId}`);
     }));
-
 
     return router;
 };
+
+function decidePath(decisionInfo, data) {
+    const decidingValue = data[decisionInfo.fieldToDecideOn];
+    return decisionInfo[decidingValue];
+}
+
+function getPathFor(formName, body) {
+    if (formConfig[formName].nextPath) {
+        return formConfig[formName].nextPath;
+    }
+    if (formConfig[formName].nextPathDecision) {
+        return decidePath(formConfig[formName].nextPathDecision, body);
+    }
+    return formName(body);
+}

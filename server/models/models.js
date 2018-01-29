@@ -36,7 +36,23 @@ const licenceModel = {
         decision: {
             reason: 'reason'
         }
+    },
+    bassReferral: {
+        decision: {}
+    },
+
+    proposedAddress: {
+        optOpt: {
+            decision: '',
+            reason: ''
+        },
+        bassReferral: {
+            decision: '',
+            proposedCounty: '',
+            proposedTown: ''
+        }
     }
+
 };
 
 

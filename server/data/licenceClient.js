@@ -44,6 +44,19 @@ module.exports = {
         });
     },
 
+    updateLicence: function(nomisId, licence = {}) {
+        return new Promise((resolve, reject) => {
+            const sql = 'UPDATE LICENCES SET LICENCE = @licence WHERE NOMIS_ID=@nomisId';
+
+            const parameters = [
+                {column: 'nomisId', type: TYPES.VarChar, value: nomisId},
+                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify(licence)}
+            ];
+
+            execSql(sql, parameters, resolve, reject);
+        });
+    },
+
     updateSection: function(section, nomisId, object, status) {
         return new Promise((resolve, reject) => {
 
