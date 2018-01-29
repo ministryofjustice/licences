@@ -76,4 +76,24 @@ describe('/hdc/proposedAddress', () => {
                 });
         });
     });
+
+    describe('GET /proposedAddress/curfewAddress/:nomisId', () => {
+
+        it('returns html', () => {
+            return request(app)
+                .get('/curfewAddress/1')
+                .expect(200)
+                .expect('Content-Type', /html/);
+        });
+
+        it('renders out out page', () => {
+            return request(app)
+                .get('/curfewAddress/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('Proposed curfew address');
+                });
+        });
+    });
 });
