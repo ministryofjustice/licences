@@ -19,7 +19,7 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         logger.debug(`GET proposedAddress/${formName}/${nomisId}`);
 
         const rawLicence = await licenceService.getLicence(nomisId);
-        const data = getIn(rawLicence, ['licence', 'proposedAddress', formName]);
+        const data = getIn(rawLicence, ['licence', 'proposedAddress', formName]) || {};
 
         res.render(`proposedAddress/${formName}Form`, {nomisId, data});
     }));

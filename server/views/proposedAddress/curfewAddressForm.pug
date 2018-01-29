@@ -1,0 +1,79 @@
+extends ../layout
+
+block content
+
+    div.pure-g.pure-u-1.borderBottom
+        div.back-link-container.smallPaddingTop
+            a.link-back(href="javascript: window.history.back();") Back
+
+        h2.heading-large Proposed curfew address
+
+        p.pure-u-1-2 Enter the proposed address that the prisoner has completed on the returned HDC form
+
+    h3.heading-medium Preferred address
+
+    form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=nomisId || '')
+        div.pure-g.largePaddingBottom
+            div.pure-u-1.pure-u-sm-5-12.pure-g
+                div.pure-u-md-2-3
+                    div.form-group.midMarginBottom
+                        label.form-label(for="addressLine1") Building and street
+                        input.form-control#addressLine1(name="addressLine1" value=data && data.addressLine1)
+                        input.form-control.smallMarginTop#addressLine2(name="addressLine2" value=data && data.addressLine2)
+
+                    div.form-group.midMarginBottom
+                        label.form-label(for="addressTown") Town or city
+                        input.form-control#addressTown(name="addressTown" value=data && data.addressTown)
+
+                    div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
+                        label.form-label(for="postCode") Postcode
+                        input.form-control#postCode(name="postCode" value=data && data.postCode)
+
+                    div.form-group.pure-u-sm-1.pure-u-md-3-4
+                        label.form-label(for="telephone") Telephone
+                        input.form-control#telephone(name="telephone" value=data && data.telephone)
+
+                    div.form-group.inline.smallPaddingTop
+                        p Does this address have an electricity supply?
+
+                        div.multiple-choice(data-target="optOutForm")
+                            input#electricityYes(type="radio" checked=data && data.electricity === 'Yes' name="electricity" value="Yes")
+                            label(for="electricityYes") Yes
+                        div.multiple-choice
+                            input#electricityNo(type="radio" checked=data && data.electricity === 'No' name="electricity" value="No")
+                            label(for="electricityNo") No
+
+
+            div.pure-u-1.pure-u-md-7-12
+                div.pure-g
+                    div.form-group.pure-u-sm-5-12
+                        label.form-label(for="occupierName") Name of main occupier
+                        input.form-control#occupierName(name="occupier[name]" value=data.occupier && data.occupier.name)
+
+                    div.form-group.pure-u-sm-1-6.padLeftRight15
+                        label.form-label(for="occupierAge") Age
+                        input.form-control#occupierAge(name="occupier[age]" value=data.occupier && data.occupier.age)
+
+                    div.form-group.pure-u-sm-5-12
+                        label.form-label(for="occupierRelationship") Relation to prisoner
+                        input.form-control#occupierRelationship(name="occupier[relationship]" value=data.occupier && data.occupier.relationship)
+
+                    include includes/otherResidents
+
+                    div.form-group.inline.smallPaddingTop.pure-u-1-2
+                        p Has the prisoner been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+
+                        div.multiple-choice
+                            input#cautionedYes(type="radio" checked=data && data.cautionedAgainstResident === 'Yes' name="cautionedAgainstResident" value="Yes")
+                            label(for="cautionedYes") Yes
+                        div.multiple-choice
+                            input#cautionedNo(type="radio" checked=data && data.cautionedAgainstResident === 'No' name="cautionedAgainstResident" value="No")
+                            label(for="cautionedNo") No
+
+        div.paddingBottom
+            div.pure-u-1.inlineButtons
+                input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+                a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to tasklist
+

@@ -11,11 +11,25 @@ module.exports = {
         }
     },
     bassReferral: {
-        nextPath: '/hdc/taskList/',
+        nextPath: '/hdc/proposedAddress/curfewAddress/',
         fields: [
             {decision: {}},
             {proposedTown: {dependantOn: 'decision', predicate: 'Yes'}},
             {proposedCounty: {dependantOn: 'decision', predicate: 'Yes'}}
+        ]
+    },
+    curfewAddress: {
+        nextPath: '/hdc/taskList/',
+        fields: [
+            {addressLine1: {}},
+            {addressLine2: {}},
+            {addressTown: {}},
+            {postCode: {}},
+            {telephone: {}},
+            {electricity: {}},
+            {occupier: {}},
+            {residents: {}},
+            {cautionedAgainstResident: {}}
         ]
     }
 };
