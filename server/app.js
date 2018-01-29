@@ -96,7 +96,7 @@ module.exports = function createApp({
 
     // Request Processing Configuration
     app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({extended: false}));
+    app.use(bodyParser.urlencoded({extended: true}));
 
     // Resource Delivery Configuration
     app.use(compression());

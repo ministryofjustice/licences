@@ -30,15 +30,7 @@ module.exports = {
             {occupierName: {}},
             {occupierAge: {}},
             {occupierRelationship: {}},
-            {resident1Name: {}},
-            {resident1Age: {}},
-            {resident1Relation: {}},
-            {resident2Name: {}},
-            {resident2Age: {}},
-            {resident2Relation: {}},
-            {resident3Name: {}},
-            {resident3Age: {}},
-            {resident3Relation: {}},
+            {residents: {}},
             {cautionedAgainstResident: {}}
         ]
     }

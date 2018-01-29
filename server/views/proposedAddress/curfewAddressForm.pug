@@ -18,16 +18,16 @@ block content
         div.pure-g.largePaddingBottom
             div.pure-u-1.pure-u-sm-5-12.pure-g
                 div.pure-u-md-2-3
-                    div.form-group
+                    div.form-group.midMarginBottom
                         label.form-label(for="addressLine1") Building and street
                         input.form-control#addressLine1(name="addressLine1" value=data && data.addressLine1)
                         input.form-control.smallMarginTop#addressLine2(name="addressLine2" value=data && data.addressLine2)
 
-                    div.form-group
+                    div.form-group.midMarginBottom
                         label.form-label(for="addressTown") Town or city
                         input.form-control#addressTown(name="addressTown" value=data && data.addressTown)
 
-                    div.form-group.pure-u-sm-1.pure-u-md-1-2
+                    div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
                         label.form-label(for="postCode") Postcode
                         input.form-control#postCode(name="postCode" value=data && data.postCode)
 
@@ -60,27 +60,7 @@ block content
                         label.form-label(for="occupierRelationship") Relation to prisoner
                         input.form-control#occupierRelationship(name="occupierRelationship" value=data && data.occupierRelationship)
 
-
-                div.pure-g
-                    h4.heading-small Other residents
-
-                    div.form-group.pure-u-sm-5-12
-                        label.form-label(for="resident1Name") Name
-                        input.form-control#resident1Name(name="resident1Name" value=data && data.resident1Name)
-                        input.form-control.smallMarginTop#resident2Name(name="resident2Name" value=data && data.resident2Name)
-                        input.form-control.smallMarginTop#resident3Name(name="resident3Name" value=data && data.resident3Name)
-
-                    div.form-group.pure-u-sm-1-6.padLeftRight15
-                        label.form-label(for="resident1Age") Age
-                        input.form-control#resident1Age(name="resident1Age" value=data && data.resident1Age)
-                        input.form-control.smallMarginTop#resident2Age(name="resident2Age" value=data && data.resident2Age)
-                        input.form-control.smallMarginTop#resident3Age(name="resident3Age" value=data && data.resident3Age)
-
-                    div.form-group.pure-u-sm-5-12
-                        label.form-label(for="resident1Relation") Relation to prisoner
-                        input.form-control#resident1Relation(name="resident1Relation" value=data && data.resident1Relation)
-                        input.form-control.smallMarginTop#resident2Relation(name="resident2Relation" value=data && data.resident2Relation)
-                        input.form-control.smallMarginTop#resident3Relation(name="resident3Relation" value=data && data.resident3Relation)
+                    include includes/otherResidents
 
                     div.form-group.inline.smallPaddingTop.pure-u-1-2
                         p Has the prisoner been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
