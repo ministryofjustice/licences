@@ -72,8 +72,5 @@ block content
                             input#cautionedNo(type="radio" checked=data && data.cautionedAgainstResident === 'No' name="cautionedAgainstResident" value="No")
                             label(for="cautionedNo") No
 
-        div.paddingBottom
-            div.pure-u-1.inlineButtons
-                input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
-                a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to tasklist
+        include ../includes/formButtons
 

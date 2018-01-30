@@ -8,11 +8,11 @@ div.largePaddingBottom
         div.pure-u-sm-5-12 Relation to prisoner
 
     while n < residentsToShow
-        div.pure-g.smallPaddingBottom
+        div.pure-g.smallPaddingBottom.otherResident
             div.pure-u-sm-5-12
-                input.form-control(name="residents["+n+"][name]" value=data.residents && data.residents[n].name)
+                input.form-control.residentName(name="residents["+n+"][name]" value=data.residents && data.residents[n].name)
             div.pure-u-sm-1-6.padLeftRight15
-                input.form-control(name="residents["+n+"][age]" value=data.residents && data.residents[n].age)
+                input.form-control.residentAge(name="residents["+n+"][age]" value=data.residents && data.residents[n].age)
             div.pure-u-sm-5-12
-                input.form-control(name="residents["+n+"][relation]" value=data.residents && data.residents[n].relation)
+                input.form-control.residentRelation(name="residents["+n+"][relation]" value=data.residents && data.residents[n].relation)
         - n++

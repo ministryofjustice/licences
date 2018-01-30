@@ -29,7 +29,4 @@ block content
                         if data && data.reason
                             | #{data.reason}
 
-            div.paddingBottom.smallPaddingTop
-                div.pure-u-1.inlineButtons
-                    input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
-                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to tasklist
+            include ../includes/formButtons
