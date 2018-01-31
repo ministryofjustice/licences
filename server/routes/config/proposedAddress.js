@@ -1,5 +1,6 @@
 module.exports = {
     optOut: {
+        licenceSection: 'optOut',
         fields: [
             {decision: {}},
             {reason: {dependantOn: 'decision', predicate: 'Yes'}}
@@ -11,6 +12,7 @@ module.exports = {
         }
     },
     bassReferral: {
+        licenceSection: 'bassReferral',
         fields: [
             {decision: {}},
             {proposedTown: {dependantOn: 'decision', predicate: 'Yes'}},
@@ -23,7 +25,8 @@ module.exports = {
         }
     },
     curfewAddress: {
-        nextPath: '/hdc/taskList/',
+        licenceSection: 'curfewAddress',
+        nextPath: '/hdc/proposedAddress/confirmAddress/',
         fields: [
             {addressLine1: {}},
             {addressLine2: {}},
@@ -35,5 +38,9 @@ module.exports = {
             {residents: {}},
             {cautionedAgainstResident: {}}
         ]
+    },
+    confirmAddress: {
+        licenceSection: 'curfewAddress',
+        nextPath: '/hdc/taskList/'
     }
 };
