@@ -25,22 +25,15 @@ const licenceModel = {
     },
     eligibility: {
         excluded: {
-            reason: 'excludedReasons'
+            decision: '',
+            reason: []
         },
-        unsuitable: {
-            reason: 'unsuitableReasons'
+        suitability: {
+            decision: '',
+            reason: []
         },
-        crdTime: ''
+        crdTime: {decision: ''}
     },
-    optOut: {
-        decision: {
-            reason: 'reason'
-        }
-    },
-    bassReferral: {
-        decision: {}
-    },
-
     proposedAddress: {
         optOpt: {
             decision: '',

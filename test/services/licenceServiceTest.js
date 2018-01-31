@@ -185,7 +185,7 @@ describe('licenceService', () => {
             );
         });
 
-        it('should merge eligibility object with exosting data', () => {
+        it('should merge eligibility object with existing data', () => {
             const input = {nomisId: 'ab1', crdTime: 'No', unsuitable: 'No'};
             const existingObject = {excluded: 'Yes'};
             service.updateEligibility(input, existingObject);
@@ -193,7 +193,7 @@ describe('licenceService', () => {
             expect(licenceClient.updateSection).to.be.calledWith(
                 'eligibility',
                 'ab1',
-                {crdTime: 'No', excluded: 'Yes', unsuitable: 'No'},
+                {crdTime: 'No', excluded: 'Yes'},
                 'ELIGIBILITY_CHECKED'
             );
         });
@@ -262,25 +262,6 @@ describe('licenceService', () => {
         it('should throw if error during findById', () => {
             establishmentsClient.findById.rejects();
             return expect(service.getEstablishment('ab1')).to.eventually.be.rejected();
-        });
-    });
-
-    describe('updatesOptOut', () => {
-        it('should call updateOptOut from the licence client', () => {
-            service.updateOptOut({nomisId: 'ab1', decision: 'Yes', reason: 'Scotland Street'});
-
-            expect(licenceClient.updateSection).to.be.calledOnce();
-            expect(licenceClient.updateSection).to.be.calledWith(
-                'optOut',
-                'ab1',
-                {decision: 'Yes', reason: 'Scotland Street'}
-            );
-        });
-
-        it('should throw if error updating licence', () => {
-            licenceClient.updateSection.rejects();
-            const args = {nomisId: 'ab1', decision: 'Yes', reason: 'Scotland Street'};
-            return expect(service.updateAddress(args)).to.eventually.be.rejected();
         });
     });
 

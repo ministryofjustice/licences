@@ -2,7 +2,7 @@ extends ../layout
 
 block content
 
-    - var unsuitableValue = eligibility ? eligibility.unsuitable: null;
+    - var suitabilityValue = data.decision || null;
 
     div.pure-g.pure-u-1
         div.back-link-container.smallPaddingTop
@@ -19,14 +19,14 @@ block content
                     p Is the offender presumed unsuitable?
 
                     div.multiple-choice(data-target="unsuitableForm")
-                        input#unsuitableYes(type="radio" checked=unsuitableValue === 'Yes' name="unsuitable" value="Yes")
+                        input#unsuitableYes(type="radio" checked=suitabilityValue === 'Yes' name="decision" value="Yes")
                         label(for="unsuitableYes") Yes
                     div.multiple-choice
-                        input#unsuitableNo(type="radio" checked=unsuitableValue === 'No' name="unsuitable" value="No")
+                        input#unsuitableNo(type="radio" checked=suitabilityValue === 'No' name="decision" value="No")
                         label(for="unsuitableNo") No
 
                 div#unsuitableForm.panel.panel-border-narrow.js-hidden
-                    include ./unsuitable
+                    include includes/suitability
 
             div.paddingBottom.smallPaddingTop
                 div.pure-u-1.inlineButtons

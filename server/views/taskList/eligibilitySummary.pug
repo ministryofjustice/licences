@@ -18,23 +18,23 @@ div.largeMarginBottom
                         div.pure-u-3-4.padRight15
                             | Is the offender excluded from HDC?
                         div#excludedAnswer.pure-u-1-4.center.bold
-                            if eligibility.excluded
-                                |#{eligibility.excluded}
+                            if eligibility.excluded && eligibility.excluded.decision
+                                |#{eligibility.excluded.decision}
                     div.pure-g.borderTopLight.smallPaddingTopBottom
                         div.pure-u-3-4.padRight15
                             | Is the offender presumed unsuitable?
                         div#unsuitableAnswer.pure-u-1-4.center.bold
-                            if eligibility.unsuitable
-                                | #{eligibility.unsuitable}
+                            if eligibility.suitability && eligibility.suitability.decision
+                                | #{eligibility.suitability.decision}
                     div.pure-g.borderTopLight.smallPaddingTopBottom
                         div.pure-u-3-4.padRight15
                             | Is there less than 4 weeks to go to the offender's CRD?
                         div#crdTimeAnswer.pure-u-1-4.center.bold
-                            if eligibility.crdTime
-                                | #{eligibility.crdTime}
+                            if eligibility.crdTime && eligibility.crdTime.decision
+                                | #{eligibility.crdTime.decision}
 
                 div.pure-u-1-2.center
-                    a#eligibilityCheckUpdate(href='/hdc/eligibility/'+prisonerInfo.offenderNo) Change these answers
+                    a#eligibilityCheckUpdate(href='/hdc/eligibility/excluded/'+prisonerInfo.offenderNo) Change these answers
 
                 // TODO Form printed
                 //div.pure-u-1.borderTopLight
