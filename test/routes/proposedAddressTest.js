@@ -96,4 +96,24 @@ describe('/hdc/proposedAddress', () => {
                 });
         });
     });
+
+    describe('GET /proposedAddress/confirmAddress/:nomisId', () => {
+
+        it('returns html', () => {
+            return request(app)
+                .get('/confirmAddress/1')
+                .expect(200)
+                .expect('Content-Type', /html/);
+        });
+
+        it('renders out out page', () => {
+            return request(app)
+                .get('/confirmAddress/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('Confirm address details');
+                });
+        });
+    });
 });
