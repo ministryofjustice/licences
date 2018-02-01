@@ -2,6 +2,7 @@ const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const path = require('path');
 const {getIn} = require('../utils/functionalHelpers');
+const formConfig = require('./config/personalDetails');
 
 module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -14,13 +15,13 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         next();
     });
 
-    router.get('/:nomisId', asyncMiddleware(async (req, res, next) => {
+    router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /details');
 
         const nomisId = req.params.nomisId;
-
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
         const licence = await licenceService.getLicence(nomisId);
+
+        const prisonerInfo = await getPersonalDetails(licence, nomisId, prisonerService, req.user.token);
         const eligibility = getIn(licence, ['licence', 'eligibility']);
         const eligible = isEligible(eligibility);
         const optOut = getIn(licence, ['licence', 'proposedAddress', 'optOut']);
@@ -28,12 +29,22 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         res.render(`taskList/index`, {prisonerInfo, eligibility, eligible, optOut});
     }));
 
-    router.post('/eligibilityStart', asyncMiddleware(async (req, res, next) => {
+    router.post('/eligibilityStart', asyncMiddleware(async (req, res) => {
         logger.debug('POST /eligibilityStart');
 
         const nomisId = req.body.nomisId;
 
-        // todo create licence and save personal details
+        const existingLicence = await licenceService.getLicence(nomisId);
+
+        if (!existingLicence) {
+            await licenceService.create({
+                nomisId: nomisId,
+                fieldMap: formConfig.personalDetails.fields,
+                userInput: req.body,
+                licenceSection: 'personalDetails',
+                formName: 'details'
+            });
+        }
 
         res.redirect(`/hdc/eligibility/${nomisId}`);
     }));
@@ -74,4 +85,12 @@ function isEligible(eligibilityObject) {
         return false;
     }
     return eligibilityObject.excluded === 'No' && eligibilityObject.unsuitable === 'No';
+}
+
+function getPersonalDetails(licence, nomisId, prisonerService, nomisToken) {
+    const savedDetails = getIn(licence, ['licence', 'personalDetails', 'details']);
+    if(savedDetails) {
+        return savedDetails;
+    }
+    return prisonerService.getPrisonerDetails(nomisId, nomisToken);
 }
