@@ -121,7 +121,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
-    async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName}) {
+    async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName, status}) {
         const updatedLicence = getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName});
 
         await licenceClient.updateLicence(nomisId, updatedLicence);
@@ -151,6 +151,10 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         return {...licence, [licenceSection]: {...licence[licenceSection], [formName]: answers}};
     }
 
+    function updateStatus(nomisId, status) {
+        return licenceClient.updateStatus(nomisId, status);
+    }
+
     return {
         reset,
         getLicence,
@@ -162,7 +166,8 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         sendToOmu,
         sendToPm,
         getEstablishment,
-        update
+        update,
+        updateStatus
     };
 };
 

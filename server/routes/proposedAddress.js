@@ -20,10 +20,10 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         logger.debug(`GET proposedAddress/${formName}/${nomisId}`);
 
         const rawLicence = await licenceService.getLicence(nomisId);
-        const {licenceSection} = formConfig[formName];
+        const {licenceSection, nextPath} = formConfig[formName];
         const data = getIn(rawLicence, ['licence', 'proposedAddress', licenceSection]) || {};
 
-        res.render(`proposedAddress/${formName}Form`, {nomisId, data});
+        res.render(`proposedAddress/${formName}Form`, {nomisId, data, nextPath});
     }));
 
     router.post('/:formName/:nomisId', asyncMiddleware(async (req, res) => {
@@ -34,14 +34,21 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         const rawLicence = await licenceService.getLicence(nomisId);
         const nextPath = getPathFor({formName, data: req.body, formConfig});
 
-        await licenceService.update({
-            licence: rawLicence.licence,
-            nomisId: nomisId,
-            fieldMap: formConfig[formName].fields,
-            userInput: req.body,
-            licenceSection: 'proposedAddress',
-            formName: formName
-        });
+        if (formConfig[formName].fields) {
+            await licenceService.update({
+                licence: rawLicence.licence,
+                nomisId: nomisId,
+                fieldMap: formConfig[formName].fields,
+                userInput: req.body,
+                licenceSection: 'proposedAddress',
+                formName: formName
+            });
+        }
+
+        if (formConfig[formName].statusChange) {
+            const status = req.body[formConfig[formName].statusChange.field];
+            await licenceService.updateStatus(nomisId, status);
+        }
 
         res.redirect(`${nextPath}${nomisId}`);
     }));

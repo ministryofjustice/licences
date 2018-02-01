@@ -9,7 +9,8 @@ module.exports = {
             fieldToDecideOn: 'decision',
             Yes: '/hdc/taskList/',
             No: '/hdc/proposedAddress/bassReferral/'
-        }
+        },
+        nextPath: null
     },
     bassReferral: {
         licenceSection: 'bassReferral',
@@ -22,7 +23,8 @@ module.exports = {
             fieldToDecideOn: 'decision',
             Yes: '/hdc/taskList/',
             No: '/hdc/proposedAddress/curfewAddress/'
-        }
+        },
+        nextPath: null
     },
     curfewAddress: {
         licenceSection: 'curfewAddress',
@@ -41,6 +43,15 @@ module.exports = {
     },
     confirmAddress: {
         licenceSection: 'curfewAddress',
+        nextPath: '/hdc/proposedAddress/submit/'
+    },
+    submit: {
+        statusChange: {
+            field: 'licenceStatus'
+        },
+        nextPath: '/hdc/proposedAddress/confirmation/'
+    },
+    confirmation: {
         nextPath: '/hdc/taskList/'
     }
 };
