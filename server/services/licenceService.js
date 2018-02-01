@@ -87,14 +87,6 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         return licenceClient.updateSection('eligibility', nomisId, eligibilityData, 'ELIGIBILITY_CHECKED');
     }
 
-    function updateOptOut(data = {}) {
-
-        const nomisId = data.nomisId;
-        const optOut = createInputWithReasonObject({inputObject: data, model: licenceModel.optOut});
-
-        return licenceClient.updateSection('optOut', nomisId, optOut);
-    }
-
     function sendToOmu(nomisId) {
         return licenceClient.updateStatus(nomisId, 'SENT');
     }
@@ -170,7 +162,6 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         sendToOmu,
         sendToPm,
         getEstablishment,
-        updateOptOut,
         update
     };
 };

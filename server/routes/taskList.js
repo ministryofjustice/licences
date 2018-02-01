@@ -17,8 +17,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /details');
 
-        const nomisId = req.params.nomisId;
-
+        const {nomisId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
         const licence = await licenceService.getLicence(nomisId);
         const eligibility = getIn(licence, ['licence', 'eligibility']);
@@ -63,5 +62,5 @@ function isEligible(eligibilityObject) {
     if(!eligibilityObject) {
         return false;
     }
-    return eligibilityObject.excluded === 'No' && eligibilityObject.unsuitable === 'No';
+    return eligibilityObject.excluded.decision === 'No' && eligibilityObject.suitability.decision === 'No';
 }

@@ -1,6 +1,8 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const {getIn} = require('../utils/functionalHelpers');
+const formConfig = require('./config/eligibility');
+const {getPathFor} = require('../utils/routes');
 
 module.exports = function({logger, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -13,73 +15,37 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         next();
     });
 
-    router.get('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /eligibility/:nomisId');
+    router.get('/:formName/:nomisId', asyncMiddleware(async (req, res) => {
+        const {nomisId, formName} = req.params;
 
-        const nomisId = req.params.nomisId;
-        const eligibility = await getEligibilityFromLicence(nomisId, licenceService);
+        logger.debug(`GET eligibility/${formName}/${nomisId}`);
 
-        res.render('eligibility/excludedForm', {nomisId: req.params.nomisId, eligibility});
+        const rawLicence = await licenceService.getLicence(nomisId);
+        const {licenceSection} = formConfig[formName];
+        const data = getIn(rawLicence, ['licence', 'eligibility', licenceSection]) || {};
+
+        res.render(`eligibility/${licenceSection}Form`, {nomisId, data});
     }));
 
-    router.post('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('POST /eligibility/:nomisId');
+    router.post('/:formName/:nomisId', asyncMiddleware(async (req, res) => {
+        const {nomisId, formName} = req.params;
 
-        const nomisId = req.params.nomisId;
-        await updateEligibilityFromSubmission(nomisId, req.body, licenceService);
+        logger.debug(`POST eligibility/${formName}/${nomisId}`);
 
-        res.redirect('suitability/' + nomisId);
-    }));
+        const rawLicence = await licenceService.getLicence(nomisId);
+        const nextPath = getPathFor({formName, data: req.body, formConfig});
 
-    router.get('/suitability/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /eligibility/suitability/:nomisId');
+        await licenceService.update({
+            licence: rawLicence.licence,
+            nomisId: nomisId,
+            fieldMap: formConfig[formName].fields,
+            userInput: req.body,
+            licenceSection: 'eligibility',
+            formName: formName
+        });
 
-        const nomisId = req.params.nomisId;
-        const eligibility = await getEligibilityFromLicence(nomisId, licenceService);
-
-        res.render('eligibility/suitabilityForm', {nomisId: req.params.nomisId, eligibility});
-    }));
-
-    router.post(['/suitability/:nomisId'], asyncMiddleware(async (req, res) => {
-        logger.debug('POST /eligibility/suitability/:nomisId');
-
-        const nomisId = req.params.nomisId;
-        await updateEligibilityFromSubmission(nomisId, req.body, licenceService);
-
-        res.redirect('/hdc/eligibility/crdTime/' + nomisId);
-    }));
-
-    router.get('/crdTime/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /eligibility/crdTime/:nomisId');
-
-        const nomisId = req.params.nomisId;
-        const eligibility = await getEligibilityFromLicence(nomisId, licenceService);
-
-        res.render('eligibility/crdTimeForm', {nomisId: req.params.nomisId, eligibility});
-    }));
-
-    router.post(['/crdTime/:nomisId'], asyncMiddleware(async (req, res) => {
-        logger.debug('POST /eligibility/crdTime/:nomisId');
-
-        const nomisId = req.params.nomisId;
-        await updateEligibilityFromSubmission(nomisId, req.body, licenceService);
-
-        res.redirect('/hdc/taskList/' + nomisId);
+        res.redirect(`${nextPath}${nomisId}`);
     }));
 
     return router;
 };
-
-async function updateEligibilityFromSubmission(nomisId, body, licenceService) {
-    const existingLicence = await licenceService.getLicence(nomisId);
-    if (!existingLicence) {
-        await licenceService.createLicence(nomisId, body);
-    }
-
-    return licenceService.updateEligibility(body, getIn(existingLicence, ['licence', 'eligibility']));
-}
-
-async function getEligibilityFromLicence(nomisId, licenceService) {
-    const rawLicence = await licenceService.getLicence(nomisId);
-    return getIn(rawLicence, ['licence', 'eligibility']);
-}

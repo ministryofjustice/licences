@@ -2,7 +2,7 @@ extends ../layout
 
 block content
 
-    - var crdTimeValue = eligibility ? eligibility.crdTime: null;
+    - var crdTimeValue = data ? data.decision : null;
 
     div.pure-g.pure-u-1
         div.back-link-container.smallPaddingTop
@@ -19,10 +19,10 @@ block content
                     p Is there less than 4 weeks to go to the offender's CRD?
 
                     div.multiple-choice
-                        input#crdTimeYes(type="radio" checked=crdTimeValue === 'Yes' name="crdTime" value="Yes")
+                        input#crdTimeYes(type="radio" checked=crdTimeValue === 'Yes' name="decision" value="Yes")
                         label(for="crdTimeYes") Yes
                     div.multiple-choice
-                        input#crdTimeNo(type="radio" checked=crdTimeValue === 'No' name="crdTime" value="No")
+                        input#crdTimeNo(type="radio" checked=crdTimeValue === 'No' name="decision" value="No")
                         label(for="crdTimeNo") No
 
             div.paddingBottom

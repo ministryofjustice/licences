@@ -71,7 +71,18 @@ describe('GET /taskList/:prisonNumber', () => {
     });
 
     it('should return the eligibility', () => {
-        licenceServiceStub.getLicence.resolves({licence: {eligibility: {key: 'value'}}});
+        licenceServiceStub.getLicence.resolves({
+            licence: {
+                eligibility: {
+                    excluded: {
+                        decision: 'No'
+                    },
+                    suitability: {
+                        decision: 'No'
+                    }
+                }
+            }
+        });
         return request(app)
             .get('/1233456')
             .expect(200)
@@ -93,10 +104,16 @@ describe('GET /taskList/:prisonNumber', () => {
 
     context('when prisoner is not excluded', () => {
         it('should display opt out form link', () => {
-            licenceServiceStub.getLicence.resolves({licence: {eligibility: {
-                excluded: 'No',
-                unsuitable: 'No'
-            }}});
+            licenceServiceStub.getLicence.resolves({licence: {
+                eligibility: {
+                    excluded: {
+                        decision: 'No'
+                    },
+                    suitability: {
+                        decision: 'No'
+                    }
+                }
+            }});
 
             return request(app)
                 .get('/1233456')

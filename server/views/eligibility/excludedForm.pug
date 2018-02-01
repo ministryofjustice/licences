@@ -2,7 +2,7 @@ extends ../layout
 
 block content
 
-    - var exclusionValue = eligibility ? eligibility.excluded : null;
+    - var exclusionValue = data.decision || null;
 
     div.pure-g.pure-u-1
         div.back-link-container.smallPaddingTop
@@ -20,14 +20,14 @@ block content
                     p Is the offender statutorily excluded from HDC?
 
                     div.multiple-choice(data-target="excludedForm")
-                        input#excludedYes(type="radio" checked=exclusionValue === 'Yes'  name="excluded" value="Yes")
+                        input#excludedYes(type="radio" checked=exclusionValue === 'Yes'  name="decision" value="Yes")
                         label(for="excludedYes") Yes
                     div.multiple-choice
-                        input#excludedNo(type="radio" checked=exclusionValue === 'No' name="excluded" value="No")
+                        input#excludedNo(type="radio" checked=exclusionValue === 'No' name="decision" value="No")
                         label(for="excludedNo") No
 
                 div#excludedForm.panel.panel-border-narrow.js-hidden
-                    include ./excluded
+                    include includes/excluded
 
             div.paddingBottom.smallPaddingTop
                 div.pure-u-1.inlineButtons
