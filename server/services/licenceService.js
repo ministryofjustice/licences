@@ -95,15 +95,6 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         return licenceClient.updateSection('optOut', nomisId, optOut);
     }
 
-    function updateBassReferral(data = {}) {
-
-        const nomisId = data.nomisId;
-        const bassReferral = createInputWithReasonObject({inputObject: data, model: licenceModel.bassReferral});
-
-        return licenceClient.updateSection('bassReferral', nomisId, bassReferral);
-    }
-
-
     function sendToOmu(nomisId) {
         return licenceClient.updateStatus(nomisId, 'SENT');
     }
@@ -138,6 +129,14 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
+    async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName}) {
+        const updatedLicence = getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName});
+
+        await licenceClient.updateLicence(nomisId, updatedLicence);
+
+        return updatedLicence;
+    }
+
     function getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName}) {
 
         const answers = fieldMap.reduce((answersAccumulator, field) => {
@@ -160,14 +159,6 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         return {...licence, [licenceSection]: {...licence[licenceSection], [formName]: answers}};
     }
 
-    async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName}) {
-        const updatedLicence = getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName});
-
-        await licenceClient.updateLicence(nomisId, updatedLicence);
-
-        return updatedLicence;
-    }
-
     return {
         reset,
         getLicence,
@@ -180,7 +171,6 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         sendToPm,
         getEstablishment,
         updateOptOut,
-        updateBassReferral,
         update
     };
 };

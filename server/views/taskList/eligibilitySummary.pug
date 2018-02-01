@@ -8,11 +8,7 @@ div.largeMarginBottom
                 form(method="post", name="eligibilityStart", action='/hdc/taskList/eligibilityStart/')
                     input(type="hidden" name="_csrf" value=csrfToken)
                     if prisonerInfo
-                        // TODO add personal details
                         input(type="hidden" name="nomisId" value=prisonerInfo.offenderNo || '')
-                        input(type="hidden" name="firstName" value=prisonerInfo.firstName || '')
-                        input(type="hidden" name="lastName" value=prisonerInfo.lastName || '')
-                        input(type="hidden" name="agencyLocationId" value=prisonerInfo.agencyId || '')
                     input#eligibilityCheckStart.taskListAction.requiredButton.button(type="submit" value="Start")
 
         else

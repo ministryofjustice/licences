@@ -153,25 +153,51 @@ describe('GET /taskList/:prisonNumber', () => {
 
 });
 
-describe('POST /taskList/:prisonNumber', () => {
+describe('POST /eligibilityStart', () => {
 
-    it('should create a new licence if a licence does not already exist', () => {
-        const formResponse = {
-            nomisId: '123',
-            extra: 'field'
-        };
+    licenceServiceStub.getLicence.resolves({nomisId: '1'});
+    licenceServiceStub.createLicence.resolves();
 
-        licenceServiceStub.getLicence.resolves(undefined);
-        licenceServiceStub.createLicence.resolves();
+    afterEach(() => {
+        sandbox.reset();
+    });
+
+    it('should redirect to eligibility section', () => {
         return request(app)
-            .post('/1233456')
-            .send(formResponse)
+            .post('/eligibilityStart')
+            .send({nomisId: '123'})
             .expect(302)
             .expect(res => {
-                expect(licenceServiceStub.createLicence).to.be.called();
-                expect(licenceServiceStub.createLicence).to.be.calledWith('123', formResponse);
-                expect(res.header['location']).to.include('/dischargeAddress');
+                expect(res.header['location']).to.include('/hdc/eligibility/123');
             });
+    });
+
+    context('licence exists in db', () => {
+        it('should not create a new licence', () => {
+            return request(app)
+                .post('/eligibilityStart')
+                .send({nomisId: '123'})
+                .expect(302)
+                .expect(res => {
+                    expect(licenceServiceStub.createLicence).to.not.be.called();
+                });
+        });
+    });
+
+    context('licence doesnt exist in db', () => {
+        it('should create a new licence', () => {
+
+            licenceServiceStub.getLicence.resolves(undefined);
+            licenceServiceStub.createLicence.resolves();
+            return request(app)
+                .post('/eligibilityStart')
+                .send({nomisId: '123'})
+                .expect(302)
+                .expect(res => {
+                    expect(licenceServiceStub.createLicence).to.be.called();
+                    expect(licenceServiceStub.createLicence).to.be.calledWith('123');
+                });
+        });
     });
 });
 

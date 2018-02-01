@@ -14,7 +14,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         next();
     });
 
-    router.get('/:nomisId', asyncMiddleware(async (req, res, next) => {
+    router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /details');
 
         const nomisId = req.params.nomisId;
@@ -28,28 +28,18 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         res.render(`taskList/index`, {prisonerInfo, eligibility, eligible, optOut});
     }));
 
-    router.post('/eligibilityStart', asyncMiddleware(async (req, res, next) => {
+    router.post('/eligibilityStart', asyncMiddleware(async (req, res) => {
         logger.debug('POST /eligibilityStart');
-
-        const nomisId = req.body.nomisId;
-
-        // todo create licence and save personal details
-
-        res.redirect(`/hdc/eligibility/${nomisId}`);
-    }));
-
-    router.post('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('POST /details');
 
         const nomisId = req.body.nomisId;
 
         const existingLicence = await licenceService.getLicence(nomisId);
 
         if (!existingLicence) {
-            await licenceService.createLicence(nomisId, req.body);
+            await licenceService.createLicence(nomisId);
         }
 
-        res.redirect('/dischargeAddress/'+nomisId);
+        res.redirect(`/hdc/eligibility/${nomisId}`);
     }));
 
     router.get('/image/:imageId', asyncMiddleware(async (req, res) => {
