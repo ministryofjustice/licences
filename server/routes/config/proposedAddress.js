@@ -49,6 +49,9 @@ module.exports = {
         statusChange: {
             field: 'licenceStatus'
         },
+        nextPath: '/hdc/proposedAddress/confirmation/'
+    },
+    confirmation: {
         nextPath: '/hdc/taskList/'
     }
 };
