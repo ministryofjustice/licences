@@ -8,11 +8,20 @@ div.largeMarginBottom
                 form(method="post", name="eligibilityStart", action='/hdc/taskList/eligibilityStart/')
                     input(type="hidden" name="_csrf" value=csrfToken)
                     if prisonerInfo
-                        // TODO add personal details
                         input(type="hidden" name="nomisId" value=prisonerInfo.offenderNo || '')
+                        input(type="hidden" name="imageId" value=prisonerInfo.imageId || '')
+                        input(type="hidden" name="captureDate" value=prisonerInfo.captureDate || '')
                         input(type="hidden" name="firstName" value=prisonerInfo.firstName || '')
                         input(type="hidden" name="lastName" value=prisonerInfo.lastName || '')
-                        input(type="hidden" name="agencyLocationId" value=prisonerInfo.agencyId || '')
+                        input(type="hidden" name="aliases" value=prisonerInfo.aliases || '')
+                        input(type="hidden" name="dateOfBirth" value=prisonerInfo.dateOfBirth || '')
+                        input(type="hidden" name="agencyLocationId" value=prisonerInfo.agencyLocationId || '')
+                        input(type="hidden" name="agencyLocationDesc" value=prisonerInfo.agencyLocationDesc || '')
+                        input(type="hidden" name="offences" value=prisonerInfo.offences || '')
+                        input(type="hidden" name="conditionalReleaseDate" value=prisonerInfo.conditionalReleaseDate || '')
+                        input(type="hidden" name="homeDetentionCurfewEligibilityDate" value=prisonerInfo.homeDetentionCurfewEligibilityDate || '')
+                        input(type="hidden" name="com" value=prisonerInfo.com || '')
+                        input(type="hidden" name="agencyId" value=prisonerInfo.agencyId || '')
                     input#eligibilityCheckStart.taskListAction.requiredButton.button(type="submit" value="Start")
 
         else

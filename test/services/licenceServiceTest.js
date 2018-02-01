@@ -548,4 +548,38 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
     });
+
+    describe('create', () => {
+        it('should call createLicence and pass in the licence, nomisId and status', async() => {
+
+            const fieldMap = [
+                {offenderNo: {}},
+                {firstName: {}},
+                {lastName: {}}
+            ];
+
+            const userInput = {
+                offenderNo: '111',
+                firstName: 'Name1',
+                lastName: 'Name2'
+            };
+
+            const expectedLicence = {
+                Section: {
+                    FormName: {
+                        offenderNo: '111',
+                        firstName: 'Name1',
+                        lastName: 'Name2'
+                    }
+                }
+            };
+            const nomisId = 'aaa';
+            const licenceSection = 'Section';
+            const formName = 'FormName';
+
+            await service.create({nomisId, fieldMap, userInput, licenceSection, formName});
+            expect(licenceClient.createLicence).to.be.calledOnce();
+            expect(licenceClient.createLicence).to.be.calledWith('aaa', expectedLicence, 'STARTED');
+        });
+    });
 });

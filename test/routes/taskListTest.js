@@ -107,6 +107,21 @@ describe('GET /taskList/:prisonNumber', () => {
         });
     });
 
+    context('when licence has been started', () => {
+        it('should load personal details from licence', () => {
+            licenceServiceStub.getLicence.resolves({licence: {personalDetails: {details: {
+                firstName: 'FIRSTNAME'
+            }}}});
+            return request(app)
+                .get('/1233456')
+                .expect(200)
+                .expect(res => {
+                    expect(res.text).to.include('FIRSTNAME');
+                    expect(serviceStub.getPrisonerDetails).to.not.be.called();
+                });
+        });
+    });
+
     context('when prisoner is ineligible', () => {
         it('should not display link to opt out when excluded', () => {
             licenceServiceStub.getLicence.resolves({licence: {eligibility: {

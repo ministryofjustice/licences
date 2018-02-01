@@ -4,8 +4,6 @@ const {
     createInputWithReasonObject,
     addAdditionalConditionsAsObject
 } = require('../utils/licenceFactory');
-const {formatObjectForView} = require('./utils/formatForView');
-const {DATE_FIELD} = require('./utils/conditionsValidator');
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
 
@@ -27,14 +25,13 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
             if(!licence) {
                 return null;
             }
-            const formattedLicence = formatObjectForView(licence, {dates: [DATE_FIELD]});
             const status = getIn(rawLicence, ['status']);
 
-            if(populateConditions && !isEmpty(formattedLicence.additionalConditions)) {
-                return populateLicenceWithConditions(formattedLicence, status);
+            if(populateConditions && !isEmpty(licence.additionalConditions)) {
+                return populateLicenceWithConditions(licence, status);
             }
 
-            return {licence: formattedLicence, status};
+            return {licence, status};
 
         } catch (error) {
             console.error('Error during getLicence', error.stack);
@@ -95,15 +92,6 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         return licenceClient.updateSection('optOut', nomisId, optOut);
     }
 
-    function updateBassReferral(data = {}) {
-
-        const nomisId = data.nomisId;
-        const bassReferral = createInputWithReasonObject({inputObject: data, model: licenceModel.bassReferral});
-
-        return licenceClient.updateSection('bassReferral', nomisId, bassReferral);
-    }
-
-
     function sendToOmu(nomisId) {
         return licenceClient.updateStatus(nomisId, 'SENT');
     }
@@ -138,6 +126,20 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
+    function create({nomisId, fieldMap, userInput, licenceSection, formName}) {
+        const newLicence = getUpdatedLicence({licence: {}, fieldMap, userInput, licenceSection, formName});
+
+        return licenceClient.createLicence(nomisId, newLicence, 'STARTED');
+    }
+
+    async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName}) {
+        const updatedLicence = getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName});
+
+        await licenceClient.updateLicence(nomisId, updatedLicence);
+
+        return updatedLicence;
+    }
+
     function getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName}) {
 
         const answers = fieldMap.reduce((answersAccumulator, field) => {
@@ -160,14 +162,6 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         return {...licence, [licenceSection]: {...licence[licenceSection], [formName]: answers}};
     }
 
-    async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName}) {
-        const updatedLicence = getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName});
-
-        await licenceClient.updateLicence(nomisId, updatedLicence);
-
-        return updatedLicence;
-    }
-
     return {
         reset,
         getLicence,
@@ -180,8 +174,8 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         sendToPm,
         getEstablishment,
         updateOptOut,
-        updateBassReferral,
-        update
+        update,
+        create
     };
 };
 
