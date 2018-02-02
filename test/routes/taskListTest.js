@@ -185,7 +185,7 @@ describe('POST /eligibilityStart', () => {
             .send({nomisId: '123'})
             .expect(302)
             .expect(res => {
-                expect(res.header['location']).to.include('/hdc/eligibility/123');
+                expect(res.header['location']).to.include('/hdc/eligibility/excluded/123');
             });
     });
 

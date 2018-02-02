@@ -38,7 +38,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
             await licenceService.createLicence(nomisId);
         }
 
-        res.redirect(`/hdc/eligibility/${nomisId}`);
+        res.redirect(`/hdc/eligibility/excluded/${nomisId}`);
     }));
 
     router.get('/image/:imageId', asyncMiddleware(async (req, res) => {
