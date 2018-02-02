@@ -1,7 +1,7 @@
 div.largeMarginBottom
     h2.heading-medium HDC eligibility and suitability check
     div.pure-g
-        if !eligibility
+        if !eligibilityAnswers
             div.pure-u-9-12
                 | Questions not completed
             div.pure-u-1-4
@@ -18,20 +18,20 @@ div.largeMarginBottom
                         div.pure-u-3-4.padRight15
                             | Is the offender excluded from HDC?
                         div#excludedAnswer.pure-u-1-4.center.bold
-                            if eligibility.excluded && eligibility.excluded.decision
-                                |#{eligibility.excluded.decision}
+                            if eligibilityAnswers.excluded && eligibilityAnswers.excluded.decision
+                                |#{eligibilityAnswers.excluded.decision}
                     div.pure-g.borderTopLight.smallPaddingTopBottom
                         div.pure-u-3-4.padRight15
                             | Is the offender presumed unsuitable?
                         div#unsuitableAnswer.pure-u-1-4.center.bold
-                            if eligibility.suitability && eligibility.suitability.decision
-                                | #{eligibility.suitability.decision}
+                            if eligibilityAnswers.suitability && eligibilityAnswers.suitability.decision
+                                | #{eligibilityAnswers.suitability.decision}
                     div.pure-g.borderTopLight.smallPaddingTopBottom
                         div.pure-u-3-4.padRight15
                             | Is there less than 4 weeks to go to the offender's CRD?
                         div#crdTimeAnswer.pure-u-1-4.center.bold
-                            if eligibility.crdTime && eligibility.crdTime.decision
-                                | #{eligibility.crdTime.decision}
+                            if eligibilityAnswers.crdTime && eligibilityAnswers.crdTime.decision
+                                | #{eligibilityAnswers.crdTime.decision}
 
                 div.pure-u-1-2.center
                     a#eligibilityCheckUpdate(href='/hdc/eligibility/excluded/'+prisonerInfo.offenderNo) Change these answers

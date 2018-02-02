@@ -46,6 +46,9 @@ module.exports = {
         nextPath: '/hdc/proposedAddress/submit/'
     },
     submit: {
+        fields: [
+            {licenceStatus: {}}
+        ],
         statusChange: {
             field: 'licenceStatus'
         },
