@@ -171,7 +171,7 @@ describe('GET /taskList/:prisonNumber', () => {
     context('when prisoner has opted out', () => {
         it('should display that user has opted out', () => {
             licenceServiceStub.getLicence.resolves({licence: {proposedAddress: {
-                optOut: {decision: 'Yes'},
+                optOut: {decision: 'Yes'}
             }}});
 
             return request(app)
@@ -186,7 +186,7 @@ describe('GET /taskList/:prisonNumber', () => {
     context('when address has been submitted', () => {
         it('should display that it has been submitted', () => {
             licenceServiceStub.getLicence.resolves({licence: {proposedAddress: {
-                optOut: {licenceStatus: 'ADDRESS_SUBMITTED'},
+                optOut: {licenceStatus: 'ADDRESS_SUBMITTED'}
             }}});
 
             return request(app)
@@ -201,7 +201,7 @@ describe('GET /taskList/:prisonNumber', () => {
     context('when bass has been requested', () => {
         it('should display that it has been requested', () => {
             licenceServiceStub.getLicence.resolves({licence: {proposedAddress: {
-                bassReferral: {decision: 'Yes'},
+                bassReferral: {decision: 'Yes'}
             }}});
 
             return request(app)

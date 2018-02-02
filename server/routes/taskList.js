@@ -81,11 +81,11 @@ function getHasStarted(licence) {
 }
 
 function getOptedOut(licence) {
-    return getIn(licence, ['licence', 'proposedAddress', 'optOut', 'decision']) === 'Yes'
+    return getIn(licence, ['licence', 'proposedAddress', 'optOut', 'decision']) === 'Yes';
 }
 
 function getBassReferralDecision(licence) {
-    return getIn(licence, ['licence', 'proposedAddress', 'bassReferral', 'decision']) === 'Yes'
+    return getIn(licence, ['licence', 'proposedAddress', 'bassReferral', 'decision']) === 'Yes';
 }
 
 function addressSubmitted(licence) {
