@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const path = require('path');
-const {getIn} = require('../utils/functionalHelpers');
+const {getIn, isEmpty} = require('../utils/functionalHelpers');
 
 module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -20,11 +20,22 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const {nomisId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
         const licence = await licenceService.getLicence(nomisId);
-        const eligibility = getIn(licence, ['licence', 'eligibility']);
-        const eligible = isEligible(eligibility);
-        const optOut = getIn(licence, ['licence', 'proposedAddress', 'optOut']);
+        const eligibilityAnswers = getIn(licence, ['licence', 'eligibility']);
+        const isEligible = getEligibility(eligibilityAnswers);
+        const hasStarted = getHasStarted(licence);
+        const hasOptedOut = getOptedOut(licence);
+        const hasBassReferral = getBassReferralDecision(licence);
+        const submittedToRo = addressSubmitted(licence);
 
-        res.render(`taskList/index`, {prisonerInfo, eligibility, eligible, optOut});
+        res.render('taskList/index', {
+            prisonerInfo,
+            eligibilityAnswers,
+            isEligible,
+            hasStarted,
+            hasOptedOut,
+            hasBassReferral,
+            submittedToRo
+        });
     }));
 
     router.post('/eligibilityStart', asyncMiddleware(async (req, res) => {
@@ -58,9 +69,25 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
     return router;
 };
 
-function isEligible(eligibilityObject) {
+function getEligibility(eligibilityObject) {
     if(!eligibilityObject) {
         return false;
     }
     return eligibilityObject.excluded.decision === 'No' && eligibilityObject.suitability.decision === 'No';
+}
+
+function getHasStarted(licence) {
+    return !isEmpty(getIn(licence, ['licence', 'proposedAddress', 'optOut']));
+}
+
+function getOptedOut(licence) {
+    return getIn(licence, ['licence', 'proposedAddress', 'optOut', 'decision']) === 'Yes';
+}
+
+function getBassReferralDecision(licence) {
+    return getIn(licence, ['licence', 'proposedAddress', 'bassReferral', 'decision']) === 'Yes';
+}
+
+function addressSubmitted(licence) {
+    return getIn(licence, ['licence', 'proposedAddress', 'submit', 'licenceStatus']) === 'ADDRESS_SUBMITTED';
 }

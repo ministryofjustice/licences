@@ -168,6 +168,51 @@ describe('GET /taskList/:prisonNumber', () => {
         });
     });
 
+    context('when prisoner has opted out', () => {
+        it('should display that user has opted out', () => {
+            licenceServiceStub.getLicence.resolves({licence: {proposedAddress: {
+                optOut: {decision: 'Yes'}
+            }}});
+
+            return request(app)
+                .get('/1233456')
+                .expect(200)
+                .expect(res => {
+                    expect(res.text).to.not.include('Prisoner has opted out of HDC');
+                });
+        });
+    });
+
+    context('when address has been submitted', () => {
+        it('should display that it has been submitted', () => {
+            licenceServiceStub.getLicence.resolves({licence: {proposedAddress: {
+                optOut: {licenceStatus: 'ADDRESS_SUBMITTED'}
+            }}});
+
+            return request(app)
+                .get('/1233456')
+                .expect(200)
+                .expect(res => {
+                    expect(res.text).to.not.include('Proposed address information sent to RO');
+                });
+        });
+    });
+
+    context('when bass has been requested', () => {
+        it('should display that it has been requested', () => {
+            licenceServiceStub.getLicence.resolves({licence: {proposedAddress: {
+                bassReferral: {decision: 'Yes'}
+            }}});
+
+            return request(app)
+                .get('/1233456')
+                .expect(200)
+                .expect(res => {
+                    expect(res.text).to.not.include('Prisoner has opted in and requested BASS referral');
+                });
+        });
+    });
+
 });
 
 describe('POST /eligibilityStart', () => {
