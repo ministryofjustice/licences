@@ -3,25 +3,27 @@ module.exports = {
         licenceSection: 'excluded',
         fields: [
             {decision: {}},
-            {reason: {dependantOn: 'decision', predicate: 'Yes'}}
+            {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
         nextPathDecision: {
             fieldToDecideOn: 'decision',
             Yes: '/hdc/taskList/',
             No: '/hdc/eligibility/suitability/'
-        }
+        },
+        nextPath: '/hdc/eligibility/suitability/'
     },
     suitability: {
         licenceSection: 'suitability',
         fields: [
             {decision: {}},
-            {reason: {dependantOn: 'decision', predicate: 'Yes'}}
+            {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
         nextPathDecision: {
             fieldToDecideOn: 'decision',
             Yes: '/hdc/taskList/',
             No: '/hdc/eligibility/crdTime/'
-        }
+        },
+        nextPath: '/hdc/eligibility/crdTime/'
     },
     crdTime: {
         licenceSection: 'crdTime',

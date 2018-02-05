@@ -279,7 +279,7 @@ describe('licenceService', () => {
             }
         };
 
-        context('When there are dependants', () => {
+        context('When there are dependents', () => {
             const licence = {
                 ...baseLicence,
                 section4: {
@@ -296,17 +296,17 @@ describe('licenceService', () => {
             const fieldMap = [
                 {decision: {}},
                 {followUp1: {
-                    dependantOn: 'decision',
+                    dependentOn: 'decision',
                     predicate: 'Yes'}
                 },
                 {followUp2: {
-                    dependantOn: 'decision',
+                    dependentOn: 'decision',
                     predicate: 'Yes'}
                 }
 
             ];
 
-            it('should store dependants if predicate matches', async () => {
+            it('should store dependents if predicate matches', async () => {
                 const userInput = {
                     decision: 'Yes',
                     followUp1: 'County',
@@ -331,7 +331,7 @@ describe('licenceService', () => {
                 });
             });
 
-            it('should remove dependants if predicate does not match', async () => {
+            it('should remove dependents if predicate does not match', async () => {
                 const userInput = {
                     decision: 'No',
                     followUp1: 'County',
@@ -355,7 +355,7 @@ describe('licenceService', () => {
             });
         });
 
-        context('When there are no dependants', () => {
+        context('When there are no dependents', () => {
 
             const licence = {
                 ...baseLicence,

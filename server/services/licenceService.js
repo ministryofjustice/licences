@@ -135,12 +135,12 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
 
             const fieldName = Object.keys(field)[0];
             const fieldObject = field[fieldName];
-            const dependantOn = userInput[fieldObject.dependantOn];
+            const dependentOn = userInput[fieldObject.dependentOn];
             const predicateResponse = fieldObject.predicate;
 
-            const dependantMatchesPredicate = fieldObject.dependantOn && dependantOn === predicateResponse;
+            const dependentMatchesPredicate = fieldObject.dependentOn && dependentOn === predicateResponse;
 
-            if (!dependantOn || dependantMatchesPredicate) {
+            if (!dependentOn || dependentMatchesPredicate) {
                 return {...answersAccumulator, [fieldName]: userInput[fieldName]};
             }
 

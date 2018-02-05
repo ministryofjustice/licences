@@ -3,7 +3,7 @@ module.exports = {
         licenceSection: 'optOut',
         fields: [
             {decision: {}},
-            {reason: {dependantOn: 'decision', predicate: 'Yes'}}
+            {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
         nextPathDecision: {
             fieldToDecideOn: 'decision',
@@ -16,8 +16,8 @@ module.exports = {
         licenceSection: 'bassReferral',
         fields: [
             {decision: {}},
-            {proposedTown: {dependantOn: 'decision', predicate: 'Yes'}},
-            {proposedCounty: {dependantOn: 'decision', predicate: 'Yes'}}
+            {proposedTown: {dependentOn: 'decision', predicate: 'Yes'}},
+            {proposedCounty: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
         nextPathDecision: {
             fieldToDecideOn: 'decision',

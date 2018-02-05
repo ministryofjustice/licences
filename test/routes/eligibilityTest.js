@@ -119,7 +119,7 @@ describe('/hdc/eligibility', () => {
                 .expect(res => {
                     expect(licenceServiceStub.update).to.be.calledOnce();
                     expect(licenceServiceStub.update.args[0][0].userInput).to.eql(form1Response);
-                    expect(res.header['location']).to.include('/hdc/taskList/1');
+                    expect(res.header['location']).to.include('/hdc/eligibility/suitability/1');
                 });
 
         });
