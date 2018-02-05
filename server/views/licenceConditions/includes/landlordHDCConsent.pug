@@ -1,0 +1,19 @@
+div.form-group
+    p Does the address have an electricity supply?
+    div.multiple-choice
+        input#hasElectricitySupplyYes(type="radio" checked=data.hasElectricitySupply === 'Yes' name="hasElectricitySupply" value="Yes")
+        label(for="hasElectricitySupplyYes") Yes
+    div.multiple-choice
+        input#hasElectricitySupplyNo(type="radio" checked=data.hasElectricitySupply === 'No' name="hasElectricitySupply" value="No")
+        label(for="hasElectricitySupplyNo") No
+
+
+div.form-group
+    p Was a home visit conducted in this case?
+    div.multiple-choice
+        input#homeVisitConductedYes(type="radio" checked=data.homeVisitConducted === 'Yes' name="homeVisitConducted" value="Yes")
+        label(for="homeVisitConductedYes") Yes
+    div.multiple-choice
+        input#homeVisitConductedNo(type="radio" checked=data.homeVisitConducted === 'No' name="homeVisitConducted" value="No")
+        label(for="homeVisitConductedNo") No
+

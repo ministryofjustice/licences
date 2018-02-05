@@ -45,7 +45,6 @@ const licenceModel = {
             proposedTown: ''
         }
     }
-
 };
 
 
