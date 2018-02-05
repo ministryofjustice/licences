@@ -22,7 +22,7 @@ const licenceServiceStub = {
 const testUser = {
     staffId: 'my-staff-id',
     token: 'my-token',
-    roleCode: 'OM'
+    roleCode: 'CA'
 };
 
 const app = appSetup(createSendRoute({

@@ -1,0 +1,18 @@
+div.largeMarginBottom.borderTop
+    h2.heading-medium Risk management and victim liaison
+
+    div.borderBottomLight.largeMarginBottom
+
+    div.pure-g
+        div.pure-u-9-12
+            if !riskManagement
+                | Not yet confirmed
+            else
+                | Risk management confirmed
+        div.pure-u-1-4
+            a.taskListAction.center.button(href="/hdc/riskManagement/" + prisonerInfo.offenderNo)
+                if !riskManagement
+                    | Start
+                else
+                    | View
+

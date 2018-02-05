@@ -1,0 +1,16 @@
+div.largeMarginBottom.borderTop
+    h2.heading-medium Submit to OMU
+
+    div.borderBottomLight.largeMarginBottom
+
+    div.pure-g
+        div.pure-u-9-12
+            if !roTasksComplete
+                | Tasks not yet complete
+            else
+                | to do
+        div.pure-u-1-4
+            if roTasksComplete
+                a.taskListAction.center.button(href="/hdc/send/" + prisonerInfo.offenderNo)
+                    | Continue
+

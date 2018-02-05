@@ -1,0 +1,17 @@
+div.largeMarginBottom.borderTop
+    h2.heading-medium Reporting instructions
+
+    div.borderBottomLight.largeMarginBottom
+
+    div.pure-g
+        div.pure-u-9-12
+            if !reportingInstructions
+                | Not yet added
+            else
+                | Reporting instructions added
+        div.pure-u-1-4
+            a.taskListAction.center.button(href="/hdc/reporting/" + prisonerInfo.offenderNo)
+                if !reportingInstructions
+                    | Start
+                else
+                    | View
