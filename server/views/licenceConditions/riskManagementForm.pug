@@ -1,0 +1,68 @@
+extends ../layout
+
+block content
+
+    div.pure-g.pure-u-1
+        div.back-link-container.smallPaddingTop
+            a.link-back(href="javascript: window.history.back();") Back
+
+        h2.heading-large Risk management and victim liaison
+
+    form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=nomisId || '')
+        div.pure-u-md-5-12.paddingBottom.largeMarginBottom
+            div
+                h3.heading-medium Risk management
+                div.form-group.inline.smallPaddingTop
+                    p Are there any risk management planning actions that must take place prior to release?
+
+                    div.multiple-choice(data-target="planningForm")
+                        input#planningYes(type="radio" checked=data.planningActions === 'Yes' name="planningActions" value="Yes")
+                        label(for="planningYes") Yes
+                    div.multiple-choice
+                        input#planningNo(type="radio" checked=data.planningActions === 'No' name="planningActions" value="No")
+                        label(for="planningNo") No
+
+                div#planningForm.panel.panel-border-narrow.js-hidden
+                    label(for='planningActionsDetails') Please give details
+                    textarea(name='planningActionsDetails' id='planningActionsDetails' class='form-control' rows='4')
+                        if data.planningActionsDetails
+                            | #{data.planningActionsDetails}
+
+            div
+                div.form-group.inline.smallPaddingTop
+                    p Are you still awaiting information?
+
+                    div.multiple-choice(data-target="awaitingForm")
+                        input#awaitingYes(type="radio" checked=data.awaitingInformation === 'Yes' name="awaitingInformation" value="Yes")
+                        label(for="awaitingYes") Yes
+                    div.multiple-choice
+                        input#awaitingNo(type="radio" checked=data.awaitingInformation === 'No' name="awaitingInformation" value="No")
+                        label(for="awaitingNo") No
+
+                div#awaitingForm.panel.panel-border-narrow.js-hidden
+                    label(for='awaitingInformationDetails') Please give details
+                    textarea(name='awaitingInformationDetails' id='awaitingInformationDetails' class='form-control' rows='4')
+                        if data.awaitingInformationDetails
+                            | #{data.awaitingInformationDetails}
+
+            div.largePaddingBottom
+                h3.heading-medium Victim liaison
+                div.form-group.inline.smallPaddingTop
+                    p Is the Victim Contact Service qualifying case where the victim has opted in?
+
+                    div.multiple-choice(data-target="victimForm")
+                        input#victimYes(type="radio" checked=data.victimLiaison === 'Yes' name="victimLiaison" value="Yes")
+                        label(for="victimYes") Yes
+                    div.multiple-choice
+                        input#victimNo(type="radio" checked=data.victimLiaison === 'No' name="victimLiaison" value="No")
+                        label(for="victimYes") No
+
+                div#victimForm.panel.panel-border-narrow.js-hidden
+                    label(for='victimLiaisonDetails') Please give details
+                    textarea(name='victimLiaisonDetails' id='victimLiaisonDetails' class='form-control' rows='4')
+                        if data.victimLiaisonDetails
+                            | #{data.victimLiaisonDetails}
+
+            include ../includes/formButtons
