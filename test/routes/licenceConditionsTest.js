@@ -51,14 +51,6 @@ describe('/hdc/licenceConditions', () => {
     });
 
     describe('GET /licenceConditions/standardConditions/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/standardConditions/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
         it('renders standard conditions page', () => {
             return request(app)
                 .get('/standardConditions/1')
@@ -71,7 +63,19 @@ describe('/hdc/licenceConditions', () => {
     });
 
     describe('GET /licenceConditions/riskManagement/:nomisId', () => {
-        it('renders out out page', () => {
+        it('renders standard conditions page', () => {
+            return request(app)
+                .get('/standardConditions/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('Not commit any offence');
+                });
+        });
+    });
+
+    describe('GET /licenceConditions/riskManagement/:nomisId', () => {
+        it('renders risk management page', () => {
             return request(app)
                 .get('/riskManagement/1')
                 .expect(200)
@@ -81,7 +85,6 @@ describe('/hdc/licenceConditions', () => {
                 });
         });
     });
-
 
     describe('GET /licenceConditions/curfewAddressReview/:nomisId', () => {
         it('renders curfew address page', () => {
