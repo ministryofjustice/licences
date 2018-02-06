@@ -84,9 +84,7 @@ describe('caseListService', () => {
 
         it('should add a started status to the prisoners if licence exists', async () => {
             licenceClient.getLicences.resolves([{
-                licence: {
-                    nomisId: 'A12345'
-                }
+                nomisId: 'A12345'
             }]);
             const result = await service.getHdcCaseList(user);
 
