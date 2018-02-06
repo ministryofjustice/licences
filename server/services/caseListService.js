@@ -41,7 +41,7 @@ function getROCaseList(nomisClient, licenceClient, user) {
 
         const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName[0].STAFF_ID.value);
 
-        if(requiredPrisoners && requiredPrisoners.length > 0) {
+        if(!isEmpty(requiredPrisoners)) {
             const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
             return nomisClient.getHdcEligiblePrisoners(requiredIDs);
         }
