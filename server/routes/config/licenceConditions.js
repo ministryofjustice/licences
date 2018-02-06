@@ -10,5 +10,16 @@ module.exports = {
             {victimLiaisonDetails: {dependentOn: 'victimLiaison', predicate: 'Yes'}}
         ],
         nextPath: '/hdc/taskList/'
+    },
+    curfewAddressReview: {
+        licenceMap: ['licence', 'proposedAddress', 'curfewAddress'],
+        nextPath: null,
+        fields: [
+            {landLordHDCConsent: {}},
+            {hasElectricitySupply: {dependentOn: 'landLordHDCConsent', predicate: 'Yes'}},
+            {homeVisitConducted: {dependentOn: 'landLordHDCConsent', predicate: 'Yes'}},
+            {managedSafely: {}},
+            {managedSafelyReasons: {dependentOn: 'managedSafely', predicate: 'No'}}
+        ]
     }
 };

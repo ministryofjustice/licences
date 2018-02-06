@@ -5,7 +5,7 @@ const {
     appSetup
 } = require('../supertestSetup');
 
-const createProposedAddressRoute = require('../../server/routes/licenceConditions');
+const createLicenceConditionsRoute = require('../../server/routes/licenceConditions');
 const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 const formConfig = require('../../server/routes/config/licenceConditions');
@@ -25,7 +25,7 @@ const testUser = {
     roleCode: 'OM'
 };
 
-const app = appSetup(createProposedAddressRoute({
+const app = appSetup(createLicenceConditionsRoute({
     licenceService: licenceServiceStub,
     logger: loggerStub,
     authenticationMiddleware
@@ -38,14 +38,6 @@ describe('/hdc/licenceConditions', () => {
     });
 
     describe('GET /licenceConditions/riskManagement/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/riskManagement/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
         it('renders out out page', () => {
             return request(app)
                 .get('/riskManagement/1')
@@ -53,6 +45,18 @@ describe('/hdc/licenceConditions', () => {
                 .expect('Content-Type', /html/)
                 .expect(res => {
                     expect(res.text).to.contain('Risk management and victim liaison');
+                });
+        });
+    });
+
+    describe('GET /licenceConditions/curfewAddressReview/:nomisId', () => {
+        it('renders out out page', () => {
+            return request(app)
+                .get('/curfewAddressReview/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('Proposed curfew address');
                 });
         });
     });

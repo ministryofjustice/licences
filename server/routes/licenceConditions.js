@@ -20,8 +20,9 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         logger.debug(`GET licenceConditions/${formName}/${nomisId}`);
 
         const rawLicence = await licenceService.getLicence(nomisId);
-        const {licenceSection, nextPath} = formConfig[formName];
-        const data = getIn(rawLicence, ['licence', 'licenceConditions', licenceSection]) || {};
+        const {licenceSection, nextPath, licenceMap} = formConfig[formName];
+        const dataPath = licenceMap || ['licence', 'licenceConditions', licenceSection];
+        const data = getIn(rawLicence, dataPath) || {};
 
         res.render(`licenceConditions/${formName}Form`, {nomisId, data, nextPath});
     }));

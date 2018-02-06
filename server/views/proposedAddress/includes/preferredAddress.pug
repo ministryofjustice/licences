@@ -1,0 +1,56 @@
+h3.heading-medium Preferred address
+    div#addressDetails.pure-g.largePaddingBottom
+        div.pure-u-1.pure-u-sm-5-12.pure-g
+            div.pure-u-md-2-3
+                | Address
+                div.paddingBottom.smallMarginTop
+                    if data.addressLine1
+                        p#address1.bold.noMargin #{data.addressLine1}
+                    if data.addressLine2
+                        p#address2.bold.noMargin #{data.addressLine2}
+                    if data.addressTown
+                        p#addressTown.bold.noMargin #{data.addressTown}
+                    if data.postCode
+                        p#addressPostCode.bold.noMargin #{data.postCode}
+
+            div.pure-u-md-2-3.largePaddingBottom
+                | Telephone
+                if data.telephone
+                    p#telephone.bold #{data.telephone}
+
+            div.pure-u-md-2-3.paddingBottom
+                p Does the address have an electricity supply?
+                if data.electricity
+                    p#electricity.bold #{data.electricity}
+
+        if data.occupier
+            div.pure-u-1.pure-u-md-7-12
+                div.pure-g
+                    p.pure-u-1-2.noMargin Name of main occupier
+                    p.pure-u-1-4.noMargin Age
+                    p.pure-u-1-4.noMargin Relation to prisoner
+
+                div.pure-g.smallMarginTop.borderBottomLight.smallPaddingBottom
+                    p#occupierName.bold.pure-u-1-2.noMargin #{data.occupier.name}
+                    p#occupierAge.bold.pure-u-1-4.noMargin #{data.occupier.age}
+                    p#occupierRelation.bold.pure-u-1-4.noMargin #{data.occupier.relationship}
+
+                if data.residents
+
+                    div.pure-g.largePaddingBottom.smallPaddingTop
+                        p.bold Other residents
+                        p.pure-u-1-2.noMargin Name
+                        p.pure-u-1-4.noMargin Age
+                        p.pure-u-1-4.noMargin Relation to prisoner
+
+                        for resident in data.residents
+                            div.pure-g.smallMarginTop
+                                p.bold.pure-u-1-2.noMargin #{resident.name}
+                                p.bold.pure-u-1-4.noMargin #{resident.age}
+                                p.bold.pure-u-1-4.noMargin #{resident.relation}
+
+
+                div.pure-u-md-2-3
+                    p Has the prisoner been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+                    if data.cautionedAgainstResident
+                        p#cautionedAgainstResident.bold #{data.cautionedAgainstResident}
