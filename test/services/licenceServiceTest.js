@@ -110,7 +110,7 @@ describe('licenceService', () => {
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
-                'dischargeAddress',
+                'curfewAddress',
                 'ab1',
                 {address1: 'Scotland Street'}
             );

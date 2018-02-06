@@ -1,34 +1,19 @@
 h2.heading-medium.borderBottom Additional conditions
 div.pure-g
-    div.pure-u-2-3
-        div.borderBottomLight
-            h3.heading-small Conditions
-            for condition in licence.additionalConditions
+    -var conditions = licence.additionalConditions
+
+    for condition, index in conditions
+        div.borderBottomLight.midPaddingTopBottom
+            div.pure-u-2-3
                 if condition.group
-                    h3.heading-small #{condition.group}
+                    div.heading-small.noMargin.smallPaddingBottom Condition #{index + 1}
+                    div.heading-small.noMargin.smallPaddingBottom #{condition.group}
                         if condition.subgroup
                             |  -- #{condition.subgroup}
 
-                p
+                div
                     for item in condition.content
                         if item.text
                             | #{item.text}
                         if item.variable
                             span(class="bold") #{item.variable}
-
-    //
-    //        h3.heading-small Condition one
-    //            span.block People, contact and relationships -- Children
-    //        p
-    //            | Not to have unsupervised contact with ANY children under the age of
-    //            | approval of your supervising officer and / or except where that contact
-    //            | is inadvertent and not reasonably avoidable in the course of lawful daily life.
-    //
-    //div.column-two-thirds
-    //    div.borderBottomLight
-    //        h3.heading-small Condition two
-    //            span.block Travel -- Passports
-    //        p
-    //            | To surrender your passport(s) to your supervising officer and to notify your
-    //            | supervising officer of any intention to apply for a new passport.
-

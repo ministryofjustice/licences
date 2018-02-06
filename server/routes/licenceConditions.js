@@ -62,11 +62,11 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         logger.debug('GET licenceConditions/conditionsReview/:nomisId');
 
         const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
-        const {licenceSection, nextPath} = formConfig.conditionsReview;
+        const {nextPath} = formConfig.conditionsReview;
         // TODO look to put additional conditions within licenceConditions section on licence to enable generic get
-        const data = getIn(rawLicence, ['licence', licenceSection]) || {};
+        const licence = getIn(rawLicence, ['licence']) || {};
 
-        res.render(`licenceConditions/conditionsReviewForm`, {nomisId, data, nextPath});
+        res.render(`licenceConditions/conditionsReviewForm`, {nomisId, licence, nextPath});
     }));
 
     router.get('/:formName/:nomisId', asyncMiddleware(async (req, res) => {

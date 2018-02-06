@@ -186,7 +186,7 @@ describe('/hdc/licenceConditions', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.contain('Additional conditions');
+                    expect(res.text).to.contain('Add another condition');
                 });
         });
     });

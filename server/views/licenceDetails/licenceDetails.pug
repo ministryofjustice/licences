@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+
+    if status === 'STARTED'
+        h1.heading-large Check the details
+    else
+        h1.heading-large Licence details
+
+    div.pure-g.largeMarginBottom
+        div.pure-u-1
+
+            if licence.proposedAddress && licence.proposedAddress.curfewAddress
+                include curfewAddress
+
+            if licence.additionalConditions && licence.additionalConditions.length > 0
+                include ./additionalConditions
+
+            if licence.licenceConditions && licence.licenceConditions.riskManagement
+                include ./riskManagement
+
+    div#continueBtns.pure-g.paddingBottom
+        div.pure-u-1.inlineButtons
+
+            // TODO update link to send page
+            a#continueBtn.requiredButton.button(href="/hdc/taskList/"+nomisId role="button") Continue
+
+            a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/"+nomisId role="button") Back to tasklist

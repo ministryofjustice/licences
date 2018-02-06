@@ -1,0 +1,71 @@
+h2.heading-medium.borderBottom.separatorTitle Planned curfew address
+div.pure-g
+    -var address = licence.proposedAddress.curfewAddress
+
+    div.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2 Address
+        div#dischargeAddress.pure-u-1-2.bold
+            if address.addressLine1
+                span.block #{address.addressLine1}
+            if address.addressLine2
+                span.block #{address.addressLine2}
+            if address.addressTown
+                span.block #{address.addressTown}
+            if address.postCode
+                span.block #{address.postCode}
+
+    div.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2 Contact number
+        div#dischargeContactName.pure-u-1-2.bold
+            if address.telephone
+                | #{address.telephone}
+
+    div.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2 Main occupier details
+        div.pure-u-1-2.pure-g.bold
+            if address.occupier
+                div.pure-u-md-1-3 #{address.occupier.name}
+                div.pure-u-md-1-6 #{address.occupier.age}
+                div.pure-u-md-1-3 #{address.occupier.relationship}
+
+    div.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2 Other occupants
+        div.pure-u-1-2.pure-g.bold
+            if address.residents
+                for resident in address.residents
+                    if (resident.name !== "" && resident.age !== "" && resident.relation !== "")
+                        div
+                            div.pure-u-md-1-3 #{resident.name}
+                            div.pure-u-md-1-6 #{resident.age}
+                            div.pure-u-md-1-3 #{resident.relation}
+
+    div.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2.pure-g
+            div.pure-u-3-4 Has the prisoner been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+        div#dischargeContactNumber.pure-u-1-2.bold
+            if address.cautionedAgainstResident
+                | #{address.cautionedAgainstResident}
+
+
+    div.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2.pure-g
+            div.pure-u-3-4 Does the homeowner/landlord give informed consent to HDC at the address?
+        div#dischargeHomeAddress.pure-u-1-2.bold
+            | NO IDEA
+
+    div.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2 Was a home visit conducted in this case?
+        div.pure-u-1-2.bold
+            | NO IDEA
+
+    div.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2 Does the address have an electricity supply?
+        div.pure-u-1-2.bold
+            if address.electricity
+                | #{address.electricity}
+
+
+    div.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2 Are you happy for this to be the curfew address?
+        div.pure-u-1-2.bold
+            | NO IDEA
