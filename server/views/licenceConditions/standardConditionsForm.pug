@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+    div.back-link-container
+        a.link-back(href="/additionalConditions/"+nomisId) Back
+
+    h1.heading-large The standard conditions
+
+    div.pure-g.paddingBottom
+        div.pure-u-2-3
+            P The following conditions are included on the licence as a baseline.
+
+            p An offender must:
+
+            ol.numberedList
+                for condition in conditions
+                    li.midPaddingBottom #{condition.TEXT.value}
+
+    form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=nomisId || '')
+        div.form-group.inline.smallPaddingTop
+            p.bold Do you want to add any additional conditions?
+
+            div.multiple-choice
+                input#additionalConditionsYes(type="radio" name="additionalConditions" value="Yes")
+                label(for="additionalConditionsYes") Yes
+            div.multiple-choice
+                input#additionalConditionsNo(type="radio" name="additionalConditions" value="No")
+                label(for="additionalConditionsNo") No
+
+        include ../includes/formButtons

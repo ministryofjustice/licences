@@ -17,11 +17,9 @@ block content
         div#conditionsInstructions.paddingBottom.largeMarginBottom
             div.pure-g
                 div.paddingBottom.borderBottom.midMarginBottom
-                    p If the offender requires additional conditions adding to their licence select them below.
-                    span.block.smallPaddingBottom
-                        a(href="./standard/"+nomisId) View the seven standard conditions
+                    p.paddingBottom If the offender requires additional conditions adding to their licence select them below.
 
-                    a.button.button-secondary(href="/reporting/"+nomisId role="button") No additional conditions required
+                    a.button.button-secondary.padd(href="/hdc/taskList/"+nomisId role="button") No additional conditions required
 
             div.pure-g
                 for group, groupName in conditions
@@ -47,12 +45,9 @@ block content
                                                     span.error-message(class='missing-'+condition.ID.value) Please supply information
                                                 if condition.ERRORS && condition.ERRORS.indexOf('INVALID_DATE') > -1
                                                     span.error-message(class='missing-'+condition.ID.value) Date must be in the format DD/MM/YYYY
-                                                include ./formBuilder
+                                                include ./includes/formBuilder
 
-        div#continueBtns.pure-g.paddingBottom
-            div.pure-u-1.inlineButtons
-                input#continueBtn.requiredButton.button(type="submit" value="Continue")
-                a#backBtn.requiredButton.button.button-secondary(href="/" role="button") Back to dashboard
+        include ../includes/formButtons
 
 
 block append scripts
