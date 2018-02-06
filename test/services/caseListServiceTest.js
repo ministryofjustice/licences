@@ -115,11 +115,22 @@ describe('caseListService', () => {
         });
 
         context('when user is a RO', () => {
-            it('should call getHdcEligiblePrisoners from nomisClient', async () => {
+            it('should call getROPrisoners && getHdcEligiblePrisoners from nomisClient', async () => {
                 await service.getHdcCaseList(ROUser);
 
+                expect(nomisClient.getROPrisoners).to.be.calledOnce();
                 expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
                 expect(nomisClient.getHdcEligiblePrisoners).to.be.calledWith(['A', 'B', 'C']);
+            });
+
+            it('should not call getHdcEligiblePrisoners when no results from getROPrisoners', async () => {
+
+                nomisClient.getROPrisoners.resolves([]);
+
+                await service.getHdcCaseList(ROUser);
+
+                expect(nomisClient.getROPrisoners).to.be.calledOnce();
+                expect(nomisClient.getHdcEligiblePrisoners).not.to.be.calledOnce();
             });
         });
     });

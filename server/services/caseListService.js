@@ -40,9 +40,13 @@ function getROCaseList(nomisClient, licenceClient, user) {
         const deliusUserName = await licenceClient.getDeliusUserName(user.username);
 
         const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName[0].STAFF_ID.value);
-        const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
 
-        return nomisClient.getHdcEligiblePrisoners(requiredIDs);
+        if(requiredPrisoners && requiredPrisoners.length > 0) {
+            const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
+            return nomisClient.getHdcEligiblePrisoners(requiredIDs);
+        }
+
+        return [];
     };
 }
 
