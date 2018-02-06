@@ -1,5 +1,5 @@
 const logger = require('../../log.js');
-const {isEmpty, getIn} = require('../utils/functionalHelpers');
+const {isEmpty} = require('../utils/functionalHelpers');
 const {formatObjectForView} = require('./utils/formatForView');
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient) {
@@ -40,9 +40,13 @@ function getROCaseList(nomisClient, licenceClient, user) {
         const deliusUserName = await licenceClient.getDeliusUserName(user.username);
 
         const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName[0].STAFF_ID.value);
-        const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
 
-        return nomisClient.getHdcEligiblePrisoners(requiredIDs);
+        if(!isEmpty(requiredPrisoners)) {
+            const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
+            return nomisClient.getHdcEligiblePrisoners(requiredIDs);
+        }
+
+        return [];
     };
 }
 
@@ -59,8 +63,7 @@ function getOffenderIds(releases) {
 
 function getStatus(prisoner, licences) {
     const licenceForPrisoner = licences.find(rawLicence => {
-        const licenceObject = getIn(rawLicence, ['licence']);
-        return prisoner.offenderNo === licenceObject.nomisId;
+        return prisoner.offenderNo === rawLicence.nomisId;
     });
 
     return licenceForPrisoner ? 'Started' : 'Not started';

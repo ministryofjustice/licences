@@ -325,7 +325,7 @@ describe('nomisClient', function() {
 
     describe('getROPrisoners', () => {
 
-        const url = '/offender-relationships/externalRef/1/com';
+        const url = '/offender-relationships/externalRef/1/COM';
 
         it('should return data from api', () => {
             fakeNomis

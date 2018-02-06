@@ -97,7 +97,7 @@ module.exports = function(token) {
         },
 
         getROPrisoners: async function(deliusUserName) {
-            const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/com`;
+            const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/COM`;
             return nomisGet(path, '', token);
         }
     };
