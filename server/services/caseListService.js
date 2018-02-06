@@ -32,7 +32,7 @@ async function getCaseList(nomisClient, licenceClient, user) {
         DM: nomisClient.getHdcEligiblePrisoners
     };
 
-    return asyncCaseRetrievalMethod[user.roleCode]();
+    return asyncCaseRetrievalMethod[user.role]();
 }
 
 function getROCaseList(nomisClient, licenceClient, user) {

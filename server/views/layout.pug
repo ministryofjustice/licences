@@ -47,9 +47,9 @@ html(lang="en")
                         a(href="https://www.gov.uk", title="Go to the GOV.UK homepage", id="logo", class="content hmppslogo")
                             img(src="/public/images/hmpps_logo_small.png", width="54", height="48", alt="")
                             span  HMPPS
-                if profile
+                if user
                     div(id="header-user")
-                        span.bold #{profile.firstName}, #{profile.lastName} &nbsp;&nbsp;|&nbsp;&nbsp;
+                        span.bold #{user.firstName}, #{user.lastName} &nbsp;&nbsp;|&nbsp;&nbsp;
                         a(href="/logout") Logout
 
         main.pure-g(role="main")

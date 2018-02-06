@@ -15,7 +15,7 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /send');
 
-        res.render(`send/${req.user.roleCode}`, {nomisId: req.params.nomisId});
+        res.render('send', {nomisId: req.params.nomisId});
     }));
 
     router.post('/omu/', asyncMiddleware(async (req, res) => {

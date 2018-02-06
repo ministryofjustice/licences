@@ -45,17 +45,16 @@ const testUser = {
 };
 
 const app = appSetup(createTaskListRoute({
-        prisonerService: serviceStub,
-        licenceService: licenceServiceStub,
-        logger: loggerStub,
-        authenticationMiddleware
-    }
-), testUser);
+    prisonerService: serviceStub,
+    licenceService: licenceServiceStub,
+    logger: loggerStub,
+    authenticationMiddleware
+}), testUser);
 
 describe('GET /taskList/:prisonNumber', () => {
 
     afterEach(() => {
-       sandbox.reset();
+        sandbox.reset();
     });
 
     it('should call getPrisonerDetails from prisonerDetailsService', () => {
@@ -104,16 +103,18 @@ describe('GET /taskList/:prisonNumber', () => {
 
     context('when prisoner is not excluded', () => {
         it('should display opt out form link', () => {
-            licenceServiceStub.getLicence.resolves({licence: {
-                eligibility: {
-                    excluded: {
-                        decision: 'No'
-                    },
-                    suitability: {
-                        decision: 'No'
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    eligibility: {
+                        excluded: {
+                            decision: 'No'
+                        },
+                        suitability: {
+                            decision: 'No'
+                        }
                     }
                 }
-            }});
+            });
 
             return request(app)
                 .get('/1233456')
@@ -126,10 +127,14 @@ describe('GET /taskList/:prisonNumber', () => {
 
     context('when prisoner is ineligible', () => {
         it('should not display link to opt out when excluded', () => {
-            licenceServiceStub.getLicence.resolves({licence: {eligibility: {
-                excluded: 'No',
-                unsuitable: 'Yes'
-            }}});
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    eligibility: {
+                        excluded: 'No',
+                        unsuitable: 'Yes'
+                    }
+                }
+            });
 
             return request(app)
                 .get('/1233456')
@@ -140,10 +145,14 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         it('should not display link to opt out when unsuitable', () => {
-            licenceServiceStub.getLicence.resolves({licence: {eligibility: {
-                excluded: 'Yes',
-                unsuitable: 'No'
-            }}});
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    eligibility: {
+                        excluded: 'Yes',
+                        unsuitable: 'No'
+                    }
+                }
+            });
 
             return request(app)
                 .get('/1233456')
@@ -154,10 +163,14 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         it('should not display link to opt out when unsuitable and excluded', () => {
-            licenceServiceStub.getLicence.resolves({licence: {eligibility: {
-                excluded: 'Yes',
-                unsuitable: 'Yes'
-            }}});
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    eligibility: {
+                        excluded: 'Yes',
+                        unsuitable: 'Yes'
+                    }
+                }
+            });
 
             return request(app)
                 .get('/1233456')
@@ -170,9 +183,13 @@ describe('GET /taskList/:prisonNumber', () => {
 
     context('when prisoner has opted out', () => {
         it('should display that user has opted out', () => {
-            licenceServiceStub.getLicence.resolves({licence: {proposedAddress: {
-                optOut: {decision: 'Yes'}
-            }}});
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    proposedAddress: {
+                        optOut: {decision: 'Yes'}
+                    }
+                }
+            });
 
             return request(app)
                 .get('/1233456')
@@ -185,9 +202,13 @@ describe('GET /taskList/:prisonNumber', () => {
 
     context('when address has been submitted', () => {
         it('should display that it has been submitted', () => {
-            licenceServiceStub.getLicence.resolves({licence: {proposedAddress: {
-                optOut: {licenceStatus: 'ADDRESS_SUBMITTED'}
-            }}});
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    proposedAddress: {
+                        optOut: {licenceStatus: 'ADDRESS_SUBMITTED'}
+                    }
+                }
+            });
 
             return request(app)
                 .get('/1233456')
@@ -200,9 +221,13 @@ describe('GET /taskList/:prisonNumber', () => {
 
     context('when bass has been requested', () => {
         it('should display that it has been requested', () => {
-            licenceServiceStub.getLicence.resolves({licence: {proposedAddress: {
-                bassReferral: {decision: 'Yes'}
-            }}});
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    proposedAddress: {
+                        bassReferral: {decision: 'Yes'}
+                    }
+                }
+            });
 
             return request(app)
                 .get('/1233456')

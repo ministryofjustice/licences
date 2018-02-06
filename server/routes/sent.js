@@ -17,7 +17,7 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
 
         const agency = await licenceService.getEstablishment(req.params.nomisId);
 
-        res.render(`sent/${req.user.roleCode}`, {agency});
+        res.render('sent', {agency});
     }));
 
 

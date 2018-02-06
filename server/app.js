@@ -151,7 +151,7 @@ module.exports = function createApp({
     app.locals.asset_path = '/public/';
 
     function addTemplateVariables(req, res, next) {
-        res.locals.profile = req.user;
+        res.locals.user = req.user;
         next();
     }
 
