@@ -4,7 +4,7 @@ const {getIn} = require('../utils/functionalHelpers');
 const formConfig = require('./config/licenceConditions');
 const {getPathFor} = require('../utils/routes');
 
-module.exports = function({logger, licenceService, authenticationMiddleware}) {
+module.exports = function({logger, licenceService, conditionsService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -14,6 +14,60 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         }
         next();
     });
+
+    router.get('/standardConditions/:nomisId', asyncMiddleware(async (req, res) => {
+        logger.debug('GET /standardConditions/:nomisId');
+
+        const nomisId = req.params.nomisId;
+        const conditions = await conditionsService.getStandardConditions();
+
+        return res.render('licenceConditions/standardConditionsForm', {nomisId, conditions});
+    }));
+
+    router.get('/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
+        logger.debug('GET /additionalConditions');
+
+        const nomisId = req.params.nomisId;
+        const existingLicence = await licenceService.getLicence(req.params.nomisId);
+        const licence = getIn(existingLicence, ['licence']);
+        const conditions = await conditionsService.getAdditionalConditions(licence);
+
+        return res.render('licenceConditions/additionalConditionsForm', {nomisId, conditions});
+    }));
+
+    router.post('/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
+        logger.debug('POST /additionalConditions');
+        const nomisId = req.body.nomisId;
+
+        if (!req.body.additionalConditions) {
+            return res.redirect('/reporting/' + nomisId);
+        }
+
+        const validatedInput = await conditionsService.validateConditionInputs(req.body);
+        if (!validatedInput.validates) {
+            const conditions = await conditionsService.getAdditionalConditionsWithErrors(validatedInput);
+            return res.render('licenceConditions/additionalConditionsForm', {
+                nomisId,
+                conditions,
+                submissionError: true
+            });
+        }
+
+        await licenceService.updateLicenceConditions(validatedInput);
+        return res.redirect('/hdc/licenceConditions/conditionsReview/' + nomisId);
+    }));
+
+    router.get('/conditionsReview/:nomisId', asyncMiddleware(async (req, res) => {
+        const {nomisId} = req.params;
+        logger.debug('GET licenceConditions/conditionsReview/:nomisId');
+
+        const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
+        const {licenceSection, nextPath} = formConfig.conditionsReview;
+        // TODO look to put additional conditions within licenceConditions section on licence to enable generic get
+        const data = getIn(rawLicence, ['licence', licenceSection]) || {};
+
+        res.render(`licenceConditions/conditionsReviewForm`, {nomisId, data, nextPath});
+    }));
 
     router.get('/:formName/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId, formName} = req.params;

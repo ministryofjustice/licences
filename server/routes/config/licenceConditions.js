@@ -1,4 +1,15 @@
 module.exports = {
+    standardConditions: {
+        nextPathDecision: {
+            fieldToDecideOn: 'additionalConditions',
+            Yes: '/hdc/licenceConditions/additionalConditions/',
+            No: '/hdc/licenceConditions/riskManagement/'
+        }
+    },
+    conditionsReview: {
+        licenceSection: 'additionalConditions',
+        nextPath: '/hdc/licenceConditions/riskManagement/'
+    },
     riskManagement: {
         licenceSection: 'riskManagement',
         fields: [
