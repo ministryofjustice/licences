@@ -15,7 +15,7 @@ const testUser = {
     lastName: 'last',
     staffId: 'id',
     token: 'token',
-    roleCode: 'CA'
+    role: 'CA'
 };
 
 module.exports = {
@@ -30,8 +30,10 @@ module.exports = {
 
         app.use((req, res, next) => {
             req.user = user;
+            res.locals.user = user;
             next();
         });
+
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(route);

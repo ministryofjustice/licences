@@ -3,8 +3,8 @@ extends ../layout
 block content
     h1#pageHeading.heading-large HDC eligible prisoners
 
-    if role === 'CA'
+    if user.role === 'CA'
         include CATable
 
-    if role === 'RO'
+    if user.role === 'RO'
         include ROTable

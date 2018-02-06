@@ -34,7 +34,7 @@ const conditionsServiceStub = {
 const testUser = {
     staffId: 'my-staff-id',
     token: 'my-token',
-    roleCode: 'OM'
+    roleCode: 'CA'
 };
 
 const app = appSetup(createLicenceConditionsRoute({

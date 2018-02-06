@@ -43,13 +43,13 @@ describe('caseListService', () => {
     const user = {
         staffId: '123',
         token: 'token',
-        roleCode: 'CA'
+        role: 'CA'
     };
 
     const ROUser = {
         staffId: '123',
         token: 'token',
-        roleCode: 'RO'
+        role: 'RO'
     };
 
     const nomisClientBuilder = sandbox.stub().returns(nomisClient);
