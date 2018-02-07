@@ -1,7 +1,7 @@
 div.largeMarginBottom
     h2.heading-medium HDC eligibility and suitability check
     div.pure-g
-        if !eligibilityAnswers
+        if taskData.eligibility.state !== 'DONE'
             div.pure-u-9-12
                 | Questions not completed
             div.pure-u-1-4
@@ -12,6 +12,7 @@ div.largeMarginBottom
                     input#eligibilityCheckStart.taskListAction.requiredButton.button(type="submit" value="Start")
 
         else
+            - var eligibilityAnswers = taskData.eligibility.answers
             div.pure-g
                 div.pure-u-1-2
                     div.pure-g.borderTopLight.smallPaddingTopBottom

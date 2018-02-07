@@ -187,24 +187,5 @@ describe('/hdc/proposedAddress', () => {
                     });
             });
         });
-
-        context('When page contains status', () => {
-            it('calls updateLicence from licenceService', () => {
-
-                const formResponse = {
-                    nomisId: '1',
-                    licenceStatus: 'StatusChange'
-                };
-
-                return request(app)
-                    .post('/submit/1')
-                    .send(formResponse)
-                    .expect(302)
-                    .expect(res => {
-                        expect(licenceServiceStub.updateStatus).to.be.calledOnce();
-                        expect(licenceServiceStub.updateStatus).to.be.calledWith('1', 'StatusChange');
-                    });
-            });
-        });
     });
 });

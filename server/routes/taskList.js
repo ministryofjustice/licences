@@ -20,21 +20,12 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const {nomisId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
         const licence = await licenceService.getLicence(nomisId);
-        const eligibilityAnswers = getIn(licence, ['licence', 'eligibility']);
-        const isEligible = getEligibility(eligibilityAnswers);
-        const hasStarted = getHasStarted(licence);
-        const hasOptedOut = getOptedOut(licence);
-        const hasBassReferral = getBassReferralDecision(licence);
-        const submittedToRo = addressSubmitted(licence);
+
+        const taskData = getTaskData(licence);
 
         res.render('taskList/index', {
-            prisonerInfo,
-            eligibilityAnswers,
-            isEligible,
-            hasStarted,
-            hasOptedOut,
-            hasBassReferral,
-            submittedToRo
+            taskData,
+            prisonerInfo
         });
     }));
 
@@ -68,6 +59,33 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
 
     return router;
 };
+
+function getTaskData(licence) {
+    const isEligible = getEligibility(getIn(licence, ['licence', 'eligibility']));
+    const hasStarted = getHasStarted(licence);
+    const hasOptedOut = getOptedOut(licence);
+    const hasBassReferral = getBassReferralDecision(licence);
+    const submittedToRo = addressSubmitted(licence);
+    const eligibility = {
+        answers: getIn(licence, ['licence', 'eligibility']),
+        state: getIn(licence, ['licence', 'eligibility']) ? 'DONE' : 'UNSTARTED'
+    };
+    const proposedAddress = {
+        state: getProposedAddressState(hasStarted, submittedToRo, hasOptedOut, hasBassReferral)
+    };
+
+    return {isEligible, hasStarted, hasOptedOut, hasBassReferral, submittedToRo, eligibility, proposedAddress};
+}
+
+function getProposedAddressState(hasStarted, submittedToRo, hasOptedOut, hasBassReferral) {
+    if(submittedToRo || hasOptedOut || hasBassReferral) {
+        return 'DONE';
+    }
+    if(hasStarted) {
+        return'STARTED';
+    }
+    return 'UNSTARTED';
+}
 
 function getEligibility(eligibilityObject) {
     if(!eligibilityObject) {

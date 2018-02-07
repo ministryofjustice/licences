@@ -45,11 +45,6 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
             });
         }
 
-        if (formConfig[formName].statusChange) {
-            const status = req.body[formConfig[formName].statusChange.field];
-            await licenceService.updateStatus(nomisId, status);
-        }
-
         res.redirect(`${nextPath}${nomisId}`);
     }));
 

@@ -1,26 +1,26 @@
-if isEligible
+if taskData.isEligible
     div.largeMarginBottom.borderTop
         h2.heading-medium Proposed address / opt out request
         div.pure-g
             div.pure-u-9-12
-                if !hasStarted
-                    | Information not yet entered
-                else if hasOptedOut
+                if !taskData.hasStarted
+                    | Info0rmation not yet entered
+                else if taskData.hasOptedOut
                     | Prisoner has opted out of HDC
-                else if hasBassReferral
+                else if taskData.hasBassReferral
                     | Prisoner has opted in and requested BASS referral
-                else if submittedToRo
+                else if taskData.submittedToRo
                     | Proposed address information sent to RO
                 else
                     | Information not yet submitted
 
             div.pure-u-1-4
-                if submittedToRo || hasOptedOut || hasBassReferral
+                if taskData.proposedAddress.state === 'DONE'
                     a.taskListAction.center.button.button-secondary(href="/hdc/proposedAddress/optOut/"+prisonerInfo.offenderNo)
                         | View
                 else
                     a.taskListAction.center.button(href="/hdc/proposedAddress/optOut/"+prisonerInfo.offenderNo)
-                        if !hasStarted
+                        if taskData.proposedAddress.state === 'UNSTARTED'
                             | Start
                         else
                             | Continue
