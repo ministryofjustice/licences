@@ -12,13 +12,12 @@ module.exports = {
     },
     standardConditions: {
         nextPathDecision: {
-            fieldToDecideOn: 'additionalConditions',
+            discriminator: 'additionalConditions',
             Yes: '/hdc/licenceConditions/additionalConditions/',
             No: '/hdc/licenceConditions/riskManagement/'
         }
     },
-    conditionsReview: {
-        licenceSection: 'additionalConditions',
+    conditionsSummary: {
         nextPath: '/hdc/licenceConditions/riskManagement/'
     },
     riskManagement: {

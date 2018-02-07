@@ -6,7 +6,7 @@ module.exports = {
             {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
         nextPathDecision: {
-            fieldToDecideOn: 'decision',
+            discriminator: 'decision',
             Yes: '/hdc/taskList/',
             No: '/hdc/eligibility/suitability/'
         },
@@ -19,7 +19,7 @@ module.exports = {
             {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
         nextPathDecision: {
-            fieldToDecideOn: 'decision',
+            discriminator: 'decision',
             Yes: '/hdc/taskList/',
             No: '/hdc/eligibility/crdTime/'
         },

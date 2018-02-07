@@ -4,7 +4,7 @@ module.exports = {
 
 
 function decidePath({decisionInfo, data}) {
-    const decidingValue = data[decisionInfo.fieldToDecideOn];
+    const decidingValue = data[decisionInfo.discriminator];
     return decisionInfo[decidingValue];
 }
 

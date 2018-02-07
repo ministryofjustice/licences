@@ -54,19 +54,19 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         }
 
         await licenceService.updateLicenceConditions(validatedInput);
-        return res.redirect('/hdc/licenceConditions/conditionsReview/' + nomisId);
+        return res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
     }));
 
-    router.get('/conditionsReview/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/conditionsSummary/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
-        logger.debug('GET licenceConditions/conditionsReview/:nomisId');
+        logger.debug('GET licenceConditions/conditionsSummary/:nomisId');
 
         const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
-        const {nextPath} = formConfig.conditionsReview;
+        const {nextPath} = formConfig.conditionsSummary;
         // TODO look to put additional conditions within licenceConditions section on licence to enable generic get
         const licence = getIn(rawLicence, ['licence']) || {};
 
-        res.render(`licenceConditions/conditionsReviewForm`, {nomisId, licence, nextPath});
+        res.render(`licenceConditions/conditionsSummaryForm`, {nomisId, licence, nextPath});
     }));
 
     router.get('/:formName/:nomisId', asyncMiddleware(async (req, res) => {

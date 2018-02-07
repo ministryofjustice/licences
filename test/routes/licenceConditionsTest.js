@@ -112,7 +112,7 @@ describe('/hdc/licenceConditions', () => {
                 .send(formResponse)
                 .expect(302)
                 .expect(res => {
-                    expect(res.header['location']).to.include('/hdc/licenceConditions/conditionsReview/123');
+                    expect(res.header['location']).to.include('/hdc/licenceConditions/conditionsSummary/123');
                 });
 
         });
@@ -171,18 +171,18 @@ describe('/hdc/licenceConditions', () => {
         });
     });
 
-    describe('GET /licenceConditions/conditionsReview/:nomisId', () => {
+    describe('GET /licenceConditions/conditionsSummary/:nomisId', () => {
 
         it('returns html', () => {
             return request(app)
-                .get('/conditionsReview/1')
+                .get('/conditionsSummary/1')
                 .expect(200)
                 .expect('Content-Type', /html/);
         });
 
         it('renders risk conditions review page', () => {
             return request(app)
-                .get('/conditionsReview/1')
+                .get('/conditionsSummary/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {

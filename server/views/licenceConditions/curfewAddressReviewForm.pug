@@ -2,18 +2,18 @@ extends ../layout
 
 block content
 
-    div.pure-g.pure-u-1.borderBottom
-        div.back-link-container.smallPaddingTop
-            a.link-back(href="javascript: window.history.back();") Back
+    div.pure-g.pure-u-1
+        div.borderBottomLight
+            div.back-link-container.smallPaddingTop
+                a.link-back(href="javascript: window.history.back();") Back
 
-        h2.heading-large Proposed curfew address
+            h2.heading-large Proposed curfew address
 
-        p The following discharge addresshave been requested by the offender.
+            p The following discharge addresshave been requested by the offender.
 
-        include ../proposedAddress/includes/preferredAddress
+            include ../proposedAddress/includes/preferredAddress
 
         h3.heading-medium Address check confirmation
-
 
         form(method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
