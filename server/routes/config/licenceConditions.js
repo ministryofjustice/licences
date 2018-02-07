@@ -1,4 +1,15 @@
 module.exports = {
+    curfewAddressReview: {
+        licenceMap: ['licence', 'proposedAddress', 'curfewAddress'],
+        fields: [
+            {landLordHDCConsent: {}},
+            {hasElectricitySupply: {dependentOn: 'landLordHDCConsent', predicate: 'Yes'}},
+            {homeVisitConducted: {dependentOn: 'landLordHDCConsent', predicate: 'Yes'}},
+            {managedSafely: {}},
+            {managedSafelyReasons: {dependentOn: 'managedSafely', predicate: 'No'}}
+        ],
+        nextPath: '/hdc/licenceConditions/standardConditions/'
+    },
     standardConditions: {
         nextPathDecision: {
             fieldToDecideOn: 'additionalConditions',
@@ -20,17 +31,6 @@ module.exports = {
             {victimLiaison: {}},
             {victimLiaisonDetails: {dependentOn: 'victimLiaison', predicate: 'Yes'}}
         ],
-        nextPath: '/hdc/taskList/'
-    },
-    curfewAddressReview: {
-        licenceMap: ['licence', 'proposedAddress', 'curfewAddress'],
-        nextPath: null,
-        fields: [
-            {landLordHDCConsent: {}},
-            {hasElectricitySupply: {dependentOn: 'landLordHDCConsent', predicate: 'Yes'}},
-            {homeVisitConducted: {dependentOn: 'landLordHDCConsent', predicate: 'Yes'}},
-            {managedSafely: {}},
-            {managedSafelyReasons: {dependentOn: 'managedSafely', predicate: 'No'}}
-        ]
+        nextPath: '/licenceDetails/'
     }
 };

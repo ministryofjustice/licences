@@ -14,7 +14,15 @@ const loggerStub = {
 };
 
 const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves({licence: {}})
+    getLicence: sandbox.stub().returnsPromise().resolves({licence: {
+        proposedAddress: {
+            curfewAddress: {
+                addressLine1: 'Address 1'
+            }
+        },
+        additionalConditions: [{content: [{text: 'Condition1'}]}],
+        licenceConditions: {riskManagement: {planningActions: 'Yes'}}
+    }})
 };
 
 const testUser = {
@@ -31,13 +39,31 @@ const app = appSetup(createLicenceDetailsRoute({
 
 describe('GET /licenceDetails/:prisonNumber', () => {
 
-    it('calls getLicenceDetails from licenceDetailsService', () => {
+    it('renders html and displays licence detail', () => {
         return request(app)
             .get('/1')
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {
-                expect(licenceServiceStub.getLicence.callCount).to.equal(1);
+                expect(res.text).to.include('Address 1');
+                expect(res.text).to.include('Condition1');
+                expect(res.text).to.include('Yes');
+            });
+
+    });
+
+    it('renders html and displays licence details if sections are missing', () => {
+        licenceServiceStub.getLicence.resolves({licence: {
+                additionalConditions: [{content: [{text: 'Condition1'}]}]
+        }});
+        return request(app)
+            .get('/1')
+            .expect(200)
+            .expect('Content-Type', /html/)
+            .expect(res => {
+                expect(res.text).to.not.include('Address 1');
+                expect(res.text).to.include('Condition1');
+                expect(res.text).to.not.include('Yes');
             });
 
     });

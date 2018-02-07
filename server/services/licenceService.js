@@ -54,7 +54,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         const nomisId = data.nomisId;
         const address = createLicenceObjectFrom({model: licenceModel.dischargeAddress, inputObject: data});
 
-        return licenceClient.updateSection('dischargeAddress', nomisId, address);
+        return licenceClient.updateSection('curfewAddress', nomisId, address);
     }
 
     function updateReportingInstructions(data = {}) {

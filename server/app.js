@@ -221,13 +221,14 @@ module.exports = function createApp({
 
     app.use(['/caseList/', '/'], createCaseListRouter({logger, caseListService, authenticationMiddleware}));
     app.use('/hdc/taskList/',
+
         createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware}));
     app.use('/hdc/eligibility/', createEligibilityRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/hdc/proposedAddress/', createProposedAddressRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/hdc/licenceConditions/', createLicenceConditionsRouter({
         logger, licenceService, conditionsService, authenticationMiddleware}));
-
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService, authenticationMiddleware}));
+
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
