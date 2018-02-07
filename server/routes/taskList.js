@@ -28,7 +28,6 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const submittedToRo = addressSubmitted(licence);
 
         res.render('taskList/index', {
-            role: req.user.roleCode,
             prisonerInfo,
             eligibilityAnswers,
             isEligible,

@@ -5,12 +5,12 @@ block content
     div.back-link-container
         a.link-back(href="/") Back to case list
 
-    if role === 'CA'
+    if user.role === 'CA'
         h1.heading-large Check prisoner details
     else
         h1.heading-large HDC release tasks
 
-    if !role
+    if !user.role
         p Error
     else if !prisonerInfo
         p No prisoner details found
@@ -18,11 +18,11 @@ block content
 
         include prisonerDetails
 
-        if role === 'CA'
+        if user.role === 'CA'
             include eligibilityTask
             include proposedAddressTask
 
-        if role === 'RO'
+        if user.role === 'RO'
             include curfewAddressTask
             include additionalConditionsTask
             include riskManagementTask
