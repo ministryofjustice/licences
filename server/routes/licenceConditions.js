@@ -100,11 +100,6 @@ module.exports = function({logger, licenceService, conditionsService, authentica
             });
         }
 
-        if (formConfig[formName].statusChange) {
-            const status = req.body[formConfig[formName].statusChange.field];
-            await licenceService.updateStatus(nomisId, status);
-        }
-
         res.redirect(`${nextPath}${nomisId}`);
     }));
 

@@ -49,9 +49,6 @@ module.exports = {
         fields: [
             {licenceStatus: {}}
         ],
-        statusChange: {
-            field: 'licenceStatus'
-        },
         nextPath: '/hdc/proposedAddress/confirmation/'
     },
     confirmation: {
