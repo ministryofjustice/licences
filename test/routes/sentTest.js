@@ -14,20 +14,14 @@ const loggerStub = {
 };
 
 const licenceServiceStub = {
-    getEstablishment: sandbox.stub().returnsPromise().resolves([{}])
-};
-
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    roleCode: 'CA'
+    getLicence: sandbox.stub().returnsPromise().resolves({status: 'CA-RO'})
 };
 
 const app = appSetup(createSendRoute({
     licenceService: licenceServiceStub,
     logger: loggerStub,
     authenticationMiddleware
-}), testUser);
+}));
 
 describe('GET sent', () => {
 
@@ -35,14 +29,13 @@ describe('GET sent', () => {
         sandbox.reset();
     });
 
-    it('calls getEstablishment via licenceService', () => {
+    it('renders the sent page', () => {
         return request(app)
             .get('/123')
-            .expect(() => {
-                expect(licenceServiceStub.getEstablishment).to.be.calledOnce();
-                expect(licenceServiceStub.getEstablishment).to.be.calledWith('123');
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('Address information submitted');
             });
-
     });
 });
 

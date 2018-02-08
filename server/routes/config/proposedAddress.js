@@ -43,15 +43,6 @@ module.exports = {
     },
     confirmAddress: {
         licenceSection: 'curfewAddress',
-        nextPath: '/hdc/proposedAddress/submit/'
-    },
-    submit: {
-        fields: [
-            {licenceStatus: {}}
-        ],
-        nextPath: '/hdc/proposedAddress/confirmation/'
-    },
-    confirmation: {
-        nextPath: '/hdc/taskList/'
+        nextPath: '/hdc/send/'
     }
 };

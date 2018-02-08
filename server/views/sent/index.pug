@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+
+    div.pure-g
+        div.pure-u-2-3
+
+            div.confirm-banner
+                if user.role == 'CA'
+                    if status == 'CA-RO'
+                        div.heading-large Address information submitted
+                    else if status == 'CA-DM'
+                        div.heading-large Submitted for approval
+
+                else if user.role == 'RO'
+                    div.heading-large Licence information sent
+
+                else if user.role == 'DM'
+                    div.heading-large Submitted to the OMU team
+
+        div
+            a#backBtn.requiredButton.button.button-secondary.largeMarginBottom(href='/hdc/taskList/' + nomisId role="button") Return to task list
+
+

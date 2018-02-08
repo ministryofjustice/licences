@@ -230,8 +230,8 @@ module.exports = function createApp({
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService, authenticationMiddleware}));
 
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
-    app.use('/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));
-    app.use('/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
+    app.use('/hdc/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));
+    app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
 
     // Error Handler
     app.use(function(req, res, next) {

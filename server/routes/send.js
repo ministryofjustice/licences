@@ -1,4 +1,5 @@
 const express = require('express');
+const {getIn} = require('../utils/functionalHelpers');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 
 module.exports = function({logger, licenceService, authenticationMiddleware}) {
@@ -13,29 +14,21 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
     });
 
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /send');
 
-        res.render('send', {nomisId: req.params.nomisId});
+        const {nomisId} = req.params;
+        const licence = await licenceService.getLicence(nomisId, {populateConditions: true});
+        const status = getIn(licence, ['status']);
+
+        console.log(nomisId);
+        console.log(status);
+
+        res.render('send/index', {nomisId, status});
     }));
 
-    router.post('/omu/', asyncMiddleware(async (req, res) => {
-        logger.debug('POST /send/omu');
-
-        const nomisId = req.body.nomisId;
-
-        await licenceService.sendToOmu(nomisId);
-
-        res.redirect('/sent/'+nomisId);
-    }));
-
-    router.post('/pm/', asyncMiddleware(async (req, res) => {
-        logger.debug('POST /send/pm');
-
-        const nomisId = req.body.nomisId;
-
-        await licenceService.sendToPm(nomisId);
-
-        res.redirect('/sent/'+nomisId);
+    router.post('/:nomisId', asyncMiddleware(async (req, res) => {
+        const {nomisId, sender, receiver} = req.body;
+        await licenceService.markForHandover(nomisId, sender, receiver);
+        res.redirect('/hdc/sent/' + nomisId);
     }));
 
     return router;

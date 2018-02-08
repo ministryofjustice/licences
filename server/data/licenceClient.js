@@ -1,5 +1,6 @@
 const {resolveJsonResponse, resolveJsonColumn} = require('./dataAccess/azureJson');
 const {getCollection, execSql} = require('./dataAccess/dbMethods');
+const licenceStates = require('./licenceStates');
 const TYPES = require('tedious').TYPES;
 
 module.exports = {
@@ -29,7 +30,7 @@ module.exports = {
         });
     },
 
-    createLicence: function(nomisId, licence = {}, status = 'STARTED') {
+    createLicence: function(nomisId, licence = {}, status = licenceStates.DEFAULT) {
         return new Promise((resolve, reject) => {
             const sql = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STATUS) ' +
                 'VALUES (@nomisId, @licence, @status)';
@@ -57,12 +58,10 @@ module.exports = {
         });
     },
 
-    updateSection: function(section, nomisId, object, status) {
+    updateSection: function(section, nomisId, object) {
         return new Promise((resolve, reject) => {
 
-            const updateStatus = status ? ', STATUS = @status' : '';
             const sql = 'UPDATE LICENCES SET LICENCE = JSON_MODIFY(LICENCE, @section, JSON_QUERY(@object))' +
-                updateStatus +
                 ' WHERE NOMIS_ID=@nomisId';
 
             const parameters = [
@@ -70,10 +69,6 @@ module.exports = {
                 {column: 'object', type: TYPES.VarChar, value: JSON.stringify(object)},
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
             ];
-
-            if (status) {
-                parameters.push({column: 'status', type: TYPES.VarChar, value: status});
-            }
 
             execSql(sql, parameters, resolve, reject);
         });

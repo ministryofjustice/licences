@@ -3,8 +3,6 @@ const {expect, sandbox} = require('../testSetup');
 
 describe('licenceService', () => {
 
-    const aLicence = {a: 'b', licence: {agencyLocationId: '123'}};
-
     const licenceClient = {
         getLicence: sandbox.stub().returnsPromise().resolves({licence: {a: 'b'}}),
         createLicence: sandbox.stub().returnsPromise().resolves('abc'),
@@ -104,44 +102,6 @@ describe('licenceService', () => {
         });
     });
 
-    describe('updatesAddress', () => {
-        it('should call updateAddress from the licence client', () => {
-            service.updateAddress({nomisId: 'ab1', address1: 'Scotland Street'});
-
-            expect(licenceClient.updateSection).to.be.calledOnce();
-            expect(licenceClient.updateSection).to.be.calledWith(
-                'curfewAddress',
-                'ab1',
-                {address1: 'Scotland Street'}
-            );
-        });
-
-        it('should throw if error updating licence', () => {
-            licenceClient.updateSection.rejects();
-            const args = {nomisId: 'ab1', address1: 'Scotland Street'};
-            return expect(service.updateAddress(args)).to.eventually.be.rejected();
-        });
-    });
-
-    describe('updatesReportingInstructions', () => {
-        it('should call updatesReportingInstructions from the licence client', () => {
-            service.updateReportingInstructions({nomisId: 'ab1', address1: 'Scotland Street'});
-
-            expect(licenceClient.updateSection).to.be.calledOnce();
-            expect(licenceClient.updateSection).to.be.calledWith(
-                'reportingInstructions',
-                'ab1',
-                {address1: 'Scotland Street'}
-            );
-        });
-
-        it('should throw if error updating licence', () => {
-            licenceClient.updateSection.rejects();
-            const args = {nomisId: 'ab1', address1: 'Scotland Street'};
-            return expect(service.updateReportingInstructions(args)).to.eventually.be.rejected();
-        });
-    });
-
     describe('updateLicenceConditions', () => {
 
         it('should get the selected licence conditions', () => {
@@ -172,98 +132,33 @@ describe('licenceService', () => {
         });
     });
 
-    describe('updateEligibility', () => {
-        it('should call updateEligibility from the licence client', () => {
-            service.updateEligibility({nomisId: 'ab1', excluded: 'true'});
+    describe('markForHandover', () => {
 
-            expect(licenceClient.updateSection).to.be.calledOnce();
-            expect(licenceClient.updateSection).to.be.calledWith(
-                'eligibility',
-                'ab1',
-                {excluded: 'true'},
-                'ELIGIBILITY_CHECKED'
-            );
-        });
-
-        it('should merge eligibility object with existing data', () => {
-            const input = {nomisId: 'ab1', crdTime: 'No', unsuitable: 'No'};
-            const existingObject = {excluded: 'Yes'};
-            service.updateEligibility(input, existingObject);
-
-            expect(licenceClient.updateSection).to.be.calledWith(
-                'eligibility',
-                'ab1',
-                {crdTime: 'No', excluded: 'Yes'},
-                'ELIGIBILITY_CHECKED'
-            );
-        });
-
-        it('should overwrite changed values', () => {
-            const input = {nomisId: 'ab1', excluded: 'No'};
-            const existingObject = {excluded: 'Yes'};
-            service.updateEligibility(input, existingObject);
-
-            expect(licenceClient.updateSection).to.be.calledWith(
-                'eligibility',
-                'ab1',
-                {excluded: 'No'},
-                'ELIGIBILITY_CHECKED'
-            );
-        });
-
-        it('should throw if error updating licence', () => {
-            licenceClient.updateSection.rejects();
-            const args = {nomisId: 'ab1', excluded: 'true'};
-            return expect(service.updateEligibility(args)).to.eventually.be.rejected();
-        });
-    });
-
-    describe('sendToOmu', () => {
         it('should call updateStatus from the licence client', () => {
-            service.sendToOmu('ab1');
+            service.markForHandover('ab1', 'CA', 'RO');
 
             expect(licenceClient.updateStatus).to.be.calledOnce();
-            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'SENT');
+            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'CA-RO');
+        });
+
+        it('should pick the right status based on sender and receiver', () => {
+            service.markForHandover('ab1', 'CA', 'DM');
+            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'CA-DM');
+
+            service.markForHandover('ab1', 'DM', 'CA');
+            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'DM-CA');
         });
 
         it('should throw if error during update status', () => {
             licenceClient.updateStatus.rejects();
-            return expect(service.sendToOmu('ab1')).to.eventually.be.rejected();
+            return expect(service.markForHandover('ab1', 'CA', 'RO')).to.eventually.be.rejected();
+        });
+
+        it('should throw if no matching sender-receiver pair', () => {
+            expect(() => service.markForHandover('ab1', 'CA', 'UNMATCHED')).to.throw(Error);
         });
     });
 
-    describe('sendToPm', () => {
-        it('should call updateStatus from the licence client', () => {
-            service.sendToPm('ab1');
-
-            expect(licenceClient.updateStatus).to.be.calledOnce();
-            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'CHECK_SENT');
-        });
-
-        it('should throw if error during update status', () => {
-            licenceClient.updateStatus.rejects();
-            return expect(service.sendToPm('ab1')).to.eventually.be.rejected();
-        });
-    });
-
-    describe('getEstablishment', () => {
-        it('should call getEstablishment from the establishments client', async () => {
-
-            licenceClient.getLicence.resolves(aLicence);
-
-            await service.getEstablishment('ab1');
-
-            expect(licenceClient.getLicence).to.be.calledOnce();
-            expect(licenceClient.getLicence).to.be.calledWith('ab1');
-            expect(establishmentsClient.findById).to.be.calledOnce();
-            expect(establishmentsClient.findById).to.be.calledWith('123');
-        });
-
-        it('should throw if error during findById', () => {
-            establishmentsClient.findById.rejects();
-            return expect(service.getEstablishment('ab1')).to.eventually.be.rejected();
-        });
-    });
 
     describe('update', () => {
 
