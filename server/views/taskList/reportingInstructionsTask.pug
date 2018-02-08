@@ -5,13 +5,11 @@ div.largeMarginBottom.borderTop
 
     div.pure-g
         div.pure-u-9-12
-            if !reportingInstructions
-                | Not yet added
-            else
-                | Reporting instructions added
+            // TODO define text
+            | Not yet added
         div.pure-u-1-4
             a.taskListAction.center.button(href="/hdc/reporting/" + prisonerInfo.offenderNo)
-                if !reportingInstructions
+                if taskData.reportingInstructions.state === 'UNSTARTED'
                     | Start
                 else
                     | View

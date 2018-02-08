@@ -89,6 +89,9 @@ function getTaskData(licence) {
         state: getIn(licence, ['licence', 'licenceConditions', 'riskManagement']) ?
             taskStates.STARTED : taskStates.DEFAULT
     };
+    const reportingInstructions = {
+        state: getIn(licence, ['licence', 'reportingInstructions']) ? 'STARTED' : 'UNSTARTED'
+    };
 
     return {
         isEligible,
@@ -99,7 +102,8 @@ function getTaskData(licence) {
         proposedAddress,
         curfewAddress,
         additionalConditions,
-        riskManagement
+        riskManagement,
+        reportingInstructions
     };
 }
 
