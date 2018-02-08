@@ -1,6 +1,9 @@
 extends ../layout
 
 block content
+
+    - var additionalConditionsValue = data.additionalConditionsRequired || null;
+
     div.back-link-container.smallPaddingTop
         a.link-back(href="javascript: window.history.back();") Back
 
@@ -23,10 +26,10 @@ block content
             p.bold Do you want to add any additional conditions?
 
             div.multiple-choice
-                input#additionalConditionsYes(type="radio" name="additionalConditions" value="Yes")
+                input#additionalConditionsYes(type="radio" name="additionalConditionsRequired" value="Yes" checked=additionalConditionsValue === 'Yes')
                 label(for="additionalConditionsYes") Yes
             div.multiple-choice
-                input#additionalConditionsNo(type="radio" name="additionalConditions" value="No")
+                input#additionalConditionsNo(type="radio" name="additionalConditionsRequired" value="No" checked=additionalConditionsValue === 'No')
                 label(for="additionalConditionsNo") No
 
         include ../includes/formButtons

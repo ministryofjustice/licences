@@ -21,7 +21,10 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         const nomisId = req.params.nomisId;
         const conditions = await conditionsService.getStandardConditions();
 
-        return res.render('licenceConditions/standardConditionsForm', {nomisId, conditions});
+        const rawLicence = await licenceService.getLicence(nomisId);
+        const data = getIn(rawLicence, ['licence', 'licenceConditions', 'standardConditions']) || {};
+
+        return res.render('licenceConditions/standardConditionsForm', {nomisId, conditions, data});
     }));
 
     router.get('/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {

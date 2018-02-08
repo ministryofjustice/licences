@@ -11,8 +11,11 @@ module.exports = {
         nextPath: '/hdc/licenceConditions/standardConditions/'
     },
     standardConditions: {
+        fields: [
+            {additionalConditionsRequired: {}}
+        ],
         nextPathDecision: {
-            discriminator: 'additionalConditions',
+            discriminator: 'additionalConditionsRequired',
             Yes: '/hdc/licenceConditions/additionalConditions/',
             No: '/hdc/licenceConditions/riskManagement/'
         }
