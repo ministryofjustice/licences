@@ -25,9 +25,7 @@ const authenticationMiddleware = auth.authenticationMiddleware;
 
 const createSignInRouter = require('./routes/signIn');
 const createTaskListRouter = require('./routes/taskList');
-const createEligibilityRouter = require('./routes/eligibility');
-const createProposedAddressRouter = require('./routes/proposedAddress');
-const createLicenceConditionsRouter = require('./routes/licenceConditions');
+const createHdcRouter = require('./routes/hdc');
 const createLicenceDetailsRouter = require('../server/routes/licenceDetails');
 const createReportingRouter = require('../server/routes/reportingInstructions');
 const createSendRouter = require('../server/routes/send');
@@ -221,12 +219,8 @@ module.exports = function createApp({
 
     app.use(['/caseList/', '/'], createCaseListRouter({logger, caseListService, authenticationMiddleware}));
     app.use('/hdc/taskList/',
-
         createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware}));
-    app.use('/hdc/eligibility/', createEligibilityRouter({logger, licenceService, authenticationMiddleware}));
-    app.use('/hdc/proposedAddress/', createProposedAddressRouter({logger, licenceService, authenticationMiddleware}));
-    app.use('/hdc/licenceConditions/', createLicenceConditionsRouter({
-        logger, licenceService, conditionsService, authenticationMiddleware}));
+    app.use('/hdc/', createHdcRouter({logger, licenceService, conditionsService, authenticationMiddleware}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService, authenticationMiddleware}));
 
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));

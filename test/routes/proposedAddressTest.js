@@ -5,7 +5,7 @@ const {
     appSetup
 } = require('../supertestSetup');
 
-const createProposedAddressRoute = require('../../server/routes/proposedAddress');
+const createProposedAddressRoute = require('../../server/routes/hdc');
 const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 const formConfig = require('../../server/routes/config/proposedAddress');
@@ -40,83 +40,27 @@ describe('/hdc/proposedAddress', () => {
         sandbox.reset();
     });
 
-    describe('GET /proposedAddress/optOut/:nomisId', () => {
+    describe('routes', () => {
+        const pages = [
+            {route: '/proposedAddress/optOut/1', content: 'HDC opt out decision'},
+            {route: '/proposedAddress/bassReferral/1', content: 'BASS referral'},
+            {route: '/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'},
+            {route: '/proposedAddress/confirmAddress/1', content: 'Confirm address details'},
+            {route: '/proposedAddress/submit/1', content: 'Submit to Responsible Officer'},
+            {route: '/proposedAddress/confirmation/1', content: 'Address information sent'}
 
-        it('returns html', () => {
-            return request(app)
-                .get('/optOut/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
+        ];
 
-        it('renders out out page', () => {
-            return request(app)
-                .get('/optOut/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('HDC opt out decision');
-                });
-        });
-    });
-
-    describe('GET /proposedAddress/bassReferral/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/bassReferral/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
-        it('renders out out page', () => {
-            return request(app)
-                .get('/bassReferral/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('BASS referral');
-                });
-        });
-    });
-
-    describe('GET /proposedAddress/curfewAddress/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/curfewAddress/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
-        it('renders out out page', () => {
-            return request(app)
-                .get('/curfewAddress/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Proposed curfew address');
-                });
-        });
-    });
-
-    describe('GET /proposedAddress/confirmAddress/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/confirmAddress/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
-        it('renders out out page', () => {
-            return request(app)
-                .get('/confirmAddress/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Confirm address details');
-                });
+        pages.forEach(get => {
+            it(`renders the ${get.route} page`, () => {
+                return request(app)
+                    .get(get.route)
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.contain(get.content);
+                    });
+            });
         });
     });
 
@@ -131,7 +75,7 @@ describe('/hdc/proposedAddress', () => {
                 };
 
                 return request(app)
-                    .post('/optOut/1')
+                    .post('/proposedAddress/optOut/1')
                     .send(formResponse)
                     .expect(302)
                     .expect(res => {

@@ -5,7 +5,7 @@ const {
     appSetup
 } = require('../supertestSetup');
 
-const createEligibilityRoute = require('../../server/routes/eligibility');
+const createEligibilityRoute = require('../../server/routes/hdc');
 const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
@@ -37,35 +37,38 @@ const form1Response = {
     reasons: ['sexOffenderRegister', 'convictedSexOffences']
 };
 
-
 describe('/hdc/eligibility', () => {
 
     afterEach(() => {
         sandbox.reset();
     });
 
+    describe('routes', () => {
+        const pages = [
+            {route: '/eligibility/excluded/1', content: 'HDC eligibility check'},
+            {route: '/eligibility/suitability/1', content: 'HDC presumed suitability'},
+            {route: '/eligibility/crdTime/1', content: 'Time left until Conditional Release Date'}
+
+        ];
+
+        pages.forEach(get => {
+            it(`renders the ${get.route} page`, () => {
+                return request(app)
+                    .get(get.route)
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.contain(get.content);
+                    });
+            });
+        });
+    });
+
     describe('GET /eligibility/excluded/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/excluded/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
-        it('renders eligibility check page', () => {
-            return request(app)
-                .get('/excluded/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('HDC eligibility check');
-                });
-        });
 
         it('does not pre-populates input if it does not exist on licence', () => {
             return request(app)
-                .get('/excluded/1')
+                .get('/eligibility/excluded/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -88,7 +91,7 @@ describe('/hdc/eligibility', () => {
             });
 
             return request(app)
-                .get('/excluded/1')
+                .get('/eligibility/excluded/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -102,7 +105,7 @@ describe('/hdc/eligibility', () => {
 
         it('calls getLicence from licenceService', () => {
             return request(app)
-                .post('/excluded/1')
+                .post('/eligibility/excluded/1')
                 .send(form1Response)
                 .expect(302)
                 .expect(res => {
@@ -113,7 +116,7 @@ describe('/hdc/eligibility', () => {
 
         it('calls update from licenceService and redirects to suitability page', () => {
             return request(app)
-                .post('/excluded/1')
+                .post('/eligibility/excluded/1')
                 .send(form1Response)
                 .expect(302)
                 .expect(res => {
@@ -122,46 +125,6 @@ describe('/hdc/eligibility', () => {
                     expect(res.header['location']).to.include('/hdc/eligibility/suitability/1');
                 });
 
-        });
-    });
-
-    describe('GET /eligibility/suitability/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/suitability/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
-        it('renders eligibility check page 2', () => {
-            return request(app)
-                .get('/suitability/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('HDC presumed suitability');
-                });
-        });
-    });
-
-    describe('GET /eligibility/crdTimeForm/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/crdTime/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
-        it('renders crd time page', () => {
-            return request(app)
-                .get('/crdTime/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Time left until Conditional Release Date');
-                });
         });
     });
 });
