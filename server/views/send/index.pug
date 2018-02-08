@@ -7,10 +7,10 @@ block content
             a.link-back(href="javascript: window.history.back();") Back
 
         if user.role == 'CA'
-            if status == 'STARTED'
-                include CAtoRO.pug
-            else if status = 'RO-CA'
+            if status == 'RO-CA'
                 include CAtoDM.pug
+            else
+                include CAtoRO.pug
 
         else if user.role == 'RO'
             include ROtoCA.pug

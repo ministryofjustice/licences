@@ -67,7 +67,6 @@ function getTaskData(licence) {
     const hasStarted = getHasStarted(licence);
     const hasOptedOut = getOptedOut(licence);
     const hasBassReferral = getBassReferralDecision(licence);
-
     const handoverState = getIn(licence, ['status']);
 
     const eligibility = {
@@ -108,7 +107,8 @@ function getTaskData(licence) {
 }
 
 function getProposedAddressState(hasStarted, handoverState, hasOptedOut, hasBassReferral) {
-    if (handoverState === licenceStates['CA']['RO'] || hasOptedOut || hasBassReferral) {
+
+    if (handoverState !== licenceStates.DEFAULT || hasOptedOut || hasBassReferral) {
         return taskStates.DONE;
     }
     if (hasStarted) {
