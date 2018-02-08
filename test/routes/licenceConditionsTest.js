@@ -191,6 +191,18 @@ describe('/hdc/licenceConditions', () => {
         });
     });
 
+    describe('GET /licenceConditions/curfewHours/:nomisId', () => {
+        it('renders risk conditions review page', () => {
+            return request(app)
+                .get('/curfewHours/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('Curfew hours');
+                });
+        });
+    });
+
     describe('POST /licenceConditions/:formName/:nomisId', () => {
         context('When page contains form fields', () => {
             it('calls updateLicence from licenceService', () => {

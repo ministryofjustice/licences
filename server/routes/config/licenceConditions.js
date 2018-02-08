@@ -34,5 +34,25 @@ module.exports = {
             {victimLiaisonDetails: {dependentOn: 'victimLiaison', predicate: 'Yes'}}
         ],
         nextPath: '/licenceDetails/'
+    },
+    curfewHours: {
+        licenceSection: 'curfewHours',
+        fields: [
+            {mondayFrom: {}},
+            {mondayUntil: {}},
+            {tuesdayFrom: {}},
+            {tuesdayUntil: {}},
+            {wednesdayFrom: {}},
+            {wednesdayUntil: {}},
+            {thursdayFrom: {}},
+            {thursdayUntil: {}},
+            {fridayFrom: {}},
+            {fridayUntil: {}},
+            {saturdayFrom: {}},
+            {saturdayUntil: {}},
+            {sundayFrom: {}},
+            {sundayUntil: {}}
+        ],
+        nextPath: '/hdc/licenceConditions/standardConditions/'
     }
 };
