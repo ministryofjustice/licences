@@ -66,6 +66,7 @@ function getTaskData(licence) {
     const hasOptedOut = getOptedOut(licence);
     const hasBassReferral = getBassReferralDecision(licence);
     const submittedToRo = addressSubmitted(licence);
+
     const eligibility = {
         answers: getIn(licence, ['licence', 'eligibility']),
         state: getIn(licence, ['licence', 'eligibility']) ? 'DONE' : 'UNSTARTED'
@@ -83,6 +84,9 @@ function getTaskData(licence) {
     const riskManagement = {
         state: getIn(licence, ['licence', 'licenceConditions', 'riskManagement']) ? 'STARTED' : 'UNSTARTED'
     };
+    const reportingInstructions = {
+        state: getIn(licence, ['licence', 'reportingInstructions']) ? 'STARTED' : 'UNSTARTED'
+    };
 
     return {
         isEligible,
@@ -94,7 +98,8 @@ function getTaskData(licence) {
         proposedAddress,
         curfewAddress,
         additionalConditions,
-        riskManagement
+        riskManagement,
+        reportingInstructions
     };
 }
 
