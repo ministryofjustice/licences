@@ -219,4 +219,34 @@ describe('/hdc/licenceConditions', () => {
             });
         });
     });
+
+    describe('POST /licenceConditions/curfewAddressReview/:nomisId', () => {
+        context('When page contains form fields', () => {
+            it('calls updateLicence from licenceService', () => {
+
+                const formResponse = {
+                    nomisId: '1',
+                    consent: 'Yes',
+                    deemedSafe: 'No',
+                    rejectionDetails: 'Reason'
+                };
+
+                return request(app)
+                    .post('/curfewAddressReview/1')
+                    .send(formResponse)
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceServiceStub.update).to.be.calledOnce();
+                        expect(licenceServiceStub.update).to.be.calledWith({
+                            licence: {key: 'value'},
+                            nomisId: '1',
+                            fieldMap: formConfig.curfewAddressReview.fields,
+                            userInput: formResponse,
+                            licenceSection: 'licenceConditions',
+                            formName: 'curfewAddressReview'
+                        });
+                    });
+            });
+        });
+    });
 });

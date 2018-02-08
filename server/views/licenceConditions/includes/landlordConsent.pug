@@ -1,11 +1,11 @@
 div.form-group
     p Does the address have an electricity supply?
     div.multiple-choice
-        input#hasElectricitySupplyYes(type="radio" checked=data.hasElectricitySupply === 'Yes' name="hasElectricitySupply" value="Yes")
-        label(for="hasElectricitySupplyYes") Yes
+        input#electricityYes(type="radio" checked=data.electricity === 'Yes' name="electricity" value="Yes")
+        label(for="electricityYes") Yes
     div.multiple-choice
-        input#hasElectricitySupplyNo(type="radio" checked=data.hasElectricitySupply === 'No' name="hasElectricitySupply" value="No")
-        label(for="hasElectricitySupplyNo") No
+        input#electricityNo(type="radio" checked=data.electricity === 'No' name="electricity" value="No")
+        label(for="electricityNo") No
 
 
 div.form-group

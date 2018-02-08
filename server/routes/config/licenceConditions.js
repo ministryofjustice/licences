@@ -2,11 +2,11 @@ module.exports = {
     curfewAddressReview: {
         licenceMap: ['licence', 'proposedAddress', 'curfewAddress'],
         fields: [
-            {landLordHDCConsent: {}},
-            {hasElectricitySupply: {dependentOn: 'landLordHDCConsent', predicate: 'Yes'}},
-            {homeVisitConducted: {dependentOn: 'landLordHDCConsent', predicate: 'Yes'}},
-            {managedSafely: {}},
-            {managedSafelyReasons: {dependentOn: 'managedSafely', predicate: 'No'}}
+            {consent: {}},
+            {electricity: {dependentOn: 'consent', predicate: 'Yes'}},
+            {homeVisitConducted: {dependentOn: 'consent', predicate: 'Yes'}},
+            {deemedSafe: {}},
+            {safetyDetails: {dependentOn: 'deemedSafe', predicate: 'No'}}
         ],
         nextPath: '/hdc/licenceConditions/standardConditions/'
     },
