@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+
+    div.pure-g.largePaddingBottom
+        div.back-link-container.smallPaddingTop
+            a.link-back(href="javascript: window.history.back();") Back
+
+        if user.role == 'CA'
+            if status == 'STARTED'
+                include CAtoRO.pug
+            else if status = 'RO-CA'
+                include CAtoDM.pug
+
+        else if user.role == 'RO'
+            include ROtoCA.pug
+
+        else if user.role == 'DM'
+            include DM.pug

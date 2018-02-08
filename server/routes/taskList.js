@@ -2,6 +2,8 @@ const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const path = require('path');
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
+const taskStates = require('../data/taskStates');
+const licenceStates = require('../data/licenceStates');
 
 module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -65,24 +67,27 @@ function getTaskData(licence) {
     const hasStarted = getHasStarted(licence);
     const hasOptedOut = getOptedOut(licence);
     const hasBassReferral = getBassReferralDecision(licence);
-    const submittedToRo = addressSubmitted(licence);
+
+    const handoverState = getIn(licence, ['status']);
 
     const eligibility = {
         answers: getIn(licence, ['licence', 'eligibility']),
-        state: getIn(licence, ['licence', 'eligibility']) ? 'DONE' : 'UNSTARTED'
+        state: getIn(licence, ['licence', 'eligibility']) ? taskStates.DONE : taskStates.DEFAULT
     };
     const proposedAddress = {
-        state: getProposedAddressState(hasStarted, submittedToRo, hasOptedOut, hasBassReferral)
+        state: getProposedAddressState(hasStarted, handoverState, hasOptedOut, hasBassReferral)
     };
     const curfewAddress = {
-        state: getIn(licence, ['licence', 'licenceConditions', 'curfewAddressReview']) ? 'STARTED' : 'UNSTARTED'
+        state: getIn(licence, ['licence', 'licenceConditions', 'curfewAddressReview']) ?
+            taskStates.STARTED : taskStates.DEFAULT
     };
     const additionalConditions = {
         state: getIn(licence, ['licence', 'licenceConditions', 'standardConditions', 'nextPathDecision'])
-            ? 'STARTED' : 'UNSTARTED'
+            ? taskStates.STARTED : taskStates.DEFAULT
     };
     const riskManagement = {
-        state: getIn(licence, ['licence', 'licenceConditions', 'riskManagement']) ? 'STARTED' : 'UNSTARTED'
+        state: getIn(licence, ['licence', 'licenceConditions', 'riskManagement']) ?
+            taskStates.STARTED : taskStates.DEFAULT
     };
     const reportingInstructions = {
         state: getIn(licence, ['licence', 'reportingInstructions']) ? 'STARTED' : 'UNSTARTED'
@@ -93,7 +98,6 @@ function getTaskData(licence) {
         hasStarted,
         hasOptedOut,
         hasBassReferral,
-        submittedToRo,
         eligibility,
         proposedAddress,
         curfewAddress,
@@ -103,18 +107,18 @@ function getTaskData(licence) {
     };
 }
 
-function getProposedAddressState(hasStarted, submittedToRo, hasOptedOut, hasBassReferral) {
-    if(submittedToRo || hasOptedOut || hasBassReferral) {
-        return 'DONE';
+function getProposedAddressState(hasStarted, handoverState, hasOptedOut, hasBassReferral) {
+    if (handoverState === licenceStates['CA']['RO'] || hasOptedOut || hasBassReferral) {
+        return taskStates.DONE;
     }
-    if(hasStarted) {
-        return'STARTED';
+    if (hasStarted) {
+        return taskStates.STARTED;
     }
-    return 'UNSTARTED';
+    return taskStates.DEFAULT;
 }
 
 function getEligibility(eligibilityObject) {
-    if(!eligibilityObject) {
+    if (!eligibilityObject) {
         return false;
     }
     return eligibilityObject.excluded.decision === 'No' && eligibilityObject.suitability.decision === 'No';
@@ -130,8 +134,4 @@ function getOptedOut(licence) {
 
 function getBassReferralDecision(licence) {
     return getIn(licence, ['licence', 'proposedAddress', 'bassReferral', 'decision']) === 'Yes';
-}
-
-function addressSubmitted(licence) {
-    return getIn(licence, ['licence', 'proposedAddress', 'submit', 'licenceStatus']) === 'ADDRESS_SUBMITTED';
 }
