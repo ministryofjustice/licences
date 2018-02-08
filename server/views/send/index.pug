@@ -2,10 +2,12 @@ extends ../layout
 
 block content
 
-    div.pure-g.largePaddingBottom
-        div.back-link-container.smallPaddingTop
-            a.link-back(href="javascript: window.history.back();") Back
+    div.pure-g
+        div.pure-u-1
+            div.back-link-container.smallPaddingTop
+                a.link-back(href="javascript: window.history.back();") Back
 
+    div.largePaddingBottom
         if user.role == 'CA'
             if status == 'RO-CA'
                 include CAtoDM.pug

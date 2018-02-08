@@ -1,25 +1,31 @@
 h2.heading-medium.borderBottom.separatorTitle Risk management and victim liaison
-div.pure-g
-    -var risk = licence.licenceConditions.riskManagement
 
-    div.borderBottomLight.midPaddingTopBottom
-        div.pure-u-1-2.pure-g
-            div.pure-u-3-4 Are there any risk management planning actions that must take place prior to release?
-        div.pure-u-1-2.bold
-            if risk.planningActions
-                | #{risk.planningActions}
+-var risk = licence.licenceConditions.riskManagement
 
-    div.borderBottomLight.midPaddingTopBottom
-        div.pure-u-1-2.pure-g
-            div.pure-u-3-4 Are you still waiting for information to inform risk management planning?
-        div.pure-u-1-2.bold
-            if risk.awaitingInformation
-                | #{risk.awaitingInformation}
+div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+        div.pure-g
+            div.pure-u-3-4
+                span Are there any risk management planning actions that must take place prior to release?
+    div.pure-u-1-2
+        if risk.planningActions
+            span.bold #{risk.planningActions}
 
-    div.borderBottomLight.midPaddingTopBottom
-        div.pure-u-1-2.pure-g
-            div.pure-u-3-4 Is this a Victim Contact Service qualifying case where the victim has opted in?
-        div.pure-u-1-2.bold
-            | NO IDEA
+div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+        div.pure-g
+            div.pure-u-3-4
+                span Are you still waiting for information to inform risk management planning?
+    div.pure-u-1-2
+        if risk.awaitingInformation
+            span #{risk.awaitingInformation}
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+        div.pure-g
+            div.pure-u-3-4
+                span Is this a Victim Contact Service qualifying case where the victim has opted in?
+    div.pure-u-1-2
+        span.bold NO IDEA
 
 
