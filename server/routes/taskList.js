@@ -73,8 +73,29 @@ function getTaskData(licence) {
     const proposedAddress = {
         state: getProposedAddressState(hasStarted, submittedToRo, hasOptedOut, hasBassReferral)
     };
+    const curfewAddress = {
+        state: getIn(licence, ['licence', 'licenceConditions', 'curfewAddressReview']) ? 'STARTED' : 'UNSTARTED'
+    };
+    const additionalConditions = {
+        state: getIn(licence, ['licence', 'licenceConditions', 'standardConditions', 'nextPathDecision'])
+            ? 'STARTED' : 'UNSTARTED'
+    };
+    const riskManagement = {
+        state: getIn(licence, ['licence', 'licenceConditions', 'riskManagement']) ? 'STARTED' : 'UNSTARTED'
+    };
 
-    return {isEligible, hasStarted, hasOptedOut, hasBassReferral, submittedToRo, eligibility, proposedAddress};
+    return {
+        isEligible,
+        hasStarted,
+        hasOptedOut,
+        hasBassReferral,
+        submittedToRo,
+        eligibility,
+        proposedAddress,
+        curfewAddress,
+        additionalConditions,
+        riskManagement
+    };
 }
 
 function getProposedAddressState(hasStarted, submittedToRo, hasOptedOut, hasBassReferral) {

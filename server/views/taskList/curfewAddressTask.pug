@@ -6,21 +6,19 @@ div.largeMarginBottom.borderTop
     if bassReferralRequested || optOut == 'Yes'
         div.pure-g
             div.pure-u-9-12
-                if bassReferralRequested
+                if taskData.hasBassReferral
                     p BASS referral requested
-                if optOut
+                if taskData.hasOptedOut
                     p Opted out
 
     else
         div.pure-g
             div.pure-u-9-12
-                if !curfewAddressApproved
-                    | Not yet approved
-                else
-                    | Curfew address approved
+                // TODO define approved
+                | Not yet approved
             div.pure-u-1-4
                 a.taskListAction.center.button(href="/hdc/licenceConditions/curfewAddressReview/" + prisonerInfo.offenderNo)
-                    if proposedAddress
-                        | View
-                    else
+                    if taskData.curfewAddress.state === 'UNSTARTED'
                         | Start
+                    else
+                        | View

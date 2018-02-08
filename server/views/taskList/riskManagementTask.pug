@@ -5,13 +5,11 @@ div.largeMarginBottom.borderTop
 
     div.pure-g
         div.pure-u-9-12
-            if !riskManagement
-                | Not yet confirmed
-            else
-                | Risk management confirmed
+            // TODO define text
+            | Not yet confirmed
         div.pure-u-1-4
             a.taskListAction.center.button(href="/hdc/licenceConditions/riskManagement/" + prisonerInfo.offenderNo)
-                if !riskManagement
+                if taskData.riskManagement.state === 'UNSTARTED'
                     | Start
                 else
                     | View
