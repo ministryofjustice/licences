@@ -338,9 +338,11 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('curfew address task started', () => {
             it('should display a view button for curfew address task', () => {
-                licenceServiceStub.getLicence.resolves({licence: {
-                    licenceConditions: {curfewAddressReview: {}}
-                }});
+                licenceServiceStub.getLicence.resolves({
+                    licence: {
+                        licenceConditions: {curfewAddressReview: {}}
+                    }
+                });
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -367,9 +369,11 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('additional condition task started', () => {
             it('should display a view button for curfew address', () => {
-                licenceServiceStub.getLicence.resolves({licence: {
-                    licenceConditions: {standardConditions: {additionalConditionsRequired: 'No'}}
-                }});
+                licenceServiceStub.getLicence.resolves({
+                    licence: {
+                        licenceConditions: {standardConditions: {additionalConditionsRequired: 'No'}}
+                    }
+                });
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -396,9 +400,11 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('risk management task started', () => {
             it('should display a view button for curfew address', () => {
-                licenceServiceStub.getLicence.resolves({licence: {
-                    licenceConditions: {riskManagement: {}}
-                }});
+                licenceServiceStub.getLicence.resolves({
+                    licence: {
+                        licenceConditions: {riskManagement: {}}
+                    }
+                });
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -410,6 +416,27 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
 
+        context('all tasks done,', () => {
+            it('should display a submit to OMU button', () => {
+                licenceServiceStub.getLicence.resolves({
+                    licence: {
+                        licenceConditions: {
+                            riskManagement: {},
+                            curfewAddressReview: {},
+                            standardConditions: {additionalConditionsRequired: 'No'}
+                        }
+                    }
+                });
+                return request(app)
+                    .get('/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('/hdc/send/noms">Continue');
+                    });
+
+            });
+        });
     });
 
 });
