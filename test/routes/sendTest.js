@@ -15,21 +15,14 @@ const loggerStub = {
 
 const licenceServiceStub = {
     getLicence: sandbox.stub().returnsPromise().resolves([{}]),
-    sendToOmu: sandbox.stub().returnsPromise().resolves([{}]),
-    sendToPm: sandbox.stub().returnsPromise().resolves([{}])
-};
-
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    roleCode: 'CA'
+    markForHandover: sandbox.stub().returnsPromise().resolves([{}])
 };
 
 const app = appSetup(createSendRoute({
     licenceService: licenceServiceStub,
     logger: loggerStub,
     authenticationMiddleware
-}), testUser);
+}));
 
 describe('Sending', () => {
 
@@ -37,52 +30,38 @@ describe('Sending', () => {
         sandbox.reset();
     });
 
-    describe('POST /send/omu', () => {
-        it('calls sendToOmu via licenceService', () => {
+    describe('GET /send', () => {
+        it('renders and HTML output', () => {
             return request(app)
-                .post('/omu')
-                .send({nomisId: 123})
+                .get('/123')
+                .expect(200)
+                .expect('Content-Type', /html/);
+        });
+    });
+
+    describe('POST /send', () => {
+        it('calls markForHandover via licenceService', () => {
+            return request(app)
+                .post('/123')
+                .send({nomisId: 123, sender: 'from', receiver: 'to'})
                 .expect(() => {
-                    expect(licenceServiceStub.sendToOmu).to.be.calledOnce();
-                    expect(licenceServiceStub.sendToOmu).to.be.calledWith(123);
+                    expect(licenceServiceStub.markForHandover).to.be.calledOnce();
+                    expect(licenceServiceStub.markForHandover).to.be.calledWith(123, 'from', 'to');
                 });
 
         });
 
         it('shows sent confirmation', () => {
             return request(app)
-                .post('/omu')
-                .send({nomisId: 123})
+                .post('/123')
+                .send({nomisId: 123, sender: 'from', receiver: 'to'})
                 .expect(302)
                 .expect(res => {
-                    expect(res.header['location']).to.eql('/sent/123');
+                    expect(res.header['location']).to.eql('/hdc/sent/123');
                 });
 
         });
     });
 
-    describe('POST /send/pm', () => {
-        it('calls sendToPm via licenceService', () => {
-            return request(app)
-                .post('/pm')
-                .send({nomisId: 123})
-                .expect(() => {
-                    expect(licenceServiceStub.sendToPm).to.be.calledOnce();
-                    expect(licenceServiceStub.sendToPm).to.be.calledWith(123);
-                });
-
-        });
-
-        it('shows sent confirmation', () => {
-            return request(app)
-                .post('/pm')
-                .send({nomisId: 123})
-                .expect(302)
-                .expect(res => {
-                    expect(res.header['location']).to.eql('/sent/123');
-                });
-
-        });
-    });
 });
 

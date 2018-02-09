@@ -1,0 +1,13 @@
+div.pure-u-2-3
+    h2.heading-large.midPaddingBottom Submit to the OMU team
+    p.lede The HDC decision can now be submitted to the OMU team or you can return to the task list and submit it later.
+
+div#continueBtns.pure-g.paddingBottom
+    div.pure-u-1
+        form#acceptanceForm(method='POST')
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="nomisId" value=nomisId)
+            input(type="hidden" name="sender" value="DM")
+            input(type="hidden" name="receiver" value="CA")
+            input#continueBtn.requiredButton.button.midMarginBottom.button-start(type="submit" value="Submit")
+        a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to task list

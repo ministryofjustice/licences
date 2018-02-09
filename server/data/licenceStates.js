@@ -1,22 +1,15 @@
-
-const REQUIRED_STATES = ['UNSTARTED', 'STARTED'];
-
-const SENT_STATES = ['SENT', 'CHECK_STARTED', 'CHECK_REJECTED', 'CHECK_SENT', 'APPROVED', 'REJECTED'];
-
-const CHECKING_STATES = ['SENT', 'CHECK_STARTED', 'CHECK_REJECTED'];
-
-const CHECK_SENT_STATES = ['CHECK_SENT', 'APPROVED', 'REJECTED'];
-
-const APPROVAL_REQUIRED_STATES = ['CHECK_SENT'];
-
-const APPROVED_STATES = ['APPROVED', 'REJECTED'];
-
 module.exports = {
-    REQUIRED_STATES,
-    SENT_STATES,
-    CHECKING_STATES,
-    CHECK_SENT_STATES,
-    APPROVAL_REQUIRED_STATES,
-    APPROVED_STATES
+    DEFAULT: 'STARTED',
+    CA: {
+        RO: 'CA-RO',
+        DM: 'CA-DM'
+    },
+    RO: {
+        CA: 'RO-CA'
+    },
+    DM: {
+        CA: 'DM-CA'
+    }
 };
+
 

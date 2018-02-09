@@ -1,4 +1,5 @@
 const express = require('express');
+const {getIn} = require('../utils/functionalHelpers');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 
 module.exports = function({logger, licenceService, authenticationMiddleware}) {
@@ -13,11 +14,14 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
     });
 
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /sent');
+        const {nomisId} = req.params;
+        const licence = await licenceService.getLicence(nomisId, {populateConditions: true});
+        const status = getIn(licence, ['status']);
 
-        const agency = await licenceService.getEstablishment(req.params.nomisId);
+        console.log(nomisId);
+        console.log(status);
 
-        res.render('sent', {agency});
+        res.render('sent/index', {nomisId, status});
     }));
 
 

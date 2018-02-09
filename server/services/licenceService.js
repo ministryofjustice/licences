@@ -1,13 +1,13 @@
 const {
     createLicenceObjectFrom,
     createConditionsObject,
-    createInputWithReasonObject,
     addAdditionalConditionsAsObject
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {DATE_FIELD} = require('./utils/conditionsValidator');
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
+const licenceStates = require('../data/licenceStates');
 
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
 
@@ -24,13 +24,13 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         try {
             const rawLicence = await licenceClient.getLicence(nomisId);
             const licence = getIn(rawLicence, ['licence']);
-            if(!licence) {
+            if (!licence) {
                 return null;
             }
             const formattedLicence = formatObjectForView(licence, {dates: [DATE_FIELD]});
             const status = getIn(rawLicence, ['status']);
 
-            if(populateConditions && !isEmpty(formattedLicence.additionalConditions)) {
+            if (populateConditions && !isEmpty(formattedLicence.additionalConditions)) {
                 return populateLicenceWithConditions(formattedLicence, status);
             }
 
@@ -43,27 +43,10 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
     }
 
     function createLicence(nomisId, data = {}) {
-
         const licence = createLicenceObjectFrom({model: licenceModel, inputObject: data});
-
         return licenceClient.createLicence(nomisId, licence, 'STARTED');
     }
 
-    function updateAddress(data = {}) {
-
-        const nomisId = data.nomisId;
-        const address = createLicenceObjectFrom({model: licenceModel.dischargeAddress, inputObject: data});
-
-        return licenceClient.updateSection('curfewAddress', nomisId, address);
-    }
-
-    function updateReportingInstructions(data = {}) {
-
-        const nomisId = data.nomisId;
-        const instructions = createLicenceObjectFrom({model: licenceModel.reporting, inputObject: data});
-
-        return licenceClient.updateSection('reportingInstructions', nomisId, instructions);
-    }
 
     async function updateLicenceConditions(data = {}) {
         try {
@@ -78,32 +61,13 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
-    function updateEligibility(data = {}, existingData = {}) {
-        const nomisId = data.nomisId;
-
-        const inputObject = createInputWithReasonObject({inputObject: data, model: licenceModel.eligibility});
-        const eligibilityData = {...existingData, ...inputObject};
-
-        return licenceClient.updateSection('eligibility', nomisId, eligibilityData, 'ELIGIBILITY_CHECKED');
-    }
-
-    function sendToOmu(nomisId) {
-        return licenceClient.updateStatus(nomisId, 'SENT');
-    }
-
-    function sendToPm(nomisId) {
-        return licenceClient.updateStatus(nomisId, 'CHECK_SENT');
-    }
-
-    async function getEstablishment(nomisId) {
-        try {
-            const record = await licenceClient.getLicence(nomisId);
-
-            return establishmentsClient.findById(record.licence.agencyLocationId);
-        } catch (error) {
-            console.error('Error during getEstablishment', error.stack);
-            throw error;
+    function markForHandover(nomisId, sender, receiver) {
+        if(!licenceStates[sender] || !licenceStates[sender][receiver]) {
+            throw new Error('Invalid handover pair: ' + sender + '-' + receiver);
         }
+
+        const newStatus = licenceStates[sender][receiver];
+        return licenceClient.updateStatus(nomisId, newStatus);
     }
 
     async function populateLicenceWithConditions(licence, status) {
@@ -159,13 +123,8 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         reset,
         getLicence,
         createLicence,
-        updateAddress,
-        updateReportingInstructions,
         updateLicenceConditions,
-        updateEligibility,
-        sendToOmu,
-        sendToPm,
-        getEstablishment,
+        markForHandover,
         update,
         updateStatus
     };

@@ -9,7 +9,7 @@ if taskData.isEligible
                     | Prisoner has opted out of HDC
                 else if taskData.hasBassReferral
                     | Prisoner has opted in and requested BASS referral
-                else if taskData.submittedToRo
+                else if taskData.proposedAddress.state === 'DONE'
                     | Proposed address information sent to RO
                 else
                     | Information not yet submitted

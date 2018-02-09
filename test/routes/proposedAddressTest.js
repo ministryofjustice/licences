@@ -120,46 +120,6 @@ describe('/hdc/proposedAddress', () => {
         });
     });
 
-    describe('GET /proposedAddress/submit/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/submit/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
-        it('renders out out page', () => {
-            return request(app)
-                .get('/submit/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Submit to Responsible Officer');
-                });
-        });
-    });
-
-    describe('GET /proposedAddress/confirmation/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/confirmation/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
-        it('renders out out page', () => {
-            return request(app)
-                .get('/confirmation/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Address information sent');
-                });
-        });
-    });
-
     describe('POST /proposedAddress/:formName/:nomisId', () => {
         context('When page contains form fields', () => {
             it('calls updateLicence from licenceService', () => {
