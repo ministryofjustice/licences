@@ -23,28 +23,28 @@ block content
                     div.form-group.inline
                         p Does the homeowner/landlord give informed consent to HDC at the address?
 
-                        div.multiple-choice(data-target="landLordHtcConsentForm")
-                            input#hdcConsentYes(type="radio" checked=data.landLordConsent === 'Yes' name="landLordHDCConsent" value="Yes")
+                        div.multiple-choice(data-target="consentForm")
+                            input#hdcConsentYes(type="radio" checked=data.consent === 'Yes' name="consent" value="Yes")
                             label(for="hdcConsentYes") Yes
                         div.multiple-choice
-                            input#hdcConsentNo(type="radio" checked=data.landLordConsent === 'No' name="landLordHDCConsent" value="No")
+                            input#hdcConsentNo(type="radio" checked=data.consent === 'No' name="consent" value="No")
                             label(for="hdcConsentNo") No
 
-                        div#landLordHtcConsentForm.panel.panel-border-narrow.js-hidden
-                            include includes/landlordHDCConsent
+                        div#consentForm.panel.panel-border-narrow.js-hidden
+                            include includes/landlordConsent
 
                     div.form-group.inline
                         p Could this person be managed safely at this address?
 
                         div.multiple-choice
-                            input#managedSafelyYes(type="radio" checked=data.landLordConsent === 'Yes' name="managedSafely" value="Yes")
-                            label(for="managedSafelyYes") Yes
+                            input#deemedSafeYes(type="radio" checked=data.deemedSafe === 'Yes' name="deemedSafe" value="Yes")
+                            label(for="deemedSafeYes") Yes
                         div.multiple-choice(data-target="managedSafelyForm")
-                            input#managedSafely(type="radio" checked=data.landLordConsent === 'No' name="managedSafely" value="No")
-                            label(for="managedSafelyNo") No
+                            input#deemedSafeNo(type="radio" checked=data.deemedSafe === 'No' name="deemedSafe" value="No")
+                            label(for="deemedSafeNo") No
 
                         div#managedSafelyForm.panel.panel-border-narrow.js-hidden
-                            label(for="managedSafelyReasons") Please give details
-                            textarea(class="form-control" name="managedSafelyReasons" id="managedSafelyReasons" rows="4" value=data.managedSafelyreason)
+                            label(for="safetyDetails") Please give details
+                            textarea(class="form-control" name="safetyDetails" id="safetyDetails" rows="4" value=data.safetyDetails)
 
             include ../includes/formButtons
