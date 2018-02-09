@@ -1,19 +1,19 @@
 h2.heading-medium.borderBottom Additional conditions
-div.pure-g
-    -var conditions = licence.additionalConditions
 
-    for condition, index in conditions
-        div.borderBottomLight.midPaddingTopBottom
-            div.pure-u-2-3
-                if condition.group
-                    div.heading-small.noMargin.smallPaddingBottom Condition #{index + 1}
-                    div.heading-small.noMargin.smallPaddingBottom #{condition.group}
-                        if condition.subgroup
-                            |  -- #{condition.subgroup}
+-var conditions = licence.additionalConditions
 
-                div
-                    for item in condition.content
-                        if item.text
-                            | #{item.text}
-                        if item.variable
-                            span(class="bold") #{item.variable}
+for condition, index in conditions
+    div.pure-g.borderBottomLight.midPaddingTopBottom
+        div.pure-u-2-3
+            if condition.group
+                div.heading-small.noMargin.smallPaddingBottom Condition #{index + 1}
+                div.heading-small.noMargin.smallPaddingBottom #{condition.group}
+                    if condition.subgroup
+                        |  -- #{condition.subgroup}
+
+            div
+                for item in condition.content
+                    if item.text
+                        | #{item.text}
+                    if item.variable
+                        span(class="bold") #{item.variable}

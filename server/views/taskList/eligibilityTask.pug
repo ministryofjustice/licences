@@ -1,42 +1,44 @@
 div.largeMarginBottom
     h2.heading-medium HDC eligibility and suitability check
-    div.pure-g
-        if taskData.eligibility.state !== 'DONE'
-            div.pure-u-9-12
+    if taskData.eligibility.state !== 'DONE'
+        div.pure-g
+            div.pure-u-1.pure-u-md-3-4
                 | Questions not completed
-            div.pure-u-1-4
+            div.pure-u-1.pure-u-md-1-4
                 form(method="post", name="eligibilityStart", action='/hdc/taskList/eligibilityStart/')
                     input(type="hidden" name="_csrf" value=csrfToken)
                     if prisonerInfo
                         input(type="hidden" name="nomisId" value=prisonerInfo.offenderNo || '')
                     input#eligibilityCheckStart.taskListAction.requiredButton.button(type="submit" value="Start")
 
-        else
-            - var eligibilityAnswers = taskData.eligibility.answers
-            div.pure-g
-                div.pure-u-1-2
-                    div.pure-g.borderTopLight.smallPaddingTopBottom
-                        div.pure-u-3-4.padRight15
-                            | Is the offender excluded from HDC?
-                        div#excludedAnswer.pure-u-1-4.center.bold
-                            if eligibilityAnswers.excluded && eligibilityAnswers.excluded.decision
-                                |#{eligibilityAnswers.excluded.decision}
-                    div.pure-g.borderTopLight.smallPaddingTopBottom
-                        div.pure-u-3-4.padRight15
-                            | Is the offender presumed unsuitable?
-                        div#unsuitableAnswer.pure-u-1-4.center.bold
-                            if eligibilityAnswers.suitability && eligibilityAnswers.suitability.decision
-                                | #{eligibilityAnswers.suitability.decision}
-                    div.pure-g.borderTopLight.smallPaddingTopBottom
-                        div.pure-u-3-4.padRight15
-                            | Is there less than 4 weeks to go to the offender's CRD?
-                        div#crdTimeAnswer.pure-u-1-4.center.bold
-                            if eligibilityAnswers.crdTime && eligibilityAnswers.crdTime.decision
-                                | #{eligibilityAnswers.crdTime.decision}
+    else
+        - var eligibilityAnswers = taskData.eligibility.answers
+        div.pure-g
+            div.pure-u-1.pure-u-md-3-4
+                div.pure-g
+                    div.pure-u-3-4
+                        div.pure-g.borderTopLight.smallPaddingTopBottom
+                            div.pure-u-3-4.padRight15
+                                | Is the offender excluded from HDC?
+                            div#excludedAnswer.pure-u-1-4.center.bold
+                                if eligibilityAnswers.excluded && eligibilityAnswers.excluded.decision
+                                    |#{eligibilityAnswers.excluded.decision}
+                        div.pure-g.borderTopLight.smallPaddingTopBottom
+                            div.pure-u-3-4.padRight15
+                                | Is the offender presumed unsuitable?
+                            div#unsuitableAnswer.pure-u-1-4.center.bold
+                                if eligibilityAnswers.suitability && eligibilityAnswers.suitability.decision
+                                    | #{eligibilityAnswers.suitability.decision}
+                        div.pure-g.borderTopLight.smallPaddingTopBottom
+                            div.pure-u-3-4.padRight15
+                                | Is there less than 4 weeks to go to the offender's CRD?
+                            div#crdTimeAnswer.pure-u-1-4.center.bold
+                                if eligibilityAnswers.crdTime && eligibilityAnswers.crdTime.decision
+                                    | #{eligibilityAnswers.crdTime.decision}
 
-                div.pure-u-1-2.center
-                    a#eligibilityCheckUpdate(href='/hdc/eligibility/excluded/'+prisonerInfo.offenderNo) Change these answers
+            div.pure-u-1.pure-u-md-1-4.center
+                a#eligibilityCheckUpdate(href='/hdc/eligibility/excluded/'+prisonerInfo.offenderNo) Change these answers
 
-                // TODO Form printed
-                //div.pure-u-1.borderTopLight
+            // TODO Form printed
+            //div.pure-u-1.borderTopLight
 

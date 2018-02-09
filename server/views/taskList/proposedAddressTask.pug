@@ -2,7 +2,7 @@ if taskData.isEligible
     div.largeMarginBottom.borderTop
         h2.heading-medium Proposed address / opt out request
         div.pure-g
-            div.pure-u-9-12
+            div.pure-u-3-4
                 if !taskData.hasStarted
                     | Information not yet entered
                 else if taskData.hasOptedOut
@@ -14,7 +14,7 @@ if taskData.isEligible
                 else
                     | Information not yet submitted
 
-            div.pure-u-1-4
+            div.pure-u-1-4.center
                 if taskData.proposedAddress.state === 'DONE'
                     a.taskListAction.center.button.button-secondary(href="/hdc/proposedAddress/optOut/"+prisonerInfo.offenderNo)
                         | View

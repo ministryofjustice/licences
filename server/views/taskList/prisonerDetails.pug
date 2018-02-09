@@ -4,15 +4,15 @@ else
     h2.heading-medium Prisoner details
 
 div#personalDetails.pure-g.borderBottom.paddingBottom
-    div.pure-u-1.pure-u-md-3-12
+    div.pure-u-1.pure-u-md-6-24
         if prisonerInfo.imageId
-            img#prisonerImage(src= "image/" + prisonerInfo.imageId)
+            img#prisonerImage.pure-img(src= "image/" + prisonerInfo.imageId)
         else
             img#prisonerImage(src= "/public/images/placeholder.png")
         if(prisonerInfo.captureDate)
             span.block.subText#prisonerPhotoDate Uploaded: #{prisonerInfo.captureDate}
 
-    div.pure-u-1.pure-u-md-2-12
+    div.pure-u-1.pure-u-md-4-24
         div.midMarginBottom
             | Name
             if(prisonerInfo.firstName || prisonerInfo.lastName)
@@ -28,7 +28,7 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
             if(prisonerInfo.offenderNo)
                 span#prisonerPrisonNumber.block.bold #{prisonerInfo.offenderNo}
 
-    div.pure-u-1.pure-u-md-4-12
+    div.pure-u-1.pure-u-md-8-24
         div.midMarginBottom
             | Date of birth
             if(prisonerInfo.dateOfBirth)
@@ -44,7 +44,7 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
             if(prisonerInfo.offences)
                 span#prisonerOffences.block.bold #{prisonerInfo.offences}
 
-    div.pure-u-1.pure-u-md-3-12
+    div.pure-u-1.pure-u-md-6-24
         div.midMarginBottom
             | CRD
             if (prisonerInfo.conditionalReleaseDate)
