@@ -45,10 +45,7 @@ describe('/hdc/proposedAddress', () => {
             {route: '/proposedAddress/optOut/1', content: 'HDC opt out decision'},
             {route: '/proposedAddress/bassReferral/1', content: 'BASS referral'},
             {route: '/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'},
-            {route: '/proposedAddress/confirmAddress/1', content: 'Confirm address details'},
-            {route: '/proposedAddress/submit/1', content: 'Submit to Responsible Officer'},
-            {route: '/proposedAddress/confirmation/1', content: 'Address information sent'}
-
+            {route: '/proposedAddress/confirmAddress/1', content: 'Confirm address details'}
         ];
 
         pages.forEach(get => {

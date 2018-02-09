@@ -218,15 +218,13 @@ module.exports = function createApp({
     });
 
     app.use(['/caseList/', '/'], createCaseListRouter({logger, caseListService, authenticationMiddleware}));
-    app.use('/hdc/taskList/',
-        createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware}));
-    app.use('/hdc/', createHdcRouter({logger, licenceService, conditionsService, authenticationMiddleware}));
     app.use('/licenceDetails/', createLicenceDetailsRouter({logger, licenceService, authenticationMiddleware}));
-
     app.use('/reporting/', createReportingRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/hdc/send/', createSendRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
-
+    app.use('/hdc/taskList/',
+        createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware}));
+    app.use('/hdc/', createHdcRouter({logger, licenceService, conditionsService, authenticationMiddleware}));
     // Error Handler
     app.use(function(req, res, next) {
         res.status(404);
