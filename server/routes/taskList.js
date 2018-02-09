@@ -81,8 +81,8 @@ function getTaskData(licence) {
             taskStates.STARTED : taskStates.DEFAULT
     };
     const additionalConditions = {
-        state: getIn(licence, ['licence', 'licenceConditions', 'standardConditions', 'nextPathDecision'])
-            ? taskStates.STARTED : taskStates.DEFAULT
+        state: getIn(licence, ['licence', 'licenceConditions', 'standardConditions', 'additionalConditionsRequired'])
+            ? 'STARTED' : 'UNSTARTED'
     };
     const riskManagement = {
         state: getIn(licence, ['licence', 'licenceConditions', 'riskManagement']) ?

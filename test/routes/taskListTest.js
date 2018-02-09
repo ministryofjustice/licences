@@ -368,7 +368,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('additional condition task started', () => {
             it('should display a view button for curfew address', () => {
                 licenceServiceStub.getLicence.resolves({licence: {
-                    licenceConditions: {standardConditions: {nextPathDecision: 'No'}}
+                    licenceConditions: {standardConditions: {additionalConditionsRequired: 'No'}}
                 }});
                 return request(app)
                     .get('/123')
