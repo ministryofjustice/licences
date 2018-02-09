@@ -251,7 +251,7 @@ exports.seed = knex =>
                     ID: 32,
                     TYPE: "ADDITIONAL",
                     TEXT: "To notify your supervising officer of the details of any passport that you possess (including passport number), and of any intention to apply for a new passport.",
-                    GROUP: 3,
+                    GROUP: 4,
                     SUBGROUP: 10,
                     ACTIVE: 1
                 },
