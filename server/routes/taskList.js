@@ -78,7 +78,7 @@ function getTaskData(licence) {
         state: getIn(licence, ['licence', 'licenceConditions', 'curfewAddressReview']) ? 'STARTED' : 'UNSTARTED'
     };
     const additionalConditions = {
-        state: getIn(licence, ['licence', 'licenceConditions', 'standardConditions', 'nextPathDecision'])
+        state: getIn(licence, ['licence', 'licenceConditions', 'standardConditions', 'additionalConditionsRequired'])
             ? 'STARTED' : 'UNSTARTED'
     };
     const riskManagement = {
