@@ -14,14 +14,9 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
     });
 
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
-
         const {nomisId} = req.params;
-        const licence = await licenceService.getLicence(nomisId, {populateConditions: true});
+        const licence = await licenceService.getLicence(nomisId);
         const status = getIn(licence, ['status']);
-
-        console.log(nomisId);
-        console.log(status);
-
         res.render('send/index', {nomisId, status});
     }));
 
