@@ -1,7 +1,10 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const {getIn} = require('../utils/functionalHelpers');
-const formConfig = require('./config/licenceConditions');
+const licenceConditionsConfig = require('./config/licenceConditions');
+const eligibilityConfig = require('./config/eligibility');
+const proposedAddressConfig = require('./config/proposedAddress');
+const formConfig = {...licenceConditionsConfig, ...eligibilityConfig, ...proposedAddressConfig};
 const {getPathFor} = require('../utils/routes');
 
 module.exports = function({logger, licenceService, conditionsService, authenticationMiddleware}) {
@@ -15,7 +18,9 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         next();
     });
 
-    router.get('/standardConditions/:nomisId', asyncMiddleware(async (req, res) => {
+    // bespoke routes
+
+    router.get('/licenceConditions/standardConditions/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /standardConditions/:nomisId');
 
         const nomisId = req.params.nomisId;
@@ -27,7 +32,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         return res.render('licenceConditions/standardConditionsForm', {nomisId, conditions, data});
     }));
 
-    router.get('/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/licenceConditions/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /additionalConditions');
 
         const nomisId = req.params.nomisId;
@@ -38,7 +43,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         return res.render('licenceConditions/additionalConditionsForm', {nomisId, conditions});
     }));
 
-    router.post('/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
+    router.post('/licenceConditions/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('POST /additionalConditions');
         const nomisId = req.body.nomisId;
 
@@ -60,7 +65,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         return res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
     }));
 
-    router.get('/conditionsSummary/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/licenceConditions/conditionsSummary/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         logger.debug('GET licenceConditions/conditionsSummary/:nomisId');
 
@@ -72,22 +77,24 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         res.render(`licenceConditions/conditionsSummaryForm`, {nomisId, licence, nextPath});
     }));
 
-    router.get('/:formName/:nomisId', asyncMiddleware(async (req, res) => {
-        const {nomisId, formName} = req.params;
+    // standard routes
+
+    router.get('/:sectionName/:formName/:nomisId', asyncMiddleware(async (req, res) => {
+        const {sectionName, formName, nomisId} = req.params;
         logger.debug(`GET licenceConditions/${formName}/${nomisId}`);
 
         const rawLicence = await licenceService.getLicence(nomisId);
         const {licenceSection, nextPath, licenceMap} = formConfig[formName];
-        const dataPath = licenceMap || ['licence', 'licenceConditions', licenceSection];
+        const dataPath = licenceMap || ['licence', sectionName, licenceSection];
         const data = getIn(rawLicence, dataPath) || {};
 
-        res.render(`licenceConditions/${formName}Form`, {nomisId, data, nextPath});
+        res.render(`${sectionName}/${formName}Form`, {nomisId, data, nextPath});
     }));
 
-    router.post('/:formName/:nomisId', asyncMiddleware(async (req, res) => {
-        const {nomisId, formName} = req.params;
+    router.post('/:sectionName/:formName/:nomisId', asyncMiddleware(async (req, res) => {
+        const {sectionName, formName, nomisId} = req.params;
 
-        logger.debug(`POST licenceConditions/${formName}/${nomisId}`);
+        logger.debug(`POST ${sectionName}/${formName}/${nomisId}`);
 
         const rawLicence = await licenceService.getLicence(nomisId);
         const nextPath = getPathFor({formName, data: req.body, formConfig});
@@ -98,7 +105,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
                 nomisId: nomisId,
                 fieldMap: formConfig[formName].fields,
                 userInput: req.body,
-                licenceSection: 'licenceConditions',
+                licenceSection: sectionName,
                 formName: formName
             });
         }

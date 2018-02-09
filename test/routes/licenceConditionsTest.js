@@ -5,7 +5,7 @@ const {
     appSetup
 } = require('../supertestSetup');
 
-const createLicenceConditionsRoute = require('../../server/routes/licenceConditions');
+const createLicenceConditionsRoute = require('../../server/routes/hdc');
 const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
 const formConfig = require('../../server/routes/config/licenceConditions');
@@ -50,53 +50,29 @@ describe('/hdc/licenceConditions', () => {
         sandbox.reset();
     });
 
-    describe('GET /licenceConditions/standardConditions/:nomisId', () => {
-        it('renders standard conditions page', () => {
-            return request(app)
-                .get('/standardConditions/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Not commit any offence');
-                });
+    describe('routes', () => {
+        const pages = [
+            {route: '/licenceConditions/standardConditions/1', content: 'Not commit any offence'},
+            {route: '/licenceConditions/riskManagement/1', content: 'Risk management and victim liaison'},
+            {route: '/licenceConditions/curfewAddressReview/1', content: 'Proposed curfew address'},
+            {route: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
+            {route: '/licenceConditions/conditionsSummary/1', content: 'Add another condition'},
+            {route: '/licenceConditions/curfewHours/1', content: 'Curfew hours'}
+        ];
+
+        pages.forEach(get => {
+            it(`renders the ${get.route} page`, () => {
+                return request(app)
+                    .get(get.route)
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.contain(get.content);
+                    });
+            });
         });
     });
 
-    describe('GET /licenceConditions/riskManagement/:nomisId', () => {
-        it('renders standard conditions page', () => {
-            return request(app)
-                .get('/standardConditions/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Not commit any offence');
-                });
-        });
-    });
-
-    describe('GET /licenceConditions/riskManagement/:nomisId', () => {
-        it('renders risk management page', () => {
-            return request(app)
-                .get('/riskManagement/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Risk management and victim liaison');
-                });
-        });
-    });
-
-    describe('GET /licenceConditions/curfewAddressReview/:nomisId', () => {
-        it('renders curfew address page', () => {
-            return request(app)
-                .get('/curfewAddressReview/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Proposed curfew address');
-                });
-        });
-    });
 
     describe('POST /additionalConditions/:nomisId', () => {
 
@@ -106,22 +82,12 @@ describe('/hdc/licenceConditions', () => {
             mentalHealthName: 'response'
         };
 
-        it('redirects to review page if no validation errors', () => {
-            return request(app)
-                .post('/additionalConditions/1')
-                .send(formResponse)
-                .expect(302)
-                .expect(res => {
-                    expect(res.header['location']).to.include('/hdc/licenceConditions/conditionsSummary/123');
-                });
-
-        });
 
         it('renders conditions page if it does not validate', () => {
             conditionsServiceStub.validateConditionInputs.resolves({validates: false});
 
             return request(app)
-                .post('/additionalConditions/1')
+                .post('/licenceConditions/additionalConditions/1')
                 .send(formResponse)
                 .expect(200)
                 .expect(res => {
@@ -134,7 +100,7 @@ describe('/hdc/licenceConditions', () => {
             conditionsServiceStub.validateConditionInputs.resolves({validates: false});
 
             return request(app)
-                .post('/additionalConditions/1')
+                .post('/licenceConditions/additionalConditions/1')
                 .send(formResponse)
                 .expect(200)
                 .expect(res => {
@@ -161,45 +127,13 @@ describe('/hdc/licenceConditions', () => {
 
 
             return request(app)
-                .post('/additionalConditions/1')
+                .post('/licenceConditions/additionalConditions/1')
                 .send(formResponse)
                 .expect(200)
                 .expect(res => {
                     expect(res.text).to.include('missing-b');
                 });
 
-        });
-    });
-
-    describe('GET /licenceConditions/conditionsSummary/:nomisId', () => {
-
-        it('returns html', () => {
-            return request(app)
-                .get('/conditionsSummary/1')
-                .expect(200)
-                .expect('Content-Type', /html/);
-        });
-
-        it('renders risk conditions review page', () => {
-            return request(app)
-                .get('/conditionsSummary/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Add another condition');
-                });
-        });
-    });
-
-    describe('GET /licenceConditions/curfewHours/:nomisId', () => {
-        it('renders risk conditions review page', () => {
-            return request(app)
-                .get('/curfewHours/1')
-                .expect(200)
-                .expect('Content-Type', /html/)
-                .expect(res => {
-                    expect(res.text).to.contain('Curfew hours');
-                });
         });
     });
 
@@ -214,7 +148,7 @@ describe('/hdc/licenceConditions', () => {
                 };
 
                 return request(app)
-                    .post('/riskManagement/1')
+                    .post('/licenceConditions/riskManagement/1')
                     .send(formResponse)
                     .expect(302)
                     .expect(res => {
@@ -244,7 +178,7 @@ describe('/hdc/licenceConditions', () => {
                 };
 
                 return request(app)
-                    .post('/curfewAddressReview/1')
+                    .post('/licenceConditions/curfewAddressReview/1')
                     .send(formResponse)
                     .expect(302)
                     .expect(res => {
