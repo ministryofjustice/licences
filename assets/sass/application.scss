@@ -271,3 +271,16 @@ td.spacer {
 .fullWidth {
     width: 100%;
 }
+
+.l-box--no-left {
+    padding-left: 0;
+}
+
+.hours-text {
+    display: block;
+    margin-top: 6px;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
