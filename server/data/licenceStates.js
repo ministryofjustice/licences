@@ -5,7 +5,7 @@ const states = {
     PROCESSING_RO: 'PROCESSING_RO',
     PROCESSING_CA: 'PROCESSING_CA',
     APPROVAL: 'APPROVAL',
-    APPROVED: 'APPROVED'
+    DECIDED: 'DECIDED'
 };
 
 const transitions = {
@@ -17,7 +17,7 @@ const transitions = {
         CA: states.PROCESSING_CA
     },
     DM: {
-        CA: states.APPROVED
+        CA: states.DECIDED
     }
 };
 

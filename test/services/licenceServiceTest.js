@@ -146,7 +146,7 @@ describe('licenceService', () => {
             expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'APPROVAL');
 
             service.markForHandover('ab1', 'DM', 'CA');
-            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'APPROVED');
+            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'DECIDED');
         });
 
         it('should throw if error during update status', () => {
