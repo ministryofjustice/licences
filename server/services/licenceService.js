@@ -62,11 +62,12 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
     }
 
     function markForHandover(nomisId, sender, receiver) {
-        if(!transitions[sender] || !transitions[sender][receiver]) {
+        const newStatus = getIn(transitions, [sender, receiver]);
+
+        if(!newStatus) {
             throw new Error('Invalid handover pair: ' + sender + '-' + receiver);
         }
 
-        const newStatus = transitions[sender][receiver];
         return licenceClient.updateStatus(nomisId, newStatus);
     }
 
