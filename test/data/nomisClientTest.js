@@ -356,7 +356,7 @@ describe('nomisClient', function() {
 
         it('should reject if api fails', () => {
             fakeNomis
-                .get(`/establishment/1`)
+                .get(`/agencies/prison/1`)
                 .reply(500);
 
             return expect(nomisClient.getEstablishment('1', 'token')).to.be.rejected();
