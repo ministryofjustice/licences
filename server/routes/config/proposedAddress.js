@@ -5,12 +5,14 @@ module.exports = {
             {decision: {}},
             {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
-        nextPathDecision: {
-            discriminator: 'decision',
-            Yes: '/hdc/taskList/',
-            No: '/hdc/proposedAddress/bassReferral/'
-        },
-        nextPath: null
+        nextPath: {
+            decisions: {
+                discriminator: 'decision',
+                Yes: '/hdc/taskList/',
+                No: '/hdc/proposedAddress/bassReferral/'
+            },
+            path: '/hdc/taskList/'
+        }
     },
     bassReferral: {
         licenceSection: 'bassReferral',
@@ -19,16 +21,17 @@ module.exports = {
             {proposedTown: {dependentOn: 'decision', predicate: 'Yes'}},
             {proposedCounty: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
-        nextPathDecision: {
-            discriminator: 'decision',
-            Yes: '/hdc/taskList/',
-            No: '/hdc/proposedAddress/curfewAddress/'
-        },
-        nextPath: null
+        nextPath: {
+            decisions: {
+                discriminator: 'decision',
+                Yes: '/hdc/taskList/',
+                No: '/hdc/proposedAddress/curfewAddress/'
+            },
+            path: '/hdc/taskList/'
+        }
     },
     curfewAddress: {
         licenceSection: 'curfewAddress',
-        nextPath: '/hdc/proposedAddress/confirmAddress/',
         fields: [
             {addressLine1: {}},
             {addressLine2: {}},
@@ -39,10 +42,15 @@ module.exports = {
             {occupier: {}},
             {residents: {}},
             {cautionedAgainstResident: {}}
-        ]
+        ],
+        nextPath: {
+            path: '/hdc/proposedAddress/confirmAddress/'
+        }
     },
     confirmAddress: {
         licenceSection: 'curfewAddress',
-        nextPath: '/hdc/send/'
+        nextPath: {
+            path: '/hdc/send/'
+        }
     }
 };

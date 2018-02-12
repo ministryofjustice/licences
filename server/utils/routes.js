@@ -2,18 +2,42 @@ module.exports = {
     getPathFor
 };
 
-
-function decidePath({decisionInfo, data}) {
-    const decidingValue = data[decisionInfo.discriminator];
-    return decisionInfo[decidingValue];
+function getPathFor({data, config}) {
+    return decidePath({nextPath: config.nextPath, data});
 }
 
-function getPathFor({formName, data, formConfig}) {
-    if (formConfig[formName].nextPath) {
-        return formConfig[formName].nextPath;
+function decidePath({nextPath, data}) {
+    if (!nextPath.decisions) {
+        return nextPath.path;
     }
-    if (formConfig[formName].nextPathDecision) {
-        return decidePath({decisionInfo: formConfig[formName].nextPathDecision, data});
+
+    if (Array.isArray(nextPath.decisions)) {
+        const path = determinePathFromDecisions({decisions: nextPath.decisions, data});
+
+        return path || nextPath.path;
     }
-    return null;
+
+
+    return getPathFromAnswer({nextPath: nextPath.decisions, data}) || nextPath.path;
 }
+
+function getPathFromAnswer({nextPath, data}) {
+    const decidingValue = data[nextPath.discriminator];
+    return nextPath[decidingValue];
+}
+
+function determinePathFromDecisions({decisions, data}) {
+    let path = null;
+    for (let pathConfig of decisions) {
+        const newPath = getPathFromAnswer({nextPath: pathConfig, data});
+
+        if (newPath) {
+            path = newPath;
+            break;
+        }
+    }
+
+    return path;
+}
+
+
