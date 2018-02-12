@@ -10,14 +10,14 @@ const states = {
 
 const transitions = {
     CA: {
-        RO: 'PROCESSING_RO',
-        DM: 'APPROVAL'
+        RO: states.PROCESSING_RO,
+        DM: states.APPROVAL
     },
     RO: {
-        CA: 'PROCESSING_CA'
+        CA: states.PROCESSING_CA
     },
     DM: {
-        CA: 'APPROVED'
+        CA: states.APPROVED
     }
 };
 
