@@ -33,7 +33,7 @@ block content
                                     div.pure-g.content-pull
                                         div.pure-u-1-3
                                             div.l-box
-                                                input(name=day+"From", id=day+"From" class="form-control", value=data[day + 'From'], type="time")
+                                                input(name=day+"From", id=day+"From" class="form-control", value=data[day + 'From'] || "19:00", type="time")
                                         div.pure-u-2-3
                                             div.l-box.l-box--no-left
                                                 span.hours-text hours each evening
@@ -44,7 +44,7 @@ block content
                                     div.pure-g.content-pull
                                         div.pure-u-1-3
                                             div.l-box
-                                                input(name=day+"Until", id=day+"Until" class="form-control", value=data[day + 'Until'], type="time")
+                                                input(name=day+"Until", id=day+"Until" class="form-control", value=data[day + 'Until'] || "07:00", type="time")
                                         div.pure-u-2-3
                                             div.l-box.l-box--no-left
                                                 span.hours-text hours the following morning
