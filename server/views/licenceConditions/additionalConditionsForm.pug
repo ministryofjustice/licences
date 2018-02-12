@@ -18,37 +18,37 @@ block content
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId)
         div#conditionsInstructions.paddingBottom.largeMarginBottom
-            div.pure-g
-                div.paddingBottom.borderBottom.midMarginBottom
-                    p.paddingBottom If the offender requires additional conditions adding to their licence select them below.
 
-                    a.button.button-secondary.padd(href="/hdc/taskList/"+nomisId role="button") No additional conditions required
+            div.paddingBottom.borderBottom.midMarginBottom
+                p.paddingBottom If the offender requires additional conditions adding to their licence select them below.
 
-            div.pure-g
-                for group, groupName in conditions
-                    div.borderBottom.paddingBottom
-                        if groupName !== 'base'
-                            h2.heading-large #{groupName}
-                        for subgroup, subgroupName in group
-                            if subgroupName !== 'base'
-                                h3.heading-medium #{subgroupName}
-                            for condition in subgroup
+                a.button.button-secondary.padd(href="/hdc/taskList/"+nomisId role="button") No additional conditions required
 
-                                - var conditionId = condition.ID.value
-                                div.pure-g.smallPaddingBottom
-                                    div.pure-u-1.pure-u-md-2-3.pure-g
-                                        div.pure-u-1.multiple-choice.conditionSelector.noLeftPaddingColumn(data-target=condition.USER_INPUT.value+'_form')
-                                            input(type="checkbox" id="check-"+conditionId value=condition.ID.value name="additionalConditions" checked=condition.SELECTED)
-                                            label(for="check-"+conditionId) #{condition.TEXT.value}
 
-                                    if condition.USER_INPUT.value
-                                        div.pure-u-1.pure-u-md-1-3.conditionForm.js-hidden(id=condition.USER_INPUT.value+'_form')
-                                            div.conditionForm
-                                                if condition.ERRORS && condition.ERRORS.indexOf('MISSING_INPUT') > -1
-                                                    span.error-message(class='missing-'+condition.ID.value) Please supply information
-                                                if condition.ERRORS && condition.ERRORS.indexOf('INVALID_DATE') > -1
-                                                    span.error-message(class='missing-'+condition.ID.value) Date must be in the format DD/MM/YYYY
-                                                include ./includes/formBuilder
+            for group, groupName in conditions
+                div.borderBottom.paddingBottom
+                    if groupName !== 'base'
+                        h2.heading-large #{groupName}
+                    for subgroup, subgroupName in group
+                        if subgroupName !== 'base'
+                            h3.heading-medium #{subgroupName}
+                        for condition in subgroup
+
+                            - var conditionId = condition.ID.value
+                            div.pure-g.smallPaddingBottom
+                                div.pure-u-1.pure-u-md-2-3.pure-g
+                                    div.pure-u-1.multiple-choice.conditionSelector.noLeftPaddingColumn(data-target=condition.USER_INPUT.value+'_form')
+                                        input(type="checkbox" id="check-"+conditionId value=condition.ID.value name="additionalConditions" checked=condition.SELECTED)
+                                        label(for="check-"+conditionId) #{condition.TEXT.value}
+
+                                if condition.USER_INPUT.value
+                                    div.pure-u-1.pure-u-md-1-3.conditionForm.js-hidden(id=condition.USER_INPUT.value+'_form')
+                                        div.conditionForm
+                                            if condition.ERRORS && condition.ERRORS.indexOf('MISSING_INPUT') > -1
+                                                span.error-message(class='missing-'+condition.ID.value) Please supply information
+                                            if condition.ERRORS && condition.ERRORS.indexOf('INVALID_DATE') > -1
+                                                span.error-message(class='missing-'+condition.ID.value) Date must be in the format DD/MM/YYYY
+                                            include ./includes/formBuilder
 
         include ../includes/formButtons
 
