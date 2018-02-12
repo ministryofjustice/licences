@@ -108,7 +108,7 @@ describe('licenceClient', () => {
             const expectedParameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
                 {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({})},
-                {column: 'status', type: TYPES.VarChar, value: 'STARTED'}
+                {column: 'status', type: TYPES.VarChar, value: 'ELIGIBILITY'}
             ];
 
             licencesProxy().createLicence('ABC123');
@@ -121,7 +121,7 @@ describe('licenceClient', () => {
             const expectedParameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
                 {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({a: 'b'})},
-                {column: 'status', type: TYPES.VarChar, value: 'STARTED'}
+                {column: 'status', type: TYPES.VarChar, value: 'ELIGIBILITY'}
             ];
 
             licencesProxy().createLicence('ABC123', {a: 'b'});

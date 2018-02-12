@@ -14,15 +14,26 @@ const loggerStub = {
 };
 
 const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves([{}]),
+    getLicence: sandbox.stub().returnsPromise().resolves({status: 'PROCESSING_RO'}),
     markForHandover: sandbox.stub().returnsPromise().resolves([{}])
+};
+
+const prisonerServiceStub = {
+    getEstablishment: sandbox.stub().returnsPromise().resolves({premise: 'HMP Blah'})
+};
+
+const testUser = {
+    staffId: 'my-staff-id',
+    token: 'my-token',
+    role: 'RO'
 };
 
 const app = appSetup(createSendRoute({
     licenceService: licenceServiceStub,
+    prisonerService: prisonerServiceStub,
     logger: loggerStub,
     authenticationMiddleware
-}));
+}), testUser);
 
 describe('Sending', () => {
 
@@ -36,6 +47,26 @@ describe('Sending', () => {
                 .get('/123')
                 .expect(200)
                 .expect('Content-Type', /html/);
+        });
+
+        it('gets establishment details when submission is RO to CA', () => {
+            return request(app)
+                .get('/123')
+                .expect(() => {
+                    expect(prisonerServiceStub.getEstablishment).to.be.calledOnce();
+                    expect(prisonerServiceStub.getEstablishment).to.be.calledWith('123', 'my-token');
+                });
+        });
+
+        it('does not establishment details when submission is CA to RO', () => {
+
+            licenceServiceStub.getLicence.resolves({status: 'WRONG_STAGE'});
+
+            return request(app)
+                .get('/123')
+                .expect(() => {
+                    expect(prisonerServiceStub.getEstablishment).to.not.be.called();
+                });
         });
     });
 

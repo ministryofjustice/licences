@@ -138,15 +138,15 @@ describe('licenceService', () => {
             service.markForHandover('ab1', 'CA', 'RO');
 
             expect(licenceClient.updateStatus).to.be.calledOnce();
-            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'CA-RO');
+            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'PROCESSING_RO');
         });
 
         it('should pick the right status based on sender and receiver', () => {
             service.markForHandover('ab1', 'CA', 'DM');
-            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'CA-DM');
+            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'APPROVAL');
 
             service.markForHandover('ab1', 'DM', 'CA');
-            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'DM-CA');
+            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'APPROVED');
         });
 
         it('should throw if error during update status', () => {

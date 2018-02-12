@@ -1,15 +1,24 @@
-module.exports = {
-    DEFAULT: 'STARTED',
+
+const states = {
+    DEFAULT: 'ELIGIBILITY',
+    ELIGIBILITY: 'ELIGIBILITY',
+    PROCESSING_RO: 'PROCESSING_RO',
+    PROCESSING_CA: 'PROCESSING_CA',
+    APPROVAL: 'APPROVAL',
+    APPROVED: 'APPROVED'
+};
+
+const transitions = {
     CA: {
-        RO: 'CA-RO',
-        DM: 'CA-DM'
+        RO: 'PROCESSING_RO',
+        DM: 'APPROVAL'
     },
     RO: {
-        CA: 'RO-CA'
+        CA: 'PROCESSING_CA'
     },
     DM: {
-        CA: 'DM-CA'
+        CA: 'APPROVED'
     }
 };
 
-
+module.exports = {states, transitions};

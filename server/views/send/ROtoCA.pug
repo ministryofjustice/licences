@@ -3,6 +3,27 @@ div.pure-g
         h2.heading-large.midPaddingBottom Submit to the Prison Case Admin
         p.lede The HDC licence information is ready to be submitted to the Prison Case Admin or you can return to the task list and send it later.
 
+        if submissionTarget
+            p The information will be submitted to:
+
+            div.bold Prison Case Admin
+            if submissionTarget.premise
+                div.bold #{submissionTarget.premise}
+            if submissionTarget.city
+                div #{submissionTarget.city}
+            if submissionTarget.locality
+                div #{submissionTarget.locality}
+            if submissionTarget.postCode
+                div #{submissionTarget.postCode}
+
+            if submissionTarget.phones
+                each phone in submissionTarget.phones
+                    div.bold.smallPaddingTop Tel: #{phone.number}
+
+            div.paddingBottom
+                if submissionTarget.email
+                | #{submissionTarget.email}
+
 div#continueBtns.pure-g.paddingBottom
     div.pure-u-1
         form#acceptanceForm(method='POST')

@@ -1,6 +1,6 @@
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const taskStates = require('../data/taskStates');
-const licenceStates = require('../data/licenceStates');
+const {states} = require('../data/licenceStates');
 
 module.exports = {
     getTaskData,
@@ -70,7 +70,7 @@ function isCompletedState(task) {
 
 function getProposedAddressState(hasStarted, handoverState, hasOptedOut, hasBassReferral) {
 
-    if (handoverState !== licenceStates.DEFAULT || hasOptedOut || hasBassReferral) {
+    if (handoverState !== states.DEFAULT || hasOptedOut || hasBassReferral) {
         return taskStates.DONE;
     }
     if (hasStarted) {
