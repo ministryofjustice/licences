@@ -5,12 +5,12 @@ div.largeMarginBottom.borderTop
 
     div.pure-g
         div.pure-u-3-4
-            if !roTasksComplete
+            if !taskData.readyToSubmit
                 | Tasks not yet complete
             else
-                | to do
+                | Ready to submit
         div.pure-u-1-4
-            if roTasksComplete
+            if taskData.readyToSubmit
                 a.taskListAction.center.button(href="/hdc/send/" + prisonerInfo.offenderNo)
                     | Continue
 
