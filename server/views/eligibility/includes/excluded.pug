@@ -2,9 +2,10 @@ block excludedForm
 
     - var vals = data.reason || ''
 
+    p Select one or more reasons why the prisoner is excluded:
+
     div.pure-g
-        p Select one or more reasons why the prisoner is excluded:
-        div.pure-u-5-12
+        div.pure-u-10-24
             div.multiple-choice
                 input(type='checkbox' name='reason' id='sexOffenderRegister' value='sexOffenderRegister' checked=vals.indexOf('sexOffenderRegister') !== -1)
                 label(for='sexOffenderRegister') Sex offender required to register
@@ -19,8 +20,8 @@ block excludedForm
                 input(type='checkbox' name='reason' id='communityCurfew' value='communityCurfew' checked=vals.indexOf('communityCurfew') !== -1)
                 label(for='communityCurfew') Serving a sentence for breach of the curfew requirement of a
                     |  Community Order
-        div.pure-u-1-6
-        div.pure-u-5-12
+        div.pure-u-4-24
+        div.pure-u-10-24
             div.multiple-choice
                 input(type='checkbox' name='reason' id='hdcCurfewConditions' value='hdcCurfewConditions' checked=vals.indexOf('hdcCurfewConditions') !== -1)
                 label(for='hdcCurfewConditions') Recalled to prison for failing to comply with the HDC
