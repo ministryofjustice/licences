@@ -4,7 +4,7 @@ exports.seed = knex =>
             () => knex('STAFF_IDS').insert([
                 {
                     NOMIS_ID: "RO_USER_TEST",
-                    STAFF_ID: "DELIUS_ID",
+                    STAFF_ID: "DELIUS_ID_TEST",
                     FIRST_NAME: 'FIRSTA',
                     LAST_NAME: 'LASTA'
                 },
