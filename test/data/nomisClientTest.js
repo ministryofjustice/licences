@@ -344,5 +344,23 @@ describe('nomisClient', function() {
         });
     });
 
+    describe('getEstablishment', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get(`/agencies/prison/1`)
+                .reply(200, {key: 'value'});
+
+            return expect(nomisClient.getEstablishment('1', 'token')).to.eventually.eql({key: 'value'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get(`/establishment/1`)
+                .reply(500);
+
+            return expect(nomisClient.getEstablishment('1', 'token')).to.be.rejected();
+        });
+    });
 });
 

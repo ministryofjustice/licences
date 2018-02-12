@@ -6,7 +6,7 @@ const {
 
 describe('prisonerDetailsService', () => {
 
-    const prisonerResponse = [{bookingId: 1, facialImageId: 2}];
+    const prisonerResponse = [{bookingId: 1, facialImageId: 2, agencyLocationId: 'ABC'}];
 
     const sentenceDetailResponse = {sentenceExpiryDate: '1985-12-03'};
     const aliasesResponse = [{firstName: 'ALIAS', lastName: 'One'}, {firstName: 'AKA', lastName: 'Two'}];
@@ -16,6 +16,8 @@ describe('prisonerDetailsService', () => {
     const imageInfoResponse = {imageId: 'imgId', captureDate: '1971-11-23'};
     const imageDataResponse = new Buffer('image');
 
+    const establishmentResponse = {premise: 'HMP Licence Test Prison'};
+
     const nomisClientMock = {
         getHdcEligiblePrisoner: sandbox.stub().returnsPromise().resolves(prisonerResponse),
         getSentenceDetail: sandbox.stub().returnsPromise().resolves(sentenceDetailResponse),
@@ -23,7 +25,8 @@ describe('prisonerDetailsService', () => {
         getMainOffence: sandbox.stub().returnsPromise().resolves(mainOffenceResponse),
         getComRelation: sandbox.stub().returnsPromise().resolves(comRelationResponse),
         getImageInfo: sandbox.stub().returnsPromise().resolves(imageInfoResponse),
-        getImageData: sandbox.stub().returnsPromise().resolves(imageDataResponse)
+        getImageData: sandbox.stub().returnsPromise().resolves(imageDataResponse),
+        getEstablishment: sandbox.stub().returnsPromise().resolves(establishmentResponse)
     };
 
     const nomisClientBuilder = sandbox.stub().returns(nomisClientMock);
@@ -36,8 +39,10 @@ describe('prisonerDetailsService', () => {
         sentenceExpiryDate: '03/12/1985',
         aliases: 'Alias One, Aka Two',
         offences: 'Robbery, conspiracy to rob',
-        com: 'Comfirst Comlast'
+        com: 'Comfirst Comlast',
+        agencyLocationId: 'ABC'
     };
+
 
     const service = createPrisonerService(nomisClientBuilder);
 
@@ -107,6 +112,32 @@ describe('prisonerDetailsService', () => {
         it('should return null if no image', async () => {
             nomisClientMock.getImageData.rejects({message: 'not found'});
             return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql(null);
+        });
+    });
+
+    describe('getEstablishment', () => {
+
+        it('should call the api with the nomis id', async () => {
+
+            nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
+
+            await service.getEstablishment('123', 'token');
+
+            expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledOnce();
+            expect(nomisClientMock.getEstablishment).to.be.calledOnce();
+            expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledWith('123');
+            expect(nomisClientMock.getEstablishment).to.be.calledWith('ABC');
+        });
+
+        it('should return the result of the api call', () => {
+            return expect(service.getEstablishment('123'))
+                .to.eventually.eql(establishmentResponse);
+        });
+
+        it('should throw if error in api', () => {
+            nomisClientMock.getHdcEligiblePrisoner.rejects(new Error('dead'));
+
+            return expect(service.getEstablishment('123')).to.be.rejected();
         });
     });
 });
