@@ -19,7 +19,7 @@ const licenceServiceStub = {
 };
 
 const prisonerServiceStub = {
-    getEstablishment: sandbox.stub().returnsPromise().resolves({premise: 'HMP Blah'})
+    getEstablishmentForPrisoner: sandbox.stub().returnsPromise().resolves({premise: 'HMP Blah'})
 };
 
 const testUser = {
@@ -35,7 +35,7 @@ const app = appSetup(createSendRoute({
     authenticationMiddleware
 }), testUser);
 
-describe('Sending', () => {
+describe('Send:', () => {
 
     afterEach(() => {
         sandbox.reset();
@@ -53,8 +53,8 @@ describe('Sending', () => {
             return request(app)
                 .get('/123')
                 .expect(() => {
-                    expect(prisonerServiceStub.getEstablishment).to.be.calledOnce();
-                    expect(prisonerServiceStub.getEstablishment).to.be.calledWith('123', 'my-token');
+                    expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledOnce();
+                    expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledWith('123', 'my-token');
                 });
         });
 
@@ -65,7 +65,7 @@ describe('Sending', () => {
             return request(app)
                 .get('/123')
                 .expect(() => {
-                    expect(prisonerServiceStub.getEstablishment).to.not.be.called();
+                    expect(prisonerServiceStub.getEstablishmentForPrisoner).to.not.be.called();
                 });
         });
     });

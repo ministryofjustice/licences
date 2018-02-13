@@ -64,7 +64,7 @@ function createPrisonerService(nomisClientBuilder) {
             return getEstablishment(prisoner.agencyLocationId, token);
 
         } catch (error) {
-            logger.error('Error getting establishment info', error.stack);
+            logger.error('Error getting prisoner establishment', error.stack);
             throw error;
         }
     }
@@ -82,10 +82,10 @@ function createPrisonerService(nomisClientBuilder) {
 
             if(error.status === 404) {
                 logger.warn('Establishment not found: ' + agencyLocationId);
-                return;
+                return null;
             }
 
-            logger.error('Error getting establishment info', error.stack);
+            logger.error('Error getting establishment', error.stack);
             throw error;
         }
     }
