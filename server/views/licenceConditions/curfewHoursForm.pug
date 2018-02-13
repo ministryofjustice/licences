@@ -3,6 +3,9 @@ extends ../layout
 block content
     -var daysInAWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
+    div.back-link-container.smallPaddingTop
+        a.link-back(href="javascript: window.history.back();") Back
+
     h2.heading-large Curfew hours
 
     div.pure-g.borderBottom.paddingBottom.largeMarginBottom

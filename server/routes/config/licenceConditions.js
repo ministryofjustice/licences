@@ -1,6 +1,6 @@
 module.exports = {
     curfewAddressReview: {
-        licenceMap: ['licence', 'proposedAddress', 'curfewAddress'],
+        licenceMap: ['licence'],
         fields: [
             {consent: {}},
             {electricity: {dependentOn: 'consent', predicate: 'Yes'}},
