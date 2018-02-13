@@ -1,8 +1,8 @@
 module.exports = {
     createLicenceObjectFrom,
-    createConditionsObject,
-    addAdditionalConditionsAsObject,
-    addAdditionalConditionsAsString,
+    createAdditionalConditionsObject,
+    populateAdditionalConditionsAsObject,
+    populateAdditionalConditionsAsString,
     createInputWithReasonObject
 };
 
@@ -25,7 +25,7 @@ const filteredToAttributes = (input, acceptedKeys, notAcceptedKeys = []) => {
     }, {});
 };
 
-function createConditionsObject(selectedConditions, formInputs) {
+function createAdditionalConditionsObject(selectedConditions, formInputs) {
     return selectedConditions.reduce((conditions, condition) => {
         const conditionAttributes = condition.FIELD_POSITION.value;
         const userInputs = conditionAttributes ? inputsFor(conditionAttributes, formInputs) : {};
@@ -63,15 +63,15 @@ function addReasonIfSelected(formInput, licenceSection) {
 }
 
 // For html page
-function addAdditionalConditionsAsObject(rawLicence, selectedConditions) {
+function populateAdditionalConditionsAsObject(rawLicence, selectedConditions) {
     return addAdditionalConditions(rawLicence, selectedConditions, injectUserInputAsObject);
 }
 
 function addAdditionalConditions(rawLicence, selectedConditions, injectUserInputMethod) {
-    const additionalConditions = Object.keys(rawLicence.additionalConditions).map(condition => {
+    const additionalConditions = Object.keys(rawLicence.additionalConditions.additional).map(condition => {
 
         const selectedCondition = selectedConditions.find(selected => selected.ID.value == condition);
-        const userInput = rawLicence.additionalConditions[condition];
+        const userInput = rawLicence.additionalConditions.additional[condition];
         const content = getContentForCondition(selectedCondition, userInput, injectUserInputMethod);
 
         return {
@@ -134,7 +134,7 @@ function injectUserInputAppointmentAsObject(userInput, conditionText) {
 }
 
 // For pdf
-function addAdditionalConditionsAsString(rawLicence, selectedConditions) {
+function populateAdditionalConditionsAsString(rawLicence, selectedConditions) {
     return addAdditionalConditions(rawLicence, selectedConditions, injectUserInputAsString);
 }
 

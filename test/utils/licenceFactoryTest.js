@@ -1,9 +1,9 @@
 const {expect} = require('../testSetup');
 const {
     createLicenceObjectFrom,
-    createConditionsObject,
-    addAdditionalConditionsAsString,
-    addAdditionalConditionsAsObject,
+    createAdditionalConditionsObject,
+    populateAdditionalConditionsAsString,
+    populateAdditionalConditionsAsObject,
     createInputWithReasonObject
 } = require('../../server/utils/licenceFactory');
 
@@ -62,7 +62,7 @@ describe('licenceFactory', () => {
                 }
             };
 
-            const output = createConditionsObject(selectedConditions, formInputs);
+            const output = createAdditionalConditionsObject(selectedConditions, formInputs);
 
             expect(output).to.eql(expectedOutput);
         });
@@ -104,7 +104,7 @@ describe('licenceFactory', () => {
                 }
             };
 
-            const output = createConditionsObject(selectedConditions, formInputs);
+            const output = createAdditionalConditionsObject(selectedConditions, formInputs);
 
             expect(output).to.eql(expectedOutput);
         });
@@ -126,15 +126,15 @@ describe('licenceFactory', () => {
                 2: {}
             };
 
-            const output = createConditionsObject(selectedConditions, formInputs);
+            const output = createAdditionalConditionsObject(selectedConditions, formInputs);
 
             expect(output).to.eql(expectedOutput);
         });
     });
 
-    describe('addAdditionalConditionsAsObject', () => {
+    describe('populateAdditionalConditionsAsObject', () => {
         it('should add text to licence if selected and has no user input', () => {
-            const rawLicence = {additionalConditions: {1: {}}};
+            const rawLicence = {additionalConditions: {additional: {1: {}}}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -145,7 +145,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsObject(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [
@@ -162,7 +162,7 @@ describe('licenceFactory', () => {
         });
 
         it('should return object for view containing condition sections', () => {
-            const rawLicence = {additionalConditions: {1: {appointmentName: 'injected'}}};
+            const rawLicence = {additionalConditions: {additional: {1: {appointmentName: 'injected'}}}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -174,7 +174,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsObject(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [
@@ -197,12 +197,12 @@ describe('licenceFactory', () => {
 
         it('should replace placeholder text for appointment conditions for view', () => {
             const rawLicence = {
-                additionalConditions: {
-                    1: {
+                additionalConditions: {additional: {
+                1: {
                         appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
                     }
                 }
-            };
+            }};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -214,7 +214,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsObject(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [{
@@ -234,7 +234,9 @@ describe('licenceFactory', () => {
 
 
         it('should replace placeholder text when multiple items for view', () => {
-            const rawLicence = {additionalConditions: {1: {field: 'injected', appointmentTime: 'injected2'}}};
+            const rawLicence = {additionalConditions: {
+                additional: {1: {field: 'injected', appointmentTime: 'injected2'}}
+            }};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -246,7 +248,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsObject(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [{
@@ -267,7 +269,9 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple items in wrong order for view', () => {
-            const rawLicence = {additionalConditions: {1: {field: 'injected', appointmentTime: 'injected2'}}};
+            const rawLicence = {additionalConditions: {
+                additional: {1: {field: 'injected', appointmentTime: 'injected2'}}
+            }};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -279,7 +283,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsObject(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [{
@@ -301,11 +305,11 @@ describe('licenceFactory', () => {
 
         it('should replace placeholder text when multiple conditions for view', () => {
             const rawLicence = {
-                additionalConditions: {
+                additionalConditions: {additional: {
                     1: {field: 'injected', appointmentTime: 'injected2'},
                     2: {groupsOrOrganisation: 'injected3'}
                 }
-            };
+            }};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -325,7 +329,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsObject(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsObject(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [
@@ -355,10 +359,10 @@ describe('licenceFactory', () => {
         });
     });
 
-    describe('addAdditionalConditionsAsString', () => {
+    describe('populateAdditionalConditionsAsString', () => {
 
         it('should replace placeholder text when asString is true', () => {
-            const rawLicence = {additionalConditions: {1: {appointmentName: 'injected'}}};
+            const rawLicence = {additionalConditions: {additional: {1: {appointmentName: 'injected'}}}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -370,7 +374,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsString(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsString(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [
@@ -388,12 +392,12 @@ describe('licenceFactory', () => {
 
         it('should replace placeholder text for appointment conditions for string', () => {
             const rawLicence = {
-                additionalConditions: {
+                additionalConditions: {additional: {
                     1: {
                         appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
                     }
                 }
-            };
+            }};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -405,7 +409,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsString(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsString(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [
@@ -422,7 +426,9 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple items when string', () => {
-            const rawLicence = {additionalConditions: {1: {field: 'injected', appointmentTime: 'injected2'}}};
+            const rawLicence = {additionalConditions: {
+                additional: {1: {field: 'injected', appointmentTime: 'injected2'}}
+            }};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -434,7 +440,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsString(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsString(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [
@@ -451,7 +457,9 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple items in wrong order as string', () => {
-            const rawLicence = {additionalConditions: {1: {field: 'injected', appointmentTime: 'injected2'}}};
+            const rawLicence = {additionalConditions: {
+                additional: {1: {field: 'injected', appointmentTime: 'injected2'}}
+            }};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -463,7 +471,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsString(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsString(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [
@@ -481,11 +489,11 @@ describe('licenceFactory', () => {
 
         it('should replace placeholder text when multiple conditions as string', () => {
             const rawLicence = {
-                additionalConditions: {
+                additionalConditions: {additional: {
                     1: {field: 'injected', appointmentTime: 'injected2'},
                     2: {groupsOrOrganisation: 'injected3'}
                 }
-            };
+            }};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -505,7 +513,7 @@ describe('licenceFactory', () => {
                 }
             ];
 
-            const output = addAdditionalConditionsAsString(rawLicence, selectedConditions);
+            const output = populateAdditionalConditionsAsString(rawLicence, selectedConditions);
 
             const expectedOutput = {
                 additionalConditions: [

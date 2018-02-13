@@ -133,7 +133,9 @@ describe('licenceDetailsService', () => {
 
         it('should populate inputs if licence is passed in', () => {
 
-            const licence = {additionalConditions: {12: {victimFamilyMembers: 'a', socialServicesDept: 'd'}}};
+            const licence = {additionalConditions: {
+                additional: {12: {victimFamilyMembers: 'a', socialServicesDept: 'd'}}
+            }};
 
             licenceClient.getAdditionalConditions.resolves([
                 {ID: {value: '12'}, TEXT: {value: 'v'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
