@@ -49,9 +49,9 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getEstablishment(nomisId, token) {
+    async function getEstablishmentForPrisoner(nomisId, token) {
         try {
-            logger.info(`getEstablishment: ${nomisId}`);
+            logger.info(`getEstablishmentForPrisoner: ${nomisId}`);
 
             const nomisClient = nomisClientBuilder(token);
 
@@ -61,10 +61,7 @@ function createPrisonerService(nomisClientBuilder) {
                 return;
             }
 
-            const agencyLocationId = prisoner.agencyLocationId;
-            const establishment = await nomisClient.getEstablishment(agencyLocationId);
-
-            return formatObjectForView(establishment);
+            return getEstablishment(prisoner.agencyLocationId, token);
 
         } catch (error) {
             logger.error('Error getting establishment info', error.stack);
@@ -72,7 +69,28 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    return {getPrisonerDetails, getPrisonerImage, getEstablishment};
+    async function getEstablishment(agencyLocationId, token) {
+        try {
+            logger.info(`getEstablishment: ${agencyLocationId}`);
+
+            const nomisClient = nomisClientBuilder(token);
+            const establishment = await nomisClient.getEstablishment(agencyLocationId);
+
+            return formatObjectForView(establishment);
+
+        } catch (error) {
+
+            if(error.status === 404) {
+                logger.warn('Establishment not found: ' + agencyLocationId);
+                return;
+            }
+
+            logger.error('Error getting establishment info', error.stack);
+            throw error;
+        }
+    }
+
+    return {getPrisonerDetails, getPrisonerImage, getEstablishmentForPrisoner, getEstablishment};
 };
 
 
