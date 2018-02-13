@@ -97,7 +97,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         logger.debug(`POST ${sectionName}/${formName}/${nomisId}`);
 
         const rawLicence = await licenceService.getLicence(nomisId);
-        const nextPath = getPathFor({formName, data: req.body, formConfig});
+        const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
 
         if (formConfig[formName].fields) {
             await licenceService.update({

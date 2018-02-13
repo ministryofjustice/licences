@@ -8,20 +8,37 @@ module.exports = {
             {deemedSafe: {}},
             {safetyDetails: {dependentOn: 'deemedSafe', predicate: 'No'}}
         ],
-        nextPath: '/hdc/licenceConditions/standardConditions/'
+        nextPath: {
+            decisions: [
+                {
+                    discriminator: 'deemedSafe',
+                    No: '/hdc/taskList/'
+                },
+                {
+                    discriminator: 'safetyDetails',
+                    No: '/hdc/taskList/'
+                }
+            ],
+            path: '/hdc/licenceConditions/curfewHours/'
+        }
     },
     standardConditions: {
         fields: [
             {additionalConditionsRequired: {}}
         ],
-        nextPathDecision: {
-            discriminator: 'additionalConditionsRequired',
-            Yes: '/hdc/licenceConditions/additionalConditions/',
-            No: '/hdc/licenceConditions/riskManagement/'
+        nextPath: {
+            decisions: {
+                discriminator: 'additionalConditionsRequired',
+                Yes: '/hdc/licenceConditions/additionalConditions/',
+                No: '/hdc/licenceConditions/riskManagement/'
+            },
+            path: '/hdc/taskList/'
         }
     },
     conditionsSummary: {
-        nextPath: '/hdc/licenceConditions/riskManagement/'
+        nextPath: {
+            path: '/hdc/licenceConditions/riskManagement/'
+        }
     },
     riskManagement: {
         licenceSection: 'riskManagement',
@@ -33,7 +50,9 @@ module.exports = {
             {victimLiaison: {}},
             {victimLiaisonDetails: {dependentOn: 'victimLiaison', predicate: 'Yes'}}
         ],
-        nextPath: '/licenceDetails/'
+        nextPath: {
+            path: '/licenceDetails/'
+        }
     },
     curfewHours: {
         licenceSection: 'curfewHours',
@@ -53,6 +72,8 @@ module.exports = {
             {sundayFrom: {}},
             {sundayUntil: {}}
         ],
-        nextPath: '/hdc/licenceConditions/standardConditions/'
+        nextPath: {
+            path: '/hdc/licenceConditions/standardConditions/'
+        }
     }
 };
