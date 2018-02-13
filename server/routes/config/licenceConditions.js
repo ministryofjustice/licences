@@ -32,7 +32,7 @@ module.exports = {
                 Yes: '/hdc/licenceConditions/additionalConditions/',
                 No: '/hdc/licenceConditions/riskManagement/'
             },
-            path: '/hdc/taskList/'
+            path: '/hdc/licenceConditions/riskManagement/'
         }
     },
     conditionsSummary: {

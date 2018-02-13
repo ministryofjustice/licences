@@ -49,7 +49,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         const nomisId = req.body.nomisId;
 
         if (!req.body.additionalConditions) {
-            return res.redirect('/reporting/' + nomisId);
+            return res.redirect('/hdc/reporting/' + nomisId);
         }
 
         const additionalConditions = await conditionsService.validateConditionInputs(req.body);
