@@ -4,6 +4,7 @@ const {formatObjectForView} = require('./utils/formatForView');
 module.exports = {createPrisonerService};
 
 function createPrisonerService(nomisClientBuilder) {
+
     async function getPrisonerDetails(nomisId, token) {
         try {
             logger.info(`getPrisonerDetail: ${nomisId}`);
@@ -48,7 +49,30 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    return {getPrisonerDetails, getPrisonerImage};
+    async function getEstablishment(nomisId, token) {
+        try {
+            logger.info(`getEstablishment: ${nomisId}`);
+
+            const nomisClient = nomisClientBuilder(token);
+
+            const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
+            const prisoner = prisoners[0];
+            if (!prisoner) {
+                return;
+            }
+
+            const agencyLocationId = prisoner.agencyLocationId;
+            const establishment = await nomisClient.getEstablishment(agencyLocationId);
+
+            return formatObjectForView(establishment);
+
+        } catch (error) {
+            logger.error('Error getting establishment info', error.stack);
+            throw error;
+        }
+    }
+
+    return {getPrisonerDetails, getPrisonerImage, getEstablishment};
 };
 
 

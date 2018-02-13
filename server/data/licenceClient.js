@@ -1,6 +1,6 @@
 const {resolveJsonResponse, resolveJsonColumn} = require('./dataAccess/azureJson');
 const {getCollection, execSql} = require('./dataAccess/dbMethods');
-const licenceStates = require('./licenceStates');
+const {states} = require('./licenceStates');
 const TYPES = require('tedious').TYPES;
 
 module.exports = {
@@ -30,7 +30,7 @@ module.exports = {
         });
     },
 
-    createLicence: function(nomisId, licence = {}, status = licenceStates.DEFAULT) {
+    createLicence: function(nomisId, licence = {}, status = states.DEFAULT) {
         return new Promise((resolve, reject) => {
             const sql = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STATUS) ' +
                 'VALUES (@nomisId, @licence, @status)';

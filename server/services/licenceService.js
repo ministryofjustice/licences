@@ -7,7 +7,7 @@ const {formatObjectForView} = require('./utils/formatForView');
 const {DATE_FIELD} = require('./utils/conditionsValidator');
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
-const licenceStates = require('../data/licenceStates');
+const {transitions} = require('../data/licenceStates');
 
 module.exports = function createLicenceService(licenceClient, establishmentsClient) {
 
@@ -62,11 +62,12 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
     }
 
     function markForHandover(nomisId, sender, receiver) {
-        if(!licenceStates[sender] || !licenceStates[sender][receiver]) {
+        const newStatus = getIn(transitions, [sender, receiver]);
+
+        if(!newStatus) {
             throw new Error('Invalid handover pair: ' + sender + '-' + receiver);
         }
 
-        const newStatus = licenceStates[sender][receiver];
         return licenceClient.updateStatus(nomisId, newStatus);
     }
 

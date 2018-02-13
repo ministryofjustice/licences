@@ -7,9 +7,9 @@ block content
 
             div.confirm-banner
                 if user.role == 'CA'
-                    if status == 'CA-RO'
+                    if status == 'PROCESSING_RO'
                         div.heading-large Address information submitted
-                    else if status == 'CA-DM'
+                    else if status == 'APPROVAL'
                         div.heading-large Submitted for approval
 
                 else if user.role == 'RO'

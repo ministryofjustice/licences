@@ -14,7 +14,7 @@ const loggerStub = {
 };
 
 const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves({status: 'CA-RO'})
+    getLicence: sandbox.stub().returnsPromise().resolves({status: 'PROCESSING_RO'})
 };
 
 const app = appSetup(createSendRoute({

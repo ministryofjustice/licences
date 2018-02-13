@@ -99,6 +99,11 @@ module.exports = function(token) {
         getROPrisoners: async function(deliusUserName) {
             const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/COM`;
             return nomisGet(path, '', token);
+        },
+
+        getEstablishment: async function(agencyLocationId) {
+            const path = `${apiUrl}/agencies/prison/${agencyLocationId}`;
+            return nomisGet(path, '', token);
         }
     };
 };

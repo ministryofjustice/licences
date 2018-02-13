@@ -32,6 +32,8 @@ function formatObjectForViewWithOptions(object, options) {
 function formatAgencyLocationDesc(agencyLocationDesc) {
     if (agencyLocationDesc && agencyLocationDesc.toLowerCase().indexOf('(hmp)') !== -1) {
         return 'HMP ' + setCase.capital(agencyLocationDesc.toLowerCase().replace('(hmp)', '')).trim();
+    } else if (agencyLocationDesc && agencyLocationDesc.toLowerCase().indexOf('hmp') !== -1) {
+        return 'HMP ' + setCase.capital(agencyLocationDesc.toLowerCase().replace('hmp', '')).trim();
     }
     return setCase.capital(agencyLocationDesc);
 }
@@ -54,6 +56,7 @@ function formatAliases(aliasesList) {
 
 const customFields = {
     agencyLocationDesc: formatAgencyLocationDesc,
+    premise: formatAgencyLocationDesc,
     offences: formatOffences,
     com: formatCom,
     aliases: formatAliases
