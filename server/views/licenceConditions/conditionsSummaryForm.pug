@@ -6,6 +6,9 @@ block content
         if licence.additionalConditions && licence.additionalConditions.length > 0
             include ../licenceDetails/additionalConditions
 
+        else
+            h2.heading-medium You have not selected any conditions.
+
     a#addAnother.button.button-secondary.largeMarginBottom(href="/hdc/licenceConditions/additionalConditions/" + nomisId role="button") Add another condition
 
     div.paddingBottom.smallPaddingTop
