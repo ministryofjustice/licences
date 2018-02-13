@@ -64,7 +64,6 @@ function allCompletedState(tasks) {
 }
 
 function isCompletedState(task) {
-console.log(task);
     // todo Define minimum requirements for each task and oly look for DONE
     return [taskStates.STARTED, taskStates.DONE].includes(task.state);
 }

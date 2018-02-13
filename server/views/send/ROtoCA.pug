@@ -8,17 +8,17 @@ div.pure-g
 
             div.bold Prison Case Admin
             if submissionTarget.premise
-                div.bold #{submissionTarget.premise}
+                div#premise.bold #{submissionTarget.premise}
             if submissionTarget.city
-                div #{submissionTarget.city}
+                div#city #{submissionTarget.city}
             if submissionTarget.locality
-                div #{submissionTarget.locality}
+                div#locality #{submissionTarget.locality}
             if submissionTarget.postCode
-                div #{submissionTarget.postCode}
+                div#postCode #{submissionTarget.postCode}
 
             if submissionTarget.phones
-                each phone in submissionTarget.phones
-                    div.bold.smallPaddingTop
+                each phone, index in submissionTarget.phones
+                    div(id="phone"+index).bold.smallPaddingTop
                         if phone.type
                             | #{phone.type}:
                         else
