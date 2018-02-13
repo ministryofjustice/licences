@@ -62,7 +62,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
             return res.render('licenceConditions/additionalConditionsForm', data);
         }
 
-        await licenceService.updateLicenceConditions(nomisId, additionalConditions, bespokeConditions);
+        await licenceService.updateLicenceConditions(nomisId, additional, bespoke);
         res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
     }));
 
