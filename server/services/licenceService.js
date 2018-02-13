@@ -48,21 +48,31 @@ module.exports = function createLicenceService(licenceClient) {
     }
 
 
-    async function updateLicenceConditions(nomisId, additionalConditions = {}, bespokeConditions = []) {
+    async function updateLicenceConditions(nomisId, additional = {}, bespoke = []) {
         try {
-            const conditionIds = additionalConditions.additionalConditions;
-            const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIds);
-            const additionalConditionsObject = createAdditionalConditionsObject(
-                selectedConditionsConfig,
-                additionalConditions
-            );
-            const licenceObject = {additional: {...additionalConditionsObject}, bespoke: bespokeConditions};
+            const licenceObject = await getConditionsObject(additional, bespoke);
 
             return licenceClient.updateSection('additionalConditions', nomisId, licenceObject);
         } catch (error) {
             console.error('Error during updateAdditionalConditions', error.stack);
             throw error;
         }
+    }
+
+    async function getConditionsObject(additional, bespoke) {
+
+        if(isEmpty(additional)) {
+            return {additional: {}, bespoke};
+        }
+
+        const conditionIds = additional.additionalConditions;
+        const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIds);
+        const additionalConditionsObject = createAdditionalConditionsObject(
+            selectedConditionsConfig,
+            additional
+        );
+
+        return {additional: {...additionalConditionsObject}, bespoke};
     }
 
     function markForHandover(nomisId, sender, receiver) {
@@ -134,4 +144,3 @@ module.exports = function createLicenceService(licenceClient) {
         updateStatus
     };
 };
-

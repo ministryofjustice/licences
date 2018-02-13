@@ -80,7 +80,8 @@ describe('/hdc/licenceConditions', () => {
         const formResponse = {
             nomisId: '123',
             additionalConditions: ['mentalHealthName'],
-            mentalHealthName: 'response'
+            mentalHealthName: 'response',
+            bespokeConditions: [{text: '', approved: ''}]
         };
 
 
@@ -133,6 +134,48 @@ describe('/hdc/licenceConditions', () => {
                 .expect(200)
                 .expect(res => {
                     expect(res.text).to.include('missing-b');
+                });
+
+        });
+
+        it('updates with empty objects if nothing returned', () => {
+
+            const formResponse2 = {
+                nomisId: '123',
+                additionalConditions: undefined,
+                bespokeConditions: [{text: '', approved: ''}]
+            };
+
+            conditionsServiceStub.validateConditionInputs.resolves({validates: false});
+
+            return request(app)
+                .post('/licenceConditions/additionalConditions/1')
+                .send(formResponse2)
+                .expect(302)
+                .expect(res => {
+                    expect(licenceServiceStub.updateLicenceConditions).to.be.calledWith('123', {}, []);
+                });
+
+        });
+
+        it('updates with bespoke objects if no additional conditions', () => {
+
+            const formResponse2 = {
+                nomisId: '123',
+                additionalConditions: undefined,
+                bespokeConditions: [{text: 'bespoke', approved: ''}]
+            };
+
+            conditionsServiceStub.validateConditionInputs.resolves({validates: false});
+
+            return request(app)
+                .post('/licenceConditions/additionalConditions/1')
+                .send(formResponse2)
+                .expect(302)
+                .expect(res => {
+                    expect(licenceServiceStub.updateLicenceConditions).to.be.calledWith(
+                        '123', {}, [{text: 'bespoke', approved: ''}]
+                    );
                 });
 
         });
