@@ -1,0 +1,20 @@
+- var bespokeConditionsToShow = bespokeConditions &&  bespokeConditions.length > 1 ? bespokeConditions.length : 1
+- var n = 0
+
+div.pure-g
+    div.pure-u-1.pure-u-md-1-2.borderBottom.largeMarginBottom
+        h1.heading-large Bespoke conditions
+        p Add the details of the bespoke condition below
+            while n < bespokeConditionsToShow
+                p.bold Bespoke condition #{n+1}
+                div.pure-g.smallPaddingBottom
+                    div.pure-u-1
+                        div.form-group
+                            textarea(name="bespokeConditions[" + n + "][text]" id="bespokeConditions[" + n + "][text]" class='form-control' rows='4')
+                                if bespokeConditions && bespokeConditions[n]
+                                    | #{bespokeConditions[n].text}
+
+                        div.form-group.multiple-choice
+                            input(name="bespokeConditions["+n+"][approved]" type="checkbox" value='Yes' checked=bespokeConditions[n] && bespokeConditions[n].approved === 'Yes')
+                            label(for="bespokeConditions["+n+"][approved]") Approved by PPCS
+                - n++

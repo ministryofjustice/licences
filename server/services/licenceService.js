@@ -1,7 +1,7 @@
 const {
     createLicenceObjectFrom,
-    createConditionsObject,
-    addAdditionalConditionsAsObject
+    createAdditionalConditionsObject,
+    populateAdditionalConditionsAsObject
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {DATE_FIELD} = require('./utils/conditionsValidator');
@@ -9,7 +9,7 @@ const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
 const {transitions} = require('../data/licenceStates');
 
-module.exports = function createLicenceService(licenceClient, establishmentsClient) {
+module.exports = function createLicenceService(licenceClient) {
 
     async function reset() {
         try {
@@ -30,7 +30,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
             const formattedLicence = formatObjectForView(licence, {dates: [DATE_FIELD]});
             const status = getIn(rawLicence, ['status']);
 
-            if (populateConditions && !isEmpty(formattedLicence.additionalConditions)) {
+            if (populateConditions && !isEmpty(getIn(formattedLicence, ['additionalConditions', 'additional']))) {
                 return populateLicenceWithConditions(formattedLicence, status);
             }
 
@@ -48,13 +48,17 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
     }
 
 
-    async function updateLicenceConditions(data = {}) {
+    async function updateLicenceConditions(nomisId, additionalConditions = {}, bespokeConditions = []) {
         try {
-            const nomisId = data.nomisId;
-            const selectedConditions = await licenceClient.getAdditionalConditions(data.additionalConditions);
-            const conditions = createConditionsObject(selectedConditions, data);
+            const conditionIds = additionalConditions.additionalConditions;
+            const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIds);
+            const additionalConditionsObject = createAdditionalConditionsObject(
+                selectedConditionsConfig,
+                additionalConditions
+            );
+            const licenceObject = {additional: {...additionalConditionsObject}, bespoke: bespokeConditions};
 
-            return licenceClient.updateSection('additionalConditions', nomisId, conditions);
+            return licenceClient.updateSection('additionalConditions', nomisId, licenceObject);
         } catch (error) {
             console.error('Error during updateAdditionalConditions', error.stack);
             throw error;
@@ -73,11 +77,11 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
 
     async function populateLicenceWithConditions(licence, status) {
         try {
-            const conditionIdsSelected = Object.keys(licence.additionalConditions);
+            const conditionIdsSelected = Object.keys(getIn(licence, ['additionalConditions', 'additional']));
             const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
 
             return {
-                licence: addAdditionalConditionsAsObject(licence, conditionsSelected),
+                licence: populateAdditionalConditionsAsObject(licence, conditionsSelected),
                 status
             };
         } catch (error) {
@@ -86,7 +90,7 @@ module.exports = function createLicenceService(licenceClient, establishmentsClie
         }
     }
 
-    async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName, status}) {
+    async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName}) {
         const updatedLicence = getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName});
 
         await licenceClient.updateLicence(nomisId, updatedLicence);

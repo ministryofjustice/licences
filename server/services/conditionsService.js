@@ -2,6 +2,7 @@ const {validate, DATE_FIELD} = require('./utils/conditionsValidator');
 const {getIntersection, flatten} = require('../utils/functionalHelpers');
 const moment = require('moment');
 const logger = require('../../log.js');
+const {getIn} = require('../utils/functionalHelpers');
 
 module.exports = function createConditionsService(licenceClient) {
 
@@ -12,11 +13,12 @@ module.exports = function createConditionsService(licenceClient) {
     async function getAdditionalConditions(licence = null) {
         try {
             const conditions = await licenceClient.getAdditionalConditions();
+            const additionalConditions = getIn(licence, ['additionalConditions', 'additional']);
 
-            if (licence && licence.additionalConditions) {
+            if (additionalConditions) {
 
                 return conditions
-                    .map(populateFromSavedLicence(licence.additionalConditions))
+                    .map(populateFromSavedLicence(additionalConditions))
                     .reduce(splitIntoGroupedObject, {});
             }
 

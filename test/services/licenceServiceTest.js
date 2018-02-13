@@ -36,7 +36,7 @@ describe('licenceService', () => {
         });
 
         it('should addAdditionalConditions if they are present in licence and requested', () => {
-            licenceClient.getLicence.resolves({licence: {additionalConditions: {1: {}}}});
+            licenceClient.getLicence.resolves({licence: {additionalConditions: {additional: {1: {}}}}});
             licenceClient.getAdditionalConditions.resolves([{
                 ID: {value: 1},
                 USER_INPUT: {value: null},
@@ -57,7 +57,7 @@ describe('licenceService', () => {
         });
 
         it('should not addAdditionalConditions if they are present in licence but not requested', () => {
-            licenceClient.getLicence.resolves({licence: {additionalConditions: {1: {}}}});
+            licenceClient.getLicence.resolves({licence: {additionalConditions: {additional: {1: {}}}}});
             licenceClient.getAdditionalConditions.resolves([{
                 ID: {value: 1},
                 USER_INPUT: {value: null},
@@ -66,7 +66,7 @@ describe('licenceService', () => {
 
             return expect(service.getLicence('123')).to.eventually.eql({
                 licence: {
-                    additionalConditions: {1: {}}
+                    additionalConditions: {additional: {1: {}}}
                 }, status: undefined
             });
         });
@@ -105,23 +105,23 @@ describe('licenceService', () => {
     describe('updateLicenceConditions', () => {
 
         it('should get the selected licence conditions', () => {
-            service.updateLicenceConditions({nomisId: 'ab1', additionalConditions: ['Scotland Street']});
+            service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
 
             expect(licenceClient.getAdditionalConditions).to.be.calledOnce();
-            expect(licenceClient.getAdditionalConditions).to.be.calledWith(['Scotland Street']);
+            expect(licenceClient.getAdditionalConditions).to.be.calledWith({additional: {key: 'var'}});
         });
 
-        it('should call update section with additional conditions from the licence client', async () => {
+        it('should call update section with conditions from the licence client', async () => {
             licenceClient.getAdditionalConditions.resolves([
                 {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}]);
 
-            await service.updateLicenceConditions({nomisId: 'ab1', additionalConditions: ['Scotland Street']});
+            await service.updateLicenceConditions('ab1', {additionalConditions: '1'}, [{text: 'bespoke'}]);
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
                 'additionalConditions',
                 'ab1',
-                {1: {}}
+                {additional: {1: {}}, bespoke: [{text: 'bespoke'}]}
             );
         });
 
