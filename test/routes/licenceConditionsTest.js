@@ -57,6 +57,7 @@ describe('/hdc/licenceConditions', () => {
             {route: '/licenceConditions/curfewAddressReview/1', content: 'Proposed curfew address'},
             {route: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
             {route: '/licenceConditions/conditionsSummary/1', content: 'Add another condition'},
+            {route: '/licenceConditions/conditionsSummary/1', content: 'href="/hdc/licenceConditions/riskManagement'},
             {route: '/licenceConditions/curfewHours/1', content: 'Curfew hours'}
         ];
 
