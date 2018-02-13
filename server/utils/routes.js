@@ -3,10 +3,8 @@ module.exports = {
 };
 
 function getPathFor({data, config}) {
-    return decidePath({nextPath: config.nextPath, data});
-}
+    const {nextPath} = config;
 
-function decidePath({nextPath, data}) {
     if (!nextPath.decisions) {
         return nextPath.path;
     }
@@ -16,7 +14,6 @@ function decidePath({nextPath, data}) {
 
         return path || nextPath.path;
     }
-
 
     return getPathFromAnswer({nextPath: nextPath.decisions, data}) || nextPath.path;
 }
