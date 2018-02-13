@@ -1,19 +1,19 @@
 div.form-group
     p Does the address have an electricity supply?
     div.multiple-choice
-        input#electricityYes(type="radio" checked=data.electricity === 'Yes' name="electricity" value="Yes")
+        input#electricityYes(type="radio" checked=review.electricity === 'Yes' name="electricity" value="Yes")
         label(for="electricityYes") Yes
     div.multiple-choice
-        input#electricityNo(type="radio" checked=data.electricity === 'No' name="electricity" value="No")
+        input#electricityNo(type="radio" checked=review.electricity === 'No' name="electricity" value="No")
         label(for="electricityNo") No
 
 
 div.form-group
     p Was a home visit conducted in this case?
     div.multiple-choice
-        input#homeVisitConductedYes(type="radio" checked=data.homeVisitConducted === 'Yes' name="homeVisitConducted" value="Yes")
+        input#homeVisitConductedYes(type="radio" checked=review.homeVisitConducted === 'Yes' name="homeVisitConducted" value="Yes")
         label(for="homeVisitConductedYes") Yes
     div.multiple-choice
-        input#homeVisitConductedNo(type="radio" checked=data.homeVisitConducted === 'No' name="homeVisitConducted" value="No")
+        input#homeVisitConductedNo(type="radio" checked=review.homeVisitConducted === 'No' name="homeVisitConducted" value="No")
         label(for="homeVisitConductedNo") No
 

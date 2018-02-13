@@ -2,6 +2,9 @@ extends ../layout
 
 block content
 
+    -var review = data.licenceConditions ? data.licenceConditions.curfewAddressReview : {}
+    -var address = data.proposedAddress ? data.proposedAddress.curfewAddress : {}
+
     div.pure-g.pure-u-1
         div.borderBottomLight
             div.back-link-container.smallPaddingTop
@@ -9,9 +12,10 @@ block content
 
             h2.heading-large Proposed curfew address
 
-            p The following discharge address have been requested by the offender.
+            if address
+                p The following discharge address have been requested by the offender.
 
-            include ../proposedAddress/includes/preferredAddress
+                include ../proposedAddress/includes/preferredAddress
 
         h3.heading-medium Address check confirmation
 
@@ -24,10 +28,10 @@ block content
                         p Does the homeowner/landlord give informed consent to HDC at the address?
 
                         div.multiple-choice(data-target="consentForm")
-                            input#hdcConsentYes(type="radio" checked=data.consent === 'Yes' name="consent" value="Yes")
+                            input#hdcConsentYes(type="radio" checked=review.consent === 'Yes' name="consent" value="Yes")
                             label(for="hdcConsentYes") Yes
                         div.multiple-choice
-                            input#hdcConsentNo(type="radio" checked=data.consent === 'No' name="consent" value="No")
+                            input#hdcConsentNo(type="radio" checked=review.consent === 'No' name="consent" value="No")
                             label(for="hdcConsentNo") No
 
                         div#consentForm.panel.panel-border-narrow.js-hidden
@@ -37,14 +41,14 @@ block content
                         p Could this person be managed safely at this address?
 
                         div.multiple-choice
-                            input#deemedSafeYes(type="radio" checked=data.deemedSafe === 'Yes' name="deemedSafe" value="Yes")
+                            input#deemedSafeYes(type="radio" checked=review.deemedSafe === 'Yes' name="deemedSafe" value="Yes")
                             label(for="deemedSafeYes") Yes
                         div.multiple-choice(data-target="managedSafelyForm")
-                            input#deemedSafeNo(type="radio" checked=data.deemedSafe === 'No' name="deemedSafe" value="No")
+                            input#deemedSafeNo(type="radio" checked=review.deemedSafe === 'No' name="deemedSafe" value="No")
                             label(for="deemedSafeNo") No
 
                         div#managedSafelyForm.panel.panel-border-narrow.js-hidden
                             label(for="safetyDetails") Please give details
-                            textarea(class="form-control" name="safetyDetails" id="safetyDetails" rows="4" value=data.safetyDetails)
+                            textarea(class="form-control" name="safetyDetails" id="safetyDetails" rows="4" value=review.safetyDetails)
 
             include ../includes/formButtons

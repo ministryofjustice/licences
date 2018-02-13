@@ -5,40 +5,40 @@ div#addressDetails.pure-g.largePaddingBottom.content-pull
         div.l-box
             span Address
             div.paddingBottom.smallMarginTop
-                if data.addressLine1
-                    p#address1.bold.noMargin #{data.addressLine1}
-                if data.addressLine2
-                    p#address2.bold.noMargin #{data.addressLine2}
-                if data.addressTown
-                    p#addressTown.bold.noMargin #{data.addressTown}
-                if data.postCode
-                    p#addressPostCode.bold.noMargin #{data.postCode}
+                if address.addressLine1
+                    p#address1.bold.noMargin #{address.addressLine1}
+                if address.addressLine2
+                    p#address2.bold.noMargin #{address.addressLine2}
+                if address.addressTown
+                    p#addressTown.bold.noMargin #{address.addressTown}
+                if address.postCode
+                    p#addressPostCode.bold.noMargin #{address.postCode}
 
             div.pure-u-md-2-3.largePaddingBottom
                 | Telephone
-                if data.telephone
-                    p#telephone.bold #{data.telephone}
+                if address.telephone
+                    p#telephone.bold #{address.telephone}
 
 
     div.pure-u-1.pure-u-md-10-24
         div.l-box
-            if data.occupier
+            if address.occupier
                 span Main occupier details
                 div.pure-g.largePaddingBottom.content-pull
                     div.pure-u-2-5
                         .l-box
-                            span#occupierName.bold #{data.occupier.name}
+                            span#occupierName.bold #{address.occupier.name}
                     div.pure-u-1-5
                         .l-box
-                            span#occupierAge.bold #{data.occupier.age}
+                            span#occupierAge.bold #{address.occupier.age}
                     div.pure-u-2-5
                         .l-box
-                            span#occupierRelation.bold  #{data.occupier.relationship}
+                            span#occupierRelation.bold  #{address.occupier.relationship}
 
-            if data.residents
+            if address.residents
                 span Other occupants
                 div.largePaddingBottom
-                    for resident in data.residents
+                    for resident in address.residents
                         div.pure-g.content-pull
                             div.pure-u-2-5
                                 .l-box
@@ -55,11 +55,11 @@ div#addressDetails.pure-g.largePaddingBottom.content-pull
 
             div
                 p Has the prisoner been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
-                if data.cautionedAgainstResident
-                    p#cautionedAgainstResident.bold #{data.cautionedAgainstResident}
+                if address.cautionedAgainstResident
+                    p#cautionedAgainstResident.bold #{address.cautionedAgainstResident}
 
     div.pure-u-1.pure-u-md-8-24
         .l-box
-            if data.electricity
+            if address.electricity
                 p.noMargin Does the address have an electricity supply?
-                p#electricity.bold #{data.electricity}
+                p#electricity.bold #{address.electricity}
