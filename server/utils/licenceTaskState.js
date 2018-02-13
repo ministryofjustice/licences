@@ -38,7 +38,7 @@ function getTaskData(licence) {
     };
 
     const reportingInstructions = {
-        state: getIn(licence, ['licence', 'reportingInstructions']) ? 'STARTED' : 'UNSTARTED'
+        state: getIn(licence, ['licence', 'reportingInstructions']) ? taskStates.STARTED : taskStates.DEFAULT
     };
 
     const readyToSubmit = allCompletedState([curfewAddress, additionalConditions, riskManagement]);
@@ -64,6 +64,7 @@ function allCompletedState(tasks) {
 }
 
 function isCompletedState(task) {
+console.log(task);
     // todo Define minimum requirements for each task and oly look for DONE
     return [taskStates.STARTED, taskStates.DONE].includes(task.state);
 }
