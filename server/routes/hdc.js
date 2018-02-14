@@ -4,7 +4,8 @@ const {getIn} = require('../utils/functionalHelpers');
 const licenceConditionsConfig = require('./config/licenceConditions');
 const eligibilityConfig = require('./config/eligibility');
 const proposedAddressConfig = require('./config/proposedAddress');
-const formConfig = {...licenceConditionsConfig, ...eligibilityConfig, ...proposedAddressConfig};
+const curfewConfig = require('./config/curfew');
+const formConfig = {...licenceConditionsConfig, ...eligibilityConfig, ...proposedAddressConfig, ...curfewConfig};
 const {getPathFor} = require('../utils/routes');
 
 module.exports = function({logger, licenceService, conditionsService, authenticationMiddleware}) {

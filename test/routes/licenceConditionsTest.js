@@ -49,16 +49,13 @@ describe('/hdc/licenceConditions', () => {
     afterEach(() => {
         sandbox.reset();
     });
-
-    describe('GET /hdc/licenceConditions/:section/:nomisId', () => {
+    describe('routes', () => {
         const routes = [
             {url: '/licenceConditions/standardConditions/1', content: 'Not commit any offence'},
             {url: '/licenceConditions/riskManagement/1', content: 'Risk management and victim liaison'},
-            {url: '/licenceConditions/curfewAddressReview/1', content: 'Proposed curfew address'},
             {url: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
             {url: '/licenceConditions/conditionsSummary/1', content: 'Add another condition'},
             {url: '/licenceConditions/conditionsSummary/1', content: 'href="/hdc/licenceConditions/riskManagement'},
-            {url: '/licenceConditions/curfewHours/1', content: 'Curfew hours'},
             {url: '/licenceConditions/reportingInstructions/1', content: 'Reporting instructions'}
         ];
 
@@ -94,30 +91,6 @@ describe('/hdc/licenceConditions', () => {
                 body: {nomisId: 1},
                 nextPath: '/hdc/licenceConditions/reportingInstructions/1',
                 section: 'riskManagement'
-            },
-            {
-                url: '/licenceConditions/curfewAddressReview/1',
-                body: {nomisId: 1},
-                section: 'curfewAddressReview',
-                nextPath: '/hdc/licenceConditions/curfewHours/1'
-            },
-            {
-                url: '/licenceConditions/curfewAddressReview/1',
-                body: {nomisId: 1, deemedSafe: 'No'},
-                section: 'curfewAddressReview',
-                nextPath: '/hdc/taskList/1'
-            },
-            {
-                url: '/licenceConditions/curfewAddressReview/1',
-                body: {nomisId: 1, safetyDetails: 'No'},
-                section: 'curfewAddressReview',
-                nextPath: '/hdc/taskList/1'
-            },
-            {
-                url: '/licenceConditions/curfewHours/1',
-                body: {nomisId: 1},
-                section: 'curfewHours',
-                nextPath: '/hdc/licenceConditions/standardConditions/1'
             },
             {
                 url: '/licenceConditions/reportingInstructions/1',
