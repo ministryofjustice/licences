@@ -32,7 +32,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
     function getSubmissionTarget(nomisId, status, token) {
         switch (status) {
             case states.PROCESSING_RO:
-                return prisonerService.getEstablishment(nomisId, token);
+                return prisonerService.getEstablishmentForPrisoner(nomisId, token);
             default:
                 return null;
         }

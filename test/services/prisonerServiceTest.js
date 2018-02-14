@@ -115,13 +115,13 @@ describe('prisonerDetailsService', () => {
         });
     });
 
-    describe('getEstablishment', () => {
+    describe('getEstablishmentForPrisoner', () => {
 
         it('should call the api with the nomis id', async () => {
 
             nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
 
-            await service.getEstablishment('123', 'token');
+            await service.getEstablishmentForPrisoner('123', 'token');
 
             expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledOnce();
             expect(nomisClientMock.getEstablishment).to.be.calledOnce();
@@ -130,14 +130,31 @@ describe('prisonerDetailsService', () => {
         });
 
         it('should return the result of the api call', () => {
-            return expect(service.getEstablishment('123'))
+            return expect(service.getEstablishmentForPrisoner('123'))
                 .to.eventually.eql(establishmentResponse);
         });
 
-        it('should throw if error in api', () => {
+        it('should throw if error in api when getting prisoner', () => {
             nomisClientMock.getHdcEligiblePrisoner.rejects(new Error('dead'));
+            return expect(service.getEstablishmentForPrisoner('123')).to.be.rejected();
+        });
 
-            return expect(service.getEstablishment('123')).to.be.rejected();
+        it('should throw if error in api when getting establishment', () => {
+            nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
+            nomisClientMock.getEstablishment.rejects(new Error('dead'));
+            return expect(service.getEstablishmentForPrisoner('123')).to.be.rejected();
+        });
+
+        it('should NOT throw but return null if 404 in api when getting establishment', () => {
+            nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
+            nomisClientMock.getEstablishment.rejects({status: 404});
+            return expect(service.getEstablishmentForPrisoner('123')).to.eventually.eql(null);
+        });
+
+        it('should throw if error in api when getting establishment if error ststus other than 404', () => {
+            nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
+            nomisClientMock.getEstablishment.rejects({status: 401});
+            return expect(service.getEstablishmentForPrisoner('123')).to.be.rejected();
         });
     });
 });
