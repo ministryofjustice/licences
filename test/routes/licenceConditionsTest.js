@@ -50,25 +50,101 @@ describe('/hdc/licenceConditions', () => {
         sandbox.reset();
     });
 
-    describe('routes', () => {
-        const pages = [
-            {route: '/licenceConditions/standardConditions/1', content: 'Not commit any offence'},
-            {route: '/licenceConditions/riskManagement/1', content: 'Risk management and victim liaison'},
-            {route: '/licenceConditions/curfewAddressReview/1', content: 'Proposed curfew address'},
-            {route: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
-            {route: '/licenceConditions/conditionsSummary/1', content: 'Add another condition'},
-            {route: '/licenceConditions/conditionsSummary/1', content: 'href="/hdc/licenceConditions/riskManagement'},
-            {route: '/licenceConditions/curfewHours/1', content: 'Curfew hours'}
+    describe('GET /hdc/licenceConditions/:section/:nomisId', () => {
+        const routes = [
+            {url: '/licenceConditions/standardConditions/1', content: 'Not commit any offence'},
+            {url: '/licenceConditions/riskManagement/1', content: 'Risk management and victim liaison'},
+            {url: '/licenceConditions/curfewAddressReview/1', content: 'Proposed curfew address'},
+            {url: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
+            {url: '/licenceConditions/conditionsSummary/1', content: 'Add another condition'},
+            {url: '/licenceConditions/conditionsSummary/1', content: 'href="/hdc/licenceConditions/riskManagement'},
+            {url: '/licenceConditions/curfewHours/1', content: 'Curfew hours'},
+            {url: '/licenceConditions/reportingInstructions/1', content: 'Reporting instructions'}
         ];
 
-        pages.forEach(get => {
-            it(`renders the ${get.route} page`, () => {
+        routes.forEach(route => {
+            it(`renders the ${route.url} page`, () => {
                 return request(app)
-                    .get(get.route)
+                    .get(route.url)
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.contain(get.content);
+                        expect(res.text).to.contain(route.content);
+                    });
+            });
+        });
+    });
+
+    describe('POST /hdc/licenceConditions/:section/:nomisId', () => {
+        const routes = [
+            {
+                url: '/licenceConditions/standardConditions/1',
+                body: {additionalConditionsRequired: 'Yes', nomisId: 1},
+                nextPath: '/hdc/licenceConditions/additionalConditions/1',
+                section: 'standardConditions'
+            },
+            {
+                url: '/licenceConditions/standardConditions/1',
+                body: {additionalConditionsRequired: 'No', nomisId: 1},
+                nextPath: '/hdc/licenceConditions/riskManagement/1',
+                section: 'standardConditions'
+            },
+            {
+                url: '/licenceConditions/riskManagement/1',
+                body: {nomisId: 1},
+                nextPath: '/hdc/licenceConditions/reportingInstructions/1',
+                section: 'riskManagement'
+            },
+            {
+                url: '/licenceConditions/curfewAddressReview/1',
+                body: {nomisId: 1},
+                section: 'curfewAddressReview',
+                nextPath: '/hdc/licenceConditions/curfewHours/1'
+            },
+            {
+                url: '/licenceConditions/curfewAddressReview/1',
+                body: {nomisId: 1, deemedSafe: 'No'},
+                section: 'curfewAddressReview',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/licenceConditions/curfewAddressReview/1',
+                body: {nomisId: 1, safetyDetails: 'No'},
+                section: 'curfewAddressReview',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/licenceConditions/curfewHours/1',
+                body: {nomisId: 1},
+                section: 'curfewHours',
+                nextPath: '/hdc/licenceConditions/standardConditions/1'
+            },
+            {
+                url: '/licenceConditions/reportingInstructions/1',
+                body: {nomisId: 1},
+                section: 'reportingInstructions',
+                nextPath: '/hdc/taskList/1'
+            }
+        ];
+
+        routes.forEach(route => {
+            it(`renders the correct path '${route.nextPath}' page`, () => {
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceServiceStub.update).to.be.calledOnce();
+                        expect(licenceServiceStub.update).to.be.calledWith({
+                            licence: {key: 'value'},
+                            nomisId: '1',
+                            fieldMap: formConfig[route.section].fields,
+                            userInput: route.body,
+                            licenceSection: 'licenceConditions',
+                            formName: route.section
+                        });
+
+                        expect(res.header.location).to.equal(route.nextPath);
                     });
             });
         });
@@ -135,7 +211,6 @@ describe('/hdc/licenceConditions', () => {
                 .expect(res => {
                     expect(res.text).to.include('missing-b');
                 });
-
         });
 
         it('updates with empty objects if nothing returned', () => {
@@ -178,65 +253,6 @@ describe('/hdc/licenceConditions', () => {
                     );
                 });
 
-        });
-    });
-
-    describe('POST /licenceConditions/:formName/:nomisId', () => {
-        context('When page contains form fields', () => {
-            it('calls updateLicence from licenceService', () => {
-
-                const formResponse = {
-                    nomisId: '1',
-                    planningActions: 'Yes',
-                    planningActionsDetails: 'details'
-                };
-
-                return request(app)
-                    .post('/licenceConditions/riskManagement/1')
-                    .send(formResponse)
-                    .expect(302)
-                    .expect(res => {
-                        expect(licenceServiceStub.update).to.be.calledOnce();
-                        expect(licenceServiceStub.update).to.be.calledWith({
-                            licence: {key: 'value'},
-                            nomisId: '1',
-                            fieldMap: formConfig.riskManagement.fields,
-                            userInput: formResponse,
-                            licenceSection: 'licenceConditions',
-                            formName: 'riskManagement'
-                        });
-                    });
-            });
-        });
-    });
-
-    describe('POST /licenceConditions/curfewAddressReview/:nomisId', () => {
-        context('When page contains form fields', () => {
-            it('calls updateLicence from licenceService', () => {
-
-                const formResponse = {
-                    nomisId: '1',
-                    consent: 'Yes',
-                    deemedSafe: 'No',
-                    rejectionDetails: 'Reason'
-                };
-
-                return request(app)
-                    .post('/licenceConditions/curfewAddressReview/1')
-                    .send(formResponse)
-                    .expect(302)
-                    .expect(res => {
-                        expect(licenceServiceStub.update).to.be.calledOnce();
-                        expect(licenceServiceStub.update).to.be.calledWith({
-                            licence: {key: 'value'},
-                            nomisId: '1',
-                            fieldMap: formConfig.curfewAddressReview.fields,
-                            userInput: formResponse,
-                            licenceSection: 'licenceConditions',
-                            formName: 'curfewAddressReview'
-                        });
-                    });
-            });
         });
     });
 });

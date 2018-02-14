@@ -51,7 +51,7 @@ module.exports = {
             {victimLiaisonDetails: {dependentOn: 'victimLiaison', predicate: 'Yes'}}
         ],
         nextPath: {
-            path: '/licenceDetails/'
+            path: '/hdc/licenceConditions/reportingInstructions/'
         }
     },
     curfewHours: {
@@ -74,6 +74,22 @@ module.exports = {
         ],
         nextPath: {
             path: '/hdc/licenceConditions/standardConditions/'
+        }
+    },
+    reportingInstructions: {
+        licenceSection: 'reportingInstructions',
+        fields: [
+            {nameOfPerson: {}},
+            {buildingAndStreet1: {}},
+            {buildingAndStreet2: {}},
+            {townOrCity: {}},
+            {postcode: {}},
+            {telephone: {}},
+            {date: {}},
+            {time: {}}
+        ],
+        nextPath: {
+            path: '/hdc/taskList/'
         }
     }
 };
