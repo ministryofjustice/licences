@@ -46,27 +46,32 @@ module.exports = function({logger, licenceService, conditionsService, authentica
 
     router.post('/licenceConditions/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('POST /additionalConditions');
-        const nomisId = req.body.nomisId;
+        const {nomisId, additionalConditions, bespokeConditions} = req.body;
 
-        if (!req.body.additionalConditions) {
-            return res.redirect('/hdc/reporting/' + nomisId);
+        const bespoke = bespokeConditions.filter(condition => condition.text) || [];
+        const additional = await getAdditionalConditionsFrom(additionalConditions, req.body);
+
+        if(!additional) {
+            await licenceService.updateLicenceConditions(nomisId, {}, bespoke);
+            return res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         }
 
-        const additionalConditions = await conditionsService.validateConditionInputs(req.body);
-        const bespokeConditions = req.body.bespokeConditions || [];
-        if (!additionalConditions.validates) {
-            const conditions = await conditionsService.getAdditionalConditionsWithErrors(additionalConditions);
-            return res.render('licenceConditions/additionalConditionsForm', {
-                nomisId,
-                conditions,
-                bespokeConditions,
-                submissionError: true
-            });
+        if (!additional.validates) {
+            const conditions = await conditionsService.getAdditionalConditionsWithErrors(additional);
+            const data = {nomisId, conditions, bespokeConditions, submissionError: true};
+            return res.render('licenceConditions/additionalConditionsForm', data);
         }
 
-        await licenceService.updateLicenceConditions(nomisId, additionalConditions, bespokeConditions);
+        await licenceService.updateLicenceConditions(nomisId, additional, bespoke);
         res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
     }));
+
+    function getAdditionalConditionsFrom(additionalConditions, input) {
+        if(!additionalConditions) {
+            return null;
+        }
+        return conditionsService.validateConditionInputs(input);
+    }
 
     router.get('/licenceConditions/conditionsSummary/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
@@ -118,3 +123,4 @@ module.exports = function({logger, licenceService, conditionsService, authentica
 
     return router;
 };
+
