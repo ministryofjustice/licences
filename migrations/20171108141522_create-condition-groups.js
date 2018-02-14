@@ -1,7 +1,7 @@
 exports.up = knex =>
     Promise.all([
         knex.schema.createTableIfNotExists('CONDITIONS_GROUPS', table => {
-            table.integer('ID').primary('PK_CONDITIONS_GROUP');
+            table.string('ID', 50).primary('PK_CONDITIONS_GROUP');
             table.string('NAME');
             table.string('TYPE');
         })

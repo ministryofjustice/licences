@@ -272,7 +272,8 @@ describe('licenceClient', () => {
                 licencesProxy().getAdditionalConditions(['1', '2']);
 
                 const sql = getCollectionStub.getCalls()[0].args[0];
-                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (1,2) AND ACTIVE = 1';
+                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (\'1\',\'2\') ' +
+                    'AND ACTIVE = 1';
                 expect(sql).to.contain(expectedSql);
             });
 
@@ -280,7 +281,8 @@ describe('licenceClient', () => {
                 licencesProxy().getAdditionalConditions('1');
 
                 const sql = getCollectionStub.getCalls()[0].args[0];
-                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (1) AND ACTIVE = 1';
+                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (\'1\') ' +
+                    'AND ACTIVE = 1';
                 expect(sql).to.contain(expectedSql);
             });
         });

@@ -30,9 +30,9 @@ module.exports = function createConditionsService(licenceClient) {
     }
 
     async function validateConditionInputs(requestBody) {
-        const conditionsSelected = await licenceClient.getAdditionalConditions(requestBody.additionalConditions);
+        const selectedConditionsConfig = await licenceClient.getAdditionalConditions(requestBody.additionalConditions);
 
-        return validate(requestBody, conditionsSelected);
+        return validate(requestBody, selectedConditionsConfig);
     }
 
     async function getAdditionalConditionsWithErrors(validatedInput) {
