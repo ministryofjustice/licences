@@ -79,7 +79,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
 
         const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
         const {nextPath} = formConfig.conditionsSummary;
-        // TODO look to put additional conditions within licenceConditions section on licence to enable generic get
+
         const licence = getIn(rawLicence, ['licence']) || {};
 
         res.render(`licenceConditions/conditionsSummaryForm`, {nomisId, licence, nextPath});

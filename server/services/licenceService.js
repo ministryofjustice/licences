@@ -30,7 +30,10 @@ module.exports = function createLicenceService(licenceClient) {
             const formattedLicence = formatObjectForView(licence, {dates: [DATE_FIELD]});
             const status = getIn(rawLicence, ['status']);
 
-            if (populateConditions && !isEmpty(getIn(formattedLicence, ['additionalConditions', 'additional']))) {
+            const additionalConditions = getIn(formattedLicence, ['additionalConditions', 'additional']);
+            const bespokeConditions = getIn(formattedLicence, ['additionalConditions', 'bespoke']) || [];
+            const conditionsOnLicence = !isEmpty(additionalConditions) || bespokeConditions.length > 0;
+            if (populateConditions && conditionsOnLicence) {
                 return populateLicenceWithConditions(formattedLicence, status);
             }
 
@@ -88,10 +91,10 @@ module.exports = function createLicenceService(licenceClient) {
     async function populateLicenceWithConditions(licence, status) {
         try {
             const conditionIdsSelected = Object.keys(getIn(licence, ['additionalConditions', 'additional']));
-            const conditionsSelected = await licenceClient.getAdditionalConditions(conditionIdsSelected);
+            const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIdsSelected);
 
             return {
-                licence: populateAdditionalConditionsAsObject(licence, conditionsSelected),
+                licence: populateAdditionalConditionsAsObject(licence, selectedConditionsConfig),
                 status
             };
         } catch (error) {

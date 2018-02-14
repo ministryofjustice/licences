@@ -63,13 +63,22 @@ function addReasonIfSelected(formInput, licenceSection) {
 }
 
 // For html page
-function populateAdditionalConditionsAsObject(rawLicence, selectedConditions) {
-    return addAdditionalConditions(rawLicence, selectedConditions, injectUserInputAsObject);
+function populateAdditionalConditionsAsObject(rawLicence, selectedConditionsConfig) {
+    return addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputAsObject);
 }
 
-function addAdditionalConditions(rawLicence, selectedConditions, injectUserInputMethod) {
-    const additionalConditions = Object.keys(rawLicence.additionalConditions.additional).map(condition => {
+function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputMethod) {
+    const {additional, bespoke} = rawLicence.additionalConditions;
 
+    const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, injectUserInputMethod);
+    const populatedAdditional = Object.keys(additional).map(getObjectForAdditional);
+    const populatedBespoke = bespoke.map(getObjectForBespoke);
+
+    return {...rawLicence, additionalConditions: [...populatedAdditional, ...populatedBespoke]};
+}
+
+function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputMethod) {
+    return condition => {
         const selectedCondition = selectedConditions.find(selected => selected.ID.value == condition);
         const userInput = rawLicence.additionalConditions.additional[condition];
         const content = getContentForCondition(selectedCondition, userInput, injectUserInputMethod);
@@ -79,9 +88,7 @@ function addAdditionalConditions(rawLicence, selectedConditions, injectUserInput
             group: selectedCondition.GROUP_NAME.value,
             subgroup: selectedCondition.SUBGROUP_NAME.value
         };
-    });
-
-    return {...rawLicence, additionalConditions};
+    };
 }
 
 function getContentForCondition(selectedCondition, userInput, injectUserInputMethod) {
@@ -90,6 +97,14 @@ function getContentForCondition(selectedCondition, userInput, injectUserInputMet
     return userInputName ?
         injectUserInputMethod(selectedCondition, userInput) :
         [{text: selectedCondition.TEXT.value}];
+}
+
+function getObjectForBespoke(condition) {
+    return {
+        content: [{text: condition.text}],
+        group: 'Bespoke',
+        subgroup: null
+    };
 }
 
 function injectUserInputAsObject(condition, userInput) {
