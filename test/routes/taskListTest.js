@@ -342,7 +342,7 @@ describe('GET /taskList/:prisonNumber', () => {
             it('should display a view button for curfew address task', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {
-                        curfew: {curfewAddressReview: {}}
+                        curfew: {curfewAddressReview: 'any'}
                     }
                 });
                 return request(app)
@@ -405,7 +405,7 @@ describe('GET /taskList/:prisonNumber', () => {
             it('should display a view button for riskManagement', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {
-                        licenceConditions: {riskManagement: 'anything'}
+                        risk: {riskManagement: 'anything'}
                     }
                 });
                 return request(app)
@@ -425,21 +425,24 @@ describe('GET /taskList/:prisonNumber', () => {
                     status: 'PROCESSING_RO',
                     licence: {
                         curfew: {
-                            curfewAddressReview: {}
-                        },
-                        licenceConditions: {
-                            riskManagement: {
-                                planningActions: 'any',
-                                victimLiaison: 'any'
-                            },
                             curfewAddressReview: {
                                 consent: 'any',
                                 deemedSafe: 'any'
                             },
-                            curfewHours: 'any',
+                            curfewHours: 'any'
+                        },
+                        risk: {
+                            riskManagement: {
+                                planningActions: 'any',
+                                victimLiaison: 'any'
+                            }
+                        },
+                        licenceConditions: {
                             standardConditions: {additionalConditionsRequired: 'No'}
                         },
-                        reportingInstructions: 'anything'
+                        reporting: {
+                            reportingInstructions: 'anything'
+                        }
                     }
                 });
                 return request(app)

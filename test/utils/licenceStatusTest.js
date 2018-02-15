@@ -54,13 +54,15 @@ describe('getTaskData', () => {
                         decision: 'Yes'
                     }
                 },
-                licenceConditions: {
+                curfew: {
                     curfewAddressReview: {
                         consent: 'Yes',
                         electricity: 'Yes',
                         homeVisitConducted: 'Yes',
                         deemedSafe: 'Yes'
-                    },
+                    }
+                },
+                risk: {
                     riskManagement: {
                         planningActions: 'Yes',
                         victimLiaison: 'Yes'
@@ -95,9 +97,7 @@ describe('getTaskData', () => {
                 licenceConditions: {
                     standardConditions: {
                         additionalConditionsRequired: 'Yes'
-                    }
-                },
-                additionalConditions: {
+                    },
                     additional: {
                         1: {},
                         2: {}
@@ -242,15 +242,21 @@ describe('getTaskData', () => {
                 licenceConditions: {
                     standardConditions: {
                         additionalConditionsRequired: 'Yes'
-                    },
+                    }
+                },
+                curfew: {
                     curfewAddressReview: {
                         consent: {}
-                    },
+                    }
+                },
+                risk: {
                     riskManagement: {
                         planningActions: {}
                     }
                 },
-                reportingInstructions: {}
+                reporting: {
+                    reportingInstructions: {}
+                }
             }
         };
 
@@ -290,24 +296,29 @@ describe('getTaskData', () => {
                         county: 'blah'
                     }
                 },
-                curfewHours: {},
-                licenceConditions: {
-                    standardConditions: {
-                        additionalConditionsRequired: 'No'
-                    },
+                curfew: {
                     curfewAddressReview: {
                         consent: 'Yes',
                         electricity: 'Yes',
                         homeVisitConducted: 'Yes',
                         deemedSafe: 'Yes'
                     },
-                    curfewHours: 'anything',
+                    curfewHours: 'anything'
+                },
+                licenceConditions: {
+                    standardConditions: {
+                        additionalConditionsRequired: 'No'
+                    }
+                },
+                risk: {
                     riskManagement: {
                         planningActions: 'anything',
                         victimLiaison: 'anything'
                     }
                 },
-                reportingInstructions: 'anything',
+                reporting: {
+                    reportingInstructions: 'anything'
+                },
                 approval: 'Yes'
             }
         };

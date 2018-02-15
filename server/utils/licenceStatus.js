@@ -168,22 +168,22 @@ function getBassReferralState(data) {
 function getRiskManagementState(data) {
 
     return {
-        riskManagementNeeded: data.path('licenceConditions.riskManagement.planningActions', equalTo('Yes')),
-        victimLiasionNeeded: data.path('licenceConditions.riskManagement.victimLiaison', equalTo('Yes')),
+        riskManagementNeeded: data.path('risk.riskManagement.planningActions', equalTo('Yes')),
+        victimLiasionNeeded: data.path('risk.riskManagement.victimLiaison', equalTo('Yes')),
         riskManagement: getState(data)
     };
 
     function getState(data) {
 
-        if (data.path('licenceConditions.riskManagement', isNotPresent)) {
+        if (data.path('risk.riskManagement', isNotPresent)) {
             return taskStates.UNSTARTED;
         }
 
-        if (data.path('licenceConditions.riskManagement.planningActions', isNotPresent)) {
+        if (data.path('risk.riskManagement.planningActions', isNotPresent)) {
             return taskStates.STARTED;
         }
 
-        if (data.path('licenceConditions.riskManagement.victimLiaison', isPresent)) {
+        if (data.path('risk.riskManagement.victimLiaison', isPresent)) {
             return taskStates.DONE;
         }
 
@@ -222,23 +222,23 @@ function getCurfewAddressReviewState(data) {
 
     function getState(data) {
 
-        if (data.path('licenceConditions.curfewAddressReview', isNotPresent)) {
+        if (data.path('curfew.curfewAddressReview', isNotPresent)) {
             return taskStates.UNSTARTED;
         }
 
-        if (data.path('licenceConditions.curfewAddressReview.consent', isNotPresent)) {
+        if (data.path('curfew.curfewAddressReview.consent', isNotPresent)) {
             return taskStates.STARTED;
         }
 
-        if (data.path('licenceConditions.curfewAddressReview.deemedSafe', isNotPresent)) {
+        if (data.path('curfew.curfewAddressReview.deemedSafe', isNotPresent)) {
             return taskStates.STARTED;
         }
 
-        if (data.path('licenceConditions.curfewAddressReview.consent', equalTo('Yes'))) {
-            if (data.path('licenceConditions.curfewAddressReview.electricity', isNotPresent)) {
+        if (data.path('curfew.curfewAddressReview.consent', equalTo('Yes'))) {
+            if (data.path('curfew.curfewAddressReview.electricity', isNotPresent)) {
                 return taskStates.STARTED;
             }
-            if (data.path('licenceConditions.curfewAddressReview.homeVisitConducted', isNotPresent)) {
+            if (data.path('curfew.curfewAddressReview.homeVisitConducted', isNotPresent)) {
                 return taskStates.STARTED;
             }
         }
@@ -248,14 +248,14 @@ function getCurfewAddressReviewState(data) {
 
     function getApproved(data) {
         return curfewAddressReview === taskStates.DONE &&
-            data.path('licenceConditions.curfewAddressReview.consent', equalTo('Yes')) &&
-            data.path('licenceConditions.curfewAddressReview.deemedSafe', equalTo('Yes'));
+            data.path('curfew.curfewAddressReview.consent', equalTo('Yes')) &&
+            data.path('curfew.curfewAddressReview.deemedSafe', equalTo('Yes'));
     }
 }
 
 function getCurfewHoursState(data) {
     return {
-        curfewHours: data.path('licenceConditions.curfewHours', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+        curfewHours: data.path('curfew.curfewHours', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
@@ -263,7 +263,7 @@ function getReportingInstructionsState(data) {
 
     return {
         reportingInstructions:
-            data.path('reportingInstructions', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+            data.path('reporting.reportingInstructions', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
         // todo check for missing mandatory elements
     };
 }
@@ -278,8 +278,8 @@ function getLicenceConditionsState(data) {
     const standardOnly =
         data.path('licenceConditions.standardConditions.additionalConditionsRequired', equalTo('No'));
 
-    const additionals = data.value('additionalConditions.additional');
-    const bespokes = data.value('additionalConditions.bespoke');
+    const additionals = data.value('licenceConditions.additional');
+    const bespokes = data.value('licenceConditions.bespoke');
 
     const additional = additionals ? Object.keys(additionals).length : 0;
     const bespoke = bespokes ? bespokes.length : 0;
