@@ -5,14 +5,14 @@ div.smallPaddingBottom
             | #{condition.USER_SUBMISSION.reportingAddress}
 
 div.pure-g.smallPaddingBottom
-    div.pure-u-6-12
+    div.pure-u-1-2
         label(for='reportingTime') At (time)
         input(type='text' name='reportingTime' id='reportingTime' class='form-control' value=condition.USER_SUBMISSION && condition.USER_SUBMISSION.reportingTime)
 
     div.pure-u-6-12
         div.pure-g.lineMarginTop
-            p.center.pure-u-1-6 or
-            div.pure-u-6-12
+            p.center.pure-u-8-24 or
+            div.pure-u-1-2
                 div.multiple-choice
                   input(id='reportingDaily' name='reportingDaily' type='checkbox' value='yes' checked=condition.USER_SUBMISSION && condition.USER_SUBMISSION.reportingDaily === 'yes')
                   label(for='reportingDaily') Daily

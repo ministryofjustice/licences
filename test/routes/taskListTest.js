@@ -332,7 +332,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/curfewAddressReview/noms">Start');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">Start');
                     });
 
             });
@@ -342,7 +342,7 @@ describe('GET /taskList/:prisonNumber', () => {
             it('should display a view button for curfew address task', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {
-                        licenceConditions: {curfewAddressReview: 'anything'}
+                        curfew: {curfewAddressReview: {}}
                     }
                 });
                 return request(app)
@@ -350,7 +350,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/curfewAddressReview/noms">View');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">View');
                     });
 
             });
@@ -395,7 +395,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/riskManagement/noms">Start');
+                        expect(res.text).to.include('/hdc/risk/riskManagement/noms">Start');
                     });
 
             });
@@ -413,7 +413,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/riskManagement/noms">View');
+                        expect(res.text).to.include('/hdc/risk/riskManagement/noms">View');
                     });
 
             });
@@ -424,6 +424,9 @@ describe('GET /taskList/:prisonNumber', () => {
                 licenceServiceStub.getLicence.resolves({
                     status: 'PROCESSING_RO',
                     licence: {
+                        curfew: {
+                            curfewAddressReview: {}
+                        },
                         licenceConditions: {
                             riskManagement: {
                                 planningActions: 'any',

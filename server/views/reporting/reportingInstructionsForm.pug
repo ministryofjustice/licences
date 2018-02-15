@@ -1,0 +1,63 @@
+extends ../layout
+
+block content
+
+    div.pure-g.pure-u-1
+        div.back-link-container.smallPaddingTop
+            a.link-back(href="javascript: window.history.back();") Back
+
+    h2.heading-large Reporting instructions
+    p Enter the details of where the licensee should report
+
+
+    form#reportingForm(method='POST')
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=nomisId)
+
+        div#address.pure-g
+            div.pure-u-1.pure-u-md-2-5
+                div.pure-g.borderBottom.largeMarginBottom.midPaddingBottom
+                    div.pure-u-1.pure-u-md-4-5
+                        div.form-group
+                            label.form-label(for="name") Name of person
+                            input#name.form-control(name="name" type="text" value=data.name)
+
+                        div.form-group
+                            label.form-label(for="building") Building and street
+                            input#building.midMarginBottom.form-control(name="buildingAndStreet1" type="text" value=data.buildingAndStreet1)
+                            input#street.form-control.block(name="buildingAndStreet2" type="text" value=data.buildingAndStreet2)
+
+                        div.form-group
+                            label.form-label(for="town") Town or city
+                            input#town.form-control(name="townOrCity" type="text" value=data.townOrCity)
+
+                        div.pure-g
+                            div.pure-u-1.pure-u-md-3-5
+                                div.form-group
+                                    label.form-label(for="postcode") Postcode
+                                    input#postcode.form-control.small(name="postcode" type="text" value=data.postcode)
+                        div.pure-g
+                            div.pure-u-1.pure-u-md-3-5
+                                div.form-group
+                                    label.form-label(for="telephone") Telephone
+                                    input#telephone.form-control.small(name="telephone" type="text" value=data.telephone)
+
+        div#dateTime.pure-g.paddingBottom
+            div.pure-u-1.pure-u-md-2-5
+                div.pure-g
+                    div.pure-u-1.pure-u-md-4-5
+                        div.pure-g
+                            div.pure-u-1.pure-u-md-2-5
+                                div.form-group
+                                    label.form-label(for="date") Date
+                                    input#date.form-control.small(name="date" type="text" value=data.date)
+
+                        div.pure-g
+                            div.pure-u-1.pure-u-md-2-5
+                                div.form-group
+                                    label(for='time') Time
+                                    input(type='time' name='time' id='time' class='form-control' value=data.time)
+
+
+        include ../includes/formButtons
+

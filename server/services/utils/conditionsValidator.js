@@ -6,9 +6,9 @@ const ALWAYS_REQUIRED = ['additionalConditions', 'nomisId'];
 
 module.exports = {validate, DATE_FIELD};
 
-function validate(inputObject, conditionsSelected) {
+function validate(inputObject, selectedConditionsConfig) {
 
-    const conditionsFieldsRequired = conditionsSelected.reduce(getSelectedFieldNamesReducer, []);
+    const conditionsFieldsRequired = selectedConditionsConfig.reduce(getSelectedFieldNamesReducer, []);
     const fieldsInput = filterInputs(inputObject, conditionsFieldsRequired);
     const errors = getErrorObjects(fieldsInput, conditionsFieldsRequired);
 

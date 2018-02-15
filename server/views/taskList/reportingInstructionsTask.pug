@@ -10,7 +10,7 @@ div.largeMarginBottom.borderTop
             else
                 | Not yet added
         div.pure-u-1-4
-            a.taskListAction.center.button(href="/hdc/reporting/" + prisonerInfo.offenderNo)
+            a.taskListAction.center.button(href="/hdc/reporting/reportingInstructions/" + prisonerInfo.offenderNo)
                 if licenceStatus.tasks.reportingInstructions === 'UNSTARTED'
                     | Start
                 else

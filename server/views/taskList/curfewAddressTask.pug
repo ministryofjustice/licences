@@ -22,7 +22,7 @@ div.largeMarginBottom.borderTop
                 else
                     | Not yet approved
             div.pure-u-1-4
-                a.taskListAction.center.button(href="/hdc/licenceConditions/curfewAddressReview/" + prisonerInfo.offenderNo)
+                a.taskListAction.center.button(href="/hdc/curfew/curfewAddressReview/" + prisonerInfo.offenderNo)
                     if licenceStatus.tasks.curfewAddressReview === 'UNSTARTED'
                         | Start
                     else

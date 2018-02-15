@@ -36,7 +36,7 @@ describe('licenceService', () => {
         });
 
         it('should addAdditionalConditions if they are present in licence and requested', () => {
-            licenceClient.getLicence.resolves({licence: {additionalConditions: {additional: {1: {}}}}});
+            licenceClient.getLicence.resolves({licence: {additionalConditions: {additional: {1: {}}, bespoke: []}}});
             licenceClient.getAdditionalConditions.resolves([{
                 ID: {value: 1},
                 USER_INPUT: {value: null},
