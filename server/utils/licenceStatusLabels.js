@@ -52,11 +52,11 @@ function roStatusLabels(licenceStatus) {
 function dmStatusLabels(licenceStatus) {
     switch (licenceStatus.stage) {
         case licenceStages.ELIGIBILITY:
-            return '';
+            return 'Eligibility checks ongoing';
         case licenceStages.PROCESSING_RO:
-            return '';
+            return 'Submitted to RO';
         case licenceStages.PROCESSING_CA:
-            return '';
+            return 'Submitted to PCA';
         case licenceStages.APPROVAL:
             return 'Awaiting Decision';
         case licenceStages.DECIDED:

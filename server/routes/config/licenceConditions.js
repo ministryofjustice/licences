@@ -7,9 +7,9 @@ module.exports = {
             decisions: {
                 discriminator: 'additionalConditionsRequired',
                 Yes: '/hdc/licenceConditions/additionalConditions/',
-                No: '/hdc/licenceConditions/riskManagement/'
+                No: '/hdc/risk/riskManagement/'
             },
-            path: '/hdc/licenceConditions/riskManagement/'
+            path: '/hdc/risk/riskManagement/'
         }
     },
     conditionsSummary: {

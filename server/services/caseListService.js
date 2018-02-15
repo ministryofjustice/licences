@@ -74,8 +74,6 @@ function getStatus(prisoner, licences, role) {
     }
 
     const licenceStatus = getLicenceStatus(licenceForPrisoner);
-
-    console.log(licenceStatus);
     return getStatusLabel(licenceStatus, role);
 }
 
