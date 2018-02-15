@@ -94,7 +94,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         it('should handle no eligibility', () => {
-            licenceServiceStub.getLicence.resolves({licence: {}});
+            licenceServiceStub.getLicence.resolves({status: 'ELIGIBILITY', licence: {}});
             return request(app)
                 .get('/1233456')
                 .expect(200)
@@ -106,6 +106,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('when prisoner is not excluded', () => {
             it('should display opt out form link', () => {
                 licenceServiceStub.getLicence.resolves({
+                    status: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
                             excluded: {
@@ -325,6 +326,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('curfew address not started', () => {
             it('should display a start button for curfew address', () => {
+                licenceServiceStub.getLicence.resolves({licence: {}});
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -340,7 +342,7 @@ describe('GET /taskList/:prisonNumber', () => {
             it('should display a view button for curfew address task', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {
-                        licenceConditions: {curfewAddressReview: {}}
+                        licenceConditions: {curfewAddressReview: 'anything'}
                     }
                 });
                 return request(app)
@@ -356,6 +358,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('additional condition task not started', () => {
             it('should display a start button for additional conditions task', () => {
+                licenceServiceStub.getLicence.resolves({licence: {}});
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -399,10 +402,10 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('risk management task started', () => {
-            it('should display a view button for curfew address', () => {
+            it('should display a view button for riskManagement', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {
-                        licenceConditions: {riskManagement: {}}
+                        licenceConditions: {riskManagement: 'anything'}
                     }
                 });
                 return request(app)
@@ -419,12 +422,21 @@ describe('GET /taskList/:prisonNumber', () => {
         context('all tasks done,', () => {
             it('should display a submit to OMU button', () => {
                 licenceServiceStub.getLicence.resolves({
+                    status: 'PROCESSING_RO',
                     licence: {
                         licenceConditions: {
-                            riskManagement: {},
-                            curfewAddressReview: {},
+                            riskManagement: {
+                                planningActions: 'any',
+                                victimLiaison: 'any'
+                            },
+                            curfewAddressReview: {
+                                consent: 'any',
+                                deemedSafe: 'any'
+                            },
+                            curfewHours: 'any',
                             standardConditions: {additionalConditionsRequired: 'No'}
-                        }
+                        },
+                        reportingInstructions: 'anything'
                     }
                 });
                 return request(app)

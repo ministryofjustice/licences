@@ -1,0 +1,19 @@
+div.largeMarginBottom.borderTop
+    h2.heading-medium Submit to PCA
+
+    div.borderBottomLight.largeMarginBottom
+
+    div.pure-g
+        div.pure-u-3-4
+            if licenceStatus.stage === 'PROCESSING_RO'
+                if allowedTransitions.roToCa
+                    | Ready to submit
+                else
+                    | Tasks not yet complete
+            else
+                | #{statusLabel}
+        div.pure-u-1-4
+            if licenceStatus.stage === 'PROCESSING_RO' && allowedTransitions.roToCa
+                a.taskListAction.center.button(href="/hdc/send/" + prisonerInfo.offenderNo)
+                    | Continue
+

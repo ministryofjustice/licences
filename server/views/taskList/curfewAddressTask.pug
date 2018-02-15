@@ -3,22 +3,27 @@ div.largeMarginBottom.borderTop
 
     div.borderBottomLight.largeMarginBottom
 
-    if bassReferralRequested || optOut == 'Yes'
+    if licenceStatus.decisions.bassReferralNeeded || licenceStatus.decisions.optedOut
         div.pure-g
             div.pure-u-1
-                if taskData.hasBassReferral
+                if licenceStatus.decisions.bassReferralNeeded
                     p BASS referral requested
-                if taskData.hasOptedOut
+                if licenceStatus.decisions.optedOut
                     p Opted out
 
     else
         div.pure-g
             div.pure-u-3-4
-                // TODO define approved
-                | Not yet approved
+                if licenceStatus.tasks.curfewAddressReview === 'DONE'
+                    if licenceStatus.decisions.curfewAddressApproved
+                        | Address approved
+                    else
+                        | Address rejected
+                else
+                    | Not yet approved
             div.pure-u-1-4
                 a.taskListAction.center.button(href="/hdc/licenceConditions/curfewAddressReview/" + prisonerInfo.offenderNo)
-                    if taskData.curfewAddress.state === 'UNSTARTED'
+                    if licenceStatus.tasks.curfewAddressReview === 'UNSTARTED'
                         | Start
                     else
                         | View

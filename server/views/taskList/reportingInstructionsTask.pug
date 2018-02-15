@@ -5,11 +5,13 @@ div.largeMarginBottom.borderTop
 
     div.pure-g
         div.pure-u-3-4
-            // TODO define text
-            | Not yet added
+            if licenceStatus.tasks.reportingInstructions === 'DONE'
+                div Confirmed
+            else
+                | Not yet added
         div.pure-u-1-4
             a.taskListAction.center.button(href="/hdc/reporting/" + prisonerInfo.offenderNo)
-                if taskData.reportingInstructions.state === 'UNSTARTED'
+                if licenceStatus.tasks.reportingInstructions === 'UNSTARTED'
                     | Start
                 else
                     | View

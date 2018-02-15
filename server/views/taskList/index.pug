@@ -19,12 +19,28 @@ block content
         include prisonerDetails
 
         if user.role === 'CA'
-            include eligibilityTask
-            include proposedAddressTask
+            if licenceStatus.stage === 'UNSTARTED' || licenceStatus.stage === 'ELIGIBILITY'
+                include eligibilityTask
+                include proposedAddressTask
+            else
+                include curfewAddressTask
+                include additionalConditionsTask
+                include riskManagementTask
+                include reportingInstructionsTask
+                include postponementTask
+                include caSubmitTask
+
 
         if user.role === 'RO'
             include curfewAddressTask
             include additionalConditionsTask
             include riskManagementTask
             include reportingInstructionsTask
-            include submitTask
+            include roSubmitTask
+
+        if user.role === 'DM'
+            include curfewAddressTask
+            include additionalConditionsTask
+            include riskManagementTask
+            include reportingInstructionsTask
+            include approvalTask

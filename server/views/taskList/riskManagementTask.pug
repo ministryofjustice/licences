@@ -5,11 +5,20 @@ div.largeMarginBottom.borderTop
 
     div.pure-g
         div.pure-u-3-4
-            // TODO define text
-            | Not yet confirmed
+            if licenceStatus.tasks.riskManagement === 'DONE'
+                if licenceStatus.decisions.riskManagementNeeded
+                    div Risk management required
+                else
+                    div No risks
+                if licenceStatus.decisions.victimLiasionNeeded
+                    div Victim liaison required
+                else
+                    div No victim liaison required
+            else
+                | Not yet confirmed
         div.pure-u-1-4
             a.taskListAction.center.button(href="/hdc/licenceConditions/riskManagement/" + prisonerInfo.offenderNo)
-                if taskData.riskManagement.state === 'UNSTARTED'
+                if licenceStatus.tasks.riskManagement === 'UNSTARTED'
                     | Start
                 else
                     | View
