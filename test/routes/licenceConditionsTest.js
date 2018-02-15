@@ -54,7 +54,7 @@ describe('/hdc/licenceConditions', () => {
             {url: '/licenceConditions/standardConditions/1', content: 'Not commit any offence'},
             {url: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
             {url: '/licenceConditions/conditionsSummary/1', content: 'Add another condition'},
-            {url: '/licenceConditions/reportingInstructions/1', content: 'Reporting instructions'}
+            {url: '/reporting/reportingInstructions/1', content: 'Reporting instructions'}
         ];
 
         routes.forEach(route => {
@@ -83,12 +83,6 @@ describe('/hdc/licenceConditions', () => {
                 body: {additionalConditionsRequired: 'No', nomisId: 1},
                 nextPath: '/hdc/licenceConditions/riskManagement/1',
                 section: 'standardConditions'
-            },
-            {
-                url: '/licenceConditions/reportingInstructions/1',
-                body: {nomisId: 1},
-                section: 'reportingInstructions',
-                nextPath: '/hdc/taskList/1'
             }
         ];
 

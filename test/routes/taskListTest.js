@@ -392,7 +392,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/riskManagement/noms">Start');
+                        expect(res.text).to.include('/hdc/risk/riskManagement/noms">Start');
                     });
 
             });
@@ -410,7 +410,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/riskManagement/noms">View');
+                        expect(res.text).to.include('/hdc/risk/riskManagement/noms">View');
                     });
 
             });

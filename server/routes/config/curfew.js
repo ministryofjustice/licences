@@ -43,5 +43,5 @@ module.exports = {
         nextPath: {
             path: '/hdc/licenceConditions/standardConditions/'
         }
-    },
+    }
 };
