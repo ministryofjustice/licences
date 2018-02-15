@@ -4,8 +4,18 @@ const {getIn} = require('../utils/functionalHelpers');
 const licenceConditionsConfig = require('./config/licenceConditions');
 const eligibilityConfig = require('./config/eligibility');
 const proposedAddressConfig = require('./config/proposedAddress');
-const formConfig = {...licenceConditionsConfig, ...eligibilityConfig, ...proposedAddressConfig};
+const curfewConfig = require('./config/curfew');
+const reporting = require('./config/reporting');
 const {getPathFor} = require('../utils/routes');
+const riskConfig = require('./config/risk');
+const formConfig = {
+    ...licenceConditionsConfig,
+    ...eligibilityConfig,
+    ...proposedAddressConfig,
+    ...curfewConfig,
+    ...riskConfig,
+    ...reporting
+};
 
 module.exports = function({logger, licenceService, conditionsService, authenticationMiddleware}) {
     const router = express.Router();

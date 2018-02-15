@@ -24,7 +24,7 @@ function getTaskData(licence) {
     };
 
     const curfewAddress = {
-        state: getIn(licence, ['licence', 'licenceConditions', 'curfewAddressReview']) ?
+        state: getIn(licence, ['licence', 'curfew', 'curfewAddressReview']) ?
             taskStates.STARTED : taskStates.DEFAULT
     };
 

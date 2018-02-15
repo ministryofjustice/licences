@@ -6,7 +6,7 @@ describe('getTaskData', () => {
     it('should show curfewAddress STARTED when curfewAddresReview section present', () => {
         const licence = {
             licence: {
-                licenceConditions: {curfewAddressReview: {}}
+                curfew: {curfewAddressReview: {}}
             }
         };
 
@@ -46,6 +46,9 @@ describe('getTaskData', () => {
     it('should show readyToSubmit true when all tasks STARTED', () => {
         const licence = {
             licence: {
+                curfew: {
+                    curfewAddressReview: {}
+                },
                 licenceConditions: {
                     riskManagement: {},
                     curfewAddressReview: {},
