@@ -41,7 +41,7 @@ module.exports = {
             {sundayUntil: {}}
         ],
         nextPath: {
-            path: '/hdc/licenceConditions/standardConditions/'
+            path: '/hdc/licenceConditions/standard/'
         }
     }
 };

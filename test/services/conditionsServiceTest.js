@@ -133,7 +133,7 @@ describe('licenceDetailsService', () => {
 
         it('should populate inputs if licence is passed in', () => {
 
-            const licence = {additionalConditions: {
+            const licence = {licenceConditions: {
                 additional: {12: {victimFamilyMembers: 'a', socialServicesDept: 'd'}}
             }};
 

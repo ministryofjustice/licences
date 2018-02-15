@@ -1,5 +1,5 @@
 module.exports = {
-    standardConditions: {
+    standard: {
         fields: [
             {additionalConditionsRequired: {}}
         ],

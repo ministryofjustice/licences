@@ -13,7 +13,7 @@ module.exports = function createConditionsService(licenceClient) {
     async function getAdditionalConditions(licence = null) {
         try {
             const conditions = await licenceClient.getAdditionalConditions();
-            const additionalConditions = getIn(licence, ['additionalConditions', 'additional']);
+            const additionalConditions = getIn(licence, ['licenceConditions', 'additional']);
 
             if (additionalConditions) {
 
