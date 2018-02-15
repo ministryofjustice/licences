@@ -85,19 +85,8 @@ function getExclusionTaskState(data) {
 
     return {
         excluded: data.path('eligibility.excluded.decision', equalTo('Yes')),
-        exclusion: getState(data)
+        exclusion: data.path('eligibility.excluded.decision', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
     };
-
-    function getState(data) {
-
-        if (data.path('eligibility.excluded', isNotPresent)) {
-            return taskStates.UNSTARTED;
-        }
-
-        if (data.path('eligibility.excluded.decision', isPresent)) {
-            return taskStates.DONE;
-        }
-    }
 }
 
 function getCrdTimeState(data) {
@@ -112,57 +101,26 @@ function getSuitabilityState(data) {
 
     return {
         unsuitable: data.path('eligibility.suitability.decision', equalTo('Yes')),
-        suitability: getState(data)
+        suitability: data.path('eligibility.suitability.decision', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
     };
-
-    function getState(data) {
-
-        if (data.path('eligibility.suitability', isNotPresent)) {
-            return taskStates.UNSTARTED;
-        }
-
-        if (data.path('eligibility.suitability.decision', isPresent)) {
-            return taskStates.DONE;
-        }
-    }
 }
 
 function getOptOutState(data) {
 
     return {
         optedOut: data.path('proposedAddress.optOut.decision', equalTo('Yes')),
-        optOut: getState(data)
+        optOut: data.path('proposedAddress.optOut.decision', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
     };
-
-    function getState(data) {
-
-        if (data.path('proposedAddress.optOut', isNotPresent)) {
-            return taskStates.UNSTARTED;
-        }
-
-        if (data.path('proposedAddress.optOut.decision', isPresent)) {
-            return taskStates.DONE;
-        }
-    }
 }
 
 function getBassReferralState(data) {
 
     return {
         bassReferralNeeded: data.path('proposedAddress.bassReferral.decision', equalTo('Yes')),
-        bassReferral: getState(data)
+        bassReferral:
+            data.path('proposedAddress.bassReferral.decision', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
     };
 
-    function getState(data) {
-
-        if (data.path('proposedAddress.bassReferral', isNotPresent)) {
-            return taskStates.UNSTARTED;
-        }
-
-        if (data.path('proposedAddress.bassReferral.decision', isPresent)) {
-            return taskStates.DONE;
-        }
-    }
 }
 
 function getRiskManagementState(data) {
@@ -271,6 +229,10 @@ function getReportingInstructionsState(data) {
 function getLicenceConditionsState(data) {
     if (data.path('licenceConditions', isNotPresent)) {
         return {
+            standardOnly: false,
+            additional: 0,
+            bespoke: 0,
+            totalCount: 0,
             licenceConditions: taskStates.UNSTARTED
         };
     }
