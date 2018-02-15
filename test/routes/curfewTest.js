@@ -93,7 +93,7 @@ describe('/hdc/curfew', () => {
                 url: '/curfew/curfewHours/1',
                 body: {nomisId: 1},
                 section: 'curfewHours',
-                nextPath: '/hdc/licenceConditions/standardConditions/1'
+                nextPath: '/hdc/licenceConditions/standard/1'
             }
         ];
 

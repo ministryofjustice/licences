@@ -30,8 +30,8 @@ module.exports = function createLicenceService(licenceClient) {
             const formattedLicence = formatObjectForView(licence, {dates: [DATE_FIELD]});
             const status = getIn(rawLicence, ['status']);
 
-            const additionalConditions = getIn(formattedLicence, ['additionalConditions', 'additional']);
-            const bespokeConditions = getIn(formattedLicence, ['additionalConditions', 'bespoke']) || [];
+            const additionalConditions = getIn(formattedLicence, ['licenceConditions', 'additional']);
+            const bespokeConditions = getIn(formattedLicence, ['licenceConditions', 'bespoke']) || [];
             const conditionsOnLicence = !isEmpty(additionalConditions) || bespokeConditions.length > 0;
             if (populateConditions && conditionsOnLicence) {
                 return populateLicenceWithConditions(formattedLicence, status);
@@ -50,12 +50,14 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.createLicence(nomisId, licence);
     }
 
-
     async function updateLicenceConditions(nomisId, additional = {}, bespoke = []) {
         try {
-            const licenceObject = await getConditionsObject(additional, bespoke);
+            const existingLicence = await licenceClient.getLicence(nomisId);
+            const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
+            const conditionsObject = await getConditionsObject(additional, bespoke);
 
-            return licenceClient.updateSection('additionalConditions', nomisId, licenceObject);
+            const licenceConditions = {...existingLicenceConditions, ...conditionsObject};
+            return licenceClient.updateSection('licenceConditions', nomisId, licenceConditions);
         } catch (error) {
             console.error('Error during updateAdditionalConditions', error.stack);
             throw error;
@@ -90,7 +92,7 @@ module.exports = function createLicenceService(licenceClient) {
 
     async function populateLicenceWithConditions(licence, status) {
         try {
-            const conditionIdsSelected = Object.keys(getIn(licence, ['additionalConditions', 'additional']));
+            const conditionIdsSelected = Object.keys(getIn(licence, ['licenceConditions', 'additional']));
             const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIdsSelected);
 
             return {

@@ -9,10 +9,10 @@ block content
         if licence.proposedAddress && licence.proposedAddress.curfewAddress
             include curfewAddress
 
-        if licence.additionalConditions && licence.additionalConditions.length > 0
+        if licence.licenceConditions && licence.licenceConditions.length > 0
             include ./additionalConditions
 
-        if licence.licenceConditions && licence.licenceConditions.riskManagement
+        if licence.risk && licence.risk.riskManagement
             include ./riskManagement
 
 
