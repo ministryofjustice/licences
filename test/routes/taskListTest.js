@@ -374,7 +374,7 @@ describe('GET /taskList/:prisonNumber', () => {
             it('should display a view button for curfew address', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {
-                        licenceConditions: {standardConditions: {additionalConditionsRequired: 'No'}}
+                        licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
                     }
                 });
                 return request(app)
@@ -438,7 +438,7 @@ describe('GET /taskList/:prisonNumber', () => {
                             }
                         },
                         licenceConditions: {
-                            standardConditions: {additionalConditionsRequired: 'No'}
+                            standard: {additionalConditionsRequired: 'No'}
                         },
                         reporting: {
                             reportingInstructions: 'anything'

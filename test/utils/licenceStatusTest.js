@@ -95,7 +95,7 @@ describe('getTaskData', () => {
             status: 'some-processing-stage',
             licence: {
                 licenceConditions: {
-                    standardConditions: {
+                    standard: {
                         additionalConditionsRequired: 'Yes'
                     },
                     additional: {
@@ -240,7 +240,7 @@ describe('getTaskData', () => {
                     }
                 },
                 licenceConditions: {
-                    standardConditions: {
+                    standard: {
                         additionalConditionsRequired: 'Yes'
                     }
                 },
@@ -306,7 +306,7 @@ describe('getTaskData', () => {
                     curfewHours: 'anything'
                 },
                 licenceConditions: {
-                    standardConditions: {
+                    standard: {
                         additionalConditionsRequired: 'No'
                     }
                 },

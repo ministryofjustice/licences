@@ -10,7 +10,7 @@ div.largeMarginBottom.borderTop
             else
                 | Use this to indicate that the process ispostponed while any risk management planning actions remain outstanding
         div.pure-u-1-4
-            a.taskListAction.center.button(href="/hdc/reporting/" + prisonerInfo.offenderNo)
+            a.taskListAction.center.button(href="/hdc/postpone/" + prisonerInfo.offenderNo)
                 if licenceStatus.decisions.postponed
                     | Resume
                 else

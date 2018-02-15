@@ -119,6 +119,6 @@ function decisionLabel(licenceStatus) {
 
 function anyStarted(tasks) {
     return tasks.some(task => {
-        [taskStates.STARTED, taskStates.DONE].includes(task.state);
+       return [taskStates.STARTED, taskStates.DONE].includes(task);
     });
 }

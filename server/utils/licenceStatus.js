@@ -238,7 +238,7 @@ function getLicenceConditionsState(data) {
     }
 
     const standardOnly =
-        data.path('licenceConditions.standardConditions.additionalConditionsRequired', equalTo('No'));
+        data.path('licenceConditions.standard.additionalConditionsRequired', equalTo('No'));
 
     const additionals = data.value('licenceConditions.additional');
     const bespokes = data.value('licenceConditions.bespoke');

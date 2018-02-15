@@ -31,7 +31,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
     // bespoke routes
 
     router.get('/licenceConditions/standard/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /standardConditions/:nomisId');
+        logger.debug('GET /standard/:nomisId');
 
         const nomisId = req.params.nomisId;
         const conditions = await conditionsService.getStandardConditions();
