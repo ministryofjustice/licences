@@ -36,7 +36,7 @@ describe('licenceService', () => {
         });
 
         it('should addAdditionalConditions if they are present in licence and requested', () => {
-            licenceClient.getLicence.resolves({licence: {additionalConditions: {additional: {1: {}}, bespoke: []}}});
+            licenceClient.getLicence.resolves({licence: {licenceConditions: {additional: {1: {}}, bespoke: []}}});
             licenceClient.getAdditionalConditions.resolves([{
                 ID: {value: 1},
                 USER_INPUT: {value: null},
@@ -47,7 +47,7 @@ describe('licenceService', () => {
 
             return expect(service.getLicence('123', {populateConditions: true})).to.eventually.eql({
                 licence: {
-                    additionalConditions: [{content: [{text: 'The condition'}],
+                    licenceConditions: [{content: [{text: 'The condition'}],
                     group: 'group',
                     subgroup: 'subgroup'}]
                 },
@@ -104,14 +104,17 @@ describe('licenceService', () => {
 
     describe('updateLicenceConditions', () => {
 
-        it('should get the selected licence conditions', () => {
-            service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+        it('should get the selected licence conditions', async () => {
+            await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
 
             expect(licenceClient.getAdditionalConditions).to.be.calledOnce();
             expect(licenceClient.getAdditionalConditions).to.be.calledWith({additional: {key: 'var'}});
         });
 
-        it('should call update section with conditions from the licence client', async () => {
+        it('should call update section with conditions from the licence client merged with existing', async () => {
+            licenceClient.getLicence.resolves({licence: {
+                licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}}
+            }});
             licenceClient.getAdditionalConditions.resolves([
                 {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}]);
 
@@ -119,9 +122,12 @@ describe('licenceService', () => {
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
-                'additionalConditions',
+                'licenceConditions',
                 'ab1',
-                {additional: {1: {}}, bespoke: [{text: 'bespoke'}]}
+                {
+                    standard: {additionalConditionsRequired: 'Yes'},
+                    additional: {1: {}},
+                    bespoke: [{text: 'bespoke'}]}
             );
         });
 

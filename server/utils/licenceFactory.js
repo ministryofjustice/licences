@@ -68,19 +68,19 @@ function populateAdditionalConditionsAsObject(rawLicence, selectedConditionsConf
 }
 
 function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputMethod) {
-    const {additional, bespoke} = rawLicence.additionalConditions;
+    const {additional, bespoke} = rawLicence.licenceConditions;
 
     const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, injectUserInputMethod);
     const populatedAdditional = Object.keys(additional).map(getObjectForAdditional);
     const populatedBespoke = bespoke.map(getObjectForBespoke);
 
-    return {...rawLicence, additionalConditions: [...populatedAdditional, ...populatedBespoke]};
+    return {...rawLicence, licenceConditions: [...populatedAdditional, ...populatedBespoke]};
 }
 
 function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputMethod) {
     return condition => {
         const selectedCondition = selectedConditions.find(selected => selected.ID.value == condition);
-        const userInput = rawLicence.additionalConditions.additional[condition];
+        const userInput = rawLicence.licenceConditions.additional[condition];
         const content = getContentForCondition(selectedCondition, userInput, injectUserInputMethod);
 
         return {

@@ -51,7 +51,7 @@ describe('/hdc/licenceConditions', () => {
     });
     describe('routes', () => {
         const routes = [
-            {url: '/licenceConditions/standardConditions/1', content: 'Not commit any offence'},
+            {url: '/licenceConditions/standard/1', content: 'Not commit any offence'},
             {url: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
             {url: '/licenceConditions/conditionsSummary/1', content: 'Add another condition'},
             {url: '/reporting/reportingInstructions/1', content: 'Reporting instructions'}
@@ -73,16 +73,16 @@ describe('/hdc/licenceConditions', () => {
     describe('POST /hdc/licenceConditions/:section/:nomisId', () => {
         const routes = [
             {
-                url: '/licenceConditions/standardConditions/1',
+                url: '/licenceConditions/standard/1',
                 body: {additionalConditionsRequired: 'Yes', nomisId: 1},
                 nextPath: '/hdc/licenceConditions/additionalConditions/1',
-                section: 'standardConditions'
+                formName: 'standard'
             },
             {
-                url: '/licenceConditions/standardConditions/1',
+                url: '/licenceConditions/standard/1',
                 body: {additionalConditionsRequired: 'No', nomisId: 1},
                 nextPath: '/hdc/licenceConditions/riskManagement/1',
-                section: 'standardConditions'
+                formName: 'standard'
             }
         ];
 
@@ -97,10 +97,10 @@ describe('/hdc/licenceConditions', () => {
                         expect(licenceServiceStub.update).to.be.calledWith({
                             licence: {key: 'value'},
                             nomisId: '1',
-                            fieldMap: formConfig[route.section].fields,
+                            fieldMap: formConfig[route.formName].fields,
                             userInput: route.body,
                             licenceSection: 'licenceConditions',
-                            formName: route.section
+                            formName: route.formName
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);

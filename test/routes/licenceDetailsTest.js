@@ -20,8 +20,8 @@ const licenceServiceStub = {
                 addressLine1: 'Address 1'
             }
         },
-        additionalConditions: [{content: [{text: 'Condition1'}]}],
-        licenceConditions: {riskManagement: {planningActions: 'Yes'}}
+        licenceConditions: [{content: [{text: 'Condition1'}]}],
+        risk: {riskManagement: {planningActions: 'Yes'}}
     }})
 };
 
@@ -54,7 +54,7 @@ describe('GET /licenceDetails/:prisonNumber', () => {
 
     it('renders html and displays licence details if sections are missing', () => {
         licenceServiceStub.getLicence.resolves({licence: {
-                additionalConditions: [{content: [{text: 'Condition1'}]}]
+                licenceConditions: [{content: [{text: 'Condition1'}]}]
         }});
         return request(app)
             .get('/1')
