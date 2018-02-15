@@ -47,7 +47,7 @@ describe('getTaskData', () => {
         const licence = {
             licence: {
                 curfew: {
-                    curfewAddressReview: {},
+                    curfewAddressReview: {}
                 },
                 licenceConditions: {
                     riskManagement: {},

@@ -14,7 +14,7 @@ module.exports = {
     },
     conditionsSummary: {
         nextPath: {
-            path: '/hdc/licenceConditions/riskManagement/'
+            path: '/hdc/risk/riskManagement/'
         }
     },
     riskManagement: {

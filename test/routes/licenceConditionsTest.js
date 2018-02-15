@@ -52,10 +52,8 @@ describe('/hdc/licenceConditions', () => {
     describe('routes', () => {
         const routes = [
             {url: '/licenceConditions/standardConditions/1', content: 'Not commit any offence'},
-            {url: '/licenceConditions/riskManagement/1', content: 'Risk management and victim liaison'},
             {url: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
             {url: '/licenceConditions/conditionsSummary/1', content: 'Add another condition'},
-            {url: '/licenceConditions/conditionsSummary/1', content: 'href="/hdc/licenceConditions/riskManagement'},
             {url: '/licenceConditions/reportingInstructions/1', content: 'Reporting instructions'}
         ];
 
@@ -85,12 +83,6 @@ describe('/hdc/licenceConditions', () => {
                 body: {additionalConditionsRequired: 'No', nomisId: 1},
                 nextPath: '/hdc/licenceConditions/riskManagement/1',
                 section: 'standardConditions'
-            },
-            {
-                url: '/licenceConditions/riskManagement/1',
-                body: {nomisId: 1},
-                nextPath: '/hdc/licenceConditions/reportingInstructions/1',
-                section: 'riskManagement'
             },
             {
                 url: '/licenceConditions/reportingInstructions/1',
