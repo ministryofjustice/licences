@@ -371,7 +371,7 @@ describe('GET /taskList/:prisonNumber', () => {
             it('should display a view button for curfew address', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {
-                        licenceConditions: {standardConditions: {additionalConditionsRequired: 'No'}}
+                        licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
                     }
                 });
                 return request(app)
@@ -402,7 +402,7 @@ describe('GET /taskList/:prisonNumber', () => {
             it('should display a view button for curfew address', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {
-                        licenceConditions: {riskManagement: {}}
+                        risk: {riskManagement: {}}
                     }
                 });
                 return request(app)
@@ -419,13 +419,23 @@ describe('GET /taskList/:prisonNumber', () => {
         context('all tasks done,', () => {
             it('should display a submit to OMU button', () => {
                 licenceServiceStub.getLicence.resolves({
+                    status: 'PROCESSING_RO',
                     licence: {
                         curfew: {
-                            curfewAddressReview: {}
+                            curfewAddressReview: {
+                                consent: 'any',
+                                deemedSafe: 'any'
+                            },
+                            curfewHours: 'any'
+                        },
+                        risk: {
+                            riskManagement: {}
                         },
                         licenceConditions: {
-                            riskManagement: {},
-                            standardConditions: {additionalConditionsRequired: 'No'}
+                            standard: {additionalConditionsRequired: 'No'}
+                        },
+                        reporting: {
+                            reportingInstructions: 'anything'
                         }
                     }
                 });
