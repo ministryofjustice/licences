@@ -2,25 +2,11 @@ const {
     request,
     sandbox,
     expect,
+    licenceServiceStub,
+    hdcRoute,
+    formConfig,
     appSetup
 } = require('../supertestSetup');
-
-const createProposedAddressRoute = require('../../server/routes/hdc');
-const auth = require('../mockAuthentication');
-const authenticationMiddleware = auth.authenticationMiddleware;
-const formConfig = require('../../server/routes/config/proposedAddress');
-
-const loggerStub = {
-    debug: sandbox.stub()
-};
-
-const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves({licence: {key: 'value'}}),
-    updateEligibility: sandbox.stub().returnsPromise().resolves(),
-    createLicence: sandbox.stub().returnsPromise().resolves(),
-    update: sandbox.stub().returnsPromise().resolves(),
-    updateStatus: sandbox.stub().returnsPromise().resolves()
-};
 
 const testUser = {
     staffId: 'my-staff-id',
@@ -28,11 +14,7 @@ const testUser = {
     roleCode: 'CA'
 };
 
-const app = appSetup(createProposedAddressRoute({
-    licenceService: licenceServiceStub,
-    logger: loggerStub,
-    authenticationMiddleware
-}), testUser);
+const app = appSetup(hdcRoute, testUser);
 
 describe('/hdc/proposedAddress', () => {
 

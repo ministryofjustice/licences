@@ -1,21 +1,13 @@
 const {
     request,
-    sandbox,
     expect,
+    licenceServiceStub,
+    loggerStub,
+    authenticationMiddleware,
     appSetup
 } = require('../supertestSetup');
 
 const createSendRoute = require('../../server/routes/sent');
-const auth = require('../mockAuthentication');
-const authenticationMiddleware = auth.authenticationMiddleware;
-
-const loggerStub = {
-    debug: sandbox.stub()
-};
-
-const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves({status: 'PROCESSING_RO'})
-};
 
 const app = appSetup(createSendRoute({
     licenceService: licenceServiceStub,
@@ -25,8 +17,8 @@ const app = appSetup(createSendRoute({
 
 describe('GET sent', () => {
 
-    afterEach(() => {
-        sandbox.reset();
+    beforeEach(() => {
+        licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO'});
     });
 
     it('renders the sent page', () => {

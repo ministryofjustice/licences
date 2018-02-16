@@ -7,7 +7,6 @@ const {
     sandbox
 } = require('../testSetup');
 
-
 describe('licenceClient', () => {
 
     const getCollectionStub = sandbox.stub();
@@ -21,10 +20,6 @@ describe('licenceClient', () => {
             }
         });
     };
-
-    afterEach(() => {
-        sandbox.reset();
-    });
 
     describe('getLicences', function() {
 

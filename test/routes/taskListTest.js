@@ -1,13 +1,14 @@
 const {
     request,
-    sandbox,
     expect,
+    loggerStub,
+    prisonerServiceStub,
+    licenceServiceStub,
+    authenticationMiddleware,
     appSetup
 } = require('../supertestSetup');
 
 const createTaskListRoute = require('../../server/routes/taskList');
-const auth = require('../mockAuthentication');
-const authenticationMiddleware = auth.authenticationMiddleware;
 
 const prisonerInfoResponse = {
     bookingId: 1,
@@ -25,23 +26,10 @@ const prisonerInfoResponse = {
     sentenceExpiryDate: '03/12/1985'
 };
 
-const loggerStub = {
-    debug: sandbox.stub()
-};
-const serviceStub = {
-    getPrisonerDetails: sandbox.stub().returnsPromise().resolves(prisonerInfoResponse),
-    getPrisonerImage: sandbox.stub().returnsPromise().resolves({image: 'image'})
-};
-
-const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves(),
-    createLicence: sandbox.stub().returnsPromise()
-};
-
 describe('GET /taskList/:prisonNumber', () => {
 
-    afterEach(() => {
-        sandbox.reset();
+    beforeEach(() => {
+        prisonerServiceStub.getPrisonerDetails.resolves(prisonerInfoResponse);
     });
 
     context('User is CA', () => {
@@ -53,7 +41,7 @@ describe('GET /taskList/:prisonNumber', () => {
         };
 
         const app = appSetup(createTaskListRoute({
-            prisonerService: serviceStub,
+            prisonerService: prisonerServiceStub,
             licenceService: licenceServiceStub,
             logger: loggerStub,
             authenticationMiddleware
@@ -65,8 +53,8 @@ describe('GET /taskList/:prisonNumber', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(serviceStub.getPrisonerDetails).to.be.calledOnce();
-                    expect(serviceStub.getPrisonerDetails).to.be.calledWith('123');
+                    expect(prisonerServiceStub.getPrisonerDetails).to.be.calledOnce();
+                    expect(prisonerServiceStub.getPrisonerDetails).to.be.calledWith('123');
                 });
 
         });
@@ -245,10 +233,6 @@ describe('GET /taskList/:prisonNumber', () => {
             licenceServiceStub.getLicence.resolves({nomisId: '1'});
             licenceServiceStub.createLicence.resolves();
 
-            afterEach(() => {
-                sandbox.reset();
-            });
-
             it('should redirect to eligibility section', () => {
                 return request(app)
                     .post('/eligibilityStart')
@@ -298,7 +282,7 @@ describe('GET /taskList/:prisonNumber', () => {
             });
 
             it('should return placeholder if no image returned from nomis', () => {
-                serviceStub.getPrisonerImage.resolves(null);
+                prisonerServiceStub.getPrisonerImage.resolves(null);
                 return request(app)
                     .get('/image/123')
                     .expect(302)
@@ -317,7 +301,7 @@ describe('GET /taskList/:prisonNumber', () => {
         };
 
         const app = appSetup(createTaskListRoute({
-            prisonerService: serviceStub,
+            prisonerService: prisonerServiceStub,
             licenceService: licenceServiceStub,
             logger: loggerStub,
             authenticationMiddleware
