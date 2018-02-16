@@ -23,7 +23,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
 
         const taskData = getTaskData(licence);
 
-        res.render('taskList/index', {
+        res.render('taskList/taskList', {
             taskData,
             prisonerInfo
         });
