@@ -73,6 +73,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         it('should return the eligibility', () => {
             licenceServiceStub.getLicence.resolves({
+                status: 'ELIGIBILITY',
                 licence: {
                     eligibility: {
                         excluded: {
@@ -326,7 +327,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('curfew address not started', () => {
             it('should display a start button for curfew address', () => {
-                licenceServiceStub.getLicence.resolves({licence: {}});
+                licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO', licence: {}});
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -358,7 +359,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('additional condition task not started', () => {
             it('should display a start button for additional conditions task', () => {
-                licenceServiceStub.getLicence.resolves({licence: {}});
+                licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO', licence: {}});
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -373,6 +374,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('additional condition task started', () => {
             it('should display a view button for curfew address', () => {
                 licenceServiceStub.getLicence.resolves({
+                    status: 'PROCESSING_RO',
                     licence: {
                         licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
                     }

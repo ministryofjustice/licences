@@ -6,12 +6,13 @@ describe('getTaskData', () => {
 
     it('should show licence stage', () => {
         const licence = {
-            status: 'some-processing-stage'
+            status: 'ELIGIBILITY',
+            licence: {}
         };
 
         const status = getLicenceStatus(licence);
 
-        expect(status.stage).to.eql('some-processing-stage');
+        expect(status.stage).to.eql('ELIGIBILITY');
     });
 
 
@@ -33,7 +34,7 @@ describe('getTaskData', () => {
 
     it('should show true decisions when decision data is present for truth', () => {
         const licence = {
-            status: 'some-processing-stage',
+            status: 'APPROVAL',
             licence: {
                 eligibility: {
                     excluded: {
@@ -92,7 +93,7 @@ describe('getTaskData', () => {
     it('should show licence conditions data', () => {
 
         const licence = {
-            status: 'some-processing-stage',
+            status: 'PROCESSING_RO',
             licence: {
                 licenceConditions: {
                     standard: {
@@ -119,7 +120,7 @@ describe('getTaskData', () => {
 
     it('should show false decisions when decision data is present for false', () => {
         const licence = {
-            status: 'some-processing-stage',
+            status: 'APPROVAL',
             licence: {
                 eligibility: {
                     excluded: {
@@ -163,7 +164,7 @@ describe('getTaskData', () => {
 
     it('should show eligible when eligibility decisions false', () => {
         const licence = {
-            status: 'some-processing-stage',
+            status: 'ELIGIBILITY',
             licence: {
                 eligibility: {
                     excluded: {
@@ -186,7 +187,7 @@ describe('getTaskData', () => {
 
     it('should show NOT eligible when eligibility decision true', () => {
         const licence = {
-            status: 'some-processing-stage',
+            status: 'ELIGIBILITY',
             licence: {
                 eligibility: {
                     excluded: {
@@ -210,6 +211,7 @@ describe('getTaskData', () => {
 
     it('should show tasks UNSTARTED when task data missing', () => {
         const licence = {
+            status: 'APPROVAL',
             licence: {}
         };
 
@@ -232,7 +234,7 @@ describe('getTaskData', () => {
 
     it('should show tasks STARTED when task data incomplete for tasks that can be STARTED', () => {
         const licence = {
-            status: 'some-processing-stage',
+            status: 'APPROVAL',
             licence: {
                 proposedAddress: {
                     curfewAddress: {
@@ -270,7 +272,7 @@ describe('getTaskData', () => {
 
     it('should show tasks DONE when task data complete', () => {
         const licence = {
-            status: 'some-processing-stage',
+            status: 'DECIDED',
             licence: {
                 eligibility: {
                     excluded: {

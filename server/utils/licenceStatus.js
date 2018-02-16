@@ -7,78 +7,111 @@ module.exports = {getLicenceStatus};
 
 function getLicenceStatus(licenceRecord) {
 
-    const stage = licenceRecord ? licenceRecord.status : licenceStages.UNSTARTED;
-
-    if (!licenceRecord || !licenceRecord.licence) {
+    if (!licenceRecord || !licenceRecord.licence || !licenceRecord.status) {
         return {
-            stage,
+            stage: licenceStages.UNSTARTED,
             decisions: {},
             tasks: {}
         };
     }
-
+    const stage = licenceRecord.status;
     const data = matcher(licenceRecord.licence);
 
-    const {excluded, exclusion} = getExclusionTaskState(data);
-    const {insufficientTime, crdTime} = getCrdTimeState(data);
-    const {unsuitable, suitability} = getSuitabilityState(data);
-    const eligibility = getOverallState([exclusion, crdTime, suitability]);
+    // todo I don't like this very much. Trying to avoid computing state info that isn't needed
+    const results = [];
 
-    const {optedOut, optOut} = getOptOutState(data);
-    const {bassReferralNeeded, bassReferral} = getBassReferralState(data);
+    switch (stage) {
+        case licenceStages.DECIDED:                             // fall through
+        case licenceStages.APPROVAL:
+            results.push(getApprovalStageState(data));          // fall through
+        case licenceStages.PROCESSING_CA:                       // fall through
+        case licenceStages.PROCESSING_RO:
+            results.push(getRoStageState(data));                // fall through
+        case licenceStages.ELIGIBILITY:
+            results.push(getEligibilityStageState(data));       // fall through
+        default:
+            const licenceStatus = results.reduce(combiner, {stage, decisions: {}, tasks: {}});
+            console.log(licenceStatus);
+            return licenceStatus;
+    }
+}
 
-    const {riskManagementNeeded, victimLiasionNeeded, riskManagement} = getRiskManagementState(data);
+// todo there must be an easier way to do this
+const combiner = (acc, data) => {
+    const tasks = Object.assign(acc.tasks, {...data.tasks});
+    const decisions = Object.assign(acc.decisions, {...data.decisions});
+    return Object.assign(acc, decisions, tasks);
+};
 
-    const {curfewAddress} = getCurfewAddressState(data);
-    const {curfewAddressReview, curfewAddressApproved} = getCurfewAddressReviewState(data);
-    const {curfewHours} = getCurfewHoursState(data);
-
-    const {reportingInstructions} = getReportingInstructionsState(data);
-
-    const {licenceConditions, standardOnly, additional, bespoke} = getLicenceConditionsState(data);
-
+function getApprovalStageState(data) {
     const {approved, refused, postponed, approval} = getApprovalState(data);
-
-    const eligible = noneOf([excluded, insufficientTime, unsuitable]);
-
-    const licenceStatus = {
-        stage,
+    return {
         decisions: {
-            excluded,
-            insufficientTime,
-            unsuitable,
-            optedOut,
-            bassReferralNeeded,
-            eligible,
-            curfewAddressApproved,
-            standardOnly,
-            additional,
-            bespoke,
-            riskManagementNeeded,
-            victimLiasionNeeded,
             approved,
             refused,
             postponed
         },
         tasks: {
-            exclusion,
-            crdTime,
-            suitability,
-            optOut,
-            bassReferral,
-            eligibility,
-            curfewAddress,
-            curfewAddressReview,
-            curfewHours,
-            licenceConditions,
-            riskManagement,
-            reportingInstructions,
             approval
         }
     };
+}
 
-    console.log(licenceStatus);
-    return licenceStatus;
+function getRoStageState(data) {
+    const {riskManagementNeeded, victimLiasionNeeded, riskManagement} = getRiskManagementState(data);
+    const {curfewAddressReview, curfewAddressApproved} = getCurfewAddressReviewState(data);
+    const {curfewHours} = getCurfewHoursState(data);
+    const {reportingInstructions} = getReportingInstructionsState(data);
+    const {licenceConditions, standardOnly, additional, bespoke} = getLicenceConditionsState(data);
+
+    return {
+        decisions: {
+            riskManagementNeeded,
+            victimLiasionNeeded,
+            curfewAddressApproved,
+            standardOnly,
+            additional,
+            bespoke
+        },
+        tasks: {
+            riskManagement,
+            curfewAddressReview,
+            curfewHours,
+            reportingInstructions,
+            licenceConditions
+        }
+    };
+}
+
+function getEligibilityStageState(data) {
+    const {excluded, exclusion} = getExclusionTaskState(data);
+    const {insufficientTime, crdTime} = getCrdTimeState(data);
+    const {unsuitable, suitability} = getSuitabilityState(data);
+    const eligibility = getOverallState([exclusion, crdTime, suitability]);
+    const eligible = noneOf([excluded, insufficientTime, unsuitable]);
+    const {optedOut, optOut} = getOptOutState(data);
+    const {bassReferralNeeded, bassReferral} = getBassReferralState(data);
+    const {curfewAddress} = getCurfewAddressState(data);
+
+    return {
+        decisions: {
+            excluded,
+            insufficientTime,
+            unsuitable,
+            eligible,
+            optedOut,
+            bassReferralNeeded
+        },
+        tasks: {
+            exclusion,
+            crdTime,
+            suitability,
+            eligibility,
+            optOut,
+            bassReferral,
+            curfewAddress
+        }
+    };
 }
 
 function getExclusionTaskState(data) {
