@@ -16,7 +16,7 @@ describe('getTaskData', () => {
     it('should show licenceConditions DONE when additionalConditionsRequired is no', () => {
         const licence = {
             licence: {
-                licenceConditions: {standardConditions: {additionalConditionsRequired: 'No'}}
+                licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
             }
         };
 
@@ -26,7 +26,7 @@ describe('getTaskData', () => {
     it('should show riskManagement STARTED when riskManagement section present', () => {
         const licence = {
             licence: {
-                licenceConditions: {riskManagement: {}}
+                risk: {riskManagement: 'any'}
             }
         };
 
@@ -36,7 +36,7 @@ describe('getTaskData', () => {
     it('should show reportingInstructions STARTED when reportingInstructions section present', () => {
         const licence = {
             licence: {
-                reportingInstructions: {}
+                reporting: {reportingInstructions: {}}
             }
         };
 
@@ -49,10 +49,11 @@ describe('getTaskData', () => {
                 curfew: {
                     curfewAddressReview: {}
                 },
+                risk: {
+                    riskManagement: {}
+                },
                 licenceConditions: {
-                    riskManagement: {},
-                    curfewAddressReview: {},
-                    standardConditions: {additionalConditionsRequired: 'No'}
+                    standard: {additionalConditionsRequired: 'No'}
                 }
             }
         };
@@ -64,8 +65,7 @@ describe('getTaskData', () => {
         const licence = {
             licence: {
                 licenceConditions: {
-                    riskManagement: {},
-                    standardConditions: {additionalConditionsRequired: 'No'}
+                    standard: {additionalConditionsRequired: 'No'}
                 }
             }
         };

@@ -33,12 +33,13 @@ function getTaskData(licence) {
     };
 
     const riskManagement = {
-        state: getIn(licence, ['licence', 'licenceConditions', 'riskManagement']) ?
+        state: getIn(licence, ['licence', 'risk', 'riskManagement']) ?
             taskStates.STARTED : taskStates.DEFAULT
     };
 
     const reportingInstructions = {
-        state: getIn(licence, ['licence', 'reportingInstructions']) ? taskStates.STARTED : taskStates.DEFAULT
+        state:
+            getIn(licence, ['licence', 'reporting', 'reportingInstructions']) ? taskStates.STARTED : taskStates.DEFAULT
     };
 
     const readyToSubmit = allCompletedState([curfewAddress, additionalConditions, riskManagement]);
@@ -101,7 +102,7 @@ function getBassReferralDecision(licence) {
 
 function getAdditionalConditionsState(licence) {
     const additionalRequired =
-        getIn(licence, ['licence', 'licenceConditions', 'standardConditions', 'additionalConditionsRequired']);
+        getIn(licence, ['licence', 'licenceConditions', 'standard', 'additionalConditionsRequired']);
 
     if (additionalRequired && additionalRequired === 'No') {
         return taskStates.DONE;
