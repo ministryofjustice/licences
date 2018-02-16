@@ -18,9 +18,6 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         const licence = await licenceService.getLicence(nomisId, {populateConditions: true});
         const status = getIn(licence, ['status']);
 
-        console.log(nomisId);
-        console.log(status);
-
         res.render('sent/index', {nomisId, status});
     }));
 
