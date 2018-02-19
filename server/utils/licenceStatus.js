@@ -45,7 +45,7 @@ function getRequiredState(stage, data) {
         [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getApprovalStageState],
         [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState],
         [licenceStages.PROCESSING_RO]: [getEligibilityStageState, getRoStageState],
-        [licenceStages.ELIGIBILITY]: [getEligibilityStageState],
+        [licenceStages.ELIGIBILITY]: [getEligibilityStageState]
     };
 
     return config[stage].map(getStateMethod => getStateMethod(data));
