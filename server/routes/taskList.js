@@ -27,7 +27,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const allowedTransitions = getAllowedTransitions(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
 
-        res.render('taskList/index', {
+        res.render('taskList/taskList', {
             licenceStatus,
             allowedTransitions,
             statusLabel,

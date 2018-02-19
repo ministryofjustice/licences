@@ -2,34 +2,11 @@ const {
     request,
     sandbox,
     expect,
+    licenceServiceStub,
+    hdcRoute,
+    formConfig,
     appSetup
 } = require('../supertestSetup');
-
-const createRiskRoute = require('../../server/routes/hdc');
-const auth = require('../mockAuthentication');
-const authenticationMiddleware = auth.authenticationMiddleware;
-const formConfig = require('../../server/routes/config/risk');
-
-const loggerStub = {
-    debug: sandbox.stub()
-};
-
-const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves({licence: {key: 'value'}}),
-    update: sandbox.stub().returnsPromise().resolves(),
-    updaterisk: sandbox.stub().returnsPromise().resolves()
-};
-
-const conditionsServiceStub = {
-    getStandardConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'Not commit any offence'}}]),
-    getAdditionalConditions: sandbox.stub().returnsPromise().resolves({
-        base: {
-            base: [{TEXT: {value: 'hi'}, ID: {value: 'ho'}, USER_INPUT: {}}]
-        }
-    }),
-    validateConditionInputs: sandbox.stub().returnsPromise().resolves({validates: true}),
-    getAdditionalConditionsWithErrors: sandbox.stub().returnsPromise().resolves({})
-};
 
 const testUser = {
     staffId: 'my-staff-id',
@@ -37,12 +14,7 @@ const testUser = {
     roleCode: 'CA'
 };
 
-const app = appSetup(createRiskRoute({
-    licenceService: licenceServiceStub,
-    logger: loggerStub,
-    conditionsService: conditionsServiceStub,
-    authenticationMiddleware
-}), testUser);
+const app = appSetup(hdcRoute, testUser);
 
 describe('/hdc/risk', () => {
 

@@ -11,7 +11,21 @@ function getLicenceStatus(licenceRecord) {
         return {
             stage: licenceStages.UNSTARTED,
             decisions: {},
-            tasks: {}
+            tasks: {
+                exclusion: taskStates.UNSTARTED,
+                crdTime: taskStates.UNSTARTED,
+                suitability: taskStates.UNSTARTED,
+                eligibility: taskStates.UNSTARTED,
+                optOut: taskStates.UNSTARTED,
+                bassReferral: taskStates.UNSTARTED,
+                curfewAddress: taskStates.UNSTARTED,
+                riskManagement: taskStates.UNSTARTED,
+                curfewAddressReview: taskStates.UNSTARTED,
+                curfewHours: taskStates.UNSTARTED,
+                reportingInstructions: taskStates.UNSTARTED,
+                licenceConditions: taskStates.UNSTARTED,
+                approval: taskStates.UNSTARTED
+            }
         };
     }
     const stage = licenceRecord.status;

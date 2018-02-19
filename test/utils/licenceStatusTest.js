@@ -24,12 +24,26 @@ describe('getLicenceStatus', () => {
         expect(status.decisions).to.eql({});
     });
 
-    it('should show no tasks when empty licence', () => {
+    it('should show all tasks UNSTARTED when empty licence', () => {
         const licence = {};
 
         const status = getLicenceStatus(licence);
 
-        expect(status.tasks).to.eql({});
+        expect(status.tasks).to.eql({
+            exclusion: taskStates.UNSTARTED,
+            crdTime: taskStates.UNSTARTED,
+            suitability: taskStates.UNSTARTED,
+            eligibility: taskStates.UNSTARTED,
+            optOut: taskStates.UNSTARTED,
+            bassReferral: taskStates.UNSTARTED,
+            curfewAddress: taskStates.UNSTARTED,
+            riskManagement: taskStates.UNSTARTED,
+            curfewAddressReview: taskStates.UNSTARTED,
+            curfewHours: taskStates.UNSTARTED,
+            reportingInstructions: taskStates.UNSTARTED,
+            licenceConditions: taskStates.UNSTARTED,
+            approval: taskStates.UNSTARTED
+        });
     });
 
     it('should show true decisions when decision data is present for truth', () => {
