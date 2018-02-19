@@ -10,88 +10,65 @@ function getStatusLabel(licenceStatus, role) {
         return 'Not started';
     }
 
-    const statusLabelMethod = {
-        CA: caStatusLabels,
-        RO: roStatusLabels,
-        DM: dmStatusLabels
+    return statusLabels(licenceStatus, role);
+}
+
+function statusLabels(licenceStatus, role) {
+
+    const labels = {
+        [licenceStages.ELIGIBILITY]: {
+            CA: caEligibilityLabel,
+            RO: () => 'Eligibility checks ongoing',
+            DM: () => 'Eligibility checks ongoing'
+        },
+        [licenceStages.PROCESSING_RO]: {
+            CA: () => 'Submitted to RO',
+            RO: roProcessingLabel,
+            DM: () => 'Submitted to RO'
+        },
+        [licenceStages.PROCESSING_CA]: {
+            CA: caProcessingLabel,
+            RO: () => 'Submitted to PCA',
+            DM: () => 'Submitted to PCA'
+        },
+        [licenceStages.APPROVAL]: {
+            CA: () => 'Submitted to DM',
+            RO: () => 'Submitted to DM',
+            DM: () => 'Awaiting Decision'
+        },
+        [licenceStages.DECIDED]: {
+            CA: decisionLabel,
+            RO: decisionLabel,
+            DM: decisionLabel
+        }
     };
 
-    return statusLabelMethod[role](licenceStatus);
-}
-
-function caStatusLabels(licenceStatus) {
-    switch (licenceStatus.stage) {
-        case licenceStages.ELIGIBILITY:
-            return caEligibilityLabel(licenceStatus);
-        case licenceStages.PROCESSING_RO:
-            return 'Submitted to RO';
-        case licenceStages.PROCESSING_CA:
-            return caProcessingLabel(licenceStatus);
-        case licenceStages.APPROVAL:
-            return 'Submitted to DM';
-        case licenceStages.DECIDED:
-            return decisionLabel(licenceStatus);
-    }
-}
-
-function roStatusLabels(licenceStatus) {
-    switch (licenceStatus.stage) {
-        case licenceStages.ELIGIBILITY:
-            return 'Eligibility checks ongoing';
-        case licenceStages.PROCESSING_RO:
-            return roProcessingLabel(licenceStatus);
-        case licenceStages.PROCESSING_CA:
-            return 'Submitted to PCA';
-        case licenceStages.APPROVAL:
-            return 'Submitted to DM';
-        case licenceStages.DECIDED:
-            return decisionLabel(licenceStatus);
-    }
-}
-
-function dmStatusLabels(licenceStatus) {
-    switch (licenceStatus.stage) {
-        case licenceStages.ELIGIBILITY:
-            return 'Eligibility checks ongoing';
-        case licenceStages.PROCESSING_RO:
-            return 'Submitted to RO';
-        case licenceStages.PROCESSING_CA:
-            return 'Submitted to PCA';
-        case licenceStages.APPROVAL:
-            return 'Awaiting Decision';
-        case licenceStages.DECIDED:
-            return decisionLabel(licenceStatus);
-    }
+    return labels[licenceStatus.stage][role](licenceStatus);
 }
 
 function caEligibilityLabel(licenceStatus) {
-    if (licenceStatus.decisions.excluded) {
-        return 'Excluded (Ineligible)';
-    } else if (licenceStatus.decisions.insufficientTime) {
-        return 'Excluded (Insufficient time)';
-    } else if (licenceStatus.decisions.unsuitable) {
-        return 'Presumed unsuitable';
-    } else if (licenceStatus.decisions.immigrationCheckNeeded) {
-        return 'Immigration status check requested';
-    } else if (licenceStatus.decisions.optedOut) {
-        return 'Opted out';
-    } else if (licenceStatus.decisions.bassReferralNeeded) {
-        return 'Address/Opt-out form sent';
-    } else {
-        return 'Eligibility checks ongoing';
-    }
+
+    const labels = [
+        {decision: 'excluded', label: 'Excluded (Ineligible)'},
+        {decision: 'insufficientTime', label: 'Excluded (Insufficient time)'},
+        {decision: 'unsuitable', label: 'Presumed unsuitable'},
+        {decision: 'immigrationCheckNeeded', label: 'Immigration status check requested'},
+        {decision: 'optedOut', label: 'Opted out'},
+        {decision: 'bassReferralNeeded', label: 'Address/Opt-out form sent'}
+    ];
+
+    return getLabel(labels, licenceStatus) || 'Eligibility checks ongoing';
 }
 
 function caProcessingLabel(licenceStatus) {
-    if (licenceStatus.decisions.excluded) {
-        return 'Excluded (Ineligible)';
-    } else if (licenceStatus.decisions.curfewAddressApproved === false) {
-        return 'Address not suitable';
-    } else if (licenceStatus.decisions.postponed) {
-        return 'Postponed';
-    } else {
-        return 'Final Checks';
-    }
+
+    const labels = [
+        {decision: 'excluded', label: 'Excluded (Ineligible)'},
+        {decision: 'curfewAddressApproved', value: false, label: 'Address not suitable'},
+        {decision: 'postponed', label: 'Postponed'}
+    ];
+
+    return getLabel(labels, licenceStatus) || 'Final Checks';
 }
 
 function roProcessingLabel(licenceStatus) {
@@ -102,19 +79,28 @@ function roProcessingLabel(licenceStatus) {
             licenceStatus.tasks.riskManagement,
             licenceStatus.tasks.reportingInstructions])) {
         return 'Assessment ongoing';
-    } else {
-        return 'Awaiting Assessment';
     }
+
+    return 'Awaiting Assessment';
 }
 
 function decisionLabel(licenceStatus) {
-    if (licenceStatus.decisions.approved) {
-        return 'Approved';
-    } else if (licenceStatus.decisions.refused) {
-        return 'Refused';
-    } else {
-        return '';
-    }
+
+    const labels = [
+        {decision: 'approved', label: 'Approved'},
+        {decision: 'refused', label: 'Refused'}
+    ];
+
+    return getLabel(labels, licenceStatus) || '';
+}
+
+function getLabel(labels, licenceStatus) {
+    const found = labels.find(label => {
+        const value = 'value' in label ? label.value : true;
+        return licenceStatus.decisions[label.decision] === value;
+    });
+
+    return found ? found.label : null;
 }
 
 function anyStarted(tasks) {
