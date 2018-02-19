@@ -9,7 +9,7 @@ block content
 
     div.largePaddingBottom
         if user.role == 'CA'
-            if status == 'RO-CA'
+            if status == 'PROCESSING_CA'
                 include CAtoDM.pug
             else
                 include CAtoRO.pug

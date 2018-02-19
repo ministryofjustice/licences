@@ -5,12 +5,20 @@ div.largeMarginBottom.borderTop
 
     div.pure-g
         div.pure-u-3-4
-            // TODO define text
-            | No conditions added
+            if licenceStatus.tasks.licenceConditions === 'DONE'
+                if licenceStatus.decisions.standardOnly
+                    div Standard conditions only
+                else
+                    if licenceStatus.decisions.additional
+                        div #{licenceStatus.decisions.additional} additional condition(s) added
+                    if licenceStatus.decisions.bespoke
+                        div #{licenceStatus.decisions.bespoke} bespoke condition(s) added
+            else
+                | No conditions added
         div.pure-u-1-4
 
             a.taskListAction.center.button(href="/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
-                if taskData.additionalConditions.state === 'UNSTARTED'
+                if licenceStatus.tasks.licenceConditions === 'UNSTARTED'
                     | Start
                 else
                     | View
