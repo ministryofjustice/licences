@@ -6,7 +6,7 @@ module.exports = {getLicenceStatus};
 
 function getLicenceStatus(licenceRecord) {
 
-    if (!licenceRecord || !licenceRecord.licence || !licenceRecord.status) {
+    if (isEmpty(licenceRecord) || isEmpty(licenceRecord.licence) || isEmpty(licenceRecord.status)) {
         return {
             stage: licenceStages.UNSTARTED,
             decisions: {},
@@ -104,7 +104,7 @@ function getEligibilityStageState(licence) {
     const {insufficientTime, crdTime} = getCrdTimeState(licence);
     const {unsuitable, suitability} = getSuitabilityState(licence);
     const eligibility = getOverallState([exclusion, crdTime, suitability]);
-    const eligible = noneOf([excluded, insufficientTime, unsuitable]);
+    const eligible = allFalse([excluded, insufficientTime, unsuitable]);
     const {optedOut, optOut} = getOptOutState(licence);
     const {bassReferralNeeded, bassReferral} = getBassReferralState(licence);
     const {curfewAddress} = getCurfewAddressState(licence);
@@ -331,6 +331,6 @@ function getOverallState(tasks) {
     }
 }
 
-function noneOf(booleans) {
-    return !booleans.some(it => it === true);
+function allFalse(booleans) {
+    return booleans.every(it => it === false);
 }
