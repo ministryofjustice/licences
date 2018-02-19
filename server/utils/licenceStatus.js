@@ -40,26 +40,26 @@ function getLicenceStatus(licenceRecord) {
 
 function getRequiredState(stage, data) {
 
-    switch (stage) {
-        case licenceStages.DECIDED:
-        // fall through
-        case licenceStages.APPROVAL:
-            return [getEligibilityStageState(data), getRoStageState(data), getApprovalStageState(data)];
-        case licenceStages.PROCESSING_CA:
-        // fall through
-        case licenceStages.PROCESSING_RO:
-            return [getEligibilityStageState(data), getRoStageState(data)];
-        case licenceStages.ELIGIBILITY:
-            return [getEligibilityStageState(data)];
-        default:
-            return [];
-    }
+    const config = {
+        [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getApprovalStageState],
+        [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getApprovalStageState],
+        [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState],
+        [licenceStages.PROCESSING_RO]: [getEligibilityStageState, getRoStageState],
+        [licenceStages.ELIGIBILITY]: [getEligibilityStageState],
+    };
+
+    return config[stage].map(getStateMethod => getStateMethod(data));
 }
 
 const combiner = (acc, data) => {
-    Object.assign(acc.tasks, {...data.tasks});
-    Object.assign(acc.decisions, {...data.decisions});
-    return acc;
+    const combinedTasks = {...acc.tasks, ...data.tasks};
+    const combinedDecisions = {...acc.decisions, ...data.decisions};
+
+    return {
+        ...acc,
+        tasks: combinedTasks,
+        decisions: combinedDecisions
+    };
 };
 
 function getApprovalStageState(data) {
