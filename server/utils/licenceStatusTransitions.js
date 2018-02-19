@@ -1,4 +1,5 @@
 const {taskStates} = require('../models/taskStates');
+const {roles} = require('../models/roles');
 
 module.exports = {getAllowedTransitions};
 
@@ -9,11 +10,11 @@ function getAllowedTransitions(licenceStatus, role) {
     }
 
     switch (role) {
-        case 'RO':
+        case roles.RO:
             return {
                 roToCa: canSendRoToCa(licenceStatus)
             };
-        case 'DM':
+        case roles.DM:
             return {
                 dmToCa: canSendDmToCa(licenceStatus)
             };

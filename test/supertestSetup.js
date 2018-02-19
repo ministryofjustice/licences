@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const createLicenceConditionsRoute = require('../server/routes/hdc');
 const auth = require('./mockAuthentication');
 
+const {roles} = require('../server/models/roles');
+
 const licenceConditionsConfig = require('../server/routes/config/licenceConditions');
 const eligibilityConfig = require('../server/routes/config/eligibility');
 const proposedAddressConfig = require('../server/routes/config/proposedAddress');
@@ -33,7 +35,7 @@ const testUser = {
     lastName: 'last',
     staffId: 'id',
     token: 'token',
-    role: 'CA'
+    role: roles.CA
 };
 
 const loggerStub = {
