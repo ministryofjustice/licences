@@ -30,13 +30,13 @@ function getRequiredState(stage, data) {
         case licenceStages.DECIDED:
         // fall through
         case licenceStages.APPROVAL:
-            return [getApprovalStageState(data)];
+            return [getEligibilityStageState(data), getRoStageState(data), getApprovalStageState(data)];
         case licenceStages.PROCESSING_CA:
         // fall through
         case licenceStages.PROCESSING_RO:
-            return [getApprovalStageState(data), getRoStageState(data)];
+            return [getEligibilityStageState(data), getRoStageState(data)];
         case licenceStages.ELIGIBILITY:
-            return [getApprovalStageState(data), getRoStageState(data), getEligibilityStageState(data)];
+            return [getEligibilityStageState(data)];
         default:
             return [];
     }

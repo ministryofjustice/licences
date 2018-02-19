@@ -24,7 +24,7 @@ block content
             // Or only when it comes back to them?
             // Or do we need an extra stage so that they strt seeing the full view as soon as the RO starts editing?
             // todo also - all views should be view only for users that don't own the current stage
-            if licenceStatus.stage === 'UNSTARTED' || licenceStatus.stage === 'ELIGIBILITY'// || licenceStatus.stage === 'PROCESSING_RO'
+            if licenceStatus.stage === 'UNSTARTED' || licenceStatus.stage === 'ELIGIBILITY'
                 include eligibilityTask
                 include proposedAddressTask
             else

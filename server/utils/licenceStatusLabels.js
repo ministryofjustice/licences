@@ -85,7 +85,7 @@ function caEligibilityLabel(licenceStatus) {
 function caProcessingLabel(licenceStatus) {
     if (licenceStatus.decisions.excluded) {
         return 'Excluded (Ineligible)';
-    } else if (!licenceStatus.decisions.curfewAddressApproved) {
+    } else if (licenceStatus.decisions.curfewAddressApproved === false) {
         return 'Address not suitable';
     } else if (licenceStatus.decisions.postponed) {
         return 'Postponed';
@@ -109,7 +109,7 @@ function roProcessingLabel(licenceStatus) {
 
 function decisionLabel(licenceStatus) {
     if (licenceStatus.decisions.approved) {
-        return ' Approved';
+        return 'Approved';
     } else if (licenceStatus.decisions.refused) {
         return 'Refused';
     } else {

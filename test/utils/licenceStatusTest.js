@@ -2,7 +2,7 @@ const {getLicenceStatus} = require('../../server/utils/licenceStatus');
 const {expect} = require('../testSetup');
 const {taskStates} = require('../../server/models/taskStates');
 
-describe('getTaskData', () => {
+describe('getLicenceStatus', () => {
 
     it('should show licence stage', () => {
         const licence = {
