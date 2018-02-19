@@ -1,26 +1,14 @@
 const {
     request,
-    sandbox,
     expect,
+    loggerStub,
+    licenceServiceStub,
+    prisonerServiceStub,
+    authenticationMiddleware,
     appSetup
 } = require('../supertestSetup');
 
 const createSendRoute = require('../../server/routes/send');
-const auth = require('../mockAuthentication');
-const authenticationMiddleware = auth.authenticationMiddleware;
-
-const loggerStub = {
-    debug: sandbox.stub()
-};
-
-const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves({status: 'PROCESSING_RO'}),
-    markForHandover: sandbox.stub().returnsPromise().resolves([{}])
-};
-
-const prisonerServiceStub = {
-    getEstablishmentForPrisoner: sandbox.stub().returnsPromise().resolves({premise: 'HMP Blah'})
-};
 
 const testUser = {
     staffId: 'my-staff-id',
@@ -37,8 +25,9 @@ const app = appSetup(createSendRoute({
 
 describe('Send:', () => {
 
-    afterEach(() => {
-        sandbox.reset();
+    beforeEach(() => {
+        licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO'});
+        prisonerServiceStub.getEstablishmentForPrisoner.resolves({premise: 'HMP Blah'});
     });
 
     describe('GET /send', () => {

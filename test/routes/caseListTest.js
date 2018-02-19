@@ -1,29 +1,22 @@
 const {
     request,
-    sandbox,
     appSetup,
-    expect
+    expect,
+    caseListServiceStub,
+    loggerStub,
+    authenticationMiddleware
 } = require('../supertestSetup');
 
 const createCaseListRoute = require('../../server/routes/caseList');
-const auth = require('../mockAuthentication');
-const authenticationMiddleware = auth.authenticationMiddleware;
-
-const loggerStub = {
-    debug: sandbox.stub()
-};
-
-const serviceStub = {
-    getHdcCaseList: sandbox.stub().returnsPromise().resolves([])
-};
 
 const app = appSetup(createCaseListRoute({
     logger: loggerStub,
-    caseListService: serviceStub,
+    caseListService: caseListServiceStub,
     authenticationMiddleware
 }));
 
 describe('GET /caseList', () => {
+
     it('renders and HTML output', () => {
         return request(app)
             .get('/')

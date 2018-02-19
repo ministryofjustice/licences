@@ -2,23 +2,10 @@ const {
     request,
     sandbox,
     expect,
+    licenceServiceStub,
+    hdcRoute,
     appSetup
 } = require('../supertestSetup');
-
-const createEligibilityRoute = require('../../server/routes/hdc');
-const auth = require('../mockAuthentication');
-const authenticationMiddleware = auth.authenticationMiddleware;
-
-const loggerStub = {
-    debug: sandbox.stub()
-};
-
-const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves({licence: {}}),
-    updateEligibility: sandbox.stub().returnsPromise().resolves(),
-    createLicence: sandbox.stub().returnsPromise().resolves(),
-    update: sandbox.stub().returnsPromise().resolves()
-};
 
 const testUser = {
     staffId: 'my-staff-id',
@@ -26,11 +13,7 @@ const testUser = {
     roleCode: 'CA'
 };
 
-const app = appSetup(createEligibilityRoute({
-    licenceService: licenceServiceStub,
-    logger: loggerStub,
-    authenticationMiddleware
-}), testUser);
+const app = appSetup(hdcRoute, testUser);
 
 const form1Response = {
     decision: 'Yes',

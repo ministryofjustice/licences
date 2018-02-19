@@ -1,29 +1,14 @@
 const {
     request,
-    sandbox,
     expect,
+    licenceServiceStub,
+    loggerStub,
     appSetup
 } = require('../supertestSetup');
 
 const createLicenceDetailsRoute = require('../../server/routes/licenceDetails');
 const auth = require('../mockAuthentication');
 const authenticationMiddleware = auth.authenticationMiddleware;
-
-const loggerStub = {
-    debug: sandbox.stub()
-};
-
-const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves({licence: {
-        proposedAddress: {
-            curfewAddress: {
-                addressLine1: 'Address 1'
-            }
-        },
-        licenceConditions: [{content: [{text: 'Condition1'}]}],
-        risk: {riskManagement: {planningActions: 'Yes'}}
-    }})
-};
 
 const testUser = {
     staffId: 'my-staff-id',
@@ -38,6 +23,20 @@ const app = appSetup(createLicenceDetailsRoute({
 }), testUser);
 
 describe('GET /licenceDetails/:prisonNumber', () => {
+
+    beforeEach(() => {
+        licenceServiceStub.getLicence.resolves({
+            licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addressLine1: 'Address 1'
+                    }
+                },
+                licenceConditions: [{content: [{text: 'Condition1'}]}],
+                risk: {riskManagement: {planningActions: 'Yes'}}
+            }
+        });
+    });
 
     it('renders html and displays licence detail', () => {
         return request(app)
