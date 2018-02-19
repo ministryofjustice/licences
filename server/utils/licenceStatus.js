@@ -41,11 +41,11 @@ function getLicenceStatus(licenceRecord) {
 function getRequiredState(stage, data) {
 
     const config = {
-        [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getApprovalStageState],
-        [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getApprovalStageState],
-        [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState],
+        [licenceStages.ELIGIBILITY]: [getEligibilityStageState],
         [licenceStages.PROCESSING_RO]: [getEligibilityStageState, getRoStageState],
-        [licenceStages.ELIGIBILITY]: [getEligibilityStageState]
+        [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState],
+        [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getApprovalStageState],
+        [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getApprovalStageState]
     };
 
     return config[stage].map(getStateMethod => getStateMethod(data));
