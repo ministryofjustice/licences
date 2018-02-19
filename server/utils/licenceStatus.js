@@ -1,7 +1,6 @@
 const {taskStates} = require('../models/taskStates');
 const {licenceStages} = require('../models/licenceStages');
-
-const {matcher, isPresent, isNotPresent, equalTo} = require('./jsonUtils');
+const {getIn, isEmpty} = require('./functionalHelpers');
 
 module.exports = {getLicenceStatus};
 
@@ -29,16 +28,15 @@ function getLicenceStatus(licenceRecord) {
         };
     }
     const stage = licenceRecord.status;
-    const data = matcher(licenceRecord.licence);
 
-    const results = getRequiredState(stage, data);
+    const results = getRequiredState(stage, licenceRecord.licence);
     const licenceStatus = results.reduce(combiner, {stage, decisions: {}, tasks: {}});
 
     console.log(licenceStatus);
     return licenceStatus;
 }
 
-function getRequiredState(stage, data) {
+function getRequiredState(stage, licence) {
 
     const config = {
         [licenceStages.ELIGIBILITY]: [getEligibilityStageState],
@@ -48,7 +46,7 @@ function getRequiredState(stage, data) {
         [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getApprovalStageState]
     };
 
-    return config[stage].map(getStateMethod => getStateMethod(data));
+    return config[stage].map(getStateMethod => getStateMethod(licence));
 }
 
 const combiner = (acc, data) => {
@@ -62,8 +60,8 @@ const combiner = (acc, data) => {
     };
 };
 
-function getApprovalStageState(data) {
-    const {approved, refused, postponed, approval} = getApprovalState(data);
+function getApprovalStageState(licence) {
+    const {approved, refused, postponed, approval} = getApprovalState(licence);
     return {
         decisions: {
             approved,
@@ -76,12 +74,12 @@ function getApprovalStageState(data) {
     };
 }
 
-function getRoStageState(data) {
-    const {riskManagementNeeded, victimLiasionNeeded, riskManagement} = getRiskManagementState(data);
-    const {curfewAddressReview, curfewAddressApproved} = getCurfewAddressReviewState(data);
-    const {curfewHours} = getCurfewHoursState(data);
-    const {reportingInstructions} = getReportingInstructionsState(data);
-    const {licenceConditions, standardOnly, additional, bespoke} = getLicenceConditionsState(data);
+function getRoStageState(licence) {
+    const {riskManagementNeeded, victimLiasionNeeded, riskManagement} = getRiskManagementState(licence);
+    const {curfewAddressReview, curfewAddressApproved} = getCurfewAddressReviewState(licence);
+    const {curfewHours} = getCurfewHoursState(licence);
+    const {reportingInstructions} = getReportingInstructionsState(licence);
+    const {licenceConditions, standardOnly, additional, bespoke} = getLicenceConditionsState(licence);
 
     return {
         decisions: {
@@ -102,15 +100,15 @@ function getRoStageState(data) {
     };
 }
 
-function getEligibilityStageState(data) {
-    const {excluded, exclusion} = getExclusionTaskState(data);
-    const {insufficientTime, crdTime} = getCrdTimeState(data);
-    const {unsuitable, suitability} = getSuitabilityState(data);
+function getEligibilityStageState(licence) {
+    const {excluded, exclusion} = getExclusionTaskState(licence);
+    const {insufficientTime, crdTime} = getCrdTimeState(licence);
+    const {unsuitable, suitability} = getSuitabilityState(licence);
     const eligibility = getOverallState([exclusion, crdTime, suitability]);
     const eligible = noneOf([excluded, insufficientTime, unsuitable]);
-    const {optedOut, optOut} = getOptOutState(data);
-    const {bassReferralNeeded, bassReferral} = getBassReferralState(data);
-    const {curfewAddress} = getCurfewAddressState(data);
+    const {optedOut, optOut} = getOptOutState(licence);
+    const {bassReferralNeeded, bassReferral} = getBassReferralState(licence);
+    const {curfewAddress} = getCurfewAddressState(licence);
 
     return {
         decisions: {
@@ -133,67 +131,68 @@ function getEligibilityStageState(data) {
     };
 }
 
-function getExclusionTaskState(data) {
+function getExclusionTaskState(licence) {
 
     return {
-        excluded: data.path('eligibility.excluded.decision', equalTo('Yes')),
-        exclusion: data.path('eligibility.excluded.decision', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+        excluded: getIn(licence, ['eligibility', 'excluded', 'decision']) === 'Yes',
+        exclusion: getIn(licence, ['eligibility', 'excluded', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
-function getCrdTimeState(data) {
+function getCrdTimeState(licence) {
 
     return {
-        insufficientTime: data.path('eligibility.crdTime.decision', equalTo('Yes')),
-        crdTime: data.path('eligibility.crdTime.decision', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+        insufficientTime: getIn(licence, ['eligibility', 'crdTime', 'decision']) === 'Yes',
+        crdTime: getIn(licence, ['eligibility', 'crdTime', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
-function getSuitabilityState(data) {
+function getSuitabilityState(licence) {
 
     return {
-        unsuitable: data.path('eligibility.suitability.decision', equalTo('Yes')),
-        suitability: data.path('eligibility.suitability.decision', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+        unsuitable: getIn(licence, ['eligibility', 'suitability', 'decision']) === 'Yes',
+        suitability:
+            getIn(licence, ['eligibility', 'suitability', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
-function getOptOutState(data) {
+function getOptOutState(licence) {
 
     return {
-        optedOut: data.path('proposedAddress.optOut.decision', equalTo('Yes')),
-        optOut: data.path('proposedAddress.optOut.decision', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+        optedOut: getIn(licence, ['proposedAddress', 'optOut', 'decision']) === 'Yes',
+        optOut: getIn(licence, ['proposedAddress', 'optOut', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
-function getBassReferralState(data) {
+function getBassReferralState(licence) {
 
     return {
-        bassReferralNeeded: data.path('proposedAddress.bassReferral.decision', equalTo('Yes')),
+        bassReferralNeeded: getIn(licence, ['proposedAddress', 'bassReferral', 'decision']) === 'Yes',
         bassReferral:
-            data.path('proposedAddress.bassReferral.decision', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+            getIn(licence, ['proposedAddress', 'bassReferral', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
     };
 
 }
 
-function getRiskManagementState(data) {
+function getRiskManagementState(licence) {
 
     return {
-        riskManagementNeeded: data.path('risk.riskManagement.planningActions', equalTo('Yes')),
-        victimLiasionNeeded: data.path('risk.riskManagement.victimLiaison', equalTo('Yes')),
-        riskManagement: getState(data)
+        riskManagementNeeded: getIn(licence, ['risk', 'riskManagement', 'planningActions']) === 'Yes',
+        victimLiasionNeeded: getIn(licence, ['risk', 'riskManagement', 'victimLiaison']) === 'Yes',
+        riskManagement: getState(licence)
     };
 
-    function getState(data) {
+    function getState(licence) {
 
-        if (data.path('risk.riskManagement', isNotPresent)) {
+        if (isEmpty(getIn(licence, ['risk', 'riskManagement']))) {
             return taskStates.UNSTARTED;
         }
 
-        if (data.path('risk.riskManagement.planningActions', isNotPresent)) {
+        if (isEmpty(getIn(licence, ['risk', 'riskManagement', 'planningActions']))) {
             return taskStates.STARTED;
         }
 
-        if (data.path('risk.riskManagement.victimLiaison', isPresent)) {
+        if (getIn(licence, ['risk', 'riskManagement', 'victimLiaison'])) {
             return taskStates.DONE;
         }
 
@@ -201,54 +200,54 @@ function getRiskManagementState(data) {
     }
 }
 
-function getApprovalState(data) {
+function getApprovalState(licence) {
 
     return {
-        approved: data.path('approval', equalTo('Yes')),
-        refused: data.path('approval', equalTo('No')),
-        postponed: data.path('postponed', equalTo('Yes')),
-        approval: data.path('approval', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+        approved: getIn(licence, ['approval']) === 'Yes',
+        refused: getIn(licence, ['approval']) === 'No',
+        postponed: getIn(licence, ['postponed']) === 'Yes',
+        approval: getIn(licence, ['approval']) ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
-function getCurfewAddressState(data) {
+function getCurfewAddressState(licence) {
     return {
-        curfewAddress: getState(data)
+        curfewAddress: getState(licence)
     };
 
-    function getState(data) {
-        return data.path('proposedAddress.curfewAddress', isPresent) ? taskStates.STARTED : taskStates.UNSTARTED;
+    function getState(licence) {
+        return getIn(licence, ['proposedAddress', 'curfewAddress']) ? taskStates.STARTED : taskStates.UNSTARTED;
         // todo DONE when all elements have values
     }
 }
 
 
-function getCurfewAddressReviewState(data) {
+function getCurfewAddressReviewState(licence) {
 
-    const curfewAddressReview = getState(data);
-    const curfewAddressApproved = getApproved(data);
+    const curfewAddressReview = getState(licence);
+    const curfewAddressApproved = getApproved(licence);
 
     return {curfewAddressReview, curfewAddressApproved};
 
-    function getState(data) {
+    function getState(licence) {
 
-        if (data.path('curfew.curfewAddressReview', isNotPresent)) {
+        if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview']))) {
             return taskStates.UNSTARTED;
         }
 
-        if (data.path('curfew.curfewAddressReview.consent', isNotPresent)) {
+        if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'consent']))) {
             return taskStates.STARTED;
         }
 
-        if (data.path('curfew.curfewAddressReview.deemedSafe', isNotPresent)) {
+        if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'deemedSafe']))) {
             return taskStates.STARTED;
         }
 
-        if (data.path('curfew.curfewAddressReview.consent', equalTo('Yes'))) {
-            if (data.path('curfew.curfewAddressReview.electricity', isNotPresent)) {
+        if (getIn(licence, ['curfew', 'curfewAddressReview', 'consent']) === 'Yes') {
+            if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']))) {
                 return taskStates.STARTED;
             }
-            if (data.path('curfew.curfewAddressReview.homeVisitConducted', isNotPresent)) {
+            if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'homeVisitConducted']))) {
                 return taskStates.STARTED;
             }
         }
@@ -256,30 +255,30 @@ function getCurfewAddressReviewState(data) {
         return taskStates.DONE;
     }
 
-    function getApproved(data) {
+    function getApproved(licence) {
         return curfewAddressReview === taskStates.DONE &&
-            data.path('curfew.curfewAddressReview.consent', equalTo('Yes')) &&
-            data.path('curfew.curfewAddressReview.deemedSafe', equalTo('Yes'));
+            getIn(licence, ['curfew', 'curfewAddressReview', 'consent']) === 'Yes' &&
+            getIn(licence, ['curfew', 'curfewAddressReview', 'deemedSafe']) === 'Yes';
     }
 }
 
-function getCurfewHoursState(data) {
+function getCurfewHoursState(licence) {
     return {
-        curfewHours: data.path('curfew.curfewHours', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+        curfewHours: getIn(licence, ['curfew', 'curfewHours']) ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
-function getReportingInstructionsState(data) {
+function getReportingInstructionsState(licence) {
 
     return {
         reportingInstructions:
-            data.path('reporting.reportingInstructions', isPresent) ? taskStates.DONE : taskStates.UNSTARTED
+            getIn(licence, ['reporting', 'reportingInstructions']) ? taskStates.DONE : taskStates.UNSTARTED
         // todo check for missing mandatory elements
     };
 }
 
-function getLicenceConditionsState(data) {
-    if (data.path('licenceConditions', isNotPresent)) {
+function getLicenceConditionsState(licence) {
+    if (isEmpty(getIn(licence, ['licenceConditions']))) {
         return {
             standardOnly: false,
             additional: 0,
@@ -290,10 +289,10 @@ function getLicenceConditionsState(data) {
     }
 
     const standardOnly =
-        data.path('licenceConditions.standard.additionalConditionsRequired', equalTo('No'));
+        getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No';
 
-    const additionals = data.value('licenceConditions.additional');
-    const bespokes = data.value('licenceConditions.bespoke');
+    const additionals = getIn(licence, ['licenceConditions', 'additional']);
+    const bespokes = getIn(licence, ['licenceConditions', 'bespoke']);
 
     const additional = additionals ? Object.keys(additionals).length : 0;
     const bespoke = bespokes ? bespokes.length : 0;
