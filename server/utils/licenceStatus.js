@@ -32,7 +32,6 @@ function getLicenceStatus(licenceRecord) {
     const results = getRequiredState(stage, licenceRecord.licence);
     const licenceStatus = results.reduce(combiner, {stage, decisions: {}, tasks: {}});
 
-    console.log(licenceStatus);
     return licenceStatus;
 }
 
