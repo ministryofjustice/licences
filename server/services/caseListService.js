@@ -1,6 +1,8 @@
 const logger = require('../../log.js');
 const {isEmpty} = require('../utils/functionalHelpers');
 const {formatObjectForView} = require('./utils/formatForView');
+const {getLicenceStatus} = require('../utils/licenceStatus');
+const {getStatusLabel} = require('../utils/licenceStatusLabels');
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient) {
     async function getHdcCaseList(user) {
@@ -14,7 +16,7 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
             }
 
             const licences = await licenceClient.getLicences(getOffenderIds(hdcEligibleReleases));
-            return hdcEligibleReleases.map(decoratePrisonerDetails(licences));
+            return hdcEligibleReleases.map(decoratePrisonerDetails(licences, user.role));
 
         } catch (error) {
             logger.error('Error during getHdcCaseList: ', error.stack);
@@ -41,7 +43,7 @@ function getROCaseList(nomisClient, licenceClient, user) {
 
         const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName[0].STAFF_ID.value);
 
-        if(!isEmpty(requiredPrisoners)) {
+        if (!isEmpty(requiredPrisoners)) {
             const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
             return nomisClient.getHdcEligiblePrisoners(requiredIDs);
         }
@@ -50,10 +52,11 @@ function getROCaseList(nomisClient, licenceClient, user) {
     };
 }
 
-function decoratePrisonerDetails(licences) {
-     return prisoner => {
+function decoratePrisonerDetails(licences, role) {
+    return prisoner => {
         const formattedPrisoner = formatObjectForView(prisoner);
-        return {...formattedPrisoner, status: getStatus(prisoner, licences)};
+        const status = getStatus(prisoner, licences, role);
+        return {...formattedPrisoner, status};
     };
 }
 
@@ -61,10 +64,16 @@ function getOffenderIds(releases) {
     return releases.map(offender => offender.offenderNo);
 }
 
-function getStatus(prisoner, licences) {
+function getStatus(prisoner, licences, role) {
     const licenceForPrisoner = licences.find(rawLicence => {
         return prisoner.offenderNo === rawLicence.nomisId;
     });
 
-    return licenceForPrisoner ? 'Started' : 'Not started';
+    if (!licenceForPrisoner) {
+        return 'Not Started';
+    }
+
+    const licenceStatus = getLicenceStatus(licenceForPrisoner);
+    return getStatusLabel(licenceStatus, role);
 }
+
