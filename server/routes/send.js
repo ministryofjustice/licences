@@ -31,6 +31,8 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
 
     function getSubmissionTarget(nomisId, status, token) {
         switch (status) {
+            case licenceStages.ELIGIBILITY:
+                return prisonerService.getComForPrisoner(nomisId, token);
             case licenceStages.PROCESSING_RO:
                 return prisonerService.getEstablishmentForPrisoner(nomisId, token);
             default:
@@ -40,3 +42,5 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
 
     return router;
 };
+
+

@@ -3,6 +3,13 @@ div.pure-g
         h2.heading-large.midPaddingBottom Submit to Responsible Officer
         p.lede The proposed address information is ready to be submitted to the RO or you can return to your dashboard and submit it later.
 
+        p The information will be submitted to:
+
+        if submissionTarget && submissionTarget.com
+            div#ro.bold.paddingBottom #{submissionTarget.com}
+        else
+            div.paddingBottom No responsible officer found
+
 div#continueBtns.pure-g.paddingBottom
     div.pure-u-1
         form#acceptanceForm(method='POST')
