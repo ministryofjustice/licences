@@ -19,7 +19,12 @@ block content
         include prisonerDetails
 
         if user.role === 'CA'
-            if licenceStatus.stage === 'UNSTARTED' || licenceStatus.stage === 'ELIGIBILITY'
+            // todo When should the CA see the full task view?
+            // As soon as they've sent it to RO, so they can see details / current progress?
+            // Or only when it comes back to them?
+            // Or do we need an extra stage so that they strt seeing the full view as soon as the RO starts editing?
+            // todo also - all views should be view only for users that don't own the current stage
+            if licenceStatus.stage === 'UNSTARTED' || licenceStatus.stage === 'ELIGIBILITY'// || licenceStatus.stage === 'PROCESSING_RO'
                 include eligibilityTask
                 include proposedAddressTask
             else

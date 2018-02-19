@@ -17,22 +17,28 @@ function getLicenceStatus(licenceRecord) {
     const stage = licenceRecord.status;
     const data = matcher(licenceRecord.licence);
 
-    // todo I don't like this very much. Trying to avoid computing state info that isn't needed
-    const results = [];
+    const results = getRequiredState(stage, data);
+    const licenceStatus = results.reduce(combiner, {stage, decisions: {}, tasks: {}});
+
+    console.log(licenceStatus);
+    return licenceStatus;
+}
+
+function getRequiredState(stage, data) {
 
     switch (stage) {
-        case licenceStages.DECIDED:                             // fall through
+        case licenceStages.DECIDED:
+        // fall through
         case licenceStages.APPROVAL:
-            results.push(getApprovalStageState(data));          // fall through
-        case licenceStages.PROCESSING_CA:                       // fall through
+            return [getApprovalStageState(data)];
+        case licenceStages.PROCESSING_CA:
+        // fall through
         case licenceStages.PROCESSING_RO:
-            results.push(getRoStageState(data));                // fall through
+            return [getApprovalStageState(data), getRoStageState(data)];
         case licenceStages.ELIGIBILITY:
-            results.push(getEligibilityStageState(data));       // fall through
+            return [getApprovalStageState(data), getRoStageState(data), getEligibilityStageState(data)];
         default:
-            const licenceStatus = results.reduce(combiner, {stage, decisions: {}, tasks: {}});
-            console.log(licenceStatus);
-            return licenceStatus;
+            return [];
     }
 }
 
