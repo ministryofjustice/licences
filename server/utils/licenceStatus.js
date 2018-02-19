@@ -133,52 +133,63 @@ function getEligibilityStageState(licence) {
 
 function getExclusionTaskState(licence) {
 
+    const excludedAnswer = getIn(licence, ['eligibility', 'excluded', 'decision']);
+
     return {
-        excluded: getIn(licence, ['eligibility', 'excluded', 'decision']) === 'Yes',
-        exclusion: getIn(licence, ['eligibility', 'excluded', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
+        excluded: excludedAnswer === 'Yes',
+        exclusion: excludedAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
 function getCrdTimeState(licence) {
 
+    const timeAnswer = getIn(licence, ['eligibility', 'crdTime', 'decision']);
+
     return {
-        insufficientTime: getIn(licence, ['eligibility', 'crdTime', 'decision']) === 'Yes',
-        crdTime: getIn(licence, ['eligibility', 'crdTime', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
+        insufficientTime: timeAnswer === 'Yes',
+        crdTime: timeAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
 function getSuitabilityState(licence) {
 
+    const suitableAnswer = getIn(licence, ['eligibility', 'suitability', 'decision']);
+
     return {
-        unsuitable: getIn(licence, ['eligibility', 'suitability', 'decision']) === 'Yes',
-        suitability:
-            getIn(licence, ['eligibility', 'suitability', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
+        unsuitable: suitableAnswer === 'Yes',
+        suitability: suitableAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
 function getOptOutState(licence) {
 
+    const optOutAnswer = getIn(licence, ['proposedAddress', 'optOut', 'decision']);
+
     return {
-        optedOut: getIn(licence, ['proposedAddress', 'optOut', 'decision']) === 'Yes',
-        optOut: getIn(licence, ['proposedAddress', 'optOut', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
+        optedOut: optOutAnswer === 'Yes',
+        optOut: optOutAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
 function getBassReferralState(licence) {
 
+    const bassReferralAnswer = getIn(licence, ['proposedAddress', 'bassReferral', 'decision']);
+
     return {
-        bassReferralNeeded: getIn(licence, ['proposedAddress', 'bassReferral', 'decision']) === 'Yes',
-        bassReferral:
-            getIn(licence, ['proposedAddress', 'bassReferral', 'decision']) ? taskStates.DONE : taskStates.UNSTARTED
+        bassReferralNeeded: bassReferralAnswer === 'Yes',
+        bassReferral: bassReferralAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
 
 }
 
 function getRiskManagementState(licence) {
 
+    const riskManagementAnswer = getIn(licence, ['risk', 'riskManagement', 'planningActions']);
+    const victimLiaisonAnswer = getIn(licence, ['risk', 'riskManagement', 'victimLiaison']);
+
     return {
-        riskManagementNeeded: getIn(licence, ['risk', 'riskManagement', 'planningActions']) === 'Yes',
-        victimLiasionNeeded: getIn(licence, ['risk', 'riskManagement', 'victimLiaison']) === 'Yes',
+        riskManagementNeeded: riskManagementAnswer === 'Yes',
+        victimLiasionNeeded: victimLiaisonAnswer === 'Yes',
         riskManagement: getState(licence)
     };
 
@@ -188,11 +199,11 @@ function getRiskManagementState(licence) {
             return taskStates.UNSTARTED;
         }
 
-        if (isEmpty(getIn(licence, ['risk', 'riskManagement', 'planningActions']))) {
+        if (isEmpty(riskManagementAnswer)) {
             return taskStates.STARTED;
         }
 
-        if (getIn(licence, ['risk', 'riskManagement', 'victimLiaison'])) {
+        if (victimLiaisonAnswer) {
             return taskStates.DONE;
         }
 
@@ -224,8 +235,13 @@ function getCurfewAddressState(licence) {
 
 function getCurfewAddressReviewState(licence) {
 
+    const consentAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'consent']);
+    const deemedSafeAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'deemedSafe']);
+
+
     const curfewAddressReview = getState(licence);
     const curfewAddressApproved = getApproved(licence);
+
 
     return {curfewAddressReview, curfewAddressApproved};
 
@@ -235,15 +251,15 @@ function getCurfewAddressReviewState(licence) {
             return taskStates.UNSTARTED;
         }
 
-        if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'consent']))) {
+        if (isEmpty(consentAnswer)) {
             return taskStates.STARTED;
         }
 
-        if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'deemedSafe']))) {
+        if (isEmpty(deemedSafeAnswer)) {
             return taskStates.STARTED;
         }
 
-        if (getIn(licence, ['curfew', 'curfewAddressReview', 'consent']) === 'Yes') {
+        if (consentAnswer === 'Yes') {
             if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']))) {
                 return taskStates.STARTED;
             }
@@ -256,9 +272,7 @@ function getCurfewAddressReviewState(licence) {
     }
 
     function getApproved(licence) {
-        return curfewAddressReview === taskStates.DONE &&
-            getIn(licence, ['curfew', 'curfewAddressReview', 'consent']) === 'Yes' &&
-            getIn(licence, ['curfew', 'curfewAddressReview', 'deemedSafe']) === 'Yes';
+        return curfewAddressReview === taskStates.DONE && consentAnswer === 'Yes' && deemedSafeAnswer === 'Yes';
     }
 }
 
