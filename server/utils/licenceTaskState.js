@@ -1,6 +1,6 @@
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
-const taskStates = require('../data/taskStates');
-const {states} = require('../data/licenceStates');
+const {taskStates} = require('../models/taskStates');
+const {licenceStages} = require('../models/licenceStages');
 
 module.exports = {
     getTaskData,
@@ -16,7 +16,7 @@ function getTaskData(licence) {
 
     const eligibility = {
         answers: getIn(licence, ['licence', 'eligibility']),
-        state: getIn(licence, ['licence', 'eligibility']) ? taskStates.DONE : taskStates.DEFAULT
+        state: getIn(licence, ['licence', 'eligibility']) ? taskStates.DONE : taskStates.UNSTARTED
     };
 
     const proposedAddress = {
@@ -25,7 +25,7 @@ function getTaskData(licence) {
 
     const curfewAddress = {
         state: getIn(licence, ['licence', 'curfew', 'curfewAddressReview']) ?
-            taskStates.STARTED : taskStates.DEFAULT
+            taskStates.STARTED : taskStates.UNSTARTED
     };
 
     const additionalConditions = {
@@ -34,12 +34,13 @@ function getTaskData(licence) {
 
     const riskManagement = {
         state: getIn(licence, ['licence', 'risk', 'riskManagement']) ?
-            taskStates.STARTED : taskStates.DEFAULT
+            taskStates.STARTED : taskStates.UNSTARTED
     };
 
     const reportingInstructions = {
         state:
-            getIn(licence, ['licence', 'reporting', 'reportingInstructions']) ? taskStates.STARTED : taskStates.DEFAULT
+            getIn(licence, ['licence', 'reporting', 'reportingInstructions']) ?
+                taskStates.STARTED : taskStates.UNSTARTED
     };
 
     const readyToSubmit = allCompletedState([curfewAddress, additionalConditions, riskManagement]);
@@ -71,13 +72,13 @@ function isCompletedState(task) {
 
 function getProposedAddressState(hasStarted, handoverState, hasOptedOut, hasBassReferral) {
 
-    if (handoverState !== states.DEFAULT || hasOptedOut || hasBassReferral) {
+    if (handoverState !== licenceStages.DEFAULT || hasOptedOut || hasBassReferral) {
         return taskStates.DONE;
     }
     if (hasStarted) {
         return taskStates.STARTED;
     }
-    return taskStates.DEFAULT;
+    return taskStates.UNSTARTED;
 }
 
 function getEligibility(eligibilityObject) {
@@ -110,5 +111,5 @@ function getAdditionalConditionsState(licence) {
         return taskStates.STARTED;
     }
 
-    return taskStates.DEFAULT;
+    return taskStates.UNSTARTED;
 }

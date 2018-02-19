@@ -7,7 +7,7 @@ const {formatObjectForView} = require('./utils/formatForView');
 const {DATE_FIELD} = require('./utils/conditionsValidator');
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
-const {transitions} = require('../data/licenceStates');
+const {transitions} = require('../models/licenceStages');
 
 module.exports = function createLicenceService(licenceClient) {
 

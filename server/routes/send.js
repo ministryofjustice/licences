@@ -1,6 +1,6 @@
 const express = require('express');
 const {getIn} = require('../utils/functionalHelpers');
-const {states} = require('../data/licenceStates');
+const {licenceStages} = require('../models/licenceStages');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 
 module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware}) {
@@ -31,7 +31,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
 
     function getSubmissionTarget(nomisId, status, token) {
         switch (status) {
-            case states.PROCESSING_RO:
+            case licenceStages.PROCESSING_RO:
                 return prisonerService.getEstablishmentForPrisoner(nomisId, token);
             default:
                 return null;

@@ -7,10 +7,12 @@ const {
     appSetup
 } = require('../supertestSetup');
 
+const {roles} = require('../../server/models/roles');
+
 const testUser = {
     staffId: 'my-staff-id',
     token: 'my-token',
-    roleCode: 'CA'
+    roleCode: roles.CA
 };
 
 const app = appSetup(hdcRoute, testUser);

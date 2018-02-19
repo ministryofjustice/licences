@@ -1,5 +1,6 @@
 
-const states = {
+const licenceStages = {
+    UNSTARTED: 'UNSTARTED',
     DEFAULT: 'ELIGIBILITY',
     ELIGIBILITY: 'ELIGIBILITY',
     PROCESSING_RO: 'PROCESSING_RO',
@@ -10,15 +11,15 @@ const states = {
 
 const transitions = {
     CA: {
-        RO: states.PROCESSING_RO,
-        DM: states.APPROVAL
+        RO: licenceStages.PROCESSING_RO,
+        DM: licenceStages.APPROVAL
     },
     RO: {
-        CA: states.PROCESSING_CA
+        CA: licenceStages.PROCESSING_CA
     },
     DM: {
-        CA: states.DECIDED
+        CA: licenceStages.DECIDED
     }
 };
 
-module.exports = {states, transitions};
+module.exports = {licenceStages, transitions};
