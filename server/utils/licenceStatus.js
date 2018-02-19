@@ -56,11 +56,10 @@ function getRequiredState(stage, data) {
     }
 }
 
-// todo there must be an easier way to do this
 const combiner = (acc, data) => {
-    const tasks = Object.assign(acc.tasks, {...data.tasks});
-    const decisions = Object.assign(acc.decisions, {...data.decisions});
-    return Object.assign(acc, decisions, tasks);
+    Object.assign(acc.tasks, {...data.tasks});
+    Object.assign(acc.decisions, {...data.decisions});
+    return acc;
 };
 
 function getApprovalStageState(data) {
