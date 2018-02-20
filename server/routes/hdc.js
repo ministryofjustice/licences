@@ -1,5 +1,5 @@
 const express = require('express');
-const asyncMiddleware = require('../utils/asyncMiddleware');
+const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
 const {getIn} = require('../utils/functionalHelpers');
 const licenceConditionsConfig = require('./config/licenceConditions');
 const eligibilityConfig = require('./config/eligibility');
@@ -28,20 +28,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         next();
     });
 
-    const checkLicence = async (req, res, next) => {
-        try {
-            const nomisId = req.params.nomisId;
-            const licence = await licenceService.getLicence(nomisId);
-            if(!licence) {
-                res.redirect('/');
-            }
-            next();
-        } catch(error) {
-            // TODO proper error handling
-            console.error('Error collecting licence from checkLicence');
-            res.redirect('/');
-        }
-    };
+    const checkLicence = checkLicenceMiddleWare(licenceService);
 
     // bespoke routes
 
@@ -51,8 +38,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         const nomisId = req.params.nomisId;
         const conditions = await conditionsService.getStandardConditions();
 
-        const rawLicence = await licenceService.getLicence(nomisId);
-        const data = getIn(rawLicence, ['licence', 'licenceConditions', 'standard']) || {};
+        const data = getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {};
 
         res.render('licenceConditions/standard', {nomisId, conditions, data});
     }));
@@ -61,9 +47,8 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         logger.debug('GET /additionalConditions');
 
         const nomisId = req.params.nomisId;
-        const existingLicence = await licenceService.getLicence(req.params.nomisId);
-        const licence = getIn(existingLicence, ['licence']);
-        const bespokeConditions = getIn(existingLicence, ['licence', 'licenceConditions', 'bespoke']) || [];
+        const licence = getIn(res.locals.licence, ['licence']);
+        const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
         const conditions = await conditionsService.getAdditionalConditions(licence);
 
         res.render('licenceConditions/additionalConditions', {nomisId, conditions, bespokeConditions});
@@ -102,6 +87,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         const {nomisId} = req.params;
         logger.debug('GET licenceConditions/conditionsSummary/:nomisId');
 
+        // TODO populate res.locals.licence rather then getLicence again
         const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
         const {nextPath} = formConfig.conditionsSummary;
 
@@ -112,17 +98,16 @@ module.exports = function({logger, licenceService, conditionsService, authentica
 
     // standard routes
 
-    router.get('/:sectionName/:formName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
         const {sectionName, formName, nomisId} = req.params;
         logger.debug(`GET licenceConditions/${formName}/${nomisId}`);
 
-        const rawLicence = await licenceService.getLicence(nomisId);
         const {licenceSection, nextPath, licenceMap} = formConfig[formName];
         const dataPath = licenceMap || ['licence', sectionName, licenceSection];
-        const data = getIn(rawLicence, dataPath) || {};
+        const data = getIn(res.locals.licence, dataPath) || {};
 
         res.render(`${sectionName}/${formName}`, {nomisId, data, nextPath});
-    }));
+    });
 
     router.post('/:sectionName/:formName/:nomisId', asyncMiddleware(async (req, res) => {
         const {sectionName, formName, nomisId} = req.params;
