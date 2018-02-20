@@ -6,7 +6,7 @@ module.exports = {getLicenceStatus};
 
 function getLicenceStatus(licenceRecord) {
 
-    if (allEmpty([licenceRecord, licenceRecord.licence, licenceRecord.status])) {
+    if (!licenceRecord || !licenceRecord.licence || !licenceRecord.status) {
         return {
             stage: licenceStages.UNSTARTED,
             decisions: {},
@@ -30,9 +30,7 @@ function getLicenceStatus(licenceRecord) {
     const stage = licenceRecord.status;
 
     const results = getRequiredState(stage, licenceRecord.licence);
-    const licenceStatus = results.reduce(combiner, {stage, decisions: {}, tasks: {}});
-
-    return licenceStatus;
+    return results.reduce(combiner, {stage, decisions: {}, tasks: {}});
 }
 
 function getRequiredState(stage, licence) {
@@ -335,6 +333,3 @@ function allFalse(booleans) {
     return booleans.every(it => it === false);
 }
 
-function allEmpty(items) {
-    return items.every(it => isEmpty(it));
-}

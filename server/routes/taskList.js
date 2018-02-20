@@ -1,7 +1,9 @@
 const express = require('express');
 const asyncMiddleware = require('../utils/asyncMiddleware');
 const path = require('path');
-const {getTaskData} = require('../utils/licenceTaskState');
+const {getLicenceStatus} = require('../utils/licenceStatus');
+const {getStatusLabel} = require('../utils/licenceStatusLabels');
+const {getAllowedTransitions} = require('../utils/licenceStatusTransitions');
 
 module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -21,10 +23,14 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
         const licence = await licenceService.getLicence(nomisId);
 
-        const taskData = getTaskData(licence);
+        const licenceStatus = getLicenceStatus(licence);
+        const allowedTransitions = getAllowedTransitions(licenceStatus, req.user.role);
+        const statusLabel = getStatusLabel(licenceStatus, req.user.role);
 
         res.render('taskList/taskList', {
-            taskData,
+            licenceStatus,
+            allowedTransitions,
+            statusLabel,
             prisonerInfo
         });
     }));

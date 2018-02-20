@@ -1,26 +1,26 @@
-if taskData.isEligible
+if licenceStatus.decisions.eligible
     div.largeMarginBottom.borderTop
         h2.heading-medium Proposed address / opt out request
         div.pure-g
             div.pure-u-3-4
-                if !taskData.hasStarted
+                if licenceStatus.tasks.curfewAddress === 'UNSTARTED'
                     | Information not yet entered
-                else if taskData.hasOptedOut
+                else if licenceStatus.decisions.optedOut
                     | Prisoner has opted out of HDC
-                else if taskData.hasBassReferral
+                else if licenceStatus.decisions.bassReferralNeeded
                     | Prisoner has opted in and requested BASS referral
-                else if taskData.proposedAddress.state === 'DONE'
+                else if licenceStatus.stage !== 'ELIGIBILITY'
                     | Proposed address information sent to RO
                 else
                     | Information not yet submitted
 
             div.pure-u-1-4.center
-                if taskData.proposedAddress.state === 'DONE'
+                if licenceStatus.stage !== 'ELIGIBILITY'
                     a.taskListAction.center.button.button-secondary(href="/hdc/proposedAddress/optOut/"+prisonerInfo.offenderNo)
                         | View
                 else
                     a.taskListAction.center.button(href="/hdc/proposedAddress/optOut/"+prisonerInfo.offenderNo)
-                        if taskData.proposedAddress.state === 'UNSTARTED'
+                        if licenceStatus.tasks.curfewAddress === 'UNSTARTED'
                             | Start
                         else
                             | Continue

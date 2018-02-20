@@ -1,6 +1,6 @@
 div.largeMarginBottom
     h2.heading-medium HDC eligibility and suitability check
-    if taskData.eligibility.state !== 'DONE'
+    if licenceStatus.tasks.eligibility !== 'DONE'
         div.pure-g
             div.pure-u-1.pure-u-md-3-4
                 | Questions not completed
@@ -12,7 +12,6 @@ div.largeMarginBottom
                     input#eligibilityCheckStart.taskListAction.requiredButton.button(type="submit" value="Start")
 
     else
-        - var eligibilityAnswers = taskData.eligibility.answers
         div.pure-g
             div.pure-u-1.pure-u-md-3-4
                 div.pure-g
@@ -21,20 +20,26 @@ div.largeMarginBottom
                             div.pure-u-3-4.padRight15
                                 | Is the offender excluded from HDC?
                             div#excludedAnswer.pure-u-1-4.center.bold
-                                if eligibilityAnswers.excluded && eligibilityAnswers.excluded.decision
-                                    |#{eligibilityAnswers.excluded.decision}
+                                if licenceStatus.decisions.excluded
+                                    | Yes
+                                else
+                                    | No
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
                                 | Is the offender presumed unsuitable?
                             div#unsuitableAnswer.pure-u-1-4.center.bold
-                                if eligibilityAnswers.suitability && eligibilityAnswers.suitability.decision
-                                    | #{eligibilityAnswers.suitability.decision}
+                                if licenceStatus.decisions.unsuitable
+                                    | Yes
+                                else
+                                    | No
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
                                 | Is there less than 4 weeks to go to the offender's CRD?
                             div#crdTimeAnswer.pure-u-1-4.center.bold
-                                if eligibilityAnswers.crdTime && eligibilityAnswers.crdTime.decision
-                                    | #{eligibilityAnswers.crdTime.decision}
+                                if licenceStatus.decisions.insufficientTime
+                                    | Yes
+                                else
+                                    | No
 
             div.pure-u-1.pure-u-md-1-4.center
                 a#eligibilityCheckUpdate(href='/hdc/eligibility/excluded/'+prisonerInfo.offenderNo) Change these answers

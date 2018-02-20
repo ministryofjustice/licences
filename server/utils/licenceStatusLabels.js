@@ -3,11 +3,16 @@ const {taskStates} = require('../models/taskStates');
 
 module.exports = {getStatusLabel};
 
+const UNSTARTED_LABEL = 'Not started';
 
 function getStatusLabel(licenceStatus, role) {
 
     if(!licenceStatus || !licenceStatus.stage || !licenceStatus.decisions || !licenceStatus.tasks) {
-        return 'Not started';
+        return UNSTARTED_LABEL;
+    }
+
+    if(licenceStatus.stage === licenceStages.UNSTARTED) {
+        return UNSTARTED_LABEL;
     }
 
     return statusLabels(licenceStatus, role);

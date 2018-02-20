@@ -61,6 +61,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         it('should return the eligibility', () => {
             licenceServiceStub.getLicence.resolves({
+                status: 'ELIGIBILITY',
                 licence: {
                     eligibility: {
                         excluded: {
@@ -82,7 +83,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         it('should handle no eligibility', () => {
-            licenceServiceStub.getLicence.resolves({licence: {}});
+            licenceServiceStub.getLicence.resolves({status: 'ELIGIBILITY', licence: {}});
             return request(app)
                 .get('/1233456')
                 .expect(200)
@@ -94,6 +95,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('when prisoner is not excluded', () => {
             it('should display opt out form link', () => {
                 licenceServiceStub.getLicence.resolves({
+                    status: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
                             excluded: {
@@ -309,6 +311,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('curfew address not started', () => {
             it('should display a start button for curfew address', () => {
+                licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO', licence: {}});
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -323,8 +326,9 @@ describe('GET /taskList/:prisonNumber', () => {
         context('curfew address task started', () => {
             it('should display a view button for curfew address task', () => {
                 licenceServiceStub.getLicence.resolves({
+                    status: 'PROCESSING_RO',
                     licence: {
-                        curfew: {curfewAddressReview: {}}
+                        curfew: {curfewAddressReview: 'any'}
                     }
                 });
                 return request(app)
@@ -340,6 +344,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('additional condition task not started', () => {
             it('should display a start button for additional conditions task', () => {
+                licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO', licence: {}});
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -354,6 +359,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('additional condition task started', () => {
             it('should display a view button for curfew address', () => {
                 licenceServiceStub.getLicence.resolves({
+                    status: 'PROCESSING_RO',
                     licence: {
                         licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
                     }
@@ -383,10 +389,11 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('risk management task started', () => {
-            it('should display a view button for curfew address', () => {
+            it('should display a view button for riskManagement', () => {
                 licenceServiceStub.getLicence.resolves({
+                    status: 'PROCESSING_RO',
                     licence: {
-                        risk: {riskManagement: {}}
+                        risk: {riskManagement: 'anything'}
                     }
                 });
                 return request(app)
@@ -413,7 +420,10 @@ describe('GET /taskList/:prisonNumber', () => {
                             curfewHours: 'any'
                         },
                         risk: {
-                            riskManagement: {}
+                            riskManagement: {
+                                planningActions: 'any',
+                                victimLiaison: 'any'
+                            }
                         },
                         licenceConditions: {
                             standard: {additionalConditionsRequired: 'No'}
