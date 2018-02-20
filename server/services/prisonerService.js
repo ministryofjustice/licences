@@ -80,8 +80,8 @@ function createPrisonerService(nomisClientBuilder) {
 
         } catch (error) {
 
-            if(error.status === 404) {
-                logger.warn('Establishment not found: ' + agencyLocationId);
+            if (error.status === 404) {
+                logger.warn('Establishment not found for agencyLocationId: ' + agencyLocationId);
                 return null;
             }
 
@@ -90,7 +90,12 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    return {getPrisonerDetails, getPrisonerImage, getEstablishmentForPrisoner, getEstablishment};
+    return {
+        getPrisonerDetails,
+        getPrisonerImage,
+        getEstablishmentForPrisoner,
+        getEstablishment
+    };
 };
 
 
