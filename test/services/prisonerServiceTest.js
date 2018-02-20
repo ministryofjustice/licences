@@ -26,7 +26,8 @@ describe('prisonerDetailsService', () => {
         getComRelation: sandbox.stub().returnsPromise().resolves(comRelationResponse),
         getImageInfo: sandbox.stub().returnsPromise().resolves(imageInfoResponse),
         getImageData: sandbox.stub().returnsPromise().resolves(imageDataResponse),
-        getEstablishment: sandbox.stub().returnsPromise().resolves(establishmentResponse)
+        getEstablishment: sandbox.stub().returnsPromise().resolves(establishmentResponse),
+        getComRelation: sandbox.stub().returnsPromise().resolves(comRelationResponse)
     };
 
     const nomisClientBuilder = sandbox.stub().returns(nomisClientMock);
@@ -155,6 +156,54 @@ describe('prisonerDetailsService', () => {
             nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
             nomisClientMock.getEstablishment.rejects({status: 401});
             return expect(service.getEstablishmentForPrisoner('123')).to.be.rejected();
+        });
+    });
+
+    describe('getComForPrisoner', () => {
+
+        it('should call the api with the nomis id', async () => {
+
+            nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
+
+            await service.getComForPrisoner('123', 'token');
+
+            expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledOnce();
+            expect(nomisClientMock.getComRelation).to.be.calledOnce();
+            expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledWith('123');
+            expect(nomisClientMock.getComRelation).to.be.calledWith(1);
+        });
+
+        it('should return the result of the api call', () => {
+
+            const expectedComData = {
+                com: 'Comfirst Comlast'
+            };
+
+            return expect(service.getComForPrisoner('123'))
+                .to.eventually.eql(expectedComData);
+        });
+
+        it('should throw if error in api when getting prisoner', () => {
+            nomisClientMock.getHdcEligiblePrisoner.rejects(new Error('dead'));
+            return expect(service.getComForPrisoner('123')).to.be.rejected();
+        });
+
+        it('should throw if error in api when getting establishment', () => {
+            nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
+            nomisClientMock.getComRelation.rejects(new Error('dead'));
+            return expect(service.getComForPrisoner('123')).to.be.rejected();
+        });
+
+        it('should NOT throw but return null if 404 in api when getting establishment', () => {
+            nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
+            nomisClientMock.getComRelation.rejects({status: 404});
+            return expect(service.getComForPrisoner('123')).to.eventually.eql(null);
+        });
+
+        it('should throw if error in api when getting establishment if error ststus other than 404', () => {
+            nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse);
+            nomisClientMock.getComRelation.rejects({status: 401});
+            return expect(service.getComForPrisoner('123')).to.be.rejected();
         });
     });
 });

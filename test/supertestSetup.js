@@ -59,6 +59,7 @@ const conditionsServiceStub = {
 
 const prisonerServiceStub = {
     getEstablishmentForPrisoner: sandbox.stub().returnsPromise().resolves(),
+    getComForPrisoner: sandbox.stub().returnsPromise().resolves(),
     getPrisonerDetails: sandbox.stub().returnsPromise().resolves({}),
     getPrisonerImage: sandbox.stub().returnsPromise().resolves({image: 'image'})
 };
