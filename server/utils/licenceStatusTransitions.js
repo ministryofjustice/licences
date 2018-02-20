@@ -5,7 +5,7 @@ module.exports = {getAllowedTransitions};
 
 function getAllowedTransitions(licenceStatus, role) {
 
-    if(!licenceStatus) {
+    if (!licenceStatus) {
         return null;
     }
 
@@ -28,15 +28,17 @@ function getAllowedTransitions(licenceStatus, role) {
 
 function canSendRoToCa(licenceStatus) {
 
-    const requiredTasks = [
-        licenceStatus.tasks.curfewAddressReview,
-        licenceStatus.tasks.curfewHours,
-        licenceStatus.tasks.licenceConditions,
-        licenceStatus.tasks.riskManagement,
-        licenceStatus.tasks.reportingInstructions
+    const tasks = licenceStatus.tasks;
+
+    const required = [
+        tasks.curfewAddressReview,
+        tasks.curfewHours,
+        tasks.licenceConditions,
+        tasks.riskManagement,
+        tasks.reportingInstructions
     ];
 
-    return requiredTasks.every(it => it === taskStates.DONE);
+    return required.every(it => it === taskStates.DONE);
 }
 
 function canSendDmToCa(licenceStatus) {
@@ -45,20 +47,23 @@ function canSendDmToCa(licenceStatus) {
 
 function canSendCaToRo(licenceStatus) {
 
-    const requiredTasks = [
-        licenceStatus.tasks.exclusion,
-        licenceStatus.tasks.crdTime,
-        licenceStatus.tasks.suitability,
-        licenceStatus.tasks.optOut,
-        licenceStatus.tasks.bassReferral
-        // licenceStatus.tasks.curfewAddress
+    const tasks = licenceStatus.tasks;
+
+    const required = [
+        tasks.exclusion,
+        tasks.crdTime,
+        tasks.suitability,
+        tasks.optOut,
+        tasks.bassReferral
+        // tasks.curfewAddress
     ];
 
-    return requiredTasks.every(it => it === taskStates.DONE);
+    return required.every(it => it === taskStates.DONE);
 }
 
 function canSendCaToDm(licenceStatus) {
-    return !(licenceStatus.decisions.postponed ||
-        !licenceStatus.decisions.curfewAddressApproved ||
-        licenceStatus.decisions.excluded);
+
+    const decisions = licenceStatus.decisions;
+
+    return (!decisions.postponed && !decisions.excluded && decisions.curfewAddressApproved);
 }
