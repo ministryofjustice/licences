@@ -80,8 +80,8 @@ function createPrisonerService(nomisClientBuilder) {
 
         } catch (error) {
 
-            if(error.status === 404) {
-                logger.warn('Establishment not found: ' + agencyLocationId);
+            if (error.status === 404) {
+                logger.warn('Establishment not found for agencyLocationId: ' + agencyLocationId);
                 return null;
             }
 
@@ -90,7 +90,55 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    return {getPrisonerDetails, getPrisonerImage, getEstablishmentForPrisoner, getEstablishment};
+    async function getComForPrisoner(nomisId, token) {
+        try {
+            logger.info(`getComForPrisoner: ${nomisId}`);
+
+            const nomisClient = nomisClientBuilder(token);
+
+            const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
+            const prisoner = prisoners[0];
+            if (!prisoner) {
+                return;
+            }
+
+            return getCom(prisoner.bookingId, token);
+
+        } catch (error) {
+            logger.error('Error getting prisoner establishment', error.stack);
+            throw error;
+        }
+    }
+
+    async function getCom(bookingId, token) {
+        try {
+            logger.info(`getCom: ${bookingId}`);
+
+            const nomisClient = nomisClientBuilder(token);
+            const com = await nomisClient.getComRelation(bookingId);
+
+            return formatObjectForView({com});
+
+        } catch (error) {
+
+            if (error.status === 404) {
+                logger.warn('COM not found for booking id: ' + bookingId);
+                return null;
+            }
+
+            logger.error('Error getting COM', error.stack);
+            throw error;
+        }
+    }
+
+    return {
+        getPrisonerDetails,
+        getPrisonerImage,
+        getEstablishmentForPrisoner,
+        getEstablishment,
+        getComForPrisoner,
+        getCom
+    };
 };
 
 

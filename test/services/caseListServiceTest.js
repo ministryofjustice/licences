@@ -79,16 +79,7 @@ describe('caseListService', () => {
         it('should add a status to the prisoners', async () => {
             const result = await service.getHdcCaseList(user);
 
-            expect(result[0].status).to.eql('Not started');
-        });
-
-        it('should add a started status to the prisoners if licence exists', async () => {
-            licenceClient.getLicences.resolves([{
-                nomisId: 'A12345'
-            }]);
-            const result = await service.getHdcCaseList(user);
-
-            expect(result[0].status).to.eql('Started');
+            expect(result[0].status).to.eql('Not Started');
         });
 
         it('should return empty array if no results', () => {

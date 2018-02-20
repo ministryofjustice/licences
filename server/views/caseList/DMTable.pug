@@ -5,7 +5,6 @@ table#hdcEligiblePrisoners.largeMarginBottom
             th NOMS ID
             th Location
             th HDCED
-            th CRD
             th Current status
             th
     tbody
@@ -29,10 +28,6 @@ table#hdcEligiblePrisoners.largeMarginBottom
                     td.hdced
                         if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
                             | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
-
-                    td.crd
-                        if prisoner.sentenceDetail.conditionalReleaseDate
-                            | #{prisoner.sentenceDetail.conditionalReleaseDate}
 
                     td.status
                         if prisoner.status
