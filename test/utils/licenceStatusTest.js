@@ -7,7 +7,7 @@ describe('getLicenceStatus', () => {
     it('should show licence stage', () => {
         const licence = {
             status: 'ELIGIBILITY',
-            licence: {}
+            licence: 'anything'
         };
 
         const status = getLicenceStatus(licence);

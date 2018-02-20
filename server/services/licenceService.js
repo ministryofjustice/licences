@@ -47,7 +47,7 @@ module.exports = function createLicenceService(licenceClient) {
 
     function createLicence(nomisId, data = {}) {
         const licence = createLicenceObjectFrom({model: licenceModel, inputObject: data});
-        return licenceClient.createLicence(nomisId, licence, 'STARTED');
+        return licenceClient.createLicence(nomisId, licence);
     }
 
     async function updateLicenceConditions(nomisId, additional = {}, bespoke = []) {
