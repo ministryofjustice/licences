@@ -55,8 +55,8 @@ function caEligibilityLabel(licenceStatus) {
 
     const labels = [
         {decision: 'excluded', label: 'Excluded (Ineligible)'},
-        {decision: 'insufficientTime', label: 'Excluded (Insufficient time)'},
         {decision: 'unsuitable', label: 'Presumed unsuitable'},
+        {decision: 'insufficientTime', label: 'Excluded (Insufficient time)'},
         {decision: 'immigrationCheckNeeded', label: 'Immigration status check requested'},
         {decision: 'optedOut', label: 'Opted out'},
         {decision: 'bassReferralNeeded', label: 'Address/Opt-out form sent'}
@@ -68,9 +68,9 @@ function caEligibilityLabel(licenceStatus) {
 function caProcessingLabel(licenceStatus) {
 
     const labels = [
+        {decision: 'postponed', label: 'Postponed'},
         {decision: 'excluded', label: 'Excluded (Ineligible)'},
-        {decision: 'curfewAddressApproved', value: false, label: 'Address not suitable'},
-        {decision: 'postponed', label: 'Postponed'}
+        {decision: 'curfewAddressApproved', value: false, label: 'Address not suitable'}
     ];
 
     return getLabel(labels, licenceStatus) || 'Final Checks';

@@ -224,7 +224,7 @@ function getCurfewAddressState(licence) {
     };
 
     function getState(licence) {
-        return getIn(licence, ['proposedAddress', 'curfewAddress']) ? taskStates.STARTED : taskStates.UNSTARTED;
+        return getIn(licence, ['proposedAddress']) ? taskStates.STARTED : taskStates.UNSTARTED;
         // todo DONE when all elements have values
     }
 }

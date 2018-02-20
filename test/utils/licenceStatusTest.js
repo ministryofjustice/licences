@@ -250,11 +250,7 @@ describe('getLicenceStatus', () => {
         const licence = {
             status: 'APPROVAL',
             licence: {
-                proposedAddress: {
-                    curfewAddress: {
-                        something: {}
-                    }
-                },
+                proposedAddress: {},
                 licenceConditions: {
                     standard: {
                         additionalConditionsRequired: 'Yes'
@@ -347,7 +343,7 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.eligibility).to.eql(taskStates.DONE);
         expect(status.tasks.optOut).to.eql(taskStates.DONE);
         expect(status.tasks.bassReferral).to.eql(taskStates.DONE);
-        expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED); // todo
+        expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED); // todo
         expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE);
         expect(status.tasks.curfewHours).to.eql(taskStates.DONE);
         expect(status.tasks.licenceConditions).to.eql(taskStates.DONE);
