@@ -5,7 +5,8 @@ const {
     conditionsServiceStub,
     hdcRoute,
     formConfig,
-    appSetup
+    appSetup,
+    testFormPageGets
 } = require('../supertestSetup');
 
 const testUser = {
@@ -27,7 +28,7 @@ describe('/hdc/licenceConditions', () => {
         });
     });
 
-    describe('routes', () => {
+    describe('licenceConditions routes', () => {
         const routes = [
             {url: '/licenceConditions/standard/1', content: 'Not commit any offence'},
             {url: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
@@ -35,17 +36,7 @@ describe('/hdc/licenceConditions', () => {
             {url: '/reporting/reportingInstructions/1', content: 'Reporting instructions'}
         ];
 
-        routes.forEach(route => {
-            it(`renders the ${route.url} page`, () => {
-                return request(app)
-                    .get(route.url)
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .expect(res => {
-                        expect(res.text).to.contain(route.content);
-                    });
-            });
-        });
+        testFormPageGets(app, routes);
     });
 
     describe('POST /hdc/licenceConditions/:section/:nomisId', () => {

@@ -28,9 +28,24 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         next();
     });
 
+    const checkLicence = async (req, res, next) => {
+        try {
+            const nomisId = req.params.nomisId;
+            const licence = await licenceService.getLicence(nomisId);
+            if(!licence) {
+                res.redirect('/');
+            }
+            next();
+        } catch(error) {
+            // TODO proper error handling
+            console.error('Error collecting licence from checkLicence');
+            res.redirect('/');
+        }
+    };
+
     // bespoke routes
 
-    router.get('/licenceConditions/standard/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/licenceConditions/standard/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         logger.debug('GET /standard/:nomisId');
 
         const nomisId = req.params.nomisId;
@@ -42,7 +57,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         res.render('licenceConditions/standard', {nomisId, conditions, data});
     }));
 
-    router.get('/licenceConditions/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/licenceConditions/additionalConditions/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         logger.debug('GET /additionalConditions');
 
         const nomisId = req.params.nomisId;
@@ -83,7 +98,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         return conditionsService.validateConditionInputs(input);
     }
 
-    router.get('/licenceConditions/conditionsSummary/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/licenceConditions/conditionsSummary/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         logger.debug('GET licenceConditions/conditionsSummary/:nomisId');
 
@@ -97,7 +112,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
 
     // standard routes
 
-    router.get('/:sectionName/:formName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/:sectionName/:formName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         const {sectionName, formName, nomisId} = req.params;
         logger.debug(`GET licenceConditions/${formName}/${nomisId}`);
 

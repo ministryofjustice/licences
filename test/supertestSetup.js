@@ -85,6 +85,41 @@ afterEach(() => {
     conditionsServiceStub.getAdditionalConditions.resolves();
 });
 
+function testFormPageGets(app, routes) {
+    context('licence exists for nomisId', () => {
+        beforeEach(() => {
+            licenceServiceStub.getLicence.resolves({licence: {}});
+        });
+        routes.forEach(route => {
+            it(`renders the ${route.url} page`, () => {
+                return request(app)
+                    .get(route.url)
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.contain(route.content);
+                    });
+            });
+        });
+    });
+
+    context('licence doesnt exists for nomisId', () => {
+        beforeEach(() => {
+            licenceServiceStub.getLicence.resolves(null);
+        });
+        routes.forEach(route => {
+            it(`renders the ${route.url} page`, () => {
+                return request(app)
+                    .get(route.url)
+                    .expect(302)
+                    .expect(res => {
+                        expect(res.header.location).to.equal('/');
+                    });
+            });
+        });
+    });
+};
+
 module.exports = {
     sinon,
     sandbox,
@@ -99,6 +134,7 @@ module.exports = {
     hdcRoute,
     formConfig,
     authenticationMiddleware,
+    testFormPageGets,
     appSetup: function(route, user = testUser) {
 
         const app = express();
