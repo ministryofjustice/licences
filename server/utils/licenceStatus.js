@@ -6,7 +6,7 @@ module.exports = {getLicenceStatus};
 
 function getLicenceStatus(licenceRecord) {
 
-    if (!licenceRecord || !licenceRecord.licence || !licenceRecord.status) {
+    if (allEmpty([licenceRecord, licenceRecord.licence, licenceRecord.status])) {
         return {
             stage: licenceStages.UNSTARTED,
             decisions: {},
@@ -331,4 +331,8 @@ function getOverallState(tasks) {
 
 function allFalse(booleans) {
     return booleans.every(it => it === false);
+}
+
+function allEmpty(items) {
+    return items.every(it => isEmpty(it));
 }
