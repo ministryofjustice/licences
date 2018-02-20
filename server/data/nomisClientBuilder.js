@@ -117,7 +117,7 @@ async function nomisGet(path, query, token, headers = {}, responseType = '') {
             .get(path)
             .query(query)
             .set('Authorization', gwToken)
-            .set('Elite-Authorization', token)
+            .set('Elite-Authorization', `Bearer ${token}`)
             .set(headers)
             .responseType(responseType)
             .timeout(timeoutSpec);
