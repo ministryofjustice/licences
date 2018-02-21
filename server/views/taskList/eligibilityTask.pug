@@ -19,7 +19,7 @@ div.largeMarginBottom
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
                                 | Is the offender excluded from HDC?
-                            if licenceStatus.tasks.exclusion == 'DONE'
+                            if licenceStatus.tasks.exclusion === 'DONE'
                                 div#excludedAnswer.pure-u-1-4.center.bold
                                     if licenceStatus.decisions.excluded
                                         | Yes
@@ -28,7 +28,7 @@ div.largeMarginBottom
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
                                 | Is the offender presumed unsuitable?
-                            if licenceStatus.tasks.suitability == 'DONE'
+                            if licenceStatus.tasks.suitability === 'DONE'
                                 div#unsuitableAnswer.pure-u-1-4.center.bold
                                     if licenceStatus.decisions.unsuitable
                                         | Yes
@@ -37,7 +37,7 @@ div.largeMarginBottom
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
                                 | Is there less than 4 weeks to go to the offender's CRD?
-                            if licenceStatus.tasks.crdTime == 'DONE'
+                            if licenceStatus.tasks.crdTime === 'DONE'
                                 div#crdTimeAnswer.pure-u-1-4.center.bold
                                     if licenceStatus.decisions.insufficientTime
                                         | Yes
