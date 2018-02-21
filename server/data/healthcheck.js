@@ -21,7 +21,7 @@ function nomisApiCheck() {
     return new Promise((resolve, reject) => {
 
         superagent
-            .get(`${config.nomis.apiUrl}/health`)
+            .get(`${getHealthcheckUrl()}/health`)
             .set('Authorization', generateApiGatewayToken())
             .timeout({
                 response: 4000,
@@ -47,3 +47,6 @@ function nomisApiCheck() {
     });
 }
 
+function getHealthcheckUrl() {
+    return config.nomis.apiUrl.replace('/api', '');
+}
