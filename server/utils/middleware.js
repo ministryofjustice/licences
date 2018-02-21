@@ -12,7 +12,7 @@ function asyncMiddleware(fn) {
 }
 
 function checkLicenceMiddleWare(licenceService) {
-    return async(req, res, next) => {
+    return async (req, res, next) => {
         try {
             const nomisId = req.params.nomisId;
             const licence = await licenceService.getLicence(nomisId);

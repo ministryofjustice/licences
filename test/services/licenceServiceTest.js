@@ -302,7 +302,7 @@ describe('licenceService', () => {
                 });
             });
         });
-        it('should call updateLicence and pass in the licence', async() => {
+        it('should call updateLicence and pass in the licence', async () => {
 
             const licence = {
                 ...baseLicence,
@@ -349,7 +349,7 @@ describe('licenceService', () => {
             expect(licenceClient.updateLicence).to.be.calledWith('ab1', expectedLicence);
         });
 
-        it('should add new form to the licence', async() => {
+        it('should add new form to the licence', async () => {
 
             const licence = {
                 ...baseLicence,
@@ -390,7 +390,7 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
 
-        it('should add new section to the licence', async() => {
+        it('should add new section to the licence', async () => {
 
             const licence = {
                 ...baseLicence,
