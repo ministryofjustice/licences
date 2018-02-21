@@ -111,13 +111,11 @@ module.exports = function(token) {
 async function nomisGet(path, query, token, headers = {}, responseType = '') {
 
     try {
-        const gwToken = `Bearer ${generateApiGatewayToken()}`;
-
         const result = await superagent
             .get(path)
             .query(query)
-            .set('Authorization', gwToken)
-            .set('Elite-Authorization', `Bearer ${token}`)
+            .set('Authorization', generateApiGatewayToken())
+            .set('Elite-Authorization', token)
             .set(headers)
             .responseType(responseType)
             .timeout(timeoutSpec);

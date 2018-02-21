@@ -4,7 +4,8 @@ const {
     expect,
     licenceServiceStub,
     hdcRoute,
-    appSetup
+    appSetup,
+    testFormPageGets
 } = require('../supertestSetup');
 
 const {roles} = require('../../server/models/roles');
@@ -28,25 +29,15 @@ describe('/hdc/eligibility', () => {
         sandbox.reset();
     });
 
-    describe('routes', () => {
-        const pages = [
-            {route: '/eligibility/excluded/1', content: 'HDC eligibility check'},
-            {route: '/eligibility/suitability/1', content: 'HDC presumed suitability'},
-            {route: '/eligibility/crdTime/1', content: 'Time left until Conditional Release Date'}
+    describe('eligibility routes', () => {
+        const routes = [
+            {url: '/eligibility/excluded/1', content: 'HDC eligibility check'},
+            {url: '/eligibility/suitability/1', content: 'HDC presumed suitability'},
+            {url: '/eligibility/crdTime/1', content: 'Time left until Conditional Release Date'}
 
         ];
 
-        pages.forEach(get => {
-            it(`renders the ${get.route} page`, () => {
-                return request(app)
-                    .get(get.route)
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .expect(res => {
-                        expect(res.text).to.contain(get.content);
-                    });
-            });
-        });
+        testFormPageGets(app, routes);
     });
 
     describe('GET /eligibility/excluded/:nomisId', () => {

@@ -1,5 +1,5 @@
 const express = require('express');
-const asyncMiddleware = require('../utils/asyncMiddleware');
+const {asyncMiddleware} = require('../utils/middleware');
 const {getIn} = require('../utils/functionalHelpers');
 
 module.exports = function({licenceService, logger, authenticationMiddleware}) {
