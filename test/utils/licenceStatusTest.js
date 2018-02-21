@@ -24,6 +24,14 @@ describe('getLicenceStatus', () => {
         expect(status.decisions).to.eql({});
     });
 
+    it('should show no decisions when empty licence.licence', () => {
+        const licence = {licence: {}};
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.decisions).to.eql({});
+    });
+
     it('should show all tasks UNSTARTED when empty licence', () => {
         const licence = {};
 
