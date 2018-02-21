@@ -1,6 +1,7 @@
 const superagent = require('superagent');
 const config = require('../config');
 const generateApiGatewayToken = require('./apiGateway');
+const generateOauthClientToken = require('./oauth');
 const logger = require('../../log');
 
 async function signIn(username, password) {
@@ -9,9 +10,11 @@ async function signIn(username, password) {
 
     try {
         const loginResult = await superagent
-            .post(`${config.nomis.apiUrl}/users/login`)
-            .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
-            .send({username, password})
+            .post(`${getOauthUrl()}/oauth/token`)
+            .set('Authorization', generateApiGatewayToken())
+            .set('Elite-Authorization', generateOauthClientToken())
+            .set('content-type', 'application/x-www-form-urlencoded')
+            .send(`grant_type=password&username=${username}&password=${password}`)
             .timeout({response: 2000, deadline: 2500});
 
         logger.info(`Elite2 login result: [${loginResult.status}]`);
@@ -23,11 +26,12 @@ async function signIn(username, password) {
         }
 
         logger.info(`Elite2 login success for [${username}]`);
-        const eliteAuthorisationToken = loginResult.body.token;
+
+        const eliteAuthorisationToken = `${loginResult.body.token_type} ${loginResult.body.access_token}`;
 
         const profileResult = await superagent
             .get(`${config.nomis.apiUrl}/users/me`)
-            .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
+            .set('Authorization', generateApiGatewayToken())
             .set('Elite-Authorization', eliteAuthorisationToken);
 
         logger.info(`Elite2 profile success for [${username}]`);
@@ -46,7 +50,7 @@ async function signIn(username, password) {
 async function getRole(eliteAuthorisationToken) {
     const rolesResult = await superagent
         .get(`${config.nomis.apiUrl}/users/me/roles`)
-        .set('Authorization', `Bearer ${generateApiGatewayToken()}`)
+        .set('Authorization', generateApiGatewayToken())
         .set('Elite-Authorization', eliteAuthorisationToken);
 
     logger.info('Roles response');
@@ -68,6 +72,10 @@ async function getRole(eliteAuthorisationToken) {
 
 function signInFor(username, password) {
     return signIn(username, password);
+}
+
+function getOauthUrl() {
+    return config.nomis.apiUrl.replace('/api', '');
 }
 
 module.exports = function createSignInService() {

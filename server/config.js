@@ -33,7 +33,9 @@ module.exports = {
             response: 2000,
             deadline: 2500
         },
-        licenceRolePrefix: get('LICENCE_ROLE_PREFIX', 'LICENCE')
+        licenceRolePrefix: get('LICENCE_ROLE_PREFIX', 'LICENCE'),
+        apiClientId: get('API_CLIENT_ID', 'elite2apiclient'),
+        apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret')
     },
 
     establishments: {

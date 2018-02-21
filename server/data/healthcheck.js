@@ -20,11 +20,9 @@ function dbCheck() {
 function nomisApiCheck() {
     return new Promise((resolve, reject) => {
 
-        const gwToken = `Bearer ${generateApiGatewayToken()}`;
-
         superagent
-            .get(`${config.nomis.apiUrl}/info/health`)
-            .set('Authorization', gwToken)
+            .get(`${config.nomis.apiUrl}/health`)
+            .set('Authorization', generateApiGatewayToken())
             .timeout({
                 response: 4000,
                 deadline: 4500

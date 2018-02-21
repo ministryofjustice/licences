@@ -12,5 +12,7 @@ module.exports = function generateApiGatewayToken() {
 
     const privateKey = `${config.nomis.apiGatewayPrivateKey}`;
     const cert = new Buffer(privateKey);
-    return jwt.sign(payload, cert, {algorithm: 'ES256'});
+    const token = jwt.sign(payload, cert, {algorithm: 'ES256'});
+
+    return `Bearer ${token}`;
 };
