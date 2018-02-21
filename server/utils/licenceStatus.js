@@ -6,7 +6,7 @@ module.exports = {getLicenceStatus};
 
 function getLicenceStatus(licenceRecord) {
 
-    if (!licenceRecord || !licenceRecord.licence || !licenceRecord.status || isEmpty(licenceRecord.licence)) {
+    if (!licenceRecord || isEmpty(licenceRecord.licence) || !licenceRecord.status) {
         return {
             stage: licenceStages.UNSTARTED,
             decisions: {},
