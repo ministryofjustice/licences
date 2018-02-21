@@ -17,10 +17,6 @@ async function signIn(username, password) {
             .send(`grant_type=password&username=${username}&password=${password}`)
             .timeout({response: 2000, deadline: 2500});
 
-        console.log(1);
-        console.log(loginResult);
-        console.log(2);
-
         logger.info(`Elite2 login result: [${loginResult.status}]`);
 
         if (loginResult.status !== 200 && loginResult.status !== 201) {
@@ -79,7 +75,6 @@ function signInFor(username, password) {
 }
 
 function getOauthUrl() {
-console.log(config.nomis.apiUrl.replace('/api', ''));
     return config.nomis.apiUrl.replace('/api', '');
 }
 
