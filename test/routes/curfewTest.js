@@ -4,7 +4,8 @@ const {
     licenceServiceStub,
     hdcRoute,
     formConfig,
-    appSetup
+    appSetup,
+    testFormPageGets
 } = require('../supertestSetup');
 
 const testUser = {
@@ -17,23 +18,13 @@ const app = appSetup(hdcRoute, testUser);
 
 describe('/hdc/curfew', () => {
 
-    describe('routes', () => {
-        const pages = [
-            {route: '/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
-            {route: '/curfew/curfewHours/1', content: 'Curfew hours'}
+    describe('curfew routes', () => {
+        const routes = [
+            {url: '/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
+            {url: '/curfew/curfewHours/1', content: 'Curfew hours'}
         ];
 
-        pages.forEach(get => {
-            it(`renders the ${get.route} page`, () => {
-                return request(app)
-                    .get(get.route)
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .expect(res => {
-                        expect(res.text).to.contain(get.content);
-                    });
-            });
-        });
+        testFormPageGets(app, routes);
     });
 
     describe('POST /hdc/curfew/:form/:nomisId', () => {

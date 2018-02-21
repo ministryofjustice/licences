@@ -1,7 +1,7 @@
 const express = require('express');
 const {getIn} = require('../utils/functionalHelpers');
 const {licenceStages} = require('../models/licenceStages');
-const asyncMiddleware = require('../utils/asyncMiddleware');
+const {asyncMiddleware} = require('../utils/middleware');
 
 module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware}) {
     const router = express.Router();

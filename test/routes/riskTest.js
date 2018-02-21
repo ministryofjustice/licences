@@ -1,11 +1,11 @@
 const {
     request,
-    sandbox,
     expect,
     licenceServiceStub,
     hdcRoute,
     formConfig,
-    appSetup
+    appSetup,
+    testFormPageGets
 } = require('../supertestSetup');
 
 const testUser = {
@@ -18,26 +18,12 @@ const app = appSetup(hdcRoute, testUser);
 
 describe('/hdc/risk', () => {
 
-    afterEach(() => {
-        sandbox.reset();
-    });
+    describe('risk routes', () => {
+        const routes = [
+            {url: '/risk/riskManagement/1', content: 'Risk management and victim liaison'}
+        ];
 
-    describe('routes', () => {
-        const pages = [
-            {route: '/risk/riskManagement/1', content: 'Risk management and victim liaison'}
-    ];
-
-        pages.forEach(get => {
-            it(`renders the ${get.route} page`, () => {
-                return request(app)
-                    .get(get.route)
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .expect(res => {
-                        expect(res.text).to.contain(get.content);
-                    });
-            });
-        });
+        testFormPageGets(app, routes);
     });
 
 

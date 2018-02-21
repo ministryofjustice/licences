@@ -1,5 +1,5 @@
 const express = require('express');
-const asyncMiddleware = require('../utils/asyncMiddleware');
+const {asyncMiddleware} = require('../utils/middleware');
 const path = require('path');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
