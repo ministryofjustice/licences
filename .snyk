@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.7.1
+version: v1.10.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   'npm:jquery:20150627':
@@ -39,6 +39,127 @@ ignore:
     - jade > transformers > uglify-js:
         reason: None given
         expires: '2017-10-18T07:32:37.858Z'
+  'npm:hoek:20180212':
+    - node-sass > request > hawk > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.034Z'
+    - node-sass-middleware > node-sass > request > hawk > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - nodemon > chokidar > fsevents > node-pre-gyp > request > hawk > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack > watchpack > chokidar > fsevents > node-pre-gyp > request > hawk > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack-stream > webpack > watchpack > chokidar > fsevents > node-pre-gyp > request > hawk > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - node-sass > request > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - node-sass-middleware > node-sass > request > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - nodemon > chokidar > fsevents > node-pre-gyp > request > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack > watchpack > chokidar > fsevents > node-pre-gyp > request > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack-stream > webpack > watchpack > chokidar > fsevents > node-pre-gyp > request > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - node-sass > request > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - node-sass-middleware > node-sass > request > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - nodemon > chokidar > fsevents > node-pre-gyp > request > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack > watchpack > chokidar > fsevents > node-pre-gyp > request > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack-stream > webpack > watchpack > chokidar > fsevents > node-pre-gyp > request > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - nodemon > chokidar > fsevents > node-pre-gyp > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack-stream > webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - nodemon > chokidar > fsevents > node-pre-gyp > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.035Z'
+    - webpack-stream > webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - node-sass > request > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - node-sass-middleware > node-sass > request > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - nodemon > chokidar > fsevents > node-pre-gyp > request > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - webpack > watchpack > chokidar > fsevents > node-pre-gyp > request > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - webpack-stream > webpack > watchpack > chokidar > fsevents > node-pre-gyp > request > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - nodemon > chokidar > fsevents > node-pre-gyp > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - webpack-stream > webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - nodemon > chokidar > fsevents > node-pre-gyp > hawk > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - webpack-stream > webpack > watchpack > chokidar > fsevents > node-pre-gyp > hawk > hoek:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+  'npm:is-my-json-valid:20180214':
+    - eslint > is-my-json-valid:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - node-sass > request > har-validator > is-my-json-valid:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - node-sass-middleware > node-sass > request > har-validator > is-my-json-valid:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+  'npm:shelljs:20140723':
+    - eslint > shelljs:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - git-rev-sync > shelljs:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+  'npm:tunnel-agent:20170305':
+    - node-sass > request > tunnel-agent:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
+    - node-sass-middleware > node-sass > request > tunnel-agent:
+        reason: None given
+        expires: '2018-03-23T11:05:32.036Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:minimatch:20160620':
