@@ -18,11 +18,15 @@ module.exports = function createConditionsService(licenceClient) {
             if (additionalConditions) {
 
                 return conditions
+                    .sort(orderForView)
                     .map(populateFromSavedLicence(additionalConditions))
                     .reduce(splitIntoGroupedObject, {});
             }
 
-            return conditions.reduce(splitIntoGroupedObject, {});
+            return conditions
+                .sort(orderForView)
+                .reduce(splitIntoGroupedObject, {});
+
         } catch(error) {
             logger.error('Error during getStandardConditions', error.stack);
             throw error;
@@ -143,4 +147,41 @@ function formatDateField(input) {
         return moment(input).format('DD/MM/YYYY');
     }
     return '';
+}
+
+function orderForView(a, b) {
+    const order = [
+        'NOCONTACTPRISONER',
+        'NOCONTACTASSOCIATE',
+        'NOCONTACTSEXOFFENDER',
+        'INTIMATERELATIONSHIP',
+        'NOCONTACTNAMED',
+        'NORESIDE',
+        'NOUNSUPERVISEDCONTACT',
+        'NOCHILDRENSAREA',
+        'NOWORKWITHAGE',
+        'NOTIFYRELATIONSHIP',
+        'NOCOMMUNICATEVICTIM',
+        'COMPLYREQUIREMENTS',
+        'ATTEND',
+        'ATTENDALL',
+        'HOMEVISITS',
+        'REMAINADDRESS',
+        'CONFINEADDRESS',
+        'REPORTTO',
+        'RETURNTOUK',
+        'NOTIFYPASSPORT',
+        'SURRENDERPASSPORT',
+        'VEHICLEDETAILS',
+        'EXCLUSIONADDRESS',
+        'EXCLUSIONAREA',
+        'ONEPHONE',
+        'NOINTERNET',
+        'USAGEHISTORY',
+        'NOCAMERA',
+        'NOCAMERAPHONE',
+        'CAMERAAPPROVAL'
+    ];
+
+    return order.indexOf(a.ID.value) - order.indexOf(b.ID.value);
 }
