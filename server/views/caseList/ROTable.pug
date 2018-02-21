@@ -39,7 +39,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
                             | #{prisoner.status}
 
                     td
-                        if prisoner.status === 'Not started'
+                        if prisoner.status === 'Not Started'
                             a.button.button-primary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
                                 | Start
                         else
