@@ -17,7 +17,7 @@ function checkLicenceMiddleWare(licenceService) {
             const nomisId = req.params.nomisId;
             const licence = await licenceService.getLicence(nomisId);
             if(!licence) {
-                res.redirect('/');
+                return res.redirect('/');
             }
             res.locals.licence = licence;
             next();
