@@ -9,7 +9,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
             th
     tbody
         if hdcEligible && hdcEligible.length > 0
-            each prisoner in hdcEligible
+            each prisoner, index in hdcEligible
                 tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
                     td.name
                         if prisoner.lastName
