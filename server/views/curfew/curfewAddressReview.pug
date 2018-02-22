@@ -49,6 +49,7 @@ block content
 
                         div#managedSafelyForm.panel.panel-border-narrow.js-hidden
                             label(for="safetyDetails") Please give details
-                            textarea(class="form-control" name="safetyDetails" id="safetyDetails" rows="4" value=review.safetyDetails)
+                            textarea(class="form-control" name="safetyDetails" id="safetyDetails" rows="4")
+                                | #{review.safetyDetails}
 
             include ../includes/formButtons
