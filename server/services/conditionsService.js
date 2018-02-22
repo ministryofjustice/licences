@@ -179,8 +179,8 @@ function orderForView(a, b) {
         'NOINTERNET',
         'USAGEHISTORY',
         'NOCAMERA',
-        'NOCAMERAPHONE',
-        'CAMERAAPPROVAL'
+        'CAMERAAPPROVAL',
+        'NOCAMERAPHONE'
     ];
 
     return order.indexOf(a.ID.value) - order.indexOf(b.ID.value);
