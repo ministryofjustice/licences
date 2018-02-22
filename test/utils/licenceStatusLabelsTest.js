@@ -153,7 +153,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {}},
-                    label: 'Awaiting Assessment'
+                    label: 'Awaiting assessment'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {curfewAddressReview: 'DONE'}},
@@ -216,7 +216,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.APPROVAL, decisions: {}, tasks: {}},
-                    label: 'Awaiting Decision'
+                    label: 'Awaiting decision'
                 }
             ];
 
