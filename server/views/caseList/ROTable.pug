@@ -39,9 +39,9 @@ table#hdcEligiblePrisoners.largeMarginBottom
                             | #{prisoner.status}
 
                     td
-                        if prisoner.status === 'Not Started'
+                        if prisoner.status === 'Awaiting assessment'
                             a.button.button-primary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
                                 | Start
                         else
                             a.button.button-secondary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
-                                | Continue
+                                | View

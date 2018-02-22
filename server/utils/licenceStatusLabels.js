@@ -39,7 +39,7 @@ function statusLabels(licenceStatus, role) {
         [licenceStages.APPROVAL]: {
             CA: () => 'Submitted to DM',
             RO: () => 'Submitted to DM',
-            DM: () => 'Awaiting Decision'
+            DM: () => 'Awaiting decision'
         },
         [licenceStages.DECIDED]: {
             CA: decisionLabel,
@@ -86,7 +86,7 @@ function roProcessingLabel(licenceStatus) {
         return 'Assessment ongoing';
     }
 
-    return 'Awaiting Assessment';
+    return 'Awaiting assessment';
 }
 
 function decisionLabel(licenceStatus) {

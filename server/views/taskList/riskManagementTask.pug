@@ -17,9 +17,5 @@ div.largeMarginBottom.borderTop
             else
                 | Not yet confirmed
         div.pure-u-1-4
-            a.taskListAction.center.button(href="/hdc/risk/riskManagement/" + prisonerInfo.offenderNo)
-                if licenceStatus.tasks.riskManagement === 'UNSTARTED'
-                    | Start
-                else
-                    | View
+            +proceed(licenceStatus.tasks.riskManagement, 'UNSTARTED', 'Start', 'View', "/hdc/risk/riskManagement/" + prisonerInfo.offenderNo)
 
