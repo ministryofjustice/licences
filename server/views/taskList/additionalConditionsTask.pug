@@ -16,10 +16,4 @@ div.largeMarginBottom.borderTop
             else
                 | No conditions added
         div.pure-u-1-4
-
-            if licenceStatus.tasks.licenceConditions === 'UNSTARTED'
-                a.taskListAction.center.button(href="/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
-                    | Start
-            else
-                a.taskListAction.center.button.button-secondary(href="/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
-                    | View
+            +proceed(licenceStatus.tasks.licenceConditions, 'UNSTARTED', 'Start', 'View', "/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
