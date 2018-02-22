@@ -41,6 +41,11 @@ function getROCaseList(nomisClient, licenceClient, user) {
     return async () => {
         const deliusUserName = await licenceClient.getDeliusUserName(user.username);
 
+        if (!deliusUserName[0]) {
+            logger.warn(`No delius user ID for nomis ID '${user.username}'`);
+            return [];
+        }
+
         const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName[0].STAFF_ID.value);
 
         if (!isEmpty(requiredPrisoners)) {
