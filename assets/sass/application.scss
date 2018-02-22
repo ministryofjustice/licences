@@ -9,6 +9,10 @@ $path: "/public/images/";
 
 #proposition-links li { color: $grey-4; }
 
+.app-container {
+    min-height: 65vh;
+}
+
 a.button.button-secondary {
     color: $black;
     background-color: $grey-3;
@@ -21,6 +25,13 @@ a.button.button-secondary {
     padding-left: 15px;
     padding-right: 15px;
     margin: 0 auto;
+}
+.hdc-footer-wrapper {
+    max-width: 1170px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: 0 auto;
+    padding-top: 50px;
 }
 
 .l-box {
