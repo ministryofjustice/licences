@@ -45,25 +45,73 @@ describe('licenceDetailsService', () => {
 
         it('should split the conditions by group and subgroup', () => {
             licenceClient.getAdditionalConditions.resolves([
-                {TEXT: {value: 'v'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}},
-                {TEXT: {value: 'g'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}},
-                {TEXT: {value: 'a'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: 's2'}},
-                {TEXT: {value: 's'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: 's3'}}
+                {
+                    ID: {value: 'NOTIFYRELATIONSHIP'},
+                    TEXT: {value: 'v'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'}
+                },
+                {
+                    ID: {value: 'NOWORKWITHAGE'},
+                    TEXT: {value: 'g'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'}
+                },
+                {
+                    ID: {value: 'NOCONTACTPRISONER'},
+                    TEXT: {value: 'a'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g2'},
+                    SUBGROUP_NAME: {value: 's2'}
+                },
+                {
+                    ID: {value: 'CAMERAAPPROVAL'},
+                    TEXT: {value: 's'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g2'},
+                    SUBGROUP_NAME: {value: 's3'}
+                }
             ]);
 
             const expectedOutput = {
                 g1: {
                     s1: [
-                        {TEXT: {value: 'v'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}},
-                        {TEXT: {value: 'g'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}}
+                        {
+                            ID: {value: 'NOWORKWITHAGE'},
+                            TEXT: {value: 'g'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'}
+                        },
+                        {
+                            ID: {value: 'NOTIFYRELATIONSHIP'},
+                            TEXT: {value: 'v'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'}
+                        }
                     ]
                 },
                 g2: {
                     s2: [
-                        {TEXT: {value: 'a'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: 's2'}}
+                        {
+                            ID: {value: 'NOCONTACTPRISONER'},
+                            TEXT: {value: 'a'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g2'},
+                            SUBGROUP_NAME: {value: 's2'}
+                        }
                     ],
                     s3: [
-                        {TEXT: {value: 's'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: 's3'}}
+                        {
+                            ID: {value: 'CAMERAAPPROVAL'},
+                            TEXT: {value: 's'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g2'},
+                            SUBGROUP_NAME: {value: 's3'}
+                        }
                     ]
                 }
             };
@@ -73,25 +121,73 @@ describe('licenceDetailsService', () => {
 
         it('should handle a null subgroup', () => {
             licenceClient.getAdditionalConditions.resolves([
-                {TEXT: {value: 'v'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}},
-                {TEXT: {value: 'g'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}},
-                {TEXT: {value: 'a'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: 's2'}},
-                {TEXT: {value: 's'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: null}}
+                {
+                    ID: {value: 'NOTIFYRELATIONSHIP'},
+                    TEXT: {value: 'v'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'}
+                },
+                {
+                    ID: {value: 'NOWORKWITHAGE'},
+                    TEXT: {value: 'g'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'}
+                },
+                {
+                    ID: {value: 'NOCONTACTPRISONER'},
+                    TEXT: {value: 'a'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g2'},
+                    SUBGROUP_NAME: {value: 's2'}
+                },
+                {
+                    ID: {value: 'CAMERAAPPROVAL'},
+                    TEXT: {value: 's'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g2'},
+                    SUBGROUP_NAME: {value: null}
+                }
             ]);
 
             const expectedOutput = {
                 g1: {
                     s1: [
-                        {TEXT: {value: 'v'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}},
-                        {TEXT: {value: 'g'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}}
+                        {
+                            ID: {value: 'NOWORKWITHAGE'},
+                            TEXT: {value: 'g'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'}
+                        },
+                        {
+                            ID: {value: 'NOTIFYRELATIONSHIP'},
+                            TEXT: {value: 'v'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'}
+                        }
                     ]
                 },
                 g2: {
                     base: [
-                        {TEXT: {value: 's'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: null}}
+                        {
+                            ID: {value: 'CAMERAAPPROVAL'},
+                            TEXT: {value: 's'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g2'},
+                            SUBGROUP_NAME: {value: null}
+                        }
                     ],
                     s2: [
-                        {TEXT: {value: 'a'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: 's2'}}
+                        {
+                            ID: {value: 'NOCONTACTPRISONER'},
+                            TEXT: {value: 'a'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g2'},
+                            SUBGROUP_NAME: {value: 's2'}
+                        }
                     ]
                 }
             };
@@ -101,29 +197,77 @@ describe('licenceDetailsService', () => {
 
         it('should handle a null group', () => {
             licenceClient.getAdditionalConditions.resolves([
-                {TEXT: {value: 'v'}, USER_INPUT: {}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null}},
-                {TEXT: {value: 'g'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}},
-                {TEXT: {value: 'a'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: 's2'}},
-                {TEXT: {value: 's'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: null}}
+                {
+                    ID: {value: 'NOWORKWITHAGE'},
+                    TEXT: {value: 'v'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: null},
+                    SUBGROUP_NAME: {value: null}
+                },
+                {
+                    ID: {value: 'NOTIFYRELATIONSHIP'},
+                    TEXT: {value: 'g'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g1'},
+                    SUBGROUP_NAME: {value: 's1'}
+                },
+                {
+                    ID: {value: 'CAMERAAPPROVAL'},
+                    TEXT: {value: 'a'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g2'},
+                    SUBGROUP_NAME: {value: 's2'}
+                },
+                {
+                    ID: {value: 'NOCONTACTPRISONER'},
+                    TEXT: {value: 's'},
+                    USER_INPUT: {},
+                    GROUP_NAME: {value: 'g2'},
+                    SUBGROUP_NAME: {value: null}
+                }
             ]);
 
             const expectedOutput = {
                 base: {
                     base: [
-                        {TEXT: {value: 'v'}, USER_INPUT: {}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null}}
+                        {
+                            ID: {value: 'NOWORKWITHAGE'},
+                            TEXT: {value: 'v'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: null},
+                            SUBGROUP_NAME: {value: null}
+                        }
                     ]
                 },
                 g1: {
                     s1: [
-                        {TEXT: {value: 'g'}, USER_INPUT: {}, GROUP_NAME: {value: 'g1'}, SUBGROUP_NAME: {value: 's1'}}
+                        {
+                            ID: {value: 'NOTIFYRELATIONSHIP'},
+                            TEXT: {value: 'g'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'}
+                        }
                     ]
                 },
                 g2: {
                     base: [
-                        {TEXT: {value: 's'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: null}}
+                        {
+                            ID: {value: 'NOCONTACTPRISONER'},
+                            TEXT: {value: 's'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g2'},
+                            SUBGROUP_NAME: {value: null}
+                        }
                     ],
                     s2: [
-                        {TEXT: {value: 'a'}, USER_INPUT: {}, GROUP_NAME: {value: 'g2'}, SUBGROUP_NAME: {value: 's2'}}
+                        {
+                            ID: {value: 'CAMERAAPPROVAL'},
+                            TEXT: {value: 'a'},
+                            USER_INPUT: {},
+                            GROUP_NAME: {value: 'g2'},
+                            SUBGROUP_NAME: {value: 's2'}
+                        }
                     ]
                 }
             };

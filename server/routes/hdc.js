@@ -133,4 +133,3 @@ module.exports = function({logger, licenceService, conditionsService, authentica
 
     return router;
 };
-
