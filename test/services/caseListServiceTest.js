@@ -119,6 +119,14 @@ describe('caseListService', () => {
                 await service.getHdcCaseList(ROUser);
 
                 expect(nomisClient.getROPrisoners).to.be.calledOnce();
+            });
+
+            it('should return empty array if no delius user name found', async () => {
+                licenceClient.getDeliusUserName.resolves({});
+
+                const result = await service.getHdcCaseList(ROUser);
+
+                expect(result).to.eql([]);
                 expect(nomisClient.getHdcEligiblePrisoners).not.to.be.calledOnce();
             });
         });
