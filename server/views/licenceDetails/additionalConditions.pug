@@ -4,14 +4,14 @@ h2.heading-medium.borderBottom Additional conditions
 
 for condition, index in conditions
     div.pure-g.borderBottomLight.midPaddingTopBottom
-        div.pure-u-2-3
+        div.pure-u-2-3.additional
             if condition.group
                 div.heading-small.noMargin.smallPaddingBottom Condition #{index + 1}
                 div.heading-small.noMargin.smallPaddingBottom #{condition.group}
                     if condition.subgroup
                         |  -- #{condition.subgroup}
 
-            div
+            div.additionalContent
                 for item in condition.content
                     if item.text
                         | #{item.text}
