@@ -9,7 +9,7 @@ exports.seed = knex =>
                 {
                     ID: 'STANDARD1',
                     TYPE: 'STANDARD',
-                    TEXT: 'Be of good behaviour and not behave in a way which undermines the purpose of the licence period'
+                    TEXT: 'Be of good behaviour and not behave in a way which undermines the purpose of the licence period.'
                 },
                 {
                     ID: 'STANDARD2',
@@ -19,27 +19,27 @@ exports.seed = knex =>
                 {
                     ID: 'STANDARD3',
                     TYPE: 'STANDARD',
-                    TEXT: 'Keep in touch with the supervising officer in accordance with instructions given by the supervising officer'
+                    TEXT: 'Keep in touch with the supervising officer in accordance with instructions given by the supervising officer.'
                 },
                 {
                     ID: 'STANDARD4',
                     TYPE: 'STANDARD',
-                    TEXT: 'Receive visits from the supervising officer in accordance with instructions given by the supervising officer'
+                    TEXT: 'Receive visits from the supervising officer in accordance with instructions given by the supervising officer.'
                 },
                 {
                     ID: 'STANDARD5',
                     TYPE: 'STANDARD',
-                    TEXT: 'Reside permanently at an address approved by the supervising officer and obtain the prior permission of the supervising officer for any stay of one or more nights at a different address'
+                    TEXT: 'Reside permanently at an address approved by the supervising officer and obtain the prior permission of the supervising officer for any stay of one or more nights at a different address.'
                 },
                 {
                     ID: 'STANDARD6',
                     TYPE: 'STANDARD',
-                    TEXT: 'Not undertake work, or a particular type of work, unless it is approved by the supervising officer and notify the supervising officer in advance of any proposal to undertake work or a particular type of work'
+                    TEXT: 'Not undertake work, or a particular type of work, unless it is approved by the supervising officer and notify the supervising officer in advance of any proposal to undertake work or a particular type of work.'
                 },
                 {
                     ID: 'STANDARD7',
                     TYPE: 'STANDARD',
-                    TEXT: 'Not travel outside the United Kingdom, the Channel Islands or the Isle of Man except with the prior permission of your supervising officer or for the purposes of immigration deportation or removal'
+                    TEXT: 'Not travel outside the United Kingdom, the Channel Islands or the Isle of Man except with the prior permission of your supervising officer or for the purposes of immigration deportation or removal.'
                 },
 
                 // ADDITIONAL
@@ -48,7 +48,7 @@ exports.seed = knex =>
                 {
                     ID: 'NOCONTACTPRISONER',
                     TYPE: 'ADDITIONAL',
-                    TEXT: 'Not to contact directly or indirectly any person who is a serving or remand prisoner or detained in State custody, without the prior approval of your supervising officer',
+                    TEXT: 'Not to contact directly or indirectly any person who is a serving or remand prisoner or detained in State custody, without the prior approval of your supervising officer.',
                     GROUP: 'PEOPLE',
                     SUBGROUP: 'PERSONORGROUP',
                     ACTIVE: 1
@@ -161,7 +161,7 @@ exports.seed = knex =>
                 {
                     ID: 'ATTEND',
                     TYPE: 'ADDITIONAL',
-                    TEXT: 'Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug',
+                    TEXT: 'Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.',
                     USER_INPUT: 'appointmentDetails',
                     GROUP: 'DRUGS',
                     ACTIVE: 1
@@ -177,7 +177,7 @@ exports.seed = knex =>
                 {
                     ID: 'HOMEVISITS',
                     TYPE: 'ADDITIONAL',
-                    TEXT: 'Receive home visits from [INSERT NAME] Mental Health Worker',
+                    TEXT: 'Receive home visits from [INSERT NAME] Mental Health Worker.',
                     USER_INPUT: 'mentalHealthName',
                     GROUP: 'DRUGS',
                     ACTIVE: 1
