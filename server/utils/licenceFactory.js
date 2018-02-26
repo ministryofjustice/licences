@@ -1,3 +1,5 @@
+const {conditionsOrder} = require('../models/conditions');
+
 module.exports = {
     createLicenceObjectFrom,
     createAdditionalConditionsObject,
@@ -71,7 +73,9 @@ function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUse
     const {additional, bespoke} = rawLicence.licenceConditions;
 
     const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, injectUserInputMethod);
-    const populatedAdditional = Object.keys(additional).map(getObjectForAdditional);
+    const populatedAdditional = Object.keys(additional)
+        .sort(orderForView)
+        .map(getObjectForAdditional);
     const populatedBespoke = bespoke.map(getObjectForBespoke);
 
     return {...rawLicence, licenceConditions: [...populatedAdditional, ...populatedBespoke]};
@@ -205,3 +209,7 @@ const inputsFor = (fieldPositions, formInputs) => {
         };
     }, {});
 };
+
+function orderForView(a, b) {
+    return conditionsOrder.indexOf(a) - conditionsOrder.indexOf(b);
+}
