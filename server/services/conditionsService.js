@@ -1,8 +1,8 @@
 const {validate, DATE_FIELD} = require('./utils/conditionsValidator');
-const {getIntersection, flatten} = require('../utils/functionalHelpers');
+const {getIntersection, flatten, getIn} = require('../utils/functionalHelpers');
 const moment = require('moment');
 const logger = require('../../log.js');
-const {getIn} = require('../utils/functionalHelpers');
+const {conditionsOrder} = require('../models/conditions');
 
 module.exports = function createConditionsService(licenceClient) {
 
@@ -150,38 +150,5 @@ function formatDateField(input) {
 }
 
 function orderForView(a, b) {
-    const order = [
-        'NOCONTACTPRISONER',
-        'NOCONTACTASSOCIATE',
-        'NOCONTACTSEXOFFENDER',
-        'INTIMATERELATIONSHIP',
-        'NOCONTACTNAMED',
-        'NORESIDE',
-        'NOUNSUPERVISEDCONTACT',
-        'NOCHILDRENSAREA',
-        'NOWORKWITHAGE',
-        'NOTIFYRELATIONSHIP',
-        'NOCOMMUNICATEVICTIM',
-        'COMPLYREQUIREMENTS',
-        'ATTEND',
-        'ATTENDALL',
-        'HOMEVISITS',
-        'REMAINADDRESS',
-        'CONFINEADDRESS',
-        'REPORTTO',
-        'RETURNTOUK',
-        'NOTIFYPASSPORT',
-        'SURRENDERPASSPORT',
-        'VEHICLEDETAILS',
-        'EXCLUSIONADDRESS',
-        'EXCLUSIONAREA',
-        'ONEPHONE',
-        'NOINTERNET',
-        'USAGEHISTORY',
-        'NOCAMERA',
-        'CAMERAAPPROVAL',
-        'NOCAMERAPHONE'
-    ];
-
-    return order.indexOf(a.ID.value) - order.indexOf(b.ID.value);
+    return conditionsOrder.indexOf(a.ID.value) - conditionsOrder.indexOf(b.ID.value);
 }
