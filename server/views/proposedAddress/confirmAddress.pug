@@ -12,14 +12,14 @@ block content
         if data.preferred && data.alternative
             div.borderBottomLight.largeMarginBottom
                 h3.heading-medium Preferred address
-                +addressDetail(data.preferred)
+                +addressDetail('preferred', data.preferred)
 
             h3.heading-medium Alternative address
-            +addressDetail(data.alternative)
+            +addressDetail('alternative', data.alternative)
 
         if data.preferred && !data.alternative
             h3.heading-medium Preferred address
-            +addressDetail(data.preferred)
+            +addressDetail('preferred', data.preferred)
 
         if !data.preferred && !data.alternative
             h3.heading-medium No address to view
