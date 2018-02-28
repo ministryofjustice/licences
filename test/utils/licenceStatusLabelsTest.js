@@ -45,10 +45,6 @@ describe('getStatusLabel', () => {
                     label: 'Presumed unsuitable'
                 },
                 {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {immigrationCheckNeeded: true}, tasks: {}},
-                    label: 'Immigration status check requested'
-                },
-                {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {optedOut: true}, tasks: {}},
                     label: 'Opted out'
                 },
