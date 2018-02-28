@@ -6,7 +6,8 @@ block content
         div.back-link-container.smallPaddingTop
             a.link-back(href="javascript: window.history.back();") Back
 
-        h2.heading-large BASS referral
+        div.pure-u-1-2
+            h2.heading-large Has the offender requested a BASS referral?
 
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
@@ -14,7 +15,6 @@ block content
         div.smallPaddingTop.paddingBottom.largeMarginBottom
             div.largePaddingBottom
                 div.form-group.inline.smallPaddingTop
-                    p Has the offender requested a BASS referral?
 
                     div.multiple-choice(data-target="bassFollowUps")
                         input#yes(type="radio" checked=data && data.decision === 'Yes' name="decision" value="Yes")
@@ -23,12 +23,12 @@ block content
                         input#no(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
                         label(for="no") No
 
-                div#bassFollowUps.panel.panel-border-narrow.js-hidden
+                div#bassFollowUps.pure-u-1-2.panel.panel-border-narrow.js-hidden
                     div.form-group
-                        label(for='proposedTown') Proposed town
+                        label(for='proposedTown') Proposed town:
                         input(type='text' name='proposedTown' id='proposedTown' class='form-control' value=data && data.proposedTown)
                     div.form-group
-                        label(for='proposedCounty') Proposed county
+                        label(for='proposedCounty') Proposed county or borough:
                         input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=data && data.proposedCounty)
 
             include ../includes/formButtons
