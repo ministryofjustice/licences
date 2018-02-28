@@ -8,7 +8,8 @@ block content
         div.back-link-container.smallPaddingTop
             a.link-back(href="javascript: window.history.back();") Back
 
-        h2.heading-large HDC presumed suitability
+        div.pure-u-1-2
+            h2.heading-large Is the offender presumed unsuitable?
 
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
@@ -16,7 +17,6 @@ block content
         div.smallPaddingTop.paddingBottom.largeMarginBottom
             div.largePaddingBottom
                 div.form-group.inline.smallPaddingTop
-                    p Is the offender presumed unsuitable?
 
                     div.multiple-choice(data-target="unsuitableForm")
                         input#unsuitableYes(type="radio" checked=suitabilityValue === 'Yes' name="decision" value="Yes")
