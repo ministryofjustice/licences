@@ -1,9 +1,10 @@
 extends ../layout
+include ../proposedAddress/includes/addressDetail
 
 block content
 
     -var review = data.curfew ? data.curfew.curfewAddressReview : {}
-    -var address = data.proposedAddress ? data.proposedAddress.curfewAddress : {}
+    -var address = data.proposedAddress ? data.proposedAddress.curfewAddress.preferred : {}
 
     div.pure-g.pure-u-1
         div.borderBottomLight
@@ -15,7 +16,7 @@ block content
             if address
                 p The following discharge address have been requested by the offender.
 
-                include ../proposedAddress/includes/preferredAddress
+                +addressDetail(address)
 
         h3.heading-medium Address check confirmation
 

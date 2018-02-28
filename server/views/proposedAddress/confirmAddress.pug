@@ -1,4 +1,5 @@
 extends ../layout
+include includes/addressDetail
 
 block content
 
@@ -8,8 +9,20 @@ block content
 
         h2.heading-large Confirm address details
 
-        -var address = data
-        include ./includes/preferredAddress
+        if data.preferred && data.alternative
+            div.borderBottomLight.largeMarginBottom
+                h3.heading-medium Preferred address
+                +addressDetail(data.preferred)
+
+            h3.heading-medium Alternative address
+            +addressDetail(data.alternative)
+
+        if data.preferred && !data.alternative
+            h3.heading-medium Preferred address
+            +addressDetail(data.preferred)
+
+        if !data.preferred && !data.alternative
+            h3.heading-medium No address to view
 
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons
