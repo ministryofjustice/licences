@@ -33,15 +33,9 @@ module.exports = {
     curfewAddress: {
         licenceSection: 'curfewAddress',
         fields: [
-            {addressLine1: {}},
-            {addressLine2: {}},
-            {addressTown: {}},
-            {postCode: {}},
-            {telephone: {}},
-            {electricity: {}},
-            {occupier: {}},
-            {residents: {}},
-            {cautionedAgainstResident: {}}
+            {preferred: {}},
+            {alternativeAddress: {}},
+            {alternative: {dependentOn: 'alternativeAddress', predicate: 'Yes'}}
         ],
         nextPath: {
             path: '/hdc/proposedAddress/confirmAddress/'

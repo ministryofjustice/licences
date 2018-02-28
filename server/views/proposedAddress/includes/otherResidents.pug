@@ -1,20 +1,22 @@
-- var residentsToShow = data.residents &&  data.residents.length > 3 ? data.residents.length : 3
-- var n = 0
-div.largePaddingBottom
-    div.pure-g
-        div.pure-u-1
-            h4.heading-small Other residents
-    div.pure-g
-        div.pure-u-sm-5-12 Name
-        div.pure-u-sm-1-6.padLeftRight15 Age
-        div.pure-u-sm-5-12 Relation to offender
+mixin otherResidents(type, savedAddress)
+    - var savedResidents = savedAddress.residents || []
+    - var residentsToShow = savedResidents.length > 3 ? savedResidents.length : 3
+    - var n = 0
+    div.largePaddingBottom
+        div.pure-g
+            div.pure-u-1
+                h4.heading-small Other residents
+        div.pure-g
+            div.pure-u-sm-5-12 Name
+            div.pure-u-sm-1-6.padLeftRight15 Age
+            div.pure-u-sm-5-12 Relation to offender
 
-    while n < residentsToShow
-        div.pure-g.smallPaddingBottom.otherResident
-            div.pure-u-sm-5-12
-                input.form-control.residentName(name="residents["+n+"][name]" value=data.residents && data.residents[n].name)
-            div.pure-u-sm-1-6.padLeftRight15
-                input.form-control.residentAge(name="residents["+n+"][age]" value=data.residents && data.residents[n].age)
-            div.pure-u-sm-5-12
-                input.form-control.residentRelation(name="residents["+n+"][relation]" value=data.residents && data.residents[n].relation)
-        - n++
+        while n < residentsToShow
+            div.pure-g.smallPaddingBottom.otherResident
+                div.pure-u-sm-5-12
+                    input.form-control.residentName(name=type+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name)
+                div.pure-u-sm-1-6.padLeftRight15
+                    input.form-control.residentAge(name=type+"[residents]["+n+"][age]" value=savedResidents[n] && savedResidents[n].age)
+                div.pure-u-sm-5-12
+                    input.form-control.residentRelation(name=type+"[residents]["+n+"][relation]" value=savedResidents[n] && savedResidents[n].relation)
+            - n++
