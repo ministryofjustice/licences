@@ -1,7 +1,7 @@
 h2.heading-medium Offender details
 
 div#personalDetails.pure-g.borderBottom.paddingBottom
-    div.pure-u-1.pure-u-md-6-24
+    div.pure-u-1.pure-u-md-5-24
         if prisonerInfo.imageId
             img#prisonerImage.pure-img(src= "image/" + prisonerInfo.imageId)
         else
@@ -9,31 +9,32 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
         if(prisonerInfo.captureDate)
             span.block.subText#prisonerPhotoDate Uploaded: #{prisonerInfo.captureDate}
 
-    div.pure-u-1.pure-u-md-4-24
+    div.pure-u-1.pure-u-md-4-24.padRight15
         div.midMarginBottom
             | Name
             if(prisonerInfo.firstName || prisonerInfo.lastName)
                 span#prisonerName.block.bold #{prisonerInfo.lastName}, #{prisonerInfo.firstName}
 
         div.midMarginBottom
-            | Aliases
-            if(prisonerInfo.aliases)
-                span#prisonerAliases.block.bold #{prisonerInfo.aliases}
-
-        div.midMarginBottom
-            | Prison number
+            | NOMIS ID
             if(prisonerInfo.offenderNo)
                 span#prisonerPrisonNumber.block.bold #{prisonerInfo.offenderNo}
 
-    div.pure-u-1.pure-u-md-8-24
         div.midMarginBottom
             | Date of birth
             if(prisonerInfo.dateOfBirth)
                 span#prisonerDob.block.bold #{prisonerInfo.dateOfBirth}
 
+    div.pure-u-1.pure-u-md-9-24.padRight30
+        div.midMarginBottom
+            | Name of RO
+            if (prisonerInfo.com)
+                span#prisonerComName.block.bold  #{prisonerInfo.com}
+
         div.midMarginBottom
             | Location
             if(prisonerInfo.agencyLocationDesc)
+                span#prisonerLocation.block.bold #{prisonerInfo.internalLocationDesc}
                 span#prisonerLocation.block.bold #{prisonerInfo.agencyLocationDesc}
 
         div.midMarginBottom
@@ -41,19 +42,30 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
             if(prisonerInfo.offences)
                 span#prisonerOffences.block.bold #{prisonerInfo.offences}
 
-    div.pure-u-1.pure-u-md-6-24
+    div.pure-u-1.pure-u-md-6-24.padRight15
         div.midMarginBottom
-            | CRD
+            | Conditional Release Date
             if (prisonerInfo.conditionalReleaseDate)
                 span#prisonerCrd.block.bold  #{prisonerInfo.conditionalReleaseDate}
 
         div.midMarginBottom
-            | HDCED
+            | HDC Eligibility Date
             if (prisonerInfo.homeDetentionCurfewEligibilityDate)
                 span#prisonerHdced.block.bold  #{prisonerInfo.homeDetentionCurfewEligibilityDate}
 
         div.midMarginBottom
-            | Responsible officer
-            if (prisonerInfo.com)
-                span#prisonerComName.block.bold  #{prisonerInfo.com}
+            | Sentence Expiry Date
+            if (prisonerInfo.sentenceExpiryDate)
+                span#prisonerSed.block.bold  #{prisonerInfo.sentenceExpiryDate}
+
+        div.midMarginBottom
+            | Licence Expiry Date
+            if (prisonerInfo.licenceExpiryDate)
+                span#prisonerLed.block.bold  #{prisonerInfo.licenceExpiryDate}
+
+        div.midMarginBottom
+            | Post Sentence Supervision Expiry Date
+            if (prisonerInfo.topupSupervisionExpiryDate)
+                span#prisonerPssed.block.bold  #{prisonerInfo.topupSupervisionExpiryDate}
+
 

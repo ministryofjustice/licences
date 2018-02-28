@@ -76,5 +76,6 @@ const dateFields = [
     'conditionalReleaseDate',
     'homeDetentionCurfewEligibilityDate',
     'licenceExpiryDate',
-    'sentenceExpiryDate'
+    'sentenceExpiryDate',
+    'topupSupervisionExpiryDate'
 ];
