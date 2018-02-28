@@ -6,15 +6,12 @@ block content
     div.back-link-container
         a.link-back(href="/") Back to case list
 
-    if user.role === 'CA'
-        h1.heading-large Check prisoner details
-    else
         h1.heading-large HDC release tasks
 
     if !user.role
         p Error
     else if !prisonerInfo
-        p No prisoner details found
+        p No offender details found
     else
 
         include prisonerDetails
