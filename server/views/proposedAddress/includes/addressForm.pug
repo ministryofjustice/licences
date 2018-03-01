@@ -1,0 +1,65 @@
+include otherResidents
+mixin addressForm(type)
+    -var thisAddress = savedAddress[type] ? savedAddress[type] : {}
+    -var savedOccupier = thisAddress.occupier || {}
+    div.pure-g.paddingBottom
+        div.pure-u-1.pure-u-md-10-24
+            div.pure-g
+                div.pure-u-1.pure-u-md-2-3
+                    div.form-group.midMarginBottom
+                        label.form-label(for=type+"-addressLine1") Building and street
+                        input.form-control(id=type+"-addressLine1" name=type+"[addressLine1]" value=thisAddress.addressLine1)
+                        input.form-control.smallMarginTop(id=type+"-addressLine2" name=type+"[addressLine2]" value=thisAddress.addressLine2)
+
+                    div.form-group.midMarginBottom
+                        label.form-label(for=type+"-addressTown") Town or city
+                        input.form-control(id=type+"-addressTown" name=type+"[addressTown]" value=thisAddress.addressTown)
+
+                    div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
+                        label.form-label(for=type+"-postCode") Postcode
+                        input.form-control(id=type+"-postCode" name=type+"[postCode]" value=thisAddress.postCode)
+
+                    div.form-group.pure-u-sm-1.pure-u-md-3-4
+                        label.form-label(for=type+"-telephone") Telephone
+                        input.form-control(id=type+"-telephone" name=type+"[telephone]" value=thisAddress.telephone)
+
+        div.pure-u-1.pure-u-md-14-24
+            div.pure-g
+                div.form-group.pure-u-1.pure-u-sm-5-12
+                    label.form-label(for=type+"-occupierName") Name of main occupier
+                    input.form-control(id=type+"-occupierName" name=type+"[occupier][name]" value=savedOccupier.name)
+
+                div.form-group.pure-u-1.pure-u-sm-1-6.padLeftRight15
+                    label.form-label(for=type+"-occupierAge") Age
+                    input.form-control(id=type+"-occupierAge" name=type+"[occupier][age]" value=savedOccupier.age)
+
+                div.form-group.pure-u-1.pure-u-sm-5-12
+                    label.form-label(for=type+"-occupierRelationship") Relation to prisoner
+                    input.form-control(id=type+"-occupierRelationship" name=type+"[occupier][relationship]" value=savedOccupier.relationship)
+
+            +otherResidents(type, thisAddress)
+
+    div.pure-g
+        div.pure-u-1.pure-u-md-10-24
+            div.form-group.inline.smallPaddingTop
+                p Does this address have an electricity supply?
+
+                div.multiple-choice
+                    input(type="radio" checked=thisAddress.electricity === 'Yes' id=type+"-electricityYes]" name=type+"[electricity]" value="Yes")
+                    label(for=type+"-electricityYes") Yes
+                div.multiple-choice
+                    input(type="radio" checked=thisAddress.electricity === 'No' id=type+"-electricityNo]" name=type+"[electricity]" value="No")
+                    label(for=type+"-electricityNo") No
+
+        div.pure-u-1.pure-u-md-14-24
+            div.pure-g
+                div.pure-u-4-5
+                    div.form-group.inline.smallPaddingTop
+                        p Has the offender been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+
+                        div.multiple-choice
+                            input(id=type+"-cautionedYes" type="radio" checked=thisAddress.cautionedAgainstResident === 'Yes' name=type+"[cautionedAgainstResident]" value="Yes")
+                            label(for=type+"-cautionedYes") Yes
+                        div.multiple-choice
+                            input(id=type+"-cautionedNo" type="radio" checked=thisAddress.cautionedAgainstResident === 'No' name=type+"[cautionedAgainstResident]" value="No")
+                            label(for=type+"-cautionedNo") No

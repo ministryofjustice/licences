@@ -1,0 +1,58 @@
+mixin addressDetail(type, address)
+
+    div.pure-g.largePaddingBottom(id=type+"-addressDetails")
+        div.pure-u-1.pure-u-sm-5-12.pure-g
+            div.pure-u-md-2-3
+                | Address
+                div.paddingBottom.smallMarginTop
+                    if address.addressLine1
+                        p.bold.noMargin(id=type+"-address1") #{address.addressLine1}
+                    if address.addressLine2
+                        p.bold.noMargin(id=type+"-address2") #{address.addressLine2}
+                    if address.addressTown
+                        p.bold.noMargin(id=type+"-addressTown") #{address.addressTown}
+                    if address.postCode
+                        p.bold.noMargin(id=type+"-addressPostCode") #{address.postCode}
+
+            div.pure-u-md-2-3.largePaddingBottom
+                | Telephone
+                if address.telephone
+                    p.bold(id=type+"-telephone") #{address.telephone}
+
+            div.pure-u-md-2-3.paddingBottom
+                p Does the address have an electricity supply?
+                if address.electricity
+                    p.bold(id=type+"-electricity") #{address.electricity}
+
+        if address.occupier
+            div.pure-u-1.pure-u-md-7-12
+                div.pure-g
+                    p.pure-u-1-2.noMargin Name of main occupier
+                    p.pure-u-1-4.noMargin Age
+                    p.pure-u-1-4.noMargin Relation to prisoner
+
+                div.pure-g.smallMarginTop.borderBottomLight.smallPaddingBottom
+                    p.bold.pure-u-1-2.noMargin(id=type+"-occupierName") #{address.occupier.name}
+                    p.bold.pure-u-1-4.noMargin(id=type+"-occupierAge") #{address.occupier.age}
+                    p.bold.pure-u-1-4.noMargin(id=type+"-occupierRelation") #{address.occupier.relationship}
+
+                if address.residents
+
+                    div.pure-g.largePaddingBottom.smallPaddingTop
+                        p.pure-u-1.bold Other residents
+                        p.pure-u-1-2.noMargin Name
+                        p.pure-u-1-4.noMargin Age
+                        p.pure-u-1-4.noMargin Relation to prisoner
+
+                        for resident in address.residents
+                            div.pure-u-1
+                                div.pure-g.smallMarginTop
+                                    p.bold.noMargin.pure-u-1-2 #{resident.name}
+                                    p.bold.noMargin.pure-u-1-4 #{resident.age}
+                                    p.bold.noMargin.pure-u-1-4 #{resident.relation}
+
+
+                div.pure-u-md-2-3
+                    p Has the prisoner been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+                    if address.cautionedAgainstResident
+                        p.bold(id=type+"-cautionedAgainstResident") #{address.cautionedAgainstResident}
