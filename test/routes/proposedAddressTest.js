@@ -20,7 +20,7 @@ describe('/hdc/proposedAddress', () => {
 
     describe('proposed address routes', () => {
         const routes = [
-            {url: '/proposedAddress/optOut/1', content: 'HDC opt out decision'},
+            {url: '/proposedAddress/optOut/1', content: 'decided to opt out'},
             {url: '/proposedAddress/bassReferral/1', content: 'BASS referral'},
             {url: '/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'},
             {url: '/proposedAddress/confirmAddress/1', content: 'Confirm address details'},

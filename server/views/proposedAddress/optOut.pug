@@ -6,7 +6,8 @@ block content
         div.back-link-container.smallPaddingTop
             a.link-back(href="javascript: window.history.back();") Back
 
-        h2.heading-large HDC opt out decision
+        div.pure-u-1-2
+            h2.heading-large Has the offender decided to opt out of the HDC process?
 
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
@@ -14,7 +15,6 @@ block content
         div.smallPaddingTop.paddingBottom.largeMarginBottom
             div.largePaddingBottom
                 div.form-group.inline.smallPaddingTop
-                    p Has the offender decided to opt out of the HDC process?
 
                     div.multiple-choice(data-target="optOutForm")
                         input#optOutYes(type="radio" checked=data && data.decision === 'Yes' name="decision" value="Yes")
