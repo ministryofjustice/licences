@@ -11,7 +11,7 @@ block content
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
-        div.pure-u-md-5-12.paddingBottom.largeMarginBottom
+        div.pure-u-md-1-2.paddingBottom.largeMarginBottom
             div
                 h3.heading-medium Risk management
                 div.form-group.inline.smallPaddingTop
@@ -42,7 +42,7 @@ block content
                         label(for="awaitingNo") No
 
                 div#awaitingForm.panel.panel-border-narrow.js-hidden
-                    label(for='awaitingInformationDetails') Please give details
+                    label(for='awaitingInformationDetails') Please provide details including the following: a) type of information required b) indicative timelines c) any third-party dependencies
                     textarea(name='awaitingInformationDetails' id='awaitingInformationDetails' class='form-control' rows='4')
                         if data.awaitingInformationDetails
                             | #{data.awaitingInformationDetails}
@@ -60,7 +60,7 @@ block content
                         label(for="victimYes") No
 
                 div#victimForm.panel.panel-border-narrow.js-hidden
-                    label(for='victimLiaisonDetails') Please give details
+                    label(for='victimLiaisonDetails') Please give details of when they were invited to provide comments and any comments that were provided
                     textarea(name='victimLiaisonDetails' id='victimLiaisonDetails' class='form-control' rows='4')
                         if data.victimLiaisonDetails
                             | #{data.victimLiaisonDetails}
