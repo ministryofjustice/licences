@@ -28,7 +28,7 @@ div#addressDetails.pure-g.largePaddingBottom
             div.pure-g
                 p.pure-u-1-2.noMargin Name of main occupier
                 p.pure-u-1-4.noMargin Age
-                p.pure-u-1-4.noMargin Relation to prisoner
+                p.pure-u-1-4.noMargin Relation to offender
 
             div.pure-g.smallMarginTop.borderBottomLight.smallPaddingBottom
                 p#occupierName.bold.pure-u-1-2.noMargin #{address.occupier.name}
@@ -41,7 +41,7 @@ div#addressDetails.pure-g.largePaddingBottom
                     p.pure-u-1.bold Other residents
                     p.pure-u-1-2.noMargin Name
                     p.pure-u-1-4.noMargin Age
-                    p.pure-u-1-4.noMargin Relation to prisoner
+                    p.pure-u-1-4.noMargin Relation to offender
 
                     for resident in address.residents
                         div.pure-u-1
@@ -52,6 +52,6 @@ div#addressDetails.pure-g.largePaddingBottom
 
 
             div.pure-u-md-2-3
-                p Has the prisoner been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+                p Has the offender been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
                 if address.cautionedAgainstResident
                     p#cautionedAgainstResident.bold #{address.cautionedAgainstResident}
