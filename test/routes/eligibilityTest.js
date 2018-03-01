@@ -31,9 +31,9 @@ describe('/hdc/eligibility', () => {
 
     describe('eligibility routes', () => {
         const routes = [
-            {url: '/eligibility/excluded/1', content: 'HDC eligibility check'},
-            {url: '/eligibility/suitability/1', content: 'HDC presumed suitability'},
-            {url: '/eligibility/crdTime/1', content: 'Time left until Conditional Release Date'}
+            {url: '/eligibility/excluded/1', content: 'statutorily excluded'},
+            {url: '/eligibility/suitability/1', content: 'presumed unsuitable'},
+            {url: '/eligibility/crdTime/1', content: '4 weeks until'}
 
         ];
 

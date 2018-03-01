@@ -8,7 +8,8 @@ block content
         div.back-link-container.smallPaddingTop
             a.link-back(href="javascript: window.history.back();") Back
 
-        h2.heading-large HDC eligibility check
+        div.pure-u-1-2
+            h2.heading-large Is the offender statutorily excluded from HDC?
 
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
@@ -17,8 +18,6 @@ block content
 
             div.largePaddingBottom
                 div.form-group.inline
-                    p Is the offender statutorily excluded from HDC?
-
                     div.multiple-choice(data-target="excludedForm")
                         input#excludedYes(type="radio" checked=exclusionValue === 'Yes'  name="decision" value="Yes")
                         label(for="excludedYes") Yes

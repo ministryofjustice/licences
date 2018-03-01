@@ -8,7 +8,8 @@ block content
         div.back-link-container.smallPaddingTop
             a.link-back(href="javascript: window.history.back();") Back
 
-        h2.heading-large Time left until Conditional Release Date
+        div.pure-u-1-2
+            h2.heading-large Are there less than 4 weeks until the offender's conditional release date?
 
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
@@ -16,7 +17,6 @@ block content
         div.smallPaddingTop.paddingBottom.largeMarginBottom
             div.largePaddingBottom
                 div.form-group.inline.smallPaddingTop.pure-u-1-2
-                    p Is there less than 4 weeks to go to the offender's CRD?
 
                     div.multiple-choice
                         input#crdTimeYes(type="radio" checked=crdTimeValue === 'Yes' name="decision" value="Yes")
