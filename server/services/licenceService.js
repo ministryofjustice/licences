@@ -111,10 +111,6 @@ module.exports = function createLicenceService(licenceClient) {
 
     function removeAdditionalCondition(oldConditions, idToRemove) {
 
-        if (!oldConditions.additional[idToRemove]) {
-            return oldConditions;
-        }
-
         const {[idToRemove]: conditionToRemove, ...theRest} = oldConditions.additional;
         logger.debug('Deleted condition: ' + conditionToRemove);
 

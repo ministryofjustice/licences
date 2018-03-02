@@ -12,7 +12,7 @@ block content
 
         if licence.licenceConditions && licence.licenceConditions.length > 0
             h2.heading-medium.borderBottomLight Additional conditions
-            +additionalConditions(false)
+            +additionalConditions()
 
         if licence.risk && licence.risk.riskManagement
             include ./riskManagement

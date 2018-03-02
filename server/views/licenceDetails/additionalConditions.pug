@@ -1,6 +1,6 @@
 mixin additionalConditions(editable)
-
-    -var conditions = licence.licenceConditions
+    - var allowEdit = (editable === 'editable')
+    - var conditions = licence.licenceConditions
 
     for condition, index in conditions
         div.pure-g.borderBottomLight.midPaddingTopBottom
@@ -18,7 +18,7 @@ mixin additionalConditions(editable)
                         if item.variable
                             span(class="bold") #{item.variable}
 
-            if editable
+            if allowEdit
                 div.pure-u-2-24
                 div.pure-u-4-24
                     div
