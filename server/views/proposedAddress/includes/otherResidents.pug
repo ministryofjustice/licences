@@ -2,10 +2,11 @@ mixin otherResidents(type, savedAddress)
     - var savedResidents = savedAddress.residents || []
     - var residentsToShow = savedResidents.length > 3 ? savedResidents.length : 3
     - var n = 0
-    div.largePaddingBottom
+    div.otherResidentsInput.largePaddingBottom
         div.pure-g
             div.pure-u-1
-                h4.heading-small Other residents
+                h4.heading-small Other residents+other
+                p.font-xsmall Only enter an age if the person is under 18
         div.pure-g
             div.pure-u-sm-5-12 Name
             div.pure-u-sm-1-6.padLeftRight15 Age
