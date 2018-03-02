@@ -307,3 +307,32 @@ td.spacer {
 .greyRow {
     background-color: $highlight-colour;
 }
+
+.addResidentButton {
+    width: 190px;
+
+}
+
+// Make a submit button look like a link
+input.link {
+    background:none;
+    border:none;
+    padding-left: 0px;
+    color: $link-colour;
+    text-align: left;
+    cursor: pointer;
+}
+
+input.link:hover{
+    color: $link-hover-colour;
+}
+
+// Move a named anchor up a bit so that linking to 'somepage#name' doesn't position up against the toolbar
+p.namedAnchor {
+    position:relative;
+}
+
+a.namedAnchor {
+    position:absolute;
+    top: -100px;
+}

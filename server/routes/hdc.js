@@ -61,7 +61,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         const bespoke = bespokeConditions.filter(condition => condition.text) || [];
         const additional = await getAdditionalConditionsFrom(additionalConditions, req.body);
 
-        if(!additional) {
+        if (!additional) {
             await licenceService.updateLicenceConditions(nomisId, {}, bespoke);
             return res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         }
@@ -69,6 +69,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
         if (!additional.validates) {
             const conditions = await conditionsService.getAdditionalConditionsWithErrors(additional);
             const data = {nomisId, conditions, bespokeConditions, submissionError: true};
+
             return res.render('licenceConditions/additionalConditions', data);
         }
 
@@ -77,7 +78,7 @@ module.exports = function({logger, licenceService, conditionsService, authentica
     }));
 
     function getAdditionalConditionsFrom(additionalConditions, input) {
-        if(!additionalConditions) {
+        if (!additionalConditions) {
             return null;
         }
         return conditionsService.validateConditionInputs(input);
@@ -95,6 +96,18 @@ module.exports = function({logger, licenceService, conditionsService, authentica
 
         res.render(`licenceConditions/conditionsSummary`, {nomisId, licence, nextPath});
     }));
+
+    router.post('/licenceConditions/additionalConditions/:nomisId/delete/:conditionId',
+        asyncMiddleware(async (req, res) => {
+            logger.debug('POST /additionalConditions/delete');
+            const {nomisId, conditionId} = req.body;
+
+            if (conditionId) {
+                await licenceService.deleteLicenceCondition(nomisId, conditionId);
+            }
+
+            res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
+        }));
 
     // standard routes
 

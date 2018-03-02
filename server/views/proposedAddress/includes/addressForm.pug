@@ -39,23 +39,10 @@ mixin addressForm(type)
 
             +otherResidents(type, thisAddress)
 
-    div.pure-g
-        div.pure-u-1.pure-u-md-10-24
-            div.form-group.inline.smallPaddingTop
-                p Does this address have an electricity supply?
-
-                div.multiple-choice
-                    input(type="radio" checked=thisAddress.electricity === 'Yes' id=type+"-electricityYes]" name=type+"[electricity]" value="Yes")
-                    label(for=type+"-electricityYes") Yes
-                div.multiple-choice
-                    input(type="radio" checked=thisAddress.electricity === 'No' id=type+"-electricityNo]" name=type+"[electricity]" value="No")
-                    label(for=type+"-electricityNo") No
-
-        div.pure-u-1.pure-u-md-14-24
             div.pure-g
                 div.pure-u-4-5
                     div.form-group.inline.smallPaddingTop
-                        p Has the offender been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+                        p According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
 
                         div.multiple-choice
                             input(id=type+"-cautionedYes" type="radio" checked=thisAddress.cautionedAgainstResident === 'Yes' name=type+"[cautionedAgainstResident]" value="Yes")

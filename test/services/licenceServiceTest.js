@@ -43,13 +43,17 @@ describe('licenceService', () => {
                 TEXT: {value: 'The condition'},
                 FIELD_POSITION: {value: null},
                 GROUP_NAME: {value: 'group'},
-                SUBGROUP_NAME: {value: 'subgroup'}}]);
+                SUBGROUP_NAME: {value: 'subgroup'}
+            }]);
 
             return expect(service.getLicence('123', {populateConditions: true})).to.eventually.eql({
                 licence: {
-                    licenceConditions: [{content: [{text: 'The condition'}],
-                    group: 'group',
-                    subgroup: 'subgroup'}]
+                    licenceConditions: [{
+                        content: [{text: 'The condition'}],
+                        group: 'group',
+                        subgroup: 'subgroup',
+                        id: 1
+                    }]
                 },
 
                 status: undefined
@@ -62,7 +66,8 @@ describe('licenceService', () => {
                 ID: {value: 1},
                 USER_INPUT: {value: null},
                 TEXT: {value: 'The condition'},
-                FIELD_POSITION: {value: null}}]);
+                FIELD_POSITION: {value: null}
+            }]);
 
             return expect(service.getLicence('123')).to.eventually.eql({
                 licence: {
@@ -112,9 +117,11 @@ describe('licenceService', () => {
         });
 
         it('should call update section with conditions from the licence client merged with existing', async () => {
-            licenceClient.getLicence.resolves({licence: {
-                licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}}
-            }});
+            licenceClient.getLicence.resolves({
+                licence: {
+                    licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}}
+                }
+            });
             licenceClient.getAdditionalConditions.resolves([
                 {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}]);
 
@@ -127,7 +134,8 @@ describe('licenceService', () => {
                 {
                     standard: {additionalConditionsRequired: 'Yes'},
                     additional: {1: {}},
-                    bespoke: [{text: 'bespoke'}]}
+                    bespoke: [{text: 'bespoke'}]
+                }
             );
         });
 
@@ -135,6 +143,80 @@ describe('licenceService', () => {
             licenceClient.updateSection.rejects();
             const args = {nomisId: 'ab1', additionalConditions: ['Scotland Street']};
             return expect(service.updateLicenceConditions(args)).to.eventually.be.rejected();
+        });
+    });
+
+    describe('deleteLicenceCondition', () => {
+
+        it('should remove additional condition by ID and call update section', async () => {
+            licenceClient.getLicence.resolves({
+                licence: {
+                    licenceConditions: {
+                        standard: {additionalConditionsRequired: 'Yes'},
+                        additional: {1: {}, 2: {}, 3: {}},
+                        bespoke: [{text: 'bespoke'}]
+                    }
+                }
+            });
+
+            await service.deleteLicenceCondition('ab1', '2');
+
+            expect(licenceClient.updateSection).to.be.calledOnce();
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'licenceConditions',
+                'ab1',
+                {
+                    standard: {additionalConditionsRequired: 'Yes'},
+                    additional: {1: {}, 3: {}},
+                    bespoke: [{text: 'bespoke'}]
+                }
+            );
+        });
+
+        it('should remove bespoke condition by index when id is "bespoke-index", and call update section', async () => {
+            licenceClient.getLicence.resolves({
+                licence: {
+                    licenceConditions: {
+                        standard: {additionalConditionsRequired: 'Yes'},
+                        additional: {1: {}, 2: {}, 'bespoke-1': {}},
+                        bespoke: [{text: '0'}, {text: '1'}, {text: '2'}]
+                    }
+                }
+            });
+
+            await service.deleteLicenceCondition('ab1', 'bespoke-1');
+
+            expect(licenceClient.updateSection).to.be.calledOnce();
+            expect(licenceClient.updateSection).to.be.calledWith(
+                'licenceConditions',
+                'ab1',
+                {
+                    standard: {additionalConditionsRequired: 'Yes'},
+                    additional: {1: {}, 2: {}, 'bespoke-1': {}},
+                    bespoke: [{text: '0'}, {text: '2'}]
+                }
+            );
+        });
+
+        it('should NOT call update section when condition to remove is not found', async () => {
+            licenceClient.getLicence.resolves({
+                licence: {
+                    licenceConditions: {
+                        standard: {additionalConditionsRequired: 'Yes'},
+                        additional: {1: {}, 2: {}, 3: {}},
+                        bespoke: [{text: '0'}, {text: '1'}, {text: '2'}]
+                    }
+                }
+            });
+
+            await service.deleteLicenceCondition('ab1', '4');
+
+            expect(licenceClient.updateSection).not.to.be.calledOnce();
+        });
+
+        it('should throw if error updating licence', () => {
+            licenceClient.updateSection.rejects();
+            return expect(service.deleteLicenceCondition('ab1', 'bespoke-1')).to.eventually.be.rejected();
         });
     });
 
@@ -196,13 +278,17 @@ describe('licenceService', () => {
 
             const fieldMap = [
                 {decision: {}},
-                {followUp1: {
-                    dependentOn: 'decision',
-                    predicate: 'Yes'}
+                {
+                    followUp1: {
+                        dependentOn: 'decision',
+                        predicate: 'Yes'
+                    }
                 },
-                {followUp2: {
-                    dependentOn: 'decision',
-                    predicate: 'Yes'}
+                {
+                    followUp2: {
+                        dependentOn: 'decision',
+                        predicate: 'Yes'
+                    }
                 }
 
             ];
@@ -215,7 +301,7 @@ describe('licenceService', () => {
                 };
 
                 const licenceSection = 'section4';
-                const formName= 'form3';
+                const formName = 'form3';
 
                 const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
 
@@ -302,7 +388,7 @@ describe('licenceService', () => {
                 });
             });
         });
-        it('should call updateLicence and pass in the licence', async() => {
+        it('should call updateLicence and pass in the licence', async () => {
 
             const licence = {
                 ...baseLicence,
@@ -349,7 +435,7 @@ describe('licenceService', () => {
             expect(licenceClient.updateLicence).to.be.calledWith('ab1', expectedLicence);
         });
 
-        it('should add new form to the licence', async() => {
+        it('should add new form to the licence', async () => {
 
             const licence = {
                 ...baseLicence,
@@ -390,7 +476,7 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
 
-        it('should add new section to the licence', async() => {
+        it('should add new section to the licence', async () => {
 
             const licence = {
                 ...baseLicence,

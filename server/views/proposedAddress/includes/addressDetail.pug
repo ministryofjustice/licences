@@ -19,11 +19,6 @@ mixin addressDetail(type, address)
                 if address.telephone
                     p.bold(id=type+"-telephone") #{address.telephone}
 
-            div.pure-u-md-2-3.paddingBottom
-                p Does the address have an electricity supply?
-                if address.electricity
-                    p.bold(id=type+"-electricity") #{address.electricity}
-
         if address.occupier
             div.pure-u-1.pure-u-md-7-12
                 div.pure-g
@@ -36,23 +31,27 @@ mixin addressDetail(type, address)
                     p.bold.pure-u-1-4.noMargin(id=type+"-occupierAge") #{address.occupier.age}
                     p.bold.pure-u-1-4.noMargin(id=type+"-occupierRelation") #{address.occupier.relationship}
 
-                if address.residents
+                div.pure-g.largePaddingBottom.smallPaddingTop
+                    p.pure-u-1.bold Other residents
+                    p.pure-u-1-2.noMargin Name
+                    p.pure-u-1-4.noMargin Age
+                    p.pure-u-1-4.noMargin Relation to prisoner
 
-                    div.pure-g.largePaddingBottom.smallPaddingTop
-                        p.pure-u-1.bold Other residents
-                        p.pure-u-1-2.noMargin Name
-                        p.pure-u-1-4.noMargin Age
-                        p.pure-u-1-4.noMargin Relation to prisoner
-
-                        for resident in address.residents
+                    if address.residents && address.residents.length > 0
+                        for resident, index in address.residents
                             div.pure-u-1
                                 div.pure-g.smallMarginTop
-                                    p.bold.noMargin.pure-u-1-2 #{resident.name}
-                                    p.bold.noMargin.pure-u-1-4 #{resident.age}
-                                    p.bold.noMargin.pure-u-1-4 #{resident.relation}
+                                    p.bold.noMargin.pure-u-1-2(id=type+"-resident-name-"+index) #{resident.name}
+                                    p.bold.noMargin.pure-u-1-4(id=type+"-resident-age-"+index) #{resident.age}
+                                    p.bold.noMargin.pure-u-1-4(id=type+"-resident-relation-"+index) #{resident.relation}
+
+                    else
+                        div.pure-u-1
+                            div.pure-g.smallMarginTop
+                                p.bold.noMargin.pure-u-1-2 None
 
 
                 div.pure-u-md-2-3
-                    p Has the prisoner been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+                    p According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
                     if address.cautionedAgainstResident
                         p.bold(id=type+"-cautionedAgainstResident") #{address.cautionedAgainstResident}

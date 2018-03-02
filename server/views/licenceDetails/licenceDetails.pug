@@ -1,5 +1,6 @@
 extends ../layout
 
+include ./additionalConditions
 block content
 
     h1.heading-large Licence details
@@ -10,7 +11,8 @@ block content
             include curfewAddress
 
         if licence.licenceConditions && licence.licenceConditions.length > 0
-            include ./additionalConditions
+            h2.heading-medium.borderBottomLight Additional conditions
+            +additionalConditions(false)
 
         if licence.risk && licence.risk.riskManagement
             include ./riskManagement
