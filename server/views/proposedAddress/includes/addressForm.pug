@@ -3,9 +3,9 @@ mixin addressForm(type)
     -var thisAddress = savedAddress[type] ? savedAddress[type] : {}
     -var savedOccupier = thisAddress.occupier || {}
     div.pure-g.paddingBottom
-        div.pure-u-1.pure-u-md-10-24
+        div.pure-u-1.pure-u-md-1-2
             div.pure-g
-                div.pure-u-1.pure-u-md-2-3
+                div.pure-u-1.pure-u-md-3-5
                     div.form-group.midMarginBottom
                         label.form-label(for=type+"-addressLine1") Building and street
                         input.form-control(id=type+"-addressLine1" name=type+"[addressLine1]" value=thisAddress.addressLine1)
@@ -23,19 +23,19 @@ mixin addressForm(type)
                         label.form-label(for=type+"-telephone") Telephone
                         input.form-control(id=type+"-telephone" name=type+"[telephone]" value=thisAddress.telephone)
 
-        div.pure-u-1.pure-u-md-14-24
+        div.pure-u-1.pure-u-md-1-2
             div.pure-g
-                div.form-group.pure-u-1.pure-u-sm-5-12
+                div.form-group.pure-u-1.pure-u-sm-10-24
                     label.form-label(for=type+"-occupierName") Name of main occupier
                     input.form-control(id=type+"-occupierName" name=type+"[occupier][name]" value=savedOccupier.name)
 
-                div.form-group.pure-u-1.pure-u-sm-1-6.padLeftRight15
-                    label.form-label(for=type+"-occupierAge") Age
-                    input.form-control(id=type+"-occupierAge" name=type+"[occupier][age]" value=savedOccupier.age)
-
-                div.form-group.pure-u-1.pure-u-sm-5-12
+                div.form-group.pure-u-1.pure-u-sm-10-24.padLeftRight15
                     label.form-label(for=type+"-occupierRelationship") Relation to prisoner
                     input.form-control(id=type+"-occupierRelationship" name=type+"[occupier][relationship]" value=savedOccupier.relationship)
+
+                div.form-group.pure-u-1.pure-u-sm-4-24
+                    label.form-label(for=type + "-occupierAge") Age
+                    input.form-control(id=type + "-occupierAge" name=type + "[occupier][age]" value=savedOccupier.age)
 
             +otherResidents(type, thisAddress)
 
