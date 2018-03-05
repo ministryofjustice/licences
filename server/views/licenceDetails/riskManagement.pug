@@ -1,4 +1,4 @@
-h2.heading-medium.borderBottom.separatorTitle Risk management and victim liaison
+h2.heading-medium.borderBottomLightThick.separatorTitle Risk management and victim liaison
 
 -var risk = licence.risk.riskManagement
 
@@ -8,8 +8,13 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Are there any risk management planning actions that must take place prior to release?
     div.pure-u-1-2
-        if risk.planningActions
-            span.bold #{risk.planningActions}
+        div.pure-g
+            div.pure-u-2-3
+                if risk.planningActions
+                    span.bold #{risk.planningActions}
+            div.pure-u-1-3.alignRight
+                if user.role === 'RO'
+                    a.link(href="/hdc/risk/riskManagement/" + nomisId) Change these details
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -18,7 +23,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 span Are you still waiting for information to inform risk management planning?
     div.pure-u-1-2
         if risk.awaitingInformation
-            span #{risk.awaitingInformation}
+            span.bold #{risk.awaitingInformation}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -26,6 +31,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Is this a Victim Contact Service qualifying case where the victim has opted in?
     div.pure-u-1-2
-        span.bold NO IDEA
+        if risk.victimLiaison
+            span.bold #{risk.victimLiaison}
 
 

@@ -6,8 +6,13 @@ block content
 
     div.largeMarginBottom
 
+        include ../taskList/prisonerDetails
+
         if licence.proposedAddress && licence.proposedAddress.curfewAddress
             include curfewAddress
+
+        if licence.curfew && licence.curfew.curfewHours
+            include curfewHours
 
         if licence.licenceConditions && licence.licenceConditions.length > 0
             include ./additionalConditions
@@ -15,12 +20,7 @@ block content
         if licence.risk && licence.risk.riskManagement
             include ./riskManagement
 
+        if licence.reporting && licence.reporting.reportingInstructions
+            include ./reportingInstructions
 
-    div#continueBtns.paddingBottom
-        div.pure-g
-            div.pure-u-1.inlineButtons
-
-                // TODO update link to send page
-                a#continueBtn.requiredButton.button(href="/hdc/taskList/"+nomisId role="button") Continue
-
-                a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/"+nomisId role="button") Back to tasklist
+    include ../includes/formButtons

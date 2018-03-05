@@ -1,4 +1,4 @@
-h2.heading-medium.borderBottom Additional conditions
+h2.heading-medium.borderBottomLightThick.separatorTitle Additional conditions
 
 -var conditions = licence.licenceConditions
 
@@ -17,3 +17,11 @@ for condition, index in conditions
                         | #{item.text}
                     if item.variable
                         span(class="bold") #{item.variable}
+
+        div.pure-u-1-3.alignRight
+            if(index == 0 && user.role === 'RO')
+                a.link(href="/hdc/licenceConditions/additionalConditions/" + nomisId) Change these details
+
+
+
+
