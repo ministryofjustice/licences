@@ -117,19 +117,23 @@ describe('/hdc/licenceConditions', () => {
 
         it('renders an error message on the condition if it is missing an input', () => {
             conditionsServiceStub.validateConditionInputs.resolves({validates: false});
-            conditionsServiceStub.getAdditionalConditionsWithErrors.resolves({base: {base: [
-                {
-                    ID: {value: 'b'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {value: 'appointmentDetails'},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: {address3: '0', address4: '1'}},
-                    SELECTED: true,
-                    USER_SUBMISSION: {address3: 'Birmingham'},
-                    ERRORS: ['MISSING_INPUT']
+            conditionsServiceStub.getAdditionalConditionsWithErrors.resolves({
+                base: {
+                    base: [
+                        {
+                            ID: {value: 'b'},
+                            TEXT: {value: 'v'},
+                            USER_INPUT: {value: 'appointmentDetails'},
+                            GROUP_NAME: {value: 'g1'},
+                            SUBGROUP_NAME: {value: 's1'},
+                            FIELD_POSITION: {value: {address3: '0', address4: '1'}},
+                            SELECTED: true,
+                            USER_SUBMISSION: {address3: 'Birmingham'},
+                            ERRORS: ['MISSING_INPUT']
+                        }
+                    ]
                 }
-            ]}});
+            });
 
 
             return request(app)
@@ -179,6 +183,27 @@ describe('/hdc/licenceConditions', () => {
                     expect(licenceServiceStub.updateLicenceConditions).to.be.calledWith(
                         '123', {}, [{text: 'bespoke', approved: ''}]
                     );
+                });
+
+        });
+    });
+
+    describe('POST /additionalConditions/:nomisId/delete/:conditionId', () => {
+
+        const formResponse = {
+            nomisId: '123',
+            conditionId: 'ABC'
+        };
+
+        it('calls licence service delete and returns to cummary page', () => {
+
+            return request(app)
+                .post('/licenceConditions/additionalConditions/1/delete/ABC')
+                .send(formResponse)
+                .expect(302)
+                .expect(res => {
+                    expect(licenceServiceStub.deleteLicenceCondition).to.be.calledWith('123', 'ABC');
+                    expect(res.header.location).to.equal('/hdc/licenceConditions/conditionsSummary/123');
                 });
 
         });

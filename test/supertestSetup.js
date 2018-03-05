@@ -46,6 +46,7 @@ const licenceServiceStub = {
     getLicence: sandbox.stub().returnsPromise().resolves(),
     update: sandbox.stub().returnsPromise().resolves(),
     updateLicenceConditions: sandbox.stub().returnsPromise().resolves(),
+    deleteLicenceCondition: sandbox.stub().returnsPromise().resolves(),
     markForHandover: sandbox.stub().returnsPromise().resolves(),
     createLicence: sandbox.stub().returnsPromise().resolves()
 };

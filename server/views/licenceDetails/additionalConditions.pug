@@ -1,19 +1,32 @@
-h2.heading-medium.borderBottom Additional conditions
+mixin additionalConditions(editable)
+    - var allowEdit = (editable === 'editable')
+    - var conditions = licence.licenceConditions
 
--var conditions = licence.licenceConditions
+    for condition, index in conditions
+        div.pure-g.borderBottomLight.midPaddingTopBottom
+            div.pure-u-18-24.additional.padRight30
+                if condition.group
+                    div.heading-small.noMargin.smallPaddingBottom Condition #{index + 1}
+                    div.heading-small.noMargin.smallPaddingBottom #{condition.group}
+                        if condition.subgroup
+                            |  -- #{condition.subgroup}
 
-for condition, index in conditions
-    div.pure-g.borderBottomLight.midPaddingTopBottom
-        div.pure-u-2-3.additional
-            if condition.group
-                div.heading-small.noMargin.smallPaddingBottom Condition #{index + 1}
-                div.heading-small.noMargin.smallPaddingBottom #{condition.group}
-                    if condition.subgroup
-                        |  -- #{condition.subgroup}
+                div.additionalContent
+                    for item in condition.content
+                        if item.text
+                            | #{item.text}
+                        if item.variable
+                            span(class="bold") #{item.variable}
 
-            div.additionalContent
-                for item in condition.content
-                    if item.text
-                        | #{item.text}
-                    if item.variable
-                        span(class="bold") #{item.variable}
+            if allowEdit
+                div.pure-u-2-24
+                div.pure-u-4-24
+                    div
+                        a.link(href="/hdc/licenceConditions/additionalConditions/" + nomisId + "#" + condition.id) Edit condition
+                    div
+                        form(method="post" action="/hdc/licenceConditions/additionalConditions/" + nomisId + "/delete/" + condition.id)
+                            input(type="hidden" name="_csrf" value=csrfToken)
+                            input(type="hidden" name="nomisId" value=nomisId || '')
+                            input(type="hidden" name="conditionId" value=condition.id || '')
+
+                            input.link(type="submit" value="Delete")

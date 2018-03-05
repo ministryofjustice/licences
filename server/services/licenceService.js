@@ -1,3 +1,4 @@
+const logger = require('../../log.js');
 const {
     createLicenceObjectFrom,
     createAdditionalConditionsObject,
@@ -66,7 +67,7 @@ module.exports = function createLicenceService(licenceClient) {
 
     async function getConditionsObject(additional, bespoke) {
 
-        if(isEmpty(additional)) {
+        if (isEmpty(additional)) {
             return {additional: {}, bespoke};
         }
 
@@ -80,10 +81,57 @@ module.exports = function createLicenceService(licenceClient) {
         return {additional: {...additionalConditionsObject}, bespoke};
     }
 
+    async function deleteLicenceCondition(nomisId, conditionId) {
+        try {
+            const existingLicence = await licenceClient.getLicence(nomisId);
+            const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
+
+            const newConditions = removeCondition(existingLicenceConditions, conditionId, nomisId);
+
+            return licenceClient.updateSection('licenceConditions', nomisId, newConditions);
+
+        } catch (error) {
+            console.error('Error during updateAdditionalConditions', error.stack);
+            throw error;
+        }
+    }
+
+    function removeCondition(oldConditions, idToRemove) {
+
+        if (idToRemove.startsWith('bespoke')) {
+            return removeBespokeCondition(oldConditions, idToRemove);
+        }
+
+        return removeAdditionalCondition(oldConditions, idToRemove);
+    }
+
+    function removeAdditionalCondition(oldConditions, idToRemove) {
+
+        const {[idToRemove]: conditionToRemove, ...theRest} = oldConditions.additional;
+        logger.debug('Deleted condition: ' + conditionToRemove);
+
+        return {...oldConditions, additional: theRest};
+    }
+
+    function removeBespokeCondition(oldConditions, idToRemove) {
+
+        const indexToRemove = idToRemove.substr(idToRemove.indexOf('-') + 1);
+
+        if (indexToRemove >= oldConditions.bespoke.length) {
+            return oldConditions;
+        }
+
+        const elementToRemove = oldConditions.bespoke[indexToRemove];
+
+        const theRest = oldConditions.bespoke.filter(e => e !== elementToRemove);
+
+        return {...oldConditions, bespoke: theRest};
+    }
+
     function markForHandover(nomisId, sender, receiver) {
         const newStatus = getIn(transitions, [sender, receiver]);
 
-        if(!newStatus) {
+        if (!newStatus) {
             throw new Error('Invalid handover pair: ' + sender + '-' + receiver);
         }
 
@@ -144,6 +192,7 @@ module.exports = function createLicenceService(licenceClient) {
         getLicence,
         createLicence,
         updateLicenceConditions,
+        deleteLicenceCondition,
         markForHandover,
         update,
         updateStatus

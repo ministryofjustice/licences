@@ -70,13 +70,16 @@ function populateAdditionalConditionsAsObject(rawLicence, selectedConditionsConf
 }
 
 function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputMethod) {
+
     const {additional, bespoke} = rawLicence.licenceConditions;
 
     const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, injectUserInputMethod);
+
     const populatedAdditional = Object.keys(additional)
         .sort(orderForView)
         .map(getObjectForAdditional);
-    const populatedBespoke = bespoke.map(getObjectForBespoke);
+
+    const populatedBespoke = bespoke ? bespoke.map(getObjectForBespoke) : [];
 
     return {...rawLicence, licenceConditions: [...populatedAdditional, ...populatedBespoke]};
 }
@@ -90,7 +93,8 @@ function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputM
         return {
             content,
             group: selectedCondition.GROUP_NAME.value,
-            subgroup: selectedCondition.SUBGROUP_NAME.value
+            subgroup: selectedCondition.SUBGROUP_NAME.value,
+            id: selectedCondition.ID.value
         };
     };
 }
@@ -103,11 +107,12 @@ function getContentForCondition(selectedCondition, userInput, injectUserInputMet
         [{text: selectedCondition.TEXT.value}];
 }
 
-function getObjectForBespoke(condition) {
+function getObjectForBespoke(condition, index) {
     return {
         content: [{text: condition.text}],
         group: 'Bespoke',
-        subgroup: null
+        subgroup: null,
+        id: `bespoke-${index}`
     };
 }
 

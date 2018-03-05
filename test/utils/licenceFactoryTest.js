@@ -152,7 +152,8 @@ describe('licenceFactory', () => {
                     {
                         content: [{text: 'The condition'}],
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 1
                     }
                 ]
             };
@@ -161,7 +162,7 @@ describe('licenceFactory', () => {
 
         });
 
-        it('should add bespoke conditions to the output in the same format', () => {
+        it('should add bespoke conditions to the output in the same format, including generated IDs', () => {
             const rawLicence = {licenceConditions: {additional: {1: {}},
                 bespoke: [{text: 'bespoke1'}, {text: 'bespoke2'}]}};
             const selectedConditions = [
@@ -181,17 +182,20 @@ describe('licenceFactory', () => {
                     {
                         content: [{text: 'The condition'}],
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 1
                     },
                     {
                         content: [{text: 'bespoke1'}],
                         group: 'Bespoke',
-                        subgroup: null
+                        subgroup: null,
+                        id: 'bespoke-0'
                     },
                     {
                         content: [{text: 'bespoke2'}],
                         group: 'Bespoke',
-                        subgroup: null
+                        subgroup: null,
+                        id: 'bespoke-1'
                     }
                 ]
             };
@@ -224,7 +228,8 @@ describe('licenceFactory', () => {
                             {text: ' with input'}
                         ],
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 1
                     }
 
                 ]
@@ -264,7 +269,8 @@ describe('licenceFactory', () => {
                         {text: ' with input'}
                     ],
                     group: 'g',
-                    subgroup: 'sg'
+                    subgroup: 'sg',
+                    id: 1
                 }]
             };
 
@@ -301,7 +307,8 @@ describe('licenceFactory', () => {
                         {text: ' and another'}
                     ],
                     group: 'g',
-                    subgroup: 'sg'
+                    subgroup: 'sg',
+                    id: 1
                 }]
             };
 
@@ -337,7 +344,8 @@ describe('licenceFactory', () => {
                         {text: ' and another'}
                     ],
                     group: 'g',
-                    subgroup: 'sg'
+                    subgroup: 'sg',
+                    id: 1
                 }]
             };
 
@@ -385,7 +393,8 @@ describe('licenceFactory', () => {
                             {text: ' and another'}
                         ],
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 1
                     },
                     {
                         content: [
@@ -393,7 +402,8 @@ describe('licenceFactory', () => {
                             {variable: 'injected3'}
                         ],
                         group: 'g2',
-                        subgroup: 'sg2'
+                        subgroup: 'sg2',
+                        id: 2
                     }]
             };
 
@@ -424,7 +434,8 @@ describe('licenceFactory', () => {
                     {
                         content: 'The condition injected with input',
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 1
                     }
                 ]
             };
@@ -460,7 +471,8 @@ describe('licenceFactory', () => {
                     {
                         content: 'The condition Address 1 on 21/01/2018 at 15:30 with input',
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 1
                     }
                 ]
             };
@@ -491,7 +503,8 @@ describe('licenceFactory', () => {
                     {
                         content: 'The condition injected with input injected2 and another',
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 1
                     }
                 ]
             };
@@ -522,7 +535,8 @@ describe('licenceFactory', () => {
                     {
                         content: 'The condition injected with input injected2 and another',
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 1
                     }
                 ]
             };
@@ -565,12 +579,14 @@ describe('licenceFactory', () => {
                     {
                         content: 'The condition injected with input injected2 and another',
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 1
                     },
                     {
                         content: 'The condition injected3',
                         group: 'g',
-                        subgroup: 'sg'
+                        subgroup: 'sg',
+                        id: 2
                     }
                 ]
             };

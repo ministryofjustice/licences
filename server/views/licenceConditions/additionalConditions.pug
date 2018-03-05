@@ -14,7 +14,7 @@ block content
 
     h1.heading-large Additional conditions
 
-    form#additionalConditions(method='POST')
+    form#additionalConditions(method='POST', action="/hdc/licenceConditions/additionalConditions/" + nomisId)
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId)
 
@@ -38,6 +38,8 @@ block content
                                     div.pure-g.smallPaddingBottom
                                         div.pure-u-1.pure-u-md-2-3.pure-g
                                             div.pure-u-1.multiple-choice.conditionSelector.noLeftPaddingColumn(data-target=condition.USER_INPUT.value+'_form')
+                                                p.namedAnchor
+                                                    a.namedAnchor(name=conditionId)
                                                 input(type="checkbox" id="check-"+conditionId value=condition.ID.value name="additionalConditions" checked=condition.SELECTED)
                                                 label(for="check-"+conditionId)
                                                 label(for="check-"+conditionId) #{condition.TEXT.value}
