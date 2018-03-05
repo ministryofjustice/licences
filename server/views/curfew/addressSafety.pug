@@ -1,0 +1,50 @@
+extends ../layout
+include ../proposedAddress/includes/addressDetail
+
+block content
+
+    -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
+    -var addressSafety = data.curfew && data.curfew.addressSafety ? data.curfew.addressSafety : {}
+    -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress.preferred : {}
+
+    div.pure-g.pure-u-1
+        div.borderBottomLight
+            div.back-link-container.smallPaddingTop
+                a.link-back(href="javascript: window.history.back();") Back
+
+            h2.heading-large Proposed address decision
+
+            if address
+                p The following address have been requested by the offender.
+
+                +addressDetail('preferred', address, review)
+
+        h3.heading-medium Decision
+
+        -var pendingText = "Yes - pending confirmation of risk management planning"
+        form(method="post")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="nomisId" value=nomisId || '')
+            div.pure-g.largePaddingBottom
+                div.pure-u-1.pure-u-md-1-2
+                    div.form-group
+                        p Could this offender be managed safely at this address?
+
+                        div.multiple-choice
+                            input#deemedSafeYes(type="radio" checked=addressSafety.deemedSafe === 'Yes' name="deemedSafe" value="Yes")
+                            label(for="deemedSafeYes") Yes
+                        div.multiple-choice
+                            input#deemedSafePending(type="radio" checked=addressSafety.deemedSafe === pendingText name="deemedSafe" value=pendingText)
+                            label(for="deemedSafePending") #{pendingText}
+                        div.multiple-choice(data-target="reasonForm")
+                            input#deemedSafeNo(type="radio" checked=addressSafety.deemedSafe === 'No' name="deemedSafe" value="No")
+                            label(for="deemedSafeNo") No
+
+                        div#reasonForm.panel.panel-border-narrow.js-hidden
+                            label(for='reason') Please explain why you have made this decision
+                                textarea(name='reason' id='reason' class='form-control' rows='5')
+                                    if addressSafety.reason
+                                        | #{addressSafety.reason}
+
+
+            include ../includes/formButtons

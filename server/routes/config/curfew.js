@@ -4,18 +4,32 @@ module.exports = {
         fields: [
             {consent: {}},
             {electricity: {dependentOn: 'consent', predicate: 'Yes'}},
-            {homeVisitConducted: {dependentOn: 'consent', predicate: 'Yes'}},
+            {homeVisitConducted: {dependentOn: 'consent', predicate: 'Yes'}}
+        ],
+        nextPath: {
+            decisions: [
+                {
+                    discriminator: 'consent',
+                    No: '/hdc/taskList/'
+                },
+                {
+                    discriminator: 'electricity',
+                    No: '/hdc/taskList/'
+                }
+            ],
+            path: '/hdc/curfew/addressSafety/'
+        }
+    },
+    addressSafety: {
+        licenceMap: ['licence'],
+        fields: [
             {deemedSafe: {}},
-            {safetyDetails: {dependentOn: 'deemedSafe', predicate: 'No'}}
+            {reason: {dependentOn: 'deemedSafe', predicate: 'No'}}
         ],
         nextPath: {
             decisions: [
                 {
                     discriminator: 'deemedSafe',
-                    No: '/hdc/taskList/'
-                },
-                {
-                    discriminator: 'safetyDetails',
                     No: '/hdc/taskList/'
                 }
             ],
