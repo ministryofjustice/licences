@@ -1,4 +1,6 @@
-mixin addressDetail(type, address)
+mixin addressDetail(type, address, review)
+
+    -var addressReview = review || {}
 
     div.pure-g.largePaddingBottom(id=type+"-addressDetails")
         div.pure-u-1.pure-u-sm-5-12.pure-g
@@ -18,6 +20,21 @@ mixin addressDetail(type, address)
                 | Telephone
                 if address.telephone
                     p.bold(id=type+"-telephone") #{address.telephone}
+
+            if addressReview.electricity
+                div.pure-u-md-4-5.paddingBottom
+                    | Does this address have an electricity supply?
+                    p.bold(id=type + "-telephone") #{addressReview.electricity}
+
+            if addressReview.consent
+                div.pure-u-md-4-5.paddingBottom
+                    | Does the homeowner/landlord give informed consent to the HDC at the address?
+                    p.bold(id=type + "-telephone") #{addressReview.consent}
+
+            if addressReview.homeVisitConducted
+                div.pure-u-md-4-5
+                    | Was a home visit conducted in this case?
+                    p.bold(id=type + "-telephone") #{addressReview.homeVisitConducted}
 
         if address.occupier
             div.pure-u-1.pure-u-md-7-12
