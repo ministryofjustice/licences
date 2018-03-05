@@ -81,7 +81,10 @@ describe('getLicenceStatus', () => {
                     curfewAddressReview: {
                         consent: 'Yes',
                         electricity: 'Yes',
-                        homeVisitConducted: 'Yes',
+                        homeVisitConducted: 'Yes'
+
+                    },
+                    addressSafety: {
                         deemedSafe: 'Yes'
                     }
                 },
@@ -320,7 +323,9 @@ describe('getLicenceStatus', () => {
                     curfewAddressReview: {
                         consent: 'Yes',
                         electricity: 'Yes',
-                        homeVisitConducted: 'Yes',
+                        homeVisitConducted: 'Yes'
+                    },
+                    addressSafety: {
                         deemedSafe: 'Yes'
                     },
                     curfewHours: 'anything'

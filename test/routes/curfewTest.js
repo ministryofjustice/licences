@@ -21,6 +21,7 @@ describe('/hdc/curfew', () => {
     describe('curfew routes', () => {
         const routes = [
             {url: '/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
+            {url: '/curfew/addressSafety/1', content: 'Could this offender be managed safely at this address?'},
             {url: '/curfew/curfewHours/1', content: 'Curfew hours'}
         ];
 
@@ -33,19 +34,37 @@ describe('/hdc/curfew', () => {
                 url: '/curfew/curfewAddressReview/1',
                 body: {nomisId: 1},
                 section: 'curfewAddressReview',
-                nextPath: '/hdc/curfew/curfewHours/1'
+                nextPath: '/hdc/curfew/addressSafety/1'
             },
             {
                 url: '/curfew/curfewAddressReview/1',
+                body: {nomisId: 1, consent: 'No'},
+                section: 'curfewAddressReview',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/curfew/curfewAddressReview/1',
+                body: {nomisId: 1, consent: 'Yes', electricity: 'No'},
+                section: 'curfewAddressReview',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/curfew/curfewAddressReview/1',
+                body: {nomisId: 1, consent: 'Yes'},
+                section: 'curfewAddressReview',
+                nextPath: '/hdc/curfew/addressSafety/1'
+            },
+            {
+                url: '/curfew/addressSafety/1',
                 body: {nomisId: 1, deemedSafe: 'No'},
-                section: 'curfewAddressReview',
+                section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/curfewAddressReview/1',
-                body: {nomisId: 1, safetyDetails: 'No'},
-                section: 'curfewAddressReview',
-                nextPath: '/hdc/taskList/1'
+                url: '/curfew/addressSafety/1',
+                body: {nomisId: 1, deemedSafe: 'Yes'},
+                section: 'addressSafety',
+                nextPath: '/hdc/curfew/curfewHours/1'
             },
             {
                 url: '/curfew/curfewHours/1',

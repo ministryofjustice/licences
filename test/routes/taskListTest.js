@@ -414,7 +414,9 @@ describe('GET /taskList/:prisonNumber', () => {
                     licence: {
                         curfew: {
                             curfewAddressReview: {
-                                consent: 'any',
+                                consent: 'any'
+                            },
+                            addressSafety: {
                                 deemedSafe: 'any'
                             },
                             curfewHours: 'any'

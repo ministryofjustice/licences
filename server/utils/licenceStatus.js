@@ -234,7 +234,7 @@ function getCurfewAddressState(licence) {
 function getCurfewAddressReviewState(licence) {
 
     const consentAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'consent']);
-    const deemedSafeAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'deemedSafe']);
+    const deemedSafeAnswer = getIn(licence, ['curfew', 'addressSafety', 'deemedSafe']);
 
 
     const curfewAddressReview = getState(licence);
