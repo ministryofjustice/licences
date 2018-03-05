@@ -14,7 +14,7 @@ block content
 
     h1.heading-large Additional conditions
 
-    form#additionalConditions(method='POST')
+    form#additionalConditions(method='POST', action="/hdc/licenceConditions/additionalConditions/" + nomisId)
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId)
 

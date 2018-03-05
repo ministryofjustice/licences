@@ -198,22 +198,6 @@ describe('licenceService', () => {
             );
         });
 
-        it('should NOT call update section when condition to remove is not found', async () => {
-            licenceClient.getLicence.resolves({
-                licence: {
-                    licenceConditions: {
-                        standard: {additionalConditionsRequired: 'Yes'},
-                        additional: {1: {}, 2: {}, 3: {}},
-                        bespoke: [{text: '0'}, {text: '1'}, {text: '2'}]
-                    }
-                }
-            });
-
-            await service.deleteLicenceCondition('ab1', '4');
-
-            expect(licenceClient.updateSection).not.to.be.calledOnce();
-        });
-
         it('should throw if error updating licence', () => {
             licenceClient.updateSection.rejects();
             return expect(service.deleteLicenceCondition('ab1', 'bespoke-1')).to.eventually.be.rejected();

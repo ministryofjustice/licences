@@ -27,7 +27,7 @@ module.exports = function createConditionsService(licenceClient) {
                 .sort(orderForView)
                 .reduce(splitIntoGroupedObject, {});
 
-        } catch(error) {
+        } catch (error) {
             logger.error('Error during getStandardConditions', error.stack);
             throw error;
         }
@@ -44,10 +44,11 @@ module.exports = function createConditionsService(licenceClient) {
             const conditions = await licenceClient.getAdditionalConditions();
 
             return conditions
+                .sort(orderForView)
                 .map(populateFromFormSubmission(validatedInput))
                 .reduce(splitIntoGroupedObject, {});
 
-        } catch(error) {
+        } catch (error) {
             logger.error('Error during getAdditionalConditionsWithErrors', error.stack);
             throw error;
         }
@@ -88,11 +89,11 @@ function populateFromSavedLicence(inputtedConditions) {
 function populateFromFormSubmission(validatedInput) {
     return condition => {
 
-        if(!conditionSelected(validatedInput, condition)) {
+        if (!conditionSelected(validatedInput, condition)) {
             return {...condition};
         }
 
-        if(!conditionHasInputFields(condition, validatedInput)) {
+        if (!conditionHasInputFields(condition, validatedInput)) {
             return {...condition, SELECTED: true};
         }
 
@@ -122,7 +123,7 @@ function getUserInputsForCondition(input, conditionInputFields) {
     return Object.keys(input)
         .filter(formInputFieldKey => conditionInputFields.includes(formInputFieldKey))
         .reduce((object, formInputFieldKey) => {
-            if(formInputFieldKey === DATE_FIELD) {
+            if (formInputFieldKey === DATE_FIELD) {
                 return {...object, [formInputFieldKey]: formatDateField(input[formInputFieldKey])};
             }
             return {...object, [formInputFieldKey]: input[formInputFieldKey]};
@@ -133,7 +134,7 @@ function getValidationErrors(validationObject, conditionFieldKeys) {
     const fieldsWithErrors = Object.keys(validationObject.errors);
     const conditionFieldsWithErrors = getIntersection(fieldsWithErrors, conditionFieldKeys);
 
-    if(conditionFieldsWithErrors.length === 0) {
+    if (conditionFieldsWithErrors.length === 0) {
         return null;
     }
 
@@ -143,7 +144,7 @@ function getValidationErrors(validationObject, conditionFieldKeys) {
 }
 
 function formatDateField(input) {
-    if(moment(input).isValid()) {
+    if (moment(input).isValid()) {
         return moment(input).format('DD/MM/YYYY');
     }
     return '';

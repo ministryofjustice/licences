@@ -88,10 +88,6 @@ module.exports = function createLicenceService(licenceClient) {
 
             const newConditions = removeCondition(existingLicenceConditions, conditionId, nomisId);
 
-            if (JSON.stringify(newConditions) === JSON.stringify(existingLicenceConditions)) {
-                return;
-            }
-
             return licenceClient.updateSection('licenceConditions', nomisId, newConditions);
 
         } catch (error) {
