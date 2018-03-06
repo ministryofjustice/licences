@@ -499,5 +499,72 @@ describe('licenceService', () => {
             };
             expect(output).to.eql(expectedLicence);
         });
+
+        it('should recurse if a field has inner contents', async() => {
+
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}},
+                {outer: {
+                    contains: [
+                        {innerQuestion: {}},
+                        {innerQuestion2: {}},
+                        {dependentAnswer: {dependentOn: 'innerQuestion2', predicate: 'Yes'}},
+                        {innerOuter: {
+                            contains: [
+                                {innerInner: {}}
+                            ]
+                        }}
+                    ]
+                }},
+                {followUp2: {}}
+            ];
+
+            const userInput = {
+                decision: 'Yes',
+                outer: {
+                    innerQuestion: 'InnerAnswer',
+                    innerQuestion2: 'Yes',
+                    unwantedAnswer: 'unwanted',
+                    dependentAnswer: 'depAnswer',
+                    innerOuter: {
+                        innerInner: 'here',
+                        innerUnwanted: 'here2'
+                    }
+                },
+                followUp2: 'Town'
+            };
+
+            const licenceSection = 'section5';
+            const formName = 'form3';
+
+            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+
+            const expectedLicence = {
+                ...licence,
+                section5: {
+                    form3: {
+                        decision: 'Yes',
+                        outer: {
+                            innerQuestion: 'InnerAnswer',
+                            innerQuestion2: 'Yes',
+                            dependentAnswer: 'depAnswer',
+                            innerOuter: {
+                                innerInner: 'here'
+                            }
+                        },
+                        followUp2: 'Town'
+                    }
+                }
+            };
+            expect(output).to.eql(expectedLicence);
+        });
     });
 });
