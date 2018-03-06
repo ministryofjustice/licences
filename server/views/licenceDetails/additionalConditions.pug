@@ -6,8 +6,8 @@ mixin additionalConditions(editable)
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-18-24.additional.padRight30
                 if condition.group
-                    div.heading-small.noMargin.smallPaddingBottom Condition #{index + 1}
-                    div.heading-small.noMargin.smallPaddingBottom #{condition.group}
+                    div.additionalTitle.heading-small.noMargin.smallPaddingBottom Condition #{index + 1}
+                    div.additionalName.heading-small.noMargin.smallPaddingBottom #{condition.group}
                         if condition.subgroup
                             |  -- #{condition.subgroup}
 
@@ -34,7 +34,7 @@ mixin additionalConditions(editable)
             if !allowEdit
                 div.pure-u-6-24.alignRight
                     if(index == 0 && user.role === 'RO')
-                        a.link(href="/hdc/licenceConditions/additionalConditions/" + nomisId) Change these details
+                        a#conditionsEditLink(href="/hdc/licenceConditions/additionalConditions/" + nomisId) Change these details
 
 
 

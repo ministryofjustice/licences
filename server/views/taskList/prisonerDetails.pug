@@ -34,8 +34,8 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
         div.midMarginBottom
             | Location
             if(prisonerInfo.agencyLocationDesc)
-                span#prisonerLocation.block.bold #{prisonerInfo.internalLocationDesc}
-                span#prisonerLocation.block.bold #{prisonerInfo.agencyLocationDesc}
+                span#prisonerLocationInternal.block.bold #{prisonerInfo.internalLocationDesc}
+                span#prisonerLocationExternal.block.bold #{prisonerInfo.agencyLocationDesc}
 
         div.midMarginBottom
             | Type of offence(s)

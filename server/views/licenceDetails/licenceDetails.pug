@@ -9,7 +9,7 @@ block content
 
         include ../taskList/prisonerDetails
 
-        if licence.proposedAddress && licence.proposedAddress.curfewAddress
+        if licence.proposedAddress && licence.proposedAddress.curfewAddress && licence.proposedAddress.curfewAddress.preferred
             include curfewAddress
 
         if licence.curfew && licence.curfew.curfewHours

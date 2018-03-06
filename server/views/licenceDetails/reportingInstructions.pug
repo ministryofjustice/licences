@@ -11,10 +11,10 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-g
             div.pure-u-2-3
                 if reportingInstructions.name
-                    span #{reportingInstructions.name}
+                    span#reportingName #{reportingInstructions.name}
             div.pure-u-1-3.alignRight
                 if user.role === 'RO'
-                    a.link(href="/hdc/reporting/reportingInstructions/" + nomisId) Change these details
+                    a#reportingEditLink(href="/hdc/reporting/reportingInstructions/" + nomisId) Change these details
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -23,13 +23,13 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 span Address
     div.pure-u-1-2
         if reportingInstructions.buildingAndStreet1
-            span.block #{reportingInstructions.buildingAndStreet1}
+            span#reportingAddress1.block #{reportingInstructions.buildingAndStreet1}
         if reportingInstructions.buildingAndStreet2
-            span.block #{reportingInstructions.buildingAndStreet2}
+            span#reportingAddress2.block #{reportingInstructions.buildingAndStreet2}
         if reportingInstructions.townOrCity
-            span.block #{reportingInstructions.townOrCity}
+            span#reportingTown.block #{reportingInstructions.townOrCity}
         if reportingInstructions.postcode
-            span.block #{reportingInstructions.postcode}
+            span#reportingPostCode.block #{reportingInstructions.postcode}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -38,5 +38,5 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 span Contact number
     div.pure-u-1-2
         if reportingInstructions.telephone
-            span #{reportingInstructions.telephone}
+            span#reportingTelephone #{reportingInstructions.telephone}
 
