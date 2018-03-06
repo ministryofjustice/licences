@@ -15,9 +15,9 @@ mixin otherResidents(type, savedAddress)
         while n < residentsToShow
             div.pure-g.smallPaddingBottom.otherResident
                 div.pure-u-sm-5-12
-                    input.form-control.residentName(name=type+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name)
+                    input.form-control.residentName(name=type+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name autocomplete="off")
                 div.pure-u-sm-5-12.padLeftRight15
-                    input.form-control.residentRelation(name=type+"[residents]["+n+"][relation]" value=savedResidents[n] && savedResidents[n].relation)
+                    input.form-control.residentRelation(name=type+"[residents]["+n+"][relation]" value=savedResidents[n] && savedResidents[n].relation autocomplete = "off")
                 div.pure-u-sm-1-6
-                    input.form-control.residentAge(name=type + "[residents][" + n + "][age]" value=savedResidents[n] && savedResidents[n].age)
+                    input.form-control.residentAge(name=type + "[residents][" + n + "][age]" value=savedResidents[n] && savedResidents[n].age autocomplete="off")
             - n++
