@@ -22,7 +22,9 @@ describe('GET /licenceDetails/:prisonNumber', () => {
             licence: {
                 proposedAddress: {
                     curfewAddress: {
-                        addressLine1: 'Address 1'
+                        preferred: {
+                            addressLine1: 'Address 1'
+                        }
                     }
                 },
                 licenceConditions: [{content: [{text: 'Condition1'}]}],
@@ -47,9 +49,11 @@ describe('GET /licenceDetails/:prisonNumber', () => {
     });
 
     it('renders html and displays licence details if sections are missing', () => {
-        licenceServiceStub.getLicence.resolves({licence: {
+        licenceServiceStub.getLicence.resolves({
+            licence: {
                 licenceConditions: [{content: [{text: 'Condition1'}]}]
-        }});
+            }
+        });
         return request(app)
             .get('/licenceDetails/1')
             .expect(200)
