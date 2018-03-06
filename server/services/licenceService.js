@@ -171,13 +171,13 @@ module.exports = function createLicenceService(licenceClient) {
     function answersFromMapReducer(userInput) {
 
         return (answersAccumulator, field) => {
-            const {fieldName, answerIsRequired, innerFields, inputIsArray} = getFieldInfo(field, userInput);
+            const {fieldName, answerIsRequired, innerFields, inputIsList} = getFieldInfo(field, userInput);
 
             if (!answerIsRequired) {
                 return answersAccumulator;
             }
 
-            if(inputIsArray) {
+            if(inputIsList) {
                 const arrayOfInputs = userInput[fieldName].map(item => {
                     return field[fieldName].contains.reduce(answersFromMapReducer(item), {});
                 });
@@ -205,7 +205,7 @@ module.exports = function createLicenceService(licenceClient) {
             fieldName,
             answerIsRequired: !fieldDependentOn || dependentMatchesPredicate,
             innerFields: field[fieldName].contains,
-            inputIsArray: Array.isArray(userInput[fieldName])
+            inputIsList: fieldConfig.isList
         };
     }
 

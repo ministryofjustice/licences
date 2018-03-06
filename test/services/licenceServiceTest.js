@@ -580,6 +580,7 @@ describe('licenceService', () => {
             const fieldMap = [
                 {decision: {}},
                 {listItem: {
+                        isList: true,
                         contains: [
                             {innerQuestion: {}},
                             {innerQuestion2: {}},
