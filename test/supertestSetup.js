@@ -69,6 +69,7 @@ const hdcRoute = createLicenceConditionsRoute({
     licenceService: licenceServiceStub,
     logger: loggerStub,
     conditionsService: conditionsServiceStub,
+    prisonerService: prisonerServiceStub,
     authenticationMiddleware
 });
 

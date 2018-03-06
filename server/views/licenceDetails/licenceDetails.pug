@@ -7,8 +7,13 @@ block content
 
     div.largeMarginBottom
 
-        if licence.proposedAddress && licence.proposedAddress.curfewAddress
+        include ../taskList/prisonerDetails
+
+        if licence.proposedAddress && licence.proposedAddress.curfewAddress && licence.proposedAddress.curfewAddress.preferred
             include curfewAddress
+
+        if licence.curfew && licence.curfew.curfewHours
+            include curfewHours
 
         if licence.licenceConditions && licence.licenceConditions.length > 0
             h2.heading-medium.borderBottomLight Additional conditions
@@ -17,12 +22,11 @@ block content
         if licence.risk && licence.risk.riskManagement
             include ./riskManagement
 
+        if licence.reporting && licence.reporting.reportingInstructions
+            include ./reportingInstructions
 
-    div#continueBtns.paddingBottom
-        div.pure-g
-            div.pure-u-1.inlineButtons
-
-                // TODO update link to send page
-                a#continueBtn.requiredButton.button(href="/hdc/taskList/"+nomisId role="button") Continue
-
-                a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/"+nomisId role="button") Back to tasklist
+    div.paddingBottom.smallPaddingTop
+        div.pure-u-1.inlineButtons
+            a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/taskList/" + nomisId role="button")
+                | Save and continue
+            a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/hdc/taskList/" + nomisId role="button") Return to task list

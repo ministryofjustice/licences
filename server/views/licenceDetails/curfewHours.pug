@@ -1,0 +1,27 @@
+h2.heading-medium.borderBottomLightThick.separatorTitle Proposed HDC curfew hours
+
+-var hours = licence.curfew.curfewHours
+
+div.pure-g.midPaddingTopBottom
+    div.pure-u-5-6
+        div.pure-u-1-6
+            span.block Monday
+            span.block Tuesday
+            span.block Wednesday
+        div.pure-u-1-6
+            span#monday.block #{hours.mondayFrom} - #{hours.mondayUntil}
+            span#tuesday.block #{hours.tuesdayFrom} - #{hours.tuesdayUntil}
+            span#wednesday.block #{hours.wednesdayFrom} - #{hours.wednesdayUntil}
+        div.pure-u-1-6
+            span.block Thursday
+            span.block Friday
+            span.block Saturday
+        div.pure-u-1-6
+            span#thursday.block #{hours.thursdayFrom} - #{hours.thursdayUntil}
+            span#friday.block #{hours.fridayFrom} - #{hours.fridayUntil}
+            span#saturday.block #{hours.saturdayFrom} - #{hours.saturdayUntil}
+        div.pure-u-1-6
+            span.block Sunday
+        div.pure-u-1-6
+            span#sunday.block #{hours.sundayFrom} - #{hours.sundayUntil}
+    div.pure-u-1-6

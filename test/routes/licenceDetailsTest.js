@@ -2,13 +2,10 @@ const {
     request,
     expect,
     licenceServiceStub,
-    loggerStub,
+    prisonerServiceStub,
+    hdcRoute,
     appSetup
 } = require('../supertestSetup');
-
-const createLicenceDetailsRoute = require('../../server/routes/licenceDetails');
-const auth = require('../mockAuthentication');
-const authenticationMiddleware = auth.authenticationMiddleware;
 
 const testUser = {
     staffId: 'my-staff-id',
@@ -16,11 +13,7 @@ const testUser = {
     roleCode: 'CA'
 };
 
-const app = appSetup(createLicenceDetailsRoute({
-    licenceService: licenceServiceStub,
-    logger: loggerStub,
-    authenticationMiddleware
-}), testUser);
+const app = appSetup(hdcRoute, testUser);
 
 describe('GET /licenceDetails/:prisonNumber', () => {
 
@@ -29,18 +22,22 @@ describe('GET /licenceDetails/:prisonNumber', () => {
             licence: {
                 proposedAddress: {
                     curfewAddress: {
-                        addressLine1: 'Address 1'
+                        preferred: {
+                            addressLine1: 'Address 1'
+                        }
                     }
                 },
                 licenceConditions: [{content: [{text: 'Condition1'}]}],
                 risk: {riskManagement: {planningActions: 'Yes'}}
             }
         });
+
+        prisonerServiceStub.getPrisonerDetails.resolves({});
     });
 
     it('renders html and displays licence detail', () => {
         return request(app)
-            .get('/1')
+            .get('/licenceDetails/1')
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {
@@ -52,11 +49,13 @@ describe('GET /licenceDetails/:prisonNumber', () => {
     });
 
     it('renders html and displays licence details if sections are missing', () => {
-        licenceServiceStub.getLicence.resolves({licence: {
+        licenceServiceStub.getLicence.resolves({
+            licence: {
                 licenceConditions: [{content: [{text: 'Condition1'}]}]
-        }});
+            }
+        });
         return request(app)
-            .get('/1')
+            .get('/licenceDetails/1')
             .expect(200)
             .expect('Content-Type', /html/)
             .expect(res => {

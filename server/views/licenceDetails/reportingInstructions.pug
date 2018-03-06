@@ -1,45 +1,42 @@
-h2.heading-medium.borderBottom.separatorTitle Reporting instructions
-div.pure-g
-    div.pure-u-2-3
+h2.heading-medium.borderBottomLightThick.separatorTitle Reporting instructions
+
+-var reportingInstructions = licence.reporting.reportingInstructions
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
         div.pure-g
-            -var reportingInstructions= licence.reportingInstructions
-            div.pure-u-1
-                div.borderBottomLight.smallPaddingTopBottom
-                    div.pure-g
-                        div.pure-u-1-3 Name of person
-                        div#reportName.pure-u-2-3
-                            if reportingInstructions.name
-                                | #{reportingInstructions.name}
+            div.pure-u-3-4
+                span Name of person
+    div.pure-u-1-2
+        div.pure-g
+            div.pure-u-2-3
+                if reportingInstructions.name
+                    span#reportingName #{reportingInstructions.name}
+            div.pure-u-1-3.alignRight
+                if user.role === 'RO'
+                    a#reportingEditLink(href="/hdc/reporting/reportingInstructions/" + nomisId) Change these details
 
-            div.pure-u-1
-                div.borderBottomLight.smallPaddingTopBottom
-                    div.pure-g
-                        div.pure-u-1-3 Address
-                        div#reportAddress.pure-u-2-3
-                            if reportingInstructions.address1
-                                span.block #{reportingInstructions.address1}
-                            if reportingInstructions.address2
-                                span.block #{reportingInstructions.address2}
-                            if reportingInstructions.address3
-                                span.block #{reportingInstructions.address3}
-                            if reportingInstructions.postCode
-                                span.block #{reportingInstructions.postCode}
+div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+        div.pure-g
+            div.pure-u-3-4
+                span Address
+    div.pure-u-1-2
+        if reportingInstructions.buildingAndStreet1
+            span#reportingAddress1.block #{reportingInstructions.buildingAndStreet1}
+        if reportingInstructions.buildingAndStreet2
+            span#reportingAddress2.block #{reportingInstructions.buildingAndStreet2}
+        if reportingInstructions.townOrCity
+            span#reportingTown.block #{reportingInstructions.townOrCity}
+        if reportingInstructions.postcode
+            span#reportingPostCode.block #{reportingInstructions.postcode}
 
+div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+        div.pure-g
+            div.pure-u-3-4
+                span Contact number
+    div.pure-u-1-2
+        if reportingInstructions.telephone
+            span#reportingTelephone #{reportingInstructions.telephone}
 
-            div.pure-u-1
-                div.borderBottomLight.smallPaddingTopBottom
-                    div.pure-g
-                        div.pure-u-1-3 Contact number
-                        div#reportContactNumber.pure-u-2-3
-                            if reportingInstructions.telephone
-                                | #{reportingInstructions.telephone}
-
-            div.pure-u-1
-                div.borderBottomLight.smallPaddingTopBottom
-                    div.pure-g
-                        div.pure-u-1-3 Date and time
-                        div#reportDateTime.pure-u-2-3
-                            if reportingInstructions.date
-                                | #{reportingInstructions.date}
-                            if reportingInstructions.hour
-                                |  #{reportingInstructions.hour}:#{reportingInstructions.minute}
