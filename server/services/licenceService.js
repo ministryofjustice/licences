@@ -171,10 +171,17 @@ module.exports = function createLicenceService(licenceClient) {
     function answersFromMapReducer(userInput) {
 
         return (answersAccumulator, field) => {
-            const {fieldName, answerIsRequired, innerFields} = getFieldInfo(field, userInput);
+            const {fieldName, answerIsRequired, innerFields, inputIsArray} = getFieldInfo(field, userInput);
 
             if (!answerIsRequired) {
                 return answersAccumulator;
+            }
+
+            if(inputIsArray) {
+                const arrayOfInputs = userInput[fieldName].map(item => {
+                    return field[fieldName].contains.reduce(answersFromMapReducer(item), {});
+                });
+                return {...answersAccumulator, [fieldName]: arrayOfInputs};
             }
 
             if (!isEmpty(innerFields)) {
@@ -197,7 +204,8 @@ module.exports = function createLicenceService(licenceClient) {
         return {
             fieldName,
             answerIsRequired: !fieldDependentOn || dependentMatchesPredicate,
-            innerFields: field[fieldName].contains
+            innerFields: field[fieldName].contains,
+            inputIsArray: Array.isArray(userInput[fieldName])
         };
     }
 

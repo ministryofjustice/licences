@@ -42,7 +42,13 @@ module.exports = {
                     {telephone: {}},
                     {electricity: {}},
                     {occupier: {}},
-                    {residents: {}},
+                    {residents: {
+                        contains: [
+                            {name: {}},
+                            {relation: {}},
+                            {age: {}}
+                        ]
+                    }},
                     {cautionedAgainstResident: {}}
                 ]
             }},
@@ -58,7 +64,13 @@ module.exports = {
                     {telephone: {}},
                     {electricity: {}},
                     {occupier: {}},
-                    {residents: {}},
+                    {residents: {
+                        contains: [
+                            {name: {}},
+                            {relation: {}},
+                            {age: {}}
+                        ]
+                    }},
                     {cautionedAgainstResident: {}}
                 ]
             }}
