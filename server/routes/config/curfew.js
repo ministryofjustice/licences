@@ -39,6 +39,8 @@ module.exports = {
     curfewHours: {
         licenceSection: 'curfewHours',
         fields: [
+            {firstNightFrom: {}},
+            {firstNightUntil: {}},
             {mondayFrom: {}},
             {mondayUntil: {}},
             {tuesdayFrom: {}},
