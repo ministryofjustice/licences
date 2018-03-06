@@ -177,10 +177,11 @@ module.exports = function createLicenceService(licenceClient) {
                 return answersAccumulator;
             }
 
-            if(inputIsList) {
-                const arrayOfInputs = userInput[fieldName].map(item => {
-                    return field[fieldName].contains.reduce(answersFromMapReducer(item), {});
-                });
+            if (inputIsList) {
+                const arrayOfInputs = userInput[fieldName]
+                    .map(item => field[fieldName].contains.reduce(answersFromMapReducer(item), {}))
+                    .filter(inputProvided);
+
                 return {...answersAccumulator, [fieldName]: arrayOfInputs};
             }
 
@@ -192,6 +193,10 @@ module.exports = function createLicenceService(licenceClient) {
 
             return {...answersAccumulator, [fieldName]: userInput[fieldName]};
         };
+    }
+
+    function inputProvided(userInput) {
+        return Object.keys(userInput).some(fieldName => userInput[fieldName]);
     }
 
     function getFieldInfo(field, userInput) {

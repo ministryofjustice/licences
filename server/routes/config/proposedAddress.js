@@ -66,6 +66,7 @@ module.exports = {
                     {electricity: {}},
                     {occupier: {}},
                     {residents: {
+                        isList: true,
                         contains: [
                             {name: {}},
                             {relation: {}},
