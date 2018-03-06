@@ -9,15 +9,15 @@ mixin otherResidents(type, savedAddress)
                 p.font-xsmall Only enter an age if the person is under 18
         div.pure-g
             div.pure-u-sm-5-12 Name
-            div.pure-u-sm-1-6.padLeftRight15 Age
-            div.pure-u-sm-5-12 Relation to offender
+            div.pure-u-sm-5-12.padLeftRight15 Relation to offender
+            div.pure-u-sm-1-6 Age
 
         while n < residentsToShow
             div.pure-g.smallPaddingBottom.otherResident
                 div.pure-u-sm-5-12
                     input.form-control.residentName(name=type+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name)
-                div.pure-u-sm-1-6.padLeftRight15
-                    input.form-control.residentAge(name=type+"[residents]["+n+"][age]" value=savedResidents[n] && savedResidents[n].age)
-                div.pure-u-sm-5-12
+                div.pure-u-sm-5-12.padLeftRight15
                     input.form-control.residentRelation(name=type+"[residents]["+n+"][relation]" value=savedResidents[n] && savedResidents[n].relation)
+                div.pure-u-sm-1-6
+                    input.form-control.residentAge(name=type + "[residents][" + n + "][age]" value=savedResidents[n] && savedResidents[n].age)
             - n++

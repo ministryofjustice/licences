@@ -163,24 +163,50 @@ module.exports = function createLicenceService(licenceClient) {
 
     function getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName}) {
 
-        const answers = fieldMap.reduce((answersAccumulator, field) => {
-
-            const fieldName = Object.keys(field)[0];
-            const fieldObject = field[fieldName];
-            const dependentOn = userInput[fieldObject.dependentOn];
-            const predicateResponse = fieldObject.predicate;
-
-            const dependentMatchesPredicate = fieldObject.dependentOn && dependentOn === predicateResponse;
-
-            if (!dependentOn || dependentMatchesPredicate) {
-                return {...answersAccumulator, [fieldName]: userInput[fieldName]};
-            }
-
-            return answersAccumulator;
-
-        }, {});
+        const answers = fieldMap.reduce(answersFromMapReducer(userInput), {});
 
         return {...licence, [licenceSection]: {...licence[licenceSection], [formName]: answers}};
+    }
+
+    function answersFromMapReducer(userInput) {
+
+        return (answersAccumulator, field) => {
+            const {fieldName, answerIsRequired, innerFields, inputIsArray} = getFieldInfo(field, userInput);
+
+            if (!answerIsRequired) {
+                return answersAccumulator;
+            }
+
+            if(inputIsArray) {
+                const arrayOfInputs = userInput[fieldName].map(item => {
+                    return field[fieldName].contains.reduce(answersFromMapReducer(item), {});
+                });
+                return {...answersAccumulator, [fieldName]: arrayOfInputs};
+            }
+
+            if (!isEmpty(innerFields)) {
+                const innerFieldMap = field[fieldName].contains;
+                const innerAnswers = innerFieldMap.reduce(answersFromMapReducer(userInput[fieldName]), {});
+                return {...answersAccumulator, [fieldName]: innerAnswers};
+            }
+
+            return {...answersAccumulator, [fieldName]: userInput[fieldName]};
+        };
+    }
+
+    function getFieldInfo(field, userInput) {
+        const fieldName = Object.keys(field)[0];
+        const fieldConfig = field[fieldName];
+        const fieldDependentOn = userInput[fieldConfig.dependentOn];
+        const predicateResponse = fieldConfig.predicate;
+        const dependentMatchesPredicate = fieldConfig.dependentOn && fieldDependentOn === predicateResponse;
+
+        return {
+            fieldName,
+            answerIsRequired: !fieldDependentOn || dependentMatchesPredicate,
+            innerFields: field[fieldName].contains,
+            inputIsArray: Array.isArray(userInput[fieldName])
+        };
     }
 
     function updateStatus(nomisId, status) {
