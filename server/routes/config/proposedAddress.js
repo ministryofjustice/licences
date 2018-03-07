@@ -9,9 +9,22 @@ module.exports = {
             decisions: {
                 discriminator: 'decision',
                 Yes: '/hdc/taskList/',
-                No: '/hdc/proposedAddress/bassReferral/'
+                No: '/hdc/proposedAddress/addressProposed/'
             },
             path: '/hdc/taskList/'
+        }
+    },
+    addressProposed: {
+        licenceSection: 'addressProposed',
+        fields: [
+            {decision: {}}
+        ],
+        nextPath: {
+            decisions: {
+                discriminator: 'decision',
+                Yes: '/hdc/proposedAddress/curfewAddress/',
+                No: '/hdc/proposedAddress/bassReferral/'
+            }
         }
     },
     bassReferral: {
@@ -22,11 +35,6 @@ module.exports = {
             {proposedCounty: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
         nextPath: {
-            decisions: {
-                discriminator: 'decision',
-                Yes: '/hdc/taskList/',
-                No: '/hdc/proposedAddress/curfewAddress/'
-            },
             path: '/hdc/taskList/'
         }
     },

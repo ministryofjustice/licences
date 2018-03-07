@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+
+    div.pure-g.pure-u-1
+        div.back-link-container.smallPaddingTop
+            a.link-back(href="javascript: window.history.back();") Back
+
+        div.pure-u-1-2
+            h2.heading-large Has the offender proposed a curfew address?
+
+    form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=nomisId || '')
+        div.smallPaddingTop.paddingBottom.largeMarginBottom
+            div.largePaddingBottom
+                div.form-group.inline.smallPaddingTop
+
+                    div.multiple-choice()
+                        input#yes(type="radio" checked=data && data.decision === 'Yes' name="decision" value="Yes")
+                        label(for="yes") Yes
+                    div.multiple-choice
+                        input#no(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
+                        label(for="no") No
+
+            include ../includes/formButtons

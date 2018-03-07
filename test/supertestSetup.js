@@ -77,7 +77,7 @@ const caseListServiceStub = {
     getHdcCaseList: sandbox.stub().returnsPromise().resolves([])
 };
 
-afterEach(() => {
+beforeEach(() => {
     sandbox.reset();
 
     licenceServiceStub.getLicence.resolves({licence: {key: 'value'}});

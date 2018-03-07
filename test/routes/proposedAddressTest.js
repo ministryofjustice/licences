@@ -21,6 +21,7 @@ describe('/hdc/proposedAddress', () => {
     describe('proposed address routes', () => {
         const routes = [
             {url: '/proposedAddress/optOut/1', content: 'decided to opt out'},
+            {url: '/proposedAddress/addressProposed/1', content: 'proposed a curfew address?'},
             {url: '/proposedAddress/bassReferral/1', content: 'BASS referral'},
             {url: '/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'},
             {url: '/proposedAddress/confirmAddress/1', content: 'Confirm address details'},
@@ -30,30 +31,64 @@ describe('/hdc/proposedAddress', () => {
         testFormPageGets(app, routes);
     });
 
-    describe('POST /proposedAddress/:formName/:nomisId', () => {
-        context('When page contains form fields', () => {
-            it('calls updateLicence from licenceService', () => {
+    describe('POST /hdc/proposedAddress/:section/:nomisId', () => {
+        const routes = [
+            {
+                url: '/proposedAddress/optOut/1',
+                body: {nomisId: 1, decision: 'Yes'},
+                section: 'optOut',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/proposedAddress/optOut/1',
+                body: {nomisId: 1, decision: 'No'},
+                section: 'optOut',
+                nextPath: '/hdc/proposedAddress/addressProposed/1'
+            },
+            {
+                url: '/proposedAddress/addressProposed/1',
+                body: {nomisId: 1, decision: 'Yes'},
+                section: 'addressProposed',
+                nextPath: '/hdc/proposedAddress/curfewAddress/1'
+            },
+            {
+                url: '/proposedAddress/addressProposed/1',
+                body: {nomisId: 1, decision: 'No'},
+                section: 'addressProposed',
+                nextPath: '/hdc/proposedAddress/bassReferral/1'
+            },
+            {
+                url: '/proposedAddress/bassReferral/1',
+                body: {nomisId: 1},
+                section: 'bassReferral',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/proposedAddress/curfewAddress/1',
+                body: {nomisId: 1},
+                section: 'curfewAddress',
+                nextPath: '/hdc/proposedAddress/confirmAddress/1'
+            }
+        ];
 
-                const formResponse = {
-                    nomisId: '1',
-                    decision: 'Yes',
-                    reason: 'sexOffenderRegister'
-                };
-
+        routes.forEach(route => {
+            it(`renders the correct path '${route.nextPath}' page`, () => {
                 return request(app)
-                    .post('/proposedAddress/optOut/1')
-                    .send(formResponse)
+                    .post(route.url)
+                    .send(route.body)
                     .expect(302)
                     .expect(res => {
                         expect(licenceServiceStub.update).to.be.calledOnce();
                         expect(licenceServiceStub.update).to.be.calledWith({
                             licence: {key: 'value'},
                             nomisId: '1',
-                            fieldMap: formConfig.optOut.fields,
-                            userInput: formResponse,
+                            fieldMap: formConfig[route.section].fields,
+                            userInput: route.body,
                             licenceSection: 'proposedAddress',
-                            formName: 'optOut'
+                            formName: route.section
                         });
+
+                        expect(res.header.location).to.equal(route.nextPath);
                     });
             });
         });
