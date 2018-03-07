@@ -1,20 +1,24 @@
-h2.heading-medium.borderBottom.separatorTitle Planned curfew address
--var address = licence.proposedAddress.curfewAddress
+h2.heading-medium.borderBottomLightThick.separatorTitle Proposed curfew address
 
+-var address = licence.proposedAddress.curfewAddress.preferred
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         span Address
     div.pure-u-1-2
-        div#dischargeAddress
-            if address.addressLine1
-                span.block.bold #{address.addressLine1}
-            if address.addressLine2
-                span.block.bold #{address.addressLine2}
-            if address.addressTown
-                span.block.bold #{address.addressTown}
-            if address.postCode
-                span.block.bold #{address.postCode}
+        div.pure-g
+            div.pure-u-1-2#dischargeAddress
+                if address.addressLine1
+                    span#address1.block.bold #{address.addressLine1}
+                if address.addressLine2
+                    span#address2.block.bold #{address.addressLine2}
+                if address.addressTown
+                    span#town.block.bold #{address.addressTown}
+                if address.postCode
+                    span#postCode.block.bold #{address.postCode}
+            div.pure-u-1-2.alignRight
+                if user.role === 'RO'
+                    a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -22,7 +26,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div#dischargeContactName
             if address.telephone
-                span.bold #{address.telephone}
+                span#telephone.bold #{address.telephone}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -31,11 +35,11 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-g
             if address.occupier
                 div.pure-u-md-2-5
-                    span.bold #{address.occupier.name}
+                    span#occupierName.bold #{address.occupier.name}
                 div.pure-u-md-1-5
-                    span.bold #{address.occupier.age}
+                    span#occupierAge.bold #{address.occupier.age}
                 div.pure-u-md-2-5
-                    span.bold #{address.occupier.relationship}
+                    span#occupierRelation.bold #{address.occupier.relationship}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -43,49 +47,60 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             if address.residents
-                for resident in address.residents
-                    if (resident.name !== "" && resident.age !== "" && resident.relation !== "")
-                        div.pure-u-md-2-5
-                            span.bold #{resident.name}
-                        div.pure-u-md-1-5
-                            span.bold #{resident.age}
-                        div.pure-u-md-2-5
-                            span.bold #{resident.relation}
+                for resident, index in address.residents
+                    if(resident.name != '' || resident.age != '' || resident.relation != '')
+                        div.pure-u-1.resident
+                            div.pure-u-md-2-5
+                                span.bold(id="residentName-" + index) #{resident.name}
+                            div.pure-u-md-1-5
+                                span.bold(id="residentAge-" + index) #{resident.age}
+                            div.pure-u-md-2-5
+                                span.bold(id="residentRelation-" + index) #{resident.relation}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             div.pure-u-3-4
-                span Has the offender been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+                span According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
     div.pure-u-1-2
         div#dischargeContactNumber
             if address.cautionedAgainstResident
-                span.bold #{address.cautionedAgainstResident}
+                span#cautioned.bold #{address.cautionedAgainstResident}
 
-div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
-        div.pure-g
-            div.pure-u-3-4
-                span Does the homeowner/landlord give informed consent to HDC at the address?
-    div.pure-u-1-2
-        div#dischargeHomeAddress
-            span.bold NO IDEA
+if licence.curfew && licence.curfew.curfewAddressReview
+    -var addressReview = licence.curfew.curfewAddressReview
+    -var addressSafety = licence.curfew.addressSafety
 
-div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
-        span Was a home visit conducted in this case?
-    div.pure-u-1-2
-        span.bold NO IDEA
+    div.pure-g.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2
+            div.pure-g
+                div.pure-u-3-4
+                    span Does the homeowner/landlord give informed consent to HDC at the address?
+        div.pure-u-1-2
+            div#dischargeHomeAddress
+                span#consent.bold #{addressReview.consent}
 
-div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
-        span Does the address have an electricity supply?
-    div.pure-u-1-2
-        if address.electricity
-            span.bold #{address.electricity}
+    div.pure-g.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2
+            span Was a home visit conducted in this case?
+        div.pure-u-1-2
+            span#homeVisit.bold #{addressReview.homeVisitConducted}
 
-div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
-        span Are you happy for this to be the curfew address?
-    div.pure-u-1-2
-        span.bold NO IDEA
+    div.pure-g.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2
+            span Does the address have an electricity supply?
+        div.pure-u-1-2
+            if address.electricity
+                span#electricity.bold #{addressReview.electricity}
+
+    div.pure-g.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2
+            span Could this offender be managed safely at address?
+        div.pure-u-1-2
+            span#deemedSafe.bold #{addressSafety.deemedSafe}
+else
+    div.pure-g.midPaddingTopBottom
+        div.pure-u-1-2
+            div.pure-g
+                div.pure-u-3-4
+                    span Address not reviewed

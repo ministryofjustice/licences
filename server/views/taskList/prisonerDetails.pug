@@ -3,7 +3,7 @@ h2.heading-medium Offender details
 div#personalDetails.pure-g.borderBottom.paddingBottom
     div.pure-u-1.pure-u-md-5-24
         if prisonerInfo.imageId
-            img#prisonerImage.pure-img(src= "image/" + prisonerInfo.imageId)
+            img#prisonerImage.pure-img(src= "/hdc/taskList/image/" + prisonerInfo.imageId)
         else
             img#prisonerImage(src= "/public/images/placeholder.png")
         if(prisonerInfo.captureDate)
@@ -34,8 +34,8 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
         div.midMarginBottom
             | Location
             if(prisonerInfo.agencyLocationDesc)
-                span#prisonerLocation.block.bold #{prisonerInfo.internalLocationDesc}
-                span#prisonerLocation.block.bold #{prisonerInfo.agencyLocationDesc}
+                span#prisonerLocationInternal.block.bold #{prisonerInfo.internalLocationDesc}
+                span#prisonerLocationExternal.block.bold #{prisonerInfo.agencyLocationDesc}
 
         div.midMarginBottom
             | Type of offence(s)

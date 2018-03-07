@@ -17,7 +17,7 @@ const formConfig = {
     ...reporting
 };
 
-module.exports = function({logger, licenceService, conditionsService, authenticationMiddleware}) {
+module.exports = function({logger, licenceService, conditionsService, prisonerService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -108,6 +108,18 @@ module.exports = function({logger, licenceService, conditionsService, authentica
 
             res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         }));
+
+    router.get('/licenceDetails/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+        const {nomisId} = req.params;
+        logger.debug('GET licenceDetails/:nomisId');
+
+        const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
+        const licence = getIn(rawLicence, ['licence']) || {};
+
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
+
+        res.render(`licenceDetails/licenceDetails`, {nomisId, licence, prisonerInfo});
+    }));
 
     // standard routes
 

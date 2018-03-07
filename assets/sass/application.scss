@@ -102,6 +102,10 @@ a.button.button-secondary {
     border-bottom: solid $grey-2 1px;
 }
 
+.borderBottomLightThick {
+    border-bottom: solid $grey-2 3px;
+}
+
 .borderTop {
     border-top: solid $grey-1 2px;
 }
@@ -115,8 +119,10 @@ a.button.button-secondary {
 }
 
 .separatorTitle {
-    padding-top: 1.875em;
+    padding-top: 1.25em;
     margin-top: 0;
+    padding-bottom: 5px;
+    margin-bottom: 0px
 }
 
 .subText {
@@ -166,6 +172,10 @@ a.button.button-secondary {
 
 .padLeft7 {
     padding-left: 7px;
+}
+
+.alignRight {
+    text-align: right;
 }
 
 #global-header #logo.hmppslogo {
