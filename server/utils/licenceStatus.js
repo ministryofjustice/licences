@@ -237,7 +237,7 @@ function getCurfewAddressState(licence) {
 function getCurfewAddressReviewState(licence) {
 
     const consentAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'consent']);
-    const electricitytAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']);
+    const electricityAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']);
 
     const deemedSafeAnswer = getIn(licence, ['curfew', 'addressSafety', 'deemedSafe']);
 
@@ -257,26 +257,18 @@ function getCurfewAddressReviewState(licence) {
             return taskStates.STARTED;
         }
 
-        if (consentAnswer === 'Yes' && electricitytAnswer !== 'No') {
-            if (isEmpty(electricitytAnswer)) {
+        if (consentAnswer === 'Yes') {
+            if (isEmpty(electricityAnswer)) {
                 return taskStates.STARTED;
             }
 
-            // Is this mandatory?
-            // if(isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'homeVisitConducted']))) {
-            //     return taskStates.STARTED;
-            // }
+            if (electricityAnswer === 'No') {
+                return taskStates.DONE;
+            }
 
             if (isEmpty(deemedSafeAnswer)) {
                 return taskStates.STARTED;
             }
-
-            // if (deemedSafeAnswer.startsWith('Yes')) {
-                // Is this mandatory?
-            //     if (isEmpty(getIn(licence, ['curfew', 'addressSafety', 'reason']))) {
-            //         return taskStates.STARTED;
-            //     }
-            // }
         }
 
         return taskStates.DONE;
@@ -285,7 +277,7 @@ function getCurfewAddressReviewState(licence) {
     function getApproved(licence) {
         return curfewAddressReview === taskStates.DONE
             && consentAnswer === 'Yes'
-            && electricitytAnswer === 'Yes'
+            && electricityAnswer === 'Yes'
             && deemedSafeAnswer.startsWith('Yes');
     }
 }
