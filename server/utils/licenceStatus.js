@@ -38,7 +38,7 @@ function getRequiredState(stage, licence) {
     const config = {
         [licenceStages.ELIGIBILITY]: [getEligibilityStageState],
         [licenceStages.PROCESSING_RO]: [getEligibilityStageState, getRoStageState],
-        [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState],
+        [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState, getCaStageState],
         [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getApprovalStageState],
         [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getApprovalStageState]
     };
@@ -58,12 +58,11 @@ const combiner = (acc, data) => {
 };
 
 function getApprovalStageState(licence) {
-    const {approved, refused, postponed, approval} = getApprovalState(licence);
+    const {approved, refused, approval} = getApprovalState(licence);
     return {
         decisions: {
             approved,
-            refused,
-            postponed
+            refused
         },
         tasks: {
             approval
@@ -95,6 +94,11 @@ function getRoStageState(licence) {
             licenceConditions
         }
     };
+}
+
+function getCaStageState(licence) {
+    // todo
+    return {};
 }
 
 function getEligibilityStageState(licence) {
@@ -214,7 +218,6 @@ function getApprovalState(licence) {
     return {
         approved: getIn(licence, ['approval']) === 'Yes',
         refused: getIn(licence, ['approval']) === 'No',
-        postponed: getIn(licence, ['postponed']) === 'Yes',
         approval: getIn(licence, ['approval']) ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
@@ -234,8 +237,9 @@ function getCurfewAddressState(licence) {
 function getCurfewAddressReviewState(licence) {
 
     const consentAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'consent']);
-    const deemedSafeAnswer = getIn(licence, ['curfew', 'addressSafety', 'deemedSafe']);
+    const electricitytAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']);
 
+    const deemedSafeAnswer = getIn(licence, ['curfew', 'addressSafety', 'deemedSafe']);
 
     const curfewAddressReview = getState(licence);
     const curfewAddressApproved = getApproved(licence);
@@ -253,24 +257,32 @@ function getCurfewAddressReviewState(licence) {
             return taskStates.STARTED;
         }
 
-        if (isEmpty(deemedSafeAnswer)) {
-            return taskStates.STARTED;
-        }
-
         if (consentAnswer === 'Yes') {
-            if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']))) {
+            if (isEmpty(electricitytAnswer)) {
                 return taskStates.STARTED;
             }
             if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'homeVisitConducted']))) {
                 return taskStates.STARTED;
             }
+            if (isEmpty(deemedSafeAnswer)) {
+                return taskStates.STARTED;
+            }
+           // if (deemedSafeAnswer.startsWith('Yes')) {
+                // Is this mandatory?
+            //     if (isEmpty(getIn(licence, ['curfew', 'addressSafety', 'reason']))) {
+            //         return taskStates.STARTED;
+            //     }
+            // }
         }
 
         return taskStates.DONE;
     }
 
     function getApproved(licence) {
-        return curfewAddressReview === taskStates.DONE && consentAnswer === 'Yes' && deemedSafeAnswer === 'Yes';
+        return curfewAddressReview === taskStates.DONE
+            && consentAnswer === 'Yes'
+            && electricitytAnswer === 'Yes'
+            && deemedSafeAnswer.startsWith('Yes');
     }
 }
 
