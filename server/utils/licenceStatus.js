@@ -257,17 +257,21 @@ function getCurfewAddressReviewState(licence) {
             return taskStates.STARTED;
         }
 
-        if (consentAnswer === 'Yes') {
+        if (consentAnswer === 'Yes' && electricitytAnswer !== 'No') {
             if (isEmpty(electricitytAnswer)) {
                 return taskStates.STARTED;
             }
-            if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'homeVisitConducted']))) {
-                return taskStates.STARTED;
-            }
+
+            // Is this mandatory?
+            // if(isEmpty(getIn(licence, ['curfew', 'curfewAddressReview', 'homeVisitConducted']))) {
+            //     return taskStates.STARTED;
+            // }
+
             if (isEmpty(deemedSafeAnswer)) {
                 return taskStates.STARTED;
             }
-           // if (deemedSafeAnswer.startsWith('Yes')) {
+
+            // if (deemedSafeAnswer.startsWith('Yes')) {
                 // Is this mandatory?
             //     if (isEmpty(getIn(licence, ['curfew', 'addressSafety', 'reason']))) {
             //         return taskStates.STARTED;
