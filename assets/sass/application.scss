@@ -351,3 +351,13 @@ a.namedAnchor {
     width: 190px;
 
 }
+
+// Case lists status markers
+.terminalStateAlert {
+    font-weight: bold;
+    color: $red;
+}
+
+.terminalStateWarn {
+    font-weight: bold;
+}

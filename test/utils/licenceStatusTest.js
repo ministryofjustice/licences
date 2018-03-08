@@ -95,8 +95,7 @@ describe('getLicenceStatus', () => {
                     }
                 },
                 approval: 'Yes',
-                addressRejected: 'Yes',
-                postponed: 'Yes'
+                addressRejected: 'Yes'
             }
         };
 
@@ -112,7 +111,6 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.victimLiasionNeeded).to.eql(true);
         expect(status.decisions.approved).to.eql(true);
         expect(status.decisions.refused).to.eql(false);
-        expect(status.decisions.postponed).to.eql(true);
     });
 
     it('should show licence conditions data', () => {
@@ -167,8 +165,7 @@ describe('getLicenceStatus', () => {
                     }
                 },
                 approval: 'No',
-                addressRejected: 'No',
-                postponed: 'No'
+                addressRejected: 'No'
             }
         };
 
@@ -184,7 +181,6 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.victimLiasionNeeded).to.eql(false);
         expect(status.decisions.approved).to.eql(false);
         expect(status.decisions.refused).to.eql(true);
-        expect(status.decisions.postponed).to.eql(false);
     });
 
     it('should show eligible when eligibility decisions false', () => {
@@ -363,5 +359,51 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.riskManagement).to.eql(taskStates.DONE);
         expect(status.tasks.reportingInstructions).to.eql(taskStates.DONE);
         expect(status.tasks.approval).to.eql(taskStates.DONE);
+    });
+
+    it('should show address review DONE when deemed safe is pending', () => {
+        const licence = {
+            status: 'PROCESSING_CA',
+            licence: {
+                curfew: {
+                    curfewAddressReview: {
+                        consent: 'Yes',
+                        electricity: 'Yes',
+                        homeVisitConducted: 'Yes'
+                    },
+                    addressSafety: {
+                        deemedSafe: 'Yes - pending confirmation of risk management planning'
+                    },
+                    curfewHours: 'anything'
+                }
+            }
+        };
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE);
+    });
+
+    it('should show address review APPROVED when deemed safe is pending and home visit is no', () => {
+        const licence = {
+            status: 'PROCESSING_CA',
+            licence: {
+                curfew: {
+                    curfewAddressReview: {
+                        consent: 'Yes',
+                        electricity: 'Yes',
+                        homeVisitConducted: 'No'
+                    },
+                    addressSafety: {
+                        deemedSafe: 'Yes - pending confirmation of risk management planning'
+                    },
+                    curfewHours: 'anything'
+                }
+            }
+        };
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.decisions.curfewAddressApproved).to.eql(true);
     });
 });
