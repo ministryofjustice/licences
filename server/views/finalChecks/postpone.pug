@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+
+    - var postponedValue = data.decision || null;
+
+    div.pure-g.pure-u-1
+        div.back-link-container.smallPaddingTop
+            a.link-back(href="javascript: window.history.back();") Back
+
+        div.pure-u-2-3
+            h2.heading-large Postpone?
+
+    form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=nomisId || '')
+        div.smallPaddingTop.paddingBottom.largeMarginBottom
+
+            div.largePaddingBottom
+                div.form-group.inline
+                    div.multiple-choice
+                        input#postponedYes(type="radio" checked=postponedValue === 'Yes'  name="decision" value="Yes")
+                        label(for="postponedYes") Yes
+                    div.multiple-choice
+                        input#postponedNo(type="radio" checked=postponedValue === 'No' name="decision" value="No")
+                        label(for="postponedNo") No
+
+            div.paddingBottom.smallPaddingTop
+                div.pure-u-1.inlineButtons
+                    input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to tasklist

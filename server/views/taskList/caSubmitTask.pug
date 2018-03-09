@@ -8,6 +8,8 @@ div.largeMarginBottom.borderTop
             if licenceStatus.stage === 'PROCESSING_CA'
                 if allowedTransitions.caToDm
                     | Ready to submit
+                else if licenceStatus.decisions.postponed
+                    | Licence postponed
                 else
                     | Tasks not yet complete
             else

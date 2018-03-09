@@ -67,7 +67,9 @@ describe('getAllowedTransitions', () => {
                 crdTime: 'DONE',
                 suitability: 'DONE',
                 optOut: 'DONE',
-                bassReferral: 'DONE'
+                bassReferral: 'DONE',
+                curfewAddress: 'DONE',
+                finalChecks: 'DONE'
             },
             decisions: {
                 postponed: false,

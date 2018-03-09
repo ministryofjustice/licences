@@ -23,6 +23,9 @@ function getLicenceStatus(licenceRecord) {
                 curfewHours: taskStates.UNSTARTED,
                 reportingInstructions: taskStates.UNSTARTED,
                 licenceConditions: taskStates.UNSTARTED,
+                seriousOffenceCheck: taskStates.UNSTARTED,
+                onRemandCheck: taskStates.UNSTARTED,
+                finalChecks: taskStates.UNSTARTED,
                 approval: taskStates.UNSTARTED
             }
         };
@@ -39,8 +42,8 @@ function getRequiredState(stage, licence) {
         [licenceStages.ELIGIBILITY]: [getEligibilityStageState],
         [licenceStages.PROCESSING_RO]: [getEligibilityStageState, getRoStageState],
         [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState, getCaStageState],
-        [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getApprovalStageState],
-        [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getApprovalStageState]
+        [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
+        [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
     };
 
     return config[stage].map(getStateMethod => getStateMethod(licence));
@@ -97,8 +100,25 @@ function getRoStageState(licence) {
 }
 
 function getCaStageState(licence) {
-    // todo
-    return {};
+    const {seriousOffence, seriousOffenceCheck} = getSeriousOffenceCheckTaskState(licence);
+    const {onRemand, onRemandCheck} = getOnRemandCheckTaskState(licence);
+    const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck]);
+    const finalCheckPass = !(seriousOffence || onRemand);
+    const {postponed} = getPostponedState(licence);
+
+    return {
+        decisions: {
+            seriousOffence,
+            onRemand,
+            finalCheckPass,
+            postponed
+        },
+        tasks: {
+            seriousOffenceCheck,
+            onRemandCheck,
+            finalChecks
+        }
+    };
 }
 
 function getEligibilityStageState(licence) {
@@ -110,7 +130,7 @@ function getEligibilityStageState(licence) {
 
     const {optedOut, optOut} = getOptOutState(licence);
     const {bassReferralNeeded, bassReferral} = getBassReferralState(licence);
-    const {curfewAddress} = getCurfewAddressState(licence);
+    const {curfewAddress} = getCurfewAddressState(licence, optedOut, bassReferralNeeded);
 
     return {
         decisions: {
@@ -222,14 +242,35 @@ function getApprovalState(licence) {
     };
 }
 
-function getCurfewAddressState(licence) {
+function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
     return {
         curfewAddress: getState(licence)
     };
 
     function getState(licence) {
-        return getIn(licence, ['proposedAddress']) ? taskStates.STARTED : taskStates.UNSTARTED;
-        // todo DONE when all elements have values
+
+        if (optedOut || bassReferralNeeded) {
+            return taskStates.DONE;
+        }
+
+        if (isEmpty(getIn(licence, ['proposedAddress', 'curfewAddress']))) {
+            return taskStates.UNSTARTED;
+        }
+        if (isEmpty(getIn(licence, ['proposedAddress', 'curfewAddress', 'addressLine1']))) {
+            return taskStates.UNSTARTED;
+        }
+
+        // todo mandatory address elements
+
+        if (isEmpty(getIn(licence, ['proposedAddress', 'curfewAddress', 'occupier']))) {
+            return taskStates.STARTED;
+        }
+
+        if (isEmpty(getIn(licence, ['proposedAddress', 'curfewAddress', 'cautionedAgainstResident']))) {
+            return taskStates.STARTED;
+        }
+
+        return taskStates.DONE;
     }
 }
 
@@ -242,7 +283,7 @@ function getCurfewAddressReviewState(licence) {
     const deemedSafeAnswer = getIn(licence, ['curfew', 'addressSafety', 'deemedSafe']);
 
     const curfewAddressReview = getState(licence);
-    const curfewAddressApproved = getApproved(licence);
+    const curfewAddressApproved = getApproved();
 
 
     return {curfewAddressReview, curfewAddressApproved};
@@ -274,7 +315,7 @@ function getCurfewAddressReviewState(licence) {
         return taskStates.DONE;
     }
 
-    function getApproved(licence) {
+    function getApproved() {
         return curfewAddressReview === taskStates.DONE
             && consentAnswer === 'Yes'
             && electricityAnswer === 'Yes'
@@ -291,10 +332,23 @@ function getCurfewHoursState(licence) {
 function getReportingInstructionsState(licence) {
 
     return {
-        reportingInstructions:
-            getIn(licence, ['reporting', 'reportingInstructions']) ? taskStates.DONE : taskStates.UNSTARTED
-        // todo check for missing mandatory elements
+        reportingInstructions: getState(licence)
     };
+
+    function getState(licence) {
+
+        if (isEmpty(getIn(licence, ['reporting', 'reportingInstructions']))) {
+            return taskStates.UNSTARTED;
+        }
+
+        if (isEmpty(getIn(licence, ['reporting', 'reportingInstructions', 'name']))) {
+            return taskStates.UNSTARTED;
+        }
+
+        // todo mandatory reportin instructions elements
+
+        return taskStates.DONE;
+    }
 }
 
 function getLicenceConditionsState(licence) {
@@ -328,12 +382,41 @@ function getLicenceConditionsState(licence) {
     };
 }
 
+function getSeriousOffenceCheckTaskState(licence) {
+
+    const seriousOffenceAnswer = getIn(licence, ['finalChecks', 'seriousOffence', 'decision']);
+
+    return {
+        seriousOffence: seriousOffenceAnswer && seriousOffenceAnswer === 'Yes',
+        seriousOffenceCheck: seriousOffenceAnswer ? taskStates.DONE : taskStates.UNSTARTED
+    };
+}
+
+function getOnRemandCheckTaskState(licence) {
+
+    const onRemandAnswer = getIn(licence, ['finalChecks', 'onRemand', 'decision']);
+
+    return {
+        onRemand: onRemandAnswer && onRemandAnswer === 'Yes',
+        onRemandCheck: onRemandAnswer ? taskStates.DONE : taskStates.UNSTARTED
+    };
+}
+
+function getPostponedState(licence) {
+
+    const postponedAnswer = getIn(licence, ['finalChecks', 'postponed', 'decision']);
+
+    return {
+        postponed: postponedAnswer && postponedAnswer === 'Yes'
+    };
+}
+
 function getOverallState(tasks) {
-    if (tasks.some(it => it === taskStates.STARTED)) {
-        return taskStates.STARTED;
-    } else if (tasks.every(it => it === taskStates.UNSTARTED)) {
+    if (tasks.every(it => it === taskStates.UNSTARTED)) {
         return taskStates.UNSTARTED;
-    } else {
+    } else if (tasks.every(it => it === taskStates.DONE)) {
         return taskStates.DONE;
+    } else {
+        return taskStates.STARTED;
     }
 }

@@ -50,6 +50,9 @@ describe('getLicenceStatus', () => {
             curfewHours: taskStates.UNSTARTED,
             reportingInstructions: taskStates.UNSTARTED,
             licenceConditions: taskStates.UNSTARTED,
+            seriousOffenceCheck: taskStates.UNSTARTED,
+            onRemandCheck: taskStates.UNSTARTED,
+            finalChecks: taskStates.UNSTARTED,
             approval: taskStates.UNSTARTED
         });
     });
@@ -94,6 +97,17 @@ describe('getLicenceStatus', () => {
                         victimLiaison: 'Yes'
                     }
                 },
+                finalChecks: {
+                    seriousOffence: {
+                        decision: 'Yes'
+                    },
+                    onRemand: {
+                        decision: 'Yes'
+                    },
+                    postponed: {
+                        decision: 'Yes'
+                    }
+                },
                 approval: 'Yes',
                 addressRejected: 'Yes'
             }
@@ -109,6 +123,10 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.curfewAddressApproved).to.eql(true);
         expect(status.decisions.riskManagementNeeded).to.eql(true);
         expect(status.decisions.victimLiasionNeeded).to.eql(true);
+        expect(status.decisions.seriousOffence).to.eql(true);
+        expect(status.decisions.onRemand).to.eql(true);
+        expect(status.decisions.finalCheckPass).to.eql(false);
+        expect(status.decisions.postponed).to.eql(true);
         expect(status.decisions.approved).to.eql(true);
         expect(status.decisions.refused).to.eql(false);
     });
@@ -164,6 +182,17 @@ describe('getLicenceStatus', () => {
                         decision: 'No'
                     }
                 },
+                finalChecks: {
+                    seriousOffence: {
+                        decision: 'No'
+                    },
+                    onRemand: {
+                        decision: 'No'
+                    },
+                    postponed: {
+                        decision: 'No'
+                    }
+                },
                 approval: 'No',
                 addressRejected: 'No'
             }
@@ -179,6 +208,10 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.curfewAddressApproved).to.eql(false);
         expect(status.decisions.riskManagementNeeded).to.eql(false);
         expect(status.decisions.victimLiasionNeeded).to.eql(false);
+        expect(status.decisions.seriousOffence).to.eql(false);
+        expect(status.decisions.onRemand).to.eql(false);
+        expect(status.decisions.finalCheckPass).to.eql(true);
+        expect(status.decisions.postponed).to.eql(false);
         expect(status.decisions.approved).to.eql(false);
         expect(status.decisions.refused).to.eql(true);
     });
@@ -250,6 +283,9 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.licenceConditions).to.eql(taskStates.UNSTARTED);
         expect(status.tasks.riskManagement).to.eql(taskStates.UNSTARTED);
         expect(status.tasks.reportingInstructions).to.eql(taskStates.UNSTARTED);
+        expect(status.tasks.seriousOffenceCheck).to.eql(taskStates.UNSTARTED);
+        expect(status.tasks.onRemandCheck).to.eql(taskStates.UNSTARTED);
+        expect(status.tasks.finalChecks).to.eql(taskStates.UNSTARTED);
         expect(status.tasks.approval).to.eql(taskStates.UNSTARTED);
     });
 
@@ -257,7 +293,11 @@ describe('getLicenceStatus', () => {
         const licence = {
             status: 'APPROVAL',
             licence: {
-                proposedAddress: {},
+                proposedAddress: {
+                    curfewAddress: {
+                        addressLine1: 'line'
+                    }
+                },
                 licenceConditions: {
                     standard: {
                         additionalConditionsRequired: 'Yes'
@@ -275,6 +315,11 @@ describe('getLicenceStatus', () => {
                 },
                 reporting: {
                     reportingInstructions: {}
+                },
+                finalChecks: {
+                    seriousOffence: {
+                        decision: 'No'
+                    }
                 }
             }
         };
@@ -285,6 +330,7 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.curfewAddressReview).to.eql(taskStates.STARTED);
         expect(status.tasks.licenceConditions).to.eql(taskStates.STARTED);
         expect(status.tasks.riskManagement).to.eql(taskStates.STARTED);
+        expect(status.tasks.finalChecks).to.eql(taskStates.STARTED);
     });
 
     it('should show tasks DONE when task data complete', () => {
@@ -313,6 +359,11 @@ describe('getLicenceStatus', () => {
                         decision: 'Yes',
                         town: 'blah',
                         county: 'blah'
+                    },
+                    curfewAddress: {
+                        addressLine1: 'line',
+                        occupier: 'occupier',
+                        cautionedAgainstResident: 'Yes'
                     }
                 },
                 curfew: {
@@ -338,7 +389,20 @@ describe('getLicenceStatus', () => {
                     }
                 },
                 reporting: {
-                    reportingInstructions: 'anything'
+                    reportingInstructions: {
+                        name: 'name'
+                    }
+                },
+                finalChecks: {
+                    seriousOffence: {
+                        decision: 'Yes'
+                    },
+                    onRemand: {
+                        decision: 'Yes'
+                    },
+                    postponed: {
+                        decision: 'Yes'
+                    }
                 },
                 approval: 'Yes'
             }
@@ -352,12 +416,15 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.eligibility).to.eql(taskStates.DONE);
         expect(status.tasks.optOut).to.eql(taskStates.DONE);
         expect(status.tasks.bassReferral).to.eql(taskStates.DONE);
-        expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED); // todo
+        expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
         expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE);
         expect(status.tasks.curfewHours).to.eql(taskStates.DONE);
         expect(status.tasks.licenceConditions).to.eql(taskStates.DONE);
         expect(status.tasks.riskManagement).to.eql(taskStates.DONE);
         expect(status.tasks.reportingInstructions).to.eql(taskStates.DONE);
+        expect(status.tasks.seriousOffenceCheck).to.eql(taskStates.DONE);
+        expect(status.tasks.onRemandCheck).to.eql(taskStates.DONE);
+        expect(status.tasks.finalChecks).to.eql(taskStates.DONE);
         expect(status.tasks.approval).to.eql(taskStates.DONE);
     });
 

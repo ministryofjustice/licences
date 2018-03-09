@@ -1,0 +1,13 @@
+div.largeMarginBottom.borderTop
+    h2.heading-medium Final checks
+
+    div.borderBottomLight.largeMarginBottom
+
+    div.pure-g
+        div.pure-u-3-4
+            if licenceStatus.tasks.finalChecks === 'DONE'
+                | Checks complete
+            else
+                | Not yet complete
+        div.pure-u-1-4
+            +proceed(licenceStatus.tasks.finalChecks, 'UNSTARTED', 'Start', 'View', "/hdc/finalChecks/seriousOffence/" + prisonerInfo.offenderNo)
