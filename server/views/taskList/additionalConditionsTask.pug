@@ -10,9 +10,13 @@ div.largeMarginBottom.borderTop
                     div Standard conditions only
                 else
                     if licenceStatus.decisions.additional
-                        div #{licenceStatus.decisions.additional} additional condition(s) added
+                        div #{licenceStatus.decisions.additional}
+                             +pluralise(licenceStatus.decisions.additional, ' additional condition')
+                             |  added
                     if licenceStatus.decisions.bespoke
-                        div #{licenceStatus.decisions.bespoke} bespoke condition(s) added
+                        div #{licenceStatus.decisions.bespoke}
+                            +pluralise(licenceStatus.decisions.bespoke, ' bespoke condition')
+                            |  added
             else
                 | No conditions added
         div.pure-u-1-4

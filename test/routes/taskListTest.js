@@ -69,6 +69,9 @@ describe('GET /taskList/:prisonNumber', () => {
                         },
                         suitability: {
                             decision: 'No'
+                        },
+                        crdTime: {
+                            decision: 'No'
                         }
                     }
                 }
@@ -431,7 +434,9 @@ describe('GET /taskList/:prisonNumber', () => {
                             standard: {additionalConditionsRequired: 'No'}
                         },
                         reporting: {
-                            reportingInstructions: 'anything'
+                            reportingInstructions: {
+                                name: 'name'
+                            }
                         }
                     }
                 });

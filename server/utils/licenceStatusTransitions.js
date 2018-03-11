@@ -54,8 +54,8 @@ function canSendCaToRo(licenceStatus) {
         tasks.crdTime,
         tasks.suitability,
         tasks.optOut,
-        tasks.bassReferral
-        // tasks.curfewAddress
+        tasks.bassReferral,
+        tasks.curfewAddress
     ];
 
     return required.every(it => it === taskStates.DONE);
@@ -63,7 +63,21 @@ function canSendCaToRo(licenceStatus) {
 
 function canSendCaToDm(licenceStatus) {
 
+    const tasks = licenceStatus.tasks;
     const decisions = licenceStatus.decisions;
 
-    return (!decisions.postponed && !decisions.excluded && decisions.curfewAddressApproved);
+    const required = [
+        tasks.finalChecks
+    ];
+
+    const tasksComplete = required.every(it => it === taskStates.DONE);
+
+    const decisionsOk =
+        !decisions.excluded &&
+        !decisions.postponed &&
+        // todo should it be possible to send to DM if serious offence / on remand?
+        // decisions.finalCheckPass &&
+        decisions.curfewAddressApproved;
+
+    return tasksComplete && decisionsOk;
 }

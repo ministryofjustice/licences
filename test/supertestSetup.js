@@ -13,15 +13,17 @@ const licenceConditionsConfig = require('../server/routes/config/licenceConditio
 const eligibilityConfig = require('../server/routes/config/eligibility');
 const proposedAddressConfig = require('../server/routes/config/proposedAddress');
 const curfewConfig = require('../server/routes/config/curfew');
-const reporting = require('../server/routes/config/reporting');
+const reportingConfig = require('../server/routes/config/reporting');
 const riskConfig = require('../server/routes/config/risk');
+const finalChecksConfig = require('../server/routes/config/finalChecks');
 const formConfig = {
     ...licenceConditionsConfig,
     ...eligibilityConfig,
     ...proposedAddressConfig,
     ...curfewConfig,
     ...riskConfig,
-    ...reporting
+    ...reportingConfig,
+    ...finalChecksConfig
 };
 
 const authenticationMiddleware = auth.authenticationMiddleware;
