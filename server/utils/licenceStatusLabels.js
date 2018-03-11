@@ -95,7 +95,7 @@ function decisionLabel(licenceStatus) {
         {decision: 'refused', label: 'Refused'}
     ];
 
-    return getLabel(labels, licenceStatus) || '';
+    return getLabel(labels, licenceStatus) || 'Not complete';
 }
 
 function getLabel(labels, licenceStatus) {

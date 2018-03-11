@@ -235,10 +235,12 @@ function getRiskManagementState(licence) {
 
 function getApprovalState(licence) {
 
+    const decision = getIn(licence, ['approval', 'release', 'decision']);
+
     return {
-        approved: getIn(licence, ['approval']) === 'Yes',
-        refused: getIn(licence, ['approval']) === 'No',
-        approval: getIn(licence, ['approval']) ? taskStates.DONE : taskStates.UNSTARTED
+        approved: decision === 'Yes',
+        refused: decision === 'No',
+        approval: isEmpty(decision) ? taskStates.UNSTARTED : taskStates.DONE
     };
 }
 

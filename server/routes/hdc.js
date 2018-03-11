@@ -5,8 +5,9 @@ const licenceConditionsConfig = require('./config/licenceConditions');
 const eligibilityConfig = require('./config/eligibility');
 const proposedAddressConfig = require('./config/proposedAddress');
 const curfewConfig = require('./config/curfew');
-const reporting = require('./config/reporting');
-const finalChecks = require('./config/finalChecks');
+const reportingConfig = require('./config/reporting');
+const finalChecksConfig = require('./config/finalChecks');
+const approvalConfig = require('./config/approval');
 const {getPathFor} = require('../utils/routes');
 const riskConfig = require('./config/risk');
 const formConfig = {
@@ -15,8 +16,9 @@ const formConfig = {
     ...proposedAddressConfig,
     ...curfewConfig,
     ...riskConfig,
-    ...reporting,
-    ...finalChecks
+    ...reportingConfig,
+    ...finalChecksConfig,
+    ...approvalConfig
 };
 
 module.exports = function({logger, licenceService, conditionsService, prisonerService, authenticationMiddleware}) {

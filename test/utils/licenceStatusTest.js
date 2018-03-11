@@ -108,8 +108,11 @@ describe('getLicenceStatus', () => {
                         decision: 'Yes'
                     }
                 },
-                approval: 'Yes',
-                addressRejected: 'Yes'
+                approval: {
+                    release: {
+                        decision: 'Yes'
+                    }
+                }
             }
         };
 
@@ -193,8 +196,11 @@ describe('getLicenceStatus', () => {
                         decision: 'No'
                     }
                 },
-                approval: 'No',
-                addressRejected: 'No'
+                approval: {
+                    release: {
+                        decision: 'No'
+                    }
+                }
             }
         };
 
@@ -404,7 +410,11 @@ describe('getLicenceStatus', () => {
                         decision: 'Yes'
                     }
                 },
-                approval: 'Yes'
+                approval: {
+                    release: {
+                        decision: 'Yes'
+                    }
+                }
             }
         };
 

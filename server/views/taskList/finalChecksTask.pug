@@ -4,10 +4,23 @@ div.largeMarginBottom.borderTop
     div.borderBottomLight.largeMarginBottom
 
     div.pure-g
-        div.pure-u-3-4
+        div.pure-u-1-2
             if licenceStatus.tasks.finalChecks === 'DONE'
-                | Checks complete
+                div.padLeftRight15
+                    ul
+                        if licenceStatus.decisions.seriousOffence
+                            li.list-bullet The prisoner is under investigation or been charged for a serious offence in custody
+                        else
+                            li.list-bullet The prisoner is not under investigation or been charged for a serious offence in custody
+
+                        if licenceStatus.decisions.onRemand
+                            li .list-bulletThe prisoner is on remand
+                        else
+                            li.list-bullet The prisoner is not on remand
             else
                 | Not yet complete
         div.pure-u-1-4
-            +proceed(licenceStatus.tasks.finalChecks, 'UNSTARTED', 'Start', 'View', "/hdc/finalChecks/seriousOffence/" + prisonerInfo.offenderNo)
+        div.pure-u-1-4
+            if user.role === 'CA'
+                +proceed(licenceStatus.tasks.finalChecks, 'UNSTARTED', 'Start', 'View', "/hdc/finalChecks/seriousOffence/" + prisonerInfo.offenderNo)
+
