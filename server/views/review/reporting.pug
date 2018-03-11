@@ -1,0 +1,30 @@
+extends ../layout
+include ../licenceDetails/additionalConditions
+
+block content
+
+    - var reporting = data.reporting.reportingInstructions || {}
+
+    div.back-link-container.smallPaddingTop
+        a.link-back(href="javascript: window.history.back();") Back
+
+    h2.heading-large Reporting instructions
+
+    div.pure-u-md-1-2.paddingBottom
+        div
+            div.smallPaddingTop.paddingBottom
+                span.block Name of person
+                span.block.bold #{reporting.name}
+
+            div.smallPaddingTop.paddingBottom
+                span.block Address
+                span.block.bold #{reporting.buildingAndStreet1}
+                span.block.bold #{reporting.buildingAndStreet2}
+                span.block.bold #{reporting.townOrCity}
+                span.block.bold #{reporting.postcode}
+
+            div.smallPaddingTop
+                span.block Telephone
+                span.block.bold #{reporting.telephone}
+
+    include ../includes/returnButton

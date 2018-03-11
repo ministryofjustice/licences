@@ -10,4 +10,7 @@ div.largeMarginBottom.borderTop
             else
                 | Not yet added
         div.pure-u-1-4
-            +proceed(licenceStatus.tasks.reportingInstructions, 'UNSTARTED', 'Start', 'View', "/hdc/reporting/reportingInstructions/" + prisonerInfo.offenderNo)
+            if user.role === 'RO'
+                +proceed(licenceStatus.tasks.reportingInstructions, 'UNSTARTED', 'Start', 'View', "/hdc/reporting/reportingInstructions/" + prisonerInfo.offenderNo)
+            else
+                a.taskListAction.center.button.button-secondary(href="/hdc/review/reporting/" + prisonerInfo.offenderNo) View

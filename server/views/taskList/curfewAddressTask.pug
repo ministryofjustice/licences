@@ -22,4 +22,7 @@ div.largeMarginBottom.borderTop
                 else
                     | Not yet approved
             div.pure-u-1-4
-                +proceed(licenceStatus.tasks.curfewAddressReview, 'UNSTARTED', 'Start', 'View', "/hdc/curfew/curfewAddressReview/" + prisonerInfo.offenderNo)
+                if user.role === 'RO'
+                    +proceed(licenceStatus.tasks.curfewAddressReview, 'UNSTARTED', 'Start', 'View', "/hdc/curfew/curfewAddressReview/" + prisonerInfo.offenderNo)
+                else
+                    a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.offenderNo) View

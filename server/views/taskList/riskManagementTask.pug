@@ -17,5 +17,7 @@ div.largeMarginBottom.borderTop
             else
                 | Not yet confirmed
         div.pure-u-1-4
-            +proceed(licenceStatus.tasks.riskManagement, 'UNSTARTED', 'Start', 'View', "/hdc/risk/riskManagement/" + prisonerInfo.offenderNo)
-
+            if user.role === 'RO'
+                +proceed(licenceStatus.tasks.riskManagement, 'UNSTARTED', 'Start', 'View', "/hdc/risk/riskManagement/" + prisonerInfo.offenderNo)
+            else
+                a.taskListAction.center.button.button-secondary(href="/hdc/review/risk/" + prisonerInfo.offenderNo) View

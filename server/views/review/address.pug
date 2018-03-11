@@ -1,0 +1,22 @@
+extends ../layout
+include ../proposedAddress/includes/addressDetail
+
+block content
+
+    -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
+    -var addressSafety = data.curfew && data.curfew.addressSafety ? data.curfew.addressSafety : {}
+    -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress.preferred : {}
+
+    div.pure-g.pure-u-1
+        div.borderBottomLight
+            div.back-link-container.smallPaddingTop
+                a.link-back(href="javascript: window.history.back();") Back
+
+            h2.heading-large Proposed address
+
+            if address
+                p The following address has been requested by the offender and checked by the RO.
+
+                +addressDetail('preferred', address, review, addressSafety)
+
+            include ../includes/returnButton

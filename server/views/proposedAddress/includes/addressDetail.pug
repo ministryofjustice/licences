@@ -1,6 +1,7 @@
-mixin addressDetail(type, address, review)
+mixin addressDetail(type, address, review, safety)
 
     -var addressReview = review || {}
+    -var addressSafety = safety || {}
 
     div.pure-g.largePaddingBottom(id=type+"-addressDetails")
         div.pure-u-1.pure-u-sm-5-12.pure-g
@@ -35,6 +36,11 @@ mixin addressDetail(type, address, review)
                 div.pure-u-md-4-5
                     | Was a home visit conducted in this case?
                     p.bold(id=type + "-telephone") #{addressReview.homeVisitConducted}
+
+            if addressSafety.deemedSafe
+                div.pure-u-md-4-5
+                    | Could this offender be managed safely at this address?
+                    p.bold(id=type + "-deemedSafe") #{addressSafety.deemedSafe}
 
         if address.occupier
             div.pure-u-1.pure-u-md-7-12

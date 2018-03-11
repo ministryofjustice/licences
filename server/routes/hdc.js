@@ -94,9 +94,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
         const {nextPath} = formConfig.conditionsSummary;
 
-        const licence = getIn(rawLicence, ['licence']) || {};
+        const data = getIn(rawLicence, ['licence']) || {};
 
-        res.render(`licenceConditions/conditionsSummary`, {nomisId, licence, nextPath});
+        res.render(`licenceConditions/conditionsSummary`, {nomisId, data, nextPath});
     }));
 
     router.post('/licenceConditions/additionalConditions/:nomisId/delete/:conditionId',
@@ -116,18 +116,27 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         logger.debug('GET licenceDetails/:nomisId');
 
         const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
-        const licence = getIn(rawLicence, ['licence']) || {};
+        const data = getIn(rawLicence, ['licence']) || {};
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
-        res.render(`licenceDetails/licenceDetails`, {nomisId, licence, prisonerInfo});
+        res.render(`licenceDetails/licenceDetails`, {nomisId, data, prisonerInfo});
     }));
 
-    // standard routes
+
+    router.get('/review/:sectionName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+        const {sectionName, nomisId} = req.params;
+        logger.debug(`GET /review/${sectionName}/${nomisId}`);
+
+        const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
+        const data = getIn(rawLicence, ['licence']) || {};
+
+        res.render(`review/${sectionName}`, {nomisId, data});
+    }));
 
     router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
         const {sectionName, formName, nomisId} = req.params;
-        logger.debug(`GET licenceConditions/${formName}/${nomisId}`);
+        logger.debug(`GET ${sectionName}/${formName}/${nomisId}`);
 
         const {licenceSection, nextPath, licenceMap} = formConfig[formName];
         const dataPath = licenceMap || ['licence', sectionName, licenceSection];

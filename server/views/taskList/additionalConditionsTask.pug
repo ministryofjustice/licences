@@ -20,4 +20,7 @@ div.largeMarginBottom.borderTop
             else
                 | No conditions added
         div.pure-u-1-4
-            +proceed(licenceStatus.tasks.licenceConditions, 'UNSTARTED', 'Start', 'View', "/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
+            if user.role === 'RO'
+                +proceed(licenceStatus.tasks.licenceConditions, 'UNSTARTED', 'Start', 'View', "/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
+            else
+                a.taskListAction.center.button.button-secondary(href="/hdc/review/conditions/" + prisonerInfo.offenderNo) View

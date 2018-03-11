@@ -1,6 +1,6 @@
 h2.heading-medium.borderBottomLightThick.separatorTitle Proposed curfew address
 
--var address = licence.proposedAddress.curfewAddress.preferred
+-var address = data.proposedAddress.curfewAddress.preferred
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -67,9 +67,9 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             if address.cautionedAgainstResident
                 span#cautioned.bold #{address.cautionedAgainstResident}
 
-if licence.curfew && licence.curfew.curfewAddressReview
-    -var addressReview = licence.curfew.curfewAddressReview
-    -var addressSafety = licence.curfew.addressSafety
+if data.curfew && data.curfew.curfewAddressReview
+    -var addressReview = data.curfew.curfewAddressReview
+    -var addressSafety = data.curfew.addressSafety
 
     div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-u-1-2
@@ -90,7 +90,7 @@ if licence.curfew && licence.curfew.curfewAddressReview
         div.pure-u-1-2
             span Does the address have an electricity supply?
         div.pure-u-1-2
-            if address.electricity
+            if addressReview.electricity
                 span#electricity.bold #{addressReview.electricity}
 
     div.pure-g.borderBottomLight.midPaddingTopBottom

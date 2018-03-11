@@ -1,0 +1,37 @@
+extends ../layout
+include ../licenceDetails/additionalConditions
+
+block content
+
+    - var risk = data.risk.riskManagement || {}
+
+    div.back-link-container.smallPaddingTop
+        a.link-back(href="javascript: window.history.back();") Back
+
+    h2.heading-large Risk management and victim liaison
+
+    div.pure-u-md-1-2.paddingBottom
+        div
+            h3.heading-medium Risk management
+
+            div.smallPaddingTop
+                p Are there any risk management planning actions that must take place prior to release?
+
+                span.block.bold #{risk.planningActions}
+                span.block.bold #{risk.planningActionsDetails}
+
+            div.smallPaddingTop
+                p Are you still awaiting information?
+
+                span.block.bold #{risk.awaitingInformation}
+                span.block.bold #{risk.awaitingInformationDetails}
+
+        div.paddingBottom
+            h3.heading-medium Victim liaison
+            div.smallPaddingTop
+                p Is this a Victim Contact Service qualifying case where the victim has opted in?
+
+                span.block.bold #{risk.victimLiaison}
+                span.block.bold #{risk.victimLiaisonDetails}
+
+    include ../includes/returnButton
