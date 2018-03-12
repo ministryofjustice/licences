@@ -68,8 +68,8 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 span#cautioned.bold #{address.cautionedAgainstResident}
 
 if data.curfew && data.curfew.curfewAddressReview
-    -var addressReview = data.curfew.curfewAddressReview
-    -var addressSafety = data.curfew.addressSafety
+    -var addressReview = data.curfew.curfewAddressReview || {}
+    -var addressSafety = data.curfew.addressSafety || {}
 
     div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-u-1-2
