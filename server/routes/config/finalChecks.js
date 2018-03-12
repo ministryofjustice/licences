@@ -18,7 +18,7 @@ module.exports = {
         }
     },
     postpone: {
-        licenceSection: 'postponed',
+        licenceSection: 'postpone',
         fields: [
             {decision: {}}
         ],
