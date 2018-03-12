@@ -104,7 +104,7 @@ describe('getLicenceStatus', () => {
                     onRemand: {
                         decision: 'Yes'
                     },
-                    postponed: {
+                    postpone: {
                         decision: 'Yes'
                     }
                 },
@@ -192,7 +192,7 @@ describe('getLicenceStatus', () => {
                     onRemand: {
                         decision: 'No'
                     },
-                    postponed: {
+                    postpone: {
                         decision: 'No'
                     }
                 },
@@ -406,7 +406,7 @@ describe('getLicenceStatus', () => {
                     onRemand: {
                         decision: 'Yes'
                     },
-                    postponed: {
+                    postpone: {
                         decision: 'Yes'
                     }
                 },

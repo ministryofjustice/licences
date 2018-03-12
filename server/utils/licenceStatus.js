@@ -406,7 +406,7 @@ function getOnRemandCheckTaskState(licence) {
 
 function getPostponedState(licence) {
 
-    const postponedAnswer = getIn(licence, ['finalChecks', 'postponed', 'decision']);
+    const postponedAnswer = getIn(licence, ['finalChecks', 'postpone', 'decision']);
 
     return {
         postponed: postponedAnswer && postponedAnswer === 'Yes'
