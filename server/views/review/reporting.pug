@@ -14,17 +14,17 @@ block content
         div
             div.smallPaddingTop.paddingBottom
                 span.block Name of person
-                span.block.bold #{reporting.name}
+                span#reportingName.block.bold #{reporting.name}
 
             div.smallPaddingTop.paddingBottom
                 span.block Address
-                span.block.bold #{reporting.buildingAndStreet1}
-                span.block.bold #{reporting.buildingAndStreet2}
-                span.block.bold #{reporting.townOrCity}
-                span.block.bold #{reporting.postcode}
+                span#reportingAddress1.block.bold #{reporting.buildingAndStreet1}
+                span#reportingAddress2.block.bold #{reporting.buildingAndStreet2}
+                span#reportingTown.block.bold #{reporting.townOrCity}
+                span#reportingPostCode.block.bold #{reporting.postcode}
 
             div.smallPaddingTop
                 span.block Telephone
-                span.block.bold #{reporting.telephone}
+                span#reportingTelephone.block.bold #{reporting.telephone}
 
     include ../includes/returnButton

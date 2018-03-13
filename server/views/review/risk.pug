@@ -17,21 +17,21 @@ block content
             div.smallPaddingTop
                 p Are there any risk management planning actions that must take place prior to release?
 
-                span.block.bold #{risk.planningActions}
-                span.block.bold #{risk.planningActionsDetails}
+                span#planningActions.block.bold #{risk.planningActions}
+                span#planningActionsDetails.block.bold #{risk.planningActionsDetails}
 
             div.smallPaddingTop
                 p Are you still awaiting information?
 
-                span.block.bold #{risk.awaitingInformation}
-                span.block.bold #{risk.awaitingInformationDetails}
+                span#awaitingInformation.block.bold #{risk.awaitingInformation}
+                span#awaitingInformationDetails.block.bold #{risk.awaitingInformationDetails}
 
         div.paddingBottom
             h3.heading-medium Victim liaison
             div.smallPaddingTop
                 p Is this a Victim Contact Service qualifying case where the victim has opted in?
 
-                span.block.bold #{risk.victimLiaison}
-                span.block.bold #{risk.victimLiaisonDetails}
+                span#victimLiaison.block.bold #{risk.victimLiaison}
+                span#victimLiaisonDetails.block.bold #{risk.victimLiaisonDetails}
 
     include ../includes/returnButton

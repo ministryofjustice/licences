@@ -13,7 +13,7 @@ mixin otherResidents(type, savedAddress)
             div.pure-u-sm-1-6 Age
 
         while n < residentsToShow
-            div.pure-g.smallPaddingBottom.otherResident
+            div.pure-g.smallPaddingBottom.resident
                 div.pure-u-sm-5-12
                     input.form-control.residentName(name=type+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name autocomplete="off")
                 div.pure-u-sm-5-12.padLeftRight15

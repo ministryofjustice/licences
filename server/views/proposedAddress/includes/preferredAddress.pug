@@ -9,9 +9,9 @@ div#addressDetails.pure-g.largePaddingBottom
                 if address.addressLine2
                     p#address2.bold.noMargin #{address.addressLine2}
                 if address.addressTown
-                    p#addressTown.bold.noMargin #{address.addressTown}
+                    p#town.bold.noMargin #{address.addressTown}
                 if address.postCode
-                    p#addressPostCode.bold.noMargin #{address.postCode}
+                    p#postCode.bold.noMargin #{address.postCode}
 
         div.pure-u-md-2-3.largePaddingBottom
             | Telephone
@@ -45,13 +45,13 @@ div#addressDetails.pure-g.largePaddingBottom
 
                     for resident in address.residents
                         div.pure-u-1
-                            div.pure-g.smallMarginTop
-                                p.bold.noMargin.pure-u-1-2 #{resident.name}
-                                p.bold.noMargin.pure-u-1-4 #{resident.age}
-                                p.bold.noMargin.pure-u-1-4 #{resident.relation}
+                            div.pure-g.smallMarginTop.resident
+                                p#residentName.bold.noMargin.pure-u-1-2 #{resident.name}
+                                p#residentAge.bold.noMargin.pure-u-1-4 #{resident.age}
+                                p#residentRelation.bold.noMargin.pure-u-1-4 #{resident.relation}
 
 
             div.pure-u-md-2-3
                 p Has the offender been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
                 if address.cautionedAgainstResident
-                    p#cautionedAgainstResident.bold #{address.cautionedAgainstResident}
+                    p#cautioned.bold #{address.cautionedAgainstResident}

@@ -3,62 +3,63 @@ mixin addressDetail(type, address, review, safety)
     -var addressReview = review || {}
     -var addressSafety = safety || {}
 
-    div.pure-g.largePaddingBottom(id=type+"-addressDetails")
+    div.pure-g.largePaddingBottom(id=type+"addressDetails")
         div.pure-u-1.pure-u-sm-5-12.pure-g
             div.pure-u-md-2-3
                 | Address
                 div.paddingBottom.smallMarginTop
                     if address.addressLine1
-                        p.bold.noMargin(id=type+"-address1") #{address.addressLine1}
+                        p.bold.noMargin(id=type+"address1") #{address.addressLine1}
                     if address.addressLine2
-                        p.bold.noMargin(id=type+"-address2") #{address.addressLine2}
+                        p.bold.noMargin(id=type+"address2") #{address.addressLine2}
                     if address.addressTown
-                        p.bold.noMargin(id=type+"-addressTown") #{address.addressTown}
+                        p.bold.noMargin(id=type+"town") #{address.addressTown}
                     if address.postCode
-                        p.bold.noMargin(id=type+"-addressPostCode") #{address.postCode}
+                        p.bold.noMargin(id=type+"postCode") #{address.postCode}
 
             div.pure-u-md-2-3.largePaddingBottom
                 | Telephone
                 if address.telephone
-                    p.bold(id=type+"-telephone") #{address.telephone}
+                    p.bold(id=type+"telephone") #{address.telephone}
 
             if addressReview.electricity
                 div.pure-u-md-4-5.paddingBottom
                     | Does this address have an electricity supply?
-                    p.bold(id=type + "-telephone") #{addressReview.electricity}
+                    p.bold(id=type + "electricity") #{addressReview.electricity}
 
             if addressReview.consent
                 div.pure-u-md-4-5.paddingBottom
                     | Does the homeowner/landlord give informed consent to the HDC at the address?
-                    p.bold(id=type + "-telephone") #{addressReview.consent}
+                    p.bold(id=type + "consent") #{addressReview.consent}
 
             if addressReview.homeVisitConducted
                 div.pure-u-md-4-5
                     | Was a home visit conducted in this case?
-                    p.bold(id=type + "-telephone") #{addressReview.homeVisitConducted}
+                    p.bold(id=type + "homeVisit") #{addressReview.homeVisitConducted}
 
             if addressSafety.deemedSafe
                 div.pure-u-md-4-5
                     | Could this offender be managed safely at this address?
-                    p.bold(id=type + "-deemedSafe") #{addressSafety.deemedSafe}
+                    p.bold(id=type + "deemedSafe") #{addressSafety.deemedSafe}
 
         if address.occupier
             div.pure-u-1.pure-u-md-7-12
                 p Main occupier
                 div.pure-g.smallMarginTop.borderBottomLight.smallPaddingBottom
-                    p.bold.pure-u-1-2.noMargin(id=type+"-occupierName") #{address.occupier.name}
-                    p.bold.pure-u-1-3.noMargin(id=type+"-occupierRelation") #{address.occupier.relationship}
-                    p.bold.pure-u-4-24.noMargin(id=type+"-occupierAge") #{address.occupier.age}
+                    p.bold.pure-u-1-2.noMargin(id=type+"occupierName") #{address.occupier.name}
+                    p.bold.pure-u-1-3.noMargin(id=type+"occupierRelation") #{address.occupier.relationship}
+                    p.bold.pure-u-4-24.noMargin(id=type+"occupierAge") #{address.occupier.age}
 
                 div.largePaddingBottom.smallPaddingTop
                     p Other residents
 
                     if address.residents && address.residents.length > 0
                         for resident, index in address.residents
-                            div.pure-g.smallMarginTop
-                                p.bold.noMargin.pure-u-1-2(id=type+"-resident-name-"+index) #{resident.name}
-                                p.bold.noMargin.pure-u-1-3(id=type+"-resident-relation-"+index) #{resident.relation}
-                                p.bold.noMargin.pure-u-4-24(id=type+"-resident-age-"+index) #{resident.age}
+                            if(resident.name != '' || resident.age != '' || resident.relation != '')
+                                div.pure-g.smallMarginTop.resident(class = type)
+                                    p.bold.noMargin.pure-u-1-2(id=type+"residentName-"+index) #{resident.name}
+                                    p.bold.noMargin.pure-u-1-3(id=type+"residentRelation-"+index) #{resident.relation}
+                                    p.bold.noMargin.pure-u-4-24(id=type+"residentAge-"+index) #{resident.age}
 
                     else
                         div.pure-u-1
@@ -69,4 +70,4 @@ mixin addressDetail(type, address, review, safety)
                 div.pure-u-md-2-3
                     p According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
                     if address.cautionedAgainstResident
-                        p.bold(id=type+"-cautionedAgainstResident") #{address.cautionedAgainstResident}
+                        p.bold(id=type+"cautioned") #{address.cautionedAgainstResident}

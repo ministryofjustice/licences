@@ -13,7 +13,7 @@ function addResidentFields() {
     var numberRegEx = /\d+/g;
 
     var group = $(this).closest('.otherResidentsInput');
-    var finalResident = group.find('.otherResident:last');
+    var finalResident = group.find('.resident:last');
 
     var newIndex = parseInt(finalResident.find('input.residentName').attr('name').match(numberRegEx), 10) + 1;
     var newName = finalResident.find('input.residentName').attr('name').replace(numberRegEx, newIndex);
