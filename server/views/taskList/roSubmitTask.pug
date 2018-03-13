@@ -13,7 +13,7 @@ div.largeMarginBottom.borderTop
             else
                 | #{statusLabel}
         div.pure-u-1-4
-            if licenceStatus.stage === 'PROCESSING_RO' && allowedTransitions.roToCa
+            if licenceStatus.stage === 'PROCESSING_RO'
                 a.taskListAction.center.button(href="/hdc/send/" + prisonerInfo.offenderNo)
                     | Continue
 
