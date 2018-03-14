@@ -11,8 +11,18 @@ div.largeMarginBottom.borderTop
                 | Use this to indicate that the process is postponed while any risk management planning actions remain outstanding
         div.pure-u-1-4
         div.pure-u-1-4
-            a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/postpone/" + prisonerInfo.offenderNo)
+            p.namedAnchor
+                a.namedAnchor(name="postpone")
+
+            form(method="post" action="/hdc/finalChecks/postpone/" + nomisId)
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="nomisId" value=nomisId || '')
+                input(type="hidden" name="anchor" value='postpone')
+
                 if licenceStatus.decisions.postponed
-                    | Resume
+                    input#postponed(type="hidden" name="decision" value="No")
+                    input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Resume")
+
                 else
-                    | Postpone
+                    input#postponed(type="hidden" name="decision" value="Yes")
+                    input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Postpone")

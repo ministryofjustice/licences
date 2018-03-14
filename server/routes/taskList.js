@@ -17,7 +17,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
     });
 
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /details');
+        logger.debug('GET /taskList');
 
         const {nomisId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
@@ -31,7 +31,8 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
             licenceStatus,
             allowedTransitions,
             statusLabel,
-            prisonerInfo
+            prisonerInfo,
+            nomisId
         });
     }));
 

@@ -9,16 +9,12 @@ div.largeMarginBottom.borderTop
                 div.padLeftRight15
                     ul
                         if licenceStatus.decisions.seriousOffence
-                            li.list-bullet#seriousOffenceAnswer The prisoner
-                                span.alert  is
-                                |  under investigation or been charged for a serious offence in custody
+                            li.list-bullet.alert#seriousOffenceAnswer The prisoner is under investigation or been charged for a serious offence in custody
                         else
                             li.list-bullet#seriousOffenceAnswer The prisoner is not under investigation or been charged for a serious offence in custody
 
                         if licenceStatus.decisions.onRemand
-                            li.list-bullet#onRemandAnswer The prisoner
-                                span.alert  is
-                                |  on remand
+                            li.list-bullet.alert#onRemandAnswer The prisoner is on remand
                         else
                             li.list-bullet#onRemandAnswer The prisoner is not on remand
             else
