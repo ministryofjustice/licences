@@ -5,6 +5,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
             th NOMS ID
             th Location
             th HDCED
+            th CRD / ARD
             th Current status
             th
     tbody
@@ -29,14 +30,19 @@ table#hdcEligiblePrisoners.largeMarginBottom
                         if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
                             | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
 
+                    td.crd
+                        if prisoner.sentenceDetail.conditionalReleaseDate
+                            | #{prisoner.sentenceDetail.conditionalReleaseDate}
+
                     td.status
                         if prisoner.status
                             | #{prisoner.status}
 
                     td
-                        if prisoner.status === 'Awaiting decision'
-                            a.button.button-primary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
-                                | Start
-                        else
-                            a.button.button-secondary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
-                                | View
+                        if ['APPROVAL', 'DECIDED'].includes(prisoner.stage)
+                            if ['Awaiting decision'].includes(prisoner.status)
+                                a.button.button-primary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
+                                    | Start
+                            else
+                                a.button.button-secondary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
+                                    | View

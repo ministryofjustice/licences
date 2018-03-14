@@ -47,10 +47,10 @@ table#hdcEligiblePrisoners.largeMarginBottom
                             | #{prisoner.status}
 
                     td
-                        if prisoner.status === 'Not Started'
-                            a.button.button-primary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
-                                | Start
-
-                        else
-                            a.button.button-secondary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
-                                | Continue
+                        if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA'].includes(prisoner.stage)
+                            if ['Not Started', 'Final Checks'].includes(prisoner.status)
+                                a.button.button-primary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
+                                    | Start
+                            else
+                                a.button.button-secondary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
+                                    | Continue

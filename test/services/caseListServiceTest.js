@@ -82,6 +82,12 @@ describe('caseListService', () => {
             expect(result[0].status).to.eql('Not Started');
         });
 
+        it('should add a processing stage to the prisoners', async () => {
+            const result = await service.getHdcCaseList(user);
+
+            expect(result[0].stage).to.eql('UNSTARTED');
+        });
+
         it('should return empty array if no results', () => {
             nomisClient.getHdcEligiblePrisoners.resolves([]);
 

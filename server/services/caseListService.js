@@ -3,6 +3,7 @@ const {isEmpty} = require('../utils/functionalHelpers');
 const {formatObjectForView} = require('./utils/formatForView');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
+const {licenceStages} = require('../models/licenceStages');
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient) {
     async function getHdcCaseList(user) {
@@ -60,8 +61,8 @@ function getROCaseList(nomisClient, licenceClient, user) {
 function decoratePrisonerDetails(licences, role) {
     return prisoner => {
         const formattedPrisoner = formatObjectForView(prisoner);
-        const status = getStatus(prisoner, licences, role);
-        return {...formattedPrisoner, status};
+        const {stage, status} = getStatus(prisoner, licences, role);
+        return {...formattedPrisoner, stage, status};
     };
 }
 
@@ -70,15 +71,16 @@ function getOffenderIds(releases) {
 }
 
 function getStatus(prisoner, licences, role) {
+
     const licenceForPrisoner = licences.find(rawLicence => {
         return prisoner.offenderNo === rawLicence.nomisId;
     });
 
     if (!licenceForPrisoner) {
-        return 'Not Started';
+        return {stage: licenceStages.UNSTARTED, status: 'Not Started'};
     }
 
     const licenceStatus = getLicenceStatus(licenceForPrisoner);
-    return getStatusLabel(licenceStatus, role);
+    return {stage: licenceForPrisoner.status, status: getStatusLabel(licenceStatus, role)};
 }
 
