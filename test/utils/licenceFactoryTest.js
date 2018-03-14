@@ -164,7 +164,7 @@ describe('licenceFactory', () => {
 
         it('should add bespoke conditions to the output in the same format, including generated IDs', () => {
             const rawLicence = {licenceConditions: {additional: {1: {}},
-                bespoke: [{text: 'bespoke1'}, {text: 'bespoke2'}]}};
+                bespoke: [{text: 'bespoke1', approved: 'Yes'}, {text: 'bespoke2', approved: 'No'}]}};
             const selectedConditions = [
                 {
                     ID: {value: 1},
@@ -189,13 +189,15 @@ describe('licenceFactory', () => {
                         content: [{text: 'bespoke1'}],
                         group: 'Bespoke',
                         subgroup: null,
-                        id: 'bespoke-0'
+                        id: 'bespoke-0',
+                        approved: 'Yes'
                     },
                     {
                         content: [{text: 'bespoke2'}],
                         group: 'Bespoke',
                         subgroup: null,
-                        id: 'bespoke-1'
+                        id: 'bespoke-1',
+                        approved: 'No'
                     }
                 ]
             };

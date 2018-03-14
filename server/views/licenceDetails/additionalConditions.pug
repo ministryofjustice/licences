@@ -6,10 +6,19 @@ mixin additionalConditions(editable)
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-18-24.additional.padRight30
                 if condition.group
-                    div.additionalTitle.heading-small.noMargin.smallPaddingBottom Condition #{index + 1}
-                    div.additionalName.heading-small.noMargin.smallPaddingBottom #{condition.group}
-                        if condition.subgroup
-                            |  -- #{condition.subgroup}
+                    div.heading-small.noMargin.smallPaddingBottom
+                        span.additionalTitle Condition #{index + 1}
+                        |  -
+                        span.additionalName  #{condition.group}
+                            if condition.subgroup
+                                |  -- #{condition.subgroup}
+                        if condition.approved
+                            |  -
+                            span.additionalApproved
+                                if condition.approved == 'Yes'
+                                    |  Approved
+                                else
+                                    span.alert  Not approved
 
                 div.additionalContent
                     for item in condition.content
@@ -17,6 +26,7 @@ mixin additionalConditions(editable)
                             | #{item.text}
                         if item.variable
                             span(class="bold") #{item.variable}
+
 
             if allowEdit
                 div.pure-u-2-24

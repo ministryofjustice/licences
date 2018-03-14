@@ -112,7 +112,8 @@ function getObjectForBespoke(condition, index) {
         content: [{text: condition.text}],
         group: 'Bespoke',
         subgroup: null,
-        id: `bespoke-${index}`
+        id: `bespoke-${index}`,
+        approved: condition.approved
     };
 }
 
