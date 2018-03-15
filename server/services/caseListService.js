@@ -77,7 +77,7 @@ function getStatus(prisoner, licences, role) {
     });
 
     if (!licenceForPrisoner) {
-        return {stage: licenceStages.UNSTARTED, status: 'Not Started'};
+        return {stage: licenceStages.UNSTARTED, status: 'Not started'};
     }
 
     const licenceStatus = getLicenceStatus(licenceForPrisoner);

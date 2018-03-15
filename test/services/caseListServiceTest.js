@@ -79,7 +79,7 @@ describe('caseListService', () => {
         it('should add a status to the prisoners', async () => {
             const result = await service.getHdcCaseList(user);
 
-            expect(result[0].status).to.eql('Not Started');
+            expect(result[0].status).to.eql('Not started');
         });
 
         it('should add a processing stage to the prisoners', async () => {
