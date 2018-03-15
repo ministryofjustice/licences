@@ -72,7 +72,7 @@ function caProcessingLabel(licenceStatus) {
         {decision: 'curfewAddressApproved', value: false, label: 'Address not suitable'}
     ];
 
-    return getLabel(labels, licenceStatus) || 'Final Checks';
+    return getLabel(labels, licenceStatus) || 'Final checks';
 }
 
 function roProcessingLabel(licenceStatus) {

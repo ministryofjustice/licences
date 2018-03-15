@@ -3,24 +3,24 @@ mixin additionalConditions(editable)
     - var conditions = data.licenceConditions
 
     for condition, index in conditions
-        div.pure-g.borderBottomLight.midPaddingTopBottom
-            div.pure-u-18-24.additional.padRight30
+        div.additional.pure-g.borderBottomLight.midPaddingTopBottom
+            div.pure-u-18-24.padRight30
                 if condition.group
                     div.heading-small.noMargin.smallPaddingBottom
-                        span.additionalTitle Condition #{index + 1}
+                        span.number Condition #{index + 1}
                         |  -
-                        span.additionalName  #{condition.group}
+                        span.title  #{condition.group}
                             if condition.subgroup
                                 |  -- #{condition.subgroup}
                         if condition.approved
                             |  -
-                            span.additionalApproved
+                            span.approved
                                 if condition.approved == 'Yes'
                                     |  Approved
                                 else
                                     span.alert  Not approved
 
-                div.additionalContent
+                div.content
                     for item in condition.content
                         if item.text
                             | #{item.text}

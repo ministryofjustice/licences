@@ -80,7 +80,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
-                    label: 'Final Checks'
+                    label: 'Final checks'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {excluded: true}, tasks: {}},

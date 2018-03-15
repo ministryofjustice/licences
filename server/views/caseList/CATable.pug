@@ -48,9 +48,9 @@ table#hdcEligiblePrisoners.largeMarginBottom
 
                     td
                         if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA'].includes(prisoner.stage)
-                            if ['Not Started', 'Final Checks'].includes(prisoner.status)
+                            if ['Not started', 'Final checks'].includes(prisoner.status)
                                 a.button.button-primary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
                                     | Start
                             else
                                 a.button.button-secondary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
-                                    | Continue
+                                    | View
