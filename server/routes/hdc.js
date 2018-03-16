@@ -130,9 +130,10 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         logger.debug(`GET /review/${sectionName}/${nomisId}`);
 
         const data = getIn(res.locals.licence, ['licence']) || {};
+        const stage = getIn(res.locals.licence, ['licence', 'status']) || {};
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
-        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo});
+        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage});
     }));
 
     router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {

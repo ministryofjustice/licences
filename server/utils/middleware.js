@@ -34,6 +34,7 @@ function checkLicenceMiddleWare(licenceService) {
     };
 }
 
+// todo
 function checkLicenceReviewMiddleWare(licenceService) {
     return async (req, res, next) => {
         try {

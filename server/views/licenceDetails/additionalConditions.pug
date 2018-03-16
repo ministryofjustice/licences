@@ -43,7 +43,7 @@ mixin additionalConditions(editable)
 
             if !allowEdit
                 div.pure-u-6-24.alignRight
-                    if(index == 0 && user.role === 'RO')
+                    if(stage === 'PROCESSING_RO' && index == 0 && user.role === 'RO')
                         a#conditionsEditLink(href="/hdc/licenceConditions/additionalConditions/" + nomisId) Change these details
 
 

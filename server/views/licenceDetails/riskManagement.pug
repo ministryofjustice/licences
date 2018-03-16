@@ -13,7 +13,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 if risk.planningActions
                     span#planningActions.bold #{risk.planningActions}
             div.pure-u-1-3.alignRight
-                if user.role === 'RO'
+                if (stage === 'PROCESSING_RO'  && user.role === 'RO')
                     a#riskEditLink(href="/hdc/risk/riskManagement/" + nomisId) Change these details
 
 div.pure-g.borderBottomLight.midPaddingTopBottom

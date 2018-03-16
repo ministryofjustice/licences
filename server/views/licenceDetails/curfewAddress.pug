@@ -17,7 +17,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 if address.postCode
                     span#curfew-postCode.block.bold #{address.postCode}
             div.pure-u-1-2.alignRight
-                if user.role === 'RO'
+                if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
