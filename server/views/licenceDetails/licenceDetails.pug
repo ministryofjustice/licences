@@ -1,29 +1,8 @@
 extends ../layout
 
-include ./additionalConditions
 block content
 
-    h1.heading-large Licence details
-
-    div.largeMarginBottom
-
-        include ../taskList/prisonerDetails
-
-        if data.proposedAddress && data.proposedAddress.curfewAddress && data.proposedAddress.curfewAddress.preferred
-            include curfewAddress
-
-        if data.curfew && data.curfew.curfewHours
-            include curfewHours
-
-        if data.licenceConditions && data.licenceConditions.length > 0
-            h2.heading-medium.borderBottomLight Additional conditions
-            +additionalConditions()
-
-        if data.risk && data.risk.riskManagement
-            include ./riskManagement
-
-        if data.reporting && data.reporting.reportingInstructions
-            include ./reportingInstructions
+    include ./licenceSummary
 
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons

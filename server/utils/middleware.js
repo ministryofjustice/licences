@@ -1,6 +1,7 @@
 module.exports = {
     asyncMiddleware,
-    checkLicenceMiddleWare
+    checkLicenceMiddleWare,
+    checkLicenceReviewMiddleWare
 };
 
 function asyncMiddleware(fn) {
@@ -12,16 +13,41 @@ function asyncMiddleware(fn) {
 }
 
 function checkLicenceMiddleWare(licenceService) {
-    return async(req, res, next) => {
+    return async (req, res, next) => {
         try {
+
             const nomisId = req.params.nomisId;
             const licence = await licenceService.getLicence(nomisId);
-            if(!licence) {
+
+            if (!licence) {
                 return res.redirect('/');
             }
+
             res.locals.licence = licence;
             next();
-        } catch(error) {
+
+        } catch (error) {
+            // TODO proper error handling
+            console.error('Error collecting licence from checkLicence');
+            res.redirect('/');
+        }
+    };
+}
+
+function checkLicenceReviewMiddleWare(licenceService) {
+    return async (req, res, next) => {
+        try {
+            const nomisId = req.params.nomisId;
+            const licence = await licenceService.getLicence(nomisId, {populateConditions: true});
+
+            if (!licence) {
+                return res.redirect('/');
+            }
+
+            res.locals.licence = licence;
+            next();
+
+        } catch (error) {
             // TODO proper error handling
             console.error('Error collecting licence from checkLicence');
             res.redirect('/');

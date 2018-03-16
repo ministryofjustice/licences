@@ -1,6 +1,9 @@
 const express = require('express');
-const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
+
+const {asyncMiddleware, checkLicenceMiddleWare, checkLicenceReviewMiddleWare} = require('../utils/middleware');
 const {getIn} = require('../utils/functionalHelpers');
+const {getPathFor} = require('../utils/routes');
+
 const licenceConditionsConfig = require('./config/licenceConditions');
 const eligibilityConfig = require('./config/eligibility');
 const proposedAddressConfig = require('./config/proposedAddress');
@@ -8,8 +11,8 @@ const curfewConfig = require('./config/curfew');
 const reportingConfig = require('./config/reporting');
 const finalChecksConfig = require('./config/finalChecks');
 const approvalConfig = require('./config/approval');
-const {getPathFor} = require('../utils/routes');
 const riskConfig = require('./config/risk');
+
 const formConfig = {
     ...licenceConditionsConfig,
     ...eligibilityConfig,
@@ -33,6 +36,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     });
 
     const checkLicence = checkLicenceMiddleWare(licenceService);
+    const checkLicenceReview = checkLicenceReviewMiddleWare(licenceService, prisonerService);
 
     // bespoke routes
 
@@ -88,18 +92,16 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         return conditionsService.validateConditionInputs(input);
     }
 
-    router.get('/licenceConditions/conditionsSummary/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
-        const {nomisId} = req.params;
-        logger.debug('GET licenceConditions/conditionsSummary/:nomisId');
+    router.get('/licenceConditions/conditionsSummary/:nomisId', checkLicenceReview,
+        asyncMiddleware(async (req, res) => {
+            const {nomisId} = req.params;
+            logger.debug('GET licenceConditions/conditionsSummary/:nomisId');
 
-        // TODO populate res.locals.licence rather then getLicence again
-        const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
-        const {nextPath} = formConfig.conditionsSummary;
+            const {nextPath} = formConfig.conditionsSummary;
+            const data = getIn(res.locals.licence, ['licence']) || {};
 
-        const data = getIn(rawLicence, ['licence']) || {};
-
-        res.render(`licenceConditions/conditionsSummary`, {nomisId, data, nextPath});
-    }));
+            res.render(`licenceConditions/conditionsSummary`, {nomisId, data, nextPath});
+        }));
 
     router.post('/licenceConditions/additionalConditions/:nomisId/delete/:conditionId',
         asyncMiddleware(async (req, res) => {
@@ -113,27 +115,24 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         }));
 
-    router.get('/licenceDetails/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/licenceDetails/:nomisId', checkLicenceReview, asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         logger.debug('GET licenceDetails/:nomisId');
 
-        const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
-        const data = getIn(rawLicence, ['licence']) || {};
-
+        const data = getIn(res.locals.licence, ['licence']) || {};
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
         res.render(`licenceDetails/licenceDetails`, {nomisId, data, prisonerInfo});
     }));
 
-
-    router.get('/review/:sectionName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/review/:sectionName/:nomisId', checkLicenceReview, asyncMiddleware(async (req, res) => {
         const {sectionName, nomisId} = req.params;
         logger.debug(`GET /review/${sectionName}/${nomisId}`);
 
-        const rawLicence = await licenceService.getLicence(req.params.nomisId, {populateConditions: true});
-        const data = getIn(rawLicence, ['licence']) || {};
+        const data = getIn(res.locals.licence, ['licence']) || {};
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
-        res.render(`review/${sectionName}`, {nomisId, data});
+        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo});
     }));
 
     router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
@@ -167,7 +166,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         }
 
         if (req.body.anchor) {
-        res.redirect(`${nextPath}${nomisId}#${req.body.anchor}`);
+            res.redirect(`${nextPath}${nomisId}#${req.body.anchor}`);
         }
 
         res.redirect(`${nextPath}${nomisId}`);

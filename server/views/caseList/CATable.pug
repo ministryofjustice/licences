@@ -54,3 +54,6 @@ table#hdcEligiblePrisoners.largeMarginBottom
                             else
                                 a.button.button-secondary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
                                     | View
+                        else if ['PROCESSING_RO', 'APPROVAL', 'DECIDED'].includes(prisoner.stage)
+                            a.button.button-secondary.fullWidth.center(href="hdc/review/licence/" + prisoner.offenderNo role="button")
+                                | Review
