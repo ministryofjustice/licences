@@ -120,9 +120,10 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         logger.debug('GET licenceDetails/:nomisId');
 
         const data = getIn(res.locals.licence, ['licence']) || {};
+        const stage = getIn(res.locals.licence, ['status']) || {};
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
-        res.render(`licenceDetails/licenceDetails`, {nomisId, data, prisonerInfo});
+        res.render(`licenceDetails/licenceDetails`, {nomisId, data, prisonerInfo, stage});
     }));
 
     router.get('/review/:sectionName/:nomisId', checkLicenceReview, asyncMiddleware(async (req, res) => {
@@ -130,7 +131,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         logger.debug(`GET /review/${sectionName}/${nomisId}`);
 
         const data = getIn(res.locals.licence, ['licence']) || {};
-        const stage = getIn(res.locals.licence, ['licence', 'status']) || {};
+        const stage = getIn(res.locals.licence, ['status']) || {};
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
         res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage});
