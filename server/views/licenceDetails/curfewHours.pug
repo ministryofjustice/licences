@@ -9,7 +9,7 @@ div.pure-g.midPaddingTopBottom
         div.pure-u-5-6
             span#firstNight.block #{hours.firstNightFrom} - #{hours.firstNightUntil}
     div.pure-u-1-6.alignRight
-        if user.role === 'RO'
+        if (stage === 'PROCESSING_RO' && user.role === 'RO')
             a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/" + nomisId) Change these details
     div.pure-u-5-6
         div.pure-u-1-6
