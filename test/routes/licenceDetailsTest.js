@@ -2,6 +2,7 @@ const {
     request,
     expect,
     licenceServiceStub,
+    conditionsServiceStub,
     prisonerServiceStub,
     hdcRoute,
     appSetup
@@ -27,11 +28,21 @@ describe('GET /licenceDetails/:prisonNumber', () => {
                         }
                     }
                 },
-                licenceConditions: [{content: [{text: 'Condition1'}]}],
+                licenceConditions: {},
                 risk: {riskManagement: {planningActions: 'Yes'}}
             }
         });
-
+        conditionsServiceStub.populateLicenceWithConditions.resolves({
+            proposedAddress: {
+                curfewAddress: {
+                    preferred: {
+                        addressLine1: 'Address 1'
+                    }
+                }
+            },
+            licenceConditions: [{content: [{text: 'Condition1'}]}],
+            risk: {riskManagement: {planningActions: 'Yes'}}
+        });
         prisonerServiceStub.getPrisonerDetails.resolves({});
     });
 
@@ -49,10 +60,8 @@ describe('GET /licenceDetails/:prisonNumber', () => {
     });
 
     it('renders html and displays licence details if sections are missing', () => {
-        licenceServiceStub.getLicence.resolves({
-            licence: {
-                licenceConditions: [{content: [{text: 'Condition1'}]}]
-            }
+        conditionsServiceStub.populateLicenceWithConditions.resolves({
+            licenceConditions: [{content: [{text: 'Condition1'}]}]
         });
         return request(app)
             .get('/licenceDetails/1')

@@ -1,8 +1,9 @@
 const {validate, DATE_FIELD} = require('./utils/conditionsValidator');
-const {getIntersection, flatten, getIn} = require('../utils/functionalHelpers');
+const {getIntersection, flatten, getIn, isEmpty} = require('../utils/functionalHelpers');
 const moment = require('moment');
 const logger = require('../../log.js');
 const {conditionsOrder} = require('../models/conditions');
+const {populateAdditionalConditionsAsObject} = require('../utils/licenceFactory');
 
 module.exports = function createConditionsService(licenceClient) {
 
@@ -54,11 +55,33 @@ module.exports = function createConditionsService(licenceClient) {
         }
     }
 
+    async function populateLicenceWithConditions(licence) {
+
+        const additionalConditions = getIn(licence, ['licenceConditions', 'additional']);
+        const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
+        const conditionsOnLicence = !isEmpty(additionalConditions) || bespokeConditions.length > 0;
+        if (!conditionsOnLicence) {
+            return licence;
+        }
+
+        try {
+            const conditionIdsSelected = Object.keys(additionalConditions);
+            const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIdsSelected);
+
+            return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig);
+
+        } catch (error) {
+            console.error('Error during populateLicenceWithConditions');
+            throw error;
+        }
+    }
+
     return {
         getStandardConditions,
         getAdditionalConditions,
         validateConditionInputs,
-        getAdditionalConditionsWithErrors
+        getAdditionalConditionsWithErrors,
+        populateLicenceWithConditions
     };
 };
 
