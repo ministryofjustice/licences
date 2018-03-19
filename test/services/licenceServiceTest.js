@@ -35,47 +35,6 @@ describe('licenceService', () => {
             return expect(service.getLicence('123')).to.eventually.eql({licence: {a: 'b'}, status: undefined});
         });
 
-        it('should addAdditionalConditions if they are present in licence and requested', () => {
-            licenceClient.getLicence.resolves({licence: {licenceConditions: {additional: {1: {}}, bespoke: []}}});
-            licenceClient.getAdditionalConditions.resolves([{
-                ID: {value: 1},
-                USER_INPUT: {value: null},
-                TEXT: {value: 'The condition'},
-                FIELD_POSITION: {value: null},
-                GROUP_NAME: {value: 'group'},
-                SUBGROUP_NAME: {value: 'subgroup'}
-            }]);
-
-            return expect(service.getLicence('123', {populateConditions: true})).to.eventually.eql({
-                licence: {
-                    licenceConditions: [{
-                        content: [{text: 'The condition'}],
-                        group: 'group',
-                        subgroup: 'subgroup',
-                        id: 1
-                    }]
-                },
-
-                status: undefined
-            });
-        });
-
-        it('should not addAdditionalConditions if they are present in licence but not requested', () => {
-            licenceClient.getLicence.resolves({licence: {additionalConditions: {additional: {1: {}}}}});
-            licenceClient.getAdditionalConditions.resolves([{
-                ID: {value: 1},
-                USER_INPUT: {value: null},
-                TEXT: {value: 'The condition'},
-                FIELD_POSITION: {value: null}
-            }]);
-
-            return expect(service.getLicence('123')).to.eventually.eql({
-                licence: {
-                    additionalConditions: {additional: {1: {}}}
-                }, status: undefined
-            });
-        });
-
         it('should throw if error getting licence', () => {
             licenceClient.getLicence.rejects();
             return expect(service.getLicence('123')).to.eventually.be.rejected();
