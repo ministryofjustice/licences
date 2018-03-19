@@ -2,6 +2,7 @@ extends ../layout
 include ./includes/proceedButton
 include ./includes/utils
 
+
 block content
 
     div.back-link-container
@@ -18,29 +19,33 @@ block content
         include prisonerDetails
 
         if user.role === 'CA'
-            if licenceStatus.stage === 'UNSTARTED' || licenceStatus.stage === 'ELIGIBILITY'
+            if (['UNSTARTED', 'ELIGIBILITY'].includes(licenceStatus.stage))
                 include eligibilityTask
                 include proposedAddressTask
             else
                 include curfewAddressTask
-                include additionalConditionsTask
-                include riskManagementTask
-                include reportingInstructionsTask
+                if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+                    include additionalConditionsTask
+                    include riskManagementTask
+                    include reportingInstructionsTask
                 include finalChecksTask
                 include postponementTask
                 include caSubmitTask
 
+
         if user.role === 'RO'
             include curfewAddressTask
-            include additionalConditionsTask
-            include riskManagementTask
-            include reportingInstructionsTask
+            if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+                include additionalConditionsTask
+                include riskManagementTask
+                include reportingInstructionsTask
             include roSubmitTask
 
         if user.role === 'DM'
             include curfewAddressTask
-            include additionalConditionsTask
-            include riskManagementTask
-            include reportingInstructionsTask
+            if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+                include additionalConditionsTask
+                include riskManagementTask
+                include reportingInstructionsTask
             include finalChecksTask
             include approvalTask

@@ -14,11 +14,10 @@ div.largeMarginBottom.borderTop
     else
         div.pure-g
             div.pure-u-3-4
-                if licenceStatus.tasks.curfewAddressReview === 'DONE'
-                    if licenceStatus.decisions.curfewAddressApproved
-                        | Address approved
-                    else
-                        | Address rejected
+                if licenceStatus.decisions.curfewAddressApproved == 'approved'
+                    | Address approved
+                else if licenceStatus.decisions.curfewAddressApproved == 'rejected'
+                    | Address rejected
                 else
                     | Not yet approved
             div.pure-u-1-4

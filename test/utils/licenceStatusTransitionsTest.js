@@ -59,6 +59,41 @@ describe('getAllowedTransitions', () => {
         expect(allowed.roToCa).to.eql(false);
     });
 
+    it('should allow RO to CA for RO when address rejected even when other tasks not done', () => {
+
+        const status = {
+            tasks: {
+                curfewAddressReview: 'DONE',
+                curfewHours: 'UNSTARTED',
+                licenceConditions: 'UNSTARTED',
+                riskManagement: 'UNSTARTED',
+                reportingInstructions: 'UNSTARTED'
+            },
+            decisions: {
+                curfewAddressApproved: 'rejected'
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'RO');
+        expect(allowed.roToCa).to.eql(true);
+    });
+
+    it('should not allow RO to CA for RO when address undecided', () => {
+
+        const status = {
+            tasks: {
+                curfewAddressReview: 'DONE',
+                curfewHours: 'UNSTARTED',
+                licenceConditions: 'UNSTARTED',
+                riskManagement: 'UNSTARTED',
+                reportingInstructions: 'UNSTARTED'
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'RO');
+        expect(allowed.roToCa).to.eql(false);
+    });
+
     it('should allow CA to RO or DM for CA when all CA tasks done and decisions OK', () => {
 
         const status = {
@@ -73,7 +108,7 @@ describe('getAllowedTransitions', () => {
             },
             decisions: {
                 postponed: false,
-                curfewAddressApproved: true,
+                curfewAddressApproved: 'approved',
                 excluded: false
             }
         };
@@ -95,7 +130,7 @@ describe('getAllowedTransitions', () => {
             },
             decisions: {
                 postponed: false,
-                curfewAddressApproved: true,
+                curfewAddressApproved: 'approved',
                 excluded: true
             }
         };
