@@ -114,18 +114,6 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         }));
 
-    router.get('/licenceDetails/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
-        const {nomisId} = req.params;
-        logger.debug('GET licenceDetails/:nomisId');
-
-        const licence = getIn(res.locals.licence, ['licence']) || {};
-        const stage = getIn(res.locals.licence, ['status']) || {};
-        const data = await conditionsService.populateLicenceWithConditions(licence);
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
-
-        res.render(`licenceDetails/licenceDetails`, {nomisId, data, prisonerInfo, stage});
-    }));
-
     router.get('/review/:sectionName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         const {sectionName, nomisId} = req.params;
         logger.debug(`GET /review/${sectionName}/${nomisId}`);
