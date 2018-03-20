@@ -26,6 +26,7 @@ describe('/hdc/licenceConditions', () => {
                 base: [{TEXT: {value: 'hi'}, ID: {value: 'ho'}, USER_INPUT: {}}]
             }
         });
+        conditionsServiceStub.populateLicenceWithConditions.resolves({licence: {}});
     });
 
     describe('licenceConditions routes', () => {

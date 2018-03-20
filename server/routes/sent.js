@@ -15,12 +15,11 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
 
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
-        const licence = await licenceService.getLicence(nomisId, {populateConditions: true});
+        const licence = await licenceService.getLicence(nomisId);
         const status = getIn(licence, ['status']);
 
         res.render('sent/index', {nomisId, status});
     }));
-
 
     return router;
 };

@@ -1,8 +1,7 @@
 const logger = require('../../log.js');
 const {
     createLicenceObjectFrom,
-    createAdditionalConditionsObject,
-    populateAdditionalConditionsAsObject
+    createAdditionalConditionsObject
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {DATE_FIELD} = require('./utils/conditionsValidator');
@@ -21,7 +20,7 @@ module.exports = function createLicenceService(licenceClient) {
         }
     }
 
-    async function getLicence(nomisId, {populateConditions = false} = {}) {
+    async function getLicence(nomisId) {
         try {
             const rawLicence = await licenceClient.getLicence(nomisId);
             const licence = getIn(rawLicence, ['licence']);
@@ -30,13 +29,6 @@ module.exports = function createLicenceService(licenceClient) {
             }
             const formattedLicence = formatObjectForView(licence, {dates: [DATE_FIELD]});
             const status = getIn(rawLicence, ['status']);
-
-            const additionalConditions = getIn(formattedLicence, ['licenceConditions', 'additional']);
-            const bespokeConditions = getIn(formattedLicence, ['licenceConditions', 'bespoke']) || [];
-            const conditionsOnLicence = !isEmpty(additionalConditions) || bespokeConditions.length > 0;
-            if (populateConditions && conditionsOnLicence) {
-                return populateLicenceWithConditions(formattedLicence, status);
-            }
 
             return {licence: formattedLicence, status};
 
@@ -138,20 +130,6 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateStatus(nomisId, newStatus);
     }
 
-    async function populateLicenceWithConditions(licence, status) {
-        try {
-            const conditionIdsSelected = Object.keys(getIn(licence, ['licenceConditions', 'additional']));
-            const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIdsSelected);
-
-            return {
-                licence: populateAdditionalConditionsAsObject(licence, selectedConditionsConfig),
-                status
-            };
-        } catch (error) {
-            console.error('Error during populateLicenceWithConditions');
-            throw error;
-        }
-    }
 
     async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName}) {
         const updatedLicence = getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName});
