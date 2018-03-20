@@ -9,15 +9,16 @@ div.largeMarginBottom
     if data.proposedAddress && data.proposedAddress.curfewAddress && data.proposedAddress.curfewAddress.preferred
         include curfewAddress
 
-    if data.curfew && data.curfew.curfewHours
-        include curfewHours
+    if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+        if data.curfew && data.curfew.curfewHours
+            include curfewHours
 
-    if data.licenceConditions && data.licenceConditions.length > 0
-        h2.heading-medium.borderBottomLight Additional conditions
-        +additionalConditions()
+        if data.licenceConditions && data.licenceConditions.length > 0
+            h2#conditionsDetails.heading-medium.borderBottomLight Additional conditions
+            +additionalConditions()
 
-    if data.risk && data.risk.riskManagement
-        include ./riskManagement
+        if data.risk && data.risk.riskManagement
+            include ./riskManagement
 
-    if data.reporting && data.reporting.reportingInstructions
-        include ./reportingInstructions
+        if data.reporting && data.reporting.reportingInstructions
+            include ./reportingInstructions
