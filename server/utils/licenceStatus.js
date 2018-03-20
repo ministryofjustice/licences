@@ -286,28 +286,12 @@ function getCurfewAddressReviewState(licence) {
         return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
     }
 
-    if (isEmpty(consentAnswer)) {
-        return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
-    }
-
-    if (consentAnswer === 'No') {
-        return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
-    }
-
-    if (isEmpty(electricityAnswer)) {
-        return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
-    }
-
-    if (electricityAnswer === 'No') {
+    if ([consentAnswer, electricityAnswer, deemedSafeAnswer].some(it => it === 'No')) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
     }
 
 
-    if (deemedSafeAnswer === 'No') {
-        return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
-    }
-
-    if (isEmpty(deemedSafeAnswer)) {
+    if ([consentAnswer, electricityAnswer, deemedSafeAnswer].some(it => isEmpty(it))) {
         return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
     }
 
