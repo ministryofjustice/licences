@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>large_tick</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="PCA-2---Submitted-to-RO" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-86.000000, -156.000000)">
+        <g id="Group-2" transform="translate(86.000000, 156.000000)">
+            <g id="large_tick">
+                <circle id="Oval-23" fill="#FFFFFF" fill-rule="evenodd" cx="40" cy="40" r="40"></circle>
+                <polyline id="Path-1" stroke="#005F9E" stroke-width="8" points="23.3333333 45.3830056 34.1198874 54.1025641 56.6666667 23.3333333"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>
