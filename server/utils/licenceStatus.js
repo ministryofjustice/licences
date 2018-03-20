@@ -302,6 +302,11 @@ function getCurfewAddressReviewState(licence) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
     }
 
+
+    if (deemedSafeAnswer === 'No') {
+        return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
+    }
+
     if (isEmpty(deemedSafeAnswer)) {
         return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
     }
