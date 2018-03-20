@@ -61,13 +61,17 @@ describe('getStatusLabel', () => {
 
             const examples = [
                 {
-                    status: {stage: licenceStages.ELIGIBILITY,
-                    decisions: {excluded: true, insufficientTime: true, unsuitable: true}, tasks: {}},
+                    status: {
+                        stage: licenceStages.ELIGIBILITY,
+                        decisions: {excluded: true, insufficientTime: true, unsuitable: true}, tasks: {}
+                    },
                     label: 'Excluded (Ineligible)'
                 },
                 {
-                    status: {stage: licenceStages.ELIGIBILITY,
-                        decisions: {insufficientTime: true, unsuitable: true}, tasks: {}},
+                    status: {
+                        stage: licenceStages.ELIGIBILITY,
+                        decisions: {insufficientTime: true, unsuitable: true}, tasks: {}
+                    },
                     label: 'Presumed unsuitable'
                 }
             ];
@@ -87,7 +91,11 @@ describe('getStatusLabel', () => {
                     label: 'Excluded (Ineligible)'
                 },
                 {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {curfewAddressApproved: false}, tasks: {}},
+                    status: {
+                        stage: licenceStages.PROCESSING_CA,
+                        decisions: {curfewAddressApproved: 'rejected'},
+                        tasks: {}
+                    },
                     label: 'Address not suitable'
                 },
                 {
@@ -103,13 +111,17 @@ describe('getStatusLabel', () => {
 
             const examples = [
                 {
-                    status: {stage: licenceStages.PROCESSING_CA,
-                        decisions: {excluded: true, curfewAddressApproved: false, postponed: true}, tasks: {}},
+                    status: {
+                        stage: licenceStages.PROCESSING_CA,
+                        decisions: {excluded: true, curfewAddressApproved: 'approved', postponed: true}, tasks: {}
+                    },
                     label: 'Postponed'
                 },
                 {
-                    status: {stage: licenceStages.PROCESSING_CA,
-                        decisions: {excluded: true, curfewAddressApproved: false}, tasks: {}},
+                    status: {
+                        stage: licenceStages.PROCESSING_CA,
+                        decisions: {excluded: true, curfewAddressApproved: 'rejected'}, tasks: {}
+                    },
                     label: 'Excluded (Ineligible)'
                 }
             ];

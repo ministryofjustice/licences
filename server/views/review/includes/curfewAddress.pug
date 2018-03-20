@@ -1,4 +1,4 @@
-h2.heading-medium.borderBottomLightThick.separatorTitle Proposed curfew address
+h2#curfewAddressDetails.heading-medium.borderBottomLightThick.separatorTitle Proposed curfew address
 
 -var address = data.proposedAddress.curfewAddress.preferred
 
@@ -80,24 +80,26 @@ if data.curfew && data.curfew.curfewAddressReview
             div#dischargeHomeAddress
                 span#curfew-consent.bold #{addressReview.consent}
 
-    div.pure-g.borderBottomLight.midPaddingTopBottom
-        div.pure-u-1-2
-            span Was a home visit conducted in this case?
-        div.pure-u-1-2
-            span#curfew-homeVisit.bold #{addressReview.homeVisitConducted}
+    if(addressReview.consent === 'Yes')
+        div.pure-g.borderBottomLight.midPaddingTopBottom
+            div.pure-u-1-2
+                span Does the address have an electricity supply?
+            div.pure-u-1-2
+                if addressReview.electricity
+                    span#curfew-electricity.bold #{addressReview.electricity}
 
-    div.pure-g.borderBottomLight.midPaddingTopBottom
-        div.pure-u-1-2
-            span Does the address have an electricity supply?
-        div.pure-u-1-2
-            if addressReview.electricity
-                span#curfew-electricity.bold #{addressReview.electricity}
+        if(addressReview.electricity === 'Yes')
+            div.pure-g.borderBottomLight.midPaddingTopBottom
+                div.pure-u-1-2
+                    span Was a home visit conducted in this case?
+                div.pure-u-1-2
+                    span#curfew-homeVisit.bold #{addressReview.homeVisitConducted}
 
-    div.pure-g.borderBottomLight.midPaddingTopBottom
-        div.pure-u-1-2
-            span Could this offender be managed safely at address?
-        div.pure-u-1-2
-            span#curfew-deemedSafe.bold #{addressSafety.deemedSafe}
+            div.pure-g.borderBottomLight.midPaddingTopBottom
+                div.pure-u-1-2
+                    span Could this offender be managed safely at address?
+                div.pure-u-1-2
+                    span#curfew-deemedSafe.bold #{addressSafety.deemedSafe}
 else
     div.pure-g.midPaddingTopBottom
         div.pure-u-1-2

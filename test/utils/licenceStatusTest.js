@@ -123,7 +123,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.unsuitable).to.eql(true);
         expect(status.decisions.optedOut).to.eql(true);
         expect(status.decisions.bassReferralNeeded).to.eql(true);
-        expect(status.decisions.curfewAddressApproved).to.eql(true);
+        expect(status.decisions.curfewAddressApproved).to.eql('approved');
         expect(status.decisions.riskManagementNeeded).to.eql(true);
         expect(status.decisions.victimLiasionNeeded).to.eql(true);
         expect(status.decisions.seriousOffence).to.eql(true);
@@ -185,6 +185,11 @@ describe('getLicenceStatus', () => {
                         decision: 'No'
                     }
                 },
+                curfew: {
+                    curfewAddressReview: {
+                        consent: 'No'
+                    }
+                },
                 finalChecks: {
                     seriousOffence: {
                         decision: 'No'
@@ -211,7 +216,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.unsuitable).to.eql(false);
         expect(status.decisions.optedOut).to.eql(false);
         expect(status.decisions.bassReferralNeeded).to.eql(false);
-        expect(status.decisions.curfewAddressApproved).to.eql(false);
+        expect(status.decisions.curfewAddressApproved).to.eql('rejected');
         expect(status.decisions.riskManagementNeeded).to.eql(false);
         expect(status.decisions.victimLiasionNeeded).to.eql(false);
         expect(status.decisions.seriousOffence).to.eql(false);
@@ -481,6 +486,29 @@ describe('getLicenceStatus', () => {
 
         const status = getLicenceStatus(licence);
 
-        expect(status.decisions.curfewAddressApproved).to.eql(true);
+        expect(status.decisions.curfewAddressApproved).to.eql('approved');
+    });
+
+    it('should show address review REJECTED when deemed safe is no', () => {
+        const licence = {
+            status: 'PROCESSING_CA',
+            licence: {
+                curfew: {
+                    curfewAddressReview: {
+                        consent: 'Yes',
+                        electricity: 'Yes',
+                        homeVisitConducted: 'No'
+                    },
+                    addressSafety: {
+                        deemedSafe: 'No'
+                    },
+                    curfewHours: 'anything'
+                }
+            }
+        };
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.decisions.curfewAddressApproved).to.eql('rejected');
     });
 });

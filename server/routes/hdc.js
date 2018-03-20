@@ -3,6 +3,7 @@ const express = require('express');
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
 const {getIn} = require('../utils/functionalHelpers');
 const {getPathFor} = require('../utils/routes');
+const {getLicenceStatus} = require('../utils/licenceStatus');
 
 const licenceConditionsConfig = require('./config/licenceConditions');
 const eligibilityConfig = require('./config/eligibility');
@@ -120,10 +121,12 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         const licence = getIn(res.locals.licence, ['licence']) || {};
         const stage = getIn(res.locals.licence, ['status']) || {};
+        const licenceStatus = getLicenceStatus(res.locals.licence);
+
         const data = await conditionsService.populateLicenceWithConditions(licence);
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
-        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage});
+        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus});
     }));
 
     router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {

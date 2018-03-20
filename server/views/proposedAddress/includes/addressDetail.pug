@@ -22,25 +22,27 @@ mixin addressDetail(type, address, review, safety)
                 if address.telephone
                     p.bold(id=type+"-telephone") #{address.telephone}
 
-            if addressReview.electricity
-                div.pure-u-md-4-5.paddingBottom
-                    | Does this address have an electricity supply?
-                    p.bold(id=type + "-electricity") #{addressReview.electricity}
-
             if addressReview.consent
                 div.pure-u-md-4-5.paddingBottom
                     | Does the homeowner/landlord give informed consent to the HDC at the address?
                     p.bold(id=type + "-consent") #{addressReview.consent}
 
-            if addressReview.homeVisitConducted
-                div.pure-u-md-4-5
-                    | Was a home visit conducted in this case?
-                    p.bold(id=type + "-homeVisit") #{addressReview.homeVisitConducted}
+            if(addressReview.consent === 'Yes')
+                if addressReview.electricity
+                    div.pure-u-md-4-5.paddingBottom
+                        | Does this address have an electricity supply?
+                        p.bold(id=type + "-electricity") #{addressReview.electricity}
 
-            if addressSafety.deemedSafe
-                div.pure-u-md-4-5
-                    | Could this offender be managed safely at this address?
-                    p.bold(id=type + "-deemedSafe") #{addressSafety.deemedSafe}
+                if(addressReview.electricity === 'Yes')
+                    if addressReview.homeVisitConducted
+                        div.pure-u-md-4-5
+                            | Was a home visit conducted in this case?
+                            p.bold(id=type + "-homeVisit") #{addressReview.homeVisitConducted}
+
+                    if addressSafety.deemedSafe
+                        div.pure-u-md-4-5
+                            | Could this offender be managed safely at this address?
+                            p.bold(id=type + "-deemedSafe") #{addressSafety.deemedSafe}
 
         if address.occupier
             div.pure-u-1.pure-u-md-7-12

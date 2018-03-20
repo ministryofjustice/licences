@@ -276,53 +276,26 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
     }
 }
 
-
 function getCurfewAddressReviewState(licence) {
 
     const consentAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'consent']);
     const electricityAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']);
-
     const deemedSafeAnswer = getIn(licence, ['curfew', 'addressSafety', 'deemedSafe']);
 
-    const curfewAddressReview = getState(licence);
-    const curfewAddressApproved = getApproved();
-
-
-    return {curfewAddressReview, curfewAddressApproved};
-
-    function getState(licence) {
-
-        if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview']))) {
-            return taskStates.UNSTARTED;
-        }
-
-        if (isEmpty(consentAnswer)) {
-            return taskStates.STARTED;
-        }
-
-        if (consentAnswer === 'Yes') {
-            if (isEmpty(electricityAnswer)) {
-                return taskStates.STARTED;
-            }
-
-            if (electricityAnswer === 'No') {
-                return taskStates.DONE;
-            }
-
-            if (isEmpty(deemedSafeAnswer)) {
-                return taskStates.STARTED;
-            }
-        }
-
-        return taskStates.DONE;
+    if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview']))) {
+        return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
     }
 
-    function getApproved() {
-        return curfewAddressReview === taskStates.DONE
-            && consentAnswer === 'Yes'
-            && electricityAnswer === 'Yes'
-            && deemedSafeAnswer.startsWith('Yes');
+    if ([consentAnswer, electricityAnswer, deemedSafeAnswer].some(it => it === 'No')) {
+        return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
     }
+
+
+    if ([consentAnswer, electricityAnswer, deemedSafeAnswer].some(it => isEmpty(it))) {
+        return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
+    }
+
+    return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};
 }
 
 function getCurfewHoursState(licence) {

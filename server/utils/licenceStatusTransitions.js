@@ -29,6 +29,11 @@ function getAllowedTransitions(licenceStatus, role) {
 function canSendRoToCa(licenceStatus) {
 
     const tasks = licenceStatus.tasks;
+    const decisions = licenceStatus.decisions || {};
+
+    if (decisions.curfewAddressApproved === 'rejected') {
+        return true;
+    }
 
     const required = [
         tasks.curfewAddressReview,
@@ -77,7 +82,7 @@ function canSendCaToDm(licenceStatus) {
         !decisions.postponed &&
         // todo should it be possible to send to DM if serious offence / on remand?
         // decisions.finalCheckPass &&
-        decisions.curfewAddressApproved;
+        decisions.curfewAddressApproved === 'approved';
 
     return tasksComplete && decisionsOk;
 }
