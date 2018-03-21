@@ -1,3 +1,11 @@
+div#tabBar
+    ul
+        each tab in tabsForRole
+            li(class=selectedTabConfig.id === tab.id ? 'selected' : undefined)
+                a(href=tab.id) #{tab.text}
+
+h2.heading-medium #{selectedTabConfig.text}
+
 table#hdcEligiblePrisoners.largeMarginBottom
     thead
         tr
