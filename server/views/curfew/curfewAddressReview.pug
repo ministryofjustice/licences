@@ -3,8 +3,8 @@ include ../proposedAddress/includes/addressDetail
 
 block content
 
-    -var review = data.curfew ? data.curfew.curfewAddressReview : {}
-    -var address = data.proposedAddress ? data.proposedAddress.curfewAddress.preferred : {}
+    -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
+    -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress.preferred : {}
 
     div.pure-g.pure-u-1
         div.borderBottomLight

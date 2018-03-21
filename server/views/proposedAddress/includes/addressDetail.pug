@@ -3,8 +3,8 @@ mixin addressDetail(type, address, review, safety)
     -var addressReview = review || {}
     -var addressSafety = safety || {}
 
-    div.pure-g.largePaddingBottom(id=type+"-addressDetails")
-        div.pure-u-1.pure-u-sm-5-12.pure-g
+    div.pure-g.smallPaddingBottom(id=type+"-addressDetails")
+        div.pure-u-1.pure-u-sm-1-2.pure-g
             div.pure-u-md-2-3
                 | Address
                 div.paddingBottom.smallMarginTop
@@ -22,31 +22,9 @@ mixin addressDetail(type, address, review, safety)
                 if address.telephone
                     p.bold(id=type+"-telephone") #{address.telephone}
 
-            if addressReview.consent
-                div.pure-u-md-4-5.paddingBottom
-                    | Does the homeowner/landlord give informed consent to the HDC at the address?
-                    p.bold(id=type + "-consent") #{addressReview.consent}
-
-            if(addressReview.consent === 'Yes')
-                if addressReview.electricity
-                    div.pure-u-md-4-5.paddingBottom
-                        | Does this address have an electricity supply?
-                        p.bold(id=type + "-electricity") #{addressReview.electricity}
-
-                if(addressReview.electricity === 'Yes')
-                    if addressReview.homeVisitConducted
-                        div.pure-u-md-4-5
-                            | Was a home visit conducted in this case?
-                            p.bold(id=type + "-homeVisit") #{addressReview.homeVisitConducted}
-
-                    if addressSafety.deemedSafe
-                        div.pure-u-md-4-5
-                            | Could this offender be managed safely at this address?
-                            p.bold(id=type + "-deemedSafe") #{addressSafety.deemedSafe}
-
         if address.occupier
-            div.pure-u-1.pure-u-md-7-12
-                p Main occupier
+            div.pure-u-1.pure-u-md-1-2
+                div Main occupier
                 div.pure-g.smallMarginTop.borderBottomLight.smallPaddingBottom
                     p.bold.pure-u-1-2.noMargin(id=type+"-occupierName") #{address.occupier.name}
                     p.bold.pure-u-1-3.noMargin(id=type+"-occupierRelation") #{address.occupier.relationship}
@@ -69,7 +47,38 @@ mixin addressDetail(type, address, review, safety)
                                 p.bold.noMargin.pure-u-1-2 None
 
 
-                div.pure-u-md-2-3
+                div.pure-u-md-5-6
                     p According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
                     if address.cautionedAgainstResident
                         p.bold(id=type+"-cautioned") #{address.cautionedAgainstResident}
+
+    if addressReview.consent
+        div.pure-g.largeMarginTop.paddingTop.smallPaddingBottom.borderTopLight
+            div.pure-u-1-2
+                div.pure-u-md-4-5
+                    | Does the homeowner/landlord give informed consent to HDC at the address?
+                    p.bold(id=type + "-consent") #{addressReview.consent}
+
+            if(addressReview.consent === 'Yes')
+                div.pure-u-1-2
+                    if addressReview.electricity
+                        div.pure-u-md-4-5.midPaddingBottom
+                            | Does this address have an electricity supply?
+                            p.bold(id=type + "-electricity") #{addressReview.electricity}
+
+                    if(addressReview.electricity === 'Yes')
+                        if addressReview.homeVisitConducted
+                            div.pure-u-md-4-5
+                                | Was a home visit conducted in this case?
+                                p.bold(id=type + "-homeVisit") #{addressReview.homeVisitConducted}
+
+            if(addressReview.consent === 'Yes' && addressReview.electricity !== 'No')
+                if addressSafety.deemedSafe
+                    div.pure-u-1.largeMarginTop.paddingTop.borderTopLight
+                        div.pure-u-md-4-5
+                            | Could this offender be managed safely at this address?
+                            p.bold(id=type + "-deemedSafe") #{addressSafety.deemedSafe}
+
+            div.pure-u-1-2
+
+
