@@ -35,6 +35,8 @@ table#hdcEligiblePrisoners.largeMarginBottom
                     td.crd
                         if prisoner.sentenceDetail.conditionalReleaseDate
                             | #{prisoner.sentenceDetail.conditionalReleaseDate}
+                        else if prisoner.sentenceDetail.automaticReleaseDate
+                            | #{prisoner.sentenceDetail.automaticReleaseDate}
 
                     if (prisoner.status == 'Address not suitable')
                         td.status.terminalStateAlert
