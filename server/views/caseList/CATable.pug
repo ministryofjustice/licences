@@ -1,11 +1,3 @@
-div#tabBar
-    ul
-        each tab in tabsForRole
-            li(class=selectedTabConfig.id === tab.id ? 'selected' : undefined)
-                a(href=tab.id) #{tab.text}
-
-h2.heading-medium #{selectedTabConfig.text}
-
 table#hdcEligiblePrisoners.largeMarginBottom
     thead
         tr
@@ -57,11 +49,11 @@ table#hdcEligiblePrisoners.largeMarginBottom
                     td
                         if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA'].includes(prisoner.stage)
                             if ['Not started', 'Final checks'].includes(prisoner.status)
-                                a.button.button-primary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
+                                a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.offenderNo role="button")
                                     | Start
                             else
-                                a.button.button-secondary.fullWidth.center(href="hdc/taskList/" + prisoner.offenderNo role="button")
+                                a.button.button-secondary.fullWidth.center(href="/hdc/taskList/" + prisoner.offenderNo role="button")
                                     | View
                         else if ['PROCESSING_RO', 'APPROVAL', 'DECIDED'].includes(prisoner.stage)
-                            a.button.button-secondary.fullWidth.center(href="hdc/review/licence/" + prisoner.offenderNo role="button")
+                            a.button.button-secondary.fullWidth.center(href="/hdc/review/licence/" + prisoner.offenderNo role="button")
                                 | View

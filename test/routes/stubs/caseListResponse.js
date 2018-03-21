@@ -93,5 +93,37 @@ module.exports = [
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
         stage: 'DECIDED',
-        status: 'Refused'}
+        status: 'Refused'},
+
+    {bookingId: 6,
+        offenderNo: 'A0001XX',
+        firstName: 'Processing CA not postponed',
+        lastName: 'Andrews',
+        dateOfBirth: '22/10/1989',
+        agencyLocationId: 'LT1',
+        agencyLocationDesc: 'Licence Auto Test Prison',
+        internalLocationDesc: 'A-1-1',
+        facialImageId: 1,
+        sentenceDetail:
+            {bookingId: 1,
+                conditionalReleaseDate: '15/10/2019',
+                homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        stage: 'PROCESSING_CA',
+        status: 'Refused'},
+
+    {bookingId: 7,
+        offenderNo: 'A0001XX',
+        firstName: 'Processing CA postponed',
+        lastName: 'Andrews',
+        dateOfBirth: '22/10/1989',
+        agencyLocationId: 'LT1',
+        agencyLocationDesc: 'Licence Auto Test Prison',
+        internalLocationDesc: 'A-1-1',
+        facialImageId: 1,
+        sentenceDetail:
+            {bookingId: 1,
+                conditionalReleaseDate: '15/10/2019',
+                homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        stage: 'PROCESSING_CA',
+        status: 'Postponed'}
 ];
