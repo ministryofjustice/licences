@@ -8,14 +8,16 @@ block content
     -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress.preferred : {}
 
     div.pure-g.pure-u-1
-        div.borderBottomLight
+        div
             div.back-link-container.smallPaddingTop
                 a.link-back(href="javascript: window.history.back();") Back
 
             h2.heading-large Proposed address
 
             if address
-                p The following address has been requested by the offender and checked by the RO.
+                div.pure-u-1-2.midPaddingBottom
+                    The following address has been requested by the offender and checked by the RO.
+                div.pure-u-1-2
 
                 +addressDetail('curfew', address, review, addressSafety)
 
