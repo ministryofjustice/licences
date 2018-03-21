@@ -1,0 +1,23 @@
+#tabBar {
+    margin-bottom: 60px;
+    border-bottom: solid $grey-2 2px;
+    font-size: larger;
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    li {
+        float: left;
+        padding: 10px 20px;
+    }
+    li.selected {
+        border-bottom: solid $govuk-blue 10px;
+    }
+    a {
+        text-decoration: none;
+        color: black;
+    }
+}
