@@ -23,8 +23,10 @@ table#hdcEligiblePrisoners.largeMarginBottom
                             | #{prisoner.offenderNo}
 
                     td.location
-                        if prisoner.agencyLocationDesc
-                            | #{prisoner.agencyLocationDesc}
+                        if prisoner.internalLocationDesc
+                            | #{prisoner.internalLocationDesc}
+                        if prisoner.internalLocationDesc && prisoner.agencyLocationDesc
+                            |  - #{prisoner.agencyLocationDesc}
 
                     td.hdced
                         if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
@@ -33,6 +35,8 @@ table#hdcEligiblePrisoners.largeMarginBottom
                     td.crd
                         if prisoner.sentenceDetail.conditionalReleaseDate
                             | #{prisoner.sentenceDetail.conditionalReleaseDate}
+                        else if prisoner.sentenceDetail.automaticReleaseDate
+                            | #{prisoner.sentenceDetail.automaticReleaseDate}
 
                     td.status
                         if prisoner.status
