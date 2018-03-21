@@ -33,7 +33,7 @@ function statusLabels(licenceStatus, role) {
         },
         [licenceStages.PROCESSING_CA]: {
             CA: caProcessingLabel,
-            RO: () => 'Submitted to PCA',
+            RO: caProcessingRoLabel,
             DM: () => 'Submitted to PCA'
         },
         [licenceStages.APPROVAL]: {
@@ -73,6 +73,15 @@ function caProcessingLabel(licenceStatus) {
     ];
 
     return getLabel(labels, licenceStatus) || 'Final checks';
+}
+
+function caProcessingRoLabel(licenceStatus) {
+
+    const labels = [
+        {decision: 'postponed', label: 'Postponed'}
+        ];
+
+    return getLabel(labels, licenceStatus) || 'Submitted to PCA';
 }
 
 function roProcessingLabel(licenceStatus) {

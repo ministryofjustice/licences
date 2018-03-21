@@ -188,16 +188,39 @@ describe('getStatusLabel', () => {
             assertLabels(examples, roles.RO);
         });
 
+        describe('PROCESSING_CA stage', () => {
+            const examples = [
+                {
+                    status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
+                    label: 'Submitted to PCA'
+                },
+                {
+                    status: {stage: licenceStages.PROCESSING_CA, decisions: {excluded: true}, tasks: {}},
+                    label: 'Submitted to PCA'
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_CA,
+                        decisions: {curfewAddressApproved: 'rejected'},
+                        tasks: {}
+                    },
+                    label: 'Submitted to PCA'
+                },
+                {
+                    status: {stage: licenceStages.PROCESSING_CA, decisions: {postponed: true}, tasks: {}},
+                    label: 'Postponed'
+                }
+            ];
+
+            assertLabels(examples, roles.RO);
+        });
+
         describe('Other stages', () => {
 
             const examples = [
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {}},
                     label: 'Eligibility checks ongoing'
-                },
-                {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
-                    label: 'Submitted to PCA'
                 },
                 {
                     status: {stage: licenceStages.APPROVAL, decisions: {approved: true}, tasks: {}},
