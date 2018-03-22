@@ -9,6 +9,12 @@ exports.seed = knex =>
                     LAST_NAME: 'LASTA'
                 },
                 {
+                    NOMIS_ID: "RO_USER_MULTI",
+                    STAFF_ID: "DELIUS_ID_TEST_MULTI",
+                    FIRST_NAME: 'FIRSTA',
+                    LAST_NAME: 'LASTA'
+                },
+                {
                     NOMIS_ID: "RO_USER",
                     STAFF_ID: "DELIUS_ID",
                     FIRST_NAME: 'JESSY',
