@@ -7,6 +7,7 @@ $path: "/public/images/";
 @import 'govuk-elements';
 @import './layout';
 @import './tabs';
+@import './pagination';
 
 #proposition-links li { color: $grey-4; }
 

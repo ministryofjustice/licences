@@ -1,0 +1,40 @@
+#pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: $govuk-blue;
+    margin: 40px 0;
+
+    a {
+        cursor: pointer;
+    }
+
+    .pub-c-pagination__link-title {
+        font-size: 27px;
+        line-height: 1.25;
+        font-family: "nta", Arial, sans-serif;
+        font-weight: 400;
+        text-transform: none;
+        display: block;
+
+        &.next {
+            text-align: right;
+        }
+
+    }
+
+    .prevArrow {
+        padding-right: 10px;
+    }
+
+    .nextArrow {
+        padding-left: 10px;
+    }
+
+    .pub-c-pagination__link-label {
+        display: block;
+        margin-top: 0.1em;
+        text-decoration: underline;
+        font-size: 16px;
+    }
+}
