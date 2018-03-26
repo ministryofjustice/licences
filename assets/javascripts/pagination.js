@@ -103,7 +103,7 @@ function paginate() {
     }
 
     function addPaginationInfo() {
-        $("#paginationInfo").html('<div id="paginationInfo">Offenders '+String(state.firstIndex+1)+' - '+String(state.lastIndex+1)+' of '+String(state.totalNumber)+'</div>')
+        $("#paginationInfo").html('Offenders '+String(state.firstIndex+1)+' - '+String(state.lastIndex+1)+' of '+String(state.totalNumber));
         $("#prevLabel").text('Page '+String(state.pageNumber));
         $("#nextLabel").text('Page '+String(state.pageNumber + 2));
     }
