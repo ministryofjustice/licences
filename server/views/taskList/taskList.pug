@@ -25,8 +25,9 @@ block content
             else
                 include curfewAddressTask
                 if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
-                    include additionalConditionsTask
                     include riskManagementTask
+                    include curfewHoursTask
+                    include additionalConditionsTask
                     include reportingInstructionsTask
                 include finalChecksTask
                 include postponementTask
@@ -36,16 +37,18 @@ block content
         if user.role === 'RO'
             include curfewAddressTask
             if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
-                include additionalConditionsTask
                 include riskManagementTask
+                include curfewHoursTask
+                include additionalConditionsTask
                 include reportingInstructionsTask
             include roSubmitTask
 
         if user.role === 'DM'
             include curfewAddressTask
             if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
-                include additionalConditionsTask
                 include riskManagementTask
+                include curfewHoursTask
+                include additionalConditionsTask
                 include reportingInstructionsTask
             include finalChecksTask
             include approvalTask

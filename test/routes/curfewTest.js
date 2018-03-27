@@ -64,13 +64,13 @@ describe('/hdc/curfew', () => {
                 url: '/curfew/addressSafety/1',
                 body: {nomisId: 1, deemedSafe: 'Yes'},
                 section: 'addressSafety',
-                nextPath: '/hdc/curfew/curfewHours/1'
+                nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/curfew/curfewHours/1',
                 body: {nomisId: 1},
                 section: 'curfewHours',
-                nextPath: '/hdc/licenceConditions/standard/1'
+                nextPath: '/hdc/taskList/1'
             }
         ];
 

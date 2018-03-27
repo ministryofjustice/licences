@@ -33,7 +33,7 @@ module.exports = {
                     No: '/hdc/taskList/'
                 }
             ],
-            path: '/hdc/curfew/curfewHours/'
+            path: '/hdc/taskList/'
         }
     },
     curfewHours: {
@@ -57,7 +57,7 @@ module.exports = {
             {sundayUntil: {}}
         ],
         nextPath: {
-            path: '/hdc/licenceConditions/standard/'
+            path: '/hdc/taskList/'
         }
     }
 };

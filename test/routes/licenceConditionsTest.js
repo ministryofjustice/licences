@@ -51,7 +51,7 @@ describe('/hdc/licenceConditions', () => {
             {
                 url: '/licenceConditions/standard/1',
                 body: {additionalConditionsRequired: 'No', nomisId: 1},
-                nextPath: '/hdc/risk/riskManagement/1',
+                nextPath: '/hdc/taskList/1',
                 formName: 'standard'
             }
         ];

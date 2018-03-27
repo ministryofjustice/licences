@@ -46,7 +46,7 @@ describe('/hdc/reporting', () => {
                 url: '/reporting/reportingInstructions/1',
                 body: {nomisId: 1},
                 section: 'reportingInstructions',
-                nextPath: '/hdc/review/licenceDetails/1'
+                nextPath: '/hdc/taskList/1'
             }
         ];
 

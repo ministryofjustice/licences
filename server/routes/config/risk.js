@@ -10,7 +10,7 @@ module.exports = {
             {victimLiaisonDetails: {dependentOn: 'victimLiaison', predicate: 'Yes'}}
         ],
         nextPath: {
-            path: '/hdc/reporting/reportingInstructions/'
+            path: '/hdc/taskList/'
         }
     }
 };
