@@ -445,7 +445,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/send/noms">Continue');
+                        expect(res.text).to.include('/hdc/review/licenceDetails/noms">Continue');
                     });
 
             });
