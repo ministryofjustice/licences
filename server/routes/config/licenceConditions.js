@@ -7,14 +7,14 @@ module.exports = {
             decisions: {
                 discriminator: 'additionalConditionsRequired',
                 Yes: '/hdc/licenceConditions/additionalConditions/',
-                No: '/hdc/risk/riskManagement/'
+                No: '/hdc/taskList/'
             },
-            path: '/hdc/risk/riskManagement/'
+            path: '/hdc/taskList/'
         }
     },
     conditionsSummary: {
         nextPath: {
-            path: '/hdc/risk/riskManagement/'
+            path: '/hdc/taskList/'
         }
     }
 };

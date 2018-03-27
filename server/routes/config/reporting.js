@@ -12,7 +12,7 @@ module.exports = {
             {time: {}}
         ],
         nextPath: {
-            path: '/hdc/review/licenceDetails/'
+            path: '/hdc/taskList/'
         }
     }
 };

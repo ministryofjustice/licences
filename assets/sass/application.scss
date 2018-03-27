@@ -99,6 +99,37 @@ $path: "/public/images/";
     padding-bottom: 10px;
 }
 
+.taskListItem {
+    border-bottom: solid $grey-2 1px;
+    padding-top: 15px;
+    h2 {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin: 0;
+        border-bottom: solid $grey-2 1px;
+    }
+    .pure-g {
+        padding: 15px 0;
+        display: table;
+        width: 100%;
+
+        div {
+            display: table-cell;
+            vertical-align: middle;
+
+            div {
+                display: block;
+            }
+        }
+    }
+
+    &.submit {
+        margin-top: 30px;
+        border-top: solid $grey-1 3px;
+        margin-bottom: 100px
+    }
+}
+
 .midPaddingTopBottom {
     padding-top: 20px;
     padding-bottom: 20px;
@@ -312,7 +343,6 @@ td.spacer {
 
 .taskListAction {
     width: 66%;
-    margin-top: -0.5em;
 }
 
 .fullWidth {

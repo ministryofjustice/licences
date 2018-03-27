@@ -1,0 +1,14 @@
+div.taskListItem
+    h2.heading-medium Curfew hours
+
+    div.pure-g
+        div.pure-u-3-4
+            if licenceStatus.tasks.curfewHours === 'DONE'
+                | Confirmed
+            else
+                | Not yet confirmed
+        div.pure-u-1-4
+            if user.role === 'RO'
+                +proceed(licenceStatus.tasks.curfewHours, 'UNSTARTED', 'Start', 'View', "/hdc/curfew/curfewHours/" + prisonerInfo.offenderNo)
+            else
+                a.taskListAction.center.button.button-secondary(href="/hdc/review/curfewHours/" + prisonerInfo.offenderNo) View

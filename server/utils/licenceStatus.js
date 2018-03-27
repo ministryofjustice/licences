@@ -291,7 +291,7 @@ function getCurfewAddressReviewState(licence) {
     }
 
 
-    if ([consentAnswer, electricityAnswer, deemedSafeAnswer].some(it => isEmpty(it))) {
+    if ([consentAnswer, electricityAnswer, deemedSafeAnswer].some(isEmpty)) {
         return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
     }
 
