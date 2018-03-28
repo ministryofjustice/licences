@@ -511,4 +511,89 @@ describe('getLicenceStatus', () => {
 
         expect(status.decisions.curfewAddressApproved).to.eql('rejected');
     });
+
+    context('Eligibility', () => {
+        it('should show eligibility DONE when excluded is YES', () => {
+            const licence = {
+                status: 'PROCESSING_CA',
+                licence: {
+                    eligibility: {
+                        excluded: {
+                            decision: 'Yes'
+                        }
+
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.eligibility).to.eql(taskStates.DONE);
+        });
+
+        it('should show eligibility DONE when suitabililty is YES', () => {
+            const licence = {
+                status: 'PROCESSING_CA',
+                licence: {
+                    eligibility: {
+                        excluded: {
+                            decision: 'No'
+                        },
+                        suitability: {
+                            decision: 'Yes'
+                        }
+
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.eligibility).to.eql(taskStates.DONE);
+        });
+
+        it('should show eligibility STARTED when suitabililty is No and excluded is No but no crdTime', () => {
+            const licence = {
+                status: 'PROCESSING_CA',
+                licence: {
+                    eligibility: {
+                        excluded: {
+                            decision: 'No'
+                        },
+                        suitability: {
+                            decision: 'No'
+                        }
+
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.eligibility).to.eql(taskStates.STARTED);
+        });
+
+        it('should show eligibility DONE when suitabililty is No and excluded is No but and complete crdTime', () => {
+            const licence = {
+                status: 'PROCESSING_CA',
+                licence: {
+                    eligibility: {
+                        excluded: {
+                            decision: 'No'
+                        },
+                        suitability: {
+                            decision: 'No'
+                        },
+                        crdTime: {
+                            decision: 'Yes'
+                        }
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.eligibility).to.eql(taskStates.DONE);
+        });
+    });
 });

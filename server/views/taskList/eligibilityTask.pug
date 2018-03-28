@@ -28,7 +28,11 @@ div.largeMarginBottom
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
                                 | Is the offender presumed unsuitable?
-                            if licenceStatus.tasks.suitability === 'DONE'
+
+                            if licenceStatus.decisions.excluded
+                                div#unsuitableAnswer.pure-u-1-4.center.bold N/A
+
+                            else if licenceStatus.tasks.suitability === 'DONE'
                                 div#unsuitableAnswer.pure-u-1-4.center.bold
                                     if licenceStatus.decisions.unsuitable
                                         | Yes
@@ -37,7 +41,10 @@ div.largeMarginBottom
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
                                 | Is there less than 4 weeks to go to the offender's CRD?
-                            if licenceStatus.tasks.crdTime === 'DONE'
+                            if licenceStatus.decisions.excluded || licenceStatus.decisions.unsuitable
+                                div#crdTimeAnswer.pure-u-1-4.center.bold N/A
+
+                            else if licenceStatus.tasks.crdTime === 'DONE'
                                 div#crdTimeAnswer.pure-u-1-4.center.bold
                                     if licenceStatus.decisions.insufficientTime
                                         | Yes

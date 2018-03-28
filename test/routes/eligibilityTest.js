@@ -4,6 +4,7 @@ const {
     expect,
     licenceServiceStub,
     hdcRoute,
+    formConfig,
     appSetup,
     testFormPageGets
 } = require('../supertestSetup');
@@ -18,11 +19,6 @@ const testUser = {
 
 const app = appSetup(hdcRoute, testUser);
 
-const form1Response = {
-    decision: 'Yes',
-    reasons: ['sexOffenderRegister', 'convictedSexOffences']
-};
-
 describe('/hdc/eligibility', () => {
 
     afterEach(() => {
@@ -34,7 +30,6 @@ describe('/hdc/eligibility', () => {
             {url: '/eligibility/excluded/1', content: 'statutorily excluded'},
             {url: '/eligibility/suitability/1', content: 'presumed unsuitable'},
             {url: '/eligibility/crdTime/1', content: '4 weeks until'}
-
         ];
 
         testFormPageGets(app, routes);
@@ -77,30 +72,66 @@ describe('/hdc/eligibility', () => {
         });
     });
 
-    describe('POST /eligibility/excluded/:nomisId', () => {
+    describe('POST /hdc/eligibility/:form/:nomisId', () => {
+        const routes = [
+            {
+                url: '/eligibility/excluded/1',
+                body: {decision: 'No'},
+                section: 'excluded',
+                nextPath: '/hdc/eligibility/suitability/1'
+            },
+            {
+                url: '/eligibility/excluded/1',
+                body: {decision: 'Yes'},
+                section: 'excluded',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/eligibility/suitability/1',
+                body: {decision: 'No'},
+                section: 'suitability',
+                nextPath: '/hdc/eligibility/crdTime/1'
+            },
+            {
+                url: '/eligibility/suitability/1',
+                body: {decision: 'Yes'},
+                section: 'suitability',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/eligibility/crdTime/1',
+                body: {decision: 'Yes'},
+                section: 'crdTime',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/eligibility/crdTime/1',
+                body: {decision: 'No'},
+                section: 'crdTime',
+                nextPath: '/hdc/taskList/1'
+            }
+        ];
 
-        it('calls getLicence from licenceService', () => {
-            return request(app)
-                .post('/eligibility/excluded/1')
-                .send(form1Response)
-                .expect(302)
-                .expect(res => {
-                    expect(licenceServiceStub.getLicence.callCount).to.equal(1);
-                });
-        });
+        routes.forEach(route => {
+            it(`renders the correct path '${route.nextPath}' page`, () => {
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceServiceStub.update).to.be.calledOnce();
+                        expect(licenceServiceStub.update).to.be.calledWith({
+                            licence: {key: 'value'},
+                            nomisId: '1',
+                            fieldMap: formConfig[route.section].fields,
+                            userInput: route.body,
+                            licenceSection: 'eligibility',
+                            formName: route.section
+                        });
 
-
-        it('calls update from licenceService and redirects to suitability page', () => {
-            return request(app)
-                .post('/eligibility/excluded/1')
-                .send(form1Response)
-                .expect(302)
-                .expect(res => {
-                    expect(licenceServiceStub.update).to.be.calledOnce();
-                    expect(licenceServiceStub.update.args[0][0].userInput).to.eql(form1Response);
-                    expect(res.header['location']).to.include('/hdc/eligibility/suitability/1');
-                });
-
+                        expect(res.header.location).to.equal(route.nextPath);
+                    });
+            });
         });
     });
 });
