@@ -13,13 +13,8 @@ const caseListTabs = {
     ],
     RO: [
         {id: 'ready', text: 'Ready to process', licenceStages: ['PROCESSING_RO']},
-        {
-            id: 'submittedPca',
-            text: 'Submitted to PCA',
-            licenceStages: ['PROCESSING_CA', 'APPROVAL'],
-            statusFilter: {PROCESSING_CA: 'Postponed'}
-        },
-        {id: 'postponed', text: 'Postponed', licenceStages: ['PROCESSING_CA'], licenceStatus: 'Postponed'},
+        {id: 'finalChecks', text: 'Final checks', licenceStages: ['PROCESSING_CA']},
+        {id: 'submittedDm', text: 'Submitted to DM', licenceStages: ['APPROVAL']},
         {id: 'active', text: 'Active licences', licenceStages: ['DECIDED']}
     ],
     DM: [
