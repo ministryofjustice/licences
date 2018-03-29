@@ -16,7 +16,11 @@ block content
         else
             h2.heading-medium You have not selected any conditions.
 
-    a#addAnother.button.button-secondary.largeMarginBottom(href="/hdc/licenceConditions/additionalConditions/" + nomisId role="button") Add another condition
+    a#addAnother.button.button-secondary.largeMarginBottom(href="/hdc/licenceConditions/additionalConditions/" + nomisId role="button")
+        if data.licenceConditions && data.licenceConditions.length > 0
+            |Add another condition
+        else
+            |Add additional condition
 
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons

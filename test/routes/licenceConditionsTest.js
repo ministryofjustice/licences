@@ -33,7 +33,7 @@ describe('/hdc/licenceConditions', () => {
         const routes = [
             {url: '/licenceConditions/standard/1', content: 'Not commit any offence'},
             {url: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
-            {url: '/licenceConditions/conditionsSummary/1', content: 'Add another condition'},
+            {url: '/licenceConditions/conditionsSummary/1', content: 'Add additional condition'},
             {url: '/reporting/reportingInstructions/1', content: 'Reporting instructions'}
         ];
 

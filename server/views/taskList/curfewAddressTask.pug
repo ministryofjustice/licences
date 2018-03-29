@@ -15,7 +15,7 @@ div.taskListItem
                 if licenceStatus.decisions.curfewAddressApproved == 'approved'
                     | Address approved
                 else if licenceStatus.decisions.curfewAddressApproved == 'rejected'
-                    | Address rejected
+                    span.bold.alert Address rejected
                 else
                     | Not yet approved
             div.pure-u-1-4
