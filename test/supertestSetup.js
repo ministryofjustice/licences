@@ -16,6 +16,7 @@ const curfewConfig = require('../server/routes/config/curfew');
 const reportingConfig = require('../server/routes/config/reporting');
 const riskConfig = require('../server/routes/config/risk');
 const finalChecksConfig = require('../server/routes/config/finalChecks');
+const approvalConfig = require('../server/routes/config/approval');
 const formConfig = {
     ...licenceConditionsConfig,
     ...eligibilityConfig,
@@ -23,7 +24,8 @@ const formConfig = {
     ...curfewConfig,
     ...riskConfig,
     ...reportingConfig,
-    ...finalChecksConfig
+    ...finalChecksConfig,
+    ...approvalConfig
 };
 
 const authenticationMiddleware = auth.authenticationMiddleware;

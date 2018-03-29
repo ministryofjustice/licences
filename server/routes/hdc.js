@@ -129,6 +129,19 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus});
     }));
 
+    router.get('/approval/release/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+        logger.debug('GET /approval/release/');
+
+        const {nomisId} = req.params;
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
+
+        const {nextPath, licenceMap} = formConfig.release;
+        const dataPath = licenceMap || ['licence', 'approval', 'release'];
+        const data = getIn(res.locals.licence, dataPath) || {};
+
+        res.render('approval/release', {prisonerInfo, nomisId, data, nextPath});
+    }));
+
     router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
         const {sectionName, formName, nomisId} = req.params;
         logger.debug(`GET ${sectionName}/${formName}/${nomisId}`);
