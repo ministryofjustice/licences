@@ -14,7 +14,7 @@ exports.seed = knex =>
                 {
                     ID: 'STANDARD2',
                     TYPE: 'STANDARD',
-                    TEXT: 'Not commit any offence'
+                    TEXT: 'Not commit any offence.'
                 },
                 {
                     ID: 'STANDARD3',
