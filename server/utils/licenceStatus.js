@@ -125,7 +125,7 @@ function getEligibilityStageState(licence) {
     const {excluded, exclusion} = getExclusionTaskState(licence);
     const {insufficientTime, crdTime} = getCrdTimeState(licence);
     const {unsuitable, suitability} = getSuitabilityState(licence);
-    const eligibility = getOverallState([exclusion, crdTime, suitability]);
+    const eligibility = getEligibilityState(unsuitable, excluded, [exclusion, crdTime, suitability]);
     const eligible = !(excluded || insufficientTime || unsuitable);
 
     const {optedOut, optOut} = getOptOutState(licence);
@@ -389,9 +389,24 @@ function getPostponedState(licence) {
 function getOverallState(tasks) {
     if (tasks.every(it => it === taskStates.UNSTARTED)) {
         return taskStates.UNSTARTED;
-    } else if (tasks.every(it => it === taskStates.DONE)) {
-        return taskStates.DONE;
-    } else {
-        return taskStates.STARTED;
     }
+
+    if (tasks.every(it => it === taskStates.DONE)) {
+        return taskStates.DONE;
+    }
+
+    return taskStates.STARTED;
+}
+
+function getEligibilityState(unsuitable, excluded, tasks) {
+    if (tasks.every(it => it === taskStates.UNSTARTED)) {
+        return taskStates.UNSTARTED;
+    }
+
+    const allDone = tasks.every(it => it === taskStates.DONE);
+    if (excluded || unsuitable || allDone) {
+        return taskStates.DONE;
+    }
+
+    return taskStates.STARTED;
 }

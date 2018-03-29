@@ -9,6 +9,14 @@ $path: "/public/images/";
 @import './tabs';
 @import './pagination';
 
+.pure-g {
+    font-family: "nta",Arial,sans-serif;
+}
+
+.pure-g [class *= "pure-u"] {
+    font-family: "nta",Arial,sans-serif;
+}
+
 #proposition-links li { color: $grey-4; }
 
 .app-container {
@@ -16,7 +24,6 @@ $path: "/public/images/";
 }
 
 .button.button-secondary {
-    font-family: "nta",Arial,sans-serif;
     color: $black;
     background-color: $grey-3;
     min-width: 120px;
