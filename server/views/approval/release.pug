@@ -4,28 +4,30 @@ block content
 
     - var releaseValue = data.decision || null;
 
-    div.pure-g.pure-u-1
+    div.pure-g.pure-u-1.largeMarginBottom
+
         include ../includes/backToCheckList
 
         div.pure-u-2-3
             h2.heading-large HDC release decision
 
-    form(method="post")
+        include ../taskList/prisonerDetails
+
+    form(method="post").largeMarginTop
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
         div.smallPaddingTop.paddingBottom.largeMarginBottom
 
-            div.largePaddingBottom
-                div.form-group
-                    div.multiple-choice
-                        input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
-                        label(for="releaseYes") I approve HDC release for this offender
-                    div.multiple-choice(data-target="releaseForm")
-                        input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
-                        label(for="releaseNo") I refuse HDC release for this offender
+            div.form-group
+                div.multiple-choice
+                    input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
+                    label(for="releaseYes") I approve HDC release for this offender
+                div.multiple-choice(data-target="releaseForm")
+                    input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
+                    label(for="releaseNo") I refuse HDC release for this offender
 
-                div#releaseForm.panel.panel-border-narrow.js-hidden
-                    include includes/release
+            div#releaseForm.panel.panel-border-narrow.js-hidden
+                include includes/release
 
             div.paddingBottom.smallPaddingTop
                 div.pure-u-1.inlineButtons

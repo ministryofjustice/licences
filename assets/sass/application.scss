@@ -137,6 +137,11 @@ $path: "/public/images/";
     }
 }
 
+.taskListAction {
+    margin-top: -5px;
+    width: 66%;
+}
+
 .midPaddingTopBottom {
     padding-top: 20px;
     padding-bottom: 20px;
@@ -346,10 +351,6 @@ td.spacer {
 
 .center {
     text-align: center;
-}
-
-.taskListAction {
-    width: 66%;
 }
 
 .fullWidth {
