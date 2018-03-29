@@ -9,8 +9,7 @@ block content
 
     div.pure-g.pure-u-1
         div
-            div.back-link-container.smallPaddingTop
-                a.link-back(href="javascript: window.history.back();") Back
+            include ../includes/backToCheckList
 
             h2.heading-large Proposed address
 
@@ -20,5 +19,3 @@ block content
                 div.pure-u-1-2
 
                 +addressDetail('curfew', address, review, addressSafety)
-
-            include ../includes/taskListReturn

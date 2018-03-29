@@ -3,8 +3,7 @@ include includes/additionalConditions
 
 block content
 
-    div.back-link-container.smallPaddingTop
-        a.link-back(href="javascript: window.history.back();") Back
+    include ../includes/backToCheckList
 
     div.largePaddingBottom
         if data.licenceConditions && data.licenceConditions.length > 0
@@ -15,5 +14,3 @@ block content
 
         else
             h2#message.heading-medium No additional conditions have been selected.
-
-        include ../includes/taskListReturn

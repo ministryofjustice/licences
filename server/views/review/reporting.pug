@@ -5,8 +5,7 @@ block content
 
     - var reporting = data.reporting && data.reporting.reportingInstructions ? data.reporting.reportingInstructions : {}
 
-    div.back-link-container.smallPaddingTop
-        a.link-back(href="javascript: window.history.back();") Back
+    include ../includes/backToCheckList
 
     h2.heading-large Reporting instructions
 
@@ -26,5 +25,3 @@ block content
             div.smallPaddingTop
                 span.block Telephone
                 span#reportingTelephone.block.bold #{reporting.telephone}
-
-    include ../includes/taskListReturn
