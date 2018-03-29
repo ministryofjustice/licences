@@ -4,8 +4,7 @@ block content
 
     - var additionalConditionsValue = data.additionalConditionsRequired || null;
 
-    div.back-link-container.smallPaddingTop
-        a.link-back(href="javascript: window.history.back();") Back
+    include ../includes/backToTaskList
 
     h1.heading-large The standard conditions
 
@@ -32,4 +31,4 @@ block content
                 input#additionalConditionsNo(type="radio" name="additionalConditionsRequired" value="No" checked=additionalConditionsValue === 'No')
                 label(for="additionalConditionsNo") No
 
-        include ../includes/formButtons
+        include ../includes/formSubmit

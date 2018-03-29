@@ -8,8 +8,7 @@ block content
 
     div.pure-g.pure-u-1
         div.borderBottomLight
-            div.back-link-container.smallPaddingTop
-                a.link-back(href="javascript: window.history.back();") Back
+            include ../includes/backToTaskList
 
             h2.heading-large Proposed curfew address
 
@@ -54,4 +53,4 @@ block content
                                     input#homeVisitConductedNo(type="radio" checked=review.homeVisitConducted === 'No' name="homeVisitConducted" value="No")
                                     label(for="homeVisitConductedNo") No
 
-            include ../includes/formButtons
+            include ../includes/formSubmit
