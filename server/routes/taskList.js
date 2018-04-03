@@ -56,7 +56,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, req.user.token);
 
         if (!prisonerImage) {
-            const placeHolder = path.join(__dirname, '../../assets/images/placeholder.png');
+            const placeHolder = path.join(__dirname, '../../assets/images/no-photo.png');
             res.status(302);
             return res.sendFile(placeHolder);
         }
