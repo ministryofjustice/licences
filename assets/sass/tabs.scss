@@ -12,6 +12,10 @@
     li {
         float: left;
         padding: 10px 20px;
+        border-bottom: solid #ffffff 10px;
+        @media (max-width: 650px) {
+            clear: both
+        }
     }
     li.selected {
         border-bottom: solid $govuk-blue 10px;
