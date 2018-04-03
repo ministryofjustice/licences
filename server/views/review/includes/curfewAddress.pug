@@ -34,11 +34,11 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             if address.occupier
-                div.pure-u-md-2-5
+                div.pure-u-1.pure-u-md-2-5
                     span#curfew-occupierName.bold #{address.occupier.name}
-                div.pure-u-md-1-5
+                div.pure-u-1.pure-u-md-1-5
                     span#curfew-occupierAge.bold #{address.occupier.age}
-                div.pure-u-md-2-5
+                div.pure-u-1.pure-u-md-2-5
                     span#curfew-occupierRelation.bold #{address.occupier.relationship}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
@@ -50,11 +50,11 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 for resident, index in address.residents
                     if(resident.name != '' || resident.age != '' || resident.relation != '')
                         div.pure-u-1.resident
-                            div.pure-u-md-2-5
+                            div.pure-u-1.pure-u-md-2-5
                                 span.bold(id="curfew-residentName-" + index) #{resident.name}
-                            div.pure-u-md-1-5
+                            div.pure-u-1.pure-u-md-1-5
                                 span.bold(id="curfew-residentAge-" + index) #{resident.age}
-                            div.pure-u-md-2-5
+                            div.pure-u-1.pure-u-md-2-5
                                 span.bold(id="curfew-residentRelation-" + index) #{resident.relation}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
