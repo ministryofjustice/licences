@@ -1,0 +1,76 @@
+.conditionSelector {
+    border: solid $grey-1 2px;
+    display: flex;
+    label {
+        display: flex;
+        padding: 10px 40px 10px 0;
+    }
+    div {
+        padding: 10px 0;
+    }
+
+    [type=checkbox]+label::before {
+        min-width: 34px;
+        margin: 0 20px;
+        position: relative;
+        align-self: center;
+    }
+    [type=checkbox]+label::after {
+        position: relative;
+        align-self: center;
+        margin-top: -27px;
+        margin-left: -58px;
+    }
+}
+
+.conditionForm {
+
+    .multiple-choice [type=radio] + label::before, .multiple-choice [type=checkbox] + label::before {
+        background-color: white;
+    }
+
+    label {
+        font-size: medium;
+    }
+
+    .multiple-choice label {
+        padding: 10px 10px 9px 5px;
+    }
+
+    .multiple-choice {
+        margin-right: 0px;
+        margin-bottom: 10px;
+    }
+
+    .inlineFormItem input {
+        width: 80px;
+        margin-left: 10px;
+
+    }
+
+    .lineMarginTop {
+        margin-top: 25px;
+    }
+
+    .form-group {
+        padding: 10px;
+        margin: 0;
+    }
+
+    .conditionForm {
+        background-color: $light-blue-25;
+        min-height: 100%;
+        margin-left: 15px;
+        display: flex;
+        align-items: center;
+
+        div {
+            flex-grow: 1;
+        }
+    }
+
+    .inlineText {
+        float: left;
+        padding: 30px 7px 0 7px;
+    }
+}
