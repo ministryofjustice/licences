@@ -32,7 +32,6 @@ describe('GET /caseList', () => {
             .expect(res => {
                 expect(res.header.location).to.include('/caseList/ready');
             });
-
     });
 
     it('redirects to tab if unexpected tab supplied', () => {
@@ -42,7 +41,6 @@ describe('GET /caseList', () => {
             .expect(res => {
                 expect(res.header.location).to.include('/caseList/ready');
             });
-
     });
 
 
@@ -51,7 +49,6 @@ describe('GET /caseList', () => {
             .get('/ready')
             .expect(200)
             .expect('Content-Type', /html/);
-
     });
 
     it('renders the hdc eligible prisoners page', () => {
@@ -61,7 +58,6 @@ describe('GET /caseList', () => {
             .expect(res => {
                 expect(res.text).to.include('id="hdcEligiblePrisoners">');
             });
-
     });
 
     context('user is CA', () => {
@@ -80,6 +76,7 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Andrews, Refused');
                         expect(res.text).to.not.include('Andrews, Processing CA not postponed');
                         expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('Andrews, Opted out');
                     });
             });
         });
@@ -97,6 +94,7 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Andrews, Refused');
                         expect(res.text).to.not.include('Andrews, Processing CA not postponed');
                         expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('Andrews, Opted out');
                     });
             });
         });
@@ -114,6 +112,7 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Andrews, Refused');
                         expect(res.text).to.include('Andrews, Processing CA not postponed');
                         expect(res.text).to.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('Andrews, Opted out');
                     });
             });
         });
@@ -131,11 +130,51 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Andrews, Refused');
                         expect(res.text).to.not.include('Andrews, Processing CA not postponed');
                         expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('Andrews, Opted out');
                     });
             });
         });
+        context('tab is decided', () => {
+            it('should filter out offenders at a stage that isnt DECIDED', () => {
+                return request(app)
+                    .get('/decided')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.not.include('Andrews, RO Processing');
+                        expect(res.text).to.not.include('Andrews, Unstarted');
+                        expect(res.text).to.not.include('Andrews, Eligibility');
+                        expect(res.text).to.not.include('Andrews, Approval');
+                        expect(res.text).to.include('Andrews, Approved');
+                        expect(res.text).to.include('Andrews, Refused');
+                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
+                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('Andrews, Opted out');
+                    });
+            });
+        });
+
+        context('tab is optedOut', () => {
+            it('should filter out offenders at a stage that isnt ELIGIBILITY with status of Opted out', () => {
+                return request(app)
+                    .get('/optedOut')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.not.include('Andrews, RO Processing');
+                        expect(res.text).to.not.include('Andrews, Unstarted');
+                        expect(res.text).to.not.include('Andrews, Eligibility');
+                        expect(res.text).to.not.include('Andrews, Approval');
+                        expect(res.text).to.not.include('Andrews, Approved');
+                        expect(res.text).to.not.include('Andrews, Refused');
+                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
+                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.include('Andrews, Opted out');
+                    });
+            });
+        });
+
+        // skipped, rather than deleted, while it is decided what tabs are necessary
         context('tab is approved', () => {
-            it('should filter out offenders at a stage that isnt DECIDED with status of Approved', () => {
+            it.skip('should filter out offenders at a stage that isnt DECIDED with status of Approved', () => {
                 return request(app)
                     .get('/approved')
                     .expect(200)
@@ -152,7 +191,7 @@ describe('GET /caseList', () => {
             });
         });
         context('tab is refused', () => {
-            it('should filter out offenders at a stage that isnt DECIDED with status of Refused', () => {
+            it.skip('should filter out offenders at a stage that isnt DECIDED with status of Refused', () => {
                 return request(app)
                     .get('/refused')
                     .expect(200)

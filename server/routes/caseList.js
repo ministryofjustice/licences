@@ -4,12 +4,13 @@ const {getIn, isEmpty} = require('../utils/functionalHelpers');
 
 const caseListTabs = {
     CA: [
-        {id: 'ready', text: 'Ready to process', licenceStages: ['UNSTARTED', 'ELIGIBILITY']},
+        {id: 'ready', text: 'Ready to process', licenceStages: ['UNSTARTED', 'ELIGIBILITY'],
+            statusFilter: {ELIGIBILITY: 'Opted out'}},
         {id: 'submittedRo', text: 'Submitted to RO', licenceStages: ['PROCESSING_RO']},
         {id: 'finalChecks', text: 'Final checks', licenceStages: ['PROCESSING_CA']},
         {id: 'submittedDm', text: 'Submitted to DM', licenceStages: ['APPROVAL']},
-        {id: 'approved', text: 'Approved', licenceStages: ['DECIDED'], licenceStatus: 'Approved'},
-        {id: 'refused', text: 'Refused', licenceStages: ['DECIDED'], licenceStatus: 'Refused'}
+        {id: 'optedOut', text: 'Opted out', licenceStages: ['ELIGIBILITY'], licenceStatus: 'Opted out'},
+        {id: 'decided', text: 'Decided', licenceStages: ['DECIDED']}
     ],
     RO: [
         {id: 'ready', text: 'Ready to process', licenceStages: ['PROCESSING_RO']},
