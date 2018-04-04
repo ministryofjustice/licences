@@ -6,7 +6,7 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
             if prisonerInfo.imageId
                 img#prisonerImage.pure-img(src= "/hdc/taskList/image/" + prisonerInfo.imageId)
             else
-                img#prisonerImage(src= "/public/images/no-photo.png")
+                img#prisonerImage.pure-img(src= "/public/images/no-photo.png")
             if(prisonerInfo.captureDate)
         p.subText#prisonerPhotoDate Uploaded: #{prisonerInfo.captureDate}
 
