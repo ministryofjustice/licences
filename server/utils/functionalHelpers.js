@@ -4,7 +4,10 @@ module.exports = {
     getIn,
     getIntersection,
     isEmpty,
-    flatten
+    flatten,
+    notAllValuesEmpty,
+    allValuesEmpty,
+    getFirstArrayItems
 };
 
 // pass in your object and a path in array format
@@ -23,4 +26,16 @@ function isEmpty(item) {
 
 function flatten(array) {
     return R.flatten(array);
+}
+
+function allValuesEmpty(object) {
+    return R.pipe(R.values, R.all(isEmpty))(object);
+}
+
+function notAllValuesEmpty(object) {
+    return !allValuesEmpty(object);
+}
+
+function getFirstArrayItems(array, number) {
+    return R.slice(0, number, array);
 }

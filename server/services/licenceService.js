@@ -5,7 +5,7 @@ const {
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {DATE_FIELD} = require('./utils/conditionsValidator');
-const {getIn, isEmpty} = require('../utils/functionalHelpers');
+const {getIn, isEmpty, notAllValuesEmpty, allValuesEmpty, getFirstArrayItems} = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
 const {transitions} = require('../models/licenceStages');
 
@@ -149,16 +149,17 @@ module.exports = function createLicenceService(licenceClient) {
     function answersFromMapReducer(userInput) {
 
         return (answersAccumulator, field) => {
-            const {fieldName, answerIsRequired, innerFields, inputIsList} = getFieldInfo(field, userInput);
+            const {fieldName, answerIsRequired, innerFields, inputIsList, fieldConfig} = getFieldInfo(field, userInput);
 
             if (!answerIsRequired) {
                 return answersAccumulator;
             }
 
             if (inputIsList) {
-                const arrayOfInputs = userInput[fieldName]
+                const input = getLimitedInput(fieldConfig, fieldName, userInput);
+                const arrayOfInputs = input
                     .map(item => field[fieldName].contains.reduce(answersFromMapReducer(item), {}))
-                    .filter(inputProvided);
+                    .filter(notAllValuesEmpty);
 
                 return {...answersAccumulator, [fieldName]: arrayOfInputs};
             }
@@ -166,15 +167,16 @@ module.exports = function createLicenceService(licenceClient) {
             if (!isEmpty(innerFields)) {
                 const innerFieldMap = field[fieldName].contains;
                 const innerAnswers = innerFieldMap.reduce(answersFromMapReducer(userInput[fieldName]), {});
+
+                if(allValuesEmpty(innerAnswers)) {
+                    return answersAccumulator;
+                }
+
                 return {...answersAccumulator, [fieldName]: innerAnswers};
             }
 
             return {...answersAccumulator, [fieldName]: userInput[fieldName]};
         };
-    }
-
-    function inputProvided(userInput) {
-        return Object.keys(userInput).some(fieldName => userInput[fieldName]);
     }
 
     function getFieldInfo(field, userInput) {
@@ -188,8 +190,21 @@ module.exports = function createLicenceService(licenceClient) {
             fieldName,
             answerIsRequired: !fieldDependentOn || dependentMatchesPredicate,
             innerFields: field[fieldName].contains,
-            inputIsList: fieldConfig.isList
+            inputIsList: fieldConfig.isList,
+            fieldConfig
         };
+    }
+
+    function getLimitedInput(fieldConfig, fieldName, userInput) {
+        const limitingField = getIn(fieldConfig, ['limitedBy', 'field']);
+        const limitingValue = userInput[limitingField];
+        const limitTo = getIn(fieldConfig, ['limitedBy', limitingValue]);
+
+        if(limitTo) {
+            return getFirstArrayItems(userInput[fieldName], limitTo);
+        }
+
+        return userInput[fieldName];
     }
 
     function updateStatus(nomisId, status) {

@@ -1,43 +1,44 @@
 include otherResidents
-mixin addressForm(type)
-    -var thisAddress = savedAddress[type] ? savedAddress[type] : {}
+mixin addressForm(index)
+    -var thisAddress = savedAddress.addresses && savedAddress.addresses[index] ? savedAddress.addresses[index] : {}
     -var savedOccupier = thisAddress.occupier || {}
+    -var addressPosition = "[addresses]["+index+"]"
     div.pure-g.paddingBottom
         div.pure-u-1.pure-u-md-1-2
             div.pure-g
                 div.pure-u-1.pure-u-md-3-5
                     div.form-group.midMarginBottom
-                        label.form-label(for=type+"-address1") Building and street
-                        input.form-control(id=type+"-address1" name=type+"[addressLine1]" value=thisAddress.addressLine1)
-                        input.form-control.smallMarginTop(id=type+"-address2" name=type+"[addressLine2]" value=thisAddress.addressLine2)
+                        label.form-label(for=index+"-address1") Building and street
+                        input.form-control(id=index+"-address1" name=addressPosition+"[addressLine1]" value=thisAddress.addressLine1)
+                        input.form-control.smallMarginTop(id=index+"-address2" name=addressPosition+"[addressLine2]" value=thisAddress.addressLine2)
 
                     div.form-group.midMarginBottom
-                        label.form-label(for=type+"-town") Town or city
-                        input.form-control(id=type+"-town" name=type+"[addressTown]" value=thisAddress.addressTown)
+                        label.form-label(for=index+"-town") Town or city
+                        input.form-control(id=index+"-town" name=addressPosition+"[addressTown]" value=thisAddress.addressTown)
 
                     div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
-                        label.form-label(for=type+"-postCode") Postcode
-                        input.form-control(id=type+"-postCode" name=type+"[postCode]" value=thisAddress.postCode)
+                        label.form-label(for=index+"-postCode") Postcode
+                        input.form-control(id=index+"-postCode" name=addressPosition+"[postCode]" value=thisAddress.postCode)
 
                     div.form-group.pure-u-sm-1.pure-u-md-3-4
-                        label.form-label(for=type+"-telephone") Telephone
-                        input.form-control(id=type+"-telephone" name=type+"[telephone]" value=thisAddress.telephone)
+                        label.form-label(for=index+"-telephone") Telephone
+                        input.form-control(id=index+"-telephone" name=addressPosition+"[telephone]" value=thisAddress.telephone)
 
         div.pure-u-1.pure-u-md-1-2
             div.pure-g
                 div.form-group.pure-u-1.pure-u-sm-10-24
-                    label.form-label(for=type+"-occupierName") Name of main occupier
-                    input.form-control(id=type+"-occupierName" name=type+"[occupier][name]" value=savedOccupier.name)
+                    label.form-label(for=index+"-occupierName") Name of main occupier
+                    input.form-control(id=index+"-occupierName" name=addressPosition+"[occupier][name]" value=savedOccupier.name)
 
                 div.form-group.pure-u-1.pure-u-sm-10-24.padLeftRight15
-                    label.form-label(for=type+"-occupierRelation") Relation to prisoner
-                    input.form-control(id=type+"-occupierRelation" name=type+"[occupier][relationship]" value=savedOccupier.relationship)
+                    label.form-label(for=index+"-occupierRelation") Relation to prisoner
+                    input.form-control(id=index+"-occupierRelation" name=addressPosition+"[occupier][relationship]" value=savedOccupier.relationship)
 
                 div.form-group.pure-u-1.pure-u-sm-4-24
-                    label.form-label(for=type + "-occupierAge") Age
-                    input.form-control(id=type + "-occupierAge" name=type + "[occupier][age]" value=savedOccupier.age)
+                    label.form-label(for=index + "-occupierAge") Age
+                    input.form-control(id=index + "-occupierAge" name=addressPosition+"[occupier][age]" value=savedOccupier.age)
 
-            +otherResidents(type, thisAddress)
+            +otherResidents(addressPosition, thisAddress)
 
             div.pure-g
                 div.pure-u-4-5
@@ -45,8 +46,8 @@ mixin addressForm(type)
                         p According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
 
                         div.multiple-choice
-                            input(id=type+"-cautionedYes" type="radio" checked=thisAddress.cautionedAgainstResident === 'Yes' name=type+"[cautionedAgainstResident]" value="Yes")
-                            label(for=type+"-cautionedYes") Yes
+                            input(id=index+"-cautionedYes" type="radio" checked=thisAddress.cautionedAgainstResident === 'Yes' name=addressPosition+"[cautionedAgainstResident]" value="Yes")
+                            label(for=index+"-cautionedYes") Yes
                         div.multiple-choice
-                            input(id=type+"-cautionedNo" type="radio" checked=thisAddress.cautionedAgainstResident === 'No' name=type+"[cautionedAgainstResident]" value="No")
-                            label(for=type+"-cautionedNo") No
+                            input(id=index+"-cautionedNo" type="radio" checked=thisAddress.cautionedAgainstResident === 'No' name=addressPosition+"[cautionedAgainstResident]" value="No")
+                            label(for=index+"-cautionedNo") No

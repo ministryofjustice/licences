@@ -15,7 +15,7 @@ block content
         input(type="hidden" name="nomisId" value=nomisId || '')
         div.borderBottomLight.paddingBottom.largeMarginBottom
             h3.heading-medium Preferred address
-            +addressForm('preferred')
+            +addressForm(0)
 
         div.form-group.inline.paddingBottom
             p Do you want to add an alternative address?
@@ -30,7 +30,7 @@ block content
         div#alternativeAddress.js-hidden
             div.paddingBottom.largeMarginBottom
                 h3.heading-medium Alternative address
-                +addressForm('alternative')
+                +addressForm(1)
 
         include ../includes/formButtons
 

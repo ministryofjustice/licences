@@ -3,24 +3,26 @@ include includes/addressDetail
 
 block content
 
+    -var addresses = data.addresses || []
+
     div.pure-g.pure-u-1
         div.back-link-container.smallPaddingTop
             a.link-back(href="javascript: window.history.back();") Back
 
         h2.heading-large.paddingBottom Confirm address details
 
-        if data.preferred && data.alternative
+        if addresses.length === 0
+            h3.heading-medium No address to view
+
+        if addresses.length === 1
+            +addressDetail('preferred', addresses[0])
+
+        if addresses.length === 2
             div.borderBottomLight.largeMarginBottom
-                +addressDetail('preferred', data.preferred)
+                +addressDetail('preferred', addresses[0])
 
             h3.heading-medium Alternative address
-            +addressDetail('alternative', data.alternative)
-
-        if data.preferred && !data.alternative
-            +addressDetail('preferred', data.preferred)
-
-        if !data.preferred && !data.alternative
-            h3.heading-medium No address to view
+            +addressDetail('alternative', addresses[1])
 
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons

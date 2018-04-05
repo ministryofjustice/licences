@@ -661,5 +661,151 @@ describe('licenceService', () => {
             };
             expect(output).to.eql(expectedLicence);
         });
+
+        it('should limit size of list by limitedBy flag', async() => {
+
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}},
+                {listItem: {
+                        isList: true,
+                        contains: [
+                            {innerQuestion: {}},
+                            {innerQuestion2: {}}
+                        ],
+                        limitedBy: {
+                            field: 'limiter',
+                            No: 1
+                        }
+                    }},
+                {limiter: {}}
+            ];
+
+            const userInput = {
+                decision: 'Yes',
+                listItem: [
+                    {
+                        innerQuestion: 'InnerAnswer',
+                        innerQuestion2: 'No'
+                    },
+                    {
+                        innerQuestion: 'InnerAnswer2',
+                        innerQuestion2: 'Yes'
+                    }
+                ],
+                limiter: 'No'
+            };
+
+            const licenceSection = 'section5';
+            const formName = 'form3';
+
+            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+
+            const expectedLicence = {
+                ...licence,
+                section5: {
+                    form3: {
+                        decision: 'Yes',
+                        listItem: [
+                            {
+                                innerQuestion: 'InnerAnswer',
+                                innerQuestion2: 'No'
+                            }
+                        ],
+                        limiter: 'No'
+                    }
+                }
+            };
+            expect(output).to.eql(expectedLicence);
+        });
+
+        it('should filter out empty list items with recusion', async() => {
+
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}},
+                {listItem: {
+                        isList: true,
+                        contains: [
+                            {innerQuestion: {}},
+                            {innerQuestion2: {
+                                contains: [
+                                    {innerInner: {}}
+                                ]
+                            }}
+                        ]
+                    }},
+                {followUp2: {}}
+            ];
+
+            const userInput = {
+                decision: 'Yes',
+                listItem: [
+                    {
+                        innerQuestion: 'InnerAnswer',
+                        innerQuestion2: {
+                            innerInner: 'innerInner'
+                        }
+                    },
+                    {
+                        innerQuestion: 'InnerAnswer2',
+                        innerQuestion2: {
+                            innerInner: 'innerInner'
+                        }
+                    },
+                    {
+                        innerQuestion: '',
+                        innerQuestion2: {
+                            innerInner: ''
+                        }
+                    }
+                ],
+                followUp2: 'Town'
+            };
+
+            const licenceSection = 'section5';
+            const formName = 'form3';
+
+            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+
+            const expectedLicence = {
+                ...licence,
+                section5: {
+                    form3: {
+                        decision: 'Yes',
+                        listItem: [
+                            {
+                                innerQuestion: 'InnerAnswer',
+                                innerQuestion2: {
+                                    innerInner: 'innerInner'
+                                }
+                            },
+                            {
+                                innerQuestion: 'InnerAnswer2',
+                                innerQuestion2: {
+                                    innerInner: 'innerInner'
+                                }
+                            }
+                        ],
+                        followUp2: 'Town'
+                    }
+                }
+            };
+            expect(output).to.eql(expectedLicence);
+        });
     });
 });

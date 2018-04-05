@@ -1,4 +1,4 @@
-mixin otherResidents(type, savedAddress)
+mixin otherResidents(prefix, savedAddress)
     - var savedResidents = savedAddress.residents || []
     - var residentsToShow = savedResidents.length > 3 ? savedResidents.length : 3
     - var n = 0
@@ -15,9 +15,9 @@ mixin otherResidents(type, savedAddress)
         while n < residentsToShow
             div.pure-g.smallPaddingBottom.resident
                 div.pure-u-sm-5-12
-                    input.form-control.residentName(name=type+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name autocomplete="off")
+                    input.form-control.residentName(name=prefix+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name autocomplete="off")
                 div.pure-u-sm-5-12.padLeftRight15
-                    input.form-control.residentRelation(name=type+"[residents]["+n+"][relation]" value=savedResidents[n] && savedResidents[n].relation autocomplete = "off")
+                    input.form-control.residentRelation(name=prefix+"[residents]["+n+"][relation]" value=savedResidents[n] && savedResidents[n].relation autocomplete = "off")
                 div.pure-u-sm-1-6
-                    input.form-control.residentAge(name=type + "[residents][" + n + "][age]" value=savedResidents[n] && savedResidents[n].age autocomplete="off")
+                    input.form-control.residentAge(name=prefix+"[residents]["+n+"][age]" value=savedResidents[n] && savedResidents[n].age autocomplete="off")
             - n++
