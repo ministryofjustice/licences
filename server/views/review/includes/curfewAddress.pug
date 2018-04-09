@@ -9,13 +9,13 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-g
             div.pure-u-1-2#addressDetails
                 if address.addressLine1
-                    span#curfew-address1.block.bold #{address.addressLine1}
+                    span#address1-curfew.block.bold #{address.addressLine1}
                 if address.addressLine2
-                    span#curfew-address2.block.bold #{address.addressLine2}
+                    span#address2-curfew.block.bold #{address.addressLine2}
                 if address.addressTown
-                    span#curfew-town.block.bold #{address.addressTown}
+                    span#town-curfew.block.bold #{address.addressTown}
                 if address.postCode
-                    span#curfew-postCode.block.bold #{address.postCode}
+                    span#postCode-curfew.block.bold #{address.postCode}
             div.pure-u-1-2.alignRight
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
@@ -26,7 +26,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div#dischargeContactName
             if address.telephone
-                span#curfew-telephone.bold #{address.telephone}
+                span#telephone-curfew.bold #{address.telephone}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -35,11 +35,11 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-g
             if address.occupier
                 div.pure-u-1.pure-u-md-2-5
-                    span#curfew-occupierName.bold #{address.occupier.name}
+                    span#occupierName-curfew.bold #{address.occupier.name}
                 div.pure-u-1.pure-u-md-1-5
-                    span#curfew-occupierAge.bold #{address.occupier.age}
+                    span#occupierAge-curfew.bold #{address.occupier.age}
                 div.pure-u-1.pure-u-md-2-5
-                    span#curfew-occupierRelation.bold #{address.occupier.relationship}
+                    span#occupierRelation-curfew.bold #{address.occupier.relationship}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -51,11 +51,11 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                     if(resident.name != '' || resident.age != '' || resident.relation != '')
                         div.pure-u-1.resident
                             div.pure-u-1.pure-u-md-2-5
-                                span.bold(id="curfew-residentName-" + index) #{resident.name}
+                                span.bold(id="residentName-curfew-" + index) #{resident.name}
                             div.pure-u-1.pure-u-md-1-5
-                                span.bold(id="curfew-residentAge-" + index) #{resident.age}
+                                span.bold(id="residentAge-curfew-" + index) #{resident.age}
                             div.pure-u-1.pure-u-md-2-5
-                                span.bold(id="curfew-residentRelation-" + index) #{resident.relation}
+                                span.bold(id="residentRelation-curfew-" + index) #{resident.relation}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -65,7 +65,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div#dischargeContactNumber
             if address.cautionedAgainstResident
-                span#curfew-cautioned.bold #{address.cautionedAgainstResident}
+                span#cautioned-curfew.bold #{address.cautionedAgainstResident}
 
 if data.curfew && data.curfew.curfewAddressReview
     -var addressReview = data.curfew.curfewAddressReview || {}
@@ -78,7 +78,7 @@ if data.curfew && data.curfew.curfewAddressReview
                     span Does the homeowner/landlord give informed consent to HDC at the address?
         div.pure-u-1-2
             div#dischargeHomeAddress
-                span#curfew-consent.bold #{addressReview.consent}
+                span#consent-curfew.bold #{addressReview.consent}
 
     if(addressReview.consent === 'Yes')
         div.pure-g.borderBottomLight.midPaddingTopBottom
@@ -86,20 +86,20 @@ if data.curfew && data.curfew.curfewAddressReview
                 span Does the address have an electricity supply?
             div.pure-u-1-2
                 if addressReview.electricity
-                    span#curfew-electricity.bold #{addressReview.electricity}
+                    span#electricity-curfew.bold #{addressReview.electricity}
 
         if(addressReview.electricity === 'Yes')
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     span Was a home visit conducted in this case?
                 div.pure-u-1-2
-                    span#curfew-homeVisit.bold #{addressReview.homeVisitConducted}
+                    span#homeVisit-curfew.bold #{addressReview.homeVisitConducted}
 
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     span Could this offender be managed safely at address?
                 div.pure-u-1-2
-                    span#curfew-deemedSafe.bold #{addressSafety.deemedSafe}
+                    span#deemedSafe-curfew.bold #{addressSafety.deemedSafe}
 else
     div.pure-g.midPaddingTopBottom
         div.pure-u-1-2

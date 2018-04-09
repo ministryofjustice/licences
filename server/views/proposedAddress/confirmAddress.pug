@@ -15,14 +15,14 @@ block content
             h3.heading-medium No address to view
 
         if addresses.length === 1
-            +addressDetail('preferred', addresses[0])
+            +addressDetail('0', addresses[0])
 
         if addresses.length === 2
             div.borderBottomLight.largeMarginBottom
-                +addressDetail('preferred', addresses[0])
+                +addressDetail('0', addresses[0])
 
             h3.heading-medium Alternative address
-            +addressDetail('alternative', addresses[1])
+            +addressDetail('1', addresses[1])
 
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons
