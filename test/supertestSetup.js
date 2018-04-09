@@ -94,9 +94,6 @@ beforeEach(() => {
 
 function testFormPageGets(app, routes) {
     context('licence exists for nomisId', () => {
-        beforeEach(() => {
-            licenceServiceStub.getLicence.resolves({licence: {}});
-        });
         routes.forEach(route => {
             it(`renders the ${route.url} page`, () => {
                 return request(app)

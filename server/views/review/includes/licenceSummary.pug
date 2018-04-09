@@ -6,7 +6,7 @@ div.largeMarginBottom
 
     include ../../taskList/prisonerDetails
 
-    if data.proposedAddress && data.proposedAddress.curfewAddress && data.proposedAddress.curfewAddress.preferred
+    if data.proposedAddress && data.proposedAddress.curfewAddress && data.proposedAddress.curfewAddress.addresses[0]
         include curfewAddress
 
     if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
