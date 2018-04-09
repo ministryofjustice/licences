@@ -3,9 +3,7 @@ include ../proposedAddress/includes/addressDetail
 
 block content
 
-    -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
-    -var addressSafety = data.curfew && data.curfew.addressSafety ? data.curfew.addressSafety : {}
-    -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress.preferred : {}
+    -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress.addresses[addressIndex] : {}
 
     div.pure-g.pure-u-1
         div.borderBottomLight
@@ -16,7 +14,7 @@ block content
             if address
                 p The following address has been requested by the offender.
 
-                +addressDetail('preferred', address, review)
+                +addressDetail('preferred', address)
 
         h3.heading-medium Decision
 
@@ -24,26 +22,27 @@ block content
         form(method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="nomisId" value=nomisId || '')
+            input(type="hidden" name="addressIndex" value=addressIndex || '')
             div.pure-g.largePaddingBottom
                 div.pure-u-1.pure-u-md-1-2
                     div.form-group
                         p Could this offender be managed safely at this address?
 
                         div.multiple-choice
-                            input#deemedSafeYes(type="radio" checked=addressSafety.deemedSafe === 'Yes' name="deemedSafe" value="Yes")
+                            input#deemedSafeYes(type="radio" checked=address.deemedSafe === 'Yes' name="deemedSafe" value="Yes")
                             label(for="deemedSafeYes") Yes
                         div.multiple-choice
-                            input#deemedSafePending(type="radio" checked=addressSafety.deemedSafe === pendingText name="deemedSafe" value=pendingText)
+                            input#deemedSafePending(type="radio" checked=address.deemedSafe === pendingText name="deemedSafe" value=pendingText)
                             label(for="deemedSafePending") #{pendingText}
                         div.multiple-choice(data-target="reasonForm")
-                            input#deemedSafeNo(type="radio" checked=addressSafety.deemedSafe === 'No' name="deemedSafe" value="No")
+                            input#deemedSafeNo(type="radio" checked=address.deemedSafe === 'No' name="deemedSafe" value="No")
                             label(for="deemedSafeNo") No
 
                         div#reasonForm.panel.panel-border-narrow.js-hidden
-                            label(for='reason') Please explain why you have made this decision
-                                textarea(name='reason' id='reason' class='form-control' rows='5')
-                                    if addressSafety.reason
-                                        | #{addressSafety.reason}
+                            label(for='unsafeReason') Please explain why you have made this decision
+                                textarea(name='unsafeReason' id='unsafeReason' class='form-control' rows='5')
+                                    if address.unsafeReason
+                                        | #{address.unsafeReason}
 
 
             include ../includes/saveAndReturn

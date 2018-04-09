@@ -17,14 +17,15 @@ module.exports = {
                     No: '/hdc/taskList/'
                 }
             ],
-            path: '/hdc/curfew/addressSafety/'
+            path: '/hdc/curfew/addressSafety/',
+            pathAppend: 'addressIndex'
         }
     },
     addressSafety: {
         licenceMap: ['licence'],
         fields: [
             {deemedSafe: {}},
-            {reason: {dependentOn: 'deemedSafe', predicate: 'No'}}
+            {unsafeReason: {dependentOn: 'deemedSafe', predicate: 'No'}}
         ],
         nextPath: {
             decisions: [

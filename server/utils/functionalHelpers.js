@@ -7,7 +7,8 @@ module.exports = {
     flatten,
     notAllValuesEmpty,
     allValuesEmpty,
-    getFirstArrayItems
+    getFirstArrayItems,
+    replaceArrayItem
 };
 
 // pass in your object and a path in array format
@@ -38,4 +39,8 @@ function notAllValuesEmpty(object) {
 
 function getFirstArrayItems(array, number) {
     return R.slice(0, number, array);
+}
+
+function replaceArrayItem(array, index, item) {
+    return R.update(parseInt(index))(item)(array);
 }
