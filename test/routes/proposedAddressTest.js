@@ -19,13 +19,41 @@ const app = appSetup(hdcRoute, testUser);
 describe('/hdc/proposedAddress', () => {
 
     describe('proposed address routes', () => {
+
+        beforeEach(() => {
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [
+                                {
+                                    addressLine1: 'line1',
+                                    consent: 'No'
+                                },
+                                {
+                                    addressLine1: 'line2',
+                                    consent: 'Yes',
+                                    electricity: 'Yes',
+                                    deemedSafe: 'No'
+                                },
+                                {
+                                    addressLine1: 'line3'
+                                }
+                            ]
+                        }
+                    }
+                }
+            });
+        });
+
         const routes = [
             {url: '/proposedAddress/optOut/1', content: 'decided to opt out'},
             {url: '/proposedAddress/addressProposed/1', content: 'proposed a curfew address?'},
             {url: '/proposedAddress/bassReferral/1', content: 'BASS referral'},
             {url: '/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'},
             {url: '/proposedAddress/confirmAddress/1', content: 'Confirm address details'},
-            {url: '/proposedAddress/confirmAddress/1', content: 'href="/hdc/send/1'}
+            {url: '/proposedAddress/confirmAddress/1', content: 'href="/hdc/send/1'},
+            {url: '/proposedAddress/confirmAddress/1', content: 'line3'}
         ];
 
         testFormPageGets(app, routes);
@@ -90,6 +118,76 @@ describe('/hdc/proposedAddress', () => {
 
                         expect(res.header.location).to.equal(route.nextPath);
                     });
+            });
+        });
+    });
+
+    describe('curfewAddress', () => {
+        context('there is a rejected address and active', () => {
+            it('should display the active and post to update', () => {
+                licenceServiceStub.getLicence.resolves({
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {addressLine1: 'address1', consent: 'No', electricity: 'No', deemedSafe: 'No'},
+                                    {addressLine1: 'address2'}
+                                ]
+                            }
+                        }
+                    }
+                });
+                return request(app)
+                    .get('/proposedAddress/curfewAddress/1')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('/proposedAddress/curfewAddress/update/');
+                        expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address2"');
+                    });
+
+            });
+        });
+
+        context('there are no addresses saved', () => {
+            it('should post to standard route', () => {
+                licenceServiceStub.getLicence.resolves({
+                    licence: { }
+                });
+                return request(app)
+                    .get('/proposedAddress/curfewAddress/1')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('<form method="post">');
+                        expect(res.text).to.include('name="[addresses][0][addressLine1]"/>');
+                    });
+
+            });
+        });
+
+        context('there are only rejected addresses', () => {
+            it('should display no address and post to add', () => {
+                licenceServiceStub.getLicence.resolves({
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {addressLine1: 'address1', consent: 'No', electricity: 'No', deemedSafe: 'No'}
+                                ]
+                            }
+                        }
+                    }
+                });
+                return request(app)
+                    .get('/proposedAddress/curfewAddress/1')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('/proposedAddress/curfewAddress/add');
+                        expect(res.text).to.include('name="[addresses][0][addressLine1]"/>');
+                    });
+
             });
         });
     });

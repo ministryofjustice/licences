@@ -1,6 +1,7 @@
 const {taskStates} = require('../models/taskStates');
 const {licenceStages} = require('../models/licenceStages');
 const {getIn, isEmpty} = require('./functionalHelpers');
+const {separateAddresses, addressReviewStarted} = require('../utils/addressHelpers');
 
 module.exports = {getLicenceStatus};
 
@@ -127,6 +128,7 @@ function getEligibilityStageState(licence) {
     const {unsuitable, suitability} = getSuitabilityState(licence);
     const eligibility = getEligibilityState(unsuitable, excluded, [exclusion, crdTime, suitability]);
     const eligible = !(excluded || insufficientTime || unsuitable);
+    const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
 
     const {optedOut, optOut} = getOptOutState(licence);
     const {bassReferralNeeded, bassReferral} = getBassReferralState(licence);
@@ -139,7 +141,8 @@ function getEligibilityStageState(licence) {
             unsuitable,
             eligible,
             optedOut,
-            bassReferralNeeded
+            bassReferralNeeded,
+            curfewAddressApproved
         },
         tasks: {
             exclusion,
@@ -273,37 +276,28 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
 }
 
 function getCurfewAddressReviewState(licence) {
-
     const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || [];
+    const {activeAddresses, acceptedAddresses, rejectedAddresses} = separateAddresses(addresses);
 
-    const approvedAddress = addresses.find(address => {
-        const {consent, electricity, deemedSafe} = address;
-        return consent === 'Yes' && electricity === 'Yes' && deemedSafe && deemedSafe.startsWith('Yes');
-    });
+    if(isEmpty(activeAddresses) && isEmpty(acceptedAddresses) && isEmpty(rejectedAddresses)) {
+        return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
+    }
 
-    if (approvedAddress) {
+    if(!isEmpty(acceptedAddresses)) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};
     }
 
-    const rejectedAddress = addresses.find(address => {
-        const {consent, electricity, deemedSafe} = address;
-        return [consent, electricity, deemedSafe].some(answer => answer === 'No');
-    });
+    if(!isEmpty(activeAddresses)) {
 
-    if (rejectedAddress) {
+        if(addressReviewStarted(activeAddresses[activeAddresses.length-1])) {
+            return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
+        }
+        return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
+    }
+
+    if(!isEmpty(rejectedAddresses)) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
     }
-
-    const reviewStarted = addresses.find(address => {
-        const {consent, electricity, homeVisitConducted, deemedSafe} = address;
-        return consent || electricity || homeVisitConducted || deemedSafe;
-    });
-
-    if (reviewStarted) {
-        return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
-    }
-
-    return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
 }
 
 function getCurfewHoursState(licence) {

@@ -563,6 +563,36 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.curfewAddressApproved).to.eql('rejected');
     });
 
+    it('should show address review UNFINISHED when there are active licences', () => {
+        const licence = {
+            status: 'PROCESSING_CA',
+            licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {
+                                consent: 'Yes',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'No',
+                                deemedSafe: 'No'
+                            },
+                            {
+                                addressLine1: 'a'
+                            }
+                        ]
+                    }
+                },
+                curfew: {
+                    curfewHours: 'anything'
+                }
+            }
+        };
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.decisions.curfewAddressApproved).to.eql('unfinished');
+    });
+
     context('Eligibility', () => {
         it('should show eligibility DONE when excluded is YES', () => {
             const licence = {

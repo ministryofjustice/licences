@@ -25,7 +25,8 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId, sender, receiver} = req.body;
-        await licenceService.markForHandover(nomisId, sender, receiver);
+        const licence = await licenceService.getLicence(nomisId);
+        await licenceService.markForHandover(nomisId, sender, receiver, licence);
         res.redirect('/hdc/sent/' + nomisId);
     }));
 

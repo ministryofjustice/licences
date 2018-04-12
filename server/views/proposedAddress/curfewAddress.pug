@@ -1,7 +1,8 @@
 extends ../layout
 include ./includes/addressForm
 block content
-    - var savedAddress = data || {}
+    -var savedAddress = data || {}
+
     div.pure-g.pure-u-1.borderBottom
         div.back-link-container.smallPaddingTop
             a.link-back(href="javascript: window.history.back();") Back
@@ -10,7 +11,7 @@ block content
 
         p.pure-u-1-2 Enter the proposed address that the offender has completed on the returned HDC form
 
-    form(method="post")
+    form(method="post" action=submitPath || undefined)
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
         div.borderBottomLight.paddingBottom.largeMarginBottom
@@ -30,7 +31,7 @@ block content
         div#alternativeAddress.js-hidden
             div.paddingBottom.largeMarginBottom
                 h3.heading-medium Alternative address
-                +addressForm(1)
+                +addressForm(1, 'alternative')
 
         include ../includes/formButtons
 

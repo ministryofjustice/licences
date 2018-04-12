@@ -14,6 +14,7 @@ const {
     replaceArrayItem} = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
 const {transitions} = require('../models/licenceStages');
+const {getLicenceStatus} = require('../utils/licenceStatus');
 
 module.exports = function createLicenceService(licenceClient) {
 
@@ -126,14 +127,30 @@ module.exports = function createLicenceService(licenceClient) {
         return {...oldConditions, bespoke: theRest};
     }
 
-    function markForHandover(nomisId, sender, receiver) {
-        const newStatus = getIn(transitions, [sender, receiver]);
+    function markForHandover(nomisId, sender, receiver, licence) {
+
+        const newStatus = getNewStatus(sender, receiver, licence);
 
         if (!newStatus) {
             throw new Error('Invalid handover pair: ' + sender + '-' + receiver);
         }
 
         return licenceClient.updateStatus(nomisId, newStatus);
+    }
+
+    function getNewStatus(sender, receiver, licence) {
+        const status = getIn(transitions, [sender, receiver]);
+
+        if(sender === 'RO') {
+            const {decisions} = getLicenceStatus(licence);
+            if (decisions.curfewAddressApproved === 'rejected') {
+                return status.addressRejected;
+            }
+            return status.default;
+
+        }
+
+        return status;
     }
 
 
@@ -230,12 +247,7 @@ module.exports = function createLicenceService(licenceClient) {
         const answers = fieldMap.reduce(answersFromMapReducer(userInput), {});
         const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
 
-        if(!addresses || !addresses[addressIndex]) {
-            return licence;
-        }
-
-        const newAddressObject = {...addresses[addressIndex], ...answers};
-        const newAddresses = replaceArrayItem(addresses, addressIndex, newAddressObject);
+        const newAddresses = getNewAddressesArray(addresses, addressIndex, answers);
 
         return {
             ...licence,
@@ -247,7 +259,46 @@ module.exports = function createLicenceService(licenceClient) {
                 }
             }
         };
+    }
 
+    function getNewAddressesArray(addresses, index, answers) {
+        if(!addresses[index]) {
+            return [...addresses, ...answers.addresses];
+        }
+
+        const newAddressObject = {...addresses[index], ...answers};
+        return replaceArrayItem(addresses, index, newAddressObject);
+    }
+
+    async function updateAddresses({nomisId, userInput, licence, fieldMap}) {
+
+        let addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
+        const newAddresses = userInput.addresses.reduce(replaceAddressObjectReducer(fieldMap, addresses), addresses);
+
+        const newLicence = {
+            ...licence,
+            proposedAddress: {
+                ...licence.proposedAddress,
+                curfewAddress: {
+                    ...licence.proposedAddress.curfewAddress,
+                    addresses: newAddresses
+                }
+            }
+        };
+
+        await licenceClient.updateLicence(nomisId, newLicence);
+
+        return newLicence;
+    }
+
+    function replaceAddressObjectReducer(fieldMap, addresses) {
+        return (newAddresses, address) => {
+            const originalAddress = addresses[address.addressIndex];
+            const newFields = fieldMap.reduce(answersFromMapReducer(address), {});
+
+            const newAddressObject = {...originalAddress, ...newFields};
+            return replaceArrayItem(newAddresses, address.addressIndex, newAddressObject);
+        };
     }
 
     return {
@@ -259,6 +310,7 @@ module.exports = function createLicenceService(licenceClient) {
         markForHandover,
         update,
         updateStatus,
-        updateAddress
+        updateAddress,
+        updateAddresses
     };
 };

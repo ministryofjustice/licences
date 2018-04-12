@@ -320,7 +320,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/0/noms">Start');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">Start');
                     });
 
             });
@@ -345,7 +345,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/0/noms">View');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">View');
                     });
 
             });

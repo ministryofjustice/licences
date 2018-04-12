@@ -1,9 +1,10 @@
 const express = require('express');
 
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
-const {getIn} = require('../utils/functionalHelpers');
+const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const {getPathFor} = require('../utils/routes');
 const {getLicenceStatus} = require('../utils/licenceStatus');
+const {separateAddresses, getAddressToShow} = require('../utils/addressHelpers');
 
 const licenceConditionsConfig = require('./config/licenceConditions');
 const eligibilityConfig = require('./config/eligibility');
@@ -123,9 +124,22 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const stage = getIn(res.locals.licence, ['status']) || {};
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
-        const data = await conditionsService.populateLicenceWithConditions(licence);
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
+        const populatedLicence = await conditionsService.populateLicenceWithConditions(licence);
+        const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+        const {activeAddresses, acceptedAddresses, rejectedAddresses} = separateAddresses(allAddresses);
 
+        const data = {
+            ...populatedLicence,
+            proposedAddress: {
+                ...populatedLicence.proposedAddress,
+                curfewAddress: {
+                    ...populatedLicence.proposedAddress.curfewAddress,
+                    addresses: getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses)
+                }
+            }
+        };
+
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
         res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus});
     }));
 
@@ -142,29 +156,69 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         res.render('approval/release', {prisonerInfo, nomisId, data, nextPath});
     }));
 
-    router.get('/curfew/:formName/:addressIndex/:nomisId', checkLicence, (req, res) => {
-        const {formName, addressIndex, nomisId} = req.params;
-        logger.debug(`GET curfew/${formName}/${addressIndex}/${nomisId}`);
+    router.get('/curfew/:formName/:nomisId', checkLicence, (req, res) => {
+        const {nomisId, formName} = req.params;
 
-        const {licenceSection, nextPath, licenceMap} = formConfig[formName];
-        const dataPath = licenceMap || ['licence', 'curfew', licenceSection];
-        const data = getIn(res.locals.licence, dataPath) || {};
+        const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+        const {acceptedAddresses, activeAddresses, rejectedAddresses} = separateAddresses(addresses);
+        const addressToShow = getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses);
+        const data = {addresses: addressToShow};
+        const nextPath = formConfig[formName].nextPath;
 
-        res.render(`curfew/${formName}`, {nomisId, data, addressIndex, nextPath});
+        res.render(`curfew/${formName}`, {nomisId, data, nextPath});
     });
 
-    router.post('/curfew/:formName/:addressIndex/:nomisId', asyncMiddleware(async (req, res) => {
-        const {formName, addressIndex, nomisId} = req.params;
-        logger.debug(`GET curfew/${formName}/${addressIndex}/${nomisId}`);
+    router.post('/curfew/curfewAddressReview/:nomisId', asyncMiddleware(addressReviewPosts('curfewAddressReview')));
+    router.post('/curfew/addressSafety/:nomisId', asyncMiddleware(addressReviewPosts('addressSafety')));
 
-        const rawLicence = await licenceService.getLicence(nomisId);
-        const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
+    function addressReviewPosts(formName) {
+        return async (req, res) => {
+            const {nomisId} = req.params;
+            logger.debug(`GET /curfew/${formName}/${nomisId}`);
 
-        if (formConfig[formName].fields) {
+            const {addressIndex} = req.body;
+            const rawLicence = await licenceService.getLicence(nomisId);
+            const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
+
             await licenceService.updateAddress({
                 licence: rawLicence.licence,
                 nomisId: nomisId,
                 fieldMap: formConfig[formName].fields,
+                userInput: req.body,
+                index: addressIndex
+            });
+
+            res.redirect(`${nextPath}${nomisId}`);
+        };
+    }
+
+    router.get('/proposedAddress/curfewAddress/:nomisId', checkLicence, (req, res) => {
+
+        const {nomisId} = req.params;
+        const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+
+        if(!addresses) {
+            return res.render('proposedAddress/curfewAddress', {nomisId, data: []});
+        }
+
+        const splitAddresses = separateAddresses(addresses);
+        const {submitPath, addressToShow} =
+            getCurfewAddressFormData(splitAddresses);
+
+        res.render('proposedAddress/curfewAddress', {nomisId, data: addressToShow, submitPath});
+    });
+
+    router.post('/proposedAddress/curfewAddress/add/', asyncMiddleware(async (req, res) => {
+        const {nomisId} = req.body;
+        const rawLicence = await licenceService.getLicence(nomisId);
+        const addressIndex = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']).length + 1;
+        const nextPath = '/hdc/proposedAddress/confirmAddress/';
+
+        if (formConfig.curfewAddress.fields) {
+            await licenceService.updateAddress({
+                licence: rawLicence.licence,
+                nomisId: nomisId,
+                fieldMap: formConfig.curfewAddress.fields,
                 userInput: req.body,
                 index: addressIndex
             });
@@ -173,6 +227,33 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         res.redirect(`${nextPath}${nomisId}`);
     }));
 
+    router.post('/proposedAddress/curfewAddress/update/', asyncMiddleware(async (req, res) => {
+
+        const {nomisId} = req.body;
+        const rawLicence = await licenceService.getLicence(nomisId);
+
+        await licenceService.updateAddresses({
+            licence: rawLicence.licence,
+            nomisId: nomisId,
+            fieldMap: formConfig.curfewAddress.fields[0].addresses.contains,
+            userInput: req.body
+        });
+
+        const nextPath = '/hdc/proposedAddress/confirmAddress/';
+        res.redirect(`${nextPath}${nomisId}`);
+    }));
+
+    router.get('/proposedAddress/confirmAddress/:nomisId', checkLicence, (req, res) => {
+        const {nomisId} = req.params;
+        const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+        const {activeAddresses} = separateAddresses(allAddresses);
+
+        const data = {addresses: activeAddresses};
+        const nextPath = formConfig.confirmAddress.nextPath;
+
+        res.render('proposedAddress/confirmAddress', {nomisId, data, nextPath});
+    });
+
     router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
         const {sectionName, formName, nomisId} = req.params;
         logger.debug(`GET ${sectionName}/${formName}/${nomisId}`);
@@ -180,8 +261,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const {licenceSection, nextPath, licenceMap} = formConfig[formName];
         const dataPath = licenceMap || ['licence', sectionName, licenceSection];
         const data = getIn(res.locals.licence, dataPath) || {};
+        const licenceStatus = getLicenceStatus(res.locals.licence);
 
-        res.render(`${sectionName}/${formName}`, {nomisId, data, nextPath});
+        res.render(`${sectionName}/${formName}`, {nomisId, data, nextPath, licenceStatus});
     });
 
     router.post('/:sectionName/:formName/:nomisId', asyncMiddleware(async (req, res) => {
@@ -212,3 +294,20 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
     return router;
 };
+
+function getCurfewAddressFormData(splitAddresses) {
+
+    const {activeAddresses, acceptedAddresses, rejectedAddresses} = splitAddresses;
+
+    if(isEmpty(activeAddresses) && isEmpty(acceptedAddresses) && isEmpty((rejectedAddresses))) {
+        return {submitPath: null, addressToShow: []};
+    }
+
+    if(!isEmpty(rejectedAddresses) && !isEmpty(activeAddresses)) {
+        return {submitPath: '/hdc/proposedAddress/curfewAddress/update/', addressToShow: activeAddresses};
+    }
+
+    if(isEmpty(activeAddresses) && isEmpty(acceptedAddresses) && !isEmpty((rejectedAddresses))) {
+        return {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: []};
+    }
+}

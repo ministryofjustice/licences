@@ -4,26 +4,23 @@ module.exports = {
 
 function getPathFor({data, config}) {
     const {nextPath} = config;
-    const appendText = nextPath.pathAppend ? `${data[nextPath.pathAppend]}/` : '';
-    const defaultPath = `${nextPath.path}${appendText}`;
 
     if (!nextPath.decisions) {
-        return defaultPath;
+        return nextPath.path;
     }
 
     if (Array.isArray(nextPath.decisions)) {
         const path = determinePathFromDecisions({decisions: nextPath.decisions, data});
 
-        return path || defaultPath;
+        return path || nextPath.path;
     }
 
-    return getPathFromAnswer({nextPath: nextPath.decisions, data}) || defaultPath;
+    return getPathFromAnswer({nextPath: nextPath.decisions, data}) || nextPath.path;
 }
 
 function getPathFromAnswer({nextPath, data}) {
     const decidingValue = data[nextPath.discriminator];
-    const path = nextPath[decidingValue];
-    return data[nextPath.pathAppend] ? `${path}${data[nextPath.pathAppend]}/` : path;
+    return nextPath[decidingValue];
 }
 
 function determinePathFromDecisions({decisions, data}) {
@@ -39,5 +36,3 @@ function determinePathFromDecisions({decisions, data}) {
 
     return path;
 }
-
-

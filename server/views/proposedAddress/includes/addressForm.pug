@@ -1,6 +1,6 @@
 include otherResidents
-mixin addressForm(index)
-    -var thisAddress = savedAddress.addresses && savedAddress.addresses[index] ? savedAddress.addresses[index] : {}
+mixin addressForm(index, alternative)
+    -var thisAddress = savedAddress && savedAddress[index] ? savedAddress[index] : {}
     -var savedOccupier = thisAddress.occupier || {}
     -var addressPosition = "[addresses]["+index+"]"
     div.pure-g.paddingBottom
@@ -51,3 +51,6 @@ mixin addressForm(index)
                         div.multiple-choice
                             input(id="cautionedNo-"+index type="radio" checked=thisAddress.cautionedAgainstResident === 'No' name=addressPosition+"[cautionedAgainstResident]" value="No")
                             label(for="cautionedNo-"+index) No
+
+        input(type="hidden" name=addressPosition+"[addressIndex]" value=thisAddress.index)
+        input(type="hidden" name=addressPosition+"[alternative]" value=alternative==='alternative')

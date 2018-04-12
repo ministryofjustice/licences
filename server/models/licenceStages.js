@@ -15,7 +15,11 @@ const transitions = {
         DM: licenceStages.APPROVAL
     },
     RO: {
-        CA: licenceStages.PROCESSING_CA
+        CA: {
+            'default': licenceStages.PROCESSING_CA,
+            addressRejected: licenceStages.ELIGIBILITY
+        }
+
     },
     DM: {
         CA: licenceStages.DECIDED
