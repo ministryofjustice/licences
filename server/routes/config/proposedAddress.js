@@ -66,7 +66,8 @@ module.exports = {
                             {age: {}}
                         ]
                     }},
-                    {cautionedAgainstResident: {}}
+                    {cautionedAgainstResident: {}},
+                    {alternative: {}}
                 ]
             }},
             {alternativeAddress: {}}
@@ -79,6 +80,19 @@ module.exports = {
         licenceSection: 'curfewAddress',
         nextPath: {
             path: '/hdc/send/'
+        }
+    },
+    rejected: {
+        licenceMap: ['licence'],
+        fields: [
+            {enterAlternative: {}}
+        ],
+        nextPath: {
+            decisions: {
+                discriminator: 'enterAlternative',
+                Yes: '/hdc/proposedAddress/curfewAddress/',
+                No: '/hdc/taskList/'
+            }
         }
     }
 };

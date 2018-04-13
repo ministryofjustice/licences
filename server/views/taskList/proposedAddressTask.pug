@@ -9,13 +9,15 @@ if licenceStatus.tasks.exclusion == 'DONE' && licenceStatus.decisions.eligible
                     | Prisoner has opted out of HDC
                 else if licenceStatus.decisions.bassReferralNeeded
                     | Prisoner has opted in and requested BASS referral
+                else if licenceStatus.decisions.curfewAddressApproved === 'rejected'
+                    span.alert.bold Address rejected
                 else if licenceStatus.stage !== 'ELIGIBILITY'
                     | Proposed address information sent to RO
                 else
                     | Information not yet submitted
 
             div.pure-u-1-4.center
-                +proceed(licenceStatus.tasks.curfewAddress, 'UNSTARTED', 'Start', 'Continue', "/hdc/proposedAddress/optOut/" + prisonerInfo.offenderNo)
-
-
-
+                if licenceStatus.decisions.curfewAddressApproved === 'rejected'
+                    +proceed(licenceStatus.tasks.curfewAddress, 'UNSTARTED', 'Start', 'View/edit', "/hdc/proposedAddress/rejected/" + prisonerInfo.offenderNo)
+                else
+                    +proceed(licenceStatus.tasks.curfewAddress, 'UNSTARTED', 'Start', 'Continue', "/hdc/proposedAddress/optOut/" + prisonerInfo.offenderNo)

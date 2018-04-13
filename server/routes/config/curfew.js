@@ -17,8 +17,7 @@ module.exports = {
                     No: '/hdc/taskList/'
                 }
             ],
-            path: '/hdc/curfew/addressSafety/',
-            pathAppend: 'addressIndex'
+            path: '/hdc/curfew/addressSafety/'
         }
     },
     addressSafety: {
