@@ -156,17 +156,22 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         res.render('approval/release', {prisonerInfo, nomisId, data, nextPath});
     }));
 
-    router.get('/curfew/:formName/:nomisId', checkLicence, (req, res) => {
-        const {nomisId, formName} = req.params;
+    router.get('/curfew/curfewAddressReview/:nomisId', checkLicence, addressReviewGets('curfewAddressReview'));
+    router.get('/curfew/addressSafety/:nomisId', checkLicence, addressReviewGets('addressSafety'));
 
-        const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-        const {acceptedAddresses, activeAddresses, rejectedAddresses} = separateAddresses(addresses);
-        const addressToShow = getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses);
-        const data = {addresses: addressToShow};
-        const nextPath = formConfig[formName].nextPath;
+    function addressReviewGets(formName) {
+        return (req, res) => {
+            const {nomisId} = req.params;
 
-        res.render(`curfew/${formName}`, {nomisId, data, nextPath});
-    });
+            const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+            const {acceptedAddresses, activeAddresses, rejectedAddresses} = separateAddresses(addresses);
+            const addressToShow = getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses);
+            const data = {addresses: addressToShow};
+            const nextPath = formConfig[formName].nextPath;
+
+            res.render(`curfew/${formName}`, {nomisId, data, nextPath});
+        };
+    }
 
     router.post('/curfew/curfewAddressReview/:nomisId', asyncMiddleware(addressReviewPosts('curfewAddressReview')));
     router.post('/curfew/addressSafety/:nomisId', asyncMiddleware(addressReviewPosts('addressSafety')));
@@ -193,7 +198,6 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     }
 
     router.get('/proposedAddress/curfewAddress/:nomisId', checkLicence, (req, res) => {
-
         const {nomisId} = req.params;
         const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
 
@@ -228,7 +232,6 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     }));
 
     router.post('/proposedAddress/curfewAddress/update/', asyncMiddleware(async (req, res) => {
-
         const {nomisId} = req.body;
         const rawLicence = await licenceService.getLicence(nomisId);
 
@@ -246,9 +249,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     router.get('/proposedAddress/confirmAddress/:nomisId', checkLicence, (req, res) => {
         const {nomisId} = req.params;
         const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-        const {activeAddresses} = separateAddresses(allAddresses);
+        const {activeAddresses, alternativeAddresses} = separateAddresses(allAddresses);
 
-        const data = {addresses: activeAddresses};
+        const data = {addresses: [...activeAddresses, ...alternativeAddresses]};
         const nextPath = formConfig.confirmAddress.nextPath;
 
         res.render('proposedAddress/confirmAddress', {nomisId, data, nextPath});
@@ -309,5 +312,9 @@ function getCurfewAddressFormData(splitAddresses) {
 
     if(isEmpty(activeAddresses) && isEmpty(acceptedAddresses) && !isEmpty((rejectedAddresses))) {
         return {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: []};
+    }
+
+    if(!isEmpty(activeAddresses)) {
+        return {submitPath: null, addressToShow: activeAddresses};
     }
 }

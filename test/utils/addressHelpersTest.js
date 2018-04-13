@@ -12,7 +12,7 @@ describe('addressHelpers', () => {
     ];
 
     describe('separateAddresses', () => {
-        it('should remove alternative addresses and split the address list into 3 lists', () => {
+        it('should split the address list into 3 lists', () => {
 
             const expectedOutput = {
                 activeAddresses: [{index: '3', addressLine1: 'line4'}, {
@@ -34,6 +34,11 @@ describe('addressHelpers', () => {
                     consent: 'No',
                     electricity: 'Yes',
                     deemedSafe: 'Yes'
+                }],
+                alternativeAddresses: [{
+                    index: '1',
+                    addressLine1: 'line2',
+                    alternative: 'alternative'
                 }]
             };
 

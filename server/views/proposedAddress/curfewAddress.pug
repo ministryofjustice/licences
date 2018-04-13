@@ -11,7 +11,7 @@ block content
 
         p.pure-u-1-2 Enter the proposed address that the offender has completed on the returned HDC form
 
-    form(method="post" action=submitPath || undefined)
+    form(method="post" action=submitPath)
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
         div.borderBottomLight.paddingBottom.largeMarginBottom

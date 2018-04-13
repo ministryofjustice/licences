@@ -1,15 +1,21 @@
-const {isEmpty} = require('./functionalHelpers');
+const {isEmpty, filterAllButLast} = require('./functionalHelpers');
 
 module.exports = {separateAddresses, addressReviewStarted, getAddressToShow};
 
 function separateAddresses(addressList) {
     return addressList
         .map((address, index) => ({...address, index: String(index)}))
-        .filter(address => !address.alternative)
         .reduce((dataObject, address) => {
 
-            const {consent, electricity} = address;
+            const {consent, electricity, alternative} = address;
             const deemedSafe = address.deemedSafe || '';
+
+            if(alternative) {
+                return {
+                    ...dataObject,
+                    alternativeAddresses: [...dataObject.alternativeAddresses, address]
+                };
+            }
 
             if(consent === 'Yes' && electricity === 'Yes' && deemedSafe.startsWith('Yes')) {
                 return {
@@ -33,7 +39,7 @@ function separateAddresses(addressList) {
             }
 
             return dataObject;
-        }, {activeAddresses: [], acceptedAddresses: [], rejectedAddresses: []});
+        }, {activeAddresses: [], acceptedAddresses: [], rejectedAddresses: [], alternativeAddresses: []});
 }
 
 function addressReviewStarted(address) {
@@ -50,6 +56,6 @@ function getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses)
         return acceptedAddresses;
     }
 
-    return [rejectedAddresses[rejectedAddresses.length-1]];
+    return filterAllButLast(rejectedAddresses);
 }
 

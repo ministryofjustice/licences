@@ -190,5 +190,30 @@ describe('/hdc/proposedAddress', () => {
 
             });
         });
+
+        context('there are only active addresses', () => {
+            it('should display the active address', () => {
+                licenceServiceStub.getLicence.resolves({
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {addressLine1: 'address1'}
+                                ]
+                            }
+                        }
+                    }
+                });
+                return request(app)
+                    .get('/proposedAddress/curfewAddress/1')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('<form method="post">');
+                        expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address1"/>');
+                    });
+
+            });
+        });
     });
 });

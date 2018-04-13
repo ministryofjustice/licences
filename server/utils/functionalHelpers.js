@@ -8,7 +8,8 @@ module.exports = {
     notAllValuesEmpty,
     allValuesEmpty,
     getFirstArrayItems,
-    replaceArrayItem
+    replaceArrayItem,
+    filterAllButLast
 };
 
 // pass in your object and a path in array format
@@ -43,4 +44,8 @@ function getFirstArrayItems(array, number) {
 
 function replaceArrayItem(array, index, item) {
     return R.update(parseInt(index))(item)(array);
+}
+
+function filterAllButLast(array) {
+    return R.takeLast(1, array);
 }
