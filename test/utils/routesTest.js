@@ -112,4 +112,54 @@ describe('getPathFor', () => {
             expect(path).to.equal('/bat');
         });
     });
+
+    context('data needs appening to url', () => {
+        it('appends to the default path when there is no match', () => {
+            const data = {
+                fooAnswer: 'Yes',
+                append: 'a'
+            };
+
+            const config = {
+                nextPath: {
+                    decisions: [
+                        {
+                            discriminator: 'fooAnswer',
+                            No: '/bar/'
+                        }
+                    ],
+                    path: '/bat/',
+                    pathAppend: 'append'
+                }
+            };
+
+            const path = getPathFor({data, config});
+
+            expect(path).to.equal('/bat/a/');
+        });
+
+        it('appends to the decision path when there is a match', () => {
+            const data = {
+                fooAnswer: 'No',
+                append: 'a'
+            };
+
+            const config = {
+                nextPath: {
+                    decisions: [
+                        {
+                            discriminator: 'fooAnswer',
+                            No: '/bar/',
+                            pathAppend: 'append'
+                        }
+                    ],
+                    path: '/bat'
+                }
+            };
+
+            const path = getPathFor({data, config});
+
+            expect(path).to.equal('/bar/a/');
+        });
+    });
 });

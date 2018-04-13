@@ -20,6 +20,6 @@ div.taskListItem
                     | Not yet approved
             div.pure-u-1-4
                 if user.role === 'RO'
-                    +proceed(licenceStatus.tasks.curfewAddressReview, 'UNSTARTED', 'Start', 'View', "/hdc/curfew/curfewAddressReview/" + prisonerInfo.offenderNo)
+                    +proceed(licenceStatus.tasks.curfewAddressReview, 'UNSTARTED', 'Start', 'View', "/hdc/curfew/curfewAddressReview/0/" + prisonerInfo.offenderNo)
                 else
                     a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.offenderNo) View

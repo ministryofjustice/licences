@@ -5,7 +5,13 @@ const {
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {DATE_FIELD} = require('./utils/conditionsValidator');
-const {getIn, isEmpty, notAllValuesEmpty, allValuesEmpty, getFirstArrayItems} = require('../utils/functionalHelpers');
+const {
+    getIn,
+    isEmpty,
+    notAllValuesEmpty,
+    allValuesEmpty,
+    getFirstArrayItems,
+    replaceArrayItem} = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
 const {transitions} = require('../models/licenceStages');
 
@@ -211,6 +217,39 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateStatus(nomisId, status);
     }
 
+    async function updateAddress({index, nomisId, licence, fieldMap, userInput}) {
+
+        const updatedLicence = updateAddressInLicence(licence, fieldMap, userInput, index);
+
+        await licenceClient.updateLicence(nomisId, updatedLicence);
+
+        return updatedLicence;
+    }
+
+    function updateAddressInLicence(licence, fieldMap, userInput, addressIndex) {
+        const answers = fieldMap.reduce(answersFromMapReducer(userInput), {});
+        const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
+
+        if(!addresses || !addresses[addressIndex]) {
+            return licence;
+        }
+
+        const newAddressObject = {...addresses[addressIndex], ...answers};
+        const newAddresses = replaceArrayItem(addresses, addressIndex, newAddressObject);
+
+        return {
+            ...licence,
+            proposedAddress: {
+                ...licence.proposedAddress,
+                curfewAddress: {
+                    ...licence.proposedAddress.curfewAddress,
+                    addresses: newAddresses
+                }
+            }
+        };
+
+    }
+
     return {
         reset,
         getLicence,
@@ -219,6 +258,7 @@ module.exports = function createLicenceService(licenceClient) {
         deleteLicenceCondition,
         markForHandover,
         update,
-        updateStatus
+        updateStatus,
+        updateAddress
     };
 };

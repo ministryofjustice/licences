@@ -78,17 +78,16 @@ describe('getLicenceStatus', () => {
                     },
                     bassReferral: {
                         decision: 'Yes'
-                    }
-                },
-                curfew: {
-                    curfewAddressReview: {
-                        consent: 'Yes',
-                        electricity: 'Yes',
-                        homeVisitConducted: 'Yes'
-
                     },
-                    addressSafety: {
-                        deemedSafe: 'Yes'
+                    curfewAddress: {
+                        addresses: [
+                            {
+                                consent: 'Yes',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'Yes',
+                                deemedSafe: 'Yes'
+                            }
+                        ]
                     }
                 },
                 risk: {
@@ -183,11 +182,16 @@ describe('getLicenceStatus', () => {
                     },
                     bassReferral: {
                         decision: 'No'
-                    }
-                },
-                curfew: {
-                    curfewAddressReview: {
-                        consent: 'No'
+                    },
+                    curfewAddress: {
+                        addresses: [
+                            {
+                                consent: 'No',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'Yes',
+                                deemedSafe: 'Yes'
+                            }
+                        ]
                     }
                 },
                 finalChecks: {
@@ -306,17 +310,19 @@ describe('getLicenceStatus', () => {
             licence: {
                 proposedAddress: {
                     curfewAddress: {
-                        addressLine1: 'line'
+                        addresses: [
+                            {
+                                addressLine1: 'line',
+                                consent: 'Yes',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'Yes'
+                            }
+                        ]
                     }
                 },
                 licenceConditions: {
                     standard: {
                         additionalConditionsRequired: 'Yes'
-                    }
-                },
-                curfew: {
-                    curfewAddressReview: {
-                        consent: {}
                     }
                 },
                 risk: {
@@ -372,20 +378,20 @@ describe('getLicenceStatus', () => {
                         county: 'blah'
                     },
                     curfewAddress: {
-                        addressLine1: 'line',
-                        occupier: 'occupier',
-                        cautionedAgainstResident: 'Yes'
+                        addresses: [
+                            {
+                                addressLine1: 'line',
+                                occupier: 'occupier',
+                                cautionedAgainstResident: 'Yes',
+                                consent: 'Yes',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'Yes',
+                                deemedSafe: 'Yes'
+                            }
+                        ]
                     }
                 },
                 curfew: {
-                    curfewAddressReview: {
-                        consent: 'Yes',
-                        electricity: 'Yes',
-                        homeVisitConducted: 'Yes'
-                    },
-                    addressSafety: {
-                        deemedSafe: 'Yes'
-                    },
                     curfewHours: 'anything'
                 },
                 licenceConditions: {
@@ -447,15 +453,19 @@ describe('getLicenceStatus', () => {
         const licence = {
             status: 'PROCESSING_CA',
             licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {
+                                consent: 'Yes',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'Yes',
+                                deemedSafe: 'Yes - pending confirmation of risk management planning'
+                            }
+                        ]
+                    }
+                },
                 curfew: {
-                    curfewAddressReview: {
-                        consent: 'Yes',
-                        electricity: 'Yes',
-                        homeVisitConducted: 'Yes'
-                    },
-                    addressSafety: {
-                        deemedSafe: 'Yes - pending confirmation of risk management planning'
-                    },
                     curfewHours: 'anything'
                 }
             }
@@ -470,15 +480,52 @@ describe('getLicenceStatus', () => {
         const licence = {
             status: 'PROCESSING_CA',
             licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {
+                                consent: 'Yes',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'No',
+                                deemedSafe: 'Yes - pending confirmation of risk management planning'
+                            }
+                        ]
+                    }
+                },
                 curfew: {
-                    curfewAddressReview: {
-                        consent: 'Yes',
-                        electricity: 'Yes',
-                        homeVisitConducted: 'No'
-                    },
-                    addressSafety: {
-                        deemedSafe: 'Yes - pending confirmation of risk management planning'
-                    },
+                    curfewHours: 'anything'
+                }
+            }
+        };
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.decisions.curfewAddressApproved).to.eql('approved');
+    });
+
+    it('should show address review APPROVED when any address is approved', () => {
+        const licence = {
+            status: 'PROCESSING_CA',
+            licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {
+                                consent: 'No',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'No',
+                                deemedSafe: 'Yes - pending confirmation of risk management planning'
+                            },
+                            {
+                                consent: 'Yes',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'No',
+                                deemedSafe: 'Yes - pending confirmation of risk management planning'
+                            }
+                        ]
+                    }
+                },
+                curfew: {
                     curfewHours: 'anything'
                 }
             }
@@ -493,15 +540,19 @@ describe('getLicenceStatus', () => {
         const licence = {
             status: 'PROCESSING_CA',
             licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {
+                                consent: 'Yes',
+                                electricity: 'Yes',
+                                homeVisitConducted: 'No',
+                                deemedSafe: 'No'
+                            }
+                        ]
+                    }
+                },
                 curfew: {
-                    curfewAddressReview: {
-                        consent: 'Yes',
-                        electricity: 'Yes',
-                        homeVisitConducted: 'No'
-                    },
-                    addressSafety: {
-                        deemedSafe: 'No'
-                    },
                     curfewHours: 'anything'
                 }
             }

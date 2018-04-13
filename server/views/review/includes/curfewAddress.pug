@@ -18,7 +18,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                     span#postCode-curfew.block.bold #{address.postCode}
             div.pure-u-1-2.alignRight
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
-                    a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
+                    a#addressEditLink(href="/hdc/curfew/curfewAddressReview/0/" + nomisId) Change these details
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -67,10 +67,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             if address.cautionedAgainstResident
                 span#cautioned-curfew.bold #{address.cautionedAgainstResident}
 
-if data.curfew && data.curfew.curfewAddressReview
-    -var addressReview = data.curfew.curfewAddressReview || {}
-    -var addressSafety = data.curfew.addressSafety || {}
-
+if address.consent
     div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-u-1-2
             div.pure-g
@@ -78,28 +75,28 @@ if data.curfew && data.curfew.curfewAddressReview
                     span Does the homeowner/landlord give informed consent to HDC at the address?
         div.pure-u-1-2
             div#dischargeHomeAddress
-                span#consent-curfew.bold #{addressReview.consent}
+                span#consent-curfew.bold #{address.consent}
 
-    if(addressReview.consent === 'Yes')
+    if(address.consent === 'Yes')
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
                 span Does the address have an electricity supply?
             div.pure-u-1-2
-                if addressReview.electricity
-                    span#electricity-curfew.bold #{addressReview.electricity}
+                if address.electricity
+                    span#electricity-curfew.bold #{address.electricity}
 
-        if(addressReview.electricity === 'Yes')
+        if(address.electricity === 'Yes')
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     span Was a home visit conducted in this case?
                 div.pure-u-1-2
-                    span#homeVisit-curfew.bold #{addressReview.homeVisitConducted}
+                    span#homeVisit-curfew.bold #{address.homeVisitConducted}
 
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     span Could this offender be managed safely at address?
                 div.pure-u-1-2
-                    span#deemedSafe-curfew.bold #{addressSafety.deemedSafe}
+                    span#deemedSafe-curfew.bold #{address.deemedSafe}
 else
     div.pure-g.midPaddingTopBottom
         div.pure-u-1-2

@@ -142,6 +142,37 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         res.render('approval/release', {prisonerInfo, nomisId, data, nextPath});
     }));
 
+    router.get('/curfew/:formName/:addressIndex/:nomisId', checkLicence, (req, res) => {
+        const {formName, addressIndex, nomisId} = req.params;
+        logger.debug(`GET curfew/${formName}/${addressIndex}/${nomisId}`);
+
+        const {licenceSection, nextPath, licenceMap} = formConfig[formName];
+        const dataPath = licenceMap || ['licence', 'curfew', licenceSection];
+        const data = getIn(res.locals.licence, dataPath) || {};
+
+        res.render(`curfew/${formName}`, {nomisId, data, addressIndex, nextPath});
+    });
+
+    router.post('/curfew/:formName/:addressIndex/:nomisId', asyncMiddleware(async (req, res) => {
+        const {formName, addressIndex, nomisId} = req.params;
+        logger.debug(`GET curfew/${formName}/${addressIndex}/${nomisId}`);
+
+        const rawLicence = await licenceService.getLicence(nomisId);
+        const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
+
+        if (formConfig[formName].fields) {
+            await licenceService.updateAddress({
+                licence: rawLicence.licence,
+                nomisId: nomisId,
+                fieldMap: formConfig[formName].fields,
+                userInput: req.body,
+                index: addressIndex
+            });
+        }
+
+        res.redirect(`${nextPath}${nomisId}`);
+    }));
+
     router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
         const {sectionName, formName, nomisId} = req.params;
         logger.debug(`GET ${sectionName}/${formName}/${nomisId}`);

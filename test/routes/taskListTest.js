@@ -320,7 +320,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">Start');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/0/noms">Start');
                     });
 
             });
@@ -331,7 +331,13 @@ describe('GET /taskList/:prisonNumber', () => {
                 licenceServiceStub.getLicence.resolves({
                     status: 'PROCESSING_RO',
                     licence: {
-                        curfew: {curfewAddressReview: 'any'}
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {consent: 'Yes'}
+                                ]
+                            }
+                        }
                     }
                 });
                 return request(app)
@@ -339,7 +345,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">View');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/0/noms">View');
                     });
 
             });

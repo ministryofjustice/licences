@@ -251,24 +251,20 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
 
     function getState(licence) {
 
+        const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
+
         if (optedOut || bassReferralNeeded) {
             return taskStates.DONE;
         }
 
-        if (isEmpty(getIn(licence, ['proposedAddress', 'curfewAddress']))) {
-            return taskStates.UNSTARTED;
-        }
-        if (isEmpty(getIn(licence, ['proposedAddress', 'curfewAddress', 'addressLine1']))) {
+        if (!addresses) {
             return taskStates.UNSTARTED;
         }
 
         // todo mandatory address elements
 
-        if (isEmpty(getIn(licence, ['proposedAddress', 'curfewAddress', 'occupier']))) {
-            return taskStates.STARTED;
-        }
-
-        if (isEmpty(getIn(licence, ['proposedAddress', 'curfewAddress', 'cautionedAgainstResident']))) {
+        const required = ['occupier', 'cautionedAgainstResident'];
+        if(required.some(field => !addresses.find(address => address[field]))) {
             return taskStates.STARTED;
         }
 
@@ -278,24 +274,36 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
 
 function getCurfewAddressReviewState(licence) {
 
-    const consentAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'consent']);
-    const electricityAnswer = getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']);
-    const deemedSafeAnswer = getIn(licence, ['curfew', 'addressSafety', 'deemedSafe']);
+    const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || [];
 
-    if (isEmpty(getIn(licence, ['curfew', 'curfewAddressReview']))) {
-        return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
+    const approvedAddress = addresses.find(address => {
+        const {consent, electricity, deemedSafe} = address;
+        return consent === 'Yes' && electricity === 'Yes' && deemedSafe && deemedSafe.startsWith('Yes');
+    });
+
+    if (approvedAddress) {
+        return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};
     }
 
-    if ([consentAnswer, electricityAnswer, deemedSafeAnswer].some(it => it === 'No')) {
+    const rejectedAddress = addresses.find(address => {
+        const {consent, electricity, deemedSafe} = address;
+        return [consent, electricity, deemedSafe].some(answer => answer === 'No');
+    });
+
+    if (rejectedAddress) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
     }
 
+    const reviewStarted = addresses.find(address => {
+        const {consent, electricity, homeVisitConducted, deemedSafe} = address;
+        return consent || electricity || homeVisitConducted || deemedSafe;
+    });
 
-    if ([consentAnswer, electricityAnswer, deemedSafeAnswer].some(isEmpty)) {
+    if (reviewStarted) {
         return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
     }
 
-    return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};
+    return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
 }
 
 function getCurfewHoursState(licence) {

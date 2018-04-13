@@ -808,4 +808,112 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
     });
+
+    describe('updateAddress', () => {
+
+        const baseLicence = {
+            proposedAddress: {
+                curfewAddress: {
+                    addresses: [
+                        {postCode: 'pc1'},
+                        {postCode: 'pc2'}
+                    ]
+                }
+            }
+        };
+
+
+        it('should add form items to correct address', async () => {
+
+
+            const output = await service.updateAddress({
+                index: 1,
+                licence: baseLicence,
+                userInput: {newField: 'newField'},
+                fieldMap: [{newField: {}}]
+            });
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1'},
+                            {postCode: 'pc2', newField: 'newField'}
+                        ]
+                    }
+                }
+            };
+
+            expect(output).to.eql(expectedOutput);
+        });
+
+        it('should use the form config', async () => {
+            const output = await service.updateAddress({
+                index: 0,
+                licence: baseLicence,
+                userInput: {newField: 'newField', unwantedField: 'unwanted'},
+                fieldMap: [{newField: {}}]
+            });
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1', newField: 'newField'},
+                            {postCode: 'pc2'}
+                        ]
+                    }
+                }
+            };
+
+            expect(output).to.eql(expectedOutput);
+        });
+
+        it('should not change the rest of the licence', async () => {
+            const output = await service.updateAddress({
+                index: 0,
+                licence: {...baseLicence, otherfield: 'other'},
+                userInput: {newField: 'newField', unwantedField: 'unwanted'},
+                fieldMap: [{newField: {}}]
+            });
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1', newField: 'newField'},
+                            {postCode: 'pc2'}
+                        ]
+                    }
+                },
+                otherfield: 'other'
+            };
+
+            expect(output).to.eql(expectedOutput);
+        });
+
+        it('should update the saved licence', async () => {
+            await service.updateAddress({
+                nomisId: 1,
+                index: 0,
+                licence: baseLicence,
+                userInput: {newField: 'newField', unwantedField: 'unwanted'},
+                fieldMap: [{newField: {}}]
+            });
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1', newField: 'newField'},
+                            {postCode: 'pc2'}
+                        ]
+                    }
+                }
+            };
+
+            expect(licenceClient.updateLicence).to.be.calledOnce();
+            expect(licenceClient.updateLicence).to.be.calledWith(1, expectedOutput);
+        });
+    });
 });

@@ -32,9 +32,9 @@ describe('/hdc/curfew', () => {
         const routes = [
             {
                 url: '/curfew/curfewAddressReview/1',
-                body: {nomisId: 1},
+                body: {nomisId: 1, addressIndex: 5},
                 section: 'curfewAddressReview',
-                nextPath: '/hdc/curfew/addressSafety/1'
+                nextPath: '/hdc/curfew/addressSafety/5/1'
             },
             {
                 url: '/curfew/curfewAddressReview/1',
@@ -50,9 +50,9 @@ describe('/hdc/curfew', () => {
             },
             {
                 url: '/curfew/curfewAddressReview/1',
-                body: {nomisId: 1, consent: 'Yes'},
+                body: {nomisId: 1, consent: 'Yes', addressIndex: 5},
                 section: 'curfewAddressReview',
-                nextPath: '/hdc/curfew/addressSafety/1'
+                nextPath: '/hdc/curfew/addressSafety/5/1'
             },
             {
                 url: '/curfew/addressSafety/1',
