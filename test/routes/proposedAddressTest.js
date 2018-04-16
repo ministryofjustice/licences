@@ -216,4 +216,79 @@ describe('/hdc/proposedAddress', () => {
             });
         });
     });
+
+    describe('rejected', () => {
+        it('should display the rejected address', () => {
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [
+                                {addressLine1: 'address1', consent: 'No'}
+                            ]
+                        }
+                    }
+                }
+            });
+            return request(app)
+                .get('/proposedAddress/rejected/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.include('id="rejectedLine1">address1</p>');
+                });
+
+        });
+
+        context('alternative address is present', () => {
+            it('should show the form to submit alternative', () => {
+                licenceServiceStub.getLicence.resolves({
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {addressLine1: 'address1', consent: 'No'},
+                                    {addressLine1: 'alt1', alternative: 'Yes'}
+                                ]
+                            }
+                        }
+                    }
+                });
+                return request(app)
+                    .get('/proposedAddress/rejected/1')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('action="/hdc/proposedAddress/submitAlternative/"');
+                        expect(res.text).to.include('id="address1-alt">alt1');
+                    });
+
+            });
+
+        });
+
+        context('alternative address is not present on licence', () => {
+            it('should show the form to enter new address', () => {
+                licenceServiceStub.getLicence.resolves({
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {addressLine1: 'address1', consent: 'No'},
+                                    {addressLine1: 'alt1'}
+                                ]
+                            }
+                        }
+                    }
+                });
+                return request(app)
+                    .get('/proposedAddress/rejected/1')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('<form id="enterAlternativeForm" method="post">');
+                    });
+            });
+        });
+    });
 });
