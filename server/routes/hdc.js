@@ -231,6 +231,31 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         res.redirect(`${nextPath}${nomisId}`);
     }));
 
+    router.get('/proposedAddress/rejected/:nomisId', checkLicence, (req, res) => {
+        const {nomisId} = req.params;
+        logger.debug(`GET proposedAddress/rejected/${nomisId}`);
+
+        const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']) || {};
+        const data = separateAddresses(addresses);
+        const licenceStatus = getLicenceStatus(res.locals.licence);
+
+        res.render('proposedAddress/rejected', {nomisId, data, licenceStatus});
+    });
+
+    router.post('/proposedAddress/submitAlternative/', asyncMiddleware(async (req, res) => {
+        const {nomisId, submitAlternative} = req.body;
+        logger.debug(`POST /proposedAddress/submitAlternative/${nomisId}`);
+        const rawLicence = await licenceService.getLicence(nomisId);
+
+        if(submitAlternative === 'Yes') {
+            await licenceService.promoteAlternativeAddress({nomisId, licence: rawLicence.licence});
+            return res.redirect(`/hdc/proposedAddress/confirmAddress/${nomisId}`);
+        } else {
+            await licenceService.removeAlternativeAddress({nomisId, licence: rawLicence.licence});
+            return res.redirect(`/hdc/proposedAddress/curfewAddress/${nomisId}`);
+        }
+    }));
+
     router.post('/proposedAddress/curfewAddress/update/', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.body;
         const rawLicence = await licenceService.getLicence(nomisId);

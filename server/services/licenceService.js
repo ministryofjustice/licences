@@ -275,17 +275,7 @@ module.exports = function createLicenceService(licenceClient) {
         let addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
         const newAddresses = userInput.addresses.reduce(replaceAddressObjectReducer(fieldMap, addresses), addresses);
 
-        const newLicence = {
-            ...licence,
-            proposedAddress: {
-                ...licence.proposedAddress,
-                curfewAddress: {
-                    ...licence.proposedAddress.curfewAddress,
-                    addresses: newAddresses
-                }
-            }
-        };
-
+        const newLicence = replaceAddressesInLicence(newAddresses, licence);
         await licenceClient.updateLicence(nomisId, newLicence);
 
         return newLicence;
@@ -301,6 +291,52 @@ module.exports = function createLicenceService(licenceClient) {
         };
     }
 
+    async function promoteAlternativeAddress({nomisId, licence}) {
+        const oldAddresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
+
+        const newAddresses = oldAddresses.map(address => {
+            if(address.alternative) {
+                address.alternative = '';
+                return address;
+            }
+            return address;
+        });
+
+        const newLicence = replaceAddressesInLicence(newAddresses, licence);
+        await licenceClient.updateLicence(nomisId, newLicence);
+
+        return newLicence;
+    }
+
+    async function removeAlternativeAddress({nomisId, licence}) {
+        const oldAddresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
+
+        const newAddresses = oldAddresses.reduce((newArray, address) => {
+            if(address.alternative) {
+                return newArray;
+            }
+            return [...newArray, address];
+        }, []);
+
+        const newLicence = replaceAddressesInLicence(newAddresses, licence);
+        await licenceClient.updateLicence(nomisId, newLicence);
+
+        return newLicence;
+    }
+
+    function replaceAddressesInLicence(newAddresses, licence) {
+        return {
+            ...licence,
+            proposedAddress: {
+                ...licence.proposedAddress,
+                curfewAddress: {
+                    ...licence.proposedAddress.curfewAddress,
+                    addresses: newAddresses
+                }
+            }
+        };
+    }
+
     return {
         reset,
         getLicence,
@@ -311,6 +347,8 @@ module.exports = function createLicenceService(licenceClient) {
         update,
         updateStatus,
         updateAddress,
-        updateAddresses
+        updateAddresses,
+        promoteAlternativeAddress,
+        removeAlternativeAddress
     };
 };

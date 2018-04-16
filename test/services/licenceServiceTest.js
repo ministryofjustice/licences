@@ -975,4 +975,71 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedOutput);
         });
     });
+
+    describe('promoteAlternativeAddress', () => {
+        const baseLicence = {
+            other: 'stuff',
+            proposedAddress: {
+                curfewAddress: {
+                    addresses: [
+                        {postCode: 'pc1', line1: 'a'},
+                        {postCode: 'pc2', line1: 'b', alternative: 'Yes'}
+                    ]
+                }
+            }
+        };
+
+
+        it('should remove alternative tag', async () => {
+
+            const output = await service.promoteAlternativeAddress({nomisId: 1, licence: baseLicence});
+
+            const expectedOutput = {
+                other: 'stuff',
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1', line1: 'a'},
+                            {postCode: 'pc2', line1: 'b', alternative: ''}
+                        ]
+                    }
+                }
+            };
+
+            expect(output).to.eql(expectedOutput);
+        });
+    });
+
+    describe('removeAlternativeAddress', () => {
+        const baseLicence = {
+            other: 'stuff',
+            proposedAddress: {
+                curfewAddress: {
+                    addresses: [
+                        {postCode: 'pc1', line1: 'a'},
+                        {postCode: 'pc2', line1: 'b', alternative: 'Yes'}
+                    ]
+                }
+            }
+        };
+
+
+        it('should remove alternative address', async () => {
+
+            const output = await service.removeAlternativeAddress({nomisId: 1, licence: baseLicence});
+
+            const expectedOutput = {
+                other: 'stuff',
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1', line1: 'a'}
+                        ]
+                    }
+                }
+            };
+
+            expect(output).to.eql(expectedOutput);
+        });
+    });
 });

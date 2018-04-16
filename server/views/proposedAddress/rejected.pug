@@ -1,10 +1,11 @@
 extends ../layout
+include ./includes/addressDetail
 
 block content
 
-    -var addresses = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress.addresses : []
-    -var address = addresses[addresses.length-1] || {}
-    -var savedData = data.proposedAddress && data.proposedAddress.rejected && data.proposedAddress.rejected.enterAlternative || {}
+    -var address = data.rejectedAddresses[data.rejectedAddresses.length-1] || {}
+    -var alternativeAddress = data.alternativeAddresses[0] || false
+    -var savedData = data.proposedAddress && data.proposedAddress.rejected || {}
 
     div.pure-g.pure-u-1
         include ../includes/backToTaskList
@@ -17,17 +18,17 @@ block content
                 p.smallMarginBottom Address
                 div.paddingBottom
                     if address.addressLine1
-                        p.bold.noMargin #{address.addressLine1}
+                        p#rejectedLine1.bold.noMargin #{address.addressLine1}
                     if address.addressLine2
-                        p.bold.noMargin #{address.addressLine2}
+                        p#rejectedLine2.bold.noMargin #{address.addressLine2}
                     if address.addressTown
-                        p.bold.noMargin #{address.addressTown}
+                        p#rejectedTown.bold.noMargin #{address.addressTown}
                     if address.postCode
-                        p.bold.noMargin #{address.postCode}
+                        p#rejectedPostCode.bold.noMargin #{address.postCode}
                 div.paddingBottom
                     if address.telephone
                         p.smallMarginBottom Telephone
-                        p.bold.noMargin #{address.telephone}
+                        p#rejectedTelephone.bold.noMargin #{address.telephone}
 
             div.pure-u-1.pure-u-md-1-2.paddingBottom
                 p.smallMarginBottom Reason for rejection:
@@ -38,18 +39,40 @@ block content
                 if address.electricity === 'No'
                     p.bold The address does not have an electricity supply
 
-        div.largePaddingBottom
-            h3.heading-medium Enter alternative address?
-            form(method="post")
-                div.form-group.paddingBottom
-                    p Do you want to enter an alternative address?
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="nomisId" value=nomisId || '')
-                    div.multiple-choice(data-target="enterAlternative")
-                        input#enterAlternativeYes(type="radio" name="enterAlternative" value="Yes" checked=savedData === "Yes")
-                        label(for="enterAlternativeYes") Yes
-                    div.multiple-choice
-                        input#enterAlternativeNo(type="radio" name="enterAlternative" value="No" checked=savedData === "No")
-                        label(for="enterAlternativeNo") No
 
-                include ../includes/formSubmit
+    if(!alternativeAddress)
+        div.pure-g
+            div.pure-u-md-1-3.largePaddingBottom
+                h3.heading-medium Enter alternative address?
+                form(id="enterAlternativeForm" method="post")
+                    div.form-group.paddingBottom
+                        p Do you want to enter an alternative address?
+                        input(type="hidden" name="_csrf" value=csrfToken)
+                        input(type="hidden" name="nomisId" value=nomisId || '')
+                        div.multiple-choice(data-target="enterAlternative")
+                            input#enterAlternativeYes(type="radio" name="enterAlternative" value="Yes" checked=savedData.enterAlternative === "Yes")
+                            label(for="enterAlternativeYes") Yes
+                        div.multiple-choice
+                            input#enterAlternativeNo(type="radio" name="enterAlternative" value="No" checked=savedData.enterAlternative === "No")
+                            label(for="enterAlternativeNo") No
+
+                    include ../includes/formSubmit
+
+    else
+        h3.heading-medium Submit alternative address?
+        +addressDetail('alt', alternativeAddress)
+        div.pure-g
+            div.pure-u-md-2-5.largePaddingBottom.paddingTop
+                form(id="submitAlternativeForm" method="post" action="/hdc/proposedAddress/submitAlternative/")
+                    div.form-group.paddingBottom
+                        p Do you wish to submit this alternative address to the Responsible Officer
+                        input(type="hidden" name="_csrf" value=csrfToken)
+                        input(type="hidden" name="nomisId" value=nomisId || '')
+                        div.multiple-choice(data-target="submitAlternative")
+                            input#enterAlternativeYes(type="radio" name="submitAlternative" value="Yes" checked=savedData.submitAlternative === "Yes")
+                            label(for="submitAlternativeYes") Yes
+                        div.multiple-choice
+                            input#enterAlternativeNo(type="radio" name="submitAlternative" value="No" checked=savedData.submitAlternative === "No")
+                            label(for="submitAlternativeNo") No - enter a new address
+
+                    include ../includes/formSubmit
