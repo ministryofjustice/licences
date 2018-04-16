@@ -14,7 +14,7 @@ module.exports = {
 
     getLicences: function(nomisIds) {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT NOMIS_ID as nomisId, ID as id, STATUS as status, JSON_QUERY(LICENCE) AS licence 
+            const sql = `SELECT NOMIS_ID as nomisId, ID as id, STAGE as stage, JSON_QUERY(LICENCE) AS licence 
                          FROM LICENCES WHERE NOMIS_ID IN (${nomisIds.map(id => `'${id}'`).join(',')}) FOR JSON PATH`;
 
             getCollection(sql, null, resolveJsonResponse(resolve), reject);
@@ -23,7 +23,7 @@ module.exports = {
 
     getLicence: function(nomisId) {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT NOMIS_ID as nomisId, ID as id, STATUS as status, JSON_QUERY(LICENCE) AS licence 
+            const sql = `SELECT NOMIS_ID as nomisId, ID as id, STAGE as stage, JSON_QUERY(LICENCE) AS licence 
                          FROM LICENCES WHERE NOMIS_ID = '${nomisId}' FOR JSON PATH, WITHOUT_ARRAY_WRAPPER`;
 
             getCollection(sql, null, resolveJsonResponse(resolve), reject);
@@ -32,13 +32,13 @@ module.exports = {
 
     createLicence: function(nomisId, licence = {}, stage = licenceStages.DEFAULT) {
         return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STATUS) ' +
-                'VALUES (@nomisId, @licence, @status)';
+            const sql = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STAGE) ' +
+                'VALUES (@nomisId, @licence, @stage)';
 
             const parameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId},
                 {column: 'licence', type: TYPES.VarChar, value: JSON.stringify(licence)},
-                {column: 'status', type: TYPES.VarChar, value: stage}
+                {column: 'stage', type: TYPES.VarChar, value: stage}
             ];
 
             execSql(sql, parameters, resolve, reject);
@@ -91,12 +91,12 @@ module.exports = {
         });
     },
 
-    updateStatus: function(nomisId, status) {
+    updateStage: function(nomisId, stage) {
         return new Promise((resolve, reject) => {
-            const sql = 'UPDATE LICENCES SET STATUS = @status WHERE NOMIS_ID = @nomisId';
+            const sql = 'UPDATE LICENCES SET STAGE = @stage WHERE NOMIS_ID = @nomisId';
 
             const parameters = [
-                {column: 'status', type: TYPES.VarChar, value: status},
+                {column: 'stage', type: TYPES.VarChar, value: stage},
                 {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
             ];
 

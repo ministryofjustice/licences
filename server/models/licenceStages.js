@@ -17,7 +17,8 @@ const transitions = {
     RO: {
         CA: {
             'default': licenceStages.PROCESSING_CA,
-            addressRejected: licenceStages.ELIGIBILITY
+            addressRejected: licenceStages.ELIGIBILITY,
+            optedOut: licenceStages.ELIGIBILITY
         }
 
     },

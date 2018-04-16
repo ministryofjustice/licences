@@ -10,9 +10,9 @@ block content
                         img(src="/public/images/large_tick.svg" alt="white tick" height="80px")
                     div.pure-u-md-7-8
                         if user.role == 'CA'
-                            if status == 'PROCESSING_RO'
+                            if stage == 'PROCESSING_RO'
                                 div.heading-large Address information submitted
-                            else if status == 'APPROVAL'
+                            else if stage == 'APPROVAL'
                                 div.heading-large Submitted for approval
 
                         else if user.role == 'RO'

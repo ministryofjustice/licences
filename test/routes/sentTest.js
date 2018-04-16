@@ -18,7 +18,7 @@ const app = appSetup(createSendRoute({
 describe('GET sent', () => {
 
     beforeEach(() => {
-        licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO'});
+        licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO'});
     });
 
     it('renders the sent page', () => {

@@ -24,6 +24,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const licence = await licenceService.getLicence(nomisId);
 
         const licenceStatus = getLicenceStatus(licence);
+
         const allowedTransitions = getAllowedTransitions(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
 

@@ -81,6 +81,6 @@ function getStatus(prisoner, licences, role) {
     }
 
     const licenceStatus = getLicenceStatus(licenceForPrisoner);
-    return {stage: licenceForPrisoner.status, status: getStatusLabel(licenceStatus, role)};
+    return {stage: licenceForPrisoner.stage, status: getStatusLabel(licenceStatus, role)};
 }
 

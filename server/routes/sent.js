@@ -16,9 +16,9 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         const licence = await licenceService.getLicence(nomisId);
-        const status = getIn(licence, ['status']);
+        const stage = getIn(licence, ['stage']);
 
-        res.render('sent/index', {nomisId, status});
+        res.render('sent/index', {nomisId, stage});
     }));
 
     return router;

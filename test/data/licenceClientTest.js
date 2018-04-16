@@ -90,8 +90,8 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedClause = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STATUS) ' +
-                'VALUES (@nomisId, @licence, @status)';
+            const expectedClause = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STAGE) ' +
+                'VALUES (@nomisId, @licence, @stage)';
 
             licencesProxy().createLicence('ABC123');
             const sql = execSqlStub.getCalls()[0].args[0];
@@ -103,7 +103,7 @@ describe('licenceClient', () => {
             const expectedParameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
                 {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({})},
-                {column: 'status', type: TYPES.VarChar, value: 'ELIGIBILITY'}
+                {column: 'stage', type: TYPES.VarChar, value: 'ELIGIBILITY'}
             ];
 
             licencesProxy().createLicence('ABC123');
@@ -116,7 +116,7 @@ describe('licenceClient', () => {
             const expectedParameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
                 {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({a: 'b'})},
-                {column: 'status', type: TYPES.VarChar, value: 'ELIGIBILITY'}
+                {column: 'stage', type: TYPES.VarChar, value: 'ELIGIBILITY'}
             ];
 
             licencesProxy().createLicence('ABC123', {a: 'b'});
@@ -124,12 +124,12 @@ describe('licenceClient', () => {
             expect(sql).to.eql(expectedParameters);
         });
 
-        it('should pass in the correct parameters if status passed in', () => {
+        it('should pass in the correct parameters if stage passed in', () => {
 
             const expectedParameters = [
                 {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
                 {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({a: 'b'})},
-                {column: 'status', type: TYPES.VarChar, value: 'SENT'}
+                {column: 'stage', type: TYPES.VarChar, value: 'SENT'}
             ];
 
             licencesProxy().createLicence('ABC123', {a: 'b'}, 'SENT');
@@ -283,15 +283,15 @@ describe('licenceClient', () => {
         });
     });
 
-    describe('updateStatus', () => {
+    describe('updateStage', () => {
         execSqlStub.callsArgWith(2);
 
         it('should pass in the correct sql', () => {
 
-            const expectedUpdate = 'SET STATUS = @status';
+            const expectedUpdate = 'SET STAGE = @stage';
             const expectedWhere = 'WHERE NOMIS_ID = @nomisId';
 
-            licencesProxy().updateStatus('ABC123', 'NEW_STATUS');
+            licencesProxy().updateStage('ABC123', 'NEW_STAGE');
             const sql = execSqlStub.getCalls()[0].args[0];
             expect(sql).to.include(expectedUpdate);
             expect(sql).to.include(expectedWhere);
@@ -300,11 +300,11 @@ describe('licenceClient', () => {
         it('should pass in the correct parameters', () => {
 
             const expectedParameters = [
-                {column: 'status', type: TYPES.VarChar, value: 'NEW_STATUS'},
+                {column: 'stage', type: TYPES.VarChar, value: 'NEW_STAGE'},
                 {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'}
             ];
 
-            licencesProxy().updateStatus('ABC123', 'NEW_STATUS');
+            licencesProxy().updateStage('ABC123', 'NEW_STAGE');
             const params = execSqlStub.getCalls()[0].args[1];
             expect(params).to.eql(expectedParameters);
         });

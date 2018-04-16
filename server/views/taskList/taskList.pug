@@ -33,14 +33,17 @@ block content
                 include postponementTask
                 include caSubmitTask
 
-
         if user.role === 'RO'
-            include curfewAddressTask
-            if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
-                include riskManagementTask
-                include curfewHoursTask
-                include additionalConditionsTask
-                include reportingInstructionsTask
+            if (licenceStatus.decisions.optedOut)
+                include optOutTask
+            else
+                include curfewAddressTask
+                if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+                    include riskManagementTask
+                    include curfewHoursTask
+                    include additionalConditionsTask
+                    include reportingInstructionsTask
+                    include optOutTask
             include roSubmitTask
 
         if user.role === 'DM'

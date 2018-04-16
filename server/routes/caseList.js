@@ -4,12 +4,20 @@ const {getIn, isEmpty} = require('../utils/functionalHelpers');
 
 const caseListTabs = {
     CA: [
-        {id: 'ready', text: 'Ready to process', licenceStages: ['UNSTARTED', 'ELIGIBILITY'],
-            statusFilter: {ELIGIBILITY: 'Opted out'}},
-        {id: 'submittedRo', text: 'Submitted to RO', licenceStages: ['PROCESSING_RO']},
+        {
+            id: 'ready', text: 'Ready to process', licenceStages: ['UNSTARTED', 'ELIGIBILITY'],
+            statusFilter: {ELIGIBILITY: 'Opted out'}
+        },
+        {
+            id: 'submittedRo', text: 'Submitted to RO', licenceStages: ['PROCESSING_RO'],
+            statusFilter: {PROCESSING_RO: 'Opted out'}
+        },
         {id: 'finalChecks', text: 'Final checks', licenceStages: ['PROCESSING_CA']},
         {id: 'submittedDm', text: 'Submitted to DM', licenceStages: ['APPROVAL']},
-        {id: 'optedOut', text: 'Opted out', licenceStages: ['ELIGIBILITY'], licenceStatus: 'Opted out'},
+        {
+            id: 'optedOut', text: 'Opted out', licenceStages: ['ELIGIBILITY', 'PROCESSING_RO'],
+            licenceStatus: 'Opted out'
+        },
         {id: 'decided', text: 'Decided', licenceStages: ['DECIDED']}
     ],
     RO: [
@@ -31,7 +39,7 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
 
     router.get('/', (req, res) => {
         const tabsForRole = getIn(caseListTabs, [req.user.role]);
-        res.redirect('/caseList/'+tabsForRole[0].id);
+        res.redirect('/caseList/' + tabsForRole[0].id);
     });
 
     router.get('/:tab', asyncMiddleware(async (req, res) => {
@@ -39,8 +47,8 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
         const tabsForRole = getIn(caseListTabs, [req.user.role]);
         const selectedTabConfig = tabsForRole.find(tab => tab.id === req.params.tab);
 
-        if(isEmpty(selectedTabConfig)) {
-            res.redirect('/caseList/'+tabsForRole[0].id);
+        if (isEmpty(selectedTabConfig)) {
+            res.redirect('/caseList/' + tabsForRole[0].id);
         }
 
         const hdcEligible = await caseListService.getHdcCaseList(req.user);
@@ -54,6 +62,7 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
 
 function filterToTabs(offenders, tabConfig) {
     return offenders.filter(offender => {
+
         const correctStage = tabConfig.licenceStages.includes(offender.stage);
         const correctStatus = tabConfig.licenceStatus ? tabConfig.licenceStatus === offender.status : true;
         const filterStatus = getIn(tabConfig, ['statusFilter', offender.stage]) === offender.status;
