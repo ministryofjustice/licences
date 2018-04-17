@@ -209,11 +209,58 @@ describe('/hdc/proposedAddress', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('<form method="post">');
+                        expect(res.text).to.include(
+                            '<form method="post" action="/hdc/proposedAddress/curfewAddress/update/">');
                         expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address1"/>');
                     });
 
             });
+        });
+    });
+
+    describe('rejected', () => {
+        it('should display the rejected address', () => {
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [
+                                {addressLine1: 'address1', consent: 'No'}
+                            ]
+                        }
+                    }
+                }
+            });
+            return request(app)
+                .get('/proposedAddress/rejected/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.include('id="rejectedLine1">address1</p>');
+                });
+
+        });
+
+        it('should show the form to enter new address', () => {
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [
+                                {addressLine1: 'address1', consent: 'No'},
+                                {addressLine1: 'alt1'}
+                            ]
+                        }
+                    }
+                }
+            });
+            return request(app)
+                .get('/proposedAddress/rejected/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.include('<form id="enterAlternativeForm" method="post">');
+                });
         });
     });
 });

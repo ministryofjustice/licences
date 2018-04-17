@@ -1,6 +1,6 @@
 include otherResidents
 mixin addressForm(index, alternative)
-    -var thisAddress = savedAddress && savedAddress[index] ? savedAddress[index] : {}
+    -var thisAddress = savedAddress
     -var savedOccupier = thisAddress.occupier || {}
     -var addressPosition = "[addresses]["+index+"]"
     div.pure-g.paddingBottom

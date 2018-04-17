@@ -18,20 +18,20 @@ block content
             h3.heading-medium Preferred address
             +addressForm(0)
 
-        div.form-group.inline.paddingBottom
-            p Do you want to add an alternative address?
-
-            div.multiple-choice(data-target="alternativeAddress")
-                input#alternativeAddressYes(type="radio" checked=savedAddress.alternativeAddress === 'Yes' name="alternativeAddress" value="Yes")
-                label(for="alternativeAddressYes") Yes
-            div.multiple-choice
-                input#alternativeAddressNo(type="radio" checked=savedAddress.alternativeAddress !== 'Yes' name="alternativeAddress" value="No")
-                label(for="alternativeAddressNo") No
-
-        div#alternativeAddress.js-hidden
-            div.paddingBottom.largeMarginBottom
-                h3.heading-medium Alternative address
-                +addressForm(1, 'alternative')
+        //div.form-group.inline.paddingBottom
+        //    p Do you want to add an alternative address?
+        //
+        //    div.multiple-choice(data-target="alternativeAddress")
+        //        input#alternativeAddressYes(type="radio" checked=savedAddress.alternativeAddress === 'Yes' name="alternativeAddress" value="Yes")
+        //        label(for="alternativeAddressYes") Yes
+        //    div.multiple-choice
+        //        input#alternativeAddressNo(type="radio" checked=savedAddress.alternativeAddress !== 'Yes' name="alternativeAddress" value="No")
+        //        label(for="alternativeAddressNo") No
+        //
+        //div#alternativeAddress.js-hidden
+        //    div.paddingBottom.largeMarginBottom
+        //        h3.heading-medium Alternative address
+        //        +addressForm(1, 'alternative')
 
         include ../includes/formButtons
 
