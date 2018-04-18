@@ -1,5 +1,5 @@
 const logger = require('../../log.js');
-const {isEmpty} = require('../utils/functionalHelpers');
+const {isEmpty, ascend, sortWith} = require('../utils/functionalHelpers');
 const {formatObjectForView} = require('./utils/formatForView');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
@@ -35,7 +35,13 @@ async function getCaseList(nomisClient, licenceClient, user) {
         DM: nomisClient.getHdcEligiblePrisoners
     };
 
-    return asyncCaseRetrievalMethod[user.role]();
+    const caseList = await asyncCaseRetrievalMethod[user.role]();
+
+    if (!caseList) {
+        return null;
+    }
+
+    return sortCaseList(caseList);
 }
 
 function getROCaseList(nomisClient, licenceClient, user) {
@@ -84,3 +90,7 @@ function getStatus(prisoner, licences, role) {
     return {stage: licenceForPrisoner.stage, status: getStatusLabel(licenceStatus, role)};
 }
 
+const sortCaseList = sortWith([
+    ascend(['sentenceDetail', 'homeDetentionCurfewEligibilityDate']),
+    ascend(['sentenceDetail', 'conditionalReleaseDate'])
+]);

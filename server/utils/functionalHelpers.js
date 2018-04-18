@@ -9,7 +9,9 @@ module.exports = {
     allValuesEmpty,
     getFirstArrayItems,
     replaceArrayItem,
-    lastItem
+    lastItem,
+    ascend,
+    sortWith
 };
 
 // pass in your object and a path in array format
@@ -48,4 +50,12 @@ function replaceArrayItem(array, index, item) {
 
 function lastItem(array) {
     return R.last(array);
+}
+
+function ascend(fieldMap) {
+    return R.ascend(R.path(fieldMap));
+}
+
+function sortWith(sortingMethods) {
+    return R.sortWith(sortingMethods);
 }

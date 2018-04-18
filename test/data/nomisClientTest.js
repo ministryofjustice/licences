@@ -186,56 +186,6 @@ describe('nomisClient', function() {
             return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql({key: 'value'});
         });
 
-        it('should set the headers to sort ascending', () => {
-            fakeNomis
-                .get(url)
-                .reply(function(uri, requestBody) {
-                    // The documented way to specify request headers doesn't work so this is a workaround
-                    if (this.req.headers['sort-order'] === 'ASC') { // eslint-disable-line
-                        return 200, {key: 'value'};
-                    }
-                    return null;
-                });
-
-            return expect(nomisClient.getHdcEligiblePrisoners())
-                .to.eventually.eql({key: 'value'});
-        });
-
-        it('should set the headers to sort by hdced then crd', () => {
-            const sortFields = 'homeDetentionCurfewEligibilityDate,conditionalReleaseDate';
-            const nomisIds = ['1'];
-            const urlWithIds = '/offender-sentences?query=homeDetentionCurfewEligibilityDate%3Ais%3Anot%20null' +
-                '%2Cand%3AconditionalReleaseDate%3Ais%3Anot%20null&offenderNo=1';
-
-            fakeNomis
-                .get(urlWithIds)
-                .reply(function(uri, requestBody) {
-                    // The documented way to specify request headers doesn't work so this is a workaround
-                    if (this.req.headers['sort-field'] === sortFields) { // eslint-disable-line
-                        return 200, {key: 'value'};
-                    }
-                    return null;
-                });
-
-            return expect(nomisClient.getHdcEligiblePrisoners(nomisIds))
-                .to.eventually.eql({key: 'value'});
-        });
-
-        it('should set the headers to control result count', () => {
-            fakeNomis
-                .get(url)
-                .reply(function(uri, requestBody) {
-                    // The documented way to specify request headers doesn't work so this is a workaround
-                    if (this.req.headers['page-limit'] === 100) { // eslint-disable-line
-                        return 200, {key: 'value'};
-                    }
-                    return null;
-                });
-
-            return expect(nomisClient.getHdcEligiblePrisoners())
-                .to.eventually.eql({key: 'value'});
-        });
-
         it('should reject if api fails', () => {
             fakeNomis
                 .get(url)
