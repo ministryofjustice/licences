@@ -9,7 +9,7 @@ module.exports = {
     allValuesEmpty,
     getFirstArrayItems,
     replaceArrayItem,
-    filterAllButLast
+    lastItem
 };
 
 // pass in your object and a path in array format
@@ -46,6 +46,6 @@ function replaceArrayItem(array, index, item) {
     return R.update(parseInt(index))(item)(array);
 }
 
-function filterAllButLast(array) {
-    return R.takeLast(1, array);
+function lastItem(array) {
+    return R.last(array);
 }

@@ -17,17 +17,17 @@ block content
                 p.smallMarginBottom Address
                 div.paddingBottom
                     if address.addressLine1
-                        p.bold.noMargin #{address.addressLine1}
+                        p#rejectedLine1.bold.noMargin #{address.addressLine1}
                     if address.addressLine2
-                        p.bold.noMargin #{address.addressLine2}
+                        p#rejectedLine2.bold.noMargin #{address.addressLine2}
                     if address.addressTown
-                        p.bold.noMargin #{address.addressTown}
+                        p#rejectedTown.bold.noMargin #{address.addressTown}
                     if address.postCode
-                        p.bold.noMargin #{address.postCode}
+                        p#rejectedPostCode.bold.noMargin #{address.postCode}
                 div.paddingBottom
                     if address.telephone
                         p.smallMarginBottom Telephone
-                        p.bold.noMargin #{address.telephone}
+                        p#rejectedTelephone.bold.noMargin #{address.telephone}
 
             div.pure-u-1.pure-u-md-1-2.paddingBottom
                 p.smallMarginBottom Reason for rejection:
@@ -40,7 +40,7 @@ block content
 
         div.largePaddingBottom
             h3.heading-medium Enter alternative address?
-            form(method="post")
+            form(id="enterAlternativeForm" method="post")
                 div.form-group.paddingBottom
                     p Do you want to enter an alternative address?
                     input(type="hidden" name="_csrf" value=csrfToken)

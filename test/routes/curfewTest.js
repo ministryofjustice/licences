@@ -77,34 +77,48 @@ describe('/hdc/curfew', () => {
 
     describe('/curfew/curfewAddressReview/1', () => {
 
+        const licence = {
+            licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [{}, {}, {}, {}, {}, {}]
+                    }
+                }
+            }
+        };
+
+        beforeEach(() => {
+            licenceServiceStub.getLicence.resolves(licence);
+        });
+
         const routes = [
             {
                 url: '/curfew/curfewAddressReview/1',
-                body: {nomisId: 1, addressIndex: 5, consent: 'No'},
+                body: {nomisId: 1, consent: 'No'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/curfew/curfewAddressReview/1',
-                body: {nomisId: 1, addressIndex: 5, consent: 'Yes', electricity: 'No'},
+                body: {nomisId: 1, consent: 'Yes', electricity: 'No'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/curfew/curfewAddressReview/1',
-                body: {nomisId: 1, addressIndex: 5, consent: 'Yes'},
+                body: {nomisId: 1, consent: 'Yes'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/curfew/addressSafety/1'
             },
             {
                 url: '/curfew/addressSafety/1',
-                body: {nomisId: 1, addressIndex: 5, deemedSafe: 'No'},
+                body: {nomisId: 1, deemedSafe: 'No'},
                 section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/curfew/addressSafety/1',
-                body: {nomisId: 1, addressIndex: 5, deemedSafe: 'Yes'},
+                body: {nomisId: 1, deemedSafe: 'Yes'},
                 section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
             }
@@ -119,7 +133,7 @@ describe('/hdc/curfew', () => {
                     .expect(res => {
                         expect(licenceServiceStub.updateAddress).to.be.calledOnce();
                         expect(licenceServiceStub.updateAddress).to.be.calledWith({
-                            licence: {key: 'value'},
+                            licence: licence.licence,
                             nomisId: '1',
                             fieldMap: formConfig[route.section].fields,
                             userInput: route.body,

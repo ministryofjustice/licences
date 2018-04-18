@@ -5,7 +5,7 @@ block content
 
     -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
     -var addressSafety = data.curfew && data.curfew.addressSafety ? data.curfew.addressSafety : {}
-    -var address = data.proposedAddress && data.proposedAddress.curfewAddress && data.proposedAddress.curfewAddress.addresses ? data.proposedAddress.curfewAddress.addresses[0] : {}
+    -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress : {}
 
     div.pure-g.pure-u-1
         div

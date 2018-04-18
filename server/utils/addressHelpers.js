@@ -1,61 +1,60 @@
-const {isEmpty, filterAllButLast} = require('./functionalHelpers');
+const {isEmpty, lastItem} = require('./functionalHelpers');
 
-module.exports = {separateAddresses, addressReviewStarted, getAddressToShow};
+module.exports = {
+    addressReviewStarted,
+    getCandidateAddress,
+    getCurfewAddressFormData,
+    isAcceptedAddress,
+    isRejectedAddress
+};
 
-function separateAddresses(addressList) {
-    return addressList
-        .map((address, index) => ({...address, index: String(index)}))
-        .reduce((dataObject, address) => {
+function getCandidateAddress(addressList) {
 
-            const {consent, electricity, alternative} = address;
-            const deemedSafe = address.deemedSafe || '';
+    const candidate = lastItem(addressList);
 
-            if(alternative) {
-                return {
-                    ...dataObject,
-                    alternativeAddresses: [...dataObject.alternativeAddresses, address]
-                };
-            }
+    if(isActiveAddress(candidate)) {
+        return candidate;
+    }
 
-            if(consent === 'Yes' && electricity === 'Yes' && deemedSafe.startsWith('Yes')) {
-                return {
-                    ...dataObject,
-                    acceptedAddresses: [...dataObject.acceptedAddresses, address]
-                };
-            }
+    return null;
+}
 
-            if (!consent || consent === 'Yes' && !deemedSafe) {
-                return {
-                    ...dataObject,
-                    activeAddresses: [...dataObject.activeAddresses, address]
-                };
-            }
+function getCurfewAddressFormData(addressList) {
 
-            if (consent === 'No' || electricity === 'No' || deemedSafe === 'No') {
-                return {
-                    ...dataObject,
-                    rejectedAddresses: [...dataObject.rejectedAddresses, address]
-                };
-            }
+    const candidate = lastItem(addressList);
 
-            return dataObject;
-        }, {activeAddresses: [], acceptedAddresses: [], rejectedAddresses: [], alternativeAddresses: []});
+    if(isEmpty(addressList)) {
+        return {submitPath: null, addressToShow: {}};
+    }
+
+    if(isActiveAddress(candidate)) {
+        return {submitPath: '/hdc/proposedAddress/curfewAddress/update/', addressToShow: candidate};
+    }
+
+    if(isRejectedAddress(candidate)) {
+        return {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}};
+    }
+}
+
+function isActiveAddress(address) {
+    const {consent, deemedSafe} = address;
+    return !consent || consent === 'Yes' && !deemedSafe;
+}
+
+function isAcceptedAddress(address) {
+    const {consent, electricity} = address;
+    const deemedSafe = address.deemedSafe || '';
+
+    return consent === 'Yes' && electricity === 'Yes' && deemedSafe.startsWith('Yes');
+}
+
+function isRejectedAddress(address) {
+    const {consent, electricity, deemedSafe} = address;
+
+    return consent === 'No' || electricity === 'No' || deemedSafe === 'No';
 }
 
 function addressReviewStarted(address) {
     const {consent, electricity, deemedSafe} = address;
     return !!(consent || electricity || deemedSafe);
 }
-
-function getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses) {
-    if(!isEmpty(activeAddresses)) {
-        return activeAddresses;
-    }
-
-    if(!isEmpty(acceptedAddresses)) {
-        return acceptedAddresses;
-    }
-
-    return filterAllButLast(rejectedAddresses);
-}
-
