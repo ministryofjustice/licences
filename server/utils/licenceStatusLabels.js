@@ -7,11 +7,11 @@ const UNSTARTED_LABEL = 'Not started';
 
 function getStatusLabel(licenceStatus, role) {
 
-    if(!licenceStatus || !licenceStatus.stage || !licenceStatus.decisions || !licenceStatus.tasks) {
+    if (!licenceStatus || !licenceStatus.stage || !licenceStatus.decisions || !licenceStatus.tasks) {
         return UNSTARTED_LABEL;
     }
 
-    if(licenceStatus.stage === licenceStages.UNSTARTED) {
+    if (licenceStatus.stage === licenceStages.UNSTARTED) {
         return UNSTARTED_LABEL;
     }
 
@@ -27,7 +27,7 @@ function statusLabels(licenceStatus, role) {
             DM: () => 'Eligibility checks ongoing'
         },
         [licenceStages.PROCESSING_RO]: {
-            CA: () => 'Submitted to RO',
+            CA: roProcessingCaLabel,
             RO: roProcessingLabel,
             DM: () => 'Submitted to RO'
         },
@@ -79,12 +79,19 @@ function caProcessingRoLabel(licenceStatus) {
 
     const labels = [
         {decision: 'postponed', label: 'Postponed'}
-        ];
+    ];
 
     return getLabel(labels, licenceStatus) || 'Submitted to PCA';
 }
 
 function roProcessingLabel(licenceStatus) {
+
+    const optOutLabel = getLabel([{decision: 'optedOut', label: 'Opted out'}], licenceStatus);
+
+    if (optOutLabel) {
+        return optOutLabel;
+    }
+
     if (anyStarted([
             licenceStatus.tasks.curfewAddressReview,
             licenceStatus.tasks.curfewHours,
@@ -95,6 +102,14 @@ function roProcessingLabel(licenceStatus) {
     }
 
     return 'Awaiting assessment';
+}
+
+function roProcessingCaLabel(licenceStatus) {
+    const labels = [
+        {decision: 'optedOut', label: 'Opted out'}
+    ];
+
+    return getLabel(labels, licenceStatus) || 'Submitted to RO';
 }
 
 function decisionLabel(licenceStatus) {
@@ -118,6 +133,6 @@ function getLabel(labels, licenceStatus) {
 
 function anyStarted(tasks) {
     return tasks.some(task => {
-       return [taskStates.STARTED, taskStates.DONE].includes(task);
+        return [taskStates.STARTED, taskStates.DONE].includes(task);
     });
 }

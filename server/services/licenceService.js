@@ -35,9 +35,9 @@ module.exports = function createLicenceService(licenceClient) {
                 return null;
             }
             const formattedLicence = formatObjectForView(licence, {dates: [DATE_FIELD]});
-            const status = getIn(rawLicence, ['status']);
+            const stage = getIn(rawLicence, ['stage']);
 
-            return {licence: formattedLicence, status};
+            return {licence: formattedLicence, stage};
 
         } catch (error) {
             console.error('Error during getLicence', error.stack);
@@ -129,28 +129,30 @@ module.exports = function createLicenceService(licenceClient) {
 
     function markForHandover(nomisId, sender, receiver, licence) {
 
-        const newStatus = getNewStatus(sender, receiver, licence);
+        const newStage = getNewStage(sender, receiver, licence);
 
-        if (!newStatus) {
+        if (!newStage) {
             throw new Error('Invalid handover pair: ' + sender + '-' + receiver);
         }
 
-        return licenceClient.updateStatus(nomisId, newStatus);
+        return licenceClient.updateStage(nomisId, newStage);
     }
 
-    function getNewStatus(sender, receiver, licence) {
-        const status = getIn(transitions, [sender, receiver]);
+    function getNewStage(sender, receiver, licence) {
+        const stage = getIn(transitions, [sender, receiver]);
 
         if(sender === 'RO') {
             const {decisions} = getLicenceStatus(licence);
-            if (decisions.curfewAddressApproved === 'rejected') {
-                return status.addressRejected;
+            if (decisions.optedOut) {
+                return stage.optedOut;
             }
-            return status.default;
-
+            if (decisions.curfewAddressApproved === 'rejected') {
+                return stage.addressRejected;
+            }
+            return stage.default;
         }
 
-        return status;
+        return stage;
     }
 
 
@@ -230,8 +232,8 @@ module.exports = function createLicenceService(licenceClient) {
         return userInput[fieldName];
     }
 
-    function updateStatus(nomisId, status) {
-        return licenceClient.updateStatus(nomisId, status);
+    function updateStage(nomisId, status) {
+        return licenceClient.updateStage(nomisId, status);
     }
 
     async function updateAddress({index, nomisId, licence, fieldMap, userInput}) {
@@ -278,7 +280,7 @@ module.exports = function createLicenceService(licenceClient) {
         deleteLicenceCondition,
         markForHandover,
         update,
-        updateStatus,
+        updateStage,
         updateAddress
     };
 };

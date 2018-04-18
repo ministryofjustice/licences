@@ -121,7 +121,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         logger.debug(`GET /review/${sectionName}/${nomisId}`);
 
         const licence = getIn(res.locals.licence, ['licence']) || {};
-        const stage = getIn(res.locals.licence, ['status']) || {};
+        const stage = getIn(res.locals.licence, ['stage']) || {};
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
         const populatedLicence = await conditionsService.populateLicenceWithConditions(licence);
@@ -197,7 +197,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const {nomisId} = req.params;
         const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
 
-        if(!addresses) {
+        if (!addresses) {
             return res.render('proposedAddress/curfewAddress', {nomisId, data: []});
         }
 
@@ -264,6 +264,23 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         res.render(`${sectionName}/${formName}`, {nomisId, data, nextPath, licenceStatus});
     });
+
+    router.post('/optOut/:nomisId', asyncMiddleware(async (req, res) => {
+        const {nomisId} = req.body;
+        const rawLicence = await licenceService.getLicence(nomisId);
+
+        await licenceService.update({
+            licence: rawLicence.licence,
+            nomisId: nomisId,
+            fieldMap: [{decision: {}}],
+            userInput: req.body,
+            licenceSection: 'proposedAddress',
+            formName: 'optOut'
+        });
+
+        const nextPath = '/hdc/taskList/';
+        res.redirect(`${nextPath}${nomisId}`);
+    }));
 
     router.post('/:sectionName/:formName/:nomisId', asyncMiddleware(async (req, res) => {
         const {sectionName, formName, nomisId} = req.params;

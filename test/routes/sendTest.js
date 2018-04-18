@@ -69,7 +69,7 @@ describe('Send:', () => {
 
             it('gets com details when submission is CA to RO', () => {
 
-                licenceServiceStub.getLicence.resolves({status: 'ELIGIBILITY'});
+                licenceServiceStub.getLicence.resolves({stage: 'ELIGIBILITY'});
 
                 return request(app)
                     .get('/123')
@@ -100,7 +100,7 @@ describe('Send:', () => {
 
         it('gets establishment details when submission is RO to CA', () => {
 
-            licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO'});
+            licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO'});
 
             return request(app)
                 .get('/123')

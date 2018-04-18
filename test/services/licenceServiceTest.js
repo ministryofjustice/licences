@@ -7,7 +7,7 @@ describe('licenceService', () => {
         getLicence: sandbox.stub().returnsPromise().resolves({licence: {a: 'b'}}),
         createLicence: sandbox.stub().returnsPromise().resolves('abc'),
         updateSection: sandbox.stub().returnsPromise().resolves(),
-        updateStatus: sandbox.stub().returnsPromise().resolves(),
+        updateStage: sandbox.stub().returnsPromise().resolves(),
         getAdditionalConditions: sandbox.stub().returnsPromise().resolves([
             {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}]),
         updateLicence: sandbox.stub().returnsPromise().resolves()
@@ -32,7 +32,7 @@ describe('licenceService', () => {
         });
 
         it('should return licence', () => {
-            return expect(service.getLicence('123')).to.eventually.eql({licence: {a: 'b'}, status: undefined});
+            return expect(service.getLicence('123')).to.eventually.eql({licence: {a: 'b'}, stage: undefined});
         });
 
         it('should throw if error getting licence', () => {
@@ -165,23 +165,38 @@ describe('licenceService', () => {
 
     describe('markForHandover', () => {
 
-        it('should call updateStatus from the licence client', () => {
+        it('should call updateStage from the licence client', () => {
             service.markForHandover('ab1', 'CA', 'RO');
 
-            expect(licenceClient.updateStatus).to.be.calledOnce();
-            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'PROCESSING_RO');
+            expect(licenceClient.updateStage).to.be.calledOnce();
+            expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_RO');
         });
 
-        it('should pick the right status based on sender and receiver', () => {
+        it('should pick the right stage based on sender and receiver', () => {
             service.markForHandover('ab1', 'CA', 'DM');
-            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'APPROVAL');
+            expect(licenceClient.updateStage).to.be.calledWith('ab1', 'APPROVAL');
 
             service.markForHandover('ab1', 'DM', 'CA');
-            expect(licenceClient.updateStatus).to.be.calledWith('ab1', 'DECIDED');
+            expect(licenceClient.updateStage).to.be.calledWith('ab1', 'DECIDED');
+        });
+
+        it('should reverse to ELIGIBILITY when RO sends to CA after opt out', () => {
+
+            service.markForHandover('ab1', 'RO', 'CA', {
+                stage: 'PROCESSING_RO',
+                licence: {proposedAddress: {optOut: {decision: 'Yes'}}}
+            });
+            expect(licenceClient.updateStage).to.be.calledWith('ab1', 'ELIGIBILITY');
+
+            service.markForHandover('ab1', 'RO', 'CA', {
+                stage: 'PROCESSING_RO',
+                licence: {proposedAddress: {optOut: {decision: 'No'}}}
+            });
+            expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_CA');
         });
 
         it('should throw if error during update status', () => {
-            licenceClient.updateStatus.rejects();
+            licenceClient.updateStage.rejects();
             return expect(service.markForHandover('ab1', 'CA', 'RO')).to.eventually.be.rejected();
         });
 
@@ -459,7 +474,7 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
 
-        it('should recurse if a field has inner contents', async() => {
+        it('should recurse if a field has inner contents', async () => {
 
             const licence = {
                 ...baseLicence,
@@ -471,18 +486,22 @@ describe('licenceService', () => {
 
             const fieldMap = [
                 {decision: {}},
-                {outer: {
-                    contains: [
-                        {innerQuestion: {}},
-                        {innerQuestion2: {}},
-                        {dependentAnswer: {dependentOn: 'innerQuestion2', predicate: 'Yes'}},
-                        {innerOuter: {
-                            contains: [
-                                {innerInner: {}}
-                            ]
-                        }}
-                    ]
-                }},
+                {
+                    outer: {
+                        contains: [
+                            {innerQuestion: {}},
+                            {innerQuestion2: {}},
+                            {dependentAnswer: {dependentOn: 'innerQuestion2', predicate: 'Yes'}},
+                            {
+                                innerOuter: {
+                                    contains: [
+                                        {innerInner: {}}
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                },
                 {followUp2: {}}
             ];
 
@@ -526,7 +545,7 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
 
-        it('should recurse through list items', async() => {
+        it('should recurse through list items', async () => {
 
             const licence = {
                 ...baseLicence,
@@ -538,14 +557,16 @@ describe('licenceService', () => {
 
             const fieldMap = [
                 {decision: {}},
-                {listItem: {
+                {
+                    listItem: {
                         isList: true,
                         contains: [
                             {innerQuestion: {}},
                             {innerQuestion2: {}},
                             {dependentAnswer: {dependentOn: 'innerQuestion2', predicate: 'Yes'}}
                         ]
-                    }},
+                    }
+                },
                 {followUp2: {}}
             ];
 
@@ -594,7 +615,7 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
 
-        it('should filter out empty list items', async() => {
+        it('should filter out empty list items', async () => {
 
             const licence = {
                 ...baseLicence,
@@ -606,13 +627,15 @@ describe('licenceService', () => {
 
             const fieldMap = [
                 {decision: {}},
-                {listItem: {
+                {
+                    listItem: {
                         isList: true,
                         contains: [
                             {innerQuestion: {}},
                             {innerQuestion2: {}}
                         ]
-                    }},
+                    }
+                },
                 {followUp2: {}}
             ];
 
@@ -662,7 +685,7 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
 
-        it('should limit size of list by limitedBy flag', async() => {
+        it('should limit size of list by limitedBy flag', async () => {
 
             const licence = {
                 ...baseLicence,
@@ -674,7 +697,8 @@ describe('licenceService', () => {
 
             const fieldMap = [
                 {decision: {}},
-                {listItem: {
+                {
+                    listItem: {
                         isList: true,
                         contains: [
                             {innerQuestion: {}},
@@ -684,7 +708,8 @@ describe('licenceService', () => {
                             field: 'limiter',
                             No: 1
                         }
-                    }},
+                    }
+                },
                 {limiter: {}}
             ];
 
@@ -726,7 +751,7 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
 
-        it('should filter out empty list items with recusion', async() => {
+        it('should filter out empty list items with recursion', async () => {
 
             const licence = {
                 ...baseLicence,
@@ -738,17 +763,21 @@ describe('licenceService', () => {
 
             const fieldMap = [
                 {decision: {}},
-                {listItem: {
+                {
+                    listItem: {
                         isList: true,
                         contains: [
                             {innerQuestion: {}},
-                            {innerQuestion2: {
-                                contains: [
-                                    {innerInner: {}}
-                                ]
-                            }}
+                            {
+                                innerQuestion2: {
+                                    contains: [
+                                        {innerInner: {}}
+                                    ]
+                                }
+                            }
                         ]
-                    }},
+                    }
+                },
                 {followUp2: {}}
             ];
 

@@ -61,7 +61,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         it('should return the eligibility', () => {
             licenceServiceStub.getLicence.resolves({
-                status: 'ELIGIBILITY',
+                stage: 'ELIGIBILITY',
                 licence: {
                     eligibility: {
                         excluded: {
@@ -86,7 +86,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         it('should handle no eligibility', () => {
-            licenceServiceStub.getLicence.resolves({status: 'ELIGIBILITY', licence: {}});
+            licenceServiceStub.getLicence.resolves({stage: 'ELIGIBILITY', licence: {}});
             return request(app)
                 .get('/1233456')
                 .expect(200)
@@ -98,7 +98,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('when prisoner is not excluded', () => {
             it('should display opt out form link', () => {
                 licenceServiceStub.getLicence.resolves({
-                    status: 'ELIGIBILITY',
+                    stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
                             excluded: {
@@ -314,7 +314,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('curfew address not started', () => {
             it('should display a start button for curfew address', () => {
-                licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO', licence: {}});
+                licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -329,7 +329,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('curfew address task started', () => {
             it('should display a view button for curfew address task', () => {
                 licenceServiceStub.getLicence.resolves({
-                    status: 'PROCESSING_RO',
+                    stage: 'PROCESSING_RO',
                     licence: {
                         proposedAddress: {
                             curfewAddress: {
@@ -353,7 +353,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('additional condition task not started', () => {
             it('should display a start button for additional conditions task', () => {
-                licenceServiceStub.getLicence.resolves({status: 'PROCESSING_RO', licence: {}});
+                licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -368,7 +368,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('additional condition task started', () => {
             it('should display a view button for curfew address', () => {
                 licenceServiceStub.getLicence.resolves({
-                    status: 'PROCESSING_RO',
+                    stage: 'PROCESSING_RO',
                     licence: {
                         licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
                     }
@@ -400,7 +400,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('risk management task started', () => {
             it('should display a view button for riskManagement', () => {
                 licenceServiceStub.getLicence.resolves({
-                    status: 'PROCESSING_RO',
+                    stage: 'PROCESSING_RO',
                     licence: {
                         risk: {riskManagement: 'anything'}
                     }
@@ -419,7 +419,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('all tasks done,', () => {
             it('should display a submit to OMU button', () => {
                 licenceServiceStub.getLicence.resolves({
-                    status: 'PROCESSING_RO',
+                    stage: 'PROCESSING_RO',
                     licence: {
                         curfew: {
                             curfewAddressReview: {

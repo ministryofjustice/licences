@@ -6,7 +6,7 @@ describe('getLicenceStatus', () => {
 
     it('should show licence stage', () => {
         const licence = {
-            status: 'ELIGIBILITY',
+            stage: 'ELIGIBILITY',
             licence: 'anything'
         };
 
@@ -59,7 +59,7 @@ describe('getLicenceStatus', () => {
 
     it('should show true decisions when decision data is present for truth', () => {
         const licence = {
-            status: 'APPROVAL',
+            stage: 'APPROVAL',
             licence: {
                 eligibility: {
                     excluded: {
@@ -136,7 +136,7 @@ describe('getLicenceStatus', () => {
     it('should show licence conditions data', () => {
 
         const licence = {
-            status: 'PROCESSING_RO',
+            stage: 'PROCESSING_RO',
             licence: {
                 licenceConditions: {
                     standard: {
@@ -163,7 +163,7 @@ describe('getLicenceStatus', () => {
 
     it('should show false decisions when decision data is present for false', () => {
         const licence = {
-            status: 'APPROVAL',
+            stage: 'APPROVAL',
             licence: {
                 eligibility: {
                     excluded: {
@@ -233,7 +233,7 @@ describe('getLicenceStatus', () => {
 
     it('should show eligible when eligibility decisions false', () => {
         const licence = {
-            status: 'ELIGIBILITY',
+            stage: 'ELIGIBILITY',
             licence: {
                 eligibility: {
                     excluded: {
@@ -256,7 +256,7 @@ describe('getLicenceStatus', () => {
 
     it('should show NOT eligible when eligibility decision true', () => {
         const licence = {
-            status: 'ELIGIBILITY',
+            stage: 'ELIGIBILITY',
             licence: {
                 eligibility: {
                     excluded: {
@@ -280,7 +280,7 @@ describe('getLicenceStatus', () => {
 
     it('should show tasks UNSTARTED when task data missing', () => {
         const licence = {
-            status: 'APPROVAL',
+            stage: 'APPROVAL',
             licence: {}
         };
 
@@ -306,7 +306,7 @@ describe('getLicenceStatus', () => {
 
     it('should show tasks STARTED when task data incomplete for tasks that can be STARTED', () => {
         const licence = {
-            status: 'APPROVAL',
+            stage: 'APPROVAL',
             licence: {
                 proposedAddress: {
                     curfewAddress: {
@@ -352,7 +352,7 @@ describe('getLicenceStatus', () => {
 
     it('should show tasks DONE when task data complete', () => {
         const licence = {
-            status: 'DECIDED',
+            stage: 'DECIDED',
             licence: {
                 eligibility: {
                     excluded: {
@@ -451,7 +451,7 @@ describe('getLicenceStatus', () => {
 
     it('should show address review DONE when deemed safe is pending', () => {
         const licence = {
-            status: 'PROCESSING_CA',
+            stage: 'PROCESSING_CA',
             licence: {
                 proposedAddress: {
                     curfewAddress: {
@@ -478,7 +478,7 @@ describe('getLicenceStatus', () => {
 
     it('should show address review APPROVED when deemed safe is pending and home visit is no', () => {
         const licence = {
-            status: 'PROCESSING_CA',
+            stage: 'PROCESSING_CA',
             licence: {
                 proposedAddress: {
                     curfewAddress: {
@@ -505,7 +505,7 @@ describe('getLicenceStatus', () => {
 
     it('should show address review APPROVED when any address is approved', () => {
         const licence = {
-            status: 'PROCESSING_CA',
+            stage: 'PROCESSING_CA',
             licence: {
                 proposedAddress: {
                     curfewAddress: {
@@ -538,7 +538,7 @@ describe('getLicenceStatus', () => {
 
     it('should show address review REJECTED when deemed safe is no', () => {
         const licence = {
-            status: 'PROCESSING_CA',
+            stage: 'PROCESSING_CA',
             licence: {
                 proposedAddress: {
                     curfewAddress: {
@@ -565,7 +565,7 @@ describe('getLicenceStatus', () => {
 
     it('should show address review UNFINISHED when there are active licences', () => {
         const licence = {
-            status: 'PROCESSING_CA',
+            stage: 'PROCESSING_CA',
             licence: {
                 proposedAddress: {
                     curfewAddress: {
@@ -596,7 +596,7 @@ describe('getLicenceStatus', () => {
     context('Eligibility', () => {
         it('should show eligibility DONE when excluded is YES', () => {
             const licence = {
-                status: 'PROCESSING_CA',
+                stage: 'PROCESSING_CA',
                 licence: {
                     eligibility: {
                         excluded: {
@@ -614,7 +614,7 @@ describe('getLicenceStatus', () => {
 
         it('should show eligibility DONE when suitabililty is YES', () => {
             const licence = {
-                status: 'PROCESSING_CA',
+                stage: 'PROCESSING_CA',
                 licence: {
                     eligibility: {
                         excluded: {
@@ -635,7 +635,7 @@ describe('getLicenceStatus', () => {
 
         it('should show eligibility STARTED when suitabililty is No and excluded is No but no crdTime', () => {
             const licence = {
-                status: 'PROCESSING_CA',
+                stage: 'PROCESSING_CA',
                 licence: {
                     eligibility: {
                         excluded: {
@@ -656,7 +656,7 @@ describe('getLicenceStatus', () => {
 
         it('should show eligibility DONE when suitabililty is No and excluded is No but and complete crdTime', () => {
             const licence = {
-                status: 'PROCESSING_CA',
+                stage: 'PROCESSING_CA',
                 licence: {
                     eligibility: {
                         excluded: {

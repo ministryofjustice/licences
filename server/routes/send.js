@@ -17,10 +17,10 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
     router.get('/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         const licence = await licenceService.getLicence(nomisId);
-        const status = getIn(licence, ['status']);
-        const submissionTarget = await getSubmissionTarget(nomisId, status, req.user.token);
+        const stage = getIn(licence, ['stage']);
+        const submissionTarget = await getSubmissionTarget(nomisId, stage, req.user.token);
 
-        res.render('send/index', {nomisId, status, submissionTarget});
+        res.render('send/index', {nomisId, stage, submissionTarget});
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
@@ -30,8 +30,8 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         res.redirect('/hdc/sent/' + nomisId);
     }));
 
-    function getSubmissionTarget(nomisId, status, token) {
-        switch (status) {
+    function getSubmissionTarget(nomisId, stage, token) {
+        switch (stage) {
             case licenceStages.ELIGIBILITY:
                 return prisonerService.getComForPrisoner(nomisId, token);
             case licenceStages.PROCESSING_RO:
