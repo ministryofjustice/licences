@@ -1,10 +1,10 @@
 const express = require('express');
 
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
-const {getIn, isEmpty} = require('../utils/functionalHelpers');
+const {getIn, lastItem} = require('../utils/functionalHelpers');
 const {getPathFor} = require('../utils/routes');
 const {getLicenceStatus} = require('../utils/licenceStatus');
-const {separateAddresses, getAddressToShow} = require('../utils/addressHelpers');
+const {getCandidateAddress, getCurfewAddressFormData} = require('../utils/addressHelpers');
 
 const licenceConditionsConfig = require('./config/licenceConditions');
 const eligibilityConfig = require('./config/eligibility');
@@ -126,16 +126,13 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         const populatedLicence = await conditionsService.populateLicenceWithConditions(licence);
         const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-        const {activeAddresses, acceptedAddresses, rejectedAddresses} = separateAddresses(allAddresses);
+        const address = lastItem(allAddresses);
 
         const data = {
             ...populatedLicence,
             proposedAddress: {
                 ...populatedLicence.proposedAddress,
-                curfewAddress: {
-                    ...populatedLicence.proposedAddress.curfewAddress,
-                    addresses: getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses)
-                }
+                curfewAddress: address
             }
         };
 
@@ -164,9 +161,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             const {nomisId} = req.params;
 
             const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-            const {acceptedAddresses, activeAddresses, rejectedAddresses} = separateAddresses(addresses);
-            const addressToShow = getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses);
-            const data = {addresses: addressToShow};
+            const data = lastItem(addresses);
             const nextPath = formConfig[formName].nextPath;
 
             res.render(`curfew/${formName}`, {nomisId, data, nextPath});
@@ -181,8 +176,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             const {nomisId} = req.params;
             logger.debug(`GET /curfew/${formName}/${nomisId}`);
 
-            const {addressIndex} = req.body;
             const rawLicence = await licenceService.getLicence(nomisId);
+            const addresses = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+            const addressIndex = addresses.length - 1;
             const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
 
             await licenceService.updateAddress({
@@ -205,9 +201,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             return res.render('proposedAddress/curfewAddress', {nomisId, data: []});
         }
 
-        const splitAddresses = separateAddresses(addresses);
-        const {submitPath, addressToShow} =
-            getCurfewAddressFormData(splitAddresses);
+        const {submitPath, addressToShow} = getCurfewAddressFormData(addresses);
 
         res.render('proposedAddress/curfewAddress', {nomisId, data: addressToShow, submitPath});
     });
@@ -234,12 +228,14 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     router.post('/proposedAddress/curfewAddress/update/', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.body;
         const rawLicence = await licenceService.getLicence(nomisId);
+        const addressIndex = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']).length;
 
-        await licenceService.updateAddresses({
+        await licenceService.updateAddress({
             licence: rawLicence.licence,
             nomisId: nomisId,
-            fieldMap: formConfig.curfewAddress.fields[0].addresses.contains,
-            userInput: req.body
+            fieldMap: formConfig.curfewAddress.fields,
+            userInput: req.body,
+            index: addressIndex
         });
 
         const nextPath = '/hdc/proposedAddress/confirmAddress/';
@@ -249,9 +245,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     router.get('/proposedAddress/confirmAddress/:nomisId', checkLicence, (req, res) => {
         const {nomisId} = req.params;
         const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-        const {activeAddresses, alternativeAddresses} = separateAddresses(allAddresses);
+        const candidateAddress = getCandidateAddress(allAddresses);
 
-        const data = {addresses: [...activeAddresses, ...alternativeAddresses]};
+        const data = candidateAddress;
         const nextPath = formConfig.confirmAddress.nextPath;
 
         res.render('proposedAddress/confirmAddress', {nomisId, data, nextPath});
@@ -314,24 +310,3 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
     return router;
 };
-
-function getCurfewAddressFormData(splitAddresses) {
-
-    const {activeAddresses, acceptedAddresses, rejectedAddresses} = splitAddresses;
-
-    if (isEmpty(activeAddresses) && isEmpty(acceptedAddresses) && isEmpty((rejectedAddresses))) {
-        return {submitPath: null, addressToShow: []};
-    }
-
-    if (!isEmpty(rejectedAddresses) && !isEmpty(activeAddresses)) {
-        return {submitPath: '/hdc/proposedAddress/curfewAddress/update/', addressToShow: activeAddresses};
-    }
-
-    if (isEmpty(activeAddresses) && isEmpty(acceptedAddresses) && !isEmpty((rejectedAddresses))) {
-        return {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: []};
-    }
-
-    if (!isEmpty(activeAddresses)) {
-        return {submitPath: null, addressToShow: activeAddresses};
-    }
-}

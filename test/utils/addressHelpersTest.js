@@ -1,50 +1,21 @@
-const {separateAddresses, addressReviewStarted, getAddressToShow} = require('../../server/utils/addressHelpers');
+const {
+    addressReviewStarted,
+    getCandidateAddress,
+    getCurfewAddressFormData,
+    isAcceptedAddress,
+    isRejectedAddress
+} = require('../../server/utils/addressHelpers');
 const {expect} = require('../testSetup');
 
 describe('addressHelpers', () => {
 
     const addressList = [
         {addressLine1: 'line1', consent: 'Yes', electricity: 'Yes', deemedSafe: 'Yes'},
-        {addressLine1: 'line2', alternative: 'alternative'},
+        {addressLine1: 'line2'},
         {addressLine1: 'line3', consent: 'No', electricity: 'Yes', deemedSafe: 'Yes'},
         {addressLine1: 'line4'},
         {addressLine1: 'line5', consent: 'Yes', electricity: 'Yes'}
     ];
-
-    describe('separateAddresses', () => {
-        it('should split the address list into 3 lists', () => {
-
-            const expectedOutput = {
-                activeAddresses: [{index: '3', addressLine1: 'line4'}, {
-                    index: '4',
-                    addressLine1: 'line5',
-                    consent: 'Yes',
-                    electricity: 'Yes'
-                }],
-                acceptedAddresses: [{
-                    index: '0',
-                    addressLine1: 'line1',
-                    consent: 'Yes',
-                    electricity: 'Yes',
-                    deemedSafe: 'Yes'
-                }],
-                rejectedAddresses: [{
-                    index: '2',
-                    addressLine1: 'line3',
-                    consent: 'No',
-                    electricity: 'Yes',
-                    deemedSafe: 'Yes'
-                }],
-                alternativeAddresses: [{
-                    index: '1',
-                    addressLine1: 'line2',
-                    alternative: 'alternative'
-                }]
-            };
-
-            expect(separateAddresses(addressList)).to.eql(expectedOutput);
-        });
-    });
 
     describe('addressReviewStarted', () => {
         it('should return true if any of consent, electricity or deemedSafe have a value', () => {
@@ -56,50 +27,75 @@ describe('addressHelpers', () => {
         });
     });
 
-    describe('getAddressToShow', () => {
-
-        const {activeAddresses, acceptedAddresses, rejectedAddresses} = {
-            activeAddresses: [
-                {index: 3, addressLine1: 'line4'},
-                {index: 4, addressLine1: 'line5', consent: 'Yes', electricity: 'Yes'}
-            ],
-            acceptedAddresses: [
-                {index: 0, addressLine1: 'line1', consent: 'Yes', electricity: 'Yes', deemedSafe: 'Yes'}
-            ],
-            rejectedAddresses: [
-                {index: 2, addressLine1: 'line3', consent: 'No', electricity: 'Yes', deemedSafe: 'Yes'},
-                {index: 5, addressLine1: 'line6', consent: 'No', electricity: 'Yes', deemedSafe: 'Yes'}
-            ]
-        };
-
-        it('should return the active address list if there are any present', () => {
-
-            const expectedOutput = [
-                {index: 3, addressLine1: 'line4'}, {index: 4, addressLine1: 'line5', consent: 'Yes', electricity: 'Yes'}
-            ];
-
-            expect(getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses)).to.eql(expectedOutput);
+    describe('getCandidateAddress', () => {
+        it('should return the last address object if it is non-finished', () => {
+            expect(getCandidateAddress(addressList)).to.eql(
+                {addressLine1: 'line5', consent: 'Yes', electricity: 'Yes'});
         });
 
-        it('should return accepted addresses if there are no active', () => {
-            const activeAddresses = [];
-
-            const expectedOutput = [
-                {index: 0, addressLine1: 'line1', consent: 'Yes', electricity: 'Yes', deemedSafe: 'Yes'}
-            ];
-
-            expect(getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses)).to.eql(expectedOutput);
-        });
-
-        it('should return the final rejected address if there are no expected or active addresses', () => {
-            const activeAddresses = [];
-            const acceptedAddresses = [];
-
-            const expectedOutput = [
-                {index: 5, addressLine1: 'line6', consent: 'No', electricity: 'Yes', deemedSafe: 'Yes'}
-            ];
-
-            expect(getAddressToShow(activeAddresses, acceptedAddresses, rejectedAddresses)).to.eql(expectedOutput);
+        it('should return null if no candidate found', () => {
+            expect(getCandidateAddress([addressList[2], addressList[0]])).to.eql(null);
         });
     });
+
+    describe('getCurfewAddressFormData', () => {
+        it('should return {submitPath: null, addressToShow: {}} if no addresses', () => {
+            expect(getCurfewAddressFormData([])).to.eql({submitPath: null, addressToShow: {}});
+        });
+
+        it('should return update and the address if the final address is unfinished', () => {
+            expect(getCurfewAddressFormData(addressList)).to.eql(
+                {submitPath: '/hdc/proposedAddress/curfewAddress/update/', addressToShow: addressList[4]}
+            );
+        });
+
+        it('should return add and an empty object if final address is rejected', () => {
+            expect(getCurfewAddressFormData([addressList[1], addressList[2]])).to.eql(
+                {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}}
+            );
+        });
+    });
+
+    describe('isAcceptedAddress', () => {
+
+        const address1 = {consent: 'Yes', electricity: 'Yes', deemedSafe: 'Yes'};
+        const address2 = {consent: 'No', electricity: 'Yes', deemedSafe: 'Yes'};
+        const address3 = {consent: 'Yes', electricity: 'No', deemedSafe: 'Yes'};
+        const address4 = {consent: 'Yes', electricity: 'Yes', deemedSafe: 'No'};
+        const address5 = {consent: 'Yes', electricity: 'Yes', deemedSafe: 'Yes sir'};
+
+        it('should return true if all expected answers are Yes', () => {
+            expect(isAcceptedAddress(address1)).to.eql(true);
+        });
+
+        it('should return false if any are No', () => {
+            expect(isAcceptedAddress(address2)).to.eql(false);
+            expect(isAcceptedAddress(address3)).to.eql(false);
+            expect(isAcceptedAddress(address4)).to.eql(false);
+        });
+
+        it('should return true if deemedSafe starts with yes', () => {
+            expect(isAcceptedAddress(address5)).to.eql(true);
+        });
+    });
+
+    describe('isRejectedAddress', () => {
+
+        const address1 = {consent: 'Yes', electricity: 'Yes', deemedSafe: 'Yes'};
+        const address2 = {consent: 'No', electricity: 'Yes', deemedSafe: 'Yes'};
+        const address3 = {consent: 'Yes', electricity: 'No', deemedSafe: 'Yes'};
+        const address4 = {consent: 'Yes', electricity: 'Yes', deemedSafe: 'No'};
+
+        it('should return false if all expected answers are Yes', () => {
+            expect(isRejectedAddress(address1)).to.eql(false);
+        });
+
+        it('should return true if any are No', () => {
+            expect(isRejectedAddress(address2)).to.eql(true);
+            expect(isRejectedAddress(address3)).to.eql(true);
+            expect(isRejectedAddress(address4)).to.eql(true);
+        });
+
+    });
+
 });

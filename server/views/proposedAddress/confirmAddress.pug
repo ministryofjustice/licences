@@ -3,7 +3,7 @@ include includes/addressDetail
 
 block content
 
-    -var addresses = data.addresses || []
+    -var address = data || null
 
     div.pure-g.pure-u-1
         div.back-link-container.smallPaddingTop
@@ -11,18 +11,11 @@ block content
 
         h2.heading-large.paddingBottom Confirm address details
 
-        if addresses.length === 0
+        if !address
             h3.heading-medium No address to view
 
-        if addresses.length === 1
-            +addressDetail('0', addresses[0])
-
-        if addresses.length === 2
-            div.borderBottomLight.largeMarginBottom
-                +addressDetail('0', addresses[0])
-
-            h3.heading-medium Alternative address
-            +addressDetail('1', addresses[1])
+        else
+            +addressDetail('0', address)
 
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons

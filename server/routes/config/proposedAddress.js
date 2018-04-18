@@ -69,8 +69,7 @@ module.exports = {
                     {cautionedAgainstResident: {}},
                     {alternative: {}}
                 ]
-            }},
-            {alternativeAddress: {}}
+            }}
         ],
         nextPath: {
             path: '/hdc/proposedAddress/confirmAddress/'

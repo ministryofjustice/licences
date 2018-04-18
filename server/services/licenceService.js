@@ -272,37 +272,6 @@ module.exports = function createLicenceService(licenceClient) {
         return replaceArrayItem(addresses, index, newAddressObject);
     }
 
-    async function updateAddresses({nomisId, userInput, licence, fieldMap}) {
-
-        let addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
-        const newAddresses = userInput.addresses.reduce(replaceAddressObjectReducer(fieldMap, addresses), addresses);
-
-        const newLicence = {
-            ...licence,
-            proposedAddress: {
-                ...licence.proposedAddress,
-                curfewAddress: {
-                    ...licence.proposedAddress.curfewAddress,
-                    addresses: newAddresses
-                }
-            }
-        };
-
-        await licenceClient.updateLicence(nomisId, newLicence);
-
-        return newLicence;
-    }
-
-    function replaceAddressObjectReducer(fieldMap, addresses) {
-        return (newAddresses, address) => {
-            const originalAddress = addresses[address.addressIndex];
-            const newFields = fieldMap.reduce(answersFromMapReducer(address), {});
-
-            const newAddressObject = {...originalAddress, ...newFields};
-            return replaceArrayItem(newAddresses, address.addressIndex, newAddressObject);
-        };
-    }
-
     return {
         reset,
         getLicence,
@@ -312,7 +281,6 @@ module.exports = function createLicenceService(licenceClient) {
         markForHandover,
         update,
         updateStage,
-        updateAddress,
-        updateAddresses
+        updateAddress
     };
 };

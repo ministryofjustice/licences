@@ -1,7 +1,7 @@
 const {taskStates} = require('../models/taskStates');
 const {licenceStages} = require('../models/licenceStages');
-const {getIn, isEmpty} = require('./functionalHelpers');
-const {separateAddresses, addressReviewStarted} = require('../utils/addressHelpers');
+const {getIn, isEmpty, lastItem} = require('./functionalHelpers');
+const {isAcceptedAddress, isRejectedAddress, addressReviewStarted} = require('../utils/addressHelpers');
 
 module.exports = {getLicenceStatus};
 
@@ -276,28 +276,27 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
 }
 
 function getCurfewAddressReviewState(licence) {
-    const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || [];
-    const {activeAddresses, acceptedAddresses, rejectedAddresses} = separateAddresses(addresses);
+    const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
 
-    if(isEmpty(activeAddresses) && isEmpty(acceptedAddresses) && isEmpty(rejectedAddresses)) {
+    if(!addresses) {
         return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
     }
 
-    if(!isEmpty(acceptedAddresses)) {
+    const lastAddress = lastItem(addresses);
+
+    if(isAcceptedAddress(lastAddress)) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};
     }
 
-    if(!isEmpty(activeAddresses)) {
-
-        if(addressReviewStarted(activeAddresses[activeAddresses.length-1])) {
-            return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
-        }
-        return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
-    }
-
-    if(!isEmpty(rejectedAddresses)) {
+    if(isRejectedAddress(lastAddress)) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
     }
+
+    if(addressReviewStarted(lastAddress)) {
+        return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
+    }
+
+    return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
 }
 
 function getCurfewHoursState(licence) {
