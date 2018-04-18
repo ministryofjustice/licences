@@ -228,12 +228,14 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     router.post('/proposedAddress/curfewAddress/update/', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.body;
         const rawLicence = await licenceService.getLicence(nomisId);
+        const addressIndex = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']).length;
 
-        await licenceService.updateAddresses({
+        await licenceService.updateAddress({
             licence: rawLicence.licence,
             nomisId: nomisId,
-            fieldMap: formConfig.curfewAddress.fields[0].addresses.contains,
-            userInput: req.body
+            fieldMap: formConfig.curfewAddress.fields,
+            userInput: req.body,
+            index: addressIndex
         });
 
         const nextPath = '/hdc/proposedAddress/confirmAddress/';
