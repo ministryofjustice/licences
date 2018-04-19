@@ -19,6 +19,7 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
 
             const licences = await licenceClient.getLicences(getOffenderIds(hdcEligibleReleases));
             return hdcEligibleReleases
+                .filter(prisoner => getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
                 .map(decoratePrisonerDetails(licences, user.role))
                 .sort(compareReleaseDates);
 
