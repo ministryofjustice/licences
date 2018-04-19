@@ -78,5 +78,6 @@ const dateFields = [
     'licenceExpiryDate',
     'sentenceExpiryDate',
     'topupSupervisionExpiryDate',
-    'automaticReleaseDate'
+    'automaticReleaseDate',
+    'releaseDate'
 ];

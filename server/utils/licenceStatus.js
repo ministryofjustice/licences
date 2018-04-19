@@ -278,7 +278,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
 function getCurfewAddressReviewState(licence) {
     const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
 
-    if(!addresses) {
+    if(!addresses || isEmpty(addresses)) {
         return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
     }
 

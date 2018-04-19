@@ -17,7 +17,7 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
             }
 
             const licences = await licenceClient.getLicences(getOffenderIds(hdcEligibleReleases));
-            return hdcEligibleReleases.map(decoratePrisonerDetails(licences, user.role));
+            return sortCaseList(hdcEligibleReleases.map(decoratePrisonerDetails(licences, user.role)));
 
         } catch (error) {
             logger.error('Error during getHdcCaseList: ', error.stack);
@@ -35,13 +35,7 @@ async function getCaseList(nomisClient, licenceClient, user) {
         DM: nomisClient.getHdcEligiblePrisoners
     };
 
-    const caseList = await asyncCaseRetrievalMethod[user.role]();
-
-    if (!caseList) {
-        return null;
-    }
-
-    return sortCaseList(caseList.map(addReleaseDate));
+    return asyncCaseRetrievalMethod[user.role]();
 }
 
 function getROCaseList(nomisClient, licenceClient, user) {
@@ -66,7 +60,8 @@ function getROCaseList(nomisClient, licenceClient, user) {
 
 function decoratePrisonerDetails(licences, role) {
     return prisoner => {
-        const formattedPrisoner = formatObjectForView(prisoner);
+        const withReleaseDate = addReleaseDate(prisoner);
+        const formattedPrisoner = formatObjectForView(withReleaseDate);
         const {stage, status} = getStatus(prisoner, licences, role);
         return {...formattedPrisoner, stage, status};
     };
