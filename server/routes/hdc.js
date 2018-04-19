@@ -244,11 +244,14 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
     router.get('/proposedAddress/confirmAddress/:nomisId', checkLicence, (req, res) => {
         const {nomisId} = req.params;
-        const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-        const candidateAddress = getCandidateAddress(allAddresses);
-
-        const data = candidateAddress;
         const nextPath = formConfig.confirmAddress.nextPath;
+
+        const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+        if(!allAddresses) {
+            return res.render('proposedAddress/confirmAddress', {nomisId, data: null, nextPath});
+        }
+
+        const data = getCandidateAddress(allAddresses);
 
         res.render('proposedAddress/confirmAddress', {nomisId, data, nextPath});
     });

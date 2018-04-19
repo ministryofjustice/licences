@@ -12,11 +12,11 @@ function getCandidateAddress(addressList) {
 
     const candidate = lastItem(addressList);
 
-    if(isActiveAddress(candidate)) {
-        return candidate;
+    if(!candidate || !isActiveAddress(candidate)) {
+        return null;
     }
 
-    return null;
+    return candidate;
 }
 
 function getCurfewAddressFormData(addressList) {
