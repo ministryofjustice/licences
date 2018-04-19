@@ -22,7 +22,7 @@ module.exports = function createLicenceService(licenceClient) {
         try {
             await licenceClient.deleteAll();
         } catch (error) {
-            console.error('Error during reset licences', error.stack);
+            logger.error('Error during reset licences', error.stack);
             throw error;
         }
     }
@@ -40,7 +40,7 @@ module.exports = function createLicenceService(licenceClient) {
             return {licence: formattedLicence, stage};
 
         } catch (error) {
-            console.error('Error during getLicence', error.stack);
+            logger.error('Error during getLicence', error.stack);
             throw error;
         }
     }
@@ -59,7 +59,7 @@ module.exports = function createLicenceService(licenceClient) {
             const licenceConditions = {...existingLicenceConditions, ...conditionsObject};
             return licenceClient.updateSection('licenceConditions', nomisId, licenceConditions);
         } catch (error) {
-            console.error('Error during updateAdditionalConditions', error.stack);
+            logger.error('Error during updateAdditionalConditions', error.stack);
             throw error;
         }
     }
@@ -90,7 +90,7 @@ module.exports = function createLicenceService(licenceClient) {
             return licenceClient.updateSection('licenceConditions', nomisId, newConditions);
 
         } catch (error) {
-            console.error('Error during updateAdditionalConditions', error.stack);
+            logger.error('Error during updateAdditionalConditions', error.stack);
             throw error;
         }
     }

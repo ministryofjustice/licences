@@ -142,7 +142,7 @@ describe('caseListService', () => {
             const offender1 = {
                 name: 'offender1',
                 sentenceDetail: {
-                    homeDetentionCurfewEligibilityDate: '2017-09-07',
+                    homeDetentionCurfewEligibilityDate: '2017-09-14',
                     conditionalReleaseDate: '2017-12-15'
                 }
             };
@@ -156,8 +156,8 @@ describe('caseListService', () => {
             const offender3 = {
                 name: 'offender3',
                 sentenceDetail: {
-                    homeDetentionCurfewEligibilityDate: '2017-11-07',
-                    conditionalReleaseDate: '2017-12-11'
+                    homeDetentionCurfewEligibilityDate: '2017-11-06',
+                    conditionalReleaseDate: '2017-01-13'
                 }
             };
 
@@ -165,7 +165,7 @@ describe('caseListService', () => {
                 name: 'offender4',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-11-07',
-                    conditionalReleaseDate: '2017-12-12'
+                    conditionalReleaseDate: '2017-07-22'
                 }
             };
 

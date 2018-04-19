@@ -24,6 +24,7 @@ module.exports = {
         "curly": ["error", "multi-line"],
         "arrow-parens": [2, "as-needed"],
         "quote-props": ["error", "as-needed", { "keywords": true, "unnecessary": true }],
-        "no-unused-expressions": "error"
+        "no-unused-expressions": "error",
+        "no-console" : 2
     }
 };
