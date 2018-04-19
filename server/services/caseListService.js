@@ -1,9 +1,10 @@
 const logger = require('../../log.js');
-const {isEmpty, ascend, sortWith, merge} = require('../utils/functionalHelpers');
+const {isEmpty, merge, getIn} = require('../utils/functionalHelpers');
 const {formatObjectForView} = require('./utils/formatForView');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {licenceStages} = require('../models/licenceStages');
+const moment = require('moment');
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient) {
     async function getHdcCaseList(user) {
@@ -17,7 +18,9 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
             }
 
             const licences = await licenceClient.getLicences(getOffenderIds(hdcEligibleReleases));
-            return sortCaseList(hdcEligibleReleases.map(decoratePrisonerDetails(licences, user.role)));
+            return hdcEligibleReleases
+                .map(decoratePrisonerDetails(licences, user.role))
+                .sort(compareReleaseDates);
 
         } catch (error) {
             logger.error('Error during getHdcCaseList: ', error.stack);
@@ -98,7 +101,20 @@ function addReleaseDate(address) {
     };
 }
 
-const sortCaseList = sortWith([
-    ascend(['sentenceDetail', 'homeDetentionCurfewEligibilityDate']),
-    ascend(['sentenceDetail', 'releaseDate'])
-]);
+function compareReleaseDates(address1, address2) {
+    const hdced1 = getIn(address1, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
+    const hdced2 = getIn(address2, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
+
+    if(hdced1 !== hdced2) {
+        return dateDifference(hdced1, hdced2);
+    }
+
+    const rd1 = getIn(address1, ['sentenceDetail', 'releaseDate']);
+    const rd2 = getIn(address2, ['sentenceDetail', 'releaseDate']);
+
+    return dateDifference(rd1, rd2);
+}
+
+function dateDifference(address1, address2) {
+    return moment(address1, 'DD-MM-YYYY').diff(moment(address2, 'DD-MM-YYYY'));
+}
