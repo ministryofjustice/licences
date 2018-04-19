@@ -11,7 +11,8 @@ module.exports = {
     replaceArrayItem,
     lastItem,
     ascend,
-    sortWith
+    sortWith,
+    merge
 };
 
 // pass in your object and a path in array format
@@ -58,4 +59,8 @@ function ascend(fieldMap) {
 
 function sortWith(sortingMethods) {
     return R.sortWith(sortingMethods);
+}
+
+function merge(object1, object2) {
+    return R.merge(object1, object2);
 }

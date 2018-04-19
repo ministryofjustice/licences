@@ -139,38 +139,38 @@ describe('caseListService', () => {
 
         describe('sorting', () => {
 
-            const address1 = {
-                name: 'address1',
+            const offender1 = {
+                name: 'offender1',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-09-07',
                     conditionalReleaseDate: '2017-12-15'
                 }
             };
-            const address2 = {
-                name: 'address2',
+            const offender2 = {
+                name: 'offender2',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-10-07',
                     conditionalReleaseDate: '2017-12-15'
                 }
             };
-            const address3 = {
-                name: 'address3',
+            const offender3 = {
+                name: 'offender3',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-11-07',
                     conditionalReleaseDate: '2017-12-11'
                 }
             };
 
-            const address4 = {
-                name: 'address4',
+            const offender4 = {
+                name: 'offender4',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-11-07',
                     conditionalReleaseDate: '2017-12-12'
                 }
             };
 
-            const address5 = {
-                name: 'address5',
+            const offender5 = {
+                name: 'offender5',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-11-07',
                     conditionalReleaseDate: '2017-12-13'
@@ -181,32 +181,55 @@ describe('caseListService', () => {
             it('should order by homeDetentionCurfewEligibilityDate first', async() => {
 
                 nomisClient.getHdcEligiblePrisoners.resolves([
-                    address3,
-                    address1,
-                    address2
+                    offender3,
+                    offender1,
+                    offender2
                 ]);
 
                 const result = await service.getHdcCaseList(user);
 
-                expect(result[0].name).to.eql('address1');
-                expect(result[1].name).to.eql('address2');
-                expect(result[2].name).to.eql('address3');
+                expect(result[0].name).to.eql('offender1');
+                expect(result[1].name).to.eql('offender2');
+                expect(result[2].name).to.eql('offender3');
             });
 
-            it('should order by second', async() => {
+            it('should order by conditionalReleaseDate second', async() => {
 
                 nomisClient.getHdcEligiblePrisoners.resolves([
-                    address5,
-                    address4,
-                    address3
-
+                    offender5,
+                    offender4,
+                    offender3
                 ]);
 
                 const result = await service.getHdcCaseList(user);
 
-                expect(result[0].name).to.eql('address3');
-                expect(result[1].name).to.eql('address4');
-                expect(result[2].name).to.eql('address5');
+                expect(result[0].name).to.eql('offender3');
+                expect(result[1].name).to.eql('offender4');
+                expect(result[2].name).to.eql('offender5');
+            });
+
+            it('should order by automaticReleaseDate second if no conditionalReleaseDate is present', async() => {
+
+                const offender6 = {
+                    name: 'offender6',
+                    sentenceDetail: {
+                        homeDetentionCurfewEligibilityDate: '2017-11-07',
+                        conditionalReleaseDate: '',
+                        automaticReleaseDate: '2017-12-13'
+                    }
+                };
+
+                nomisClient.getHdcEligiblePrisoners.resolves([
+                    offender6,
+                    offender4,
+                    offender3
+                ]);
+
+                const result = await service.getHdcCaseList(user);
+
+                expect(result[0].name).to.eql('offender3');
+                expect(result[1].name).to.eql('offender4');
+                expect(result[2].name).to.eql('offender6');
             });
         });
     });
