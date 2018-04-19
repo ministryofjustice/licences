@@ -202,7 +202,7 @@ describe('caseListService', () => {
                 ]);
 
                 const result = await service.getHdcCaseList(user);
-                console.log(result);
+
                 expect(result[0].name).to.eql('offender3');
                 expect(result[1].name).to.eql('offender4');
                 expect(result[2].name).to.eql('offender5');

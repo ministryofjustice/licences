@@ -71,7 +71,7 @@ module.exports = function createConditionsService(licenceClient) {
             return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig);
 
         } catch (error) {
-            console.error('Error during populateLicenceWithConditions');
+            logger.error('Error during populateLicenceWithConditions');
             throw error;
         }
     }

@@ -1,3 +1,4 @@
+const logger = require('../../log.js');
 module.exports = {
     asyncMiddleware,
     checkLicenceMiddleWare
@@ -27,7 +28,7 @@ function checkLicenceMiddleWare(licenceService) {
 
         } catch (error) {
             // TODO proper error handling
-            console.error('Error collecting licence from checkLicence');
+            logger.error('Error collecting licence from checkLicence');
             res.redirect('/');
         }
     };
