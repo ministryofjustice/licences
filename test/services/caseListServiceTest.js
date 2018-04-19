@@ -136,5 +136,101 @@ describe('caseListService', () => {
                 expect(nomisClient.getHdcEligiblePrisoners).not.to.be.calledOnce();
             });
         });
+
+        describe('sorting', () => {
+
+            const offender1 = {
+                name: 'offender1',
+                sentenceDetail: {
+                    homeDetentionCurfewEligibilityDate: '2017-09-07',
+                    conditionalReleaseDate: '2017-12-15'
+                }
+            };
+            const offender2 = {
+                name: 'offender2',
+                sentenceDetail: {
+                    homeDetentionCurfewEligibilityDate: '2017-10-07',
+                    conditionalReleaseDate: '2017-12-15'
+                }
+            };
+            const offender3 = {
+                name: 'offender3',
+                sentenceDetail: {
+                    homeDetentionCurfewEligibilityDate: '2017-11-07',
+                    conditionalReleaseDate: '2017-12-11'
+                }
+            };
+
+            const offender4 = {
+                name: 'offender4',
+                sentenceDetail: {
+                    homeDetentionCurfewEligibilityDate: '2017-11-07',
+                    conditionalReleaseDate: '2017-12-12'
+                }
+            };
+
+            const offender5 = {
+                name: 'offender5',
+                sentenceDetail: {
+                    homeDetentionCurfewEligibilityDate: '2017-11-07',
+                    conditionalReleaseDate: '2017-12-13'
+                }
+            };
+
+
+            it('should order by homeDetentionCurfewEligibilityDate first', async() => {
+
+                nomisClient.getHdcEligiblePrisoners.resolves([
+                    offender3,
+                    offender1,
+                    offender2
+                ]);
+
+                const result = await service.getHdcCaseList(user);
+
+                expect(result[0].name).to.eql('offender1');
+                expect(result[1].name).to.eql('offender2');
+                expect(result[2].name).to.eql('offender3');
+            });
+
+            it('should order by conditionalReleaseDate second', async() => {
+
+                nomisClient.getHdcEligiblePrisoners.resolves([
+                    offender5,
+                    offender4,
+                    offender3
+                ]);
+
+                const result = await service.getHdcCaseList(user);
+
+                expect(result[0].name).to.eql('offender3');
+                expect(result[1].name).to.eql('offender4');
+                expect(result[2].name).to.eql('offender5');
+            });
+
+            it('should order by automaticReleaseDate second if no conditionalReleaseDate is present', async() => {
+
+                const offender6 = {
+                    name: 'offender6',
+                    sentenceDetail: {
+                        homeDetentionCurfewEligibilityDate: '2017-11-07',
+                        conditionalReleaseDate: '',
+                        automaticReleaseDate: '2017-12-13'
+                    }
+                };
+
+                nomisClient.getHdcEligiblePrisoners.resolves([
+                    offender6,
+                    offender4,
+                    offender3
+                ]);
+
+                const result = await service.getHdcCaseList(user);
+
+                expect(result[0].name).to.eql('offender3');
+                expect(result[1].name).to.eql('offender4');
+                expect(result[2].name).to.eql('offender6');
+            });
+        });
     });
 });

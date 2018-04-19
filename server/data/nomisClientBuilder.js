@@ -21,12 +21,6 @@ module.exports = function(token) {
             return nomisGet(path, query, token, headers);
         },
 
-        getUpcomingReleasesByUser: function() {
-            const path = `${apiUrl}/users/me/offender-releases`;
-            const headers = {'Page-Limit': 50}; // todo pagination?
-            return nomisGet(path, '', token, headers);
-        },
-
         getBookings: function(nomisId) {
             const path = `${apiUrl}/bookings`;
             const query = {query: `offenderNo:eq:'${nomisId}'`};
@@ -78,10 +72,9 @@ module.exports = function(token) {
             };
 
             const headers = {
-                'Sort-Field': 'homeDetentionCurfewEligibilityDate,conditionalReleaseDate',
-                'Sort-Order': 'ASC',
-                'Page-Limit': 100
+                'Page-Limit': 10000
             };
+
             return nomisGet(path, query, token, headers);
         },
 
