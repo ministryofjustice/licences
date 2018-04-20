@@ -12,7 +12,6 @@ mixin additionalConditions(editable)
                         span.title  #{condition.group}
                             if condition.subgroup
                                 |  -- #{condition.subgroup}
-                        if condition.approved
                             |  -
                             span.approved
                                 if condition.approved == 'Yes'
