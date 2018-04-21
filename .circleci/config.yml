@@ -113,10 +113,18 @@ jobs:
       - run:
           name: Build container and publish to docker hub (master only)
           command: |
+             export BUILD_NUMBER="$CIRCLE_BUILD_NUM"
+             export GIT_REF="$CIRCLE_SHA1"
+             yarn run record-build-info
              VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
              GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $4}')
              GIT_DATE=$(egrep gitDate build-info.json  | awk -F"\"" '{print $4}')
-             BUILD_VERSION=LICENCES_${VERSION}
+
+             if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+               BUILD_VERSION=LICENCES_${VERSION}
+             else
+               BUILD_VERSION=${VERSION}.${CIRCLE_BRANCH}
+             fi
 
              docker build --rm=false . \
                  --build-arg BUILD_NUMBER=$VERSION \
@@ -217,11 +225,8 @@ workflows:
                 - master
       - build_docker:
           requires:
-            - deploy_and_accept_mock
-          filters:
-            branches:
-              only:
-                - master
+            - test
+
       - hold:
           type: approval
           filters:

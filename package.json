@@ -12,6 +12,7 @@
     "test-with-coverage": "nyc --reporter=text --check-coverage --lines 85 mocha",
     "test-with-coverage-ci": "nyc --reporter=html --check-coverage --lines 85 mocha --reporter mocha-junit-reporter",
     "snyk-protect": "snyk protect",
+    "plant-beanstalk": "node bin/plant-beanstalk.js",
     "lint": "eslint .",
     "record-build-info": "node ./bin/record-build-info",
     "wait-for-deploy": "node ./bin/wait-for-deploy",
