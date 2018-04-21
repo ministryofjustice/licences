@@ -1,0 +1,8 @@
+branch-defaults:
+  master:
+    environment: licences-dev
+deploy:
+  artifact: Dockerrun.aws.json
+global:
+  application_name: licences
+  default_region: eu-west-2
