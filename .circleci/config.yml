@@ -1,9 +1,12 @@
+defaults: &defaults
+  working_directory: ~/noms-digital-studio/licences
+  docker:
+    - image: circleci/node:8.10.0-browsers
+
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/node:8.4.0
-    working_directory: ~/noms-digital-studio/licences
+    <<: *defaults
     steps:
       - checkout
       - restore_cache:
@@ -32,9 +35,7 @@ jobs:
 #          name: Security check
 #          command: yarn run snyk-protect
   test:
-    docker:
-      - image: circleci/node:8.4.0
-    working_directory: ~/noms-digital-studio/licences
+    <<: *defaults
     steps:
       - checkout
       - restore_cache:
@@ -53,10 +54,10 @@ jobs:
       - store_artifacts:
           path: coverage
           destination: coverage
+
+
   deploy_and_accept_mock:
-    docker:
-      - image: circleci/node:8.4.0
-    working_directory: ~/noms-digital-studio/licences
+    <<: *defaults
     steps:
       - checkout
       - restore_cache:
@@ -94,6 +95,64 @@ jobs:
           name: execute feature tests - mock
           command: |
             curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build
+            - build-info.json
+
+  build_docker:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/noms-digital-studio/licences
+      - setup_remote_docker:
+          exclusive: true
+      - run:
+          name: Build container and publish to docker hub (master only)
+          command: |
+             VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
+             GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $4}')
+             GIT_DATE=$(egrep gitDate build-info.json  | awk -F"\"" '{print $4}')
+             BUILD_VERSION=LICENCES_${VERSION}
+
+             docker build --rm=false . \
+                 --build-arg BUILD_NUMBER=$VERSION \
+                 --build-arg GIT_REF=$GIT_REF \
+                 --build-arg GIT_DATE=$GIT_DATE \
+                 --tag "mjwillis/licences:$BUILD_VERSION" \
+                 --label "maintainer=licences-team@digital.justice.gov.uk" \
+                 --label "build.number=$CIRCLE_BUILD_NUM" \
+                 --label "build.url=$CIRCLE_BUILD_URL" \
+                 --label "build.gitref=$GIT_REF"
+
+             docker login -u $DOCKER_USER -p $DOCKER_PASS
+             docker tag mjwillis/licences:$BUILD_VERSION mjwillis/licences:latest
+             docker push mjwillis/licences:$BUILD_VERSION
+             docker push mjwillis/licences:latest
+
+  deploy_release_to_eb:
+      <<: *defaults
+      steps:
+        - checkout
+        - attach_workspace:
+            at: ~/noms-digital-studio/licences
+        - deploy:
+            name: Install elastic beanstalk CLI
+            command: |
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                sudo apt-get install python-pip python-dev
+                pip install --user 'six>-1.9.0' awsebcli --ignore-installed
+              fi
+        - deploy:
+            name: Deploy to Elastic Beanstalk Dev
+            command: |
+              VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
+              yarn run plant-beanstalk LICENCES_${VERSION}
+              ~/.local/bin/eb deploy --process --verbose
+
   deploy_stage:
     docker:
       - image: circleci/node:8.4.0
@@ -152,6 +211,13 @@ workflows:
       - deploy_and_accept_mock:
           requires:
             - test
+          filters:
+            branches:
+              only:
+                - master
+      - build_docker:
+          requires:
+            - deploy_and_accept_mock
           filters:
             branches:
               only:
