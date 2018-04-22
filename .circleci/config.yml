@@ -115,7 +115,6 @@ jobs:
           command: |
              VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
              GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
-             GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
              BUILD_VERSION=LICENCES_${VERSION}
 
              docker build --rm=false . \
