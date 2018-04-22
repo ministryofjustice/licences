@@ -10,9 +10,10 @@ async function signIn(username, password) {
 
     try {
         let oauthClientToken = generateOauthClientToken();
+        let auth = config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : oauthClientToken;
         const loginResult = await superagent
             .post(`${getOauthUrl()}/oauth/token`)
-            .set('Authorization', config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : oauthClientToken)
+            .set('Authorization', auth)
             .set('Elite-Authorization', oauthClientToken)
             .set('content-type', 'application/x-www-form-urlencoded')
             .send(`grant_type=password&username=${username}&password=${password}`)
@@ -32,7 +33,7 @@ async function signIn(username, password) {
 
         const profileResult = await superagent
             .get(`${config.nomis.apiUrl}/users/me`)
-            .set('Authorization', config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : eliteAuthorisationToken)
+            .set('Authorization', auth)
             .set('Elite-Authorization', eliteAuthorisationToken);
 
         logger.info(`Elite2 profile success for [${username}]`);
@@ -49,9 +50,10 @@ async function signIn(username, password) {
 }
 
 async function getRole(eliteAuthorisationToken) {
+    let auth = config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : eliteAuthorisationToken;
     const rolesResult = await superagent
         .get(`${config.nomis.apiUrl}/users/me/roles`)
-        .set('Authorization', config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : eliteAuthorisationToken)
+        .set('Authorization', auth)
         .set('Elite-Authorization', eliteAuthorisationToken);
 
     logger.info('Roles response');
