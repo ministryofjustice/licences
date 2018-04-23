@@ -9,8 +9,8 @@ async function signIn(username, password) {
     logger.info(`Log in for: ${username}`);
 
     try {
-        let oauthClientToken = generateOauthClientToken();
-        let auth = config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : oauthClientToken;
+        const oauthClientToken = generateOauthClientToken();
+        const auth = config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : oauthClientToken;
         const loginResult = await superagent
             .post(`${getOauthUrl()}/oauth/token`)
             .set('Authorization', auth)
@@ -50,7 +50,7 @@ async function signIn(username, password) {
 }
 
 async function getRole(eliteAuthorisationToken) {
-    let auth = config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : eliteAuthorisationToken;
+    const auth = config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : eliteAuthorisationToken;
     const rolesResult = await superagent
         .get(`${config.nomis.apiUrl}/users/me/roles`)
         .set('Authorization', auth)
