@@ -306,9 +306,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         if (req.body.anchor) {
             res.redirect(`${nextPath}${nomisId}#${req.body.anchor}`);
+        } else {
+            res.redirect(`${nextPath}${nomisId}`);
         }
-
-        res.redirect(`${nextPath}${nomisId}`);
     }));
 
     return router;

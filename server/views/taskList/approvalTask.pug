@@ -4,8 +4,12 @@ div.taskListItem.largeMarginBottom
     div.pure-g
         div.pure-u-3-4
             | #{statusLabel}
+            if (licenceStatus.decisions.refusalReason)
+                | : #{licenceStatus.decisions.refusalReason}
         div.pure-u-1-4
-            +proceed(licenceStatus.tasks.approval, 'UNSTARTED', 'Continue', 'View', "/hdc/approval/release/" + prisonerInfo.offenderNo)
+            if licenceStatus.tasks.approval !== 'DONE'
+                +proceed(licenceStatus.tasks.approval, 'UNSTARTED', 'Continue', 'View', "/hdc/approval/release/" + prisonerInfo.offenderNo)
+
 
 
 
