@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   licences:
-    image: mjwillis/licences:latest
+    image: mojdigitalstudio/licences:latest
     networks:
       - hmpps
     depends_on:
