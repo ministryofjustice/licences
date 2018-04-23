@@ -107,7 +107,7 @@ async function nomisGet(path, query, token, headers = {}, responseType = '') {
         const result = await superagent
             .get(path)
             .query(query)
-            .set('Authorization', config.nomis.apiGatewayEnabled === 'true' ? generateApiGatewayToken() : token)
+            .set('Authorization', config.nomis.apiGatewayEnabled ? generateApiGatewayToken() : token)
             .set('Elite-Authorization', token)
             .set(headers)
             .responseType(responseType)
