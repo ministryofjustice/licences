@@ -247,7 +247,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const nextPath = formConfig.confirmAddress.nextPath;
 
         const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-        if(!allAddresses) {
+        if (!allAddresses) {
             return res.render('proposedAddress/confirmAddress', {nomisId, data: null, nextPath});
         }
 
@@ -305,9 +305,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         }
 
         if (req.body.anchor) {
-            res.redirect(`${nextPath}${nomisId}#${req.body.anchor}`);
+            return res.redirect(`${nextPath}${nomisId}#${req.body.anchor}`);
         }
-
+        
         res.redirect(`${nextPath}${nomisId}`);
     }));
 

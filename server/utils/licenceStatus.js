@@ -62,11 +62,12 @@ const combiner = (acc, data) => {
 };
 
 function getApprovalStageState(licence) {
-    const {approved, refused, approval} = getApprovalState(licence);
+    const {approved, refused, approval, refusalReason} = getApprovalState(licence);
     return {
         decisions: {
             approved,
-            refused
+            refused,
+            refusalReason
         },
         tasks: {
             approval
@@ -239,11 +240,13 @@ function getRiskManagementState(licence) {
 function getApprovalState(licence) {
 
     const decision = getIn(licence, ['approval', 'release', 'decision']);
+    const reason = getIn(licence, ['approval', 'release', 'reason']);
 
     return {
         approved: decision === 'Yes',
         refused: decision === 'No',
-        approval: isEmpty(decision) ? taskStates.UNSTARTED : taskStates.DONE
+        approval: isEmpty(decision) ? taskStates.UNSTARTED : taskStates.DONE,
+        refusalReason: refusalReasons[reason]
     };
 }
 
@@ -267,7 +270,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
         // todo mandatory address elements
 
         const required = ['occupier', 'cautionedAgainstResident'];
-        if(required.some(field => !addresses.find(address => address[field]))) {
+        if (required.some(field => !addresses.find(address => address[field]))) {
             return taskStates.STARTED;
         }
 
@@ -278,21 +281,21 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
 function getCurfewAddressReviewState(licence) {
     const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
 
-    if(!addresses || isEmpty(addresses)) {
+    if (!addresses || isEmpty(addresses)) {
         return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
     }
 
     const lastAddress = lastItem(addresses);
 
-    if(isAcceptedAddress(lastAddress)) {
+    if (isAcceptedAddress(lastAddress)) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};
     }
 
-    if(isRejectedAddress(lastAddress)) {
+    if (isRejectedAddress(lastAddress)) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
     }
 
-    if(addressReviewStarted(lastAddress)) {
+    if (addressReviewStarted(lastAddress)) {
         return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
     }
 
@@ -411,3 +414,8 @@ function getEligibilityState(unsuitable, excluded, tasks) {
 
     return taskStates.STARTED;
 }
+
+const refusalReasons = {
+    addressUnsuitable: 'Address unsuitable',
+    insufficientTime: 'Insufficient time'
+};
