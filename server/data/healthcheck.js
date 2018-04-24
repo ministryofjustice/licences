@@ -22,7 +22,7 @@ function nomisApiCheck() {
 
         superagent
             .get(`${getHealthcheckUrl()}/health`)
-            .set('Authorization', generateApiGatewayToken())
+            .set('Authorization', config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : '')
             .timeout({
                 response: 4000,
                 deadline: 4500
