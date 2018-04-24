@@ -13,7 +13,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
     environment:
       - PORT=3000
-      - API_GATEWAY_ENABLED=false
+      - API_GATEWAY_ENABLED=no
       - API_CLIENT_ID=licences
       - API_CLIENT_SECRET=clientsecret
       - DB_USER=sa
