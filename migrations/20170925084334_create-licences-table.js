@@ -8,7 +8,7 @@ exports.up = knex =>
         knex.raw('ALTER TABLE [LICENCES] ALTER COLUMN [LICENCE] [NVARCHAR](MAX) NULL'),
         knex.raw('ALTER TABLE [LICENCES] ADD CONSTRAINT [LICENCES.LICENCE should be formatted as JSON] ' +
          'CHECK (ISJSON(LICENCE) > 0)'),
-        knex.raw('CREATE INDEX LICENCE_BY_NOMIS_ID ON LICENCES (NOMIS_ID) INCLUDE (ID, LICENCE) WITH (ONLINE = ON);')
+        knex.raw('CREATE INDEX LICENCE_BY_NOMIS_ID ON LICENCES (NOMIS_ID) INCLUDE (ID, LICENCE);')
     ]);
 
 exports.down = knex =>

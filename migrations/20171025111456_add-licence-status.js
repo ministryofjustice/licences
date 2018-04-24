@@ -21,7 +21,7 @@ exports.up = knex =>
 
         // Make the index include the status
         knex.raw(`CREATE INDEX LICENCE_BY_NOMIS_ID ON LICENCES (NOMIS_ID) 
-                    INCLUDE (ID, LICENCE, STATUS) WITH (ONLINE = ON);`)
+                    INCLUDE (ID, LICENCE, STATUS);`)
     ]);
 
 exports.down = knex =>
@@ -38,6 +38,6 @@ exports.down = knex =>
         }),
 
         // Recreate the original index
-        knex.raw('CREATE INDEX LICENCE_BY_NOMIS_ID ON LICENCES (NOMIS_ID) INCLUDE (ID, LICENCE) WITH (ONLINE = ON);')
+        knex.raw('CREATE INDEX LICENCE_BY_NOMIS_ID ON LICENCES (NOMIS_ID) INCLUDE (ID, LICENCE);')
     ]);
 
