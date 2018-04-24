@@ -10,8 +10,7 @@ exports.up = knex =>
             table.string('SUBGROUP', 50);
             table.bit('ACTIVE').defaultTo(0);
         }),
-        knex.raw(`CREATE INDEX CONDITION_BY_TYPE ON CONDITIONS (TYPE) INCLUDE (ID, TIMESTAMP, TEXT, USER_INPUT)
-                WITH (ONLINE = ON);`)
+        knex.raw(`CREATE INDEX CONDITION_BY_TYPE ON CONDITIONS (TYPE) INCLUDE (ID, TIMESTAMP, TEXT, USER_INPUT);`)
     ]);
 
 exports.down = knex =>
