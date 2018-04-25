@@ -34,6 +34,19 @@ jobs:
 #      - run:
 #          name: Security check
 #          command: yarn run snyk-protect
+      - run:
+          command: |
+            yarn run build
+            export BUILD_NUMBER="$CIRCLE_BUILD_NUM"
+            export GIT_REF="$CIRCLE_SHA1"
+            yarn run record-build-info
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - build-info.json
+            - assets/stylesheets
+
   test:
     <<: *defaults
     steps:
@@ -54,53 +67,6 @@ jobs:
       - store_artifacts:
           path: coverage
           destination: coverage
-
-
-  deploy_and_accept_mock:
-    <<: *defaults
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
-            - node_modules-{{ checksum "package.json" }}
-            - node_modules
-            - yarn-cache
-      - add_ssh_keys:
-          fingerprints:
-            - "ce:dc:1a:a6:a5:39:ba:eb:ac:9d:ca:9a:46:e3:74:99"
-      - run:
-          name: build deployment package
-          command: |
-            yarn run build
-            export BUILD_NUMBER="$CIRCLE_BUILD_NUM"
-            export GIT_REF="$CIRCLE_SHA1"
-            yarn run record-build-info
-            git add --force --verbose assets/stylesheets build-info.json
-            git config user.name "Circle CI"
-            git config user.email "circle@circleci.com"
-            git commit \
-              -m "Deployment of build $CIRCLE_BUILD_NUM" \
-              -m "$(git log --format=%B -n 1 $CIRCLE_SHA1)" \
-              -m "From gitref $CIRCLE_SHA1"
-            git push --force origin HEAD:deploy-to-mock
-      - run:
-          name: wait for mock deployment to complete
-          command: |
-            export GIT_REF="$CIRCLE_SHA1"
-            export APP_BASE_URL="https://licences-mock.hmpps.dsd.io/health"
-            export WAIT_DURATION="45000"
-            yarn run wait-for-deploy
-      - run:
-          name: execute feature tests - mock
-          command: |
-            curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
-      - persist_to_workspace:
-          root: .
-          paths:
-            - node_modules
-            - build
-            - build-info.json
 
   build_docker:
     <<: *defaults
@@ -150,6 +116,42 @@ jobs:
               VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
               yarn run plant-beanstalk LICENCES_${VERSION}
               ~/.local/bin/eb deploy --process --verbose
+        - run:
+            name: check into mock - remove once stage migrated
+            command: |
+              git add --force --verbose assets/stylesheets build-info.json
+              git config user.name "Circle CI"
+              git config user.email "circle@circleci.com"
+              git commit \
+                -m "Deployment of build $CIRCLE_BUILD_NUM" \
+                -m "$(git log --format=%B -n 1 $CIRCLE_SHA1)" \
+                -m "From gitref $CIRCLE_SHA1"
+              git push --force origin HEAD:deploy-to-mock
+
+  feature_tests:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+            - node_modules-{{ checksum "package.json" }}
+            - node_modules
+            - yarn-cache
+      - add_ssh_keys:
+          fingerprints:
+            - "ce:dc:1a:a6:a5:39:ba:eb:ac:9d:ca:9a:46:e3:74:99"
+      - run:
+          name: wait for mock deployment to complete
+          command: |
+            export GIT_REF="$CIRCLE_SHA1"
+            export APP_BASE_URL="https://licences-mock.hmpps.dsd.io/health"
+            export WAIT_DURATION="45000"
+            yarn run wait-for-deploy
+      - run:
+          name: execute feature tests - mock
+          command: |
+            curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
 
   deploy_stage:
     docker:
@@ -166,6 +168,7 @@ jobs:
             git config user.name "Circle CI"
             git config user.email "circle@circleci.com"
             git push --force origin HEAD:deploy-to-stage
+
   accept_stage:
     docker:
       - image: circleci/node:8.4.0
@@ -206,16 +209,9 @@ workflows:
             branches:
               ignore:
                 - /deploy-to.*/
-      - deploy_and_accept_mock:
-          requires:
-            - test
-          filters:
-            branches:
-              only:
-                - master
       - build_docker:
           requires:
-            - deploy_and_accept_mock
+            - test
           filters:
             branches:
               only:
@@ -223,6 +219,13 @@ workflows:
       - deploy_release_to_eb:
           requires:
             - build_docker
+      - feature_tests:
+          requires:
+            - deploy_release_to_eb
+          filters:
+            branches:
+              only:
+                - master
       - hold:
           type: approval
           filters:
