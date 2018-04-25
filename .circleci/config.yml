@@ -116,17 +116,6 @@ jobs:
               VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
               yarn run plant-beanstalk LICENCES_${VERSION}
               ~/.local/bin/eb deploy --process --verbose
-        - run:
-            name: check into mock - remove once stage migrated
-            command: |
-              git add --force --verbose assets/stylesheets build-info.json
-              git config user.name "Circle CI"
-              git config user.email "circle@circleci.com"
-              git commit \
-                -m "Deployment of build $CIRCLE_BUILD_NUM" \
-                -m "$(git log --format=%B -n 1 $CIRCLE_SHA1)" \
-                -m "From gitref $CIRCLE_SHA1"
-              git push --force origin HEAD:deploy-to-mock
 
   feature_tests:
     <<: *defaults
