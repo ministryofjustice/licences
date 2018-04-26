@@ -156,6 +156,10 @@ module.exports = function createApp({
     // Don't cache dynamic resources
     app.use(helmet.noCache());
 
+    if (config.enableTestUtils) {
+        app.use('/utils/', createUtilsRouter({logger, licenceService}));
+    }
+
     // CSRF protection
     if (!testMode) {
         app.use(csurf());
@@ -195,10 +199,6 @@ module.exports = function createApp({
             res.json(result);
         });
     });
-
-    if (config.enableTestUtils) {
-        app.use('/utils/', createUtilsRouter({logger, licenceService}));
-    }
 
     app.get('/feedback', (req, res) => {
         return res.render('feedback', {returnURL: req.get('referer')});
