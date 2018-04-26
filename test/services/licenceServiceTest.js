@@ -944,4 +944,229 @@ describe('licenceService', () => {
             expect(licenceClient.updateLicence).to.be.calledWith(1, expectedOutput);
         });
     });
+
+    describe('validateLicence', () => {
+
+        context('Eligibility', () => {
+            const validEligibility = {
+                eligibility: {
+                    excluded: {
+                        decision: 'Yes',
+                        reason: 'this reason'
+                    },
+                    suitability: {
+                        decision: 'Yes',
+                        reason: 'this reason'
+                    },
+                    crdTime: {
+                        decision: 'No'
+                    }
+                }
+            };
+
+            it('should return null if the licence is valid', () => {
+                expect(service.validateLicence(validEligibility, 'ELIGIBILITY')).to.eql(null);
+            });
+
+            it('should return error if required field not provided', () => {
+
+                const missingField = {
+                    eligibility: {
+                        excluded: {
+                            decision: 'Yes',
+                            reason: 'this reason'
+                        },
+                        suitability: {
+                            decision: ''
+                        },
+                        crdTime: {
+                            decision: 'No'
+                        }
+                    }
+                };
+
+                expect(service.validateLicence(missingField, 'ELIGIBILITY')[0].path).to.eql(
+                    ['suitability', 'decision']);
+            });
+        });
+
+        context('proposedAddress', () => {
+            const validProposedAddress = {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [{
+                            addressLine1: 'line1',
+                            addressTown: 'town',
+                            postCode: 'pc',
+                            telephone: '123',
+                            occupier: {
+                                name: 'occupier',
+                                relation: 'rel',
+                                age: ''
+                            },
+                            residents: [
+                                {
+                                    name: 'occupier',
+                                    relation: 'rel',
+                                    age: ''
+                                }
+                            ],
+                            cautionedAgainstResident: 'No'
+                        }]
+                    }
+                }
+            };
+
+            it('should return null if the licence is valid', () => {
+                expect(service.validateLicence(validProposedAddress, 'ELIGIBILITY')).to.eql(null);
+            });
+
+            it('should return error if required field not provided', () => {
+
+                const missingFieldProposedAddress = {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [{
+                                addressLine1: '',
+                                addressTown: 'town',
+                                postCode: 'pc',
+                                telephone: '123',
+                                occupier: {
+                                    name: 'occupier',
+                                    relation: 'rel',
+                                    age: ''
+                                },
+                                residents: [
+                                    {
+                                        name: 'occupier',
+                                        relation: 'rel',
+                                        age: ''
+                                    }
+                                ],
+                                cautionedAgainstResident: 'No'
+                            }]
+                        }
+                    }
+                };
+
+                expect(service.validateLicence(missingFieldProposedAddress, 'ELIGIBILITY')[0].path).to.eql(
+                    ['curfewAddress', 'addresses', 0, 'addressLine1']);
+            });
+
+            it('should allow empty residents list', () => {
+
+                const emptyResidents = {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [{
+                                    addressLine1: 'address1',
+                                addressTown: 'town',
+                                postCode: 'pc',
+                                telephone: '123',
+                                occupier: {
+                                    name: 'occupier',
+                                    relation: 'rel',
+                                    age: ''
+                                },
+                                residents: [],
+                                cautionedAgainstResident: 'No'
+                            }]
+                        }
+                    }
+                };
+
+                expect(service.validateLicence(emptyResidents, 'ELIGIBILITY')).to.eql(null);
+            });
+
+            it('should not allow empty occupier object', () => {
+
+                const emptyOccupier = {
+                    eligibility: {
+                        excluded: {
+                            decision: 'No'
+                        },
+                        suitability: {
+                            decision: 'No'
+                        },
+                        crdTime: {
+                            decision: 'No'
+                        }
+                    },
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [{
+                                addressLine1: '',
+                                addressTown: 'town',
+                                postCode: 'pc',
+                                telephone: '123',
+                                occupier: {
+                                    name: '',
+                                    relation: '',
+                                    age: ''
+                                },
+                                residents: [],
+                                cautionedAgainstResident: 'No'
+                            }]
+                        }
+                    }
+                };
+
+                expect(service.validateLicence(emptyOccupier, 'ELIGIBILITY')[0].path).to.eql(
+                    ['curfewAddress', 'addresses', 0, 'addressLine1']);
+
+                expect(service.validateLicence(emptyOccupier, 'ELIGIBILITY')[1].path).to.eql(
+                    ['curfewAddress', 'addresses', 0, 'occupier', 'name']);
+            });
+        });
+
+        context('Multiple sections', () => {
+
+            const licence = {
+                eligibility: {
+                    excluded: {
+                        decision: 'Yes',
+                        reason: 'this reason'
+                    },
+                    suitability: {
+                        decision: ''
+                    },
+                    crdTime: {
+                        decision: 'No'
+                    }
+                },
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [{
+                            addressLine1: '',
+                            addressTown: 'town',
+                            postCode: 'pc',
+                            telephone: '123',
+                            occupier: {
+                                name: 'Res',
+                                relation: 'Rel',
+                                age: '18'
+                            },
+                            residents: [],
+                            cautionedAgainstResident: 'No'
+                        }]
+                    }
+                }
+            };
+
+            it('should validate all sections asked for', () => {
+
+                const output = service.validateLicence(licence, 'ELIGIBILITY');
+
+                expect(output.length).to.eql(2);
+
+                expect(output[0].path).to.eql(
+                    ['suitability', 'decision']);
+
+                expect(output[1].path).to.eql(
+                    ['curfewAddress', 'addresses', 0, 'addressLine1']);
+
+            });
+        });
+
+    });
 });
