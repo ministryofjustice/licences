@@ -48,7 +48,7 @@ module.exports = function({logger, licenceService}) {
 
         try {
             await licenceClient.createLicence(nomisId, licence, stage);
-            logger.info('Created licence')
+            logger.info('Created licence');
             return res.status(201).send({});
         } catch (error) {
             logger.error('Error during create licence', error.stack);
