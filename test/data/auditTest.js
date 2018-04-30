@@ -1,6 +1,5 @@
 const proxyquire = require('proxyquire');
 proxyquire.noCallThru();
-const TYPES = require('tedious').TYPES;
 
 const {
     expect,
@@ -10,12 +9,12 @@ const {
 
 describe('Audit', () => {
 
-    let execSqlStub = sandbox.stub().callsArgWith(2, 14);
+    const queryStub = sandbox.stub().returnsPromise().resolves();
 
-    const record = (execSql = execSqlStub) => {
+    const record = (query = queryStub) => {
         return proxyquire('../../server/data/audit', {
-            './dataAccess/dbMethods': {
-                execSql: execSql
+            './dataAccess/db': {
+                query
             }
         }).record;
     };
@@ -26,27 +25,22 @@ describe('Audit', () => {
 
     it('should reject if unspecified key', () => {
         expect(() => record()('Key', 'a@y.com', {data: 'data'})).to.throw(Error);
-
     });
 
     it('should call auditData.execSql', () => {
         const result = record()('VIEW_TASKLIST', 'a@y.com', {data: 'data'});
 
         return result.then(data => {
-            expect(execSqlStub).to.have.callCount(1);
+            expect(queryStub).to.have.callCount(1);
         });
     });
 
     it('should pass the sql paramaters', () => {
         const result = record()('VIEW_TASKLIST', 'a@y.com', {data: 'data'});
-        const expectedParameters = [
-            {column: 'user', type: TYPES.VarChar, value: 'a@y.com'},
-            {column: 'action', type: TYPES.VarChar, value: 'VIEW_TASKLIST'},
-            {column: 'details', type: TYPES.VarChar, value: JSON.stringify({data: 'data'})}
-        ];
+        const expectedParameters = ['a@y.com', 'VIEW_TASKLIST', {data: 'data'}];
 
         return result.then(data => {
-            expect(execSqlStub.getCall(0).args[1]).to.eql(expectedParameters);
+            expect(queryStub.getCall(0).args[0].values).to.eql(expectedParameters);
         });
     });
 });

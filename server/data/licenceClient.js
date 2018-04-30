@@ -1,126 +1,102 @@
-const {resolveJsonResponse, resolveJsonColumn} = require('./dataAccess/azureJson');
-const {getCollection, execSql} = require('./dataAccess/dbMethods');
 const {licenceStages} = require('../models/licenceStages');
-const TYPES = require('tedious').TYPES;
+const db = require('./dataAccess/db');
 
 module.exports = {
 
     deleteAll: function() {
-        return new Promise((resolve, reject) => {
-            const sql = `DELETE FROM LICENCES WHERE NOMIS_ID NOT LIKE '%XX'`;
-            execSql(sql, null, resolve, reject);
-        });
+        return db.query(`delete from licences where nomis_id not like '%XX'`);
     },
 
     deleteAllTest: function() {
-        return new Promise((resolve, reject) => {
-            const sql = `DELETE FROM LICENCES WHERE NOMIS_ID LIKE '%XX'`;
-            execSql(sql, null, resolve, reject);
-        });
+        return db.query(`delete from licences where nomis_id like '%XX'`);
     },
 
-    getLicences: function(nomisIds) {
-        return new Promise((resolve, reject) => {
-            const sql = `SELECT NOMIS_ID as nomisId, ID as id, STAGE as stage, JSON_QUERY(LICENCE) AS licence 
-                         FROM LICENCES WHERE NOMIS_ID IN (${nomisIds.map(id => `'${id}'`).join(',')}) FOR JSON PATH`;
+    getLicences: async function(nomisIds) {
+        const query = {
+            text: `select licence, nomis_id, stage from licences 
+                   where nomis_id in (${nomisIds.map(id => `'${id}'`).join(',')})`
+        };
 
-            getCollection(sql, null, resolveJsonResponse(resolve), reject);
-        });
+        const {rows} = await db.query(query);
+        return rows;
     },
 
-    getLicence: function(nomisId) {
-        return new Promise((resolve, reject) => {
-            const sql = `SELECT NOMIS_ID as nomisId, ID as id, STAGE as stage, JSON_QUERY(LICENCE) AS licence 
-                         FROM LICENCES WHERE NOMIS_ID = '${nomisId}' FOR JSON PATH, WITHOUT_ARRAY_WRAPPER`;
+    getLicence: async function(nomisId) {
+        const query = {
+            text: `select licence, nomis_id, stage from licences where nomis_id = $1`,
+            values: [nomisId]
+        };
 
-            getCollection(sql, null, resolveJsonResponse(resolve), reject);
-        });
+        const {rows} = await db.query(query);
+
+        if (rows) {
+            return rows[0];
+        }
+
+        return {};
     },
 
     createLicence: function(nomisId, licence = {}, stage = licenceStages.DEFAULT) {
-        return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STAGE) ' +
-                'VALUES (@nomisId, @licence, @stage)';
+        const query = {
+            text: 'insert into licences (nomis_id, licence, stage) values ($1, $2, $3)',
+            values: [nomisId, licence, stage]
+        };
 
-            const parameters = [
-                {column: 'nomisId', type: TYPES.VarChar, value: nomisId},
-                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify(licence)},
-                {column: 'stage', type: TYPES.VarChar, value: stage}
-            ];
-
-            execSql(sql, parameters, resolve, reject);
-        });
+        return db.query(query);
     },
 
     updateLicence: function(nomisId, licence = {}) {
-        return new Promise((resolve, reject) => {
-            const sql = 'UPDATE LICENCES SET LICENCE = @licence WHERE NOMIS_ID=@nomisId';
+        const query = {
+            text: 'update licences set licence = $1 where nomis_id=$2',
+            values: [licence, nomisId]
+        };
 
-            const parameters = [
-                {column: 'nomisId', type: TYPES.VarChar, value: nomisId},
-                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify(licence)}
-            ];
-
-            execSql(sql, parameters, resolve, reject);
-        });
+        return db.query(query);
     },
 
     updateSection: function(section, nomisId, object) {
-        return new Promise((resolve, reject) => {
+        const path = '{licenceConditions}';
 
-            const sql = 'UPDATE LICENCES SET LICENCE = JSON_MODIFY(LICENCE, @section, JSON_QUERY(@object))' +
-                ' WHERE NOMIS_ID=@nomisId';
+        const query = {
+            text: 'update licences set licence = jsonb_set(licence, $1, $2) where nomis_id=$3',
+            values: [path, object, nomisId]
+        };
 
-            const parameters = [
-                {column: 'section', type: TYPES.VarChar, value: '$.' + section},
-                {column: 'object', type: TYPES.VarChar, value: JSON.stringify(object)},
-                {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
-            ];
-
-            execSql(sql, parameters, resolve, reject);
-        });
+        return db.query(query);
     },
 
-    getStandardConditions: function() {
-        return new Promise((resolve, reject) => {
-            const sql = 'select * from CONDITIONS Where TYPE = \'STANDARD\'';
-
-            getCollection(sql, null, resolve, reject);
-        });
+    getStandardConditions: async function() {
+        const {rows} = await db.query(`select * from conditions Where type = 'STANDARD'`);
+        return rows;
     },
 
-    getAdditionalConditions: function(ids = []) {
-
-        const sql = additionalConditionsSql(ids);
-
-        return new Promise((resolve, reject) => {
-            getCollection(sql, null, resolveJsonColumn(resolve, 'FIELD_POSITION'), reject);
-        });
+    getAdditionalConditions: async function(ids = []) {
+        const {rows} = await db.query(additionalConditionsSql(ids));
+        return rows;
     },
 
     updateStage: function(nomisId, stage) {
-        return new Promise((resolve, reject) => {
-            const sql = 'UPDATE LICENCES SET STAGE = @stage WHERE NOMIS_ID = @nomisId';
+        const query = {
+            text: 'update licences set stage = $1 where nomis_id = $2',
+            values: [stage, nomisId]
+        };
 
-            const parameters = [
-                {column: 'stage', type: TYPES.VarChar, value: stage},
-                {column: 'nomisId', type: TYPES.VarChar, value: nomisId}
-            ];
-
-            execSql(sql, parameters, resolve, reject);
-        });
+        return db.query(query);
     },
 
-    getDeliusUserName: function(nomisUserName) {
-        const sql = 'SELECT STAFF_ID FROM STAFF_IDS WHERE NOMIS_ID = @nomisUserName';
+    getDeliusUserName: async function(nomisUserName) {
+        const query = {
+            text: 'select staff_id from staff_ids where nomis_id = $1',
+            values: [nomisUserName]
+        };
 
-        return new Promise((resolve, reject) => {
-            const parameters = [
-                {column: 'nomisUserName', type: TYPES.VarChar, value: nomisUserName}
-            ];
+        const {rows} = await db.query(query);
 
-            getCollection(sql, parameters, resolve, reject);
-        });
+        if (rows[0]) {
+            return rows[0].staff_id;
+        }
+
+        return {};
     }
 };
 
@@ -128,29 +104,29 @@ const additionalConditionsSql = ids => {
     const idArray = Array.isArray(ids) ? ids : [ids];
 
     if (idArray.length === 0) {
-        return 'SELECT ' +
-            '  CONDITIONS.*, ' +
-            '  CONDITIONS_UI.FIELD_POSITION, ' +
-            '  GROUPS.NAME AS GROUP_NAME, ' +
-            '  SUBGROUPS.NAME AS SUBGROUP_NAME ' +
-            'FROM CONDITIONS ' +
-            'LEFT JOIN CONDITIONS_UI ON CONDITIONS.USER_INPUT = CONDITIONS_UI.UI_ID ' +
-            'LEFT JOIN CONDITIONS_GROUPS GROUPS ON CONDITIONS.[GROUP] = GROUPS.ID ' +
-            'LEFT JOIN CONDITIONS_GROUPS SUBGROUPS ON CONDITIONS.SUBGROUP = SUBGROUPS.ID ' +
-            'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND ACTIVE = 1' +
-            'ORDER BY CONDITIONS.[GROUP], CONDITIONS.SUBGROUP';
+        return 'select ' +
+            '  conditions.*, ' +
+            '  conditions_ui.field_position, ' +
+            '  groups.name as group_name, ' +
+            '  subgroups.name as subgroup_name ' +
+            'from conditions ' +
+            'left join conditions_ui on conditions.user_input = conditions_ui.ui_id ' +
+            'left join conditions_groups groups on conditions.group = groups.id ' +
+            'left join conditions_groups subgroups on conditions.subgroup = subgroups.id ' +
+            'where conditions.type = \'ADDITIONAL\' and active = true ' +
+            'order by conditions.group, conditions.subgroup';
     }
 
-    return 'SELECT ' +
-        '  CONDITIONS.*, ' +
-        '  CONDITIONS_UI.FIELD_POSITION, ' +
-        '  GROUPS.NAME AS GROUP_NAME, ' +
-        '  SUBGROUPS.NAME AS SUBGROUP_NAME ' +
-        'FROM CONDITIONS ' +
-        'LEFT JOIN CONDITIONS_UI ON CONDITIONS.USER_INPUT = CONDITIONS_UI.UI_ID ' +
-        'LEFT JOIN CONDITIONS_GROUPS GROUPS ON CONDITIONS.[GROUP] = GROUPS.ID ' +
-        'LEFT JOIN CONDITIONS_GROUPS SUBGROUPS ON CONDITIONS.SUBGROUP = SUBGROUPS.ID ' +
-        'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (\'' + idArray.join('\',\'') + '\') ' +
-        'AND ACTIVE = 1' +
-        'ORDER BY CONDITIONS.[GROUP], CONDITIONS.SUBGROUP';
+    return 'select ' +
+        '  conditions.*, ' +
+        '  conditions_ui.field_position, ' +
+        '  groups.name as group_name, ' +
+        '  subgroups.name as subgroup_name ' +
+        'from conditions ' +
+        'left join conditions_ui on conditions.user_input = conditions_ui.ui_id ' +
+        'left join conditions_groups groups on conditions.group = groups.id ' +
+        'left join conditions_groups subgroups on conditions.subgroup = subgroups.id ' +
+        'where conditions.type = \'ADDITIONAL\' and conditions.id in (\'' + idArray.join('\',\'') + '\') ' +
+        'and active = true ' +
+        'order by conditions.group, conditions.subgroup';
 };
