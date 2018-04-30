@@ -282,7 +282,7 @@ module.exports = function createLicenceService(licenceClient) {
         const validationErrors = sections.map(validate(licence)).filter(item => item);
 
         if (isEmpty(validationErrors)) {
-            return null;
+            return [];
         }
 
         const errors = validationErrors.map(error => {
@@ -313,8 +313,7 @@ function getLicenceSectionToValidate(stage) {
         case licenceStages.ELIGIBILITY:
             return ['eligibility', 'proposedAddress'];
         case licenceStages.PROCESSING_RO:
-            // TODO
-            return ['eligibility', 'proposedAddress'];
+            return ['curfew', 'risk', 'reporting'];
         case licenceStages.PROCESSING_CA:
             // TODO
             return ['eligibility', 'proposedAddress'];

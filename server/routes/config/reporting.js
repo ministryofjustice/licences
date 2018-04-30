@@ -7,9 +7,7 @@ module.exports = {
             {buildingAndStreet2: {}},
             {townOrCity: {}},
             {postcode: {}},
-            {telephone: {}},
-            {date: {}},
-            {time: {}}
+            {telephone: {}}
         ],
         nextPath: {
             path: '/hdc/taskList/'
