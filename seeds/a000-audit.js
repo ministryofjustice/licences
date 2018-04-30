@@ -1,4 +1,4 @@
 exports.seed = knex =>
-    knex('AUDIT').delete();
+    knex('audit').delete();
 
 

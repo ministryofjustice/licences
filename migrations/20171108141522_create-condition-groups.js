@@ -1,11 +1,11 @@
 exports.up = knex =>
     Promise.all([
-        knex.schema.createTableIfNotExists('CONDITIONS_GROUPS', table => {
-            table.string('ID', 50).primary('PK_CONDITIONS_GROUP');
-            table.string('NAME');
-            table.string('TYPE');
+        knex.schema.createTableIfNotExists('conditions_groups', table => {
+            table.string('id', 50).primary('pk_conditions_group');
+            table.string('name');
+            table.string('type');
         })
     ]);
 
 exports.down = knex =>
-    knex.schema.dropTable('CONDITIONS_GROUPS');
+    knex.schema.dropTable('conditions_groups');

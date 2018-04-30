@@ -1,15 +1,13 @@
 exports.up = knex =>
     Promise.all([
-        knex.schema.createTableIfNotExists('LICENCES', table => {
-            table.increments('ID').primary('PK_LICENCE');
-            table.string('LICENCE').notNullable();
-            table.string('NOMIS_ID').notNullable();
-        }),
-        knex.raw('ALTER TABLE [LICENCES] ALTER COLUMN [LICENCE] [NVARCHAR](MAX) NULL'),
-        knex.raw('ALTER TABLE [LICENCES] ADD CONSTRAINT [LICENCES.LICENCE should be formatted as JSON] ' +
-         'CHECK (ISJSON(LICENCE) > 0)'),
-        knex.raw('CREATE INDEX LICENCE_BY_NOMIS_ID ON LICENCES (NOMIS_ID) INCLUDE (ID, LICENCE);')
+        knex.schema.createTableIfNotExists('licences', table => {
+            table.increments('id').primary('pk_licence');
+            table.jsonb('licence').nullable();
+            table.string('nomis_id').notNullable();
+            table.string('stage').notNullable();
+            table.index(['nomis_id', 'id', 'stage'], 'licence_by_nomis_id');
+        })
     ]);
 
 exports.down = knex =>
-    knex.schema.dropTable('LICENCES');
+    knex.schema.dropTable('licences');
