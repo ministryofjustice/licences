@@ -1,54 +1,54 @@
 exports.seed = knex =>
-    knex('STAFF_IDS').delete()
+    knex('staff_ids').delete()
         .then(
-            () => knex('STAFF_IDS').insert([
+            () => knex('staff_ids').insert([
                 {
-                    NOMIS_ID: "RO_USER_TEST",
-                    STAFF_ID: "DELIUS_ID_TEST",
-                    FIRST_NAME: 'FIRSTA',
-                    LAST_NAME: 'LASTA'
+                    nomis_id: "RO_USER_TEST",
+                    staff_id: "DELIUS_ID_TEST",
+                    first_name: 'FIRSTA',
+                    last_name: 'LASTA'
                 },
                 {
-                    NOMIS_ID: "RO_USER_MULTI",
-                    STAFF_ID: "DELIUS_ID_TEST_MULTI",
-                    FIRST_NAME: 'FIRSTA',
-                    LAST_NAME: 'LASTA'
+                    nomis_id: "RO_USER_MULTI",
+                    staff_id: "DELIUS_ID_TEST_MULTI",
+                    first_name: 'FIRSTA',
+                    last_name: 'LASTA'
                 },
                 {
-                    NOMIS_ID: "RO_USER",
-                    STAFF_ID: "DELIUS_ID",
-                    FIRST_NAME: 'JESSY',
-                    LAST_NAME: 'SMITH'
+                    nomis_id: "RO_USER",
+                    staff_id: "DELIUS_ID",
+                    first_name: 'JESSY',
+                    last_name: 'SMITH'
                 },
                 {
-                    NOMIS_ID: "RO_USER2",
-                    STAFF_ID: "DELIUS_USER2",
-                    FIRST_NAME: 'SHEILA',
-                    LAST_NAME: 'HANCOCK'
+                    nomis_id: "RO_USER2",
+                    staff_id: "DELIUS_USER2",
+                    first_name: 'SHEILA',
+                    last_name: 'HANCOCK'
                 },
                 {
-                    NOMIS_ID: "RO_USER3",
-                    STAFF_ID: "DELIUS_USER3",
-                    FIRST_NAME: 'TREVOR',
-                    LAST_NAME: 'SMITH'
+                    nomis_id: "RO_USER3",
+                    staff_id: "DELIUS_USER3",
+                    first_name: 'TREVOR',
+                    last_name: 'SMITH'
                 },
                 {
-                    NOMIS_ID: "RO_USER4",
-                    STAFF_ID: "DELIUS_USER4",
-                    FIRST_NAME: 'DAVID',
-                    LAST_NAME: 'BALL'
+                    nomis_id: "RO_USER4",
+                    staff_id: "DELIUS_USER4",
+                    first_name: 'DAVID',
+                    last_name: 'BALL'
                 },
                 {
-                    NOMIS_ID: "RO_USER5",
-                    STAFF_ID: "DELIUS_USER5",
-                    FIRST_NAME: 'JULIE',
-                    LAST_NAME: 'WOOD'
+                    nomis_id: "RO_USER5",
+                    staff_id: "DELIUS_USER5",
+                    first_name: 'JULIE',
+                    last_name: 'WOOD'
                 },
                 {
-                    NOMIS_ID: "RO_USER6",
-                    STAFF_ID: "DELIUS_USER6",
-                    FIRST_NAME: 'LYDIA',
-                    LAST_NAME: 'HUME'
+                    nomis_id: "RO_USER6",
+                    staff_id: "DELIUS_USER6",
+                    first_name: 'LYDIA',
+                    last_name: 'HUME'
                 }
             ])
         );

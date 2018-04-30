@@ -1,7 +1,7 @@
 const config = require('./server/config');
 
 module.exports = {
-    client: 'mssql',
+    client: 'postgresql',
     connection: {
         server: config.db.server,
         user: config.db.username,

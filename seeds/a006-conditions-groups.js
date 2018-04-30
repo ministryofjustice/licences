@@ -1,76 +1,76 @@
 exports.seed = knex =>
-    knex('CONDITIONS_GROUPS').delete()
+    knex('conditions_groups').delete()
         .then(
-            () => knex('CONDITIONS_GROUPS').insert([
+            () => knex('conditions_groups').insert([
                 {
-                    ID: 'PEOPLE',
-                    NAME: 'People, contact and relationships',
-                    TYPE: 'MAIN'
+                    id: 'PEOPLE',
+                    name: 'People, contact and relationships',
+                    type: 'MAIN'
                 },
                 {
-                    ID: 'DRUGS',
-                    NAME: 'Drugs, health and behaviour',
-                    TYPE: 'MAIN'
+                    id: 'DRUGS',
+                    name: 'Drugs, health and behaviour',
+                    type: 'MAIN'
                 },
                 {
-                    ID: 'CURFEW',
-                    NAME: 'Curfew and reporting',
-                    TYPE: 'MAIN'
+                    id: 'CURFEW',
+                    name: 'Curfew and reporting',
+                    type: 'MAIN'
                 },
                 {
-                    ID: 'TRAVEL',
-                    NAME: 'Travel',
-                    TYPE: 'MAIN'
+                    id: 'TRAVEL',
+                    name: 'Travel',
+                    type: 'MAIN'
                 },
                 {
-                    ID: 'EXCLUSION',
-                    NAME: 'Exclusion',
-                    TYPE: 'MAIN'
+                    id: 'EXCLUSION',
+                    name: 'Exclusion',
+                    type: 'MAIN'
                 },
                 {
-                    ID: 'TECHNOLOGY',
-                    NAME: 'Technology',
-                    TYPE: 'MAIN'
+                    id: 'TECHNOLOGY',
+                    name: 'Technology',
+                    type: 'MAIN'
                 },
                 {
-                    ID: 'PERSONORGROUP',
-                    NAME: 'Person or group',
-                    TYPE: 'SUB'
+                    id: 'PERSONORGROUP',
+                    name: 'Person or group',
+                    type: 'SUB'
                 },
                 {
-                    ID: 'CHILDREN',
-                    NAME: 'Children',
-                    TYPE: 'SUB'
+                    id: 'CHILDREN',
+                    name: 'Children',
+                    type: 'SUB'
                 },
                 {
-                    ID: 'VICTIMS',
-                    NAME: 'Victims',
-                    TYPE: 'SUB'
+                    id: 'VICTIMS',
+                    name: 'Victims',
+                    type: 'SUB'
                 },
                 {
-                    ID: 'PASSPORTS',
-                    NAME: 'Passports',
-                    TYPE: 'SUB'
+                    id: 'PASSPORTS',
+                    name: 'Passports',
+                    type: 'SUB'
                 },
                 {
-                    ID: 'VEHICLES',
-                    NAME: 'Vehicles',
-                    TYPE: 'SUB'
+                    id: 'VEHICLES',
+                    name: 'Vehicles',
+                    type: 'SUB'
                 },
                 {
-                    ID: 'PHONES',
-                    NAME: 'Mobile phones',
-                    TYPE: 'SUB'
+                    id: 'PHONES',
+                    name: 'Mobile phones',
+                    type: 'SUB'
                 },
                 {
-                    ID: 'COMPUTERS',
-                    NAME: 'Computers and internet',
-                    TYPE: 'SUB'
+                    id: 'COMPUTERS',
+                    name: 'Computers and internet',
+                    type: 'SUB'
                 },
                 {
-                    ID: 'CAMERAS',
-                    NAME: 'Cameras and photos',
-                    TYPE: 'SUB'
+                    id: 'CAMERAS',
+                    name: 'Cameras and photos',
+                    type: 'SUB'
                 }
 
             ])

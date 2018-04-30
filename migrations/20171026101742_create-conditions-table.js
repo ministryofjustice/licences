@@ -1,18 +1,17 @@
 exports.up = knex =>
     Promise.all([
-        knex.schema.createTableIfNotExists('CONDITIONS', table => {
-            table.string('ID', 50).unique().primary('PK_CONDITIONS');
-            table.date('TIMESTAMP').notNullable().defaultTo(knex.fn.now());
-            table.string('TYPE', 50).notNullable();
-            table.string('TEXT').notNullable();
-            table.string('USER_INPUT');
-            table.string('GROUP', 50);
-            table.string('SUBGROUP', 50);
-            table.bit('ACTIVE').defaultTo(0);
-        }),
-        knex.raw(`CREATE INDEX CONDITION_BY_TYPE ON CONDITIONS (TYPE) INCLUDE (ID, TIMESTAMP, TEXT, USER_INPUT)
-                WITH (ONLINE = ON);`)
+        knex.schema.createTableIfNotExists('conditions', table => {
+            table.string('id', 50).unique().primary('pk_conditions');
+            table.date('timestamp').notNullable().defaultTo(knex.fn.now());
+            table.string('type', 50).notNullable();
+            table.text('text').notNullable();
+            table.text('user_input');
+            table.string('group', 50);
+            table.string('subgroup', 50);
+            table.boolean('active').defaultTo(0);
+            table.index(['type', 'id', 'timestamp', 'text'], 'condition_by_type');
+        })
     ]);
 
 exports.down = knex =>
-    knex.schema.dropTable('CONDITIONS');
+    knex.schema.dropTable('conditions');

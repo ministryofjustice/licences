@@ -1,11 +1,12 @@
 exports.up = knex =>
     Promise.all([
-        knex.schema.createTableIfNotExists('STAFF_IDS', table => {
-            table.string('NOMIS_ID', 8).notNullable();
-            table.string('STAFF_ID', 8).notNullable();
-            table.string('STAFF_NAME').notNullable();
+        knex.schema.createTableIfNotExists('staff_ids', table => {
+            table.string('nomis_id', 255).notNullable();
+            table.string('staff_id', 255).notNullable();
+            table.string('first_name').nullable();
+            table.string('last_name').nullable();
         })
     ]);
 
 exports.down = knex =>
-    knex.schema.dropTable('STAFF_IDS');
+    knex.schema.dropTable('staff_ids');

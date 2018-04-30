@@ -1,101 +1,101 @@
 exports.seed = knex =>
-    knex('CONDITIONS_UI').delete()
+    knex('conditions_ui').delete()
         .then(
-            () => knex('CONDITIONS_UI').insert([
+            () => knex('conditions_ui').insert([
                 {
-                    UI_ID: "appointmentName",
-                    FIELD_POSITION: '{' +
+                    ui_id: "appointmentName",
+                    field_position: '{' +
                     '"appointmentName": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "mentalHealthName",
-                    FIELD_POSITION: '{' +
+                    ui_id: "mentalHealthName",
+                    field_position: '{' +
                     '"mentalHealthName": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "appointmentDetails",
-                    FIELD_POSITION: '{' +
+                    ui_id: "appointmentDetails",
+                    field_position: '{' +
                     '"appointmentDate": "0",' +
                     '"appointmentTime": "1",' +
                     '"appointmentAddress": "2"' +
                     '}'
                 },
                 {
-                    UI_ID: "victimDetails",
-                    FIELD_POSITION: '{' +
+                    ui_id: "victimDetails",
+                    field_position: '{' +
                     '"victimFamilyMembers": "0",' +
                     '"socialServicesDept": "1"' +
                     '}'
                 },
                 {
-                    UI_ID: "noUnsupervisedContact",
-                    FIELD_POSITION: '{' +
+                    ui_id: "noUnsupervisedContact",
+                    field_position: '{' +
                     '"unsupervisedContactGender": "0",' +
                     '"unsupervisedContactAge": "1",' +
                     '"unsupervisedContactSocial": "2"' +
                     '}'
                 },
                 {
-                    UI_ID: "noContactOffenders",
-                    FIELD_POSITION: '{' +
+                    ui_id: "noContactOffenders",
+                    field_position: '{' +
                     '"noContactOffenders": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "groupsOrOrganisations",
-                    FIELD_POSITION: '{' +
+                    ui_id: "groupsOrOrganisations",
+                    field_position: '{' +
                     '"groupsOrOrganisation": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "courseOrCentre",
-                    FIELD_POSITION: '{' +
+                    ui_id: "courseOrCentre",
+                    field_position: '{' +
                     '"courseOrCentre": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "noWorkWithAge",
-                    FIELD_POSITION: '{' +
+                    ui_id: "noWorkWithAge",
+                    field_position: '{' +
                     '"noWorkWithAge": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "noSpecificItems",
-                    FIELD_POSITION: '{' +
+                    ui_id: "noSpecificItems",
+                    field_position: '{' +
                     '"noSpecificItems": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "noCurrencyQuantity",
-                    FIELD_POSITION: '{' +
+                    ui_id: "noCurrencyQuantity",
+                    field_position: '{' +
                     '"cashQuantity": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "vehicleDetails",
-                    FIELD_POSITION: '{' +
+                    ui_id: "vehicleDetails",
+                    field_position: '{' +
                     '"vehicleDetails": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "intimateGender",
-                    FIELD_POSITION: '{' +
+                    ui_id: "intimateGender",
+                    field_position: '{' +
                     '"intimateGender": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "confinedDetails",
-                    FIELD_POSITION: '{' +
+                    ui_id: "confinedDetails",
+                    field_position: '{' +
                     '"confinedTo": "0",' +
                     '"confinedFrom": "1",' +
                     '"confinedReviewFrequency": "2"' +
                     '}'
                 },
                 {
-                    UI_ID: "curfewDetails",
-                    FIELD_POSITION: '{' +
+                    ui_id: "curfewDetails",
+                    field_position: '{' +
                     '"curfewAddress": "0",' +
                     '"curfewFrom": "1",' +
                     '"curfewTo": "2",' +
@@ -103,26 +103,26 @@ exports.seed = knex =>
                     '}'
                 },
                 {
-                    UI_ID: "exclusionArea",
-                    FIELD_POSITION: '{' +
+                    ui_id: "exclusionArea",
+                    field_position: '{' +
                     '"exclusionArea": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "noEnterPlace",
-                    FIELD_POSITION: '{' +
+                    ui_id: "noEnterPlace",
+                    field_position: '{' +
                     '"noEnterPlace": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "notInSightOf",
-                    FIELD_POSITION: '{' +
+                    ui_id: "notInSightOf",
+                    field_position: '{' +
                     '"notInSightOf": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "reportingDetails",
-                    FIELD_POSITION: '{' +
+                    ui_id: "reportingDetails",
+                    field_position: '{' +
                     '"reportingAddress": "0",' +
                     '"reportingTime": "1",' +
                     '"reportingDaily": "2",' +
@@ -130,14 +130,14 @@ exports.seed = knex =>
                     '}'
                 },
                 {
-                    UI_ID: "alcoholLimit",
-                    FIELD_POSITION: '{' +
+                    ui_id: "alcoholLimit",
+                    field_position: '{' +
                     '"alcoholLimit": "0"' +
                     '}'
                 },
                 {
-                    UI_ID: "notToReside",
-                    FIELD_POSITION: '{' +
+                    ui_id: "notToReside",
+                    field_position: '{' +
                     '"notResideWithGender": "0",' +
                     '"notResideWithAge": "1"' +
                     '}'
