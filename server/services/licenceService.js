@@ -11,10 +11,14 @@ const {
     notAllValuesEmpty,
     allValuesEmpty,
     getFirstArrayItems,
-    replaceArrayItem} = require('../utils/functionalHelpers');
+    replaceArrayItem,
+    flatten
+} = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
 const {transitions} = require('../models/licenceStages');
 const {getLicenceStatus} = require('../utils/licenceStatus');
+const {licenceStages} = require('../models/licenceStages');
+const validate = require('./utils/licenceValidation');
 
 module.exports = function createLicenceService(licenceClient) {
 
@@ -272,6 +276,24 @@ module.exports = function createLicenceService(licenceClient) {
         return replaceArrayItem(addresses, index, newAddressObject);
     }
 
+    function validateLicence(licence, stage) {
+
+        const sections = getLicenceSectionToValidate(stage);
+        const validationErrors = sections.map(validate(licence)).filter(item => item);
+
+        if (isEmpty(validationErrors)) {
+            return [];
+        }
+
+        const errors = validationErrors.map(error => {
+            return error.details.map(key => {
+                const {path, message, type} = key;
+                return {path, message, type};
+            });
+        });
+        return flatten(errors);
+    }
+
     return {
         reset,
         getLicence,
@@ -281,6 +303,24 @@ module.exports = function createLicenceService(licenceClient) {
         markForHandover,
         update,
         updateStage,
-        updateAddress
+        updateAddress,
+        validateLicence
     };
 };
+
+function getLicenceSectionToValidate(stage) {
+    switch (stage) {
+        case licenceStages.ELIGIBILITY:
+            return ['eligibility', 'proposedAddress'];
+        case licenceStages.PROCESSING_RO:
+            return ['curfew', 'risk', 'reporting'];
+        case licenceStages.PROCESSING_CA:
+            // TODO
+            return ['eligibility', 'proposedAddress'];
+        case licenceStages.APPROVAL:
+            // TODO
+            return ['eligibility', 'proposedAddress'];
+        default:
+            return null;
+    }
+}

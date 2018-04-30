@@ -12,6 +12,13 @@ module.exports = {
         });
     },
 
+    deleteAllTest: function() {
+        return new Promise((resolve, reject) => {
+            const sql = `DELETE FROM LICENCES WHERE NOMIS_ID LIKE '%XX'`;
+            execSql(sql, null, resolve, reject);
+        });
+    },
+
     getLicences: function(nomisIds) {
         return new Promise((resolve, reject) => {
             const sql = `SELECT NOMIS_ID as nomisId, ID as id, STAGE as stage, JSON_QUERY(LICENCE) AS licence 
