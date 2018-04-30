@@ -1,5 +1,5 @@
 const config = require('../config.js');
-const {getCollection} = require('./dataAccess/dbMethods');
+const db = require('./dataAccess/db');
 const logger = require('../../log.js');
 
 const superagent = require('superagent');
@@ -12,9 +12,7 @@ module.exports = {
 };
 
 function dbCheck() {
-    return new Promise((resolve, reject) => {
-        getCollection('SELECT 1 AS [ok]', null, resolve, reject);
-    });
+    return db.query('SELECT 1 AS ok');
 }
 
 function nomisApiCheck() {

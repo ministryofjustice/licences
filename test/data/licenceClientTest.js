@@ -1,6 +1,5 @@
 const proxyquire = require('proxyquire');
 proxyquire.noCallThru();
-const TYPES = require('tedious').TYPES;
 
 const {
     expect,
@@ -9,331 +8,252 @@ const {
 
 describe('licenceClient', () => {
 
-    const getCollectionStub = sandbox.stub();
-    const execSqlStub = sandbox.stub();
-
-    const licencesProxy = (getCollection = getCollectionStub, execSql = execSqlStub) => {
-        return proxyquire('../../server/data/licenceClient', {
-            './dataAccess/dbMethods': {
-                getCollection,
-                execSql
-            }
-        });
-    };
-
-    describe('getLicences', function() {
-
-        const standardResponse = [{
-            JSON1: {
-                value: JSON.stringify([{
-                    nomisId: 'A6627JH',
-                    id: 4,
-                    licence: {
-                        name: 'Bryanston, David',
-                        nomisId: 'A6627JH',
-                        establishment: 'HMP Birmingham',
-                        dischargeDate: '2017-07-10'
-                    }
-                }])
-            }
-        }];
-
-        const expectedReturnValue = [{
-            nomisId: 'A6627JH',
-            id: 4,
+    const standardResponse = {
+        rows: [{
+            nomis_id: 'A6627JH',
+            stage: 'ELIGIBILITY',
             licence: {
                 name: 'Bryanston, David',
                 nomisId: 'A6627JH',
                 establishment: 'HMP Birmingham',
                 dischargeDate: '2017-07-10'
             }
-        }];
+        }]
+    };
 
-        it('should return expected data', () => {
-            getCollectionStub.callsArgWith(2, standardResponse);
-            return expect(licencesProxy().getLicences(['ABC123'])).to.eventually.eql(expectedReturnValue);
+    const queryStub = sandbox.stub();
+
+    const licencesProxy = (query = queryStub) => {
+        return proxyquire('../../server/data/licenceClient', {
+            './dataAccess/db': {
+                query
+            }
         });
+    };
 
-        it('should call getCollection', () => {
+    beforeEach(() => {
+        queryStub.returnsPromise().resolves(standardResponse);
+    });
+
+    afterEach(() => {
+        sandbox.reset();
+    });
+
+    describe('getLicences', function() {
+
+        it('should call query', () => {
             licencesProxy().getLicences(['ABC123']);
-            expect(getCollectionStub).to.have.callCount(1);
-        });
-
-        it('should return recordset as an array', () => {
-            getCollectionStub.callsArgWith(2, standardResponse);
-            return expect(licencesProxy().getLicences(['ABC123'])).to.eventually.be.an('array');
+            expect(queryStub).to.have.callCount(1);
         });
 
         it('should pass in the correct sql for multiple nomis IDs', () => {
 
-            const expectedClause = 'WHERE NOMIS_ID IN (\'ABC123\',\'DEF456\',\'XYZ789\')';
+            const expectedClause = 'where nomis_id in (\'ABC123\',\'DEF456\',\'XYZ789\')';
 
-            licencesProxy().getLicences(['ABC123', 'DEF456', 'XYZ789']);
-            const sql = getCollectionStub.getCalls()[0].args[0];
-            expect(sql).includes(expectedClause);
+            const result = licencesProxy().getLicences(['ABC123', 'DEF456', 'XYZ789']);
+
+            return result.then(data => {
+                expect(queryStub.getCalls()[0].args[0].text).includes(expectedClause);
+            });
         });
 
         it('should pass in the correct sql for a single nomis ID', () => {
 
-            const expectedClause = `WHERE NOMIS_ID IN ('ABC123') FOR JSON PATH`;
+            const expectedClause = `where nomis_id in ('ABC123')`;
 
-            licencesProxy().getLicences(['ABC123']);
-            const sql = getCollectionStub.getCalls()[0].args[0];
-            expect(sql).includes(expectedClause);
+            const result = licencesProxy().getLicences(['ABC123']);
+
+            return result.then(data => {
+                expect(queryStub.getCalls()[0].args[0].text).includes(expectedClause);
+            });
         });
 
     });
 
     describe('createLicence', () => {
 
-        execSqlStub.callsArg(2);
-
         it('should pass in the correct sql', () => {
 
-            const expectedClause = 'INSERT INTO LICENCES (NOMIS_ID, LICENCE, STAGE) ' +
-                'VALUES (@nomisId, @licence, @stage)';
+            const expectedClause = 'insert into licences (nomis_id, licence, stage) values ($1, $2, $3)';
 
-            licencesProxy().createLicence('ABC123');
-            const sql = execSqlStub.getCalls()[0].args[0];
-            expect(sql).to.eql(expectedClause);
+            const result = licencesProxy().createLicence('ABC123');
+
+            return result.then(data => {
+                expect(queryStub.getCalls()[0].args[0].text).includes(expectedClause);
+            });
         });
 
         it('should pass in the correct parameters', () => {
 
-            const expectedParameters = [
-                {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
-                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({})},
-                {column: 'stage', type: TYPES.VarChar, value: 'ELIGIBILITY'}
-            ];
+            const expectedParameters = ['ABC123', {}, 'ELIGIBILITY'];
 
-            licencesProxy().createLicence('ABC123');
-            const sql = execSqlStub.getCalls()[0].args[1];
-            expect(sql).to.eql(expectedParameters);
+            const result = licencesProxy().createLicence('ABC123');
+
+            return result.then(data => {
+                const values = queryStub.getCalls()[0].args[0].values;
+                expect(values).to.eql(expectedParameters);
+            });
         });
 
         it('should pass in the correct parameters if licence passed in', () => {
 
-            const expectedParameters = [
-                {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
-                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({a: 'b'})},
-                {column: 'stage', type: TYPES.VarChar, value: 'ELIGIBILITY'}
-            ];
+            const expectedParameters = ['ABC123', {a: 'b'}, 'ELIGIBILITY'];
 
-            licencesProxy().createLicence('ABC123', {a: 'b'});
-            const sql = execSqlStub.getCalls()[0].args[1];
-            expect(sql).to.eql(expectedParameters);
+            const result = licencesProxy().createLicence('ABC123', {a: 'b'});
+
+            return result.then(data => {
+                const values = queryStub.getCalls()[0].args[0].values;
+                expect(values).to.eql(expectedParameters);
+            });
         });
 
         it('should pass in the correct parameters if stage passed in', () => {
 
-            const expectedParameters = [
-                {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'},
-                {column: 'licence', type: TYPES.VarChar, value: JSON.stringify({a: 'b'})},
-                {column: 'stage', type: TYPES.VarChar, value: 'SENT'}
-            ];
+            const expectedParameters = ['ABC123', {a: 'b'}, 'SENT'];
 
-            licencesProxy().createLicence('ABC123', {a: 'b'}, 'SENT');
-            const sql = execSqlStub.getCalls()[0].args[1];
-            expect(sql).to.eql(expectedParameters);
+            const result = licencesProxy().createLicence('ABC123', {a: 'b'}, 'SENT');
+
+            return result.then(data => {
+                const values = queryStub.getCalls()[0].args[0].values;
+                expect(values).to.eql(expectedParameters);
+            });
         });
     });
 
     describe('updateSection', () => {
-        execSqlStub.callsArgWith(2);
 
         it('should pass in the correct sql', () => {
 
-            const expectedUpdate = 'SET LICENCE = JSON_MODIFY(LICENCE, @section, JSON_QUERY(@object))';
-            const expectedWhere = 'WHERE NOMIS_ID=@nomisId';
+            const expectedUpdate = 'update licences set licence = jsonb_set(licence, $1, $2)';
+            const expectedWhere = 'where nomis_id=$3';
 
-            licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
-            const sql = execSqlStub.getCalls()[0].args[0];
-            expect(sql).to.include(expectedUpdate);
-            expect(sql).to.include(expectedWhere);
+            const result = licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
+
+            return result.then(data => {
+                const sql = queryStub.getCalls()[0].args[0].text;
+                expect(sql).to.include(expectedUpdate);
+                expect(sql).to.include(expectedWhere);
+            });
         });
 
         it('should pass in the correct parameters', () => {
 
-            const expectedParameters = [
-                {column: 'section', type: TYPES.VarChar, value: '$.section'},
-                {column: 'object', type: TYPES.VarChar, value: JSON.stringify({hi: 'ho'})},
-                {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'}
-            ];
+            const expectedParameters = ['{licenceConditions}', {hi: 'ho'}, 'ABC123'];
 
-            licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
-            const params = execSqlStub.getCalls()[0].args[1];
-            expect(params).to.eql(expectedParameters);
+            const result = licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
+
+            return result.then(data => {
+                const values = queryStub.getCalls()[0].args[0].values;
+                expect(values).to.eql(expectedParameters);
+            });
         });
     });
 
     describe('getStandardConditions', () => {
-        const standardConditions = [
-            {
-                ID: '1',
-                TIMESTAMP: '2017-10-26',
-                TYPE: 'STANDARD',
-                TEXT: 'Text'
-            },
-            {
-                ID: '2',
-                TIMESTAMP: '2017-10-26',
-                TYPE: 'STANDARD',
-                TEXT: 'Text2'
-            }
-        ];
-
-        it('should return expected conditions data', async () => {
-            getCollectionStub.callsArgWith(2, standardConditions);
-            const result = await licencesProxy().getStandardConditions();
-
-            return expect(result).to.deep.equal(standardConditions);
-        });
 
         it('should call getStandardConditions', () => {
             licencesProxy().getStandardConditions();
-            expect(getCollectionStub).to.have.callCount(1);
+            expect(queryStub).to.have.callCount(1);
         });
     });
 
     describe('getAdditionalConditions', () => {
 
-        const additionalConditionsResponse = [
-            {
-                ID: '1',
-                TIMESTAMP: '2017-10-26',
-                TYPE: 'ADDITIONAL',
-                TEXT: 'Text',
-                FIELD_POSITION: {value: '{"a": "Text2"}'}
-            },
-            {
-                ID: '2',
-                TIMESTAMP: '2017-10-26',
-                TYPE: 'ADDITIONAL',
-                TEXT: 'Text2',
-                FIELD_POSITION: {value: '{"a": "Text2"}'}
-            }
-        ];
-
-        const additionalConditions = [
-            {
-                ID: '1',
-                TIMESTAMP: '2017-10-26',
-                TYPE: 'ADDITIONAL',
-                TEXT: 'Text',
-                FIELD_POSITION: {value: {a: 'Text2'}}
-            },
-            {
-                ID: '2',
-                TIMESTAMP: '2017-10-26',
-                TYPE: 'ADDITIONAL',
-                TEXT: 'Text2',
-                FIELD_POSITION: {value: {a: 'Text2'}}
-            }
-        ];
-
-        it('it should return expected additional conditions data', async () => {
-            getCollectionStub.callsArgWith(2, additionalConditionsResponse);
-            const result = await licencesProxy().getAdditionalConditions();
-
-            return expect(result).to.deep.equal(additionalConditions);
+        it('should call db.query', () => {
+            licencesProxy().getAdditionalConditions();
+            expect(queryStub).to.have.callCount(1);
         });
 
-        it('should call get collection from dbMethods', () => {
-            licencesProxy().getAdditionalConditions();
-            expect(getCollectionStub).to.have.callCount(1);
-        });
-
-        it('should not pass parameters to get collection', () => {
+        it('should not pass parameters to query', () => {
             licencesProxy().getAdditionalConditions();
 
-            const params = getCollectionStub.getCalls()[0].args[1];
-            expect(params).to.be.null();
+            const params = queryStub.getCalls()[0].args[0].values;
+            expect(params).to.be.undefined();
         });
 
         describe('when no ids are passed in', () => {
 
             it('should use sql without IN clause', () => {
-                licencesProxy().getAdditionalConditions();
+                const result = licencesProxy().getAdditionalConditions();
 
-                const sql = getCollectionStub.getCalls()[0].args[0];
-                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND ACTIVE = 1';
-                expect(sql).to.contain(expectedSql);
+                return result.then(data => {
+                    const sql = queryStub.getCalls()[0].args[0];
+                    const expectedSql = 'where conditions.type = \'ADDITIONAL\' and active = true';
+                    expect(sql).to.contain(expectedSql);
+                });
             });
         });
 
         describe('when ids are passed in', () => {
 
             it('should use sql with IN clause', () => {
-                licencesProxy().getAdditionalConditions(['1', '2']);
+                const result = licencesProxy().getAdditionalConditions(['1', '2']);
 
-                const sql = getCollectionStub.getCalls()[0].args[0];
-                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (\'1\',\'2\') ' +
-                    'AND ACTIVE = 1';
-                expect(sql).to.contain(expectedSql);
+                return result.then(data => {
+                    const sql = queryStub.getCalls()[0].args[0];
+                    const expectedSql = 'where conditions.type = \'ADDITIONAL\' and conditions.id in (\'1\',\'2\') ' +
+                        'and active = true';
+                    expect(sql).to.contain(expectedSql);
+                });
             });
 
             it('should use sql with IN clause when there is 1 id', () => {
-                licencesProxy().getAdditionalConditions('1');
+                const result = licencesProxy().getAdditionalConditions('1');
 
-                const sql = getCollectionStub.getCalls()[0].args[0];
-                const expectedSql = 'WHERE CONDITIONS.TYPE = \'ADDITIONAL\' AND CONDITIONS.ID IN (\'1\') ' +
-                    'AND ACTIVE = 1';
-                expect(sql).to.contain(expectedSql);
+                return result.then(data => {
+                    const sql = queryStub.getCalls()[0].args[0];
+                    const expectedSql = 'where conditions.type = \'ADDITIONAL\' and conditions.id in (\'1\') ' +
+                        'and active = true';
+                    expect(sql).to.contain(expectedSql);
+                });
             });
         });
     });
 
     describe('updateStage', () => {
-        execSqlStub.callsArgWith(2);
 
         it('should pass in the correct sql', () => {
 
-            const expectedUpdate = 'SET STAGE = @stage';
-            const expectedWhere = 'WHERE NOMIS_ID = @nomisId';
+            const expectedUpdate = 'set stage = $1';
+            const expectedWhere = 'where nomis_id = $2';
 
-            licencesProxy().updateStage('ABC123', 'NEW_STAGE');
-            const sql = execSqlStub.getCalls()[0].args[0];
-            expect(sql).to.include(expectedUpdate);
-            expect(sql).to.include(expectedWhere);
+            const result = licencesProxy().updateStage('ABC123', 'NEW_STAGE');
+
+            return result.then(data => {
+                const sql = queryStub.getCalls()[0].args[0].text;
+                expect(sql).to.include(expectedUpdate);
+                expect(sql).to.include(expectedWhere);
+            });
         });
 
         it('should pass in the correct parameters', () => {
 
-            const expectedParameters = [
-                {column: 'stage', type: TYPES.VarChar, value: 'NEW_STAGE'},
-                {column: 'nomisId', type: TYPES.VarChar, value: 'ABC123'}
-            ];
+            const expectedParameters = ['NEW_STAGE', 'ABC123'];
 
-            licencesProxy().updateStage('ABC123', 'NEW_STAGE');
-            const params = execSqlStub.getCalls()[0].args[1];
-            expect(params).to.eql(expectedParameters);
+            const result = licencesProxy().updateStage('ABC123', 'NEW_STAGE');
+
+            return result.then(data => {
+                const values = queryStub.getCalls()[0].args[0].values;
+                expect(values).to.eql(expectedParameters);
+            });
         });
 
     });
 
     describe('getDeliusUserName', () => {
 
-        const deliusUserName = [{ID: '1'}];
-
-        it('it should return expected deliusUserName', async () => {
-            getCollectionStub.callsArgWith(2, deliusUserName);
-            const result = await licencesProxy().getDeliusUserName(5);
-
-            return expect(result).to.deep.equal(deliusUserName);
+        it('should call db.query', () => {
+            licencesProxy().getDeliusUserName(5);
+            expect(queryStub).to.have.callCount(1);
         });
 
-        it('should call get collection from dbMethods', () => {
-            licencesProxy().getDeliusUserName(5);
-            expect(getCollectionStub).to.have.callCount(1);
-        });
+        it('should pass in the correct parameters', () => {
+            const result = licencesProxy().getDeliusUserName(5);
 
-        it('should pass parameters to get collection', () => {
-            licencesProxy().getDeliusUserName(5);
-
-            const params = getCollectionStub.getCalls()[0].args[1];
-            expect(params).to.eql([
-                {column: 'nomisUserName', type: TYPES.VarChar, value: 5}
-            ]);
+            return result.then(data => {
+                const values = queryStub.getCalls()[0].args[0].values;
+                expect(values).to.eql([5]);
+            });
         });
     });
 });
