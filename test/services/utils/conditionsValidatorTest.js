@@ -8,7 +8,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {a: 0, b: 1}}}
+            {field_position: {value: {a: 0, b: 1}}}
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(false);
@@ -20,7 +20,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {a: 0, b: 1, c: 2}}}
+            {field_position: {a: 0, b: 1, c: 2}}
         ];
 
         const expectedErrors = {
@@ -37,7 +37,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+            {field_position: {appointmentDate: 0}}
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(false);
@@ -49,7 +49,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+            {field_position: {appointmentDate: 0}}
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(false);
@@ -61,7 +61,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+            {field_position: {appointmentDate: 0}}
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(true);
@@ -73,7 +73,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+            {field_position: {appointmentDate: 0}}
         ];
 
         const expectedErrors = {
@@ -90,7 +90,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {a: 0, b: 1}}}
+            {field_position: {a: 0, b: 1}}
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(false);
@@ -103,7 +103,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {a: 0, b: 2}}}
+            {field_position: {a: 0, b: 2}}
         ];
 
         const expectedErrors = {
@@ -120,7 +120,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {a: 0, b: 1}}}
+            {field_position: {a: 0, b: 1}}
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(true);
@@ -130,7 +130,7 @@ describe('conditionsValidator', () => {
         const inputObject = {};
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: null}}
+            {field_position: null}
         ];
 
         expect(validate(inputObject, conditionsSelected).validates).to.eql(true);
@@ -142,7 +142,7 @@ describe('conditionsValidator', () => {
         };
 
         const conditionsSelected = [
-            {FIELD_POSITION: {value: {appointmentDate: 0}}}
+            {field_position: {appointmentDate: 0}}
         ];
 
         expect(validate(inputObject, conditionsSelected).appointmentDate).to.eql('2017-12-23');

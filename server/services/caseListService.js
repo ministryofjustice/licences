@@ -46,12 +46,12 @@ function getROCaseList(nomisClient, licenceClient, user) {
     return async () => {
         const deliusUserName = await licenceClient.getDeliusUserName(user.username);
 
-        if (!deliusUserName[0]) {
+        if (!deliusUserName) {
             logger.warn(`No delius user ID for nomis ID '${user.username}'`);
             return [];
         }
 
-        const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName[0].STAFF_ID.value);
+        const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName);
 
         if (!isEmpty(requiredPrisoners)) {
             const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
@@ -77,9 +77,9 @@ function getOffenderIds(releases) {
 
 function getStatus(prisoner, licences, role) {
 
-    const licenceForPrisoner = licences.find(rawLicence => {
-        return prisoner.offenderNo === rawLicence.nomisId;
-    });
+    const licenceForPrisoner = licences ? licences.find(rawLicence => {
+        return prisoner.offenderNo === rawLicence.nomis_id;
+    }) : null;
 
     if (!licenceForPrisoner) {
         return {stage: licenceStages.UNSTARTED, status: 'Not started'};

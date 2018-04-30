@@ -86,8 +86,8 @@ module.exports = function createConditionsService(licenceClient) {
 };
 
 function splitIntoGroupedObject(conditionObject, condition) {
-    const groupName = condition.GROUP_NAME.value || 'base';
-    const subgroupName = condition.SUBGROUP_NAME.value || 'base';
+    const groupName = condition.group_name || 'base';
+    const subgroupName = condition.subgroup_name || 'base';
 
     const group = conditionObject[groupName] || {};
     const subgroup = group[subgroupName] || [];
@@ -102,10 +102,10 @@ function populateFromSavedLicence(inputtedConditions) {
     const populatedConditionIds = Object.keys(inputtedConditions);
 
     return condition => {
-        const submission = inputtedConditions[condition.ID.value] || {};
-        const selected = populatedConditionIds.includes(String(condition.ID.value));
+        const submission = inputtedConditions[condition.id] || {};
+        const selected = populatedConditionIds.includes(String(condition.id));
 
-        return {...condition, SELECTED: selected, USER_SUBMISSION: submission};
+        return {...condition, selected: selected, user_submission: submission};
     };
 }
 
@@ -117,29 +117,29 @@ function populateFromFormSubmission(validatedInput) {
         }
 
         if (!conditionHasInputFields(condition, validatedInput)) {
-            return {...condition, SELECTED: true};
+            return {...condition, selected: true};
         }
 
-        const conditionFieldKeys = Object.keys(condition.FIELD_POSITION.value);
+        const conditionFieldKeys = Object.keys(condition.field_position);
         const userInputsForCondition = getUserInputsForCondition(validatedInput, conditionFieldKeys);
         const validationErrors = getValidationErrors(validatedInput, conditionFieldKeys);
 
         return {
             ...condition,
-            SELECTED: true,
-            USER_SUBMISSION: userInputsForCondition,
-            ERRORS: validationErrors
+            selected: true,
+            user_submission: userInputsForCondition,
+            errors: validationErrors
         };
     };
 }
 
 function conditionSelected(input, condition) {
     const selectedConditions = input.additionalConditions;
-    return selectedConditions.includes(String(condition.ID.value));
+    return selectedConditions.includes(String(condition.id));
 }
 
 function conditionHasInputFields(condition) {
-    return !!condition.FIELD_POSITION.value;
+    return !!condition.field_position;
 }
 
 function getUserInputsForCondition(input, conditionInputFields) {
@@ -174,5 +174,5 @@ function formatDateField(input) {
 }
 
 function orderForView(a, b) {
-    return conditionsOrder.indexOf(a.ID.value) - conditionsOrder.indexOf(b.ID.value);
+    return conditionsOrder.indexOf(a.id) - conditionsOrder.indexOf(b.id);
 }

@@ -29,12 +29,12 @@ const filteredToAttributes = (input, acceptedKeys, notAcceptedKeys = []) => {
 
 function createAdditionalConditionsObject(selectedConditions, formInputs) {
     return selectedConditions.reduce((conditions, condition) => {
-        const conditionAttributes = condition.FIELD_POSITION.value;
+        const conditionAttributes = condition.field_position;
         const userInputs = conditionAttributes ? inputsFor(conditionAttributes, formInputs) : {};
 
         return {
             ...conditions,
-            [condition.ID.value]: {
+            [condition.id]: {
                 ...userInputs
             }
         };
@@ -86,25 +86,25 @@ function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUse
 
 function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputMethod) {
     return condition => {
-        const selectedCondition = selectedConditions.find(selected => selected.ID.value == condition);
+        const selectedCondition = selectedConditions.find(selected => selected.id == condition);
         const userInput = rawLicence.licenceConditions.additional[condition];
         const content = getContentForCondition(selectedCondition, userInput, injectUserInputMethod);
 
         return {
             content,
-            group: selectedCondition.GROUP_NAME.value,
-            subgroup: selectedCondition.SUBGROUP_NAME.value,
-            id: selectedCondition.ID.value
+            group: selectedCondition.group_name,
+            subgroup: selectedCondition.subgroup_name,
+            id: selectedCondition.id
         };
     };
 }
 
 function getContentForCondition(selectedCondition, userInput, injectUserInputMethod) {
-    const userInputName = selectedCondition.USER_INPUT.value;
+    const userInputName = selectedCondition.user_input;
 
     return userInputName ?
         injectUserInputMethod(selectedCondition, userInput) :
-        [{text: selectedCondition.TEXT.value}];
+        [{text: selectedCondition.text}];
 }
 
 function getObjectForBespoke(condition, index) {
@@ -119,9 +119,9 @@ function getObjectForBespoke(condition, index) {
 
 function injectUserInputAsObject(condition, userInput) {
 
-    const conditionName = condition.USER_INPUT.value;
-    const conditionText = condition.TEXT.value;
-    const fieldPositionObject = condition.FIELD_POSITION.value;
+    const conditionName = condition.user_input;
+    const conditionText = condition.text;
+    const fieldPositionObject = condition.field_position;
 
     return conditionName === 'appointmentDetails' ?
         injectUserInputAppointmentAsObject(userInput, conditionText) :
@@ -165,9 +165,9 @@ function populateAdditionalConditionsAsString(rawLicence, selectedConditions) {
 
 function injectUserInputAsString(condition, userInput) {
 
-    const conditionName = condition.USER_INPUT.value;
-    const conditionText = condition.TEXT.value;
-    const fieldPositionObject = condition.FIELD_POSITION.value;
+    const conditionName = condition.user_input;
+    const conditionText = condition.text;
+    const fieldPositionObject = condition.field_position;
     const placeHolders = getPlaceholdersFrom(conditionText);
 
     if (conditionName === 'appointmentDetails') {
