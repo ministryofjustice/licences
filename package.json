@@ -4,7 +4,7 @@
   "description": "Licences Application",
   "main": "server.js",
   "engines": {
-    "node": ">=8.4.0"
+    "node": ">=8.10.0"
   },
   "scripts": {
     "start": "node server.js",
@@ -68,6 +68,7 @@
     "govuk_frontend_toolkit": "^5.2.0",
     "govuk_template_jinja": "^0.19.2",
     "helmet": "^3.5.0",
+    "joi": "^13.2.0",
     "jquery": "^1.12.4",
     "jsonwebtoken": "^8.1.0",
     "knex": "^0.13.0",

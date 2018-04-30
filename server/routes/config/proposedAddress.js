@@ -50,7 +50,6 @@ module.exports = {
                     {addressTown: {}},
                     {postCode: {}},
                     {telephone: {}},
-                    {electricity: {}},
                     {occupier: {
                         contains: [
                             {name: {}},
