@@ -8,7 +8,8 @@ const pool = new Pool({
     host: config.db.server,
     database: config.db.database,
     password: config.db.password,
-    port: 5432
+    port: 5432,
+    ssl: true
 });
 
 pool.on('error', (error, client) => {
