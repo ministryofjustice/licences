@@ -143,24 +143,26 @@ jobs:
             curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
 
   deploy_stage:
-    docker:
-      - image: circleci/node:8.4.0
-    working_directory: ~/noms-digital-studio/licences
-    steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "ce:dc:1a:a6:a5:39:ba:eb:ac:9d:ca:9a:46:e3:74:99"
-      - run:
-          name: Deploy latest mock deployment into stage
-          command: |
-            git config user.name "Circle CI"
-            git config user.email "circle@circleci.com"
-            git push --force origin HEAD:deploy-to-stage
+      <<: *defaults
+      steps:
+        - checkout
+        - attach_workspace:
+            at: ~/noms-digital-studio/licences
+        - deploy:
+            name: Install elastic beanstalk CLI
+            command: |
+              if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                sudo apt-get install python-pip python-dev
+                pip install --user 'six>-1.9.0' awsebcli --ignore-installed
+              fi
+        - deploy:
+            name: Deploy to Elastic Beanstalk Stage
+            command: |
+              ~/.local/bin/eb deploy licences-stage
 
   accept_stage:
     docker:
-      - image: circleci/node:8.4.0
+      - image: circleci/node:8.10.0
     working_directory: ~/noms-digital-studio/licences
     steps:
       - checkout
