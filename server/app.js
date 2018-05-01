@@ -183,7 +183,8 @@ module.exports = function createApp({
             return meta;
         },
         colorize: true,
-        requestWhitelist: ['url', 'method', 'originalUrl', 'query', 'body']
+        requestWhitelist: ['url', 'method', 'originalUrl', 'query', 'body'],
+        ignoredRoutes: ['/health', '/favicon.ico']
     }));
 
     // Express Routing Configuration
