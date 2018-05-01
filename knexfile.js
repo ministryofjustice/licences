@@ -1,15 +1,12 @@
 const config = require('./server/config');
 
 module.exports = {
-    client: 'postgresql',
+    client: 'pg',
     connection: {
-        server: config.db.server,
+        host: config.db.server,
         user: config.db.username,
         password: config.db.password,
-        database: config.db.database,
-        options: {
-            encrypt: true
-        }
+        database: config.db.database
     },
     acquireConnectionTimeout: 5000
 };
