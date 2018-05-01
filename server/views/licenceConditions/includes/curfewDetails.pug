@@ -1,16 +1,16 @@
 label(for='curfewAddress') Curfew address
 textarea(name='curfewAddress' id='curfewAddress' class='form-control' rows='4')
-    if condition.USER_SUBMISSION && condition.USER_SUBMISSION.curfewAddress
-        | #{condition.USER_SUBMISSION.curfewAddress}
+    if condition.user_submission && condition.user_submission.curfewAddress
+        | #{condition.user_submission.curfewAddress}
 
 div.pure-g.smallPaddingBottom
     div.pure-u-1-2.padRight7
         label(for='curfewFrom') From
-        input(type='text' name='curfewFrom' id='curfewFrom' class='form-control' value=condition.USER_SUBMISSION && condition.USER_SUBMISSION.curfewFrom)
+        input(type='text' name='curfewFrom' id='curfewFrom' class='form-control' value=condition.user_submission && condition.user_submission.curfewFrom)
     div.pure-u-1-2.padLeft7
         label(for='curfewTo') To
-        input(type='text' name='curfewTo' id='curfewTo' class='form-control' value=condition.USER_SUBMISSION && condition.USER_SUBMISSION.curfewTo)
+        input(type='text' name='curfewTo' id='curfewTo' class='form-control' value=condition.user_submission && condition.user_submission.curfewTo)
 
 div.multiple-choice
-    input(id='curfewTagRequired' name='curfewTagRequired' type='checkbox' value='yes' checked=condition.USER_SUBMISSION && condition.USER_SUBMISSION.curfewTagRequired)
+    input(id='curfewTagRequired' name='curfewTagRequired' type='checkbox' value='yes' checked=condition.user_submission && condition.user_submission.curfewTagRequired)
     label(for='curfewTagRequired') Electronic tag required

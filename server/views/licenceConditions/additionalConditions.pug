@@ -34,23 +34,23 @@ block content
                                     h3.heading-small #{subgroupName}
                                 for condition in subgroup
 
-                                    - var conditionId = condition.ID.value
+                                    - var conditionId = condition.id
                                     div.pure-g.smallPaddingBottom
                                         div.pure-u-1.pure-u-md-2-3.pure-g
-                                            div.pure-u-1.multiple-choice.conditionSelector.noLeftPaddingColumn(data-target=condition.USER_INPUT.value+'_form')
+                                            div.pure-u-1.multiple-choice.conditionSelector.noLeftPaddingColumn(data-target=condition.user_input+'_form')
                                                 p.namedAnchor
                                                     a.namedAnchor(name=conditionId)
-                                                input(type="checkbox" id="check-"+conditionId value=condition.ID.value name="additionalConditions" checked=condition.SELECTED)
+                                                input(type="checkbox" id="check-"+conditionId value=condition.id name="additionalConditions" checked=condition.selected)
                                                 label(for="check-"+conditionId)
-                                                label(for="check-"+conditionId) #{condition.TEXT.value}
+                                                label(for="check-"+conditionId) #{condition.text}
 
-                                        if condition.USER_INPUT.value
-                                            div.pure-u-1.pure-u-md-1-3.conditionForm.js-hidden(id=condition.USER_INPUT.value+'_form')
+                                        if condition.user_input
+                                            div.pure-u-1.pure-u-md-1-3.conditionForm.js-hidden(id=condition.user_input+'_form')
                                                 div.conditionForm
-                                                    if condition.ERRORS && condition.ERRORS.indexOf('MISSING_INPUT') > -1
-                                                        span.error-message(class='missing-'+condition.ID.value) Please supply information
-                                                    if condition.ERRORS && condition.ERRORS.indexOf('INVALID_DATE') > -1
-                                                        span.error-message(class='missing-'+condition.ID.value) Date must be in the format DD/MM/YYYY
+                                                    if condition.errors && condition.errors.indexOf('MISSING_INPUT') > -1
+                                                        span.error-message(class='missing-'+condition.id) Please supply information
+                                                    if condition.errors && condition.errors.indexOf('INVALID_DATE') > -1
+                                                        span.error-message(class='missing-'+condition.id) Date must be in the format DD/MM/YYYY
                                                     include ./includes/formBuilder
 
         include ./includes/bespokeConditions

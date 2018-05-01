@@ -1,12 +1,12 @@
 div.pure-g
     div.pure-u-1-2.padRight7
         label(for='appointmentDate') Date
-        input(type='text' name='appointmentDate' id='appointmentDate' class='form-control' value=condition.USER_SUBMISSION && condition.USER_SUBMISSION.appointmentDate)
+        input(type='text' name='appointmentDate' id='appointmentDate' class='form-control' value=condition.user_submission && condition.user_submission.appointmentDate)
     div.pure-u-1-2.padLeft7
         label(for='appointmentTime') Time
-        input(type='text' name='appointmentTime' id='appointmentTime' class='form-control' value=condition.USER_SUBMISSION && condition.USER_SUBMISSION.appointmentTime)
+        input(type='text' name='appointmentTime' id='appointmentTime' class='form-control' value=condition.user_submission && condition.user_submission.appointmentTime)
     div.pure-u-1
         label(for='appointmentAddress') Address
             textarea(name='appointmentAddress' id='appointmentAddress' class='form-control' rows='2')
-                if condition.USER_SUBMISSION && condition.USER_SUBMISSION.appointmentAddress
-                    | #{condition.USER_SUBMISSION.appointmentAddress}
+                if condition.user_submission && condition.user_submission.appointmentAddress
+                    | #{condition.user_submission.appointmentAddress}
