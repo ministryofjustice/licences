@@ -9,7 +9,7 @@ describe('licenceService', () => {
         updateSection: sandbox.stub().returnsPromise().resolves(),
         updateStage: sandbox.stub().returnsPromise().resolves(),
         getAdditionalConditions: sandbox.stub().returnsPromise().resolves([
-            {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}]),
+            {user_input: 1, id: 1, field_position: null}]),
         updateLicence: sandbox.stub().returnsPromise().resolves()
     };
 
@@ -82,7 +82,7 @@ describe('licenceService', () => {
                 }
             });
             licenceClient.getAdditionalConditions.resolves([
-                {USER_INPUT: {value: 1}, ID: {value: 1}, FIELD_POSITION: {value: null}}]);
+                {user_input: 1, id: 1, field_position: null}]);
 
             await service.updateLicenceConditions('ab1', {additionalConditions: '1'}, [{text: 'bespoke'}]);
 

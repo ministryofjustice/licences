@@ -61,10 +61,10 @@ function errorObjectWithCheckedString(input, fieldName, errorObject) {
 
 function getSelectedFieldNamesReducer(array, condition) {
 
-    if(!condition.FIELD_POSITION.value) {
+    if(!condition.field_position) {
         return array;
     }
-    const inputItems = Object.keys(condition.FIELD_POSITION.value).map(key => key);
+    const inputItems = Object.keys(condition.field_position).map(key => key);
     return [...array, ...inputItems];
 }
 

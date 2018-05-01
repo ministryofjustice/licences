@@ -38,15 +38,14 @@ describe('licenceFactory', () => {
         it('should return an object for each selected item', () => {
 
             const selectedConditions = [
-                {ID: {value: 1}, USER_INPUT: {value: 'appointmentName'}, FIELD_POSITION: {value: {appointmentName: 0}}},
+                {id: 1, user_input: 'appointmentName', field_position: {appointmentName: 0}},
                 {
-                    ID: {value: 2}, USER_INPUT: {value: 'confinedDetails'},
-                    FIELD_POSITION: {
-                        value: {
-                            confinedTo: 0,
-                            confinedFrom: 1,
-                            confinedReviewFrequency: 2
-                        }
+                    id: 2, user_input: 'confinedDetails',
+                    field_position: {
+
+                        confinedTo: 0,
+                        confinedFrom: 1,
+                        confinedReviewFrequency: 2
                     }
                 }
             ];
@@ -70,16 +69,14 @@ describe('licenceFactory', () => {
         it('should add form data to the objects', () => {
 
             const selectedConditions = [
-                {ID: {value: 1}, USER_INPUT: {value: 'notInSightOf'}, FIELD_POSITION: {value: {notInSightOf: 0}}},
+                {id: 1, user_input: 'notInSightOf', field_position: {notInSightOf: 0}},
                 {
-                    ID: {value: 2}, USER_INPUT: {value: 'curfewDetails'},
-                    FIELD_POSITION: {
-                        value: {
-                            curfewFrom: 0,
-                            curfewTo: 1,
-                            curfewTagRequired: 3,
-                            curfewAddress: 2
-                        }
+                    id: 2, user_input: 'curfewDetails',
+                    field_position: {
+                        curfewFrom: 0,
+                        curfewTo: 1,
+                        curfewTagRequired: 3,
+                        curfewAddress: 2
                     }
                 }
             ];
@@ -112,8 +109,8 @@ describe('licenceFactory', () => {
         it('should return empty object for conditions with no input', () => {
 
             const selectedConditions = [
-                {ID: {value: 1}, USER_INPUT: {value: 'notInSightOf'}, FIELD_POSITION: {value: {notInSightOf: 0}}},
-                {ID: {value: 2}, USER_INPUT: {value: 'null'}, FIELD_POSITION: {value: null}}
+                {id: 1, user_input: 'notInSightOf', field_position: {notInSightOf: 0}},
+                {id: 2, user_input: 'null', field_position: null}
             ];
 
             const formInputs = {
@@ -137,11 +134,11 @@ describe('licenceFactory', () => {
             const rawLicence = {licenceConditions: {additional: {1: {}}, bespoke: []}};
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: null},
-                    TEXT: {value: 'The condition'},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: null,
+                    text: 'The condition',
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -163,15 +160,19 @@ describe('licenceFactory', () => {
         });
 
         it('should add bespoke conditions to the output in the same format, including generated IDs', () => {
-            const rawLicence = {licenceConditions: {additional: {1: {}},
-                bespoke: [{text: 'bespoke1', approved: 'Yes'}, {text: 'bespoke2', approved: 'No'}]}};
+            const rawLicence = {
+                licenceConditions: {
+                    additional: {1: {}},
+                    bespoke: [{text: 'bespoke1', approved: 'Yes'}, {text: 'bespoke2', approved: 'No'}]
+                }
+            };
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: null},
-                    TEXT: {value: 'The condition'},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: null,
+                    text: 'The condition',
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -210,12 +211,12 @@ describe('licenceFactory', () => {
             const rawLicence = {licenceConditions: {additional: {1: {appointmentName: 'injected'}}, bespoke: []}};
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'appointmentName'},
-                    TEXT: {value: 'The condition [placeholder] with input'},
-                    FIELD_POSITION: {value: {appointmentName: 0}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'appointmentName',
+                    text: 'The condition [placeholder] with input',
+                    field_position: {appointmentName: 0},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -243,21 +244,23 @@ describe('licenceFactory', () => {
 
         it('should replace placeholder text for appointment conditions for view', () => {
             const rawLicence = {
-                licenceConditions: {additional: {
-                1: {
-                        appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
-                    }
-                },
-                bespoke: []
-            }};
+                licenceConditions: {
+                    additional: {
+                        1: {
+                            appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
+                        }
+                    },
+                    bespoke: []
+                }
+            };
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'appointmentDetails'},
-                    TEXT: {value: 'The condition [placeholder] with input'},
-                    FIELD_POSITION: {value: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'appointmentDetails',
+                    text: 'The condition [placeholder] with input',
+                    field_position: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -282,18 +285,20 @@ describe('licenceFactory', () => {
 
 
         it('should replace placeholder text when multiple items for view', () => {
-            const rawLicence = {licenceConditions: {
-                additional: {1: {field: 'injected', appointmentTime: 'injected2'}},
-                bespoke: []
-            }};
+            const rawLicence = {
+                licenceConditions: {
+                    additional: {1: {field: 'injected', appointmentTime: 'injected2'}},
+                    bespoke: []
+                }
+            };
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'standardCondition'},
-                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'standardCondition',
+                    text: 'The condition [placeholder] with input [placeholder2] and another',
+                    field_position: {field: 0, appointmentTime: 1},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -319,18 +324,20 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple items in wrong order for view', () => {
-            const rawLicence = {licenceConditions: {
-                additional: {1: {field: 'injected', appointmentTime: 'injected2'}},
-                bespoke: []
-            }};
+            const rawLicence = {
+                licenceConditions: {
+                    additional: {1: {field: 'injected', appointmentTime: 'injected2'}},
+                    bespoke: []
+                }
+            };
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'standardCondition'},
-                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {appointmentTime: 1, field: 0}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'standardCondition',
+                    text: 'The condition [placeholder] with input [placeholder2] and another',
+                    field_position: {appointmentTime: 1, field: 0},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -357,28 +364,30 @@ describe('licenceFactory', () => {
 
         it('should replace placeholder text when multiple conditions for view', () => {
             const rawLicence = {
-                licenceConditions: {additional: {
-                    1: {field: 'injected', appointmentTime: 'injected2'},
-                    2: {groupsOrOrganisation: 'injected3'}
-                },
-                bespoke: []
-            }};
+                licenceConditions: {
+                    additional: {
+                        1: {field: 'injected', appointmentTime: 'injected2'},
+                        2: {groupsOrOrganisation: 'injected3'}
+                    },
+                    bespoke: []
+                }
+            };
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'standardCondition'},
-                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'standardCondition',
+                    text: 'The condition [placeholder] with input [placeholder2] and another',
+                    field_position: {field: 0, appointmentTime: 1},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 },
                 {
-                    ID: {value: 2},
-                    USER_INPUT: {value: 'groupsOrOrganisations'},
-                    TEXT: {value: 'The condition [placeholder]'},
-                    FIELD_POSITION: {value: {groupsOrOrganisation: 0}},
-                    GROUP_NAME: {value: 'g2'},
-                    SUBGROUP_NAME: {value: 'sg2'}
+                    id: 2,
+                    user_input: 'groupsOrOrganisations',
+                    text: 'The condition [placeholder]',
+                    field_position: {groupsOrOrganisation: 0},
+                    group_name: 'g2',
+                    subgroup_name: 'sg2'
                 }
             ];
 
@@ -420,12 +429,12 @@ describe('licenceFactory', () => {
             const rawLicence = {licenceConditions: {additional: {1: {appointmentName: 'injected'}}, bespoke: []}};
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'appointmentName'},
-                    TEXT: {value: 'The condition [placeholder] with input'},
-                    FIELD_POSITION: {value: {appointmentName: 0}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'appointmentName',
+                    text: 'The condition [placeholder] with input',
+                    field_position: {appointmentName: 0},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -448,21 +457,23 @@ describe('licenceFactory', () => {
 
         it('should replace placeholder text for appointment conditions for string', () => {
             const rawLicence = {
-                licenceConditions: {additional: {
-                    1: {
-                        appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
-                    }
-                },
-                bespoke: []
-            }};
+                licenceConditions: {
+                    additional: {
+                        1: {
+                            appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
+                        }
+                    },
+                    bespoke: []
+                }
+            };
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'appointmentDetails'},
-                    TEXT: {value: 'The condition [placeholder] with input'},
-                    FIELD_POSITION: {value: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'appointmentDetails',
+                    text: 'The condition [placeholder] with input',
+                    field_position: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -484,17 +495,19 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple items when string', () => {
-            const rawLicence = {licenceConditions: {
-                additional: {1: {field: 'injected', appointmentTime: 'injected2'}}, bespoke: []
-            }};
+            const rawLicence = {
+                licenceConditions: {
+                    additional: {1: {field: 'injected', appointmentTime: 'injected2'}}, bespoke: []
+                }
+            };
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'standardCondition'},
-                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'standardCondition',
+                    text: 'The condition [placeholder] with input [placeholder2] and another',
+                    field_position: {field: 0, appointmentTime: 1},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -516,17 +529,19 @@ describe('licenceFactory', () => {
         });
 
         it('should replace placeholder text when multiple items in wrong order as string', () => {
-            const rawLicence = {licenceConditions: {
-                additional: {1: {field: 'injected', appointmentTime: 'injected2'}}, bespoke: []
-            }};
+            const rawLicence = {
+                licenceConditions: {
+                    additional: {1: {field: 'injected', appointmentTime: 'injected2'}}, bespoke: []
+                }
+            };
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'standardCondition'},
-                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {appointmentTime: 1, field: 0}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'standardCondition',
+                    text: 'The condition [placeholder] with input [placeholder2] and another',
+                    field_position: {appointmentTime: 1, field: 0},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 
@@ -549,28 +564,30 @@ describe('licenceFactory', () => {
 
         it('should replace placeholder text when multiple conditions as string', () => {
             const rawLicence = {
-                licenceConditions: {additional: {
-                    1: {field: 'injected', appointmentTime: 'injected2'},
-                    2: {groupsOrOrganisation: 'injected3'}
-                },
-                bespoke: []
-            }};
+                licenceConditions: {
+                    additional: {
+                        1: {field: 'injected', appointmentTime: 'injected2'},
+                        2: {groupsOrOrganisation: 'injected3'}
+                    },
+                    bespoke: []
+                }
+            };
             const selectedConditions = [
                 {
-                    ID: {value: 1},
-                    USER_INPUT: {value: 'standardCondition'},
-                    TEXT: {value: 'The condition [placeholder] with input [placeholder2] and another'},
-                    FIELD_POSITION: {value: {field: 0, appointmentTime: 1}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 1,
+                    user_input: 'standardCondition',
+                    text: 'The condition [placeholder] with input [placeholder2] and another',
+                    field_position: {field: 0, appointmentTime: 1},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 },
                 {
-                    ID: {value: 2},
-                    USER_INPUT: {value: 'groupsOrOrganisations'},
-                    TEXT: {value: 'The condition [placeholder]'},
-                    FIELD_POSITION: {value: {groupsOrOrganisation: 0}},
-                    GROUP_NAME: {value: 'g'},
-                    SUBGROUP_NAME: {value: 'sg'}
+                    id: 2,
+                    user_input: 'groupsOrOrganisations',
+                    text: 'The condition [placeholder]',
+                    field_position: {groupsOrOrganisation: 0},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
                 }
             ];
 

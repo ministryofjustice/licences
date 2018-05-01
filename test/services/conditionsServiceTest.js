@@ -1,11 +1,11 @@
 const createConditionsService = require('../../server/services/conditionsService');
 const {expect, sandbox} = require('../testSetup');
 
-describe('licenceDetailsService', () => {
+describe('conditionsService', () => {
 
     const licenceClient = {
         getStandardConditions: sandbox.stub().returnsPromise().resolves({a: 'b'}),
-        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{TEXT: {value: 'v'}, USER_INPUT: {}}])
+        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{text: 'v', user_input: {}}])
     };
 
     const service = createConditionsService(licenceClient);
@@ -46,32 +46,32 @@ describe('licenceDetailsService', () => {
         it('should split the conditions by group and subgroup', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'NOTIFYRELATIONSHIP'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'}
+                    id: 'NOTIFYRELATIONSHIP',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1'
                 },
                 {
-                    ID: {value: 'NOWORKWITHAGE'},
-                    TEXT: {value: 'g'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'}
+                    id: 'NOWORKWITHAGE',
+                    text: 'g',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1'
                 },
                 {
-                    ID: {value: 'NOCONTACTPRISONER'},
-                    TEXT: {value: 'a'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g2'},
-                    SUBGROUP_NAME: {value: 's2'}
+                    id: 'NOCONTACTPRISONER',
+                    text: 'a',
+                    user_input: {},
+                    group_name: 'g2',
+                    subgroup_name: 's2'
                 },
                 {
-                    ID: {value: 'CAMERAAPPROVAL'},
-                    TEXT: {value: 's'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g2'},
-                    SUBGROUP_NAME: {value: 's3'}
+                    id: 'CAMERAAPPROVAL',
+                    text: 's',
+                    user_input: {},
+                    group_name: 'g2',
+                    subgroup_name: 's3'
                 }
             ]);
 
@@ -79,38 +79,38 @@ describe('licenceDetailsService', () => {
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'NOWORKWITHAGE'},
-                            TEXT: {value: 'g'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'}
+                            id: 'NOWORKWITHAGE',
+                            text: 'g',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1'
                         },
                         {
-                            ID: {value: 'NOTIFYRELATIONSHIP'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'}
+                            id: 'NOTIFYRELATIONSHIP',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1'
                         }
                     ]
                 },
                 g2: {
                     s2: [
                         {
-                            ID: {value: 'NOCONTACTPRISONER'},
-                            TEXT: {value: 'a'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g2'},
-                            SUBGROUP_NAME: {value: 's2'}
+                            id: 'NOCONTACTPRISONER',
+                            text: 'a',
+                            user_input: {},
+                            group_name: 'g2',
+                            subgroup_name: 's2'
                         }
                     ],
                     s3: [
                         {
-                            ID: {value: 'CAMERAAPPROVAL'},
-                            TEXT: {value: 's'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g2'},
-                            SUBGROUP_NAME: {value: 's3'}
+                            id: 'CAMERAAPPROVAL',
+                            text: 's',
+                            user_input: {},
+                            group_name: 'g2',
+                            subgroup_name: 's3'
                         }
                     ]
                 }
@@ -122,32 +122,32 @@ describe('licenceDetailsService', () => {
         it('should handle a null subgroup', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'NOTIFYRELATIONSHIP'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'}
+                    id: 'NOTIFYRELATIONSHIP',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1'
                 },
                 {
-                    ID: {value: 'NOWORKWITHAGE'},
-                    TEXT: {value: 'g'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'}
+                    id: 'NOWORKWITHAGE',
+                    text: 'g',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1'
                 },
                 {
-                    ID: {value: 'NOCONTACTPRISONER'},
-                    TEXT: {value: 'a'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g2'},
-                    SUBGROUP_NAME: {value: 's2'}
+                    id: 'NOCONTACTPRISONER',
+                    text: 'a',
+                    user_input: {},
+                    group_name: 'g2',
+                    subgroup_name: 's2'
                 },
                 {
-                    ID: {value: 'CAMERAAPPROVAL'},
-                    TEXT: {value: 's'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g2'},
-                    SUBGROUP_NAME: {value: null}
+                    id: 'CAMERAAPPROVAL',
+                    text: 's',
+                    user_input: {},
+                    group_name: 'g2',
+                    subgroup_name: null
                 }
             ]);
 
@@ -155,38 +155,38 @@ describe('licenceDetailsService', () => {
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'NOWORKWITHAGE'},
-                            TEXT: {value: 'g'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'}
+                            id: 'NOWORKWITHAGE',
+                            text: 'g',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1'
                         },
                         {
-                            ID: {value: 'NOTIFYRELATIONSHIP'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'}
+                            id: 'NOTIFYRELATIONSHIP',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1'
                         }
                     ]
                 },
                 g2: {
                     base: [
                         {
-                            ID: {value: 'CAMERAAPPROVAL'},
-                            TEXT: {value: 's'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g2'},
-                            SUBGROUP_NAME: {value: null}
+                            id: 'CAMERAAPPROVAL',
+                            text: 's',
+                            user_input: {},
+                            group_name: 'g2',
+                            subgroup_name: null
                         }
                     ],
                     s2: [
                         {
-                            ID: {value: 'NOCONTACTPRISONER'},
-                            TEXT: {value: 'a'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g2'},
-                            SUBGROUP_NAME: {value: 's2'}
+                            id: 'NOCONTACTPRISONER',
+                            text: 'a',
+                            user_input: {},
+                            group_name: 'g2',
+                            subgroup_name: 's2'
                         }
                     ]
                 }
@@ -198,32 +198,32 @@ describe('licenceDetailsService', () => {
         it('should handle a null group', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'NOWORKWITHAGE'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: null},
-                    SUBGROUP_NAME: {value: null}
+                    id: 'NOWORKWITHAGE',
+                    text: 'v',
+                    user_input: {},
+                    group_name: null,
+                    subgroup_name: null
                 },
                 {
-                    ID: {value: 'NOTIFYRELATIONSHIP'},
-                    TEXT: {value: 'g'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'}
+                    id: 'NOTIFYRELATIONSHIP',
+                    text: 'g',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1'
                 },
                 {
-                    ID: {value: 'CAMERAAPPROVAL'},
-                    TEXT: {value: 'a'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g2'},
-                    SUBGROUP_NAME: {value: 's2'}
+                    id: 'CAMERAAPPROVAL',
+                    text: 'a',
+                    user_input: {},
+                    group_name: 'g2',
+                    subgroup_name: 's2'
                 },
                 {
-                    ID: {value: 'NOCONTACTPRISONER'},
-                    TEXT: {value: 's'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g2'},
-                    SUBGROUP_NAME: {value: null}
+                    id: 'NOCONTACTPRISONER',
+                    text: 's',
+                    user_input: {},
+                    group_name: 'g2',
+                    subgroup_name: null
                 }
             ]);
 
@@ -231,42 +231,42 @@ describe('licenceDetailsService', () => {
                 base: {
                     base: [
                         {
-                            ID: {value: 'NOWORKWITHAGE'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: null},
-                            SUBGROUP_NAME: {value: null}
+                            id: 'NOWORKWITHAGE',
+                            text: 'v',
+                            user_input: {},
+                            group_name: null,
+                            subgroup_name: null
                         }
                     ]
                 },
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'NOTIFYRELATIONSHIP'},
-                            TEXT: {value: 'g'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'}
+                            id: 'NOTIFYRELATIONSHIP',
+                            text: 'g',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1'
                         }
                     ]
                 },
                 g2: {
                     base: [
                         {
-                            ID: {value: 'NOCONTACTPRISONER'},
-                            TEXT: {value: 's'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g2'},
-                            SUBGROUP_NAME: {value: null}
+                            id: 'NOCONTACTPRISONER',
+                            text: 's',
+                            user_input: {},
+                            group_name: 'g2',
+                            subgroup_name: null
                         }
                     ],
                     s2: [
                         {
-                            ID: {value: 'CAMERAAPPROVAL'},
-                            TEXT: {value: 'a'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g2'},
-                            SUBGROUP_NAME: {value: 's2'}
+                            id: 'CAMERAAPPROVAL',
+                            text: 'a',
+                            user_input: {},
+                            group_name: 'g2',
+                            subgroup_name: 's2'
                         }
                     ]
                 }
@@ -277,41 +277,58 @@ describe('licenceDetailsService', () => {
 
         it('should populate inputs if licence is passed in', () => {
 
-            const licence = {licenceConditions: {
-                additional: {12: {victimFamilyMembers: 'a', socialServicesDept: 'd'}}
-            }};
+            const licence = {
+                licenceConditions: {
+                    additional: {12: {victimFamilyMembers: 'a', socialServicesDept: 'd'}}
+                }
+            };
 
             licenceClient.getAdditionalConditions.resolves([
-                {ID: {value: '12'}, TEXT: {value: 'v'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
-                    USER_INPUT: {value: 'additionalConditions'}},
-                {ID: {value: '13'}, TEXT: {value: 'g'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
-                    USER_INPUT: {}},
-                {ID: {value: '14'}, TEXT: {value: 'a'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
-                    USER_INPUT: {}},
-                {ID: {value: '15'}, TEXT: {value: 's'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
-                    USER_INPUT: {}}
+                {
+                    id: '12', text: 'v', group_name: null, subgroup_name: null,
+                    user_input: 'additionalConditions'
+                },
+                {
+                    id: '13', text: 'g', group_name: null, subgroup_name: null,
+                    user_input: {}
+                },
+                {
+                    id: '14', text: 'a', group_name: null, subgroup_name: null,
+                    user_input: {}
+                },
+                {
+                    id: '15', text: 's', group_name: null, subgroup_name: null,
+                    user_input: {}
+                }
             ]);
 
             const expectedOutput = {
                 base: {
                     base: [
-                        {ID: {value: '12'}, TEXT: {value: 'v'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
-                            USER_INPUT: {value: 'additionalConditions'},
-                            SELECTED: true,
-                            USER_SUBMISSION: {victimFamilyMembers: 'a', socialServicesDept: 'd'}
+                        {
+                            id: '12', text: 'v', group_name: null, subgroup_name: null,
+                            user_input: 'additionalConditions',
+                            selected: true,
+                            user_submission: {victimFamilyMembers: 'a', socialServicesDept: 'd'}
                         },
-                        {ID: {value: '13'}, TEXT: {value: 'g'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
-                            USER_INPUT: {},
-                            SELECTED: false,
-                            USER_SUBMISSION: {}},
-                        {ID: {value: '14'}, TEXT: {value: 'a'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
-                            USER_INPUT: {},
-                            SELECTED: false,
-                            USER_SUBMISSION: {}},
-                        {ID: {value: '15'}, TEXT: {value: 's'}, GROUP_NAME: {value: null}, SUBGROUP_NAME: {value: null},
-                            USER_INPUT: {},
-                            SELECTED: false,
-                            USER_SUBMISSION: {}}
+                        {
+                            id: '13', text: 'g', group_name: null, subgroup_name: null,
+                            user_input: {},
+                            selected: false,
+                            user_submission: {}
+                        },
+                        {
+                            id: '14', text: 'a', group_name: null, subgroup_name: null,
+                            user_input: {},
+                            selected: false,
+                            user_submission: {}
+                        },
+                        {
+                            id: '15', text: 's', group_name: null, subgroup_name: null,
+                            user_input: {},
+                            selected: false,
+                            user_submission: {}
+                        }
                     ]
                 }
             };
@@ -326,12 +343,12 @@ describe('licenceDetailsService', () => {
         it('should populate the user input with form data', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'a'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: {address1: '0', address2: '1'}}
+                    id: 'a',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: {address1: '0', address2: '1'}
                 }
             ]);
 
@@ -349,15 +366,15 @@ describe('licenceDetailsService', () => {
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'a'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: {address1: '0', address2: '1'}},
-                            SELECTED: true,
-                            USER_SUBMISSION: {address1: '5 Fleet Street', address2: 'London'},
-                            ERRORS: ['MISSING_INPUT']
+                            id: 'a',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: {address1: '0', address2: '1'},
+                            selected: true,
+                            user_submission: {address1: '5 Fleet Street', address2: 'London'},
+                            errors: ['MISSING_INPUT']
                         }
                     ]
                 }
@@ -370,12 +387,12 @@ describe('licenceDetailsService', () => {
         it('should format date fields', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'a'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: {appointmentDate: '0', b: '1'}}
+                    id: 'a',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: {appointmentDate: '0', b: '1'}
                 }
             ]);
 
@@ -392,15 +409,15 @@ describe('licenceDetailsService', () => {
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'a'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: {appointmentDate: '0', b: '1'}},
-                            SELECTED: true,
-                            USER_SUBMISSION: {appointmentDate: '13/11/2017'},
-                            ERRORS: ['MISSING_INPUT']
+                            id: 'a',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: {appointmentDate: '0', b: '1'},
+                            selected: true,
+                            user_submission: {appointmentDate: '13/11/2017'},
+                            errors: ['MISSING_INPUT']
                         }
                     ]
                 }
@@ -413,12 +430,12 @@ describe('licenceDetailsService', () => {
         it('should not populate unselected items', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'a'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: {address1: '0', address2: '1'}}
+                    id: 'a',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: {address1: '0', address2: '1'}
                 }
             ]);
 
@@ -437,12 +454,12 @@ describe('licenceDetailsService', () => {
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'a'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: {address1: '0', address2: '1'}}
+                            id: 'a',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: {address1: '0', address2: '1'}
                         }
                     ]
                 }
@@ -455,20 +472,20 @@ describe('licenceDetailsService', () => {
         it('should populate multiple conditions', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'a'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: {address1: '0', address2: '1'}}
+                    id: 'a',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: {address1: '0', address2: '1'}
                 },
                 {
-                    ID: {value: 'b'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: {address3: '0', address4: '1'}}
+                    id: 'b',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: {address3: '0', address4: '1'}
                 }
             ]);
 
@@ -487,26 +504,26 @@ describe('licenceDetailsService', () => {
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'a'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: {address1: '0', address2: '1'}},
-                            SELECTED: true,
-                            USER_SUBMISSION: {address1: '5 Fleet Street', address2: 'London'},
-                            ERRORS: null
+                            id: 'a',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: {address1: '0', address2: '1'},
+                            selected: true,
+                            user_submission: {address1: '5 Fleet Street', address2: 'London'},
+                            errors: null
                         },
                         {
-                            ID: {value: 'b'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: {address3: '0', address4: '1'}},
-                            SELECTED: true,
-                            USER_SUBMISSION: {address3: 'Birmingham'},
-                            ERRORS: ['MISSING_INPUT']
+                            id: 'b',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: {address3: '0', address4: '1'},
+                            selected: true,
+                            user_submission: {address3: 'Birmingham'},
+                            errors: ['MISSING_INPUT']
                         }
                     ]
                 }
@@ -519,20 +536,20 @@ describe('licenceDetailsService', () => {
         it('should not break on conditions with no inputs', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'a'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: null}
+                    id: 'a',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: null
                 },
                 {
-                    ID: {value: 'b'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: {address3: '0', address4: '1'}}
+                    id: 'b',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: {address3: '0', address4: '1'}
                 }
             ]);
 
@@ -549,24 +566,24 @@ describe('licenceDetailsService', () => {
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'a'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: null},
-                            SELECTED: true
+                            id: 'a',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: null,
+                            selected: true
                         },
                         {
-                            ID: {value: 'b'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: {address3: '0', address4: '1'}},
-                            SELECTED: true,
-                            USER_SUBMISSION: {address3: 'Birmingham'},
-                            ERRORS: ['MISSING_INPUT']
+                            id: 'b',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: {address3: '0', address4: '1'},
+                            selected: true,
+                            user_submission: {address3: 'Birmingham'},
+                            errors: ['MISSING_INPUT']
                         }
                     ]
                 }
@@ -579,20 +596,20 @@ describe('licenceDetailsService', () => {
         it('should be able to handle multiple errors for same condition', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'a'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: null}
+                    id: 'a',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: null
                 },
                 {
-                    ID: {value: 'b'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: {address3: '0', address4: '1'}}
+                    id: 'b',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: {address3: '0', address4: '1'}
                 }
             ]);
 
@@ -610,24 +627,24 @@ describe('licenceDetailsService', () => {
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'a'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: null},
-                            SELECTED: true
+                            id: 'a',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: null,
+                            selected: true
                         },
                         {
-                            ID: {value: 'b'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: {address3: '0', address4: '1'}},
-                            SELECTED: true,
-                            USER_SUBMISSION: {address3: 'Birmingham'},
-                            ERRORS: ['MISSING_INPUT', 'TOO_LONG']
+                            id: 'b',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: {address3: '0', address4: '1'},
+                            selected: true,
+                            user_submission: {address3: 'Birmingham'},
+                            errors: ['MISSING_INPUT', 'TOO_LONG']
                         }
                     ]
                 }
@@ -640,20 +657,20 @@ describe('licenceDetailsService', () => {
         it('should be able to handle multiple errors for same field', () => {
             licenceClient.getAdditionalConditions.resolves([
                 {
-                    ID: {value: 'a'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: null}
+                    id: 'a',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: null
                 },
                 {
-                    ID: {value: 'b'},
-                    TEXT: {value: 'v'},
-                    USER_INPUT: {},
-                    GROUP_NAME: {value: 'g1'},
-                    SUBGROUP_NAME: {value: 's1'},
-                    FIELD_POSITION: {value: {address3: '0', address4: '1'}}
+                    id: 'b',
+                    text: 'v',
+                    user_input: {},
+                    group_name: 'g1',
+                    subgroup_name: 's1',
+                    field_position: {address3: '0', address4: '1'}
                 }
             ]);
 
@@ -671,24 +688,24 @@ describe('licenceDetailsService', () => {
                 g1: {
                     s1: [
                         {
-                            ID: {value: 'a'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: null},
-                            SELECTED: true
+                            id: 'a',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: null,
+                            selected: true
                         },
                         {
-                            ID: {value: 'b'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: {address3: '0', address4: '1'}},
-                            SELECTED: true,
-                            USER_SUBMISSION: {address3: 'Birmingham'},
-                            ERRORS: ['MISSING_INPUT', 'TOO_LONG', 'INVALID_DATE']
+                            id: 'b',
+                            text: 'v',
+                            user_input: {},
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: {address3: '0', address4: '1'},
+                            selected: true,
+                            user_submission: {address3: 'Birmingham'},
+                            errors: ['MISSING_INPUT', 'TOO_LONG', 'INVALID_DATE']
                         }
                     ]
                 }
@@ -704,12 +721,12 @@ describe('licenceDetailsService', () => {
             it('should addAdditionalConditions if they are present in licence and requested', () => {
                 const licence = {licenceConditions: {additional: {1: {}}, bespoke: []}};
                 licenceClient.getAdditionalConditions.resolves([{
-                    ID: {value: 1},
-                    USER_INPUT: {value: null},
-                    TEXT: {value: 'The condition'},
-                    FIELD_POSITION: {value: null},
-                    GROUP_NAME: {value: 'group'},
-                    SUBGROUP_NAME: {value: 'subgroup'}
+                    id: 1,
+                    user_input: null,
+                    text: 'The condition',
+                    field_position: null,
+                    group_name: 'group',
+                    subgroup_name: 'subgroup'
                 }]);
 
                 return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql({
@@ -729,12 +746,12 @@ describe('licenceDetailsService', () => {
             it('should return licence if no additional conditions', () => {
                 const licence = {licenceConditions: {}};
                 licenceClient.getAdditionalConditions.resolves([{
-                    ID: {value: 1},
-                    USER_INPUT: {value: null},
-                    TEXT: {value: 'The condition'},
-                    FIELD_POSITION: {value: null},
-                    GROUP_NAME: {value: 'group'},
-                    SUBGROUP_NAME: {value: 'subgroup'}
+                    id: 1,
+                    user_input: null,
+                    text: 'The condition',
+                    field_position: null,
+                    group_name: 'group',
+                    subgroup_name: 'subgroup'
                 }]);
 
                 return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql({

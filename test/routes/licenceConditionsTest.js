@@ -20,10 +20,10 @@ const app = appSetup(hdcRoute, testUser);
 describe('/hdc/licenceConditions', () => {
 
     beforeEach(() => {
-        conditionsServiceStub.getStandardConditions.resolves([{TEXT: {value: 'Not commit any offence'}}]);
+        conditionsServiceStub.getStandardConditions.resolves([{text: 'Not commit any offence'}]);
         conditionsServiceStub.getAdditionalConditions.resolves({
             base: {
-                base: [{TEXT: {value: 'hi'}, ID: {value: 'ho'}, USER_INPUT: {}}]
+                base: [{text: 'hi', id: 'ho', user_input: {}}]
             }
         });
         conditionsServiceStub.populateLicenceWithConditions.resolves({licence: {}});
@@ -122,15 +122,15 @@ describe('/hdc/licenceConditions', () => {
                 base: {
                     base: [
                         {
-                            ID: {value: 'b'},
-                            TEXT: {value: 'v'},
-                            USER_INPUT: {value: 'appointmentDetails'},
-                            GROUP_NAME: {value: 'g1'},
-                            SUBGROUP_NAME: {value: 's1'},
-                            FIELD_POSITION: {value: {address3: '0', address4: '1'}},
-                            SELECTED: true,
-                            USER_SUBMISSION: {address3: 'Birmingham'},
-                            ERRORS: ['MISSING_INPUT']
+                            id: 'b',
+                            text: 'v',
+                            user_input: 'appointmentDetails',
+                            group_name: 'g1',
+                            subgroup_name: 's1',
+                            field_position: {address3: '0', address4: '1'},
+                            selected: true,
+                            user_submission: {address3: 'Birmingham'},
+                            errors: ['MISSING_INPUT']
                         }
                     ]
                 }
