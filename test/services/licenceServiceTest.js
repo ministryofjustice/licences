@@ -1846,7 +1846,7 @@ describe('licenceService', () => {
                                 ...baseLicence.licenceConditions,
                                 additional: {
                                     ATTEND: {
-                                        appointmentDate: 'a',
+                                        appointmentDate: '2019-12-26',
                                         appointmentTime: '13',
                                         appointmentAddress: 'address'
                                     }
@@ -1881,6 +1881,29 @@ describe('licenceService', () => {
                             ['additional', 'ATTEND', 'appointmentTime']);
                         expect(output[2].path).to.eql(
                             ['additional', 'ATTEND', 'appointmentAddress']);
+                    });
+
+                    it('should return error if appointmentDate is not in the format YYYY-MM-DD', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    ATTEND: {
+                                        appointmentDate: '26/12/2018',
+                                        appointmentTime: '13',
+                                        appointmentAddress: 'address'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'ATTEND', 'appointmentDate']);
                     });
                 });
 

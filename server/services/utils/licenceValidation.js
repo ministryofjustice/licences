@@ -1,8 +1,11 @@
-const joi = require('joi');
+const baseJoi = require('joi');
+const dateExtend = require('joi-date-extensions');
+const joi = baseJoi.extend(dateExtend);
 
 const optionalString = joi.string().allow('').optional();
 const requiredString = joi.string().required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
+const requiredDate = joi.date().format('YYYY-MM-DD').required();
 const requiredIf = (field, answer) => {
     return joi.when(field, {is: answer, then: joi.string().required(), otherwise: joi.valid(['']).optional()});
 };
@@ -145,7 +148,7 @@ const additional = joi.object({
         courseOrCentre: requiredString
     }),
     ATTEND: joi.object({
-        appointmentDate: requiredString,
+        appointmentDate: requiredDate,
         appointmentTime: requiredString,
         appointmentAddress: requiredString
     }),
