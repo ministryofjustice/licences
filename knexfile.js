@@ -6,7 +6,8 @@ module.exports = {
         host: config.db.server,
         user: config.db.username,
         password: config.db.password,
-        database: config.db.database
+        database: config.db.database,
+        ssl: true
     },
     acquireConnectionTimeout: 5000
 };
