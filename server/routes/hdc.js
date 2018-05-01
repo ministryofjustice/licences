@@ -75,13 +75,6 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             return res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         }
 
-        if (!additional.validates) {
-            const conditions = await conditionsService.getAdditionalConditionsWithErrors(additional);
-            const data = {nomisId, conditions, bespokeConditions, submissionError: true};
-
-            return res.render('licenceConditions/additionalConditions', data);
-        }
-
         await licenceService.updateLicenceConditions(nomisId, additional, bespoke);
         res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
     }));
@@ -90,7 +83,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         if (!additionalConditions) {
             return null;
         }
-        return conditionsService.validateConditionInputs(input);
+        return conditionsService.formatConditionInputs(input);
     }
 
     router.get('/licenceConditions/conditionsSummary/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
@@ -307,7 +300,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         if (req.body.anchor) {
             return res.redirect(`${nextPath}${nomisId}#${req.body.anchor}`);
         }
-        
+
         res.redirect(`${nextPath}${nomisId}`);
     }));
 

@@ -25,8 +25,7 @@ mixin additionalConditions(editable)
                         if item.text
                             | #{item.text}
                         if item.variable
-                            span(class="bold") #{item.variable}
-
+                            span(class=item.variable.includes('INPUT REQUIRED') ? "bold alert" : "bold") #{item.variable}
 
             if allowEdit
                 div.pure-u-2-24

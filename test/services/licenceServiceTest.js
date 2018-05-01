@@ -947,6 +947,58 @@ describe('licenceService', () => {
 
     describe('validateLicence', () => {
 
+        const curfewAddressReview = {
+            consent: 'Yes',
+            electricity: 'Yes',
+            homeVisitConducted: 'Yes'
+        };
+
+        const addressSafety = {
+            deemedSafe: 'Yes',
+            unsafeReason: ''
+        };
+
+        const curfewHours = {
+            firstNightFrom: '09:00',
+            firstNightUntil: '09:00',
+            mondayFrom: '09:00',
+            mondayUntil: '09:00',
+            tuesdayFrom: '09:00',
+            tuesdayUntil: '09:00',
+            wednesdayFrom: '09:00',
+            wednesdayUntil: '09:00',
+            thursdayFrom: '09:00',
+            thursdayUntil: '09:00',
+            fridayFrom: '09:00',
+            fridayUntil: '09:00',
+            saturdayFrom: '09:00',
+            saturdayUntil: '09:00',
+            sundayFrom: '09:00',
+            sundayUntil: '09:00'
+        };
+
+        const riskManagement = {
+            planningActions: 'No',
+            planningActionsDetails: '',
+            awaitingInformation: 'No',
+            awaitingInformationDetails: '',
+            victimLiaison: 'No',
+            victimLiaisonDetails: ''
+        };
+
+        const reportingInstructions = {
+            name: 'name',
+            buildingAndStreet1: 'name',
+            buildingAndStreet2: 'name',
+            townOrCity: 'name',
+            postcode: 'name',
+            telephone: 'name'
+        };
+
+        const standard = {
+            additionalConditionsRequired: 'No'
+        };
+
         const eligibility = {
             excluded: {
                 decision: 'No',
@@ -1170,71 +1222,26 @@ describe('licenceService', () => {
 
         context('PROCESSING_RO', () => {
 
-            const curfewAddressReview = {
-                consent: 'Yes',
-                electricity: 'Yes',
-                homeVisitConducted: 'Yes'
-            };
-
-            const addressSafety = {
-                deemedSafe: 'Yes',
-                unsafeReason: ''
-            };
-
-            const curfewHours = {
-                firstNightFrom: '09:00',
-                firstNightUntil: '09:00',
-                mondayFrom: '09:00',
-                mondayUntil: '09:00',
-                tuesdayFrom: '09:00',
-                tuesdayUntil: '09:00',
-                wednesdayFrom: '09:00',
-                wednesdayUntil: '09:00',
-                thursdayFrom: '09:00',
-                thursdayUntil: '09:00',
-                fridayFrom: '09:00',
-                fridayUntil: '09:00',
-                saturdayFrom: '09:00',
-                saturdayUntil: '09:00',
-                sundayFrom: '09:00',
-                sundayUntil: '09:00'
-            };
-
-            const riskManagement = {
-                planningActions: 'No',
-                planningActionsDetails: '',
-                awaitingInformation: 'No',
-                awaitingInformationDetails: '',
-                victimLiaison: 'No',
-                victimLiaisonDetails: ''
-            };
-
-            const reportingInstructions = {
-                name: 'name',
-                buildingAndStreet1: 'name',
-                buildingAndStreet2: 'name',
-                townOrCity: 'name',
-                postcode: 'name',
-                telephone: 'name'
+            const baseLicence = {
+                curfew: {
+                    curfewAddressReview,
+                    addressSafety,
+                    curfewHours
+                },
+                risk: {
+                    riskManagement
+                },
+                reporting: {
+                    reportingInstructions
+                },
+                licenceConditions: {
+                    standard
+                }
             };
 
             it('should return [] for no errors', () => {
 
-                const licence = {
-                    curfew: {
-                        curfewAddressReview,
-                        addressSafety,
-                        curfewHours
-                    },
-                    risk: {
-                        riskManagement
-                    },
-                    reporting: {
-                        reportingInstructions
-                    }
-                };
-
-                const output = service.validateLicence(licence, 'PROCESSING_RO');
+                const output = service.validateLicence(baseLicence, 'PROCESSING_RO');
 
                 expect(output).to.eql([]);
 
@@ -1243,7 +1250,7 @@ describe('licenceService', () => {
 
             it('should require all sections for the processing stage', () => {
 
-                const licence2 = {
+                const newLicence = {
                     curfew: {
                         curfewAddressReview,
                         addressSafety,
@@ -1251,10 +1258,13 @@ describe('licenceService', () => {
                     },
                     risk: {
                         riskManagement
+                    },
+                    licenceConditions: {
+                        standard
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(newLicence, 'PROCESSING_RO');
 
                 expect(output).to.eql([{
                     message: 'reporting is required',
@@ -1268,179 +1278,130 @@ describe('licenceService', () => {
 
             it('should require an answer for curfew address review', () => {
 
-                const licence2 = {
+                const licence = {
+                    ...baseLicence,
                     curfew: {
+                        ...baseLicence.curfew,
                         curfewAddressReview: {
                             consent: ''
-                        },
-                        addressSafety,
-                        curfewHours
-                    },
-                    risk: {
-                        riskManagement
-                    },
-                    reporting: {
-                        reportingInstructions
+                        }
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(licence, 'PROCESSING_RO');
 
                 expect(output.length).to.eql(1);
-
                 expect(output[0].path).to.eql(['curfewAddressReview', 'consent']);
             });
 
             it('should require an answer for electricity if consent is yes', () => {
 
-                const licence2 = {
+                const licence = {
+                    ...baseLicence,
                     curfew: {
+                        ...baseLicence.curfew,
                         curfewAddressReview: {
                             consent: 'Yes',
                             electricity: ''
-                        },
-                        addressSafety,
-                        curfewHours
-                    },
-                    risk: {
-                        riskManagement
-                    },
-                    reporting: {
-                        reportingInstructions
+                        }
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(licence, 'PROCESSING_RO');
 
                 expect(output.length).to.eql(1);
-
                 expect(output[0].path).to.eql(['curfewAddressReview', 'electricity']);
             });
 
             it('should require an answer for homeVisitConducted if electricity is yes', () => {
 
-                const licence2 = {
+                const licence = {
+                    ...baseLicence,
                     curfew: {
+                        ...baseLicence.curfew,
                         curfewAddressReview: {
                             consent: 'Yes',
                             electricity: 'Yes',
                             homeVisitConducted: ''
-                        },
-                        addressSafety,
-                        curfewHours
-                    },
-                    risk: {
-                        riskManagement
-                    },
-                    reporting: {
-                        reportingInstructions
+                        }
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(licence, 'PROCESSING_RO');
 
                 expect(output.length).to.eql(1);
-
                 expect(output[0].path).to.eql(['curfewAddressReview', 'homeVisitConducted']);
             });
 
             it('should require an answer for address safety', () => {
 
-                const licence2 = {
+                const licence = {
+                    ...baseLicence,
                     curfew: {
-                        curfewAddressReview,
+                        ...baseLicence.curfew,
                         addressSafety: {
                             deemedSafe: ''
-                        },
-                        curfewHours
-                    },
-                    risk: {
-                        riskManagement
-                    },
-                    reporting: {
-                        reportingInstructions
+                        }
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(licence, 'PROCESSING_RO');
 
                 expect(output.length).to.eql(1);
-
                 expect(output[0].path).to.eql(['addressSafety', 'deemedSafe']);
             });
 
             it('should require a reason if deemedSafe is no', () => {
 
-                const licence2 = {
+                const licence = {
+                    ...baseLicence,
                     curfew: {
-                        curfewAddressReview,
+                        ...baseLicence.curfew,
                         addressSafety: {
                             deemedSafe: 'No'
-                        },
-                        curfewHours
-                    },
-                    risk: {
-                        riskManagement
-                    },
-                    reporting: {
-                        reportingInstructions
+                        }
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(licence, 'PROCESSING_RO');
 
                 expect(output.length).to.eql(1);
-
                 expect(output[0].path).to.eql(['addressSafety', 'unsafeReason']);
             });
 
             it('should require curfew hours', () => {
 
-                const licence2 = {
+                const licence = {
+                    ...baseLicence,
                     curfew: {
-                        curfewAddressReview,
-                        addressSafety,
+                        ...baseLicence.curfew,
                         curfewHours: {
-                            ...curfewHours,
+                            ...baseLicence.curfew.curfewHours,
                             wednesdayFrom: ''
                         }
-                    },
-                    risk: {
-                        riskManagement
-                    },
-                    reporting: {
-                        reportingInstructions
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(licence, 'PROCESSING_RO');
 
                 expect(output.length).to.eql(1);
-
                 expect(output[0].path).to.eql(['curfewHours', 'wednesdayFrom']);
             });
 
             it('should require an answer for planning actions, awaiting information and victim liaison', () => {
 
-                const licence2 = {
-                    curfew: {
-                        curfewAddressReview,
-                        addressSafety,
-                        curfewHours
-                    },
+                const licence = {
+                    ...baseLicence,
                     risk: {
                         riskManagement: {
                             planningActions: '',
                             awaitingInformation: '',
                             victimLiaison: ''
                         }
-                    },
-                    reporting: {
-                        reportingInstructions
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(licence, 'PROCESSING_RO');
 
                 expect(output.length).to.eql(3);
 
@@ -1451,25 +1412,18 @@ describe('licenceService', () => {
 
             it('should require reasons for planning actions, awaiting information and victim liaison if Yes', () => {
 
-                const licence2 = {
-                    curfew: {
-                        curfewAddressReview,
-                        addressSafety,
-                        curfewHours
-                    },
+                const licence = {
+                    ...baseLicence,
                     risk: {
                         riskManagement: {
                             planningActions: 'Yes',
                             awaitingInformation: 'Yes',
                             victimLiaison: 'Yes'
                         }
-                    },
-                    reporting: {
-                        reportingInstructions
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(licence, 'PROCESSING_RO');
 
                 expect(output.length).to.eql(3);
 
@@ -1480,15 +1434,8 @@ describe('licenceService', () => {
 
             it('should require reporting instructions fields', () => {
 
-                const licence2 = {
-                    curfew: {
-                        curfewAddressReview,
-                        addressSafety,
-                        curfewHours
-                    },
-                    risk: {
-                        riskManagement
-                    },
+                const licence = {
+                    ...baseLicence,
                     reporting: {
                         reportingInstructions: {
 
@@ -1496,7 +1443,7 @@ describe('licenceService', () => {
                     }
                 };
 
-                const output = service.validateLicence(licence2, 'PROCESSING_RO');
+                const output = service.validateLicence(licence, 'PROCESSING_RO');
 
                 expect(output.length).to.eql(5);
 
@@ -1506,6 +1453,883 @@ describe('licenceService', () => {
                 expect(output[3].path).to.eql(['reportingInstructions', 'postcode']);
                 expect(output[4].path).to.eql(['reportingInstructions', 'telephone']);
             });
+
+            describe('additional conditions validation', () => {
+
+                it('should return no error if there are no additional conditions', () => {
+                    const output = service.validateLicence(baseLicence, 'PROCESSING_RO');
+
+                    expect(output.length).to.eql(0);
+                });
+
+                context('NOCONTACTASSOCIATE', () => {
+                    it('should return no error if groupsOrOrganisation is entered', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOCONTACTASSOCIATE: {
+                                        groupsOrOrganisation: 'ngr'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if groupsOrOrganisation is not', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOCONTACTASSOCIATE: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'NOCONTACTASSOCIATE', 'groupsOrOrganisation']);
+                    });
+                });
+
+                context('INTIMATERELATIONSHIP', () => {
+                    it('should return no error if intimateGender is entered', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    INTIMATERELATIONSHIP: {
+                                        intimateGender: 'a'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if groupsOrOrganisation is not', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    INTIMATERELATIONSHIP: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'INTIMATERELATIONSHIP', 'intimateGender']);
+                    });
+                });
+
+                context('NOCONTACTNAMED', () => {
+                    it('should return no error if noContactOffenders is entered', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOCONTACTNAMED: {
+                                        noContactOffenders: 'a'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if noContactOffenders is not', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOCONTACTNAMED: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'NOCONTACTNAMED', 'noContactOffenders']);
+                    });
+                });
+
+                context('NORESIDE', () => {
+                    it('should return no error if notResideWithGender and notResideWithAge are filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NORESIDE: {
+                                        notResideWithGender: 'a',
+                                        notResideWithAge: '13'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if noContactOffenders is not', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NORESIDE: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(2);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'NORESIDE', 'notResideWithGender']);
+                        expect(output[1].path).to.eql(
+                            ['additional', 'NORESIDE', 'notResideWithAge']);
+                    });
+                });
+
+                context('NOUNSUPERVISEDCONTACT', () => {
+                    it('should return no error if unsupervisedContactGender, unsupervisedContactAge and ' +
+                        'unsupervisedContactSocial are filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOUNSUPERVISEDCONTACT: {
+                                        unsupervisedContactGender: 'a',
+                                        unsupervisedContactAge: '13',
+                                        unsupervisedContactSocial: 'b'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if unsupervisedContactGender, unsupervisedContactAge or ' +
+                        'unsupervisedContactSocial are not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOUNSUPERVISEDCONTACT: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(3);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'NOUNSUPERVISEDCONTACT', 'unsupervisedContactGender']);
+                        expect(output[1].path).to.eql(
+                            ['additional', 'NOUNSUPERVISEDCONTACT', 'unsupervisedContactAge']);
+                        expect(output[2].path).to.eql(
+                            ['additional', 'NOUNSUPERVISEDCONTACT', 'unsupervisedContactSocial']);
+                    });
+                });
+
+                context('NOCHILDRENSAREA', () => {
+                    it('should return no error if notInSightOf is filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOCHILDRENSAREA: {
+                                        notInSightOf: 'a'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if notInSightOf is not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOCHILDRENSAREA: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'NOCHILDRENSAREA', 'notInSightOf']);
+                    });
+                });
+
+                context('NOWORKWITHAGE', () => {
+                    it('should return no error if noWorkWithAge is filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOWORKWITHAGE: {
+                                        noWorkWithAge: '12'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if noWorkWithAge is not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOWORKWITHAGE: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'NOWORKWITHAGE', 'noWorkWithAge']);
+                    });
+                });
+
+                context('NOCOMMUNICATEVICTIM', () => {
+                    it('should return no error if victimFamilyMembers and socialServicesDept are filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOCOMMUNICATEVICTIM: {
+                                        victimFamilyMembers: 'a',
+                                        socialServicesDept: '13'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if noContactOffenders is not', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOCOMMUNICATEVICTIM: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(2);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'NOCOMMUNICATEVICTIM', 'victimFamilyMembers']);
+                        expect(output[1].path).to.eql(
+                            ['additional', 'NOCOMMUNICATEVICTIM', 'socialServicesDept']);
+                    });
+                });
+
+                context('COMPLYREQUIREMENTS', () => {
+                    it('should return no error if courseOrCentre is filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    COMPLYREQUIREMENTS: {
+                                        courseOrCentre: '12'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if courseOrCentre is not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    COMPLYREQUIREMENTS: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'COMPLYREQUIREMENTS', 'courseOrCentre']);
+                    });
+                });
+
+                context('ATTEND', () => {
+                    it('should return no error if appointmentDate, appointmentTime and appointmentAddress ' +
+                        'are filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    ATTEND: {
+                                        appointmentDate: 'a',
+                                        appointmentTime: '13',
+                                        appointmentAddress: 'address'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if appointmentDate, appointmentTime and appointmentAddress ' +
+                        'are not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    ATTEND: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(3);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'ATTEND', 'appointmentDate']);
+                        expect(output[1].path).to.eql(
+                            ['additional', 'ATTEND', 'appointmentTime']);
+                        expect(output[2].path).to.eql(
+                            ['additional', 'ATTEND', 'appointmentAddress']);
+                    });
+                });
+
+                context('ATTENDALL', () => {
+                    it('should return no error if appointmentName is filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    ATTENDALL: {
+                                        appointmentName: '12'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if appointmentName is not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    ATTENDALL: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'ATTENDALL', 'appointmentName']);
+                    });
+                });
+
+                context('HOMEVISITS', () => {
+                    it('should return no error if mentalHealthName is filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    HOMEVISITS: {
+                                        mentalHealthName: '12'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if mentalHealthName is not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    HOMEVISITS: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'HOMEVISITS', 'mentalHealthName']);
+                    });
+                });
+
+                context('REMAINADDRESS', () => {
+                    it('should return no error if curfewAddress, curfewFrom, curfewTo and curfewTagRequired' +
+                        'are filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    REMAINADDRESS: {
+                                        curfewAddress: 'a',
+                                        curfewFrom: 'b',
+                                        curfewTo: 'c',
+                                        curfewTagRequired: 'd'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if curfewAddress, curfewFrom, curfewTo and curfewTagRequired ' +
+                        'are not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    REMAINADDRESS: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(4);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'REMAINADDRESS', 'curfewAddress']);
+                        expect(output[1].path).to.eql(
+                            ['additional', 'REMAINADDRESS', 'curfewFrom']);
+                        expect(output[2].path).to.eql(
+                            ['additional', 'REMAINADDRESS', 'curfewTo']);
+                        expect(output[3].path).to.eql(
+                            ['additional', 'REMAINADDRESS', 'curfewTagRequired']);
+                    });
+                });
+
+                context('CONFINEADDRESS', () => {
+                    it('should return no error if confinedTo, confinedFrom and confinedReviewFrequency' +
+                        'are filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    CONFINEADDRESS: {
+                                        confinedTo: 'a',
+                                        confinedFrom: 'b',
+                                        confinedReviewFrequency: 'c'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if confinedTo, confinedFrom and confinedReviewFrequency ' +
+                        'are not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    CONFINEADDRESS: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(3);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'CONFINEADDRESS', 'confinedTo']);
+                        expect(output[1].path).to.eql(
+                            ['additional', 'CONFINEADDRESS', 'confinedFrom']);
+                        expect(output[2].path).to.eql(
+                            ['additional', 'CONFINEADDRESS', 'confinedReviewFrequency']);
+                    });
+                });
+
+                context('REPORTTO', () => {
+                    it('should return no error if reportingAddress, reportingTime and reportingFrequency' +
+                        'are filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    REPORTTO: {
+                                        reportingAddress: 'a',
+                                        reportingTime: 'b',
+                                        reportingDaily: '',
+                                        reportingFrequency: 'c'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return no error if reportingAddress, reportingDaily and reportingFrequency' +
+                        'are filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    REPORTTO: {
+                                        reportingAddress: 'a',
+                                        reportingTime: '',
+                                        reportingDaily: 'b',
+                                        reportingFrequency: 'c'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if reportingTime and reportingFrequency are both filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    REPORTTO: {
+                                        reportingAddress: 'a',
+                                        reportingTime: 'b',
+                                        reportingDaily: 'c',
+                                        reportingFrequency: 'c'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(['additional', 'REPORTTO', 'reportingDaily']);
+                    });
+
+                    it('should return error if reportingTime and reportingFrequency are both empty', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    REPORTTO: {
+                                        reportingAddress: 'a',
+                                        reportingTime: '',
+                                        reportingDaily: '',
+                                        reportingFrequency: 'c'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(['additional', 'REPORTTO', 'reportingDaily']);
+                    });
+
+                    it('should return error if confinedTo, confinedFrom and confinedReviewFrequency ' +
+                        'are not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    REPORTTO: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(2);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'REPORTTO', 'reportingAddress']);
+                        expect(output[1].path).to.eql(
+                            ['additional', 'REPORTTO', 'reportingFrequency']);
+                    });
+                });
+
+                context('VEHICLEDETAILS', () => {
+                    it('should return no error if vehicleDetails is filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    VEHICLEDETAILS: {
+                                        vehicleDetails: 'fe'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if vehicleDetails is not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    VEHICLEDETAILS: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'VEHICLEDETAILS', 'vehicleDetails']);
+                    });
+                });
+
+                context('EXCLUSIONADDRESS', () => {
+                    it('should return no error if noEnterPlace is filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    EXCLUSIONADDRESS: {
+                                        noEnterPlace: 'fe'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if noEnterPlace is not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    EXCLUSIONADDRESS: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'EXCLUSIONADDRESS', 'noEnterPlace']);
+                    });
+                });
+
+                context('EXCLUSIONAREA', () => {
+                    it('should return no error if exclusionArea is filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    EXCLUSIONAREA: {
+                                        exclusionArea: 'fe'
+                                    }
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+
+                    it('should return error if exclusionArea is not filled in', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    EXCLUSIONAREA: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(1);
+                        expect(output[0].path).to.eql(
+                            ['additional', 'EXCLUSIONAREA', 'exclusionArea']);
+                    });
+                });
+
+                context('Conditions with no extra information', () => {
+                    it('should return no error if conditions selected', () => {
+
+                        const newLicence = {
+                            ...baseLicence,
+                            licenceConditions: {
+                                ...baseLicence.licenceConditions,
+                                additional: {
+                                    NOTIFYRELATIONSHIP: {},
+                                    NOCONTACTPRISONER: {},
+                                    NOCONTACTSEXOFFENDER: {},
+                                    CAMERAAPPROVAL: {},
+                                    NOCAMERA: {},
+                                    NOCAMERAPHONE: {},
+                                    USAGEHISTORY: {},
+                                    NOINTERNET: {},
+                                    ONEPHONE: {},
+                                    RETURNTOUK: {},
+                                    SURRENDERPASSPORT: {},
+                                    NOTIFYPASSPORT: {}
+                                }
+                            }
+                        };
+
+                        const output = service.validateLicence(newLicence, 'PROCESSING_RO');
+
+                        expect(output.length).to.eql(0);
+                    });
+                });
+            });
+
         });
     });
 });

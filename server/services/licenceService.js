@@ -4,7 +4,6 @@ const {
     createAdditionalConditionsObject
 } = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
-const {DATE_FIELD} = require('./utils/conditionsValidator');
 const {
     getIn,
     isEmpty,
@@ -38,7 +37,7 @@ module.exports = function createLicenceService(licenceClient) {
             if (!licence) {
                 return null;
             }
-            const formattedLicence = formatObjectForView(licence, {dates: [DATE_FIELD]});
+            const formattedLicence = formatObjectForView(licence);
             const stage = getIn(rawLicence, ['stage']);
 
             return {licence: formattedLicence, stage};
@@ -313,7 +312,7 @@ function getLicenceSectionToValidate(stage) {
         case licenceStages.ELIGIBILITY:
             return ['eligibility', 'proposedAddress'];
         case licenceStages.PROCESSING_RO:
-            return ['curfew', 'risk', 'reporting'];
+            return ['curfew', 'risk', 'reporting', 'licenceConditions'];
         case licenceStages.PROCESSING_CA:
             // TODO
             return ['eligibility', 'proposedAddress'];

@@ -1,6 +1,5 @@
-const {validate, DATE_FIELD} = require('./utils/conditionsValidator');
-const {getIntersection, flatten, getIn, isEmpty} = require('../utils/functionalHelpers');
-const moment = require('moment');
+const {formatConditionsInput} = require('./utils/conditionsFormatter');
+const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const logger = require('../../log.js');
 const {conditionsOrder} = require('../models/conditions');
 const {populateAdditionalConditionsAsObject} = require('../utils/licenceFactory');
@@ -34,25 +33,10 @@ module.exports = function createConditionsService(licenceClient) {
         }
     }
 
-    async function validateConditionInputs(requestBody) {
+    async function formatConditionInputs(requestBody) {
         const selectedConditionsConfig = await licenceClient.getAdditionalConditions(requestBody.additionalConditions);
 
-        return validate(requestBody, selectedConditionsConfig);
-    }
-
-    async function getAdditionalConditionsWithErrors(validatedInput) {
-        try {
-            const conditions = await licenceClient.getAdditionalConditions();
-
-            return conditions
-                .sort(orderForView)
-                .map(populateFromFormSubmission(validatedInput))
-                .reduce(splitIntoGroupedObject, {});
-
-        } catch (error) {
-            logger.error('Error during getAdditionalConditionsWithErrors', error.stack);
-            throw error;
-        }
+        return formatConditionsInput(requestBody, selectedConditionsConfig);
     }
 
     async function populateLicenceWithConditions(licence) {
@@ -79,8 +63,7 @@ module.exports = function createConditionsService(licenceClient) {
     return {
         getStandardConditions,
         getAdditionalConditions,
-        validateConditionInputs,
-        getAdditionalConditionsWithErrors,
+        formatConditionInputs,
         populateLicenceWithConditions
     };
 };
@@ -107,70 +90,6 @@ function populateFromSavedLicence(inputtedConditions) {
 
         return {...condition, selected: selected, user_submission: submission};
     };
-}
-
-function populateFromFormSubmission(validatedInput) {
-    return condition => {
-
-        if (!conditionSelected(validatedInput, condition)) {
-            return {...condition};
-        }
-
-        if (!conditionHasInputFields(condition, validatedInput)) {
-            return {...condition, selected: true};
-        }
-
-        const conditionFieldKeys = Object.keys(condition.field_position);
-        const userInputsForCondition = getUserInputsForCondition(validatedInput, conditionFieldKeys);
-        const validationErrors = getValidationErrors(validatedInput, conditionFieldKeys);
-
-        return {
-            ...condition,
-            selected: true,
-            user_submission: userInputsForCondition,
-            errors: validationErrors
-        };
-    };
-}
-
-function conditionSelected(input, condition) {
-    const selectedConditions = input.additionalConditions;
-    return selectedConditions.includes(String(condition.id));
-}
-
-function conditionHasInputFields(condition) {
-    return !!condition.field_position;
-}
-
-function getUserInputsForCondition(input, conditionInputFields) {
-    return Object.keys(input)
-        .filter(formInputFieldKey => conditionInputFields.includes(formInputFieldKey))
-        .reduce((object, formInputFieldKey) => {
-            if (formInputFieldKey === DATE_FIELD) {
-                return {...object, [formInputFieldKey]: formatDateField(input[formInputFieldKey])};
-            }
-            return {...object, [formInputFieldKey]: input[formInputFieldKey]};
-        }, {});
-}
-
-function getValidationErrors(validationObject, conditionFieldKeys) {
-    const fieldsWithErrors = Object.keys(validationObject.errors);
-    const conditionFieldsWithErrors = getIntersection(fieldsWithErrors, conditionFieldKeys);
-
-    if (conditionFieldsWithErrors.length === 0) {
-        return null;
-    }
-
-    return flatten(conditionFieldsWithErrors.map(field => {
-        return validationObject.errors[field];
-    }));
-}
-
-function formatDateField(input) {
-    if (moment(input).isValid()) {
-        return moment(input).format('DD/MM/YYYY');
-    }
-    return '';
 }
 
 function orderForView(a, b) {

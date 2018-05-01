@@ -1,4 +1,5 @@
 const {conditionsOrder} = require('../models/conditions');
+const NO_INPUT_MESSAGE = 'INPUT REQUIRED';
 
 module.exports = {
     createLicenceObjectFrom,
@@ -141,15 +142,19 @@ function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInpu
         if (!fieldNameForPlaceholder) {
             return [...conditionArray, {text: textSegment}];
         }
-        const inputtedData = userInput[fieldNameForPlaceholder];
+        const inputtedData = userInput[fieldNameForPlaceholder] || NO_INPUT_MESSAGE;
         return [...conditionArray, {text: textSegment}, {variable: inputtedData}];
     };
 }
 
 // Special case, doesn't follow normal rules
 function injectUserInputAppointmentAsObject(userInput, conditionText) {
-    const {appointmentAddress, appointmentDate, appointmentTime} = userInput;
+    const appointmentAddress = userInput.appointmentAddress || NO_INPUT_MESSAGE;
+    const appointmentDate = userInput.appointmentDate || NO_INPUT_MESSAGE;
+    const appointmentTime = userInput.appointmentTime || NO_INPUT_MESSAGE;
+
     const string = `${appointmentAddress} on ${appointmentDate} at ${appointmentTime}`;
+
     const splitConditionText = conditionText.split(betweenBrackets).filter(text => text);
     return [
         {text: splitConditionText[0]},
