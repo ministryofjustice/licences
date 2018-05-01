@@ -108,12 +108,100 @@ const reportingInstructions = joi.object({
     telephone: requiredString
 });
 
+const standard = joi.object({
+    additionalConditionsRequired: requiredString
+});
+
+const additional = joi.object({
+    NOCONTACTASSOCIATE: joi.object({
+        groupsOrOrganisation: requiredString
+    }),
+    INTIMATERELATIONSHIP: joi.object({
+        intimateGender: requiredString
+    }),
+    NOCONTACTNAMED: joi.object({
+        noContactOffenders: requiredString
+    }),
+    NORESIDE: joi.object({
+        notResideWithGender: requiredString,
+        notResideWithAge: requiredString
+    }),
+    NOUNSUPERVISEDCONTACT: joi.object({
+        unsupervisedContactGender: requiredString,
+        unsupervisedContactAge: requiredString,
+        unsupervisedContactSocial: requiredString
+    }),
+    NOCHILDRENSAREA: joi.object({
+        notInSightOf: requiredString
+    }),
+    NOWORKWITHAGE: joi.object({
+        noWorkWithAge: requiredString
+    }),
+    NOCOMMUNICATEVICTIM: joi.object({
+        victimFamilyMembers: requiredString,
+        socialServicesDept: requiredString
+    }),
+    COMPLYREQUIREMENTS: joi.object({
+        courseOrCentre: requiredString
+    }),
+    ATTEND: joi.object({
+        appointmentDate: requiredString,
+        appointmentTime: requiredString,
+        appointmentAddress: requiredString
+    }),
+    ATTENDALL: joi.object({
+        appointmentName: requiredString
+    }),
+    HOMEVISITS: joi.object({
+        mentalHealthName: requiredString
+    }),
+    REMAINADDRESS: joi.object({
+        curfewAddress: requiredString,
+        curfewFrom: requiredString,
+        curfewTo: requiredString,
+        curfewTagRequired: requiredString
+    }),
+    CONFINEADDRESS: joi.object({
+        confinedTo: requiredString,
+        confinedFrom: requiredString,
+        confinedReviewFrequency: requiredString
+    }),
+    REPORTTO: joi.object({
+        reportingAddress: requiredString,
+        reportingTime: optionalString,
+        reportingDaily: requiredIf('reportingTime', ''),
+        reportingFrequency: requiredString
+    }),
+    VEHICLEDETAILS: joi.object({
+        vehicleDetails: requiredString
+    }),
+    EXCLUSIONADDRESS: joi.object({
+        noEnterPlace: requiredString
+    }),
+    EXCLUSIONAREA: joi.object({
+        exclusionArea: requiredString
+    }),
+    NOTIFYRELATIONSHIP: joi.object({}),
+    NOCONTACTPRISONER: joi.object({}),
+    NOCONTACTSEXOFFENDER: joi.object({}),
+    CAMERAAPPROVAL: joi.object({}),
+    NOCAMERA: joi.object({}),
+    NOCAMERAPHONE: joi.object({}),
+    USAGEHISTORY: joi.object({}),
+    NOINTERNET: joi.object({}),
+    ONEPHONE: joi.object({}),
+    RETURNTOUK: joi.object({}),
+    SURRENDERPASSPORT: joi.object({}),
+    NOTIFYPASSPORT: joi.object({})
+});
+
 const schema = {
     eligibility: {excluded, suitability, crdTime},
     proposedAddress: {optOut, addressProposed, bassReferral, curfewAddress},
     curfew: {curfewAddressReview, addressSafety, curfewHours},
     risk: {riskManagement},
-    reporting: {reportingInstructions}
+    reporting: {reportingInstructions},
+    licenceConditions: {standard, additional}
 };
 
 module.exports = function(licence) {

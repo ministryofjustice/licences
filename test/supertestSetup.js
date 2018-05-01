@@ -60,8 +60,7 @@ const licenceServiceStub = {
 const conditionsServiceStub = {
     getStandardConditions: sandbox.stub().returnsPromise().resolves(),
     getAdditionalConditions: sandbox.stub().returnsPromise().resolves(),
-    validateConditionInputs: sandbox.stub().returnsPromise().resolves({validates: true}),
-    getAdditionalConditionsWithErrors: sandbox.stub().returnsPromise().resolves({}),
+    formatConditionInputs: sandbox.stub().returnsPromise().resolves(),
     populateLicenceWithConditions: sandbox.stub().returnsPromise().resolves({})
 };
 
