@@ -4,21 +4,22 @@ const joi = baseJoi.extend(dateExtend);
 
 const optionalString = joi.string().allow('').optional();
 const requiredString = joi.string().required();
+const selection = joi.array().min(1).required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
 const requiredDate = joi.date().format('YYYY-MM-DD').required();
-const requiredIf = (field, answer) => {
-    return joi.when(field, {is: answer, then: joi.string().required(), otherwise: joi.valid(['']).optional()});
+const requiredIf = (field, answer, typeRequired = requiredString) => {
+    return joi.when(field, {is: answer, then: typeRequired, otherwise: joi.valid(['']).optional()});
 };
 
 // ELIGIBILITY
 const excluded = joi.object().keys({
     decision: requiredYesNo,
-    reason: requiredIf('decision', 'Yes')
+    reason: requiredIf('decision', 'Yes', selection)
 });
 
 const suitability = joi.object().keys({
     decision: requiredYesNo,
-    reason: requiredIf('decision', 'Yes')
+    reason: requiredIf('decision', 'Yes', selection)
 });
 
 const crdTime = joi.object().keys({
