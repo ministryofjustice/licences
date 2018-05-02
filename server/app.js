@@ -205,6 +205,11 @@ module.exports = function createApp({
         return res.render('feedback', {returnURL: req.get('referer')});
     });
 
+    app.get('/notfound', (req, res) => {
+        res.status(404);
+        return res.render('notfound');
+    });
+
     app.use('/login', createSignInRouter(passport));
 
     app.use('/logout', (req, res) => {
@@ -226,8 +231,7 @@ module.exports = function createApp({
 
     // Error Handler
     app.use(function(req, res, next) {
-        res.status(404);
-        res.render('notfound');
+        res.redirect('/notfound');
     });
 
     app.use(handleKnownErrors);
