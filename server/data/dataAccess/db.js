@@ -2,6 +2,7 @@ const logger = require('../../../log');
 const config = require('../../config');
 
 const {Pool} = require('pg');
+const fs = require('fs');
 
 const pool = new Pool({
     user: config.db.username,
@@ -9,7 +10,10 @@ const pool = new Pool({
     database: config.db.database,
     password: config.db.password,
     port: 5432,
-    ssl: config.db.sslEnabled === 'true'
+    ssl: config.db.sslEnabled === 'true' ? {
+        ca: fs.readFileSync('root.cert'),
+        rejectUnauthorized: true
+    } : false
 });
 
 pool.on('error', (error, client) => {
