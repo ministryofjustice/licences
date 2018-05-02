@@ -195,13 +195,28 @@ const additional = joi.object({
     NOTIFYPASSPORT: joi.object({})
 });
 
+const seriousOffence = {
+    decision: requiredYesNo
+};
+
+const onRemand = {
+    decision: requiredYesNo
+};
+
+const release = {
+    decision: requiredYesNo,
+    reason: requiredIf('decision', 'No')
+};
+
 const schema = {
     eligibility: {excluded, suitability, crdTime},
     proposedAddress: {optOut, addressProposed, bassReferral, curfewAddress},
     curfew: {curfewAddressReview, addressSafety, curfewHours},
     risk: {riskManagement},
     reporting: {reportingInstructions},
-    licenceConditions: {standard, additional}
+    licenceConditions: {standard, additional},
+    finalChecks: {seriousOffence, onRemand},
+    approval: {release}
 };
 
 module.exports = function(licence) {

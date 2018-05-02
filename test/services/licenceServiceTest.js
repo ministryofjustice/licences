@@ -1013,6 +1013,22 @@ describe('licenceService', () => {
             }
         };
 
+        const finalChecks = {
+            seriousOffence: {
+                decision: 'No'
+            },
+            onRemand: {
+                decision: 'No'
+            }
+        };
+
+        const approval = {
+            release: {
+                decision: 'Yes',
+                reason: ''
+            }
+        };
+
         it('should return error if section is missing from licence', () => {
             const licence = {};
 
@@ -2330,6 +2346,142 @@ describe('licenceService', () => {
                 });
             });
 
+        });
+
+        context('PROCESSING_CA', () => {
+
+            const baseLicence = {
+                finalChecks
+            };
+
+            it('should return [] for no errors', () => {
+
+                const output = service.validateLicence(baseLicence, 'PROCESSING_CA');
+
+                expect(output).to.eql([]);
+
+            });
+
+            it('should return an error if no data provided', () => {
+
+                const newLicence = {};
+
+                const output = service.validateLicence(newLicence, 'PROCESSING_CA');
+
+                expect(output.length).to.eql(1);
+                expect(output[0].path).to.eql(
+                    ['finalChecks']);
+            });
+
+            it('should return an error if no seriousOffence provided', () => {
+
+                const newLicence = {
+                    finalChecks: {
+                        ...baseLicence.finalChecks,
+                        seriousOffence: {
+
+                        }
+                    }
+                };
+
+                const output = service.validateLicence(newLicence, 'PROCESSING_CA');
+
+                expect(output.length).to.eql(1);
+                expect(output[0].path).to.eql(
+                    ['seriousOffence', 'decision']);
+            });
+
+            it('should return an error if no onRemand provided', () => {
+
+                const newLicence = {
+                    finalChecks: {
+                        ...baseLicence.finalChecks,
+                        onRemand: {
+
+                        }
+                    }
+                };
+
+                const output = service.validateLicence(newLicence, 'PROCESSING_CA');
+
+                expect(output.length).to.eql(1);
+                expect(output[0].path).to.eql(
+                    ['onRemand', 'decision']);
+            });
+        });
+
+        context('APPROVAL', () => {
+            const baseLicence = {
+                approval
+            };
+
+            it('should return [] for no errors', () => {
+
+                const output = service.validateLicence(baseLicence, 'APPROVAL');
+
+                expect(output).to.eql([]);
+
+            });
+
+            it('should return an error if no data provided', () => {
+
+                const newLicence = {};
+
+                const output = service.validateLicence(newLicence, 'APPROVAL');
+
+                expect(output.length).to.eql(1);
+                expect(output[0].path).to.eql(
+                    ['approval']);
+            });
+
+            it('should return an error if no decision provided', () => {
+
+                const newLicence = {
+                    approval: {
+                        release: {
+
+                        }
+                    }
+                };
+
+                const output = service.validateLicence(newLicence, 'APPROVAL');
+
+                expect(output.length).to.eql(1);
+                expect(output[0].path).to.eql(['release', 'decision']);
+            });
+
+            it('should return an error if no reason provided for no decision', () => {
+
+                const newLicence = {
+                    approval: {
+                        release: {
+                            decision: 'No',
+                            reason: ''
+                        }
+                    }
+                };
+
+                const output = service.validateLicence(newLicence, 'APPROVAL');
+
+                expect(output.length).to.eql(1);
+                expect(output[0].path).to.eql(['release', 'reason']);
+            });
+
+            it('should return no error if reason provided for no decision', () => {
+
+                const newLicence = {
+                    approval: {
+                        release: {
+                            decision: 'No',
+                            reason: 'Reason'
+                        }
+                    }
+                };
+
+                const output = service.validateLicence(newLicence, 'APPROVAL');
+
+                expect(output.length).to.eql(0);
+            });
         });
     });
 });
