@@ -77,9 +77,9 @@ function getOffenderIds(releases) {
 
 function getStatus(prisoner, licences, role) {
 
-    const licenceForPrisoner = licences ? licences.find(rawLicence => {
+    const licenceForPrisoner = licences.find(rawLicence => {
         return prisoner.offenderNo === rawLicence.nomis_id;
-    }) : null;
+    });
 
     if (!licenceForPrisoner) {
         return {stage: licenceStages.UNSTARTED, status: 'Not started'};
