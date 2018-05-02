@@ -189,17 +189,9 @@ workflows:
   build_test_deploy:
     jobs:
       - build:
-          filters:
-            branches:
-              ignore:
-                - /deploy-to.*/
       - test:
           requires:
             - build
-          filters:
-            branches:
-              ignore:
-                - /deploy-to.*/
       - build_docker:
           requires:
             - test
@@ -213,25 +205,13 @@ workflows:
       - feature_tests:
           requires:
             - deploy_release_to_eb
-          filters:
-            branches:
-              only:
-                - master
       - hold:
           type: approval
-          filters:
-            branches:
-              only:
-                - deploy-to-mock
+          requires:
+            - deploy_release_to_eb
       - deploy_stage:
-          filters:
-            branches:
-              only:
-                - deploy-to-mock
           requires:
             - hold
       - accept_stage:
-          filters:
-            branches:
-              only:
-                - deploy-to-stage
+          requires:
+            - deploy_stage
