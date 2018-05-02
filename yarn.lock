@@ -3436,6 +3436,12 @@ istanbul@^0.4.5:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
+joi-date-extensions@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/joi-date-extensions/-/joi-date-extensions-1.2.0.tgz#1b00382f204b3409fdf0c3f904c0c9c1ec533402"
+  dependencies:
+    moment "2.x.x"
+
 joi@^13.2.0:
   version "13.2.0"
   resolved "https://registry.yarnpkg.com/joi/-/joi-13.2.0.tgz#72307f1765bb40b068361f9368a4ba1092b8478e"
@@ -4200,6 +4206,10 @@ mocha@^3.2.0:
 module-not-found-error@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/module-not-found-error/-/module-not-found-error-1.0.1.tgz#cf8b4ff4f29640674d6cdd02b0e3bc523c2bbdc0"
+
+moment@2.x.x:
+  version "2.22.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.1.tgz#529a2e9bf973f259c9643d237fda84de3a26e8ad"
 
 moment@^2.16.0, moment@^2.18.1:
   version "2.18.1"
