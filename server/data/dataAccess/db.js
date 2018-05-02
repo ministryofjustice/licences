@@ -2,7 +2,7 @@ const logger = require('../../../log');
 const config = require('../../config');
 
 const {Pool} = require('pg');
-const fs = require('fs')
+const fs = require('fs');
 
 const pool = new Pool({
     user: config.db.username,
