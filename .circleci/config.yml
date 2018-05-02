@@ -116,6 +116,10 @@ jobs:
               VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
               yarn run plant-beanstalk LICENCES_${VERSION}
               ~/.local/bin/eb deploy --process --verbose
+        - persist_to_workspace:
+            root: .
+            paths:
+              - Dockerrun.aws.json
 
   feature_tests:
     <<: *defaults
