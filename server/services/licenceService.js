@@ -308,18 +308,13 @@ module.exports = function createLicenceService(licenceClient) {
 };
 
 function getLicenceSectionToValidate(stage) {
-    switch (stage) {
-        case licenceStages.ELIGIBILITY:
-            return ['eligibility', 'proposedAddress'];
-        case licenceStages.PROCESSING_RO:
-            return ['curfew', 'risk', 'reporting', 'licenceConditions'];
-        case licenceStages.PROCESSING_CA:
-            // TODO
-            return ['eligibility', 'proposedAddress'];
-        case licenceStages.APPROVAL:
-            // TODO
-            return ['eligibility', 'proposedAddress'];
-        default:
-            return null;
-    }
+
+    const validationSections = {
+        [licenceStages.ELIGIBILITY]: ['eligibility', 'proposedAddress'],
+        [licenceStages.PROCESSING_RO]: ['curfew', 'risk', 'reporting', 'licenceConditions'],
+        [licenceStages.PROCESSING_CA]: ['finalChecks'],
+        [licenceStages.APPROVAL]: ['approval']
+    };
+
+    return validationSections[stage];
 }
