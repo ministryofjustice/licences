@@ -13,8 +13,6 @@ npm-debug.log
 build/*
 uploads/*
 test-results.xml
-iis-ui.log
-iis-ui-audit.log
 tests.log
 build-info.json
 .env
