@@ -9,7 +9,7 @@ const pool = new Pool({
     database: config.db.database,
     password: config.db.password,
     port: 5432,
-    ssl: true
+    ssl: config.db.sslEnabled === 'true'
 });
 
 pool.on('error', (error, client) => {

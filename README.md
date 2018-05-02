@@ -49,6 +49,7 @@ For the database:
 * DB_PASS - password for DB access
 * DB_SERVER - DB server host
 * DB_NAME - DB name
+* DB_SSL_ENABLED - set to false for local
 
 ## Migrations
 

@@ -22,7 +22,8 @@ module.exports = {
         username: get('DB_USER', 'user'),
         password: get('DB_PASS', 'password'),
         server: get('DB_SERVER', 'server'),
-        database: get('DB_NAME', 'licences')
+        database: get('DB_NAME', 'licences'),
+        sslEnabled: get('DB_SSL_ENABLED', 'true')
     },
 
     nomis: {
