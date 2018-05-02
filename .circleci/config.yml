@@ -131,16 +131,6 @@ jobs:
             - node_modules-{{ checksum "package.json" }}
             - node_modules
             - yarn-cache
-      - add_ssh_keys:
-          fingerprints:
-            - "ce:dc:1a:a6:a5:39:ba:eb:ac:9d:ca:9a:46:e3:74:99"
-      - run:
-          name: wait for mock deployment to complete
-          command: |
-            export GIT_REF="$CIRCLE_SHA1"
-            export APP_BASE_URL="https://licences-mock.hmpps.dsd.io/health"
-            export WAIT_DURATION="45000"
-            yarn run wait-for-deploy
       - run:
           name: execute feature tests - mock
           command: |
@@ -176,13 +166,6 @@ jobs:
             - node_modules-{{ checksum "package.json" }}
             - node_modules
             - yarn-cache
-      - run:
-          name: wait for stage deployment to complete
-          command: |
-              export GIT_REF=$(git rev-parse "$CIRCLE_SHA1"^)
-              export APP_BASE_URL="https://licences-stage.hmpps.dsd.io/health"
-              export WAIT_DURATION="45000"
-              yarn run wait-for-deploy
       - run:
           name: execute feature tests - stage
           command: |
