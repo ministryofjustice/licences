@@ -129,8 +129,11 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             }
         };
 
+        const validationErrors = licenceService.validateLicence(data, stage);
+
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
-        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus});
+
+        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus, validationErrors});
     }));
 
     router.get('/approval/release/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
