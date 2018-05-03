@@ -43,7 +43,6 @@ module.exports = {
         fields: [
             {addresses: {
                 isList: true,
-                limitedBy: {field: 'alternativeAddress', No: 1},
                 contains: [
                     {addressLine1: {}},
                     {addressLine2: {}},
@@ -65,8 +64,7 @@ module.exports = {
                             {age: {}}
                         ]
                     }},
-                    {cautionedAgainstResident: {}},
-                    {alternative: {}}
+                    {cautionedAgainstResident: {}}
                 ]
             }}
         ],

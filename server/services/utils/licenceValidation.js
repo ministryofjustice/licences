@@ -43,24 +43,22 @@ const bassReferral = joi.object().keys({
 });
 
 const curfewAddress = joi.object().keys({
-    addresses: joi.array().items(joi.object().keys({
-        addressLine1: requiredString,
-        addressLine2: optionalString,
-        addressTown: requiredString,
-        postCode: requiredString,
-        telephone: requiredString,
-        occupier: joi.object().required().keys({
-            name: requiredString,
-            age: optionalString,
-            relation: requiredString
-        }),
-        residents: joi.array().items(joi.object().keys({
-            name: requiredString,
-            age: optionalString,
-            relation: requiredString
-        })),
-        cautionedAgainstResident: requiredYesNo
-    }))
+    addressLine1: requiredString,
+    addressLine2: optionalString,
+    addressTown: requiredString,
+    postCode: requiredString,
+    telephone: requiredString,
+    occupier: joi.object().required().keys({
+        name: requiredString,
+        age: optionalString,
+        relationship: requiredString
+    }),
+    residents: joi.array().items(joi.object().keys({
+        name: requiredString,
+        age: optionalString,
+        relationship: requiredString
+    })),
+    cautionedAgainstResident: requiredYesNo
 });
 
 // PROCESSING_RO

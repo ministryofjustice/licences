@@ -949,25 +949,23 @@ describe('licenceService', () => {
 
         const proposedAddress = {
             curfewAddress: {
-                addresses: [{
-                    addressLine1: 'line1',
-                    addressTown: 'town',
-                    postCode: 'pc',
-                    telephone: '123',
-                    occupier: {
+                addressLine1: 'line1',
+                addressTown: 'town',
+                postCode: 'pc',
+                telephone: '123',
+                occupier: {
+                    name: 'occupier',
+                    relationship: 'rel',
+                    age: ''
+                },
+                residents: [
+                    {
                         name: 'occupier',
-                        relation: 'rel',
+                        relationship: 'rel',
                         age: ''
-                    },
-                    residents: [
-                        {
-                            name: 'occupier',
-                            relation: 'rel',
-                            age: ''
-                        }
-                    ],
-                    cautionedAgainstResident: 'No'
-                }]
+                    }
+                ],
+                cautionedAgainstResident: 'No'
             }
         };
 
@@ -1151,32 +1149,31 @@ describe('licenceService', () => {
             const missingFieldProposedAddress = {
                 eligibility,
                 proposedAddress: {
+                    optOut: {
+                        decision: 'No'
+                    },
                     curfewAddress: {
-                        addresses: [{
-                            addressLine1: '',
-                            addressTown: 'town',
-                            postCode: 'pc',
-                            telephone: '123',
-                            occupier: {
-                                name: 'occupier',
-                                relation: 'rel',
-                                age: ''
-                            },
-                            residents: [
-                                {
-                                    name: 'occupier',
-                                    relation: 'rel',
-                                    age: ''
-                                }
-                            ],
-                            cautionedAgainstResident: 'No'
-                        }]
+                        occupier: {
+                            age: '33',
+                            name: 'Matthew Whitfield',
+                            relationship: 'Self'
+                        },
+                        postCode: 'S10 5NW',
+                        residents: [],
+                        telephone: '07709492117',
+                        addressTown: 'Sheffield',
+                        addressLine1: '',
+                        addressLine2: '',
+                        cautionedAgainstResident: 'No'
+                    },
+                    addressProposed: {
+                        decision: 'Yes'
                     }
                 }
             };
-
+            expect(service.validateLicence(missingFieldProposedAddress, 'ELIGIBILITY').length).to.eql(1);
             expect(service.validateLicence(missingFieldProposedAddress, 'ELIGIBILITY')[0].path).to.eql(
-                ['curfewAddress', 'addresses', 0, 'addressLine1']);
+                ['curfewAddress', 'addressLine1']);
         });
 
         it('should allow empty residents list', () => {
@@ -1185,19 +1182,17 @@ describe('licenceService', () => {
                 eligibility,
                 proposedAddress: {
                     curfewAddress: {
-                        addresses: [{
-                                addressLine1: 'address1',
-                            addressTown: 'town',
-                            postCode: 'pc',
-                            telephone: '123',
-                            occupier: {
-                                name: 'occupier',
-                                relation: 'rel',
-                                age: ''
-                            },
-                            residents: [],
-                            cautionedAgainstResident: 'No'
-                        }]
+                        addressLine1: 'address1',
+                        addressTown: 'town',
+                        postCode: 'pc',
+                        telephone: '123',
+                        occupier: {
+                            name: 'occupier',
+                            relationship: 'rel',
+                            age: ''
+                        },
+                        residents: [],
+                        cautionedAgainstResident: 'No'
                     }
                 }
             };
@@ -1211,28 +1206,26 @@ describe('licenceService', () => {
                 eligibility,
                 proposedAddress: {
                     curfewAddress: {
-                        addresses: [{
-                            addressLine1: '',
-                            addressTown: 'town',
-                            postCode: 'pc',
-                            telephone: '123',
-                            occupier: {
-                                name: '',
-                                relation: '',
-                                age: ''
-                            },
-                            residents: [],
-                            cautionedAgainstResident: 'No'
-                        }]
+                        addressLine1: '',
+                        addressTown: 'town',
+                        postCode: 'pc',
+                        telephone: '123',
+                        occupier: {
+                            name: '',
+                            relationship: '',
+                            age: ''
+                        },
+                        residents: [],
+                        cautionedAgainstResident: 'No'
                     }
                 }
             };
 
             expect(service.validateLicence(emptyOccupier, 'ELIGIBILITY')[0].path).to.eql(
-                ['curfewAddress', 'addresses', 0, 'addressLine1']);
+                ['curfewAddress', 'addressLine1']);
 
             expect(service.validateLicence(emptyOccupier, 'ELIGIBILITY')[1].path).to.eql(
-                ['curfewAddress', 'addresses', 0, 'occupier', 'name']);
+                ['curfewAddress', 'occupier', 'name']);
         });
 
 
@@ -1253,19 +1246,17 @@ describe('licenceService', () => {
                 },
                 proposedAddress: {
                     curfewAddress: {
-                        addresses: [{
-                            addressLine1: '',
-                            addressTown: 'town',
-                            postCode: 'pc',
-                            telephone: '123',
-                            occupier: {
-                                name: 'Res',
-                                relation: 'Rel',
-                                age: '18'
-                            },
-                            residents: [],
-                            cautionedAgainstResident: 'No'
-                        }]
+                        addressLine1: '',
+                        addressTown: 'town',
+                        postCode: 'pc',
+                        telephone: '123',
+                        occupier: {
+                            name: 'Res',
+                            relationship: 'Rel',
+                            age: '18'
+                        },
+                        residents: [],
+                        cautionedAgainstResident: 'No'
                     }
                 }
             };
@@ -1280,7 +1271,7 @@ describe('licenceService', () => {
                     ['suitability', 'decision']);
 
                 expect(output[1].path).to.eql(
-                    ['curfewAddress', 'addresses', 0, 'addressLine1']);
+                    ['curfewAddress', 'addressLine1']);
 
             });
         });
@@ -1502,9 +1493,7 @@ describe('licenceService', () => {
                 const licence = {
                     ...baseLicence,
                     reporting: {
-                        reportingInstructions: {
-
-                        }
+                        reportingInstructions: {}
                     }
                 };
 
@@ -2472,9 +2461,7 @@ describe('licenceService', () => {
                 const newLicence = {
                     finalChecks: {
                         ...baseLicence.finalChecks,
-                        seriousOffence: {
-
-                        }
+                        seriousOffence: {}
                     }
                 };
 
@@ -2490,9 +2477,7 @@ describe('licenceService', () => {
                 const newLicence = {
                     finalChecks: {
                         ...baseLicence.finalChecks,
-                        onRemand: {
-
-                        }
+                        onRemand: {}
                     }
                 };
 
@@ -2532,9 +2517,7 @@ describe('licenceService', () => {
 
                 const newLicence = {
                     approval: {
-                        release: {
-
-                        }
+                        release: {}
                     }
                 };
 
