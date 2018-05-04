@@ -313,7 +313,8 @@ function getLicenceSectionToValidate(stage) {
         [licenceStages.ELIGIBILITY]: ['eligibility', 'proposedAddress'],
         [licenceStages.PROCESSING_RO]: ['curfew', 'risk', 'reporting', 'licenceConditions'],
         [licenceStages.PROCESSING_CA]: ['finalChecks'],
-        [licenceStages.APPROVAL]: ['approval']
+        [licenceStages.APPROVAL]: ['approval'],
+        [licenceStages.DECIDED]: []
     };
 
     return validationSections[stage];
