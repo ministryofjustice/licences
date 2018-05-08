@@ -32,10 +32,10 @@ mixin addressDetail(type, address)
                 p Other residents
                 if address.residents && address.residents.length > 0
                     for resident, index in address.residents
-                        if(resident.name != '' || resident.age != '' || resident.relation != '')
+                        if(resident.name != '' || resident.age != '' || resident.relationship != '')
                             div.pure-g.smallMarginTop.resident(class = "type"+type)
                                 p.bold.noMargin.pure-u-1-2(id="residentName-"+type+"-"+index) #{resident.name}
-                                p.bold.noMargin.pure-u-1-3(id="residentRelation-"+type+"-"+index) #{resident.relation}
+                                p.bold.noMargin.pure-u-1-3(id="residentRelation-"+type+"-"+index) #{resident.relationship}
                                 p.bold.noMargin.pure-u-4-24(id="residentAge-"+type+"-"+index) #{resident.age}
 
                 else

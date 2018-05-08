@@ -2,7 +2,6 @@ const R = require('ramda');
 
 module.exports = {
     getIn,
-    getIntersection,
     isEmpty,
     flatten,
     notAllValuesEmpty,
@@ -12,17 +11,14 @@ module.exports = {
     lastItem,
     ascend,
     sortWith,
-    merge
+    merge,
+    mergeWithRight
 };
 
 // pass in your object and a path in array format
 // http://ramdajs.com/docs/#path
 function getIn(object, pathArray) {
     return R.path(pathArray, object);
-}
-
-function getIntersection(array1, array2) {
-    return R.intersection(array1, array2);
 }
 
 function isEmpty(item) {
@@ -63,4 +59,9 @@ function sortWith(sortingMethods) {
 
 function merge(object1, object2) {
     return R.merge(object1, object2);
+}
+
+// uses the value on object2 if it key exists on both
+function mergeWithRight(object1, object2) {
+    return R.mergeDeepRight(object1, object2);
 }

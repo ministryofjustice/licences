@@ -1,24 +1,42 @@
 include additionalConditions
 
 h1.heading-large Licence details
-
 div.largeMarginBottom
 
     include ../../taskList/prisonerDetails
-
-    if data.proposedAddress && data.proposedAddress.curfewAddress
+    // Proposed address
+    h2#curfewAddressDetails.heading-medium.borderBottomLight Proposed curfew address
+    if typeof errorObject.proposedAddress === 'string'
+        p.alert.bold(id='proposed-address-error') #{errorObject.proposedAddress}
+    else
         include curfewAddress
 
     if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
-        if data.curfew && data.curfew.curfewHours
-            include curfewHours
 
-        if data.licenceConditions && data.licenceConditions.length > 0
-            h2.heading-medium.borderBottomLight Additional conditions
-            +additionalConditions()
-
-        if data.risk && data.risk.riskManagement
+        // Risk
+        h2#riskDetails.heading-medium.borderBottomLight Risk management and victim liaison
+        if typeof errorObject.risk === 'string'
+            p.alert.bold(id='risk-error') #{errorObject.risk}
+        else
             include riskManagement
 
-        if data.reporting && data.reporting.reportingInstructions
+        // Curfew hours
+        h2#curfewHoursDetails.heading-medium.borderBottomLight Proposed HDC curfew hours
+        if typeof errorObject.curfew === 'string'
+            p.alert.bold(id='curfew-hours-error') #{errorObject.curfew}
+        else
+            include curfewHours
+
+        // Additional conditions
+        h2.heading-medium.borderBottomLight Additional conditions
+        if typeof errorObject.licenceConditions === 'string'
+            p.alert.bold(id='additional-conditions-error') #{errorObject.licenceConditions}
+        else
+            +additionalConditions()
+
+        // Reporting instructions
+        h2#reportingDetails.heading-medium.borderBottomLight Reporting instructions
+        if typeof errorObject.reporting === 'string'
+            p.alert.bold(id='reporting-error') #{errorObject.reporting}
+        else
             include reportingInstructions

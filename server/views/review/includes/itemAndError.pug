@@ -1,0 +1,5 @@
+mixin itemAndError(field, errorField, id, oneLine)
+    if field
+        span(id=`${id}` class=oneLine ? "bold" : "block bold") #{field}
+    if errorField
+            span.alert.bold(id=`${id}-error`) #{errorField}

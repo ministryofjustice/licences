@@ -1,6 +1,6 @@
-h2#riskDetails.heading-medium.borderBottomLightThick.separatorTitle Risk management and victim liaison
-
+include ./itemAndError
 -var risk = data.risk.riskManagement
+-var errors = errorObject.risk && errorObject.risk.riskManagement || {}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -10,8 +10,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             div.pure-u-2-3
-                if risk.planningActions
-                    span#planningActions.bold #{risk.planningActions}
+                +itemAndError(risk.planningActions, errors.planningActions, "planningActions")
             div.pure-u-1-3.alignRight
                 if (stage === 'PROCESSING_RO'  && user.role === 'RO')
                     a#riskEditLink(href="/hdc/risk/riskManagement/" + nomisId) Change these details
@@ -22,8 +21,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Are you still waiting for information to inform risk management planning?
     div.pure-u-1-2
-        if risk.awaitingInformation
-            span#awaitingInformation.bold #{risk.awaitingInformation}
+        +itemAndError(risk.awaitingInformation, errors.awaitingInformation, "awaitingInformation")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -31,7 +29,4 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Is this a Victim Contact Service qualifying case where the victim has opted in?
     div.pure-u-1-2
-        if risk.victimLiaison
-            span#victimLiaison.bold #{risk.victimLiaison}
-
-
+        +itemAndError(risk.victimLiaison, errors.victimLiaison, "victimLiaison")

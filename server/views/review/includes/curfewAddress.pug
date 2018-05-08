@@ -1,6 +1,6 @@
-h2#curfewAddressDetails.heading-medium.borderBottomLightThick.separatorTitle Proposed curfew address
-
--var address = data.proposedAddress.curfewAddress
+include ./itemAndError
+-var address = data.proposedAddress && data.proposedAddress.curfewAddress
+-var errors = errorObject.proposedAddress && errorObject.proposedAddress.curfewAddress || {}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -8,14 +8,12 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             div.pure-u-1-2#addressDetails
-                if address.addressLine1
-                    span#address1-curfew.block.bold #{address.addressLine1}
+                +itemAndError(address.addressLine1, errors.addressLine1, "address1-curfew")
                 if address.addressLine2
                     span#address2-curfew.block.bold #{address.addressLine2}
-                if address.addressTown
-                    span#town-curfew.block.bold #{address.addressTown}
-                if address.postCode
-                    span#postCode-curfew.block.bold #{address.postCode}
+                +itemAndError(address.addressTown, errors.addressTown, "town-curfew")
+                +itemAndError(address.postCode, errors.postCode, "postCode-curfew")
+
             div.pure-u-1-2.alignRight
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
@@ -25,8 +23,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         span Contact number
     div.pure-u-1-2
         div#dischargeContactName
-            if address.telephone
-                span#telephone-curfew.bold #{address.telephone}
+            +itemAndError(address.telephone, errors.telephone, "telephone-curfew")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -36,10 +33,16 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             if address.occupier
                 div.pure-u-1.pure-u-md-2-5
                     span#occupierName-curfew.bold #{address.occupier.name}
+                    if errors.occupier && errors.occupier.name
+                        span#occupierName-error.alert.bold #{errors.occupier.name}
                 div.pure-u-1.pure-u-md-1-5
                     span#occupierAge-curfew.bold #{address.occupier.age}
+                    if errors.occupier && errors.occupier.age
+                        span#occupierAge-error.alert.bold #{errors.occupier.age}
                 div.pure-u-1.pure-u-md-2-5
                     span#occupierRelation-curfew.bold #{address.occupier.relationship}
+                    if errors.occupier && errors.occupier.relationship
+                        span#occupierRelation-error.alert.bold #{errors.occupier.relationship}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -48,14 +51,15 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-g
             if address.residents
                 for resident, index in address.residents
-                    if(resident.name != '' || resident.age != '' || resident.relation != '')
+                    -var errorObj = errors.residents && errors.residents[index] || {}
+                    if(resident.name != '' || resident.age != '' || resident.relationship != '')
                         div.pure-u-1.resident
                             div.pure-u-1.pure-u-md-2-5
-                                span.bold(id="residentName-curfew-" + index) #{resident.name}
+                                +itemAndError(resident.name, errorObj.name, "residentName-curfew-" + index)
                             div.pure-u-1.pure-u-md-1-5
-                                span.bold(id="residentAge-curfew-" + index) #{resident.age}
+                                +itemAndError(resident.age, errorObj.age, "residentAge-curfew-" + index)
                             div.pure-u-1.pure-u-md-2-5
-                                span.bold(id="residentRelation-curfew-" + index) #{resident.relation}
+                                +itemAndError(resident.relationship, errorObj.relation, "residentRelation-curfew-" + index)
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -65,41 +69,35 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div#dischargeContactNumber
             if address.cautionedAgainstResident
-                span#cautioned-curfew.bold #{address.cautionedAgainstResident}
+                +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
 
-if address.consent
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+        div.pure-g
+            div.pure-u-3-4
+                span Does the homeowner/landlord give informed consent to HDC at the address?
+    div.pure-u-1-2
+        div#dischargeHomeAddress
+            #{errors.electricity}
+            +itemAndError(address.consent, errors.consent, "consent-curfew")
+
+if(address.consent === 'Yes')
     div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-u-1-2
-            div.pure-g
-                div.pure-u-3-4
-                    span Does the homeowner/landlord give informed consent to HDC at the address?
+            span Does the address have an electricity supply?
         div.pure-u-1-2
-            div#dischargeHomeAddress
-                span#consent-curfew.bold #{address.consent}
+            +itemAndError(address.electricity, errors.electricity, "electricity-curfew")
 
-    if(address.consent === 'Yes')
+    if(address.electricity === 'Yes')
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
-                span Does the address have an electricity supply?
+                span Was a home visit conducted in this case?
             div.pure-u-1-2
-                if address.electricity
-                    span#electricity-curfew.bold #{address.electricity}
+                +itemAndError(address.homeVisitConducted, errors.homeVisitConducted, "homeVisit-curfew")
 
-        if(address.electricity === 'Yes')
-            div.pure-g.borderBottomLight.midPaddingTopBottom
-                div.pure-u-1-2
-                    span Was a home visit conducted in this case?
-                div.pure-u-1-2
-                    span#homeVisit-curfew.bold #{address.homeVisitConducted}
-
-            div.pure-g.borderBottomLight.midPaddingTopBottom
-                div.pure-u-1-2
-                    span Could this offender be managed safely at address?
-                div.pure-u-1-2
-                    span#deemedSafe-curfew.bold #{address.deemedSafe}
-else
-    div.pure-g.midPaddingTopBottom
-        div.pure-u-1-2
-            div.pure-g
-                div.pure-u-3-4
-                    span Address not reviewed
+        div.pure-g.borderBottomLight.midPaddingTopBottom
+            div.pure-u-1-2
+                span Could this offender be managed safely at address?
+            div.pure-u-1-2
+                +itemAndError(address.deemedSafe, errors.deemedSafe, "deemedSafe-curfew")

@@ -17,7 +17,7 @@ mixin otherResidents(prefix, savedAddress)
                 div.pure-u-sm-5-12
                     input.form-control.residentName(name=prefix+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name autocomplete="off")
                 div.pure-u-sm-5-12.padLeftRight15
-                    input.form-control.residentRelation(name=prefix+"[residents]["+n+"][relation]" value=savedResidents[n] && savedResidents[n].relation autocomplete = "off")
+                    input.form-control.residentRelation(name=prefix+"[residents]["+n+"][relationship]" value=savedResidents[n] && savedResidents[n].relationship autocomplete = "off")
                 div.pure-u-sm-1-6
                     input.form-control.residentAge(name=prefix+"[residents]["+n+"][age]" value=savedResidents[n] && savedResidents[n].age autocomplete="off")
             - n++
