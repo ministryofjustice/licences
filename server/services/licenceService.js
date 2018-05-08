@@ -11,12 +11,12 @@ const {
     allValuesEmpty,
     getFirstArrayItems,
     replaceArrayItem,
-    flatten
+    flatten,
+    mergeWithRight
 } = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
 const {transitions} = require('../models/licenceStages');
 const {getLicenceStatus} = require('../utils/licenceStatus');
-const {licenceStages} = require('../models/licenceStages');
 const validate = require('./utils/licenceValidation');
 
 module.exports = function createLicenceService(licenceClient) {
@@ -275,22 +275,17 @@ module.exports = function createLicenceService(licenceClient) {
         return replaceArrayItem(addresses, index, newAddressObject);
     }
 
-    function validateLicence(licence, stage) {
+    function getLicenceErrors(licence) {
 
-        const sections = getLicenceSectionToValidate(stage);
+        // TODO mechanism for role specific validation when defined
+        const sections = ['eligibility', 'proposedAddress', 'curfew', 'risk', 'reporting', 'licenceConditions'];
         const validationErrors = sections.map(validate(licence)).filter(item => item);
 
         if (isEmpty(validationErrors)) {
             return [];
         }
 
-        const errors = validationErrors.map(error => {
-            return error.details.map(key => {
-                const {path, message, type} = key;
-                return {path, message, type};
-            });
-        });
-        return flatten(errors);
+        return flatten(validationErrors).reduce((errorObject, error) => mergeWithRight(errorObject, error.path), {});
     }
 
     return {
@@ -303,18 +298,6 @@ module.exports = function createLicenceService(licenceClient) {
         update,
         updateStage,
         updateAddress,
-        validateLicence
+        getLicenceErrors
     };
 };
-
-function getLicenceSectionToValidate(stage) {
-
-    const validationSections = {
-        [licenceStages.ELIGIBILITY]: ['eligibility', 'proposedAddress'],
-        [licenceStages.PROCESSING_RO]: ['curfew', 'risk', 'reporting', 'licenceConditions'],
-        [licenceStages.PROCESSING_CA]: ['finalChecks'],
-        [licenceStages.APPROVAL]: ['approval']
-    };
-
-    return validationSections[stage];
-}

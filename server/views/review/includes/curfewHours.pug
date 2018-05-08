@@ -1,35 +1,59 @@
-h2#curfewHoursDetails.heading-medium.borderBottomLightThick.separatorTitle Proposed HDC curfew hours
-
+include ./itemAndError
 -var hours = data.curfew.curfewHours
+-var errors = errorObject.curfew && errorObject.curfew.curfewHours || {}
 
-div.pure-g.midPaddingTopBottom
-    div.pure-u-5-6.smallPaddingBottom
-        div.pure-u-1-6
-            span.block First night
-        div.pure-u-5-6
-            span#firstNight.block #{hours.firstNightFrom} - #{hours.firstNightUntil}
-    div.pure-u-1-6.alignRight
-        if (stage === 'PROCESSING_RO' && user.role === 'RO')
-            a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/" + nomisId) Change these details
-    div.pure-u-5-6
-        div.pure-u-1-6
-            span.block Monday
-            span.block Tuesday
-            span.block Wednesday
-        div.pure-u-1-6
-            span#monday.block #{hours.mondayFrom} - #{hours.mondayUntil}
-            span#tuesday.block #{hours.tuesdayFrom} - #{hours.tuesdayUntil}
-            span#wednesday.block #{hours.wednesdayFrom} - #{hours.wednesdayUntil}
-        div.pure-u-1-6
-            span.block Thursday
-            span.block Friday
-            span.block Saturday
-        div.pure-u-1-6
-            span#thursday.block #{hours.thursdayFrom} - #{hours.thursdayUntil}
-            span#friday.block #{hours.fridayFrom} - #{hours.fridayUntil}
-            span#saturday.block #{hours.saturdayFrom} - #{hours.saturdayUntil}
-        div.pure-u-1-6
-            span.block Sunday
-        div.pure-u-1-6
-            span#sunday.block #{hours.sundayFrom} - #{hours.sundayUntil}
-    div.pure-u-1-6
+div.pure-u-1.pure-u-md-4-5
+    div.pure-g.midPaddingTopBottom
+        div.pure-u-1-2.pure-u-md-1-6 First night
+        div.pure-u-1-2.pure-u-md-1-6
+            +itemAndError(hours.firstNightFrom, errors.firstNightFrom, "firstNightFrom", 'oneline')
+            | &nbsp;-&nbsp;
+            +itemAndError(hours.firstNightUntil, errors.firstNightUntil, "firstNightUntil", 'oneline')
+
+    div.pure-g.smallPaddingBottom.smallMarginTop
+        div.pure-u-1-2.pure-u-md-1-6 Monday
+        div.pure-u-1-2.pure-u-md-5-6
+            +itemAndError(hours.mondayFrom, errors.mondayFrom, "mondayFrom", 'oneline')
+            | &nbsp;-&nbsp;
+            +itemAndError(hours.mondayUntil, errors.mondayUntil, "mondayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+        div.pure-u-1-2.pure-u-md-1-6 Tuesday
+        div.pure-u-1-2.pure-u-md-5-6
+            +itemAndError(hours.tuesdayFrom, errors.tuesdayFrom, "tuesdayFrom", 'oneline')
+            | &nbsp;-&nbsp;
+            +itemAndError(hours.tuesdayUntil, errors.tuesdayUntil, "tuesdayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+        div.pure-u-1-2.pure-u-md-1-6 Wednesday
+        div.pure-u-1-2.pure-u-md-5-6
+            +itemAndError(hours.wednesdayFrom, errors.wednesdayFrom, "wednesdayFrom", 'oneline')
+            | &nbsp;-&nbsp;
+            +itemAndError(hours.wednesdayUntil, errors.wednesdayUntil, "wednesdayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+        div.pure-u-1-2.pure-u-md-1-6 Thursday
+        div.pure-u-1-2.pure-u-md-5-6
+            +itemAndError(hours.thursdayFrom, errors.thursdayFrom, "thursdayFrom", 'oneline')
+            | &nbsp;-&nbsp;
+            +itemAndError(hours.thursdayUntil, errors.thursdayUntil, "thursdayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+        div.pure-u-1-2.pure-u-md-1-6 Friday
+        div.pure-u-1-2.pure-u-md-5-6
+            +itemAndError(hours.fridayFrom, errors.fridayFrom, "fridayFrom", 'oneline')
+            | &nbsp;-&nbsp;
+            +itemAndError(hours.fridayUntil, errors.fridayUntil, "fridayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+        div.pure-u-1-2.pure-u-md-1-6 Saturday
+        div.pure-u-1-2.pure-u-md-5-6
+            +itemAndError(hours.saturdayFrom, errors.saturdayFrom, "saturdayFrom", 'oneline')
+            | &nbsp;-&nbsp;
+            +itemAndError(hours.saturdayUntil, errors.saturdayUntil, "saturdayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+        div.pure-u-1-2.pure-u-md-1-6 Sunday
+        div.pure-u-1-2.pure-u-md-5-6
+            +itemAndError(hours.sundayFrom, errors.sundayFrom, "sundayFrom", 'oneline')
+            | &nbsp;-&nbsp;
+            +itemAndError(hours.sundayUntil, errors.sundayUntil, "sundayUntil", 'oneline')
+
+div.pure-u-1.pure-u-md-1-5.alignRight
+    if (stage === 'PROCESSING_RO' && user.role === 'RO')
+        a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/" + nomisId) Change these details
+

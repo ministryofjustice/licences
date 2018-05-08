@@ -1,6 +1,6 @@
-h2#reportingDetails.heading-medium.borderBottomLightThick.separatorTitle Reporting instructions
-
+include ./itemAndError
 -var reportingInstructions = data.reporting.reportingInstructions
+-var errors = errorObject.reporting && errorObject.reporting.reportingInstructions || {}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -10,8 +10,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             div.pure-u-2-3
-                if reportingInstructions.name
-                    span#reportingName #{reportingInstructions.name}
+                +itemAndError(reportingInstructions.name, errors.name, "reportingName")
             div.pure-u-1-3.alignRight
                 if (stage === 'PROCESSING_RO'  && user.role === 'RO')
                     a#reportingEditLink(href="/hdc/reporting/reportingInstructions/" + nomisId) Change these details
@@ -22,14 +21,10 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Address
     div.pure-u-1-2
-        if reportingInstructions.buildingAndStreet1
-            span#reportingAddress1.block #{reportingInstructions.buildingAndStreet1}
-        if reportingInstructions.buildingAndStreet2
-            span#reportingAddress2.block #{reportingInstructions.buildingAndStreet2}
-        if reportingInstructions.townOrCity
-            span#reportingTown.block #{reportingInstructions.townOrCity}
-        if reportingInstructions.postcode
-            span#reportingPostCode.block #{reportingInstructions.postcode}
+        +itemAndError(reportingInstructions.buildingAndStreet1, errors.buildingAndStreet1, "reportingAddress1")
+        +itemAndError(reportingInstructions.buildingAndStreet2, errors.buildingAndStreet2, "reportingAddress2")
+        +itemAndError(reportingInstructions.townOrCity, errors.townOrCity, "reportingTown")
+        +itemAndError(reportingInstructions.postcode, errors.postcode, "reportingPostCode")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -38,5 +33,4 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 span Contact number
     div.pure-u-1-2
         if reportingInstructions.telephone
-            span#reportingTelephone #{reportingInstructions.telephone}
-
+            +itemAndError(reportingInstructions.telephone, errors.telephone, "reportingTelephone")

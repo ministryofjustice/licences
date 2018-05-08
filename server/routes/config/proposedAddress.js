@@ -60,7 +60,7 @@ module.exports = {
                         isList: true,
                         contains: [
                             {name: {}},
-                            {relation: {}},
+                            {relationship: {}},
                             {age: {}}
                         ]
                     }},

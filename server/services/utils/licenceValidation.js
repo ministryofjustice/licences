@@ -3,12 +3,17 @@ const dateExtend = require('joi-date-extensions');
 const joi = baseJoi.extend(dateExtend);
 
 const optionalString = joi.string().allow('').optional();
+const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
 const selection = joi.array().min(1).required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
 const requiredDate = joi.date().format('YYYY-MM-DD').required();
-const requiredIf = (field, answer, typeRequired = requiredString) => {
-    return joi.when(field, {is: answer, then: typeRequired, otherwise: joi.valid(['']).optional()});
+const requiredIf = (field, answer, typeRequired = requiredString, ifNot = optionalString) => {
+    return joi.when(field, {is: answer, then: typeRequired, otherwise: ifNot});
+};
+
+const ERROR_MESSAGE = {
+    'date.format': 'Invalid or incorrectly formatted date'
 };
 
 // ELIGIBILITY
@@ -58,20 +63,15 @@ const curfewAddress = joi.object().keys({
         age: optionalString,
         relationship: requiredString
     })),
-    cautionedAgainstResident: requiredYesNo
+    cautionedAgainstResident: requiredYesNo,
+    consent: requiredYesNo,
+    electricity: requiredIf('consent', 'Yes'),
+    homeVisitConducted: requiredIf('electricity', 'Yes'),
+    deemedSafe: requiredString,
+    unsafeReason: requiredIf('deemedSafe', 'No')
 });
 
 // PROCESSING_RO
-const curfewAddressReview = joi.object().keys({
-    consent: requiredYesNo,
-    electricity: requiredIf('consent', 'Yes'),
-    homeVisitConducted: requiredIf('electricity', 'Yes')
-});
-
-const addressSafety = joi.object().keys({
-    deemedSafe: requiredYesNo,
-    unsafeReason: requiredIf('deemedSafe', 'No')
-});
 
 const curfewHours = joi.object().keys({
     firstNightFrom: requiredString,
@@ -171,7 +171,7 @@ const additional = joi.object({
     REPORTTO: joi.object({
         reportingAddress: requiredString,
         reportingTime: optionalString,
-        reportingDaily: requiredIf('reportingTime', ''),
+        reportingDaily: requiredIf('reportingTime', '', requiredString, forbidden),
         reportingFrequency: requiredString
     }),
     VEHICLEDETAILS: joi.object({
@@ -213,7 +213,7 @@ const release = {
 const schema = {
     eligibility: {excluded, suitability, crdTime},
     proposedAddress: {optOut, addressProposed, bassReferral, curfewAddress},
-    curfew: {curfewAddressReview, addressSafety, curfewHours},
+    curfew: {curfewHours},
     risk: {riskManagement},
     reporting: {reportingInstructions},
     licenceConditions: {standard, additional},
@@ -224,10 +224,25 @@ const schema = {
 module.exports = function(licence) {
     return section => {
         if(!licence[section]) {
-            return {
-                details: [{path: [section], type: 'any.required', message: `${section} is required`}]
-            };
+            return [{
+                path: {[section]: 'Not answered'}
+            }];
         }
-        return joi.validate(licence[section], schema[section], {abortEarly: false}).error;
+
+        const errorsForSection = joi.validate(licence[section], schema[section], {abortEarly: false}).error;
+
+        if(!errorsForSection) {
+            return [];
+        }
+
+        return errorsForSection.details.map(error => {
+            return {
+                path: {
+                    [section]: error.path.reduceRight((object, key) => {
+                        return {[key]: object};
+                    }, ERROR_MESSAGE[error.type] || 'Not answered')
+                }
+            };
+        });
     };
 };

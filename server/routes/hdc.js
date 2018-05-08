@@ -117,24 +117,30 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const stage = getIn(res.locals.licence, ['stage']) || {};
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
-        const populatedLicence = await conditionsService.populateLicenceWithConditions(licence);
-        const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-        const address = lastItem(allAddresses);
+        const licenceWithAddress = addAddressTo(licence);
+        const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress);
+        const errorObject = licenceService.getLicenceErrors(licenceWithAddress, stage);
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
-        const data = {
-            ...populatedLicence,
+        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus, errorObject});
+    }));
+
+    function addAddressTo(licence) {
+        const allAddresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
+
+        if(!allAddresses) {
+            return licence;
+        }
+
+        const address = lastItem(allAddresses);
+        return {
+            ...licence,
             proposedAddress: {
-                ...populatedLicence.proposedAddress,
+                ...licence.proposedAddress,
                 curfewAddress: address
             }
         };
-
-        const validationErrors = licenceService.validateLicence(data, stage);
-
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
-
-        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus, validationErrors});
-    }));
+    }
 
     router.get('/approval/release/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         logger.debug('GET /approval/release/');
