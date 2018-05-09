@@ -275,17 +275,22 @@ module.exports = function createLicenceService(licenceClient) {
         return replaceArrayItem(addresses, index, newAddressObject);
     }
 
-    function getLicenceErrors(licence) {
+    function getLicenceErrors(licence, sections) {
 
-        // TODO mechanism for role specific validation when defined
-        const sections = ['eligibility', 'proposedAddress', 'curfew', 'risk', 'reporting', 'licenceConditions'];
-        const validationErrors = sections.map(validate(licence)).filter(item => item);
+        const licenceSections = sections ||
+            ['eligibility', 'proposedAddress', 'curfew', 'risk', 'reporting', 'licenceConditions'];
+
+        const validationErrors = licenceSections.map(validate(licence)).filter(item => item);
 
         if (isEmpty(validationErrors)) {
             return [];
         }
 
         return flatten(validationErrors).reduce((errorObject, error) => mergeWithRight(errorObject, error.path), {});
+    }
+
+    function getConditionsErrors(licence) {
+        return getLicenceErrors(licence, ['licenceConditions']);
     }
 
     return {
@@ -298,6 +303,7 @@ module.exports = function createLicenceService(licenceClient) {
         update,
         updateStage,
         updateAddress,
-        getLicenceErrors
+        getLicenceErrors,
+        getConditionsErrors
     };
 };

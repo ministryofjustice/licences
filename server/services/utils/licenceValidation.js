@@ -7,7 +7,7 @@ const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
 const selection = joi.array().min(1).required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
-const requiredDate = joi.date().format('YYYY-MM-DD').required();
+const requiredDate = joi.date().format('DD/MM/YYYY').required();
 const requiredIf = (field, answer, typeRequired = requiredString, ifNot = optionalString) => {
     return joi.when(field, {is: answer, then: typeRequired, otherwise: ifNot});
 };
@@ -197,6 +197,11 @@ const additional = joi.object({
     NOTIFYPASSPORT: joi.object({})
 });
 
+const bespoke = joi.array().items(joi.object({
+    text: requiredString,
+    approved: requiredYesNo
+}));
+
 const seriousOffence = {
     decision: requiredYesNo
 };
@@ -216,7 +221,7 @@ const schema = {
     curfew: {curfewHours},
     risk: {riskManagement},
     reporting: {reportingInstructions},
-    licenceConditions: {standard, additional},
+    licenceConditions: {standard, additional, bespoke},
     finalChecks: {seriousOffence, onRemand},
     approval: {release}
 };

@@ -92,7 +92,8 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         const {nextPath} = formConfig.conditionsSummary;
         const licence = getIn(res.locals.licence, ['licence']) || {};
-        const data = await conditionsService.populateLicenceWithConditions(licence);
+        const errorObject = licenceService.getConditionsErrors(licence);
+        const data = await conditionsService.populateLicenceWithConditions(licence, errorObject);
 
         res.render(`licenceConditions/conditionsSummary`, {nomisId, data, nextPath});
     }));
@@ -118,7 +119,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
         const licenceWithAddress = addAddressTo(licence);
-        const errorObject = licenceService.getLicenceErrors(licenceWithAddress, stage);
+        const errorObject = licenceService.getLicenceErrors(licenceWithAddress);
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
