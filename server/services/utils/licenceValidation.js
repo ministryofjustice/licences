@@ -197,6 +197,11 @@ const additional = joi.object({
     NOTIFYPASSPORT: joi.object({})
 });
 
+const bespoke = joi.array().items(joi.object({
+    text: requiredString,
+    approved: requiredYesNo
+}));
+
 const seriousOffence = {
     decision: requiredYesNo
 };
@@ -216,7 +221,7 @@ const schema = {
     curfew: {curfewHours},
     risk: {riskManagement},
     reporting: {reportingInstructions},
-    licenceConditions: {standard, additional},
+    licenceConditions: {standard, additional, bespoke},
     finalChecks: {seriousOffence, onRemand},
     approval: {release}
 };
