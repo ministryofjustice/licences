@@ -7,7 +7,7 @@ const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
 const selection = joi.array().min(1).required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
-const requiredDate = joi.date().format('YYYY-MM-DD').required();
+const requiredDate = joi.date().format('DD/MM/YYYY').required();
 const requiredIf = (field, answer, typeRequired = requiredString, ifNot = optionalString) => {
     return joi.when(field, {is: answer, then: typeRequired, otherwise: ifNot});
 };

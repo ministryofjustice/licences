@@ -1882,7 +1882,7 @@ describe('licenceService', () => {
                             ...baseLicence.licenceConditions,
                             additional: {
                                 ATTEND: {
-                                    appointmentDate: '2019-12-26',
+                                    appointmentDate: '26/12/2019',
                                     appointmentTime: '13',
                                     appointmentAddress: 'address'
                                 }
@@ -1932,7 +1932,7 @@ describe('licenceService', () => {
                             ...baseLicence.licenceConditions,
                             additional: {
                                 ATTEND: {
-                                    appointmentDate: '26/12/2018',
+                                    appointmentDate: '2018-26-12',
                                     appointmentTime: '13',
                                     appointmentAddress: 'address'
                                 }
