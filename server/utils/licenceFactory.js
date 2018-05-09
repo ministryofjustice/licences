@@ -1,5 +1,4 @@
 const {conditionsOrder} = require('../models/conditions');
-const NO_INPUT_MESSAGE = 'INPUT REQUIRED';
 const {getIn} = require('../utils/functionalHelpers');
 
 module.exports = {
@@ -129,7 +128,7 @@ function injectUserInputAsObject(condition, userInput, userErrors) {
     const fieldPositionObject = condition.field_position;
 
     return conditionName === 'appointmentDetails' ?
-        injectUserInputAppointmentAsObject(userInput, conditionText) :
+        injectUserInputAppointmentAsObject(userInput, conditionText, userErrors) :
         injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject, userErrors);
 }
 
@@ -149,7 +148,7 @@ function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInpu
 
         const inputError = getIn(userErrors, [fieldNameForPlaceholder]);
         if (inputError) {
-            return [...conditionArray, {text: textSegment}, {error: inputError}];
+            return [...conditionArray, {text: textSegment}, {error: `[${inputError}]`}];
         }
 
         const inputtedData = getIn(userInput, [fieldNameForPlaceholder]);
@@ -158,19 +157,37 @@ function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInpu
 }
 
 // Special case, doesn't follow normal rules
-function injectUserInputAppointmentAsObject(userInput, conditionText) {
-    const appointmentAddress = userInput.appointmentAddress || NO_INPUT_MESSAGE;
-    const appointmentDate = userInput.appointmentDate || NO_INPUT_MESSAGE;
-    const appointmentTime = userInput.appointmentTime || NO_INPUT_MESSAGE;
+function injectUserInputAppointmentAsObject(userInput, conditionText, userErrors) {
+    const {appointmentAddress, appointmentDate, appointmentTime} = userInput;
+    const {addressError, dateError, timeError, anyErrors} = getAppointmentErrors(userErrors);
 
-    const string = `${appointmentAddress} on ${appointmentDate} at ${appointmentTime}`;
+    const variableString = (error, variable) => error ? `[${error}]` : variable;
+    const addressString = variableString(addressError, appointmentAddress);
+    const dateString = variableString(dateError, appointmentDate);
+    const timeString = variableString(timeError, appointmentTime);
+    const string = `${addressString} on ${dateString} at ${timeString}`;
+
+    const variableKey = anyErrors ? 'error' : 'variable';
 
     const splitConditionText = conditionText.split(betweenBrackets).filter(text => text);
     return [
         {text: splitConditionText[0]},
-        {variable: string},
+        {[variableKey]: string},
         {text: splitConditionText[1]}
     ];
+}
+
+function getAppointmentErrors(errorObject) {
+    const addressError = getIn(errorObject, ['appointmentAddress']);
+    const dateError = getIn(errorObject, ['appointmentDate']);
+    const timeError = getIn(errorObject, ['appointmentTime']);
+
+    return {
+        addressError,
+        dateError,
+        timeError,
+        anyErrors: addressError || dateError || timeError
+    };
 }
 
 // For pdf

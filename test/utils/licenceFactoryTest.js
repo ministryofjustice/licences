@@ -445,7 +445,7 @@ describe('licenceFactory', () => {
                         {
                             content: [
                                 {text: 'The condition '},
-                                {error: 'ERROR'},
+                                {error: '[ERROR]'},
                                 {text: ' with input'}
                             ],
                             group: 'g',
@@ -454,6 +454,53 @@ describe('licenceFactory', () => {
                         }
 
                     ]
+                };
+
+                expect(output).to.eql(expectedOutput);
+
+            });
+
+            it('should replace placeholder text for appointment conditions with errors', () => {
+                const rawLicence = {
+                    licenceConditions: {
+                        additional: {
+                            1: {
+                                appointmentAddress: 'Address 1', appointmentDate: '21/01/2018', appointmentTime: '15:30'
+                            }
+                        },
+                        bespoke: []
+                    }
+                };
+
+                const errors = {
+                    licenceConditions: {
+                        additional: {1: {appointmentDate: 'Invalid date'}}
+                    }
+                };
+                const selectedConditions = [
+                    {
+                        id: 1,
+                        user_input: 'appointmentDetails',
+                        text: 'The condition [placeholder] with input',
+                        field_position: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2},
+                        group_name: 'g',
+                        subgroup_name: 'sg'
+                    }
+                ];
+
+                const output = populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errors);
+
+                const expectedOutput = {
+                    licenceConditions: [{
+                        content: [
+                            {text: 'The condition '},
+                            {error: 'Address 1 on [Invalid date] at 15:30'},
+                            {text: ' with input'}
+                        ],
+                        group: 'g',
+                        subgroup: 'sg',
+                        id: 1
+                    }]
                 };
 
                 expect(output).to.eql(expectedOutput);
