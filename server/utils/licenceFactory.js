@@ -1,5 +1,5 @@
 const {conditionsOrder} = require('../models/conditions');
-const NO_INPUT_MESSAGE = 'INPUT REQUIRED';
+const {getIn} = require('../utils/functionalHelpers');
 
 module.exports = {
     createLicenceObjectFrom,
@@ -21,7 +21,7 @@ const filteredToAttributes = (input, acceptedKeys, notAcceptedKeys = []) => {
             const value = input[key] || '';
             return {...objectBuilt, ...{[key]: value}};
         }
-        if(notAcceptedKeys.includes(key)) {
+        if (notAcceptedKeys.includes(key)) {
             return {...objectBuilt, ...{[key]: null}};
         }
         return objectBuilt;
@@ -66,15 +66,17 @@ function addReasonIfSelected(formInput, licenceSection) {
 }
 
 // For html page
-function populateAdditionalConditionsAsObject(rawLicence, selectedConditionsConfig) {
-    return addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputAsObject);
+function populateAdditionalConditionsAsObject(rawLicence, selectedConditionsConfig, inputErrors = {}) {
+    return addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputAsObject, inputErrors);
 }
 
-function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputMethod) {
+function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputMethod, inputErrors) {
 
     const {additional, bespoke} = rawLicence.licenceConditions;
 
-    const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, injectUserInputMethod);
+    const getObjectForAdditional = createAdditionalMethod(
+        rawLicence, selectedConditionsConfig, injectUserInputMethod, inputErrors
+    );
 
     const populatedAdditional = Object.keys(additional)
         .sort(orderForView)
@@ -85,11 +87,12 @@ function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUse
     return {...rawLicence, licenceConditions: [...populatedAdditional, ...populatedBespoke]};
 }
 
-function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputMethod) {
+function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputMethod, inputErrors) {
     return condition => {
         const selectedCondition = selectedConditions.find(selected => selected.id == condition);
-        const userInput = rawLicence.licenceConditions.additional[condition];
-        const content = getContentForCondition(selectedCondition, userInput, injectUserInputMethod);
+        const userInput = getIn(rawLicence, ['licenceConditions', 'additional', condition]);
+        const userErrors = getIn(inputErrors, ['licenceConditions', 'additional', condition]);
+        const content = getContentForCondition(selectedCondition, userInput, injectUserInputMethod, userErrors);
 
         return {
             content,
@@ -100,11 +103,11 @@ function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputM
     };
 }
 
-function getContentForCondition(selectedCondition, userInput, injectUserInputMethod) {
+function getContentForCondition(selectedCondition, userInput, injectUserInputMethod, userErrors) {
     const userInputName = selectedCondition.user_input;
 
     return userInputName ?
-        injectUserInputMethod(selectedCondition, userInput) :
+        injectUserInputMethod(selectedCondition, userInput, userErrors) :
         [{text: selectedCondition.text}];
 }
 
@@ -118,49 +121,73 @@ function getObjectForBespoke(condition, index) {
     };
 }
 
-function injectUserInputAsObject(condition, userInput) {
+function injectUserInputAsObject(condition, userInput, userErrors) {
 
     const conditionName = condition.user_input;
     const conditionText = condition.text;
     const fieldPositionObject = condition.field_position;
 
     return conditionName === 'appointmentDetails' ?
-        injectUserInputAppointmentAsObject(userInput, conditionText) :
-        injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject);
+        injectUserInputAppointmentAsObject(userInput, conditionText, userErrors) :
+        injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject, userErrors);
 }
 
-function injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject) {
+function injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject, userErrors) {
     const fieldNames = Object.keys(fieldPositionObject);
     const splitConditionText = conditionText.split(betweenBrackets).filter(text => text);
-    const reducer = injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput);
+    const reducer = injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput, userErrors);
     return splitConditionText.reduce(reducer, []);
 }
 
-function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput) {
+function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput, userErrors) {
     return (conditionArray, textSegment, index) => {
         const fieldNameForPlaceholder = fieldNames.find(field => fieldPositionObject[field] == index);
         if (!fieldNameForPlaceholder) {
             return [...conditionArray, {text: textSegment}];
         }
-        const inputtedData = userInput[fieldNameForPlaceholder] || NO_INPUT_MESSAGE;
+
+        const inputError = getIn(userErrors, [fieldNameForPlaceholder]);
+        if (inputError) {
+            return [...conditionArray, {text: textSegment}, {error: `[${inputError}]`}];
+        }
+
+        const inputtedData = getIn(userInput, [fieldNameForPlaceholder]);
         return [...conditionArray, {text: textSegment}, {variable: inputtedData}];
     };
 }
 
 // Special case, doesn't follow normal rules
-function injectUserInputAppointmentAsObject(userInput, conditionText) {
-    const appointmentAddress = userInput.appointmentAddress || NO_INPUT_MESSAGE;
-    const appointmentDate = userInput.appointmentDate || NO_INPUT_MESSAGE;
-    const appointmentTime = userInput.appointmentTime || NO_INPUT_MESSAGE;
+function injectUserInputAppointmentAsObject(userInput, conditionText, userErrors) {
+    const {appointmentAddress, appointmentDate, appointmentTime} = userInput;
+    const {addressError, dateError, timeError, anyErrors} = getAppointmentErrors(userErrors);
 
-    const string = `${appointmentAddress} on ${appointmentDate} at ${appointmentTime}`;
+    const variableString = (error, variable) => error ? `[${error}]` : variable;
+    const addressString = variableString(addressError, appointmentAddress);
+    const dateString = variableString(dateError, appointmentDate);
+    const timeString = variableString(timeError, appointmentTime);
+    const string = `${addressString} on ${dateString} at ${timeString}`;
+
+    const variableKey = anyErrors ? 'error' : 'variable';
 
     const splitConditionText = conditionText.split(betweenBrackets).filter(text => text);
     return [
         {text: splitConditionText[0]},
-        {variable: string},
+        {[variableKey]: string},
         {text: splitConditionText[1]}
     ];
+}
+
+function getAppointmentErrors(errorObject) {
+    const addressError = getIn(errorObject, ['appointmentAddress']);
+    const dateError = getIn(errorObject, ['appointmentDate']);
+    const timeError = getIn(errorObject, ['appointmentTime']);
+
+    return {
+        addressError,
+        dateError,
+        timeError,
+        anyErrors: addressError || dateError || timeError
+    };
 }
 
 // For pdf
