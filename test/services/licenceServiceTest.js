@@ -951,7 +951,7 @@ describe('licenceService', () => {
             curfewAddress: {
                 addressLine1: 'line1',
                 addressTown: 'town',
-                postCode: 'pc',
+                postCode: 'S10 5NW',
                 telephone: '123',
                 occupier: {
                     name: 'occupier',
@@ -1018,8 +1018,8 @@ describe('licenceService', () => {
             buildingAndStreet1: 'name',
             buildingAndStreet2: 'name',
             townOrCity: 'name',
-            postcode: 'name',
-            telephone: 'name'
+            postcode: 'S10 5NW',
+            telephone: '123'
         };
 
         const standard = {
@@ -1162,6 +1162,42 @@ describe('licenceService', () => {
             );
         });
 
+        it('should return error if the telephone is not a number', () => {
+
+            const missingFieldProposedAddress = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
+                        telephone: 'abc'
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors(missingFieldProposedAddress)).to.eql(
+                {proposedAddress: {curfewAddress: {telephone: 'Invalid entry - number required'}}}
+            );
+        });
+
+        it('should return error if the postcode is not formatted correctly', () => {
+
+            const missingFieldProposedAddress = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
+                        postCode: 'abc'
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors(missingFieldProposedAddress)).to.eql(
+                {proposedAddress: {curfewAddress: {postCode: 'Invalid postcode'}}}
+            );
+        });
+
         it('should allow empty residents list', () => {
 
             const emptyResidents = {
@@ -1189,7 +1225,7 @@ describe('licenceService', () => {
                         occupier: {
                             name: '',
                             relationship: '',
-                            age: ''
+                            age: 'a'
                         }
                     }
                 }
@@ -1200,7 +1236,8 @@ describe('licenceService', () => {
                     curfewAddress: {
                         occupier: {
                             name: 'Not answered',
-                            relationship: 'Not answered'
+                            relationship: 'Not answered',
+                            age: 'Invalid entry - number required'
                         }
                     }
                 }
@@ -1346,14 +1383,25 @@ describe('licenceService', () => {
                     ...baseLicence.curfew,
                     curfewHours: {
                         ...baseLicence.curfew.curfewHours,
-                        wednesdayFrom: ''
+                        wednesdayFrom: '',
+                        wednesdayUntil: 'abc',
+                        thursdayUntil: '25:14',
+                        fridayUntil: '23:14'
                     }
                 }
             };
 
             const output = service.getLicenceErrors(licence);
 
-            expect(output).to.eql({curfew: {curfewHours: {wednesdayFrom: 'Not answered'}}});
+            expect(output).to.eql({
+                curfew: {
+                    curfewHours: {
+                        wednesdayFrom: 'Not answered',
+                        wednesdayUntil: 'Invalid time',
+                        thursdayUntil: 'Invalid time'
+                    }
+                }
+            });
         });
 
         it('should require an answer for planning actions, awaiting information and victim liaison', () => {

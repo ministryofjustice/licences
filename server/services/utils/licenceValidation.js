@@ -1,20 +1,44 @@
 const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
-const joi = baseJoi.extend(dateExtend);
+const postcodeExtend = require('joi-postcode');
+const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 
 const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
+const requiredNumber = joi.number().required();
+const optionalNumber = joi.number().allow('').optional();
 const selection = joi.array().min(1).required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
 const requiredDate = joi.date().format('DD/MM/YYYY').required();
+const requiredTime = joi.date().format('HH:mm').required();
+const requiredPostcode = joi.postcode().required();
 const requiredIf = (field, answer, typeRequired = requiredString, ifNot = optionalString) => {
     return joi.when(field, {is: answer, then: typeRequired, otherwise: ifNot});
 };
 
-const ERROR_MESSAGE = {
-    'date.format': 'Invalid or incorrectly formatted date'
-};
+function getMessage(errorType, errorMessage) {
+    if (errorType === 'date.format') {
+        if(errorMessage.includes('[HH:mm]')) {
+            return 'Invalid time';
+        }
+        return 'Invalid or incorrectly formatted date';
+    }
+
+    if (errorType === 'string.alphanum') {
+        return 'Invalid entry - letters and numbers only';
+    }
+
+    if (errorType === 'number.base') {
+        return 'Invalid entry - number required';
+    }
+
+    if (errorType === 'string.regex.base') {
+        return 'Invalid postcode';
+    }
+
+    return 'Not answered';
+}
 
 // ELIGIBILITY
 const excluded = joi.object().keys({
@@ -51,16 +75,16 @@ const curfewAddress = joi.object().keys({
     addressLine1: requiredString,
     addressLine2: optionalString,
     addressTown: requiredString,
-    postCode: requiredString,
-    telephone: requiredString,
+    postCode: requiredPostcode,
+    telephone: requiredNumber,
     occupier: joi.object().required().keys({
         name: requiredString,
-        age: optionalString,
+        age: optionalNumber,
         relationship: requiredString
     }),
     residents: joi.array().items(joi.object().keys({
         name: requiredString,
-        age: optionalString,
+        age: optionalNumber,
         relationship: requiredString
     })),
     cautionedAgainstResident: requiredYesNo,
@@ -74,22 +98,22 @@ const curfewAddress = joi.object().keys({
 // PROCESSING_RO
 
 const curfewHours = joi.object().keys({
-    firstNightFrom: requiredString,
-    firstNightUntil: requiredString,
-    mondayFrom: requiredString,
-    mondayUntil: requiredString,
-    tuesdayFrom: requiredString,
-    tuesdayUntil: requiredString,
-    wednesdayFrom: requiredString,
-    wednesdayUntil: requiredString,
-    thursdayFrom: requiredString,
-    thursdayUntil: requiredString,
-    fridayFrom: requiredString,
-    fridayUntil: requiredString,
-    saturdayFrom: requiredString,
-    saturdayUntil: requiredString,
-    sundayFrom: requiredString,
-    sundayUntil: requiredString
+    firstNightFrom: requiredTime,
+    firstNightUntil: requiredTime,
+    mondayFrom: requiredTime,
+    mondayUntil: requiredTime,
+    tuesdayFrom: requiredTime,
+    tuesdayUntil: requiredTime,
+    wednesdayFrom: requiredTime,
+    wednesdayUntil: requiredTime,
+    thursdayFrom: requiredTime,
+    thursdayUntil: requiredTime,
+    fridayFrom: requiredTime,
+    fridayUntil: requiredTime,
+    saturdayFrom: requiredTime,
+    saturdayUntil: requiredTime,
+    sundayFrom: requiredTime,
+    sundayUntil: requiredTime
 });
 
 const riskManagement = joi.object().keys({
@@ -106,8 +130,8 @@ const reportingInstructions = joi.object({
     buildingAndStreet1: requiredString,
     buildingAndStreet2: optionalString,
     townOrCity: requiredString,
-    postcode: requiredString,
-    telephone: requiredString
+    postcode: requiredPostcode,
+    telephone: requiredNumber
 });
 
 const standard = joi.object({
@@ -245,7 +269,7 @@ module.exports = function(licence) {
                 path: {
                     [section]: error.path.reduceRight((object, key) => {
                         return {[key]: object};
-                    }, ERROR_MESSAGE[error.type] || 'Not answered')
+                    }, getMessage(error.type, error.message))
                 }
             };
         });
