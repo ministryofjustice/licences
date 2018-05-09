@@ -99,4 +99,20 @@ describe('/hdc/licenceConditions', () => {
 
         });
     });
+
+    describe('GET /additionalConditions/conditionsSummary:nomisId', () => {
+        it('should validate the conditions', () => {
+            licenceServiceStub.getConditionsErrors.returns({error: 'object'});
+
+            return request(app)
+                .get('/licenceConditions/conditionsSummary/1')
+                .expect(200)
+                .expect(res => {
+                    expect(licenceServiceStub.getConditionsErrors).to.be.calledWith({key: 'value'});
+                    expect(conditionsServiceStub.populateLicenceWithConditions).to.be.calledWith(
+                        {key: 'value'}, {error: 'object'});
+                });
+
+        });
+    });
 });

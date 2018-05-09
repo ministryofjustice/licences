@@ -1058,85 +1058,91 @@ describe('licenceService', () => {
             expect(service.getLicenceErrors(licence)).to.eql(emptyLicenceResponse);
         });
 
-        context('Eligibility', () => {
+        it('should only validate sections passed into the licence', () => {
+            const licence = {};
+            const expectedOutput = {
+                licenceConditions: 'Not answered'
+            };
 
-            it('should return null if the licence is valid', () => {
-                expect(service.getLicenceErrors(baseLicence)).to.eql({});
-            });
-
-            it('should return error if reason is not provided for exclusion', () => {
-
-                const licence = {
-                    ...baseLicence,
-                    eligibility: {
-                        excluded: {
-                            decision: 'Yes'
-                        }
-                    }
-                };
-
-                expect(service.getLicenceErrors(licence)).to.eql(
-                    {eligibility: {excluded: {reason: 'Not answered'}}});
-            });
-
-            it('should return error if suitability decision is not provided', () => {
-
-                const licence = {
-                    ...baseLicence,
-                    eligibility: {
-                        excluded: {
-                            decision: 'No'
-                        },
-                        suitability: {
-                            decision: ''
-                        },
-                        crdTime: {
-                            decision: 'No'
-                        }
-                    }
-                };
-
-                expect(service.getLicenceErrors(licence)).to.eql(
-                    {eligibility: {suitability: {decision: 'Not answered'}}});
-            });
-
-            it('should return error if reason is not provided for suitability', () => {
-
-                const licence = {
-                    ...baseLicence,
-                    eligibility: {
-                        excluded: {
-                            decision: 'No'
-                        },
-                        suitability: {
-                            decision: 'Yes'
-                        }
-                    }
-                };
-
-                expect(service.getLicenceErrors(licence)).to.eql(
-                    {eligibility: {suitability: {reason: 'Not answered'}}});
-            });
-
-            it('should not return error if reason is provided for suitability', () => {
-
-                const licence = {
-                    ...baseLicence,
-                    eligibility: {
-                        excluded: {
-                            decision: 'No'
-                        },
-                        suitability: {
-                            decision: 'Yes',
-                            reason: ['this']
-                        }
-                    }
-                };
-
-                expect(service.getLicenceErrors(licence)).to.eql({});
-            });
-
+            expect(service.getLicenceErrors(licence, ['licenceConditions'])).to.eql(expectedOutput);
         });
+
+        it('should return null if the licence is valid', () => {
+            expect(service.getLicenceErrors(baseLicence)).to.eql({});
+        });
+
+        it('should return error if reason is not provided for exclusion', () => {
+
+            const licence = {
+                ...baseLicence,
+                eligibility: {
+                    excluded: {
+                        decision: 'Yes'
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors(licence)).to.eql(
+                {eligibility: {excluded: {reason: 'Not answered'}}});
+        });
+
+        it('should return error if suitability decision is not provided', () => {
+
+            const licence = {
+                ...baseLicence,
+                eligibility: {
+                    excluded: {
+                        decision: 'No'
+                    },
+                    suitability: {
+                        decision: ''
+                    },
+                    crdTime: {
+                        decision: 'No'
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors(licence)).to.eql(
+                {eligibility: {suitability: {decision: 'Not answered'}}});
+        });
+
+        it('should return error if reason is not provided for suitability', () => {
+
+            const licence = {
+                ...baseLicence,
+                eligibility: {
+                    excluded: {
+                        decision: 'No'
+                    },
+                    suitability: {
+                        decision: 'Yes'
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors(licence)).to.eql(
+                {eligibility: {suitability: {reason: 'Not answered'}}});
+        });
+
+        it('should not return error if reason is provided for suitability', () => {
+
+            const licence = {
+                ...baseLicence,
+                eligibility: {
+                    excluded: {
+                        decision: 'No'
+                    },
+                    suitability: {
+                        decision: 'Yes',
+                        reason: ['this']
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors(licence)).to.eql({});
+        });
+
 
         it('should return error if required address field is not provided', () => {
 
@@ -1429,7 +1435,7 @@ describe('licenceService', () => {
         describe('additional conditions validation', () => {
 
             it('should return no error if there are no additional conditions', () => {
-                const output = service.getLicenceErrors(baseLicence, 'PROCESSING_RO');
+                const output = service.getLicenceErrors(baseLicence);
 
                 expect(output).to.eql({});
             });
