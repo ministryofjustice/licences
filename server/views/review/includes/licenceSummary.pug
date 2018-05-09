@@ -32,7 +32,10 @@ div.largeMarginBottom
         if typeof errorObject.licenceConditions === 'string'
             p.alert.bold(id='additional-conditions-error') #{errorObject.licenceConditions}
         else
-            +additionalConditions()
+            if data.licenceConditions && data.licenceConditions.length > 0
+                +additionalConditions()
+            else
+                | No additional conditions selected
 
         // Reporting instructions
         h2#reportingDetails.heading-medium.borderBottomLight Reporting instructions
