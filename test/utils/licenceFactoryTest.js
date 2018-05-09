@@ -421,6 +421,45 @@ describe('licenceFactory', () => {
             expect(output).to.eql(expectedOutput);
 
         });
+
+        context('When there are errors in user input', () => {
+            it('should return object for view containing input errors', () => {
+                const rawLicence = {licenceConditions: {additional: {1: {appointmentName: 'injected'}}, bespoke: []}};
+                const errorLicence = {licenceConditions: {additional: {1: {appointmentName: 'ERROR'}}, bespoke: []}};
+                const selectedConditions = [
+                    {
+                        id: 1,
+                        user_input: 'appointmentName',
+                        text: 'The condition [placeholder] with input',
+                        field_position: {appointmentName: 0},
+                        group_name: 'g',
+                        subgroup_name: 'sg'
+                    }
+                ];
+
+
+                const output = populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errorLicence);
+
+                const expectedOutput = {
+                    licenceConditions: [
+                        {
+                            content: [
+                                {text: 'The condition '},
+                                {error: 'ERROR'},
+                                {text: ' with input'}
+                            ],
+                            group: 'g',
+                            subgroup: 'sg',
+                            id: 1
+                        }
+
+                    ]
+                };
+
+                expect(output).to.eql(expectedOutput);
+
+            });
+        });
     });
 
     describe('populateAdditionalConditionsAsString', () => {

@@ -39,7 +39,7 @@ module.exports = function createConditionsService(licenceClient) {
         return formatConditionsInput(requestBody, selectedConditionsConfig);
     }
 
-    async function populateLicenceWithConditions(licence) {
+    async function populateLicenceWithConditions(licence, errors = {}) {
 
         const additionalConditions = getIn(licence, ['licenceConditions', 'additional']);
         const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
@@ -52,7 +52,7 @@ module.exports = function createConditionsService(licenceClient) {
             const conditionIdsSelected = Object.keys(additionalConditions);
             const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIdsSelected);
 
-            return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig);
+            return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors);
 
         } catch (error) {
             logger.error('Error during populateLicenceWithConditions');

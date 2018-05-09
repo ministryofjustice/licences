@@ -118,8 +118,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
         const licenceWithAddress = addAddressTo(licence);
-        const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress);
         const errorObject = licenceService.getLicenceErrors(licenceWithAddress, stage);
+        const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
+
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
         res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus, errorObject});
