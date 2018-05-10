@@ -1247,6 +1247,68 @@ describe('licenceService', () => {
 
         });
 
+        it('should not allow ages below 0', () => {
+
+            const emptyOccupier = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
+                        occupier: {
+                            name: 'Name',
+                            relationship: 'Relationship',
+                            age: '-1'
+                        }
+                    }
+                }
+            };
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        occupier: {
+                            age: 'Invalid age - must be 0 or above'
+                        }
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors(emptyOccupier)).to.eql(expectedOutput);
+
+        });
+
+        it('should not allow ages above 110', () => {
+
+            const emptyOccupier = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
+                        occupier: {
+                            name: 'Name',
+                            relationship: 'Relationship',
+                            age: '111'
+                        }
+                    }
+                }
+            };
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        occupier: {
+                            age: 'Invalid age - must be 110 or below'
+                        }
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors(emptyOccupier)).to.eql(expectedOutput);
+
+        });
+
 
         context('Multiple sections', () => {
 
@@ -1930,7 +1992,7 @@ describe('licenceService', () => {
                             ...baseLicence.licenceConditions,
                             additional: {
                                 ATTEND: {
-                                    appointmentDate: '26/12/2019',
+                                    appointmentDate: '26/12/2040',
                                     appointmentTime: '13',
                                     appointmentAddress: 'address'
                                 }
@@ -1980,7 +2042,7 @@ describe('licenceService', () => {
                             ...baseLicence.licenceConditions,
                             additional: {
                                 ATTEND: {
-                                    appointmentDate: '2018-26-12',
+                                    appointmentDate: '2040-26-12',
                                     appointmentTime: '13',
                                     appointmentAddress: 'address'
                                 }
@@ -2010,7 +2072,7 @@ describe('licenceService', () => {
                             ...baseLicence.licenceConditions,
                             additional: {
                                 ATTEND: {
-                                    appointmentDate: '2018-12-32', appointmentTime: '13',
+                                    appointmentDate: '2040-12-32', appointmentTime: '13',
                                     appointmentAddress: 'address'
                                 }
                             }
@@ -2025,6 +2087,35 @@ describe('licenceService', () => {
                                 additional: {
                                     ATTEND: {
                                         appointmentDate: 'Invalid or incorrectly formatted date'
+                                    }
+                                }
+                            }
+                        });
+                });
+
+                it('should return error if appointmentDate is in the past', () => {
+
+                    const newLicence = {
+                        ...baseLicence,
+                        licenceConditions: {
+                            ...baseLicence.licenceConditions,
+                            additional: {
+                                ATTEND: {
+                                    appointmentDate: '01/01/2016', appointmentTime: '13',
+                                    appointmentAddress: 'address'
+                                }
+                            }
+                        }
+                    };
+
+                    const output = service.getLicenceErrors(newLicence);
+
+                    expect(output).to.eql(
+                        {
+                            licenceConditions: {
+                                additional: {
+                                    ATTEND: {
+                                        appointmentDate: 'Invalid date - must not be in the past'
                                     }
                                 }
                             }
