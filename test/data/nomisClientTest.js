@@ -89,25 +89,6 @@ describe('nomisClient', function() {
         });
     });
 
-    describe('getSentenceDetail', () => {
-
-        it('should return data from api', () => {
-            fakeNomis
-                .get(`/bookings/1/sentenceDetail`)
-                .reply(200, {key: 'value'});
-
-            return expect(nomisClient.getSentenceDetail('1', 'token')).to.eventually.eql({key: 'value'});
-        });
-
-        it('should reject if api fails', () => {
-            fakeNomis
-                .get(`/bookings/1/sentenceDetail`)
-                .reply(500);
-
-            return expect(nomisClient.getSentenceDetail('1', 'token')).to.be.rejected();
-        });
-    });
-
     describe('getImageInfo', () => {
 
         it('should return data from api', () => {
@@ -124,25 +105,6 @@ describe('nomisClient', function() {
                 .reply(500);
 
             return expect(nomisClient.getImageInfo('1', 'token')).to.be.rejected();
-        });
-    });
-
-    describe('getDischargeAddress', () => {
-
-        it('should return data from api', () => {
-            fakeNomis
-                .get(`/dischargeAddress?nomisId=a`)
-                .reply(200, {key: 'value'});
-
-            return expect(nomisClient.getDischargeAddress('a', 'token')).to.eventually.eql({key: 'value'});
-        });
-
-        it('should reject if api fails', () => {
-            fakeNomis
-                .get(`/dischargeAddress?nomisId=a`)
-                .reply(500);
-
-            return expect(nomisClient.getDischargeAddress('a', 'token')).to.be.rejected();
         });
     });
 
@@ -193,6 +155,35 @@ describe('nomisClient', function() {
 
             return expect(nomisClient.getHdcEligiblePrisoners()).to.be.rejected();
         });
+
+        it('should set releaseDate as CRD if present', () => {
+            fakeNomis
+                .get(url)
+                .reply(200, [
+                    {sentenceDetail: {conditionalReleaseDate: 'a', automaticReleaseDate: 'b'}},
+                    {sentenceDetail: {conditionalReleaseDate: 'c', automaticReleaseDate: 'd'}}
+                ]);
+
+            return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
+                {sentenceDetail: {conditionalReleaseDate: 'a', automaticReleaseDate: 'b', releaseDate: 'a'}},
+                {sentenceDetail: {conditionalReleaseDate: 'c', automaticReleaseDate: 'd', releaseDate: 'c'}}
+            ]);
+        });
+
+        it('should set releaseDate as ARD if no CRD', () => {
+            fakeNomis
+                .get(url)
+                .reply(200, [
+                    {sentenceDetail: {automaticReleaseDate: 'b'}},
+                    {sentenceDetail: {automaticReleaseDate: 'd'}}
+                ]);
+
+            return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
+                {sentenceDetail: {automaticReleaseDate: 'b', releaseDate: 'b'}},
+                {sentenceDetail: {automaticReleaseDate: 'd', releaseDate: 'd'}}
+            ]);
+        });
+
     });
 
     describe('getHdcEligiblePrisoner', () => {

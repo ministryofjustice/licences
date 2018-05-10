@@ -143,21 +143,24 @@ describe('caseListService', () => {
                 name: 'offender1',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-09-14',
-                    conditionalReleaseDate: '2017-12-15'
+                    conditionalReleaseDate: '2017-12-15',
+                    releaseDate: '2017-12-15'
                 }
             };
             const offender2 = {
                 name: 'offender2',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-10-07',
-                    conditionalReleaseDate: '2017-12-15'
+                    conditionalReleaseDate: '2017-12-15',
+                    releaseDate: '2017-12-15'
                 }
             };
             const offender3 = {
                 name: 'offender3',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-11-06',
-                    conditionalReleaseDate: '2017-01-13'
+                    conditionalReleaseDate: '2017-01-13',
+                    releaseDate: '2017-01-13'
                 }
             };
 
@@ -165,7 +168,8 @@ describe('caseListService', () => {
                 name: 'offender4',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-11-07',
-                    conditionalReleaseDate: '2017-07-22'
+                    conditionalReleaseDate: '2017-07-22',
+                    releaseDate: '2017-07-22'
                 }
             };
 
@@ -173,7 +177,8 @@ describe('caseListService', () => {
                 name: 'offender5',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-11-07',
-                    conditionalReleaseDate: '2017-12-13'
+                    conditionalReleaseDate: '2017-12-13',
+                    releaseDate: '2017-12-13'
                 }
             };
 
@@ -215,7 +220,8 @@ describe('caseListService', () => {
                     sentenceDetail: {
                         homeDetentionCurfewEligibilityDate: '2017-11-07',
                         conditionalReleaseDate: '',
-                        automaticReleaseDate: '2017-12-13'
+                        automaticReleaseDate: '2017-12-13',
+                        releaseDate: '2017-12-13'
                     }
                 };
 
