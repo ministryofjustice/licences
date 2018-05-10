@@ -7,10 +7,10 @@ const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
 const requiredPhone = joi.string().regex(/^[0-9\+\s]+$/).required();
-const optionalNumber = joi.number().allow('').optional();
+const optionalAge = joi.number().min(0).max(110).allow('').optional();
 const selection = joi.array().min(1).required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
-const requiredDate = joi.date().format('DD/MM/YYYY').required();
+const requiredDate = joi.date().format('DD/MM/YYYY').min('now').required();
 const requiredTime = joi.date().format('HH:mm').required();
 const requiredPostcode = joi.postcode().required();
 const requiredIf = (field, answer, typeRequired = requiredString, ifNot = optionalString) => {
@@ -38,6 +38,18 @@ function getMessage(errorType, errorMessage) {
             return 'Invalid entry - number required';
         }
         return 'Invalid postcode';
+    }
+
+    if (errorType === 'number.min') {
+        return 'Invalid age - must be 0 or above';
+    }
+
+    if (errorType === 'number.max') {
+        return 'Invalid age - must be 110 or below';
+    }
+
+    if (errorType === 'date.min') {
+        return 'Invalid date - must not be in the past';
     }
 
     return 'Not answered';
@@ -82,12 +94,12 @@ const curfewAddress = joi.object().keys({
     telephone: requiredPhone,
     occupier: joi.object().required().keys({
         name: requiredString,
-        age: optionalNumber,
+        age: optionalAge,
         relationship: requiredString
     }),
     residents: joi.array().items(joi.object().keys({
         name: requiredString,
-        age: optionalNumber,
+        age: optionalAge,
         relationship: requiredString
     })),
     cautionedAgainstResident: requiredYesNo,
