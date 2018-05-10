@@ -1,8 +1,7 @@
 const config = require('../config');
 const logger = require('../../log.js');
-
+const {merge} = require('../utils/functionalHelpers');
 const superagent = require('superagent');
-
 const generateApiGatewayToken = require('../authentication/apiGateway');
 
 const timeoutSpec = {
@@ -32,11 +31,6 @@ module.exports = function(token) {
             return nomisGet(path, '', token);
         },
 
-        getSentenceDetail: function(bookingId) {
-            const path = `${apiUrl}/bookings/${bookingId}/sentenceDetail`;
-            return nomisGet(path, '', token);
-        },
-
         getAliases: function(bookingId) {
             const path = `${apiUrl}/bookings/${bookingId}/aliases`;
             return nomisGet(path, '', token);
@@ -58,13 +52,7 @@ module.exports = function(token) {
             return nomisGet(path, '', token);
         },
 
-        getDischargeAddress: function(nomisId) {
-            const path = `${apiUrl}/dischargeAddress`;
-            const query = {nomisId: `${nomisId}`};
-            return nomisGet(path, query, token);
-        },
-
-        getHdcEligiblePrisoners: function(nomisIds) {
+        getHdcEligiblePrisoners: async function(nomisIds) {
             const path = `${apiUrl}/offender-sentences`;
             const query = {
                     query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`,
@@ -75,13 +63,15 @@ module.exports = function(token) {
                 'Page-Limit': 10000
             };
 
-            return nomisGet(path, query, token, headers);
+            const prisoners = await nomisGet(path, query, token, headers);
+            return prisoners.map(prisoner => addReleaseDate(prisoner));
         },
 
-        getHdcEligiblePrisoner: function(nomisId) {
+        getHdcEligiblePrisoner: async function(nomisId) {
             const path = `${apiUrl}/offender-sentences`;
             const query = {offenderNo: nomisId};
-            return nomisGet(path, query, token);
+            const prisoners = await nomisGet(path, query, token);
+            return prisoners.map(prisoner => addReleaseDate(prisoner));
         },
 
         getImageData: async function(id) {
@@ -119,4 +109,17 @@ async function nomisGet(path, query, token, headers = {}, responseType = '') {
         logger.error('Error from NOMIS: ', error.stack);
         throw error;
     }
+}
+
+function addReleaseDate(prisoner) {
+
+    const {conditionalReleaseDate, automaticReleaseDate} = prisoner.sentenceDetail;
+
+    const crd = conditionalReleaseDate && conditionalReleaseDate !== 'Invalid date' ? conditionalReleaseDate : null;
+    const ard = automaticReleaseDate && automaticReleaseDate !== 'Invalid date' ? automaticReleaseDate : null;
+
+    return {
+        ...prisoner,
+        sentenceDetail: merge(prisoner.sentenceDetail, {releaseDate: crd || ard})
+    };
 }

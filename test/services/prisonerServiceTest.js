@@ -37,7 +37,6 @@ describe('prisonerDetailsService', () => {
         facialImageId: 2,
         imageId: 'imgId',
         captureDate: '23/11/1971',
-        sentenceExpiryDate: '03/12/1985',
         aliases: 'Alias One, Aka Two',
         offences: 'Robbery, conspiracy to rob',
         com: 'Comfirst Comlast',
@@ -57,14 +56,12 @@ describe('prisonerDetailsService', () => {
             await service.getPrisonerDetails('123');
 
             expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledOnce();
-            expect(nomisClientMock.getSentenceDetail).to.be.calledOnce();
             expect(nomisClientMock.getAliases).to.be.calledOnce();
             expect(nomisClientMock.getMainOffence).to.be.calledOnce();
             expect(nomisClientMock.getComRelation).to.be.calledOnce();
             expect(nomisClientMock.getImageInfo).to.be.calledOnce();
 
             expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledWith('123');
-            expect(nomisClientMock.getSentenceDetail).to.be.calledWith(1);
             expect(nomisClientMock.getAliases).to.be.calledWith(1);
             expect(nomisClientMock.getMainOffence).to.be.calledWith(1);
             expect(nomisClientMock.getComRelation).to.be.calledWith(1);

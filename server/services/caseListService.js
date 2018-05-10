@@ -1,5 +1,5 @@
 const logger = require('../../log.js');
-const {isEmpty, merge, getIn} = require('../utils/functionalHelpers');
+const {isEmpty, getIn} = require('../utils/functionalHelpers');
 const {formatObjectForView} = require('./utils/formatForView');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
@@ -64,8 +64,7 @@ function getROCaseList(nomisClient, licenceClient, user) {
 
 function decoratePrisonerDetails(licences, role) {
     return prisoner => {
-        const withReleaseDate = addReleaseDate(prisoner);
-        const formattedPrisoner = formatObjectForView(withReleaseDate);
+        const formattedPrisoner = formatObjectForView(prisoner);
         const {stage, status} = getStatus(prisoner, licences, role);
         return {...formattedPrisoner, stage, status};
     };
@@ -87,19 +86,6 @@ function getStatus(prisoner, licences, role) {
 
     const licenceStatus = getLicenceStatus(licenceForPrisoner);
     return {stage: licenceForPrisoner.stage, status: getStatusLabel(licenceStatus, role)};
-}
-
-function addReleaseDate(address) {
-
-    const {conditionalReleaseDate, automaticReleaseDate} = address.sentenceDetail;
-
-    const crd = conditionalReleaseDate && conditionalReleaseDate !== 'Invalid date' ? conditionalReleaseDate : null;
-    const ard = automaticReleaseDate && automaticReleaseDate !== 'Invalid date' ? automaticReleaseDate : null;
-
-    return {
-        ...address,
-        sentenceDetail: merge(address.sentenceDetail, {releaseDate: crd || ard})
-    };
 }
 
 function compareReleaseDates(address1, address2) {

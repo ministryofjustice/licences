@@ -18,9 +18,6 @@ function createPrisonerService(nomisClientBuilder) {
             }
 
             const bookingId = prisoner.bookingId;
-
-            // todo could make this use promise.all, but wait until we know the API is stable and details are right
-            const sentence = await nomisClient.getSentenceDetail(bookingId);
             const aliases = await nomisClient.getAliases(bookingId);
             const offences = await nomisClient.getMainOffence(bookingId);
             const com = await nomisClient.getComRelation(bookingId);
@@ -28,7 +25,7 @@ function createPrisonerService(nomisClientBuilder) {
             const image = prisoner.facialImageId ?
                 await nomisClient.getImageInfo(prisoner.facialImageId) : {imageId: false};
 
-            return formatObjectForView({...prisoner, ...sentence, offences, ...image, com, aliases});
+            return formatObjectForView({...prisoner, offences, ...image, com, aliases});
 
         } catch (error) {
             logger.error('Error getting prisoner info', error.stack);
