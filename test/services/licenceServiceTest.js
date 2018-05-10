@@ -952,7 +952,7 @@ describe('licenceService', () => {
                 addressLine1: 'line1',
                 addressTown: 'town',
                 postCode: 'S10 5NW',
-                telephone: '123',
+                telephone: '+123',
                 occupier: {
                     name: 'occupier',
                     relationship: 'rel',
@@ -1019,7 +1019,7 @@ describe('licenceService', () => {
             buildingAndStreet2: 'name',
             townOrCity: 'name',
             postcode: 'S10 5NW',
-            telephone: '123'
+            telephone: '123 234'
         };
 
         const standard = {

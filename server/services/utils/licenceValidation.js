@@ -6,7 +6,7 @@ const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
-const requiredNumber = joi.number().required();
+const requiredPhone = joi.string().regex(/^[0-9\+\s]+$/).required();
 const optionalNumber = joi.number().allow('').optional();
 const selection = joi.array().min(1).required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
@@ -34,6 +34,9 @@ function getMessage(errorType, errorMessage) {
     }
 
     if (errorType === 'string.regex.base') {
+        if(errorMessage.includes('telephone')) {
+            return 'Invalid entry - number required';
+        }
         return 'Invalid postcode';
     }
 
@@ -76,7 +79,7 @@ const curfewAddress = joi.object().keys({
     addressLine2: optionalString,
     addressTown: requiredString,
     postCode: requiredPostcode,
-    telephone: requiredNumber,
+    telephone: requiredPhone,
     occupier: joi.object().required().keys({
         name: requiredString,
         age: optionalNumber,
@@ -131,7 +134,7 @@ const reportingInstructions = joi.object({
     buildingAndStreet2: optionalString,
     townOrCity: requiredString,
     postcode: requiredPostcode,
-    telephone: requiredNumber
+    telephone: requiredPhone
 });
 
 const standard = joi.object({
