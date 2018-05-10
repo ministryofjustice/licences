@@ -143,9 +143,10 @@ describe('nomisClient', function() {
         it('should return data from api', () => {
             fakeNomis
                 .get(url)
-                .reply(200, {key: 'value'});
+                .reply(200, [{sentenceDetail: {conditionalReleaseDate: 'a'}}]);
 
-            return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
+                {sentenceDetail: {conditionalReleaseDate: 'a', releaseDate: 'a'}}]);
         });
 
         it('should reject if api fails', () => {
@@ -193,9 +194,10 @@ describe('nomisClient', function() {
         it('should return data from api', () => {
             fakeNomis
                 .get(url)
-                .reply(200, {key: 'value'});
+                .reply(200, [{sentenceDetail: {conditionalReleaseDate: 'a'}}]);
 
-            return expect(nomisClient.getHdcEligiblePrisoner('1', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getHdcEligiblePrisoner('1', 'token')).to.eventually.eql([
+                {sentenceDetail: {conditionalReleaseDate: 'a', releaseDate: 'a'}}]);
         });
 
         it('should reject if api fails', () => {

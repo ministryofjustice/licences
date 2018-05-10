@@ -64,14 +64,14 @@ module.exports = function(token) {
             };
 
             const prisoners = await nomisGet(path, query, token, headers);
-            return addReleaseDates(prisoners);
+            return prisoners.map(prisoner => addReleaseDate(prisoner));
         },
 
-        getHdcEligiblePrisoner: function(nomisId) {
+        getHdcEligiblePrisoner: async function(nomisId) {
             const path = `${apiUrl}/offender-sentences`;
             const query = {offenderNo: nomisId};
-            const prisoners = nomisGet(path, query, token);
-            return addReleaseDates(prisoners);
+            const prisoners = await nomisGet(path, query, token);
+            return prisoners.map(prisoner => addReleaseDate(prisoner));
         },
 
         getImageData: async function(id) {
@@ -109,10 +109,6 @@ async function nomisGet(path, query, token, headers = {}, responseType = '') {
         logger.error('Error from NOMIS: ', error.stack);
         throw error;
     }
-}
-
-function addReleaseDates(prisoners) {
-    return prisoners.length > 0 ? prisoners.map(prisoner => addReleaseDate(prisoner)) : prisoners;
 }
 
 function addReleaseDate(prisoner) {
