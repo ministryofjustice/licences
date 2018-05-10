@@ -18,6 +18,7 @@ function createPrisonerService(nomisClientBuilder) {
             }
 
             const bookingId = prisoner.bookingId;
+            const {pncNumber, croNumber, middleNames} = await nomisClient.getPrisoner(nomisId);
             const aliases = await nomisClient.getAliases(bookingId);
             const offences = await nomisClient.getMainOffence(bookingId);
             const com = await nomisClient.getComRelation(bookingId);
@@ -25,7 +26,9 @@ function createPrisonerService(nomisClientBuilder) {
             const image = prisoner.facialImageId ?
                 await nomisClient.getImageInfo(prisoner.facialImageId) : {imageId: false};
 
-            return formatObjectForView({...prisoner, offences, ...image, com, aliases});
+            return formatObjectForView({
+                ...prisoner, pncNumber, croNumber, middleNames, offences, ...image, com, aliases
+            });
 
         } catch (error) {
             logger.error('Error getting prisoner info', error.stack);
