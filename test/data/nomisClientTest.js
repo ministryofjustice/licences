@@ -228,6 +228,25 @@ describe('nomisClient', function() {
         });
     });
 
+    describe('getPrisoner', () => {
+
+        it('should return first element of data from api', () => {
+            fakeNomis
+                .get(`/prisoners?offenderNo=1`)
+                .reply(200, [{key: '1'}, {key: '2'}]);
+
+            return expect(nomisClient.getPrisoner('1', 'token')).to.eventually.eql({key: '1'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get(`/prisoners?offenderNo=1`)
+                .reply(500);
+
+            return expect(nomisClient.getPrisoner('1', 'token')).to.be.rejected();
+        });
+    });
+
     describe('getMainOffence', () => {
 
         it('should return data from api', () => {
