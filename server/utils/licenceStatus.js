@@ -42,7 +42,8 @@ function getRequiredState(stage, licence) {
     const config = {
         [licenceStages.ELIGIBILITY]: [getEligibilityStageState],
         [licenceStages.PROCESSING_RO]: [getEligibilityStageState, getRoStageState],
-        [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState, getCaStageState],
+        [licenceStages.PROCESSING_CA]:
+            [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
         [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
         [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
     };

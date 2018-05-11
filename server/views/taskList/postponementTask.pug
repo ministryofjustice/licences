@@ -29,6 +29,13 @@ div.largeMarginBottom.borderTop
 
     div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-u-1-2
+            if licenceStatus.decisions.refused
+                span.alert.bold HDC refused
+
         div.pure-u-1-4
         div.pure-u-1-4
-            a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/refuse/" + prisonerInfo.offenderNo) Refuse HDC
+            a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/refuse/" + prisonerInfo.offenderNo)
+                if licenceStatus.decisions.refused
+                    | Update refusal
+                else
+                    | Refuse HDC

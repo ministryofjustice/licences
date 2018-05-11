@@ -31,7 +31,8 @@ block content
                     include reportingInstructionsTask
                 include finalChecksTask
                 include postponementTask
-                include caSubmitTask
+                if (!licenceStatus.decisions.refused)
+                    include caSubmitTask
 
         if user.role === 'RO'
             if (licenceStatus.decisions.optedOut)
@@ -44,8 +45,7 @@ block content
                     include additionalConditionsTask
                     include reportingInstructionsTask
                     include optOutTask
-            if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
-                include roSubmitTask
+            include roSubmitTask
 
         if user.role === 'DM'
             include curfewAddressTask
