@@ -44,7 +44,8 @@ block content
                     include additionalConditionsTask
                     include reportingInstructionsTask
                     include optOutTask
-            include roSubmitTask
+            if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+                include roSubmitTask
 
         if user.role === 'DM'
             include curfewAddressTask

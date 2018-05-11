@@ -79,7 +79,7 @@ module.exports = {
         }
     },
     rejected: {
-        licenceMap: ['licence'],
+        pageDataMap: ['licence'],
         fields: [
             {enterAlternative: {}}
         ],

@@ -45,8 +45,32 @@ describe('/hdc/finalChecks', () => {
             {
                 url: '/finalChecks/seriousOffence/1',
                 body: {nomisId: 1},
-                section: 'seriousOffence',
+                formName: 'seriousOffence',
                 nextPath: '/hdc/finalChecks/onRemand/1'
+            },
+            {
+                url: '/finalChecks/refuse/1',
+                body: {nomisId: 1, decision: 'No'},
+                fieldMap: formConfig.refuse.fields,
+                sectionName: 'approval',
+                formName: 'release',
+                nextPath: '/hdc/finalChecks/refusal/1'
+            },
+            {
+                url: '/finalChecks/refuse/1',
+                body: {nomisId: 1, decision: 'Yes'},
+                fieldMap: formConfig.refuse.fields,
+                sectionName: 'approval',
+                formName: 'release',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/finalChecks/refusal/1',
+                body: {nomisId: 1, reason: 'something', outOfTimeReasons: []},
+                fieldMap: formConfig.refusal.fields,
+                sectionName: 'approval',
+                formName: 'release',
+                nextPath: '/hdc/taskList/1'
             }
         ];
 
@@ -61,10 +85,10 @@ describe('/hdc/finalChecks', () => {
                         expect(licenceServiceStub.update).to.be.calledWith({
                             licence: {key: 'value'},
                             nomisId: '1',
-                            fieldMap: formConfig[route.section].fields,
+                            fieldMap: route.fieldMap || formConfig[route.formName].fields,
                             userInput: route.body,
-                            licenceSection: 'finalChecks',
-                            formName: route.section
+                            licenceSection: route.sectionName || 'finalChecks',
+                            formName: route.formName
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);

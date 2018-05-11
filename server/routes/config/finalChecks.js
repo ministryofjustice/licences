@@ -25,5 +25,33 @@ module.exports = {
         nextPath: {
             path: '/hdc/taskList/'
         }
+    },
+    refuse: {
+        pageDataMap: ['licence', 'approval', 'release'],
+        saveSection: ['approval', 'release'],
+        fields: [
+            {decision: {}},
+            {reason: {}},
+            {outOfTimeReasons: {}}
+        ],
+        nextPath: {
+            decisions: {
+                discriminator: 'decision',
+                No: '/hdc/finalChecks/refusal/'
+            },
+            path: '/hdc/taskList/'
+        }
+    },
+    refusal: {
+        pageDataMap: ['licence', 'approval', 'release'],
+        saveSection: ['approval', 'release'],
+        fields: [
+            {decision: {}},
+            {reason: {}},
+            {outOfTimeReasons: {}}
+        ],
+        nextPath: {
+            path: '/hdc/taskList/'
+        }
     }
 };

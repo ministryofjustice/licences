@@ -1,6 +1,6 @@
 module.exports = {
     curfewAddressReview: {
-        licenceMap: ['licence'],
+        pageDataMap: ['licence'],
         fields: [
             {consent: {}},
             {electricity: {dependentOn: 'consent', predicate: 'Yes'}},
@@ -21,7 +21,7 @@ module.exports = {
         }
     },
     addressSafety: {
-        licenceMap: ['licence'],
+        pageDataMap: ['licence'],
         fields: [
             {deemedSafe: {}},
             {unsafeReason: {dependentOn: 'deemedSafe', predicate: 'No'}}
