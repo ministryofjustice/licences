@@ -18,7 +18,7 @@ function createPrisonerService(nomisClientBuilder) {
             }
 
             const bookingId = prisoner.bookingId;
-            const {pncNumber, croNumber, middleNames} = await nomisClient.getPrisoner(nomisId);
+            // const {pncNumber, croNumber, middleNames} = await nomisClient.getPrisoner(nomisId);
             const aliases = await nomisClient.getAliases(bookingId);
             const offences = await nomisClient.getMainOffence(bookingId);
             const com = await nomisClient.getComRelation(bookingId);
@@ -27,7 +27,8 @@ function createPrisonerService(nomisClientBuilder) {
                 await nomisClient.getImageInfo(prisoner.facialImageId) : {imageId: false};
 
             return formatObjectForView({
-                ...prisoner, pncNumber, croNumber, middleNames, offences, ...image, com, aliases
+                // ...prisoner, pncNumber, croNumber, middleNames, offences, ...image, com, aliases
+                ...prisoner, offences, ...image, com, aliases
             });
 
         } catch (error) {
