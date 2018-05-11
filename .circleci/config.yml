@@ -124,13 +124,6 @@ jobs:
   feature_tests:
     <<: *defaults
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
-            - node_modules-{{ checksum "package.json" }}
-            - node_modules
-            - yarn-cache
       - run:
           name: execute feature tests - mock
           command: |
@@ -159,13 +152,6 @@ jobs:
       - image: circleci/node:8.10.0
     working_directory: ~/noms-digital-studio/licences
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
-            - node_modules-{{ checksum "package.json" }}
-            - node_modules
-            - yarn-cache
       - run:
           name: execute feature tests - stage
           command: |
