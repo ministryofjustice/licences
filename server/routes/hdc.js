@@ -150,8 +150,8 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const {nomisId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
-        const {nextPath, licenceMap} = formConfig.release;
-        const dataPath = licenceMap || ['licence', 'approval', 'release'];
+        const {nextPath, pageDataMap} = formConfig.release;
+        const dataPath = pageDataMap || ['licence', 'approval', 'release'];
         const data = getIn(res.locals.licence, dataPath) || {};
 
         res.render('approval/release', {prisonerInfo, nomisId, data, nextPath});
@@ -264,8 +264,8 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const {sectionName, formName, nomisId} = req.params;
         logger.debug(`GET ${sectionName}/${formName}/${nomisId}`);
 
-        const {licenceSection, nextPath, licenceMap} = formConfig[formName];
-        const dataPath = licenceMap || ['licence', sectionName, licenceSection];
+        const {licenceSection, nextPath, pageDataMap} = formConfig[formName];
+        const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
         const data = getIn(res.locals.licence, dataPath) || {};
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
@@ -296,6 +296,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         const rawLicence = await licenceService.getLicence(nomisId);
         const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
+        const saveSection = formConfig[formName].saveSection || [];
 
         if (formConfig[formName].fields) {
             await licenceService.update({
@@ -303,8 +304,8 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
                 nomisId: nomisId,
                 fieldMap: formConfig[formName].fields,
                 userInput: req.body,
-                licenceSection: sectionName,
-                formName: formName
+                licenceSection: saveSection[0] || sectionName,
+                formName: saveSection[1] || formName
             });
         }
 

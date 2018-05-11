@@ -140,4 +140,28 @@ describe('getAllowedTransitions', () => {
         expect(allowed.caToDm).to.eql(false);
     });
 
+    it('should not allow CA to DM when HDC refused', () => {
+
+        const status = {
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                bassReferral: 'DONE',
+                curfewAddress: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                postponed: false,
+                curfewAddressApproved: 'approved',
+                excluded: false,
+                refused: true
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'CA');
+        expect(allowed.caToDm).to.eql(false);
+    });
+
 });

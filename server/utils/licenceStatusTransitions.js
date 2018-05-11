@@ -80,6 +80,7 @@ function canSendCaToDm(licenceStatus) {
     const decisionsOk =
         !decisions.excluded &&
         !decisions.postponed &&
+        !decisions.refused &&
         // todo should it be possible to send to DM if serious offence / on remand?
         // decisions.finalCheckPass &&
         decisions.curfewAddressApproved === 'approved';

@@ -9,13 +9,15 @@ div.largeMarginBottom.borderTop
                 if allowedTransitions.caToDm
                     | Ready to submit
                 else if licenceStatus.decisions.postponed
-                    | HDC application postponed
+                    | Submission unavailable - HDC application postponed
+                else if licenceStatus.decisions.refused
+                    | Submission unavailable - HDC refused
                 else
-                    | Tasks not yet complete
+                    | Submission unavailable - Tasks not yet complete
             else
                 | #{statusLabel}
         div.pure-u-1-4
-            if licenceStatus.stage === 'PROCESSING_CA'
-                //- && allowedTransitions.caToDm
+            if licenceStatus.stage === 'PROCESSING_CA' && allowedTransitions.caToDm
+
                 a.taskListAction.center.button(href="/hdc/send/" + prisonerInfo.offenderNo)
                     | Continue
