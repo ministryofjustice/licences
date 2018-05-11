@@ -31,8 +31,7 @@ block content
                     include reportingInstructionsTask
                 include finalChecksTask
                 include postponementTask
-                if (!licenceStatus.decisions.refused)
-                    include caSubmitTask
+                include caSubmitTask
 
         if user.role === 'RO'
             if (licenceStatus.decisions.optedOut)
