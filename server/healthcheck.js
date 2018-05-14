@@ -38,18 +38,10 @@ function addAppInfo(result) {
     const buildInfo = {
         uptime: process.uptime(),
         build: getBuild(),
-        version: getVersion()
+        version: getBuild()
     };
 
     return Object.assign({}, result, buildInfo);
-}
-
-function getVersion() {
-    try {
-        return require('../package.json').version;
-    } catch (ex) {
-        return null;
-    }
 }
 
 function getBuild() {
