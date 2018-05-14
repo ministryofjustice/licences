@@ -81,7 +81,7 @@ jobs:
           command: |
              VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
              GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
-             BUILD_VERSION=LICENCES_${VERSION}
+             BUILD_VERSION=${VERSION}
 
              docker build --rm=false . \
                  --build-arg BUILD_NUMBER=$VERSION \
@@ -106,16 +106,14 @@ jobs:
         - deploy:
             name: Install elastic beanstalk CLI
             command: |
-              if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                sudo apt-get install python-pip python-dev
-                pip install --user 'six>-1.9.0' awsebcli --ignore-installed
-              fi
+            sudo apt-get install python-pip python-dev
+            pip install --user 'six>-1.9.0' awsebcli --ignore-installed
         - deploy:
             name: Deploy to Elastic Beanstalk Dev
             command: |
-              VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
-              yarn run plant-beanstalk LICENCES_${VERSION}
-              ~/.local/bin/eb deploy --process --verbose
+              VERSION=$(egrep buildNumber build-info.json | awk -F"\"" '{print $4}')
+              yarn run plant-beanstalk ${VERSION}
+              ~/.local/bin/eb deploy --process --verbose --label ${VERSION}
         - persist_to_workspace:
             root: .
             paths:
@@ -138,14 +136,13 @@ jobs:
         - deploy:
             name: Install elastic beanstalk CLI
             command: |
-              if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                sudo apt-get install python-pip python-dev
-                pip install --user 'six>-1.9.0' awsebcli --ignore-installed
-              fi
+            sudo apt-get install python-pip python-dev
+            pip install --user 'six>-1.9.0' awsebcli --ignore-installed
         - deploy:
             name: Deploy to Elastic Beanstalk Stage
             command: |
-              ~/.local/bin/eb deploy licences-stage
+              VERSION=$(egrep licences Dockerrun.aws.json | awk -F"\"" '{print $4}' |  awk -F":" '{print $2}')
+              ~/.local/bin/eb deploy licences-stage --label ${VERSION}
 
   accept_stage:
     docker:
