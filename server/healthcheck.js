@@ -39,7 +39,7 @@ function addAppInfo(result) {
     const buildInfo = {
         uptime: process.uptime(),
         build: buildInformation,
-        version: buildInformation.buildNumber
+        version: buildInformation && buildInformation.buildNumber
     };
 
     return Object.assign({}, result, buildInfo);
