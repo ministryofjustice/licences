@@ -35,10 +35,11 @@ function gatherCheckInfo(total, currentValue) {
 }
 
 function addAppInfo(result) {
+    const buildInformation = getBuild();
     const buildInfo = {
         uptime: process.uptime(),
-        build: getBuild(),
-        version: getBuild()
+        build: buildInformation,
+        version: buildInformation.buildNumber
     };
 
     return Object.assign({}, result, buildInfo);
