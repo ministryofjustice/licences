@@ -6,6 +6,7 @@ const nock = require('nock');
 const bodyParser = require('body-parser');
 const createLicenceConditionsRoute = require('../server/routes/hdc');
 const auth = require('./mockAuthentication');
+const flash = require('connect-flash');
 
 const {roles} = require('../server/models/roles');
 
@@ -151,6 +152,7 @@ module.exports = {
             next();
         });
 
+        app.use(flash());
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(route);

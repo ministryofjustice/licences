@@ -6,6 +6,7 @@ const {
 
 const {urlencoded} = require('body-parser');
 const express = require('express');
+const flash = require('connect-flash');
 
 const createSignInEndpoint = require('../../server/routes/signIn');
 const mockAuthentication = require('../mockAuthentication');
@@ -16,6 +17,7 @@ describe('POST /login', () => {
 
     mockAuthentication.setupMockAuthentication(app, fakeSignInService);
     app.use(urlencoded({extended: true}));
+    app.use(flash());
     app.use(createSignInEndpoint());
 
     context('Successful sign in', () => {

@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const express = require('express');
 const path = require('path');
+const flash = require('connect-flash');
 
 const helmet = require('helmet');
 const csurf = require('csurf');
@@ -187,6 +188,8 @@ module.exports = function createApp({
         ignoredRoutes: ['/health', '/favicon.ico']
     }));
 
+    app.use(flash());
+
     // Express Routing Configuration
     app.get('/health', (req, res, next) => {
         healthcheck((err, result) => {
@@ -221,7 +224,8 @@ module.exports = function createApp({
         }
     });
 
-    app.use(['/caseList/', '/'], createCaseListRouter({logger, caseListService, authenticationMiddleware}));
+    app.get('/', (req, res) => res.redirect('/caseList/'));
+    app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
     app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware}));
     app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/hdc/taskList/',

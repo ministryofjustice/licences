@@ -20,13 +20,6 @@ async function signIn(username, password) {
             .timeout({response: 2000, deadline: 2500});
 
         logger.info(`Elite2 login result: [${loginResult.status}]`);
-
-        if (loginResult.status !== 200 && loginResult.status !== 201) {
-            logger.info(`Elite2 login failed for [${username}]`);
-            logger.warn(loginResult.body);
-            throw new Error('Login error');
-        }
-
         logger.info(`Elite2 login success for [${username}]`);
 
         const eliteAuthorisationToken = `${loginResult.body.token_type} ${loginResult.body.access_token}`;
@@ -44,6 +37,11 @@ async function signIn(username, password) {
         logger.info(`Elite2 profile success for [${username}] with role  [${roleCode}]`);
         return {...profileResult.body, token: eliteAuthorisationToken, role: roleCode, username};
     } catch (error) {
+        if(error.status === 400 || error.status === 401 || error.status === 403) {
+            logger.error(`Forbidden Elite2 login for [${username}]:`, error.stack);
+            return {};
+        }
+
         logger.error(`Elite 2 login error [${username}]:`, error.stack);
         throw error;
     }
@@ -73,14 +71,10 @@ async function getRole(eliteAuthorisationToken) {
     throw new Error('Login error - no acceptable role');
 }
 
-function signInFor(username, password) {
-    return signIn(username, password);
-}
-
 function getOauthUrl() {
     return config.nomis.apiUrl.replace('/api', '');
 }
 
 module.exports = function createSignInService() {
-    return {signIn: (username, password) => signInFor(username, password)};
+    return {signIn};
 };

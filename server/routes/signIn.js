@@ -13,14 +13,16 @@ module.exports = function createRouter() {
     });
 
     router.get('/', (req, res) => {
-        res.render('login');
+        const errors = req.flash('error');
+        res.render('login', {errors});
     });
 
     router.use(bodyParser.urlencoded({extended: true}));
 
     router.post('/', passport.authenticate('local', {
         successRedirect: '/',
-        failureRedirect: '/login'
+        failureRedirect: '/login',
+        failureFlash: true
     }));
 
     return router;
