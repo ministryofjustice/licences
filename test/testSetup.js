@@ -10,8 +10,10 @@ const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 chai.use(require('chai-as-promised'));
 chai.use(require('dirty-chai'));
+const nock = require('nock');
 
 module.exports = {
     sandbox,
-    expect
+    expect,
+    nock
 };
