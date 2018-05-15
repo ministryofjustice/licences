@@ -36,6 +36,11 @@ module.exports = function(token) {
             return nomisGet(path, '', token);
         },
 
+        getIdentifiers: function(bookingId) {
+            const path = `${apiUrl}/bookings/${bookingId}/identifiers`;
+            return nomisGet(path, '', token);
+        },
+
         getMainOffence: function(bookingId) {
             const path = `${apiUrl}/bookings/${bookingId}/mainOffence`;
             return nomisGet(path, '', token);
@@ -87,13 +92,6 @@ module.exports = function(token) {
         getEstablishment: async function(agencyLocationId) {
             const path = `${apiUrl}/agencies/prison/${agencyLocationId}`;
             return nomisGet(path, '', token);
-        },
-
-        getPrisoner: async function(nomisId) {
-            const path = `${apiUrl}/prisoners`;
-            const query = {offenderNo: nomisId};
-            const prisoners = await nomisGet(path, query, token);
-            return prisoners[0] || {};
         }
     };
 };

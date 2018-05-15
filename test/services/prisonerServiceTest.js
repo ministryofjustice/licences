@@ -6,9 +6,8 @@ const {
 
 describe('prisonerDetailsService', () => {
 
-    const hdcPrisonersResponse = [{bookingId: 1, facialImageId: 2, agencyLocationId: 'ABC'}];
-
-    const prisonerResponse = {croNumber: 'CRO', pncNumber: 'PNC', middleNames: 'Middle'};
+    const hdcPrisonersResponse = [{bookingId: 1, facialImageId: 2, agencyLocationId: 'ABC', middleName: 'Middle'}];
+    const identifiersResponse = [{type: 'PNC', value: 'PNC001'}, {type: 'CRO', value: 'CRO001'}];
     const aliasesResponse = [{firstName: 'ALIAS', lastName: 'One'}, {firstName: 'AKA', lastName: 'Two'}];
     const mainOffenceResponse = [{offenceDescription: 'Robbery, conspiracy to rob'}];
     const comRelationResponse = [{firstName: 'COMFIRST', lastName: 'comLast'}];
@@ -20,7 +19,7 @@ describe('prisonerDetailsService', () => {
 
     const nomisClientMock = {
         getHdcEligiblePrisoner: sandbox.stub().returnsPromise().resolves(hdcPrisonersResponse),
-        getPrisoner: sandbox.stub().returnsPromise().resolves(prisonerResponse),
+        getIdentifiers: sandbox.stub().returnsPromise().resolves(identifiersResponse),
         getAliases: sandbox.stub().returnsPromise().resolves(aliasesResponse),
         getMainOffence: sandbox.stub().returnsPromise().resolves(mainOffenceResponse),
         getImageInfo: sandbox.stub().returnsPromise().resolves(imageInfoResponse),
@@ -39,10 +38,10 @@ describe('prisonerDetailsService', () => {
         aliases: 'Alias One, Aka Two',
         offences: 'Robbery, conspiracy to rob',
         com: 'Comfirst Comlast',
-        agencyLocationId: 'ABC'
-        // croNumber: 'CRO',
-        // pncNumber: 'PNC',
-        // middleNames: 'Middle'
+        agencyLocationId: 'ABC',
+        CRO: 'CRO001',
+        PNC: 'PNC001',
+        middleName: 'Middle'
     };
 
 
@@ -54,7 +53,7 @@ describe('prisonerDetailsService', () => {
 
     describe('getPrisonerDetails', () => {
 
-        it('should call the api with the nomis id', async () => {
+        it('should call the api with the nomis id then booking id', async () => {
             await service.getPrisonerDetails('123');
 
             expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledOnce();
@@ -62,17 +61,31 @@ describe('prisonerDetailsService', () => {
             expect(nomisClientMock.getMainOffence).to.be.calledOnce();
             expect(nomisClientMock.getComRelation).to.be.calledOnce();
             expect(nomisClientMock.getImageInfo).to.be.calledOnce();
-           // expect(nomisClientMock.getPrisoner).to.be.calledOnce();
+            expect(nomisClientMock.getIdentifiers).to.be.calledOnce();
 
             expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledWith('123');
             expect(nomisClientMock.getAliases).to.be.calledWith(1);
             expect(nomisClientMock.getMainOffence).to.be.calledWith(1);
             expect(nomisClientMock.getComRelation).to.be.calledWith(1);
             expect(nomisClientMock.getImageInfo).to.be.calledWith(2);
-            // expect(nomisClientMock.getPrisoner).to.be.calledWith('123');
+            expect(nomisClientMock.getIdentifiers).to.be.calledWith(1);
         });
 
         it('should return the result of the api call', () => {
+            return expect(service.getPrisonerDetails('123'))
+                .to.eventually.eql(prisonerInfoResponse);
+        });
+
+        it('should return the only selected identifiers', () => {
+
+            const identifiersResponseWithOthers = [
+                {type: 'PNC', value: 'PNC001'},
+                {type: 'IGNORE', value: 'IGNORE001'},
+                {type: 'CRO', value: 'CRO001'}
+            ];
+
+            nomisClientMock.getIdentifiers.resolves(identifiersResponseWithOthers);
+
             return expect(service.getPrisonerDetails('123'))
                 .to.eventually.eql(prisonerInfoResponse);
         });
