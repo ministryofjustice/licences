@@ -51,6 +51,13 @@ For the database:
 * DB_NAME - DB name
 * DB_SSL_ENABLED - set to false for local
 
+# AWS database access
+
+When accessing the AWS Postgres databases eg for the stage env, SSL must be enabled (DB_SSL_ENABLED=true) and you
+need a file in the root of the project called root.cert containing the AWS RDS root certificate
+
+see https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
+
 ## Migrations
 
 Migrations are managed using [knex](http://knexjs.org/#Migrations-CLI) and [knex-migrate](https://github.com/sheerun/knex-migrate)

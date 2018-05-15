@@ -24,7 +24,7 @@ describe('nomisClient', function() {
                 .get(`/offender-releases?offenderNo=a`)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getUpcomingReleasesByOffenders('a', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getUpcomingReleasesByOffenders('a')).to.eventually.eql({key: 'value'});
         });
 
         it('should set the page-count header to match the number of offenders', () => {
@@ -38,7 +38,7 @@ describe('nomisClient', function() {
                     return null;
                 });
 
-            return expect(nomisClient.getUpcomingReleasesByOffenders(['a', 'b', 'c'], 'token'))
+            return expect(nomisClient.getUpcomingReleasesByOffenders(['a', 'b', 'c']))
                 .to.eventually.eql({key: 'value'});
         });
 
@@ -47,7 +47,7 @@ describe('nomisClient', function() {
                 .get(`/offender-releases?offenderNo=a`)
                 .reply(500);
 
-            return expect(nomisClient.getUpcomingReleasesByOffenders('a', 'token')).to.be.rejected();
+            return expect(nomisClient.getUpcomingReleasesByOffenders('a')).to.be.rejected();
         });
     });
 
@@ -58,7 +58,7 @@ describe('nomisClient', function() {
                 .get(`/bookings?query=offenderNo%3Aeq%3A%27A1235HG%27`)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getBookings('A1235HG', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getBookings('A1235HG')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -66,7 +66,7 @@ describe('nomisClient', function() {
                 .get(`/bookings?query=offenderNo%3Aeq%3AA1235HG`)
                 .reply(500);
 
-            return expect(nomisClient.getBookings('A1235HG', 'token')).to.be.rejected();
+            return expect(nomisClient.getBookings('A1235HG')).to.be.rejected();
         });
     });
 
@@ -77,7 +77,7 @@ describe('nomisClient', function() {
                 .get(`/bookings/1`)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getBooking('1', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getBooking('1')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -85,7 +85,7 @@ describe('nomisClient', function() {
                 .get(`/bookings/1`)
                 .reply(500);
 
-            return expect(nomisClient.getBooking('1', 'token')).to.be.rejected();
+            return expect(nomisClient.getBooking('1')).to.be.rejected();
         });
     });
 
@@ -96,7 +96,7 @@ describe('nomisClient', function() {
                 .get(`/images/1`)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getImageInfo('1', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getImageInfo('1')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -104,7 +104,7 @@ describe('nomisClient', function() {
                 .get(`/images/1`)
                 .reply(500);
 
-            return expect(nomisClient.getImageInfo('1', 'token')).to.be.rejected();
+            return expect(nomisClient.getImageInfo('1')).to.be.rejected();
         });
     });
 
@@ -196,7 +196,7 @@ describe('nomisClient', function() {
                 .get(url)
                 .reply(200, [{sentenceDetail: {conditionalReleaseDate: 'a'}}]);
 
-            return expect(nomisClient.getHdcEligiblePrisoner('1', 'token')).to.eventually.eql([
+            return expect(nomisClient.getHdcEligiblePrisoner('1')).to.eventually.eql([
                 {sentenceDetail: {conditionalReleaseDate: 'a', releaseDate: 'a'}}]);
         });
 
@@ -205,7 +205,7 @@ describe('nomisClient', function() {
                 .get(url)
                 .reply(500);
 
-            return expect(nomisClient.getHdcEligiblePrisoner('1', 'token')).to.be.rejected();
+            return expect(nomisClient.getHdcEligiblePrisoner('1')).to.be.rejected();
         });
     });
 
@@ -216,7 +216,7 @@ describe('nomisClient', function() {
                 .get(`/bookings/1/aliases`)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getAliases('1', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getAliases('1')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -224,26 +224,26 @@ describe('nomisClient', function() {
                 .get(`/bookings/1/aliases`)
                 .reply(500);
 
-            return expect(nomisClient.getAliases('1', 'token')).to.be.rejected();
+            return expect(nomisClient.getAliases('1')).to.be.rejected();
         });
     });
 
-    describe('getPrisoner', () => {
+    describe('getIdentifiers', () => {
 
-        it('should return first element of data from api', () => {
+        it('should return data from api', () => {
             fakeNomis
-                .get(`/prisoners?offenderNo=1`)
+                .get(`/bookings/1/identifiers`)
                 .reply(200, [{key: '1'}, {key: '2'}]);
 
-            return expect(nomisClient.getPrisoner('1', 'token')).to.eventually.eql({key: '1'});
+            return expect(nomisClient.getIdentifiers('1')).to.eventually.eql([{key: '1'}, {key: '2'}]);
         });
 
         it('should reject if api fails', () => {
             fakeNomis
-                .get(`/prisoners?offenderNo=1`)
+                .get(`/bookings/1/identifiers`)
                 .reply(500);
 
-            return expect(nomisClient.getPrisoner('1', 'token')).to.be.rejected();
+            return expect(nomisClient.getIdentifiers('1')).to.be.rejected();
         });
     });
 
@@ -254,7 +254,7 @@ describe('nomisClient', function() {
                 .get(`/bookings/1/mainOffence`)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getMainOffence('1', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getMainOffence('1')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -262,7 +262,7 @@ describe('nomisClient', function() {
                 .get(`/bookings/1/mainOffence`)
                 .reply(500);
 
-            return expect(nomisClient.getMainOffence('1', 'token')).to.be.rejected();
+            return expect(nomisClient.getMainOffence('1')).to.be.rejected();
         });
     });
 
@@ -273,7 +273,7 @@ describe('nomisClient', function() {
                 .get(`/bookings/1/relationships?query=relationshipType%3Aeq%3A%27COM%27`)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getComRelation('1', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getComRelation('1')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -281,7 +281,7 @@ describe('nomisClient', function() {
                 .get(`/bookings/1/relationships?query=relationshipType%3Aeq%3A%27COM%27`)
                 .reply(500);
 
-            return expect(nomisClient.getComRelation('1', 'token')).to.be.rejected();
+            return expect(nomisClient.getComRelation('1')).to.be.rejected();
         });
     });
 
@@ -294,7 +294,7 @@ describe('nomisClient', function() {
                 .get(url)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getROPrisoners('1', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getROPrisoners('1')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -302,7 +302,7 @@ describe('nomisClient', function() {
                 .get(url)
                 .reply(500);
 
-            return expect(nomisClient.getROPrisoners('1', 'token')).to.be.rejected();
+            return expect(nomisClient.getROPrisoners('1')).to.be.rejected();
         });
     });
 
@@ -313,7 +313,7 @@ describe('nomisClient', function() {
                 .get(`/agencies/prison/1`)
                 .reply(200, {key: 'value'});
 
-            return expect(nomisClient.getEstablishment('1', 'token')).to.eventually.eql({key: 'value'});
+            return expect(nomisClient.getEstablishment('1')).to.eventually.eql({key: 'value'});
         });
 
         it('should reject if api fails', () => {
@@ -321,7 +321,7 @@ describe('nomisClient', function() {
                 .get(`/agencies/prison/1`)
                 .reply(500);
 
-            return expect(nomisClient.getEstablishment('1', 'token')).to.be.rejected();
+            return expect(nomisClient.getEstablishment('1')).to.be.rejected();
         });
     });
 });

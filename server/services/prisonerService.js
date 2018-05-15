@@ -18,17 +18,17 @@ function createPrisonerService(nomisClientBuilder) {
             }
 
             const bookingId = prisoner.bookingId;
-            // const {pncNumber, croNumber, middleNames} = await nomisClient.getPrisoner(nomisId);
+
             const aliases = await nomisClient.getAliases(bookingId);
             const offences = await nomisClient.getMainOffence(bookingId);
             const com = await nomisClient.getComRelation(bookingId);
+            const {CRO, PNC} = selectFrom(await nomisClient.getIdentifiers(bookingId));
 
             const image = prisoner.facialImageId ?
                 await nomisClient.getImageInfo(prisoner.facialImageId) : {imageId: false};
 
             return formatObjectForView({
-                // ...prisoner, pncNumber, croNumber, middleNames, offences, ...image, com, aliases
-                ...prisoner, offences, ...image, com, aliases
+                ...prisoner, CRO, PNC, offences, ...image, com, aliases
             });
 
         } catch (error) {
@@ -130,6 +130,15 @@ function createPrisonerService(nomisClientBuilder) {
             logger.error('Error getting COM', error.stack);
             throw error;
         }
+    }
+
+    function selectFrom(identifiers) {
+        return identifiers.reduce((selected, element) => {
+            if (['PNC', 'CRO'].includes(element.type)) {
+                selected[element.type] = element.value;
+            }
+            return selected;
+        }, {});
     }
 
     return {
