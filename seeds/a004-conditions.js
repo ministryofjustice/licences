@@ -48,7 +48,7 @@ exports.seed = knex =>
                 {
                     id: 'NOCONTACTPRISONER',
                     type: 'ADDITIONAL',
-                    text: 'Not to contact directly or indirectly any person who is a serving or remand prisoner or detained in State custody, without the prior approval of your supervising officer.',
+                    text: 'Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',
                     group: 'PEOPLE',
                     subgroup: 'PERSONORGROUP',
                     active: 1
