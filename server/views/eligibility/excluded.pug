@@ -15,6 +15,8 @@ block content
         div.pure-u-1-2
             h2.heading-large Is the offender statutorily excluded from HDC?
 
+    if errorObject.decision
+        p.error-message Please select an answer
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
