@@ -9,10 +9,9 @@ module.exports = {
     getFirstArrayItems,
     replaceArrayItem,
     lastItem,
-    ascend,
-    sortWith,
     merge,
-    mergeWithRight
+    mergeWithRight,
+    firstItem
 };
 
 // pass in your object and a path in array format
@@ -49,12 +48,8 @@ function lastItem(array) {
     return R.last(array);
 }
 
-function ascend(fieldMap) {
-    return R.ascend(R.path(fieldMap));
-}
-
-function sortWith(sortingMethods) {
-    return R.sortWith(sortingMethods);
+function firstItem(array) {
+    return R.head(array);
 }
 
 function merge(object1, object2) {

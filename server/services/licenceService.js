@@ -275,7 +275,7 @@ module.exports = function createLicenceService(licenceClient) {
         return replaceArrayItem(addresses, index, newAddressObject);
     }
 
-    function getLicenceErrors(licence, sections) {
+    function getLicenceErrors({licence, sections}) {
 
         const licenceSections = sections ||
             ['eligibility', 'proposedAddress', 'curfew', 'risk', 'reporting', 'licenceConditions'];
@@ -290,7 +290,7 @@ module.exports = function createLicenceService(licenceClient) {
     }
 
     function getConditionsErrors(licence) {
-        return getLicenceErrors(licence, ['licenceConditions']);
+        return getLicenceErrors({licence, section: ['licenceConditions']});
     }
 
     return {

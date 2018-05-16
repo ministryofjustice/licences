@@ -3,37 +3,38 @@ block excludedForm
     - var vals = data.reason || ''
 
     p Select one or more reasons why the offender is excluded:
-
+        if errorObject.reason
+            span.error-message One or more reason must be selected for exclusion
     div.pure-g
         div.pure-u-10-24
             div.multiple-choice
-                input(type='checkbox' name='reason' id='sexOffenderRegister' value='sexOffenderRegister' checked=vals.indexOf('sexOffenderRegister') !== -1)
+                input(type='checkbox' name='reason[]' id='sexOffenderRegister' value='sexOffenderRegister' checked=vals.indexOf('sexOffenderRegister') !== -1)
                 label(for='sexOffenderRegister') Sex offender required to register
             div.multiple-choice
-                input(type='checkbox' name='reason' id='convictedSexOffences' value='convictedSexOffences' checked=vals.indexOf('convictedSexOffences') !== -1)
+                input(type='checkbox' name='reason[]' id='convictedSexOffences' value='convictedSexOffences' checked=vals.indexOf('convictedSexOffences') !== -1)
                 label(for='convictedSexOffences') Convicted of violent or sexual offences, currently serving an
                     |  extended sentence
             div.multiple-choice
-                input(type='checkbox' name='reason' id='rotlFail' value='rotlFail' checked=vals.indexOf('rotlFail') !== -1)
+                input(type='checkbox' name='reason[]' id='rotlFail' value='rotlFail' checked=vals.indexOf('rotlFail') !== -1)
                 label(for='rotlFail') Serving a sentence for ROTL fail to return, absconds and escapes
             div.multiple-choice
-                input(type='checkbox' name='reason' id='communityCurfew' value='communityCurfew' checked=vals.indexOf('communityCurfew') !== -1)
+                input(type='checkbox' name='reason[]' id='communityCurfew' value='communityCurfew' checked=vals.indexOf('communityCurfew') !== -1)
                 label(for='communityCurfew') Serving a sentence for breach of the curfew requirement of a
                     |  Community Order
             div.multiple-choice
-                input(type='checkbox' name='reason' id='returnedAtRisk' value='returnedAtRisk' checked=vals.indexOf('returnedAtRisk') !== -1)
+                input(type='checkbox' name='reason[]' id='returnedAtRisk' value='returnedAtRisk' checked=vals.indexOf('returnedAtRisk') !== -1)
                 label(for='returnedAtRisk') Offender returned to custody during at risk period
         div.pure-u-4-24
         div.pure-u-10-24
             div.multiple-choice
-                input(type='checkbox' name='reason' id='hdcCurfewConditions' value='hdcCurfewConditions' checked=vals.indexOf('hdcCurfewConditions') !== -1)
+                input(type='checkbox' name='reason[]' id='hdcCurfewConditions' value='hdcCurfewConditions' checked=vals.indexOf('hdcCurfewConditions') !== -1)
                 label(for='hdcCurfewConditions') Recalled to prison for failing to comply with the HDC
                     |  curfew conditions
             div.multiple-choice
-                input(type='checkbox' name='reason' id='servingRecall' value='servingRecall' checked=vals.indexOf('servingRecall') !== -1)
+                input(type='checkbox' name='reason[]' id='servingRecall' value='servingRecall' checked=vals.indexOf('servingRecall') !== -1)
                 label(for='servingRecall') Currently serving a recall from early release on compassionate grounds
             div.multiple-choice
-                input(type='checkbox' name='reason' id='deportation' value='deportation' checked=vals.indexOf('deportation') !== -1)
+                input(type='checkbox' name='reason[]' id='deportation' value='deportation' checked=vals.indexOf('deportation') !== -1)
                 label(for='deportation') Foreign national offender recommended for deportation by
                     |  the court and those who are liable to deportation and a decision to deport has been served
                     |  (i.e. not just those with a Deportation Order)

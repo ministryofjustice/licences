@@ -1,7 +1,7 @@
 const express = require('express');
 
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
-const {getIn, lastItem} = require('../utils/functionalHelpers');
+const {getIn, lastItem, isEmpty, firstItem} = require('../utils/functionalHelpers');
 const {getPathFor} = require('../utils/routes');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getCandidateAddress, getCurfewAddressFormData} = require('../utils/addressHelpers');
@@ -119,7 +119,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
         const licenceWithAddress = addAddressTo(licence);
-        const errorObject = licenceService.getLicenceErrors(licenceWithAddress);
+        const errorObject = licenceService.getLicenceErrors({licence: licenceWithAddress});
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
@@ -264,12 +264,15 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const {sectionName, formName, nomisId} = req.params;
         logger.debug(`GET ${sectionName}/${formName}/${nomisId}`);
 
-        const {licenceSection, nextPath, pageDataMap} = formConfig[formName];
+        const {licenceSection, nextPath, pageDataMap, validateInPlace} = formConfig[formName];
         const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
         const data = getIn(res.locals.licence, dataPath) || {};
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
-        res.render(`${sectionName}/${formName}`, {nomisId, data, nextPath, licenceStatus});
+        const errors = validateInPlace && firstItem(req.flash('errors'));
+        const errorObject = getIn(errors, [sectionName, formName]) || {};
+
+        res.render(`${sectionName}/${formName}`, {nomisId, data, nextPath, licenceStatus, errorObject});
     });
 
     router.post('/optOut/:nomisId', asyncMiddleware(async (req, res) => {
@@ -299,7 +302,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const saveSection = formConfig[formName].saveSection || [];
 
         if (formConfig[formName].fields) {
-            await licenceService.update({
+            const updatedLicence = await licenceService.update({
                 licence: rawLicence.licence,
                 nomisId: nomisId,
                 fieldMap: formConfig[formName].fields,
@@ -307,6 +310,18 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
                 licenceSection: saveSection[0] || sectionName,
                 formName: saveSection[1] || formName
             });
+
+            if(formConfig[formName].validateInPlace) {
+                const errors = licenceService.getLicenceErrors({
+                    licence: updatedLicence,
+                    section: [sectionName]
+                });
+
+                if (!isEmpty(getIn(errors, [sectionName, formName]))) {
+                    req.flash('errors', errors);
+                    return res.redirect(`/hdc/${sectionName}/${formName}/${nomisId}`);
+                }
+            }
         }
 
         if (req.body.anchor) {

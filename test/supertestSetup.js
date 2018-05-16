@@ -6,6 +6,8 @@ const nock = require('nock');
 const bodyParser = require('body-parser');
 const createLicenceConditionsRoute = require('../server/routes/hdc');
 const auth = require('./mockAuthentication');
+
+const cookieSession = require('cookie-session');
 const flash = require('connect-flash');
 
 const {roles} = require('../server/models/roles');
@@ -56,7 +58,8 @@ const licenceServiceStub = {
     createLicence: sandbox.stub().returnsPromise().resolves(),
     updateAddress: sandbox.stub().returnsPromise().resolves(),
     updateAddresses: sandbox.stub().returnsPromise().resolves(),
-    getConditionsErrors: sandbox.stub().returns()
+    getConditionsErrors: sandbox.stub().returns(),
+    getLicenceErrors: sandbox.stub().returns()
 };
 
 const conditionsServiceStub = {
@@ -151,6 +154,8 @@ module.exports = {
             res.locals.user = user;
             next();
         });
+
+        app.use(cookieSession({keys: ['']}));
 
         app.use(flash());
         app.use(bodyParser.json());
