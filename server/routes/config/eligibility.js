@@ -5,6 +5,7 @@ module.exports = {
             {decision: {}},
             {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
+        validateInPlace: true,
         nextPath: {
             decisions: [
                 {

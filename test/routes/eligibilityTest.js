@@ -118,6 +118,7 @@ describe('/hdc/eligibility', () => {
                     .post(route.url)
                     .send(route.body)
                     .expect(302)
+                    .expect('Location', route.nextPath)
                     .expect(res => {
                         expect(licenceServiceStub.update).to.be.calledOnce();
                         expect(licenceServiceStub.update).to.be.calledWith({
@@ -128,10 +129,30 @@ describe('/hdc/eligibility', () => {
                             licenceSection: 'eligibility',
                             formName: route.section
                         });
-
-                        expect(res.header.location).to.equal(route.nextPath);
                     });
             });
+        });
+
+        it('should redirect back to excluded page if there is an error in the submission', () => {
+            licenceServiceStub.getLicenceErrors.returns({eligibility: {excluded: {reason: 'error'}}});
+
+            return request(app)
+                .post('/eligibility/excluded/1')
+                .send({})
+                .expect(302)
+                .expect('Location', '/hdc/eligibility/excluded/1');
+
+        });
+
+        it('should not redirect back to excluded page if there is an error in a different part of licence', () => {
+            licenceServiceStub.getLicenceErrors.returns({eligibility: {suitability: {reason: 'error'}}});
+
+            return request(app)
+                .post('/eligibility/excluded/1')
+                .send({decision: 'No'})
+                .expect(302)
+                .expect('Location', '/hdc/eligibility/suitability/1');
+
         });
     });
 });

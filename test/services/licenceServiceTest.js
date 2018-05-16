@@ -1055,7 +1055,7 @@ describe('licenceService', () => {
         it('should return error if section is missing from licence', () => {
             const licence = {};
 
-            expect(service.getLicenceErrors(licence)).to.eql(emptyLicenceResponse);
+            expect(service.getLicenceErrors({licence})).to.eql(emptyLicenceResponse);
         });
 
         it('should only validate sections passed into the licence', () => {
@@ -1064,11 +1064,11 @@ describe('licenceService', () => {
                 licenceConditions: 'Not answered'
             };
 
-            expect(service.getLicenceErrors(licence, ['licenceConditions'])).to.eql(expectedOutput);
+            expect(service.getLicenceErrors({licence, sections: ['licenceConditions']})).to.eql(expectedOutput);
         });
 
         it('should return null if the licence is valid', () => {
-            expect(service.getLicenceErrors(baseLicence)).to.eql({});
+            expect(service.getLicenceErrors({licence: baseLicence})).to.eql({});
         });
 
         it('should return error if reason is not provided for exclusion', () => {
@@ -1082,7 +1082,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(licence)).to.eql(
+            expect(service.getLicenceErrors({licence})).to.eql(
                 {eligibility: {excluded: {reason: 'Not answered'}}});
         });
 
@@ -1103,7 +1103,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(licence)).to.eql(
+            expect(service.getLicenceErrors({licence})).to.eql(
                 {eligibility: {suitability: {decision: 'Not answered'}}});
         });
 
@@ -1121,7 +1121,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(licence)).to.eql(
+            expect(service.getLicenceErrors({licence})).to.eql(
                 {eligibility: {suitability: {reason: 'Not answered'}}});
         });
 
@@ -1140,7 +1140,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(licence)).to.eql({});
+            expect(service.getLicenceErrors({licence})).to.eql({});
         });
 
 
@@ -1157,7 +1157,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(missingFieldProposedAddress)).to.eql(
+            expect(service.getLicenceErrors({licence: missingFieldProposedAddress})).to.eql(
                 {proposedAddress: {curfewAddress: {addressLine1: 'Not answered'}}}
             );
         });
@@ -1175,7 +1175,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(missingFieldProposedAddress)).to.eql(
+            expect(service.getLicenceErrors({licence: missingFieldProposedAddress})).to.eql(
                 {proposedAddress: {curfewAddress: {telephone: 'Invalid entry - number required'}}}
             );
         });
@@ -1193,7 +1193,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(missingFieldProposedAddress)).to.eql(
+            expect(service.getLicenceErrors({licence: missingFieldProposedAddress})).to.eql(
                 {proposedAddress: {curfewAddress: {postCode: 'Invalid postcode'}}}
             );
         });
@@ -1211,7 +1211,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(emptyResidents)).to.eql({});
+            expect(service.getLicenceErrors({licence: emptyResidents})).to.eql({});
         });
 
         it('should not allow empty occupier object', () => {
@@ -1243,7 +1243,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(emptyOccupier)).to.eql(expectedOutput);
+            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql(expectedOutput);
 
         });
 
@@ -1274,7 +1274,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(emptyOccupier)).to.eql(expectedOutput);
+            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql(expectedOutput);
 
         });
 
@@ -1305,7 +1305,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(emptyOccupier)).to.eql(expectedOutput);
+            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql(expectedOutput);
 
         });
 
@@ -1336,7 +1336,7 @@ describe('licenceService', () => {
                     proposedAddress: {curfewAddress: {addressLine1: 'Not answered'}}
                 };
 
-                const output = service.getLicenceErrors(licence);
+                const output = service.getLicenceErrors({licence});
                 expect(output).to.eql(expectedOutput);
             });
         });
@@ -1356,7 +1356,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(licence);
+            const output = service.getLicenceErrors({licence});
 
             expect(output).to.eql({proposedAddress: {curfewAddress: {consent: 'Not answered'}}});
         });
@@ -1375,7 +1375,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(licence);
+            const output = service.getLicenceErrors({licence});
 
             expect(output).to.eql({proposedAddress: {curfewAddress: {electricity: 'Not answered'}}});
         });
@@ -1395,7 +1395,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(licence);
+            const output = service.getLicenceErrors({licence});
 
             expect(output).to.eql({proposedAddress: {curfewAddress: {homeVisitConducted: 'Not answered'}}});
         });
@@ -1413,7 +1413,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(licence);
+            const output = service.getLicenceErrors({licence});
 
             expect(output).to.eql({proposedAddress: {curfewAddress: {deemedSafe: 'Not answered'}}});
         });
@@ -1432,7 +1432,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(licence);
+            const output = service.getLicenceErrors({licence});
 
             expect(output).to.eql({proposedAddress: {curfewAddress: {unsafeReason: 'Not answered'}}});
         });
@@ -1453,7 +1453,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(licence);
+            const output = service.getLicenceErrors({licence});
 
             expect(output).to.eql({
                 curfew: {
@@ -1489,7 +1489,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(licence)).to.eql(expectedOutput);
+            expect(service.getLicenceErrors({licence})).to.eql(expectedOutput);
         });
 
         it('should require reasons for planning actions, awaiting information and victim liaison if Yes', () => {
@@ -1515,7 +1515,7 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(licence)).to.eql(expectedOutput);
+            expect(service.getLicenceErrors({licence})).to.eql(expectedOutput);
         });
 
         it('should require reporting instructions fields', () => {
@@ -1539,13 +1539,13 @@ describe('licenceService', () => {
                 }
             };
 
-            expect(service.getLicenceErrors(licence)).to.eql(expectedOutput);
+            expect(service.getLicenceErrors({licence})).to.eql(expectedOutput);
         });
 
         describe('additional conditions validation', () => {
 
             it('should return no error if there are no additional conditions', () => {
-                const output = service.getLicenceErrors(baseLicence);
+                const output = service.getLicenceErrors({licence: baseLicence});
 
                 expect(output).to.eql({});
             });
@@ -1565,7 +1565,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    expect(service.getLicenceErrors(newLicence)).to.eql({});
+                    expect(service.getLicenceErrors({licence: newLicence})).to.eql({});
                 });
 
                 it('should return error if groupsOrOrganisation is not', () => {
@@ -1580,7 +1580,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -1610,7 +1610,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -1627,7 +1627,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -1657,7 +1657,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -1674,7 +1674,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -1705,7 +1705,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -1722,7 +1722,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -1757,7 +1757,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -1775,7 +1775,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -1807,7 +1807,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -1824,7 +1824,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -1854,7 +1854,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -1871,7 +1871,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -1902,7 +1902,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -1919,7 +1919,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -1950,7 +1950,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -1967,7 +1967,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2000,7 +2000,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2018,7 +2018,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2050,7 +2050,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2079,7 +2079,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2108,7 +2108,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2138,7 +2138,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2155,7 +2155,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2185,7 +2185,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2202,7 +2202,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2236,7 +2236,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2254,7 +2254,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2291,7 +2291,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2309,7 +2309,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2345,7 +2345,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2368,7 +2368,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2390,7 +2390,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({
                         licenceConditions: {
@@ -2420,7 +2420,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({
                         licenceConditions: {
@@ -2446,7 +2446,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2477,7 +2477,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2494,7 +2494,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2524,7 +2524,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2541,7 +2541,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2571,7 +2571,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2588,7 +2588,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql(
                         {
@@ -2627,7 +2627,7 @@ describe('licenceService', () => {
                         }
                     };
 
-                    const output = service.getLicenceErrors(newLicence);
+                    const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
                 });
@@ -2640,7 +2640,7 @@ describe('licenceService', () => {
 
             const newLicence = {};
 
-            const output = service.getLicenceErrors(newLicence);
+            const output = service.getLicenceErrors({licence: newLicence});
 
             expect(output.length).to.eql(1);
             expect(output).to.eql(
@@ -2656,7 +2656,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(newLicence);
+            const output = service.getLicenceErrors({licence: newLicence});
 
             expect(output.length).to.eql(1);
             expect(output).to.eql(
@@ -2672,7 +2672,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(newLicence);
+            const output = service.getLicenceErrors({licence: newLicence});
 
             expect(output.length).to.eql(1);
             expect(output).to.eql(
@@ -2686,7 +2686,7 @@ describe('licenceService', () => {
 
         it('should return [] for no errors', () => {
 
-            const output = service.getLicenceErrors(baseLicence);
+            const output = service.getLicenceErrors({licence: baseLicence});
 
             expect(output).to.eql([]);
 
@@ -2696,7 +2696,7 @@ describe('licenceService', () => {
 
             const newLicence = {};
 
-            const output = service.getLicenceErrors(newLicence);
+            const output = service.getLicenceErrors({licence: newLicence});
 
             expect(output.length).to.eql(1);
             expect(output).to.eql(
@@ -2711,7 +2711,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(newLicence);
+            const output = service.getLicenceErrors({licence: newLicence});
 
             expect(output.length).to.eql(1);
             expect(output).to.eql({approval: {release: {decision: 'Not answered'}}});
@@ -2728,7 +2728,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(newLicence);
+            const output = service.getLicenceErrors({licence: newLicence});
 
             expect(output.length).to.eql(1);
             expect(output).to.eql({approval: {release: {reason: 'Not answered'}}});
@@ -2745,7 +2745,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = service.getLicenceErrors(newLicence);
+            const output = service.getLicenceErrors({licence: newLicence});
 
             expect(output.length).to.eql(0);
         });
