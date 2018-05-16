@@ -67,8 +67,7 @@ const suitability = joi.object().keys({
 });
 
 const crdTime = joi.object().keys({
-    decision: requiredYesNo,
-    reason: requiredIf('decision', 'Yes')
+    decision: requiredYesNo
 });
 
 const optOut = joi.object().keys({

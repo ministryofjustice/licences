@@ -6,10 +6,13 @@ block content
 
     div.pure-g.pure-u-1
         include ../includes/back
+        include ../includes/errorBanner
 
         div.pure-u-1-2
             h2.heading-large Is the offender presumed unsuitable?
 
+    if errorObject.decision
+        p.error-message Please select an answer
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
@@ -24,7 +27,7 @@ block content
                         input#unsuitableNo(type="radio" checked=suitabilityValue === 'No' name="decision" value="No")
                         label(for="unsuitableNo") No
 
-                div#unsuitableForm.panel.panel-border-narrow.js-hidden
+                div#unsuitableForm(class=errorObject.reason ? 'form-group-error': 'panel panel-border-narrow js-hidden')
                     include includes/suitability
 
             div.paddingBottom.smallPaddingTop

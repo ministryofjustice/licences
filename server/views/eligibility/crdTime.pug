@@ -6,10 +6,13 @@ block content
 
     div.pure-g.pure-u-1
         include ../includes/back
+        include ../includes/errorBanner
 
         div.pure-u-1-2
             h2.heading-large Are there less than 4 weeks until the offender's conditional release date?
 
+    if errorObject.decision
+        p.error-message Please select an answer
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')

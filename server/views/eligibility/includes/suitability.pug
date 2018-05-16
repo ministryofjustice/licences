@@ -3,25 +3,27 @@ block unsuitableForm
     - var vals = data.reason || ''
 
     p Select one or more reasons why the offender is presumed unsuitable:
+        if errorObject.reason
+            span.error-message One or more reasons must be selected
     div.pure-g
         div.pure-u-10-24
             div.multiple-choice
-                input(type='checkbox' name='reason' id='sexOffender' value='sexOffender' checked=vals.indexOf('sexOffender') !== -1)
+                input(type='checkbox' name='reason[]' id='sexOffender' value='sexOffender' checked=vals.indexOf('sexOffender') !== -1)
                 label(for='sexOffender') Has a history of sexual offending but not required to register
             div.multiple-choice
-                input(type='checkbox' name='reason' id='deportationLiable' value='deportationLiable' checked=vals.indexOf('deportationLiable') !== -1)
+                input(type='checkbox' name='reason[]' id='deportationLiable' value='deportationLiable' checked=vals.indexOf('deportationLiable') !== -1)
                 label(for='deportationLiable') Foreign national liable to deportation but not yet served with
                     |  a decision to deport
             div.multiple-choice
-                input(type='checkbox' name='reason' id='immigrationStatusUnclear' value='immigrationStatusUnclear' checked=vals.indexOf('immigrationStatusUnclear') !== -1)
+                input(type='checkbox' name='reason[]' id='immigrationStatusUnclear' value='immigrationStatusUnclear' checked=vals.indexOf('immigrationStatusUnclear') !== -1)
                 label(for='immigrationStatusUnclear') Immigration status unclear
             div.multiple-choice
-                input(type='checkbox' name='reason' id='recalled' value='recalled' checked=vals.indexOf('recalled') !== -1)
+                input(type='checkbox' name='reason[]' id='recalled' value='recalled' checked=vals.indexOf('recalled') !== -1)
                 label(for='recalled') Recalled for poor behaviour during a previous period of HDC
         div.pure-u-4-24
         div.pure-u-10-24
             div.multiple-choice
-                input(type='checkbox' name='reason' id='sentenceCategory' value='sentenceCategory' checked=vals.indexOf('sentenceCategory') !== -1)
+                input(type='checkbox' name='reason[]' id='sentenceCategory' value='sentenceCategory' checked=vals.indexOf('sentenceCategory') !== -1)
                 label(for='sentenceCategory') Serving a sentence for one of the following categories:
                     ul.list
                         li - Homicide

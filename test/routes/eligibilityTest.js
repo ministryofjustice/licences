@@ -154,6 +154,27 @@ describe('/hdc/eligibility', () => {
                 .expect('Location', '/hdc/eligibility/suitability/1');
 
         });
+
+        it('should redirect back to suitability page if there is an error in the submission', () => {
+            licenceServiceStub.getLicenceErrors.returns({eligibility: {suitability: {reason: 'error'}}});
+
+            return request(app)
+                .post('/eligibility/suitability/1')
+                .send({})
+                .expect(302)
+                .expect('Location', '/hdc/eligibility/suitability/1');
+
+        });
+
+        it('should redirect back to crdtime page if there is an error in the submission', () => {
+            licenceServiceStub.getLicenceErrors.returns({eligibility: {crdTime: {reason: 'error'}}});
+
+            return request(app)
+                .post('/eligibility/crdTime/1')
+                .send({})
+                .expect(302)
+                .expect('Location', '/hdc/eligibility/crdTime/1');
+
+        });
     });
 });
-
