@@ -149,7 +149,7 @@ describe('prisonerDetailsService', () => {
                 .to.eventually.eql(establishmentResponse);
         });
 
-        it('should throw if error in api when getting prisoner', () => {
+        it('should throw if error in api when getting offender', () => {
             nomisClientMock.getHdcEligiblePrisoner.rejects(new Error('dead'));
             return expect(service.getEstablishmentForPrisoner('123')).to.be.rejected();
         });
@@ -197,7 +197,7 @@ describe('prisonerDetailsService', () => {
                 .to.eventually.eql(expectedComData);
         });
 
-        it('should throw if error in api when getting prisoner', () => {
+        it('should throw if error in api when getting offender', () => {
             nomisClientMock.getHdcEligiblePrisoner.rejects(new Error('dead'));
             return expect(service.getComForPrisoner('123')).to.be.rejected();
         });

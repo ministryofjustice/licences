@@ -95,7 +95,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 });
         });
 
-        context('when prisoner is not excluded', () => {
+        context('when offender is not excluded', () => {
             it('should display opt out form link', () => {
                 licenceServiceStub.getLicence.resolves({
                     stage: 'ELIGIBILITY',
@@ -120,7 +120,7 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
 
-        context('when prisoner is ineligible', () => {
+        context('when offender is ineligible', () => {
             it('should not display link to opt out when excluded', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {
@@ -176,7 +176,7 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
 
-        context('when prisoner has opted out', () => {
+        context('when offender has opted out', () => {
             it('should display that user has opted out', () => {
                 licenceServiceStub.getLicence.resolves({
                     licence: {

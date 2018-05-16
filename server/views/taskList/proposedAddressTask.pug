@@ -6,9 +6,9 @@ if licenceStatus.tasks.exclusion == 'DONE' && licenceStatus.decisions.eligible
                 if licenceStatus.tasks.curfewAddress === 'UNSTARTED'
                     | Information not yet entered
                 else if licenceStatus.decisions.optedOut
-                    | Prisoner has opted out of HDC
+                    | Offender has opted out of HDC
                 else if licenceStatus.decisions.bassReferralNeeded
-                    | Prisoner has opted in and requested BASS referral
+                    | Offender has opted in and requested BASS referral
                 else if licenceStatus.decisions.curfewAddressApproved === 'rejected'
                     span.alert.bold Address rejected
                 else if licenceStatus.stage !== 'ELIGIBILITY'
