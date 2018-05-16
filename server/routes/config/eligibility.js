@@ -26,6 +26,7 @@ module.exports = {
             {decision: {}},
             {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
+        validateInPlace: true,
         nextPath: {
             decisions: [
                 {
@@ -45,6 +46,7 @@ module.exports = {
         fields: [
             {decision: {}}
         ],
+        validateInPlace: true,
         nextPath: {
             path: '/hdc/taskList/'
         }
