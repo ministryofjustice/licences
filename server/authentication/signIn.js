@@ -10,7 +10,7 @@ async function signIn(username, password) {
 
     try {
         const oauthClientToken = generateOauthClientToken();
-        const auth = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : oauthClientToken;
+        let auth = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : oauthClientToken;
         const loginResult = await superagent
             .post(`${getOauthUrl()}/oauth/token`)
             .set('Authorization', auth)
@@ -23,6 +23,7 @@ async function signIn(username, password) {
         logger.info(`Elite2 login success for [${username}]`);
 
         const eliteAuthorisationToken = `${loginResult.body.token_type} ${loginResult.body.access_token}`;
+        auth = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : eliteAuthorisationToken;
 
         const profileResult = await superagent
             .get(`${config.nomis.apiUrl}/users/me`)
