@@ -10,7 +10,6 @@ const {
     notAllValuesEmpty,
     allValuesEmpty,
     getFirstArrayItems,
-    replaceArrayItem,
     flatten,
     mergeWithRight
 } = require('../utils/functionalHelpers');
@@ -18,6 +17,7 @@ const {licenceModel} = require('../models/models');
 const {transitions} = require('../models/licenceStages');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const validate = require('./utils/licenceValidation');
+const addressHelpers = require('./utils/addressHelpers');
 
 module.exports = function createLicenceService(licenceClient) {
 
@@ -158,6 +158,7 @@ module.exports = function createLicenceService(licenceClient) {
         return stage;
     }
 
+    const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
 
     async function update({nomisId, licence, fieldMap, userInput, licenceSection, formName}) {
         const updatedLicence = getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName});
@@ -169,7 +170,7 @@ module.exports = function createLicenceService(licenceClient) {
 
     function getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName}) {
 
-        const answers = fieldMap.reduce(answersFromMapReducer(userInput), {});
+        const answers = getFormResponse(fieldMap, userInput);
 
         return {...licence, [licenceSection]: {...licence[licenceSection], [formName]: answers}};
     }
@@ -186,7 +187,7 @@ module.exports = function createLicenceService(licenceClient) {
             if (inputIsList) {
                 const input = getLimitedInput(fieldConfig, fieldName, userInput);
                 const arrayOfInputs = input
-                    .map(item => field[fieldName].contains.reduce(answersFromMapReducer(item), {}))
+                    .map(item => getFormResponse(field[fieldName].contains, item))
                     .filter(notAllValuesEmpty);
 
                 return {...answersAccumulator, [fieldName]: arrayOfInputs};
@@ -194,7 +195,7 @@ module.exports = function createLicenceService(licenceClient) {
 
             if (!isEmpty(innerFields)) {
                 const innerFieldMap = field[fieldName].contains;
-                const innerAnswers = innerFieldMap.reduce(answersFromMapReducer(userInput[fieldName]), {});
+                const innerAnswers = getFormResponse(innerFieldMap, userInput[fieldName]);
 
                 if(allValuesEmpty(innerAnswers)) {
                     return answersAccumulator;
@@ -239,40 +240,19 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateStage(nomisId, status);
     }
 
-    async function updateAddress({index, nomisId, licence, fieldMap, userInput}) {
+    const updateAddress = updateAddressArray(addressHelpers.update);
+    const addAddress = updateAddressArray(addressHelpers.add);
 
-        const updatedLicence = updateAddressInLicence(licence, fieldMap, userInput, index);
+    function updateAddressArray(addressesUpdateMethod) {
+        return async ({nomisId, licence, fieldMap, userInput, index}) => {
+            const formResponse = getFormResponse(fieldMap, userInput);
+            const newAddress = Array.isArray(formResponse.addresses) ? formResponse.addresses[0] : formResponse;
+            const updatedLicence = addressesUpdateMethod({nomisId, licence, newAddress, index});
 
-        await licenceClient.updateLicence(nomisId, updatedLicence);
+            await licenceClient.updateLicence(nomisId, updatedLicence);
 
-        return updatedLicence;
-    }
-
-    function updateAddressInLicence(licence, fieldMap, userInput, addressIndex) {
-        const answers = fieldMap.reduce(answersFromMapReducer(userInput), {});
-        const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
-
-        const newAddresses = getNewAddressesArray(addresses, addressIndex, answers);
-
-        return {
-            ...licence,
-            proposedAddress: {
-                ...licence.proposedAddress,
-                curfewAddress: {
-                    ...licence.proposedAddress.curfewAddress,
-                    addresses: newAddresses
-                }
-            }
+            return updatedLicence;
         };
-    }
-
-    function getNewAddressesArray(addresses, index, answers) {
-        if(!addresses[index]) {
-            return [...addresses, ...answers.addresses];
-        }
-
-        const newAddressObject = {...addresses[index], ...answers};
-        return replaceArrayItem(addresses, index, newAddressObject);
     }
 
     function getLicenceErrors({licence, sections}) {
@@ -303,6 +283,7 @@ module.exports = function createLicenceService(licenceClient) {
         update,
         updateStage,
         updateAddress,
+        addAddress,
         getLicenceErrors,
         getConditionsErrors
     };

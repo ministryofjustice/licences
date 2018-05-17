@@ -11,7 +11,8 @@ module.exports = {
     lastItem,
     merge,
     mergeWithRight,
-    firstItem
+    firstItem,
+    lastIndex
 };
 
 // pass in your object and a path in array format
@@ -59,4 +60,8 @@ function merge(object1, object2) {
 // uses the value on object2 if it key exists on both
 function mergeWithRight(object1, object2) {
     return R.mergeDeepRight(object1, object2);
+}
+
+function lastIndex(array) {
+    return array.length - 1;
 }

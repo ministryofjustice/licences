@@ -1,7 +1,7 @@
 const express = require('express');
 
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
-const {getIn, lastItem, isEmpty, firstItem} = require('../utils/functionalHelpers');
+const {getIn, lastItem, isEmpty, firstItem, lastIndex} = require('../utils/functionalHelpers');
 const {getPathFor} = require('../utils/routes');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getCandidateAddress, getCurfewAddressFormData} = require('../utils/addressHelpers');
@@ -178,11 +178,11 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     function addressReviewPosts(formName) {
         return async (req, res) => {
             const {nomisId} = req.params;
-            logger.debug(`GET /curfew/${formName}/${nomisId}`);
+            logger.debug(`POST /curfew/${formName}/${nomisId}`);
 
             const rawLicence = await licenceService.getLicence(nomisId);
             const addresses = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-            const addressIndex = addresses.length - 1;
+            const addressIndex = lastIndex(addresses);
             const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
 
             await licenceService.updateAddress({
@@ -213,16 +213,14 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     router.post('/proposedAddress/curfewAddress/add/', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.body;
         const rawLicence = await licenceService.getLicence(nomisId);
-        const addressIndex = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']).length + 1;
         const nextPath = '/hdc/proposedAddress/confirmAddress/';
 
         if (formConfig.curfewAddress.fields) {
-            await licenceService.updateAddress({
+            await licenceService.addAddress({
                 licence: rawLicence.licence,
                 nomisId: nomisId,
                 fieldMap: formConfig.curfewAddress.fields,
-                userInput: req.body,
-                index: addressIndex
+                userInput: req.body
             });
         }
 
@@ -232,7 +230,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     router.post('/proposedAddress/curfewAddress/update/', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.body;
         const rawLicence = await licenceService.getLicence(nomisId);
-        const addressIndex = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']).length;
+        const addressIndex = lastIndex(getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']));
 
         await licenceService.updateAddress({
             licence: rawLicence.licence,
