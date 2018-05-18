@@ -120,6 +120,17 @@ describe('/hdc/proposedAddress', () => {
                     });
             });
         });
+
+        it('should redirect back to optOut page if there is an error in the submission', () => {
+            licenceServiceStub.getLicenceErrors.returns({proposedAddress: {optOut: {reason: 'error'}}});
+
+            return request(app)
+                .post('/proposedAddress/optOut/1')
+                .send({})
+                .expect(302)
+                .expect('Location', '/hdc/proposedAddress/optOut/1');
+
+        });
     });
 
     describe('curfewAddress', () => {
