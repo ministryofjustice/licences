@@ -50,11 +50,9 @@ describe('/hdc/proposedAddress', () => {
             {url: '/proposedAddress/optOut/1', content: 'decided to opt out'},
             {url: '/proposedAddress/addressProposed/1', content: 'proposed a curfew address?'},
             {url: '/proposedAddress/bassReferral/1', content: 'BASS referral'},
-            {url: '/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'},
-            {url: '/proposedAddress/confirmAddress/1', content: 'Confirm address details'},
-            {url: '/proposedAddress/confirmAddress/1', content: 'href="/hdc/send/1'},
-            {url: '/proposedAddress/confirmAddress/1', content: 'line3'}
+            {url: '/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'}
         ];
+
 
         testFormPageGets(app, routes);
     });
@@ -95,7 +93,7 @@ describe('/hdc/proposedAddress', () => {
                 url: '/proposedAddress/curfewAddress/1',
                 body: {nomisId: 1},
                 section: 'curfewAddress',
-                nextPath: '/hdc/proposedAddress/confirmAddress/1'
+                nextPath: '/hdc/review/curfewAddress/1'
             }
         ];
 
@@ -119,6 +117,17 @@ describe('/hdc/proposedAddress', () => {
                         expect(res.header.location).to.equal(route.nextPath);
                     });
             });
+        });
+
+        it('should redirect back to optOut page if there is an error in the submission', () => {
+            licenceServiceStub.getLicenceErrors.returns({proposedAddress: {optOut: {reason: 'error'}}});
+
+            return request(app)
+                .post('/proposedAddress/optOut/1')
+                .send({})
+                .expect(302)
+                .expect('Location', '/hdc/proposedAddress/optOut/1');
+
         });
     });
 

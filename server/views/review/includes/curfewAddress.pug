@@ -1,5 +1,5 @@
 include ./itemAndError
--var address = data.proposedAddress && data.proposedAddress.curfewAddress
+-var address = data.proposedAddress && data.proposedAddress.curfewAddress || {}
 -var errors = errorObject.proposedAddress && errorObject.proposedAddress.curfewAddress || {}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
@@ -17,6 +17,8 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2.alignRight
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
+                if(stage === 'ELIGIBILITY' && user.role === 'CA')
+                    a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Change these details
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -71,33 +73,33 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             if address.cautionedAgainstResident
                 +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
 
-
-div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
-        div.pure-g
-            div.pure-u-3-4
-                span Does the homeowner/landlord give informed consent to HDC at the address?
-    div.pure-u-1-2
-        div#dischargeHomeAddress
-            #{errors.electricity}
-            +itemAndError(address.consent, errors.consent, "consent-curfew")
-
-if(address.consent === 'Yes')
+if licenceStatus.stage !== 'ELIGIBILITY'
     div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-u-1-2
-            span Does the address have an electricity supply?
+            div.pure-g
+                div.pure-u-3-4
+                    span Does the homeowner/landlord give informed consent to HDC at the address?
         div.pure-u-1-2
-            +itemAndError(address.electricity, errors.electricity, "electricity-curfew")
+            div#dischargeHomeAddress
+                #{errors.electricity}
+                +itemAndError(address.consent, errors.consent, "consent-curfew")
 
-    if(address.electricity === 'Yes')
+    if(address.consent === 'Yes')
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
-                span Was a home visit conducted in this case?
+                span Does the address have an electricity supply?
             div.pure-u-1-2
-                +itemAndError(address.homeVisitConducted, errors.homeVisitConducted, "homeVisit-curfew")
+                +itemAndError(address.electricity, errors.electricity, "electricity-curfew")
 
-        div.pure-g.borderBottomLight.midPaddingTopBottom
-            div.pure-u-1-2
-                span Could this offender be managed safely at address?
-            div.pure-u-1-2
-                +itemAndError(address.deemedSafe, errors.deemedSafe, "deemedSafe-curfew")
+        if(address.electricity === 'Yes')
+            div.pure-g.borderBottomLight.midPaddingTopBottom
+                div.pure-u-1-2
+                    span Was a home visit conducted in this case?
+                div.pure-u-1-2
+                    +itemAndError(address.homeVisitConducted, errors.homeVisitConducted, "homeVisit-curfew")
+
+            div.pure-g.borderBottomLight.midPaddingTopBottom
+                div.pure-u-1-2
+                    span Could this offender be managed safely at address?
+                div.pure-u-1-2
+                    +itemAndError(address.deemedSafe, errors.deemedSafe, "deemedSafe-curfew")

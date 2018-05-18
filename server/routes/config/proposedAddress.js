@@ -5,13 +5,13 @@ module.exports = {
             {decision: {}},
             {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
+        validateInPlace: true,
         nextPath: {
             decisions: {
                 discriminator: 'decision',
                 Yes: '/hdc/taskList/',
                 No: '/hdc/proposedAddress/addressProposed/'
-            },
-            path: '/hdc/taskList/'
+            }
         }
     },
     addressProposed: {
@@ -69,13 +69,7 @@ module.exports = {
             }}
         ],
         nextPath: {
-            path: '/hdc/proposedAddress/confirmAddress/'
-        }
-    },
-    confirmAddress: {
-        licenceSection: 'curfewAddress',
-        nextPath: {
-            path: '/hdc/send/'
+            path: '/hdc/review/curfewAddress/'
         }
     },
     rejected: {

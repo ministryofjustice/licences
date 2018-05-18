@@ -12,7 +12,8 @@ module.exports = {
     merge,
     mergeWithRight,
     firstItem,
-    lastIndex
+    lastIndex,
+    removePath
 };
 
 // pass in your object and a path in array format
@@ -64,4 +65,8 @@ function mergeWithRight(object1, object2) {
 
 function lastIndex(array) {
     return array.length - 1;
+}
+
+function removePath(path, object) {
+    return R.dissocPath(path, object);
 }
