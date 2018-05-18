@@ -875,6 +875,29 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedOutput);
         });
 
+        it('should handle submissions from the licence form', async () => {
+
+            const output = await service.updateAddress({
+                index: 1,
+                licence: baseLicence,
+                userInput: {addresses: [{postCode: 'pc3'}]},
+                fieldMap: [{addresses: {}, isList: true, contains: [{postCode: {}}]}]
+            });
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1'},
+                            {postCode: 'pc3'}
+                        ]
+                    }
+                }
+            };
+
+            expect(output).to.eql(expectedOutput);
+        });
+
         it('should use the form config', async () => {
             const output = await service.updateAddress({
                 index: 0,
@@ -942,6 +965,53 @@ describe('licenceService', () => {
 
             expect(licenceClient.updateLicence).to.be.calledOnce();
             expect(licenceClient.updateLicence).to.be.calledWith(1, expectedOutput);
+        });
+
+        it('should throw if there is no address to update', async () => {
+            expect(service.updateAddress({
+                nomisId: 1,
+                index: 3,
+                licence: baseLicence,
+                userInput: {newField: 'newField', unwantedField: 'unwanted'},
+                fieldMap: [{newField: {}}]
+            })).to.eventually.throw('No address to update');
+        });
+    });
+
+    describe('addAddress', () => {
+        const baseLicence = {
+            proposedAddress: {
+                curfewAddress: {
+                    addresses: [
+                        {postCode: 'pc1'},
+                        {postCode: 'pc2'}
+                    ]
+                }
+            }
+        };
+
+        it('should add form items to address array', async () => {
+
+            const output = await service.addAddress({
+                nomisId: 1,
+                licence: baseLicence,
+                userInput: {addresses: [{postCode: 'pc3'}]},
+                fieldMap: [{addresses: {}, isList: true, contains: [{postCode: {}}]}]
+            });
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1'},
+                            {postCode: 'pc2'},
+                            {postCode: 'pc3'}
+                        ]
+                    }
+                }
+            };
+
+            expect(output).to.eql(expectedOutput);
         });
     });
 
