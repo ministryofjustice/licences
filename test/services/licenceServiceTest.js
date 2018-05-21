@@ -2822,4 +2822,91 @@ describe('licenceService', () => {
         */
 
     });
+
+    describe('getEligibilityErrors', () => {
+
+        const proposedAddress = {
+            curfewAddress: {
+                addressLine1: 'line1',
+                addressTown: 'town',
+                postCode: 'S10 5NW',
+                telephone: '+123',
+                occupier: {
+                    name: 'occupier',
+                    relationship: 'rel',
+                    age: ''
+                },
+                residents: [
+                    {
+                        name: 'occupier',
+                        relationship: 'rel',
+                        age: ''
+                    }
+                ],
+                cautionedAgainstResident: 'No',
+                consent: 'Yes',
+                deemedSafe: 'Yes',
+                electricity: 'Yes',
+                homeVisitConducted: 'Yes'
+            }
+        };
+
+        const eligibility = {
+            excluded: {
+                decision: 'No'
+            },
+            suitability: {
+                decision: 'No'
+            },
+            crdTime: {
+                decision: 'No'
+            }
+        };
+
+        const baseLicence = {
+            eligibility,
+            proposedAddress
+        };
+
+        it('should validate and remove unrequired address fields', () => {
+            const missingFieldProposedAddress = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
+                        telephone: 'abc',
+                        cautionedAgainstResident: '',
+                        consent: '',
+                        deemedSafe: ''
+                    }
+                }
+            };
+
+            expect(service.getEligibilityErrors({licence: missingFieldProposedAddress})).to.eql(
+                {proposedAddress: {curfewAddress: {
+                    telephone: 'Invalid entry - number required',
+                    cautionedAgainstResident: 'Not answered'
+                }}}
+            );
+        });
+
+        it('should remove proposedAddress if it is empty after removal of fields', () => {
+            const missingFieldProposedAddress = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
+                        consent: '',
+                        deemedSafe: ''
+                    }
+                }
+            };
+
+            expect(service.getEligibilityErrors({licence: missingFieldProposedAddress})).to.eql(
+                {}
+            );
+        });
+    });
 });

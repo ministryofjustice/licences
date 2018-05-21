@@ -4,7 +4,7 @@ const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware')
 const {getIn, lastItem, isEmpty, firstItem, lastIndex} = require('../utils/functionalHelpers');
 const {getPathFor} = require('../utils/routes');
 const {getLicenceStatus} = require('../utils/licenceStatus');
-const {getCandidateAddress, getCurfewAddressFormData} = require('../utils/addressHelpers');
+const {getCurfewAddressFormData} = require('../utils/addressHelpers');
 
 const licenceConditionsConfig = require('./config/licenceConditions');
 const eligibilityConfig = require('./config/eligibility');
@@ -110,6 +110,10 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         }));
 
+    const validationMethods = {
+        ELIGIBILITY: licenceService.getEligibilityErrors
+    };
+
     router.get('/review/:sectionName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         const {sectionName, nomisId} = req.params;
         logger.debug(`GET /review/${sectionName}/${nomisId}`);
@@ -119,7 +123,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
         const licenceWithAddress = addAddressTo(licence);
-        const errorObject = licenceService.getLicenceErrors({licence: licenceWithAddress});
+        const validationMethod = validationMethods[licenceStatus.stage] || licenceService.getLicenceErrors;
+        const errorObject = validationMethod({licence: licenceWithAddress});
+
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
@@ -240,23 +246,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             index: addressIndex
         });
 
-        const nextPath = '/hdc/proposedAddress/confirmAddress/';
+        const nextPath = formConfig.curfewAddress.nextPath.path;
         res.redirect(`${nextPath}${nomisId}`);
     }));
-
-    router.get('/proposedAddress/confirmAddress/:nomisId', checkLicence, (req, res) => {
-        const {nomisId} = req.params;
-        const nextPath = formConfig.confirmAddress.nextPath;
-
-        const allAddresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-        if (!allAddresses) {
-            return res.render('proposedAddress/confirmAddress', {nomisId, data: null, nextPath});
-        }
-
-        const data = getCandidateAddress(allAddresses);
-
-        res.render('proposedAddress/confirmAddress', {nomisId, data, nextPath});
-    });
 
     router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
         const {sectionName, formName, nomisId} = req.params;

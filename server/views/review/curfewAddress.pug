@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+
+    - var errorsOnPage = Object.keys(errorObject).length !== 0;
+
+    include ../includes/backToTaskList
+
+    if errorsOnPage
+        div.error-summary(role="alert" aria-labelledby="error-summary-heading-example-1" tabindex="-1")
+            h2.heading-medium.error-summary-heading.center.noMargin#error-summary-heading-example-1
+                | There are unanswered questions - see below
+
+    h1.heading-large Licence details
+    div.largeMarginBottom
+
+        include ../taskList/prisonerDetails
+
+        h2#curfewAddressDetails.heading-medium.borderBottomLight Proposed curfew address
+        if typeof errorObject.proposedAddress === 'string'
+            p.alert.bold(id='proposed-address-error') #{errorObject.proposedAddress}
+        else
+            include ./includes/curfewAddress
+
+    div.paddingBottom.smallPaddingTop
+        div.pure-u-1.inlineButtons
+            if !errorsOnPage
+                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/" + nomisId role="button")
+                    | Continue
+            else
+                a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Correct the errors before continuing
