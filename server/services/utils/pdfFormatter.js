@@ -48,6 +48,11 @@ function readEntry(data, spec) {
 }
 
 function getAdditionalConditionsText(licence) {
+
+    if (!licence.licenceConditions) {
+        return;
+    }
+
     const indent = ':    ';
     const itemDivider = '\n\n';
 
