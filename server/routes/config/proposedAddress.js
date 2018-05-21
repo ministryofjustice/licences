@@ -69,13 +69,7 @@ module.exports = {
             }}
         ],
         nextPath: {
-            path: '/hdc/proposedAddress/confirmAddress/'
-        }
-    },
-    confirmAddress: {
-        licenceSection: 'curfewAddress',
-        nextPath: {
-            path: '/hdc/send/'
+            path: '/hdc/review/curfewAddress/'
         }
     },
     rejected: {
