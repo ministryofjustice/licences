@@ -11,7 +11,8 @@ const {
     allValuesEmpty,
     getFirstArrayItems,
     flatten,
-    mergeWithRight
+    mergeWithRight,
+    removePath
 } = require('../utils/functionalHelpers');
 const {licenceModel} = require('../models/models');
 const {transitions} = require('../models/licenceStages');
@@ -270,7 +271,22 @@ module.exports = function createLicenceService(licenceClient) {
     }
 
     function getConditionsErrors(licence) {
-        return getLicenceErrors({licence, section: ['licenceConditions']});
+        return getLicenceErrors({licence, sections: ['licenceConditions']});
+    }
+
+    function getEligibilityErrors({licence}) {
+        const errorObject = getLicenceErrors({licence, sections: ['proposedAddress']});
+        const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
+
+        return unwantedAddressFields.reduce((errorObject, addressKey) => {
+            const newObject = removePath(['proposedAddress', 'curfewAddress', addressKey], errorObject);
+
+            if(isEmpty(getIn(newObject, ['proposedAddress', 'curfewAddress']))) {
+                return removePath(['proposedAddress'], newObject);
+            }
+
+            return newObject;
+        }, errorObject);
     }
 
     return {
@@ -285,6 +301,7 @@ module.exports = function createLicenceService(licenceClient) {
         updateAddress,
         addAddress,
         getLicenceErrors,
-        getConditionsErrors
+        getConditionsErrors,
+        getEligibilityErrors
     };
 };

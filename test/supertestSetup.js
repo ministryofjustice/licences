@@ -59,7 +59,8 @@ const licenceServiceStub = {
     updateAddress: sandbox.stub().returnsPromise().resolves(),
     updateAddresses: sandbox.stub().returnsPromise().resolves(),
     getConditionsErrors: sandbox.stub().returns(),
-    getLicenceErrors: sandbox.stub().returns()
+    getLicenceErrors: sandbox.stub().returns(),
+    getEligibilityErrors: sandbox.stub().returns()
 };
 
 const conditionsServiceStub = {
