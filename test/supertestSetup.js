@@ -46,7 +46,9 @@ const testUser = {
 };
 
 const loggerStub = {
-    debug: sandbox.stub()
+    debug: sandbox.stub(),
+    info: sandbox.stub(),
+    error: sandbox.stub()
 };
 
 const licenceServiceStub = {
@@ -77,6 +79,10 @@ const prisonerServiceStub = {
     getPrisonerImage: sandbox.stub().returnsPromise().resolves({image: 'image'})
 };
 
+const pdfServiceStub = {
+    getPdfLicenceData: sandbox.stub().returnsPromise().resolves()
+};
+
 const hdcRoute = createLicenceConditionsRoute({
     licenceService: licenceServiceStub,
     logger: loggerStub,
@@ -97,6 +103,7 @@ beforeEach(() => {
     conditionsServiceStub.getStandardConditions.resolves();
     prisonerServiceStub.getPrisonerDetails.resolves();
     conditionsServiceStub.getAdditionalConditions.resolves();
+    pdfServiceStub.getPdfLicenceData.resolves();
 });
 
 function testFormPageGets(app, routes) {
@@ -142,6 +149,7 @@ module.exports = {
     conditionsServiceStub,
     prisonerServiceStub,
     caseListServiceStub,
+    pdfServiceStub,
     hdcRoute,
     formConfig,
     authenticationMiddleware,

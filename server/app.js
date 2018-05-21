@@ -31,6 +31,7 @@ const createSendRouter = require('../server/routes/send');
 const createSentRouter = require('../server/routes/sent');
 const createUtilsRouter = require('../server/routes/utils');
 const createCaseListRouter = require('../server/routes/caseList');
+const createPdfRouter = require('../server/routes/pdf');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -42,7 +43,8 @@ module.exports = function createApp({
                                         licenceService,
                                         prisonerService,
                                         conditionsService,
-                                        caseListService
+                                        caseListService,
+                                        pdfService
                                     }) {
     const app = express();
 
@@ -228,6 +230,7 @@ module.exports = function createApp({
     app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
     app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware}));
     app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
+    app.use('/hdc/pdf/', createPdfRouter({logger, pdfService, authenticationMiddleware}));
     app.use('/hdc/taskList/',
         createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware}));
     app.use('/hdc/',
