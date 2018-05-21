@@ -278,15 +278,21 @@ module.exports = function createLicenceService(licenceClient) {
         const errorObject = getLicenceErrors({licence, sections: ['proposedAddress']});
         const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
 
-        return unwantedAddressFields.reduce((errorObject, addressKey) => {
-            const newObject = removePath(['proposedAddress', 'curfewAddress', addressKey], errorObject);
+        if(typeof errorObject.proposedAddress.curfewAddress === 'string') {
+            return errorObject;
+        }
 
-            if(isEmpty(getIn(newObject, ['proposedAddress', 'curfewAddress']))) {
-                return removePath(['proposedAddress'], newObject);
-            }
+        return unwantedAddressFields.reduce(removeFromAddressReducer, errorObject);
+    }
 
-            return newObject;
-        }, errorObject);
+    function removeFromAddressReducer(errorObject, addressKey) {
+        const newObject = removePath(['proposedAddress', 'curfewAddress', addressKey], errorObject);
+
+        if(isEmpty(getIn(newObject, ['proposedAddress', 'curfewAddress']))) {
+            return removePath(['proposedAddress'], newObject);
+        }
+
+        return newObject;
     }
 
     return {
