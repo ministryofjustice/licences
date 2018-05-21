@@ -19,6 +19,8 @@ block content
         h2#curfewAddressDetails.heading-medium.borderBottomLight Proposed curfew address
         if typeof errorObject.proposedAddress === 'string'
             p.alert.bold(id='proposed-address-error') #{errorObject.proposedAddress}
+        else if errorObject.proposedAddress && typeof errorObject.proposedAddress.curfewAddress === 'string'
+            p.alert.bold(id='proposed-address-error') #{errorObject.proposedAddress.curfewAddress}
         else
             include ./includes/curfewAddress
 

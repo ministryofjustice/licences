@@ -107,7 +107,7 @@ const curfewAddress = joi.object().keys({
     homeVisitConducted: requiredIf('electricity', 'Yes'),
     deemedSafe: requiredString,
     unsafeReason: requiredIf('deemedSafe', 'No')
-});
+}).required();
 
 // PROCESSING_RO
 
