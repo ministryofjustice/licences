@@ -23,17 +23,23 @@ describe('healthcheck', () => {
     describe('healthcheck', () => {
         let dbCheckStub;
         let nomisApiCheckStub;
+        let pdfApiCheckStub;
 
         beforeEach(() => {
             dbCheckStub = sandbox.stub().returnsPromise().resolves([{totalRows: {value: 0}}]);
             nomisApiCheckStub = sandbox.stub().returnsPromise().resolves('OK');
+            pdfApiCheckStub = sandbox.stub().returnsPromise().resolves('OK');
         });
 
-        const healthcheckProxy = (dbCheck = dbCheckStub, nomisApiCheck = nomisApiCheckStub) => {
+        const healthcheckProxy = (
+            dbCheck = dbCheckStub,
+            nomisApiCheck = nomisApiCheckStub,
+            pdfApiCheck = pdfApiCheckStub) => {
             return proxyquire('../../server/healthcheck', {
                 './data/healthcheck': {
                     dbCheck: dbCheck,
-                    nomisApiCheck: nomisApiCheck
+                    nomisApiCheck: nomisApiCheck,
+                    pdfApiCheck: pdfApiCheck
                 }
             });
         };
@@ -49,6 +55,7 @@ describe('healthcheck', () => {
 
                 expect(calledWith.checks.db).to.eql('OK');
                 expect(calledWith.checks.nomis).to.eql('OK');
+                expect(calledWith.checks.pdf).to.eql('OK');
             });
         });
 
@@ -70,7 +77,7 @@ describe('healthcheck', () => {
 
             const nomisApiCheckStubReject = sandbox.stub().returnsPromise().rejects(404);
 
-            return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject)(callback).then(() => {
+            return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject, pdfApiCheckStub)(callback).then(() => {
 
                 const calledWith = callback.getCalls()[0].args[1];
 
@@ -78,6 +85,21 @@ describe('healthcheck', () => {
                 expect(calledWith.healthy).to.eql(false);
                 expect(calledWith.checks.db).to.eql('OK');
                 expect(calledWith.checks.nomis).to.eql(404);
+            });
+        });
+
+        it('should return unhealthy if pdf rejects promise', () => {
+
+            const pdfApiCheckStubReject = sandbox.stub().returnsPromise().rejects(404);
+
+            return healthcheckProxy(dbCheckStub, nomisApiCheckStub, pdfApiCheckStubReject)(callback).then(() => {
+
+                const calledWith = callback.getCalls()[0].args[1];
+
+                expect(callback).to.have.callCount(1);
+                expect(calledWith.healthy).to.eql(false);
+                expect(calledWith.checks.db).to.eql('OK');
+                expect(calledWith.checks.pdf).to.eql(404);
             });
         });
     });

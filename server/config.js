@@ -52,5 +52,10 @@ module.exports = {
     staticResourceCacheDuration: 365 * oneDay,
     healthcheckInterval: Number(get('HEALTHCHECK_INTERVAL', 0)),
 
-    sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', {requireInProduction: true})
+    sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', {requireInProduction: true}),
+
+    pdf: {
+        templateName: get('PDF_TEMPLATE_NAME', 'hdc-ap-pss'),
+        pdfServiceHost: get('PDF_SERVICE_HOST', 'http://localhost:8081')
+    }
 };
