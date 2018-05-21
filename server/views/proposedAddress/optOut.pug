@@ -4,10 +4,13 @@ block content
 
     div.pure-g.pure-u-1
         include ../includes/back
+        include ../includes/errorBanner
 
         div.pure-u-1-2
             h2.heading-large Has the offender decided to opt out of the HDC process?
 
+            if errorObject.decision
+                p.error-message Please select an answer
             form(method="post")
                 input(type="hidden" name="_csrf" value=csrfToken)
                 input(type="hidden" name="nomisId" value=nomisId || '')
@@ -22,8 +25,10 @@ block content
                                 input#optOutNo(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
                                 label(for="optOutNo") No
 
-                        div#optOutForm.panel.panel-border-narrow.js-hidden
+                        div#optOutForm(class=errorObject.reason ? 'form-group-error': 'panel panel-border-narrow js-hidden')
                             label(for='optOutDetails') Please give details
+                                if errorObject.reason
+                                    span.error-message Please provide a reason
                             textarea(name='reason' id='optOutDetails' class='form-control' rows='4')
                                 if data && data.reason
                                     | #{data.reason}

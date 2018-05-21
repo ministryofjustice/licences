@@ -16,8 +16,7 @@ module.exports = {
                     discriminator: 'decision',
                     Yes: '/hdc/taskList/'
                 }
-            ],
-            path: '/hdc/taskList/'
+            ]
         }
     },
     suitability: {
@@ -37,8 +36,7 @@ module.exports = {
                     discriminator: 'decision',
                     Yes: '/hdc/taskList/'
                 }
-            ],
-            path: '/hdc/eligibility/crdTime/'
+            ]
         }
     },
     crdTime: {
