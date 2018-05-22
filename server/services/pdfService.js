@@ -1,8 +1,11 @@
-const {getValues} = require('./utils/pdfFormatter');
+const superagent = require('superagent');
+const config = require('../config');
 
-module.exports = function createPdfService(licenceService, conditionsService, prisonerService) {
+const pdfGenPath = `${config.pdf.pdfServiceHost}/generate`;
 
-    async function getPdfLicenceData(nomisId, token) {
+module.exports = function createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter) {
+
+    async function getPdfLicenceData(templateName, nomisId, token) {
 
         const rawLicence = await licenceService.getLicence(nomisId);
         const licence = await conditionsService.populateLicenceWithConditions(rawLicence.licence);
@@ -10,12 +13,36 @@ module.exports = function createPdfService(licenceService, conditionsService, pr
         const establishment = await prisonerService.getEstablishmentForPrisoner(nomisId, token);
         const image = await prisonerService.getPrisonerImage(prisonerInfo.facialImageId, token);
 
-        return getValues(nomisId, {licence, prisonerInfo, establishment}, image);
+        return pdfFormatter.formatPdfData(templateName, nomisId, {licence, prisonerInfo, establishment}, image);
+    }
+
+    async function getPdf(templateName, values) {
+
+        logger.info(`Creating PDF at URI '${pdfGenPath}' for template '${templateName}'`);
+
+        try {
+            const result = await superagent
+                .post(pdfGenPath)
+                .send({
+                    templateName,
+                    values
+                });
+            return new Buffer(result.body);
+
+        } catch (error) {
+            logger.error('Error during generate PDF: ', error.stack);
+            throw error;
+        }
+    }
+
+    async function generatePdf(templateName, nomisId, token) {
+        const {values} = await getPdfLicenceData(templateName, nomisId, token);
+        return getPdf(templateName, values);
     }
 
     return {
-        getPdfLicenceData
+        getPdfLicenceData,
+        getPdf,
+        generatePdf
     };
 };
-
-

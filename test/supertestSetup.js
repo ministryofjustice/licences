@@ -80,7 +80,9 @@ const prisonerServiceStub = {
 };
 
 const pdfServiceStub = {
-    getPdfLicenceData: sandbox.stub().returnsPromise().resolves()
+    getPdfLicenceData: sandbox.stub().returnsPromise().resolves(),
+    getPdf: sandbox.stub().returnsPromise().resolves(),
+    generatePdf: sandbox.stub().returnsPromise().resolves()
 };
 
 const hdcRoute = createLicenceConditionsRoute({

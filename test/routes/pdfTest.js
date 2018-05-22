@@ -5,8 +5,7 @@ const {
     loggerStub,
     pdfServiceStub,
     authenticationMiddleware,
-    appSetup,
-    nock
+    appSetup
 } = require('../supertestSetup');
 const config = require('../../server/config');
 
@@ -40,13 +39,12 @@ const valuesOnly = {
     }
 };
 
-const fakePdfGenerator = nock(`${config.pdf.pdfServiceHost}`);
+const templateName = config.pdf.templateName;
 
 describe('PDF:', () => {
 
     afterEach(() => {
         sandbox.reset();
-        nock.cleanAll();
     });
 
     describe('GET /view', () => {
@@ -63,7 +61,7 @@ describe('PDF:', () => {
                     expect(res.text).to.include('Missing 1');
                     expect(res.text).to.include('Missing 2');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
-                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith('123', 'my-token');
+                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(templateName, '123', 'my-token');
                 });
         });
 
@@ -82,23 +80,18 @@ describe('PDF:', () => {
 
     describe('GET /create', () => {
 
-        it('Posts to PDF generator and renders response as PDF', () => {
+        it('Calls pdf service and renders response as PDF', () => {
 
-            const pdf1AsBytes = [80, 68, 70, 45, 49];
-
-            fakePdfGenerator
-                .post('/generate', valuesOnly)
-                .reply(200, pdf1AsBytes);
-
-            pdfServiceStub.getPdfLicenceData.resolves(valuesOnly);
+            const pdf1AsBytes = new Buffer([80, 68, 70, 45, 49]);
+            pdfServiceStub.generatePdf.resolves(pdf1AsBytes);
 
             return request(app)
                 .get('/create/123')
                 .expect(200)
                 .expect('Content-Type', 'application/pdf')
                 .expect(res => {
-                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
-                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith('123', 'my-token');
+                    expect(pdfServiceStub.generatePdf).to.be.calledOnce();
+                    expect(pdfServiceStub.generatePdf).to.be.calledWith(templateName, '123', 'my-token');
                     expect(res.text).to.include('PDF-1');
                 });
         });

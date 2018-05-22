@@ -1,28 +1,29 @@
-const {getValues} = require('../../../server/services/utils/pdfFormatter');
+const {formatPdfData} = require('../../../server/services/utils/pdfFormatter');
 const {expect} = require('../../testSetup');
 
 describe('pdfFormatter', () => {
 
-    function callGetValues({
-                               nomisId = '',
-                               licence = {},
-                               prisonerInfo = {},
-                               establishment = {},
-                               image = '',
-                               placeholder = 'PLACEHOLDER'
-                           }) {
-        return getValues(nomisId, {licence, prisonerInfo, establishment}, image, placeholder);
+    function formatWith({
+                            templateName = 'hdc_ap_pss',
+                            nomisId = '',
+                            licence = {},
+                            prisonerInfo = {},
+                            establishment = {},
+                            image = '',
+                            placeholder = 'PLACEHOLDER'
+                        }) {
+        return formatPdfData(templateName, nomisId, {licence, prisonerInfo, establishment}, image, placeholder);
     }
 
     it('should give placeholders and display names for everything when all inputs missing', () => {
 
-        const data = callGetValues({});
+        const data = formatWith({});
 
         expect(data.values).to.eql(allValuesEmpty);
         expect(data.missing).to.eql(displayNames);
     });
 
-    it('should join offender names together with spaces', () => {
+    it('should join offender names using spaces', () => {
 
         const prisonerInfo = {
             firstName: 'first',
@@ -30,13 +31,13 @@ describe('pdfFormatter', () => {
             lastName: 'third'
         };
 
-        const data = callGetValues({prisonerInfo: prisonerInfo});
+        const data = formatWith({prisonerInfo: prisonerInfo});
 
         expect(data.values.OFF_NAME).to.eql('first second third');
         expect(data.missing).to.not.have.property('OFF_NAME');
     });
 
-    it('should join offender names together with spaces omitting blanks', () => {
+    it('should join offender names using spaces, omitting blanks', () => {
 
         const prisonerInfo = {
             firstName: 'first',
@@ -44,7 +45,7 @@ describe('pdfFormatter', () => {
             lastName: 'third'
         };
 
-        const data = callGetValues({prisonerInfo: prisonerInfo});
+        const data = formatWith({prisonerInfo: prisonerInfo});
 
         expect(data.values.OFF_NAME).to.eql('first third');
         expect(data.missing).to.not.have.property('OFF_NAME');
@@ -56,7 +57,7 @@ describe('pdfFormatter', () => {
             phones: [{number: 111}, {number: 222}]
         };
 
-        const data = callGetValues({establishment: establishment});
+        const data = formatWith({establishment: establishment});
 
         expect(data.values.EST_PHONE).to.eql('111');
         expect(data.missing).to.not.have.property('EST_PHONE');
@@ -64,13 +65,13 @@ describe('pdfFormatter', () => {
 
     it('should convert image to base64 string', () => {
 
-        const data = callGetValues({image: 'IMAGE INPUT'});
+        const data = formatWith({image: 'IMAGE INPUT'});
 
         expect(data.values.OFF_PHOTO).to.eql('IMAGE INPUT'.toString('base64'));
         expect(data.missing).to.not.have.property('OFF_PHOTO');
     });
 
-    it('should join reporting address elements together with new lines omitting blanks', () => {
+    it('should join reporting address elements using new lines, omitting blanks', () => {
 
         const licence = {
             reporting: {
@@ -83,13 +84,13 @@ describe('pdfFormatter', () => {
             }
         };
 
-        const data = callGetValues({licence: licence});
+        const data = formatWith({licence: licence});
 
         expect(data.values.REPORTING_ADDRESS).to.eql('first\ntown\npost');
         expect(data.missing).to.not.have.property('REPORTING_ADDRESS');
     });
 
-    it('should join curfew address elements together with new lines omitting blanks', () => {
+    it('should join curfew address elements using new lines, omitting blanks', () => {
 
         const licence = {
             proposedAddress: {
@@ -104,7 +105,7 @@ describe('pdfFormatter', () => {
             }
         };
 
-        const data = callGetValues({licence: licence});
+        const data = formatWith({licence: licence});
 
         expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost');
         expect(data.missing).to.not.have.property('CURFEW_ADDRESS');

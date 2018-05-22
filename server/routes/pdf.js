@@ -1,9 +1,7 @@
 const express = require('express');
-const superagent = require('superagent');
 const {asyncMiddleware} = require('../utils/middleware');
 const config = require('../config');
 
-const pdfGenPath = `${config.pdf.pdfServiceHost}/generate`;
 const templateName = config.pdf.templateName;
 
 module.exports = function({logger, pdfService, authenticationMiddleware}) {
@@ -14,10 +12,11 @@ module.exports = function({logger, pdfService, authenticationMiddleware}) {
     router.get('/view/:nomisId', asyncMiddleware(async (req, res) => {
 
         const {nomisId} = req.params;
-        const data = await pdfService.getPdfLicenceData(nomisId, req.user.token);
+        logger.debug(`GET pdf/view/${nomisId}`);
+        const {missing} = await pdfService.getPdfLicenceData(templateName, nomisId, req.user.token);
 
-        if (data.missing) {
-            return res.render('pdf/errors', {nomisId, missing: data.missing});
+        if (missing) {
+            return res.render('pdf/errors', {nomisId, missing});
         }
 
         return res.redirect('/hdc/pdf/create/' + nomisId);
@@ -26,31 +25,12 @@ module.exports = function({logger, pdfService, authenticationMiddleware}) {
     router.get('/create/:nomisId', asyncMiddleware(async (req, res) => {
 
         const {nomisId} = req.params;
-        const data = await pdfService.getPdfLicenceData(nomisId, req.user.token);
-
-        try {
-            return await generatePdf(res, data.values);
-        } catch (error) {
-            logger.error('Error during generate PDF: ', error.stack);
-            throw error;
-        }
-    }));
-
-    async function generatePdf(res, values) {
-
-        logger.info(`Creating PDF at URI '${pdfGenPath}' for template '${templateName}'`);
-        logger.debug(values);
-
-        const result = await superagent
-            .post(pdfGenPath)
-            .send({
-                templateName,
-                values
-            });
+        logger.debug(`GET pdf/create/${nomisId}`);
+        const pdf = await pdfService.generatePdf(templateName, nomisId, req.user.token);
 
         res.writeHead(200, {'Content-Type': 'application/pdf'});
-        return res.end(new Buffer(result.body), 'binary');
-    }
+        return res.end(pdf, 'binary');
+    }));
 
     return router;
 };

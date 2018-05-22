@@ -1,6 +1,6 @@
 module.exports = {
 
-    dictionary: {
+    hdc_ap_pss: {
         EST_PREMISE: {
             paths: [['establishment', 'premise']],
             displayName: 'Prison name'

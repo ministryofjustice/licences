@@ -55,7 +55,7 @@ module.exports = {
     sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', {requireInProduction: true}),
 
     pdf: {
-        templateName: get('PDF_TEMPLATE_NAME', 'hdc-ap-pss'),
+        templateName: get('PDF_TEMPLATE_NAME', 'hdc_ap_pss'),
         pdfServiceHost: get('PDF_SERVICE_HOST', 'http://localhost:8081')
     }
 };

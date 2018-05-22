@@ -1,9 +1,13 @@
 const {getIn, mergeWithRight} = require('../../utils/functionalHelpers');
-const {dictionary} = require('../config/pdfData');
+const pdfData = require('../config/pdfData');
 
-module.exports = {getValues};
+module.exports = {formatPdfData};
 
-function getValues(nomisId, {licence, prisonerInfo, establishment}, image, placeholder = '(DATA MISSING)') {
+const DEFAULT_PLACEHOLDER = '(DATA MISSING)';
+
+function formatPdfData(templateName, nomisId,
+                       {licence, prisonerInfo, establishment}, image,
+                       placeholder = DEFAULT_PLACEHOLDER) {
 
     const conditions = getAdditionalConditionsText(licence);
     const photo = image ? image.toString('base64') : placeholder.toString('base64');
@@ -17,11 +21,12 @@ function getValues(nomisId, {licence, prisonerInfo, establishment}, image, place
         photo
     };
 
-    return valueOrPlaceholder(allData, placeholder);
+    return valueOrPlaceholder(allData, placeholder, templateName);
 }
 
-function valueOrPlaceholder(allData, placeholder) {
-    return Object.entries(dictionary).reduce(readValuesReducer(allData, placeholder), {values: {}, missing: {}});
+function valueOrPlaceholder(allData, placeholder, templateName) {
+    return Object.entries(pdfData[templateName])
+        .reduce(readValuesReducer(allData, placeholder), {values: {}, missing: {}});
 }
 
 const readValuesReducer = (allData, placeholder) => (summary, [key, spec]) => {
