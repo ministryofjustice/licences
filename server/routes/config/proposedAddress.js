@@ -19,6 +19,7 @@ module.exports = {
         fields: [
             {decision: {}}
         ],
+        validateInPlace: true,
         nextPath: {
             decisions: {
                 discriminator: 'decision',
