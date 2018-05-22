@@ -73,8 +73,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 span According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
     div.pure-u-1-2
         div#dischargeContactNumber
-            if address.cautionedAgainstResident
-                +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
+            +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
 
 if licenceStatus.stage !== 'ELIGIBILITY'
     div.pure-g.borderBottomLight.midPaddingTopBottom
