@@ -1213,6 +1213,20 @@ describe('licenceService', () => {
             expect(service.getLicenceErrors({licence})).to.eql({});
         });
 
+        it('should return error if no address is provided', () => {
+
+            const missingFieldProposedAddress = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: undefined
+                }
+            };
+
+            expect(service.getLicenceErrors({licence: missingFieldProposedAddress})).to.eql(
+                {proposedAddress: {curfewAddress: 'Not answered'}}
+            );
+        });
 
         it('should return error if required address field is not provided', () => {
 
@@ -2888,6 +2902,20 @@ describe('licenceService', () => {
                     telephone: 'Invalid entry - number required',
                     cautionedAgainstResident: 'Not answered'
                 }}}
+            );
+        });
+
+        it('should handle a string for curfew address error', () => {
+            const missingFieldProposedAddress = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: 'Not answered'
+                }
+            };
+
+            expect(service.getEligibilityErrors({licence: missingFieldProposedAddress})).to.eql(
+                {proposedAddress: {curfewAddress: 'Not answered'}}
             );
         });
 

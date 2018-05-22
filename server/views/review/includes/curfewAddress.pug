@@ -32,19 +32,22 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         span Main occupier details
     div.pure-u-1-2
         div.pure-g
-            if address.occupier
+            if typeof errors.occupier === 'string'
+                div.pure-u-1.pure-u-md-2-5
+                    span#occupierFull-error.alert.bold #{errors.occupier}
+            else if address.occupier
                 div.pure-u-1.pure-u-md-2-5
                     span#occupierName-curfew.bold #{address.occupier.name}
                     if errors.occupier && errors.occupier.name
                         span#occupierName-error.alert.bold #{errors.occupier.name}
-                div.pure-u-1.pure-u-md-1-5
-                    span#occupierAge-curfew.bold #{address.occupier.age}
-                    if errors.occupier && errors.occupier.age
-                        span#occupierAge-error.alert.bold #{errors.occupier.age}
                 div.pure-u-1.pure-u-md-2-5
                     span#occupierRelation-curfew.bold #{address.occupier.relationship}
                     if errors.occupier && errors.occupier.relationship
                         span#occupierRelation-error.alert.bold #{errors.occupier.relationship}
+                div.pure-u-1.pure-u-md-1-5
+                    span#occupierAge-curfew.bold #{address.occupier.age}
+                    if errors.occupier && errors.occupier.age
+                        span#occupierAge-error.alert.bold #{errors.occupier.age}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -58,10 +61,10 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                         div.pure-u-1.resident
                             div.pure-u-1.pure-u-md-2-5
                                 +itemAndError(resident.name, errorObj.name, "residentName-curfew-" + index)
+                            div.pure-u-1.pure-u-md-2-5
+                                +itemAndError(resident.relationship, errorObj.relationship, "residentRelation-curfew-" + index)
                             div.pure-u-1.pure-u-md-1-5
                                 +itemAndError(resident.age, errorObj.age, "residentAge-curfew-" + index)
-                            div.pure-u-1.pure-u-md-2-5
-                                +itemAndError(resident.relationship, errorObj.relation, "residentRelation-curfew-" + index)
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -70,8 +73,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 span According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
     div.pure-u-1-2
         div#dischargeContactNumber
-            if address.cautionedAgainstResident
-                +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
+            +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
 
 if licenceStatus.stage !== 'ELIGIBILITY'
     div.pure-g.borderBottomLight.midPaddingTopBottom
