@@ -51,6 +51,11 @@ For the database:
 * DB_NAME - DB name
 * DB_SSL_ENABLED - set to false for local
 
+For the PDF generator service
+
+* PDF_TEMPLATE_NAME - Name of template to use eg 'hdc_ap_pss'
+* PDF_SERVICE_HOST - Root of PDF generator service eg 'http://localhost:8081' or 'http://localhost:9090' if using wiremock
+
 # AWS database access
 
 When accessing the AWS Postgres databases eg for the stage env, SSL must be enabled (DB_SSL_ENABLED=true) and you
