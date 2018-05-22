@@ -2,7 +2,7 @@ const {firstItem} = require('./functionalHelpers');
 
 module.exports = {romanise, romaniseLower};
 
-const numerals = {
+const conversions = {
     1: 'I',
     4: 'IV',
     5: 'V',
@@ -12,14 +12,15 @@ const numerals = {
     50: 'L'
 };
 
+const numerals = Object.entries(conversions).reverse();
+
 function romaniseLower(number) {
     return romanise(number).toLowerCase();
 }
 
 function romanise(number) {
     return firstItem(
-        Object.entries(numerals)
-            .reverse()
+        numerals
             .filter(([arabic]) => arabic <= number)
             .map(([arabic, roman]) => roman + romanise(number - arabic))
     ) || '';
