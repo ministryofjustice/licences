@@ -1,5 +1,6 @@
 const {getIn, mergeWithRight} = require('../../utils/functionalHelpers');
 const pdfData = require('../config/pdfData');
+const {romaniseLower} = require('../../utils/romanise');
 
 module.exports = {formatPdfData};
 
@@ -62,12 +63,10 @@ function getAdditionalConditionsText(licence) {
     const itemDivider = '\n\n';
 
     return licence.licenceConditions
-        .map((condition, index) => `${index + 1}${indent}${getConditionText(condition.content)}`)
+        .map((condition, index) => `${romaniseLower(index + 1)}${indent}${getConditionText(condition.content)}`)
         .join(itemDivider);
 }
 
 function getConditionText(content) {
     return content.map(({text, variable}) => text || variable).join('');
 }
-
-
