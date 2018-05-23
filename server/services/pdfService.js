@@ -27,7 +27,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
                     templateName,
                     values
                 });
-            return new Buffer(result.body);
+            return Buffer.from(result.body);
 
         } catch (error) {
             logger.error('Error during generate PDF: ', error.stack);

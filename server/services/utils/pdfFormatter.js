@@ -1,6 +1,6 @@
 const {getIn, mergeWithRight} = require('../../utils/functionalHelpers');
 const pdfData = require('../config/pdfData');
-const {romaniseLower} = require('../../utils/romanise');
+const {romanise} = require('../../utils/romanise');
 
 module.exports = {formatPdfData};
 
@@ -59,14 +59,25 @@ function getAdditionalConditionsText(licence) {
         return;
     }
 
-    const indent = ':    ';
+    // todo extrcat this config if supporting other templates
+    const start = 8; // Need to continue existing list number
     const itemDivider = '\n\n';
 
     return licence.licenceConditions
-        .map((condition, index) => `${romaniseLower(index + 1)}${indent}${getConditionText(condition.content)}`)
+        .map((condition, index) => `${listCounter(start, index)}${getConditionText(condition.content)}`)
         .join(itemDivider);
 }
 
+function listCounter(start, index) {
+    return romanise(start + index)
+        .concat('. ')
+        .toLowerCase();
+}
+
 function getConditionText(content) {
-    return content.map(({text, variable}) => text || variable).join('');
+    return content
+        .map(({text, variable}) => text || variable)
+        .join('')
+        .replace(/\.+$/, '') // remove trailing period
+        .concat(';');
 }

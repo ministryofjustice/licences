@@ -1,6 +1,6 @@
 const {firstItem} = require('./functionalHelpers');
 
-module.exports = {romanise, romaniseLower};
+module.exports = {romanise};
 
 const conversions = {
     1: 'I',
@@ -14,14 +14,18 @@ const conversions = {
 
 const numerals = Object.entries(conversions).reverse();
 
-function romaniseLower(number) {
-    return romanise(number).toLowerCase();
+function romanise(number) {
+    if(number < 1 || number > 50) {
+        throw new Error('Input must be in range 1 to 50');
+    }
+
+    return convert(number);
 }
 
-function romanise(number) {
+function convert(number) {
     return firstItem(
         numerals
             .filter(([arabic]) => arabic <= number)
-            .map(([arabic, roman]) => roman + romanise(number - arabic))
+            .map(([arabic, roman]) => roman + convert(number - arabic))
     ) || '';
 }

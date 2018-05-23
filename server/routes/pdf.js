@@ -28,7 +28,7 @@ module.exports = function({logger, pdfService, authenticationMiddleware}) {
         logger.debug(`GET pdf/create/${nomisId}`);
         const pdf = await pdfService.generatePdf(templateName, nomisId, req.user.token);
 
-        res.writeHead(200, {'Content-Type': 'application/pdf'});
+        res.type('application/pdf');
         return res.end(pdf, 'binary');
     }));
 

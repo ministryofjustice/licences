@@ -110,6 +110,23 @@ describe('pdfFormatter', () => {
         expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost');
         expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
     });
+
+    it('should join conditions with newlines, terminated by semi-colons, with roman numeral index', () => {
+
+        const licence = {
+            licenceConditions: [
+                {content: [{text: 'first condition'}]},
+                {content: [{text: 'second condition'}]},
+                {content: [{variable: 'third condition'}]}
+            ]
+        };
+        const expected = 'viii. first condition;\n\nix. second condition;\n\nx. third condition;';
+
+        const data = formatWith({licence: licence});
+
+        expect(data.values.CONDITIONS).to.eql(expected);
+        expect(data.missing).to.not.have.property('CONDITIONS');
+    });
 });
 
 const allValuesEmpty = {
