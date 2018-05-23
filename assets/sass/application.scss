@@ -320,11 +320,14 @@ input.link {
     padding-left: 0px;
     color: $link-colour;
     text-align: left;
-    cursor: pointer;
 }
 
 input.link:hover{
     color: $link-hover-colour;
+}
+
+.link {
+    cursor: pointer;
 }
 
 // Move a named anchor up a bit so that linking to 'somepage#name' doesn't position up against the toolbar
