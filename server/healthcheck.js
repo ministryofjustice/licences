@@ -1,6 +1,7 @@
 const {
     dbCheck,
-    nomisApiCheck
+    nomisApiCheck,
+    pdfApiCheck
 } = require('./data/healthcheck');
 
 function db() {
@@ -15,8 +16,14 @@ function nomisApi() {
         .catch(err => ({name: 'nomis', status: 'ERROR', message: err}));
 }
 
+function pdfApi() {
+    return pdfApiCheck()
+        .then(result => ({name: 'pdf', status: 'ok', message: result}))
+        .catch(err => ({name: 'pdf', status: 'ERROR', message: err}));
+}
+
 module.exports = function healthcheck(callback) {
-    const checks = [db, nomisApi];
+    const checks = [db, nomisApi, pdfApi];
 
     return Promise
         .all(checks.map(fn => fn()))
