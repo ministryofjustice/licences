@@ -2,21 +2,25 @@
 - var n = 0
 
 div.pure-g
-    div.pure-u-1.pure-u-md-1-2.borderBottom.largeMarginBottom
+    div#bespokeConditionsInput.pure-u-1.pure-u-md-1-2.largeMarginBottom
         h1.heading-large Bespoke conditions
         p Add the details of the bespoke condition below
             while n < bespokeConditionsToShow
-                p.bold Bespoke condition #{n+1}
-                p.namedAnchor
-                    a.namedAnchor(name="bespoke-" + n)
-                div.pure-g.smallPaddingBottom
-                    div.pure-u-1
-                        div.form-group
-                            textarea(name="bespokeConditions[" + n + "][text]" id="bespokeConditions[" + n + "][text]" class='form-control' rows='4')
-                                if bespokeConditions && bespokeConditions[n]
-                                    | #{bespokeConditions[n].text}
+                div.bespokeConditionsForm.largeMarginBottom
+                    div.bespokeTitleWrapper.pure-g
+                        div.pure-u-md-3-4
+                            p.bold.bespokeTitle Bespoke condition #{n+1}
+                        div.removeWrapper.pure-u-md-1-4.alignRight
+                    div(style="position:relative")
+                        a.namedAnchor(name="bespoke-" + n)
+                    div.pure-g.smallPaddingBottom
+                        div.pure-u-1
+                            div.form-group
+                                textarea(name="bespokeConditions[" + n + "][text]" id="bespokeConditions[" + n + "][text]" class='form-control bespokeInput' rows='4')
+                                    if bespokeConditions && bespokeConditions[n]
+                                        | #{bespokeConditions[n].text}
 
-                        div.form-group.multiple-choice
-                            input(name="bespokeConditions["+n+"][approved]" type="checkbox" value='Yes' checked=bespokeConditions[n] && bespokeConditions[n].approved === 'Yes')
-                            label(for="bespokeConditions["+n+"][approved]") Approved by PPCS
-                - n++
+                            div.form-group.multiple-choice
+                                input.bespokeCheckbox(name="bespokeConditions["+n+"][approved]" type="checkbox" value='Yes' checked=bespokeConditions[n] && bespokeConditions[n].approved === 'Yes')
+                                label.bespokeCheckboxLabel(for="bespokeConditions["+n+"][approved]") Approved by PPCS
+                    - n++
