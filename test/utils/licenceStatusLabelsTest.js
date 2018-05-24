@@ -51,6 +51,14 @@ describe('getStatusLabel', () => {
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {bassReferralNeeded: true}, tasks: {}},
                     label: 'Address/Opt-out form sent'
+                },
+                {
+                    status: {
+                        stage: licenceStages.ELIGIBILITY,
+                        decisions: {curfewAddressApproved: 'rejected'},
+                        tasks: {}
+                    },
+                    label: 'Address rejected'
                 }
             ];
 
