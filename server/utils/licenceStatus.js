@@ -42,8 +42,7 @@ function getRequiredState(stage, licence) {
     const config = {
         [licenceStages.ELIGIBILITY]: [getEligibilityStageState],
         [licenceStages.PROCESSING_RO]: [getEligibilityStageState, getRoStageState],
-        [licenceStages.PROCESSING_CA]:
-            [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
+        [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState, getCaStageState],
         [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
         [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
     };
@@ -107,14 +106,16 @@ function getCaStageState(licence) {
     const {onRemand, onRemandCheck} = getOnRemandCheckTaskState(licence);
     const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck]);
     const finalCheckPass = !(seriousOffence || onRemand);
-    const {postponed} = getPostponedState(licence);
+    const postponed = getIn(licence, ['finalChecks', 'postpone', 'decision']) === 'Yes';
+    const finalChecksRefused = getIn(licence, ['finalChecks', 'refusal', 'decision']) === 'Yes';
 
     return {
         decisions: {
             seriousOffence,
             onRemand,
             finalCheckPass,
-            postponed
+            postponed,
+            finalChecksRefused
         },
         tasks: {
             seriousOffenceCheck,
@@ -379,15 +380,6 @@ function getOnRemandCheckTaskState(licence) {
     return {
         onRemand: onRemandAnswer && onRemandAnswer === 'Yes',
         onRemandCheck: onRemandAnswer ? taskStates.DONE : taskStates.UNSTARTED
-    };
-}
-
-function getPostponedState(licence) {
-
-    const postponedAnswer = getIn(licence, ['finalChecks', 'postpone', 'decision']);
-
-    return {
-        postponed: postponedAnswer && postponedAnswer === 'Yes'
     };
 }
 

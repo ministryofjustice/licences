@@ -27,8 +27,8 @@ module.exports = {
         }
     },
     refuse: {
-        pageDataMap: ['licence', 'approval', 'release'],
-        saveSection: ['approval', 'release'],
+        pageDataMap: ['licence', 'finalChecks', 'refusal'],
+        saveSection: ['finalChecks', 'refusal'],
         fields: [
             {decision: {}},
             {reason: {}},
@@ -37,14 +37,14 @@ module.exports = {
         nextPath: {
             decisions: {
                 discriminator: 'decision',
-                No: '/hdc/finalChecks/refusal/'
+                Yes: '/hdc/finalChecks/refusal/'
             },
             path: '/hdc/taskList/'
         }
     },
     refusal: {
-        pageDataMap: ['licence', 'approval', 'release'],
-        saveSection: ['approval', 'release'],
+        pageDataMap: ['licence', 'finalChecks', 'refusal'],
+        saveSection: ['finalChecks', 'refusal'],
         fields: [
             {decision: {}},
             {reason: {}},

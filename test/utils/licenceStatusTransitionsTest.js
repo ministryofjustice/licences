@@ -156,7 +156,7 @@ describe('getAllowedTransitions', () => {
                 postponed: false,
                 curfewAddressApproved: 'approved',
                 excluded: false,
-                refused: true
+                finalChecksRefused: true
             }
         };
 
