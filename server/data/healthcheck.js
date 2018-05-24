@@ -54,7 +54,7 @@ function pdfApiCheck() {
     return new Promise((resolve, reject) => {
 
         superagent
-            .get(`${config.pdf.pdfServiceHost}/healthcheck`)
+            .get(`${config.pdf.pdfServiceHost}/health`)
             .timeout({
                 response: 4000,
                 deadline: 4500
