@@ -58,7 +58,8 @@ function caEligibilityLabel(licenceStatus) {
         {decision: 'unsuitable', label: 'Presumed unsuitable'},
         {decision: 'insufficientTime', label: 'Excluded (Insufficient time)'},
         {decision: 'optedOut', label: 'Opted out'},
-        {decision: 'bassReferralNeeded', label: 'Address/Opt-out form sent'}
+        {decision: 'bassReferralNeeded', label: 'Address/Opt-out form sent'},
+        {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address rejected'}
     ];
 
     return getLabel(labels, licenceStatus) || 'Eligibility checks ongoing';
