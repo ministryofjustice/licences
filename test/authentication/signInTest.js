@@ -23,17 +23,23 @@ describe('signIn', () => {
 
         fakeNomis
             .get(`/users/me`)
-            .reply(200, {key: 'value'});
+            .reply(200, {key: 'value', activeCaseLoadId: 'ID'});
 
         fakeNomis
             .get(`/users/me/roles`)
             .reply(200, [{roleCode: 'LICENCE'}]);
 
+        fakeNomis
+            .get(`/users/me/caseLoads`)
+            .reply(200, [{description: 'Prison', caseLoadId: 'ID'}, {description: 'None', caseLoadId: 'wrong'}]);
+
         const expectedOutput = {
             key: 'value',
             token: 'type token',
             role: 'LICENCE',
-            username: 'un'
+            username: 'un',
+            activeCaseLoadId: 'ID',
+            activeCaseLoad: {description: 'Prison', caseLoadId: 'ID'}
         };
 
         return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
@@ -106,5 +112,34 @@ describe('signIn', () => {
 
 
         return expect(service.signIn('un', 'pw')).to.eventually.be.rejected();
+    });
+
+    it('should return null if there is no active caseload', () => {
+        fakeOauth
+            .post(`/oauth/token`)
+            .reply(200, {token_type: 'type', access_token: 'token'});
+
+        fakeNomis
+            .get(`/users/me`)
+            .reply(200, {key: 'value', activeCaseLoadId: 'ID'});
+
+        fakeNomis
+            .get(`/users/me/roles`)
+            .reply(200, [{roleCode: 'LICENCE'}]);
+
+        fakeNomis
+            .get(`/users/me/caseLoads`)
+            .reply(500);
+
+        const expectedOutput = {
+            key: 'value',
+            token: 'type token',
+            role: 'LICENCE',
+            username: 'un',
+            activeCaseLoadId: 'ID',
+            activeCaseLoad: null
+        };
+
+        return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
     });
 });
