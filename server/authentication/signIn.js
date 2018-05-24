@@ -33,10 +33,11 @@ async function signIn(username, password) {
         logger.info(`Elite2 profile success for [${username}]`);
 
         const role = await getRole(eliteAuthorisationToken);
+        const activeCaseLoad = await getCaseLoad(eliteAuthorisationToken, profileResult.body.activeCaseLoadId);
         const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
 
         logger.info(`Elite2 profile success for [${username}] with role  [${roleCode}]`);
-        return {...profileResult.body, token: eliteAuthorisationToken, role: roleCode, username};
+        return {...profileResult.body, token: eliteAuthorisationToken, role: roleCode, activeCaseLoad, username};
     } catch (error) {
         if(error.status === 400 || error.status === 401 || error.status === 403) {
             logger.error(`Forbidden Elite2 login for [${username}]:`, error.stack);
@@ -70,6 +71,21 @@ async function getRole(eliteAuthorisationToken) {
     }
 
     throw new Error('Login error - no acceptable role');
+}
+
+async function getCaseLoad(eliteAuthorisationToken, id) {
+    try {
+        const auth = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : eliteAuthorisationToken;
+        const result = await superagent
+            .get(`${config.nomis.apiUrl}/users/me/caseLoads`)
+            .set('Authorization', auth)
+            .set('Elite-Authorization', eliteAuthorisationToken);
+
+        return result.body.find(caseLoad => caseLoad.caseLoadId === id) || null;
+    } catch(error) {
+        logger.error('No active case load', error.stack);
+        return null;
+    }
 }
 
 function getOauthUrl() {

@@ -54,6 +54,8 @@ html(lang="en")
                 if user
                     div(id="header-user")
                         span.bold #{user.firstName}, #{user.lastName} &nbsp;&nbsp;|&nbsp;&nbsp;
+                        if user.activeCaseLoad
+                            span.bold #{user.activeCaseLoad.description} &nbsp;&nbsp;|&nbsp;&nbsp;
                         a(href="/logout") Logout
 
         main.app-container(role="main")
