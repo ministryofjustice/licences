@@ -4,8 +4,10 @@ include includes/additionalConditions
 block content
 
     - var risk = data.risk && data.risk.riskManagement ? data.risk.riskManagement : {}
+    - var personalDetails = data.personalDetails || {}
 
     include ../includes/backToCheckList
+    include ../includes/personalDetailsSummary
 
     h2.heading-large Risk management and victim liaison
 

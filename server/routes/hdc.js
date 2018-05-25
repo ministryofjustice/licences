@@ -46,10 +46,11 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         const nomisId = req.params.nomisId;
         const conditions = await conditionsService.getStandardConditions();
+        const personalDetails = getIn(res.locals.licence, ['licence', 'personalDetails']) || {};
 
         const data = getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {};
 
-        res.render('licenceConditions/standard', {nomisId, conditions, data});
+        res.render('licenceConditions/standard', {nomisId, conditions, data, personalDetails});
     }));
 
     router.get('/licenceConditions/additionalConditions/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
@@ -57,10 +58,11 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         const nomisId = req.params.nomisId;
         const licence = getIn(res.locals.licence, ['licence']);
+        const personalDetails = getIn(res.locals.licence, ['licence', 'personalDetails']) || {};
         const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
         const conditions = await conditionsService.getAdditionalConditions(licence);
 
-        res.render('licenceConditions/additionalConditions', {nomisId, conditions, bespokeConditions});
+        res.render('licenceConditions/additionalConditions', {nomisId, conditions, bespokeConditions, personalDetails});
     }));
 
     router.post('/licenceConditions/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
@@ -92,10 +94,11 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         const {nextPath} = formConfig.conditionsSummary;
         const licence = getIn(res.locals.licence, ['licence']) || {};
+        const personalDetails = getIn(res.locals.licence, ['licence', 'personalDetails']) || {};
         const errorObject = licenceService.getConditionsErrors(licence);
         const data = await conditionsService.populateLicenceWithConditions(licence, errorObject);
 
-        res.render(`licenceConditions/conditionsSummary`, {nomisId, data, nextPath});
+        res.render(`licenceConditions/conditionsSummary`, {nomisId, data, nextPath, personalDetails});
     }));
 
     router.post('/licenceConditions/additionalConditions/:nomisId/delete/:conditionId',
@@ -174,7 +177,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             const data = lastItem(addresses);
             const nextPath = formConfig[formName].nextPath;
 
-            res.render(`curfew/${formName}`, {nomisId, data, nextPath});
+            const personalDetails = getIn(res.locals.licence, ['licence', 'personalDetails']) || {};
+
+            res.render(`curfew/${formName}`, {nomisId, data, nextPath, personalDetails});
         };
     }
 
@@ -206,14 +211,15 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     router.get('/proposedAddress/curfewAddress/:nomisId', checkLicence, (req, res) => {
         const {nomisId} = req.params;
         const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+        const personalDetails = getIn(res.locals.licence, ['licence', 'personalDetails']) || {};
 
         if (!addresses) {
-            return res.render('proposedAddress/curfewAddress', {nomisId, data: []});
+            return res.render('proposedAddress/curfewAddress', {nomisId, data: [], personalDetails});
         }
 
         const {submitPath, addressToShow} = getCurfewAddressFormData(addresses);
 
-        res.render('proposedAddress/curfewAddress', {nomisId, data: addressToShow, submitPath});
+        res.render('proposedAddress/curfewAddress', {nomisId, data: addressToShow, submitPath, personalDetails});
     });
 
     router.post('/proposedAddress/curfewAddress/add/', asyncMiddleware(async (req, res) => {
@@ -262,7 +268,10 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const errors = validateInPlace && firstItem(req.flash('errors'));
         const errorObject = getIn(errors, [sectionName, formName]) || {};
 
-        res.render(`${sectionName}/${formName}`, {nomisId, data, nextPath, licenceStatus, errorObject});
+        const personalDetails = getIn(res.locals.licence, ['licence', 'personalDetails']) || {};
+
+        const viewData = {nomisId, personalDetails, data, nextPath, licenceStatus, errorObject};
+        res.render(`${sectionName}/${formName}`, viewData);
     });
 
     router.post('/optOut/:nomisId', asyncMiddleware(async (req, res) => {

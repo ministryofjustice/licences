@@ -6,10 +6,13 @@ block content
     -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
     -var addressSafety = data.curfew && data.curfew.addressSafety ? data.curfew.addressSafety : {}
     -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress : {}
+    -var personalDetails = data.personalDetails || {}
 
     div.pure-g.pure-u-1
         div
             include ../includes/backToCheckList
+            include ../includes/personalDetailsSummary
+
 
             h2.heading-large Proposed address
 

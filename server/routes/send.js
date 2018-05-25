@@ -18,9 +18,10 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         const {nomisId} = req.params;
         const licence = await licenceService.getLicence(nomisId);
         const stage = getIn(licence, ['stage']);
+        const personalDetails = getIn(licence, ['licence', 'personalDetails']) || {};
         const submissionTarget = await getSubmissionTarget(nomisId, stage, req.user.token);
 
-        res.render('send/index', {nomisId, stage, submissionTarget});
+        res.render('send/index', {nomisId, stage, submissionTarget, personalDetails});
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {

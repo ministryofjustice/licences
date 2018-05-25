@@ -2,8 +2,10 @@ extends ../layout
 include includes/additionalConditions
 
 block content
+    - var personalDetails = data.personalDetails || {}
 
     include ../includes/backToCheckList
+    include ../includes/personalDetailsSummary
 
     div.largePaddingBottom
         if data.licenceConditions && data.licenceConditions.length > 0

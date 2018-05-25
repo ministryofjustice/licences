@@ -199,6 +199,12 @@ $path: "/public/images/";
     float: left;
 }
 
+.inlineList {
+    li {
+        display: inline-block;
+    }
+}
+
 .boxPanel {
     border: solid $grey-1 2px;
     padding: 20px 0 0 0;

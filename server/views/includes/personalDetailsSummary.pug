@@ -1,0 +1,11 @@
+if Object.keys(personalDetails).length > 0
+    div.borderTopLight.borderBottomLight.midPaddingTopBottom
+        ul.inlineList.padRight30.block
+            li.padRight30 Name&nbsp;&nbsp;
+                span.bold #{personalDetails.lastName}, #{personalDetails.firstName}
+
+            li.padRight30.block NOMIS ID&nbsp;&nbsp;
+                span.bold #{nomisId}
+
+            li.block Date of birth&nbsp;&nbsp;
+                span.bold #{personalDetails.dateOfBirth}
