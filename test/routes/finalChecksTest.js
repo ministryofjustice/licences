@@ -50,26 +50,23 @@ describe('/hdc/finalChecks', () => {
             },
             {
                 url: '/finalChecks/refuse/1',
-                body: {nomisId: 1, decision: 'No'},
+                body: {nomisId: 1, decision: 'Yes'},
                 fieldMap: formConfig.refuse.fields,
-                sectionName: 'approval',
-                formName: 'release',
+                formName: 'refusal',
                 nextPath: '/hdc/finalChecks/refusal/1'
             },
             {
                 url: '/finalChecks/refuse/1',
-                body: {nomisId: 1, decision: 'Yes'},
+                body: {nomisId: 1, decision: 'No'},
                 fieldMap: formConfig.refuse.fields,
-                sectionName: 'approval',
-                formName: 'release',
+                formName: 'refusal',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/finalChecks/refusal/1',
                 body: {nomisId: 1, reason: 'something', outOfTimeReasons: []},
                 fieldMap: formConfig.refusal.fields,
-                sectionName: 'approval',
-                formName: 'release',
+                formName: 'refusal',
                 nextPath: '/hdc/taskList/1'
             }
         ];

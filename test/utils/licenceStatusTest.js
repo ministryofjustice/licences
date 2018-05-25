@@ -105,6 +105,9 @@ describe('getLicenceStatus', () => {
                     },
                     postpone: {
                         decision: 'Yes'
+                    },
+                    refusal: {
+                        decision: 'Yes'
                     }
                 },
                 approval: {
@@ -131,6 +134,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.postponed).to.eql(true);
         expect(status.decisions.approved).to.eql(true);
         expect(status.decisions.refused).to.eql(false);
+        expect(status.decisions.finalChecksRefused).to.eql(true);
     });
 
     it('should show licence conditions data', () => {
@@ -229,6 +233,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.postponed).to.eql(false);
         expect(status.decisions.approved).to.eql(false);
         expect(status.decisions.refused).to.eql(true);
+        expect(status.decisions.finalChecksRefused).to.eql(false);
     });
 
     it('should show eligible when eligibility decisions false', () => {
