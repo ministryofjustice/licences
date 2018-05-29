@@ -127,6 +127,30 @@ describe('pdfFormatter', () => {
         expect(data.values.CONDITIONS).to.eql(expected);
         expect(data.missing).to.not.have.property('CONDITIONS');
     });
+
+    it('should return placeholder when standard conditions only', () => {
+
+        const licence = {
+            licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
+        };
+
+        const data = formatWith({licence: licence});
+
+        expect(data.values.CONDITIONS).to.eql('PLACEHOLDER');
+        expect(data.missing['CONDITIONS']).to.eql(displayNames['CONDITIONS']);
+    });
+
+    it('should return placeholder when additional conditions empty', () => {
+
+        const licence = {
+            licenceConditions: []
+        };
+
+        const data = formatWith({licence: licence});
+
+        expect(data.values.CONDITIONS).to.eql('PLACEHOLDER');
+        expect(data.missing['CONDITIONS']).to.eql(displayNames['CONDITIONS']);
+    });
 });
 
 const allValuesEmpty = {

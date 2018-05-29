@@ -1,4 +1,4 @@
-const {getIn, mergeWithRight} = require('../../utils/functionalHelpers');
+const {getIn, isEmpty, mergeWithRight} = require('../../utils/functionalHelpers');
 const pdfData = require('../config/pdfData');
 const {romanise} = require('../../utils/romanise');
 
@@ -55,15 +55,19 @@ function readEntry(data, spec) {
 
 function getAdditionalConditionsText(licence) {
 
-    if (!licence.licenceConditions) {
+
+    const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']);
+    const conditions = getIn(licence, ['licenceConditions']);
+
+    if (standardOnly === 'No' || isEmpty(conditions)) {
         return;
     }
 
-    // todo extrcat this config if supporting other templates
+    // todo extract this config if supporting other templates
     const start = 8; // Need to continue existing list number
     const itemDivider = '\n\n';
 
-    return licence.licenceConditions
+    return conditions
         .map((condition, index) => `${listCounter(start, index)}${getConditionText(condition.content)}`)
         .join(itemDivider);
 }
