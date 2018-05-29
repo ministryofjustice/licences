@@ -274,6 +274,20 @@ describe('GET /taskList/:prisonNumber', () => {
                             expect(licenceServiceStub.createLicence).to.be.calledWith('123');
                         });
                 });
+
+                it('should include personal details', () => {
+
+                    licenceServiceStub.getLicence.resolves(undefined);
+                    licenceServiceStub.createLicence.resolves();
+                    return request(app)
+                        .post('/eligibilityStart')
+                        .send({nomisId: '123', firstName: 'fn', lastName: 'ln', dateOfBirth: '13/01/1980'})
+                        .expect(302)
+                        .expect(res => {
+                            expect(licenceServiceStub.createLicence).to.be.called();
+                            expect(licenceServiceStub.createLicence).to.be.calledWith('123');
+                        });
+                });
             });
         });
 

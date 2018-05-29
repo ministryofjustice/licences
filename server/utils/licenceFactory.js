@@ -2,18 +2,11 @@ const {conditionsOrder} = require('../models/conditions');
 const {getIn} = require('../utils/functionalHelpers');
 
 module.exports = {
-    createLicenceObjectFrom,
     createAdditionalConditionsObject,
     populateAdditionalConditionsAsObject,
     populateAdditionalConditionsAsString,
     createInputWithReasonObject
 };
-
-function createLicenceObjectFrom({model, inputObject}) {
-    const acceptedAttributes = Object.keys(model);
-
-    return filteredToAttributes(inputObject, acceptedAttributes);
-}
 
 const filteredToAttributes = (input, acceptedKeys, notAcceptedKeys = []) => {
     return Object.keys(input).reduce((objectBuilt, key) => {

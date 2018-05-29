@@ -37,7 +37,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         next();
     });
 
-    const checkLicence = checkLicenceMiddleWare(licenceService);
+    const checkLicence = checkLicenceMiddleWare(licenceService, prisonerService);
 
     // bespoke routes
 
@@ -262,7 +262,8 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const errors = validateInPlace && firstItem(req.flash('errors'));
         const errorObject = getIn(errors, [sectionName, formName]) || {};
 
-        res.render(`${sectionName}/${formName}`, {nomisId, data, nextPath, licenceStatus, errorObject});
+        const viewData = {nomisId, data, nextPath, licenceStatus, errorObject};
+        res.render(`${sectionName}/${formName}`, viewData);
     });
 
     router.post('/optOut/:nomisId', asyncMiddleware(async (req, res) => {

@@ -12,18 +12,22 @@ function asyncMiddleware(fn) {
     };
 }
 
-function checkLicenceMiddleWare(licenceService) {
+function checkLicenceMiddleWare(licenceService, prisonerService) {
     return async (req, res, next) => {
         try {
 
             const nomisId = req.params.nomisId;
-            const licence = await licenceService.getLicence(nomisId);
 
-            if (!licence) {
+            const getLicence = licenceService.getLicence(nomisId);
+            const getPrisoner = prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token);
+            const details = await Promise.all([getLicence, getPrisoner]);
+
+            if (!details[0] || !details[1]) {
                 return res.redirect('/');
             }
 
-            res.locals.licence = licence;
+            res.locals.licence = details[0];
+            res.locals.prisoner = details[1];
             next();
 
         } catch (error) {

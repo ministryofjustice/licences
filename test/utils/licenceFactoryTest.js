@@ -1,38 +1,12 @@
 const {expect} = require('../testSetup');
 const {
-    createLicenceObjectFrom,
     createAdditionalConditionsObject,
     populateAdditionalConditionsAsString,
     populateAdditionalConditionsAsObject,
     createInputWithReasonObject
 } = require('../../server/utils/licenceFactory');
 
-const model = {
-    firstName: '',
-    lastName: '',
-    nomisId: '',
-    establishment: '',
-    agencyLocationId: '',
-    dischargeDate: '',
-    licenceConditions: {},
-    dischargeAddress: {
-        address1: '',
-        address2: '',
-        address3: '',
-        postCode: ''
-    }
-};
-
 describe('licenceFactory', () => {
-
-    describe('createLicenceObjectFrom', () => {
-
-        it('should filter out any unacceptable data', () => {
-            const input = {firstName: 'Matt', bad: 'yes'};
-
-            expect(createLicenceObjectFrom({model, inputObject: input})).to.eql({firstName: 'Matt'});
-        });
-    });
 
     describe('createConditionsObject', () => {
         it('should return an object for each selected item', () => {

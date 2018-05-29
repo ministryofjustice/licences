@@ -1,7 +1,7 @@
 const express = require('express');
 const {getIn} = require('../utils/functionalHelpers');
 const {licenceStages} = require('../models/licenceStages');
-const {asyncMiddleware} = require('../utils/middleware');
+const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
 
 module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware}) {
     const router = express.Router();
@@ -14,7 +14,9 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         next();
     });
 
-    router.get('/:nomisId', asyncMiddleware(async (req, res) => {
+    const checkLicence = checkLicenceMiddleWare(licenceService, prisonerService);
+
+    router.get('/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         const licence = await licenceService.getLicence(nomisId);
         const stage = getIn(licence, ['stage']);

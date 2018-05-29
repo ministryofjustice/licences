@@ -49,8 +49,8 @@ describe('licenceService', () => {
             expect(licenceClient.createLicence).to.be.calledWith('123', {});
         });
 
-        it('should pass in a valid licence', () => {
-            service.createLicence('123', {firstName: 'M', bad: '1'});
+        it('should pass in the licence', () => {
+            service.createLicence('123', {firstName: 'M'});
 
             expect(licenceClient.createLicence).to.be.calledOnce();
             expect(licenceClient.createLicence).to.be.calledWith('123', {firstName: 'M'});

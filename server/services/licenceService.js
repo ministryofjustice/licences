@@ -1,8 +1,5 @@
 const logger = require('../../log.js');
-const {
-    createLicenceObjectFrom,
-    createAdditionalConditionsObject
-} = require('../utils/licenceFactory');
+const {createAdditionalConditionsObject} = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {
     getIn,
@@ -14,7 +11,6 @@ const {
     mergeWithRight,
     removePath
 } = require('../utils/functionalHelpers');
-const {licenceModel} = require('../models/models');
 const {transitions} = require('../models/licenceStages');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const validate = require('./utils/licenceValidation');
@@ -50,8 +46,7 @@ module.exports = function createLicenceService(licenceClient) {
     }
 
     function createLicence(nomisId, data = {}) {
-        const licence = createLicenceObjectFrom({model: licenceModel, inputObject: data});
-        return licenceClient.createLicence(nomisId, licence);
+        return licenceClient.createLicence(nomisId, data);
     }
 
     async function updateLicenceConditions(nomisId, additional = {}, bespoke = []) {

@@ -1,9 +1,11 @@
 extends ../layout
 
 block content
-    -var hours = data.curfew.curfewHours
+    - var hours = data.curfew.curfewHours
+
     div.largePaddingBottom
         include ../includes/backToCheckList
+        include ../includes/personalDetailsSummary
 
         h2.heading-large Proposed HDC curfew hours
 

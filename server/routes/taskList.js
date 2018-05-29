@@ -39,7 +39,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
     router.post('/eligibilityStart', asyncMiddleware(async (req, res) => {
         logger.debug('POST /eligibilityStart');
 
-        const nomisId = req.body.nomisId;
+        const {nomisId} = req.body;
 
         const existingLicence = await licenceService.getLicence(nomisId);
 

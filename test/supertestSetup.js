@@ -76,7 +76,9 @@ const prisonerServiceStub = {
     getEstablishmentForPrisoner: sandbox.stub().returnsPromise().resolves(),
     getComForPrisoner: sandbox.stub().returnsPromise().resolves(),
     getPrisonerDetails: sandbox.stub().returnsPromise().resolves({}),
-    getPrisonerImage: sandbox.stub().returnsPromise().resolves({image: 'image'})
+    getPrisonerImage: sandbox.stub().returnsPromise().resolves({image: 'image'}),
+    getPrisonerPersonalDetails: sandbox.stub().returnsPromise().resolves(
+        {firstName: 'fn', lastName: 'ln', dateOfBirth: '1980-01-01'})
 };
 
 const pdfServiceStub = {

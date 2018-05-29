@@ -5,6 +5,21 @@ module.exports = {createPrisonerService};
 
 function createPrisonerService(nomisClientBuilder) {
 
+    async function getPrisonerPersonalDetails(nomisId, token) {
+        try {
+            logger.info(`getPrisonerPersonalDetails: ${nomisId}`);
+
+            const nomisClient = nomisClientBuilder(token);
+
+            const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
+
+            return formatObjectForView(prisoners[0]);
+        } catch (error) {
+            logger.error('Error getting prisoner personal details');
+            return null;
+        }
+    }
+
     async function getPrisonerDetails(nomisId, token) {
         try {
             logger.info(`getPrisonerDetail: ${nomisId}`);
@@ -147,7 +162,8 @@ function createPrisonerService(nomisClientBuilder) {
         getEstablishmentForPrisoner,
         getEstablishment,
         getComForPrisoner,
-        getCom
+        getCom,
+        getPrisonerPersonalDetails
     };
 };
 
