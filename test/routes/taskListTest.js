@@ -285,11 +285,7 @@ describe('GET /taskList/:prisonNumber', () => {
                         .expect(302)
                         .expect(res => {
                             expect(licenceServiceStub.createLicence).to.be.called();
-                            expect(licenceServiceStub.createLicence).to.be.calledWith('123', {
-                                personalDetails: {
-                                    firstName: 'fn', lastName: 'ln', dateOfBirth: '1980-01-13'
-                                }
-                            });
+                            expect(licenceServiceStub.createLicence).to.be.calledWith('123');
                         });
                 });
             });

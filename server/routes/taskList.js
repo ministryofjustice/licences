@@ -4,7 +4,6 @@ const path = require('path');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransitions} = require('../utils/licenceStatusTransitions');
-const moment = require('moment');
 
 module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -40,18 +39,12 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
     router.post('/eligibilityStart', asyncMiddleware(async (req, res) => {
         logger.debug('POST /eligibilityStart');
 
-        const {nomisId, firstName, lastName, dateOfBirth} = req.body;
+        const {nomisId} = req.body;
 
         const existingLicence = await licenceService.getLicence(nomisId);
 
         if (!existingLicence) {
-            await licenceService.createLicence(nomisId, {
-                personalDetails: {
-                    firstName,
-                    lastName,
-                    dateOfBirth: moment(dateOfBirth, 'DD/MM/YYYY').format('YYYY-MM-DD')
-                }
-            });
+            await licenceService.createLicence(nomisId);
         }
 
         res.redirect(`/hdc/eligibility/excluded/${nomisId}`);
