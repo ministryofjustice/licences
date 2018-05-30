@@ -128,7 +128,41 @@ describe('pdfFormatter', () => {
         expect(data.missing).to.not.have.property('CONDITIONS');
     });
 
-    it('should return placeholder when standard conditions only', () => {
+    it('should join conditions except exclusions', () => {
+
+        const licence = {
+            licenceConditions: [
+                {id: 'INCLUDED_1', content: [{text: 'first included condition'}]},
+                {id: 'ATTENDSAMPLE', content: [{text: 'excluded condition'}]},
+                {id: 'INCLUDED_2', content: [{variable: 'second included condition'}]}
+            ]
+        };
+        const expected = 'viii. first included condition;\n\nix. second included condition;';
+
+        const data = formatWith({licence: licence});
+
+        expect(data.values.CONDITIONS).to.eql(expected);
+        expect(data.missing).to.not.have.property('CONDITIONS');
+    });
+
+    it('should join PSS conditions only for inclusions', () => {
+
+        const licence = {
+            licenceConditions: [
+                {id: 'ATTENDSAMPLE', content: [{text: 'first PSS condition'}]},
+                {id: 'NOT_A_PSS_CONDITION', content: [{text: 'excluded condition'}]},
+                {id: 'ATTENDDEPENDENCY', content: [{variable: 'second PSS condition'}]}
+            ]
+        };
+        const expected = 'ix. first PSS condition;\n\nx. second PSS condition;';
+
+        const data = formatWith({licence: licence});
+
+        expect(data.values.PSS).to.eql(expected);
+        expect(data.missing).to.not.have.property('PSS');
+    });
+
+    it('should skip placeholder when standard conditions only', () => {
 
         const licence = {
             licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
@@ -136,11 +170,13 @@ describe('pdfFormatter', () => {
 
         const data = formatWith({licence: licence});
 
-        expect(data.values.CONDITIONS).to.eql('PLACEHOLDER');
+        expect(data.values.CONDITIONS).to.eql('');
+        expect(data.values.PSS).to.eql('');
         expect(data.missing['CONDITIONS']).to.eql(displayNames['CONDITIONS']);
+        expect(data.missing['PSS']).to.eql(displayNames['PSS']);
     });
 
-    it('should return placeholder when additional conditions empty', () => {
+    it('should skip placeholder when additional conditions empty', () => {
 
         const licence = {
             licenceConditions: []
@@ -148,13 +184,15 @@ describe('pdfFormatter', () => {
 
         const data = formatWith({licence: licence});
 
-        expect(data.values.CONDITIONS).to.eql('PLACEHOLDER');
+        expect(data.values.CONDITIONS).to.eql('');
+        expect(data.values.PSS).to.eql('');
         expect(data.missing['CONDITIONS']).to.eql(displayNames['CONDITIONS']);
+        expect(data.missing['PSS']).to.eql(displayNames['PSS']);
     });
 });
 
 const allValuesEmpty = {
-    CONDITIONS: 'PLACEHOLDER',
+    CONDITIONS: '',
     CURFEW_ADDRESS: 'PLACEHOLDER',
     CURFEW_FIRST_FROM: 'PLACEHOLDER',
     CURFEW_FIRST_UNTIL: 'PLACEHOLDER',
@@ -182,6 +220,7 @@ const allValuesEmpty = {
     OFF_NOMS: 'PLACEHOLDER',
     OFF_PHOTO: 'PLACEHOLDER',
     OFF_PNC: 'PLACEHOLDER',
+    PSS: '',
     REPORTING_ADDRESS: 'PLACEHOLDER',
     REPORTING_AT: 'PLACEHOLDER',
     REPORTING_NAME: 'PLACEHOLDER',
@@ -221,6 +260,7 @@ const displayNames = {
     OFF_NAME: 'Offender name',
     OFF_NOMS: 'Offender Noms ID',
     OFF_PNC: 'Offender PNC',
+    PSS: 'Post-sentence supervision conditions',
     REPORTING_ADDRESS: 'Reporting address',
     REPORTING_AT: 'Reporting at',
     REPORTING_NAME: 'Reporting name',
