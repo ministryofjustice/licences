@@ -170,6 +170,7 @@ module.exports = {
         },
 
         CONDITIONS: {
+            noPlaceholder: true,
             paths: [['conditions']],
             displayName: 'Additional conditions',
             startIndex: 8,
@@ -180,6 +181,7 @@ module.exports = {
         },
 
         PSS: {
+            noPlaceholder: true,
             paths: [['pss']],
             displayName: 'Post-sentence supervision conditions',
             startIndex: 9,
