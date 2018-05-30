@@ -13,7 +13,8 @@ module.exports = {
     mergeWithRight,
     firstItem,
     lastIndex,
-    removePath
+    removePath,
+    interleave
 };
 
 // pass in your object and a path in array format
@@ -69,4 +70,10 @@ function lastIndex(array) {
 
 function removePath(path, object) {
     return R.dissocPath(path, object);
+}
+
+function interleave(firstArray, secondArray) {
+    return flatten(firstArray
+        .map((item, index) => [item, secondArray[index] || '']))
+        .join('');
 }

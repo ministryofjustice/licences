@@ -1,6 +1,6 @@
 const {conditionsOrder} = require('../models/conditions');
 const {multiFields} = require('../models/conditions');
-const {getIn, flatten} = require('../utils/functionalHelpers');
+const {getIn, interleave} = require('../utils/functionalHelpers');
 
 module.exports = {
     createAdditionalConditionsObject,
@@ -164,9 +164,7 @@ function injectMultiFieldsAsObject(userInput, conditionText, userErrors, config)
         .map(fieldName => getIn(userErrors, [fieldName]))
         .filter(e => e);
 
-    const string = flatten(strings
-        .map((string, index) => [string, config.joining[index] || '']))
-        .join('');
+    const string = interleave(strings, config.joining);
 
     const variableKey = fieldErrors.length > 0 ? 'error' : 'variable';
 
@@ -190,8 +188,8 @@ function injectUserInputAsString(condition, userInput) {
     const fieldPositionObject = condition.field_position;
     const placeHolders = getPlaceholdersFrom(conditionText);
 
-    if (conditionName === 'appointmentDetails') {
-        return injectUserInputAppointmentAsString(userInput, conditionText, placeHolders);
+    if (multiFields[conditionName]) {
+        return injectMultiFieldsAsString(userInput, conditionText, placeHolders, multiFields[conditionName]);
     }
 
     return injectUserInputStandardAsString(userInput, conditionText, placeHolders, fieldPositionObject);
@@ -211,12 +209,11 @@ function injectVariablesIntoString(fieldNames, fieldPositionObject, userInput) {
     };
 }
 
-// Special case, doesn't follow normal rules
-function injectUserInputAppointmentAsString(userInput, conditionText, placeHolder) {
-    const {appointmentAddress, appointmentDate, appointmentTime} = userInput;
-    const string = `${appointmentAddress} on ${appointmentDate} at ${appointmentTime}`;
+function injectMultiFieldsAsString(userInput, conditionText, placeHolder, config) {
 
-    return conditionText.replace(placeHolder, string);
+    const strings = config.fields.map(fieldName => getIn(userInput, [fieldName]));
+
+    return conditionText.replace(placeHolder, interleave(strings, config.joining));
 }
 
 const betweenBrackets = /\[[^\]]*]/g;
