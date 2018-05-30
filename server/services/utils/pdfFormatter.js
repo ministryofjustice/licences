@@ -43,7 +43,7 @@ const readValuesReducer = (allData, placeholder) => (summary, [key, spec]) => {
     }
 
     return mergeWithRight(summary, {
-        values: {[key]: placeholder},
+        values: {[key]: spec.noPlaceholder ? '' : placeholder},
         missing: {[key]: spec.displayName}
     });
 };
