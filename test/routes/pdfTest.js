@@ -13,7 +13,7 @@ const createPdfRoute = require('../../server/routes/pdf');
 
 const testUser = {
     staffId: 'my-staff-id',
-    token: 'my-token',
+    username: 'my-username',
     role: 'CA'
 };
 
@@ -61,7 +61,8 @@ describe('PDF:', () => {
                     expect(res.text).to.include('Missing 1');
                     expect(res.text).to.include('Missing 2');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
-                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(templateName, '123', 'my-token');
+                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
+                        templateName, '123', {tokenId: 'my-username'});
                 });
         });
 
@@ -91,7 +92,7 @@ describe('PDF:', () => {
                 .expect('Content-Type', 'application/pdf')
                 .expect(res => {
                     expect(pdfServiceStub.generatePdf).to.be.calledOnce();
-                    expect(pdfServiceStub.generatePdf).to.be.calledWith(templateName, '123', 'my-token');
+                    expect(pdfServiceStub.generatePdf).to.be.calledWith(templateName, '123', {tokenId: 'my-username'});
                     expect(res.text).to.include('PDF-1');
                 });
         });

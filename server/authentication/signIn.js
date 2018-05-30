@@ -4,49 +4,52 @@ const generateApiGatewayToken = require('./apiGateway');
 const generateOauthClientToken = require('./oauth');
 const logger = require('../../log');
 
-async function signIn(username, password) {
+function signIn(tokenStore) {
+    return async function(username, password) {
+        logger.info(`Log in for: ${username}`);
 
-    logger.info(`Log in for: ${username}`);
+        try {
+            const oauthClientToken = generateOauthClientToken();
+            let auth = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : oauthClientToken;
+            const loginResult = await superagent
+                .post(`${getOauthUrl()}/oauth/token`)
+                .set('Authorization', auth)
+                .set('Elite-Authorization', oauthClientToken)
+                .set('content-type', 'application/x-www-form-urlencoded')
+                .send(`grant_type=password&username=${username}&password=${password}`)
+                .timeout({response: 2000, deadline: 2500});
 
-    try {
-        const oauthClientToken = generateOauthClientToken();
-        let auth = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : oauthClientToken;
-        const loginResult = await superagent
-            .post(`${getOauthUrl()}/oauth/token`)
-            .set('Authorization', auth)
-            .set('Elite-Authorization', oauthClientToken)
-            .set('content-type', 'application/x-www-form-urlencoded')
-            .send(`grant_type=password&username=${username}&password=${password}`)
-            .timeout({response: 2000, deadline: 2500});
+            logger.info(`Elite2 login result: [${loginResult.status}]`);
+            logger.info(`Elite2 login success for [${username}]`);
 
-        logger.info(`Elite2 login result: [${loginResult.status}]`);
-        logger.info(`Elite2 login success for [${username}]`);
+            const eliteAuthorisationToken = `${loginResult.body.token_type} ${loginResult.body.access_token}`;
+            tokenStore.addOrUpdate(username, eliteAuthorisationToken, loginResult.body.refresh_token);
+            auth = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : eliteAuthorisationToken;
 
-        const eliteAuthorisationToken = `${loginResult.body.token_type} ${loginResult.body.access_token}`;
-        auth = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : eliteAuthorisationToken;
+            const profileResult = await superagent
+                .get(`${config.nomis.apiUrl}/users/me`)
+                .set('Authorization', auth)
+                .set('Elite-Authorization', eliteAuthorisationToken);
 
-        const profileResult = await superagent
-            .get(`${config.nomis.apiUrl}/users/me`)
-            .set('Authorization', auth)
-            .set('Elite-Authorization', eliteAuthorisationToken);
+            logger.info(`Elite2 profile success for [${username}]`);
 
-        logger.info(`Elite2 profile success for [${username}]`);
+            const role = await getRole(eliteAuthorisationToken);
+            const activeCaseLoad = await getCaseLoad(eliteAuthorisationToken, profileResult.body.activeCaseLoadId);
+            const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
 
-        const role = await getRole(eliteAuthorisationToken);
-        const activeCaseLoad = await getCaseLoad(eliteAuthorisationToken, profileResult.body.activeCaseLoadId);
-        const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
+            logger.info(`Elite2 profile success for [${username}] with role  [${roleCode}]`);
 
-        logger.info(`Elite2 profile success for [${username}] with role  [${roleCode}]`);
-        return {...profileResult.body, token: eliteAuthorisationToken, role: roleCode, activeCaseLoad, username};
-    } catch (error) {
-        if(error.status === 400 || error.status === 401 || error.status === 403) {
-            logger.error(`Forbidden Elite2 login for [${username}]:`, error.stack);
-            return {};
+            return {...profileResult.body, token: eliteAuthorisationToken, role: roleCode, activeCaseLoad, username};
+        } catch (error) {
+            if(error.status === 400 || error.status === 401 || error.status === 403) {
+                logger.error(`Forbidden Elite2 login for [${username}]:`, error.stack);
+                return {};
+            }
+
+            logger.error(`Elite 2 login error [${username}]:`, error.stack);
+            throw error;
         }
-
-        logger.error(`Elite 2 login error [${username}]:`, error.stack);
-        throw error;
-    }
+    };
 }
 
 async function getRole(eliteAuthorisationToken) {
@@ -92,6 +95,6 @@ function getOauthUrl() {
     return config.nomis.apiUrl.replace('/api', '');
 }
 
-module.exports = function createSignInService() {
-    return {signIn};
+module.exports = function createSignInService(tokenStore) {
+    return {signIn: signIn(tokenStore)};
 };

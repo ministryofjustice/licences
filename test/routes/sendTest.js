@@ -25,7 +25,7 @@ describe('Send:', () => {
 
             const testUser = {
                 staffId: 'my-staff-id',
-                token: 'my-token',
+                username: 'my-username',
                 role: 'CA'
             };
 
@@ -75,7 +75,7 @@ describe('Send:', () => {
                     .get('/123')
                     .expect(() => {
                         expect(prisonerServiceStub.getComForPrisoner).to.be.calledOnce();
-                        expect(prisonerServiceStub.getComForPrisoner).to.be.calledWith('123', 'my-token');
+                        expect(prisonerServiceStub.getComForPrisoner).to.be.calledWith('123', {tokenId: 'my-username'});
                         expect(prisonerServiceStub.getEstablishmentForPrisoner).not.to.be.called();
                     });
             });
@@ -87,7 +87,7 @@ describe('Send:', () => {
 
         const testUser = {
             staffId: 'my-staff-id',
-            token: 'my-token',
+            username: 'my-username',
             role: 'RO'
         };
 
@@ -106,7 +106,8 @@ describe('Send:', () => {
                 .get('/123')
                 .expect(() => {
                     expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledOnce();
-                    expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledWith('123', 'my-token');
+                    expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledWith(
+                        '123', {tokenId: 'my-username'});
                     expect(prisonerServiceStub.getComForPrisoner).not.to.be.called();
                 });
         });

@@ -5,11 +5,11 @@ module.exports = {createPrisonerService};
 
 function createPrisonerService(nomisClientBuilder) {
 
-    async function getPrisonerPersonalDetails(nomisId, token) {
+    async function getPrisonerPersonalDetails(nomisId, {tokenId}) {
         try {
             logger.info(`getPrisonerPersonalDetails: ${nomisId}`);
 
-            const nomisClient = nomisClientBuilder(token);
+            const nomisClient = nomisClientBuilder(tokenId);
 
             const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
 
@@ -20,11 +20,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getPrisonerDetails(nomisId, token) {
+    async function getPrisonerDetails(nomisId, {tokenId}) {
         try {
             logger.info(`getPrisonerDetail: ${nomisId}`);
 
-            const nomisClient = nomisClientBuilder(token);
+            const nomisClient = nomisClientBuilder(tokenId);
 
             const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
             const prisoner = prisoners[0];
@@ -52,11 +52,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getPrisonerImage(imageId, token) {
+    async function getPrisonerImage(imageId, {tokenId}) {
         try {
             logger.info(`getPrisonerImage: ${imageId}`);
 
-            const nomisClient = nomisClientBuilder(token);
+            const nomisClient = nomisClientBuilder(tokenId);
             const image = await nomisClient.getImageData(imageId);
             return image;
         } catch (error) {
@@ -65,11 +65,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getEstablishmentForPrisoner(nomisId, token) {
+    async function getEstablishmentForPrisoner(nomisId, {tokenId}) {
         try {
             logger.info(`getEstablishmentForPrisoner: ${nomisId}`);
 
-            const nomisClient = nomisClientBuilder(token);
+            const nomisClient = nomisClientBuilder(tokenId);
 
             const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
             const prisoner = prisoners[0];
@@ -77,7 +77,7 @@ function createPrisonerService(nomisClientBuilder) {
                 return;
             }
 
-            return getEstablishment(prisoner.agencyLocationId, token);
+            return getEstablishment(prisoner.agencyLocationId, {tokenId});
 
         } catch (error) {
             logger.error('Error getting prisoner establishment', error.stack);
@@ -85,11 +85,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getEstablishment(agencyLocationId, token) {
+    async function getEstablishment(agencyLocationId, {tokenId}) {
         try {
             logger.info(`getEstablishment: ${agencyLocationId}`);
 
-            const nomisClient = nomisClientBuilder(token);
+            const nomisClient = nomisClientBuilder(tokenId);
             const establishment = await nomisClient.getEstablishment(agencyLocationId);
 
             return formatObjectForView(establishment);
@@ -106,11 +106,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getComForPrisoner(nomisId, token) {
+    async function getComForPrisoner(nomisId, {tokenId}) {
         try {
             logger.info(`getComForPrisoner: ${nomisId}`);
 
-            const nomisClient = nomisClientBuilder(token);
+            const nomisClient = nomisClientBuilder(tokenId);
 
             const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
             const prisoner = prisoners[0];
@@ -118,7 +118,7 @@ function createPrisonerService(nomisClientBuilder) {
                 return;
             }
 
-            return getCom(prisoner.bookingId, token);
+            return getCom(prisoner.bookingId, {tokenId});
 
         } catch (error) {
             logger.error('Error getting prisoner establishment', error.stack);
@@ -126,11 +126,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getCom(bookingId, token) {
+    async function getCom(bookingId, {tokenId}) {
         try {
             logger.info(`getCom: ${bookingId}`);
 
-            const nomisClient = nomisClientBuilder(token);
+            const nomisClient = nomisClientBuilder(tokenId);
             const com = await nomisClient.getComRelation(bookingId);
 
             return formatObjectForView({com});

@@ -11,7 +11,10 @@ const timeoutSpec = {
 
 const apiUrl = config.nomis.apiUrl;
 
-module.exports = function(token) {
+module.exports = tokenStore => tokenId => {
+
+    const {token} = tokenStore.getTokens(tokenId);
+
     return {
         getUpcomingReleasesByOffenders: function(nomisIds) {
             const path = `${apiUrl}/offender-releases`;

@@ -7,8 +7,9 @@ const config = require('../../server/config');
 const nomisClientBuilder = require('../../server/data/nomisClientBuilder');
 
 const fakeNomis = nock(`${config.nomis.apiUrl}`);
+const fakeStore = {getTokens: sandbox.stub().returns({token: 'token', refreshToken: 'refresh'})};
 
-const nomisClient = nomisClientBuilder('token');
+const nomisClient = nomisClientBuilder(fakeStore)('username');
 
 describe('nomisClient', function() {
 
