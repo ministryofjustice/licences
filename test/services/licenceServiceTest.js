@@ -2066,147 +2066,6 @@ describe('licenceService', () => {
                 });
             });
 
-            context('ATTEND', () => {
-                it('should return no error if appointmentDate, appointmentTime and appointmentAddress ' +
-                    'are filled in', () => {
-
-                    const newLicence = {
-                        ...baseLicence,
-                        licenceConditions: {
-                            ...baseLicence.licenceConditions,
-                            additional: {
-                                ATTEND: {
-                                    appointmentDate: '26/12/2040',
-                                    appointmentTime: '13',
-                                    appointmentAddress: 'address'
-                                }
-                            }
-                        }
-                    };
-
-                    const output = service.getLicenceErrors({licence: newLicence});
-
-                    expect(output).to.eql({});
-                });
-
-                it('should return error if appointmentDate, appointmentTime and appointmentAddress ' +
-                    'are not filled in', () => {
-
-                    const newLicence = {
-                        ...baseLicence,
-                        licenceConditions: {
-                            ...baseLicence.licenceConditions,
-                            additional: {
-                                ATTEND: {}
-                            }
-                        }
-                    };
-
-                    const output = service.getLicenceErrors({licence: newLicence});
-
-                    expect(output).to.eql(
-                        {
-                            licenceConditions: {
-                                additional: {
-                                    ATTEND: {
-                                        appointmentDate: 'Not answered',
-                                        appointmentTime: 'Not answered',
-                                        appointmentAddress: 'Not answered'
-                                    }
-                                }
-                            }
-                        });
-                });
-
-                it('should return error if appointmentDate is not in the format YYYY-MM-DD', () => {
-
-                    const newLicence = {
-                        ...baseLicence,
-                        licenceConditions: {
-                            ...baseLicence.licenceConditions,
-                            additional: {
-                                ATTEND: {
-                                    appointmentDate: '2040-26-12',
-                                    appointmentTime: '13',
-                                    appointmentAddress: 'address'
-                                }
-                            }
-                        }
-                    };
-
-                    const output = service.getLicenceErrors({licence: newLicence});
-
-                    expect(output).to.eql(
-                        {
-                            licenceConditions: {
-                                additional: {
-                                    ATTEND: {
-                                        appointmentDate: 'Invalid or incorrectly formatted date'
-                                    }
-                                }
-                            }
-                        });
-                });
-
-                it('should return error if appointmentDate is not a possible date', () => {
-
-                    const newLicence = {
-                        ...baseLicence,
-                        licenceConditions: {
-                            ...baseLicence.licenceConditions,
-                            additional: {
-                                ATTEND: {
-                                    appointmentDate: '2040-12-32', appointmentTime: '13',
-                                    appointmentAddress: 'address'
-                                }
-                            }
-                        }
-                    };
-
-                    const output = service.getLicenceErrors({licence: newLicence});
-
-                    expect(output).to.eql(
-                        {
-                            licenceConditions: {
-                                additional: {
-                                    ATTEND: {
-                                        appointmentDate: 'Invalid or incorrectly formatted date'
-                                    }
-                                }
-                            }
-                        });
-                });
-
-                it('should return error if appointmentDate is in the past', () => {
-
-                    const newLicence = {
-                        ...baseLicence,
-                        licenceConditions: {
-                            ...baseLicence.licenceConditions,
-                            additional: {
-                                ATTEND: {
-                                    appointmentDate: '01/01/2016', appointmentTime: '13',
-                                    appointmentAddress: 'address'
-                                }
-                            }
-                        }
-                    };
-
-                    const output = service.getLicenceErrors({licence: newLicence});
-
-                    expect(output).to.eql(
-                        {
-                            licenceConditions: {
-                                additional: {
-                                    ATTEND: {
-                                        appointmentDate: 'Invalid date - must not be in the past'
-                                    }
-                                }
-                            }
-                        });
-                });
-            });
-
             context('ATTENDALL', () => {
                 it('should return no error if appointmentName is filled in', () => {
 
@@ -2714,6 +2573,196 @@ describe('licenceService', () => {
                     const output = service.getLicenceErrors({licence: newLicence});
 
                     expect(output).to.eql({});
+                });
+            });
+
+            context('ATTENDDEPENDENCY', () => {
+                it('should return no error if appointmentDate, appointmentTime and appointmentAddress ' +
+                    'are filled in', () => {
+
+                    const newLicence = {
+                        ...baseLicence,
+                        licenceConditions: {
+                            ...baseLicence.licenceConditions,
+                            additional: {
+                                ATTENDDEPENDENCY: {
+                                    appointmentDate: '26/12/2040',
+                                    appointmentTime: '13',
+                                    appointmentAddress: 'address'
+                                }
+                            }
+                        }
+                    };
+
+                    const output = service.getLicenceErrors({licence: newLicence});
+
+                    expect(output).to.eql({});
+                });
+
+                it('should return error if appointmentDate, appointmentTime and appointmentAddress ' +
+                    'are not filled in', () => {
+
+                    const newLicence = {
+                        ...baseLicence,
+                        licenceConditions: {
+                            ...baseLicence.licenceConditions,
+                            additional: {
+                                ATTENDDEPENDENCY: {}
+                            }
+                        }
+                    };
+
+                    const output = service.getLicenceErrors({licence: newLicence});
+
+                    expect(output).to.eql(
+                        {
+                            licenceConditions: {
+                                additional: {
+                                    ATTENDDEPENDENCY: {
+                                        appointmentDate: 'Not answered',
+                                        appointmentTime: 'Not answered',
+                                        appointmentAddress: 'Not answered'
+                                    }
+                                }
+                            }
+                        });
+                });
+
+                it('should return error if appointmentDate is not in the format YYYY-MM-DD', () => {
+
+                    const newLicence = {
+                        ...baseLicence,
+                        licenceConditions: {
+                            ...baseLicence.licenceConditions,
+                            additional: {
+                                ATTENDDEPENDENCY: {
+                                    appointmentDate: '2040-26-12',
+                                    appointmentTime: '13',
+                                    appointmentAddress: 'address'
+                                }
+                            }
+                        }
+                    };
+
+                    const output = service.getLicenceErrors({licence: newLicence});
+
+                    expect(output).to.eql(
+                        {
+                            licenceConditions: {
+                                additional: {
+                                    ATTENDDEPENDENCY: {
+                                        appointmentDate: 'Invalid or incorrectly formatted date'
+                                    }
+                                }
+                            }
+                        });
+                });
+
+                it('should return error if appointmentDate is not a possible date', () => {
+
+                    const newLicence = {
+                        ...baseLicence,
+                        licenceConditions: {
+                            ...baseLicence.licenceConditions,
+                            additional: {
+                                ATTENDDEPENDENCY: {
+                                    appointmentDate: '2040-12-32', appointmentTime: '13',
+                                    appointmentAddress: 'address'
+                                }
+                            }
+                        }
+                    };
+
+                    const output = service.getLicenceErrors({licence: newLicence});
+
+                    expect(output).to.eql(
+                        {
+                            licenceConditions: {
+                                additional: {
+                                    ATTENDDEPENDENCY: {
+                                        appointmentDate: 'Invalid or incorrectly formatted date'
+                                    }
+                                }
+                            }
+                        });
+                });
+
+                it('should return error if appointmentDate is in the past', () => {
+
+                    const newLicence = {
+                        ...baseLicence,
+                        licenceConditions: {
+                            ...baseLicence.licenceConditions,
+                            additional: {
+                                ATTENDDEPENDENCY: {
+                                    appointmentDate: '01/01/2016', appointmentTime: '13',
+                                    appointmentAddress: 'address'
+                                }
+                            }
+                        }
+                    };
+
+                    const output = service.getLicenceErrors({licence: newLicence});
+
+                    expect(output).to.eql(
+                        {
+                            licenceConditions: {
+                                additional: {
+                                    ATTENDDEPENDENCY: {
+                                        appointmentDate: 'Invalid date - must not be in the past'
+                                    }
+                                }
+                            }
+                        });
+                });
+            });
+
+            context('ATTENDSAMPLE', () => {
+                it('should return no error if attendSampleDetailsName, attendSampleDetailsAddress are present', () => {
+
+                    const newLicence = {
+                        ...baseLicence,
+                        licenceConditions: {
+                            ...baseLicence.licenceConditions,
+                            additional: {
+                                ATTENDSAMPLE: {
+                                    attendSampleDetailsName: 'name',
+                                    attendSampleDetailsAddress: 'address'
+                                }
+                            }
+                        }
+                    };
+
+                    const output = service.getLicenceErrors({licence: newLicence});
+
+                    expect(output).to.eql({});
+                });
+
+                it('should return error if attendSampleDetailsName, attendSampleDetailsAddress are not present', () => {
+
+                    const newLicence = {
+                        ...baseLicence,
+                        licenceConditions: {
+                            ...baseLicence.licenceConditions,
+                            additional: {
+                                ATTENDSAMPLE: {}
+                            }
+                        }
+                    };
+
+                    const output = service.getLicenceErrors({licence: newLicence});
+
+                    expect(output).to.eql(
+                        {
+                            licenceConditions: {
+                                additional: {
+                                    ATTENDSAMPLE: {
+                                        attendSampleDetailsName: 'Not answered',
+                                        attendSampleDetailsAddress: 'Not answered'
+                                    }
+                                }
+                            }
+                        });
                 });
             });
         });
