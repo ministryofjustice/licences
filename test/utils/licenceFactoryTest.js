@@ -638,10 +638,9 @@ describe('licenceFactory', () => {
             };
 
             expect(output).to.eql(expectedOutput);
-
         });
 
-        it('should replace placeholder text for appointment conditions for string', () => {
+        it('should replace placeholder text for dependency appointment conditions for string', () => {
             const rawLicence = {
                 licenceConditions: {
                     additional: {
@@ -677,7 +676,82 @@ describe('licenceFactory', () => {
             };
 
             expect(output).to.eql(expectedOutput);
+        });
 
+        it('should replace placeholder text for sample appointment conditions for string', () => {
+            const rawLicence = {
+                licenceConditions: {
+                    additional: {
+                        1: {
+                            attendSampleDetailsName: 'name', attendSampleDetailsAddress: 'address'
+                        }
+                    },
+                    bespoke: []
+                }
+            };
+            const selectedConditions = [
+                {
+                    id: 1,
+                    user_input: 'attendSampleDetails',
+                    text: 'The condition [placeholder] with input',
+                    field_position: {attendSampleDetailsName: 0, attendSampleDetailsAddress: 1},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
+                }
+            ];
+
+            const output = populateAdditionalConditionsAsString(rawLicence, selectedConditions);
+
+            const expectedOutput = {
+                licenceConditions: [
+                    {
+                        content: 'The condition name, address with input',
+                        group: 'g',
+                        subgroup: 'sg',
+                        id: 1
+                    }
+                ]
+            };
+
+            expect(output).to.eql(expectedOutput);
+        });
+
+        it('should join all fields and separators for multi field conditions when some missing', () => {
+            const rawLicence = {
+                licenceConditions: {
+                    additional: {
+                        1: {
+                            appointmentAddress: 'Address 1', appointmentTime: '15:30'
+                        }
+                    },
+                    bespoke: []
+                }
+            };
+            const selectedConditions = [
+                {
+                    id: 1,
+                    user_input: 'appointmentDetails',
+                    text: 'The condition [placeholder] with input',
+                    field_position: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2},
+                    group_name: 'g',
+                    subgroup_name: 'sg'
+                }
+            ];
+
+            const output = populateAdditionalConditionsAsString(rawLicence, selectedConditions);
+
+            const expectedOutput = {
+                licenceConditions: [
+                    {
+                        content: 'The condition Address 1 on  at 15:30 with input',
+                        group: 'g',
+                        subgroup: 'sg',
+                        id: 1
+                    }
+                ]
+            };
+
+            expect(output).to.eql(expectedOutput);
         });
 
         it('should replace placeholder text when multiple items when string', () => {
