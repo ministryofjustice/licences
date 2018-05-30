@@ -10,7 +10,8 @@ function formatPdfData(templateName, nomisId,
                        {licence, prisonerInfo, establishment}, image,
                        placeholder = DEFAULT_PLACEHOLDER) {
 
-    const conditions = getAdditionalConditionsText(licence);
+    const conditions = getAdditionalConditionsText(licence, pdfData[templateName]['CONDITIONS']);
+    const pss = getAdditionalConditionsText(licence, pdfData[templateName]['PSS']);
     const photo = image ? image.toString('base64') : placeholder.toString('base64');
 
     const allData = {
@@ -19,6 +20,7 @@ function formatPdfData(templateName, nomisId,
         establishment,
         nomisId,
         conditions,
+        pss,
         photo
     };
 
@@ -53,8 +55,7 @@ function readEntry(data, spec) {
         .join(spec.separator);
 }
 
-function getAdditionalConditionsText(licence) {
-
+function getAdditionalConditionsText(licence, config) {
 
     const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']);
     const conditions = getIn(licence, ['licenceConditions']);
@@ -63,12 +64,14 @@ function getAdditionalConditionsText(licence) {
         return;
     }
 
-    // todo extract this config if supporting other templates
-    const start = 8; // Need to continue existing list number
-    const itemDivider = '\n\n';
+    const start = config.startIndex;
+    const itemDivider = config.divider;
+    const filter = config.filter ? config.filter(config.filtered) : condition => condition;
 
     return conditions
-        .map((condition, index) => `${listCounter(start, index)}${getConditionText(condition.content)}`)
+        .filter(condition => filter(condition))
+        .map((condition, index) =>
+            `${listCounter(start, index)}${getConditionText(condition.content, config.terminator)}`)
         .join(itemDivider);
 }
 
@@ -78,10 +81,10 @@ function listCounter(start, index) {
         .toLowerCase();
 }
 
-function getConditionText(content) {
+function getConditionText(content, terminator) {
     return content
         .map(({text, variable}) => text || variable)
         .join('')
         .replace(/\.+$/, '') // remove trailing period
-        .concat(';');
+        .concat(terminator);
 }

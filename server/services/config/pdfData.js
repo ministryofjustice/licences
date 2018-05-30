@@ -171,7 +171,22 @@ module.exports = {
 
         CONDITIONS: {
             paths: [['conditions']],
-            displayName: 'Additional conditions'
+            displayName: 'Additional conditions',
+            startIndex: 8,
+            divider: '\n\n',
+            terminator: ';',
+            filtered: ['ATTENDSAMPLE', 'ATTENDDEPENDENCY'],
+            filter: filtered => condition => !filtered.includes(condition.id)
+        },
+
+        PSS: {
+            paths: [['pss']],
+            displayName: 'Post-sentence supervision conditions',
+            startIndex: 9,
+            divider: '\n\n',
+            terminator: ';',
+            filtered: ['ATTENDSAMPLE', 'ATTENDDEPENDENCY'],
+            filter: filtered => condition => filtered.includes(condition.id)
         }
     }
 };
