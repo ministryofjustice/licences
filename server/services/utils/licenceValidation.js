@@ -184,11 +184,6 @@ const additional = joi.object({
     COMPLYREQUIREMENTS: joi.object({
         courseOrCentre: requiredString
     }),
-    ATTEND: joi.object({
-        appointmentDate: requiredDate,
-        appointmentTime: requiredString,
-        appointmentAddress: requiredString
-    }),
     ATTENDALL: joi.object({
         appointmentName: requiredString
     }),
@@ -232,7 +227,16 @@ const additional = joi.object({
     ONEPHONE: joi.object({}),
     RETURNTOUK: joi.object({}),
     SURRENDERPASSPORT: joi.object({}),
-    NOTIFYPASSPORT: joi.object({})
+    NOTIFYPASSPORT: joi.object({}),
+    ATTENDDEPENDENCY: joi.object({
+        appointmentDate: requiredDate,
+        appointmentTime: requiredString,
+        appointmentAddress: requiredString
+    }),
+    ATTENDSAMPLE: joi.object({
+        attendSampleDetailsName: requiredString,
+        attendSampleDetailsAddress: requiredString
+    })
 });
 
 const bespoke = joi.array().items(joi.object({

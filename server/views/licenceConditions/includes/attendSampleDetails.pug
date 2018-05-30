@@ -1,0 +1,9 @@
+div.pure-g
+    div.pure-u-1
+        label(for='attendSampleDetailsName') Name
+            input(type='text' name='attendSampleDetailsName' id='attendSampleDetailsName' class='form-control' value=condition.user_submission && condition.user_submission.attendSampleDetailsName)
+    div.pure-u-1
+        label(for='attendSampleDetailsAddress') Address
+            textarea(name='attendSampleDetailsAddress' id='attendSampleDetailsAddress' class='form-control' rows='2')
+                if condition.user_submission && condition.user_submission.attendSampleDetailsAddress
+                    | #{condition.user_submission.attendSampleDetailsAddress}

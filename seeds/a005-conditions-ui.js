@@ -23,6 +23,13 @@ exports.seed = knex =>
                     '}'
                 },
                 {
+                    ui_id: "attendSampleDetails",
+                    field_position: '{' +
+                    '"attendSampleDetailsName": "0",' +
+                    '"attendSampleDetailsAddress": "1"' +
+                    '}'
+                },
+                {
                     ui_id: "victimDetails",
                     field_position: '{' +
                     '"victimFamilyMembers": "0",' +

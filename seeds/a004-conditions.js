@@ -159,14 +159,6 @@ exports.seed = knex =>
                     active: 1
                 },
                 {
-                    id: 'ATTEND',
-                    type: 'ADDITIONAL',
-                    text: 'Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.',
-                    user_input: 'appointmentDetails',
-                    group: 'DRUGS',
-                    active: 1
-                },
-                {
                     id: 'ATTENDALL',
                     type: 'ADDITIONAL',
                     text: 'Attend all appointments arranged for you with [INSERT NAME], a psychiatrist / psychologist / medical practitioner and co-operate fully with any care or treatment they recommend.',
@@ -322,6 +314,24 @@ exports.seed = knex =>
                     group: 'TECHNOLOGY',
                     subgroup: 'CAMERAS',
                     active: 1
-                }
+                },
+
+                // PSS
+                {
+                    id: 'ATTENDSAMPLE',
+                    type: 'ADDITIONAL',
+                    text: 'Attend [INSERT APPOINTMENT NAME AND ADDRESS], as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour.',
+                    user_input: 'attendSampleDetails',
+                    group: 'PSS',
+                    active: 1
+                },
+                {
+                    id: 'ATTENDDEPENDENCY',
+                    type: 'ADDITIONAL',
+                    text: 'Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.',
+                    user_input: 'appointmentDetails',
+                    group: 'PSS',
+                    active: 1
+                },
             ])
         );

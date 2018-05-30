@@ -33,6 +33,11 @@ exports.seed = knex =>
                     type: 'MAIN'
                 },
                 {
+                    id: 'PSS',
+                    name: 'Post-sentence supervision only',
+                    type: 'MAIN'
+                },
+                {
                     id: 'PERSONORGROUP',
                     name: 'Person or group',
                     type: 'SUB'

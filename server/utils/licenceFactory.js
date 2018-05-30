@@ -1,5 +1,6 @@
 const {conditionsOrder} = require('../models/conditions');
-const {getIn} = require('../utils/functionalHelpers');
+const {multiFields} = require('../models/conditions');
+const {getIn, flatten} = require('../utils/functionalHelpers');
 
 module.exports = {
     createLicenceObjectFrom,
@@ -127,9 +128,11 @@ function injectUserInputAsObject(condition, userInput, userErrors) {
     const conditionText = condition.text;
     const fieldPositionObject = condition.field_position;
 
-    return conditionName === 'appointmentDetails' ?
-        injectUserInputAppointmentAsObject(userInput, conditionText, userErrors) :
-        injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject, userErrors);
+    if (multiFields[conditionName]) {
+        return injectMultiFieldsAsObject(userInput, conditionText, userErrors, multiFields[conditionName]);
+    }
+
+    return injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject, userErrors);
 }
 
 function injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject, userErrors) {
@@ -156,18 +159,23 @@ function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInpu
     };
 }
 
-// Special case, doesn't follow normal rules
-function injectUserInputAppointmentAsObject(userInput, conditionText, userErrors) {
-    const {appointmentAddress, appointmentDate, appointmentTime} = userInput;
-    const {addressError, dateError, timeError, anyErrors} = getAppointmentErrors(userErrors);
+function injectMultiFieldsAsObject(userInput, conditionText, userErrors, config) {
 
-    const variableString = (error, variable) => error ? `[${error}]` : variable;
-    const addressString = variableString(addressError, appointmentAddress);
-    const dateString = variableString(dateError, appointmentDate);
-    const timeString = variableString(timeError, appointmentTime);
-    const string = `${addressString} on ${dateString} at ${timeString}`;
+    const variableString = (variable, error) => error ? `[${error}]` : variable;
 
-    const variableKey = anyErrors ? 'error' : 'variable';
+    const strings = config.fields.map(fieldName => {
+        return variableString(getIn(userInput, [fieldName]), getIn(userErrors, [fieldName]));
+    });
+
+    const fieldErrors = config.fields
+        .map(fieldName => getIn(userErrors, [fieldName]))
+        .filter(e => e);
+
+    const string = flatten(strings
+        .map((string, index) => [string, config.joining[index] || '']))
+        .join('');
+
+    const variableKey = fieldErrors.length > 0 ? 'error' : 'variable';
 
     const splitConditionText = conditionText.split(betweenBrackets).filter(text => text);
     return [
@@ -175,19 +183,6 @@ function injectUserInputAppointmentAsObject(userInput, conditionText, userErrors
         {[variableKey]: string},
         {text: splitConditionText[1]}
     ];
-}
-
-function getAppointmentErrors(errorObject) {
-    const addressError = getIn(errorObject, ['appointmentAddress']);
-    const dateError = getIn(errorObject, ['appointmentDate']);
-    const timeError = getIn(errorObject, ['appointmentTime']);
-
-    return {
-        addressError,
-        dateError,
-        timeError,
-        anyErrors: addressError || dateError || timeError
-    };
 }
 
 // For pdf

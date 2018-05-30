@@ -29,6 +29,31 @@ module.exports = {
         'USAGEHISTORY',
         'NOCAMERA',
         'CAMERAAPPROVAL',
-        'NOCAMERAPHONE'
-    ]
+        'NOCAMERAPHONE',
+        'ATTENDSAMPLE',
+        'ATTENDDEPENDENCY'
+    ],
+
+    multiFields: {
+        appointmentDetails: {
+            fields: [
+                'appointmentAddress',
+                'appointmentDate',
+                'appointmentTime'
+            ],
+            joining: [
+                ' on ',
+                ' at '
+            ]
+        },
+        attendSampleDetails: {
+            fields: [
+                'attendSampleDetailsName',
+                'attendSampleDetailsAddress'
+            ],
+            joining: [
+                ', '
+            ]
+        }
+    }
 };
