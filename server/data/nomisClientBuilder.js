@@ -4,6 +4,7 @@ const {merge} = require('../utils/functionalHelpers');
 const superagent = require('superagent');
 const generateApiGatewayToken = require('../authentication/apiGateway');
 const generateOauthClientToken = require('../authentication/oauth');
+const {NoTokenError} = require('../utils/errors');
 
 const timeoutSpec = {
     response: config.nomis.timeout.response,
@@ -103,6 +104,10 @@ module.exports = tokenStore => tokenId => {
 function nomisGetBuilder(tokenStore, tokenId) {
 
     const tokenObject = tokenStore.getTokens(tokenId);
+
+    if(!tokenObject) {
+        throw new NoTokenError();
+    }
 
     return async ({path, query = '', headers = {}, responseType = ''} = {}) => {
 

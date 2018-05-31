@@ -253,6 +253,11 @@ function handleKnownErrors(error, req, res, next) {
         logger.error('Bad csurf token: ' + error.stack);
     }
 
+    if(error.name === 'NoToken') {
+        logger.error('No token found for user');
+        return res.redirect('/logout');
+    }
+
     switch (error.status) {
         case 401:
             return res.redirect('/logout');
