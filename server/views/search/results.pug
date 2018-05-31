@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+
+    div.pure-g.pure-u-1
+        include ../includes/backToCaseList
+
+        div.pure-u-1-2
+            h1#pageHeading.heading-large Search results
+
+        include includes/searchErrors
+        include includes/offenderSearchForm
+
+        div.pure-u-1
+            include includes/resultsTable
+
+block append scripts
+    script(src="/public/javascripts/pagination.js?"+version)

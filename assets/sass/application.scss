@@ -186,6 +186,15 @@ $path: "/public/images/";
     margin-bottom: 0px
 }
 
+.searchLink {
+    text-align: right;
+    padding-top: 55px;
+}
+
+.searchForm {
+    background-color: $highlight-colour;
+}
+
 .subText {
     font-size: 80%;
 }

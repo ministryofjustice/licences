@@ -1,7 +1,10 @@
 const createCaseListService = require('../../server/services/caseListService');
+const createCaseListFormatter = require('../../server/services/utils/caseListFormatter');
+
 const {
     sandbox,
-    expect
+    expect,
+    logger
 } = require('../testSetup');
 
 describe('caseListService', () => {
@@ -53,8 +56,9 @@ describe('caseListService', () => {
     };
 
     const nomisClientBuilder = sandbox.stub().returns(nomisClient);
+    const caseListFormatter = createCaseListFormatter(logger, licenceClient);
 
-    const service = createCaseListService(nomisClientBuilder, licenceClient);
+    const service = createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter);
 
     afterEach(() => {
         sandbox.reset();

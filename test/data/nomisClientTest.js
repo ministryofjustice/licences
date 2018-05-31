@@ -334,6 +334,25 @@ describe('nomisClient', function() {
         });
     });
 
+    describe('getPrisoners', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get(`/prisoners?lastName=LAST`)
+                .reply(200, {key: 'value'});
+
+            return expect(nomisClient.getPrisoners('lastName=LAST')).to.eventually.eql({key: 'value'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get(`/prisoners?lastName=bill`)
+                .reply(500);
+
+            return expect(nomisClient.getPrisoners('lastName=LAST')).to.be.rejected();
+        });
+    });
+
     describe('token refreshing', () => {
 
         let clock;
