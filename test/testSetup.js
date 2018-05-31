@@ -14,6 +14,7 @@ const nock = require('nock');
 
 module.exports = {
     sandbox,
+    sinon,
     expect,
     nock
 };
