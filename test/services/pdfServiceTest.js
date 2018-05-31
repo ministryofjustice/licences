@@ -62,7 +62,7 @@ describe('pdfService', () => {
                 .post('/generate', {templateName, values})
                 .reply(200, pdf1AsBytes);
 
-            const result = await service.generatePdf(templateName, '123', 'token');
+            const result = await service.generatePdf(templateName, '123', {tokenId: 'token'});
 
             expect(licenceService.getLicence).to.be.calledOnce();
             expect(conditionsService.populateLicenceWithConditions).to.be.calledOnce();

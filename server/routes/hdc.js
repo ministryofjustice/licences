@@ -128,7 +128,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, {tokenId: req.user.username});
 
         res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus, errorObject});
     }));
@@ -154,7 +154,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         logger.debug('GET /approval/release/');
 
         const {nomisId} = req.params;
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, {tokenId: req.user.username});
 
         const {nextPath, pageDataMap} = formConfig.release;
         const dataPath = pageDataMap || ['licence', 'approval', 'release'];

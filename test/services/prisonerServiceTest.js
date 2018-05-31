@@ -54,7 +54,7 @@ describe('prisonerDetailsService', () => {
     describe('getPrisonerDetails', () => {
 
         it('should call the api with the nomis id then booking id', async () => {
-            await service.getPrisonerDetails('123');
+            await service.getPrisonerDetails('123', {tokenId: 'username'});
 
             expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledOnce();
             expect(nomisClientMock.getAliases).to.be.calledOnce();
@@ -72,7 +72,7 @@ describe('prisonerDetailsService', () => {
         });
 
         it('should return the result of the api call', () => {
-            return expect(service.getPrisonerDetails('123'))
+            return expect(service.getPrisonerDetails('123', {tokenId: 'username'}))
                 .to.eventually.eql(prisonerInfoResponse);
         });
 
@@ -86,14 +86,14 @@ describe('prisonerDetailsService', () => {
 
             nomisClientMock.getIdentifiers.resolves(identifiersResponseWithOthers);
 
-            return expect(service.getPrisonerDetails('123'))
+            return expect(service.getPrisonerDetails('123', {tokenId: 'username'}))
                 .to.eventually.eql(prisonerInfoResponse);
         });
 
         it('should throw if error in api', () => {
             nomisClientMock.getHdcEligiblePrisoner.rejects(new Error('dead'));
 
-            return expect(service.getPrisonerDetails('123')).to.be.rejected();
+            return expect(service.getPrisonerDetails('123', {tokenId: 'username'})).to.be.rejected();
         });
 
         it('it should return false for imageId of no image', async () => {
@@ -102,31 +102,31 @@ describe('prisonerDetailsService', () => {
 
             nomisClientMock.getHdcEligiblePrisoner.resolves(prisonerResponse2);
 
-            const result = await service.getPrisonerDetails('123');
+            const result = await service.getPrisonerDetails('123', {tokenId: 'username'});
             return expect(result.imageId).to.eql(false);
         });
     });
 
     describe('getPrisonerImage', () => {
         it('should call getImageData with the imageId', async () => {
-            await service.getPrisonerImage('123', 'token');
+            await service.getPrisonerImage('123', {tokenId: 'username'});
 
             expect(nomisClientMock.getImageData).to.be.calledOnce();
             expect(nomisClientMock.getImageData).to.be.calledWith('123');
         });
 
         it('should return the image', async () => {
-            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql(imageDataResponse);
+            return expect(service.getPrisonerImage('123', {tokenId: 'username'})).to.eventually.eql(imageDataResponse);
         });
 
         it('should return null if no image', async () => {
             nomisClientMock.getImageData.resolves(null);
-            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql(null);
+            return expect(service.getPrisonerImage('123', {tokenId: 'username'})).to.eventually.eql(null);
         });
 
         it('should return null if no image', async () => {
             nomisClientMock.getImageData.rejects({message: 'not found'});
-            return expect(service.getPrisonerImage('123', 'token')).to.eventually.eql(null);
+            return expect(service.getPrisonerImage('123', {tokenId: 'username'})).to.eventually.eql(null);
         });
     });
 
@@ -136,7 +136,7 @@ describe('prisonerDetailsService', () => {
 
             nomisClientMock.getHdcEligiblePrisoner.resolves(hdcPrisonersResponse);
 
-            await service.getEstablishmentForPrisoner('123', 'token');
+            await service.getEstablishmentForPrisoner('123', {tokenId: 'username'});
 
             expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledOnce();
             expect(nomisClientMock.getEstablishment).to.be.calledOnce();
@@ -145,31 +145,31 @@ describe('prisonerDetailsService', () => {
         });
 
         it('should return the result of the api call', () => {
-            return expect(service.getEstablishmentForPrisoner('123'))
+            return expect(service.getEstablishmentForPrisoner('123', {tokenId: 'username'}))
                 .to.eventually.eql(establishmentResponse);
         });
 
         it('should throw if error in api when getting offender', () => {
             nomisClientMock.getHdcEligiblePrisoner.rejects(new Error('dead'));
-            return expect(service.getEstablishmentForPrisoner('123')).to.be.rejected();
+            return expect(service.getEstablishmentForPrisoner('123', {tokenId: 'username'})).to.be.rejected();
         });
 
         it('should throw if error in api when getting establishment', () => {
             nomisClientMock.getHdcEligiblePrisoner.resolves(hdcPrisonersResponse);
             nomisClientMock.getEstablishment.rejects(new Error('dead'));
-            return expect(service.getEstablishmentForPrisoner('123')).to.be.rejected();
+            return expect(service.getEstablishmentForPrisoner('123', {tokenId: 'username'})).to.be.rejected();
         });
 
         it('should NOT throw but return null if 404 in api when getting establishment', () => {
             nomisClientMock.getHdcEligiblePrisoner.resolves(hdcPrisonersResponse);
             nomisClientMock.getEstablishment.rejects({status: 404});
-            return expect(service.getEstablishmentForPrisoner('123')).to.eventually.eql(null);
+            return expect(service.getEstablishmentForPrisoner('123', {tokenId: 'username'})).to.eventually.eql(null);
         });
 
         it('should throw if error in api when getting establishment if error ststus other than 404', () => {
             nomisClientMock.getHdcEligiblePrisoner.resolves(hdcPrisonersResponse);
             nomisClientMock.getEstablishment.rejects({status: 401});
-            return expect(service.getEstablishmentForPrisoner('123')).to.be.rejected();
+            return expect(service.getEstablishmentForPrisoner('123', {tokenId: 'username'})).to.be.rejected();
         });
     });
 
@@ -179,7 +179,7 @@ describe('prisonerDetailsService', () => {
 
             nomisClientMock.getHdcEligiblePrisoner.resolves(hdcPrisonersResponse);
 
-            await service.getComForPrisoner('123', 'token');
+            await service.getComForPrisoner('123', {tokenId: 'username'});
 
             expect(nomisClientMock.getHdcEligiblePrisoner).to.be.calledOnce();
             expect(nomisClientMock.getComRelation).to.be.calledOnce();
@@ -193,31 +193,31 @@ describe('prisonerDetailsService', () => {
                 com: 'Comfirst Comlast'
             };
 
-            return expect(service.getComForPrisoner('123'))
+            return expect(service.getComForPrisoner('123', {tokenId: 'username'}))
                 .to.eventually.eql(expectedComData);
         });
 
         it('should throw if error in api when getting offender', () => {
             nomisClientMock.getHdcEligiblePrisoner.rejects(new Error('dead'));
-            return expect(service.getComForPrisoner('123')).to.be.rejected();
+            return expect(service.getComForPrisoner('123', {tokenId: 'username'})).to.be.rejected();
         });
 
         it('should throw if error in api when getting establishment', () => {
             nomisClientMock.getHdcEligiblePrisoner.resolves(hdcPrisonersResponse);
             nomisClientMock.getComRelation.rejects(new Error('dead'));
-            return expect(service.getComForPrisoner('123')).to.be.rejected();
+            return expect(service.getComForPrisoner('123', {tokenId: 'username'})).to.be.rejected();
         });
 
         it('should NOT throw but return null if 404 in api when getting establishment', () => {
             nomisClientMock.getHdcEligiblePrisoner.resolves(hdcPrisonersResponse);
             nomisClientMock.getComRelation.rejects({status: 404});
-            return expect(service.getComForPrisoner('123')).to.eventually.eql(null);
+            return expect(service.getComForPrisoner('123', {tokenId: 'username'})).to.eventually.eql(null);
         });
 
         it('should throw if error in api when getting establishment if error ststus other than 404', () => {
             nomisClientMock.getHdcEligiblePrisoner.resolves(hdcPrisonersResponse);
             nomisClientMock.getComRelation.rejects({status: 401});
-            return expect(service.getComForPrisoner('123')).to.be.rejected();
+            return expect(service.getComForPrisoner('123', {tokenId: 'username'})).to.be.rejected();
         });
     });
 });
