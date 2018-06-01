@@ -29,7 +29,8 @@ const app = createApp({
     prisonerService,
     conditionsService,
     caseListService,
-    pdfService
+    pdfService,
+    tokenStore
 });
 
 module.exports = app;

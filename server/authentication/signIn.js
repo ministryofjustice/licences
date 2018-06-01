@@ -23,7 +23,8 @@ function signIn(tokenStore) {
             logger.info(`Elite2 login success for [${username}]`);
 
             const eliteAuthorisationToken = `${loginResult.body.token_type} ${loginResult.body.access_token}`;
-            tokenStore.addOrUpdate(username, eliteAuthorisationToken, loginResult.body.refresh_token);
+            const refreshToken = loginResult.body.refresh_token;
+            tokenStore.addOrUpdate(username, eliteAuthorisationToken, refreshToken);
             auth = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : eliteAuthorisationToken;
 
             const profileResult = await superagent
@@ -39,7 +40,15 @@ function signIn(tokenStore) {
 
             logger.info(`Elite2 profile success for [${username}] with role  [${roleCode}]`);
 
-            return {...profileResult.body, token: eliteAuthorisationToken, role: roleCode, activeCaseLoad, username};
+            return {
+                ...profileResult.body,
+                token: eliteAuthorisationToken,
+                refreshToken,
+                role: roleCode,
+                activeCaseLoad,
+                username
+            };
+
         } catch (error) {
             if(error.status === 400 || error.status === 401 || error.status === 403) {
                 logger.error(`Forbidden Elite2 login for [${username}]:`, error.stack);

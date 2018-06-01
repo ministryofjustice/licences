@@ -44,7 +44,8 @@ module.exports = function createApp({
                                         prisonerService,
                                         conditionsService,
                                         caseListService,
-                                        pdfService
+                                        pdfService,
+                                        tokenStore
                                     }) {
     const app = express();
 
@@ -96,6 +97,25 @@ module.exports = function createApp({
     // Request Processing Configuration
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
+
+    // token retrieval
+    app.use((req, res, next) => {
+        if (req.user) {
+            const tokens = tokenStore.getTokens(req.user.username);
+
+            if (!tokens) {
+                tokenStore.addOrUpdate(req.user.username, req.user.token, req.user.refreshToken);
+            } else {
+                // token store is more up-to-date than cookie so update tokens
+                if(tokens.token !== req.user.token) {
+                    req.user.token = tokens.token;
+                    req.user.refreshToken = tokens.refreshToken;
+                }
+            }
+        }
+
+        next();
+    });
 
     // Resource Delivery Configuration
     app.use(compression());
@@ -251,6 +271,11 @@ function handleKnownErrors(error, req, res, next) {
 
     if (error.code === 'EBADCSRFTOKEN') {
         logger.error('Bad csurf token: ' + error.stack);
+    }
+
+    if(error.name === 'NoToken') {
+        logger.error('No token found for user');
+        return res.redirect('/logout');
     }
 
     switch (error.status) {

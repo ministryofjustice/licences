@@ -21,7 +21,7 @@ describe('signIn', () => {
     it('should return user object if all apis succeed', () => {
         fakeOauth
             .post(`/oauth/token`)
-            .reply(200, {token_type: 'type', access_token: 'token'});
+            .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh'});
 
         fakeNomis
             .get(`/users/me`)
@@ -38,6 +38,7 @@ describe('signIn', () => {
         const expectedOutput = {
             key: 'value',
             token: 'type token',
+            refreshToken: 'refresh',
             role: 'LICENCE',
             username: 'un',
             activeCaseLoadId: 'ID',
@@ -119,7 +120,7 @@ describe('signIn', () => {
     it('should return null if there is no active caseload', () => {
         fakeOauth
             .post(`/oauth/token`)
-            .reply(200, {token_type: 'type', access_token: 'token'});
+            .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh'});
 
         fakeNomis
             .get(`/users/me`)
@@ -136,6 +137,7 @@ describe('signIn', () => {
         const expectedOutput = {
             key: 'value',
             token: 'type token',
+            refreshToken: 'refresh',
             role: 'LICENCE',
             username: 'un',
             activeCaseLoadId: 'ID',
