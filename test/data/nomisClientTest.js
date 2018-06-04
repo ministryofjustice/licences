@@ -355,12 +355,12 @@ describe('nomisClient', function() {
 
             fakeOauth
                 .post(`/oauth/token`)
-                .reply(200, {access_token: 'a', refresh_token: 'b'});
+                .reply(200, {access_token: 'a', refresh_token: 'b', token_type: 'Bearer'});
 
             const result = await nomisClient.getEstablishment('1');
 
             expect(fakeStore.addOrUpdate).to.be.calledOnce();
-            expect(fakeStore.addOrUpdate).to.be.calledWith('username', 'a', 'b');
+            expect(fakeStore.addOrUpdate).to.be.calledWith('username', 'Bearer a', 'b');
             expect(result).to.eql({response: 'this'});
         });
 
