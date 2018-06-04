@@ -125,25 +125,20 @@ function nomisGetBuilder(tokenStore, tokenId) {
             return result.body;
 
         } catch (error) {
-            logger.error('Error from NOMIS: ', error.stack);
-
             const unauthorisedError = error.status === 400 || error.status === 401 || error.status === 403;
             const refreshAttempted = Date.now() - tokenObject.timestamp < 5000;
 
             if(!unauthorisedError || refreshAttempted) {
+                logger.error('Error from NOMIS: ', error.stack);
                 throw error;
             }
 
-            try {
-                const {accessToken, refreshToken} = await refreshNomisToken(tokenObject.refreshToken);
-                tokenStore.addOrUpdate(tokenId, accessToken, refreshToken);
+            logger.info('Refreshing token for ', tokenId);
+            const {accessToken, refreshToken} = await refreshNomisToken(tokenObject.refreshToken);
+            tokenStore.addOrUpdate(tokenId, accessToken, refreshToken);
 
-                const nomisGet = nomisGetBuilder(tokenStore, tokenId);
-                return nomisGet({path, query, headers, responseType});
-            } catch (error) {
-                logger.error('Error refreshing NOMIS token: ', error.stack);
-                throw error;
-            }
+            const nomisGet = nomisGetBuilder(tokenStore, tokenId);
+            return nomisGet({path, query, headers, responseType});
         }
     };
 }
@@ -174,7 +169,7 @@ async function refreshNomisToken(refreshToken) {
         .timeout({response: 2000, deadline: 2500});
 
     return {
-        accessToken: result.body.access_token,
+        accessToken: `${result.body.token_type} ${result.body.access_token}`,
         refreshToken: result.body.refresh_token
     };
 }
