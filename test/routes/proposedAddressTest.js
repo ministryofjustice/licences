@@ -271,5 +271,15 @@ describe('/hdc/proposedAddress', () => {
                     expect(res.text).to.include('<form id="enterAlternativeForm" method="post">');
                 });
         });
+
+        it('should redirect to review page on addition of an address', () => {
+
+            return request(app)
+                .post('/proposedAddress/curfewAddress/add')
+                .send({nomisId: '1'})
+                .expect(302)
+                .expect('Location', '/hdc/review/curfewAddress/1');
+
+        });
     });
 });

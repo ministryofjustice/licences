@@ -219,7 +219,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     router.post('/proposedAddress/curfewAddress/add/', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.body;
         const rawLicence = await licenceService.getLicence(nomisId);
-        const nextPath = '/hdc/proposedAddress/confirmAddress/';
+        const nextPath = '/hdc/review/curfewAddress/';
 
         if (formConfig.curfewAddress.fields) {
             await licenceService.addAddress({
