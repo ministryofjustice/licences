@@ -1,6 +1,5 @@
 const {
     addressReviewStarted,
-    getCandidateAddress,
     getCurfewAddressFormData,
     isAcceptedAddress,
     isRejectedAddress
@@ -27,23 +26,12 @@ describe('addressHelpers', () => {
         });
     });
 
-    describe('getCandidateAddress', () => {
-        it('should return the last address object if it is non-finished', () => {
-            expect(getCandidateAddress(addressList)).to.eql(
-                {addressLine1: 'line5', consent: 'Yes', electricity: 'Yes'});
-        });
-
-        it('should return null if no candidate found', () => {
-            expect(getCandidateAddress([addressList[2], addressList[0]])).to.eql(null);
-        });
-    });
-
     describe('getCurfewAddressFormData', () => {
         it('should return {submitPath: null, addressToShow: {}} if no addresses', () => {
             expect(getCurfewAddressFormData([])).to.eql({submitPath: null, addressToShow: {}});
         });
 
-        it('should return update and the address if the final address is unfinished', () => {
+        it('should return update and the address if the final address has not been rejected', () => {
             expect(getCurfewAddressFormData(addressList)).to.eql(
                 {submitPath: '/hdc/proposedAddress/curfewAddress/update/', addressToShow: addressList[4]}
             );

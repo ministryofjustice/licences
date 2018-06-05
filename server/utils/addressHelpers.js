@@ -2,22 +2,10 @@ const {isEmpty, lastItem} = require('./functionalHelpers');
 
 module.exports = {
     addressReviewStarted,
-    getCandidateAddress,
     getCurfewAddressFormData,
     isAcceptedAddress,
     isRejectedAddress
 };
-
-function getCandidateAddress(addressList) {
-
-    const candidate = lastItem(addressList);
-
-    if(!candidate || !isActiveAddress(candidate)) {
-        return null;
-    }
-
-    return candidate;
-}
 
 function getCurfewAddressFormData(addressList) {
 
@@ -27,18 +15,11 @@ function getCurfewAddressFormData(addressList) {
         return {submitPath: null, addressToShow: {}};
     }
 
-    if(isActiveAddress(candidate)) {
-        return {submitPath: '/hdc/proposedAddress/curfewAddress/update/', addressToShow: candidate};
-    }
-
     if(isRejectedAddress(candidate)) {
         return {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}};
     }
-}
 
-function isActiveAddress(address) {
-    const {consent, deemedSafe} = address;
-    return !consent || consent === 'Yes' && !deemedSafe;
+    return {submitPath: '/hdc/proposedAddress/curfewAddress/update/', addressToShow: candidate};
 }
 
 function isAcceptedAddress(address) {
