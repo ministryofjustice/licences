@@ -1484,7 +1484,27 @@ describe('licenceService', () => {
             expect(output).to.eql({proposedAddress: {curfewAddress: {homeVisitConducted: 'Not answered'}}});
         });
 
-        it('should require an answer for address safety', () => {
+        it('should not require an answer for homeVisitConducted if consent is no', () => {
+
+            const licence = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
+                        consent: 'No',
+                        electricity: 'Yes',
+                        homeVisitConducted: ''
+                    }
+                }
+            };
+
+            const output = service.getLicenceErrors({licence});
+
+            expect(output).to.eql({});
+        });
+
+        it('should require an answer for address safety if other curfew address questions are Yes', () => {
 
             const licence = {
                 ...baseLicence,
@@ -1500,6 +1520,27 @@ describe('licenceService', () => {
             const output = service.getLicenceErrors({licence});
 
             expect(output).to.eql({proposedAddress: {curfewAddress: {deemedSafe: 'Not answered'}}});
+        });
+
+        it('should not require an answer for address safety if other curfew address questions are No', () => {
+
+            const licence = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
+                        consent: 'Yes',
+                        electricity: 'No',
+                        homeVisitConducted: 'Yes',
+                        deemedSafe: ''
+                    }
+                }
+            };
+
+            const output = service.getLicenceErrors({licence});
+
+            expect(output).to.eql({});
         });
 
         it('should require a reason if deemedSafe is no', () => {
@@ -2886,7 +2927,7 @@ describe('licenceService', () => {
 
     });
 
-    describe('getEligibilityErrors', () => {
+    describe('getValidationErrorsForReview', () => {
 
         const proposedAddress = {
             curfewAddress: {
@@ -2931,59 +2972,105 @@ describe('licenceService', () => {
             proposedAddress
         };
 
-        it('should validate and remove unrequired address fields', () => {
-            const missingFieldProposedAddress = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        telephone: 'abc',
-                        cautionedAgainstResident: '',
-                        consent: '',
-                        deemedSafe: ''
-                    }
-                }
-            };
+        context('Stage === ELIGIBILITY', () => {
 
-            expect(service.getEligibilityErrors({licence: missingFieldProposedAddress})).to.eql(
-                {proposedAddress: {curfewAddress: {
-                    telephone: 'Invalid entry - number required',
-                    cautionedAgainstResident: 'Not answered'
-                }}}
-            );
+            it('should validate and remove unrequired address fields', () => {
+                const missingFieldProposedAddress = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            telephone: 'abc',
+                            cautionedAgainstResident: '',
+                            consent: '',
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'ELIGIBILITY'},
+                    licence: missingFieldProposedAddress});
+
+                expect(output).to.eql(
+                    {proposedAddress: {curfewAddress: {
+                                telephone: 'Invalid entry - number required',
+                                cautionedAgainstResident: 'Not answered'
+                            }}}
+                );
+            });
+
+            it('should handle a string for curfew address error', () => {
+                const missingFieldProposedAddress = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: 'Not answered'
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'ELIGIBILITY'},
+                    licence: missingFieldProposedAddress});
+
+                expect(output).to.eql(
+                    {proposedAddress: {curfewAddress: 'Not answered'}}
+                );
+            });
+
+            it('should remove proposedAddress if it is empty after removal of fields', () => {
+                const missingFieldProposedAddress = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: '',
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'ELIGIBILITY'},
+                    licence: missingFieldProposedAddress});
+
+                expect(output).to.eql({});
+            });
         });
 
-        it('should handle a string for curfew address error', () => {
-            const missingFieldProposedAddress = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: 'Not answered'
-                }
-            };
-
-            expect(service.getEligibilityErrors({licence: missingFieldProposedAddress})).to.eql(
-                {proposedAddress: {curfewAddress: 'Not answered'}}
-            );
-        });
-
-        it('should remove proposedAddress if it is empty after removal of fields', () => {
-            const missingFieldProposedAddress = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: '',
-                        deemedSafe: ''
+        context('Stage === PROCESSING_RO, curfewAddressApproved === rejected', () => {
+            it('should only validate proposedAddress sections', () => {
+                const licence = {
+                    eligibility: {
+                        excluded: {
+                            decision: ''
+                        }
+                    },
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            deemedSafe: ''
+                        }
                     }
-                }
-            };
+                };
 
-            expect(service.getEligibilityErrors({licence: missingFieldProposedAddress})).to.eql(
-                {}
-            );
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'PROCESSING_RO', decisions: {curfewAddressApproved: 'rejected'}},
+                    licence});
+
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            deemedSafe: 'Not answered'
+                        }
+                    }
+                });
+            });
+
         });
     });
 });

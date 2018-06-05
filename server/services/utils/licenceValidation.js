@@ -104,9 +104,18 @@ const curfewAddress = joi.object().keys({
     cautionedAgainstResident: requiredYesNo,
     consent: requiredYesNo,
     electricity: requiredIf('consent', 'Yes'),
-    homeVisitConducted: requiredIf('electricity', 'Yes'),
-    deemedSafe: requiredString,
-    unsafeReason: requiredIf('deemedSafe', 'No')
+    homeVisitConducted:
+        requiredIf('consent', 'Yes',
+            requiredIf('electricity', 'Yes')),
+    deemedSafe:
+        requiredIf('consent', 'Yes',
+            requiredIf('electricity', 'Yes',
+                requiredIf('homeVisitConducted', 'Yes'))),
+    unsafeReason:
+        requiredIf('consent', 'Yes',
+            requiredIf('electricity', 'Yes',
+                requiredIf('homeVisitConducted', 'Yes',
+                    requiredIf('deemedSafe', 'No'))))
 }).required();
 
 // PROCESSING_RO
@@ -276,7 +285,11 @@ module.exports = function(licence) {
             }];
         }
 
-        const errorsForSection = joi.validate(licence[section], schema[section], {abortEarly: false}).error;
+        const errorsForSection = joi.validate(
+            licence[section],
+            schema[section],
+            {stripUnknown: true, abortEarly: false}
+        ).error;
 
         if(!errorsForSection) {
             return [];

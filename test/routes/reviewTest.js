@@ -44,7 +44,7 @@ describe('/review/', () => {
 
         it('shows a link to the send page if there are no errors', () => {
 
-            licenceServiceStub.getEligibilityErrors.returns({});
+            licenceServiceStub.getValidationErrorsForReview.returns({});
 
             return request(app)
                 .get('/review/curfewAddress/1')
@@ -58,7 +58,7 @@ describe('/review/', () => {
 
         it('shows a link to the address page if there are errors', () => {
 
-            licenceServiceStub.getEligibilityErrors.returns({a: 'b'});
+            licenceServiceStub.getValidationErrorsForReview.returns({a: 'b'});
 
             return request(app)
                 .get('/review/curfewAddress/1')

@@ -105,3 +105,4 @@ if licenceStatus.stage !== 'ELIGIBILITY'
                     span Could this offender be managed safely at address?
                 div.pure-u-1-2
                     +itemAndError(address.deemedSafe, errors.deemedSafe, "deemedSafe-curfew")
+                    +itemAndError('', errors.unsafeReason && 'Reason not provided', "unsafeReason-curfew")

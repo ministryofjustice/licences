@@ -269,11 +269,25 @@ module.exports = function createLicenceService(licenceClient) {
         return getLicenceErrors({licence, sections: ['licenceConditions']});
     }
 
+    const getValidationErrorsForReview = ({licenceStatus, licence}) => {
+        const {stage, decisions} = licenceStatus;
+
+        if(stage === 'ELIGIBILITY') {
+            return getEligibilityErrors({licence});
+        }
+
+        if(stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
+            return getAddressRejectedErrors({licence});
+        }
+
+        return getLicenceErrors({licence});
+    };
+
     function getEligibilityErrors({licence}) {
         const errorObject = getLicenceErrors({licence, sections: ['proposedAddress']});
         const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
 
-        if(typeof errorObject.proposedAddress.curfewAddress === 'string') {
+        if(typeof getIn(errorObject, ['proposedAddress', 'curfewAddress']) === 'string') {
             return errorObject;
         }
 
@@ -290,6 +304,10 @@ module.exports = function createLicenceService(licenceClient) {
         return newObject;
     }
 
+    function getAddressRejectedErrors({licence}) {
+        return getLicenceErrors({licence, sections: ['proposedAddress']});
+    }
+
     return {
         reset,
         getLicence,
@@ -303,6 +321,7 @@ module.exports = function createLicenceService(licenceClient) {
         addAddress,
         getLicenceErrors,
         getConditionsErrors,
-        getEligibilityErrors
+        getEligibilityErrors,
+        getValidationErrorsForReview
     };
 };

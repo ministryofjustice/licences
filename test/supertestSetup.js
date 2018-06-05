@@ -63,6 +63,7 @@ const licenceServiceStub = {
     getConditionsErrors: sandbox.stub().returns(),
     getLicenceErrors: sandbox.stub().returns(),
     getEligibilityErrors: sandbox.stub().returns(),
+    getValidationErrorsForReview: sandbox.stub().returns({}),
     addAddress: sandbox.stub().returnsPromise().resolves()
 };
 
