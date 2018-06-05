@@ -24,7 +24,7 @@ describe('/hdc/finalChecks', () => {
 
     describe('routes', () => {
         const routes = [
-            {url: '/finalChecks/seriousOffence/1', content: 'serious offence'}
+            {url: '/finalChecks/seriousOffence/1', content: 'other law enforcement'}
         ];
 
         routes.forEach(route => {
