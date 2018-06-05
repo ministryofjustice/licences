@@ -110,10 +110,6 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         }));
 
-    const validationMethods = {
-        ELIGIBILITY: licenceService.getEligibilityErrors
-    };
-
     router.get('/review/:sectionName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         const {sectionName, nomisId} = req.params;
         logger.debug(`GET /review/${sectionName}/${nomisId}`);
@@ -123,9 +119,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
         const licenceWithAddress = addAddressTo(licence);
-        const validationMethod = validationMethods[licenceStatus.stage] || licenceService.getLicenceErrors;
-        const errorObject = validationMethod({licence: licenceWithAddress});
-
+        const errorObject = licenceService.getValidationErrorsForReview({licenceStatus, licence: licenceWithAddress});
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, {tokenId: req.user.username});
