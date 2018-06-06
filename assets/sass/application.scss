@@ -249,6 +249,10 @@ $path: "/public/images/";
     text-align: right;
 }
 
+.marginTopMedium {
+    margin-top: 1em;
+}
+
 #global-header #logo.hmppslogo {
     background: url($path+'/hmpps_logo_small.png') no-repeat;
     background-size: 54px 48px;
@@ -377,3 +381,10 @@ input[type="time"] {
 .maxWidth {
     max-width: 85%;
 }
+
+.error-banner {
+    text-align: center;
+    padding: 1em;
+    border: solid 3px #E78E5F;
+}
+
