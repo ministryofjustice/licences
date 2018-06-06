@@ -3,6 +3,7 @@ extends ../layout
 block content
 
     - var crdTimeValue = data ? data.decision : null;
+    - var dmApprovedValue = data ? data.dmApproval : null;
 
     div.pure-g.pure-u-1
         include ../includes/back
@@ -21,12 +22,23 @@ block content
             div.largePaddingBottom
                 div.form-group.inline.smallPaddingTop.pure-u-1-2
 
-                    div.multiple-choice
+                    div.multiple-choice(data-target="dmApprovalForm")
                         input#crdTimeYes(type="radio" checked=crdTimeValue === 'Yes' name="decision" value="Yes")
                         label(for="crdTimeYes") Yes
                     div.multiple-choice
                         input#crdTimeNo(type="radio" checked=crdTimeValue === 'No' name="decision" value="No")
                         label(for="crdTimeNo") No
+
+                    div#dmApprovalForm(class=errorObject.dmApproval ? 'form-group-error panel panel-border-narrow': 'panel panel-border-narrow js-hidden')
+                        p Has the decision maker given approval to continue the HDC case?
+                            if errorObject.dmApproval
+                                span.error-message Please provide an answer
+                        div.multiple-choice.smallPaddingBottom
+                            input#dmApprovalYes(type="radio" checked=dmApprovedValue === 'Yes' name="dmApproval" value="Yes")
+                            label(for="dmApprovalYes") Yes
+                        div.multiple-choice
+                            input#dmApprovalNo(type="radio" checked=dmApprovedValue === 'No' name="dmApproval" value="No")
+                            label(for="dmApprovalNo") No
 
             div.paddingBottom
                 div.pure-u-1.inlineButtons.smallPaddingTop

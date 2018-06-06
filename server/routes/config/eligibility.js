@@ -42,7 +42,8 @@ module.exports = {
     crdTime: {
         licenceSection: 'crdTime',
         fields: [
-            {decision: {}}
+            {decision: {}},
+            {dmApproval: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
         validateInPlace: true,
         nextPath: {

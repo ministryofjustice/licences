@@ -1156,6 +1156,22 @@ describe('licenceService', () => {
                 {eligibility: {excluded: {reason: 'Not answered'}}});
         });
 
+        it('should return error if DM approval is not provided for when less than 4 weeks', () => {
+
+            const licence = {
+                ...baseLicence,
+                eligibility: {
+                    ...baseLicence.eligibility,
+                    crdTime: {
+                        decision: 'Yes'
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors({licence})).to.eql(
+                {eligibility: {crdTime: {dmApproval: 'Not answered'}}});
+        });
+
         it('should return error if suitability decision is not provided', () => {
 
             const licence = {
