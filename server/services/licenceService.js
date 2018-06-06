@@ -277,7 +277,7 @@ module.exports = function createLicenceService(licenceClient) {
         }
 
         if(stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
-            return getAddressRejectedErrors({licence});
+            return getLicenceErrors({licence, sections: ['proposedAddress']});
         }
 
         return getLicenceErrors({licence});
@@ -302,10 +302,6 @@ module.exports = function createLicenceService(licenceClient) {
         }
 
         return newObject;
-    }
-
-    function getAddressRejectedErrors({licence}) {
-        return getLicenceErrors({licence, sections: ['proposedAddress']});
     }
 
     return {

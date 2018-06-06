@@ -262,6 +262,12 @@ const onRemand = {
     decision: requiredYesNo
 };
 
+const confiscationOrder = {
+    decision: requiredYesNo,
+    confiscationUnitConsulted: requiredIf('decision', 'Yes', requiredYesNo),
+    comments: requiredIf('confiscationUnitConsulted', 'Yes')
+};
+
 const release = {
     decision: requiredYesNo,
     reason: requiredIf('decision', 'No')
@@ -274,7 +280,7 @@ const schema = {
     risk: {riskManagement},
     reporting: {reportingInstructions},
     licenceConditions: {standard, additional, bespoke},
-    finalChecks: {seriousOffence, onRemand},
+    finalChecks: {seriousOffence, onRemand, confiscationOrder},
     approval: {release}
 };
 

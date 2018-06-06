@@ -24,7 +24,9 @@ describe('/hdc/finalChecks', () => {
 
     describe('routes', () => {
         const routes = [
-            {url: '/finalChecks/seriousOffence/1', content: 'other law enforcement'}
+            {url: '/finalChecks/seriousOffence/1', content: 'other law enforcement'},
+            {url: '/finalChecks/onRemand/1', content: 'Is the offender currently on remand '},
+            {url: '/finalChecks/confiscationOrder/1', content: 'Is the offender subject to a confiscation order?'}
         ];
 
         routes.forEach(route => {
@@ -47,6 +49,18 @@ describe('/hdc/finalChecks', () => {
                 body: {nomisId: 1},
                 formName: 'seriousOffence',
                 nextPath: '/hdc/finalChecks/onRemand/1'
+            },
+            {
+                url: '/finalChecks/onRemand/1',
+                body: {nomisId: 1},
+                formName: 'onRemand',
+                nextPath: '/hdc/finalChecks/confiscationOrder/1'
+            },
+            {
+                url: '/finalChecks/confiscationOrder/1',
+                body: {nomisId: 1},
+                formName: 'confiscationOrder',
+                nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/finalChecks/refuse/1',

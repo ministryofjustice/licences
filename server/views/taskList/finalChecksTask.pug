@@ -15,6 +15,11 @@ div.taskListItem.smallPaddingBottom
                             li.list-bullet.alert#onRemandAnswer The offender is on remand
                         else
                             li.list-bullet#onRemandAnswer The offender is not on remand
+
+                        if licenceStatus.decisions.confiscationOrder
+                            li.list-bullet.alert#confiscationOrderAnswer The offender is subject to a confiscation order
+                        else
+                            li.list-bullet#confiscationOrderAnswer The offender is not subject to a confiscation order
             else
                 | Not yet complete
         div.pure-u-1-4

@@ -1,0 +1,46 @@
+extends ../layout
+
+block content
+
+    - var confiscationOrderValue = data.decision || null;
+
+    div.pure-g.pure-u-1
+        include ../includes/back
+        include ../includes/personalDetailsSummary
+
+        div.pure-u-1-2
+            h2.heading-large Is the offender subject to a confiscation order?
+
+    form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=nomisId || '')
+        div.smallPaddingTop.paddingBottom.largeMarginBottom
+
+            div.pure-u-md-1-2.largeMarginBottom
+                div.form-group.inline
+                    div.multiple-choice(data-target="consultedForm")
+                        input#confiscationOrderYes(type="radio" checked=confiscationOrderValue === 'Yes'  name="decision" value="Yes")
+                        label(for="confiscationOrderYes") Yes
+                    div.multiple-choice
+                        input#confiscationOrderNo(type="radio" checked=confiscationOrderValue === 'No' name="decision" value="No")
+                        label(for="confiscationOrderNo") No
+
+                div#consultedForm.panel.panel-border-narrow.js-hidden
+                    p Has the prosecuting/enforcement authority and regional confiscation unit been consulted regarding the proposed release on HDC?
+                    div.form-group.inline
+                        div.multiple-choice
+                            input#confiscationUnitConsultedYes(type="radio" checked=confiscationOrderValue === 'Yes'  name="confiscationUnitConsulted" value="Yes")
+                            label(for="confiscationUnitConsultedYes") Yes
+                        div.multiple-choice
+                            input#confiscationUnitConsultedNo(type="radio" checked=confiscationOrderValue === 'No' name="confiscationUnitConsulted" value="No")
+                            label(for="confiscationUnitConsultedNo") No
+
+                    label(for='comments') Comments
+                    textarea(name='comments' id='comments' class='form-control' rows='4')
+                        if data.comments
+                            | #{data.comments}
+
+            div.paddingBottom.smallPaddingTop
+                div.pure-u-1.inlineButtons
+                    input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to tasklist
