@@ -52,6 +52,7 @@ describe('getLicenceStatus', () => {
             licenceConditions: taskStates.UNSTARTED,
             seriousOffenceCheck: taskStates.UNSTARTED,
             onRemandCheck: taskStates.UNSTARTED,
+            confiscationOrderCheck: taskStates.UNSTARTED,
             finalChecks: taskStates.UNSTARTED,
             approval: taskStates.UNSTARTED
         });
@@ -103,6 +104,9 @@ describe('getLicenceStatus', () => {
                     onRemand: {
                         decision: 'Yes'
                     },
+                    confiscationOrder: {
+                        decision: 'Yes'
+                    },
                     postpone: {
                         decision: 'Yes'
                     },
@@ -130,6 +134,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.victimLiasionNeeded).to.eql(true);
         expect(status.decisions.seriousOffence).to.eql(true);
         expect(status.decisions.onRemand).to.eql(true);
+        expect(status.decisions.confiscationOrder).to.eql(true);
         expect(status.decisions.finalCheckPass).to.eql(false);
         expect(status.decisions.postponed).to.eql(true);
         expect(status.decisions.approved).to.eql(true);
@@ -205,6 +210,9 @@ describe('getLicenceStatus', () => {
                     onRemand: {
                         decision: 'No'
                     },
+                    confiscationOrder: {
+                        decision: 'No'
+                    },
                     postpone: {
                         decision: 'No'
                     }
@@ -229,6 +237,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.victimLiasionNeeded).to.eql(false);
         expect(status.decisions.seriousOffence).to.eql(false);
         expect(status.decisions.onRemand).to.eql(false);
+        expect(status.decisions.confiscationOrder).to.eql(false);
         expect(status.decisions.finalCheckPass).to.eql(true);
         expect(status.decisions.postponed).to.eql(false);
         expect(status.decisions.approved).to.eql(false);
@@ -422,6 +431,9 @@ describe('getLicenceStatus', () => {
                     onRemand: {
                         decision: 'Yes'
                     },
+                    confiscationOrder: {
+                        decision: 'Yes'
+                    },
                     postpone: {
                         decision: 'Yes'
                     }
@@ -450,6 +462,7 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.reportingInstructions).to.eql(taskStates.DONE);
         expect(status.tasks.seriousOffenceCheck).to.eql(taskStates.DONE);
         expect(status.tasks.onRemandCheck).to.eql(taskStates.DONE);
+        expect(status.tasks.confiscationOrderCheck).to.eql(taskStates.DONE);
         expect(status.tasks.finalChecks).to.eql(taskStates.DONE);
         expect(status.tasks.approval).to.eql(taskStates.DONE);
     });

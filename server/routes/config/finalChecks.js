@@ -14,6 +14,17 @@ module.exports = {
             {decision: {}}
         ],
         nextPath: {
+            path: '/hdc/finalChecks/confiscationOrder/'
+        }
+    },
+    confiscationOrder: {
+        licenceSection: 'confiscationOrder',
+        fields: [
+            {decision: {}},
+            {confiscationUnitConsulted: {dependentOn: 'decision', predicate: 'Yes'}},
+            {comments: {dependentOn: 'decision', predicate: 'Yes'}}
+        ],
+        nextPath: {
             path: '/hdc/taskList/'
         }
     },

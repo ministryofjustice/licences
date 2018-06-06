@@ -26,6 +26,7 @@ function getLicenceStatus(licenceRecord) {
                 licenceConditions: taskStates.UNSTARTED,
                 seriousOffenceCheck: taskStates.UNSTARTED,
                 onRemandCheck: taskStates.UNSTARTED,
+                confiscationOrderCheck: taskStates.UNSTARTED,
                 finalChecks: taskStates.UNSTARTED,
                 approval: taskStates.UNSTARTED
             }
@@ -104,7 +105,8 @@ function getRoStageState(licence) {
 function getCaStageState(licence) {
     const {seriousOffence, seriousOffenceCheck} = getSeriousOffenceCheckTaskState(licence);
     const {onRemand, onRemandCheck} = getOnRemandCheckTaskState(licence);
-    const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck]);
+    const {confiscationOrder, confiscationOrderCheck} = getConfiscationOrderTaskState(licence);
+    const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck, confiscationOrderCheck]);
     const finalCheckPass = !(seriousOffence || onRemand);
     const postponed = getIn(licence, ['finalChecks', 'postpone', 'decision']) === 'Yes';
     const finalChecksRefused = getIn(licence, ['finalChecks', 'refusal', 'decision']) === 'Yes';
@@ -113,6 +115,7 @@ function getCaStageState(licence) {
         decisions: {
             seriousOffence,
             onRemand,
+            confiscationOrder,
             finalCheckPass,
             postponed,
             finalChecksRefused
@@ -120,6 +123,7 @@ function getCaStageState(licence) {
         tasks: {
             seriousOffenceCheck,
             onRemandCheck,
+            confiscationOrderCheck,
             finalChecks
         }
     };
@@ -380,6 +384,16 @@ function getOnRemandCheckTaskState(licence) {
     return {
         onRemand: onRemandAnswer && onRemandAnswer === 'Yes',
         onRemandCheck: onRemandAnswer ? taskStates.DONE : taskStates.UNSTARTED
+    };
+}
+
+function getConfiscationOrderTaskState(licence) {
+
+    const confiscationOrderAnswer = getIn(licence, ['finalChecks', 'confiscationOrder', 'decision']);
+
+    return {
+        confiscationOrder: confiscationOrderAnswer && confiscationOrderAnswer === 'Yes',
+        confiscationOrderCheck: confiscationOrderAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
