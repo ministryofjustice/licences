@@ -5,7 +5,8 @@ const {allValuesEmpty, difference, isEmpty} = require('./functionalHelpers');
 
 const nomisIdRegex = /[A-Z]\d{4}[A-Z]{2}/gi;
 const dobRegex = /(\d{1,2}[\/]){2}\d{2,4}/g;
-const nameRegex = /(?!\d+)(?:[^\s])[A-ZÀ-ÖØ-öø-ÿ-']+[^\s\d]/giu;
+// const nameRegexWithDiacritics = /(?!\d+)(?:[^\s])[A-ZÀ-ÖØ-öø-ÿ-']+[^\s\d]/giu;
+const nameRegex = /(\b[A-Z'-]+\b)/gi;
 
 
 function parseSearchTerms(input) {

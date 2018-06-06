@@ -61,15 +61,16 @@ describe('parseSearchTerms', () => {
             });
     });
 
-    describe('parsing and url encoding names including special characters anddiacritics', () => {
+    // describe('parsing and url encoding names and special characters including diacritics', () => {
+    describe('parsing and url encoding names and special characters NOT including diacritics', () => {
         const inputsAndOutputs = [
             ['last', 'lastName=LAST'],
             ['LAST', 'lastName=LAST'],
             ['first last', 'firstName=FIRST&lastName=LAST'],
             [`apostrophe'last`, `lastName=APOSTROPHE'LAST`],
-            ['hyphen-last', 'lastName=HYPHEN-LAST'],
-            ['àccent-làst', 'lastName=%C3%80CCENT-L%C3%80ST'],
-            ['ümlaüt-last', 'lastName=%C3%9CMLA%C3%9CT-LAST']
+            ['hyphen-last', 'lastName=HYPHEN-LAST'] // ,
+        //    ['àccent-làst', 'lastName=%C3%80CCENT-L%C3%80ST'],
+        //    ['ümlaüt-last', 'lastName=%C3%9CMLA%C3%9CT-LAST']
         ];
 
         inputsAndOutputs
