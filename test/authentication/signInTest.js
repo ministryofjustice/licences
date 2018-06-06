@@ -1,4 +1,4 @@
-const signInService = require('../../server/authentication/signIn');
+const signInService = require('../../server/authentication/signInService');
 const {
     sandbox,
     expect,

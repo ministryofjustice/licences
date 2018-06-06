@@ -2,7 +2,8 @@ const {
     nock,
     expect,
     sandbox,
-    sinon
+    sinon,
+    signInServiceStub
 } = require('../supertestSetup');
 const config = require('../../server/config');
 const nomisClientBuilder = require('../../server/data/nomisClientBuilder');
@@ -16,7 +17,7 @@ const fakeStore = {
 };
 
 
-const nomisClient = nomisClientBuilder(fakeStore)('username');
+const nomisClient = nomisClientBuilder(fakeStore, signInServiceStub)('username');
 
 describe('nomisClient', function() {
 
@@ -336,7 +337,7 @@ describe('nomisClient', function() {
     describe('token refreshing', () => {
 
         let clock;
-        const fakeOauth = nock(`${config.nomis.apiUrl.replace('/api', '')}`);
+        // const fakeOauth = nock(`${config.nomis.apiUrl.replace('/api', '')}`);
 
         beforeEach(() => {
             clock = sinon.useFakeTimers(new Date('May 31, 2018 12:00:00').getTime());
@@ -346,34 +347,35 @@ describe('nomisClient', function() {
             clock.restore();
         });
 
-        it('should try to refresh if it returns an anauthorised response', async () => {
+        it('should try to refresh if it returns an unauthorised response', async () => {
             fakeNomis
                 .get(`/agencies/prison/1`)
                 .reply(401)
                 .get(`/agencies/prison/1`)
                 .reply(200, {response: 'this'});
 
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {access_token: 'a', refresh_token: 'b', token_type: 'Bearer'});
+            // fakeOauth
+            //     .post(`/oauth/token`)
+            //     .reply(200, {access_token: 'a', refresh_token: 'b', token_type: 'Bearer'});
 
             const result = await nomisClient.getEstablishment('1');
 
-            expect(fakeStore.addOrUpdate).to.be.calledOnce();
-            expect(fakeStore.addOrUpdate).to.be.calledWith('username', 'Bearer a', 'b');
+            expect(signInServiceStub.refresh).to.be.calledOnce();
+            // expect(fakeStore.addOrUpdate).to.be.calledOnce();
+            // expect(fakeStore.addOrUpdate).to.be.calledWith('username', 'Bearer a', 'b');
             expect(result).to.eql({response: 'this'});
         });
 
-        it('should not try to refresh if not an anauthorised response', () => {
+        it('should not try to refresh if not an unauthorised response', () => {
             fakeNomis
                 .get(`/agencies/prison/1`)
                 .reply(500)
                 .get(`/agencies/prison/1`)
                 .reply(200, {response: 'this'});
 
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {access_token: 'a', refresh_token: 'b'});
+            // fakeOauth
+            //     .post(`/oauth/token`)
+            //     .reply(200, {access_token: 'a', refresh_token: 'b'});
 
             return expect(nomisClient.getEstablishment('1')).to.be.rejected();
         });
@@ -385,9 +387,9 @@ describe('nomisClient', function() {
                 .get(`/agencies/prison/1`)
                 .reply(401, {response: 'this'});
 
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {access_token: 'a', refresh_token: 'b'});
+            // fakeOauth
+            //     .post(`/oauth/token`)
+            //     .reply(200, {access_token: 'a', refresh_token: 'b'});
 
             return expect(nomisClient.getEstablishment('1')).to.be.rejected();
         });

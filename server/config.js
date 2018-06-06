@@ -37,7 +37,9 @@ module.exports = {
         },
         licenceRolePrefix: get('LICENCE_ROLE_PREFIX', 'LICENCE'),
         apiClientId: get('API_CLIENT_ID', 'licences'),
-        apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret')
+        apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret'),
+        licencesAdminApiClientId: get('ADMIN_API_CLIENT_ID', 'licencesadmin'),
+        licencesAdminApiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'adminclientsecret')
     },
 
     establishments: {
