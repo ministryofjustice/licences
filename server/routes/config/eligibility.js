@@ -23,7 +23,8 @@ module.exports = {
         licenceSection: 'suitability',
         fields: [
             {decision: {}},
-            {reason: {dependentOn: 'decision', predicate: 'Yes'}}
+            {reason: {dependentOn: 'decision', predicate: 'Yes'}},
+            {exceptionalCircumstances: {}}
         ],
         validateInPlace: true,
         nextPath: {
@@ -34,7 +35,26 @@ module.exports = {
                 },
                 {
                     discriminator: 'decision',
-                    Yes: '/hdc/taskList/'
+                    Yes: '/hdc/eligibility/exceptionalCircumstances/'
+                }
+            ]
+        }
+    },
+    exceptionalCircumstances: {
+        licenceSection: 'exceptionalCircumstances',
+        fields: [
+            {decision: {}}
+        ],
+        validateInPlace: true,
+        nextPath: {
+            decisions: [
+                {
+                    discriminator: 'decision',
+                    No: '/hdc/taskList/'
+                },
+                {
+                    discriminator: 'decision',
+                    Yes: '/hdc/eligibility/crdTime/'
                 }
             ]
         }

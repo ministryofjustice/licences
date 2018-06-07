@@ -110,7 +110,6 @@ function getCaStageState(licence) {
     const finalCheckPass = !(seriousOffence || onRemand);
     const postponed = getIn(licence, ['finalChecks', 'postpone', 'decision']) === 'Yes';
     const finalChecksRefused = getIn(licence, ['finalChecks', 'refusal', 'decision']) === 'Yes';
-
     return {
         decisions: {
             seriousOffence,
@@ -132,7 +131,7 @@ function getCaStageState(licence) {
 function getEligibilityStageState(licence) {
     const {excluded, exclusion} = getExclusionTaskState(licence);
     const {insufficientTime, crdTime} = getCrdTimeState(licence);
-    const {unsuitable, suitability} = getSuitabilityState(licence);
+    const {unsuitable, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
     const eligibility = getEligibilityState(unsuitable, excluded, [exclusion, crdTime, suitability]);
     const eligible = !(excluded || insufficientTime || unsuitable);
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
@@ -143,6 +142,7 @@ function getEligibilityStageState(licence) {
 
     return {
         decisions: {
+            exceptionalCircumstances,
             excluded,
             insufficientTime,
             unsuitable,
@@ -186,8 +186,9 @@ function getCrdTimeState(licence) {
 function getSuitabilityState(licence) {
 
     const suitableAnswer = getIn(licence, ['eligibility', 'suitability', 'decision']);
-
+    const exceptionalCircumstances = getIn(licence, ['eligibility', 'exceptionalCircumstances', 'decision']);
     return {
+        exceptionalCircumstances: exceptionalCircumstances === 'Yes',
         unsuitable: suitableAnswer === 'Yes',
         suitability: suitableAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
