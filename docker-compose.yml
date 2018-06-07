@@ -24,7 +24,7 @@ services:
       - API_CLIENT_SECRET=clientsecret
       - HOST=licences.hmpps.dsd.test
       - NOMIS_API_URL=http://elite2-api:8080/api
-      - PDF_SERVICE_HOST=http://hdc-pdfgenerator:8081
+      - PDF_SERVICE_HOST=http://hdc-pdfgenerator:8080
 
   elite2-api:
     image: sysconjusticesystems/elite2-api:latest
