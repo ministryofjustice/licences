@@ -16,7 +16,7 @@ services:
       - PORT=3000
       - DB_USER=licences
       - DB_PASS=licences
-      - DB_SERVER=localhost
+      - DB_SERVER=licence-db
       - DB_NAME=licences
       - DB_SSL_ENABLED=no
       - API_GATEWAY_ENABLED=no
@@ -64,11 +64,11 @@ services:
     container_name: hdc-pdfgenerator
     restart: always
     ports:
-      - "8081:8081"
+      - "8081:8080"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/healthcheck"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
     environment:
-      - PORT=8081
+      - PORT=8080
 
 networks:
   hmpps:
