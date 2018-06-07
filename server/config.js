@@ -39,7 +39,7 @@ module.exports = {
         apiClientId: get('API_CLIENT_ID', 'licences'),
         apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret'),
         licencesAdminApiClientId: get('ADMIN_API_CLIENT_ID', 'licencesadmin'),
-        licencesAdminApiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'adminclientsecret')
+        licencesAdminApiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'clientsecret')
     },
 
     establishments: {

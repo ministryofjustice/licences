@@ -136,7 +136,7 @@ module.exports = function createApp({
         app.use('/public', sassMiddleware({
             src: path.join(__dirname, '../assets/sass'),
             dest: path.join(__dirname, '../assets/stylesheets'),
-            debug: true,
+            debug: false,
             outputStyle: 'compressed',
             prefix: '/stylesheets/',
             includePaths: [

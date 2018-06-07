@@ -75,7 +75,9 @@ describe('Send:', () => {
                     .get('/123')
                     .expect(() => {
                         expect(prisonerServiceStub.getComForPrisoner).to.be.calledOnce();
-                        expect(prisonerServiceStub.getComForPrisoner).to.be.calledWith('123', {tokenId: 'my-username'});
+                        expect(prisonerServiceStub.getComForPrisoner).to.be.calledWith('123', {
+                            role: 'CA', tokenId: 'my-username'
+                        });
                         expect(prisonerServiceStub.getEstablishmentForPrisoner).not.to.be.called();
                     });
             });
@@ -107,7 +109,7 @@ describe('Send:', () => {
                 .expect(() => {
                     expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledOnce();
                     expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledWith(
-                        '123', {tokenId: 'my-username'});
+                        '123', {role: 'RO', tokenId: 'my-username'});
                     expect(prisonerServiceStub.getComForPrisoner).not.to.be.called();
                 });
         });

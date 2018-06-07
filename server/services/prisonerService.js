@@ -5,11 +5,11 @@ module.exports = {createPrisonerService};
 
 function createPrisonerService(nomisClientBuilder) {
 
-    async function getPrisonerPersonalDetails(nomisId, {tokenId}) {
+    async function getPrisonerPersonalDetails(nomisId, {role, tokenId}) {
         try {
             logger.info(`getPrisonerPersonalDetails: ${nomisId}`);
 
-            const nomisClient = nomisClientBuilder(tokenId);
+            const nomisClient = nomisClientBuilder(role, tokenId);
 
             const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
 
@@ -20,11 +20,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getPrisonerDetails(nomisId, {tokenId}) {
+    async function getPrisonerDetails(nomisId, {role, tokenId}) {
         try {
             logger.info(`getPrisonerDetail: ${nomisId}`);
 
-            const nomisClient = nomisClientBuilder(tokenId);
+            const nomisClient = nomisClientBuilder(role, tokenId);
 
             const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
             const prisoner = prisoners[0];
@@ -52,11 +52,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getPrisonerImage(imageId, {tokenId}) {
+    async function getPrisonerImage(imageId, {role, tokenId}) {
         try {
             logger.info(`getPrisonerImage: ${imageId}`);
 
-            const nomisClient = nomisClientBuilder(tokenId);
+            const nomisClient = nomisClientBuilder(role, tokenId);
             const image = await nomisClient.getImageData(imageId);
             return image;
         } catch (error) {
@@ -65,11 +65,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getEstablishmentForPrisoner(nomisId, {tokenId}) {
+    async function getEstablishmentForPrisoner(nomisId, {role, tokenId}) {
         try {
             logger.info(`getEstablishmentForPrisoner: ${nomisId}`);
 
-            const nomisClient = nomisClientBuilder(tokenId);
+            const nomisClient = nomisClientBuilder(role, tokenId);
 
             const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
             const prisoner = prisoners[0];
@@ -85,11 +85,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getEstablishment(agencyLocationId, {tokenId}) {
+    async function getEstablishment(agencyLocationId, {role, tokenId}) {
         try {
             logger.info(`getEstablishment: ${agencyLocationId}`);
 
-            const nomisClient = nomisClientBuilder(tokenId);
+            const nomisClient = nomisClientBuilder(role, tokenId);
             const establishment = await nomisClient.getEstablishment(agencyLocationId);
 
             return formatObjectForView(establishment);
@@ -106,11 +106,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getComForPrisoner(nomisId, {tokenId}) {
+    async function getComForPrisoner(nomisId, {role, tokenId}) {
         try {
             logger.info(`getComForPrisoner: ${nomisId}`);
 
-            const nomisClient = nomisClientBuilder(tokenId);
+            const nomisClient = nomisClientBuilder(role, tokenId);
 
             const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
             const prisoner = prisoners[0];
@@ -126,11 +126,11 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getCom(bookingId, {tokenId}) {
+    async function getCom(bookingId, {role, tokenId}) {
         try {
             logger.info(`getCom: ${bookingId}`);
 
-            const nomisClient = nomisClientBuilder(tokenId);
+            const nomisClient = nomisClientBuilder(role, tokenId);
             const com = await nomisClient.getComRelation(bookingId);
 
             return formatObjectForView({com});
