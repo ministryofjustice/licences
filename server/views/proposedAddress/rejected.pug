@@ -35,8 +35,11 @@ block content
                     p.bold The homeowner/landlord does not give informed consent
                 if address.deemedSafe === 'No'
                     p.bold The address has been deemed unsafe
+                    if address.unsafeReason
+                        p #{address.unsafeReason}
                 if address.electricity === 'No'
                     p.bold The address does not have an electricity supply
+
 
         div.largePaddingBottom
             h3.heading-medium Enter alternative address?
