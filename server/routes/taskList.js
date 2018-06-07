@@ -20,7 +20,10 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         logger.debug('GET /taskList');
 
         const {nomisId} = req.params;
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, {tokenId: req.user.username});
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, {
+            role: req.user.role,
+            tokenId: req.user.username
+        });
         const licence = await licenceService.getLicence(nomisId);
 
         const licenceStatus = getLicenceStatus(licence);

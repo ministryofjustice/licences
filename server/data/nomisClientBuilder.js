@@ -12,9 +12,9 @@ const timeoutSpec = {
 
 const apiUrl = config.nomis.apiUrl;
 
-module.exports = (tokenStore, signInService) => tokenId => {
+module.exports = (tokenStore, signInService) => (userRole, tokenId) => {
 
-    const nomisGet = nomisGetBuilder(tokenStore, signInService, tokenId);
+    const nomisGet = nomisGetBuilder(tokenStore, signInService, userRole, tokenId);
 
     return {
         getUpcomingReleasesByOffenders: function(nomisIds) {
@@ -100,15 +100,15 @@ module.exports = (tokenStore, signInService) => tokenId => {
     };
 };
 
-function nomisGetBuilder(tokenStore, signInService, tokenId) {
-
-    const tokenObject = tokenStore.getTokens(tokenId);
-
-    if(!tokenObject) {
-        throw new NoTokenError();
-    }
+function nomisGetBuilder(tokenStore, signInService, userRole, tokenId) {
 
     return async ({path, query = '', headers = {}, responseType = ''} = {}) => {
+
+        const tokenObject = tokenStore.getTokens(tokenId);
+
+        if(!tokenObject) {
+            throw new NoTokenError();
+        }
 
         try {
             const result = await superagent
@@ -123,6 +123,7 @@ function nomisGetBuilder(tokenStore, signInService, tokenId) {
             return result.body;
 
         } catch (error) {
+
             const unauthorisedError = error.status === 400 || error.status === 401 || error.status === 403;
             const refreshAttempted = Date.now() - tokenObject.timestamp < 5000;
 
@@ -132,9 +133,9 @@ function nomisGetBuilder(tokenStore, signInService, tokenId) {
             }
 
             logger.info('Refreshing token for ', tokenId);
-            await signInService.refresh(tokenId, tokenObject.refreshToken);
+            await signInService.refresh(userRole, tokenId, tokenObject.refreshToken);
 
-            const nomisGet = nomisGetBuilder(tokenStore, signInService, tokenId);
+            const nomisGet = nomisGetBuilder(tokenStore, signInService, userRole, tokenId);
             return nomisGet({path, query, headers, responseType});
         }
     };

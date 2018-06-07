@@ -17,7 +17,7 @@ const fakeStore = {
 };
 
 
-const nomisClient = nomisClientBuilder(fakeStore, signInServiceStub)('username');
+const nomisClient = nomisClientBuilder(fakeStore, signInServiceStub)('CA', 'username');
 
 describe('nomisClient', function() {
 
@@ -337,7 +337,6 @@ describe('nomisClient', function() {
     describe('token refreshing', () => {
 
         let clock;
-        // const fakeOauth = nock(`${config.nomis.apiUrl.replace('/api', '')}`);
 
         beforeEach(() => {
             clock = sinon.useFakeTimers(new Date('May 31, 2018 12:00:00').getTime());
@@ -354,15 +353,10 @@ describe('nomisClient', function() {
                 .get(`/agencies/prison/1`)
                 .reply(200, {response: 'this'});
 
-            // fakeOauth
-            //     .post(`/oauth/token`)
-            //     .reply(200, {access_token: 'a', refresh_token: 'b', token_type: 'Bearer'});
-
             const result = await nomisClient.getEstablishment('1');
 
             expect(signInServiceStub.refresh).to.be.calledOnce();
-            // expect(fakeStore.addOrUpdate).to.be.calledOnce();
-            // expect(fakeStore.addOrUpdate).to.be.calledWith('username', 'Bearer a', 'b');
+            expect(fakeStore.getTokens).to.be.calledTwice(); // get expired token, refresh, get new token
             expect(result).to.eql({response: 'this'});
         });
 
@@ -373,10 +367,6 @@ describe('nomisClient', function() {
                 .get(`/agencies/prison/1`)
                 .reply(200, {response: 'this'});
 
-            // fakeOauth
-            //     .post(`/oauth/token`)
-            //     .reply(200, {access_token: 'a', refresh_token: 'b'});
-
             return expect(nomisClient.getEstablishment('1')).to.be.rejected();
         });
 
@@ -386,10 +376,6 @@ describe('nomisClient', function() {
                 .reply(401)
                 .get(`/agencies/prison/1`)
                 .reply(401, {response: 'this'});
-
-            // fakeOauth
-            //     .post(`/oauth/token`)
-            //     .reply(200, {access_token: 'a', refresh_token: 'b'});
 
             return expect(nomisClient.getEstablishment('1')).to.be.rejected();
         });
