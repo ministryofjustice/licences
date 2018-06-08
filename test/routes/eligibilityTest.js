@@ -96,6 +96,18 @@ describe('/hdc/eligibility', () => {
                 url: '/eligibility/suitability/1',
                 body: {decision: 'Yes'},
                 section: 'suitability',
+                nextPath: '/hdc/eligibility/exceptionalCircumstances/1'
+            },
+            {
+                url: '/eligibility/exceptionalCircumstances/1',
+                body: {decision: 'Yes'},
+                section: 'exceptionalCircumstances',
+                nextPath: '/hdc/eligibility/crdTime/1'
+            },
+            {
+                url: '/eligibility/exceptionalCircumstances/1',
+                body: {decision: 'No'},
+                section: 'exceptionalCircumstances',
                 nextPath: '/hdc/taskList/1'
             },
             {

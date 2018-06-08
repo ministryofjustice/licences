@@ -1,0 +1,36 @@
+extends ../layout
+
+block content
+
+    - var exceptionalCircumstancesValue = data.decision || null;
+
+    div.pure-g
+
+        div.pure-u-1
+            include ../includes/back
+            include ../includes/personalDetailsSummary
+            include ../includes/errorBanner
+
+        div.pure-u-1-2
+            h2.heading-large Have exceptional circumstances been accepted?
+
+            if errorObject.decision
+                p.error-message Please select an answer
+
+            form(method="post")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="nomisId" value=nomisId || '')
+
+                div.largePaddingBottom
+                    div.form-group.inline.smallPaddingTop.largePaddingBottom
+                        .multiple-choice
+                            input#exceptionalCircumstancesYes(type='radio', checked=exceptionalCircumstancesValue === 'Yes' name='decision', value='Yes')
+                            label(for='exceptionalCircumstancesYes') Yes
+                        .multiple-choice
+                            input#exceptionalCircumstancesNo(type='radio', checked=exceptionalCircumstancesValue === 'No' name='decision', value='No')
+                            label(for='exceptionalCircumstancesNo') No
+
+                    div.largePaddingBottom.smallPaddingTop
+                        div.inlineButtons
+                            input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+                            a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to tasklist

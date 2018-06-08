@@ -253,6 +253,10 @@ $path: "/public/images/";
     margin-top: 1em;
 }
 
+.marginBottomLarge {
+    margin-bottom: 2em;
+}
+
 #global-header #logo.hmppslogo {
     background: url($path+'/hmpps_logo_small.png') no-repeat;
     background-size: 54px 48px;
