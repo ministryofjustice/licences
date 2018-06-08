@@ -134,7 +134,7 @@ describe('/hdc/eligibility', () => {
         });
 
         it('should redirect back to excluded page if there is an error in the submission', () => {
-            licenceServiceStub.getLicenceErrors.returns({eligibility: {excluded: {reason: 'error'}}});
+            licenceServiceStub.getValidationErrorsForPage.returns({eligibility: {excluded: {reason: 'error'}}});
 
             return request(app)
                 .post('/eligibility/excluded/1')
@@ -145,7 +145,7 @@ describe('/hdc/eligibility', () => {
         });
 
         it('should not redirect back to excluded page if there is an error in a different part of licence', () => {
-            licenceServiceStub.getLicenceErrors.returns({eligibility: {suitability: {reason: 'error'}}});
+            licenceServiceStub.getValidationErrorsForPage.returns({eligibility: {suitability: {reason: 'error'}}});
 
             return request(app)
                 .post('/eligibility/excluded/1')
@@ -156,7 +156,7 @@ describe('/hdc/eligibility', () => {
         });
 
         it('should redirect back to suitability page if there is an error in the submission', () => {
-            licenceServiceStub.getLicenceErrors.returns({eligibility: {suitability: {reason: 'error'}}});
+            licenceServiceStub.getValidationErrorsForPage.returns({eligibility: {suitability: {reason: 'error'}}});
 
             return request(app)
                 .post('/eligibility/suitability/1')
@@ -167,7 +167,7 @@ describe('/hdc/eligibility', () => {
         });
 
         it('should redirect back to crdtime page if there is an error in the submission', () => {
-            licenceServiceStub.getLicenceErrors.returns({eligibility: {crdTime: {reason: 'error'}}});
+            licenceServiceStub.getValidationErrorsForPage.returns({eligibility: {crdTime: {reason: 'error'}}});
 
             return request(app)
                 .post('/eligibility/crdTime/1')

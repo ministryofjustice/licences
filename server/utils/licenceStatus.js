@@ -3,7 +3,7 @@ const {licenceStages} = require('../models/licenceStages');
 const {getIn, isEmpty, lastItem} = require('./functionalHelpers');
 const {isAcceptedAddress, isRejectedAddress, addressReviewStarted} = require('../utils/addressHelpers');
 
-module.exports = {getLicenceStatus};
+module.exports = {getLicenceStatus, getConfiscationOrderTaskState};
 
 function getLicenceStatus(licenceRecord) {
 

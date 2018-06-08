@@ -12,7 +12,7 @@ const {
     removePath
 } = require('../utils/functionalHelpers');
 const {transitions} = require('../models/licenceStages');
-const {getLicenceStatus} = require('../utils/licenceStatus');
+const {getLicenceStatus, getConfiscationOrderTaskState} = require('../utils/licenceStatus');
 const validate = require('./utils/licenceValidation');
 const addressHelpers = require('./utils/addressHelpers');
 
@@ -304,6 +304,34 @@ module.exports = function createLicenceService(licenceClient) {
         return newObject;
     }
 
+    function getValidationErrorsForPage(licence, licenceSectionOfPage) {
+        if (licenceSectionOfPage === 'approval') {
+            const {confiscationOrder} = getConfiscationOrderTaskState(licence);
+            return getApprovalErrors({licence, confiscationOrder});
+        }
+
+        return getLicenceErrors({licence, sections: [licenceSectionOfPage]});
+    }
+
+    function getApprovalErrors({licence, confiscationOrder}) {
+        const errorObject = getLicenceErrors({licence, sections: ['approval']});
+
+        if (confiscationOrder) {
+            return errorObject;
+        }
+
+        const removeNotedCommentsError = removePath(['approval', 'release', 'notedComments']);
+        const errorsWithoutNotedComments = removeNotedCommentsError(errorObject);
+
+        const noErrorsInApproval = isEmpty(getIn(errorsWithoutNotedComments, ['approval', 'release']));
+        if (noErrorsInApproval) {
+            const removeApprovalError = removePath(['approval']);
+            return removeApprovalError(errorsWithoutNotedComments);
+        }
+
+        return errorsWithoutNotedComments;
+    }
+
     return {
         reset,
         getLicence,
@@ -318,6 +346,7 @@ module.exports = function createLicenceService(licenceClient) {
         getLicenceErrors,
         getConditionsErrors,
         getEligibilityErrors,
-        getValidationErrorsForReview
+        getValidationErrorsForReview,
+        getValidationErrorsForPage
     };
 };

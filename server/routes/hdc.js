@@ -153,8 +153,11 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const {nextPath, pageDataMap} = formConfig.release;
         const dataPath = pageDataMap || ['licence', 'approval', 'release'];
         const data = getIn(res.locals.licence, dataPath) || {};
+        const errors = firstItem(req.flash('errors'));
+        const errorObject = getIn(errors, ['approval', 'release']) || {};
+        const licenceStatus = getLicenceStatus(res.locals.licence);
 
-        res.render('approval/release', {prisonerInfo, nomisId, data, nextPath});
+        res.render('approval/release', {prisonerInfo, nomisId, data, nextPath, errorObject, licenceStatus});
     }));
 
     router.get('/curfew/curfewAddressReview/:nomisId', checkLicence, addressReviewGets('curfewAddressReview'));
@@ -297,10 +300,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             });
 
             if(formConfig[formName].validateInPlace) {
-                const errors = licenceService.getLicenceErrors({
-                    licence: updatedLicence,
-                    section: [sectionName]
-                });
+                const errors = licenceService.getValidationErrorsForPage(updatedLicence, sectionName);
 
                 if (!isEmpty(getIn(errors, [sectionName, formName]))) {
                     req.flash('errors', errors);
@@ -318,3 +318,4 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
     return router;
 };
+

@@ -43,7 +43,7 @@ describe('/hdc/approval', () => {
 
     describe('approval routes', () => {
         const routes = [
-            {url: '/approval/release/1', content: 'I approve HDC release'}
+            {url: '/approval/release/1', content: 'Do you approve HDC release for this offender?'}
         ];
 
         testFormPageGets(app, routes);
@@ -99,6 +99,22 @@ describe('/hdc/approval', () => {
                         expect(res.header.location).to.equal(route.nextPath);
                     });
             });
+        });
+
+        it('should redirect to same page if errors on input', () => {
+            licenceServiceStub.getValidationErrorsForPage.returns({
+                approval: {
+                    release: {
+                        decision: 'Error 1'
+                    }
+                }
+            });
+
+            return request(app)
+                .post('/approval/release/1')
+                .send({})
+                .expect(302)
+                .expect('Location', '/hdc/approval/release/1');
         });
     });
 });
