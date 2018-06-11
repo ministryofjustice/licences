@@ -3,32 +3,57 @@ extends ../layout
 block content
 
     - var releaseValue = data.decision || null;
+    - var notedCommentsValue = data.notedComments || null;
 
     div.pure-g.pure-u-1.largeMarginBottom
 
         include ../includes/backToCheckList
-
-        div.pure-u-2-3
-            h2.heading-large HDC release decision
-
+        include ../includes/errorBanner
         include ../taskList/prisonerDetails
 
-    form(method="post").largeMarginTop
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="nomisId" value=nomisId || '')
-        div.smallPaddingTop.paddingBottom.largeMarginBottom
+        div.pure-u-md-1-2
+            h2.heading-large Do you approve HDC release for this offender?
 
-            div.form-group
-                div.multiple-choice
-                    input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
-                    label(for="releaseYes") I approve HDC release for this offender
-                div.multiple-choice(data-target="releaseForm")
-                    input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
-                    label(for="releaseNo") I refuse HDC release for this offender
+            if errorObject.decision
+                p.error-message Please select an answer
+            form(method="post").largeMarginTop
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="nomisId" value=nomisId || '')
+                div.paddingBottom.largeMarginBottom
 
-            div#releaseForm.panel.panel-border-narrow.js-hidden
-                include includes/release
+                    div.form-group
+                        if licenceStatus.decisions.confiscationOrder
+                            div.multiple-choice(data-target="confiscationOrder")
+                                input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
+                                label(for="releaseYes") Yes, I approve
+                            div#confiscationOrder(class=errorObject.notedComments ? 'panel panel-border-narrow form-group-error inline': 'panel panel-border-narrow js-hidden inline')
+                                p
+                                    span.bold Confiscation order
+                                    span.block Have you noted the comments of the enforcement area regarding release on HDC?
+                                    if errorObject.notedComments
+                                        span.block.error-message Please select an answer
+                                div.multiple-choice
+                                    input#notedCommentsYes(type="radio" checked=notedCommentsValue === 'Yes'  name="notedComments" value="Yes")
+                                    label(for="notedCommentsYes") Yes
+                                div.multiple-choice.paddingBottom
+                                    input#notedCommentsNo(type="radio" checked=notedCommentsValue === 'No' name="notedComments" value="No")
+                                    label(for="notedCommentsNo") No
 
-            div.paddingBottom.smallPaddingTop
-                div.pure-u-1.inlineButtons
-                    input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+                            div.multiple-choice(data-target="releaseForm")
+                                input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
+                                label(for="releaseNo") No, I refuse
+
+                        else
+                            div.multiple-choice
+                                input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
+                                label(for="releaseYes") Yes, I approve
+
+                            div.multiple-choice(data-target="releaseForm")
+                                input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
+                                label(for="releaseNo") No, I refuse
+
+                        div#releaseForm.panel.panel-border-narrow.js-hidden
+                            include includes/release
+
+                    div.paddingBottom.smallPaddingTop
+                        input#continueBtn.requiredButton.button(type="submit" value="Save and continue")

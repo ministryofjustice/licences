@@ -270,7 +270,8 @@ const confiscationOrder = {
 
 const release = {
     decision: requiredYesNo,
-    reason: requiredIf('decision', 'No')
+    reason: requiredIf('decision', 'No'),
+    notedComments: requiredIf('decision', 'Yes')
 };
 
 const schema = {

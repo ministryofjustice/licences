@@ -64,7 +64,8 @@ const licenceServiceStub = {
     getLicenceErrors: sandbox.stub().returns(),
     getEligibilityErrors: sandbox.stub().returns(),
     getValidationErrorsForReview: sandbox.stub().returns({}),
-    addAddress: sandbox.stub().returnsPromise().resolves()
+    addAddress: sandbox.stub().returnsPromise().resolves(),
+    getValidationErrorsForPage: sandbox.stub().returns({})
 };
 
 const conditionsServiceStub = {

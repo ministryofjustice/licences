@@ -2824,122 +2824,6 @@ describe('licenceService', () => {
             });
         });
 
-        // commented until validation extended beyond RO
-        /*
-        it('should return an error if no data provided', () => {
-
-            const newLicence = {};
-
-            const output = service.getLicenceErrors({licence: newLicence});
-
-            expect(output.length).to.eql(1);
-            expect(output).to.eql(
-                {finalChecks: 'Not answered'});
-        });
-
-        it('should return an error if no seriousOffence provided', () => {
-
-            const newLicence = {
-                finalChecks: {
-                    ...baseLicence.finalChecks,
-                    seriousOffence: {}
-                }
-            };
-
-            const output = service.getLicenceErrors({licence: newLicence});
-
-            expect(output.length).to.eql(1);
-            expect(output).to.eql(
-                {finalChecks: {seriousOffence: {decision: 'Not answered'}}});
-        });
-
-        it('should return an error if no onRemand provided', () => {
-
-            const newLicence = {
-                finalChecks: {
-                    ...baseLicence.finalChecks,
-                    onRemand: {}
-                }
-            };
-
-            const output = service.getLicenceErrors({licence: newLicence});
-
-            expect(output.length).to.eql(1);
-            expect(output).to.eql(
-                {finalChecks: {onRemand: {decision: 'Not answered'}}});
-        });
-
-
-        const baseLicence = {
-            approval
-        };
-
-        it('should return [] for no errors', () => {
-
-            const output = service.getLicenceErrors({licence: baseLicence});
-
-            expect(output).to.eql([]);
-
-        });
-
-        it('should return an error if no data provided', () => {
-
-            const newLicence = {};
-
-            const output = service.getLicenceErrors({licence: newLicence});
-
-            expect(output.length).to.eql(1);
-            expect(output).to.eql(
-                {approval: 'Not answered'});
-        });
-
-        it('should return an error if no decision provided', () => {
-
-            const newLicence = {
-                approval: {
-                    release: {}
-                }
-            };
-
-            const output = service.getLicenceErrors({licence: newLicence});
-
-            expect(output.length).to.eql(1);
-            expect(output).to.eql({approval: {release: {decision: 'Not answered'}}});
-        });
-
-        it('should return an error if no reason provided for no decision', () => {
-
-            const newLicence = {
-                approval: {
-                    release: {
-                        decision: 'No',
-                        reason: ''
-                    }
-                }
-            };
-
-            const output = service.getLicenceErrors({licence: newLicence});
-
-            expect(output.length).to.eql(1);
-            expect(output).to.eql({approval: {release: {reason: 'Not answered'}}});
-        });
-
-        it('should return no error if reason provided for no decision', () => {
-
-            const newLicence = {
-                approval: {
-                    release: {
-                        decision: 'No',
-                        reason: 'Reason'
-                    }
-                }
-            };
-
-            const output = service.getLicenceErrors({licence: newLicence});
-
-            expect(output.length).to.eql(0);
-        });
-        */
 
     });
 
@@ -3087,6 +2971,102 @@ describe('licenceService', () => {
                 });
             });
 
+        });
+    });
+
+    describe('getValidationErrorsForPage', () => {
+
+        context('section === approval, confiscationOrder: true', () => {
+
+            it('should return no error if decision is Yes and notedComments answered', () => {
+
+                const licence = {
+                    approval: {
+                        release: {
+                            decision: 'Yes',
+                            notedComments: 'Yes'
+                        }
+                    },
+                    finalChecks: {
+                        confiscationOrder: {
+                            decision: 'Yes'
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForPage(licence, 'approval');
+
+                expect(output).to.eql({});
+            });
+
+            it('should return an error if decision is No and reason is not supplied', () => {
+
+                const licence = {
+                    approval: {
+                        release: {
+                            decision: 'No'
+                        }
+                    },
+                    finalChecks: {
+                        confiscationOrder: {
+                            decision: 'Yes'
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForPage(licence, 'approval');
+
+                expect(output).to.eql({approval: {release: {reason: 'Not answered'}}});
+            });
+
+            it('should return error if decision is Yes and notedComments is not answered', () => {
+
+                const licence = {
+                    approval: {
+                        release: {
+                            decision: 'Yes',
+                            notedComments: ''
+                        }
+                    },
+                    finalChecks: {
+                        confiscationOrder: {
+                            decision: 'Yes'
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForPage(licence, 'approval');
+
+                expect(output).to.eql({approval: {release: {notedComments: 'Not answered'}}});
+            });
+        });
+
+        context('section === approval, confiscationOrder === false', () => {
+            it('should return no error if decision is Yes and notedComments is not answered', () => {
+
+                const licence = {
+                    approval: {
+                        release: {
+                            decision: 'Yes'
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForPage(licence, 'approval');
+
+                expect(output).to.eql({});
+            });
+        });
+
+        context('section !== approval', () => {
+            it('should only validate sections passed into the licence', () => {
+                const licence = {};
+                const expectedOutput = {
+                    licenceConditions: 'Not answered'
+                };
+
+                expect(service.getValidationErrorsForPage(licence, 'licenceConditions')).to.eql(expectedOutput);
+            });
         });
     });
 });

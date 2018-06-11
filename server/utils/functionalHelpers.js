@@ -68,8 +68,9 @@ function lastIndex(array) {
     return array.length - 1;
 }
 
-function removePath(path, object) {
-    return R.dissocPath(path, object);
+// pass in path and an object. Using ...args enables currying
+function removePath(...args) {
+    return R.dissocPath(...args);
 }
 
 function interleave(firstArray, secondArray) {
