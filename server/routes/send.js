@@ -20,10 +20,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         const {nomisId} = req.params;
         const licence = await licenceService.getLicence(nomisId);
         const stage = getIn(licence, ['stage']);
-        const submissionTarget = await getSubmissionTarget(nomisId, stage, {
-            role: req.user.role,
-            tokenId: req.user.username
-        });
+        const submissionTarget = await getSubmissionTarget(nomisId, stage, req.user.username);
 
         res.render('send/index', {nomisId, stage, submissionTarget});
     }));
@@ -35,12 +32,12 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         res.redirect('/hdc/sent/' + nomisId);
     }));
 
-    function getSubmissionTarget(nomisId, stage, {role, tokenId}) {
+    function getSubmissionTarget(nomisId, stage, username) {
         switch (stage) {
             case licenceStages.ELIGIBILITY:
-                return prisonerService.getComForPrisoner(nomisId, {role, tokenId});
+                return prisonerService.getComForPrisoner(nomisId, username);
             case licenceStages.PROCESSING_RO:
-                return prisonerService.getEstablishmentForPrisoner(nomisId, {role, tokenId});
+                return prisonerService.getEstablishmentForPrisoner(nomisId, username);
             default:
                 return null;
         }
