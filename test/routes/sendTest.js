@@ -75,45 +75,42 @@ describe('Send:', () => {
                     .get('/123')
                     .expect(() => {
                         expect(prisonerServiceStub.getComForPrisoner).to.be.calledOnce();
-                        expect(prisonerServiceStub.getComForPrisoner).to.be.calledWith('123', {
-                            role: 'CA', tokenId: 'my-username'
-                        });
-                        expect(prisonerServiceStub.getEstablishmentForPrisoner).not.to.be.called();
+                        expect(prisonerServiceStub.getComForPrisoner).to.be.calledWith('123', 'my-username');
                     });
+                expect(prisonerServiceStub.getEstablishmentForPrisoner).not.to.be.called();
             });
         });
     });
-
-
-    describe('When role is RO', () => {
-
-        const testUser = {
-            staffId: 'my-staff-id',
-            username: 'my-username',
-            role: 'RO'
-        };
-
-        const app = appSetup(createSendRoute({
-            licenceService: licenceServiceStub,
-            prisonerService: prisonerServiceStub,
-            logger: loggerStub,
-            authenticationMiddleware
-        }), testUser);
-
-        it('gets establishment details when submission is RO to CA', () => {
-
-            licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO'});
-
-            return request(app)
-                .get('/123')
-                .expect(() => {
-                    expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledOnce();
-                    expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledWith(
-                        '123', {role: 'RO', tokenId: 'my-username'});
-                    expect(prisonerServiceStub.getComForPrisoner).not.to.be.called();
-                });
-        });
-    });
-
 });
+
+
+describe('When role is RO', () => {
+
+    const testUser = {
+        staffId: 'my-staff-id',
+        username: 'my-username',
+        role: 'RO'
+    };
+
+    const app = appSetup(createSendRoute({
+        licenceService: licenceServiceStub,
+        prisonerService: prisonerServiceStub,
+        logger: loggerStub,
+        authenticationMiddleware
+    }), testUser);
+
+    it('gets establishment details when submission is RO to CA', () => {
+
+        licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO'});
+
+        return request(app)
+            .get('/123')
+            .expect(() => {
+                expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledOnce();
+                expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledWith('123', 'my-username');
+                expect(prisonerServiceStub.getComForPrisoner).not.to.be.called();
+            });
+    });
+});
+
 
