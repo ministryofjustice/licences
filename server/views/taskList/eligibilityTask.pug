@@ -1,3 +1,5 @@
+- var unsuitable = licenceStatus.decisions.unsuitable && !licenceStatus.decisions.exceptionalCircumstances
+
 div.largeMarginBottom
     h2.heading-medium HDC eligibility and suitability check
     if licenceStatus.tasks.eligibility !== 'DONE'
@@ -48,7 +50,7 @@ div.largeMarginBottom
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
                                 | Is there less than 4 weeks to go to the offender's CRD?
-                            if licenceStatus.decisions.excluded || licenceStatus.decisions.unsuitable
+                            if licenceStatus.decisions.excluded || unsuitable
                                 div#crdTimeAnswer.pure-u-1-4.center.bold N/A
 
                             else if licenceStatus.tasks.crdTime === 'DONE'

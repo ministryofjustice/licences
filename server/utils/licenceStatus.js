@@ -133,9 +133,9 @@ function getEligibilityStageState(licence) {
     const {insufficientTime, crdTime} = getCrdTimeState(licence);
     const {unsuitable, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
     const eligibility = getEligibilityState(unsuitable, excluded, [exclusion, crdTime, suitability]);
-    const eligible = !(excluded || insufficientTime || unsuitable);
-    const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
+    const eligible = isEligible({excluded, insufficientTime, unsuitable, exceptionalCircumstances});
 
+    const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
     const {bassReferralNeeded, bassReferral} = getBassReferralState(licence);
     const {curfewAddress} = getCurfewAddressState(licence, optedOut, bassReferralNeeded);
@@ -161,6 +161,26 @@ function getEligibilityStageState(licence) {
             curfewAddress
         }
     };
+}
+
+function isEligible({
+    excluded,
+    insufficientTime,
+    unsuitable,
+    exceptionalCircumstances
+}) {
+    if (excluded) {
+        return false;
+    }
+    if (insufficientTime) {
+        return false;
+    }
+
+    if (unsuitable && !exceptionalCircumstances) {
+        return false;
+    }
+
+    return true;
 }
 
 function getExclusionTaskState(licence) {

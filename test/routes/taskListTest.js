@@ -120,13 +120,24 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
 
-        context('when offender is ineligible', () => {
-            it('should not display link to opt out when excluded', () => {
+        context('when offender has been given exceptional circumstances', () => {
+            it('should display opt out form link', () => {
                 licenceServiceStub.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
-                            excluded: 'No',
-                            unsuitable: 'Yes'
+                            excluded: {
+                                decision: 'No'
+                            },
+                            suitability: {
+                                decision: 'Yes'
+                            },
+                            exceptionalCircumstances: {
+                                decision: 'Yes'
+                            },
+                            crdTime: {
+                                decision: 'No'
+                            }
                         }
                     }
                 });
@@ -135,16 +146,49 @@ describe('GET /taskList/:prisonNumber', () => {
                     .get('/1233456')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('/hdc/optOut/');
+                        expect(res.text).to.include('/hdc/proposedAddress/optOut/');
+                    });
+            });
+        });
+
+        context('when offender is ineligible', () => {
+            it('should not display link to opt out when unsuitable', () => {
+                licenceServiceStub.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
+                    licence: {
+                        eligibility: {
+                            excluded: {
+                                decision: 'No'
+                            },
+                            suitability: {
+                                decision: 'Yes'
+                            }
+                        }
+                    }
+                });
+
+                return request(app)
+                    .get('/1233456')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
                     });
             });
 
-            it('should not display link to opt out when unsuitable', () => {
+            it('should not display link to opt out when no exceptional circumstances are given', () => {
                 licenceServiceStub.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
-                            excluded: 'Yes',
-                            unsuitable: 'No'
+                            excluded: {
+                                decision: 'No'
+                            },
+                            suitability: {
+                                decision: 'Yes'
+                            },
+                            exceptionalCircumstances: {
+                                decision: 'No'
+                            }
                         }
                     }
                 });
@@ -153,16 +197,43 @@ describe('GET /taskList/:prisonNumber', () => {
                     .get('/1233456')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('/hdc/optOut/');
+                        expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
+                        expect(res.text).to.include('The offender is presumed unsuitable for HDC release');
+                    });
+            });
+
+            it('should not display link to opt out when excluded', () => {
+                licenceServiceStub.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
+                    licence: {
+                        eligibility: {
+                            excluded: {
+                                decision: 'Yes'
+                            }
+                        }
+                    }
+                });
+
+                return request(app)
+                    .get('/1233456')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
+                        expect(res.text).to.include('The offender is statutorily excluded from HDC');
                     });
             });
 
             it('should not display link to opt out when unsuitable and excluded', () => {
                 licenceServiceStub.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
-                            excluded: 'Yes',
-                            unsuitable: 'Yes'
+                            excluded: {
+                                decision: 'Yes'
+                            },
+                            suitability: {
+                                decision: 'Yes'
+                            }
                         }
                     }
                 });
@@ -171,7 +242,8 @@ describe('GET /taskList/:prisonNumber', () => {
                     .get('/1233456')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('/hdc/optOut/');
+                        expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
+                        expect(res.text).to.include('The offender is statutorily excluded from HDC');
                     });
             });
         });
