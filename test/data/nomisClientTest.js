@@ -10,10 +10,10 @@ const nomisClientBuilder = require('../../server/data/nomisClientBuilder');
 
 const fakeNomis = nock(`${config.nomis.apiUrl}`);
 const fakeStore = {
-    getTokens: sandbox.stub().returns(
+    get: sandbox.stub().returns(
         {token: 'token', refreshToken: 'refresh', timestamp: new Date('May 31, 2018 11:00:00').getTime()}
     ),
-    addOrUpdate: sandbox.stub()
+    store: sandbox.stub()
 };
 
 
@@ -356,7 +356,7 @@ describe('nomisClient', function() {
             const result = await nomisClient.getEstablishment('1');
 
             expect(signInServiceStub.refresh).to.be.calledOnce();
-            expect(fakeStore.getTokens).to.be.calledTwice(); // get expired token, refresh, get new token
+            expect(fakeStore.get).to.be.calledTwice(); // get expired token, refresh, get new token
             expect(result).to.eql({response: 'this'});
         });
 

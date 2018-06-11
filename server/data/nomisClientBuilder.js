@@ -1,5 +1,4 @@
 const config = require('../config');
-const logger = require('../../log.js');
 const {merge} = require('../utils/functionalHelpers');
 const superagent = require('superagent');
 const generateApiGatewayToken = require('../authentication/apiGateway');
@@ -12,9 +11,9 @@ const timeoutSpec = {
 
 const apiUrl = config.nomis.apiUrl;
 
-module.exports = (tokenStore, signInService) => (userRole, tokenId) => {
+module.exports = (tokenStore, signInService) => username => {
 
-    const nomisGet = nomisGetBuilder(tokenStore, signInService, userRole, tokenId);
+    const nomisGet = nomisGetBuilder(tokenStore, signInService, username);
 
     return {
         getUpcomingReleasesByOffenders: function(nomisIds) {
@@ -64,8 +63,8 @@ module.exports = (tokenStore, signInService) => (userRole, tokenId) => {
         getHdcEligiblePrisoners: async function(nomisIds) {
             const path = `${apiUrl}/offender-sentences`;
             const query = {
-                    query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`,
-                    offenderNo: nomisIds
+                query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`,
+                offenderNo: nomisIds
             };
 
             const headers = {
@@ -100,13 +99,13 @@ module.exports = (tokenStore, signInService) => (userRole, tokenId) => {
     };
 };
 
-function nomisGetBuilder(tokenStore, signInService, userRole, tokenId) {
+function nomisGetBuilder(tokenStore, signInService, username) {
 
     return async ({path, query = '', headers = {}, responseType = ''} = {}) => {
 
-        const tokenObject = tokenStore.getTokens(tokenId);
+        const tokens = tokenStore.get(username);
 
-        if(!tokenObject) {
+        if (!tokens) {
             throw new NoTokenError();
         }
 
@@ -114,8 +113,8 @@ function nomisGetBuilder(tokenStore, signInService, userRole, tokenId) {
             const result = await superagent
                 .get(path)
                 .query(query)
-                .set('Authorization', gatewayTokenOrCopy(tokenObject.token))
-                .set('Elite-Authorization', tokenObject.token)
+                .set('Authorization', gatewayTokenOrCopy(tokens.token))
+                .set('Elite-Authorization', tokens.token)
                 .set(headers)
                 .responseType(responseType)
                 .timeout(timeoutSpec);
@@ -123,22 +122,28 @@ function nomisGetBuilder(tokenStore, signInService, userRole, tokenId) {
             return result.body;
 
         } catch (error) {
-
-            const unauthorisedError = error.status === 400 || error.status === 401 || error.status === 403;
-            const refreshAttempted = Date.now() - tokenObject.timestamp < 5000;
-
-            if(!unauthorisedError || refreshAttempted) {
-                logger.error('Error from NOMIS: ', error.stack);
-                throw error;
+            if (canRetry(error, tokens)) {
+                return refreshAndRetry(username, {path, query, headers, responseType});
             }
 
-            logger.info('Refreshing token for ', tokenId);
-            await signInService.refresh(userRole, tokenId, tokenObject.refreshToken);
-
-            const nomisGet = nomisGetBuilder(tokenStore, signInService, userRole, tokenId);
-            return nomisGet({path, query, headers, responseType});
+            throw error;
         }
     };
+
+    function canRetry(error, tokens) {
+        const unauthorisedError = [400, 401, 403].includes(error.status);
+        const refreshAllowed = Date.now() - tokens.timestamp >= 5000;
+
+        return unauthorisedError && refreshAllowed;
+    }
+
+    async function refreshAndRetry(username, {path, query, headers, responseType}) {
+
+        await signInService.refresh(username);
+
+        const nomisGet = nomisGetBuilder(tokenStore, signInService, username);
+        return nomisGet({path, query, headers, responseType});
+    }
 }
 
 function addReleaseDate(prisoner) {
