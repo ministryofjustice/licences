@@ -3,17 +3,17 @@ const {isEmpty} = require('../utils/functionalHelpers');
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter) {
 
-    async function getHdcCaseList(user) {
+    async function getHdcCaseList(username, role) {
         try {
-            const nomisClient = nomisClientBuilder(user.username);
-            const hdcEligibleReleases = await getCaseList(nomisClient, licenceClient, user);
+            const nomisClient = nomisClientBuilder(username);
+            const hdcEligibleReleases = await getCaseList(nomisClient, licenceClient, username, role);
 
             if (isEmpty(hdcEligibleReleases)) {
                 logger.info('No hdc eligible prisoners');
                 return [];
             }
 
-            return caseListFormatter.formatCaseList(user.role, hdcEligibleReleases);
+            return caseListFormatter.formatCaseList(hdcEligibleReleases, role);
 
         } catch (error) {
             logger.error('Error during getHdcCaseList: ', error.stack);
@@ -24,22 +24,22 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
     return {getHdcCaseList};
 };
 
-async function getCaseList(nomisClient, licenceClient, user) {
+async function getCaseList(nomisClient, licenceClient, username, role) {
     const asyncCaseRetrievalMethod = {
         CA: nomisClient.getHdcEligiblePrisoners,
-        RO: getROCaseList(nomisClient, licenceClient, user),
+        RO: getROCaseList(nomisClient, licenceClient, username),
         DM: nomisClient.getHdcEligiblePrisoners
     };
 
-    return asyncCaseRetrievalMethod[user.role]();
+    return asyncCaseRetrievalMethod[role]();
 }
 
-function getROCaseList(nomisClient, licenceClient, user) {
+function getROCaseList(nomisClient, licenceClient, username) {
     return async () => {
-        const deliusUserName = await licenceClient.getDeliusUserName(user.username);
+        const deliusUserName = await licenceClient.getDeliusUserName(username);
 
         if (!deliusUserName) {
-            logger.warn(`No delius user ID for nomis ID '${user.username}'`);
+            logger.warn(`No delius user ID for nomis ID '${username}'`);
             return [];
         }
 

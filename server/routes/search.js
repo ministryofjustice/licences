@@ -22,9 +22,9 @@ module.exports = function({logger, searchService, authenticationMiddleware}) {
         logger.debug('POST /search/offender');
 
         const {searchTerm} = req.body;
-        const {error, query}= parseSearchTerms(searchTerm);
+        const {error, query} = parseSearchTerms(searchTerm);
 
-        if(error) {
+        if (error) {
             return res.render('search/offender', {error});
         }
 
@@ -34,11 +34,7 @@ module.exports = function({logger, searchService, authenticationMiddleware}) {
     router.get('/offender/results', asyncMiddleware(async (req, res) => {
         logger.debug('GET /search/offender/results');
 
-        const hdcEligible = await searchService.searchOffendersAny({
-            user: req.user,
-            tokenId: req.user.username,
-            searchTerms: req.query
-        });
+        const hdcEligible = await searchService.searchOffenders(req.query.nomisId, req.user.username, req.user.role);
 
         res.render('search/results', {hdcEligible});
     }));

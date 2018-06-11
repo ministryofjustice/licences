@@ -4,13 +4,18 @@ function TokenStore() {
     this.tokens = {};
 }
 
-TokenStore.prototype.store = (userId, role, token, refreshToken) => {
+TokenStore.prototype.store = (username, role, token, refreshToken) => {
+
+    if(!(username && role && token)) {
+        throw new Error('Invalid token store entry');
+    }
+
     const timestamp = new Date();
-    this.tokens = mergeWithRight(this.tokens, {[userId]: {role, token, refreshToken, timestamp}});
+    this.tokens = mergeWithRight(this.tokens, {[username]: {role, token, refreshToken, timestamp}});
 };
 
-TokenStore.prototype.get = userId => {
-    return getIn(this.tokens, [userId]);
+TokenStore.prototype.get = username => {
+    return getIn(this.tokens, [username]);
 };
 
 module.exports = TokenStore;

@@ -7,12 +7,12 @@ const moment = require('moment');
 
 module.exports = function createCaseListFormatter(logger, licenceClient) {
 
-    async function formatCaseList(userRole, hdcEligibleReleases) {
+    async function formatCaseList(hdcEligibleReleases, role) {
 
         const licences = await licenceClient.getLicences(getOffenderIds(hdcEligibleReleases));
         return hdcEligibleReleases
             .filter(prisoner => getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
-            .map(decoratePrisonerDetails(licences, userRole))
+            .map(decoratePrisonerDetails(licences, role))
             .sort(compareReleaseDates);
     }
 
@@ -23,15 +23,15 @@ function getOffenderIds(releases) {
     return releases.map(offender => offender.offenderNo);
 }
 
-function decoratePrisonerDetails(licences, userRole) {
+function decoratePrisonerDetails(licences, role) {
     return prisoner => {
         const formattedPrisoner = formatObjectForView(prisoner);
-        const {stage, status} = getStatus(prisoner, licences, userRole);
+        const {stage, status} = getStatus(prisoner, licences, role);
         return {...formattedPrisoner, stage, status};
     };
 }
 
-function getStatus(prisoner, licences, userRole) {
+function getStatus(prisoner, licences, role) {
 
     const licenceForPrisoner = licences.find(rawLicence => {
         return prisoner.offenderNo === rawLicence.nomis_id;
@@ -42,7 +42,7 @@ function getStatus(prisoner, licences, userRole) {
     }
 
     const licenceStatus = getLicenceStatus(licenceForPrisoner);
-    return {stage: licenceForPrisoner.stage, status: getStatusLabel(licenceStatus, userRole)};
+    return {stage: licenceForPrisoner.stage, status: getStatusLabel(licenceStatus, role)};
 }
 
 function compareReleaseDates(address1, address2) {

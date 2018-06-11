@@ -22,7 +22,8 @@ const licenceService = createLicenceService(licenceClient);
 const conditionsService = createConditionsService(licenceClient);
 const prisonerService = createPrisonerService(nomisClientBuilder(tokenStore, signInService));
 const caseListFormatter = createCaseListFormatter(logger, licenceClient);
-const caseListService = createCaseListService(nomisClientBuilder(tokenStore, signInService), licenceClient, caseListFormatter);
+const caseListService =
+    createCaseListService(nomisClientBuilder(tokenStore, signInService), licenceClient, caseListFormatter);
 const pdfService = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter);
 const searchService = createSearchService(logger, nomisClientBuilder(tokenStore), caseListFormatter);
 

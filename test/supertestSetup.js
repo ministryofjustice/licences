@@ -96,8 +96,7 @@ const pdfServiceStub = {
 };
 
 const searchServiceStub = {
-    searchOffendersAny: sandbox.stub().returnsPromise().resolves(),
-    searchOffendersAll: sandbox.stub().returnsPromise().resolves()
+    searchOffenders: sandbox.stub().returnsPromise().resolves()
 };
 
 const hdcRoute = createLicenceConditionsRoute({

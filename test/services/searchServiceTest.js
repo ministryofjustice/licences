@@ -51,14 +51,9 @@ describe('searchService', () => {
 
     describe('searchOffenders', () => {
 
-        it('should skip getPrisoners when only nomis IDs', async () => {
+        it('should get prisoners and add com relation', async () => {
 
-            const result = await service.searchOffendersAny(
-                {
-                    searchTerms: {nomisId: ['A0001AA']},
-                    tokenId: 'token',
-                    user: {}
-                });
+            const result = await service.searchOffenders('A0001AA', {});
 
             expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
             expect(nomisClient.getHdcEligiblePrisoners).to.be.calledWith(['A0001AA']);
@@ -71,12 +66,7 @@ describe('searchService', () => {
 
         it('should remove duplicate nomis IDs before searching nomis', async () => {
 
-            await service.searchOffendersAny(
-                {
-                    searchTerms: {nomisId: ['A0001AA', 'A0001AA', 'A0002AA']},
-                    tokenId: 'token',
-                    user: {}
-                });
+            await service.searchOffenders(['A0001AA', 'A0001AA', 'A0002AA'], {});
 
             expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
             expect(nomisClient.getHdcEligiblePrisoners).to.be.calledWith(['A0001AA', 'A0002AA']);
@@ -84,37 +74,10 @@ describe('searchService', () => {
 
         it('should not search nomis if no nomis iDs', async () => {
 
-            await service.searchOffendersAny(
-                {
-                    searchTerms: {nomisId: []},
-                    tokenId: 'token',
-                    user: {}
-                });
+            await service.searchOffenders(['', '   '], {});
 
             expect(nomisClient.getHdcEligiblePrisoners).to.not.be.calledOnce();
         });
-
-        it('should call getPrisoners when name or dob', async () => {
-
-            const result = await service.searchOffendersAny(
-                {
-                    searchTerms: {lastName: 'LAST'},
-                    tokenId: 'token',
-                    user: {}
-                });
-
-            expect(nomisClient.getPrisoners).to.be.calledOnce();
-            expect(nomisClient.getPrisoners).to.be.calledWith('lastName=LAST&anyMatch=true');
-
-            expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
-            expect(nomisClient.getHdcEligiblePrisoners).to.be.calledWith(['A0001AA', 'A0001BB']);
-
-            expect(nomisClient.getComRelation).to.be.calledOnce();
-            expect(nomisClient.getComRelation).to.be.calledWith(123456);
-
-            expect(result[0].com).to.eql({comName: 'COMNAME'});
-        });
-
     });
 
 });

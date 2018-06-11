@@ -13,13 +13,12 @@ const createSearchRoute = require('../../server/routes/search');
 describe('Search:', () => {
 
     beforeEach(() => {
-        searchServiceStub.searchOffendersAny.resolves({});
+        searchServiceStub.searchOffenders.resolves({});
     });
 
     describe('When role is RO', () => {
 
         const testUser = {
-            staffId: 'my-staff-id',
             username: 'my-username',
             role: 'RO'
         };
@@ -46,10 +45,10 @@ describe('Search:', () => {
             it('parses search terms into query string and redirects to /hdc/search/offender/results', () => {
                 return request(app)
                     .post('/offender')
-                    .send({searchTerm: 'LAST'})
+                    .send({searchTerm: 'A0001XX'})
                     .expect(302)
                     .expect(res => {
-                        expect(res.header['location']).to.eql('/hdc/search/offender/results?lastName=LAST');
+                        expect(res.header['location']).to.eql('/hdc/search/offender/results?nomisId=A0001XX');
                     });
 
             });
@@ -72,10 +71,10 @@ describe('Search:', () => {
             it('parses search terms into query string and redirects to /hdc/search/offender/results', () => {
                 return request(app)
                     .post('/offender/results')
-                    .send({searchTerm: 'LAST'})
+                    .send({searchTerm: 'A0001XX'})
                     .expect(302)
                     .expect(res => {
-                        expect(res.header['location']).to.eql('/hdc/search/offender/results?lastName=LAST');
+                        expect(res.header['location']).to.eql('/hdc/search/offender/results?nomisId=A0001XX');
                     });
 
             });
@@ -97,16 +96,13 @@ describe('Search:', () => {
 
             it('calls search service and renders HTML output', () => {
                 return request(app)
-                    .get('/offender/results?lastName=LAST')
+                    .get('/offender/results?nomisId=A0001XX')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(() => {
-                        expect(searchServiceStub.searchOffendersAny).to.be.calledOnce();
-                        expect(searchServiceStub.searchOffendersAny).to.be.calledWith({
-                            user: testUser,
-                            tokenId: testUser.username,
-                            searchTerms: {lastName: 'LAST'}
-                        });
+                        expect(searchServiceStub.searchOffenders).to.be.calledOnce();
+                        expect(searchServiceStub.searchOffenders)
+                            .to.be.calledWith('A0001XX', testUser.username, testUser.role);
                     });
             });
 

@@ -44,13 +44,13 @@ describe('caseListService', () => {
     };
 
     const user = {
-        staffId: '123',
+        username: '123',
         token: 'token',
         role: 'CA'
     };
 
     const ROUser = {
-        staffId: '123',
+        username: '123',
         token: 'token',
         role: 'RO'
     };
@@ -67,27 +67,27 @@ describe('caseListService', () => {
     describe('getHdcCaseList', () => {
 
         it('should format dates', async () => {
-            const result = await service.getHdcCaseList(user);
+            const result = await service.getHdcCaseList(user.username, user.role);
 
             expect(result[0].sentenceDetail.homeDetentionCurfewEligibilityDate).to.eql('07/09/2017');
             expect(result[0].sentenceDetail.conditionalReleaseDate).to.eql('15/12/2017');
         });
 
         it('should capitalise names', async () => {
-            const result = await service.getHdcCaseList(user);
+            const result = await service.getHdcCaseList(user.username, user.role);
 
             expect(result[0].firstName).to.eql('Mark');
             expect(result[0].lastName).to.eql('Andrews');
         });
 
         it('should add a status to the prisoners', async () => {
-            const result = await service.getHdcCaseList(user);
+            const result = await service.getHdcCaseList(user.username, user.role);
 
             expect(result[0].status).to.eql('Not started');
         });
 
         it('should add a processing stage to the prisoners', async () => {
-            const result = await service.getHdcCaseList(user);
+            const result = await service.getHdcCaseList(user.username, user.role);
 
             expect(result[0].stage).to.eql('UNSTARTED');
         });
@@ -95,18 +95,18 @@ describe('caseListService', () => {
         it('should return empty array if no results', () => {
             nomisClient.getHdcEligiblePrisoners.resolves([]);
 
-            return expect(service.getHdcCaseList(user)).to.eventually.eql([]);
+            return expect(service.getHdcCaseList(user.username, user.role)).to.eventually.eql([]);
         });
 
         it('should return empty array if no null returned', () => {
             nomisClient.getHdcEligiblePrisoners.resolves(null);
 
-            return expect(service.getHdcCaseList(user)).to.eventually.eql([]);
+            return expect(service.getHdcCaseList(user.username, user.role)).to.eventually.eql([]);
         });
 
         context('when user is a CA', () => {
             it('should call getHdcEligiblePrisoners from nomisClient', () => {
-                service.getHdcCaseList(user);
+                service.getHdcCaseList(user.username, user.role);
 
                 expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
                 expect(nomisClient.getHdcEligiblePrisoners.firstCall.args.length).to.eql(0);
@@ -115,7 +115,7 @@ describe('caseListService', () => {
 
         context('when user is a RO', () => {
             it('should call getROPrisoners && getHdcEligiblePrisoners from nomisClient', async () => {
-                await service.getHdcCaseList(ROUser);
+                await service.getHdcCaseList(ROUser.username, ROUser.role);
 
                 expect(nomisClient.getROPrisoners).to.be.calledOnce();
                 expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
@@ -126,7 +126,7 @@ describe('caseListService', () => {
 
                 nomisClient.getROPrisoners.resolves([]);
 
-                await service.getHdcCaseList(ROUser);
+                await service.getHdcCaseList(ROUser.username, ROUser.role);
 
                 expect(nomisClient.getROPrisoners).to.be.calledOnce();
             });
@@ -134,7 +134,7 @@ describe('caseListService', () => {
             it('should return empty array if no delius user name found', async () => {
                 licenceClient.getDeliusUserName.resolves({});
 
-                const result = await service.getHdcCaseList(ROUser);
+                const result = await service.getHdcCaseList(ROUser.username, ROUser.role);
 
                 expect(result).to.eql([]);
                 expect(nomisClient.getHdcEligiblePrisoners).not.to.be.calledOnce();
@@ -195,7 +195,7 @@ describe('caseListService', () => {
                     offender2
                 ]);
 
-                const result = await service.getHdcCaseList(user);
+                const result = await service.getHdcCaseList(user.username, user.role);
 
                 expect(result[0].name).to.eql('offender1');
                 expect(result[1].name).to.eql('offender2');
@@ -210,7 +210,7 @@ describe('caseListService', () => {
                     offender3
                 ]);
 
-                const result = await service.getHdcCaseList(user);
+                const result = await service.getHdcCaseList(user.username, user.role);
 
                 expect(result[0].name).to.eql('offender3');
                 expect(result[1].name).to.eql('offender4');
@@ -235,7 +235,7 @@ describe('caseListService', () => {
                     offender3
                 ]);
 
-                const result = await service.getHdcCaseList(user);
+                const result = await service.getHdcCaseList(user.username, user.role);
 
                 expect(result[0].name).to.eql('offender3');
                 expect(result[1].name).to.eql('offender4');
