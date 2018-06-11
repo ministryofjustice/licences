@@ -300,10 +300,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             });
 
             if (formConfig[formName].validateInPlace) {
-                const errors = licenceService.getLicenceErrors({
-                    licence: updatedLicence,
-                    section: [sectionName]
-                });
+                const errors = licenceService.getValidationErrorsForPage(updatedLicence, sectionName);
 
                 if (!isEmpty(getIn(errors, [sectionName, formName]))) {
                     req.flash('errors', errors);
