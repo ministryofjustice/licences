@@ -1314,7 +1314,7 @@ describe('licenceService', () => {
             expect(service.getLicenceErrors({licence: emptyResidents})).to.eql({});
         });
 
-        it('should not allow empty occupier object', () => {
+        it('should allow empty occupier object', () => {
 
             const emptyOccupier = {
                 ...baseLicence,
@@ -1325,26 +1325,35 @@ describe('licenceService', () => {
                         occupier: {
                             name: '',
                             relationship: '',
-                            age: 'a'
+                            age: ''
                         }
                     }
                 }
             };
 
-            const expectedOutput = {
+            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql({});
+        });
+
+        it('should require a relationship if an age is provided', () => {
+
+            const emptyOccupier = {
+                ...baseLicence,
                 proposedAddress: {
+                    ...baseLicence.proposedAddress,
                     curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
                         occupier: {
-                            name: 'Not answered',
-                            relationship: 'Not answered',
-                            age: 'Invalid entry - number required'
+                            name: 'name',
+                            relationship: '',
+                            age: ''
                         }
                     }
                 }
             };
 
-            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql(expectedOutput);
-
+            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql({
+                proposedAddress: {curfewAddress: {occupier: {relationship: 'Not answered'}}}
+            });
         });
 
         it('should not allow ages below 0', () => {

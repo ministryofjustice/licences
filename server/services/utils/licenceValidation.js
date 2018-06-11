@@ -16,6 +16,9 @@ const requiredPostcode = joi.postcode().required();
 const requiredIf = (field, answer, typeRequired = requiredString, ifNot = optionalString) => {
     return joi.when(field, {is: answer, then: typeRequired, otherwise: ifNot});
 };
+const requiredIfAnswered = (field, typeRequired = requiredString) => {
+    return joi.when(field, {is: joi.string(), then: typeRequired});
+};
 
 function getMessage(errorType, errorMessage) {
     if (errorType === 'date.format') {
@@ -92,10 +95,10 @@ const curfewAddress = joi.object().keys({
     addressTown: requiredString,
     postCode: requiredPostcode,
     telephone: requiredPhone,
-    occupier: joi.object().required().keys({
-        name: requiredString,
+    occupier: joi.object().keys({
+        name: optionalString,
         age: optionalAge,
-        relationship: requiredString
+        relationship: requiredIfAnswered('name')
     }),
     residents: joi.array().items(joi.object().keys({
         name: requiredString,
