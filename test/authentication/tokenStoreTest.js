@@ -19,11 +19,12 @@ describe('tokenStore', () => {
         clock.restore();
     });
 
-    describe('addOrUpdate', () => {
+    describe('store', () => {
 
         it('should add a new field to the store', () => {
-            tokenStore.addOrUpdate('username', 'token', 'refresh');
-            expect(tokenStore.getTokens('username')).to.eql({
+            tokenStore.store('username', 'role', 'token', 'refresh');
+            expect(tokenStore.get('username')).to.eql({
+                role: 'role',
                 token: 'token',
                 refreshToken: 'refresh',
                 timestamp: new Date('May 31, 2018 12:00:00')
@@ -31,8 +32,9 @@ describe('tokenStore', () => {
         });
 
         it('should update an existing field to the store', () => {
-            tokenStore.addOrUpdate('username', 'token2', 'refresh2');
-            expect(tokenStore.getTokens('username')).to.eql({
+            tokenStore.store('username', 'role', 'token2', 'refresh2');
+            expect(tokenStore.get('username')).to.eql({
+                role: 'role',
                 token: 'token2',
                 refreshToken: 'refresh2',
                 timestamp: new Date('May 31, 2018 12:00:00')

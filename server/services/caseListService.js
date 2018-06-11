@@ -9,7 +9,7 @@ const moment = require('moment');
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient) {
     async function getHdcCaseList(user) {
         try {
-            const nomisClient = nomisClientBuilder(user.role, user.username);
+            const nomisClient = nomisClientBuilder(user.username);
             const hdcEligibleReleases = await getCaseList(nomisClient, licenceClient, user);
 
             if (isEmpty(hdcEligibleReleases)) {

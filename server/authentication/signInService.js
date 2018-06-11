@@ -4,6 +4,7 @@ const querystring = require('querystring');
 const config = require('../config');
 const generateApiGatewayToken = require('./apiGateway');
 const {generateOauthClientToken, generateAdminOauthClientToken} = require('./oauth');
+const {NoTokenError} = require('../utils/errors');
 const logger = require('../../log');
 
 const timeoutSpec = {
@@ -22,20 +23,22 @@ function signInService(tokenStore) {
             logger.info(`Log in for: ${username}`);
 
             try {
-                const {profile, role, tokenObject} = await doLogin(username, password);
+                const {profile, role, token, refreshToken} = await login(username, password);
+                tokenStore.store(username, role, token, refreshToken);
 
-                const activeCaseLoad = await getCaseLoad(tokenObject.token, profile.activeCaseLoadId);
+                const activeCaseLoad = await getCaseLoad(token, profile.activeCaseLoadId);
 
                 return {
                     ...profile,
-                    ...tokenObject,
+                    token,
+                    refreshToken,
                     role,
                     activeCaseLoad,
                     username
                 };
 
             } catch (error) {
-                if (error.status === 400 || error.status === 401 || error.status === 403) {
+                if (unauthorised(error)) {
                     logger.error(`Forbidden Elite2 login for [${username}]:`, error.stack);
                     return {};
                 }
@@ -45,18 +48,22 @@ function signInService(tokenStore) {
             }
         },
 
-        refresh: async function(role, username, oldRefreshToken) {
+        refresh: async function(username) {
 
             logger.info(`Token refresh for: ${username}`);
 
-            try {
-                const oauthResult = await getRefreshToken(role, username, oldRefreshToken);
-                logger.info(`Refresh oauth result status: ${oauthResult.status}`);
+            const oldTokenObject = tokenStore.get(username);
 
-                storeToken(username, oauthResult);
+            if (!oldTokenObject) {
+                throw new NoTokenError();
+            }
+
+            try {
+                const {token, refreshToken} = await getRefreshTokens(username, oldTokenObject);
+                tokenStore.store(username, oldTokenObject.role, token, refreshToken);
 
             } catch (error) {
-                if (error.status === 400 || error.status === 401 || error.status === 403) {
+                if (unauthorised(error)) {
                     logger.error(`Forbidden Elite2 token refresh for [${username}]:`, error.stack);
                     return {};
                 }
@@ -67,66 +74,61 @@ function signInService(tokenStore) {
         }
     };
 
-    async function doLogin(username, password) {
+    async function login(username, password) {
 
-        const oauthResult = await getPasswordOauthToken(generateOauthClientToken(), username, password);
-        logger.info(`Password oauth result status: ${oauthResult.status}`);
-        const tokenObject = storeToken(username, oauthResult);
+        const {token, refreshToken} = await getPasswordTokens(username, password);
 
-        const profile = await getUserProfile(tokenObject.token, username);
-        const role = await getRoleCode(tokenObject.token);
+        const [profile, role] = await Promise.all([
+            getUserProfile(token, username),
+            getRoleCode(token)
+        ]);
 
         if (role === RO_ROLE_CODE) {
-            const oauthResult = await getClientCredentialsOauthToken(generateAdminOauthClientToken(), username);
-            logger.info(`RO client credentials oauth result status: ${oauthResult.status}`);
-            return userData(profile, role, storeToken(username, oauthResult));
+            const roToken = await getClientCredentialsTokens(username);
+            return {profile, role, ...roToken};
         }
 
-        return userData(profile, role, tokenObject);
+        return {profile, role, token, refreshToken};
     }
 
-    function userData(profile, role, tokenObject) {
-        return {
-            profile: profile.body,
-            role,
-            tokenObject
-        };
+    async function getPasswordTokens(username, password) {
+        const oauthClientToken = generateOauthClientToken();
+        const oauthRequest = {grant_type: 'password', username, password};
+
+        return oauthTokenRequest(oauthClientToken, oauthRequest);
     }
 
-    function storeToken(username, oauthResult) {
-        const {token, refreshToken} = getTokens(oauthResult);
-        tokenStore.addOrUpdate(username, token, refreshToken);
-        return {token, refreshToken};
+    async function getClientCredentialsTokens(username) {
+        const oauthAdminClientToken = generateAdminOauthClientToken();
+        const oauthRequest = {grant_type: 'client_credentials', username};
+
+        return oauthTokenRequest(oauthAdminClientToken, oauthRequest);
     }
 
-    function getRefreshToken(role, username, oldRefreshToken) {
+    async function getRefreshTokens(username, oldTokenObject) {
 
-        if (role === RO_ROLE_CODE) {
+        if (oldTokenObject.role === RO_ROLE_CODE) {
             logger.info('RO client credentials token refresh');
-            return getClientCredentialsOauthToken(generateAdminOauthClientToken(), username);
+            return getClientCredentialsTokens(username);
         }
 
-        logger.info('Non-RO token refresh');
-        return getRefreshOauthToken(generateOauthClientToken(), username, oldRefreshToken);
+        const oauthClientToken = generateOauthClientToken();
+        const oauthRequest = {grant_type: 'refresh_token', refresh_token: oldTokenObject.refreshToken};
+
+        return oauthTokenRequest(oauthClientToken, oauthRequest);
     }
+}
+
+async function oauthTokenRequest(clientToken, oauthRequest) {
+    const oauthResult = await getOauthToken(clientToken, oauthRequest);
+    logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`);
+
+    return parseOauthTokens(oauthResult);
 }
 
 function gatewayTokenOrCopy(token) {
     return config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : token;
 }
-
-function getPasswordOauthToken(oauthClientToken, username, password) {
-    return getOauthToken(oauthClientToken, {grant_type: 'password', username, password});
-}
-
-function getRefreshOauthToken(oauthClientToken, username, refreshToken) {
-    return getOauthToken(oauthClientToken, {grant_type: 'refresh_token', refresh_token: refreshToken});
-}
-
-function getClientCredentialsOauthToken(oauthClientToken, username) {
-    return getOauthToken(oauthClientToken, {grant_type: 'client_credentials', username});
-}
-
 
 function getOauthToken(oauthClientToken, requestSpec) {
 
@@ -141,16 +143,18 @@ function getOauthToken(oauthClientToken, requestSpec) {
         .timeout(timeoutSpec);
 }
 
-function getTokens(oauthResult, username) {
+function parseOauthTokens(oauthResult) {
+
     const token = `${oauthResult.body.token_type} ${oauthResult.body.access_token}`;
     const refreshToken = oauthResult.body.refresh_token;
+
     return {token, refreshToken};
 }
 
 async function getUserProfile(token, username) {
     const profileResult = await nomisGet('/users/me', token);
     logger.info(`Elite2 profile success for [${username}]`);
-    return profileResult;
+    return profileResult.body;
 }
 
 async function getRoleCode(token) {
@@ -202,6 +206,10 @@ function nomisGet(path, token) {
 
 function getOauthUrl() {
     return config.nomis.apiUrl.replace('/api', '');
+}
+
+function unauthorised(error) {
+    return [400, 401, 403].includes(error.status);
 }
 
 module.exports = function createSignInService(tokenStore) {
