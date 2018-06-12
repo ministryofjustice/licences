@@ -51,6 +51,11 @@ const loggerStub = {
     error: sandbox.stub()
 };
 
+const signInServiceStub = {
+    signIn: sandbox.stub().returnsPromise().resolves(),
+    refresh: sandbox.stub().returnsPromise().resolves()
+};
+
 const licenceServiceStub = {
     getLicence: sandbox.stub().returnsPromise().resolves(),
     update: sandbox.stub().returnsPromise().resolves(),
@@ -152,6 +157,7 @@ module.exports = {
     expect,
     nock,
     loggerStub,
+    signInServiceStub,
     licenceServiceStub,
     conditionsServiceStub,
     prisonerServiceStub,

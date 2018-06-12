@@ -122,7 +122,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const errorObject = licenceService.getValidationErrorsForReview({licenceStatus, licence: licenceWithAddress});
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, {tokenId: req.user.username});
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.username);
 
         res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus, errorObject});
     }));
@@ -130,7 +130,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     function addAddressTo(licence) {
         const allAddresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
 
-        if(!allAddresses) {
+        if (!allAddresses) {
             return licence;
         }
 
@@ -148,7 +148,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         logger.debug('GET /approval/release/');
 
         const {nomisId} = req.params;
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, {tokenId: req.user.username});
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.username);
 
         const {nextPath, pageDataMap} = formConfig.release;
         const dataPath = pageDataMap || ['licence', 'approval', 'release'];
@@ -299,7 +299,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
                 formName: saveSection[1] || formName
             });
 
-            if(formConfig[formName].validateInPlace) {
+            if (formConfig[formName].validateInPlace) {
                 const errors = licenceService.getValidationErrorsForPage(updatedLicence, sectionName);
 
                 if (!isEmpty(getIn(errors, [sectionName, formName]))) {

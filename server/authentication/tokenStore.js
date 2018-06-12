@@ -4,12 +4,12 @@ function TokenStore() {
     this.tokens = {};
 }
 
-TokenStore.prototype.addOrUpdate = (userId, token, refreshToken) => {
+TokenStore.prototype.store = (userId, role, token, refreshToken) => {
     const timestamp = new Date();
-    this.tokens = mergeWithRight(this.tokens, {[userId]: {token, refreshToken, timestamp}});
+    this.tokens = mergeWithRight(this.tokens, {[userId]: {role, token, refreshToken, timestamp}});
 };
 
-TokenStore.prototype.getTokens = userId => {
+TokenStore.prototype.get = userId => {
     return getIn(this.tokens, [userId]);
 };
 

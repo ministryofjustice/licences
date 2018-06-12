@@ -1,9 +1,7 @@
 const config = require('../config');
-const logger = require('../../log.js');
 const {merge} = require('../utils/functionalHelpers');
 const superagent = require('superagent');
 const generateApiGatewayToken = require('../authentication/apiGateway');
-const generateOauthClientToken = require('../authentication/oauth');
 const {NoTokenError} = require('../utils/errors');
 
 const timeoutSpec = {
@@ -13,9 +11,9 @@ const timeoutSpec = {
 
 const apiUrl = config.nomis.apiUrl;
 
-module.exports = tokenStore => tokenId => {
+module.exports = (tokenStore, signInService) => username => {
 
-    const nomisGet = nomisGetBuilder(tokenStore, tokenId);
+    const nomisGet = nomisGetBuilder(tokenStore, signInService, username);
 
     return {
         getUpcomingReleasesByOffenders: function(nomisIds) {
@@ -65,8 +63,8 @@ module.exports = tokenStore => tokenId => {
         getHdcEligiblePrisoners: async function(nomisIds) {
             const path = `${apiUrl}/offender-sentences`;
             const query = {
-                    query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`,
-                    offenderNo: nomisIds
+                query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`,
+                offenderNo: nomisIds
             };
 
             const headers = {
@@ -101,23 +99,22 @@ module.exports = tokenStore => tokenId => {
     };
 };
 
-function nomisGetBuilder(tokenStore, tokenId) {
-
-    const tokenObject = tokenStore.getTokens(tokenId);
-
-    if(!tokenObject) {
-        throw new NoTokenError();
-    }
+function nomisGetBuilder(tokenStore, signInService, username) {
 
     return async ({path, query = '', headers = {}, responseType = ''} = {}) => {
 
-        const authorisation = config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : tokenObject.token;
+        const tokens = tokenStore.get(username);
+
+        if (!tokens) {
+            throw new NoTokenError();
+        }
+
         try {
             const result = await superagent
                 .get(path)
                 .query(query)
-                .set('Authorization', authorisation)
-                .set('Elite-Authorization', tokenObject.token)
+                .set('Authorization', gatewayTokenOrCopy(tokens.token))
+                .set('Elite-Authorization', tokens.token)
                 .set(headers)
                 .responseType(responseType)
                 .timeout(timeoutSpec);
@@ -125,22 +122,28 @@ function nomisGetBuilder(tokenStore, tokenId) {
             return result.body;
 
         } catch (error) {
-            const unauthorisedError = error.status === 400 || error.status === 401 || error.status === 403;
-            const refreshAttempted = Date.now() - tokenObject.timestamp < 5000;
-
-            if(!unauthorisedError || refreshAttempted) {
-                logger.error('Error from NOMIS: ', error.stack);
-                throw error;
+            if (canRetry(error, tokens)) {
+                return refreshAndRetry(username, {path, query, headers, responseType});
             }
 
-            logger.info('Refreshing token for ', tokenId);
-            const {accessToken, refreshToken} = await refreshNomisToken(tokenObject.refreshToken);
-            tokenStore.addOrUpdate(tokenId, accessToken, refreshToken);
-
-            const nomisGet = nomisGetBuilder(tokenStore, tokenId);
-            return nomisGet({path, query, headers, responseType});
+            throw error;
         }
     };
+
+    function canRetry(error, tokens) {
+        const unauthorisedError = [400, 401, 403].includes(error.status);
+        const refreshAllowed = Date.now() - tokens.timestamp >= 5000;
+
+        return unauthorisedError && refreshAllowed;
+    }
+
+    async function refreshAndRetry(username, {path, query, headers, responseType}) {
+
+        await signInService.refresh(username);
+
+        const nomisGet = nomisGetBuilder(tokenStore, signInService, username);
+        return nomisGet({path, query, headers, responseType});
+    }
 }
 
 function addReleaseDate(prisoner) {
@@ -156,20 +159,6 @@ function addReleaseDate(prisoner) {
     };
 }
 
-async function refreshNomisToken(refreshToken) {
-
-    const path = `${config.nomis.apiUrl.replace('/api', '')}/oauth/token`;
-    const oauthClientToken = generateOauthClientToken();
-    const result = await superagent
-        .post(path)
-        .set('Authorization', config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : oauthClientToken)
-        .set('Elite-Authorization', oauthClientToken)
-        .set('content-type', 'application/x-www-form-urlencoded')
-        .send(`grant_type=refresh_token&refresh_token=${refreshToken}`)
-        .timeout({response: 2000, deadline: 2500});
-
-    return {
-        accessToken: `${result.body.token_type} ${result.body.access_token}`,
-        refreshToken: result.body.refresh_token
-    };
+function gatewayTokenOrCopy(token) {
+    return config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : token;
 }
