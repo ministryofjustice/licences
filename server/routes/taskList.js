@@ -53,7 +53,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
     router.get('/image/:imageId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /image');
 
-        const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, {tokenId: req.user.username});
+        const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, req.user.username);
 
         if (!prisonerImage) {
             const placeHolder = path.join(__dirname, '../../assets/images/no-photo.png');

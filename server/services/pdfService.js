@@ -35,8 +35,8 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
         }
     }
 
-    async function generatePdf(templateName, nomisId, {tokenId}) {
-        const {values} = await getPdfLicenceData(templateName, nomisId, {tokenId});
+    async function generatePdf(templateName, nomisId, username) {
+        const {values} = await getPdfLicenceData(templateName, nomisId, username);
         return getPdf(templateName, values);
     }
 
