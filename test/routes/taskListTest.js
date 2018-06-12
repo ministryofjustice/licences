@@ -96,7 +96,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('when offender is not excluded', () => {
-            it('should display opt out form link', () => {
+            it('should not display opt out form link if section is incomplete', () => {
                 licenceServiceStub.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
@@ -115,12 +115,38 @@ describe('GET /taskList/:prisonNumber', () => {
                     .get('/1233456')
                     .expect(200)
                     .expect(res => {
+                        expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
+                    });
+            });
+
+            it('should display opt out form link if section is complete', () => {
+                licenceServiceStub.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
+                    licence: {
+                        eligibility: {
+                            excluded: {
+                                decision: 'No'
+                            },
+                            suitability: {
+                                decision: 'No'
+                            },
+                            crdTime: {
+                                decision: 'No'
+                            }
+                        }
+                    }
+                });
+
+                return request(app)
+                    .get('/1233456')
+                    .expect(200)
+                    .expect(res => {
                         expect(res.text).to.include('/hdc/proposedAddress/optOut/');
                     });
             });
         });
 
-        context('when offender has been given exceptional circumstances', () => {
+        context('when offender is unsuitable and has been given exceptional circumstances', () => {
             it('should display opt out form link', () => {
                 licenceServiceStub.getLicence.resolves({
                     stage: 'ELIGIBILITY',
