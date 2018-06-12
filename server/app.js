@@ -104,7 +104,7 @@ module.exports = function createApp({
             const tokens = tokenStore.get(req.user.username);
 
             if (!tokens) {
-                tokenStore.store(req.user.username, req.user.token, req.user.refreshToken);
+                tokenStore.store(req.user.username, req.user.role, req.user.token, req.user.refreshToken);
             } else {
                 // token store is more up-to-date than cookie so update tokens
                 if(tokens.token !== req.user.token) {
