@@ -13,7 +13,7 @@ module.exports = function({logger, pdfService, authenticationMiddleware}) {
 
         const {nomisId} = req.params;
         logger.debug(`GET pdf/view/${nomisId}`);
-        const {missing} = await pdfService.getPdfLicenceData(templateName, nomisId, {tokenId: req.user.username});
+        const {missing} = await pdfService.getPdfLicenceData(templateName, nomisId, req.user.username);
 
         if (missing) {
             return res.render('pdf/errors', {nomisId, missing});
@@ -26,7 +26,7 @@ module.exports = function({logger, pdfService, authenticationMiddleware}) {
 
         const {nomisId} = req.params;
         logger.debug(`GET pdf/create/${nomisId}`);
-        const pdf = await pdfService.generatePdf(templateName, nomisId, {tokenId: req.user.username});
+        const pdf = await pdfService.generatePdf(templateName, nomisId, req.user.username);
 
         res.type('application/pdf');
         return res.end(pdf, 'binary');

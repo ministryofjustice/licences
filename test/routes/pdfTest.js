@@ -62,7 +62,7 @@ describe('PDF:', () => {
                     expect(res.text).to.include('Missing 2');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
-                        templateName, '123', {tokenId: 'my-username'});
+                        templateName, '123', 'my-username');
                 });
         });
 
@@ -92,7 +92,7 @@ describe('PDF:', () => {
                 .expect('Content-Type', 'application/pdf')
                 .expect(res => {
                     expect(pdfServiceStub.generatePdf).to.be.calledOnce();
-                    expect(pdfServiceStub.generatePdf).to.be.calledWith(templateName, '123', {tokenId: 'my-username'});
+                    expect(pdfServiceStub.generatePdf).to.be.calledWith(templateName, '123', 'my-username');
                     expect(res.text).to.include('PDF-1');
                 });
         });
