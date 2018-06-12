@@ -60,25 +60,20 @@ module.exports = (tokenStore, signInService) => username => {
             return nomisGet({path});
         },
 
-        getHdcEligiblePrisoners: async function(nomisIds) {
-            const path = `${apiUrl}/offender-sentences`;
-            const query = {
-                query: `homeDetentionCurfewEligibilityDate:is:not null,and:conditionalReleaseDate:is:not null`,
-                offenderNo: nomisIds
-            };
+        getHdcEligiblePrisoners: async function() {
+            const path = `${apiUrl}/offender-sentences/home-detention-curfew-candidates`;
+            const headers = {'Page-Limit': 10000};
 
-            const headers = {
-                'Page-Limit': 10000
-            };
-
-            const prisoners = await nomisGet({path, query, headers});
+            const prisoners = await nomisGet({path, headers});
             return prisoners.map(prisoner => addReleaseDate(prisoner));
         },
 
-        getHdcEligiblePrisoner: async function(nomisId) {
+        getOffenderSentences: async function(nomisIds) {
             const path = `${apiUrl}/offender-sentences`;
-            const query = {offenderNo: nomisId};
-            const prisoners = await nomisGet({path, query});
+            const query = {offenderNo: nomisIds};
+            const headers = {'Page-Limit': 10000};
+
+            const prisoners = await nomisGet({path, query, headers});
             return prisoners.map(prisoner => addReleaseDate(prisoner));
         },
 
