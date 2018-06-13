@@ -1,5 +1,5 @@
 include ./itemAndError
--var reportingInstructions = data.reporting.reportingInstructions
+-var reportingInstructions = data.reporting && data.reporting.reportingInstructions || {}
 -var errors = errorObject.reporting && errorObject.reporting.reportingInstructions || {}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom

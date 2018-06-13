@@ -15,7 +15,9 @@ function parseSearchTerms(input) {
         return {error: 'Invalid entry - no supported search terms found'};
     }
 
-    const unrecognisedTerms = difference(input.split(' '), ids);
+    const cleanedInput = input.split(/[, ]+/).filter(Boolean);
+
+    const unrecognisedTerms = difference(cleanedInput, ids);
 
     if (!isEmpty(unrecognisedTerms)) {
         return {error: 'Invalid entry - unrecognised input'};
