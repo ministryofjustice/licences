@@ -24,6 +24,12 @@ else
                                     if prisoner.firstName
                                         | , #{prisoner.firstName}
 
+                        else if ['UNSTARTED'].includes(prisoner.stage)
+                            if prisoner.lastName
+                                | #{prisoner.lastName}
+                                if prisoner.firstName
+                                    | , #{prisoner.firstName}
+
                         else
                             a(href="/hdc/review/licence/" + prisoner.offenderNo)
                                 |
@@ -31,6 +37,7 @@ else
                                     | #{prisoner.lastName}
                                     if prisoner.firstName
                                         | , #{prisoner.firstName}
+
 
                     td.offenderNo
                         if prisoner.offenderNo
