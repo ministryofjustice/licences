@@ -5,19 +5,16 @@ div.largeMarginBottom.borderTop
 
     div.pure-g
         div.pure-u-3-4
-            if licenceStatus.stage === 'PROCESSING_CA'
-                if allowedTransitions.caToDm
-                    | Ready to submit
-                else if licenceStatus.decisions.postponed
-                    | Submission unavailable - HDC application postponed
-                else if licenceStatus.decisions.finalChecksRefused
-                    | Submission unavailable - HDC refused
-                else
-                    | Submission unavailable - Tasks not yet complete
+            if allowedTransitions.caToDm || allowedTransitions.caToRo
+                | Ready to submit
+            else if licenceStatus.decisions.postponed
+                | Submission unavailable - HDC application postponed
+            else if licenceStatus.decisions.finalChecksRefused
+                | Submission unavailable - HDC refused
             else
-                | #{statusLabel}
-        div.pure-u-1-4
-            if licenceStatus.stage === 'PROCESSING_CA' && allowedTransitions.caToDm
+                | Submission unavailable - Tasks not yet complete
 
+        div.pure-u-1-4.center
+            if (licenceStatus.stage === 'PROCESSING_CA' && allowedTransitions.caToDm) || (licenceStatus.stage === 'ELIGIBILITY' && allowedTransitions.caToRo)
                 a.taskListAction.center.button(href="/hdc/send/" + prisonerInfo.offenderNo)
                     | Continue

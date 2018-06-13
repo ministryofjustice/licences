@@ -38,7 +38,8 @@ block content
                     include reportingInstructionsTask
                 include finalChecksTask
                 include postponementTask
-                include caSubmitTask
+
+            include caSubmitTask
 
         if user.role === 'RO'
             if (licenceStatus.decisions.optedOut)

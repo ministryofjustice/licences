@@ -662,7 +662,6 @@ describe('getLicenceStatus', () => {
                         suitability: {
                             decision: 'No'
                         }
-
                     }
                 }
             };

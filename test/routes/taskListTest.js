@@ -177,6 +177,35 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
 
+        context('when there is less 4 weeks for the offenders CRD but the DM approves to continue assessment', () => {
+            it('should display opt out form link', () => {
+                licenceServiceStub.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
+                    licence: {
+                        eligibility: {
+                            excluded: {
+                                decision: 'No'
+                            },
+                            suitability: {
+                                decision: 'No'
+                            },
+                            crdTime: {
+                                decision: 'Yes',
+                                dmApproval: 'Yes'
+                            }
+                        }
+                    }
+                });
+
+                return request(app)
+                    .get('/1233456')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.include('/hdc/proposedAddress/optOut/');
+                    });
+            });
+        });
+
         context('when offender is ineligible', () => {
             it('should not display link to opt out when unsuitable', () => {
                 licenceServiceStub.getLicence.resolves({

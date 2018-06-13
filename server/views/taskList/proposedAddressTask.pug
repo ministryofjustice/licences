@@ -5,6 +5,8 @@ if licenceStatus.tasks.eligibility === 'DONE' && licenceStatus.decisions.eligibl
             div.pure-u-3-4
                 if licenceStatus.tasks.curfewAddress === 'UNSTARTED'
                     | Information not yet entered
+                if licenceStatus.tasks.curfewAddress === 'DONE'
+                    | Information inputted
                 else if licenceStatus.decisions.optedOut
                     | Offender has opted out of HDC
                 else if licenceStatus.decisions.bassReferralNeeded

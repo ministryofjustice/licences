@@ -69,7 +69,7 @@ module.exports = {
             }}
         ],
         nextPath: {
-            path: '/hdc/review/curfewAddress/'
+            path: '/hdc/taskList/'
         }
     },
     rejected: {

@@ -52,18 +52,23 @@ function canSendDmToCa(licenceStatus) {
 
 function canSendCaToRo(licenceStatus) {
 
-    const tasks = licenceStatus.tasks;
+    const {tasks, decisions} = licenceStatus;
 
     const required = [
         tasks.exclusion,
         tasks.crdTime,
         tasks.suitability,
         tasks.optOut,
-        tasks.bassReferral,
         tasks.curfewAddress
     ];
 
-    return required.every(it => it === taskStates.DONE);
+    const allTaskComplete = required.every(it => it === taskStates.DONE);
+
+    if (decisions.bassReferralNeeded) {
+        return allTaskComplete && tasks.bassReferral == taskStates.DONE;
+    }
+
+    return allTaskComplete;
 }
 
 function canSendCaToDm(licenceStatus) {

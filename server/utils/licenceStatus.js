@@ -130,10 +130,17 @@ function getCaStageState(licence) {
 
 function getEligibilityStageState(licence) {
     const {excluded, exclusion} = getExclusionTaskState(licence);
-    const {insufficientTime, crdTime} = getCrdTimeState(licence);
+    const {insufficientTime, crdTime, dmApprovalToContinue} = getCrdTimeState(licence);
     const {unsuitable, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
     const eligibility = getEligibilityState(unsuitable, excluded, [exclusion, crdTime, suitability]);
-    const eligible = isEligible({excluded, insufficientTime, unsuitable, exceptionalCircumstances});
+    const eligible = isEligible({
+        excluded,
+        insufficientTime,
+        unsuitable,
+        exceptionalCircumstances,
+        insufficientTime,
+        dmApprovalToContinue
+    });
 
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
@@ -145,6 +152,7 @@ function getEligibilityStageState(licence) {
             exceptionalCircumstances,
             excluded,
             insufficientTime,
+            dmApprovalToContinue,
             unsuitable,
             eligible,
             optedOut,
@@ -167,12 +175,13 @@ function isEligible({
     excluded,
     insufficientTime,
     unsuitable,
-    exceptionalCircumstances
+    exceptionalCircumstances,
+    dmApprovalToContinue
 }) {
     if (excluded) {
         return false;
     }
-    if (insufficientTime) {
+    if (insufficientTime && !dmApprovalToContinue) {
         return false;
     }
 
@@ -194,12 +203,14 @@ function getExclusionTaskState(licence) {
 }
 
 function getCrdTimeState(licence) {
-
-    const timeAnswer = getIn(licence, ['eligibility', 'crdTime', 'decision']);
+    const crdTime = getIn(licence, ['eligibility', 'crdTime']);
+    const decision = getIn(crdTime, ['decision']);
+    const dmApproval = getIn(crdTime, ['dmApproval']);
 
     return {
-        insufficientTime: timeAnswer === 'Yes',
-        crdTime: timeAnswer ? taskStates.DONE : taskStates.UNSTARTED
+        dmApprovalToContinue: dmApproval === 'Yes',
+        insufficientTime: decision === 'Yes',
+        crdTime: decision ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
 
