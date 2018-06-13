@@ -1,4 +1,5 @@
 extends ../layout
+include ../includes/errorBannerWithDetail
 
 block content
 
@@ -8,20 +9,24 @@ block content
     div.pure-g.pure-u-1.largeMarginBottom
 
         include ../includes/backToCheckList
-        include ../includes/errorBanner
+        +errorBannerWithDetail(errorObject, [
+            {field: 'decision', message: 'Select yes or no'},
+            {field: 'notedComments', message: 'Add a comment'},
+            {field: 'reason', message: 'Add a reason'}
+        ])
         include ../taskList/prisonerDetails
 
         div.pure-u-md-1-2
             h2.heading-large Do you approve HDC release for this offender?
 
             if errorObject.decision
-                p.error-message Please select an answer
+                p.error-message Select yes or no
             form(method="post").largeMarginTop
                 input(type="hidden" name="_csrf" value=csrfToken)
                 input(type="hidden" name="nomisId" value=nomisId || '')
                 div.paddingBottom.largeMarginBottom
 
-                    div.form-group
+                    div#error-anchor.form-group
                         if licenceStatus.decisions.confiscationOrder
                             div.multiple-choice(data-target="confiscationOrder")
                                 input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
@@ -31,7 +36,7 @@ block content
                                     span.bold Confiscation order
                                     span.block Have you noted the comments of the enforcement area regarding release on HDC?
                                     if errorObject.notedComments
-                                        span.block.error-message Please select an answer
+                                        span.block.error-message Add a comment
                                 div.multiple-choice
                                     input#notedCommentsYes(type="radio" checked=notedCommentsValue === 'Yes'  name="notedComments" value="Yes")
                                     label(for="notedCommentsYes") Yes
