@@ -1,5 +1,5 @@
 include ./itemAndError
--var hours = data.curfew.curfewHours
+-var hours = data.curfew && data.curfew.curfewHours || {}
 -var errors = errorObject.curfew && errorObject.curfew.curfewHours || {}
 
 div.pure-u-1.pure-u-md-4-5

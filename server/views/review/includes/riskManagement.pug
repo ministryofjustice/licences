@@ -1,5 +1,5 @@
 include ./itemAndError
--var risk = data.risk.riskManagement
+-var risk = data.risk && data.risk.riskManagement || {}
 -var errors = errorObject.risk && errorObject.risk.riskManagement || {}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
