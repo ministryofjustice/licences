@@ -13,12 +13,12 @@ module.exports = function({logger, searchService, authenticationMiddleware}) {
         next();
     });
 
-    router.get('/offender', asyncMiddleware(async (req, res) => {
+    router.get('/offender', (req, res) => {
         logger.debug('GET /search/offender');
         res.render('search/offender');
-    }));
+    });
 
-    router.post(['/offender', '/offender/results'], asyncMiddleware(async (req, res) => {
+    router.post(['/offender', '/offender/results'], (req, res) => {
         logger.debug('POST /search/offender');
 
         const {searchTerm} = req.body;
@@ -29,7 +29,7 @@ module.exports = function({logger, searchService, authenticationMiddleware}) {
         }
 
         res.redirect('/hdc/search/offender/results?' + query);
-    }));
+    });
 
     router.get('/offender/results', asyncMiddleware(async (req, res) => {
         logger.debug('GET /search/offender/results');
