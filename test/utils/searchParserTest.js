@@ -7,7 +7,16 @@ describe('parseSearchTerms', () => {
         const inputsAndOutputs = [
             ['nomis id only', 'A0001AA', 'nomisId=A0001AA'],
             ['nomis id only - lower case', 'a0001aa', 'nomisId=A0001AA'],
-            ['multiple nomis ids only', 'A0001AA B0002BB', 'nomisId=A0001AA&nomisId=B0002BB']
+            ['multiple nomis ids only', 'A0001AA B0002BB', 'nomisId=A0001AA&nomisId=B0002BB'],
+            ['multiple nomis ids with multiple spaces',
+                'A0001AA     B0002BB  C0003CC   ',
+                'nomisId=A0001AA&nomisId=B0002BB&nomisId=C0003CC'],
+            ['multiple nomis ids with commas',
+                'A0001AA,B0002BB,C0003CC',
+                'nomisId=A0001AA&nomisId=B0002BB&nomisId=C0003CC'],
+            ['multiple nomis ids with multiple commas and sapces',
+                ',,,A0001AA,   ,   B0002BB , C0003CC, ',
+                'nomisId=A0001AA&nomisId=B0002BB&nomisId=C0003CC']
         ];
 
         inputsAndOutputs
