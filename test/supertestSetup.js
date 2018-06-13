@@ -95,6 +95,10 @@ const pdfServiceStub = {
     generatePdf: sandbox.stub().returnsPromise().resolves()
 };
 
+const searchServiceStub = {
+    searchOffenders: sandbox.stub().returnsPromise().resolves()
+};
+
 const hdcRoute = createLicenceConditionsRoute({
     licenceService: licenceServiceStub,
     logger: loggerStub,
@@ -163,6 +167,7 @@ module.exports = {
     prisonerServiceStub,
     caseListServiceStub,
     pdfServiceStub,
+    searchServiceStub,
     hdcRoute,
     formConfig,
     authenticationMiddleware,

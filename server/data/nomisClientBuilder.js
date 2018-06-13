@@ -95,6 +95,11 @@ module.exports = (tokenStore, signInService) => username => {
         getEstablishment: async function(agencyLocationId) {
             const path = `${apiUrl}/agencies/prison/${agencyLocationId}`;
             return nomisGet({path});
+        },
+
+        getPrisoners: async function(query) {
+            const path = `${apiUrl}/prisoners`;
+            return nomisGet({path, query});
         }
     };
 };

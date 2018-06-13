@@ -14,7 +14,9 @@ module.exports = {
     firstItem,
     lastIndex,
     removePath,
-    interleave
+    interleave,
+    arrayEquals,
+    difference
 };
 
 // pass in your object and a path in array format
@@ -77,4 +79,12 @@ function interleave(firstArray, secondArray) {
     return flatten(firstArray
         .map((item, index) => [item, secondArray[index] || '']))
         .join('');
+}
+
+function arrayEquals(firstArray, secondArray) {
+    return R.equals(firstArray, secondArray);
+}
+
+function difference(firstArray, secondArray) {
+    return R.difference(firstArray, secondArray);
 }

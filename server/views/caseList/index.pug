@@ -1,24 +1,30 @@
 extends ../layout
 
 block content
-    h1#pageHeading.heading-large HDC eligible offenders
+    div.pure-g.pure-u-1
+        div.pure-u-1-2
+            h1#pageHeading.heading-large HDC eligible offenders
+        div.pure-u-1-2.searchLink
+            if user.role === 'RO'
+                a#searchOffenderLink(href='/hdc/search/offender') Search for an offender
 
-    div#tabBar
-        ul
-            each tab in tabsForRole
-                li(class=selectedTabConfig.id === tab.id ? 'selected' : undefined)
-                    a(href=tab.id) #{tab.text}
+    div.pure-u-1
+        div#tabBar
+            ul
+                each tab in tabsForRole
+                    li(class=selectedTabConfig.id === tab.id ? 'selected' : undefined)
+                        a(href=tab.id) #{tab.text}
 
-    h2.heading-medium #{selectedTabConfig.text}
+        h2.heading-medium #{selectedTabConfig.text}
 
-    if user.role === 'CA'
-        include CATable
+        if user.role === 'CA'
+            include CATable
 
-    if user.role === 'RO'
-        include ROTable
+        if user.role === 'RO'
+            include ROTable
 
-    if user.role === 'DM'
-        include DMTable
+        if user.role === 'DM'
+            include DMTable
 
 block append scripts
     script(src="/public/javascripts/pagination.js?"+version)
