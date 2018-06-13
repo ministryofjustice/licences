@@ -146,8 +146,7 @@ describe('nomisClient', function() {
 
     describe('getHdcEligiblePrisoners', () => {
 
-        const url = '/offender-sentences?query=homeDetentionCurfewEligibilityDate%3Ais%3Anot%20null%2Cand%3A' +
-            'conditionalReleaseDate%3Ais%3Anot%20null';
+        const url = '/offender-sentences/home-detention-curfew-candidates';
 
         it('should return data from api', () => {
             fakeNomis
@@ -194,28 +193,6 @@ describe('nomisClient', function() {
             ]);
         });
 
-    });
-
-    describe('getHdcEligiblePrisoner', () => {
-
-        const url = '/offender-sentences?offenderNo=1';
-
-        it('should return data from api', () => {
-            fakeNomis
-                .get(url)
-                .reply(200, [{sentenceDetail: {conditionalReleaseDate: 'a'}}]);
-
-            return expect(nomisClient.getHdcEligiblePrisoner('1')).to.eventually.eql([
-                {sentenceDetail: {conditionalReleaseDate: 'a', releaseDate: 'a'}}]);
-        });
-
-        it('should reject if api fails', () => {
-            fakeNomis
-                .get(url)
-                .reply(500);
-
-            return expect(nomisClient.getHdcEligiblePrisoner('1')).to.be.rejected();
-        });
     });
 
     describe('getAliases', () => {

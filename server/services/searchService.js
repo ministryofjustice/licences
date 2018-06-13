@@ -15,7 +15,7 @@ module.exports = function createSearchService(logger, nomisClientBuilder, caseLi
                 return [];
             }
 
-            const hdcEligibleReleases = await nomisClient.getHdcEligiblePrisoners(uniqueNomisIds);
+            const hdcEligibleReleases = await nomisClient.getOffenderSentences(uniqueNomisIds);
 
             if (isEmpty(hdcEligibleReleases)) {
                 logger.info('No hdc eligible prisoners found in search');

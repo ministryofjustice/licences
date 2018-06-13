@@ -25,6 +25,22 @@ describe('caseListService', () => {
                 }
             }
         ]),
+        getOffenderSentences: sandbox.stub().returnsPromise().resolves([
+            {
+                bookingId: 0,
+                offenderNo: 'A12345',
+                firstName: 'MARK',
+                middleNames: '',
+                lastName: 'ANDREWS',
+                agencyLocationDesc: 'BERWIN (HMP)',
+                internalLocationDesc: 'A-C-2-002',
+                sentenceDetail: {
+                    homeDetentionCurfewEligibilityDate: '2017-09-07',
+                    conditionalReleaseDate: '2017-12-15',
+                    receptionDate: '2018-01-03'
+                }
+            }
+        ]),
         getROPrisoners: sandbox.stub().returnsPromise().resolves([
             {
                 offenderNo: 'A'
@@ -40,7 +56,7 @@ describe('caseListService', () => {
 
     const licenceClient = {
         getLicences: sandbox.stub().returnsPromise().resolves([]),
-        getDeliusUserName: sandbox.stub().returnsPromise().resolves([{STAFF_ID: {value: 'xxx'}}])
+        getDeliusUserName: sandbox.stub().returnsPromise().resolves('xxx')
     };
 
     const user = {
@@ -114,29 +130,31 @@ describe('caseListService', () => {
         });
 
         context('when user is a RO', () => {
-            it('should call getROPrisoners && getHdcEligiblePrisoners from nomisClient', async () => {
+            it('should call getROPrisoners && getOffenderSentences from nomisClient', async () => {
                 await service.getHdcCaseList(ROUser.username, ROUser.role);
 
                 expect(nomisClient.getROPrisoners).to.be.calledOnce();
-                expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce();
-                expect(nomisClient.getHdcEligiblePrisoners).to.be.calledWith(['A', 'B', 'C']);
+                expect(nomisClient.getOffenderSentences).to.be.calledOnce();
+                expect(nomisClient.getOffenderSentences).to.be.calledWith(['A', 'B', 'C']);
             });
 
-            it('should not call getHdcEligiblePrisoners when no results from getROPrisoners', async () => {
+            it('should not call getOffenderSentences when no results from getROPrisoners', async () => {
 
                 nomisClient.getROPrisoners.resolves([]);
 
                 await service.getHdcCaseList(ROUser.username, ROUser.role);
 
                 expect(nomisClient.getROPrisoners).to.be.calledOnce();
+                expect(nomisClient.getOffenderSentences).not.to.be.calledOnce();
             });
 
             it('should return empty array if no delius user name found', async () => {
-                licenceClient.getDeliusUserName.resolves({});
+                licenceClient.getDeliusUserName.resolves(undefined);
 
                 const result = await service.getHdcCaseList(ROUser.username, ROUser.role);
 
                 expect(result).to.eql([]);
+                expect(nomisClient.getROPrisoners).not.to.be.calledOnce();
                 expect(nomisClient.getHdcEligiblePrisoners).not.to.be.calledOnce();
             });
         });

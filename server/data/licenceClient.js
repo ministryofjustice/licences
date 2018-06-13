@@ -96,7 +96,7 @@ module.exports = {
             return rows[0].staff_id;
         }
 
-        return {};
+        return undefined;
     }
 };
 

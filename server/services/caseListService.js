@@ -1,5 +1,5 @@
 const logger = require('../../log.js');
-const {isEmpty} = require('../utils/functionalHelpers');
+const {isEmpty, getIn} = require('../utils/functionalHelpers');
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter) {
 
@@ -47,7 +47,9 @@ function getROCaseList(nomisClient, licenceClient, username) {
 
         if (!isEmpty(requiredPrisoners)) {
             const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
-            return nomisClient.getHdcEligiblePrisoners(requiredIDs);
+            const offenders = await nomisClient.getOffenderSentences(requiredIDs);
+            return offenders
+                .filter(prisoner => getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']));
         }
 
         return [];

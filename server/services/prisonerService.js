@@ -11,7 +11,7 @@ function createPrisonerService(nomisClientBuilder) {
 
             const nomisClient = nomisClientBuilder(username);
 
-            const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
+            const prisoners = await nomisClient.getOffenderSentences(nomisId);
 
             return formatObjectForView(prisoners[0]);
         } catch (error) {
@@ -26,7 +26,7 @@ function createPrisonerService(nomisClientBuilder) {
 
             const nomisClient = nomisClientBuilder(username);
 
-            const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
+            const prisoners = await nomisClient.getOffenderSentences(nomisId);
             const prisoner = prisoners[0];
             if (!prisoner) {
                 return;
@@ -71,7 +71,7 @@ function createPrisonerService(nomisClientBuilder) {
 
             const nomisClient = nomisClientBuilder(username);
 
-            const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
+            const prisoners = await nomisClient.getOffenderSentences(nomisId);
             const prisoner = prisoners[0];
             if (!prisoner) {
                 return;
@@ -112,7 +112,7 @@ function createPrisonerService(nomisClientBuilder) {
 
             const nomisClient = nomisClientBuilder(username);
 
-            const prisoners = await nomisClient.getHdcEligiblePrisoner(nomisId);
+            const prisoners = await nomisClient.getOffenderSentences(nomisId);
             const prisoner = prisoners[0];
             if (!prisoner) {
                 return;
