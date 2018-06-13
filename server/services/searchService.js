@@ -1,4 +1,4 @@
-const {isEmpty} = require('../utils/functionalHelpers');
+const {isEmpty, getUniqueStrings} = require('../utils/functionalHelpers');
 
 module.exports = function createSearchService(logger, nomisClientBuilder, caseListFormatter) {
 
@@ -8,7 +8,7 @@ module.exports = function createSearchService(logger, nomisClientBuilder, caseLi
 
         try {
             const nomisClient = nomisClientBuilder(username);
-            const uniqueNomisIds = Array.from(new Set([].concat(nomisIds))).filter(id => id.trim());
+            const uniqueNomisIds = getUniqueStrings([nomisIds]);
 
             if (isEmpty(uniqueNomisIds)) {
                 logger.info('Empty search input');

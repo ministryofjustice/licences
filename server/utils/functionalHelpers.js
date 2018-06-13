@@ -16,7 +16,8 @@ module.exports = {
     removePath,
     interleave,
     arrayEquals,
-    difference
+    difference,
+    getUniqueStrings
 };
 
 // pass in your object and a path in array format
@@ -87,4 +88,13 @@ function arrayEquals(firstArray, secondArray) {
 
 function difference(firstArray, secondArray) {
     return R.difference(firstArray, secondArray);
+}
+
+function getUniqueStrings(array) {
+    const isNotEmpty = item => item.trim();
+    return R.pipe(
+        R.flatten,
+        R.uniq,
+        R.filter(isNotEmpty)
+    )(array);
 }
