@@ -106,5 +106,43 @@ describe('/hdc/finalChecks', () => {
                     });
             });
         });
+
+        context('when there are errors', () => {
+            it('should redirect back to seriousOffence page if there is an error', () => {
+                licenceServiceStub.getValidationErrorsForPage.returns(
+                    {finalChecks: {seriousOffence: {reason: 'error'}}});
+
+                return request(app)
+                    .post('/finalChecks/seriousOffence/1')
+                    .send({})
+                    .expect(302)
+                    .expect('Location', '/hdc/finalChecks/seriousOffence/1');
+
+            });
+
+            it('should redirect back to onRemand page if there is an error', () => {
+                licenceServiceStub.getValidationErrorsForPage.returns(
+                    {finalChecks: {onRemand: {reason: 'error'}}});
+
+                return request(app)
+                    .post('/finalChecks/onRemand/1')
+                    .send({})
+                    .expect(302)
+                    .expect('Location', '/hdc/finalChecks/onRemand/1');
+
+            });
+
+            it('should redirect back to confiscationOrder page if there is an error', () => {
+                licenceServiceStub.getValidationErrorsForPage.returns(
+                    {finalChecks: {confiscationOrder: {reason: 'error'}}});
+
+                return request(app)
+                    .post('/finalChecks/confiscationOrder/1')
+                    .send({})
+                    .expect(302)
+                    .expect('Location', '/hdc/finalChecks/confiscationOrder/1');
+
+            });
+        });
     });
 });

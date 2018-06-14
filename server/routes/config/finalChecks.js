@@ -1,6 +1,7 @@
 module.exports = {
     seriousOffence: {
         licenceSection: 'seriousOffence',
+        validateInPlace: true,
         fields: [
             {decision: {}}
         ],
@@ -10,6 +11,7 @@ module.exports = {
     },
     onRemand: {
         licenceSection: 'onRemand',
+        validateInPlace: true,
         fields: [
             {decision: {}}
         ],
@@ -19,6 +21,7 @@ module.exports = {
     },
     confiscationOrder: {
         licenceSection: 'confiscationOrder',
+        validateInPlace: true,
         fields: [
             {decision: {}},
             {confiscationUnitConsulted: {dependentOn: 'decision', predicate: 'Yes'}},
