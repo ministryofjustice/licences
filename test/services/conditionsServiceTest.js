@@ -340,47 +340,61 @@ describe('conditionsService', () => {
     });
 
     describe('populateLicenceWithConditions', () => {
-        it('should populate the user input with form data', () => {
-            it('should addAdditionalConditions if they are present in licence and requested', () => {
-                const licence = {licenceConditions: {additional: {1: {}}, bespoke: []}};
-                licenceClient.getAdditionalConditions.resolves([{
-                    id: 1,
-                    user_input: null,
-                    text: 'The condition',
-                    field_position: null,
-                    group_name: 'group',
-                    subgroup_name: 'subgroup'
-                }]);
 
-                return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql({
-                    licence: {
-                        licenceConditions: [{
-                            content: [{text: 'The condition'}],
-                            group: 'group',
-                            subgroup: 'subgroup',
-                            id: 1
-                        }]
-                    },
+        it('should addAdditionalConditions if they are present in licence and requested', () => {
+            const licence = {licenceConditions: {additional: {1: {}}, bespoke: []}};
+            licenceClient.getAdditionalConditions.resolves([{
+                id: 1,
+                user_input: null,
+                text: 'The condition',
+                field_position: null,
+                group_name: 'group',
+                subgroup_name: 'subgroup'
+            }]);
 
-                    status: undefined
-                });
-            });
-
-            it('should return licence if no additional conditions', () => {
-                const licence = {licenceConditions: {}};
-                licenceClient.getAdditionalConditions.resolves([{
-                    id: 1,
-                    user_input: null,
-                    text: 'The condition',
-                    field_position: null,
-                    group_name: 'group',
-                    subgroup_name: 'subgroup'
-                }]);
-
-                return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql({
-                    licence: {licenceConditions: {}}
-                });
+            return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql({
+                licenceConditions: [{
+                    content: [{text: 'The condition'}],
+                    group: 'group',
+                    subgroup: 'subgroup',
+                    id: 1
+                }]
             });
         });
+
+        it('should return the licence if conditions not required', () => {
+            const licence = {licenceConditions: {
+                standard: {additionalConditionsRequired: 'No'},
+                additional: {1: {}},
+                bespoke: []
+            }};
+            licenceClient.getAdditionalConditions.resolves([{
+                id: 1,
+                user_input: null,
+                text: 'The condition',
+                field_position: null,
+                group_name: 'group',
+                subgroup_name: 'subgroup'
+            }]);
+
+            return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql(licence);
+        });
+
+        it('should return licence if no additional conditions', () => {
+            const licence = {licenceConditions: {}};
+            licenceClient.getAdditionalConditions.resolves([{
+                id: 1,
+                user_input: null,
+                text: 'The condition',
+                field_position: null,
+                group_name: 'group',
+                subgroup_name: 'subgroup'
+            }]);
+
+            return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql({
+                licenceConditions: {}
+            });
+        });
+
     });
 });
