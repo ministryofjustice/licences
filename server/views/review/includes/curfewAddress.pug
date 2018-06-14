@@ -14,12 +14,6 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                 +itemAndError(address.addressTown, errors.addressTown && 'Town or city - not answered', "town-curfew")
                 +itemAndError(address.postCode, errors.postCode && 'Postcode - not answered or invalid', "postCode-curfew")
 
-            div.pure-u-1-2.alignRight
-                if (stage === 'PROCESSING_RO' && user.role === 'RO')
-                    a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
-                if(stage === 'ELIGIBILITY' && user.role === 'CA')
-                    a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Change these details
-
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         span Contact number

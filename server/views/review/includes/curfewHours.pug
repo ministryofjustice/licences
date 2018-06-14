@@ -52,8 +52,3 @@ div.pure-u-1.pure-u-md-4-5
             +itemAndError(hours.sundayFrom, errors.sundayFrom, "sundayFrom", 'oneline')
             | &nbsp;-&nbsp;
             +itemAndError(hours.sundayUntil, errors.sundayUntil, "sundayUntil", 'oneline')
-
-div.pure-u-1.pure-u-md-1-5.alignRight
-    if (stage === 'PROCESSING_RO' && user.role === 'RO')
-        a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/" + nomisId) Change these details
-

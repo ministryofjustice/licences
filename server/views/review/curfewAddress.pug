@@ -16,7 +16,16 @@ block content
 
         include ../taskList/prisonerDetails
 
-        h2#curfewAddressDetails.heading-medium.borderBottomLight Proposed curfew address
+        div.pure-g.borderBottomLight
+            div.pure-u-md-1-2
+                h2#curfewAddressDetails.heading-medium Proposed curfew address
+            div.pure-u-md-1-2.alignRight
+                div.pure-u-md-1-2.change-details
+                    if (stage === 'PROCESSING_RO' && user.role === 'RO')
+                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
+                    if(stage === 'ELIGIBILITY' && user.role === 'CA')
+                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Change these details
+
         if typeof errorObject.proposedAddress === 'string'
             p.alert.bold(id='proposed-address-error') #{errorObject.proposedAddress}
         else if errorObject.proposedAddress && typeof errorObject.proposedAddress.curfewAddress === 'string'
