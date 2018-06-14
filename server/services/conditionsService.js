@@ -41,6 +41,10 @@ module.exports = function createConditionsService(licenceClient) {
 
     async function populateLicenceWithConditions(licence, errors = {}) {
 
+        if (getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No') {
+            return licence;
+        }
+
         const additionalConditions = getIn(licence, ['licenceConditions', 'additional']);
         const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
         const conditionsOnLicence = !isEmpty(additionalConditions) || bespokeConditions.length > 0;
