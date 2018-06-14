@@ -1,4 +1,5 @@
 extends ../layout
+include ../includes/errorBannerWithDetail
 
 block content
 
@@ -6,15 +7,20 @@ block content
 
     div.pure-g.pure-u-1
         include ../includes/backToCheckList
+        +errorBannerWithDetail(errorObject, [
+            {field: 'decision', message: 'Select yes or no'}
+        ])
         include ../includes/personalDetailsSummary
 
         div.pure-u-2-3
             h2.heading-large Has the offender been referred to the police or other law enforcement agency or to the independent adjudicator (IA) in relation to an alleged offence committed during the current sentence and the matter remains unresolved?
 
+    if errorObject.decision
+        p.block.error-message Select yes or no
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
-        div.smallPaddingTop.paddingBottom.largeMarginBottom
+        div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
 
             div.largePaddingBottom
                 div.form-group.inline
