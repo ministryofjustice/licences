@@ -53,8 +53,7 @@ module.exports = {
                     {occupier: {
                         contains: [
                             {name: {}},
-                            {relationship: {}},
-                            {age: {}}
+                            {relationship: {}}
                         ]
                     }},
                     {residents: {

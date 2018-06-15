@@ -5,6 +5,7 @@ $path: "/public/images/";
 // Import GOV.UK elements from /govuk-modules/, this will import the frontend toolkit and some base styles.
 // Take a look in /govuk-modules/_govuk-elements.scss to see which files are imported.
 @import 'govuk-elements';
+@import "./header";
 @import './layout';
 @import './tabs';
 @import './pagination';
@@ -21,6 +22,10 @@ $path: "/public/images/";
 #proposition-links li { color: $grey-4; }
 
 .app-container {
+    max-width: 1170px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: 0 auto;
     min-height: 65vh;
 }
 
@@ -31,12 +36,6 @@ $path: "/public/images/";
     text-align: center;
 }
 
-.app-container {
-    max-width: 1170px;
-    padding-left: 15px;
-    padding-right: 15px;
-    margin: 0 auto;
-}
 .hdc-footer-wrapper {
     max-width: 1170px;
     padding-left: 15px;
@@ -113,7 +112,7 @@ $path: "/public/images/";
 }
 
 .taskListItem {
-    border-bottom: solid $grey-2 1px;
+
     padding-top: 15px;
     h2 {
         padding-top: 10px;
@@ -264,29 +263,6 @@ $path: "/public/images/";
 
 .marginBottomLarge {
     margin-bottom: 2em;
-}
-
-#global-header #logo.hmppslogo {
-    background: url($path+'/hmpps_logo_small.png') no-repeat;
-    background-size: 54px 48px;
-    background-position: 0 0;
-    line-height: normal;
-}
-
-#global-header .header-wrapper{
-    padding-top: 0px;
-    padding-bottom: 0px;
-}
-
-#header-user {
-    float: right;
-    color: $white;
-    background-color: $govuk-blue;
-    padding: 15px;
-
-    a {
-        color: white
-    }
 }
 
 .numberedList {

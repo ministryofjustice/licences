@@ -30,7 +30,7 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
 
     div.pure-u-1.pure-u-md-10-24.padRight30
         div.midMarginBottom
-            | Name of RO
+            | Responsible officer
             if (prisonerInfo.com)
                 span#prisonerComName.block.bold  #{prisonerInfo.com}
 
@@ -41,34 +41,34 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
                 span#prisonerLocationExternal.block.bold #{prisonerInfo.agencyLocationDesc}
 
         div.midMarginBottom
-            | Type of offence(s)
+            | Offence(s)
             if(prisonerInfo.offences)
                 span#prisonerOffences.block.bold #{prisonerInfo.offences}
 
     div.pure-u-1.pure-u-md-5-24
         div.midMarginBottom
-            | Conditional Release Date
+            | Conditional release date
             if (sentenceDetail.conditionalReleaseDate)
                 span#prisonerCrd.block.bold  #{sentenceDetail.conditionalReleaseDate}
 
         div.midMarginBottom
-            | HDC Eligibility Date
+            | HDC eligibility date
             if (sentenceDetail.homeDetentionCurfewEligibilityDate)
                 span#prisonerHdced.block.bold  #{sentenceDetail.homeDetentionCurfewEligibilityDate}
 
         if (sentenceDetail.sentenceExpiryDate && sentenceDetail.sentenceExpiryDate !== 'Invalid date')
             div.midMarginBottom
-                | Sentence Expiry Date
+                | Sentence expiry date
                 span#prisonerSed.block.bold  #{sentenceDetail.sentenceExpiryDate}
 
         if (sentenceDetail.licenceExpiryDate && sentenceDetail.licenceExpiryDate !== 'Invalid date')
             div.midMarginBottom
-                | Licence Expiry Date
+                | Licence expiry date
                 span#prisonerLed.block.bold  #{sentenceDetail.licenceExpiryDate}
 
         if (sentenceDetail.topupSupervisionExpiryDate && sentenceDetail.topupSupervisionExpiryDate !== 'Invalid date')
             div.midMarginBottom
-                | Post Sentence Supervision Expiry Date
+                | Post sentence supervision expiry date
                 span#prisonerPssed.block.bold  #{sentenceDetail.topupSupervisionExpiryDate}
 
 

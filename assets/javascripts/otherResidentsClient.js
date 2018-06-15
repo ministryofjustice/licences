@@ -4,7 +4,7 @@ $(document).ready(init);
 
 function init() {
     $('.otherResidentsInput').append(
-        '<a class="button button-secondary addResidentButton smallMarginTop">Add another</a>'
+        '<a class="button button-secondary addResidentButton smallMarginTop">Add resident</a>'
     );
     $('.otherResidentsInput a').on('click', addResidentFields);
 }
