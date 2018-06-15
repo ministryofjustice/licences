@@ -1344,8 +1344,7 @@ describe('licenceService', () => {
                         ...baseLicence.proposedAddress.curfewAddress,
                         occupier: {
                             name: 'name',
-                            relationship: '',
-                            age: ''
+                            relationship: ''
                         }
                     }
                 }
@@ -1355,69 +1354,6 @@ describe('licenceService', () => {
                 proposedAddress: {curfewAddress: {occupier: {relationship: 'Not answered'}}}
             });
         });
-
-        it('should not allow ages below 0', () => {
-
-            const emptyOccupier = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        occupier: {
-                            name: 'Name',
-                            relationship: 'Relationship',
-                            age: '-1'
-                        }
-                    }
-                }
-            };
-
-            const expectedOutput = {
-                proposedAddress: {
-                    curfewAddress: {
-                        occupier: {
-                            age: 'Invalid age - must be 0 or above'
-                        }
-                    }
-                }
-            };
-
-            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql(expectedOutput);
-
-        });
-
-        it('should not allow ages above 110', () => {
-
-            const emptyOccupier = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        occupier: {
-                            name: 'Name',
-                            relationship: 'Relationship',
-                            age: '111'
-                        }
-                    }
-                }
-            };
-
-            const expectedOutput = {
-                proposedAddress: {
-                    curfewAddress: {
-                        occupier: {
-                            age: 'Invalid age - must be 110 or below'
-                        }
-                    }
-                }
-            };
-
-            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql(expectedOutput);
-
-        });
-
 
         context('Multiple sections', () => {
 

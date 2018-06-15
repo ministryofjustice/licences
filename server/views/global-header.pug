@@ -1,0 +1,17 @@
+header(role="banner", id="global-header", class="with-proposition")
+    div.header-wrapper
+        div.pure-g
+            div.pure-u-md-1-2
+                div.header-logo
+                    a(href="/", title="Go to the homepage", id="logo", class="content hmppslogo")
+                        | HMPPS
+                    span |
+                    h1.heading-medium.noMargin Home detention curfew (HDC)
+
+            if user
+                div.pure-u-md-1-2
+                    div#header-user
+                        span.bold #{user.firstName}, #{user.lastName} &nbsp;&nbsp;|&nbsp;&nbsp;
+                        if user.activeCaseLoad
+                            span.bold #{user.activeCaseLoad.description} &nbsp;&nbsp;|&nbsp;&nbsp;
+                        a(href="/logout") Logout

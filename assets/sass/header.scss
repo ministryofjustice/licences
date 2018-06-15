@@ -1,0 +1,45 @@
+#global-header {
+    color: white;
+
+    .header-wrapper {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .header-logo {
+        display: flex;
+        align-items: center;
+
+        span {
+            font-size: xx-large;
+            margin-right: 20px;
+            margin-left: 20px;
+        }
+    }
+
+    #logo.hmppslogo {
+        display: flex;
+        align-items: center;
+        font-size: 26px;
+        background: url($path+'/hmpps_logo_small.png') no-repeat;
+        background-size: 54px 48px;
+        background-position: 0 0;
+        line-height: normal;
+        margin-top: 3px;
+        padding-left: 65px;
+        height: 50px;
+
+
+    }
+
+    #header-user {
+        float: right;
+        color: $white;
+        background-color: $govuk-blue;
+        padding: 15px;
+
+        a {
+            color: white
+        }
+    }
+}

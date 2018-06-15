@@ -97,7 +97,6 @@ const curfewAddress = joi.object().keys({
     telephone: requiredPhone,
     occupier: joi.object().keys({
         name: optionalString,
-        age: optionalAge,
         relationship: requiredIfAnswered('name')
     }),
     residents: joi.array().items(joi.object().keys({
