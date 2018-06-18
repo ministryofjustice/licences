@@ -7,7 +7,6 @@ const {
     authenticationMiddleware,
     appSetup
 } = require('../supertestSetup');
-const config = require('../../server/config');
 
 const createPdfRoute = require('../../server/routes/pdf');
 
@@ -39,8 +38,6 @@ const valuesOnly = {
     }
 };
 
-const templateName = config.pdf.templateName;
-
 describe('PDF:', () => {
 
     afterEach(() => {
@@ -54,7 +51,7 @@ describe('PDF:', () => {
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
 
             return request(app)
-                .get('/view/123')
+                .get('/view/hdc_ap_pss/123')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -62,7 +59,7 @@ describe('PDF:', () => {
                     expect(res.text).to.include('Missing 2');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
-                        templateName, '123', 'my-username');
+                        'hdc_ap_pss', '123', 'my-username');
                 });
         });
 
@@ -71,10 +68,10 @@ describe('PDF:', () => {
             pdfServiceStub.getPdfLicenceData.resolves(valuesOnly);
 
             return request(app)
-                .get('/view/123')
+                .get('/view/hdc_ap_pss/123')
                 .expect(302)
                 .expect(res => {
-                    expect(res.header.location).to.equal('/hdc/pdf/create/123');
+                    expect(res.header.location).to.equal('/hdc/pdf/create/hdc_ap_pss/123');
                 });
         });
     });
@@ -87,12 +84,12 @@ describe('PDF:', () => {
             pdfServiceStub.generatePdf.resolves(pdf1AsBytes);
 
             return request(app)
-                .get('/create/123')
+                .get('/create/hdc_ap_pss/123')
                 .expect(200)
                 .expect('Content-Type', 'application/pdf')
                 .expect(res => {
                     expect(pdfServiceStub.generatePdf).to.be.calledOnce();
-                    expect(pdfServiceStub.generatePdf).to.be.calledWith(templateName, '123', 'my-username');
+                    expect(pdfServiceStub.generatePdf).to.be.calledWith('hdc_ap_pss', '123', 'my-username');
                     expect(res.text).to.include('PDF-1');
                 });
         });
