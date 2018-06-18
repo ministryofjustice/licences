@@ -1,0 +1,16 @@
+div.largeMarginBottom.borderTop
+    h2.heading-medium Submit to decision maker
+
+    div.borderBottomLight.largeMarginBottom
+
+    div.pure-g
+        div.pure-u-3-4
+            if allowedTransitions.caToDmRefusal
+                | Ready to submit
+            else
+                | Submission unavailable - Tasks not yet complete
+
+        div.pure-u-1-4.center
+            if allowedTransitions.caToDmRefusal
+                a.taskListAction.center.button(href="/hdc/send/" + prisonerInfo.offenderNo)
+                    | Continue

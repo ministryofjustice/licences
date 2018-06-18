@@ -11,6 +11,8 @@ block content
         if user.role == 'CA'
             if stage == 'PROCESSING_CA'
                 include CAtoDM.pug
+            else if licenceStatus.decisions.insufficientTimeStop
+                include CAtoDMRefusal.pug
             else
                 include CAtoRO.pug
 

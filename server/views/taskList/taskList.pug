@@ -28,7 +28,14 @@ block content
         if user.role === 'CA'
             if (['UNSTARTED', 'ELIGIBILITY'].includes(licenceStatus.stage))
                 include eligibilityTask
-                include proposedAddressTask
+
+                if licenceStatus.decisions.eligible
+                    include proposedAddressTask
+                    include caSubmitTask
+                else
+                    include caSubmitRefusalTask
+
+
             else
                 include curfewAddressTask
                 if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
@@ -38,8 +45,7 @@ block content
                     include reportingInstructionsTask
                 include finalChecksTask
                 include postponementTask
-
-            include caSubmitTask
+                include caSubmitTask
 
         if user.role === 'RO'
             if (licenceStatus.decisions.optedOut)

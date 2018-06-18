@@ -21,7 +21,8 @@ function getAllowedTransitions(licenceStatus, role) {
         default:
             return {
                 caToRo: canSendCaToRo(licenceStatus),
-                caToDm: canSendCaToDm(licenceStatus)
+                caToDm: canSendCaToDm(licenceStatus),
+                caToDmRefusal: caToDmRefusal(licenceStatus)
             };
     }
 }
@@ -71,10 +72,24 @@ function canSendCaToRo(licenceStatus) {
     return allTaskComplete;
 }
 
-function canSendCaToDm(licenceStatus) {
+function caToDmRefusal(licenceStatus) {
+    const stage = licenceStatus.stage;
+    const decisions = licenceStatus.decisions;
 
+    if ( stage === 'ELIGIBILITY' && decisions.insufficientTimeStop) {
+        return true;
+    }
+
+    return false;
+}
+
+function canSendCaToDm(licenceStatus) {
     const tasks = licenceStatus.tasks;
     const decisions = licenceStatus.decisions;
+
+    if (decisions.insufficientTimeStop) {
+        return true;
+    }
 
     const required = [
         tasks.finalChecks
