@@ -131,9 +131,9 @@ function getCaStageState(licence) {
 function getEligibilityStageState(licence) {
     const {excluded, exclusion} = getExclusionTaskState(licence);
     const {insufficientTime, crdTime} = getCrdTimeState(licence);
-    const {unsuitable, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
-    const eligibility = getEligibilityState(unsuitable, excluded, [exclusion, crdTime, suitability]);
-    const eligible = isEligible({excluded, insufficientTime, unsuitable, exceptionalCircumstances});
+    const {unsuitable, effectiveUnsuitable, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
+    const eligible = isEligible({excluded, insufficientTime, effectiveUnsuitable});
+    const eligibility = getEligibilityState(eligible, [exclusion, crdTime, suitability]);
 
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
@@ -146,6 +146,7 @@ function getEligibilityStageState(licence) {
             excluded,
             insufficientTime,
             unsuitable,
+            effectiveUnsuitable,
             eligible,
             optedOut,
             bassReferralNeeded,
@@ -163,24 +164,17 @@ function getEligibilityStageState(licence) {
     };
 }
 
-function isEligible({
-    excluded,
-    insufficientTime,
-    unsuitable,
-    exceptionalCircumstances
-}) {
+function isEligible({excluded, insufficientTime, effectiveUnsuitable}) {
+
     if (excluded) {
         return false;
     }
+
     if (insufficientTime) {
         return false;
     }
 
-    if (unsuitable && !exceptionalCircumstances) {
-        return false;
-    }
-
-    return true;
+    return !effectiveUnsuitable;
 }
 
 function getExclusionTaskState(licence) {
@@ -188,7 +182,7 @@ function getExclusionTaskState(licence) {
     const excludedAnswer = getIn(licence, ['eligibility', 'excluded', 'decision']);
 
     return {
-        excluded: excludedAnswer && excludedAnswer === 'Yes',
+        excluded: excludedAnswer === 'Yes',
         exclusion: excludedAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
 }
@@ -205,13 +199,32 @@ function getCrdTimeState(licence) {
 
 function getSuitabilityState(licence) {
 
-    const suitableAnswer = getIn(licence, ['eligibility', 'suitability', 'decision']);
+    const unsuitableAnswer = getIn(licence, ['eligibility', 'suitability', 'decision']);
     const exceptionalCircumstances = getIn(licence, ['eligibility', 'exceptionalCircumstances', 'decision']);
+
     return {
+        unsuitable: unsuitableAnswer === 'Yes',
         exceptionalCircumstances: exceptionalCircumstances === 'Yes',
-        unsuitable: suitableAnswer === 'Yes',
-        suitability: suitableAnswer ? taskStates.DONE : taskStates.UNSTARTED
+        effectiveUnsuitable: unsuitableAnswer === 'Yes' && exceptionalCircumstances === 'No',
+        suitability: getState(licence)
     };
+
+    function getState(licence) {
+
+        if (!unsuitableAnswer) {
+            return taskStates.UNSTARTED;
+        }
+
+        if (unsuitableAnswer === 'No') {
+            return taskStates.DONE;
+        }
+
+        if (exceptionalCircumstances) {
+            return taskStates.DONE;
+        }
+
+        return taskStates.STARTED;
+    }
 }
 
 function getOptOutState(licence) {
@@ -351,7 +364,7 @@ function getReportingInstructionsState(licence) {
             return taskStates.UNSTARTED;
         }
 
-        // todo mandatory reportin instructions elements
+        // todo mandatory reporting instructions elements
 
         return taskStates.DONE;
     }
@@ -430,13 +443,17 @@ function getOverallState(tasks) {
     return taskStates.STARTED;
 }
 
-function getEligibilityState(unsuitable, excluded, tasks) {
+function getEligibilityState(eligible, tasks) {
+
     if (tasks.every(it => it === taskStates.UNSTARTED)) {
         return taskStates.UNSTARTED;
     }
 
-    const allDone = tasks.every(it => it === taskStates.DONE);
-    if (excluded || unsuitable || allDone) {
+    if(!eligible) {
+        return taskStates.DONE;
+    }
+
+    if( tasks.every(it => it === taskStates.DONE)) {
         return taskStates.DONE;
     }
 

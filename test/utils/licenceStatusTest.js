@@ -69,6 +69,9 @@ describe('getLicenceStatus', () => {
                     suitability: {
                         decision: 'Yes'
                     },
+                    exceptionalCircumstances: {
+                        decision: 'No'
+                    },
                     crdTime: {
                         decision: 'Yes'
                     }
@@ -126,7 +129,7 @@ describe('getLicenceStatus', () => {
 
         expect(status.decisions.excluded).to.eql(true);
         expect(status.decisions.insufficientTime).to.eql(true);
-        expect(status.decisions.unsuitable).to.eql(true);
+        expect(status.decisions.effectiveUnsuitable).to.eql(true);
         expect(status.decisions.optedOut).to.eql(true);
         expect(status.decisions.bassReferralNeeded).to.eql(true);
         expect(status.decisions.curfewAddressApproved).to.eql('approved');
@@ -229,7 +232,7 @@ describe('getLicenceStatus', () => {
 
         expect(status.decisions.excluded).to.eql(false);
         expect(status.decisions.insufficientTime).to.eql(false);
-        expect(status.decisions.unsuitable).to.eql(false);
+        expect(status.decisions.effectiveUnsuitable).to.eql(false);
         expect(status.decisions.optedOut).to.eql(false);
         expect(status.decisions.bassReferralNeeded).to.eql(false);
         expect(status.decisions.curfewAddressApproved).to.eql('rejected');
@@ -243,6 +246,84 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.approved).to.eql(false);
         expect(status.decisions.refused).to.eql(true);
         expect(status.decisions.finalChecksRefused).to.eql(false);
+    });
+
+    it('should show all tasks UNSTARTED when empty licence', () => {
+        const licence = {};
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.tasks).to.eql({
+            exclusion: taskStates.UNSTARTED,
+            crdTime: taskStates.UNSTARTED,
+            suitability: taskStates.UNSTARTED,
+            eligibility: taskStates.UNSTARTED,
+            optOut: taskStates.UNSTARTED,
+            bassReferral: taskStates.UNSTARTED,
+            curfewAddress: taskStates.UNSTARTED,
+            riskManagement: taskStates.UNSTARTED,
+            curfewAddressReview: taskStates.UNSTARTED,
+            curfewHours: taskStates.UNSTARTED,
+            reportingInstructions: taskStates.UNSTARTED,
+            licenceConditions: taskStates.UNSTARTED,
+            seriousOffenceCheck: taskStates.UNSTARTED,
+            onRemandCheck: taskStates.UNSTARTED,
+            confiscationOrderCheck: taskStates.UNSTARTED,
+            finalChecks: taskStates.UNSTARTED,
+            approval: taskStates.UNSTARTED
+        });
+    });
+
+    it('should show effectiveUnsuitable when unsuitable and no exceptional circumstances', () => {
+        const licence = {
+            stage: 'APPROVAL',
+            licence: {
+                eligibility: {
+                    excluded: {
+                        decision: 'Yes'
+                    },
+                    suitability: {
+                        decision: 'Yes'
+                    },
+                    exceptionalCircumstances: {
+                        decision: 'No'
+                    },
+                    crdTime: {
+                        decision: 'Yes'
+                    }
+                }
+            }
+        };
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.decisions.effectiveUnsuitable).to.eql(true);
+    });
+
+    it('should show NOT effectiveUnsuitable when unsuitable and there are exceptional circumstances', () => {
+        const licence = {
+            stage: 'APPROVAL',
+            licence: {
+                eligibility: {
+                    excluded: {
+                        decision: 'Yes'
+                    },
+                    suitability: {
+                        decision: 'Yes'
+                    },
+                    exceptionalCircumstances: {
+                        decision: 'Yes'
+                    },
+                    crdTime: {
+                        decision: 'Yes'
+                    }
+                }
+            }
+        };
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.decisions.effectiveUnsuitable).to.eql(false);
     });
 
     it('should show eligible when eligibility decisions false', () => {
@@ -279,6 +360,9 @@ describe('getLicenceStatus', () => {
                     suitability: {
                         decision: 'Yes'
                     },
+                    exceptionalCircumstances: {
+                        decision: 'No'
+                    },
                     crdTime: {
                         decision: 'No'
                     }
@@ -289,6 +373,32 @@ describe('getLicenceStatus', () => {
         const status = getLicenceStatus(licence);
 
         expect(status.decisions.eligible).to.eql(false);
+    });
+
+    it('should show eligible when unsuitable but exceptional circumstances', () => {
+        const licence = {
+            stage: 'ELIGIBILITY',
+            licence: {
+                eligibility: {
+                    excluded: {
+                        decision: 'No'
+                    },
+                    suitability: {
+                        decision: 'Yes'
+                    },
+                    exceptionalCircumstances: {
+                        decision: 'Yes'
+                    },
+                    crdTime: {
+                        decision: 'No'
+                    }
+                }
+            }
+        };
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.decisions.eligible).to.eql(true);
     });
 
 
@@ -376,6 +486,9 @@ describe('getLicenceStatus', () => {
                     suitability: {
                         decision: 'Yes',
                         reason: 'blah'
+                    },
+                    exceptionalCircumstances: {
+                        decision: 'Yes'
                     },
                     crdTime: {
                         decision: 'No'
@@ -630,7 +743,7 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.eligibility).to.eql(taskStates.DONE);
         });
 
-        it('should show eligibility DONE when suitabililty is YES', () => {
+        it('should show eligibility DONE when (un)suitabililty is YES and exceptionalCircumstances is answered', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
                 licence: {
@@ -640,8 +753,10 @@ describe('getLicenceStatus', () => {
                         },
                         suitability: {
                             decision: 'Yes'
+                        },
+                        exceptionalCircumstances: {
+                            decision: 'No'
                         }
-
                     }
                 }
             };
@@ -651,7 +766,29 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.eligibility).to.eql(taskStates.DONE);
         });
 
-        it('should show eligibility STARTED when suitabililty is No and excluded is No but no crdTime', () => {
+        it('should show eligibility STARTED when (un)suitabililty is YES and exceptionalCircumstances missing', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {
+                    eligibility: {
+                        excluded: {
+                            decision: 'No'
+                        },
+                        suitability: {
+                            decision: 'Yes'
+                        },
+                        exceptionalCircumstances: {
+                        }
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.eligibility).to.eql(taskStates.STARTED);
+        });
+
+        it('should show eligibility STARTED when (un)suitabililty is No and excluded is No but no crdTime', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
                 licence: {
