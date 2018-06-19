@@ -28,7 +28,13 @@ block content
         if user.role === 'CA'
             if (['UNSTARTED', 'ELIGIBILITY'].includes(licenceStatus.stage))
                 include eligibilityTask
-                include proposedAddressTask
+                if licenceStatus.decisions.eligible
+                    include proposedAddressTask
+                    include caSubmitTask
+                else if licenceStatus.decisions.insufficientTimeStop
+                    include caSubmitRefusalTask
+
+
             else
                 include curfewAddressTask
                 if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')

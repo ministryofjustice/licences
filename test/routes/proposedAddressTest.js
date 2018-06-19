@@ -93,7 +93,7 @@ describe('/hdc/proposedAddress', () => {
                 url: '/proposedAddress/curfewAddress/1',
                 body: {nomisId: 1},
                 section: 'curfewAddress',
-                nextPath: '/hdc/review/curfewAddress/1'
+                nextPath: '/hdc/taskList/1'
             }
         ];
 

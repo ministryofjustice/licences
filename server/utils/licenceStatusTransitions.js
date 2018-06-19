@@ -21,15 +21,20 @@ function getAllowedTransitions(licenceStatus, role) {
         default:
             return {
                 caToRo: canSendCaToRo(licenceStatus),
-                caToDm: canSendCaToDm(licenceStatus)
+                caToDm: canSendCaToDm(licenceStatus),
+                caToDmRefusal: caToDmRefusal(licenceStatus)
             };
     }
 }
 
 function canSendRoToCa(licenceStatus) {
-
     const tasks = licenceStatus.tasks;
+    const stage = licenceStatus.stage;
     const decisions = licenceStatus.decisions || {};
+
+    if (stage !== 'PROCESSING_RO') {
+        return false;
+    }
 
     if (decisions.curfewAddressApproved === 'rejected') {
         return true;
@@ -47,29 +52,56 @@ function canSendRoToCa(licenceStatus) {
 }
 
 function canSendDmToCa(licenceStatus) {
-    return licenceStatus.tasks.approval === taskStates.DONE;
+    const {tasks, stage} = licenceStatus;
+    return tasks.approval === taskStates.DONE && stage === 'APPROVAL';
 }
 
 function canSendCaToRo(licenceStatus) {
-
-    const tasks = licenceStatus.tasks;
-
+    const {tasks, decisions, stage} = licenceStatus;
     const required = [
         tasks.exclusion,
         tasks.crdTime,
         tasks.suitability,
         tasks.optOut,
-        tasks.bassReferral,
         tasks.curfewAddress
     ];
 
-    return required.every(it => it === taskStates.DONE);
+    if (stage !== 'ELIGIBILITY') {
+        return false;
+    }
+
+    const allTaskComplete = required.every(it => it === taskStates.DONE);
+
+    if (decisions.bassReferralNeeded) {
+        return allTaskComplete && tasks.bassReferral == taskStates.DONE;
+    }
+
+    return allTaskComplete;
+}
+
+function caToDmRefusal(licenceStatus) {
+    const stage = licenceStatus.stage;
+    const decisions = licenceStatus.decisions;
+
+    if (stage !== 'ELIGIBILITY') {
+        return false;
+    }
+
+    return decisions.insufficientTimeStop;
 }
 
 function canSendCaToDm(licenceStatus) {
-
     const tasks = licenceStatus.tasks;
     const decisions = licenceStatus.decisions;
+    const stage = licenceStatus.stage;
+
+    if (stage !== 'PROCESSING_CA' ) {
+        return false;
+    }
+
+    if (decisions.insufficientTimeStop) {
+        return true;
+    }
 
     const required = [
         tasks.finalChecks

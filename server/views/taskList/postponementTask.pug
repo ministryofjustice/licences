@@ -4,13 +4,14 @@ div.largeMarginBottom.borderTop
     div.borderBottomLight.largeMarginBottom
 
     div.pure-g.borderBottomLight.midPaddingBottom
-        div.pure-u-1-2
-            if licenceStatus.decisions.postponed
-                | HDC application postponed
-            else
-                | Use this to indicate that the process is postponed while any risk management planning actions remain outstanding
-        div.pure-u-1-4
-        div.pure-u-1-4
+        div.pure-u-3-4
+            .pure-g
+                .pure-u-3-4
+                    if licenceStatus.decisions.postponed
+                        | HDC application postponed
+                    else
+                        | Use this to indicate that the process is postponed while any risk management planning actions remain outstanding
+        div.pure-u-1-4.center
             p.namedAnchor
                 a.namedAnchor(name="postpone")
 
@@ -28,12 +29,11 @@ div.largeMarginBottom.borderTop
                     input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Postpone")
 
 div.pure-g.borderBottomLight.midPaddingBottom
-    div.pure-u-1-2
+    div.pure-u-3-4
         if licenceStatus.decisions.refused
             span.alert.bold HDC refused
 
-    div.pure-u-1-4
-    div.pure-u-1-4
+    div.pure-u-1-4.center
         a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/refuse/" + prisonerInfo.offenderNo)
             if licenceStatus.decisions.refused
                 | Update refusal

@@ -40,25 +40,38 @@ div.largeMarginBottom
                                         | Yes
                                     else
                                         | No
-                        if licenceStatus.decisions.exceptionalCircumstances
+                        if licenceStatus.decisions.unsuitable && licenceStatus.decisions.exceptionalCircumstances
                             div.pure-g.borderTopLight.smallPaddingTopBottom
                                 div.pure-u-3-4.padRight15
                                     | Exceptional circumstances accepted?
 
                                 div#exceptionalCircumstances.pure-u-1-4.center.bold
                                     | Yes
-                        div.pure-g.borderTopLight.smallPaddingTopBottom
-                            div.pure-u-3-4.padRight15
-                                | Is there less than 4 weeks to go to the offender's CRD?
-                            if licenceStatus.decisions.excluded || unsuitable
+
+                        if licenceStatus.decisions.excluded || unsuitable
+                            div.pure-g.borderTopLight.smallPaddingTopBottom
+                                div.pure-u-3-4.padRight15
+                                    | Is there less than 4 weeks to go to the offender's CRD?
                                 div#crdTimeAnswer.pure-u-1-4.center.bold N/A
 
-                            else if licenceStatus.tasks.crdTime === 'DONE'
+                        else if licenceStatus.tasks.crdTime === 'DONE'
+                            div.pure-g.borderTopLight.smallPaddingTopBottom
+                                div.pure-u-3-4.padRight15
+                                    | Is there less than 4 weeks to go to the offender's CRD?
                                 div#crdTimeAnswer.pure-u-1-4.center.bold
                                     if licenceStatus.decisions.insufficientTime
                                         | Yes
                                     else
                                         | No
+                            if licenceStatus.decisions.insufficientTime
+                                div.pure-g
+                                    div.pure-u-3-4.padLeft30.padRight15
+                                        | Has the decision maker given approval to continue the HDC case?
+                                    div#dmApprovalToContinue.pure-u-1-4.center.bold
+                                        if licenceStatus.decisions.insufficientTimeContinue
+                                            | Yes
+                                        else
+                                            | No
 
             div.pure-u-1.pure-u-md-1-4.center
                 a#eligibilityCheckUpdate(href='/hdc/eligibility/excluded/'+prisonerInfo.offenderNo) Change these answers

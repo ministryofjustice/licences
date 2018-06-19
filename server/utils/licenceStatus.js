@@ -130,10 +130,16 @@ function getCaStageState(licence) {
 
 function getEligibilityStageState(licence) {
     const {excluded, exclusion} = getExclusionTaskState(licence);
-    const {insufficientTime, crdTime} = getCrdTimeState(licence);
+    const {insufficientTime, crdTime, insufficientTimeContinue, insufficientTimeStop} = getCrdTimeState(licence);
     const {unsuitable, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
     const eligibility = getEligibilityState(unsuitable, excluded, [exclusion, crdTime, suitability]);
-    const eligible = isEligible({excluded, insufficientTime, unsuitable, exceptionalCircumstances});
+    const eligible = isEligible({
+        eligibility,
+        excluded,
+        unsuitable,
+        exceptionalCircumstances,
+        insufficientTimeStop
+    });
 
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
@@ -145,6 +151,8 @@ function getEligibilityStageState(licence) {
             exceptionalCircumstances,
             excluded,
             insufficientTime,
+            insufficientTimeContinue,
+            insufficientTimeStop,
             unsuitable,
             eligible,
             optedOut,
@@ -164,15 +172,13 @@ function getEligibilityStageState(licence) {
 }
 
 function isEligible({
+    eligibility,
     excluded,
-    insufficientTime,
     unsuitable,
-    exceptionalCircumstances
+    exceptionalCircumstances,
+    insufficientTimeStop
 }) {
     if (excluded) {
-        return false;
-    }
-    if (insufficientTime) {
         return false;
     }
 
@@ -180,7 +186,11 @@ function isEligible({
         return false;
     }
 
-    return true;
+    if (insufficientTimeStop) {
+        return false;
+    }
+
+    return eligibility === 'DONE';
 }
 
 function getExclusionTaskState(licence) {
@@ -194,13 +204,31 @@ function getExclusionTaskState(licence) {
 }
 
 function getCrdTimeState(licence) {
-
-    const timeAnswer = getIn(licence, ['eligibility', 'crdTime', 'decision']);
+    const decision = getIn(licence, ['eligibility', 'crdTime', 'decision']);
+    const dmApproval = getIn(licence, ['eligibility', 'crdTime', 'dmApproval']);
 
     return {
-        insufficientTime: timeAnswer === 'Yes',
-        crdTime: timeAnswer ? taskStates.DONE : taskStates.UNSTARTED
+        insufficientTimeContinue: decision === 'Yes' && dmApproval === 'Yes',
+        insufficientTimeStop: decision === 'Yes' && dmApproval === 'No',
+        insufficientTime: decision === 'Yes',
+        crdTime: getState(licence)
     };
+
+    function getState(licence) {
+        if (isEmpty(getIn(licence, ['eligibility', 'crdTime']))) {
+            return taskStates.UNSTARTED;
+        }
+
+        if (decision === 'No') {
+            return taskStates.DONE;
+        }
+
+        if (isEmpty(dmApproval)) {
+            return taskStates.STARTED;
+        }
+
+        return taskStates.DONE;
+    }
 }
 
 function getSuitabilityState(licence) {
