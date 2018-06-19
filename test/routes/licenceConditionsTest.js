@@ -86,7 +86,7 @@ describe('/hdc/licenceConditions', () => {
             conditionId: 'ABC'
         };
 
-        it('calls licence service delete and returns to cummary page', () => {
+        it('calls licence service delete and returns to summary page', () => {
 
             return request(app)
                 .post('/licenceConditions/additionalConditions/1/delete/ABC')

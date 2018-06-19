@@ -28,9 +28,13 @@ function getAllowedTransitions(licenceStatus, role) {
 }
 
 function canSendRoToCa(licenceStatus) {
-
     const tasks = licenceStatus.tasks;
+    const stage = licenceStatus.stage;
     const decisions = licenceStatus.decisions || {};
+
+    if (stage !== 'PROCESSING_RO') {
+        return false;
+    }
 
     if (decisions.curfewAddressApproved === 'rejected') {
         return true;
@@ -48,13 +52,12 @@ function canSendRoToCa(licenceStatus) {
 }
 
 function canSendDmToCa(licenceStatus) {
-    return licenceStatus.tasks.approval === taskStates.DONE;
+    const {tasks, stage} = licenceStatus;
+    return tasks.approval === taskStates.DONE && stage === 'APPROVAL';
 }
 
 function canSendCaToRo(licenceStatus) {
-
-    const {tasks, decisions} = licenceStatus;
-
+    const {tasks, decisions, stage} = licenceStatus;
     const required = [
         tasks.exclusion,
         tasks.crdTime,
@@ -62,6 +65,10 @@ function canSendCaToRo(licenceStatus) {
         tasks.optOut,
         tasks.curfewAddress
     ];
+
+    if (stage !== 'ELIGIBILITY') {
+        return false;
+    }
 
     const allTaskComplete = required.every(it => it === taskStates.DONE);
 
@@ -76,16 +83,21 @@ function caToDmRefusal(licenceStatus) {
     const stage = licenceStatus.stage;
     const decisions = licenceStatus.decisions;
 
-    if ( stage === 'ELIGIBILITY' && decisions.insufficientTimeStop) {
-        return true;
+    if (stage !== 'ELIGIBILITY') {
+        return false;
     }
 
-    return false;
+    return decisions.insufficientTimeStop;
 }
 
 function canSendCaToDm(licenceStatus) {
     const tasks = licenceStatus.tasks;
     const decisions = licenceStatus.decisions;
+    const stage = licenceStatus.stage;
+
+    if (stage !== 'PROCESSING_CA' ) {
+        return false;
+    }
 
     if (decisions.insufficientTimeStop) {
         return true;

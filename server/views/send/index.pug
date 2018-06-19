@@ -9,9 +9,9 @@ block content
 
     div.largePaddingBottom
         if user.role == 'CA'
-            if stage == 'PROCESSING_CA'
+            if allowedTransitions.caToDm
                 include CAtoDM.pug
-            else if licenceStatus.decisions.insufficientTimeStop
+            else if allowedTransitions.caToDmRefusal
                 include CAtoDMRefusal.pug
             else
                 include CAtoRO.pug

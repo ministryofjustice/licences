@@ -2,6 +2,7 @@ const express = require('express');
 const {getIn} = require('../utils/functionalHelpers');
 const {licenceStages} = require('../models/licenceStages');
 const {getLicenceStatus} = require('../utils/licenceStatus');
+const {getAllowedTransitions} = require('../utils/licenceStatusTransitions');
 
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
 
@@ -23,9 +24,10 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         const licence = await licenceService.getLicence(nomisId);
         const stage = getIn(licence, ['stage']);
         const licenceStatus = getLicenceStatus(licence);
+        const allowedTransitions = getAllowedTransitions(licenceStatus, req.user.role);
         const submissionTarget = await getSubmissionTarget(nomisId, stage, req.user.username);
 
-        res.render('send/index', {nomisId, stage, submissionTarget, licenceStatus});
+        res.render('send/index', {nomisId, stage, submissionTarget, allowedTransitions});
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {

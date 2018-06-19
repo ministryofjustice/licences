@@ -134,6 +134,7 @@ function getEligibilityStageState(licence) {
     const {unsuitable, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
     const eligibility = getEligibilityState(unsuitable, excluded, [exclusion, crdTime, suitability]);
     const eligible = isEligible({
+        eligibility,
         excluded,
         unsuitable,
         exceptionalCircumstances,
@@ -171,6 +172,7 @@ function getEligibilityStageState(licence) {
 }
 
 function isEligible({
+    eligibility,
     excluded,
     unsuitable,
     exceptionalCircumstances,
@@ -188,7 +190,7 @@ function isEligible({
         return false;
     }
 
-    return true;
+    return eligibility === 'DONE';
 }
 
 function getExclusionTaskState(licence) {

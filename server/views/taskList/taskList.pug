@@ -28,12 +28,10 @@ block content
         if user.role === 'CA'
             if (['UNSTARTED', 'ELIGIBILITY'].includes(licenceStatus.stage))
                 include eligibilityTask
-
                 if licenceStatus.decisions.eligible
-                    if licenceStatus.tasks.eligibility === 'DONE'
-                        include proposedAddressTask
-                        include caSubmitTask
-                else
+                    include proposedAddressTask
+                    include caSubmitTask
+                else if licenceStatus.decisions.insufficientTimeStop
                     include caSubmitRefusalTask
 
 

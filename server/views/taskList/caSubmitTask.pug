@@ -1,14 +1,15 @@
-- var canSendToDm = licenceStatus.stage === 'PROCESSING_CA' || allowedTransitions.caToDm
-- var canSendToRo = licenceStatus.stage === 'ELIGIBILITY' && allowedTransitions.caToRo
-
 div.largeMarginBottom.borderTop
-    h2.heading-medium Submit to decision maker
+    if licenceStatus.stage === "ELIGIBILITY"
+        h2.heading-medium Submit to responsible officer
+    else
+        h2.heading-medium Submit to decision maker
+
 
     div.borderBottomLight.largeMarginBottom
 
     div.pure-g
         div.pure-u-3-4
-            if canSendToRo || canSendToDm
+            if allowedTransitions.caToRo || allowedTransitions.caToDm
                 | Ready to submit
             else if licenceStatus.decisions.postponed
                 | Submission unavailable - HDC application postponed
@@ -18,6 +19,6 @@ div.largeMarginBottom.borderTop
                 | Submission unavailable - Tasks not yet complete
 
         div.pure-u-1-4.center
-            if canSendToDm || canSendToRo
+            if allowedTransitions.caToRo || allowedTransitions.caToDm
                 a.taskListAction.center.button(href="/hdc/send/" + prisonerInfo.offenderNo)
                     | Continue
