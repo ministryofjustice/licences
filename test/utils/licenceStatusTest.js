@@ -671,7 +671,7 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.eligibility).to.eql(taskStates.STARTED);
         });
 
-        it('should show eligibility DONE when suitabililty is No and excluded is No but and complete crdTime', () => {
+        it('should show eligibility DONE when suitability is No and excluded is No but and complete crdTime', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
                 licence: {
@@ -683,7 +683,8 @@ describe('getLicenceStatus', () => {
                             decision: 'No'
                         },
                         crdTime: {
-                            decision: 'Yes'
+                            decision: 'Yes',
+                            dmApproval: 'No'
                         }
                     }
                 }

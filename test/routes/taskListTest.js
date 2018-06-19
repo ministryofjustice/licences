@@ -205,6 +205,36 @@ describe('GET /taskList/:prisonNumber', () => {
                     });
             });
         });
+        // eslint-disable-next-line max-len
+        context('when there is less 4 weeks for the offenders CRD but the DM does not approves to continue assessment', () => {
+            it('should display the submit decision button', () => {
+                licenceServiceStub.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
+                    licence: {
+                        eligibility: {
+                            excluded: {
+                                decision: 'No'
+                            },
+                            suitability: {
+                                decision: 'No'
+                            },
+                            crdTime: {
+                                decision: 'Yes',
+                                dmApproval: 'No'
+                            }
+                        }
+                    }
+                });
+
+                return request(app)
+                    .get('/1233456')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
+                        expect(res.text).to.include('/hdc/send/noms');
+                    });
+            });
+        });
 
         context('when offender is ineligible', () => {
             it('should not display link to opt out when unsuitable', () => {

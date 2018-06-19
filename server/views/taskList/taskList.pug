@@ -30,8 +30,9 @@ block content
                 include eligibilityTask
 
                 if licenceStatus.decisions.eligible
-                    include proposedAddressTask
-                    include caSubmitTask
+                    if licenceStatus.tasks.eligibility === 'DONE'
+                        include proposedAddressTask
+                        include caSubmitTask
                 else
                     include caSubmitRefusalTask
 
