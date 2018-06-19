@@ -54,7 +54,7 @@ div.largeMarginBottom
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
                                 | Is there less than 4 weeks to go to the offender's CRD?
-                            if licenceStatus.decisions.excluded || licenceStatus.decisions.effectiveUnsuitable
+                            if licenceStatus.decisions.excluded || licenceStatus.decisions.unsuitableResult
                                 div#crdTimeAnswer.pure-u-1-4.center.bold N/A
                             else if licenceStatus.tasks.crdTime === 'DONE'
                                 div#crdTimeAnswer.pure-u-1-4.center.bold

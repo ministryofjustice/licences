@@ -129,7 +129,7 @@ describe('getLicenceStatus', () => {
 
         expect(status.decisions.excluded).to.eql(true);
         expect(status.decisions.insufficientTime).to.eql(true);
-        expect(status.decisions.effectiveUnsuitable).to.eql(true);
+        expect(status.decisions.unsuitableResult).to.eql(true);
         expect(status.decisions.optedOut).to.eql(true);
         expect(status.decisions.bassReferralNeeded).to.eql(true);
         expect(status.decisions.curfewAddressApproved).to.eql('approved');
@@ -232,7 +232,7 @@ describe('getLicenceStatus', () => {
 
         expect(status.decisions.excluded).to.eql(false);
         expect(status.decisions.insufficientTime).to.eql(false);
-        expect(status.decisions.effectiveUnsuitable).to.eql(false);
+        expect(status.decisions.unsuitableResult).to.eql(false);
         expect(status.decisions.optedOut).to.eql(false);
         expect(status.decisions.bassReferralNeeded).to.eql(false);
         expect(status.decisions.curfewAddressApproved).to.eql('rejected');
@@ -274,7 +274,7 @@ describe('getLicenceStatus', () => {
         });
     });
 
-    it('should show effectiveUnsuitable when unsuitable and no exceptional circumstances', () => {
+    it('should show unsuitableResult true when unsuitable and no exceptional circumstances', () => {
         const licence = {
             stage: 'APPROVAL',
             licence: {
@@ -297,10 +297,10 @@ describe('getLicenceStatus', () => {
 
         const status = getLicenceStatus(licence);
 
-        expect(status.decisions.effectiveUnsuitable).to.eql(true);
+        expect(status.decisions.unsuitableResult).to.eql(true);
     });
 
-    it('should show NOT effectiveUnsuitable when unsuitable and there are exceptional circumstances', () => {
+    it('should show NOT unsuitableResult true when unsuitable and there are exceptional circumstances', () => {
         const licence = {
             stage: 'APPROVAL',
             licence: {
@@ -323,7 +323,7 @@ describe('getLicenceStatus', () => {
 
         const status = getLicenceStatus(licence);
 
-        expect(status.decisions.effectiveUnsuitable).to.eql(false);
+        expect(status.decisions.unsuitableResult).to.eql(false);
     });
 
     it('should show eligible when eligibility decisions false', () => {

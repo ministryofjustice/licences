@@ -41,7 +41,7 @@ describe('getStatusLabel', () => {
                     label: 'Excluded (Insufficient time)'
                 },
                 {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {effectiveUnsuitable: true}, tasks: {}},
+                    status: {stage: licenceStages.ELIGIBILITY, decisions: {unsuitableResult: true}, tasks: {}},
                     label: 'Presumed unsuitable'
                 },
                 {
@@ -63,7 +63,7 @@ describe('getStatusLabel', () => {
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {curfewAddressApproved: 'rejected', effectiveUnsuitable: false},
+                        decisions: {curfewAddressApproved: 'rejected', unsuitableResult: false},
                         tasks: {}
                     },
                     label: 'Address rejected'
@@ -71,7 +71,7 @@ describe('getStatusLabel', () => {
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {curfewAddressApproved: 'rejected', effectiveUnsuitable: true},
+                        decisions: {curfewAddressApproved: 'rejected', unsuitableResult: true},
                         tasks: {}
                     },
                     label: 'Presumed unsuitable'
@@ -87,14 +87,14 @@ describe('getStatusLabel', () => {
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {excluded: true, insufficientTime: true, effectiveUnsuitable: true}, tasks: {}
+                        decisions: {excluded: true, insufficientTime: true, unsuitableResult: true}, tasks: {}
                     },
                     label: 'Excluded (Ineligible)'
                 },
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {insufficientTime: true, effectiveUnsuitable: true}, tasks: {}
+                        decisions: {insufficientTime: true, unsuitableResult: true}, tasks: {}
                     },
                     label: 'Presumed unsuitable'
                 }

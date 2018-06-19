@@ -131,8 +131,8 @@ function getCaStageState(licence) {
 function getEligibilityStageState(licence) {
     const {excluded, exclusion} = getExclusionTaskState(licence);
     const {insufficientTime, crdTime} = getCrdTimeState(licence);
-    const {unsuitable, effectiveUnsuitable, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
-    const eligible = isEligible({excluded, insufficientTime, effectiveUnsuitable});
+    const {unsuitable, unsuitableResult, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
+    const eligible = isEligible({excluded, insufficientTime, unsuitableResult});
     const eligibility = getEligibilityState(eligible, [exclusion, crdTime, suitability]);
 
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
@@ -146,7 +146,7 @@ function getEligibilityStageState(licence) {
             excluded,
             insufficientTime,
             unsuitable,
-            effectiveUnsuitable,
+            unsuitableResult,
             eligible,
             optedOut,
             bassReferralNeeded,
@@ -164,7 +164,7 @@ function getEligibilityStageState(licence) {
     };
 }
 
-function isEligible({excluded, insufficientTime, effectiveUnsuitable}) {
+function isEligible({excluded, insufficientTime, unsuitableResult}) {
 
     if (excluded) {
         return false;
@@ -174,7 +174,7 @@ function isEligible({excluded, insufficientTime, effectiveUnsuitable}) {
         return false;
     }
 
-    return !effectiveUnsuitable;
+    return !unsuitableResult;
 }
 
 function getExclusionTaskState(licence) {
@@ -205,7 +205,7 @@ function getSuitabilityState(licence) {
     return {
         unsuitable: unsuitableAnswer === 'Yes',
         exceptionalCircumstances: exceptionalCircumstances === 'Yes',
-        effectiveUnsuitable: unsuitableAnswer === 'Yes' && exceptionalCircumstances === 'No',
+        unsuitableResult: unsuitableAnswer === 'Yes' && exceptionalCircumstances === 'No',
         suitability: getState(licence)
     };
 
