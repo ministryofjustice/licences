@@ -31,10 +31,11 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
-        const {nomisId, sender, receiver} = req.body;
+        const {nomisId, sender, receiver, transitionType} = req.body;
         const licence = await licenceService.getLicence(nomisId);
         await licenceService.markForHandover(nomisId, sender, receiver, licence);
-        res.redirect('/hdc/sent/' + nomisId);
+
+        res.redirect(`/hdc/sent/${transitionType}`);
     }));
 
     function getSubmissionTarget(nomisId, stage, username) {

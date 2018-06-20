@@ -1,0 +1,13 @@
+mixin sentContent(title)
+    div.pure-g.largeMarginBottom
+        div.pure-u-3-5
+            div.confirm-banner
+                div.pure-g
+                    div.pure-u-md-1-8.smallMarginTop.smallPaddingTop.padLeft15
+                        img(src="/public/images/large_tick.svg" alt="white tick" height="80px")
+                    div.pure-u-md-7-8
+                        h1.heading-large=title
+
+
+    div
+        a#backBtn.requiredButton.button.button-secondary.largeMarginBottom(href='/' role="button") Return to case list

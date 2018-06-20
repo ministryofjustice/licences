@@ -16,18 +16,64 @@ const app = appSetup(createSendRoute({
 }));
 
 describe('GET sent', () => {
-
-    beforeEach(() => {
-        licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO'});
-    });
-
-    it('renders the sent page', () => {
+    it('renders the sent page for CAtoRO', () => {
         return request(app)
-            .get('/123')
+            .get('/CAtoRO')
             .expect(200)
             .expect(res => {
                 expect(res.text).to.include('Address information submitted');
             });
+    });
+
+    it('renders the sent page for CAtoRO', () => {
+        return request(app)
+            .get('/CAtoRO')
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('Address information submitted');
+            });
+    });
+
+    it('renders the sent page for CAtoRO', () => {
+        return request(app)
+            .get('/CAtoRO')
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('Address information submitted');
+            });
+    });
+
+    it('renders the sent page for CAtoDM', () => {
+        return request(app)
+            .get('/CAtoDM')
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('Submitted for approval');
+            });
+    });
+
+    it('renders the sent page for ROtoCA', () => {
+        return request(app)
+            .get('/ROtoCA')
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('Licence information sent');
+            });
+    });
+
+    it('renders the sent page for CAtoDMRefusal', () => {
+        return request(app)
+            .get('/CAtoDMRefusal')
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('Submitted for refusal');
+            });
+    });
+
+    it('errors when an invalid transition type is provided', () => {
+        return request(app)
+            .get('/foobar')
+            .expect(500);
     });
 });
 
