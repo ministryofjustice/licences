@@ -3,6 +3,7 @@ const {asyncMiddleware} = require('../utils/middleware');
 
 module.exports = function({logger, licenceService, authenticationMiddleware}) {
     const router = express.Router();
+
     router.use(authenticationMiddleware());
 
     router.use(function(req, res, next) {

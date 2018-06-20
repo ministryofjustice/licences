@@ -25,24 +25,6 @@ describe('GET sent', () => {
             });
     });
 
-    it('renders the sent page for CAtoRO', () => {
-        return request(app)
-            .get('/CAtoRO')
-            .expect(200)
-            .expect(res => {
-                expect(res.text).to.include('Address information submitted');
-            });
-    });
-
-    it('renders the sent page for CAtoRO', () => {
-        return request(app)
-            .get('/CAtoRO')
-            .expect(200)
-            .expect(res => {
-                expect(res.text).to.include('Address information submitted');
-            });
-    });
-
     it('renders the sent page for CAtoDM', () => {
         return request(app)
             .get('/CAtoDM')
@@ -58,6 +40,15 @@ describe('GET sent', () => {
             .expect(200)
             .expect(res => {
                 expect(res.text).to.include('Licence information sent');
+            });
+    });
+
+    it('renders the sent page for DMtoCA', () => {
+        return request(app)
+            .get('/DMtoCA')
+            .expect(200)
+            .expect(res => {
+                expect(res.text).to.include('Submitted to the prison case admin');
             });
     });
 
