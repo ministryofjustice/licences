@@ -1,9 +1,9 @@
 const express = require('express');
-const {getIn} = require('../utils/functionalHelpers');
 const {asyncMiddleware} = require('../utils/middleware');
 
 module.exports = function({logger, licenceService, authenticationMiddleware}) {
     const router = express.Router();
+
     router.use(authenticationMiddleware());
 
     router.use(function(req, res, next) {
@@ -13,12 +13,8 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         next();
     });
 
-    router.get('/:nomisId', asyncMiddleware(async (req, res) => {
-        const {nomisId} = req.params;
-        const licence = await licenceService.getLicence(nomisId);
-        const stage = getIn(licence, ['stage']);
-
-        res.render('sent/index', {nomisId, stage});
+    router.get('/:handoverType', asyncMiddleware(async (req, res) => {
+        res.render(`sent/${req.params.handoverType}`);
     }));
 
     return router;

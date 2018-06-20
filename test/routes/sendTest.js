@@ -72,10 +72,10 @@ describe('Send:', () => {
             it('shows sent confirmation', () => {
                 return request(app)
                     .post('/123')
-                    .send({nomisId: 123, sender: 'from', receiver: 'to'})
+                    .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'foobar'})
                     .expect(302)
                     .expect(res => {
-                        expect(res.header['location']).to.eql('/hdc/sent/123');
+                        expect(res.header['location']).to.eql('/hdc/sent/foobar');
                     });
 
             });
