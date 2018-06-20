@@ -1,31 +1,29 @@
 const express = require('express');
 const {asyncMiddleware} = require('../utils/middleware');
-const config = require('../config');
-
-const templateName = config.pdf.templateName;
 
 module.exports = function({logger, pdfService, authenticationMiddleware}) {
 
     const router = express.Router();
     router.use(authenticationMiddleware());
 
-    router.get('/view/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/view/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
 
-        const {nomisId} = req.params;
-        logger.debug(`GET pdf/view/${nomisId}`);
+        const {nomisId, templateName} = req.params;
+        logger.debug(`GET pdf/view/${templateName}/${nomisId}`);
+
         const {missing} = await pdfService.getPdfLicenceData(templateName, nomisId, req.user.username);
 
         if (missing) {
-            return res.render('pdf/errors', {nomisId, missing});
+            return res.render('pdf/errors', {nomisId, missing, templateName});
         }
 
-        return res.redirect('/hdc/pdf/create/' + nomisId);
+        return res.redirect(`/hdc/pdf/create/${templateName}/${nomisId}`);
     }));
 
-    router.get('/create/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/create/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
 
-        const {nomisId} = req.params;
-        logger.debug(`GET pdf/create/${nomisId}`);
+        const {nomisId, templateName} = req.params;
+        logger.debug(`GET pdf/create/${nomisId}/${templateName}`);
         const pdf = await pdfService.generatePdf(templateName, nomisId, req.user.username);
 
         res.type('application/pdf');

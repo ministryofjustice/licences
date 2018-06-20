@@ -10,8 +10,9 @@ function formatPdfData(templateName, nomisId,
                        {licence, prisonerInfo, establishment}, image,
                        placeholder = DEFAULT_PLACEHOLDER) {
 
-    const conditions = getAdditionalConditionsText(licence, pdfData[templateName]['CONDITIONS']);
-    const pss = getAdditionalConditionsText(licence, pdfData[templateName]['PSS']);
+    const conditions = getConditionsForConfig(licence, templateName, 'CONDITIONS');
+    const pss = getConditionsForConfig(licence, templateName, 'PSS');
+
     const photo = image ? image.toString('base64') : placeholder.toString('base64');
 
     const allData = {
@@ -53,6 +54,11 @@ function readEntry(data, spec) {
         .map(path => getIn(data, path))
         .filter(x => x)
         .join(spec.separator);
+}
+
+function getConditionsForConfig(licence, templateName, configName) {
+    const conditionsConfig = pdfData[templateName][configName];
+    return isEmpty(conditionsConfig) ? {} : getAdditionalConditionsText(licence, conditionsConfig);
 }
 
 function getAdditionalConditionsText(licence, config) {
