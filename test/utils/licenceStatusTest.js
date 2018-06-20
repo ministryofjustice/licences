@@ -138,7 +138,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.seriousOffence).to.eql(true);
         expect(status.decisions.onRemand).to.eql(true);
         expect(status.decisions.confiscationOrder).to.eql(true);
-        expect(status.decisions.finalCheckPass).to.eql(false);
+        expect(status.decisions.finalChecksPass).to.eql(false);
         expect(status.decisions.postponed).to.eql(true);
         expect(status.decisions.approved).to.eql(true);
         expect(status.decisions.refused).to.eql(false);
@@ -241,7 +241,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.seriousOffence).to.eql(false);
         expect(status.decisions.onRemand).to.eql(false);
         expect(status.decisions.confiscationOrder).to.eql(false);
-        expect(status.decisions.finalCheckPass).to.eql(true);
+        expect(status.decisions.finalChecksPass).to.eql(true);
         expect(status.decisions.postponed).to.eql(false);
         expect(status.decisions.approved).to.eql(false);
         expect(status.decisions.refused).to.eql(true);
@@ -799,7 +799,6 @@ describe('getLicenceStatus', () => {
                         suitability: {
                             decision: 'No'
                         }
-
                     }
                 }
             };
@@ -809,7 +808,7 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.eligibility).to.eql(taskStates.STARTED);
         });
 
-        it('should show eligibility DONE when suitabililty is No and excluded is No but and complete crdTime', () => {
+        it('should show eligibility DONE when suitability is No and excluded is No but and complete crdTime', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
                 licence: {
@@ -821,7 +820,8 @@ describe('getLicenceStatus', () => {
                             decision: 'No'
                         },
                         crdTime: {
-                            decision: 'Yes'
+                            decision: 'Yes',
+                            dmApproval: 'No'
                         }
                     }
                 }

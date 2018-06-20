@@ -3,7 +3,7 @@ const {licenceStages} = require('../models/licenceStages');
 const {getIn, isEmpty, lastItem} = require('./functionalHelpers');
 const {isAcceptedAddress, isRejectedAddress, addressReviewStarted} = require('../utils/addressHelpers');
 
-module.exports = {getLicenceStatus, getConfiscationOrderTaskState};
+module.exports = {getLicenceStatus, getConfiscationOrderState};
 
 function getLicenceStatus(licenceRecord) {
 
@@ -77,6 +77,7 @@ function getApprovalStageState(licence) {
 }
 
 function getRoStageState(licence) {
+
     const {riskManagementNeeded, victimLiasionNeeded, riskManagement} = getRiskManagementState(licence);
     const {curfewAddressReview, curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {curfewHours} = getCurfewHoursState(licence);
@@ -103,20 +104,20 @@ function getRoStageState(licence) {
 }
 
 function getCaStageState(licence) {
-    const {seriousOffence, seriousOffenceCheck} = getSeriousOffenceCheckTaskState(licence);
-    const {onRemand, onRemandCheck} = getOnRemandCheckTaskState(licence);
-    const {confiscationOrder, confiscationOrderCheck} = getConfiscationOrderTaskState(licence);
+
+    const {seriousOffence, seriousOffenceCheck} = getSeriousOffenceCheckState(licence);
+    const {onRemand, onRemandCheck} = getOnRemandCheckState(licence);
+    const {confiscationOrder, confiscationOrderCheck} = getConfiscationOrderState(licence);
+    const {finalChecksPass, finalChecksRefused, postponed} = getFinalChecksState(licence, seriousOffence, onRemand);
     const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck, confiscationOrderCheck]);
-    const finalCheckPass = !(seriousOffence || onRemand);
-    const postponed = getIn(licence, ['finalChecks', 'postpone', 'decision']) === 'Yes';
-    const finalChecksRefused = getIn(licence, ['finalChecks', 'refusal', 'decision']) === 'Yes';
+
     return {
         decisions: {
             seriousOffence,
             onRemand,
             confiscationOrder,
-            finalCheckPass,
             postponed,
+            finalChecksPass,
             finalChecksRefused
         },
         tasks: {
@@ -129,11 +130,13 @@ function getCaStageState(licence) {
 }
 
 function getEligibilityStageState(licence) {
-    const {excluded, exclusion} = getExclusionTaskState(licence);
-    const {insufficientTime, crdTime} = getCrdTimeState(licence);
-    const {unsuitable, unsuitableResult, suitability, exceptionalCircumstances} = getSuitabilityState(licence);
-    const eligible = isEligible({excluded, insufficientTime, unsuitableResult});
-    const eligibility = getEligibilityState(eligible, [exclusion, crdTime, suitability]);
+
+    const {exclusion, excluded} = getExclusionState(licence);
+    const {crdTime, insufficientTime, insufficientTimeContinue, insufficientTimeStop} = getCrdTimeState(licence);
+    const {suitability, unsuitable, unsuitableResult, exceptionalCircumstances} = getSuitabilityState(licence);
+
+    const notEligible = (excluded || insufficientTimeStop || unsuitableResult);
+    const {eligibility, eligible} = getEligibilityState(notEligible, [exclusion, crdTime, suitability]);
 
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
@@ -145,6 +148,8 @@ function getEligibilityStageState(licence) {
             exceptionalCircumstances,
             excluded,
             insufficientTime,
+            insufficientTimeContinue,
+            insufficientTimeStop,
             unsuitable,
             unsuitableResult,
             eligible,
@@ -164,20 +169,20 @@ function getEligibilityStageState(licence) {
     };
 }
 
-function isEligible({excluded, insufficientTime, unsuitableResult}) {
+function getEligibilityState(notEligible, eligibilityTasks) {
 
-    if (excluded) {
-        return false;
-    }
+    const eligibility = notEligible ? taskStates.DONE : getOverallState(eligibilityTasks);
 
-    if (insufficientTime) {
-        return false;
-    }
+    // some things mean not eligible no matter what else, but we only know definitely eligible when all answers complete
+    const eligible = notEligible ? false : eligibility === taskStates.DONE;
 
-    return !unsuitableResult;
+    return {
+        eligibility,
+        eligible
+    };
 }
 
-function getExclusionTaskState(licence) {
+function getExclusionState(licence) {
 
     const excludedAnswer = getIn(licence, ['eligibility', 'excluded', 'decision']);
 
@@ -188,13 +193,31 @@ function getExclusionTaskState(licence) {
 }
 
 function getCrdTimeState(licence) {
-
-    const timeAnswer = getIn(licence, ['eligibility', 'crdTime', 'decision']);
+    const decision = getIn(licence, ['eligibility', 'crdTime', 'decision']);
+    const dmApproval = getIn(licence, ['eligibility', 'crdTime', 'dmApproval']);
 
     return {
-        insufficientTime: timeAnswer === 'Yes',
-        crdTime: timeAnswer ? taskStates.DONE : taskStates.UNSTARTED
+        insufficientTimeContinue: decision === 'Yes' && dmApproval === 'Yes',
+        insufficientTimeStop: decision === 'Yes' && dmApproval === 'No',
+        insufficientTime: decision === 'Yes',
+        crdTime: getState(licence)
     };
+
+    function getState(licence) {
+        if (isEmpty(getIn(licence, ['eligibility', 'crdTime']))) {
+            return taskStates.UNSTARTED;
+        }
+
+        if (decision === 'No') {
+            return taskStates.DONE;
+        }
+
+        if (isEmpty(dmApproval)) {
+            return taskStates.STARTED;
+        }
+
+        return taskStates.DONE;
+    }
 }
 
 function getSuitabilityState(licence) {
@@ -279,6 +302,11 @@ function getRiskManagementState(licence) {
 
 function getApprovalState(licence) {
 
+    const refusalReasons = {
+        addressUnsuitable: 'Address unsuitable',
+        insufficientTime: 'Insufficient time'
+    };
+
     const decision = getIn(licence, ['approval', 'release', 'decision']);
     const reason = getIn(licence, ['approval', 'release', 'reason']);
 
@@ -291,6 +319,7 @@ function getApprovalState(licence) {
 }
 
 function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
+
     return {
         curfewAddress: getState(licence)
     };
@@ -307,8 +336,6 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
             return taskStates.UNSTARTED;
         }
 
-        // todo mandatory address elements
-
         const required = ['occupier', 'cautionedAgainstResident'];
         if (required.some(field => !addresses.find(address => address[field]))) {
             return taskStates.STARTED;
@@ -319,6 +346,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
 }
 
 function getCurfewAddressReviewState(licence) {
+
     const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
 
     if (!addresses || isEmpty(addresses)) {
@@ -371,6 +399,7 @@ function getReportingInstructionsState(licence) {
 }
 
 function getLicenceConditionsState(licence) {
+
     if (isEmpty(getIn(licence, ['licenceConditions']))) {
         return {
             standardOnly: false,
@@ -401,7 +430,7 @@ function getLicenceConditionsState(licence) {
     };
 }
 
-function getSeriousOffenceCheckTaskState(licence) {
+function getSeriousOffenceCheckState(licence) {
 
     const seriousOffenceAnswer = getIn(licence, ['finalChecks', 'seriousOffence', 'decision']);
 
@@ -411,7 +440,7 @@ function getSeriousOffenceCheckTaskState(licence) {
     };
 }
 
-function getOnRemandCheckTaskState(licence) {
+function getOnRemandCheckState(licence) {
 
     const onRemandAnswer = getIn(licence, ['finalChecks', 'onRemand', 'decision']);
 
@@ -421,7 +450,7 @@ function getOnRemandCheckTaskState(licence) {
     };
 }
 
-function getConfiscationOrderTaskState(licence) {
+function getConfiscationOrderState(licence) {
 
     const confiscationOrderAnswer = getIn(licence, ['finalChecks', 'confiscationOrder', 'decision']);
 
@@ -431,7 +460,22 @@ function getConfiscationOrderTaskState(licence) {
     };
 }
 
+function getFinalChecksState(licence, seriousOffence, onRemand) {
+
+    const finalChecksPass = !(seriousOffence || onRemand);
+
+    const postponed = getIn(licence, ['finalChecks', 'postpone', 'decision']) === 'Yes';
+    const finalChecksRefused = getIn(licence, ['finalChecks', 'refusal', 'decision']) === 'Yes';
+
+    return {
+        finalChecksPass,
+        finalChecksRefused,
+        postponed
+    };
+}
+
 function getOverallState(tasks) {
+
     if (tasks.every(it => it === taskStates.UNSTARTED)) {
         return taskStates.UNSTARTED;
     }
@@ -443,24 +487,4 @@ function getOverallState(tasks) {
     return taskStates.STARTED;
 }
 
-function getEligibilityState(eligible, tasks) {
 
-    if (tasks.every(it => it === taskStates.UNSTARTED)) {
-        return taskStates.UNSTARTED;
-    }
-
-    if(!eligible) {
-        return taskStates.DONE;
-    }
-
-    if( tasks.every(it => it === taskStates.DONE)) {
-        return taskStates.DONE;
-    }
-
-    return taskStates.STARTED;
-}
-
-const refusalReasons = {
-    addressUnsuitable: 'Address unsuitable',
-    insufficientTime: 'Insufficient time'
-};

@@ -1,0 +1,13 @@
+div.pure-g.largePaddingBottom
+    div.pure-u-2-3
+        h2.heading-large.midPaddingBottom Submit for refusal
+        p.lede The licence is ready to be submitted for refusal by the decision maker or you can return to the task list and submit it later.
+
+div#continueBtns.pure-g.paddingBottom
+    div.pure-u-1
+        form#acceptanceForm(method='POST')
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="nomisId" value=nomisId)
+            input(type="hidden" name="sender" value="CA")
+            input(type="hidden" name="receiver" value="DM")
+            include includes/sendButtons
