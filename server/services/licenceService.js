@@ -12,7 +12,7 @@ const {
     removePath
 } = require('../utils/functionalHelpers');
 const {transitions} = require('../models/licenceStages');
-const {getLicenceStatus, getConfiscationOrderTaskState} = require('../utils/licenceStatus');
+const {getLicenceStatus, getConfiscationOrderState} = require('../utils/licenceStatus');
 const validate = require('./utils/licenceValidation');
 const addressHelpers = require('./utils/addressHelpers');
 
@@ -306,7 +306,7 @@ module.exports = function createLicenceService(licenceClient) {
 
     function getValidationErrorsForPage(licence, licenceSectionOfPage) {
         if (licenceSectionOfPage === 'approval') {
-            const {confiscationOrder} = getConfiscationOrderTaskState(licence);
+            const {confiscationOrder} = getConfiscationOrderState(licence);
             return getApprovalErrors({licence, confiscationOrder});
         }
 

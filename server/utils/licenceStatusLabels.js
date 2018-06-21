@@ -55,7 +55,7 @@ function caEligibilityLabel(licenceStatus) {
 
     const labels = [
         {decision: 'excluded', label: 'Excluded (Ineligible)'},
-        {decision: 'unsuitable', label: 'Presumed unsuitable'},
+        {decision: 'unsuitableResult', label: 'Presumed unsuitable'},
         {decision: 'insufficientTime', label: 'Excluded (Insufficient time)'},
         {decision: 'optedOut', label: 'Opted out'},
         {decision: 'bassReferralNeeded', label: 'Address/Opt-out form sent'},

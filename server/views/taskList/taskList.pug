@@ -5,15 +5,13 @@ include ./includes/utils
 
 block content
 
-    - var unsuitable = licenceStatus.decisions.unsuitable && !licenceStatus.decisions.exceptionalCircumstances
-
     div.back-link-container
         a.link-back(href="/") Back to case list
 
         if licenceStatus.decisions.excluded
             div.error-banner.marginTopMedium
                 strong.bold The offender is statutorily excluded from HDC
-        else if unsuitable
+        else if licenceStatus.decisions.unsuitableResult
             div.error-banner.marginTopMedium
                 strong.bold The offender is presumed unsuitable for HDC release
 
