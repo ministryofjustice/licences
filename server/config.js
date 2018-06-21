@@ -32,8 +32,8 @@ module.exports = {
         apiGatewayToken: get('NOMIS_GW_TOKEN', 'dummy'),
         apiGatewayPrivateKey: new Buffer(get('NOMIS_GW_KEY', 'dummy'), 'base64').toString('ascii'),
         timeout: {
-            response: 5000,
-            deadline: 7500
+            response: 10000,
+            deadline: 15000
         },
         licenceRolePrefix: get('LICENCE_ROLE_PREFIX', 'LICENCE'),
         apiClientId: get('API_CLIENT_ID', 'licences'),
