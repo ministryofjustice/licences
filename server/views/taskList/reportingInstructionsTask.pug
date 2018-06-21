@@ -7,7 +7,7 @@ div.taskListItem
                 div Confirmed
             else
                 | Not yet added
-        div.pure-u-1-4
+        div.pure-u-1-4.center
             if user.role === 'RO'
                 +proceed(licenceStatus.tasks.reportingInstructions, 'UNSTARTED', 'Start', 'View', "/hdc/reporting/reportingInstructions/" + prisonerInfo.offenderNo)
             else

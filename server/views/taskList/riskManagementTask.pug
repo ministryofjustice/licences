@@ -14,7 +14,7 @@ div.taskListItem
                     div No victim liaison required
             else
                 | Not yet confirmed
-        div.pure-u-1-4
+        div.pure-u-1-4.center
             if user.role === 'RO'
                 +proceed(licenceStatus.tasks.riskManagement, 'UNSTARTED', 'Start', 'View', "/hdc/risk/riskManagement/" + prisonerInfo.offenderNo)
             else
