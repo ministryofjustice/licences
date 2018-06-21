@@ -1,0 +1,12 @@
+div.taskListItem
+    div.pure-g.borderBottomLight.midPaddingBottom
+        div.pure-u-3-4
+            if licenceStatus.decisions.refused
+                span.alert.bold HDC refused
+
+        div.pure-u-1-4.center
+            a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/refuse/" + prisonerInfo.offenderNo)
+                if licenceStatus.decisions.refused
+                    | Update refusal
+                else
+                    | Refuse HDC
