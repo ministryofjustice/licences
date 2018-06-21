@@ -10,7 +10,10 @@ div.largeMarginBottom
                     input(type="hidden" name="_csrf" value=csrfToken)
                     if prisonerInfo
                         input(type="hidden" name="nomisId" value=prisonerInfo.offenderNo || '')
-                    input#eligibilityCheckStart.taskListAction.requiredButton.button(type="submit" value="Start")
+                    if licenceStatus.tasks.eligibility === 'UNSTARTED'
+                        input#eligibilityCheckStart.taskListAction.requiredButton.button(type="submit" value="Start")
+                    else
+                        input#eligibilityCheckStart.taskListAction.requiredButton.button.button-secondary(type="submit" value="View")
 
     else
         div.pure-g
