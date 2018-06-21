@@ -629,4 +629,59 @@ describe('GET /taskList/:prisonNumber', () => {
         });
     });
 
+    context('User is DM', () => {
+        const testUser = {
+            staffId: 'my-staff-id',
+            token: 'my-token',
+            role: 'DM'
+        };
+
+        const app = appSetup(createTaskListRoute({
+            prisonerService: prisonerServiceStub,
+            licenceService: licenceServiceStub,
+            logger: loggerStub,
+            authenticationMiddleware
+        }), testUser);
+
+        context('When there is a confiscation order', () => {
+            it('should display the postpone HDC button', () => {
+                licenceServiceStub.getLicence.resolves({stage: 'APPROVAL', licence: {
+                    finalChecks: {
+                      confiscationOrder: {
+                        comments: 'dscdscsdcdsc',
+                        decision: 'Yes',
+                        confiscationUnitConsulted: 'Yes'
+                      }
+                    }
+                  }});
+                return request(app)
+                    .get('/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('value="Postpone"');
+                    });
+            });
+        });
+
+        context('When there is\'nt a confiscation order', () => {
+            it('should not display the postpone HDC button', () => {
+                licenceServiceStub.getLicence.resolves({stage: 'APPROVAL', licence: {
+                    finalChecks: {
+                      confiscationOrder: {
+                        decision: 'No'
+                      }
+                    }
+                  }});
+                return request(app)
+                    .get('/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.not.include('value="Postpone"');
+                    });
+            });
+        });
+    });
+
 });
