@@ -117,6 +117,27 @@ describe('getAllowedTransitions', () => {
         expect(allowed.caToDm).to.eql(false);
     });
 
+    it('should not allow CA to RO in the ELIGIBILITY stage when HDC has been opted out', () => {
+        const status = {
+            stage: 'ELIGIBILITY',
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                bassReferral: 'DONE',
+                curfewAddress: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                optedOut: true
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'CA');
+        expect(allowed.caToRo).to.eql(false);
+    });
+
     it('should allow CA to DM in the PROCESSING_CA stage when all CA tasks done and decisions OK', () => {
         const status = {
             stage: 'PROCESSING_CA',

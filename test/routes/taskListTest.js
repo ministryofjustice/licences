@@ -348,6 +348,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('Prisoner has opted out of HDC');
+                        expect(res.text).to.not.include('href="/hdc/send/');
                     });
             });
         });
