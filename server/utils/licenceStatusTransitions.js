@@ -72,6 +72,10 @@ function canSendCaToRo(licenceStatus) {
 
     const allTaskComplete = required.every(it => it === taskStates.DONE);
 
+    if (decisions.optedOut) {
+        return false;
+    }
+
     if (decisions.bassReferralNeeded) {
         return allTaskComplete && tasks.bassReferral == taskStates.DONE;
     }

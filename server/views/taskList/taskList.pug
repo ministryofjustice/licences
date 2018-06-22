@@ -28,7 +28,8 @@ block content
                 include eligibilityTask
                 if licenceStatus.decisions.eligible
                     include proposedAddressTask
-                    include caSubmitTask
+                    if allowedTransitions.caToRo
+                        include caSubmitTask
                 else if licenceStatus.decisions.insufficientTimeStop
                     include caSubmitRefusalTask
 
