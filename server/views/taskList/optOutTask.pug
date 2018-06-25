@@ -7,7 +7,7 @@ div.taskListItem
                 | Offender has opted out
             else
                 | Offender has opted in
-        div.pure-u-1-4
+        div.pure-u-1-4.center
             form(method="post" action="/hdc/optOut/" + nomisId)
                 input(type="hidden" name="_csrf" value=csrfToken)
                 input(type="hidden" name="nomisId" value=nomisId || '')

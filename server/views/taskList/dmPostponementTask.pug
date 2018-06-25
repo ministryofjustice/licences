@@ -1,0 +1,18 @@
+div.taskListItem.borderTop
+    h2.heading-medium Postponement / refuse HDC
+
+    div.borderBottomLight
+        div.pure-g
+            div.pure-u-3-4
+                .pure-g
+                    .pure-u-3-5
+                        if licenceStatus.decisions.postponed
+                            | HDC application postponed
+                        else else licenceStatus.decisions.confiscationOrder
+                            | Use this to indicate that the process is postponed if a confiscation order is in place
+
+            div.pure-u-1-4.center
+                p.namedAnchor
+                    a.namedAnchor(name="postpone")
+
+                include "includes/postponeFrom.pug"
