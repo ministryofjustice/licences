@@ -17,7 +17,7 @@ div.taskListItem
                             |  added
             else
                 | No conditions added
-        div.pure-u-1-4
+        div.pure-u-1-4.center
             if user.role === 'RO'
                 +proceed(licenceStatus.tasks.licenceConditions, 'UNSTARTED', 'Start', 'View', "/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
             else

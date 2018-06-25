@@ -7,7 +7,7 @@ div.taskListItem
                 | Confirmed
             else
                 | Not yet confirmed
-        div.pure-u-1-4
+        div.pure-u-1-4.center
             if user.role === 'RO'
                 +proceed(licenceStatus.tasks.curfewHours, 'UNSTARTED', 'Start', 'View', "/hdc/curfew/curfewHours/" + prisonerInfo.offenderNo)
             else

@@ -18,7 +18,7 @@ div.taskListItem
                     span.bold.alert Address rejected
                 else
                     | Not yet approved
-            div.pure-u-1-4
+            div.pure-u-1-4.center
                 if user.role === 'RO'
                     +proceed(licenceStatus.tasks.curfewAddressReview, 'UNSTARTED', 'Start', 'View', "/hdc/curfew/curfewAddressReview/" + prisonerInfo.offenderNo)
                 else

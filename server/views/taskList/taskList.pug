@@ -43,6 +43,7 @@ block content
                     include reportingInstructionsTask
                 include finalChecksTask
                 include postponementTask
+                include HDCRefusalTask
                 include caSubmitTask
 
         if user.role === 'RO'
@@ -66,4 +67,8 @@ block content
                 include additionalConditionsTask
                 include reportingInstructionsTask
             include finalChecksTask
+            if licenceStatus.decisions.confiscationOrder
+                include postponementTask
+
+
             include approvalTask

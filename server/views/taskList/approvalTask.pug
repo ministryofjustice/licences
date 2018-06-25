@@ -6,7 +6,7 @@ div.taskListItem.largeMarginBottom
             | #{statusLabel}
             if (licenceStatus.decisions.refusalReason)
                 | : #{licenceStatus.decisions.refusalReason}
-        div.pure-u-1-4
+        div.pure-u-1-4.center
             if (licenceStatus.stage === 'APPROVAL')
                 +proceed(licenceStatus.tasks.approval, 'UNSTARTED', 'Continue', 'View', "/hdc/approval/release/" + prisonerInfo.offenderNo)
 

@@ -2,7 +2,7 @@ div.taskListItem.smallPaddingBottom
     h2.heading-medium Final checks
 
     div.pure-g
-        div.pure-u-1-2
+        div.pure-u-3-4
             if licenceStatus.tasks.finalChecks === 'DONE'
                 div.padLeftRight15
                     ul
@@ -22,8 +22,7 @@ div.taskListItem.smallPaddingBottom
                             li.list-bullet#confiscationOrderAnswer The offender is not subject to a confiscation order
             else
                 | Not yet complete
-        div.pure-u-1-4
-        div.pure-u-1-4
+        div.pure-u-1-4.center
             if user.role === 'CA'
                 +proceed(licenceStatus.tasks.finalChecks, 'UNSTARTED', 'Start', 'View', "/hdc/finalChecks/seriousOffence/" + prisonerInfo.offenderNo)
 

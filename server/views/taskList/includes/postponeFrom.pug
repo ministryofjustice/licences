@@ -1,0 +1,12 @@
+form(method="post" action="/hdc/finalChecks/postpone/" + nomisId)
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="nomisId" value=nomisId || '')
+    input(type="hidden" name="anchor" value='postpone')
+
+    if licenceStatus.decisions.postponed
+        input#postponed(type="hidden" name="decision" value="No")
+        input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Resume")
+
+    else
+        input#postponed(type="hidden" name="decision" value="Yes")
+        input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Postpone")
