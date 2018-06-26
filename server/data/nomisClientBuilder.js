@@ -1,5 +1,5 @@
 const config = require('../config');
-const {merge} = require('../utils/functionalHelpers');
+const {merge, pipe} = require('../utils/functionalHelpers');
 const superagent = require('superagent');
 const generateApiGatewayToken = require('../authentication/apiGateway');
 const {NoTokenError} = require('../utils/errors');
@@ -10,10 +10,16 @@ const timeoutSpec = {
 };
 
 const apiUrl = config.nomis.apiUrl;
+const invalidDate = 'Invalid date';
 
 module.exports = (tokenStore, signInService) => username => {
 
     const nomisGet = nomisGetBuilder(tokenStore, signInService, username);
+    const addReleaseDatesToPrisoner = pipe(
+        addReleaseDate,
+        addEffectiveConditionalReleaseDate,
+        addEffectiveAutomaticReleaseDate
+    );
 
     return {
         getUpcomingReleasesByOffenders: function(nomisIds) {
@@ -65,7 +71,7 @@ module.exports = (tokenStore, signInService) => username => {
             const headers = {'Page-Limit': 10000};
 
             const prisoners = await nomisGet({path, headers});
-            return prisoners.map(prisoner => addReleaseDate(prisoner));
+            return prisoners.map(addReleaseDatesToPrisoner);
         },
 
         getOffenderSentences: async function(nomisIds) {
@@ -74,7 +80,7 @@ module.exports = (tokenStore, signInService) => username => {
             const headers = {'Page-Limit': 10000};
 
             const prisoners = await nomisGet({path, query, headers});
-            return prisoners.map(prisoner => addReleaseDate(prisoner));
+            return prisoners.map(addReleaseDatesToPrisoner);
         },
 
         getImageData: async function(id) {
@@ -146,12 +152,68 @@ function nomisGetBuilder(tokenStore, signInService, username) {
     }
 }
 
+function effectiveConditionalReleaseDate({conditionalReleaseDate, conditionalReleaseOverrideDate}) {
+    if (conditionalReleaseOverrideDate && conditionalReleaseOverrideDate !== invalidDate) {
+        return conditionalReleaseOverrideDate;
+    }
+
+    if (conditionalReleaseDate && conditionalReleaseDate !== invalidDate) {
+        return conditionalReleaseDate;
+    }
+
+    return null;
+}
+
+function effectiveAutomaticReleaseDate({automaticReleaseDate, automaticReleaseOverrideDate}) {
+    if (automaticReleaseOverrideDate && automaticReleaseOverrideDate !== invalidDate) {
+        return automaticReleaseOverrideDate;
+    }
+
+    if (automaticReleaseDate && automaticReleaseDate !== invalidDate) {
+        return automaticReleaseDate;
+    }
+
+    return null;
+}
+
+function addEffectiveConditionalReleaseDate(prisoner) {
+    const {
+        conditionalReleaseDate,
+        conditionalReleaseOverrideDate
+    } = prisoner.sentenceDetail;
+
+    const crd = effectiveConditionalReleaseDate({conditionalReleaseDate, conditionalReleaseOverrideDate});
+
+    return {
+        ...prisoner,
+        sentenceDetail: merge(prisoner.sentenceDetail, {effectiveConditionalReleaseDate: crd})
+    };
+}
+
+function addEffectiveAutomaticReleaseDate(prisoner) {
+    const {
+        automaticReleaseDate,
+        automaticReleaseOverrideDate
+    } = prisoner.sentenceDetail;
+
+    const ard = effectiveAutomaticReleaseDate({automaticReleaseDate, automaticReleaseOverrideDate});
+
+    return {
+        ...prisoner,
+        sentenceDetail: merge(prisoner.sentenceDetail, {effectiveAutomaticReleaseDate: ard})
+    };
+}
+
 function addReleaseDate(prisoner) {
+    const {
+        automaticReleaseDate,
+        automaticReleaseOverrideDate,
+        conditionalReleaseDate,
+        conditionalReleaseOverrideDate
+    } = prisoner.sentenceDetail;
 
-    const {conditionalReleaseDate, automaticReleaseDate} = prisoner.sentenceDetail;
-
-    const crd = conditionalReleaseDate && conditionalReleaseDate !== 'Invalid date' ? conditionalReleaseDate : null;
-    const ard = automaticReleaseDate && automaticReleaseDate !== 'Invalid date' ? automaticReleaseDate : null;
+    const crd = effectiveConditionalReleaseDate({conditionalReleaseDate, conditionalReleaseOverrideDate});
+    const ard = effectiveAutomaticReleaseDate({automaticReleaseDate, automaticReleaseOverrideDate});
 
     return {
         ...prisoner,

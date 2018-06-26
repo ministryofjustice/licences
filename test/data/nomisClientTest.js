@@ -151,10 +151,19 @@ describe('nomisClient', function() {
         it('should return data from api', () => {
             fakeNomis
                 .get(url)
-                .reply(200, [{sentenceDetail: {conditionalReleaseDate: 'a'}}]);
+                .reply(200, [{
+                    sentenceDetail: {
+                        conditionalReleaseDate: 'a'
+                    }
+                }]);
 
             return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
-                {sentenceDetail: {conditionalReleaseDate: 'a', releaseDate: 'a'}}]);
+                {sentenceDetail: {
+                    conditionalReleaseDate: 'a',
+                    releaseDate: 'a',
+                    effectiveAutomaticReleaseDate: null,
+                    effectiveConditionalReleaseDate: 'a'
+                }}]);
         });
 
         it('should reject if api fails', () => {
@@ -165,31 +174,149 @@ describe('nomisClient', function() {
             return expect(nomisClient.getHdcEligiblePrisoners()).to.be.rejected();
         });
 
-        it('should set releaseDate as CRD if present', () => {
+        it('should set releaseDate as CRDOverride if present', () => {
             fakeNomis
                 .get(url)
                 .reply(200, [
-                    {sentenceDetail: {conditionalReleaseDate: 'a', automaticReleaseDate: 'b'}},
-                    {sentenceDetail: {conditionalReleaseDate: 'c', automaticReleaseDate: 'd'}}
+                    {sentenceDetail: {
+                        conditionalReleaseOverrideDate: 'a',
+                        conditionalReleaseDate: 'b'
+                    }},
+                    {sentenceDetail: {
+                        conditionalReleaseOverrideDate: 'c',
+                        conditionalReleaseDate: 'd',
+                        automaticReleaseDate: 'y'
+                    }}
                 ]);
 
             return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
-                {sentenceDetail: {conditionalReleaseDate: 'a', automaticReleaseDate: 'b', releaseDate: 'a'}},
-                {sentenceDetail: {conditionalReleaseDate: 'c', automaticReleaseDate: 'd', releaseDate: 'c'}}
+                {sentenceDetail: {
+                    conditionalReleaseOverrideDate: 'a',
+                    conditionalReleaseDate: 'b',
+                    releaseDate: 'a',
+                    effectiveAutomaticReleaseDate: null,
+                    effectiveConditionalReleaseDate: 'a'
+                }},
+                {sentenceDetail: {
+                    conditionalReleaseOverrideDate: 'c',
+                    conditionalReleaseDate: 'd',
+                    automaticReleaseDate: 'y',
+                    releaseDate: 'c',
+                    effectiveAutomaticReleaseDate: 'y',
+                    effectiveConditionalReleaseDate: 'c'
+                }}
             ]);
         });
 
-        it('should set releaseDate as ARD if no CRD', () => {
+        it('should set releaseDate as CRD if no CRDOverride is present', () => {
             fakeNomis
                 .get(url)
                 .reply(200, [
-                    {sentenceDetail: {automaticReleaseDate: 'b'}},
-                    {sentenceDetail: {automaticReleaseDate: 'd'}}
+                    {
+                        sentenceDetail: {
+                            conditionalReleaseDate: 'a',
+                            automaticReleaseDate: 'b'
+                        }
+                    },
+                    {
+                        sentenceDetail: {
+                            conditionalReleaseDate: 'c',
+                            automaticReleaseDate: 'd'
+                        }
+                    }
                 ]);
 
             return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
-                {sentenceDetail: {automaticReleaseDate: 'b', releaseDate: 'b'}},
-                {sentenceDetail: {automaticReleaseDate: 'd', releaseDate: 'd'}}
+                {
+                    sentenceDetail: {
+                        conditionalReleaseDate: 'a',
+                        automaticReleaseDate: 'b',
+                        releaseDate: 'a',
+                        effectiveAutomaticReleaseDate: 'b',
+                        effectiveConditionalReleaseDate: 'a'
+                    }
+                },
+                {
+                    sentenceDetail: {
+                        conditionalReleaseDate: 'c',
+                        automaticReleaseDate: 'd',
+                        releaseDate: 'c',
+                        effectiveAutomaticReleaseDate: 'd',
+                        effectiveConditionalReleaseDate: 'c'
+                    }
+                }
+            ]);
+        });
+
+        it('should set releaseDate as ARDOverride if no CRD is present', () => {
+            fakeNomis
+                .get(url)
+                .reply(200, [
+                    {
+                        sentenceDetail: {
+                            automaticReleaseOverrideDate: 'b'
+                        }
+                    },
+                    {
+                        sentenceDetail: {
+                            automaticReleaseOverrideDate: 'd'
+                        }
+                    }
+                ]);
+
+            return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
+                {
+                    sentenceDetail: {
+                        automaticReleaseOverrideDate: 'b',
+                        releaseDate: 'b',
+                        effectiveAutomaticReleaseDate: 'b',
+                        effectiveConditionalReleaseDate: null
+                    }
+                },
+                {
+                    sentenceDetail: {
+                        automaticReleaseOverrideDate: 'd',
+                        releaseDate: 'd',
+                        effectiveAutomaticReleaseDate: 'd',
+                        effectiveConditionalReleaseDate: null
+                    }
+                }
+            ]);
+        });
+
+        it('should set releaseDate as ARD if no CRD or ARDOverride is present', () => {
+            fakeNomis
+                .get(url)
+                .reply(200, [
+                    {
+                        sentenceDetail: {
+                            automaticReleaseDate: 'b'
+                        }
+                    },
+                    {
+                        sentenceDetail: {
+                            automaticReleaseDate: 'd'
+                        }
+                    }
+                ]);
+
+            return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
+                {
+                    sentenceDetail: {
+                        automaticReleaseDate: 'b',
+                        releaseDate: 'b',
+                        effectiveAutomaticReleaseDate: 'b',
+                        effectiveConditionalReleaseDate: null
+                    }
+                },
+                {
+                    sentenceDetail: {
+                        automaticReleaseDate: 'd',
+                        releaseDate: 'd',
+                        effectiveAutomaticReleaseDate: 'd',
+                        effectiveConditionalReleaseDate: null
+                    }
+                }
             ]);
         });
 

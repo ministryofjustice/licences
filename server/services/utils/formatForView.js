@@ -73,13 +73,13 @@ const nameFields = [
 const dateFields = [
     'captureDate',
     'dateOfBirth',
-    'conditionalReleaseDate',
+    'effectiveConditionalReleaseDate',
     'homeDetentionCurfewEligibilityDate',
     'homeDetentionCurfewActualDate',
     'licenceExpiryDate',
     'sentenceExpiryDate',
     'topupSupervisionExpiryDate',
-    'automaticReleaseDate',
+    'effectiveAutomaticReleaseDate',
     'releaseDate',
     'appointmentDate'
 ];
