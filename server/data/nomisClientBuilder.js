@@ -152,28 +152,9 @@ function nomisGetBuilder(tokenStore, signInService, username) {
     }
 }
 
-function effectiveConditionalReleaseDate({conditionalReleaseDate, conditionalReleaseOverrideDate}) {
-    if (conditionalReleaseOverrideDate && conditionalReleaseOverrideDate !== invalidDate) {
-        return conditionalReleaseOverrideDate;
-    }
 
-    if (conditionalReleaseDate && conditionalReleaseDate !== invalidDate) {
-        return conditionalReleaseDate;
-    }
-
-    return null;
-}
-
-function effectiveAutomaticReleaseDate({automaticReleaseDate, automaticReleaseOverrideDate}) {
-    if (automaticReleaseOverrideDate && automaticReleaseOverrideDate !== invalidDate) {
-        return automaticReleaseOverrideDate;
-    }
-
-    if (automaticReleaseDate && automaticReleaseDate !== invalidDate) {
-        return automaticReleaseDate;
-    }
-
-    return null;
+function findFirstValid(datesList) {
+    return datesList.find(date => date && date !== invalidDate) || null;
 }
 
 function addEffectiveConditionalReleaseDate(prisoner) {
@@ -182,7 +163,7 @@ function addEffectiveConditionalReleaseDate(prisoner) {
         conditionalReleaseOverrideDate
     } = prisoner.sentenceDetail;
 
-    const crd = effectiveConditionalReleaseDate({conditionalReleaseDate, conditionalReleaseOverrideDate});
+    const crd = findFirstValid([conditionalReleaseOverrideDate, conditionalReleaseDate]);
 
     return {
         ...prisoner,
@@ -196,7 +177,7 @@ function addEffectiveAutomaticReleaseDate(prisoner) {
         automaticReleaseOverrideDate
     } = prisoner.sentenceDetail;
 
-    const ard = effectiveAutomaticReleaseDate({automaticReleaseDate, automaticReleaseOverrideDate});
+    const ard = findFirstValid([automaticReleaseOverrideDate, automaticReleaseDate]);
 
     return {
         ...prisoner,
@@ -212,12 +193,16 @@ function addReleaseDate(prisoner) {
         conditionalReleaseOverrideDate
     } = prisoner.sentenceDetail;
 
-    const crd = effectiveConditionalReleaseDate({conditionalReleaseDate, conditionalReleaseOverrideDate});
-    const ard = effectiveAutomaticReleaseDate({automaticReleaseDate, automaticReleaseOverrideDate});
+    const releaseDate = findFirstValid([
+        conditionalReleaseOverrideDate,
+        conditionalReleaseDate,
+        automaticReleaseOverrideDate,
+        automaticReleaseDate
+    ]);
 
     return {
         ...prisoner,
-        sentenceDetail: merge(prisoner.sentenceDetail, {releaseDate: crd || ard})
+        sentenceDetail: merge(prisoner.sentenceDetail, {releaseDate})
     };
 }
 

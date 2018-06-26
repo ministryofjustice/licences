@@ -19,3 +19,5 @@ build-info.json
 coverage
 .nyc_output
 root.cert
+yarn-error.log
+.vscode/
