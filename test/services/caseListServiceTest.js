@@ -21,6 +21,7 @@ describe('caseListService', () => {
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-09-07',
                     conditionalReleaseDate: '2017-12-15',
+                    effectiveConditionalReleaseDate: '2017-12-16',
                     receptionDate: '2018-01-03'
                 }
             }
@@ -36,7 +37,7 @@ describe('caseListService', () => {
                 internalLocationDesc: 'A-C-2-002',
                 sentenceDetail: {
                     homeDetentionCurfewEligibilityDate: '2017-09-07',
-                    conditionalReleaseDate: '2017-12-15',
+                    effectiveConditionalReleaseDate: '2017-12-15',
                     receptionDate: '2018-01-03'
                 }
             }
@@ -86,7 +87,7 @@ describe('caseListService', () => {
             const result = await service.getHdcCaseList(user.username, user.role);
 
             expect(result[0].sentenceDetail.homeDetentionCurfewEligibilityDate).to.eql('07/09/2017');
-            expect(result[0].sentenceDetail.conditionalReleaseDate).to.eql('15/12/2017');
+            expect(result[0].sentenceDetail.effectiveConditionalReleaseDate).to.eql('16/12/2017');
         });
 
         it('should capitalise names', async () => {
@@ -204,7 +205,6 @@ describe('caseListService', () => {
                 }
             };
 
-
             it('should order by homeDetentionCurfewEligibilityDate first', async() => {
 
                 nomisClient.getHdcEligiblePrisoners.resolves([
@@ -220,7 +220,7 @@ describe('caseListService', () => {
                 expect(result[2].name).to.eql('offender3');
             });
 
-            it('should order by conditionalReleaseDate second', async() => {
+            it('should order by releaseDate second', async() => {
 
                 nomisClient.getHdcEligiblePrisoners.resolves([
                     offender5,
@@ -233,31 +233,6 @@ describe('caseListService', () => {
                 expect(result[0].name).to.eql('offender3');
                 expect(result[1].name).to.eql('offender4');
                 expect(result[2].name).to.eql('offender5');
-            });
-
-            it('should order by automaticReleaseDate second if no conditionalReleaseDate is present', async() => {
-
-                const offender6 = {
-                    name: 'offender6',
-                    sentenceDetail: {
-                        homeDetentionCurfewEligibilityDate: '2017-11-07',
-                        conditionalReleaseDate: '',
-                        automaticReleaseDate: '2017-12-13',
-                        releaseDate: '2017-12-13'
-                    }
-                };
-
-                nomisClient.getHdcEligiblePrisoners.resolves([
-                    offender6,
-                    offender4,
-                    offender3
-                ]);
-
-                const result = await service.getHdcCaseList(user.username, user.role);
-
-                expect(result[0].name).to.eql('offender3');
-                expect(result[1].name).to.eql('offender4');
-                expect(result[2].name).to.eql('offender6');
             });
         });
     });

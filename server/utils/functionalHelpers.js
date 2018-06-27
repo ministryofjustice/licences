@@ -17,7 +17,8 @@ module.exports = {
     interleave,
     arrayEquals,
     difference,
-    getUniqueStrings
+    getUniqueStrings,
+    pipe
 };
 
 // pass in your object and a path in array format
@@ -58,8 +59,12 @@ function firstItem(array) {
     return R.head(array);
 }
 
-function merge(object1, object2) {
-    return R.merge(object1, object2);
+function merge(...args) {
+    return R.merge(...args);
+}
+
+function pipe(...args) {
+    return R.pipe(...args);
 }
 
 // uses the value on object2 if it key exists on both
