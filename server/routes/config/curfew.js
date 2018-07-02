@@ -88,5 +88,34 @@ module.exports = {
             ],
             path: '/hdc/taskList/'
         }
+    },
+    withdrawConsent: {
+        pageDataMap: ['licence'],
+        fields: [
+            {consent: {}}
+        ],
+        nextPath: {
+            decisions: [
+                {
+                    discriminator: 'consent',
+                    No: '/hdc/curfew/consentWithdrawn/'
+                }
+            ],
+            path: '/hdc/taskList/'
+        }
+    },
+    consentWithdrawn: {
+        fields: [
+            {decision: {}}
+        ],
+        nextPath: {
+            decisions: [
+                {
+                    discriminator: 'decision',
+                    Yes: '/hdc/proposedAddress/curfewAddress/'
+                }
+            ],
+            path: '/hdc/taskList/'
+        }
     }
 };

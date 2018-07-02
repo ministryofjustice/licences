@@ -1,13 +1,26 @@
 - var addressWithdrawn = address.addressWithdrawn === "Yes"
-- var submitValue = addressWithdrawn ? "No" : "Yes"
-- var buttonText = addressWithdrawn ? "Reinstate address" : "Offender withdrawn address"
+- var addressSubmitValue = addressWithdrawn ? "No" : "Yes"
+- var addressButtonText = addressWithdrawn ? "Reinstate address" : "Offender withdrawn address"
+
+- var consentGiven = address.consent === "Yes"
+- var consentSubmitValue = consentGiven ? "No" : "Yes"
+- var consentButtonText = consentGiven ? "Consent withdrawn" : "Reinstate consent"
+
 div
     h3.heading-small Actions
     div.pure-g
+        div.pure-u-md-1-2
+            p Homeowner/landlord consent withdrawn
+            div
+                form(method="post", name="withdrawConsent", action="/hdc/curfew/withdrawConsent/" + nomisId)
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    input(type="hidden" name="consent" value=consentSubmitValue)
+                    button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") #{consentButtonText}
+
         div.pure-u-md-1-2
             p Offender has requested to withdraw address
             div
                 form(method="post", name="withdrawAddress", action="/hdc/curfew/withdrawAddress/"+nomisId)
                     input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="addressWithdrawn" value=submitValue)
-                    button#withdrawAddress.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") #{buttonText}
+                    input(type="hidden" name="addressWithdrawn" value=addressSubmitValue)
+                    button#withdrawAddress.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") #{addressButtonText}
