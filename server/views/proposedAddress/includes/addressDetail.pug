@@ -55,6 +55,13 @@ mixin addressDetail(type, address)
                     | Does the homeowner/landlord give informed consent to HDC at the address?
                     p.bold(id="consent-"+type) #{address.consent}
 
+                if(address.consent === 'Yes' && address.electricity !== 'No')
+                    if address.deemedSafe
+                        div.pure-u-md-4-5
+                            div.pure-u-md-4-5
+                                | Could this offender be managed safely at this address?
+                                p.bold(id="deemedSafe-" + type) #{address.deemedSafe}
+
             if(address.consent === 'Yes')
                 div.pure-u-1-2
                     if address.electricity
@@ -67,14 +74,3 @@ mixin addressDetail(type, address)
                             div.pure-u-md-4-5
                                 | Was a home visit conducted in this case?
                                 p.bold(id="homeVisit-"+type) #{address.homeVisitConducted}
-
-            if(address.consent === 'Yes' && address.electricity !== 'No')
-                if address.deemedSafe
-                    div.pure-u-1.largeMarginTop.paddingTop.borderTopLight
-                        div.pure-u-md-4-5
-                            | Could this offender be managed safely at this address?
-                            p.bold(id="deemedSafe-"+type) #{address.deemedSafe}
-
-            div.pure-u-1-2
-
-

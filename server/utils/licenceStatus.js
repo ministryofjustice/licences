@@ -1,7 +1,12 @@
 const {taskStates} = require('../models/taskStates');
 const {licenceStages} = require('../models/licenceStages');
 const {getIn, isEmpty, lastItem} = require('./functionalHelpers');
-const {isAcceptedAddress, isRejectedAddress, addressReviewStarted} = require('../utils/addressHelpers');
+const {
+    isAcceptedAddress,
+    isRejectedAddress,
+    addressReviewStarted,
+    isWithdrawnAddress
+} = require('../utils/addressHelpers');
 
 module.exports = {getLicenceStatus, getConfiscationOrderState};
 
@@ -354,6 +359,10 @@ function getCurfewAddressReviewState(licence) {
     }
 
     const lastAddress = lastItem(addresses);
+
+    if (isWithdrawnAddress(lastAddress)) {
+        return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'withdrawn'};
+    }
 
     if (isAcceptedAddress(lastAddress)) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};

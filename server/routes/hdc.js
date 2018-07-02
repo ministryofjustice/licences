@@ -108,7 +108,8 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             }
 
             res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
-        }));
+        })
+    );
 
     router.get('/review/:sectionName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         const {sectionName, nomisId} = req.params;
@@ -177,6 +178,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
     router.post('/curfew/curfewAddressReview/:nomisId', asyncMiddleware(addressReviewPosts('curfewAddressReview')));
     router.post('/curfew/addressSafety/:nomisId', asyncMiddleware(addressReviewPosts('addressSafety')));
+    router.post('/curfew/withdrawAddress/:nomisId', asyncMiddleware(addressReviewPosts('withdrawAddress')));
 
     function addressReviewPosts(formName) {
         return async (req, res) => {

@@ -12,15 +12,17 @@ block content
             include ../includes/backToCheckList
             include ../includes/personalDetailsSummary
 
-
             h2.heading-large Proposed address
 
             if address
                 div.pure-u-1-2.midPaddingBottom
                     The following address has been requested by the offender and checked by the RO.
-                div.pure-u-1-2
 
                 +addressDetail('curfew', address, review, addressSafety)
+
+                if stage === 'PROCESSING_CA'
+                    div.borderBottomLight.borderTopLight.marginBottomLarge
+                        include ./includes/addressActions
 
             else
                 p NO ADDRESS

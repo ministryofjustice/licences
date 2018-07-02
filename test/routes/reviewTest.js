@@ -24,12 +24,13 @@ describe('/review/', () => {
         sandbox.reset();
     });
 
+    beforeEach(() => {
+        prisonerServiceStub.getPrisonerDetails.resolves({});
+    });
+
     describe('/curfewAddress/', () => {
 
         beforeEach(() => {
-
-            prisonerServiceStub.getPrisonerDetails.resolves({});
-
             licenceServiceStub.getLicence.resolves({
                 licence: {
                     eligibility: {
@@ -68,6 +69,52 @@ describe('/review/', () => {
                     expect(res.text).to.not.contain('href="/hdc/send/');
                     expect(res.text).to.contain('errors before continuing');
                     expect(res.text).to.contain('class="error-summary"');
+                });
+        });
+    });
+
+    describe('/address/', () => {
+        it('shows an actions panel if in PROCESSING_CA stage', () => {
+
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    eligibility: {
+                        proposedAddress: {
+                            addressLine1: 'line1'
+                        }
+                    }
+                },
+                stage: 'PROCESSING_CA'
+            });
+
+            return request(app)
+                .get('/review/address/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('id="withdrawAddress"');
+                });
+        });
+
+        it('does not show an actions panel if in ELIGIBILITY stage', () => {
+
+            licenceServiceStub.getLicence.resolves({
+                licence: {
+                    eligibility: {
+                        proposedAddress: {
+                            addressLine1: 'line1'
+                        }
+                    }
+                },
+                stage: 'ELIGIBILITY'
+            });
+
+            return request(app)
+                .get('/review/address/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.not.contain('id="withdrawAddress"');
                 });
         });
     });

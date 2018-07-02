@@ -59,5 +59,14 @@ module.exports = {
         nextPath: {
             path: '/hdc/taskList/'
         }
+    },
+    withdrawAddress: {
+        pageDataMap: ['licence'],
+        fields: [
+            {addressWithdrawn: {}}
+        ],
+        nextPath: {
+            path: '/hdc/taskList/'
+        }
     }
 };

@@ -3,6 +3,7 @@ const {isEmpty, lastItem} = require('./functionalHelpers');
 module.exports = {
     addressReviewStarted,
     getCurfewAddressFormData,
+    isWithdrawnAddress,
     isAcceptedAddress,
     isRejectedAddress
 };
@@ -20,6 +21,12 @@ function getCurfewAddressFormData(addressList) {
     }
 
     return {submitPath: '/hdc/proposedAddress/curfewAddress/update/', addressToShow: candidate};
+}
+
+function isWithdrawnAddress(address) {
+    const {addressWithdrawn} = address;
+
+    return addressWithdrawn === 'Yes';
 }
 
 function isAcceptedAddress(address) {
