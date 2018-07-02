@@ -16,7 +16,7 @@ function getCurfewAddressFormData(addressList) {
         return {submitPath: null, addressToShow: {}};
     }
 
-    if(isRejectedAddress(candidate)) {
+    if(isRejectedAddress(candidate) || isWithdrawnAddress(candidate)) {
         return {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}};
     }
 

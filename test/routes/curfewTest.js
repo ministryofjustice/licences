@@ -36,7 +36,8 @@ describe('/hdc/curfew', () => {
         const routes = [
             {url: '/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
             {url: '/curfew/addressSafety/1', content: 'Could this offender be managed safely at this address?'},
-            {url: '/curfew/curfewHours/1', content: 'Curfew hours'}
+            {url: '/curfew/curfewHours/1', content: 'Curfew hours'},
+            {url: '/curfew/addressWithdrawn/1', content: 'Prisoner has withdrawn the address'}
         ];
 
         testFormPageGets(app, routes);
@@ -48,6 +49,18 @@ describe('/hdc/curfew', () => {
                 url: '/curfew/curfewHours/1',
                 body: {nomisId: 1},
                 section: 'curfewHours',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/curfew/addressWithdrawn/1',
+                body: {decision: 'Yes'},
+                section: 'addressWithdrawn',
+                nextPath: '/hdc/proposedAddress/curfewAddress/1'
+            },
+            {
+                url: '/curfew/addressWithdrawn/1',
+                body: {decision: 'No'},
+                section: 'addressWithdrawn',
                 nextPath: '/hdc/taskList/1'
             }
         ];

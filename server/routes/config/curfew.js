@@ -66,6 +66,26 @@ module.exports = {
             {addressWithdrawn: {}}
         ],
         nextPath: {
+            decisions: [
+                {
+                    discriminator: 'addressWithdrawn',
+                    Yes: '/hdc/curfew/addressWithdrawn/'
+                }
+            ],
+            path: '/hdc/taskList/'
+        }
+    },
+    addressWithdrawn: {
+        fields: [
+            {decision: {}}
+        ],
+        nextPath: {
+            decisions: [
+                {
+                    discriminator: 'decision',
+                    Yes: '/hdc/proposedAddress/curfewAddress/'
+                }
+            ],
             path: '/hdc/taskList/'
         }
     }
