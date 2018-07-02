@@ -42,6 +42,12 @@ describe('addressHelpers', () => {
                 {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}}
             );
         });
+
+        it('should return add and an empty object if final address has been withdrawn', () => {
+            expect(getCurfewAddressFormData([addressList[1], {...addressList[0], addressWithdrawn: 'Yes'}])).to.eql(
+                {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}}
+            );
+        });
     });
 
     describe('isAcceptedAddress', () => {
