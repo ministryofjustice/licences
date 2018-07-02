@@ -12,9 +12,13 @@ div.taskListItem
     else
         div.pure-g
             div.pure-u-3-4
-                if licenceStatus.decisions.curfewAddressApproved == 'approved'
+                -var curfewAddressApproved = licenceStatus.decisions.curfewAddressApproved;
+
+                if curfewAddressApproved === 'approved'
                     | Address approved
-                else if licenceStatus.decisions.curfewAddressApproved == 'rejected'
+                else if curfewAddressApproved === 'withdrawn'
+                    span.bold.alert Address withdrawn
+                else if curfewAddressApproved === 'rejected'
                     span.bold.alert Address rejected
                 else
                     | Not yet approved

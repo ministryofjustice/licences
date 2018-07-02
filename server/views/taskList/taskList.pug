@@ -36,12 +36,13 @@ block content
 
             else
                 include curfewAddressTask
-                if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+                if (licenceStatus.decisions.curfewAddressApproved !== 'rejected' && licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
                     include riskManagementTask
                     include curfewHoursTask
                     include additionalConditionsTask
                     include reportingInstructionsTask
-                include finalChecksTask
+                if licenceStatus.decisions.curfewAddressApproved !== 'withdrawn'
+                    include finalChecksTask
                 include postponementTask
                 include HDCRefusalTask
                 include caSubmitTask

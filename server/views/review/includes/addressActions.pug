@@ -1,0 +1,13 @@
+- var addressWithdrawn = address.addressWithdrawn === "Yes"
+- var submitValue = addressWithdrawn ? "No" : "Yes"
+- var buttonText = addressWithdrawn ? "Reinstate address" : "Offender withdrawn address"
+div
+    h3.heading-small Actions
+    div.pure-g
+        div.pure-u-md-1-2
+            p Offender has requested to withdraw address
+            div
+                form(method="post", name="withdrawAddress", action="/hdc/curfew/withdrawAddress/"+nomisId)
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    input(type="hidden" name="addressWithdrawn" value=submitValue)
+                    button#withdrawAddress.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") #{buttonText}

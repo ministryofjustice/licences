@@ -121,6 +121,12 @@ describe('/hdc/curfew', () => {
                 body: {nomisId: 1, deemedSafe: 'Yes'},
                 section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/curfew/withdrawAddress/1',
+                body: {withdrawAddress: 'Yes'},
+                section: 'withdrawAddress',
+                nextPath: '/hdc/taskList/1'
             }
         ];
 
