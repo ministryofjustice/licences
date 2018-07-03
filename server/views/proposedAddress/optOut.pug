@@ -1,21 +1,25 @@
 extends ../layout
+include ../includes/errorBannerWithDetail
 
 block content
 
     div.pure-g.pure-u-1
         include ../includes/back
         include ../includes/personalDetailsSummary
-        include ../includes/errorBanner
+        +errorBannerWithDetail(errorObject, [
+            {field: 'decision', message: 'Select yes or no'},
+            {field: 'reason', message: 'Explain why they opted out'}
+        ])
 
         div.pure-u-1-2
             h2.heading-large Has the offender decided to opt out of the HDC process?
 
             if errorObject.decision
-                p.error-message Please select an answer
+                p.error-message Select yes or no
             form(method="post")
                 input(type="hidden" name="_csrf" value=csrfToken)
                 input(type="hidden" name="nomisId" value=nomisId || '')
-                div.smallPaddingTop.paddingBottom.largeMarginBottom
+                div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
                     div.largePaddingBottom
                         div.form-group.inline.smallPaddingTop
 
@@ -29,7 +33,7 @@ block content
                         div#optOutForm(class=errorObject.reason ? 'form-group-error': 'panel panel-border-narrow js-hidden')
                             label(for='optOutDetails') Please give details
                                 if errorObject.reason
-                                    span.error-message Please provide a reason
+                                    span.error-message Explain why they opted out
                             textarea(name='reason' id='optOutDetails' class='form-control' rows='4')
                                 if data && data.reason
                                     | #{data.reason}
