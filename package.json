@@ -4,7 +4,8 @@
   "description": "Licences Application",
   "main": "server.js",
   "engines": {
-    "node": ">=8.10.0"
+    "node": "^8.11.1",
+    "npm": "^5.6.0"
   },
   "scripts": {
     "start": "node server.js",
@@ -54,6 +55,7 @@
     "compression": "^1.6.2",
     "config": "^1.24.0",
     "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
     "cookie-session": "^2.0.0-alpha.2",
     "copyfiles": "^1.2.0",
     "csurf": "^1.9.0",
