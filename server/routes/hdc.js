@@ -179,6 +179,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     router.post('/curfew/curfewAddressReview/:nomisId', asyncMiddleware(addressReviewPosts('curfewAddressReview')));
     router.post('/curfew/addressSafety/:nomisId', asyncMiddleware(addressReviewPosts('addressSafety')));
     router.post('/curfew/withdrawAddress/:nomisId', asyncMiddleware(addressReviewPosts('withdrawAddress')));
+    router.post('/curfew/withdrawConsent/:nomisId', asyncMiddleware(addressReviewPosts('withdrawConsent')));
 
     function addressReviewPosts(formName) {
         return async (req, res) => {

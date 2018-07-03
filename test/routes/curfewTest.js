@@ -37,7 +37,8 @@ describe('/hdc/curfew', () => {
             {url: '/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
             {url: '/curfew/addressSafety/1', content: 'Could this offender be managed safely at this address?'},
             {url: '/curfew/curfewHours/1', content: 'Curfew hours'},
-            {url: '/curfew/addressWithdrawn/1', content: 'Prisoner has withdrawn the address'}
+            {url: '/curfew/addressWithdrawn/1', content: 'Prisoner has withdrawn the address'},
+            {url: '/curfew/consentWithdrawn/1', content: 'The landlord/homeowner has withdrawn consent'}
         ];
 
         testFormPageGets(app, routes);
@@ -61,6 +62,18 @@ describe('/hdc/curfew', () => {
                 url: '/curfew/addressWithdrawn/1',
                 body: {decision: 'No'},
                 section: 'addressWithdrawn',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/curfew/consentWithdrawn/1',
+                body: {decision: 'Yes'},
+                section: 'consentWithdrawn',
+                nextPath: '/hdc/proposedAddress/curfewAddress/1'
+            },
+            {
+                url: '/curfew/consentWithdrawn/1',
+                body: {decision: 'No'},
+                section: 'consentWithdrawn',
                 nextPath: '/hdc/taskList/1'
             }
         ];
