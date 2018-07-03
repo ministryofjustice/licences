@@ -93,6 +93,9 @@ module.exports = function createApp({
         sameSite: 'lax'
     }));
 
+    app.use(cookieParser());
+    app.use(csurf({cookie: true}));
+
     app.use(passport.initialize());
     app.use(passport.session());
 
