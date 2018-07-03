@@ -35,6 +35,7 @@ module.exports = {
             {proposedTown: {dependentOn: 'decision', predicate: 'Yes'}},
             {proposedCounty: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
+        validateInPlace: true,
         nextPath: {
             path: '/hdc/taskList/'
         }

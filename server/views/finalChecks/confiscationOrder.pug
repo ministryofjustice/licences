@@ -9,7 +9,8 @@ block content
         include ../includes/back
         +errorBannerWithDetail(errorObject, [
             {field: 'decision', message: 'Select yes or no'},
-            {field: 'confiscationUnitConsulted', message: 'Select yes or no'}
+            {field: 'confiscationUnitConsulted', message: 'Select yes or no'},
+            {field: 'comments', message: 'Provide details'}
         ])
         include ../includes/personalDetailsSummary
 
@@ -45,6 +46,8 @@ block content
                             label(for="confiscationUnitConsultedNo") No
 
                     label(for='comments') Comments
+                    if errorObject.comments
+                        span.block.error-message Provide details
                     textarea(name='comments' id='comments' class='form-control' rows='4')
                         if data.comments
                             | #{data.comments}

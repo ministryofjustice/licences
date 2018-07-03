@@ -1,4 +1,5 @@
 extends ../layout
+include ../includes/errorBannerWithDetail
 
 block content
 
@@ -7,17 +8,20 @@ block content
     div.pure-g.pure-u-1
         include ../includes/back
         include ../includes/personalDetailsSummary
-        include ../includes/errorBanner
+        +errorBannerWithDetail(errorObject, [
+            {field: 'decision', message: 'Select yes or no'},
+            {field: 'reason', message: 'Select one or more reasons'}
+        ])
 
         div.pure-u-1-2
             h2.heading-large Is the offender statutorily excluded from HDC?
 
     if errorObject.decision
-        p.error-message Please select an answer
+        p.error-message Select yes or no
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
-        div.smallPaddingTop.paddingBottom.largeMarginBottom
+        div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
 
             div.largePaddingBottom
                 div.form-group.inline

@@ -1,18 +1,27 @@
 extends ../layout
+include ../includes/errorBannerWithDetail
 
 block content
 
     div.pure-g.pure-u-1
         include ../includes/back
         include ../includes/personalDetailsSummary
+        +errorBannerWithDetail(errorObject, [
+            {field: 'decision', message: 'Select yes or no'},
+            {field: 'proposedTown', message: 'Enter a town'},
+            {field: 'proposedCounty', message: 'Enter a county or borough'}
+        ])
 
         div.pure-u-1-2
             h2.heading-large Has the offender requested a BASS referral?
 
+    if errorObject.decision
+        p.error-message Select yes or no
+
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
-        div.smallPaddingTop.paddingBottom.largeMarginBottom
+        div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
             div.largePaddingBottom
                 div.form-group.inline.smallPaddingTop
 
@@ -23,10 +32,14 @@ block content
                         input#no(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
                         label(for="no") No
 
-                div#bassFollowUps.pure-u-1-2.panel.panel-border-narrow.js-hidden
+                div#bassFollowUps.pure-u-1-2(class=errorObject.proposedTown || errorObject.proposedCounty ? 'form-group-error': 'panel panel-border-narrow js-hidden')
+                    if errorObject.proposedTown
+                        span.error-message Enter a town
                     div.form-group
                         label(for='proposedTown') Proposed town:
                         input(type='text' name='proposedTown' id='proposedTown' class='form-control' value=data && data.proposedTown)
+                    if errorObject.proposedCounty
+                        span.error-message Enter a county or borough
                     div.form-group
                         label(for='proposedCounty') Proposed county or borough:
                         input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=data && data.proposedCounty)
