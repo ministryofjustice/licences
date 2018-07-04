@@ -1,7 +1,7 @@
 'use strict';
 
 let winston = require('winston');
-const {flattenMeta} = require('./server/misc');
+// const {flattenMeta} = require('./server/misc');
 
 const logger = new (winston.Logger);
 
