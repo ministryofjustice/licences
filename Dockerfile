@@ -1,4 +1,4 @@
-FROM node:8.10
+FROM node:8.11.3-alpine
 MAINTAINER HMPPS Digital Studio <info@digital.justice.gov.uk>
 ARG BUILD_NUMBER
 ARG GIT_REF
@@ -11,13 +11,14 @@ ADD . .
 # Install AWS RDS Root cert
 RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2015-root.pem > /app/root.cert
 
-RUN yarn --frozen-lockfile && \
-    yarn run build && \
+RUN npm install -g npm@latest && \
+    npm ci && \
+    npm run build && \
     export BUILD_NUMBER=${BUILD_NUMBER} && \
     export GIT_REF=${GIT_REF} && \
-    yarn run record-build-info
+    npm run record-build-info
 
 ENV PORT=3000
 
 EXPOSE 3000
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]
