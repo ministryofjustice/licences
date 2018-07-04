@@ -857,8 +857,8 @@ describe('licenceService', () => {
             const output = await service.updateAddress({
                 index: 1,
                 licence: baseLicence,
-                userInput: {newField: 'newField'},
-                fieldMap: [{newField: {}}]
+                userInput: {addresses: [{newField: 'newField'}]},
+                fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             });
 
             const expectedOutput = {
@@ -875,13 +875,35 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedOutput);
         });
 
+        it('should remove the address item if the submission is empty', async () => {
+
+            const output = await service.updateAddress({
+                index: 1,
+                licence: baseLicence,
+                userInput: {addresses: [{postCode: ''}]},
+                fieldMap: [{addresses: {isList: true, contains: [{postCode: {}}]}}]
+            });
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1'}
+                        ]
+                    }
+                }
+            };
+
+            expect(output).to.eql(expectedOutput);
+        });
+
         it('should handle submissions from the licence form', async () => {
 
             const output = await service.updateAddress({
                 index: 1,
                 licence: baseLicence,
                 userInput: {addresses: [{postCode: 'pc3'}]},
-                fieldMap: [{addresses: {}, isList: true, contains: [{postCode: {}}]}]
+                fieldMap: [{addresses: {isList: true, contains: [{postCode: {}}]}}]
             });
 
             const expectedOutput = {
@@ -902,8 +924,8 @@ describe('licenceService', () => {
             const output = await service.updateAddress({
                 index: 0,
                 licence: baseLicence,
-                userInput: {newField: 'newField', unwantedField: 'unwanted'},
-                fieldMap: [{newField: {}}]
+                userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
+                fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             });
 
             const expectedOutput = {
@@ -924,8 +946,8 @@ describe('licenceService', () => {
             const output = await service.updateAddress({
                 index: 0,
                 licence: {...baseLicence, otherfield: 'other'},
-                userInput: {newField: 'newField', unwantedField: 'unwanted'},
-                fieldMap: [{newField: {}}]
+                userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
+                fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             });
 
             const expectedOutput = {
@@ -948,8 +970,8 @@ describe('licenceService', () => {
                 nomisId: 1,
                 index: 0,
                 licence: baseLicence,
-                userInput: {newField: 'newField', unwantedField: 'unwanted'},
-                fieldMap: [{newField: {}}]
+                userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
+                fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             });
 
             const expectedOutput = {
@@ -972,8 +994,8 @@ describe('licenceService', () => {
                 nomisId: 1,
                 index: 3,
                 licence: baseLicence,
-                userInput: {newField: 'newField', unwantedField: 'unwanted'},
-                fieldMap: [{newField: {}}]
+                userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
+                fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             })).to.eventually.throw('No address to update');
         });
     });

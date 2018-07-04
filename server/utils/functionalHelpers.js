@@ -18,7 +18,8 @@ module.exports = {
     arrayEquals,
     difference,
     getUniqueStrings,
-    pipe
+    pipe,
+    removeFromArray
 };
 
 // pass in your object and a path in array format
@@ -102,4 +103,8 @@ function getUniqueStrings(array) {
         R.uniq,
         R.filter(isNotEmpty)
     )(array);
+}
+
+function removeFromArray(index, end, array) {
+    return R.remove(index, end, array);
 }

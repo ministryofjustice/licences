@@ -1,4 +1,4 @@
-const {getIn, replaceArrayItem, mergeWithRight} = require('../../utils/functionalHelpers');
+const {getIn, replaceArrayItem, mergeWithRight, removeFromArray} = require('../../utils/functionalHelpers');
 
 module.exports = {
     update: editAddressesArray(updateAddressInArray),
@@ -37,6 +37,10 @@ function updateAddressesInLicence({updateMethod, licence, newAddress, index = nu
 function updateAddressInArray({addresses, index, newAddress}) {
     if(!addresses[index]) {
         throw new Error('No address to update: '+index);
+    }
+
+    if(!newAddress) {
+        return removeFromArray(index, 1, addresses);
     }
 
     const newAddressObject = mergeWithRight(addresses[index], newAddress);
