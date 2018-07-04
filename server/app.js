@@ -7,6 +7,7 @@ const moment = require('moment');
 
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const path = require('path');
 const flash = require('connect-flash');
@@ -92,6 +93,13 @@ module.exports = function createApp({
         overwrite: true,
         sameSite: 'lax'
     }));
+
+    app.use(cookieParser());
+
+    // CSRF protection
+    if (!testMode) {
+        app.use(csurf({cookie: true}));
+    }
 
     app.use(passport.initialize());
     app.use(passport.session());
@@ -190,11 +198,6 @@ module.exports = function createApp({
 
     if (config.enableTestUtils) {
         app.use('/utils/', createUtilsRouter({logger, licenceService}));
-    }
-
-    // CSRF protection
-    if (!testMode) {
-        app.use(csurf());
     }
 
     // Request logging
