@@ -56,19 +56,19 @@ if (process.env.NODE_ENV === 'test') {
     });
 }
 
-const appInsights = require('./azure-appinsights');
-if (appInsights) {
-    const aiLogger = require('winston-azure-application-insights');
-    logger.info('Activating application insights logger');
-    logger.add(aiLogger.AzureApplicationInsightsLogger, {
-        insights: appInsights,
-        level: 'info',
-        silent: false,
-        treatErrorsAsExceptions: true
-    });
-    logger.rewriters.push(function(level, msg, meta) {
-        return flattenMeta(meta);
-    });
-}
+// const appInsights = require('./azure-appinsights');
+// if (appInsights) {
+//     const aiLogger = require('winston-azure-application-insights');
+//     logger.info('Activating application insights logger');
+//     logger.add(aiLogger.AzureApplicationInsightsLogger, {
+//         insights: appInsights,
+//         level: 'info',
+//         silent: false,
+//         treatErrorsAsExceptions: true
+//     });
+//     logger.rewriters.push(function(level, msg, meta) {
+//         return flattenMeta(meta);
+//     });
+// }
 
 module.exports = logger;
