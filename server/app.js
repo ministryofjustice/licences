@@ -37,7 +37,6 @@ const createSearchRouter = require('../server/routes/search');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
-const testMode = process.env.NODE_ENV === 'test';
 
 module.exports = function createApp({
                                         logger,
@@ -94,19 +93,15 @@ module.exports = function createApp({
         sameSite: 'lax'
     }));
 
-    app.use(cookieParser());
-
-    // CSRF protection
-    if (!testMode) {
-        app.use(csurf({cookie: true}));
-    }
-
     app.use(passport.initialize());
     app.use(passport.session());
 
     // Request Processing Configuration
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
+
+    app.use(cookieParser());
+    app.use(csurf({cookie: true}));
 
     // token retrieval
     app.use((req, res, next) => {
