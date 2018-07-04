@@ -23,17 +23,17 @@ jobs:
             - node_modules
       - run:
           name: Linter check
-          command: yarn run lint
+          command: npm run lint
 #      - run:
 #          name: Security check
-#          command: yarn run snyk-protect
+#          command: npm run snyk-protect
       - run:
           command: |
-            yarn run build
+            npm run build
             DATE=$(date '+%Y-%m-%d')
             export BUILD_NUMBER=${DATE}.${CIRCLE_BUILD_NUM}
             export GIT_REF="$CIRCLE_SHA1"
-            yarn run record-build-info
+            npm run record-build-info
       - persist_to_workspace:
           root: .
           paths:
@@ -46,14 +46,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - node_modules-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
-            - node_modules-{{ checksum "package.json" }}
-            - node_modules
-            - yarn-cache
+          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: unit tests with coverage
-          command: yarn run test-with-coverage-ci
+          command: npm run test-with-coverage-ci
           environment:
             MOCHA_FILE: ./reports/test-results.xml
       - store_test_results:
@@ -103,7 +99,7 @@ jobs:
             name: Deploy to Elastic Beanstalk Dev
             command: |
               VERSION=$(egrep buildNumber build-info.json | awk -F"\"" '{print $4}')
-              yarn run plant-beanstalk ${VERSION}
+              npm run plant-beanstalk ${VERSION}
               ~/.local/bin/eb deploy --process --verbose --label ${VERSION}
         - persist_to_workspace:
             root: .
@@ -137,7 +133,7 @@ jobs:
 
   accept_stage:
     docker:
-      - image: circleci/node:8.10.0
+      - image: circleci/node:8
     working_directory: ~/noms-digital-studio/licences
     steps:
       - run:
