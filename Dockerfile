@@ -1,4 +1,4 @@
-FROM node:8.11.3-alpine
+FROM node:8.11.3-slim
 MAINTAINER HMPPS Digital Studio <info@digital.justice.gov.uk>
 ARG BUILD_NUMBER
 ARG GIT_REF
