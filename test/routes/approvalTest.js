@@ -1,9 +1,9 @@
+const request = require('supertest');
+
 const {
-    request,
-    prisonerServiceStub,
-    expect,
-    licenceServiceStub,
-    hdcRoute,
+    createPrisonerServiceStub,
+    createLicenceServiceStub,
+    createHdcRoute,
     formConfig,
     appSetup,
     testFormPageGets
@@ -33,24 +33,26 @@ const prisonerInfoResponse = {
     sentenceExpiryDate: '03/12/1985'
 };
 
-const app = appSetup(hdcRoute, testUser);
-
 describe('/hdc/approval', () => {
+    let app;
+    let licenceServiceStub;
 
     beforeEach(() => {
-        prisonerServiceStub.getPrisonerDetails.resolves(prisonerInfoResponse);
+        licenceServiceStub = createLicenceServiceStub();
+        app = createApp({licenceServiceStub});
     });
 
     describe('approval routes', () => {
+        const service = createLicenceServiceStub();
+        const app = createApp({licenceServiceStub: service});
         const routes = [
             {url: '/approval/release/1', content: 'Do you approve HDC release for this offender?'}
         ];
 
-        testFormPageGets(app, routes);
+        testFormPageGets(app, routes, service);
     });
 
     describe('GET /approval/routes/:nomisId', () => {
-
         it('should display the offender details', () => {
             return request(app)
                 .get('/approval/release/1')
@@ -119,3 +121,15 @@ describe('/hdc/approval', () => {
     });
 });
 
+function createApp({licenceServiceStub}) {
+    const prisonerServiceStub = createPrisonerServiceStub();
+    prisonerServiceStub.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse);
+    licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
+
+    const hdcRoute = createHdcRoute({
+        licenceService: licenceServiceStub,
+        prisonerService: prisonerServiceStub
+    });
+
+    return appSetup(hdcRoute, testUser);
+}

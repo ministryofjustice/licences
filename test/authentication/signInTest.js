@@ -1,24 +1,25 @@
+const nock = require('nock');
 const signInService = require('../../server/authentication/signInService');
-const {
-    sandbox,
-    expect,
-    nock
-} = require('../testSetup');
 const config = require('../../server/config');
 
-const fakeNomis = nock(`${config.nomis.apiUrl}`);
-const fakeOauth = nock(`${config.nomis.apiUrl.replace('/api', '')}`);
-const fakeStore = {store: sandbox.stub(), get: sandbox.stub()};
-const service = signInService(fakeStore);
 
 describe('signInSAervice', () => {
+    let fakeNomis;
+    let fakeOauth;
+    let fakeStore;
+    let service;
+
+    beforeEach(() => {
+        fakeNomis = nock(`${config.nomis.apiUrl}`);
+        fakeOauth = nock(`${config.nomis.apiUrl.replace('/api', '')}`);
+        fakeStore = {store: sinon.stub(), get: sinon.stub()};
+        service = signInService(fakeStore);
+    });
+
+    afterEach(() => {
+        nock.cleanAll();
+    });
     describe('signIn', () => {
-
-        afterEach(() => {
-            nock.cleanAll();
-            sandbox.reset();
-        });
-
         it('should return user object if all apis succeed', () => {
             fakeOauth
                 .post(`/oauth/token`)

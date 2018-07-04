@@ -1,5 +1,4 @@
 const {formatPdfData} = require('../../../server/services/utils/pdfFormatter');
-const {expect} = require('../../testSetup');
 
 describe('pdfFormatter', () => {
 
@@ -16,7 +15,6 @@ describe('pdfFormatter', () => {
     }
 
     it('should give placeholders and display names for everything when all inputs missing', () => {
-
         const data = formatWith({});
 
         expect(data.values).to.eql(allValuesEmpty);
@@ -24,7 +22,6 @@ describe('pdfFormatter', () => {
     });
 
     it('should join offender names using spaces', () => {
-
         const prisonerInfo = {
             firstName: 'first',
             middleName: 'second',
@@ -38,7 +35,6 @@ describe('pdfFormatter', () => {
     });
 
     it('should join offender names using spaces, omitting blanks', () => {
-
         const prisonerInfo = {
             firstName: 'first',
             middleName: '',
@@ -52,7 +48,6 @@ describe('pdfFormatter', () => {
     });
 
     it('should take first establishment phone number', () => {
-
         const establishment = {
             phones: [{number: 111}, {number: 222}]
         };
@@ -64,7 +59,6 @@ describe('pdfFormatter', () => {
     });
 
     it('should convert image to base64 string', () => {
-
         const data = formatWith({image: 'IMAGE INPUT'});
 
         expect(data.values.OFF_PHOTO).to.eql('IMAGE INPUT'.toString('base64'));
@@ -72,7 +66,6 @@ describe('pdfFormatter', () => {
     });
 
     it('should join reporting address elements using new lines, omitting blanks', () => {
-
         const licence = {
             reporting: {
                 reportingInstructions: {
@@ -91,7 +84,6 @@ describe('pdfFormatter', () => {
     });
 
     it('should join curfew address elements using new lines, omitting blanks', () => {
-
         const licence = {
             proposedAddress: {
                 curfewAddress: {

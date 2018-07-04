@@ -1,5 +1,4 @@
 const {allValuesEmpty, interleave} = require('../../server/utils/functionalHelpers');
-const {expect} = require('../testSetup');
 
 describe('functionalHelpers', () => {
     describe('allValuesEmpty', () => {

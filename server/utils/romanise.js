@@ -15,7 +15,7 @@ const conversions = {
 const numerals = Object.entries(conversions).reverse();
 
 function romanise(number) {
-    if(number < 1 || number > 50) {
+    if (number < 1 || number > 50) {
         throw new Error('Input must be in range 1 to 50');
     }
 

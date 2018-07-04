@@ -1,26 +1,24 @@
 const createLicenceService = require('../../server/services/licenceService');
-const {expect, sandbox} = require('../testSetup');
 
 describe('licenceService', () => {
-
-    const licenceClient = {
-        getLicence: sandbox.stub().returnsPromise().resolves({licence: {a: 'b'}}),
-        createLicence: sandbox.stub().returnsPromise().resolves('abc'),
-        updateSection: sandbox.stub().returnsPromise().resolves(),
-        updateStage: sandbox.stub().returnsPromise().resolves(),
-        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([
-            {user_input: 1, id: 1, field_position: null}]),
-        updateLicence: sandbox.stub().returnsPromise().resolves()
-    };
+    let licenceClient;
+    let service;
 
     const establishmentsClient = {
-        findById: sandbox.stub().returnsPromise().resolves({a: 'b'})
+        findById: sinon.stub().resolves({a: 'b'})
     };
 
-    const service = createLicenceService(licenceClient, establishmentsClient);
-
-    afterEach(() => {
-        sandbox.reset();
+    beforeEach(() => {
+        licenceClient = {
+            getLicence: sinon.stub().resolves({licence: {a: 'b'}}),
+            createLicence: sinon.stub().resolves('abc'),
+            updateSection: sinon.stub().resolves(),
+            updateStage: sinon.stub().resolves(),
+            getAdditionalConditions: sinon.stub().resolves([
+                {user_input: 1, id: 1, field_position: null}]),
+            updateLicence: sinon.stub().resolves()
+        };
+        service = createLicenceService(licenceClient, establishmentsClient);
     });
 
     describe('getLicence', () => {

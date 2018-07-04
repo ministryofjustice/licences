@@ -12,11 +12,11 @@ function getCurfewAddressFormData(addressList) {
 
     const candidate = lastItem(addressList);
 
-    if(isEmpty(addressList)) {
+    if (isEmpty(addressList)) {
         return {submitPath: null, addressToShow: {}};
     }
 
-    if(isRejectedAddress(candidate) || isWithdrawnAddress(candidate)) {
+    if (isRejectedAddress(candidate) || isWithdrawnAddress(candidate)) {
         return {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}};
     }
 

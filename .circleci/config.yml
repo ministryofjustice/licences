@@ -24,9 +24,6 @@ jobs:
       - run:
           name: Linter check
           command: npm run lint
-#      - run:
-#          name: Security check
-#          command: npm run snyk-protect
       - run:
           command: |
             npm run build

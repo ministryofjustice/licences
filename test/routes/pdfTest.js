@@ -1,7 +1,6 @@
+const request = require('supertest');
+
 const {
-    request,
-    expect,
-    sandbox,
     loggerStub,
     pdfServiceStub,
     authenticationMiddleware,
@@ -39,11 +38,6 @@ const valuesOnly = {
 };
 
 describe('PDF:', () => {
-
-    afterEach(() => {
-        sandbox.reset();
-    });
-
     describe('GET /view', () => {
 
         it('Shows display labels when missing values', () => {

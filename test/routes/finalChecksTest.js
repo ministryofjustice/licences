@@ -1,11 +1,9 @@
+const request = require('supertest');
+
 const {
-    request,
-    sandbox,
-    expect,
-    licenceServiceStub,
-    hdcRoute,
-    formConfig,
-    appSetup
+    createLicenceServiceStub,
+    createApp,
+    formConfig
 } = require('../supertestSetup');
 
 const testUser = {
@@ -14,14 +12,7 @@ const testUser = {
     roleCode: 'CA'
 };
 
-const app = appSetup(hdcRoute, testUser);
-
 describe('/hdc/finalChecks', () => {
-
-    afterEach(() => {
-        sandbox.reset();
-    });
-
     describe('routes', () => {
         const routes = [
             {url: '/finalChecks/seriousOffence/1', content: 'other law enforcement'},
@@ -31,6 +22,9 @@ describe('/hdc/finalChecks', () => {
 
         routes.forEach(route => {
             it(`renders the ${route.url} page`, () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, testUser);
+
                 return request(app)
                     .get(route.url)
                     .expect(200)
@@ -87,13 +81,16 @@ describe('/hdc/finalChecks', () => {
 
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, testUser);
+
                 return request(app)
                     .post(route.url)
                     .send(route.body)
                     .expect(302)
                     .expect(res => {
-                        expect(licenceServiceStub.update).to.be.calledOnce();
-                        expect(licenceServiceStub.update).to.be.calledWith({
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
                             licence: {key: 'value'},
                             nomisId: '1',
                             fieldMap: route.fieldMap || formConfig[route.formName].fields,
@@ -109,8 +106,15 @@ describe('/hdc/finalChecks', () => {
 
         context('when there are errors', () => {
             it('should redirect back to seriousOffence page if there is an error', () => {
-                licenceServiceStub.getValidationErrorsForPage.returns(
-                    {finalChecks: {seriousOffence: {reason: 'error'}}});
+                const licenceService = createLicenceServiceStub();
+                licenceService.getValidationErrorsForPage = sinon.stub().returns({
+                    finalChecks: {
+                        seriousOffence: {
+                            reason: 'error'
+                        }
+                    }
+                });
+                const app = createApp({licenceService}, testUser);
 
                 return request(app)
                     .post('/finalChecks/seriousOffence/1')
@@ -121,8 +125,15 @@ describe('/hdc/finalChecks', () => {
             });
 
             it('should redirect back to onRemand page if there is an error', () => {
-                licenceServiceStub.getValidationErrorsForPage.returns(
-                    {finalChecks: {onRemand: {reason: 'error'}}});
+                const licenceService = createLicenceServiceStub();
+                licenceService.getValidationErrorsForPage = sinon.stub().returns({
+                    finalChecks: {
+                        onRemand: {
+                            reason: 'error'
+                        }
+                    }
+                });
+                const app = createApp({licenceService}, testUser);
 
                 return request(app)
                     .post('/finalChecks/onRemand/1')
@@ -133,8 +144,15 @@ describe('/hdc/finalChecks', () => {
             });
 
             it('should redirect back to confiscationOrder page if there is an error', () => {
-                licenceServiceStub.getValidationErrorsForPage.returns(
-                    {finalChecks: {confiscationOrder: {reason: 'error'}}});
+                const licenceService = createLicenceServiceStub();
+                licenceService.getValidationErrorsForPage = sinon.stub().returns({
+                    finalChecks: {
+                        confiscationOrder: {
+                            reason: 'error'
+                        }
+                    }
+                });
+                const app = createApp({licenceService}, testUser);
 
                 return request(app)
                     .post('/finalChecks/confiscationOrder/1')

@@ -1,5 +1,4 @@
 const {formatObjectForView, formatObjectForViewWithOptions} = require('../../../server/services/utils/formatForView');
-const {expect} = require('../../testSetup');
 
 describe('formatForView', () => {
     describe('dates', () => {

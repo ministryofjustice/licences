@@ -6,7 +6,7 @@ function TokenStore() {
 
 TokenStore.prototype.store = (username, role, token, refreshToken) => {
 
-    if(!(username && role && token)) {
+    if (!(username && role && token)) {
         throw new Error('Invalid token store entry');
     }
 

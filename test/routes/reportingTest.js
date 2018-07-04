@@ -1,11 +1,9 @@
+const request = require('supertest');
+
 const {
-    request,
-    sandbox,
-    expect,
-    licenceServiceStub,
-    hdcRoute,
+    createLicenceServiceStub,
     formConfig,
-    appSetup
+    createApp
 } = require('../supertestSetup');
 
 const testUser = {
@@ -14,14 +12,7 @@ const testUser = {
     roleCode: 'CA'
 };
 
-const app = appSetup(hdcRoute, testUser);
-
 describe('/hdc/reporting', () => {
-
-    afterEach(() => {
-        sandbox.reset();
-    });
-
     describe('routes', () => {
         const routes = [
             {url: '/reporting/reportingInstructions/1', content: 'Reporting instructions'}
@@ -29,6 +20,9 @@ describe('/hdc/reporting', () => {
 
         routes.forEach(route => {
             it(`renders the ${route.url} page`, () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, testUser);
+
                 return request(app)
                     .get(route.url)
                     .expect(200)
@@ -52,13 +46,16 @@ describe('/hdc/reporting', () => {
 
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, testUser);
+
                 return request(app)
                     .post(route.url)
                     .send(route.body)
                     .expect(302)
                     .expect(res => {
-                        expect(licenceServiceStub.update).to.be.calledOnce();
-                        expect(licenceServiceStub.update).to.be.calledWith({
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
                             licence: {key: 'value'},
                             nomisId: '1',
                             fieldMap: formConfig[route.section].fields,

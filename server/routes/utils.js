@@ -36,7 +36,7 @@ module.exports = function({logger, licenceService}) {
         logger.info('stage: ', stage);
         logger.info('licence: ', licence);
 
-        if(!nomisId || !licence || !stage) {
+        if (!nomisId || !licence || !stage) {
             logger.warn('Missing input for create test licence');
             return res.status(404).send({});
         }

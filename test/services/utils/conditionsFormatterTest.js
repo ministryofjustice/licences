@@ -1,5 +1,4 @@
 const {formatConditionsInput} = require('../../../server/services/utils/conditionsFormatter');
-const {expect} = require('../../testSetup');
 
 describe('conditionsValidator', () => {
     it('should reformat date fields to iso date', () => {

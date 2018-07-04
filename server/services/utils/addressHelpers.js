@@ -35,11 +35,11 @@ function updateAddressesInLicence({updateMethod, licence, newAddress, index = nu
 }
 
 function updateAddressInArray({addresses, index, newAddress}) {
-    if(!addresses[index]) {
+    if (!addresses[index]) {
         throw new Error('No address to update: '+index);
     }
 
-    if(!newAddress) {
+    if (!newAddress) {
         return removeFromArray(index, 1, addresses);
     }
 

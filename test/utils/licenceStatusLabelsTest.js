@@ -1,4 +1,3 @@
-const {expect} = require('../testSetup');
 const {getStatusLabel} = require('../../server/utils/licenceStatusLabels');
 const {roles} = require('../../server/models/roles');
 const {licenceStages} = require('../../server/models/licenceStages');

@@ -20,7 +20,7 @@ const requiredIf = (field, answer, typeRequired = requiredString, ifNot = option
 
 function getMessage(errorType, errorMessage) {
     if (errorType === 'date.format') {
-        if(errorMessage.includes('[HH:mm]')) {
+        if (errorMessage.includes('[HH:mm]')) {
             return 'Invalid time';
         }
         return 'Invalid or incorrectly formatted date';
@@ -35,7 +35,7 @@ function getMessage(errorType, errorMessage) {
     }
 
     if (errorType === 'string.regex.base') {
-        if(errorMessage.includes('telephone')) {
+        if (errorMessage.includes('telephone')) {
             return 'Invalid entry - number required';
         }
         return 'Invalid postcode';
@@ -287,7 +287,7 @@ const schema = {
 
 module.exports = function(licence) {
     return section => {
-        if(!licence[section]) {
+        if (!licence[section]) {
             return [{
                 path: {[section]: 'Not answered'}
             }];
@@ -299,7 +299,7 @@ module.exports = function(licence) {
             {stripUnknown: true, abortEarly: false}
         ).error;
 
-        if(!errorsForSection) {
+        if (!errorsForSection) {
             return [];
         }
 

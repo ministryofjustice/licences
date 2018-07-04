@@ -1,3 +1,4 @@
+--require ./test/.testSetup.js
 --recursive
 --reporter spec
 --timeout 5000

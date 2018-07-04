@@ -2,7 +2,6 @@ const request = require('supertest');
 const sinon = require('sinon');
 const express = require('express');
 const path = require('path');
-const nock = require('nock');
 const bodyParser = require('body-parser');
 const createLicenceConditionsRoute = require('../server/routes/hdc');
 const auth = require('./mockAuthentication');
@@ -32,10 +31,6 @@ const formConfig = {
 };
 
 const authenticationMiddleware = auth.authenticationMiddleware;
-const {
-    expect,
-    sandbox
-} = require('./testSetup');
 
 const testUser = {
     firstName: 'first',
@@ -46,83 +41,73 @@ const testUser = {
 };
 
 const loggerStub = {
-    debug: sandbox.stub(),
-    info: sandbox.stub(),
-    error: sandbox.stub()
+    debug: sinon.stub(),
+    info: sinon.stub(),
+    error: sinon.stub()
 };
 
 const signInServiceStub = {
-    signIn: sandbox.stub().returnsPromise().resolves(),
-    refresh: sandbox.stub().returnsPromise().resolves()
+    signIn: sinon.stub().resolves(),
+    refresh: sinon.stub().resolves()
 };
 
-const licenceServiceStub = {
-    getLicence: sandbox.stub().returnsPromise().resolves(),
-    update: sandbox.stub().returnsPromise().resolves(),
-    updateLicenceConditions: sandbox.stub().returnsPromise().resolves(),
-    deleteLicenceCondition: sandbox.stub().returnsPromise().resolves(),
-    markForHandover: sandbox.stub().returnsPromise().resolves(),
-    createLicence: sandbox.stub().returnsPromise().resolves(),
-    updateAddress: sandbox.stub().returnsPromise().resolves(),
-    updateAddresses: sandbox.stub().returnsPromise().resolves(),
-    getConditionsErrors: sandbox.stub().returns(),
-    getLicenceErrors: sandbox.stub().returns(),
-    getEligibilityErrors: sandbox.stub().returns(),
-    getValidationErrorsForReview: sandbox.stub().returns({}),
-    addAddress: sandbox.stub().returnsPromise().resolves(),
-    getValidationErrorsForPage: sandbox.stub().returns({})
-};
+const createLicenceServiceStub = () => ({
+    getLicence: sinon.stub().resolves({licence: {key: 'value'}}),
+    update: sinon.stub().resolves(),
+    updateLicenceConditions: sinon.stub().resolves(),
+    deleteLicenceCondition: sinon.stub().resolves(),
+    markForHandover: sinon.stub().resolves(),
+    createLicence: sinon.stub().resolves(),
+    updateAddress: sinon.stub().resolves(),
+    updateAddresses: sinon.stub().resolves(),
+    getConditionsErrors: sinon.stub().returns(),
+    getLicenceErrors: sinon.stub().returns(),
+    getEligibilityErrors: sinon.stub().returns(),
+    getValidationErrorsForReview: sinon.stub().returns({}),
+    addAddress: sinon.stub().resolves(),
+    getValidationErrorsForPage: sinon.stub().returns({})
+});
 
-const conditionsServiceStub = {
-    getStandardConditions: sandbox.stub().returnsPromise().resolves(),
-    getAdditionalConditions: sandbox.stub().returnsPromise().resolves(),
-    formatConditionInputs: sandbox.stub().returnsPromise().resolves(),
-    populateLicenceWithConditions: sandbox.stub().returnsPromise().resolves({})
-};
+const createConditionsServiceStub = () => ({
+    getStandardConditions: sinon.stub().resolves(),
+    getAdditionalConditions: sinon.stub().resolves(),
+    formatConditionInputs: sinon.stub().resolves(),
+    populateLicenceWithConditions: sinon.stub().resolves({})
+});
 
-const prisonerServiceStub = {
-    getEstablishmentForPrisoner: sandbox.stub().returnsPromise().resolves(),
-    getComForPrisoner: sandbox.stub().returnsPromise().resolves(),
-    getPrisonerDetails: sandbox.stub().returnsPromise().resolves({}),
-    getPrisonerImage: sandbox.stub().returnsPromise().resolves({image: 'image'}),
-    getPrisonerPersonalDetails: sandbox.stub().returnsPromise().resolves(
+const createPrisonerServiceStub = () =>({
+    getEstablishmentForPrisoner: sinon.stub().resolves(),
+    getComForPrisoner: sinon.stub().resolves(),
+    getPrisonerDetails: sinon.stub().resolves({}),
+    getPrisonerImage: sinon.stub().resolves({image: 'image'}),
+    getPrisonerPersonalDetails: sinon.stub().resolves(
         {firstName: 'fn', lastName: 'ln', dateOfBirth: '1980-01-01'})
-};
+});
 
 const pdfServiceStub = {
-    getPdfLicenceData: sandbox.stub().returnsPromise().resolves(),
-    getPdf: sandbox.stub().returnsPromise().resolves(),
-    generatePdf: sandbox.stub().returnsPromise().resolves()
+    getPdfLicenceData: sinon.stub().resolves(),
+    getPdf: sinon.stub().resolves(),
+    generatePdf: sinon.stub().resolves()
 };
 
 const searchServiceStub = {
-    searchOffenders: sandbox.stub().returnsPromise().resolves()
+    searchOffenders: sinon.stub().resolves()
 };
 
-const hdcRoute = createLicenceConditionsRoute({
-    licenceService: licenceServiceStub,
+const createHdcRoute = overrides => createLicenceConditionsRoute({
+    licenceService: createLicenceServiceStub(),
     logger: loggerStub,
-    conditionsService: conditionsServiceStub,
-    prisonerService: prisonerServiceStub,
-    authenticationMiddleware
+    conditionsService: createConditionsServiceStub(),
+    prisonerService: createPrisonerServiceStub(),
+    authenticationMiddleware,
+    ...overrides
 });
 
 const caseListServiceStub = {
-    getHdcCaseList: sandbox.stub().returnsPromise().resolves([])
+    getHdcCaseList: sinon.stub().resolves([])
 };
 
-beforeEach(() => {
-    sandbox.reset();
-
-    licenceServiceStub.getLicence.resolves({licence: {key: 'value'}});
-    prisonerServiceStub.getPrisonerDetails.resolves();
-    conditionsServiceStub.getStandardConditions.resolves();
-    prisonerServiceStub.getPrisonerDetails.resolves();
-    conditionsServiceStub.getAdditionalConditions.resolves();
-    pdfServiceStub.getPdfLicenceData.resolves();
-});
-
-function testFormPageGets(app, routes) {
+function testFormPageGets(app, routes, licenceServiceStub) {
     context('licence exists for nomisId', () => {
         routes.forEach(route => {
             it(`renders the ${route.url} page`, () => {
@@ -154,43 +139,43 @@ function testFormPageGets(app, routes) {
     });
 };
 
-module.exports = {
-    sinon,
-    sandbox,
-    request,
-    expect,
-    nock,
+const setup = {
     loggerStub,
     signInServiceStub,
-    licenceServiceStub,
-    conditionsServiceStub,
-    prisonerServiceStub,
+    createLicenceServiceStub,
+    createConditionsServiceStub,
+    createPrisonerServiceStub,
     caseListServiceStub,
     pdfServiceStub,
     searchServiceStub,
-    hdcRoute,
+    createHdcRoute,
     formConfig,
     authenticationMiddleware,
     testFormPageGets,
-    appSetup: function(route, user = testUser) {
+    createApp(opts, user = testUser) {
+        const hdcRoute = createHdcRoute({...opts});
 
+        return setup.appSetup(hdcRoute, user);
+    },
+    appSetup(route, user = testUser) {
         const app = express();
+
+        app.set('views', path.join(__dirname, '../server/views'));
+        app.set('view engine', 'pug');
 
         app.use((req, res, next) => {
             req.user = user;
             res.locals.user = user;
             next();
         });
-
         app.use(cookieSession({keys: ['']}));
-
         app.use(flash());
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(route);
-        app.set('views', path.join(__dirname, '../server/views'));
-        app.set('view engine', 'pug');
 
         return app;
     }
 };
+
+module.exports = setup;

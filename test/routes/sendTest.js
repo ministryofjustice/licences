@@ -1,9 +1,9 @@
+const request = require('supertest');
+
 const {
-    request,
-    expect,
     loggerStub,
-    licenceServiceStub,
-    prisonerServiceStub,
+    createLicenceServiceStub,
+    createPrisonerServiceStub,
     authenticationMiddleware,
     appSetup
 } = require('../supertestSetup');
@@ -12,31 +12,22 @@ const createSendRoute = require('../../server/routes/send');
 
 
 describe('Send:', () => {
+    let prisonerService;
+    let licenceService;
 
     beforeEach(() => {
-        licenceServiceStub.getLicence.resolves({});
-        prisonerServiceStub.getEstablishmentForPrisoner.resolves({premise: 'HMP Blah'});
-        prisonerServiceStub.getComForPrisoner.resolves({com: 'Something'});
+        prisonerService = createPrisonerServiceStub();
+        licenceService = createLicenceServiceStub();
+
+        prisonerService.getLicence = sinon.stub().resolves({});
+        prisonerService.getEstablishmentForPrisoner = sinon.stub().resolves({premise: 'HMP Blah'});
+        prisonerService.getComForPrisoner = sinon.stub().resolves({com: 'Something'});
     });
 
     describe('When role is CA', () => {
-
-        const testUser = {
-            staffId: 'my-staff-id',
-            username: 'my-username',
-            role: 'CA'
-        };
-
-        const app = appSetup(createSendRoute({
-            licenceService: licenceServiceStub,
-            prisonerService: prisonerServiceStub,
-            logger: loggerStub,
-            authenticationMiddleware
-        }), testUser);
-
         describe('GET /send', () => {
-
             it('renders and HTML output', () => {
+                const app = createApp({licenceService, prisonerService});
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -44,32 +35,36 @@ describe('Send:', () => {
             });
 
             it('gets com details when submission is CA to RO', () => {
-
-                licenceServiceStub.getLicence.resolves({stage: 'ELIGIBILITY'});
+                licenceService.getLicence.resolves({stage: 'ELIGIBILITY'});
+                const app = createApp({licenceService, prisonerService});
 
                 return request(app)
                     .get('/123')
                     .expect(() => {
-                        expect(prisonerServiceStub.getComForPrisoner).to.be.calledOnce();
-                        expect(prisonerServiceStub.getComForPrisoner).to.be.calledWith('123', 'my-username');
+                        expect(prisonerService.getComForPrisoner).to.be.calledOnce();
+                        expect(prisonerService.getComForPrisoner).to.be.calledWith('123', 'my-username');
                     });
-                expect(prisonerServiceStub.getEstablishmentForPrisoner).not.to.be.called();
+                expect(prisonerService.getEstablishmentForPrisoner).not.to.be.called();
             });
         });
 
         describe('POST /send', () => {
             it('calls markForHandover via licenceService', () => {
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .post('/123')
                     .send({nomisId: 123, sender: 'from', receiver: 'to'})
                     .expect(() => {
-                        expect(licenceServiceStub.markForHandover).to.be.calledOnce();
-                        expect(licenceServiceStub.markForHandover).to.be.calledWith(123, 'from', 'to');
+                        expect(licenceService.markForHandover).to.be.calledOnce();
+                        expect(licenceService.markForHandover).to.be.calledWith(123, 'from', 'to');
                     });
 
             });
 
             it('shows sent confirmation', () => {
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .post('/123')
                     .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'foobar'})
@@ -82,36 +77,42 @@ describe('Send:', () => {
         });
 
     });
-});
 
+    describe('When role is RO', () => {
+        const roUser = {
+            staffId: 'my-staff-id',
+            username: 'my-username',
+            role: 'RO'
+        };
 
-describe('When role is RO', () => {
+        it('gets establishment details when submission is RO to CA', () => {
+            licenceService.getLicence.resolves({stage: 'PROCESSING_RO'});
 
-    const testUser = {
-        staffId: 'my-staff-id',
-        username: 'my-username',
-        role: 'RO'
-    };
+            const app = createApp({licenceService, prisonerService}, roUser);
 
-    const app = appSetup(createSendRoute({
-        licenceService: licenceServiceStub,
-        prisonerService: prisonerServiceStub,
-        logger: loggerStub,
-        authenticationMiddleware
-    }), testUser);
-
-    it('gets establishment details when submission is RO to CA', () => {
-
-        licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO'});
-
-        return request(app)
-            .get('/123')
-            .expect(() => {
-                expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledOnce();
-                expect(prisonerServiceStub.getEstablishmentForPrisoner).to.be.calledWith('123', 'my-username');
-                expect(prisonerServiceStub.getComForPrisoner).not.to.be.called();
-            });
+            return request(app)
+                .get('/123')
+                .expect(() => {
+                    expect(prisonerService.getEstablishmentForPrisoner).to.be.calledOnce();
+                    expect(prisonerService.getEstablishmentForPrisoner).to.be.calledWith('123', 'my-username');
+                    expect(prisonerService.getComForPrisoner).not.to.be.called();
+                });
+        });
     });
 });
 
 
+const caUser = {
+    staffId: 'my-staff-id',
+    username: 'my-username',
+    role: 'CA'
+};
+
+function createApp({licenceService, prisonerService}, user = caUser) {
+    return appSetup(createSendRoute({
+        licenceService,
+        prisonerService,
+        logger: loggerStub,
+        authenticationMiddleware
+    }), user);
+}

@@ -140,7 +140,7 @@ module.exports = function createLicenceService(licenceClient) {
     function getNewStage(sender, receiver, licence) {
         const stage = getIn(transitions, [sender, receiver]);
 
-        if(sender === 'RO') {
+        if (sender === 'RO') {
             const {decisions} = getLicenceStatus(licence);
             if (decisions.optedOut) {
                 return stage.optedOut;
@@ -193,7 +193,7 @@ module.exports = function createLicenceService(licenceClient) {
                 const innerFieldMap = field[fieldName].contains;
                 const innerAnswers = getFormResponse(innerFieldMap, userInput[fieldName]);
 
-                if(allValuesEmpty(innerAnswers)) {
+                if (allValuesEmpty(innerAnswers)) {
                     return answersAccumulator;
                 }
 
@@ -225,7 +225,7 @@ module.exports = function createLicenceService(licenceClient) {
         const limitingValue = userInput[limitingField];
         const limitTo = getIn(fieldConfig, ['limitedBy', limitingValue]);
 
-        if(limitTo) {
+        if (limitTo) {
             return getFirstArrayItems(userInput[fieldName], limitTo);
         }
 
@@ -272,11 +272,11 @@ module.exports = function createLicenceService(licenceClient) {
     const getValidationErrorsForReview = ({licenceStatus, licence}) => {
         const {stage, decisions} = licenceStatus;
 
-        if(stage === 'ELIGIBILITY') {
+        if (stage === 'ELIGIBILITY') {
             return getEligibilityErrors({licence});
         }
 
-        if(stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
+        if (stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
             return getLicenceErrors({licence, sections: ['proposedAddress']});
         }
 
@@ -287,7 +287,7 @@ module.exports = function createLicenceService(licenceClient) {
         const errorObject = getLicenceErrors({licence, sections: ['proposedAddress']});
         const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
 
-        if(typeof getIn(errorObject, ['proposedAddress', 'curfewAddress']) === 'string') {
+        if (typeof getIn(errorObject, ['proposedAddress', 'curfewAddress']) === 'string') {
             return errorObject;
         }
 
@@ -297,7 +297,7 @@ module.exports = function createLicenceService(licenceClient) {
     function removeFromAddressReducer(errorObject, addressKey) {
         const newObject = removePath(['proposedAddress', 'curfewAddress', addressKey], errorObject);
 
-        if(isEmpty(getIn(newObject, ['proposedAddress', 'curfewAddress']))) {
+        if (isEmpty(getIn(newObject, ['proposedAddress', 'curfewAddress']))) {
             return removePath(['proposedAddress'], newObject);
         }
 

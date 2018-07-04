@@ -1,56 +1,55 @@
+const nock = require('nock');
+
 const createSearchService = require('../../server/services/searchService');
 const createCaseListFormatter = require('../../server/services/utils/caseListFormatter');
-const {
-    expect,
-    sandbox,
-    nock
-} = require('../supertestSetup');
 
 describe('searchService', () => {
+    let nomisClient;
+    let service;
 
-    const nomisClient = {
-        getOffenderSentences: sandbox.stub().returnsPromise().resolves([
-            {
-                bookingId: 123456,
-                offenderNo: 'A12345',
-                firstName: 'MARK',
-                middleNames: '',
-                lastName: 'ANDREWS',
-                agencyLocationDesc: 'BERWIN (HMP)',
-                internalLocationDesc: 'A-C-2-002',
-                sentenceDetail: {
-                    homeDetentionCurfewEligibilityDate: '2017-09-07',
-                    conditionalReleaseDate: '2017-12-15',
-                    receptionDate: '2018-01-03'
+    beforeEach(() => {
+        nomisClient = {
+            getOffenderSentences: sinon.stub().resolves([
+                {
+                    bookingId: 123456,
+                    offenderNo: 'A12345',
+                    firstName: 'MARK',
+                    middleNames: '',
+                    lastName: 'ANDREWS',
+                    agencyLocationDesc: 'BERWIN (HMP)',
+                    internalLocationDesc: 'A-C-2-002',
+                    sentenceDetail: {
+                        homeDetentionCurfewEligibilityDate: '2017-09-07',
+                        conditionalReleaseDate: '2017-12-15',
+                        receptionDate: '2018-01-03'
+                    }
                 }
-            }
-        ]),
-        getPrisoners: sandbox.stub().returnsPromise().resolves([{offenderNo: 'A0001AA'}, {offenderNo: 'A0001BB'}]),
-        getComRelation: sandbox.stub().returnsPromise().resolves({comName: 'COMNAME'})
-    };
+            ]),
+            getPrisoners: sinon.stub().resolves([{offenderNo: 'A0001AA'}, {offenderNo: 'A0001BB'}]),
+            getComRelation: sinon.stub().resolves({comName: 'COMNAME'})
+        };
 
-    const licenceClient = {
-        getLicences: sandbox.stub().returnsPromise().resolves([]),
-        getDeliusUserName: sandbox.stub().returnsPromise().resolves([{STAFF_ID: {value: 'xxx'}}])
-    };
+        const licenceClient = {
+            getLicences: sinon.stub().resolves([]),
+            getDeliusUserName: sinon.stub().resolves([{STAFF_ID: {value: 'xxx'}}])
+        };
 
-    const logger = {
-        info: sandbox.stub(),
-        error: sandbox.stub()
-    };
+        const logger = {
+            info: sinon.stub(),
+            error: sinon.stub()
+        };
 
-    const nomisClientBuilder = sandbox.stub().returns(nomisClient);
-    const caseListFormatter = createCaseListFormatter(logger, licenceClient);
+        const nomisClientBuilder = sinon.stub().returns(nomisClient);
+        const caseListFormatter = createCaseListFormatter(logger, licenceClient);
 
-    const service = createSearchService(logger, nomisClientBuilder, caseListFormatter);
+        service = createSearchService(logger, nomisClientBuilder, caseListFormatter);
+    });
 
     afterEach(() => {
-        sandbox.reset();
         nock.cleanAll();
     });
 
     describe('searchOffenders', () => {
-
         it('should get prisoners and add com relation', async () => {
 
             const result = await service.searchOffenders('A0001AA', {});
@@ -65,7 +64,6 @@ describe('searchService', () => {
         });
 
         it('should remove duplicate nomis IDs before searching nomis', async () => {
-
             await service.searchOffenders(['A0001AA', 'A0001AA', 'A0002AA'], {});
 
             expect(nomisClient.getOffenderSentences).to.be.calledOnce();

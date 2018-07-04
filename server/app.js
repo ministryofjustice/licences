@@ -1,5 +1,3 @@
-'use strict';
-
 const logger = require('../log.js');
 const expressWinston = require('express-winston');
 const addRequestId = require('express-request-id')();
@@ -92,9 +90,6 @@ module.exports = function createApp({
         overwrite: true,
         sameSite: 'lax'
     }));
-
-    app.use(cookieParser());
-    app.use(csurf({cookie: true}));
 
     app.use(passport.initialize());
     app.use(passport.session());
