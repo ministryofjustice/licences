@@ -80,7 +80,7 @@ describe('PDF:', () => {
 
         it('Calls pdf service and renders response as PDF', () => {
 
-            const pdf1AsBytes = new Buffer([80, 68, 70, 45, 49]);
+            const pdf1AsBytes = Buffer.from([80, 68, 70, 45, 49]);
             pdfServiceStub.generatePdf.resolves(pdf1AsBytes);
 
             return request(app)
@@ -90,7 +90,7 @@ describe('PDF:', () => {
                 .expect(res => {
                     expect(pdfServiceStub.generatePdf).to.be.calledOnce();
                     expect(pdfServiceStub.generatePdf).to.be.calledWith('hdc_ap_pss', '123', 'my-username');
-                    expect(res.text).to.include('PDF-1');
+                    expect(res.body.toString()).to.include('PDF-1');
                 });
         });
     });
