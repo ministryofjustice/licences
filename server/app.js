@@ -95,7 +95,11 @@ module.exports = function createApp({
     }));
 
     app.use(cookieParser());
-    app.use(csurf({cookie: true}));
+
+    // CSRF protection
+    if (!testMode) {
+        app.use(csurf({cookie: true}));
+    }
 
     app.use(passport.initialize());
     app.use(passport.session());
@@ -194,11 +198,6 @@ module.exports = function createApp({
 
     if (config.enableTestUtils) {
         app.use('/utils/', createUtilsRouter({logger, licenceService}));
-    }
-
-    // CSRF protection
-    if (!testMode) {
-        app.use(csurf({cookie: true}));
     }
 
     // Request logging
