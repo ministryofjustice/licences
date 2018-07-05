@@ -100,6 +100,10 @@ module.exports = function createApp({
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
 
+    if (config.enableTestUtils) {
+        app.use('/utils/', createUtilsRouter({logger, licenceService}));
+    }
+
     app.use(cookieParser());
     app.use(csurf({cookie: true}));
 
@@ -112,7 +116,7 @@ module.exports = function createApp({
                 tokenStore.store(req.user.username, req.user.role, req.user.token, req.user.refreshToken);
             } else {
                 // token store is more up-to-date than cookie so update tokens
-                if(tokens.token !== req.user.token) {
+                if (tokens.token !== req.user.token) {
                     req.user.token = tokens.token;
                     req.user.refreshToken = tokens.refreshToken;
                 }
@@ -190,10 +194,6 @@ module.exports = function createApp({
 
     // Don't cache dynamic resources
     app.use(helmet.noCache());
-
-    if (config.enableTestUtils) {
-        app.use('/utils/', createUtilsRouter({logger, licenceService}));
-    }
 
     // Request logging
     app.use(expressWinston.logger({
@@ -281,7 +281,7 @@ function handleKnownErrors(error, req, res, next) {
         logger.error('Bad csurf token: ' + error.stack);
     }
 
-    if(error.name === 'NoToken') {
+    if (error.name === 'NoToken') {
         logger.error('No token found for user');
         return res.redirect('/logout');
     }
