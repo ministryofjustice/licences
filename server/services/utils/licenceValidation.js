@@ -2,6 +2,7 @@ const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
+const {all, pipe, getIn, isEmpty} = require('../../utils/functionalHelpers');
 
 const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
@@ -15,9 +16,6 @@ const requiredTime = joi.date().format('HH:mm').required();
 const requiredPostcode = joi.postcode().required();
 const requiredIf = (field, answer, typeRequired = requiredString, ifNot = optionalString) => {
     return joi.when(field, {is: answer, then: typeRequired, otherwise: ifNot});
-};
-const requiredIfAnswered = (field, typeRequired = requiredString) => {
-    return joi.when(field, {is: joi.string(), then: typeRequired});
 };
 
 function getMessage(errorType, errorMessage) {
@@ -96,8 +94,8 @@ const curfewAddress = joi.object().keys({
     postCode: requiredPostcode,
     telephone: requiredPhone,
     occupier: joi.object().keys({
-        name: optionalString,
-        relationship: requiredIfAnswered('name')
+        name: requiredString,
+        relationship: requiredString
     }),
     residents: joi.array().items(joi.object().keys({
         name: requiredString,
@@ -305,7 +303,7 @@ module.exports = function(licence) {
             return [];
         }
 
-        return errorsForSection.details.map(error => {
+        const errorObject = errorsForSection.details.map(error => {
             return {
                 path: {
                     [section]: error.path.reduceRight((object, key) => {
@@ -314,5 +312,47 @@ module.exports = function(licence) {
                 }
             };
         });
+
+        return updateWithSpecialCases(errorObject);
     };
 };
+
+const specialCases = [
+    {
+        path: ['proposedAddress', 'curfewAddress', 'occupier', 'name'],
+        method: removeErrorsIfAll('Not answered', [
+            ['path', 'proposedAddress', 'curfewAddress', 'occupier', 'name'],
+            ['path', 'proposedAddress', 'curfewAddress', 'occupier', 'relationship']
+        ])
+    }
+];
+
+function updateWithSpecialCases(errorObject) {
+
+    const specialCaseIsInErrorObject = specialCase => errorObject.find(error => getIn(error.path, specialCase.path));
+    const specialCaseMethod = specialCase => specialCase.method;
+
+    const methodsToRunOnObject = specialCases
+        .filter(specialCaseIsInErrorObject)
+        .map(specialCaseMethod);
+
+    if (isEmpty(methodsToRunOnObject)) {
+        return errorObject;
+    }
+
+    return pipe(...methodsToRunOnObject)(errorObject);
+}
+
+function removeErrorsIfAll(errorLabel, pathsToTest) {
+    return errors => {
+        const errorsListContainsObject = path => {
+            return errors.find(error => getIn(error, path) === errorLabel);
+        };
+
+        if (all(errorsListContainsObject, pathsToTest)) {
+            return errors.filter(error => !pathsToTest.find(path => getIn(error, path)));
+        }
+
+        return errors;
+    };
+}

@@ -1284,6 +1284,24 @@ describe('licenceService', () => {
             );
         });
 
+        it('should return error if occupier relationship provided without name', () => {
+
+            const missingFieldProposedAddress = {
+                ...baseLicence,
+                proposedAddress: {
+                    ...baseLicence.proposedAddress,
+                    curfewAddress: {
+                        ...baseLicence.proposedAddress.curfewAddress,
+                        addressLine1: ''
+                    }
+                }
+            };
+
+            expect(service.getLicenceErrors({licence: missingFieldProposedAddress})).to.eql(
+                {proposedAddress: {curfewAddress: {addressLine1: 'Not answered'}}}
+            );
+        });
+
         it('should return error if the telephone is not a number', () => {
 
             const missingFieldProposedAddress = {
@@ -1336,44 +1354,66 @@ describe('licenceService', () => {
             expect(service.getLicenceErrors({licence: emptyResidents})).to.eql({});
         });
 
-        it('should allow empty occupier object', () => {
+        describe('occuppier', () => {
+            it('should allow empty occupier object', () => {
 
-            const emptyOccupier = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        occupier: {
-                            name: '',
-                            relationship: '',
-                            age: ''
+                const emptyOccupier = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            occupier: {
+                                name: '',
+                                relationship: ''
+                            }
                         }
                     }
-                }
-            };
+                };
 
-            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql({});
-        });
+                expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql({});
+            });
 
-        it('should require a relationship if an age is provided', () => {
+            it('should require a relationship if a name is provided', () => {
 
-            const emptyOccupier = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        occupier: {
-                            name: 'name',
-                            relationship: ''
+                const emptyOccupier = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            occupier: {
+                                name: 'name',
+                                relationship: ''
+                            }
                         }
                     }
-                }
-            };
+                };
 
-            expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql({
-                proposedAddress: {curfewAddress: {occupier: {relationship: 'Not answered'}}}
+                expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql({
+                    proposedAddress: {curfewAddress: {occupier: {relationship: 'Not answered'}}}
+                });
+            });
+
+            it('should require a name if a relationship is provided', () => {
+
+                const emptyOccupier = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            occupier: {
+                                name: '',
+                                relationship: 'relationship'
+                            }
+                        }
+                    }
+                };
+
+                expect(service.getLicenceErrors({licence: emptyOccupier})).to.eql({
+                    proposedAddress: {curfewAddress: {occupier: {name: 'Not answered'}}}
+                });
             });
         });
 
