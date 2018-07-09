@@ -7,7 +7,7 @@ div.largeMarginBottom
 
     // Proposed address
     div.borderBottom
-        div.pure-g.borderBottomLight
+        div.pure-g
             div.pure-u-md-1-2
                 h2#curfewAddressDetails.heading-medium Proposed curfew address
             div.pure-u-md-1-2.alignRight
@@ -26,7 +26,7 @@ div.largeMarginBottom
 
         // Risk
         div.borderBottom
-            div.pure-g.borderBottomLight
+            div.pure-g
                 div.pure-u-md-1-2
                     h2#riskDetails.heading-medium Risk management and victim liaison
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
@@ -41,7 +41,7 @@ div.largeMarginBottom
 
         // Curfew hours
         div.borderBottom
-            div.pure-g.borderBottomLight
+            div.pure-g
                 div.pure-u-md-1-2
                     h2#curfewHoursDetails.heading-medium Proposed HDC curfew hours
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
@@ -56,7 +56,7 @@ div.largeMarginBottom
 
         // Additional condition
         div.borderBottom
-            div.pure-g.borderBottomLight
+            div.pure-g
                 div.pure-u-md-1-2
                     h2.heading-medium Additional conditions
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
@@ -73,15 +73,16 @@ div.largeMarginBottom
                     | No additional conditions selected
 
         // Reporting instructions
-        div.pure-g.borderBottomLight
-            div.pure-u-md-1-2
-                h2#reportingDetails.heading-medium Reporting instructions
-            if (stage === 'PROCESSING_RO' && user.role === 'RO')
-                div.pure-u-md-1-2.alignRight
-                    div.pure-u-md-1-2.change-details
-                        a#reportingEditLink(href="/hdc/reporting/reportingInstructions/" + nomisId) Change these details
+        div.borderBottom
+            div.pure-g
+                div.pure-u-md-1-2
+                    h2#reportingDetails.heading-medium Reporting instructions
+                if (stage === 'PROCESSING_RO' && user.role === 'RO')
+                    div.pure-u-md-1-2.alignRight
+                        div.pure-u-md-1-2.change-details
+                            a#reportingEditLink(href="/hdc/reporting/reportingInstructions/" + nomisId) Change these details
 
-        if typeof errorObject.reporting === 'string'
-            p.alert.bold(id='reporting-error') #{errorObject.reporting}
-        else
-            include reportingInstructions
+            if typeof errorObject.reporting === 'string'
+                p.alert.bold(id='reporting-error') #{errorObject.reporting}
+            else
+                include reportingInstructions
