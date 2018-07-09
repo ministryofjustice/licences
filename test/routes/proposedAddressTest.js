@@ -273,7 +273,7 @@ describe('/hdc/proposedAddress', () => {
                 });
         });
 
-        it('should redirect to review page on addition of an address if in ELIGIBILITY stage', () => {
+        it('should redirect to the task list on addition of an address', () => {
             licenceServiceStub.getLicence.resolves({
                 licence: {
                     proposedAddress: {
@@ -285,28 +285,6 @@ describe('/hdc/proposedAddress', () => {
                     }
                 },
                 stage: 'ELIGIBILITY'
-            });
-
-            return request(app)
-                .post('/proposedAddress/curfewAddress/add')
-                .send({nomisId: '1'})
-                .expect(302)
-                .expect('Location', '/hdc/review/curfewAddress/1');
-
-        });
-
-        it('should redirect to task list if not in ELIGIBILITY stage', () => {
-            licenceServiceStub.getLicence.resolves({
-                licence: {
-                    proposedAddress: {
-                        curfewAddress: {
-                            addresses: [
-                                {addressLine1: 'address1', consent: 'No'}
-                            ]
-                        }
-                    }
-                },
-                stage: 'PROCESSING_CA'
             });
 
             return request(app)

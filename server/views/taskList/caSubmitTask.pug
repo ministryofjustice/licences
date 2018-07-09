@@ -20,5 +20,6 @@ div.largeMarginBottom.borderTop
 
         div.pure-u-1-4.center
             if allowedTransitions.caToRo || allowedTransitions.caToDm
-                a#continueBtn.taskListAction.center.button(href="/hdc/send/" + prisonerInfo.offenderNo)
+                -var linkTarget = allowedTransitions.caToRo ? '/hdc/review/curfewAddress/' : '/hdc/send/';
+                a#continueBtn.taskListAction.center.button(href=linkTarget + prisonerInfo.offenderNo)
                     | Continue
