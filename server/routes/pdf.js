@@ -1,5 +1,6 @@
 const express = require('express');
 const {asyncMiddleware} = require('../utils/middleware');
+const {templates} = require('./config/pdf');
 
 module.exports = function({logger, pdfService, authenticationMiddleware}) {
 
@@ -10,6 +11,10 @@ module.exports = function({logger, pdfService, authenticationMiddleware}) {
 
         const {nomisId, templateName} = req.params;
         logger.debug(`GET pdf/view/${templateName}/${nomisId}`);
+
+        if (!templates.includes(templateName)) {
+            throw new Error('Invalid licence template name');
+        }
 
         const {missing} = await pdfService.getPdfLicenceData(templateName, nomisId, req.user.username);
 
