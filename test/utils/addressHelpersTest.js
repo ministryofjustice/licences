@@ -4,8 +4,6 @@ const {
     isAcceptedAddress,
     isRejectedAddress
 } = require('../../server/utils/addressHelpers');
-const {expect} = require('../testSetup');
-
 describe('addressHelpers', () => {
 
     const addressList = [

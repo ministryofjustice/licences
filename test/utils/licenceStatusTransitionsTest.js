@@ -1,5 +1,4 @@
 const {getAllowedTransitions} = require('../../server/utils/licenceStatusTransitions');
-const {expect} = require('../testSetup');
 
 describe('getAllowedTransitions', () => {
     it('should allow DM to CA for DM when approval task done', () => {

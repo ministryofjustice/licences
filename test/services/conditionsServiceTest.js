@@ -1,17 +1,16 @@
 const createConditionsService = require('../../server/services/conditionsService');
-const {expect, sandbox} = require('../testSetup');
 
 describe('conditionsService', () => {
+    let licenceClient;
+    let service;
 
-    const licenceClient = {
-        getStandardConditions: sandbox.stub().returnsPromise().resolves({a: 'b'}),
-        getAdditionalConditions: sandbox.stub().returnsPromise().resolves([{text: 'v', user_input: {}}])
-    };
+    beforeEach(() => {
+        licenceClient = {
+            getStandardConditions: sinon.stub().resolves({a: 'b'}),
+            getAdditionalConditions: sinon.stub().resolves([{text: 'v', user_input: {}}])
+        };
 
-    const service = createConditionsService(licenceClient);
-
-    afterEach(() => {
-        sandbox.reset();
+        service = createConditionsService(licenceClient);
     });
 
     describe('getStandardConditions', () => {

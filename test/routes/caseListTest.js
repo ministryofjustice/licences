@@ -1,7 +1,7 @@
+const request = require('supertest');
+
 const {
-    request,
     appSetup,
-    expect,
     caseListServiceStub,
     loggerStub,
     authenticationMiddleware

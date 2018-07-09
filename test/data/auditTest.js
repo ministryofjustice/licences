@@ -1,15 +1,8 @@
 const proxyquire = require('proxyquire');
 proxyquire.noCallThru();
 
-const {
-    expect,
-    sandbox
-} = require('../testSetup');
-
-
 describe('Audit', () => {
-
-    const queryStub = sandbox.stub().returnsPromise().resolves();
+    let queryStub;
 
     const record = (query = queryStub) => {
         return proxyquire('../../server/data/audit', {
@@ -19,8 +12,8 @@ describe('Audit', () => {
         }).record;
     };
 
-    afterEach(() => {
-        sandbox.reset();
+    beforeEach(() => {
+        queryStub = sinon.stub().resolves();
     });
 
     it('should reject if unspecified key', () => {

@@ -1,5 +1,3 @@
-'use strict';
-
 const logger = require('../log.js');
 const expressWinston = require('express-winston');
 const addRequestId = require('express-request-id')();

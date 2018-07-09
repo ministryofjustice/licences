@@ -6,8 +6,6 @@ chai.use(sinonChai);
 const sandbox = sinon.sandbox.create();
 const proxyquire = require('proxyquire');
 proxyquire.noCallThru();
-const sinonStubPromise = require('sinon-stub-promise');
-sinonStubPromise(sinon);
 
 describe('healthcheck', () => {
     let callback;
@@ -17,7 +15,7 @@ describe('healthcheck', () => {
     });
 
     afterEach(() => {
-        sandbox.reset();
+        sandbox.restore();
     });
 
     describe('healthcheck', () => {
@@ -26,9 +24,9 @@ describe('healthcheck', () => {
         let pdfApiCheckStub;
 
         beforeEach(() => {
-            dbCheckStub = sandbox.stub().returnsPromise().resolves([{totalRows: {value: 0}}]);
-            nomisApiCheckStub = sandbox.stub().returnsPromise().resolves('OK');
-            pdfApiCheckStub = sandbox.stub().returnsPromise().resolves('OK');
+            dbCheckStub = sandbox.stub().resolves([{totalRows: {value: 0}}]);
+            nomisApiCheckStub = sandbox.stub().resolves('OK');
+            pdfApiCheckStub = sandbox.stub().resolves('OK');
         });
 
         const healthcheckProxy = (
@@ -61,7 +59,7 @@ describe('healthcheck', () => {
 
         it('should return unhealthy if db rejects promise', () => {
 
-            const dbCheckStubReject = sandbox.stub().returnsPromise().rejects({message: 'rubbish'});
+            const dbCheckStubReject = sandbox.stub().rejects({message: 'rubbish'});
 
             return healthcheckProxy(dbCheckStubReject)(callback).then(() => {
                 const calledWith = callback.getCalls()[0].args[1];
@@ -75,7 +73,7 @@ describe('healthcheck', () => {
 
         it('should return unhealthy if nomis rejects promise', () => {
 
-            const nomisApiCheckStubReject = sandbox.stub().returnsPromise().rejects(404);
+            const nomisApiCheckStubReject = sandbox.stub().rejects(404);
 
             return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject, pdfApiCheckStub)(callback).then(() => {
 
@@ -90,7 +88,7 @@ describe('healthcheck', () => {
 
         it('should return unhealthy if pdf rejects promise', () => {
 
-            const pdfApiCheckStubReject = sandbox.stub().returnsPromise().rejects(404);
+            const pdfApiCheckStubReject = sandbox.stub().rejects(404);
 
             return healthcheckProxy(dbCheckStub, nomisApiCheckStub, pdfApiCheckStubReject)(callback).then(() => {
 

@@ -1,6 +1,6 @@
+const request = require('supertest');
+
 const {
-    request,
-    expect,
     loggerStub,
     searchServiceStub,
     authenticationMiddleware,

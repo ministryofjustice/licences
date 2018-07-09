@@ -1,9 +1,4 @@
-const {
-    request,
-    sandbox,
-    expect
-} = require('../supertestSetup');
-
+const request = require('supertest');
 const {urlencoded} = require('body-parser');
 const express = require('express');
 const flash = require('connect-flash');
@@ -12,21 +7,17 @@ const createSignInEndpoint = require('../../server/routes/signIn');
 const mockAuthentication = require('../mockAuthentication');
 
 describe('POST /login', () => {
-    const app = express();
-    const fakeSignInService = sandbox.stub();
-
-    mockAuthentication.setupMockAuthentication(app, fakeSignInService);
-    app.use(urlencoded({extended: true}));
-    app.use(flash());
-    app.use(createSignInEndpoint());
-
     context('Successful sign in', () => {
         it('redirects to "/" path', () => {
-            fakeSignInService.signIn = sandbox.stub().returnsPromise().resolves({
-                firstName: 'staff',
-                lastName: 'user',
-                token: 'aToken'
-            });
+            const fakeSignInService = {
+                signIn: sinon.stub().resolves({
+                    firstName: 'staff',
+                    lastName: 'user',
+                    token: 'aToken'
+                })
+            };
+
+            const app = createSignInApp(fakeSignInService);
 
             return request(app)
                 .post('/')
@@ -43,7 +34,11 @@ describe('POST /login', () => {
             const error = new Error('Foo error');
             error.type = 'foo-error';
 
-            fakeSignInService.signIn = sandbox.stub().returnsPromise().rejects(error);
+            const fakeSignInService = {
+                signIn: sinon.stub().rejects(error)
+            };
+
+            const app = createSignInApp(fakeSignInService);
 
             return request(app)
                 .post('/')
@@ -55,3 +50,14 @@ describe('POST /login', () => {
         });
     });
 });
+
+function createSignInApp(fakeSignInService) {
+    const app = express();
+
+    mockAuthentication.setupMockAuthentication(app, fakeSignInService);
+    app.use(urlencoded({extended: true}));
+    app.use(flash());
+    app.use(createSignInEndpoint());
+
+    return app;
+}

@@ -1,5 +1,4 @@
 const {parseSearchTerms} = require('../../server/utils/searchParser');
-const {expect} = require('../testSetup');
 
 describe('parseSearchTerms', () => {
 

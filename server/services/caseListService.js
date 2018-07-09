@@ -2,7 +2,6 @@ const logger = require('../../log.js');
 const {isEmpty, getIn} = require('../utils/functionalHelpers');
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter) {
-
     async function getHdcCaseList(username, role) {
         try {
             const nomisClient = nomisClientBuilder(username);

@@ -1,10 +1,5 @@
 const Store = require('../../server/authentication/tokenStore');
 
-const {
-    expect,
-    sinon
-} = require('../testSetup');
-
 let clock;
 
 const tokenStore = new Store();

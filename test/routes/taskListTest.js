@@ -1,9 +1,9 @@
+const request = require('supertest');
+
 const {
-    request,
-    expect,
     loggerStub,
-    prisonerServiceStub,
-    licenceServiceStub,
+    createPrisonerServiceStub,
+    createLicenceServiceStub,
     authenticationMiddleware,
     appSetup
 } = require('../supertestSetup');
@@ -27,40 +27,31 @@ const prisonerInfoResponse = {
 };
 
 describe('GET /taskList/:prisonNumber', () => {
+    let prisonerService;
+    let licenceService;
 
     beforeEach(() => {
-        prisonerServiceStub.getPrisonerDetails.resolves(prisonerInfoResponse);
+        licenceService = createLicenceServiceStub();
+        prisonerService = createPrisonerServiceStub();
+        prisonerService.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse);
     });
 
-    context('User is CA', () => {
-
-        const testUser = {
-            staffId: 'my-staff-id',
-            token: 'my-token',
-            role: 'CA'
-        };
-
-        const app = appSetup(createTaskListRoute({
-            prisonerService: prisonerServiceStub,
-            licenceService: licenceServiceStub,
-            logger: loggerStub,
-            authenticationMiddleware
-        }), testUser);
-
+    describe('User is CA', () => {
         it('should call getPrisonerDetails from prisonerDetailsService', () => {
+            const app = createApp({licenceService, prisonerService});
             return request(app)
                 .get('/123')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(prisonerServiceStub.getPrisonerDetails).to.be.calledOnce();
-                    expect(prisonerServiceStub.getPrisonerDetails).to.be.calledWith('123');
+                    expect(prisonerService.getPrisonerDetails).to.be.calledOnce();
+                    expect(prisonerService.getPrisonerDetails).to.be.calledWith('123');
                 });
 
         });
 
         it('should return the eligibility', () => {
-            licenceServiceStub.getLicence.resolves({
+            licenceService.getLicence.resolves({
                 stage: 'ELIGIBILITY',
                 licence: {
                     eligibility: {
@@ -76,6 +67,9 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 }
             });
+
+            const app = createApp({licenceService, prisonerService});
+
             return request(app)
                 .get('/1233456')
                 .expect(200)
@@ -86,7 +80,10 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         it('should handle no eligibility', () => {
-            licenceServiceStub.getLicence.resolves({stage: 'ELIGIBILITY', licence: {}});
+            licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: {}});
+
+            const app = createApp({licenceService, prisonerService});
+
             return request(app)
                 .get('/1233456')
                 .expect(200)
@@ -97,7 +94,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('when offender is not excluded', () => {
             it('should not display opt out form link if section is incomplete', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
@@ -111,6 +108,8 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/1233456')
                     .expect(200)
@@ -120,7 +119,7 @@ describe('GET /taskList/:prisonNumber', () => {
             });
 
             it('should display opt out form link if section is complete', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
@@ -137,6 +136,8 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/1233456')
                     .expect(200)
@@ -148,7 +149,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('when offender is unsuitable and has been given exceptional circumstances', () => {
             it('should display opt out form link', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
@@ -168,6 +169,8 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/1233456')
                     .expect(200)
@@ -179,7 +182,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('when there is less 4 weeks for the offenders CRD but the DM approves to continue assessment', () => {
             it('should display opt out form link', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
@@ -197,6 +200,8 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/1233456')
                     .expect(200)
@@ -208,7 +213,7 @@ describe('GET /taskList/:prisonNumber', () => {
         // eslint-disable-next-line max-len
         context('when there is less 4 weeks for the offenders CRD but the DM does not approves to continue assessment', () => {
             it('should display the submit decision button', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
@@ -226,6 +231,8 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/1233456')
                     .expect(200)
@@ -238,7 +245,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('when offender is ineligible', () => {
             it('should not display link to opt out when unsuitable', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
@@ -252,6 +259,8 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/1233456')
                     .expect(200)
@@ -261,7 +270,7 @@ describe('GET /taskList/:prisonNumber', () => {
             });
 
             it('should not display link to opt out when no exceptional circumstances are given', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
@@ -278,6 +287,8 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/1233456')
                     .expect(200)
@@ -288,7 +299,7 @@ describe('GET /taskList/:prisonNumber', () => {
             });
 
             it('should not display link to opt out when excluded', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
@@ -298,6 +309,8 @@ describe('GET /taskList/:prisonNumber', () => {
                         }
                     }
                 });
+
+                const app = createApp({licenceService, prisonerService});
 
                 return request(app)
                     .get('/1233456')
@@ -309,7 +322,7 @@ describe('GET /taskList/:prisonNumber', () => {
             });
 
             it('should not display link to opt out when unsuitable and excluded', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
                         eligibility: {
@@ -323,6 +336,8 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/1233456')
                     .expect(200)
@@ -335,13 +350,15 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('when offender has opted out', () => {
             it('should display that user has opted out', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     licence: {
                         proposedAddress: {
                             optOut: {decision: 'Yes'}
                         }
                     }
                 });
+
+                const app = createApp({licenceService, prisonerService});
 
                 return request(app)
                     .get('/1233456')
@@ -355,13 +372,15 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('when address has been submitted', () => {
             it('should display that it has been submitted', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     licence: {
                         proposedAddress: {
                             optOut: {licenceStatus: 'ADDRESS_SUBMITTED'}
                         }
                     }
                 });
+
+                const app = createApp({licenceService, prisonerService});
 
                 return request(app)
                     .get('/1233456')
@@ -374,13 +393,15 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('when bass has been requested', () => {
             it('should display that it has been requested', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     licence: {
                         proposedAddress: {
                             bassReferral: {decision: 'Yes'}
                         }
                     }
                 });
+
+                const app = createApp({licenceService, prisonerService});
 
                 return request(app)
                     .get('/1233456')
@@ -392,11 +413,14 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         describe('POST /eligibilityStart', () => {
-
-            licenceServiceStub.getLicence.resolves({nomisId: '1'});
-            licenceServiceStub.createLicence.resolves();
+            beforeEach(() => {
+                licenceService.getLicence.resolves({nomisId: '1'});
+                licenceService.createLicence.resolves();
+            });
 
             it('should redirect to eligibility section', () => {
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .post('/eligibilityStart')
                     .send({nomisId: '123'})
@@ -408,50 +432,57 @@ describe('GET /taskList/:prisonNumber', () => {
 
             context('licence exists in db', () => {
                 it('should not create a new licence', () => {
+                    const app = createApp({licenceService, prisonerService});
+
                     return request(app)
                         .post('/eligibilityStart')
                         .send({nomisId: '123'})
                         .expect(302)
                         .expect(res => {
-                            expect(licenceServiceStub.createLicence).to.not.be.called();
+                            expect(licenceService.createLicence).to.not.be.called();
                         });
                 });
             });
 
-            context('licence doesnt exist in db', () => {
+            context('licence does not exist in db', () => {
                 it('should create a new licence', () => {
+                    licenceService.getLicence.resolves(undefined);
+                    licenceService.createLicence.resolves();
 
-                    licenceServiceStub.getLicence.resolves(undefined);
-                    licenceServiceStub.createLicence.resolves();
+                    const app = createApp({licenceService, prisonerService});
+
                     return request(app)
                         .post('/eligibilityStart')
                         .send({nomisId: '123'})
                         .expect(302)
                         .expect(res => {
-                            expect(licenceServiceStub.createLicence).to.be.called();
-                            expect(licenceServiceStub.createLicence).to.be.calledWith('123');
+                            expect(licenceService.createLicence).to.be.called();
+                            expect(licenceService.createLicence).to.be.calledWith('123');
                         });
                 });
 
                 it('should include personal details', () => {
+                    licenceService.getLicence.resolves(undefined);
+                    licenceService.createLicence.resolves();
 
-                    licenceServiceStub.getLicence.resolves(undefined);
-                    licenceServiceStub.createLicence.resolves();
+                    const app = createApp({licenceService, prisonerService});
+
                     return request(app)
                         .post('/eligibilityStart')
                         .send({nomisId: '123', firstName: 'fn', lastName: 'ln', dateOfBirth: '13/01/1980'})
                         .expect(302)
                         .expect(res => {
-                            expect(licenceServiceStub.createLicence).to.be.called();
-                            expect(licenceServiceStub.createLicence).to.be.calledWith('123');
+                            expect(licenceService.createLicence).to.be.called();
+                            expect(licenceService.createLicence).to.be.calledWith('123');
                         });
                 });
             });
         });
 
         describe('GET /image/:imageId', () => {
-
             it('should return an image', () => {
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/image/123')
                     .expect(200)
@@ -459,7 +490,10 @@ describe('GET /taskList/:prisonNumber', () => {
             });
 
             it('should return placeholder if no image returned from nomis', () => {
-                prisonerServiceStub.getPrisonerImage.resolves(null);
+                prisonerService.getPrisonerImage.resolves(null);
+
+                const app = createApp({licenceService, prisonerService});
+
                 return request(app)
                     .get('/image/123')
                     .expect(302)
@@ -469,24 +503,19 @@ describe('GET /taskList/:prisonNumber', () => {
 
     });
 
-    context('User is RO', () => {
-
-        const testUser = {
+    describe('User is RO', () => {
+        const roUser = {
             staffId: 'my-staff-id',
             token: 'my-token',
             role: 'RO'
         };
 
-        const app = appSetup(createTaskListRoute({
-            prisonerService: prisonerServiceStub,
-            licenceService: licenceServiceStub,
-            logger: loggerStub,
-            authenticationMiddleware
-        }), testUser);
-
         context('curfew address not started', () => {
             it('should display a start button for curfew address', () => {
-                licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
+                licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
+
+                const app = createApp({licenceService, prisonerService}, roUser);
+
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -500,7 +529,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('curfew address task started', () => {
             it('should display a view button for curfew address task', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {
                         proposedAddress: {
@@ -512,6 +541,9 @@ describe('GET /taskList/:prisonNumber', () => {
                         }
                     }
                 });
+
+                const app = createApp({licenceService, prisonerService}, roUser);
+
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -525,7 +557,10 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('additional condition task not started', () => {
             it('should display a start button for additional conditions task', () => {
-                licenceServiceStub.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
+                licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
+
+                const app = createApp({licenceService, prisonerService}, roUser);
+
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -539,12 +574,15 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('additional condition task started', () => {
             it('should display a view button for curfew address', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {
                         licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
                     }
                 });
+
+                const app = createApp({licenceService, prisonerService}, roUser);
+
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -558,6 +596,8 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('risk management task not started', () => {
             it('should display a start button for additional conditions task', () => {
+                const app = createApp({licenceService, prisonerService}, roUser);
+
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -571,12 +611,15 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('risk management task started', () => {
             it('should display a view button for riskManagement', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {
                         risk: {riskManagement: 'anything'}
                     }
                 });
+
+                const app = createApp({licenceService, prisonerService}, roUser);
+
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -590,7 +633,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('all tasks done,', () => {
             it('should display a submit to OMU button', () => {
-                licenceServiceStub.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {
                         curfew: {
@@ -618,6 +661,9 @@ describe('GET /taskList/:prisonNumber', () => {
                         }
                     }
                 });
+
+                const app = createApp({licenceService, prisonerService}, roUser);
+
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -631,22 +677,16 @@ describe('GET /taskList/:prisonNumber', () => {
     });
 
     context('User is DM', () => {
-        const testUser = {
+        const dmUser = {
             staffId: 'my-staff-id',
             token: 'my-token',
             role: 'DM'
         };
 
-        const app = appSetup(createTaskListRoute({
-            prisonerService: prisonerServiceStub,
-            licenceService: licenceServiceStub,
-            logger: loggerStub,
-            authenticationMiddleware
-        }), testUser);
 
         context('When there is a confiscation order', () => {
             it('should display the postpone HDC button', () => {
-                licenceServiceStub.getLicence.resolves({stage: 'APPROVAL', licence: {
+                licenceService.getLicence.resolves({stage: 'APPROVAL', licence: {
                     finalChecks: {
                       confiscationOrder: {
                         comments: 'dscdscsdcdsc',
@@ -655,6 +695,9 @@ describe('GET /taskList/:prisonNumber', () => {
                       }
                     }
                   }});
+
+                const app = createApp({licenceService, prisonerService}, dmUser);
+
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -667,13 +710,16 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('When there is\'nt a confiscation order', () => {
             it('should not display the postpone HDC button', () => {
-                licenceServiceStub.getLicence.resolves({stage: 'APPROVAL', licence: {
+                licenceService.getLicence.resolves({stage: 'APPROVAL', licence: {
                     finalChecks: {
                       confiscationOrder: {
                         decision: 'No'
                       }
                     }
                   }});
+
+                  const app = createApp({licenceService, prisonerService}, dmUser);
+
                 return request(app)
                     .get('/123')
                     .expect(200)
@@ -684,5 +730,21 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
     });
-
 });
+
+const caUser = {
+    staffId: 'my-staff-id',
+    token: 'my-token',
+    role: 'CA'
+};
+
+function createApp({prisonerService, licenceService}, user = caUser) {
+    const route = createTaskListRoute({
+        prisonerService,
+        licenceService,
+        logger: loggerStub,
+        authenticationMiddleware
+    });
+
+    return appSetup(route, user);
+}

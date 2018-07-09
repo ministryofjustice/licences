@@ -1,5 +1,4 @@
 const {getLicenceStatus} = require('../../server/utils/licenceStatus');
-const {expect} = require('../testSetup');
 const {taskStates} = require('../../server/models/taskStates');
 
 describe('getLicenceStatus', () => {

@@ -1,29 +1,27 @@
-const {
-    nock,
-    expect,
-    sandbox,
-    sinon,
-    signInServiceStub
-} = require('../supertestSetup');
+const nock = require('nock');
+
+const {signInServiceStub} = require('../supertestSetup');
 const config = require('../../server/config');
 const nomisClientBuilder = require('../../server/data/nomisClientBuilder');
 
-const fakeNomis = nock(`${config.nomis.apiUrl}`);
-const fakeStore = {
-    get: sandbox.stub().returns(
-        {token: 'token', refreshToken: 'refresh', timestamp: new Date('May 31, 2018 11:00:00').getTime()}
-    ),
-    store: sandbox.stub()
-};
-
-
-const nomisClient = nomisClientBuilder(fakeStore, signInServiceStub)('CA', 'username');
-
 describe('nomisClient', function() {
+    let fakeNomis;
+    let fakeStore;
+    let nomisClient;
+
+    beforeEach(() => {
+        fakeNomis = nock(`${config.nomis.apiUrl}`);
+        fakeStore = {
+            get: sinon.stub().returns(
+                {token: 'token', refreshToken: 'refresh', timestamp: new Date('May 31, 2018 11:00:00').getTime()}
+            ),
+            store: sinon.stub()
+        };
+        nomisClient = nomisClientBuilder(fakeStore, signInServiceStub)('CA', 'username');
+    });
 
     afterEach(() => {
         nock.cleanAll();
-        sandbox.reset();
     });
 
     describe('getUpcomingReleasesByOffenders', () => {

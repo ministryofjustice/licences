@@ -1,24 +1,16 @@
+const request = require('supertest');
+
 const {
-    request,
-    expect,
-    licenceServiceStub,
-    hdcRoute,
-    appSetup
+    createLicenceServiceStub,
+    createApp
 } = require('../supertestSetup');
 
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    roleCode: 'CA'
-};
-
-const app = appSetup(hdcRoute, testUser);
-
 describe('/hdc/optOut', () => {
-
    describe('POST /optOut/:nomisId', () => {
         context('When page contains form fields', () => {
             it('calls updateLicence from licenceService and updates the proposedAddress optOut section', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService});
 
                 const formResponse = {
                     nomisId: '1',
@@ -30,8 +22,8 @@ describe('/hdc/optOut', () => {
                     .send(formResponse)
                     .expect(302)
                     .expect(res => {
-                        expect(licenceServiceStub.update).to.be.calledOnce();
-                        expect(licenceServiceStub.update).to.be.calledWith({
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
                             licence: {key: 'value'},
                             nomisId: '1',
                             fieldMap: [{decision: {}}],

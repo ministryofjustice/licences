@@ -14,7 +14,7 @@ function filterInputs(inputObject, conditionsFieldsRequired) {
     return Object.keys(inputObject)
         .reduce((filteredInput, fieldName) => {
 
-            if(!ALWAYS_REQUIRED.includes(fieldName) && !conditionsFieldsRequired.includes(fieldName)) {
+            if (!ALWAYS_REQUIRED.includes(fieldName) && !conditionsFieldsRequired.includes(fieldName)) {
                 return filteredInput;
             }
 
@@ -28,7 +28,7 @@ function filterInputs(inputObject, conditionsFieldsRequired) {
 
 function getSelectedFieldNamesReducer(array, condition) {
 
-    if(!condition.field_position) {
+    if (!condition.field_position) {
         return array;
     }
     const inputItems = Object.keys(condition.field_position).map(key => key);

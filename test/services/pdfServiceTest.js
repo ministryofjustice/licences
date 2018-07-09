@@ -1,63 +1,60 @@
+const nock = require('nock');
+
 const createPdfService = require('../../server/services/pdfService');
-const {
-    expect,
-    sandbox,
-    nock
-} = require('../supertestSetup');
 const config = require('../../server/config');
 
 describe('pdfService', () => {
+    let licenceService;
+    let conditionsService;
+    let prisonerService;
+    let pdfFormatter;
+    let service;
+    let fakePdfGenerator;
 
     const licence = {key: 'value'};
     const licenceResponse = {licence};
     const prisonerResponse = {facialImageId: 'imageId'};
     const establishmentResponse = {};
     const imageResponse = {};
-
-    const licenceService = {
-        getLicence: sandbox.stub().returnsPromise().resolves(licenceResponse)
-    };
-
-    const conditionsService = {
-        populateLicenceWithConditions: sandbox.stub().returnsPromise().resolves(licence)
-    };
-
-    const prisonerService = {
-        getPrisonerDetails: sandbox.stub().returnsPromise().resolves(prisonerResponse),
-        getEstablishmentForPrisoner: sandbox.stub().returnsPromise().resolves(establishmentResponse),
-        getPrisonerImage: sandbox.stub().returnsPromise().resolves(imageResponse)
-    };
-
-    const logger = {
-        info: sandbox.stub(),
-        error: sandbox.stub()
-    };
-
     const values = {
         OFF_NAME: 'FIRST LAST'
     };
-
     const pdf1AsBytes = [80, 68, 70, 45, 49];
-
-    const pdfFormatter = {
-        formatPdfData: sandbox.stub().returnsPromise().resolves({values})
+    const templateName = 'hdc_ap_pss';
+    const logger = {
+        info: sinon.stub(),
+        error: sinon.stub()
     };
 
-    const service = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter);
+    beforeEach(() => {
+        licenceService = {
+            getLicence: sinon.stub().resolves(licenceResponse)
+        };
 
-    const templateName = 'hdc_ap_pss';
+        conditionsService = {
+            populateLicenceWithConditions: sinon.stub().resolves(licence)
+        };
 
-    const fakePdfGenerator = nock(`${config.pdf.pdfServiceHost}`);
+        prisonerService = {
+            getPrisonerDetails: sinon.stub().resolves(prisonerResponse),
+            getEstablishmentForPrisoner: sinon.stub().resolves(establishmentResponse),
+            getPrisonerImage: sinon.stub().resolves(imageResponse)
+        };
+
+        pdfFormatter = {
+            formatPdfData: sinon.stub().resolves({values})
+        };
+
+        service = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter);
+        fakePdfGenerator = nock(`${config.pdf.pdfServiceHost}`);
+    });
 
     afterEach(() => {
-        sandbox.reset();
         nock.cleanAll();
     });
 
     describe('generatePdf', () => {
-
         it('should call services, format data, and return as buffer', async () => {
-
             fakePdfGenerator
                 .post('/generate', {templateName, values})
                 .reply(200, pdf1AsBytes);
@@ -77,9 +74,7 @@ describe('pdfService', () => {
     });
 
     describe('getPdf', () => {
-
         it('Posts to PDF generator and renders response as byte buffer', async () => {
-
             fakePdfGenerator
                 .post('/generate', {templateName, values})
                 .reply(200, pdf1AsBytes);
@@ -89,7 +84,6 @@ describe('pdfService', () => {
         });
 
         it('should throw if error in PDF generator service', () => {
-
             fakePdfGenerator
                 .post('/generate', {templateName, values})
                 .reply(500, 'DIED');
@@ -100,7 +94,6 @@ describe('pdfService', () => {
 
     describe('getPdfLicenceData', () => {
         it('should request details from services and pass to formatter', async () => {
-
             await service.getPdfLicenceData(templateName, '123', 'token');
 
             expect(licenceService.getLicence).to.be.calledOnce();
@@ -126,7 +119,6 @@ describe('pdfService', () => {
 
 
         it('should throw if error in other service', () => {
-
             licenceService.getLicence.rejects(new Error('dead'));
             return expect(service.getPdfLicenceData(templateName, '123', 'token')).to.be.rejected();
         });

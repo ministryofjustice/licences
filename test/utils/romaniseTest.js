@@ -1,5 +1,4 @@
 const {romanise} = require('../../server/utils/romanise');
-const {expect} = require('../testSetup');
 
 describe('romanise', () => {
 

@@ -1,10 +1,9 @@
+const request = require('supertest');
+
 const {
-    request,
-    expect,
-    licenceServiceStub,
-    hdcRoute,
+    createLicenceServiceStub,
+    createApp,
     formConfig,
-    appSetup,
     testFormPageGets
 } = require('../supertestSetup');
 
@@ -14,24 +13,19 @@ const testUser = {
     roleCode: 'CA'
 };
 
-const app = appSetup(hdcRoute, testUser);
-
 describe('/hdc/curfew', () => {
-
     describe('curfew routes', () => {
-
-        beforeEach(() => {
-            licenceServiceStub.getLicence.resolves({
-                    licence: {
-                       proposedAddress: {
-                           curfewAddress: {
-                               addresses: []
-                           }
-                       }
-                    }
-                }
-            );
+        const licenceService = createLicenceServiceStub();
+        licenceService.getLicence = sinon.stub().resolves({
+            licence: {
+               proposedAddress: {
+                   curfewAddress: {
+                       addresses: []
+                   }
+               }
+            }
         });
+        const app = createApp({licenceService}, testUser);
 
         const routes = [
             {url: '/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
@@ -41,7 +35,7 @@ describe('/hdc/curfew', () => {
             {url: '/curfew/consentWithdrawn/1', content: 'The landlord/homeowner has withdrawn consent'}
         ];
 
-        testFormPageGets(app, routes);
+        testFormPageGets(app, routes, licenceService);
     });
 
     describe('POST /hdc/curfew/:form/:nomisId', () => {
@@ -80,13 +74,15 @@ describe('/hdc/curfew', () => {
 
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, testUser);
                 return request(app)
                     .post(route.url)
                     .send(route.body)
                     .expect(302)
                     .expect(res => {
-                        expect(licenceServiceStub.update).to.be.calledOnce();
-                        expect(licenceServiceStub.update).to.be.calledWith({
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
                             licence: {key: 'value'},
                             nomisId: '1',
                             fieldMap: formConfig[route.section].fields,
@@ -102,7 +98,6 @@ describe('/hdc/curfew', () => {
     });
 
     describe('/curfew/curfewAddressReview/1', () => {
-
         const licence = {
             licence: {
                 proposedAddress: {
@@ -112,10 +107,6 @@ describe('/hdc/curfew', () => {
                 }
             }
         };
-
-        beforeEach(() => {
-            licenceServiceStub.getLicence.resolves(licence);
-        });
 
         const routes = [
             {
@@ -158,13 +149,16 @@ describe('/hdc/curfew', () => {
 
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
+                const licenceService = createLicenceServiceStub();
+                licenceService.getLicence = sinon.stub().resolves(licence);
+                const app = createApp({licenceService});
                 return request(app)
                     .post(route.url)
                     .send(route.body)
                     .expect(302)
                     .expect(res => {
-                        expect(licenceServiceStub.updateAddress).to.be.calledOnce();
-                        expect(licenceServiceStub.updateAddress).to.be.calledWith({
+                        expect(licenceService.updateAddress).to.be.calledOnce();
+                        expect(licenceService.updateAddress).to.be.calledWith({
                             licence: licence.licence,
                             nomisId: '1',
                             fieldMap: formConfig[route.section].fields,

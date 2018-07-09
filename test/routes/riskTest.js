@@ -1,10 +1,9 @@
+const request = require('supertest');
+
 const {
-    request,
-    expect,
-    licenceServiceStub,
-    hdcRoute,
+    createLicenceServiceStub,
+    createApp,
     formConfig,
-    appSetup,
     testFormPageGets
 } = require('../supertestSetup');
 
@@ -14,22 +13,23 @@ const testUser = {
     roleCode: 'CA'
 };
 
-const app = appSetup(hdcRoute, testUser);
-
 describe('/hdc/risk', () => {
-
     describe('risk routes', () => {
         const routes = [
             {url: '/risk/riskManagement/1', content: 'Risk management and victim liaison'}
         ];
+        const licenceService = createLicenceServiceStub();
+        const app = createApp({licenceService}, testUser);
 
-        testFormPageGets(app, routes);
+        testFormPageGets(app, routes, licenceService);
     });
 
 
     describe('POST /risk/:formName/:nomisId', () => {
         context('When page contains form fields', () => {
             it('calls updateLicence from licenceService', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, testUser);
 
                 const formResponse = {
                     nomisId: '1',
@@ -42,8 +42,8 @@ describe('/hdc/risk', () => {
                     .send(formResponse)
                     .expect(302)
                     .expect(res => {
-                        expect(licenceServiceStub.update).to.be.calledOnce();
-                        expect(licenceServiceStub.update).to.be.calledWith({
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
                             licence: {key: 'value'},
                             nomisId: '1',
                             fieldMap: formConfig.riskManagement.fields,

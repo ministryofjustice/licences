@@ -26,7 +26,7 @@ exports.record = function record(key, user, data) {
 
 function addItem(key, user, data) {
     const query = {
-        text: `insert into audit (user, action, details) 
+        text: `insert into audit (user, action, details)
                      VALUES ($1, $2, $3);`,
         values: [user, key, data]
     };

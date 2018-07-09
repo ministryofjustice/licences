@@ -1,4 +1,3 @@
-const {expect} = require('../testSetup');
 const {
     createAdditionalConditionsObject,
     populateAdditionalConditionsAsString,

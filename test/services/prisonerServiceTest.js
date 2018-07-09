@@ -1,35 +1,17 @@
 const {createPrisonerService} = require('../../server/services/prisonerService');
-const {
-    sandbox,
-    expect
-} = require('../testSetup');
 
 describe('prisonerDetailsService', () => {
+    let nomisClientMock;
+    let service;
 
     const hdcPrisonersResponse = [{bookingId: 1, facialImageId: 2, agencyLocationId: 'ABC', middleName: 'Middle'}];
     const identifiersResponse = [{type: 'PNC', value: 'PNC001'}, {type: 'CRO', value: 'CRO001'}];
     const aliasesResponse = [{firstName: 'ALIAS', lastName: 'One'}, {firstName: 'AKA', lastName: 'Two'}];
     const mainOffenceResponse = [{offenceDescription: 'Robbery, conspiracy to rob'}];
     const comRelationResponse = [{firstName: 'COMFIRST', lastName: 'comLast'}];
-
     const imageInfoResponse = {imageId: 'imgId', captureDate: '1971-11-23'};
-    const imageDataResponse = new Buffer('image');
-
+    const imageDataResponse = Buffer.from('image');
     const establishmentResponse = {premise: 'HMP Licence Test Prison'};
-
-    const nomisClientMock = {
-        getOffenderSentences: sandbox.stub().returnsPromise().resolves(hdcPrisonersResponse),
-        getIdentifiers: sandbox.stub().returnsPromise().resolves(identifiersResponse),
-        getAliases: sandbox.stub().returnsPromise().resolves(aliasesResponse),
-        getMainOffence: sandbox.stub().returnsPromise().resolves(mainOffenceResponse),
-        getImageInfo: sandbox.stub().returnsPromise().resolves(imageInfoResponse),
-        getImageData: sandbox.stub().returnsPromise().resolves(imageDataResponse),
-        getEstablishment: sandbox.stub().returnsPromise().resolves(establishmentResponse),
-        getComRelation: sandbox.stub().returnsPromise().resolves(comRelationResponse)
-    };
-
-    const nomisClientBuilder = sandbox.stub().returns(nomisClientMock);
-
     const prisonerInfoResponse = {
         bookingId: 1,
         facialImageId: 2,
@@ -44,15 +26,22 @@ describe('prisonerDetailsService', () => {
         middleName: 'Middle'
     };
 
-
-    const service = createPrisonerService(nomisClientBuilder);
-
-    afterEach(() => {
-        sandbox.reset();
+    beforeEach(() => {
+        nomisClientMock = {
+            getOffenderSentences: sinon.stub().resolves(hdcPrisonersResponse),
+            getIdentifiers: sinon.stub().resolves(identifiersResponse),
+            getAliases: sinon.stub().resolves(aliasesResponse),
+            getMainOffence: sinon.stub().resolves(mainOffenceResponse),
+            getImageInfo: sinon.stub().resolves(imageInfoResponse),
+            getImageData: sinon.stub().resolves(imageDataResponse),
+            getEstablishment: sinon.stub().resolves(establishmentResponse),
+            getComRelation: sinon.stub().resolves(comRelationResponse)
+        };
+        const nomisClientBuilder = sinon.stub().returns(nomisClientMock);
+        service = createPrisonerService(nomisClientBuilder);
     });
 
     describe('getPrisonerDetails', () => {
-
         it('should call the api with the nomis id then booking id', async () => {
             await service.getPrisonerDetails('123', 'username');
 
@@ -77,7 +66,6 @@ describe('prisonerDetailsService', () => {
         });
 
         it('should return the only selected identifiers', () => {
-
             const identifiersResponseWithOthers = [
                 {type: 'PNC', value: 'PNC001'},
                 {type: 'IGNORE', value: 'IGNORE001'},
@@ -97,7 +85,6 @@ describe('prisonerDetailsService', () => {
         });
 
         it('it should return false for imageId of no image', async () => {
-
             const prisonerResponse2 = [{bookingId: 1, facialImageId: null}];
 
             nomisClientMock.getOffenderSentences.resolves(prisonerResponse2);
@@ -131,7 +118,6 @@ describe('prisonerDetailsService', () => {
     });
 
     describe('getEstablishmentForPrisoner', () => {
-
         it('should call the api with the nomis id', async () => {
 
             nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
@@ -174,9 +160,7 @@ describe('prisonerDetailsService', () => {
     });
 
     describe('getComForPrisoner', () => {
-
         it('should call the api with the nomis id', async () => {
-
             nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
 
             await service.getComForPrisoner('123', 'username');

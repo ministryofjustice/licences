@@ -49,7 +49,7 @@ function compareReleaseDates(address1, address2) {
     const hdced1 = getIn(address1, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
     const hdced2 = getIn(address2, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
 
-    if(hdced1 !== hdced2) {
+    if (hdced1 !== hdced2) {
         return dateDifference(hdced1, hdced2);
     }
 

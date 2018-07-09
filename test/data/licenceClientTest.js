@@ -1,12 +1,8 @@
 const proxyquire = require('proxyquire');
 proxyquire.noCallThru();
 
-const {
-    expect,
-    sandbox
-} = require('../testSetup');
-
 describe('licenceClient', () => {
+    let queryStub;
 
     const standardResponse = {
         rows: [{
@@ -20,9 +16,6 @@ describe('licenceClient', () => {
             }
         }]
     };
-
-    const queryStub = sandbox.stub();
-
     const licencesProxy = (query = queryStub) => {
         return proxyquire('../../server/data/licenceClient', {
             './dataAccess/db': {
@@ -32,12 +25,9 @@ describe('licenceClient', () => {
     };
 
     beforeEach(() => {
-        queryStub.returnsPromise().resolves(standardResponse);
+        queryStub = sinon.stub().resolves(standardResponse);
     });
 
-    afterEach(() => {
-        sandbox.reset();
-    });
 
     describe('getLicences', function() {
 

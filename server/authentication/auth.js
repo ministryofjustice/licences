@@ -27,12 +27,12 @@ function init(signInService) {
         try {
             const user = await signInService.signIn(username, password);
 
-            if(isEmpty(user)) {
+            if (isEmpty(user)) {
                 return done(null, false, {message: 'Incorrect username or password'});
             }
 
             return done(null, user);
-        } catch(error) {
+        } catch (error) {
             return done(null, false, {message: 'A system error occured; please try again later'});
         }
     });

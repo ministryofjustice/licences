@@ -1,5 +1,3 @@
-const {expect} = require('../testSetup');
-
 const {getPathFor} = require('../../server/utils/routes');
 
 describe('getPathFor', () => {
