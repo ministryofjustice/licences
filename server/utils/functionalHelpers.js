@@ -19,7 +19,8 @@ module.exports = {
     difference,
     getUniqueStrings,
     pipe,
-    removeFromArray
+    removeFromArray,
+    all
 };
 
 // pass in your object and a path in array format
@@ -38,6 +39,10 @@ function flatten(array) {
 
 function allValuesEmpty(object) {
     return R.pipe(R.values, R.all(isEmpty))(object);
+}
+
+function all(predicate, array) {
+    return R.all(predicate)(array);
 }
 
 function notAllValuesEmpty(object) {
