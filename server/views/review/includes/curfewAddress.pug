@@ -60,7 +60,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             div.pure-u-3-4
-                span According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+                span According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
     div.pure-u-1-2
         div#dischargeContactNumber
             +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
@@ -70,7 +70,7 @@ if licenceStatus.stage !== 'ELIGIBILITY'
         div.pure-u-1-2
             div.pure-g
                 div.pure-u-3-4
-                    span Does the homeowner/landlord give informed consent to HDC at the address?
+                    span Does the main occupier consent to HDC?
         div.pure-u-1-2
             div#dischargeHomeAddress
                 #{errors.electricity}
@@ -79,7 +79,7 @@ if licenceStatus.stage !== 'ELIGIBILITY'
     if(address.consent === 'Yes')
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
-                span Does the address have an electricity supply?
+                span Is there an electricity supply?
             div.pure-u-1-2
                 +itemAndError(address.electricity, errors.electricity, "electricity-curfew")
 

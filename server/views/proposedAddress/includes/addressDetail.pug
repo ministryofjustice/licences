@@ -44,7 +44,7 @@ mixin addressDetail(type, address)
 
             if address.cautionedAgainstResident
                 div.pure-u-md-5-6
-                    p According to the offender, have they been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+                    p According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
 
                         p.bold(id="cautioned-"+type) #{address.cautionedAgainstResident}
 
@@ -52,7 +52,7 @@ mixin addressDetail(type, address)
         div.pure-g.largeMarginTop.paddingTop.smallPaddingBottom.borderTopLight
             div.pure-u-1-2
                 div.pure-u-md-4-5
-                    | Does the homeowner/landlord give informed consent to HDC at the address?
+                    | Does the main occupier consent to HDC?
                     p.bold(id="consent-"+type) #{address.consent}
 
                 if(address.consent === 'Yes' && address.electricity !== 'No')
@@ -66,11 +66,11 @@ mixin addressDetail(type, address)
                 div.pure-u-1-2
                     if address.electricity
                         div.pure-u-md-4-5.midPaddingBottom
-                            | Does this address have an electricity supply?
+                            | Is there an electricity supply?
                             p.bold(id="electricity-"+type) #{address.electricity}
 
                     if(address.electricity === 'Yes')
                         if address.homeVisitConducted
                             div.pure-u-md-4-5
-                                | Was a home visit conducted in this case?
+                                | Did you do a home visit?
                                 p.bold(id="homeVisit-"+type) #{address.homeVisitConducted}
