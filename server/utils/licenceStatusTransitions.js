@@ -66,7 +66,8 @@ function canSendCaToRo(licenceStatus) {
         tasks.curfewAddress
     ];
 
-    if (stage !== 'ELIGIBILITY') {
+    const addressReviewNeeded = stage === 'PROCESSING_CA' && tasks.curfewAddressReview === 'UNSTARTED';
+    if (stage !== 'ELIGIBILITY' && !addressReviewNeeded) {
         return false;
     }
 

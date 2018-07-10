@@ -2,9 +2,9 @@
 - var addressSubmitValue = addressWithdrawn ? "No" : "Yes"
 - var addressButtonText = addressWithdrawn ? "Reinstate address" : "Offender withdrawn address"
 
-- var consentGiven = address.consent === "Yes"
-- var consentSubmitValue = consentGiven ? "No" : "Yes"
-- var consentButtonText = consentGiven ? "Consent withdrawn" : "Reinstate consent"
+- var consentWithdrawn = address.consentWithdrawn === "Yes"
+- var consentSubmitValue = consentWithdrawn ? "No" : "Yes"
+- var consentButtonText = consentWithdrawn ? "Reinstate consent" : "Consent withdrawn"
 
 div
     h3.heading-small Actions
@@ -14,7 +14,7 @@ div
             div
                 form(method="post", name="withdrawConsent", action="/hdc/curfew/withdrawConsent/" + nomisId)
                     input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="consent" value=consentSubmitValue)
+                    input(type="hidden" name="consentWithdrawn" value=consentSubmitValue)
                     button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") #{consentButtonText}
 
         div.pure-u-md-1-2

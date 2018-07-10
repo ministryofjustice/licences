@@ -92,13 +92,13 @@ module.exports = {
     withdrawConsent: {
         pageDataMap: ['licence'],
         fields: [
-            {consent: {}}
+            {consentWithdrawn: {}}
         ],
         nextPath: {
             decisions: [
                 {
-                    discriminator: 'consent',
-                    No: '/hdc/curfew/consentWithdrawn/'
+                    discriminator: 'consentWithdrawn',
+                    Yes: '/hdc/curfew/consentWithdrawn/'
                 }
             ],
             path: '/hdc/taskList/'
