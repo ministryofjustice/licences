@@ -4,7 +4,8 @@ const {
     appSetup,
     caseListServiceStub,
     loggerStub,
-    authenticationMiddleware
+    authenticationMiddleware,
+    auditStub
 } = require('../supertestSetup');
 
 const {roles} = require('../../server/models/roles');
@@ -22,7 +23,8 @@ describe('GET /caseList', () => {
     const app = appSetup(createCaseListRoute({
         logger: loggerStub,
         caseListService: caseListServiceStub,
-        authenticationMiddleware
+        authenticationMiddleware,
+        audit: auditStub
     }));
 
     it('redirects to tab if none supplied', () => {
@@ -222,7 +224,8 @@ describe('GET /caseList', () => {
         const app = appSetup(createCaseListRoute({
             logger: loggerStub,
             caseListService: caseListServiceStub,
-            authenticationMiddleware
+            authenticationMiddleware,
+            audit: auditStub
         }), testUser);
 
         beforeEach(() => {
@@ -310,7 +313,8 @@ describe('GET /caseList', () => {
         const app = appSetup(createCaseListRoute({
             logger: loggerStub,
             caseListService: caseListServiceStub,
-            authenticationMiddleware
+            authenticationMiddleware,
+            audit: auditStub
         }), testUser);
 
         context('tab is ready', () => {

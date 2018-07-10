@@ -3,23 +3,27 @@ const signInService = require('../../server/authentication/signInService');
 const config = require('../../server/config');
 
 
-describe('signInSAervice', () => {
+describe('signInService', () => {
     let fakeNomis;
     let fakeOauth;
     let fakeStore;
     let service;
+    let auditStub;
 
     beforeEach(() => {
         fakeNomis = nock(`${config.nomis.apiUrl}`);
         fakeOauth = nock(`${config.nomis.apiUrl.replace('/api', '')}`);
         fakeStore = {store: sinon.stub(), get: sinon.stub()};
-        service = signInService(fakeStore);
+        auditStub = {record: sinon.stub()};
+        service = signInService(fakeStore, auditStub);
     });
 
     afterEach(() => {
         nock.cleanAll();
     });
+
     describe('signIn', () => {
+
         it('should return user object if all apis succeed', () => {
             fakeOauth
                 .post(`/oauth/token`)
@@ -51,7 +55,6 @@ describe('signInSAervice', () => {
         });
 
         it('should add the token to the token store', async () => {
-
             fakeOauth
                 .post(`/oauth/token`)
                 .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh'});
@@ -73,7 +76,6 @@ describe('signInSAervice', () => {
         });
 
         it('should get RO client credentials token when user role is RO', async () => {
-
             fakeOauth
                 .post(`/oauth/token`, 'grant_type=password&username=un&password=pw')
                 .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh'});

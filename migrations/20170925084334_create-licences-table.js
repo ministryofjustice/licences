@@ -1,6 +1,6 @@
 exports.up = knex =>
     Promise.all([
-        knex.schema.createTableIfNotExists('licences', table => {
+        knex.schema.createTable('licences', table => {
             table.increments('id').primary('pk_licence');
             table.jsonb('licence').nullable();
             table.string('nomis_id').notNullable();

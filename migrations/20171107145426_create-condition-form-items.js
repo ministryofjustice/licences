@@ -1,6 +1,6 @@
 exports.up = knex =>
     Promise.all([
-        knex.schema.createTableIfNotExists('conditions_ui', table => {
+        knex.schema.createTable('conditions_ui', table => {
             table.increments('id').primary('pk_conditions_ui');
             table.string('ui_id');
             table.jsonb('field_position').nullable();

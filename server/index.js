@@ -4,6 +4,8 @@ const logger = require('../log');
 const TokenStore = require('./authentication/tokenStore');
 const tokenStore = new TokenStore();
 
+const audit = require('./data/audit');
+
 const licenceClient = require('./data/licenceClient');
 const nomisClientBuilder = require('./data/nomisClientBuilder');
 const pdfFormatter = require('./services/utils/pdfFormatter');
@@ -17,7 +19,7 @@ const createPdfService = require('./services/pdfService');
 const createSearchService = require('./services/searchService');
 const createCaseListFormatter = require('./services/utils/caseListFormatter');
 
-const signInService = createSignInService(tokenStore);
+const signInService = createSignInService(tokenStore, audit);
 const licenceService = createLicenceService(licenceClient);
 const conditionsService = createConditionsService(licenceClient);
 const prisonerService = createPrisonerService(nomisClientBuilder(tokenStore, signInService));
@@ -36,7 +38,8 @@ const app = createApp({
     caseListService,
     pdfService,
     searchService,
-    tokenStore
+    tokenStore,
+    audit
 });
 
 module.exports = app;

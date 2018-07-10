@@ -2,7 +2,7 @@ const express = require('express');
 const {asyncMiddleware} = require('../utils/middleware');
 const {templates} = require('./config/pdf');
 
-module.exports = function({logger, pdfService, authenticationMiddleware}) {
+module.exports = function({logger, pdfService, authenticationMiddleware, audit}) {
 
     const router = express.Router();
     router.use(authenticationMiddleware());
@@ -30,6 +30,8 @@ module.exports = function({logger, pdfService, authenticationMiddleware}) {
         const {nomisId, templateName} = req.params;
         logger.debug(`GET pdf/create/${nomisId}/${templateName}`);
         const pdf = await pdfService.generatePdf(templateName, nomisId, req.user.username);
+
+        audit.record('CREATE_PDF', req.user.email, {templateName, nomisId});
 
         res.type('application/pdf');
         return res.end(pdf, 'binary');

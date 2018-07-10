@@ -2,9 +2,17 @@ const logger = require('../../log');
 const db = require('./dataAccess/db');
 
 const keys = [
+    'LOGIN',
+    'VIEW_CASELIST',
     'VIEW_TASKLIST',
-    'VIEW_PRISONER_DETAILS',
-    'VIEW_ADDRESS_DETAILS'
+    'LICENCE_RECORD_STARTED',
+    'VIEW_SECTION',
+    'UPDATE_SECTION',
+    'REVIEW_SECTION',
+    'SEND',
+    'CREATE_PDF',
+    'SEARCH_OFFENDERS',
+    'VIEW_SEARCH_OFFENDERS_RESULT'
 ];
 
 exports.record = function record(key, user, data) {
@@ -26,8 +34,7 @@ exports.record = function record(key, user, data) {
 
 function addItem(key, user, data) {
     const query = {
-        text: `insert into audit (user, action, details)
-                     VALUES ($1, $2, $3);`,
+        text: `insert into audit ("user", action, details) values ($1, $2, $3);`,
         values: [user, key, data]
     };
 

@@ -46,6 +46,10 @@ const loggerStub = {
     error: sinon.stub()
 };
 
+const auditStub = {
+    record: sinon.stub()
+};
+
 const signInServiceStub = {
     signIn: sinon.stub().resolves(),
     refresh: sinon.stub().resolves()
@@ -100,6 +104,7 @@ const createHdcRoute = overrides => createLicenceConditionsRoute({
     conditionsService: createConditionsServiceStub(),
     prisonerService: createPrisonerServiceStub(),
     authenticationMiddleware,
+    audit: auditStub,
     ...overrides
 });
 
@@ -141,6 +146,7 @@ function testFormPageGets(app, routes, licenceServiceStub) {
 
 const setup = {
     loggerStub,
+    auditStub,
     signInServiceStub,
     createLicenceServiceStub,
     createConditionsServiceStub,

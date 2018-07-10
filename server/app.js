@@ -45,7 +45,8 @@ module.exports = function createApp({
                                         caseListService,
                                         pdfService,
                                         searchService,
-                                        tokenStore
+                                        tokenStore,
+                                        audit
                                     }) {
     const app = express();
 
@@ -252,15 +253,15 @@ module.exports = function createApp({
     });
 
     app.get('/', (req, res) => res.redirect('/caseList/'));
-    app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
-    app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware}));
+    app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware, audit}));
+    app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
-    app.use('/hdc/pdf/', createPdfRouter({logger, pdfService, authenticationMiddleware}));
-    app.use('/hdc/search/', createSearchRouter({logger, searchService, authenticationMiddleware}));
+    app.use('/hdc/pdf/', createPdfRouter({logger, pdfService, authenticationMiddleware, audit}));
+    app.use('/hdc/search/', createSearchRouter({logger, searchService, authenticationMiddleware, audit}));
     app.use('/hdc/taskList/',
-        createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware}));
+        createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware, audit}));
     app.use('/hdc/',
-        createHdcRouter({logger, licenceService, conditionsService, prisonerService, authenticationMiddleware}));
+        createHdcRouter({logger, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
 
     // Error Handler
     app.use(function(req, res, next) {

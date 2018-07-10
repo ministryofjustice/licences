@@ -6,7 +6,7 @@ const {getAllowedTransitions} = require('../utils/licenceStatusTransitions');
 
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
 
-module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware}) {
+module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -34,6 +34,8 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         const {nomisId, sender, receiver, transitionType} = req.body;
         const licence = await licenceService.getLicence(nomisId);
         await licenceService.markForHandover(nomisId, sender, receiver, licence);
+
+        audit.record('SEND', req.user.email, {nomisId, sender, receiver, transitionType});
 
         res.redirect(`/hdc/sent/${transitionType}`);
     }));

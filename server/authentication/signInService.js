@@ -14,7 +14,7 @@ const timeoutSpec = {
 
 const RO_ROLE_CODE = 'RO';
 
-function signInService(tokenStore) {
+function signInService(tokenStore, audit) {
 
     return {
 
@@ -25,6 +25,7 @@ function signInService(tokenStore) {
             try {
                 const {profile, role, token, refreshToken} = await login(username, password);
                 tokenStore.store(username, role, token, refreshToken);
+                audit.record('LOGIN', profile.email);
 
                 const activeCaseLoad = await getCaseLoad(token, profile.activeCaseLoadId);
 
@@ -212,6 +213,6 @@ function unauthorised(error) {
     return [400, 401, 403].includes(error.status);
 }
 
-module.exports = function createSignInService(tokenStore) {
-    return signInService(tokenStore);
+module.exports = function createSignInService(tokenStore, audit) {
+    return signInService(tokenStore, audit);
 };

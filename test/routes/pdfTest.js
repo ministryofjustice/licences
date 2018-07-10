@@ -4,7 +4,8 @@ const {
     loggerStub,
     pdfServiceStub,
     authenticationMiddleware,
-    appSetup
+    appSetup,
+    auditStub
 } = require('../supertestSetup');
 
 const createPdfRoute = require('../../server/routes/pdf');
@@ -18,7 +19,8 @@ const testUser = {
 const app = appSetup(createPdfRoute({
     logger: loggerStub,
     pdfService: pdfServiceStub,
-    authenticationMiddleware
+    authenticationMiddleware,
+    audit: auditStub
 }), testUser);
 
 const valuesWithMissing = {

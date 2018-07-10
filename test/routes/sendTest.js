@@ -5,7 +5,8 @@ const {
     createLicenceServiceStub,
     createPrisonerServiceStub,
     authenticationMiddleware,
-    appSetup
+    appSetup,
+    auditStub
 } = require('../supertestSetup');
 
 const createSendRoute = require('../../server/routes/send');
@@ -113,6 +114,7 @@ function createApp({licenceService, prisonerService}, user = caUser) {
         licenceService,
         prisonerService,
         logger: loggerStub,
-        authenticationMiddleware
+        authenticationMiddleware,
+        audit: auditStub
     }), user);
 }

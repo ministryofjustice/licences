@@ -26,7 +26,9 @@ const formConfig = {
     ...approvalConfig
 };
 
-module.exports = function({logger, licenceService, conditionsService, prisonerService, authenticationMiddleware}) {
+module.exports = function(
+    {logger, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}) {
+
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -49,6 +51,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
 
         const data = getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {};
 
+        audit.record('VIEW_SECTION', req.user.email,
+            {nomisId, sectionName: 'licenceConditions', formName: 'standard'});
+
         res.render('licenceConditions/standard', {nomisId, conditions, data});
     }));
 
@@ -59,6 +64,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const licence = getIn(res.locals.licence, ['licence']);
         const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
         const conditions = await conditionsService.getAdditionalConditions(licence);
+
+        audit.record('VIEW_SECTION', req.user.email,
+            {nomisId, sectionName: 'licenceConditions', formName: 'additionalConditions'});
 
         res.render('licenceConditions/additionalConditions', {nomisId, conditions, bespokeConditions});
     }));
@@ -76,6 +84,16 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         }
 
         await licenceService.updateLicenceConditions(nomisId, additional, bespoke);
+
+        audit.record('UPDATE_SECTION', req.user.email,
+            {
+                nomisId,
+                sectionName: 'licenceConditions',
+                formName: 'additionalConditions',
+                action: 'update',
+                userInput: {additionalConditions, bespokeConditions}
+            });
+
         res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
     }));
 
@@ -95,6 +113,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const errorObject = licenceService.getConditionsErrors(licence);
         const data = await conditionsService.populateLicenceWithConditions(licence, errorObject);
 
+        audit.record('VIEW_SECTION', req.user.email,
+            {nomisId, sectionName: 'licenceConditions', formName: 'conditionsSummary'});
+
         res.render(`licenceConditions/conditionsSummary`, {nomisId, data, nextPath});
     }));
 
@@ -106,6 +127,15 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             if (conditionId) {
                 await licenceService.deleteLicenceCondition(nomisId, conditionId);
             }
+
+            audit.record('UPDATE_SECTION', req.user.email,
+                {
+                    nomisId,
+                    sectionName: 'licenceConditions',
+                    formName: 'additionalConditions',
+                    action: 'delete',
+                    userInput: {conditionId}
+                });
 
             res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         })
@@ -124,6 +154,8 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.username);
+
+        audit.record('REVIEW_SECTION', req.user.email, {nomisId, sectionName});
 
         res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus, errorObject});
     }));
@@ -158,6 +190,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const errorObject = getIn(errors, ['approval', 'release']) || {};
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
+        audit.record('VIEW_SECTION', req.user.email,
+            {nomisId, sectionName: 'approval', formName: 'release'});
+
         res.render('approval/release', {prisonerInfo, nomisId, data, nextPath, errorObject, licenceStatus});
     }));
 
@@ -171,6 +206,8 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
             const data = lastItem(addresses);
             const nextPath = formConfig[formName].nextPath;
+
+            audit.record('VIEW_SECTION', req.user.email, {nomisId, sectionName: 'curfew', formName});
 
             res.render(`curfew/${formName}`, {nomisId, data, nextPath});
         };
@@ -199,6 +236,10 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
                 index: addressIndex
             });
 
+            audit.record('UPDATE_SECTION', req.user.email, {
+                nomisId, sectionName: 'curfew', formName, userInput: req.body
+            });
+
             res.redirect(`${nextPath}${nomisId}`);
         };
     }
@@ -212,6 +253,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         }
 
         const {submitPath, addressToShow} = getCurfewAddressFormData(addresses);
+
+        audit.record('VIEW_SECTION', req.user.email,
+            {nomisId, sectionName: 'proposedAddress', formName: 'curfewAddress'});
 
         res.render('proposedAddress/curfewAddress', {nomisId, data: addressToShow, submitPath});
     });
@@ -230,6 +274,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             });
         }
 
+        audit.record('UPDATE_SECTION', req.user.email,
+            {nomisId, sectionName: 'proposedAddress', formName: 'curfewAddress', action: 'add', userInput: req.body});
+
         res.redirect(`${nextPath}${nomisId}`);
     }));
 
@@ -245,6 +292,15 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             userInput: req.body,
             index: addressIndex
         });
+
+        audit.record('UPDATE_SECTION', req.user.email,
+            {
+                nomisId,
+                sectionName: 'proposedAddress',
+                formName: 'curfewAddress',
+                action: 'update',
+                userInput: req.body
+            });
 
         const nextPath = formConfig.curfewAddress.nextPath.path;
         res.redirect(`${nextPath}${nomisId}`);
@@ -263,6 +319,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const errorObject = getIn(errors, [sectionName, formName]) || {};
 
         const viewData = {nomisId, data, nextPath, licenceStatus, errorObject};
+
+        audit.record('VIEW_SECTION', req.user.email, {nomisId, sectionName, formName});
+
         res.render(`${sectionName}/${formName}`, viewData);
     });
 
@@ -279,6 +338,9 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             formName: 'optOut'
         });
 
+        audit.record('UPDATE_SECTION', req.user.email,
+            {nomisId, sectionName: 'optOut', formName: 'optOut', userInput: req.body});
+
         const nextPath = '/hdc/taskList/';
         res.redirect(`${nextPath}${nomisId}`);
     }));
@@ -287,6 +349,7 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
         const {sectionName, formName, nomisId} = req.params;
 
         logger.debug(`POST ${sectionName}/${formName}/${nomisId}`);
+
 
         const rawLicence = await licenceService.getLicence(nomisId);
         const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
@@ -312,6 +375,15 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
             }
         }
 
+        audit.record('UPDATE_SECTION', req.user.email,
+            {
+                nomisId,
+                sectionName: 'proposedAddress',
+                formName: 'curfewAddress',
+                action: req.body.anchor,
+                userInput: auditableData(req.body)
+            });
+
         if (req.body.anchor) {
             return res.redirect(`${nextPath}${nomisId}#${req.body.anchor}`);
         }
@@ -322,3 +394,15 @@ module.exports = function({logger, licenceService, conditionsService, prisonerSe
     return router;
 };
 
+function auditableData(input) {
+    return Object.keys(input).reduce((objectBuilt, key) => {
+        if (notAcceptedKeys.includes(key)) {
+            return {...objectBuilt};
+        } else {
+            const value = input[key] || '';
+            return {...objectBuilt, ...{[key]: value}};
+        }
+    }, {});
+}
+
+const notAcceptedKeys = ['nomisId', '_csrf', 'anchor'];
