@@ -1,6 +1,6 @@
 
 div.largeMarginBottom
-    h2.heading-medium HDC eligibility and suitability check
+    h2.heading-medium Check eligibility
     if licenceStatus.tasks.eligibility !== 'DONE'
         div.pure-g
             div.pure-u-1.pure-u-md-3-4
@@ -56,7 +56,7 @@ div.largeMarginBottom
 
                         div.pure-g.borderTopLight.smallPaddingTopBottom
                             div.pure-u-3-4.padRight15
-                                | Is there less than 4 weeks to go to the offender's CRD?
+                                | Is there less than 4 weeks to the conditional release date?
                             if licenceStatus.decisions.excluded || licenceStatus.decisions.unsuitableResult
                                 div#crdTimeAnswer.pure-u-1-4.center.bold N/A
                             else if licenceStatus.tasks.crdTime === 'DONE'
@@ -77,5 +77,5 @@ div.largeMarginBottom
                                         | No
 
             div.pure-u-1.pure-u-md-1-4.center
-                a#eligibilityCheckUpdate(href='/hdc/eligibility/excluded/'+prisonerInfo.offenderNo) Change these answers
+                a#eligibilityCheckUpdate(href='/hdc/eligibility/excluded/'+prisonerInfo.offenderNo) Change
 

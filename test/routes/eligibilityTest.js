@@ -20,7 +20,7 @@ describe('/hdc/eligibility', () => {
         const routes = [
             {url: '/eligibility/excluded/1', content: 'statutorily excluded'},
             {url: '/eligibility/suitability/1', content: 'presumed unsuitable'},
-            {url: '/eligibility/crdTime/1', content: '4 weeks until'}
+            {url: '/eligibility/crdTime/1', content: '4 weeks to the conditional release date?'}
         ];
         const licenceService = createLicenceServiceStub();
         const app = createApp({licenceService}, testUser);
