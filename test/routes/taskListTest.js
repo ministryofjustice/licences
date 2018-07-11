@@ -552,6 +552,23 @@ describe('GET /taskList/:prisonNumber', () => {
                             expect(licenceService.createLicence).to.be.calledWith('123');
                         });
                 });
+
+                it('should audit the new licence creation event', () => {
+                    licenceService.getLicence.resolves(undefined);
+                    licenceService.createLicence.resolves();
+
+                    const app = createApp({licenceService, prisonerService});
+
+                    return request(app)
+                        .post('/eligibilityStart')
+                        .send({nomisId: '123'})
+                        .expect(302)
+                        .expect(res => {
+                            expect(auditStub.record).to.be.called();
+                            expect(auditStub.record).to.be.calledWith(
+                                'LICENCE_RECORD_STARTED', 'user@email', {nomisId: '123'});
+                        });
+                });
             });
         });
 
@@ -762,15 +779,17 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('When there is a confiscation order', () => {
             it('should display the postpone HDC button', () => {
-                licenceService.getLicence.resolves({stage: 'APPROVAL', licence: {
-                    finalChecks: {
-                      confiscationOrder: {
-                        comments: 'dscdscsdcdsc',
-                        decision: 'Yes',
-                        confiscationUnitConsulted: 'Yes'
-                      }
+                licenceService.getLicence.resolves({
+                    stage: 'APPROVAL', licence: {
+                        finalChecks: {
+                            confiscationOrder: {
+                                comments: 'dscdscsdcdsc',
+                                decision: 'Yes',
+                                confiscationUnitConsulted: 'Yes'
+                            }
+                        }
                     }
-                  }});
+                });
 
                 const app = createApp({licenceService, prisonerService}, dmUser);
 
@@ -786,15 +805,17 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('When there is\'nt a confiscation order', () => {
             it('should not display the postpone HDC button', () => {
-                licenceService.getLicence.resolves({stage: 'APPROVAL', licence: {
-                    finalChecks: {
-                      confiscationOrder: {
-                        decision: 'No'
-                      }
+                licenceService.getLicence.resolves({
+                    stage: 'APPROVAL', licence: {
+                        finalChecks: {
+                            confiscationOrder: {
+                                decision: 'No'
+                            }
+                        }
                     }
-                  }});
+                });
 
-                  const app = createApp({licenceService, prisonerService}, dmUser);
+                const app = createApp({licenceService, prisonerService}, dmUser);
 
                 return request(app)
                     .get('/123')
@@ -811,6 +832,7 @@ describe('GET /taskList/:prisonNumber', () => {
 const caUser = {
     staffId: 'my-staff-id',
     token: 'my-token',
+    email: 'user@email',
     role: 'CA'
 };
 

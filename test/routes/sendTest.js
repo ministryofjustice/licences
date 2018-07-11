@@ -23,6 +23,8 @@ describe('Send:', () => {
         prisonerService.getLicence = sinon.stub().resolves({});
         prisonerService.getEstablishmentForPrisoner = sinon.stub().resolves({premise: 'HMP Blah'});
         prisonerService.getComForPrisoner = sinon.stub().resolves({com: 'Something'});
+
+        auditStub.record.reset();
     });
 
     describe('When role is CA', () => {
@@ -59,6 +61,20 @@ describe('Send:', () => {
                     .expect(() => {
                         expect(licenceService.markForHandover).to.be.calledOnce();
                         expect(licenceService.markForHandover).to.be.calledWith(123, 'from', 'to');
+                    });
+
+            });
+
+            it('audits the send event', () => {
+                const app = createApp({licenceService, prisonerService});
+
+                return request(app)
+                    .post('/123')
+                    .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'type'})
+                    .expect(() => {
+                        expect(auditStub.record).to.be.calledOnce();
+                        expect(auditStub.record).to.be.calledWith('SEND', 'user@email',
+                            {nomisId: 123, receiver: 'to', sender: 'from', transitionType: 'type'});
                     });
 
             });
@@ -106,6 +122,7 @@ describe('Send:', () => {
 const caUser = {
     staffId: 'my-staff-id',
     username: 'my-username',
+    email: 'user@email',
     role: 'CA'
 };
 

@@ -27,8 +27,6 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const allowedTransitions = getAllowedTransitions(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
 
-        audit.record('VIEW_TASKLIST', req.user.email, {nomisId});
-
         res.render('taskList/taskList', {
             licenceStatus,
             allowedTransitions,

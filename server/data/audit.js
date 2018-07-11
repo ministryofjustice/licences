@@ -3,16 +3,10 @@ const db = require('./dataAccess/db');
 
 const keys = [
     'LOGIN',
-    'VIEW_CASELIST',
-    'VIEW_TASKLIST',
     'LICENCE_RECORD_STARTED',
-    'VIEW_SECTION',
     'UPDATE_SECTION',
-    'REVIEW_SECTION',
     'SEND',
-    'CREATE_PDF',
-    'SEARCH_OFFENDERS',
-    'VIEW_SEARCH_OFFENDERS_RESULT'
+    'CREATE_PDF'
 ];
 
 exports.record = function record(key, user, data) {

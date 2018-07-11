@@ -13,6 +13,7 @@ const createPdfRoute = require('../../server/routes/pdf');
 const testUser = {
     staffId: 'my-staff-id',
     username: 'my-username',
+    email: 'user@email',
     role: 'CA'
 };
 
@@ -40,6 +41,11 @@ const valuesOnly = {
 };
 
 describe('PDF:', () => {
+
+    beforeEach(() => {
+        auditStub.record.reset();
+    });
+
     describe('GET /view', () => {
 
         it('Shows display labels when missing values', () => {
@@ -87,6 +93,22 @@ describe('PDF:', () => {
                     expect(pdfServiceStub.generatePdf).to.be.calledOnce();
                     expect(pdfServiceStub.generatePdf).to.be.calledWith('hdc_ap_pss', '123', 'my-username');
                     expect(res.body.toString()).to.include('PDF-1');
+                });
+        });
+
+        it('Audits the PDF creation event', () => {
+
+            const pdf1AsBytes = Buffer.from([80, 68, 70, 45, 49]);
+            pdfServiceStub.generatePdf.resolves(pdf1AsBytes);
+
+            return request(app)
+                .get('/create/hdc_ap_pss/123')
+                .expect(200)
+                .expect('Content-Type', 'application/pdf')
+                .expect(res => {
+                    expect(auditStub.record).to.be.calledOnce();
+                    expect(auditStub.record).to.be.calledWith(
+                        'CREATE_PDF', 'user@email', {nomisId: '123', templateName: 'hdc_ap_pss'});
                 });
         });
     });

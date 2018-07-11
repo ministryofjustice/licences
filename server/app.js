@@ -253,11 +253,11 @@ module.exports = function createApp({
     });
 
     app.get('/', (req, res) => res.redirect('/caseList/'));
-    app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware, audit}));
+    app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
     app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/hdc/pdf/', createPdfRouter({logger, pdfService, authenticationMiddleware, audit}));
-    app.use('/hdc/search/', createSearchRouter({logger, searchService, authenticationMiddleware, audit}));
+    app.use('/hdc/search/', createSearchRouter({logger, searchService, authenticationMiddleware}));
     app.use('/hdc/taskList/',
         createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware, audit}));
     app.use('/hdc/',

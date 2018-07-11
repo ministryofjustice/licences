@@ -33,7 +33,7 @@ const caseListTabs = {
     ]
 };
 
-module.exports = function({logger, caseListService, authenticationMiddleware, audit}) {
+module.exports = function({logger, caseListService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -48,14 +48,11 @@ module.exports = function({logger, caseListService, authenticationMiddleware, au
         const selectedTabConfig = tabsForRole.find(tab => tab.id === req.params.tab);
 
         if (isEmpty(selectedTabConfig)) {
-            audit.record('VIEW_CASELIST', req.user.email, {tab: tabsForRole[0].id});
             res.redirect('/caseList/' + tabsForRole[0].id);
         }
 
         const hdcEligible = await caseListService.getHdcCaseList(req.user.username, req.user.role);
         const filteredToTabs = filterToTabs(hdcEligible, selectedTabConfig);
-
-        audit.record('VIEW_CASELIST', req.user.email, {tab: selectedTabConfig.id});
 
         return res.render('caseList/index', {hdcEligible: filteredToTabs, tabsForRole, selectedTabConfig});
     }));
