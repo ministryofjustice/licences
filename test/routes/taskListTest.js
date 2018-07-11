@@ -412,6 +412,81 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
 
+        context('PROCESSING_CA, replacing an address', () => {
+            it('should display send to RO task if unstarted address review', () => {
+                licenceService.getLicence.resolves({
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {
+                                        occupier: {
+                                            name: 'James Green',
+                                            relationship: 'UX guy'
+                                        },
+                                        postCode: 'LE17 4AX',
+                                        residents: [],
+                                        telephone: '00000000000',
+                                        addressTown: 'Lutterworth',
+                                        addressLine1: '18 Almond Way',
+                                        addressLine2: '',
+                                        cautionedAgainstResident: 'No'
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    stage: 'PROCESSING_CA'
+                });
+
+                const app = createApp({licenceService, prisonerService});
+
+                return request(app)
+                    .get('/1233456')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.include('Submit to responsible officer');
+                    });
+            });
+
+            it('should not display send to RO task if unstarted address review', () => {
+                licenceService.getLicence.resolves({
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {
+                                        occupier: {
+                                            name: 'James Green',
+                                            relationship: 'UX guy'
+                                        },
+                                        postCode: 'LE17 4AX',
+                                        residents: [],
+                                        telephone: '00000000000',
+                                        addressTown: 'Lutterworth',
+                                        addressLine1: '18 Almond Way',
+                                        addressLine2: '',
+                                        cautionedAgainstResident: 'No',
+                                        consent: 'Yes'
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    stage: 'PROCESSING_CA'
+                });
+
+                const app = createApp({licenceService, prisonerService});
+
+                return request(app)
+                    .get('/1233456')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.not.include('Submit to responsible officer');
+                    });
+            });
+        });
+
         describe('POST /eligibilityStart', () => {
             beforeEach(() => {
                 licenceService.getLicence.resolves({nomisId: '1'});

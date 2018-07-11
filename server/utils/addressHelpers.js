@@ -24,9 +24,9 @@ function getCurfewAddressFormData(addressList) {
 }
 
 function isWithdrawnAddress(address) {
-    const {addressWithdrawn} = address;
+    const {addressWithdrawn, consentWithdrawn} = address;
 
-    return addressWithdrawn === 'Yes';
+    return addressWithdrawn === 'Yes' || consentWithdrawn === 'Yes';
 }
 
 function isAcceptedAddress(address) {

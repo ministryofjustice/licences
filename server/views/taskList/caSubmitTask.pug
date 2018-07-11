@@ -1,5 +1,8 @@
 div.largeMarginBottom.borderTop
-    if licenceStatus.stage === "ELIGIBILITY"
+
+    - var addressReviewNeeded = licenceStatus.stage === 'PROCESSING_CA' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
+
+    if licenceStatus.stage === "ELIGIBILITY" || addressReviewNeeded
         h2.heading-medium Submit to responsible officer
     else
         h2.heading-medium Submit to decision maker

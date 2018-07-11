@@ -86,19 +86,19 @@ module.exports = {
                     Yes: '/hdc/proposedAddress/curfewAddress/'
                 }
             ],
-            path: '/hdc/taskList/'
+            path: '/hdc/review/address/'
         }
     },
     withdrawConsent: {
         pageDataMap: ['licence'],
         fields: [
-            {consent: {}}
+            {consentWithdrawn: {}}
         ],
         nextPath: {
             decisions: [
                 {
-                    discriminator: 'consent',
-                    No: '/hdc/curfew/consentWithdrawn/'
+                    discriminator: 'consentWithdrawn',
+                    Yes: '/hdc/curfew/consentWithdrawn/'
                 }
             ],
             path: '/hdc/taskList/'
@@ -115,7 +115,7 @@ module.exports = {
                     Yes: '/hdc/proposedAddress/curfewAddress/'
                 }
             ],
-            path: '/hdc/taskList/'
+            path: '/hdc/review/address/'
         }
     }
 };

@@ -228,4 +228,27 @@ describe('getAllowedTransitions', () => {
         expect(allowed.caToDm).to.eql(false);
     });
 
+    it('should allow CA to RO when address review has not been started', () => {
+        const status = {
+            stage: 'PROCESSING_CA',
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                curfewAddress: 'DONE',
+                curfewAddressReview: 'UNSTARTED'
+            },
+            decisions: {
+                postponed: false,
+                curfewAddressApproved: 'approved',
+                excluded: false,
+                finalChecksRefused: true
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'CA');
+        expect(allowed.caToRo).to.eql(true);
+    });
+
 });

@@ -6,11 +6,23 @@ block content
     -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
     -var addressSafety = data.curfew && data.curfew.addressSafety ? data.curfew.addressSafety : {}
     -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress : {}
+    -var addressWithdrawn = address.addressWithdrawn === 'Yes'
+    -var consentWithdrawn = address.consentWithdrawn === 'Yes'
 
     div.pure-g.pure-u-1
         div
             include ../includes/backToCheckList
             include ../includes/personalDetailsSummary
+
+            if addressWithdrawn || consentWithdrawn
+                -var message = addressWithdrawn ? 'The offender has withdrawn this address' : 'The Homeowner/landlord has withdrawn consent for this address'
+                div.pure-g
+                    div.error-summary.pure-u-1.center(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
+                        h2.heading-medium.error-summary-heading#error-summary-heading #{message}
+                        ul.error-summary-list
+                            li
+                                a(href="/hdc/proposedAddress/curfewAddress/"+nomisId) Add a new address
+
 
             h2.heading-large Proposed address
 

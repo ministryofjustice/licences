@@ -2977,6 +2977,70 @@ describe('licenceService', () => {
             });
 
         });
+
+        context('Stage === PROCESSING_CA', () => {
+            it('should validate all fields if curfewAddressReview !== UNSTARTED', () => {
+                const missingFieldProposedAddress = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            telephone: 'abc',
+                            cautionedAgainstResident: '',
+                            consent: '',
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'PROCESSING_CA', tasks: {curfewAddressReview: 'STARTED'}},
+                    licence: missingFieldProposedAddress});
+
+                expect(output).to.eql(
+                    {proposedAddress: {
+                        curfewAddress: {
+                            telephone: 'Invalid entry - number required',
+                            cautionedAgainstResident: 'Not answered',
+                            consent: 'Not answered'
+                        }
+                    },
+                    curfew: 'Not answered',
+                    licenceConditions: 'Not answered',
+                    reporting: 'Not answered',
+                    risk: 'Not answered'
+                    }
+                );
+            });
+
+            it('should validate only ELIGIBILITY fields id curfewAddressReview is unstarted', () => {
+                const missingFieldProposedAddress = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            telephone: 'abc',
+                            cautionedAgainstResident: '',
+                            consent: '',
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'PROCESSING_CA', tasks: {curfewAddressReview: 'UNSTARTED'}},
+                    licence: missingFieldProposedAddress});
+
+                expect(output).to.eql(
+                    {proposedAddress: {curfewAddress: {
+                                telephone: 'Invalid entry - number required',
+                                cautionedAgainstResident: 'Not answered'
+                            }}}
+                );
+            });
+        });
     });
 
     describe('getValidationErrorsForPage', () => {

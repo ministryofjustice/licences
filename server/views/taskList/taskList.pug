@@ -35,8 +35,12 @@ block content
 
 
             else
+
+                - var addressRejectedOrWithdrawn = licenceStatus.decisions.curfewAddressApproved === 'rejected' || licenceStatus.decisions.curfewAddressApproved === 'withdrawn'
+                - var addressReviewDone = licenceStatus.tasks.curfewAddressReview !== 'UNSTARTED'
+
                 include curfewAddressTask
-                if (licenceStatus.decisions.curfewAddressApproved !== 'rejected' && licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
+                if (addressReviewDone && !addressRejectedOrWithdrawn)
                     include riskManagementTask
                     include curfewHoursTask
                     include additionalConditionsTask

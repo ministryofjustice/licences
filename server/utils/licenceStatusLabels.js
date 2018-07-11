@@ -70,7 +70,8 @@ function caProcessingLabel(licenceStatus) {
     const labels = [
         {decision: 'postponed', label: 'Postponed'},
         {decision: 'excluded', label: 'Excluded (Ineligible)'},
-        {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address not suitable'}
+        {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address not suitable'},
+        {decision: 'curfewAddressApproved', value: 'withdrawn', label: 'Address withdrawn'}
     ];
 
     return getLabel(labels, licenceStatus) || 'Final checks';

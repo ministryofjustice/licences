@@ -270,9 +270,10 @@ module.exports = function createLicenceService(licenceClient) {
     }
 
     const getValidationErrorsForReview = ({licenceStatus, licence}) => {
-        const {stage, decisions} = licenceStatus;
+        const {stage, decisions, tasks} = licenceStatus;
+        const newAddressAddedForReview = stage === 'PROCESSING_CA' && tasks.curfewAddressReview === 'UNSTARTED';
 
-        if (stage === 'ELIGIBILITY') {
+        if (stage === 'ELIGIBILITY' || newAddressAddedForReview) {
             return getEligibilityErrors({licence});
         }
 
