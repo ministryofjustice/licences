@@ -56,7 +56,7 @@ describe('/hdc/curfew', () => {
                 url: '/curfew/addressWithdrawn/1',
                 body: {decision: 'No'},
                 section: 'addressWithdrawn',
-                nextPath: '/hdc/taskList/1'
+                nextPath: '/hdc/review/address/1'
             },
             {
                 url: '/curfew/consentWithdrawn/1',
@@ -68,7 +68,7 @@ describe('/hdc/curfew', () => {
                 url: '/curfew/consentWithdrawn/1',
                 body: {decision: 'No'},
                 section: 'consentWithdrawn',
-                nextPath: '/hdc/taskList/1'
+                nextPath: '/hdc/review/address/1'
             }
         ];
 

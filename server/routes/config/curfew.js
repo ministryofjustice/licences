@@ -86,7 +86,7 @@ module.exports = {
                     Yes: '/hdc/proposedAddress/curfewAddress/'
                 }
             ],
-            path: '/hdc/taskList/'
+            path: '/hdc/review/address/'
         }
     },
     withdrawConsent: {
@@ -115,7 +115,7 @@ module.exports = {
                     Yes: '/hdc/proposedAddress/curfewAddress/'
                 }
             ],
-            path: '/hdc/taskList/'
+            path: '/hdc/review/address/'
         }
     }
 };
