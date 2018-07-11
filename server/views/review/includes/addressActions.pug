@@ -8,7 +8,7 @@ div
                     form(method="post", name="withdrawConsent", action="/hdc/curfew/withdrawConsent/" + nomisId)
                         input(type="hidden" name="_csrf" value=csrfToken)
                         input(type="hidden" name="consentWithdrawn" value="Yes")
-                        button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Consent withdrawn
+                        button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw consent
                 else
                     a.largeMarginBottom.button(href="/hdc/proposedAddress/curfewAddress/"+nomisId) Add a new address
 
@@ -19,6 +19,6 @@ div
                     form(method="post", name="withdrawAddress", action="/hdc/curfew/withdrawAddress/"+nomisId)
                         input(type="hidden" name="_csrf" value=csrfToken)
                         input(type="hidden" name="addressWithdrawn" value="Yes")
-                        button#withdrawAddress.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Offender withdrawn address
+                        button#withdrawAddress.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw address
                 else
                     a.largeMarginBottom.button(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Add a new address
