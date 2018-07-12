@@ -1,7 +1,7 @@
 const express = require('express');
 
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
-const {getIn, lastItem, isEmpty, firstItem, lastIndex} = require('../utils/functionalHelpers');
+const {getIn, lastItem, isEmpty, firstItem, lastIndex, omit} = require('../utils/functionalHelpers');
 const {getPathFor} = require('../utils/routes');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getCurfewAddressFormData} = require('../utils/addressHelpers');
@@ -79,14 +79,10 @@ module.exports = function(
 
         await licenceService.updateLicenceConditions(nomisId, additional, bespoke);
 
-        audit.record('UPDATE_SECTION', req.user.email,
-            {
-                nomisId,
-                sectionName: 'licenceConditions',
-                formName: 'additionalConditions',
-                action: 'update',
-                userInput: {bespokeConditions, additional}
-            });
+        auditUpdateEventWithData(req, nomisId, 'licenceConditions', 'additionalConditions', 'update', {
+            bespokeConditions,
+            additional
+        });
 
         res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
     }));
@@ -119,14 +115,9 @@ module.exports = function(
                 await licenceService.deleteLicenceCondition(nomisId, conditionId);
             }
 
-            audit.record('UPDATE_SECTION', req.user.email,
-                {
-                    nomisId,
-                    sectionName: 'licenceConditions',
-                    formName: 'additionalConditions',
-                    action: 'delete',
-                    userInput: {conditionId}
-                });
+            auditUpdateEventWithData(req, nomisId, 'licenceConditions', 'additionalConditions', 'delete', {
+                conditionId
+            });
 
             res.redirect('/hdc/licenceConditions/conditionsSummary/' + nomisId);
         })
@@ -220,9 +211,7 @@ module.exports = function(
                 index: addressIndex
             });
 
-            audit.record('UPDATE_SECTION', req.user.email, {
-                nomisId, sectionName: 'curfew', formName, userInput: auditableData(req.body)
-            });
+            auditUpdateEvent(req, nomisId, 'curfew', formName);
 
             res.redirect(`${nextPath}${nomisId}`);
         };
@@ -255,14 +244,7 @@ module.exports = function(
             });
         }
 
-        audit.record('UPDATE_SECTION', req.user.email,
-            {
-                nomisId,
-                sectionName: 'proposedAddress',
-                formName: 'curfewAddress',
-                action: 'add',
-                userInput: auditableData(req.body)
-            });
+        auditUpdateEventWithAction(req, nomisId, 'proposedAddress', 'curfewAddress', 'add');
 
         res.redirect(`${nextPath}${nomisId}`);
     }));
@@ -280,14 +262,7 @@ module.exports = function(
             index: addressIndex
         });
 
-        audit.record('UPDATE_SECTION', req.user.email,
-            {
-                nomisId,
-                sectionName: 'proposedAddress',
-                formName: 'curfewAddress',
-                action: 'update',
-                userInput: auditableData(req.body)
-            });
+        auditUpdateEventWithAction(req, nomisId, 'proposedAddress', 'curfewAddress', 'update');
 
         const nextPath = formConfig.curfewAddress.nextPath.path;
         res.redirect(`${nextPath}${nomisId}`);
@@ -323,8 +298,7 @@ module.exports = function(
             formName: 'optOut'
         });
 
-        audit.record('UPDATE_SECTION', req.user.email,
-            {nomisId, sectionName: 'optOut', formName: 'optOut', userInput: auditableData(req.body)});
+        auditUpdateEvent(req, nomisId, 'optOut', 'optOut');
 
         const nextPath = '/hdc/taskList/';
         res.redirect(`${nextPath}${nomisId}`);
@@ -334,7 +308,6 @@ module.exports = function(
         const {sectionName, formName, nomisId} = req.params;
 
         logger.debug(`POST ${sectionName}/${formName}/${nomisId}`);
-
 
         const rawLicence = await licenceService.getLicence(nomisId);
         const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
@@ -360,14 +333,7 @@ module.exports = function(
             }
         }
 
-        audit.record('UPDATE_SECTION', req.user.email,
-            {
-                nomisId,
-                sectionName,
-                formName,
-                action: req.body.anchor || '',
-                userInput: auditableData(req.body)
-            });
+        auditUpdateEvent(req, nomisId, sectionName, formName);
 
         if (req.body.anchor) {
             return res.redirect(`${nextPath}${nomisId}#${req.body.anchor}`);
@@ -376,18 +342,29 @@ module.exports = function(
         res.redirect(`${nextPath}${nomisId}`);
     }));
 
+    function auditUpdateEvent(req, nomisId, sectionName, formName) {
+        auditUpdateEventWithAction(req, nomisId, sectionName, formName, req.body.anchor || null);
+    }
+
+    function auditUpdateEventWithAction(req, nomisId, sectionName, formName, action) {
+        auditUpdateEventWithData(req, nomisId, sectionName, formName, action, userInputFrom(req.body));
+    }
+
+    function auditUpdateEventWithData(req, nomisId, sectionName, formName, action, userInput) {
+        audit.record('UPDATE_SECTION', req.user.email, {
+            nomisId,
+            sectionName,
+            formName,
+            action,
+            userInput
+        });
+    }
+
+    function userInputFrom(data) {
+        return omit(['nomisId', '_csrf', 'anchor'], data);
+    }
+
     return router;
 };
 
-function auditableData(input) {
-    return Object.keys(input).reduce((objectBuilt, key) => {
-        if (notAcceptedKeys.includes(key)) {
-            return {...objectBuilt};
-        } else {
-            const value = input[key] || '';
-            return {...objectBuilt, ...{[key]: value}};
-        }
-    }, {});
-}
 
-const notAcceptedKeys = ['nomisId', '_csrf', 'anchor'];
