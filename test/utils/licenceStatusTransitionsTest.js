@@ -251,4 +251,16 @@ describe('getAllowedTransitions', () => {
         expect(allowed.caToRo).to.eql(true);
     });
 
+    it('should allow CA to DM when address has been withdrawn', () => {
+        const status = {
+            stage: 'PROCESSING_CA',
+            tasks: {},
+            decisions: {
+                curfewAddressApproved: 'withdrawn'
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'CA');
+        expect(allowed.caToDmRefusal).to.eql(true);
+    });
 });

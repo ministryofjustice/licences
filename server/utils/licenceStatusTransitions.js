@@ -93,6 +93,10 @@ function caToDmRefusal(licenceStatus) {
     const stage = licenceStatus.stage;
     const decisions = licenceStatus.decisions;
 
+    if (stage === 'PROCESSING_CA') {
+        return decisions.curfewAddressApproved === 'withdrawn';
+    }
+
     if (stage !== 'ELIGIBILITY') {
         return false;
     }

@@ -30,7 +30,7 @@ block content
                     include proposedAddressTask
                     if allowedTransitions.caToRo
                         include caSubmitTask
-                else if licenceStatus.decisions.insufficientTimeStop
+                else if allowedTransitions.caToDmRefusal
                     include caSubmitRefusalTask
 
 
@@ -48,7 +48,10 @@ block content
                     include finalChecksTask
                 include postponementTask
                 include HDCRefusalTask
-                include caSubmitTask
+                if allowedTransitions.caToDmRefusal
+                    include caSubmitRefusalTask
+                else
+                    include caSubmitTask
 
         if user.role === 'RO'
             if (licenceStatus.decisions.optedOut)

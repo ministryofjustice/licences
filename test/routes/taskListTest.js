@@ -449,6 +449,59 @@ describe('GET /taskList/:prisonNumber', () => {
                     });
             });
 
+            it('should display send to DM for refusal task if adderss is withdrawn', () => {
+                licenceService.getLicence.resolves({
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {
+                                        addressWithdrawn: 'Yes'
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    stage: 'PROCESSING_CA'
+                });
+
+                const app = createApp({licenceService, prisonerService});
+
+                return request(app)
+                    .get('/1233456')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.include('Ready to submit for refusal');
+                    });
+            });
+
+            it('should display send to DM for refusal task if consent is withdrawn', () => {
+                licenceService.getLicence.resolves({
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [
+                                    {
+                                        consentWithdrawn: 'Yes'
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    stage: 'PROCESSING_CA'
+                });
+
+                const app = createApp({licenceService, prisonerService});
+
+                return request(app)
+                    .get('/1233456')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.include('Ready to submit for refusal');
+                    });
+            });
+
+
             it('should not display send to RO task if unstarted address review', () => {
                 licenceService.getLicence.resolves({
                     licence: {
