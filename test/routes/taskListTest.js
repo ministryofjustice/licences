@@ -449,7 +449,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     });
             });
 
-            it('should display send to DM for refusal task if adderss is withdrawn', () => {
+            it('should display send to DM for refusal task if address is withdrawn', () => {
                 licenceService.getLicence.resolves({
                     licence: {
                         proposedAddress: {

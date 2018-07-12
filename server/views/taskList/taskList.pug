@@ -28,11 +28,10 @@ block content
                 include eligibilityTask
                 if licenceStatus.decisions.eligible
                     include proposedAddressTask
-                    if allowedTransitions.caToRo
-                        include caSubmitTask
+                if allowedTransitions.caToRo
+                    include caSubmitTask
                 else if allowedTransitions.caToDmRefusal
                     include caSubmitRefusalTask
-
 
             else
 

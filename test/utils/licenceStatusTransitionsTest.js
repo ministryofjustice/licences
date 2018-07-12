@@ -107,7 +107,8 @@ describe('getAllowedTransitions', () => {
             decisions: {
                 postponed: false,
                 curfewAddressApproved: 'approved',
-                excluded: false
+                excluded: false,
+                eligible: true
             }
         };
 
@@ -135,6 +136,52 @@ describe('getAllowedTransitions', () => {
 
         const allowed = getAllowedTransitions(status, 'CA');
         expect(allowed.caToRo).to.eql(false);
+    });
+
+    it('should not allow CA to RO in the ELIGIBILITY stage when address has been rejected', () => {
+        const status = {
+            stage: 'ELIGIBILITY',
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                bassReferral: 'DONE',
+                curfewAddress: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                curfewAddressApproved: 'false'
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'CA');
+        expect(allowed.caToRo).to.eql(false);
+    });
+
+    it('should not allow CA to RO in the ELIGIBILITY stage when ineligible', () => {
+        const status = {
+            stage: 'ELIGIBILITY',
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                bassReferral: 'DONE',
+                curfewAddress: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                postponed: false,
+                curfewAddressApproved: 'approved',
+                excluded: false,
+                eligible: false
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'CA');
+        expect(allowed.caToRo).to.eql(false);
+        expect(allowed.caToDmRefusal).to.eql(false);
     });
 
     it('should allow CA to DM in the PROCESSING_CA stage when all CA tasks done and decisions OK', () => {
@@ -183,7 +230,7 @@ describe('getAllowedTransitions', () => {
         expect(allowed.caToDm).to.eql(false);
     });
 
-    it('should allow CA to DM when DM does not approve application to continue', () => {
+    it('should allow CA to DM refusal when eligible and insufficient time', () => {
         const status = {
             stage: 'ELIGIBILITY',
             tasks: {
@@ -196,7 +243,74 @@ describe('getAllowedTransitions', () => {
                 finalChecks: 'DONE'
             },
             decisions: {
-                insufficientTimeStop: true
+                insufficientTimeStop: true,
+                eligible: true
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'CA');
+        expect(allowed.caToDmRefusal).to.eql(true);
+    });
+
+    it('should allow CA to DM refusal when ineligble but insufficientTimeStop', () => {
+        const status = {
+            stage: 'ELIGIBILITY',
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                bassReferral: 'DONE',
+                curfewAddress: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                insufficientTimeStop: true,
+                eligible: false
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'CA');
+        expect(allowed.caToDmRefusal).to.eql(true);
+    });
+
+    it('should not allow CA to DM refusal if ineligible without', () => {
+        const status = {
+            stage: 'ELIGIBILITY',
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                bassReferral: 'DONE',
+                curfewAddress: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                eligible: false,
+                curfewAddressApproved: 'rejected'
+            }
+        };
+
+        const allowed = getAllowedTransitions(status, 'CA');
+        expect(allowed.caToDmRefusal).to.eql(false);
+    });
+
+    it('should allow CA to DM refusal if curfew address is rejected', () => {
+        const status = {
+            stage: 'ELIGIBILITY',
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                bassReferral: 'DONE',
+                curfewAddress: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                eligible: true,
+                curfewAddressApproved: 'rejected'
             }
         };
 
