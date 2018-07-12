@@ -64,6 +64,13 @@ function canSendCaToRo(licenceStatus) {
         return true;
     }
 
+    const {eligible, optedOut, bassReferralNeeded, curfewAddressApproved} = decisions;
+
+    const notToProgress = !eligible || optedOut || curfewAddressApproved === 'rejected';
+    if (stage !== 'ELIGIBILITY' || notToProgress) {
+        return false;
+    }
+
     const required = [
         tasks.exclusion,
         tasks.crdTime,
@@ -72,36 +79,33 @@ function canSendCaToRo(licenceStatus) {
         tasks.curfewAddress
     ];
 
-    if (stage !== 'ELIGIBILITY') {
-        return false;
-    }
-
     const allTaskComplete = required.every(it => it === taskStates.DONE);
 
-    if (decisions.optedOut) {
-        return false;
-    }
-
-    if (decisions.bassReferralNeeded) {
-        return allTaskComplete && tasks.bassReferral == taskStates.DONE;
+    if (bassReferralNeeded) {
+        return allTaskComplete && tasks.bassReferral === taskStates.DONE;
     }
 
     return allTaskComplete;
 }
 
 function caToDmRefusal(licenceStatus) {
-    const stage = licenceStatus.stage;
-    const decisions = licenceStatus.decisions;
+    const {stage, decisions} = licenceStatus;
 
     if (stage === 'PROCESSING_CA') {
         return decisions.curfewAddressApproved === 'withdrawn';
     }
 
-    if (stage !== 'ELIGIBILITY') {
-        return false;
+    if (stage === 'ELIGIBILITY') {
+        const {eligible, insufficientTimeStop, curfewAddressApproved} = decisions;
+
+        if (!eligible && !insufficientTimeStop) {
+            return false;
+        }
+
+        return insufficientTimeStop || curfewAddressApproved === 'rejected';
     }
 
-    return decisions.insufficientTimeStop;
+    return false;
 }
 
 function canSendCaToDm(licenceStatus) {
