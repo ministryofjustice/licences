@@ -90,7 +90,6 @@ describe('/hdc/approval', () => {
                     .expect(res => {
                         expect(licenceServiceStub.update).to.be.calledOnce();
                         expect(licenceServiceStub.update).to.be.calledWith({
-                            licence: {key: 'value'},
                             nomisId: '1',
                             fieldMap: formConfig.release.fields,
                             userInput: route.body,

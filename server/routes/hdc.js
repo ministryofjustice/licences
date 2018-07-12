@@ -287,10 +287,8 @@ module.exports = function(
 
     router.post('/optOut/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.body;
-        const rawLicence = await licenceService.getLicence(nomisId);
 
         await licenceService.update({
-            licence: rawLicence.licence,
             nomisId: nomisId,
             fieldMap: [{decision: {}}],
             userInput: req.body,
@@ -309,13 +307,11 @@ module.exports = function(
 
         logger.debug(`POST ${sectionName}/${formName}/${nomisId}`);
 
-        const rawLicence = await licenceService.getLicence(nomisId);
         const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
         const saveSection = formConfig[formName].saveSection || [];
 
         if (formConfig[formName].fields) {
             const updatedLicence = await licenceService.update({
-                licence: rawLicence.licence,
                 nomisId: nomisId,
                 fieldMap: formConfig[formName].fields,
                 userInput: req.body,
