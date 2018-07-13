@@ -259,7 +259,8 @@ describe('licenceService', () => {
                 const licenceSection = 'section4';
                 const formName = 'form3';
 
-                const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+                licenceClient.getLicence.resolves({licence});
+                const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -284,7 +285,8 @@ describe('licenceService', () => {
                 const licenceSection = 'section4';
                 const formName = 'form3';
 
-                const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+                licenceClient.getLicence.resolves({licence});
+                const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -329,7 +331,8 @@ describe('licenceService', () => {
                 const licenceSection = 'section4';
                 const formName = 'form3';
 
-                const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+                licenceClient.getLicence.resolves({licence});
+                const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -374,7 +377,8 @@ describe('licenceService', () => {
             const licenceSection = 'section4';
             const formName = 'form3';
 
-            await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+            licenceClient.getLicence.resolves({licence});
+            await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -416,7 +420,8 @@ describe('licenceService', () => {
             const licenceSection = 'section4';
             const formName = 'form3';
 
-            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+            licenceClient.getLicence.resolves({licence});
+            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -457,7 +462,8 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+            licenceClient.getLicence.resolves({licence});
+            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -521,7 +527,8 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+            licenceClient.getLicence.resolves({licence});
+            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -588,6 +595,7 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
+            licenceClient.getLicence.resolves({licence});
             const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
 
             const expectedLicence = {
@@ -659,7 +667,8 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+            licenceClient.getLicence.resolves({licence});
+            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -729,7 +738,8 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+            licenceClient.getLicence.resolves({licence});
+            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -807,7 +817,8 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+            licenceClient.getLicence.resolves({licence});
+            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,

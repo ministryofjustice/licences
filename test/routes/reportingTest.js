@@ -56,7 +56,6 @@ describe('/hdc/reporting', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            licence: {key: 'value'},
                             nomisId: '1',
                             fieldMap: formConfig[route.section].fields,
                             userInput: route.body,
