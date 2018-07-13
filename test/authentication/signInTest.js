@@ -3,23 +3,27 @@ const signInService = require('../../server/authentication/signInService');
 const config = require('../../server/config');
 
 
-describe('signInSAervice', () => {
+describe('signInService', () => {
     let fakeNomis;
     let fakeOauth;
     let fakeStore;
     let service;
+    let auditStub;
 
     beforeEach(() => {
         fakeNomis = nock(`${config.nomis.apiUrl}`);
         fakeOauth = nock(`${config.nomis.apiUrl.replace('/api', '')}`);
         fakeStore = {store: sinon.stub(), get: sinon.stub()};
-        service = signInService(fakeStore);
+        auditStub = {record: sinon.stub()};
+        service = signInService(fakeStore, auditStub);
     });
 
     afterEach(() => {
         nock.cleanAll();
     });
+
     describe('signIn', () => {
+
         it('should return user object if all apis succeed', () => {
             fakeOauth
                 .post(`/oauth/token`)
@@ -51,7 +55,6 @@ describe('signInSAervice', () => {
         });
 
         it('should add the token to the token store', async () => {
-
             fakeOauth
                 .post(`/oauth/token`)
                 .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh'});
@@ -72,8 +75,28 @@ describe('signInSAervice', () => {
             return expect(fakeStore.store).to.be.calledWith('un', 'CA', 'type token', 'refresh');
         });
 
-        it('should get RO client credentials token when user role is RO', async () => {
+        it('should audit the login', async () => {
+            fakeOauth
+                .post(`/oauth/token`)
+                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh'});
 
+            fakeNomis
+                .get(`/users/me`)
+                .reply(200, {key: 'value', activeCaseLoadId: 'ID', email: 'user@email'});
+
+            fakeNomis
+                .get(`/users/me/roles`)
+                .reply(200, [{roleCode: 'LICENCE_CA'}]);
+
+            fakeNomis
+                .get(`/users/me/caseLoads`)
+                .reply(200, [{description: 'Prison', caseLoadId: 'ID'}, {description: 'None', caseLoadId: 'wrong'}]);
+
+            await service.signIn('un', 'pw');
+            return expect(auditStub.record).to.be.calledWith('LOGIN', 'user@email');
+        });
+
+        it('should get RO client credentials token when user role is RO', async () => {
             fakeOauth
                 .post(`/oauth/token`, 'grant_type=password&username=un&password=pw')
                 .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh'});

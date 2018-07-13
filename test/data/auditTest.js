@@ -21,7 +21,7 @@ describe('Audit', () => {
     });
 
     it('should call auditData.execSql', () => {
-        const result = record()('VIEW_TASKLIST', 'a@y.com', {data: 'data'});
+        const result = record()('LOGIN', 'a@y.com', {data: 'data'});
 
         return result.then(data => {
             expect(queryStub).to.have.callCount(1);
@@ -29,8 +29,8 @@ describe('Audit', () => {
     });
 
     it('should pass the sql paramaters', () => {
-        const result = record()('VIEW_TASKLIST', 'a@y.com', {data: 'data'});
-        const expectedParameters = ['a@y.com', 'VIEW_TASKLIST', {data: 'data'}];
+        const result = record()('LOGIN', 'a@y.com', {data: 'data'});
+        const expectedParameters = ['a@y.com', 'LOGIN', {data: 'data'}];
 
         return result.then(data => {
             expect(queryStub.getCall(0).args[0].values).to.eql(expectedParameters);

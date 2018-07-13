@@ -1,6 +1,6 @@
 exports.up = knex =>
     Promise.all([
-        knex.schema.createTableIfNotExists('conditions', table => {
+        knex.schema.createTable('conditions', table => {
             table.string('id', 50).unique().primary('pk_conditions');
             table.date('timestamp').notNullable().defaultTo(knex.fn.now());
             table.string('type', 50).notNullable();

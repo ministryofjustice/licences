@@ -4,7 +4,8 @@ const {
     loggerStub,
     searchServiceStub,
     authenticationMiddleware,
-    appSetup
+    appSetup,
+    auditStub
 } = require('../supertestSetup');
 
 const createSearchRoute = require('../../server/routes/search');
@@ -26,7 +27,8 @@ describe('Search:', () => {
         const app = appSetup(createSearchRoute({
             searchService: searchServiceStub,
             logger: loggerStub,
-            authenticationMiddleware
+            authenticationMiddleware,
+            audit: auditStub
         }), testUser);
 
         describe('GET /search/offender', () => {

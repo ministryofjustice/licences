@@ -5,7 +5,7 @@ const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransitions} = require('../utils/licenceStatusTransitions');
 
-module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware}) {
+module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -45,6 +45,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
 
         if (!existingLicence) {
             await licenceService.createLicence(nomisId);
+            audit.record('LICENCE_RECORD_STARTED', req.user.email, {nomisId});
         }
 
         res.redirect(`/hdc/eligibility/excluded/${nomisId}`);

@@ -20,7 +20,8 @@ module.exports = {
     getUniqueStrings,
     pipe,
     removeFromArray,
-    all
+    all,
+    omit
 };
 
 // pass in your object and a path in array format
@@ -112,4 +113,8 @@ function getUniqueStrings(array) {
 
 function removeFromArray(index, end, array) {
     return R.remove(index, end, array);
+}
+
+function omit(namesList, sourceObject) {
+    return R.omit(namesList, sourceObject);
 }
