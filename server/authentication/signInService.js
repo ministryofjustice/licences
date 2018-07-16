@@ -1,8 +1,6 @@
 const superagent = require('superagent');
 const querystring = require('querystring');
-
 const config = require('../config');
-const generateApiGatewayToken = require('./apiGateway');
 const {generateOauthClientToken, generateAdminOauthClientToken} = require('./oauth');
 const {NoTokenError} = require('../utils/errors');
 const logger = require('../../log');
@@ -127,17 +125,13 @@ async function oauthTokenRequest(clientToken, oauthRequest) {
     return parseOauthTokens(oauthResult);
 }
 
-function gatewayTokenOrCopy(token) {
-    return config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : token;
-}
-
 function getOauthToken(oauthClientToken, requestSpec) {
 
     const oauthRequest = querystring.stringify(requestSpec);
 
     return superagent
         .post(`${getOauthUrl()}/oauth/token`)
-        .set('Authorization', gatewayTokenOrCopy(oauthClientToken))
+        .set('Authorization', oauthClientToken)
         .set('Elite-Authorization', oauthClientToken)
         .set('content-type', 'application/x-www-form-urlencoded')
         .send(oauthRequest)
@@ -200,7 +194,7 @@ async function getCaseLoad(token, id) {
 function nomisGet(path, token) {
     return superagent
         .get(`${config.nomis.apiUrl}${path}`)
-        .set('Authorization', gatewayTokenOrCopy(token))
+        .set('Authorization', token)
         .set('Elite-Authorization', token)
         .timeout(timeoutSpec);
 }

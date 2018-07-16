@@ -1,10 +1,8 @@
 const config = require('../config.js');
 const db = require('./dataAccess/db');
 const logger = require('../../log.js');
-
 const superagent = require('superagent');
 
-const generateApiGatewayToken = require('../authentication/apiGateway');
 
 module.exports = {
     nomisApiCheck,
@@ -21,7 +19,6 @@ function nomisApiCheck() {
 
         superagent
             .get(`${getHealthcheckUrl()}/health`)
-            .set('Authorization', config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : '')
             .timeout({
                 response: 4000,
                 deadline: 4500
