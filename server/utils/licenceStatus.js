@@ -268,9 +268,10 @@ function getOptOutState(licence) {
 function getBassReferralState(licence) {
 
     const bassReferralAnswer = getIn(licence, ['proposedAddress', 'bassReferral', 'decision']);
+    const addressProposedAnswer = getIn(licence, ['proposedAddress', 'addressProposed', 'decision']);
 
     return {
-        bassReferralNeeded: bassReferralAnswer === 'Yes',
+        bassReferralNeeded: bassReferralAnswer === 'Yes' && addressProposedAnswer === 'No',
         bassReferral: bassReferralAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
 
