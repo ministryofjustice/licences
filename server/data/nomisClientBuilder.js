@@ -1,7 +1,6 @@
 const config = require('../config');
 const {merge, pipe} = require('../utils/functionalHelpers');
 const superagent = require('superagent');
-const generateApiGatewayToken = require('../authentication/apiGateway');
 const {NoTokenError} = require('../utils/errors');
 
 const timeoutSpec = {
@@ -119,7 +118,7 @@ function nomisGetBuilder(tokenStore, signInService, username) {
             const result = await superagent
                 .get(path)
                 .query(query)
-                .set('Authorization', gatewayTokenOrCopy(tokens.token))
+                .set('Authorization', tokens.token)
                 .set('Elite-Authorization', tokens.token)
                 .set(headers)
                 .responseType(responseType)
@@ -204,8 +203,4 @@ function addReleaseDate(prisoner) {
         ...prisoner,
         sentenceDetail: merge(prisoner.sentenceDetail, {releaseDate})
     };
-}
-
-function gatewayTokenOrCopy(token) {
-    return config.nomis.apiGatewayEnabled === 'yes' ? generateApiGatewayToken() : token;
 }
