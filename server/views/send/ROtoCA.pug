@@ -41,4 +41,6 @@ div#continueBtns.pure-g.paddingBottom
             input(type="hidden" name="sender" value="RO")
             input(type="hidden" name="receiver" value="CA")
             input(type="hidden" name="transitionType" value="ROtoCA")
+            if submissionTarget && submissionTarget.premise
+                input(type="hidden" name="submissionTarget" value=submissionTarget.premise)
             include includes/sendButtons
