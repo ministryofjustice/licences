@@ -21,7 +21,7 @@ describe('GET sent', () => {
             .get('/CAtoRO')
             .expect(200)
             .expect(res => {
-                expect(res.text).to.include('Address information submitted');
+                expect(res.text).to.include('Curfew address submitted');
             });
     });
 
