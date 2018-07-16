@@ -23,7 +23,10 @@ function signInService(tokenStore, audit) {
             try {
                 const {profile, role, token, refreshToken} = await login(username, password);
                 tokenStore.store(username, role, token, refreshToken);
-                audit.record('LOGIN', profile.staffId);
+
+                const userDetail = profile.staffId || profile.username || profile.lastName || 'no user id';
+
+                audit.record('LOGIN', userDetail);
 
                 const activeCaseLoad = await getCaseLoad(token, profile.activeCaseLoadId);
 

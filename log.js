@@ -1,5 +1,5 @@
 const winston = require('winston');
-const {flattenMeta} = require('./server/misc');
+// const {flattenMeta} = require('./server/misc');
 
 const logger = new (winston.Logger);
 
@@ -54,19 +54,19 @@ if (process.env.NODE_ENV === 'test') {
     });
 }
 
-const appInsights = require('./azure-appinsights');
-if (appInsights) {
-    const aiLogger = require('winston-azure-application-insights').AzureApplicationInsightsLogger;
-    logger.info('Activating application insights logger');
-    logger.add(aiLogger, {
-        insights: appInsights,
-        level: 'info',
-        silent: false,
-        treatErrorsAsExceptions: true
-    });
-    logger.rewriters.push(function(level, msg, meta) {
-        return flattenMeta(meta);
-    });
-}
+// const appInsights = require('./azure-appinsights');
+// if (appInsights) {
+//     const aiLogger = require('winston-azure-application-insights').AzureApplicationInsightsLogger;
+//     logger.info('Activating application insights logger');
+//     logger.add(aiLogger, {
+//         insights: appInsights,
+//         level: 'info',
+//         silent: false,
+//         treatErrorsAsExceptions: true
+//     });
+//     logger.rewriters.push(function(level, msg, meta) {
+//         return flattenMeta(meta);
+//     });
+// }
 
 module.exports = logger;
