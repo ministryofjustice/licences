@@ -10,7 +10,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             div.pure-u-2-3
-                +itemAndError(reportingInstructions.name, errors.name, "reportingName")
+                +itemAndError(reportingInstructions.name, errors.name && "Enter a name", "reportingName")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -18,10 +18,10 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Address
     div.pure-u-1-2
-        +itemAndError(reportingInstructions.buildingAndStreet1, errors.buildingAndStreet1, "reportingAddress1")
+        +itemAndError(reportingInstructions.buildingAndStreet1, errors.buildingAndStreet1 && "Enter a building or street", "reportingAddress1")
         +itemAndError(reportingInstructions.buildingAndStreet2, errors.buildingAndStreet2, "reportingAddress2")
-        +itemAndError(reportingInstructions.townOrCity, errors.townOrCity, "reportingTown")
-        +itemAndError(reportingInstructions.postcode, errors.postcode, "reportingPostCode")
+        +itemAndError(reportingInstructions.townOrCity, errors.townOrCity && "Enter a town or city", "reportingTown")
+        +itemAndError(reportingInstructions.postcode, errors.postcode && "Enter a postcode in the right format", "reportingPostCode")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -29,4 +29,4 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Contact number
     div.pure-u-1-2
-        +itemAndError(reportingInstructions.telephone, errors.telephone, "reportingTelephone")
+        +itemAndError(reportingInstructions.telephone, errors.telephone && "Enter a telephone number in the right format", "reportingTelephone")

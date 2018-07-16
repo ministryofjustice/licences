@@ -35,7 +35,7 @@ div.largeMarginBottom
                             a#riskEditLink(href="/hdc/risk/riskManagement/" + nomisId) Change these details
 
             if typeof errorObject.risk === 'string'
-                p.alert.bold(id='risk-error') #{errorObject.risk}
+                p.alert.bold(id='risk-error') Enter the risk management and victim liaison details
             else
                 include riskManagement
 
@@ -50,7 +50,7 @@ div.largeMarginBottom
                             a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/" + nomisId) Change these details
 
             if typeof errorObject.curfew === 'string'
-                p.alert.bold(id='curfew-hours-error') #{errorObject.curfew}
+                p.alert.bold(id='curfew-hours-error') Select the proposed curfew hours
             else
                 include curfewHours
 
@@ -67,7 +67,7 @@ div.largeMarginBottom
             if typeof errorObject.licenceConditions === 'string'
                 p.alert.bold(id='additional-conditions-error') #{errorObject.licenceConditions}
             else
-                if data.licenceConditions && data.licenceConditions.length > 0
+                if data.licenceConditions
                     +additionalConditions()
                 else
                     | No additional conditions selected
@@ -83,6 +83,6 @@ div.largeMarginBottom
                             a#reportingEditLink(href="/hdc/reporting/reportingInstructions/" + nomisId) Change these details
 
             if typeof errorObject.reporting === 'string'
-                p.alert.bold(id='reporting-error') #{errorObject.reporting}
+                p.alert.bold(id='reporting-error') Enter the reporting instructions
             else
                 include reportingInstructions
