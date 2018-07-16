@@ -83,7 +83,7 @@ describe('Send:', () => {
                     })
                     .expect(() => {
                         expect(auditStub.record).to.be.calledOnce();
-                        expect(auditStub.record).to.be.calledWith('SEND', 'user@email',
+                        expect(auditStub.record).to.be.calledWith('SEND', 'my-staff-id',
                             {
                                 nomisId: 123,
                                 receiver: 'to',

@@ -619,7 +619,7 @@ describe('GET /taskList/:prisonNumber', () => {
                         .expect(res => {
                             expect(auditStub.record).to.be.called();
                             expect(auditStub.record).to.be.calledWith(
-                                'LICENCE_RECORD_STARTED', 'user@email', {nomisId: '123'});
+                                'LICENCE_RECORD_STARTED', 'my-staff-id', {nomisId: '123'});
                         });
                 });
             });

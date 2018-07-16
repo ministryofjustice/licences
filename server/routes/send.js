@@ -35,7 +35,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         const licence = await licenceService.getLicence(nomisId);
         await licenceService.markForHandover(nomisId, sender, receiver, licence);
 
-        audit.record('SEND', req.user.email, {nomisId, sender, receiver, transitionType, submissionTarget});
+        audit.record('SEND', req.user.staffId, {nomisId, sender, receiver, transitionType, submissionTarget});
 
         res.redirect(`/hdc/sent/${transitionType}`);
     }));

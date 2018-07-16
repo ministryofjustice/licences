@@ -347,7 +347,7 @@ module.exports = function(
     }
 
     function auditUpdateEventWithData(req, nomisId, sectionName, formName, action, userInput) {
-        audit.record('UPDATE_SECTION', req.user.email, {
+        audit.record('UPDATE_SECTION', req.user.staffId, {
             nomisId,
             sectionName,
             formName,

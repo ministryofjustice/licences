@@ -45,7 +45,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
 
         if (!existingLicence) {
             await licenceService.createLicence(nomisId);
-            audit.record('LICENCE_RECORD_STARTED', req.user.email, {nomisId});
+            audit.record('LICENCE_RECORD_STARTED', req.user.staffId, {nomisId});
         }
 
         res.redirect(`/hdc/eligibility/excluded/${nomisId}`);

@@ -31,7 +31,7 @@ module.exports = function({logger, pdfService, authenticationMiddleware, audit})
         logger.debug(`GET pdf/create/${nomisId}/${templateName}`);
         const pdf = await pdfService.generatePdf(templateName, nomisId, req.user.username);
 
-        audit.record('CREATE_PDF', req.user.email, {templateName, nomisId});
+        audit.record('CREATE_PDF', req.user.staffId, {templateName, nomisId});
 
         res.type('application/pdf');
         return res.end(pdf, 'binary');
