@@ -30,11 +30,15 @@ describe('Send:', () => {
     describe('When role is CA', () => {
         describe('GET /send', () => {
             it('renders and HTML output', () => {
+                licenceService.getLicence.resolves({stage: 'ELIGIBILITY'});
                 const app = createApp({licenceService, prisonerService});
                 return request(app)
                     .get('/123')
                     .expect(200)
-                    .expect('Content-Type', /html/);
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.contain('name="submissionTarget" value="Something"');
+                    });
             });
 
             it('gets com details when submission is CA to RO', () => {
@@ -70,11 +74,23 @@ describe('Send:', () => {
 
                 return request(app)
                     .post('/123')
-                    .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'type'})
+                    .send({
+                        nomisId: 123,
+                        sender: 'from',
+                        receiver: 'to',
+                        transitionType: 'type',
+                        submissionTarget: 'target'
+                    })
                     .expect(() => {
                         expect(auditStub.record).to.be.calledOnce();
                         expect(auditStub.record).to.be.calledWith('SEND', 'user@email',
-                            {nomisId: 123, receiver: 'to', sender: 'from', transitionType: 'type'});
+                            {
+                                nomisId: 123,
+                                receiver: 'to',
+                                sender: 'from',
+                                transitionType: 'type',
+                                submissionTarget: 'target'
+                            });
                     });
 
             });
@@ -109,7 +125,8 @@ describe('Send:', () => {
 
             return request(app)
                 .get('/123')
-                .expect(() => {
+                .expect(res => {
+                    expect(res.text).to.contain('name="submissionTarget" value="HMP Blah"');
                     expect(prisonerService.getEstablishmentForPrisoner).to.be.calledOnce();
                     expect(prisonerService.getEstablishmentForPrisoner).to.be.calledWith('123', 'my-username');
                     expect(prisonerService.getComForPrisoner).not.to.be.called();
