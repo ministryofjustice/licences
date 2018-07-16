@@ -82,7 +82,7 @@ describe('signInService', () => {
 
             fakeNomis
                 .get(`/users/me`)
-                .reply(200, {key: 'value', activeCaseLoadId: 'ID', email: 'user@email'});
+                .reply(200, {key: 'value', activeCaseLoadId: 'ID', staffId: 'staff-id'});
 
             fakeNomis
                 .get(`/users/me/roles`)
@@ -93,7 +93,7 @@ describe('signInService', () => {
                 .reply(200, [{description: 'Prison', caseLoadId: 'ID'}, {description: 'None', caseLoadId: 'wrong'}]);
 
             await service.signIn('un', 'pw');
-            return expect(auditStub.record).to.be.calledWith('LOGIN', 'user@email');
+            return expect(auditStub.record).to.be.calledWith('LOGIN', 'staff-id');
         });
 
         it('should get RO client credentials token when user role is RO', async () => {

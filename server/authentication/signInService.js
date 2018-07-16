@@ -25,7 +25,7 @@ function signInService(tokenStore, audit) {
             try {
                 const {profile, role, token, refreshToken} = await login(username, password);
                 tokenStore.store(username, role, token, refreshToken);
-                audit.record('LOGIN', profile.email);
+                audit.record('LOGIN', profile.staffId);
 
                 const activeCaseLoad = await getCaseLoad(token, profile.activeCaseLoadId);
 
