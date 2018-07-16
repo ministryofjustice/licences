@@ -82,6 +82,9 @@ describe('getLicenceStatus', () => {
                     bassReferral: {
                         decision: 'Yes'
                     },
+                    addressProposed: {
+                        decision: 'No'
+                    },
                     curfewAddress: {
                         addresses: [
                             {
