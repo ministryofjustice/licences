@@ -1,4 +1,5 @@
 extends ../layout
+include ../includes/errorBannerWithDetail
 
 block content
 
@@ -7,7 +8,7 @@ block content
     if Object.keys(errorObject).length !== 0
         div.error-summary(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
             h2.heading-medium.error-summary-heading.center.noMargin#error-summary-heading
-                | There are unanswered questions - see below
+                | There is a problem
 
     include includes/licenceSummary
 

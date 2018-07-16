@@ -4,7 +4,7 @@ block excludedForm
 
     div
         if errorObject.reason
-            p.block.error-message Add a reason
+            p.block.error-message Select a reason
         div.multiple-choice
             input(type='checkbox' name='reason' id='addressUnsuitable' value='addressUnsuitable' checked=vals.indexOf('addressUnsuitable') !== -1)
             label(for='addressUnsuitable') The address is unsuitable

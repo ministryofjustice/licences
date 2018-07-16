@@ -10,8 +10,8 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             div.pure-u-2-3
-                +itemAndError(risk.planningActions, errors.planningActions, "planningActions")
-                +itemAndError('', errors.planningActionsDetails && 'Details not entered', "planningActionsDetails")
+                +itemAndError(risk.planningActions, errors.planningActions && 'Say if there are risk management actions', "planningActions")
+                +itemAndError('', errors.planningActionsDetails && 'Provide details of the risk management actions', "planningActionsDetails")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -19,8 +19,8 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Are you still waiting for information to inform risk management planning?
     div.pure-u-1-2
-        +itemAndError(risk.awaitingInformation, errors.awaitingInformation, "awaitingInformation")
-        +itemAndError('', errors.awaitingInformationDetails && 'Details not entered', "awaitingInformationDetails")
+        +itemAndError(risk.awaitingInformation, errors.awaitingInformation && 'Say if you are still awaiting information', "awaitingInformation")
+        +itemAndError('', errors.awaitingInformationDetails && 'Provide details of information that you are waiting for', "awaitingInformationDetails")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -28,5 +28,5 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Is this a Victim Contact Service qualifying case where the victim has opted in?
     div.pure-u-1-2
-        +itemAndError(risk.victimLiaison, errors.victimLiaison, "victimLiaison")
-        +itemAndError('', errors.victimLiaisonDetails && 'Details not entered', "victimLiaisonDetails")
+        +itemAndError(risk.victimLiaison, errors.victimLiaison && 'Say if it is a victim liaison case', "victimLiaison")
+        +itemAndError('', errors.victimLiaisonDetails && 'Provide details of the victim liaison case', "victimLiaisonDetails")
