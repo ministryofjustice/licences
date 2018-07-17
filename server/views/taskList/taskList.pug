@@ -34,12 +34,8 @@ block content
                     include caSubmitRefusalTask
 
             else
-
-                - var addressRejectedOrWithdrawn = licenceStatus.decisions.curfewAddressApproved === 'rejected' || licenceStatus.decisions.curfewAddressApproved === 'withdrawn'
-                - var addressReviewDone = licenceStatus.tasks.curfewAddressReview !== 'UNSTARTED'
-
                 include curfewAddressTask
-                if (addressReviewDone && !addressRejectedOrWithdrawn)
+                if (['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved))
                     include riskManagementTask
                     include curfewHoursTask
                     include additionalConditionsTask
@@ -67,12 +63,12 @@ block content
 
         if user.role === 'DM'
             include curfewAddressTask
-            if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+            if (licenceStatus.decisions.curfewAddressApproved === 'approved')
                 include riskManagementTask
                 include curfewHoursTask
                 include additionalConditionsTask
                 include reportingInstructionsTask
-            include finalChecksTask
+                include finalChecksTask
             if licenceStatus.decisions.confiscationOrder
                 include postponementTask
 

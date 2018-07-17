@@ -724,7 +724,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.curfewAddressApproved).to.eql('rejected');
     });
 
-    it('should show address review UNFINISHED when there are active licences', () => {
+    it('should show address review UNSTARTED when there are active addresses', () => {
         const licence = {
             stage: 'PROCESSING_CA',
             licence: {
@@ -751,7 +751,8 @@ describe('getLicenceStatus', () => {
 
         const status = getLicenceStatus(licence);
 
-        expect(status.decisions.curfewAddressApproved).to.eql('unfinished');
+        expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
+        expect(status.decisions.curfewAddressApproved).to.eql('unstarted');
     });
 
     context('Eligibility', () => {

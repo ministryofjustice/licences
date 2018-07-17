@@ -356,7 +356,7 @@ function getCurfewAddressReviewState(licence) {
     const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
 
     if (!addresses || isEmpty(addresses)) {
-        return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
+        return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unstarted'};
     }
 
     const lastAddress = lastItem(addresses);
@@ -377,7 +377,7 @@ function getCurfewAddressReviewState(licence) {
         return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
     }
 
-    return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unfinished'};
+    return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unstarted'};
 }
 
 function getCurfewHoursState(licence) {
