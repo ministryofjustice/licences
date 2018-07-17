@@ -1,7 +1,7 @@
 div.pure-g.largePaddingBottom
     div.pure-u-2-3
-        h2.heading-large.midPaddingBottom Submit to Responsible Officer
-        p.lede The proposed address information is ready to be submitted to the RO or you can return to your dashboard and submit it later.
+        h2.heading-large.midPaddingBottom Submit curfew address
+        p.lede The proposed curfew address is ready to send to the offender's responsible officer.
 
         p The information will be submitted to:
 
@@ -20,4 +20,5 @@ div#continueBtns.pure-g.paddingBottom
             input(type="hidden" name="transitionType" value="CAtoRO")
             if submissionTarget && submissionTarget.com
                 input(type="hidden" name="submissionTarget" value=submissionTarget.com)
-            include includes/sendButtons
+            input#continueBtn.requiredButton.button.button-start(type="submit" value="Submit address")
+            a#backBtn.requiredButton.button.button-secondary.button-start-height(href="/hdc/taskList/" + nomisId role="button") Cancel
