@@ -916,7 +916,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('Curfew address rejected', () => {
-            it('should display all other tasks', () => {
+            it('should NOT display all other tasks', () => {
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO', licence: {
                         proposedAddress: {
