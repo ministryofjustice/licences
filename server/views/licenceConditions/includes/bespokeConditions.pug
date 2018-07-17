@@ -3,13 +3,23 @@
 
 div.pure-g
     div#bespokeConditionsInput.pure-u-1.pure-u-md-1-2.largeMarginBottom
-        h1.heading-large Bespoke conditions
-        p Add the details of the bespoke condition below
+        h2.heading-large Do you need to add any bespoke conditions?
+
+        div.form-group.inline.smallPaddingTop
+
+            div.multiple-choice(data-target="bespokeConditionsForm")
+                input#yes(type="radio" checked=bespokeConditions.length > 0 name="bespokeDecision" value="Yes")
+                label(for="yes") Yes
+            div.multiple-choice
+                input#no(type="radio" checked=bespokeConditions.length === 0 name="bespokeDecision" value="No")
+                label(for="no") No
+
+        div#bespokeConditionsForm.js-hidden
             while n < bespokeConditionsToShow
                 div.bespokeConditionsForm.largeMarginBottom
                     div.bespokeTitleWrapper.pure-g
                         div.pure-u-md-3-4
-                            p.bold.bespokeTitle Bespoke condition #{n+1}
+                            p.bold.bespokeTitle Enter bespoke condition
                         div.removeWrapper.pure-u-md-1-4.alignRight
                     div(style="position:relative")
                         a.namedAnchor(name="bespoke-" + n)
@@ -20,7 +30,12 @@ div.pure-g
                                     if bespokeConditions && bespokeConditions[n]
                                         | #{bespokeConditions[n].text}
 
-                            div.form-group.multiple-choice
-                                input.bespokeCheckbox(name="bespokeConditions["+n+"][approved]" type="checkbox" value='Yes' checked=bespokeConditions[n] && bespokeConditions[n].approved === 'Yes')
-                                label.bespokeCheckboxLabel(for="bespokeConditions["+n+"][approved]") Approved by PPCS
+                            div.form-group.inline.smallPaddingTop
+                                p.strong Has the PPCS (Public protection casework section) approved this condition?
+                                div#bespokeApprovedYes.multiple-choice
+                                    input.bespokeApproved(id="bespokeConditions["+n+"][approved][yes]" type="radio" checked=bespokeConditions[n] && bespokeConditions[n].approved === 'Yes' name="bespokeConditions["+n+"][approved]" value="Yes")
+                                    label.bespokeCheckboxLabelYes(for="bespokeConditions["+n+"][approved][yes]") Yes
+                                div#bespokeApprovedNo.multiple-choice
+                                    input.bespokeApproved(id="bespokeConditions["+n+"][approved][no]" type="radio" checked=bespokeConditions[n] && bespokeConditions[n].approved === 'No' name="bespokeConditions["+n+"][approved]" value="No")
+                                    label.bespokeCheckboxLabelNo(for="bespokeConditions["+n+"][approved][no]") No
                     - n++

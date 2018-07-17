@@ -3,10 +3,10 @@
 $(document).ready(init);
 
 function init() {
-    $('#bespokeConditionsInput').append(
+    $('#bespokeConditionsForm').append(
         '<a class="button button-secondary addBespokeButton smallMarginTop">Add another</a>'
     );
-    $('#bespokeConditionsInput a').on('click', addBespokeFields);
+    $('#bespokeConditionsForm a').on('click', addBespokeFields);
     $('.bespokeTitleWrapper .removeWrapper').append('<a class="link removeBespoke">Remove</a>');
     $('.removeBespoke').on('click', removeBespoke);
 }
@@ -24,16 +24,18 @@ function addBespokeFields() {
     var newIndex = parseInt(indexes[indexes.length - 1]) + 1;
 
     var newTextbox = finalBespoke.find('textarea.bespokeInput').attr('name').replace(indexRegEx, "bespokeConditions[" + newIndex + "]");
-    var newCheckbox = finalBespoke.find('input.bespokeCheckbox').attr('name').replace(indexRegEx, "bespokeConditions[" + newIndex + "]");
-    var newCheckboxLabel = finalBespoke.find('label.bespokeCheckboxLabel').attr('for').replace(indexRegEx, "bespokeConditions[" + newIndex + "]");
+    var newApprovedYes = finalBespoke.find('#bespokeApprovedYes input.bespokeApproved').attr('name').replace(indexRegEx, "bespokeConditions[" + newIndex + "]");
+    var newApprovedNo = finalBespoke.find('#bespokeApprovedNo input.bespokeApproved').attr('name').replace(indexRegEx, "bespokeConditions[" + newIndex + "]");
 
     var newBespoke = finalBespoke.clone();
     newBespoke.find('textarea.bespokeInput').attr('name', newTextbox).attr('id', newTextbox).val('');
-    newBespoke.find('input.bespokeCheckbox').attr('name', newCheckbox).prop('checked', false);
-    newBespoke.find('label.bespokeCheckboxLabel').attr('for', newCheckboxLabel);
+    console.log(newApprovedYes);
+    newBespoke.find('#bespokeApprovedYes input.bespokeApproved').attr('name', newApprovedYes).attr('id', newApprovedYes).prop('checked', false);
+    newBespoke.find('#bespokeApprovedNo input.bespokeApproved').attr('name', newApprovedNo).attr('id', newApprovedNo).prop('checked', false);
+    newBespoke.find('label.bespokeCheckboxLabelYes').attr('for', newApprovedYes);
+    newBespoke.find('label.bespokeCheckboxLabelNo').attr('for', newApprovedNo);
     $(finalBespoke).after(newBespoke);
 
-    retitle();
     $('.removeBespoke').on('click', removeBespoke);
 }
 
@@ -46,14 +48,6 @@ function removeBespoke() {
         closestBespoke.remove();
     } else {
         closestBespoke.find('textarea.bespokeInput').val('');
-        closestBespoke.find('input.bespokeCheckbox').prop('checked', false)
+        closestBespoke.find('input.bespokeCheckbox').prop('checked', false);
     }
-
-    retitle()
-}
-
-function retitle() {
-    $('.bespokeConditionsForm').each(function(index) {
-        $(this).find('.bespokeTitle').text('Bespoke condition ' + Number(index + 1));
-    })
 }
