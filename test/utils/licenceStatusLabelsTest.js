@@ -29,7 +29,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {}},
-                    label: 'Eligibility checks ongoing'
+                    label: 'Checking eligibility'
                 },
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {excluded: true}, tasks: {}},
@@ -37,7 +37,7 @@ describe('getStatusLabel', () => {
                 },
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {insufficientTime: true}, tasks: {}},
-                    label: 'Excluded (Insufficient time)'
+                    label: 'Not enough time'
                 },
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {unsuitableResult: true}, tasks: {}},
@@ -49,7 +49,7 @@ describe('getStatusLabel', () => {
                 },
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {bassReferralNeeded: true}, tasks: {}},
-                    label: 'Address/Opt-out form sent'
+                    label: 'Getting address'
                 },
                 {
                     status: {
@@ -107,7 +107,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
-                    label: 'Final checks'
+                    label: 'Reviewing case'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {excluded: true}, tasks: {}},
@@ -157,7 +157,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {}},
-                    label: 'Submitted to RO'
+                    label: 'With responsible officer'
                 },
                 {
                     status: {stage: licenceStages.APPROVAL, decisions: {}, tasks: {}},
@@ -184,7 +184,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {}},
-                    label: 'Awaiting assessment'
+                    label: 'Ready to check'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {curfewAddressReview: 'DONE'}},
@@ -243,7 +243,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {}},
-                    label: 'Eligibility checks ongoing'
+                    label: 'Checking eligibility'
                 },
                 {
                     status: {stage: licenceStages.APPROVAL, decisions: {approved: true}, tasks: {}},
@@ -282,11 +282,11 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {}},
-                    label: 'Eligibility checks ongoing'
+                    label: 'Checking eligibility'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {}},
-                    label: 'Submitted to RO'
+                    label: 'With responsible officer'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
