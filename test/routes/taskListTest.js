@@ -718,13 +718,12 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
 
-        context('additional condition task started', () => {
-            it('should display a view button for curfew address', () => {
+        context('additional conditions task started', () => {
+            it('should display a view button for additional conditions', () => {
+
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
-                    licence: {
-                        licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
-                    }
+                    licence: {licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}}}
                 });
 
                 const app = createApp({licenceService, prisonerService}, roUser);
@@ -741,7 +740,12 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('risk management task not started', () => {
-            it('should display a start button for additional conditions task', () => {
+            it('should display a start button for risk management task', () => {
+                licenceService.getLicence.resolves({
+                    stage: 'PROCESSING_RO',
+                    licence: {licenceConditions: {standard: {additionalConditionsRequired: 'No'}}}
+                });
+
                 const app = createApp({licenceService, prisonerService}, roUser);
 
                 return request(app)
@@ -759,9 +763,7 @@ describe('GET /taskList/:prisonNumber', () => {
             it('should display a view button for riskManagement', () => {
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
-                    licence: {
-                        risk: {riskManagement: 'anything'}
-                    }
+                    licence: {risk: {riskManagement: 'anything'}}
                 });
 
                 const app = createApp({licenceService, prisonerService}, roUser);
@@ -856,7 +858,7 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
 
-        context('When there is\'nt a confiscation order', () => {
+        context('When there is not a confiscation order', () => {
             it('should not display the postpone HDC button', () => {
                 licenceService.getLicence.resolves({
                     stage: 'APPROVAL', licence: {
@@ -877,6 +879,70 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(res => {
                         expect(res.text).to.not.include('value="Postpone"');
                     });
+            });
+        });
+
+        context('Curfew address approved', () => {
+            it('should display all other tasks', () => {
+                licenceService.getLicence.resolves({
+                    stage: 'PROCESSING_RO', licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [{
+                                    consent: 'Yes',
+                                    electricity: 'Yes',
+                                    deemedSafe: 'Yes'
+                                }]
+                            }
+                        }
+                    }
+                });
+
+                const app = createApp({licenceService, prisonerService}, dmUser);
+
+                return request(app)
+                    .get('/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('/hdc/review/risk/noms">View');
+                        expect(res.text).to.include('/hdc/review/curfewHours/noms">View');
+                        expect(res.text).to.include('/hdc/review/conditions/noms">View');
+                        expect(res.text).to.include('/hdc/review/reporting/noms">View');
+                        expect(res.text).to.include('Final checks');
+                    });
+
+            });
+        });
+
+        context('Curfew address rejected', () => {
+            it('should NOT display all other tasks', () => {
+                licenceService.getLicence.resolves({
+                    stage: 'PROCESSING_RO', licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [{
+                                    consent: 'No'
+                                }]
+                            }
+                        }
+                    }
+                });
+
+                const app = createApp({licenceService, prisonerService}, dmUser);
+
+                return request(app)
+                    .get('/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).not.to.include('/hdc/review/risk/noms">View');
+                        expect(res.text).not.to.include('/hdc/review/curfewHours/noms">View');
+                        expect(res.text).not.to.include('/hdc/review/conditions/noms">View');
+                        expect(res.text).not.to.include('/hdc/review/reporting/noms">View');
+                        expect(res.text).not.to.include('Final checks');
+                    });
+
             });
         });
     });
