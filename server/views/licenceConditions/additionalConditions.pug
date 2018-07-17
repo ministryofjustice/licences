@@ -12,17 +12,13 @@ block content
     include ../includes/back
     include ../includes/personalDetailsSummary
 
-    h1.heading-large Additional conditions
+    h1.heading-large Select additional conditions
 
     form#additionalConditions(method='POST', action="/hdc/licenceConditions/additionalConditions/" + nomisId)
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId)
 
         div#conditionsInstructions
-            div.pure-g.borderBottom
-                div.pure-u-1
-                    p Select the additional conditions you want to add to the offender's licence below.
-
             div.pure-g
                 div.pure-u-1.midPaddingTopBottom
                     for group, groupName in conditions

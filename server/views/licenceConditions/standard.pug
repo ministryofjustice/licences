@@ -7,11 +7,11 @@ block content
     include ../includes/backToTaskList
     include ../includes/personalDetailsSummary
 
-    h1.heading-large The standard conditions
+    h1.heading-large Standard licence conditions
 
     div.pure-g.paddingBottom
         div.pure-u-2-3
-            P The following conditions are included on the licence as standard.
+            P The following conditions are always included on the licence:
 
             p An offender must:
 
@@ -23,7 +23,7 @@ block content
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
         div.form-group.inline.smallPaddingTop
-            p.bold Do you want to add any additional conditions?
+            h2.heading-large Do you want to add any additional conditions?
 
             div.multiple-choice
                 input#additionalConditionsYes(type="radio" name="additionalConditionsRequired" value="Yes" checked=additionalConditionsValue === 'Yes')

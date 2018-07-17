@@ -36,7 +36,7 @@ describe('/hdc/licenceConditions', () => {
         const app = createApp({licenceService, conditionsService: conditionsServiceStub});
         const routes = [
             {url: '/licenceConditions/standard/1', content: 'Not commit any offence'},
-            {url: '/licenceConditions/additionalConditions/1', content: 'Additional conditions</h1>'},
+            {url: '/licenceConditions/additionalConditions/1', content: 'Select additional conditions</h1>'},
             {url: '/licenceConditions/conditionsSummary/1', content: 'Add additional condition'},
             {url: '/reporting/reportingInstructions/1', content: 'Reporting instructions'}
         ];

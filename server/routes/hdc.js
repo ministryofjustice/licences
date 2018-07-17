@@ -67,9 +67,9 @@ module.exports = function(
 
     router.post('/licenceConditions/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('POST /additionalConditions');
-        const {nomisId, additionalConditions, bespokeConditions} = req.body;
+        const {nomisId, additionalConditions, bespokeDecision, bespokeConditions} = req.body;
 
-        const bespoke = bespokeConditions.filter(condition => condition.text) || [];
+        const bespoke = bespokeDecision === 'Yes' && bespokeConditions.filter(condition => condition.text) || [];
         const additional = await getAdditionalConditionsFrom(additionalConditions, req.body);
 
         if (!additional) {
