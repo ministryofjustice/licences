@@ -23,13 +23,13 @@ function statusLabels(licenceStatus, role) {
     const labels = {
         [licenceStages.ELIGIBILITY]: {
             CA: caEligibilityLabel,
-            RO: () => 'Eligibility checks ongoing',
-            DM: () => 'Eligibility checks ongoing'
+            RO: () => 'Checking eligibility',
+            DM: () => 'Checking eligibility'
         },
         [licenceStages.PROCESSING_RO]: {
             CA: roProcessingCaLabel,
             RO: roProcessingLabel,
-            DM: () => 'Submitted to RO'
+            DM: () => 'With responsible officer'
         },
         [licenceStages.PROCESSING_CA]: {
             CA: caProcessingLabel,
@@ -56,13 +56,13 @@ function caEligibilityLabel(licenceStatus) {
     const labels = [
         {decision: 'excluded', label: 'Excluded (Ineligible)'},
         {decision: 'unsuitableResult', label: 'Presumed unsuitable'},
-        {decision: 'insufficientTime', label: 'Excluded (Insufficient time)'},
+        {decision: 'insufficientTime', label: 'Not enough time'},
         {decision: 'optedOut', label: 'Opted out'},
-        {decision: 'bassReferralNeeded', label: 'Address/Opt-out form sent'},
+        {decision: 'bassReferralNeeded', label: 'Getting address'},
         {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address rejected'}
     ];
 
-    return getLabel(labels, licenceStatus) || 'Eligibility checks ongoing';
+    return getLabel(labels, licenceStatus) || 'Checking eligibility';
 }
 
 function caProcessingLabel(licenceStatus) {
@@ -74,7 +74,7 @@ function caProcessingLabel(licenceStatus) {
         {decision: 'curfewAddressApproved', value: 'withdrawn', label: 'Address withdrawn'}
     ];
 
-    return getLabel(labels, licenceStatus) || 'Final checks';
+    return getLabel(labels, licenceStatus) || 'Reviewing case';
 }
 
 function caProcessingRoLabel(licenceStatus) {
@@ -103,7 +103,7 @@ function roProcessingLabel(licenceStatus) {
         return 'Assessment ongoing';
     }
 
-    return 'Awaiting assessment';
+    return 'Ready to check';
 }
 
 function roProcessingCaLabel(licenceStatus) {
@@ -111,7 +111,7 @@ function roProcessingCaLabel(licenceStatus) {
         {decision: 'optedOut', label: 'Opted out'}
     ];
 
-    return getLabel(labels, licenceStatus) || 'Submitted to RO';
+    return getLabel(labels, licenceStatus) || 'With responsible officer';
 }
 
 function decisionLabel(licenceStatus) {
