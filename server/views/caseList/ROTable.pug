@@ -42,7 +42,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
 
                     td
                         if ['PROCESSING_RO'].includes(prisoner.stage)
-                            if ['Awaiting assessment'].includes(prisoner.status)
+                            if ['Ready to check'].includes(prisoner.status)
                                 a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.offenderNo role="button")
                                     | Start
                             else
