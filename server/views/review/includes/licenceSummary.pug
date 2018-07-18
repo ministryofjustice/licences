@@ -56,21 +56,26 @@ div.largeMarginBottom
 
         // Additional condition
         div.borderBottom
+            -var standardOnly = licenceStatus.decisions.standardOnly
+            -var linkTo = standardOnly ?  'standard' : 'additionalConditions'
+
             div.pure-g
                 div.pure-u-md-1-2
                     h2.heading-medium Additional conditions
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#conditionsEditLink(href="/hdc/licenceConditions/additionalConditions/" + nomisId) Change these details
+                            a#conditionsEditLink(href="/hdc/licenceConditions/" + linkTo + "/" + nomisId) Change these details
 
             if typeof errorObject.licenceConditions === 'string'
                 p.alert.bold(id='additional-conditions-error') #{errorObject.licenceConditions}
             else
-                if data.licenceConditions
+                if standardOnly
+                    p No additional conditions selected
+                else if data.licenceConditions && data.licenceConditions.length > 0
                     +additionalConditions()
                 else
-                    | No additional conditions selected
+                    p(id='noConditionsError' class="bold alert") Select one or more additional conditions
 
         // Reporting instructions
         div.borderBottom
