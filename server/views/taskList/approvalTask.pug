@@ -8,7 +8,7 @@ div.taskListItem.largeMarginBottom
                 | : #{licenceStatus.decisions.refusalReason}
         div.pure-u-1-4.center
             if (licenceStatus.stage === 'APPROVAL')
-                +proceed(licenceStatus.tasks.approval, 'UNSTARTED', 'Continue', 'View', "/hdc/approval/release/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.approval, "/hdc/approval/release/" + prisonerInfo.offenderNo)
 
 
 

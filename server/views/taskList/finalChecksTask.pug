@@ -21,8 +21,8 @@ div.taskListItem.smallPaddingBottom
                         else
                             li.list-bullet#confiscationOrderAnswer The offender is not subject to a confiscation order
             else
-                | Not yet complete
+                | Not completed
         div.pure-u-1-4.center
             if user.role === 'CA'
-                +proceed(licenceStatus.tasks.finalChecks, 'UNSTARTED', 'Start', 'View', "/hdc/finalChecks/seriousOffence/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.finalChecks, "/hdc/finalChecks/seriousOffence/" + prisonerInfo.offenderNo)
 

@@ -1,7 +1,0 @@
-mixin proceed(task, onStatus, onText, offText, path)
-    - var primaryAction = (task === onStatus)
-    a.taskListAction.center.button(class = primaryAction ? '' : 'button-secondary', href=path)
-        if primaryAction
-            | #{onText}
-        else
-            | #{offText}

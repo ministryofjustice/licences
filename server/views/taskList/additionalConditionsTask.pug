@@ -16,9 +16,9 @@ div.taskListItem
                             +pluralise(licenceStatus.decisions.bespoke, ' bespoke condition')
                             |  added
             else
-                | No conditions added
+                | Not completed
         div.pure-u-1-4.center
             if user.role === 'RO'
-                +proceed(licenceStatus.tasks.licenceConditions, 'UNSTARTED', 'Start', 'View', "/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.licenceConditions, "/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
             else
                 a.taskListAction.center.button.button-secondary(href="/hdc/review/conditions/" + prisonerInfo.offenderNo) View

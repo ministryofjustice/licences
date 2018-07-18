@@ -4,7 +4,7 @@ div.largeMarginBottom
     if licenceStatus.tasks.eligibility !== 'DONE'
         div.pure-g
             div.pure-u-1.pure-u-md-3-4
-                | Questions not completed
+                | Not completed
             div.pure-u-1.pure-u-md-1-4.center
                 form(method="post", name="eligibilityStart", action='/hdc/taskList/eligibilityStart/')
                     input(type="hidden" name="_csrf" value=csrfToken)

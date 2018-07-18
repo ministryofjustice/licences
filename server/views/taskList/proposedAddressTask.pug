@@ -3,7 +3,7 @@ div.largeMarginBottom.borderTop
     div.pure-g
         div.pure-u-3-4
             if licenceStatus.tasks.curfewAddress === 'UNSTARTED'
-                | Information not yet entered
+                | Not completed
             else if licenceStatus.decisions.optedOut
                 | Offender has opted out of HDC
             else if licenceStatus.decisions.bassReferralNeeded
@@ -17,6 +17,6 @@ div.largeMarginBottom.borderTop
 
         div.pure-u-1-4.center
             if licenceStatus.decisions.curfewAddressApproved === 'rejected'
-                +proceed(licenceStatus.tasks.curfewAddress, 'UNSTARTED', 'Start', 'View/edit', "/hdc/proposedAddress/rejected/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/rejected/" + prisonerInfo.offenderNo)
             else
-                +proceed(licenceStatus.tasks.curfewAddress, 'UNSTARTED', 'Start', 'Continue', "/hdc/proposedAddress/optOut/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/optOut/" + prisonerInfo.offenderNo)
