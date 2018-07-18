@@ -10,14 +10,17 @@ block content
     div.largePaddingBottom
         if user.role == 'CA'
             if allowedTransitions.caToDm
-                include CAtoDM.pug
+                include CAtoDM
             else if allowedTransitions.caToDmRefusal
-                include CAtoDMRefusal.pug
+                include CAtoDMRefusal
             else
-                include CAtoRO.pug
+                include CAtoRO
 
         else if user.role == 'RO'
-            include ROtoCA.pug
+            include ROtoCA
 
         else if user.role == 'DM'
-            include DM.pug
+            if allowedTransitions.dmToCaReturn
+                include DMtoCAReturn
+            else
+                include DM
