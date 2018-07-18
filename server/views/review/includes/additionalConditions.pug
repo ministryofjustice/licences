@@ -17,8 +17,10 @@ mixin additionalConditions(editable)
                             span.approved
                                 if condition.approved === 'Yes'
                                     |  Approved
-                                else
+                                else if condition.approved === 'No'
                                     span.alert  Not approved
+                                else
+                                    span.alert  Say if the PPCS approved the bespoke conditions
 
                 div.content
                     for item in condition.content
