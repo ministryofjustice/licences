@@ -43,6 +43,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
     function getSubmissionTarget(nomisId, stage, username) {
         switch (stage) {
             case licenceStages.ELIGIBILITY:
+            case licenceStages.PROCESSING_CA:
                 return prisonerService.getComForPrisoner(nomisId, username);
             case licenceStages.PROCESSING_RO:
                 return prisonerService.getEstablishmentForPrisoner(nomisId, username);
