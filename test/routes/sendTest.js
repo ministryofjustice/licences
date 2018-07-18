@@ -41,8 +41,21 @@ describe('Send:', () => {
                     });
             });
 
-            it('gets com details when submission is CA to RO', () => {
+            it('gets com details when submission is CA to RO in Eligibility stage', () => {
                 licenceService.getLicence.resolves({stage: 'ELIGIBILITY'});
+                const app = createApp({licenceService, prisonerService});
+
+                return request(app)
+                    .get('/123')
+                    .expect(() => {
+                        expect(prisonerService.getComForPrisoner).to.be.calledOnce();
+                        expect(prisonerService.getComForPrisoner).to.be.calledWith('123', 'my-username');
+                    });
+                expect(prisonerService.getEstablishmentForPrisoner).not.to.be.called();
+            });
+
+            it('gets com details when submission is CA to RO in Final Checks stage', () => {
+                licenceService.getLicence.resolves({stage: 'PROCESSING_CA'});
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
