@@ -11,7 +11,7 @@ header(role="banner", id="global-header", class="with-proposition")
             if user
                 div.pure-u-md-1-2
                     div#header-user
-                        span.bold #{user.firstName}, #{user.lastName} &nbsp;&nbsp;|&nbsp;&nbsp;
+                        span.bold #{user.firstName} #{user.lastName} &nbsp;&nbsp;|&nbsp;&nbsp;
                         if user.activeCaseLoad
                             span.bold #{user.activeCaseLoad.description} &nbsp;&nbsp;|&nbsp;&nbsp;
                         a(href="/logout") Logout
