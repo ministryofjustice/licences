@@ -1,8 +1,7 @@
 const express = require('express');
 const {getIn} = require('../utils/functionalHelpers');
-const {licenceStages} = require('../models/licenceStages');
 const {getLicenceStatus} = require('../utils/licenceStatus');
-const {getAllowedTransitions} = require('../utils/licenceStatusTransitions');
+const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
 
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
 
@@ -24,10 +23,10 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         const licence = await licenceService.getLicence(nomisId);
         const stage = getIn(licence, ['stage']);
         const licenceStatus = getLicenceStatus(licence);
-        const allowedTransitions = getAllowedTransitions(licenceStatus, req.user.role);
-        const submissionTarget = await getSubmissionTarget(nomisId, stage, req.user.username);
+        const transitionType = getAllowedTransition(licenceStatus, req.user.role);
+        const submissionTarget = await getSubmissionTarget(transitionType, nomisId, req.user.username);
 
-        res.render('send/index', {nomisId, stage, submissionTarget, allowedTransitions});
+        res.render('send/index', {nomisId, stage, submissionTarget, transitionType});
     }));
 
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
@@ -40,16 +39,17 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         res.redirect(`/hdc/sent/${transitionType}`);
     }));
 
-    function getSubmissionTarget(nomisId, stage, username) {
-        switch (stage) {
-            case licenceStages.ELIGIBILITY:
-            case licenceStages.PROCESSING_CA:
-                return prisonerService.getComForPrisoner(nomisId, username);
-            case licenceStages.PROCESSING_RO:
-                return prisonerService.getEstablishmentForPrisoner(nomisId, username);
-            default:
-                return null;
+    function getSubmissionTarget(transitionType, nomisId, username) {
+
+        if (transitionType === 'caToRo') {
+            return prisonerService.getComForPrisoner(nomisId, username);
         }
+
+        if (transitionType === 'roToCa') {
+            return prisonerService.getEstablishmentForPrisoner(nomisId, username);
+        }
+
+        return null;
     }
 
     return router;

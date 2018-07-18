@@ -1,6 +1,6 @@
-const {getAllowedTransitions} = require('../../server/utils/licenceStatusTransitions');
+const {getAllowedTransition} = require('../../server/utils/licenceStatusTransitions');
 
-describe('getAllowedTransitions', () => {
+describe('getAllowedTransition', () => {
     it('should allow DM to CA for DM when approval task done', () => {
         const status = {
             stage: 'APPROVAL',
@@ -9,8 +9,8 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'DM');
-        expect(allowed.dmToCa).to.eql(true);
+        const allowed = getAllowedTransition(status, 'DM');
+        expect(allowed).to.eql('dmToCa');
     });
 
     it('should not allow DM to CA for DM when approval task not done', () => {
@@ -21,8 +21,8 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'DM');
-        expect(allowed.dmToCa).to.eql(false);
+        const allowed = getAllowedTransition(status, 'DM');
+        expect(allowed).to.eql(null);
     });
 
     it('should allow RO to CA for RO when all RO tasks done', () => {
@@ -37,8 +37,8 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'RO');
-        expect(allowed.roToCa).to.eql(true);
+        const allowed = getAllowedTransition(status, 'RO');
+        expect(allowed).to.eql('roToCa');
     });
 
     it('should not allow RO to CA for RO when any RO tasks not done', () => {
@@ -53,8 +53,8 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'RO');
-        expect(allowed.roToCa).to.eql(false);
+        const allowed = getAllowedTransition(status, 'RO');
+        expect(allowed).to.eql(null);
     });
 
     it('should allow RO to CA for RO when address rejected even when other tasks not done', () => {
@@ -72,8 +72,8 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'RO');
-        expect(allowed.roToCa).to.eql(true);
+        const allowed = getAllowedTransition(status, 'RO');
+        expect(allowed).to.eql('roToCa');
     });
 
     it('should not allow RO to CA for RO when address undecided', () => {
@@ -88,8 +88,8 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'RO');
-        expect(allowed.roToCa).to.eql(false);
+        const allowed = getAllowedTransition(status, 'RO');
+        expect(allowed).to.eql(null);
     });
 
     it('should allow CA to RO in the ELIGIBILITY stage when all CA tasks done and decisions OK', () => {
@@ -105,16 +105,15 @@ describe('getAllowedTransitions', () => {
                 finalChecks: 'DONE'
             },
             decisions: {
-                postponed: false,
+                postponed: null,
                 curfewAddressApproved: 'approved',
-                excluded: false,
+                excluded: null,
                 eligible: true
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToRo).to.eql(true);
-        expect(allowed.caToDm).to.eql(false);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToRo');
     });
 
     it('should not allow CA to RO in the ELIGIBILITY stage when HDC has been opted out', () => {
@@ -134,8 +133,8 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToRo).to.eql(false);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql(null);
     });
 
     it('should not allow CA to RO in the ELIGIBILITY stage when address has been rejected', () => {
@@ -151,12 +150,12 @@ describe('getAllowedTransitions', () => {
                 finalChecks: 'DONE'
             },
             decisions: {
-                curfewAddressApproved: 'false'
+                curfewAddressApproved: 'null'
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToRo).to.eql(false);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql(null);
     });
 
     it('should not allow CA to RO in the ELIGIBILITY stage when ineligible', () => {
@@ -172,16 +171,15 @@ describe('getAllowedTransitions', () => {
                 finalChecks: 'DONE'
             },
             decisions: {
-                postponed: false,
+                postponed: null,
                 curfewAddressApproved: 'approved',
-                excluded: false,
-                eligible: false
+                excluded: null,
+                eligible: null
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToRo).to.eql(false);
-        expect(allowed.caToDmRefusal).to.eql(false);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql(null);
     });
 
     it('should allow CA to DM in the PROCESSING_CA stage when all CA tasks done and decisions OK', () => {
@@ -197,15 +195,15 @@ describe('getAllowedTransitions', () => {
                 finalChecks: 'DONE'
             },
             decisions: {
-                postponed: false,
+                postponed: null,
                 curfewAddressApproved: 'approved',
-                excluded: false
+                excluded: null
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
+        const allowed = getAllowedTransition(status, 'CA');
 
-        expect(allowed.caToDm).to.eql(true);
+        expect(allowed).to.eql('caToDm');
     });
 
     it('should not allow CA to DM in the PROCESSING_CA when any CA tasks not done and decisions not OK', () => {
@@ -219,15 +217,15 @@ describe('getAllowedTransitions', () => {
                 bassReferral: 'DONE'
             },
             decisions: {
-                postponed: false,
+                postponed: null,
                 curfewAddressApproved: 'approved',
                 excluded: true
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
+        const allowed = getAllowedTransition(status, 'CA');
 
-        expect(allowed.caToDm).to.eql(false);
+        expect(allowed).to.eql(null);
     });
 
     it('should allow CA to DM refusal when eligible and insufficient time', () => {
@@ -248,8 +246,8 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToDmRefusal).to.eql(true);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
     });
 
     it('should allow CA to DM refusal when ineligble but insufficientTimeStop', () => {
@@ -266,12 +264,12 @@ describe('getAllowedTransitions', () => {
             },
             decisions: {
                 insufficientTimeStop: true,
-                eligible: false
+                eligible: null
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToDmRefusal).to.eql(true);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
     });
 
     it('should not allow CA to DM refusal if ineligible without', () => {
@@ -287,13 +285,13 @@ describe('getAllowedTransitions', () => {
                 finalChecks: 'DONE'
             },
             decisions: {
-                eligible: false,
+                eligible: null,
                 curfewAddressApproved: 'rejected'
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToDmRefusal).to.eql(false);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql(null);
     });
 
     it('should allow CA to DM refusal if curfew address is rejected', () => {
@@ -314,8 +312,8 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToDmRefusal).to.eql(true);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
     });
 
     it('should not allow CA to DM when HDC refused', () => {
@@ -331,15 +329,15 @@ describe('getAllowedTransitions', () => {
                 finalChecks: 'DONE'
             },
             decisions: {
-                postponed: false,
+                postponed: null,
                 curfewAddressApproved: 'approved',
-                excluded: false,
+                excluded: null,
                 finalChecksRefused: true
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToDm).to.eql(false);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql(null);
     });
 
     it('should allow CA to RO when address review has not been started', () => {
@@ -354,15 +352,15 @@ describe('getAllowedTransitions', () => {
                 curfewAddressReview: 'UNSTARTED'
             },
             decisions: {
-                postponed: false,
+                postponed: null,
                 curfewAddressApproved: 'approved',
-                excluded: false,
+                excluded: null,
                 finalChecksRefused: true
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToRo).to.eql(true);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToRo');
     });
 
     it('should allow CA to DM when address has been withdrawn', () => {
@@ -374,7 +372,7 @@ describe('getAllowedTransitions', () => {
             }
         };
 
-        const allowed = getAllowedTransitions(status, 'CA');
-        expect(allowed.caToDmRefusal).to.eql(true);
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
     });
 });

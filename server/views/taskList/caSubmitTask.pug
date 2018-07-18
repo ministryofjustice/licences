@@ -9,7 +9,7 @@ div.largeMarginBottom.borderTop
 
     div.pure-g
         div.pure-u-3-4
-            if allowedTransitions.caToRo || allowedTransitions.caToDm
+            if allowedTransition === 'caToRo' || allowedTransition === 'caToDm'
                 | Ready to submit
             else if licenceStatus.decisions.postponed
                 | Submission unavailable - HDC application postponed
@@ -19,7 +19,7 @@ div.largeMarginBottom.borderTop
                 | Submission unavailable - Tasks not yet complete
 
         div.pure-u-1-4.center
-            if allowedTransitions.caToRo || allowedTransitions.caToDm
-                -var linkTarget = allowedTransitions.caToRo ? '/hdc/review/curfewAddress/' : '/hdc/send/';
+            if allowedTransition === 'caToRo' || allowedTransition === 'caToDm'
+                -var linkTarget = allowedTransition === 'caToRo' ? '/hdc/review/curfewAddress/' : '/hdc/send/';
                 a#continueBtn.taskListAction.center.button(href=linkTarget + prisonerInfo.offenderNo)
                     | Continue

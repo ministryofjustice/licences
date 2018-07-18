@@ -17,7 +17,7 @@ div#continueBtns.pure-g.paddingBottom
             input(type="hidden" name="nomisId" value=nomisId)
             input(type="hidden" name="sender" value="CA")
             input(type="hidden" name="receiver" value="RO")
-            input(type="hidden" name="transitionType" value="CAtoRO")
+            input(type="hidden" name="transitionType" value=transitionType)
             if submissionTarget && submissionTarget.com
                 input(type="hidden" name="submissionTarget" value=submissionTarget.com)
             input#continueBtn.requiredButton.button.button-start(type="submit" value="Submit address")

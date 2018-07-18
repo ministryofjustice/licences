@@ -28,9 +28,46 @@ describe('Send:', () => {
     });
 
     describe('When role is CA', () => {
+
+        const eligibilityCompleteLicence = {
+            eligibility: {
+                excluded: {
+                    decision: 'No'
+                },
+                suitability: {
+                    decision: 'No'
+                },
+                crdTime: {
+                    decision: 'No'
+                }
+            },
+            proposedAddress: {
+                optOut: {
+                    decision: 'No'
+                },
+                bassReferral: {
+                    decision: 'No'
+                },
+                curfewAddress: {
+                    addresses: [{
+                        addressLine1: 'Street',
+                        addressTown: 'Town',
+                        postCode: 'AB1 1AB',
+                        telephone: '0123 456789',
+                        cautionedAgainstResident: 'No',
+                        occupier: {
+                            name: 'Main Occupier',
+                            age: '21',
+                            relationship: 'Brother'
+                        }
+                    }]
+                }
+            }
+        };
+
         describe('GET /send', () => {
             it('renders and HTML output', () => {
-                licenceService.getLicence.resolves({stage: 'ELIGIBILITY'});
+                licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: eligibilityCompleteLicence});
                 const app = createApp({licenceService, prisonerService});
                 return request(app)
                     .get('/123')
@@ -42,7 +79,7 @@ describe('Send:', () => {
             });
 
             it('gets com details when submission is CA to RO in Eligibility stage', () => {
-                licenceService.getLicence.resolves({stage: 'ELIGIBILITY'});
+                licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: eligibilityCompleteLicence});
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
@@ -50,12 +87,16 @@ describe('Send:', () => {
                     .expect(() => {
                         expect(prisonerService.getComForPrisoner).to.be.calledOnce();
                         expect(prisonerService.getComForPrisoner).to.be.calledWith('123', 'my-username');
+                        expect(prisonerService.getEstablishmentForPrisoner).not.to.be.called();
                     });
-                expect(prisonerService.getEstablishmentForPrisoner).not.to.be.called();
             });
 
             it('gets com details when submission is CA to RO in Final Checks stage', () => {
-                licenceService.getLicence.resolves({stage: 'PROCESSING_CA'});
+                licenceService.getLicence.resolves({
+                    stage: 'PROCESSING_CA', licence: {
+                        proposedAddress: {curfewAddress: {addresses: [{}]}}
+                    }
+                });
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
@@ -63,8 +104,8 @@ describe('Send:', () => {
                     .expect(() => {
                         expect(prisonerService.getComForPrisoner).to.be.calledOnce();
                         expect(prisonerService.getComForPrisoner).to.be.calledWith('123', 'my-username');
+                        expect(prisonerService.getEstablishmentForPrisoner).not.to.be.called();
                     });
-                expect(prisonerService.getEstablishmentForPrisoner).not.to.be.called();
             });
         });
 
@@ -132,7 +173,17 @@ describe('Send:', () => {
         };
 
         it('gets establishment details when submission is RO to CA', () => {
-            licenceService.getLicence.resolves({stage: 'PROCESSING_RO'});
+            licenceService.getLicence.resolves({
+                stage: 'PROCESSING_RO', licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [{
+                                consent: 'No'
+                            }]
+                        }
+                    }
+                }
+            });
 
             const app = createApp({licenceService, prisonerService}, roUser);
 
@@ -146,7 +197,8 @@ describe('Send:', () => {
                 });
         });
     });
-});
+})
+;
 
 
 const caUser = {

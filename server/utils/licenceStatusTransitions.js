@@ -1,29 +1,46 @@
 const {taskStates} = require('../models/taskStates');
 const {roles} = require('../models/roles');
 
-module.exports = {getAllowedTransitions};
+module.exports = {getAllowedTransition};
 
-function getAllowedTransitions(licenceStatus, role) {
+function getAllowedTransition(licenceStatus, role) {
 
     if (!licenceStatus) {
         return null;
     }
 
     switch (role) {
+
+
         case roles.RO:
-            return {
-                roToCa: canSendRoToCa(licenceStatus)
-            };
+            if (canSendRoToCa(licenceStatus)) {
+                return 'roToCa';
+            }
+
+            return null;
+
         case roles.DM:
-            return {
-                dmToCa: canSendDmToCa(licenceStatus)
-            };
+            if (canSendDmToCa(licenceStatus)) {
+                return 'dmToCa';
+            }
+
+            return null;
+
         default:
-            return {
-                caToRo: canSendCaToRo(licenceStatus),
-                caToDm: canSendCaToDm(licenceStatus),
-                caToDmRefusal: caToDmRefusal(licenceStatus)
-            };
+
+            if (canSendCaToDmRefusal(licenceStatus)) {
+                return 'caToDmRefusal';
+            }
+
+            if (canSendCaToDm(licenceStatus)) {
+                return 'caToDm';
+            }
+
+            if (canSendCaToRo(licenceStatus)) {
+                return 'caToRo';
+            }
+
+            return null;
     }
 }
 
@@ -60,6 +77,7 @@ function canSendCaToRo(licenceStatus) {
     const {tasks, decisions, stage} = licenceStatus;
 
     const addressReviewNeeded = stage === 'PROCESSING_CA' && tasks.curfewAddressReview === 'UNSTARTED';
+
     if (addressReviewNeeded) {
         return true;
     }
@@ -67,6 +85,7 @@ function canSendCaToRo(licenceStatus) {
     const {eligible, optedOut, bassReferralNeeded, curfewAddressApproved} = decisions;
 
     const notToProgress = !eligible || optedOut || curfewAddressApproved === 'rejected';
+
     if (stage !== 'ELIGIBILITY' || notToProgress) {
         return false;
     }
@@ -88,7 +107,7 @@ function canSendCaToRo(licenceStatus) {
     return allTaskComplete;
 }
 
-function caToDmRefusal(licenceStatus) {
+function canSendCaToDmRefusal(licenceStatus) {
     const {stage, decisions} = licenceStatus;
 
     if (stage === 'PROCESSING_CA') {
@@ -113,7 +132,7 @@ function canSendCaToDm(licenceStatus) {
     const decisions = licenceStatus.decisions;
     const stage = licenceStatus.stage;
 
-    if (stage !== 'PROCESSING_CA' ) {
+    if (stage !== 'PROCESSING_CA') {
         return false;
     }
 

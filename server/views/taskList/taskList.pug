@@ -28,9 +28,9 @@ block content
                 include eligibilityTask
                 if licenceStatus.decisions.eligible
                     include proposedAddressTask
-                if allowedTransitions.caToRo
+                if allowedTransition === 'caToRo'
                     include caSubmitTask
-                else if allowedTransitions.caToDmRefusal
+                else if allowedTransition === 'caToDmRefusal'
                     include caSubmitRefusalTask
 
             else
@@ -43,7 +43,7 @@ block content
                     include finalChecksTask
                 include postponementTask
                 include HDCRefusalTask
-                if allowedTransitions.caToDmRefusal
+                if allowedTransition === 'caToDmRefusal'
                     include caSubmitRefusalTask
                 else
                     include caSubmitTask
