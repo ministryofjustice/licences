@@ -23,7 +23,10 @@ const transitions = {
 
     },
     DM: {
-        CA: licenceStages.DECIDED
+        CA: {
+            'default': licenceStages.DECIDED,
+            returnedToCa: licenceStages.PROCESSING_CA
+        }
     }
 };
 

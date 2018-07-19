@@ -193,6 +193,15 @@ describe('licenceService', () => {
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_CA');
         });
 
+        it('should send to PROCESSING_CA if transition type of DMtoCAReturn is passed in', () => {
+
+            service.markForHandover('ab1', 'DM', 'CA', {
+                stage: 'APPROVAL',
+                licence: {proposedAddress: {optOut: {decision: 'No'}}}
+            }, 'DMtoCAReturn');
+            expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_CA');
+        });
+
         it('should throw if error during update status', () => {
             licenceClient.updateStage.rejects();
             return expect(service.markForHandover('ab1', 'CA', 'RO')).to.eventually.be.rejected();

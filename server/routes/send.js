@@ -30,10 +30,17 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         res.render('send/index', {nomisId, stage, submissionTarget, allowedTransitions});
     }));
 
+    router.get('/return/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+        const {nomisId} = req.params;
+        const allowedTransitions = {dmToCaReturn: true};
+
+        res.render('send/index', {nomisId, allowedTransitions});
+    }));
+
     router.post('/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId, sender, receiver, transitionType, submissionTarget} = req.body;
         const licence = await licenceService.getLicence(nomisId);
-        await licenceService.markForHandover(nomisId, sender, receiver, licence);
+        await licenceService.markForHandover(nomisId, sender, receiver, licence, transitionType);
 
         audit.record('SEND', req.user.staffId, {nomisId, sender, receiver, transitionType, submissionTarget});
 

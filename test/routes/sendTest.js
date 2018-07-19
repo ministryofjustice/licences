@@ -61,10 +61,11 @@ describe('Send:', () => {
 
                 return request(app)
                     .post('/123')
-                    .send({nomisId: 123, sender: 'from', receiver: 'to'})
+                    .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'type'})
                     .expect(() => {
                         expect(licenceService.markForHandover).to.be.calledOnce();
-                        expect(licenceService.markForHandover).to.be.calledWith(123, 'from', 'to');
+                        expect(licenceService.markForHandover).to.be.calledWith(
+                            123, 'from', 'to', {licence: {key: 'value'}}, 'type');
                     });
 
             });
@@ -130,6 +131,27 @@ describe('Send:', () => {
                     expect(prisonerService.getEstablishmentForPrisoner).to.be.calledOnce();
                     expect(prisonerService.getEstablishmentForPrisoner).to.be.calledWith('123', 'my-username');
                     expect(prisonerService.getComForPrisoner).not.to.be.called();
+                });
+        });
+    });
+
+    describe('GET /send/return', () => {
+        it('displays the return to ca form', () => {
+
+            const dmUser = {
+                staffId: 'my-staff-id',
+                username: 'my-username',
+                role: 'DM'
+            };
+
+            licenceService.getLicence.resolves({stage: 'PROCESSING_RO'});
+
+            const app = createApp({licenceService, prisonerService}, dmUser);
+
+            return request(app)
+                .get('/return/123')
+                .expect(res => {
+                    expect(res.text).to.contain('value="DMtoCAReturn"');
                 });
         });
     });
