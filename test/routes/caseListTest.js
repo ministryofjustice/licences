@@ -70,15 +70,15 @@ describe('GET /caseList', () => {
                     .get('/ready')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.include('Andrews, Unstarted');
-                        expect(res.text).to.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
-                        expect(res.text).to.not.include('Andrews, Opted out');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.include('Unstarted Andrews');
+                        expect(res.text).to.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
+                        expect(res.text).to.not.include('Opted out Andrews');
                     });
             });
         });
@@ -88,15 +88,15 @@ describe('GET /caseList', () => {
                     .get('/submittedRo')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
-                        expect(res.text).to.not.include('Andrews, Opted out');
+                        expect(res.text).to.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
+                        expect(res.text).to.not.include('Opted out Andrews');
                     });
             });
         });
@@ -106,15 +106,15 @@ describe('GET /caseList', () => {
                     .get('/finalChecks')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.include('Andrews, Processing CA postponed');
-                        expect(res.text).to.not.include('Andrews, Opted out');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.include('Processing CA postponed Andrews');
+                        expect(res.text).to.not.include('Opted out Andrews');
                     });
             });
         });
@@ -124,15 +124,15 @@ describe('GET /caseList', () => {
                     .get('/submittedDm')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
-                        expect(res.text).to.not.include('Andrews, Opted out');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
+                        expect(res.text).to.not.include('Opted out Andrews');
                     });
             });
         });
@@ -142,15 +142,15 @@ describe('GET /caseList', () => {
                     .get('/decided')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.include('Andrews, Approved');
-                        expect(res.text).to.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
-                        expect(res.text).to.not.include('Andrews, Opted out');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.include('Approved Andrews');
+                        expect(res.text).to.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
+                        expect(res.text).to.not.include('Opted out Andrews');
                     });
             });
         });
@@ -161,15 +161,15 @@ describe('GET /caseList', () => {
                     .get('/optedOut')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
-                        expect(res.text).to.include('Andrews, Opted out');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
+                        expect(res.text).to.include('Opted out Andrews');
                     });
             });
         });
@@ -181,14 +181,14 @@ describe('GET /caseList', () => {
                     .get('/approved')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
                     });
             });
         });
@@ -198,14 +198,14 @@ describe('GET /caseList', () => {
                     .get('/refused')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
                     });
             });
         });
@@ -238,12 +238,12 @@ describe('GET /caseList', () => {
                     .get('/ready')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
+                        expect(res.text).to.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
                     });
             });
         });
@@ -253,14 +253,14 @@ describe('GET /caseList', () => {
                     .get('/finalChecks')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.include('Processing CA postponed Andrews');
                     });
             });
         });
@@ -270,14 +270,14 @@ describe('GET /caseList', () => {
                     .get('/submittedDm')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
                     });
             });
         });
@@ -287,14 +287,14 @@ describe('GET /caseList', () => {
                     .get('/active')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.include('Andrews, Approved');
-                        expect(res.text).to.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.include('Approved Andrews');
+                        expect(res.text).to.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
                     });
             });
         });
@@ -323,14 +323,14 @@ describe('GET /caseList', () => {
                     .get('/ready')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
                     });
             });
         });
@@ -340,14 +340,14 @@ describe('GET /caseList', () => {
                     .get('/approved')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.include('Andrews, Approved');
-                        expect(res.text).to.not.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
                     });
             });
         });
@@ -357,14 +357,14 @@ describe('GET /caseList', () => {
                     .get('/refused')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('Andrews, RO Processing');
-                        expect(res.text).to.not.include('Andrews, Unstarted');
-                        expect(res.text).to.not.include('Andrews, Eligibility');
-                        expect(res.text).to.not.include('Andrews, Approval');
-                        expect(res.text).to.not.include('Andrews, Approved');
-                        expect(res.text).to.include('Andrews, Refused');
-                        expect(res.text).to.not.include('Andrews, Processing CA not postponed');
-                        expect(res.text).to.not.include('Andrews, Processing CA postponed');
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
                     });
             });
         });

@@ -16,7 +16,7 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
         div.midMarginBottom
             | Name
             if(prisonerInfo.firstName || prisonerInfo.lastName)
-                span#prisonerName.block.bold #{prisonerInfo.lastName}, #{prisonerInfo.firstName}
+                span#prisonerName.block.bold #{prisonerInfo.firstName} #{prisonerInfo.lastName}
 
         div.midMarginBottom
             | Prison Number

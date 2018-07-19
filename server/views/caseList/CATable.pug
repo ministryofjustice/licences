@@ -13,10 +13,10 @@ table#hdcEligiblePrisoners.largeMarginBottom
             each prisoner, index in hdcEligible
                 tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
                     td.name
+                        if prisoner.firstName
+                            | #{prisoner.firstName}
                         if prisoner.lastName
-                            | #{prisoner.lastName}
-                            if prisoner.firstName
-                                | , #{prisoner.firstName}
+                            |  #{prisoner.lastName}
 
                     td.offenderNo
                         if prisoner.offenderNo
