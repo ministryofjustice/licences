@@ -8,16 +8,18 @@ block content
             include ../includes/personalDetailsSummary
 
     div.largePaddingBottom
-        if user.role == 'CA'
-            if allowedTransitions.caToDm
-                include CAtoDM.pug
-            else if allowedTransitions.caToDmRefusal
-                include CAtoDMRefusal.pug
-            else
-                include CAtoRO.pug
 
-        else if user.role == 'RO'
+        if transitionType === 'caToDm'
+            include CAtoDM.pug
+
+        else if transitionType === 'caToDmRefusal'
+            include CAtoDMRefusal.pug
+
+        else if transitionType === 'caToRo'
+            include CAtoRO.pug
+
+        else if transitionType === 'roToCa'
             include ROtoCA.pug
 
-        else if user.role == 'DM'
+        else if transitionType === 'dmToCa'
             include DM.pug

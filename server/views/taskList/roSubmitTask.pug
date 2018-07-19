@@ -4,7 +4,7 @@ div.taskListItem.submit
     div.pure-g
         div#submitPcaStatus.pure-u-3-4
             if licenceStatus.stage === 'PROCESSING_RO'
-                if allowedTransitions.roToCa
+                if allowedTransition === 'roToCa'
                     | Ready to submit
                 else
                     | Tasks not yet complete
@@ -12,7 +12,6 @@ div.taskListItem.submit
                 | #{statusLabel}
         div.pure-u-1-4.center
             if licenceStatus.stage === 'PROCESSING_RO'
-                //- && allowedTransitions.roToCa
                 a.taskListAction.center.button(href="/hdc/review/licenceDetails/" + prisonerInfo.offenderNo)
                     | Continue
 
