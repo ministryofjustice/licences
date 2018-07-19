@@ -15,7 +15,7 @@ const testUser = {
 describe('/hdc/finalChecks', () => {
     describe('routes', () => {
         const routes = [
-            {url: '/finalChecks/seriousOffence/1', content: 'other law enforcement'},
+            {url: '/finalChecks/seriousOffence/1', content: 'Has the offender committed an offence'},
             {url: '/finalChecks/onRemand/1', content: 'Is the offender currently on remand '},
             {url: '/finalChecks/confiscationOrder/1', content: 'Is the offender subject to a confiscation order?'}
         ];
