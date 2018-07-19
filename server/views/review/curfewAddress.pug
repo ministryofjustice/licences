@@ -3,6 +3,7 @@ extends ../layout
 block content
 
     - var errorsOnPage = Object.keys(errorObject).length !== 0;
+    - var addressChanged = licenceStatus.stage === 'PROCESSING_CA' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
 
     include ../includes/backToTaskList
 
@@ -23,7 +24,7 @@ block content
                 div.pure-u-md-1-2.change-details
                     if (stage === 'PROCESSING_RO' && user.role === 'RO')
                         a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
-                    if(stage === 'ELIGIBILITY' && user.role === 'CA')
+                    if(user.role === 'CA' && (stage === 'ELIGIBILITY' || addressChanged))
                         a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Change these details
 
         if typeof errorObject.proposedAddress === 'string'
