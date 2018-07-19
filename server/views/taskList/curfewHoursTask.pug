@@ -6,9 +6,9 @@ div.taskListItem
             if licenceStatus.tasks.curfewHours === 'DONE'
                 | Confirmed
             else
-                | Not yet confirmed
+                | Not completed
         div.pure-u-1-4.center
             if user.role === 'RO'
-                +proceed(licenceStatus.tasks.curfewHours, 'UNSTARTED', 'Start', 'View', "/hdc/curfew/curfewHours/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.curfewHours, "/hdc/curfew/curfewHours/" + prisonerInfo.offenderNo)
             else
                 a.taskListAction.center.button.button-secondary(href="/hdc/review/curfewHours/" + prisonerInfo.offenderNo) View

@@ -674,7 +674,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('curfew address task started', () => {
-            it('should display a view button for curfew address task', () => {
+            it('should display a continue button for curfew address task', () => {
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {
@@ -683,6 +683,38 @@ describe('GET /taskList/:prisonNumber', () => {
                                 addresses: [
                                     {consent: 'Yes'}
                                 ]
+                            }
+                        }
+                    }
+                });
+
+                const app = createApp({licenceService, prisonerService}, roUser);
+
+                return request(app)
+                    .get('/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">Continue');
+                    });
+
+            });
+        });
+
+        context('curfew address task complete', () => {
+            it('should display a view button for curfew address task', () => {
+                licenceService.getLicence.resolves({
+                    stage: 'PROCESSING_RO',
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [{
+                                    cautionedAgainstResident: 'No',
+                                    consent: 'Yes',
+                                    electricity: 'Yes',
+                                    homeVisitConducted: 'Yes',
+                                    deemedSafe: 'Yes'
+                                }]
                             }
                         }
                     }
@@ -719,11 +751,32 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('additional conditions task started', () => {
-            it('should display a view button for additional conditions', () => {
+            it('should display a continue button for additional conditions', () => {
 
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}}}
+                });
+
+                const app = createApp({licenceService, prisonerService}, roUser);
+
+                return request(app)
+                    .get('/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('/hdc/licenceConditions/standard/noms">Continue');
+                    });
+
+            });
+        });
+
+        context('additional conditions task complete', () => {
+            it('should display a view button for additional conditions', () => {
+
+                licenceService.getLicence.resolves({
+                    stage: 'PROCESSING_RO',
+                    licence: {licenceConditions: {standard: {additionalConditionsRequired: 'No'}}}
                 });
 
                 const app = createApp({licenceService, prisonerService}, roUser);
@@ -760,10 +813,44 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('risk management task started', () => {
+            it('should display a continue button for riskManagement', () => {
+                licenceService.getLicence.resolves({
+                    stage: 'PROCESSING_RO',
+                    licence: {
+                        risk: {
+                            riskManagement: {
+                                planningActions: 'Yes'
+                            }
+                        }
+                    }
+                });
+
+                const app = createApp({licenceService, prisonerService}, roUser);
+
+                return request(app)
+                    .get('/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('/hdc/risk/riskManagement/noms">Continue');
+                    });
+
+            });
+        });
+
+        context('risk management task complete', () => {
             it('should display a view button for riskManagement', () => {
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
-                    licence: {risk: {riskManagement: 'anything'}}
+                    licence: {
+                        risk: {
+                            riskManagement: {
+                                planningActions: 'No',
+                                awaitingInformation: 'No',
+                                victimLiaison: 'No'
+                            }
+                        }
+                    }
                 });
 
                 const app = createApp({licenceService, prisonerService}, roUser);

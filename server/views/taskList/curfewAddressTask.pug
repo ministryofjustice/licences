@@ -21,9 +21,9 @@ div.taskListItem
                 else if curfewAddressApproved === 'rejected'
                     span.bold.alert Address rejected
                 else
-                    | Not yet approved
+                    | Not completed
             div.pure-u-1-4.center
                 if user.role === 'RO'
-                    +proceed(licenceStatus.tasks.curfewAddressReview, 'UNSTARTED', 'Start', 'View', "/hdc/curfew/curfewAddressReview/" + prisonerInfo.offenderNo)
+                    +startContinueView(licenceStatus.tasks.curfewAddressReview, "/hdc/curfew/curfewAddressReview/" + prisonerInfo.offenderNo)
                 else
                     a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.offenderNo) View
