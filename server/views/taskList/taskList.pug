@@ -29,7 +29,7 @@ block content
                 if licenceStatus.decisions.eligible
                     include proposedAddressTask
                 if allowedTransition === 'caToRo'
-                    include caSubmitTask
+                    include caSubmitAddressReviewTask
                 else if allowedTransition === 'caToDmRefusal'
                     include caSubmitRefusalTask
 
@@ -46,7 +46,7 @@ block content
                 if allowedTransition === 'caToDmRefusal'
                     include caSubmitRefusalTask
                 else
-                    include caSubmitTask
+                    include caSubmitApprovalTask
 
         if user.role === 'RO'
             if (licenceStatus.decisions.optedOut)
@@ -72,5 +72,5 @@ block content
             if licenceStatus.decisions.confiscationOrder
                 include postponementTask
 
-
+            include returnToCATask
             include approvalTask

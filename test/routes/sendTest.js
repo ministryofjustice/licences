@@ -11,8 +11,8 @@ const {
 
 const createSendRoute = require('../../server/routes/send');
 
+describe('send', () => {
 
-describe('Send:', () => {
     let prisonerService;
     let licenceService;
 
@@ -27,179 +27,153 @@ describe('Send:', () => {
         auditStub.record.reset();
     });
 
-    describe('When role is CA', () => {
+    describe('Get send/:destination/:nomisId', () => {
 
-        const eligibilityCompleteLicence = {
-            eligibility: {
-                excluded: {
-                    decision: 'No'
-                },
-                suitability: {
-                    decision: 'No'
-                },
-                crdTime: {
-                    decision: 'No'
-                }
-            },
-            proposedAddress: {
-                optOut: {
-                    decision: 'No'
-                },
-                bassReferral: {
-                    decision: 'No'
-                },
-                curfewAddress: {
-                    addresses: [{
-                        addressLine1: 'Street',
-                        addressTown: 'Town',
-                        postCode: 'AB1 1AB',
-                        telephone: '0123 456789',
-                        cautionedAgainstResident: 'No',
-                        occupier: {
-                            name: 'Main Occupier',
-                            age: '21',
-                            relationship: 'Brother'
-                        }
-                    }]
-                }
-            }
-        };
-
-        describe('GET /send', () => {
-            it('renders and HTML output', () => {
-                licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: eligibilityCompleteLicence});
-                const app = createApp({licenceService, prisonerService});
-                return request(app)
-                    .get('/123')
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .expect(res => {
-                        expect(res.text).to.contain('name="submissionTarget" value="Something"');
-                    });
-            });
-
-            it('gets com details when submission is CA to RO in Eligibility stage', () => {
-                licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: eligibilityCompleteLicence});
-                const app = createApp({licenceService, prisonerService});
-
-                return request(app)
-                    .get('/123')
-                    .expect(() => {
-                        expect(prisonerService.getComForPrisoner).to.be.calledOnce();
-                        expect(prisonerService.getComForPrisoner).to.be.calledWith('123', 'my-username');
-                        expect(prisonerService.getEstablishmentForPrisoner).not.to.be.called();
-                    });
-            });
-
-            it('gets com details when submission is CA to RO in Final Checks stage', () => {
-                licenceService.getLicence.resolves({
-                    stage: 'PROCESSING_CA', licence: {
-                        proposedAddress: {curfewAddress: {addresses: [{}]}}
-                    }
-                });
-                const app = createApp({licenceService, prisonerService});
-
-                return request(app)
-                    .get('/123')
-                    .expect(() => {
-                        expect(prisonerService.getComForPrisoner).to.be.calledOnce();
-                        expect(prisonerService.getComForPrisoner).to.be.calledWith('123', 'my-username');
-                        expect(prisonerService.getEstablishmentForPrisoner).not.to.be.called();
-                    });
-            });
-        });
-
-        describe('POST /send', () => {
-            it('calls markForHandover via licenceService', () => {
-                const app = createApp({licenceService, prisonerService});
-
-                return request(app)
-                    .post('/123')
-                    .send({nomisId: 123, sender: 'from', receiver: 'to'})
-                    .expect(() => {
-                        expect(licenceService.markForHandover).to.be.calledOnce();
-                        expect(licenceService.markForHandover).to.be.calledWith(123, 'from', 'to');
-                    });
-
-            });
-
-            it('audits the send event', () => {
-                const app = createApp({licenceService, prisonerService});
-
-                return request(app)
-                    .post('/123')
-                    .send({
-                        nomisId: 123,
-                        sender: 'from',
-                        receiver: 'to',
-                        transitionType: 'type',
-                        submissionTarget: 'target'
-                    })
-                    .expect(() => {
-                        expect(auditStub.record).to.be.calledOnce();
-                        expect(auditStub.record).to.be.calledWith('SEND', 'my-staff-id',
-                            {
-                                nomisId: 123,
-                                receiver: 'to',
-                                sender: 'from',
-                                transitionType: 'type',
-                                submissionTarget: 'target'
-                            });
-                    });
-
-            });
-
-            it('shows sent confirmation', () => {
-                const app = createApp({licenceService, prisonerService});
-
-                return request(app)
-                    .post('/123')
-                    .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'foobar'})
-                    .expect(302)
-                    .expect(res => {
-                        expect(res.header['location']).to.eql('/hdc/sent/foobar');
-                    });
-
-            });
-        });
-
-    });
-
-    describe('When role is RO', () => {
-        const roUser = {
-            staffId: 'my-staff-id',
-            username: 'my-username',
-            role: 'RO'
-        };
-
-        it('gets establishment details when submission is RO to CA', () => {
-            licenceService.getLicence.resolves({
-                stage: 'PROCESSING_RO', licence: {
-                    proposedAddress: {
-                        curfewAddress: {
-                            addresses: [{
-                                consent: 'No'
-                            }]
-                        }
-                    }
-                }
-            });
-
-            const app = createApp({licenceService, prisonerService}, roUser);
-
+        it('renders caToRo form when addressReview is destination', () => {
+            const app = createApp({licenceService, prisonerService});
             return request(app)
-                .get('/123')
+                .get('/addressReview/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('<input type="hidden" name="transitionType" value="caToRo">');
+                });
+        });
+
+        it('renders roToCa form when finalChecks is destination', () => {
+            const app = createApp({licenceService, prisonerService});
+            return request(app)
+                .get('/finalChecks/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('<input type="hidden" name="transitionType" value="roToCa">');
+                });
+        });
+
+        it('renders caToDm form when approval is destination', () => {
+            const app = createApp({licenceService, prisonerService});
+            return request(app)
+                .get('/approval/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('<input type="hidden" name="transitionType" value="caToDm">');
+                });
+        });
+
+        it('renders dmToCa form when decided is destination', () => {
+            const app = createApp({licenceService, prisonerService});
+            return request(app)
+                .get('/decided/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('<input type="hidden" name="transitionType" value="dmToCa">');
+                });
+        });
+
+        it('renders caToDmRefusal form when refusal is destination', () => {
+            const app = createApp({licenceService, prisonerService});
+            return request(app)
+                .get('/refusal/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('<input type="hidden" name="transitionType" value="caToDmRefusal">');
+                });
+        });
+
+        it('renders dmToCaReturn form when return is destination', () => {
+            const app = createApp({licenceService, prisonerService});
+            return request(app)
+                .get('/return/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('<input type="hidden" name="transitionType" value="dmToCaReturn">');
+                });
+        });
+
+        it('gets a submission target for caToRo', () => {
+            const app = createApp({licenceService, prisonerService});
+            return request(app)
+                .get('/addressReview/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('name="submissionTarget" value="Something"');
+                });
+        });
+
+        it('gets a submission target for roToCa', () => {
+            const app = createApp({licenceService, prisonerService});
+            return request(app)
+                .get('/finalChecks/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
                 .expect(res => {
                     expect(res.text).to.contain('name="submissionTarget" value="HMP Blah"');
-                    expect(prisonerService.getEstablishmentForPrisoner).to.be.calledOnce();
-                    expect(prisonerService.getEstablishmentForPrisoner).to.be.calledWith('123', 'my-username');
-                    expect(prisonerService.getComForPrisoner).not.to.be.called();
                 });
         });
     });
-})
-;
 
+    describe('POST /send', () => {
+        it('calls markForHandover via licenceService', () => {
+            const app = createApp({licenceService, prisonerService});
+
+            return request(app)
+                .post('/')
+                .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'caToRo'})
+                .expect(() => {
+                    expect(licenceService.markForHandover).to.be.calledOnce();
+                    expect(licenceService.markForHandover).to.be.calledWith(
+                        123, 'from', 'to', {licence: {key: 'value'}}, 'caToRo'
+                    );
+                });
+
+        });
+
+        it('audits the send event', () => {
+            const app = createApp({licenceService, prisonerService});
+
+            return request(app)
+                .post('/')
+                .send({
+                    nomisId: 123,
+                    sender: 'from',
+                    receiver: 'to',
+                    transitionType: 'type',
+                    submissionTarget: 'target'
+                })
+                .expect(() => {
+                    expect(auditStub.record).to.be.calledOnce();
+                    expect(auditStub.record).to.be.calledWith('SEND', 'my-staff-id',
+                        {
+                            nomisId: 123,
+                            receiver: 'to',
+                            sender: 'from',
+                            transitionType: 'type',
+                            submissionTarget: 'target'
+                        });
+                });
+
+        });
+
+        it('shows sent confirmation', () => {
+            const app = createApp({licenceService, prisonerService});
+
+            return request(app)
+                .post('/')
+                .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'foobar'})
+                .expect(302)
+                .expect(res => {
+                    expect(res.header['location']).to.eql('/hdc/sent/foobar');
+                });
+
+        });
+    });
+});
 
 const caUser = {
     staffId: 'my-staff-id',

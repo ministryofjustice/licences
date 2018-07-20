@@ -1,0 +1,55 @@
+extends ../layout
+
+block content
+
+    div.pure-g
+        div.pure-u-1
+            include ../includes/back
+            include ../includes/personalDetailsSummary
+
+    div.pure-g.largePaddingBottom
+        div.pure-u-2-3
+            h2.heading-large.midPaddingBottom Submit to the Prison Case Admin
+            p.lede The HDC licence information is ready to be submitted to the Prison Case Admin or you can return to the task list and send it later.
+
+            p The information will be submitted to:
+
+            div.bold Prison Case Admin
+
+            if submissionTarget
+                if submissionTarget.premise
+                    div#premise.bold #{submissionTarget.premise}
+                if submissionTarget.city
+                    div#city #{submissionTarget.city}
+                if submissionTarget.locality
+                    div#locality #{submissionTarget.locality}
+                if submissionTarget.postCode
+                    div#postCode #{submissionTarget.postCode}
+
+                if submissionTarget.phones
+                    each phone, index in submissionTarget.phones
+                        div(id="phone"+index).bold.smallPaddingTop
+                            if phone.type
+                                | #{phone.type}:
+                            else
+                                | Tel:
+                            |  #{phone.number}
+
+                div.paddingBottom
+                    if submissionTarget.email
+                    | #{submissionTarget.email}
+
+            else
+                div.paddingBottom No prison address found
+
+    div#continueBtns.pure-g.paddingBottom
+        div.pure-u-1
+            form#acceptanceForm(method='POST' action='/hdc/send/')
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="nomisId" value=nomisId)
+                input(type="hidden" name="sender" value="RO")
+                input(type="hidden" name="receiver" value="CA")
+                input(type="hidden" name="transitionType" value='roToCa')
+                if submissionTarget && submissionTarget.premise
+                    input(type="hidden" name="submissionTarget" value=submissionTarget.premise)
+                include includes/sendButtons

@@ -140,6 +140,14 @@ $path: "/public/images/";
     }
 }
 
+.taskListSingleLineItem {
+    padding: 1em 0 0.9em 0;
+
+    .buttonContainer {
+        padding-top: 0.5em;
+    }
+}
+
 .taskListAction {
     margin-top: -5px;
     width: 66%;
