@@ -18,7 +18,7 @@ const app = appSetup(createSendRoute({
 describe('GET sent', () => {
     it('renders the sent page for CAtoRO', () => {
         return request(app)
-            .get('/CAtoRO')
+            .get('/caToRo')
             .expect(200)
             .expect(res => {
                 expect(res.text).to.include('Curfew address submitted');
@@ -27,7 +27,7 @@ describe('GET sent', () => {
 
     it('renders the sent page for CAtoDM', () => {
         return request(app)
-            .get('/CAtoDM')
+            .get('/caToDm')
             .expect(200)
             .expect(res => {
                 expect(res.text).to.include('Submitted for approval');
@@ -36,7 +36,7 @@ describe('GET sent', () => {
 
     it('renders the sent page for ROtoCA', () => {
         return request(app)
-            .get('/ROtoCA')
+            .get('/roToCa')
             .expect(200)
             .expect(res => {
                 expect(res.text).to.include('Licence information sent');
@@ -45,7 +45,7 @@ describe('GET sent', () => {
 
     it('renders the sent page for DMtoCA', () => {
         return request(app)
-            .get('/DMtoCA')
+            .get('/dmToCa')
             .expect(200)
             .expect(res => {
                 expect(res.text).to.include('Submitted to the prison case admin');
@@ -54,7 +54,7 @@ describe('GET sent', () => {
 
     it('renders the sent page for CAtoDMRefusal', () => {
         return request(app)
-            .get('/CAtoDMRefusal')
+            .get('/caToDmRefusal')
             .expect(200)
             .expect(res => {
                 expect(res.text).to.include('Submitted for refusal');
