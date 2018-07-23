@@ -283,6 +283,7 @@ module.exports = {
         SENT_HDCAD,
         SENT_CRD,
         SENT_LED,
+        SENT_SED,
         ...REPORTING,
         CURFEW_ADDRESS,
         CURFEW_FIRST_FROM,
