@@ -17,7 +17,5 @@ block content
             form#acceptanceForm(method='POST' action='/hdc/send/')
                 input(type="hidden" name="_csrf" value=csrfToken)
                 input(type="hidden" name="nomisId" value=nomisId)
-                input(type="hidden" name="sender" value="CA")
-                input(type="hidden" name="receiver" value="DM")
                 input(type="hidden" name="transitionType" value='caToDmRefusal')
                 include includes/sendButtons

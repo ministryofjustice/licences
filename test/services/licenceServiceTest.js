@@ -164,51 +164,63 @@ describe('licenceService', () => {
     describe('markForHandover', () => {
 
         it('should call updateStage from the licence client', () => {
-            service.markForHandover('ab1', 'CA', 'RO');
+            service.markForHandover('ab1', {}, 'caToRo');
 
             expect(licenceClient.updateStage).to.be.calledOnce();
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_RO');
         });
 
         it('should pick the right stage based on sender and receiver', () => {
-            service.markForHandover('ab1', 'CA', 'DM');
+            service.markForHandover('ab1', {}, 'caToDm');
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'APPROVAL');
 
-            service.markForHandover('ab1', 'DM', 'CA');
+            service.markForHandover('ab1', {}, 'dmToCa');
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'DECIDED');
         });
 
         it('should reverse to ELIGIBILITY when RO sends to CA after opt out', () => {
 
-            service.markForHandover('ab1', 'RO', 'CA', {
-                stage: 'PROCESSING_RO',
-                licence: {proposedAddress: {optOut: {decision: 'Yes'}}}
-            });
+            service.markForHandover(
+                'ab1',
+                {
+                    stage: 'PROCESSING_RO',
+                    licence: {proposedAddress: {optOut: {decision: 'Yes'}}}
+                },
+                'roToCa'
+            );
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'ELIGIBILITY');
 
-            service.markForHandover('ab1', 'RO', 'CA', {
-                stage: 'PROCESSING_RO',
-                licence: {proposedAddress: {optOut: {decision: 'No'}}}
-            });
+            service.markForHandover(
+                'ab1',
+                {
+                    stage: 'PROCESSING_RO',
+                    licence: {proposedAddress: {optOut: {decision: 'No'}}}
+                },
+                'roToCa'
+            );
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_CA');
         });
 
         it('should send to PROCESSING_CA if transition type of dmToCaReturn is passed in', () => {
 
-            service.markForHandover('ab1', 'DM', 'CA', {
-                stage: 'APPROVAL',
-                licence: {proposedAddress: {optOut: {decision: 'No'}}}
-            }, 'dmToCaReturn');
+            service.markForHandover(
+                'ab1',
+                {
+                    stage: 'APPROVAL',
+                    licence: {proposedAddress: {optOut: {decision: 'No'}}}
+                },
+                'dmToCaReturn'
+            );
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_CA');
         });
 
         it('should throw if error during update status', () => {
             licenceClient.updateStage.rejects();
-            return expect(service.markForHandover('ab1', 'CA', 'RO')).to.eventually.be.rejected();
+            return expect(service.markForHandover('ab1', {}, 'caToRo')).to.eventually.be.rejected();
         });
 
-        it('should throw if no matching sender-receiver pair', () => {
-            expect(() => service.markForHandover('ab1', 'CA', 'UNMATCHED')).to.throw(Error);
+        it('should throw if no matching transition type', () => {
+            expect(() => service.markForHandover('ab1', {}, 'caToBlah')).to.throw(Error);
         });
     });
 
