@@ -10,23 +10,16 @@ const licenceStages = {
 };
 
 const transitions = {
-    CA: {
-        RO: licenceStages.PROCESSING_RO,
-        DM: licenceStages.APPROVAL
+    caToRo: licenceStages.PROCESSING_RO,
+    caToDm: licenceStages.APPROVAL,
+    roToCa: {
+        'default': licenceStages.PROCESSING_CA,
+        addressRejected: licenceStages.ELIGIBILITY,
+        optedOut: licenceStages.ELIGIBILITY
     },
-    RO: {
-        CA: {
-            'default': licenceStages.PROCESSING_CA,
-            addressRejected: licenceStages.ELIGIBILITY,
-            optedOut: licenceStages.ELIGIBILITY
-        }
-    },
-    DM: {
-        CA: {
-            'default': licenceStages.DECIDED,
-            returnedToCa: licenceStages.PROCESSING_CA
-        }
-    }
+    dmToCa: licenceStages.DECIDED,
+    dmToCaReturn: licenceStages.PROCESSING_CA,
+    caToDmRefusal: licenceStages.APPROVAL
 };
 
 module.exports = {licenceStages, transitions};

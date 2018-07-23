@@ -34,14 +34,12 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
     });
 
     router.post('/', asyncMiddleware(async (req, res) => {
-        const {nomisId, sender, receiver, transitionType, submissionTarget} = req.body;
+        const {nomisId, transitionType, submissionTarget} = req.body;
         const licence = await licenceService.getLicence(nomisId);
 
-        // TODO check the transition can occur
+        await licenceService.markForHandover(nomisId, licence, transitionType);
 
-        await licenceService.markForHandover(nomisId, sender, receiver, licence, transitionType);
-
-        audit.record('SEND', req.user.staffId, {nomisId, sender, receiver, transitionType, submissionTarget});
+        audit.record('SEND', req.user.staffId, {nomisId, transitionType, submissionTarget});
 
         res.redirect(`/hdc/sent/${transitionType}`);
     }));

@@ -124,11 +124,11 @@ describe('send', () => {
 
             return request(app)
                 .post('/')
-                .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'caToRo'})
+                .send({nomisId: 123, transitionType: 'caToRo'})
                 .expect(() => {
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        123, 'from', 'to', {licence: {key: 'value'}}, 'caToRo'
+                        123, {licence: {key: 'value'}}, 'caToRo'
                     );
                 });
 
@@ -151,8 +151,6 @@ describe('send', () => {
                     expect(auditStub.record).to.be.calledWith('SEND', 'my-staff-id',
                         {
                             nomisId: 123,
-                            receiver: 'to',
-                            sender: 'from',
                             transitionType: 'type',
                             submissionTarget: 'target'
                         });

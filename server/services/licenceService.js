@@ -126,34 +126,27 @@ module.exports = function createLicenceService(licenceClient) {
         return {...oldConditions, bespoke: theRest};
     }
 
-    function markForHandover(nomisId, sender, receiver, licence, transitionType) {
+    function markForHandover(nomisId, licence, transitionType) {
 
-        const newStage = getNewStage(sender, receiver, licence, transitionType);
+        const newStage = getNewStage(licence, transitionType);
 
         if (!newStage) {
-            throw new Error('Invalid handover pair: ' + sender + '-' + receiver);
+            throw new Error('Invalid handover transition: ' + transitionType);
         }
 
         return licenceClient.updateStage(nomisId, newStage);
     }
 
-    function getNewStage(sender, receiver, licence, transitionType) {
-        const stage = getIn(transitions, [sender, receiver]);
+    function getNewStage(licence, transitionType) {
+        const stage = getIn(transitions, [transitionType]);
 
-        if (sender === 'RO') {
+        if (transitionType === 'roToCa') {
             const {decisions} = getLicenceStatus(licence);
             if (decisions.optedOut) {
                 return stage.optedOut;
             }
             if (decisions.curfewAddressApproved === 'rejected') {
                 return stage.addressRejected;
-            }
-            return stage.default;
-        }
-
-        if (sender === 'DM') {
-            if (transitionType === 'dmToCaReturn') {
-                return stage.returnedToCa;
             }
             return stage.default;
         }
