@@ -158,7 +158,7 @@ module.exports = function(
     }
 
     router.get('/approval/release/:nomisId', checkLicence, asyncMiddleware(approvalGets('release')));
-    router.get('/approval/crdrefuse/:nomisId', checkLicence, asyncMiddleware(approvalGets('crdrefuse')));
+    router.get('/approval/crdRefuse/:nomisId', checkLicence, asyncMiddleware(approvalGets('crdRefuse')));
 
     function approvalGets(formName) {
         return async (req, res) => {

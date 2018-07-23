@@ -11,7 +11,7 @@ module.exports = {
             path: '/hdc/send/decided/'
         }
     },
-    crdrefuse: {
+    crdRefuse: {
         licenceSection: 'release',
         validateInPlace: false,
         fields: [

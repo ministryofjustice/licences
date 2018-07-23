@@ -47,7 +47,7 @@ describe('/hdc/approval', () => {
         const app = createApp({licenceServiceStub: service});
         const routes = [
             {url: '/approval/release/1', content: 'Do you approve HDC release for this offender?'},
-            {url: '/approval/crdrefuse/1', content: 'HDC refused because there is not enough time'}
+            {url: '/approval/crdRefuse/1', content: 'HDC refused because there is not enough time'}
         ];
 
         testFormPageGets(app, routes, service);
@@ -64,9 +64,9 @@ describe('/hdc/approval', () => {
 
                 });
         });
-        it('should display the offender details - crdrefuse', () => {
+        it('should display the offender details - crdRefuse', () => {
             return request(app)
-                .get('/approval/crdrefuse/1')
+                .get('/approval/crdRefuse/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -93,11 +93,11 @@ describe('/hdc/approval', () => {
                 formName: 'release'
             },
             {
-                url: '/approval/crdrefuse/1',
+                url: '/approval/crdRefuse/1',
                 body: {decision: 'No'},
                 section: 'release',
                 nextPath: '/hdc/send/decided/1',
-                formName: 'crdrefuse'
+                formName: 'crdRefuse'
             }
         ];
 
