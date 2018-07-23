@@ -159,6 +159,10 @@ $path: "/public/images/";
 }
 
 .borderBottomLight {
+    border-bottom: solid $grey-2 1px;
+}
+
+.borderBottomLightMedium {
     border-bottom: solid $grey-2 2px;
 }
 
