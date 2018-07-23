@@ -178,27 +178,14 @@ describe('licenceService', () => {
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'DECIDED');
         });
 
-        it('should reverse to ELIGIBILITY when RO sends to CA after opt out', () => {
-
-            service.markForHandover(
-                'ab1',
-                {
-                    stage: 'PROCESSING_RO',
-                    licence: {proposedAddress: {optOut: {decision: 'Yes'}}}
-                },
-                'roToCa'
-            );
+        it('should return to ELIGIBILITY when RO sends to CA after opt out', () => {
+            service.markForHandover('ab1', {}, 'roToCaOptedOut');
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'ELIGIBILITY');
+        });
 
-            service.markForHandover(
-                'ab1',
-                {
-                    stage: 'PROCESSING_RO',
-                    licence: {proposedAddress: {optOut: {decision: 'No'}}}
-                },
-                'roToCa'
-            );
-            expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_CA');
+        it('should return to ELIGIBILITY when RO sends to CA after address rejected', () => {
+            service.markForHandover('ab1', {}, 'roToCaAddressRejected');
+            expect(licenceClient.updateStage).to.be.calledWith('ab1', 'ELIGIBILITY');
         });
 
         it('should send to PROCESSING_CA if transition type of dmToCaReturn is passed in', () => {

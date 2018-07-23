@@ -24,7 +24,9 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
             approval: 'caToDm',
             decided: 'dmToCa',
             'return': 'dmToCaReturn',
-            refusal: 'caToDmRefusal'
+            refusal: 'caToDmRefusal',
+            addressRejected: 'roToCaAddressRejected',
+            optedOut: 'roToCaOptedOut'
         };
 
         const transition = transitionForDestination[destination];

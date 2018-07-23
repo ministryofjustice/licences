@@ -12,7 +12,7 @@ const {
     removePath
 } = require('../utils/functionalHelpers');
 const {transitions} = require('../models/licenceStages');
-const {getLicenceStatus, getConfiscationOrderState} = require('../utils/licenceStatus');
+const {getConfiscationOrderState} = require('../utils/licenceStatus');
 const validate = require('./utils/licenceValidation');
 const addressHelpers = require('./utils/addressHelpers');
 
@@ -128,30 +128,13 @@ module.exports = function createLicenceService(licenceClient) {
 
     function markForHandover(nomisId, licence, transitionType) {
 
-        const newStage = getNewStage(licence, transitionType);
+        const newStage = getIn(transitions, [transitionType]);
 
         if (!newStage) {
             throw new Error('Invalid handover transition: ' + transitionType);
         }
 
         return licenceClient.updateStage(nomisId, newStage);
-    }
-
-    function getNewStage(licence, transitionType) {
-        const stage = getIn(transitions, [transitionType]);
-
-        if (transitionType === 'roToCa') {
-            const {decisions} = getLicenceStatus(licence);
-            if (decisions.optedOut) {
-                return stage.optedOut;
-            }
-            if (decisions.curfewAddressApproved === 'rejected') {
-                return stage.addressRejected;
-            }
-            return stage.default;
-        }
-
-        return stage;
     }
 
     const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
