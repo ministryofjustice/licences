@@ -66,6 +66,100 @@ describe('/review/', () => {
         });
     });
 
+    describe('/licenceDetails/', () => {
+        const roUser = {
+            staffId: 'my-staff-id',
+            token: 'my-token',
+            roleCode: roles.RO
+        };
+
+        let licenceService;
+        const licence = {
+            licence: {
+                eligibility: {
+                    proposedAddress: {
+                        addressLine1: 'line1'
+                    }
+                }
+            },
+            stage: 'ELIGIBILITY'
+        };
+
+        beforeEach(() => {
+            licenceService = createLicenceServiceStub();
+            licenceService.getLicence = sinon.stub().resolves(licence);
+        });
+
+        it('links to optedOut send page when opted out', () => {
+            licenceService.getLicence = sinon.stub().resolves({
+                licence: {
+                    proposedAddress: {
+                        optOut: {decision: 'Yes'}
+                    }
+                },
+                stage: 'PROCESSING_RO'
+            });
+            const app = createApp({licenceService, prisonerService}, roUser);
+
+            return request(app)
+                .get('/review/licenceDetails/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('href="/hdc/send/optedOut/1');
+                });
+        });
+
+        it('links to addressRejected send page when opted out', () => {
+            licenceService.getLicence = sinon.stub().resolves({
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [
+                                {consent: 'No'}
+                            ]
+                        }
+                    }
+                },
+                stage: 'PROCESSING_RO'
+            });
+            const app = createApp({licenceService, prisonerService}, roUser);
+
+            return request(app)
+                .get('/review/licenceDetails/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('href="/hdc/send/addressRejected/1');
+                });
+        });
+
+        it('links to final checks send page when not opted out and address not rejected', () => {
+            licenceService.getLicence = sinon.stub().resolves({
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [
+                                {consent: 'Yes'}
+                            ]
+                        }
+                    }
+                },
+                stage: 'PROCESSING_RO'
+            });
+            const app = createApp({licenceService, prisonerService}, roUser);
+
+            return request(app)
+                .get('/review/licenceDetails/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('href="/hdc/send/finalChecks/1');
+                });
+        });
+
+    });
+
     describe('/address/', () => {
         let licenceService;
 

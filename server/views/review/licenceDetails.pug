@@ -14,5 +14,15 @@ block content
 
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons
-            a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/finalChecks/" + nomisId role="button")
-                | Continue
+
+            if licenceStatus.decisions.optedOut
+                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/optedOut/" + nomisId role="button")
+                    | Continue
+
+            else if licenceStatus.decisions.curfewAddressApproved === 'rejected'
+                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/addressRejected/" + nomisId role="button")
+                    | Continue
+
+            else
+                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/finalChecks/" + nomisId role="button")
+                    | Continue

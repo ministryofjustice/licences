@@ -12,14 +12,12 @@ const licenceStages = {
 const transitions = {
     caToRo: licenceStages.PROCESSING_RO,
     caToDm: licenceStages.APPROVAL,
-    roToCa: {
-        'default': licenceStages.PROCESSING_CA,
-        addressRejected: licenceStages.ELIGIBILITY,
-        optedOut: licenceStages.ELIGIBILITY
-    },
+    roToCa: licenceStages.PROCESSING_CA,
     dmToCa: licenceStages.DECIDED,
     dmToCaReturn: licenceStages.PROCESSING_CA,
-    caToDmRefusal: licenceStages.APPROVAL
+    caToDmRefusal: licenceStages.APPROVAL,
+    roToCaAddressRejected: licenceStages.ELIGIBILITY,
+    roToCaOptedOut: licenceStages.ELIGIBILITY
 };
 
 module.exports = {licenceStages, transitions};
