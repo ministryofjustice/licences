@@ -1,7 +1,4 @@
 const express = require('express');
-const {getIn} = require('../utils/functionalHelpers');
-const {getLicenceStatus} = require('../utils/licenceStatus');
-const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
 
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
 
@@ -18,21 +15,31 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
 
     const checkLicence = checkLicenceMiddleWare(licenceService, prisonerService);
 
-    router.get('/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
-        const {nomisId} = req.params;
-        const licence = await licenceService.getLicence(nomisId);
-        const stage = getIn(licence, ['stage']);
-        const licenceStatus = getLicenceStatus(licence);
-        const transitionType = getAllowedTransition(licenceStatus, req.user.role);
-        const submissionTarget = await getSubmissionTarget(transitionType, nomisId, req.user.username);
+    router.get('/:destination/:nomisId', checkLicence, async (req, res) => {
+        const {destination, nomisId} = req.params;
 
-        res.render('send/index', {nomisId, stage, submissionTarget, transitionType});
-    }));
+        const transitionForDestination = {
+            addressReview: 'caToRo',
+            finalChecks: 'roToCa',
+            approval: 'caToDm',
+            decided: 'dmToCa',
+            'return': 'dmToCaReturn',
+            refusal: 'caToDmRefusal'
+        };
 
-    router.post('/:nomisId', asyncMiddleware(async (req, res) => {
+        const transition = transitionForDestination[destination];
+        const submissionTarget = await getSubmissionTarget(transition, nomisId, req.user.username);
+
+        res.render('send/' + transition, {nomisId, submissionTarget});
+    });
+
+    router.post('/', asyncMiddleware(async (req, res) => {
         const {nomisId, sender, receiver, transitionType, submissionTarget} = req.body;
         const licence = await licenceService.getLicence(nomisId);
-        await licenceService.markForHandover(nomisId, sender, receiver, licence);
+
+        // TODO check the transition can occur
+
+        await licenceService.markForHandover(nomisId, sender, receiver, licence, transitionType);
 
         audit.record('SEND', req.user.staffId, {nomisId, sender, receiver, transitionType, submissionTarget});
 
@@ -54,5 +61,4 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
 
     return router;
 };
-
 

@@ -1,0 +1,20 @@
+div.largeMarginBottom.borderTop
+
+    h2.heading-medium Submit to responsible officer
+
+    div.pure-g
+        div.pure-u-3-4
+            if allowedTransition === 'caToRo'
+                | Ready to submit
+            else
+                | Submission unavailable - Tasks not yet complete
+
+        div.pure-u-1-4.center
+
+            if allowedTransition === 'caToRo'
+                a#continueBtn.taskListAction.center.button(href='/hdc/review/curfewAddress/' + prisonerInfo.offenderNo)
+                    | Continue
+
+            else if allowedTransition === 'caToDm'
+                a#continueBtn.taskListAction.center.button(href='/hdc/send/refusal/' + prisonerInfo.offenderNo)
+                    | Continue

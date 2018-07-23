@@ -8,7 +8,7 @@ module.exports = {
             {reason: {dependentOn: 'decision', predicate: 'No'}}
         ],
         nextPath: {
-            path: '/hdc/send/'
+            path: '/hdc/send/decided/'
         }
     }
 };

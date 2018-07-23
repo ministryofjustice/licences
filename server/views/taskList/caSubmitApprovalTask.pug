@@ -1,15 +1,16 @@
 div.largeMarginBottom.borderTop
 
-    - var addressReviewNeeded = licenceStatus.stage === 'PROCESSING_CA' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
+    - var addressReviewNeeded = allowedTransition === 'caToRo'
+    - var approvalNeeded = allowedTransition === 'caToDm'
 
-    if licenceStatus.stage === "ELIGIBILITY" || addressReviewNeeded
+    if addressReviewNeeded
         h2.heading-medium Submit to responsible officer
     else
         h2.heading-medium Submit to decision maker
 
     div.pure-g
         div.pure-u-3-4
-            if allowedTransition === 'caToRo' || allowedTransition === 'caToDm'
+            if approvalNeeded || addressReviewNeeded
                 | Ready to submit
             else if licenceStatus.decisions.postponed
                 | Submission unavailable - HDC application postponed
@@ -19,7 +20,9 @@ div.largeMarginBottom.borderTop
                 | Submission unavailable - Tasks not yet complete
 
         div.pure-u-1-4.center
-            if allowedTransition === 'caToRo' || allowedTransition === 'caToDm'
-                -var linkTarget = allowedTransition === 'caToRo' ? '/hdc/review/curfewAddress/' : '/hdc/send/';
-                a#continueBtn.taskListAction.center.button(href=linkTarget + prisonerInfo.offenderNo)
+            if addressReviewNeeded
+                a#continueBtn.taskListAction.center.button(href='/hdc/send/addressReview/' + prisonerInfo.offenderNo)
+                    | Continue
+            if approvalNeeded
+                a#continueBtn.taskListAction.center.button(href='/hdc/send/approval/' + prisonerInfo.offenderNo)
                     | Continue

@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const expect = chai.expect;
 chai.use(sinonChai);
-const sandbox = sinon.sandbox.create();
+const sandbox = sinon.createSandbox();
 const proxyquire = require('proxyquire');
 proxyquire.noCallThru();
 

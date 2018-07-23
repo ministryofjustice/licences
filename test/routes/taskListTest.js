@@ -239,7 +239,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
-                        expect(res.text).to.include('/hdc/send/noms');
+                        expect(res.text).to.include('/hdc/send/refusal/noms');
                     });
             });
         });

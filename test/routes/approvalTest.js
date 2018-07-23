@@ -65,19 +65,19 @@ describe('/hdc/approval', () => {
         });
     });
 
-    describe('POST /hdc/eligibility/:form/:nomisId', () => {
+    describe('POST /hdc/approval/:form/:nomisId', () => {
         const routes = [
             {
                 url: '/approval/release/1',
                 body: {decision: 'Yes'},
                 section: 'release',
-                nextPath: '/hdc/send/1'
+                nextPath: '/hdc/send/decided/1'
             },
             {
                 url: '/approval/release/1',
                 body: {decision: 'No'},
                 section: 'release',
-                nextPath: '/hdc/send/1'
+                nextPath: '/hdc/send/decided/1'
             }
         ];
 
