@@ -1,0 +1,14 @@
+div.taskListItem.borderBottom.largeMarginBottom
+    h2.heading-medium Final decision
+
+    div.pure-g
+        div.pure-u-3-4
+            | #{statusLabel}
+        div.pure-u-1-4.center
+            if (licenceStatus.stage === 'APPROVAL')
+                a.taskListAction.center.button(href="/hdc/approval/crdrefuse/" + prisonerInfo.offenderNo)
+                    | Refuse HDC
+
+
+
+

@@ -265,12 +265,16 @@ describe('getStatusLabel', () => {
 
     describe('DM user labels', () => {
 
-        describe('Other stages', () => {
+        describe('Approval stage', () => {
 
             const examples = [
                 {
                     status: {stage: licenceStages.APPROVAL, decisions: {}, tasks: {}},
                     label: 'Awaiting decision'
+                },
+                {
+                    status: {stage: licenceStages.APPROVAL, decisions: {insufficientTimeStop: true}, tasks: {}},
+                    label: 'Awaiting refusal'
                 }
             ];
 

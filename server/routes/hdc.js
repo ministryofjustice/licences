@@ -157,21 +157,26 @@ module.exports = function(
         };
     }
 
-    router.get('/approval/release/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
-        logger.debug('GET /approval/release/');
+    router.get('/approval/release/:nomisId', checkLicence, asyncMiddleware(approvalGets('release')));
+    router.get('/approval/crdrefuse/:nomisId', checkLicence, asyncMiddleware(approvalGets('crdrefuse')));
 
-        const {nomisId} = req.params;
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.username);
+    function approvalGets(formName) {
+        return async (req, res) => {
+            logger.debug(`GET /approval/${formName}/`);
 
-        const {nextPath, pageDataMap} = formConfig.release;
-        const dataPath = pageDataMap || ['licence', 'approval', 'release'];
-        const data = getIn(res.locals.licence, dataPath) || {};
-        const errors = firstItem(req.flash('errors'));
-        const errorObject = getIn(errors, ['approval', 'release']) || {};
-        const licenceStatus = getLicenceStatus(res.locals.licence);
+            const {nomisId} = req.params;
+            const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.username);
 
-        res.render('approval/release', {prisonerInfo, nomisId, data, nextPath, errorObject, licenceStatus});
-    }));
+            const {nextPath, pageDataMap} = formConfig[formName];
+            const dataPath = pageDataMap || ['licence', 'approval', 'release'];
+            const data = getIn(res.locals.licence, dataPath) || {};
+            const errors = firstItem(req.flash('errors'));
+            const errorObject = getIn(errors, ['approval', 'release']) || {};
+            const licenceStatus = getLicenceStatus(res.locals.licence);
+
+            res.render(`approval/${formName}`, {prisonerInfo, nomisId, data, nextPath, errorObject, licenceStatus});
+        };
+    }
 
     router.get('/curfew/curfewAddressReview/:nomisId', checkLicence, addressReviewGets('curfewAddressReview'));
     router.get('/curfew/addressSafety/:nomisId', checkLicence, addressReviewGets('addressSafety'));

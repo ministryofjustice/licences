@@ -10,5 +10,16 @@ module.exports = {
         nextPath: {
             path: '/hdc/send/decided/'
         }
+    },
+    crdrefuse: {
+        licenceSection: 'release',
+        validateInPlace: false,
+        fields: [
+            {decision: {}}
+        ],
+        nextPath: {
+            path: '/hdc/send/decided/'
+        },
+        saveSection: ['approval', 'release']
     }
 };
