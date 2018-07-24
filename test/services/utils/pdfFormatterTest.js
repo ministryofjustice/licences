@@ -47,9 +47,9 @@ describe('pdfFormatter', () => {
         expect(data.missing).to.not.have.property('OFF_NAME');
     });
 
-    it('should take first establishment phone number', () => {
+    it('should take number from establishment phone number', () => {
         const establishment = {
-            phones: [{number: 111}, {number: 222}]
+            phones: {type: 'BUS', number: 111}
         };
 
         const data = formatWith({establishment: establishment});

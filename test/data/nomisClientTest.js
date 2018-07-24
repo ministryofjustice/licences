@@ -62,7 +62,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get(`/bookings?query=offenderNo%3Aeq%3A%27A1235HG%27`)
+                .get(`/bookings/offenderNo/A1235HG`)
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getBookings('A1235HG')).to.eventually.eql({key: 'value'});
@@ -381,7 +381,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get(`/bookings/1/relationships?query=relationshipType%3Aeq%3A%27COM%27`)
+                .get(`/bookings/1/relationships?relationshipType=COM`)
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getComRelation('1')).to.eventually.eql({key: 'value'});

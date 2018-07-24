@@ -38,6 +38,13 @@ function formatAgencyLocationDesc(agencyLocationDesc) {
     return setCase.capital(agencyLocationDesc);
 }
 
+function formatAgencyBusinessPhone(phones) {
+    if (phones && phones.length > 0) {
+        return phones.find(phone => phone.type === 'BUS') || '';
+    }
+    return '';
+}
+
 function formatOffences(offences) {
     return offences && offences[0] ? offences[0].offenceDescription : '';
 }
@@ -48,7 +55,7 @@ function formatCom(com) {
 }
 
 function formatAliases(aliasesList) {
-    return aliasesList && aliasesList[0] ?aliasesList.map(alias => {
+    return aliasesList && aliasesList[0] ? aliasesList.map(alias => {
         const name = [alias.firstName, alias.lastName].join(' ');
         return setCase.capital(name.toLowerCase());
     }).join(', ') : '';
@@ -57,6 +64,7 @@ function formatAliases(aliasesList) {
 const customFields = {
     agencyLocationDesc: formatAgencyLocationDesc,
     premise: formatAgencyLocationDesc,
+    phones: formatAgencyBusinessPhone,
     offences: formatOffences,
     com: formatCom,
     aliases: formatAliases
