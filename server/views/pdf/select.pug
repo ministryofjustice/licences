@@ -1,0 +1,29 @@
+extends ../layout
+include ../includes/errorBannerWithDetail
+
+block content
+
+    div.pure-g
+        div.pure-u-1
+            include ../includes/back
+            include ../includes/personalDetailsSummary
+            +errorBannerWithDetail(errors, [
+                {field: 'decision', message: 'Select a licence type'}
+            ])
+
+        div.pure-u-1-3
+            h2.heading-large Select licence type
+
+            form(method="post")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="nomisId" value=nomisId || '')
+                div.form-group.largePaddingBottom
+                    select.form-control#selectLicence(name="decision")
+                        option(value="" disabled selected) -- select --
+                        for template in templates
+                            option(value=template.id) #{template.label}
+
+                div.largePaddingBottom.smallPaddingTop
+                    div.inlineButtons
+                        input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+

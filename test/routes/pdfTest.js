@@ -5,7 +5,8 @@ const {
     pdfServiceStub,
     authenticationMiddleware,
     appSetup,
-    auditStub
+    auditStub,
+    createPrisonerServiceStub
 } = require('../supertestSetup');
 
 const createPdfRoute = require('../../server/routes/pdf');
@@ -17,11 +18,14 @@ const testUser = {
     role: 'CA'
 };
 
+const prisonerService = createPrisonerServiceStub();
+
 const app = appSetup(createPdfRoute({
     logger: loggerStub,
     pdfService: pdfServiceStub,
     authenticationMiddleware,
-    audit: auditStub
+    audit: auditStub,
+    prisonerService
 }), testUser);
 
 const valuesWithMissing = {
@@ -44,6 +48,41 @@ describe('PDF:', () => {
 
     beforeEach(() => {
         auditStub.record.reset();
+    });
+
+    describe('GET /select', () => {
+
+        it('renders dropdown containing licence types', () => {
+            return request(app)
+                .get('/select/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.include('<option value="hdc_ap_pss">AP PSS HDC Licence</option>');
+                    expect(res.text).to.include('<option value="hdc_yn">HDC Young Person\'s Licence</option>');
+                    expect(res.text).to.include('<option value="hdc_ap">AP HDC Licence</option>');
+                    expect(res.text).to.include('<option value="hdc_pss">HDC PSS Notice of Supervision</option>');
+                });
+        });
+    });
+
+    describe('POST /select', () => {
+
+        it('redirects to the page of the selected pdf', () => {
+            return request(app)
+                .post('/select/123')
+                .send({decision: 'hdc_ap_pss'})
+                .expect(302)
+                .expect('Location', '/hdc/pdf/view/hdc_ap_pss/123');
+        });
+
+        it('redirects back to the select page if nothing selected', () => {
+            return request(app)
+                .post('/select/123')
+                .send({decision: ''})
+                .expect(302)
+                .expect('Location', '/hdc/pdf/select/123');
+        });
     });
 
     describe('GET /view', () => {
