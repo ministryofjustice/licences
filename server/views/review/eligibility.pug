@@ -1,0 +1,69 @@
+extends ../layout
+
+block content
+
+    div.largePaddingBottom
+        include ../includes/backToCheckList
+        include ../includes/personalDetailsSummary
+
+        h2.heading-large Eligibility and presumed suitability
+
+        div.pure-g
+            div.pure-u-1.pure-u-md-3-4
+                div.pure-g
+                    div.pure-u-3-4
+
+                        div.pure-g.borderTopLight.smallPaddingTopBottom
+                            div.pure-u-3-4.padRight15
+                                | Is the offender excluded from HDC?
+                            if licenceStatus.tasks.exclusion === 'DONE'
+                                div#excludedAnswer.pure-u-1-4.center.bold
+                                    if licenceStatus.decisions.excluded
+                                        | Yes
+                                    else
+                                        | No
+
+                        div.pure-g.borderTopLight.smallPaddingTopBottom
+                            div.pure-u-3-4.padRight15
+                                | Is the offender presumed unsuitable?
+                            if licenceStatus.decisions.excluded
+                                div#unsuitableAnswer.pure-u-1-4.center.bold N/A
+                            else if licenceStatus.tasks.suitability === 'DONE'
+                                div#unsuitableAnswer.pure-u-1-4.center.bold
+                                    if licenceStatus.decisions.unsuitable
+                                        | Yes
+                                    else
+                                        | No
+
+                        if !licenceStatus.decisions.excluded && licenceStatus.decisions.unsuitable
+                            div.pure-g.borderTopLight.smallPaddingTopBottom
+                                div.pure-u-3-4.padRight15
+                                    | Exceptional circumstances accepted?
+                                if licenceStatus.tasks.suitability === 'DONE'
+                                    div#exceptionalCircumstances.pure-u-1-4.center.bold
+                                        if licenceStatus.decisions.exceptionalCircumstances
+                                            | Yes
+                                        else
+                                            | No
+
+                        div.pure-g.borderTopLight.smallPaddingTopBottom
+                            div.pure-u-3-4.padRight15
+                                | Is there less than 4 weeks to the conditional release date?
+                            if licenceStatus.decisions.excluded || licenceStatus.decisions.unsuitableResult
+                                div#crdTimeAnswer.pure-u-1-4.center.bold N/A
+                            else if licenceStatus.tasks.crdTime === 'DONE'
+                                div#crdTimeAnswer.pure-u-1-4.center.bold
+                                    if licenceStatus.decisions.insufficientTime
+                                        | Yes
+                                    else
+                                        | No
+
+                        if licenceStatus.decisions.insufficientTime
+                            div.pure-g.borderTopLight.smallPaddingTopBottom
+                                div.pure-u-3-4.padRight15
+                                    | Has the decision maker given approval to continue the HDC case?
+                                div#dmApprovalToContinue.pure-u-1-4.center.bold
+                                    if licenceStatus.decisions.insufficientTimeContinue
+                                        | Yes
+                                    else
+                                        | No

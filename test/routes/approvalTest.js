@@ -46,16 +46,27 @@ describe('/hdc/approval', () => {
         const service = createLicenceServiceStub();
         const app = createApp({licenceServiceStub: service});
         const routes = [
-            {url: '/approval/release/1', content: 'Do you approve HDC release for this offender?'}
+            {url: '/approval/release/1', content: 'Do you approve HDC release for this offender?'},
+            {url: '/approval/crdRefuse/1', content: 'HDC refused because there is not enough time'}
         ];
 
         testFormPageGets(app, routes, service);
     });
 
     describe('GET /approval/routes/:nomisId', () => {
-        it('should display the offender details', () => {
+        it('should display the offender details - release', () => {
             return request(app)
                 .get('/approval/release/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('23/12/1971');
+
+                });
+        });
+        it('should display the offender details - crdRefuse', () => {
+            return request(app)
+                .get('/approval/crdRefuse/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -71,13 +82,22 @@ describe('/hdc/approval', () => {
                 url: '/approval/release/1',
                 body: {decision: 'Yes'},
                 section: 'release',
-                nextPath: '/hdc/send/decided/1'
+                nextPath: '/hdc/send/decided/1',
+                formName: 'release'
             },
             {
                 url: '/approval/release/1',
                 body: {decision: 'No'},
                 section: 'release',
-                nextPath: '/hdc/send/decided/1'
+                nextPath: '/hdc/send/decided/1',
+                formName: 'release'
+            },
+            {
+                url: '/approval/crdRefuse/1',
+                body: {decision: 'No'},
+                section: 'release',
+                nextPath: '/hdc/send/decided/1',
+                formName: 'crdRefuse'
             }
         ];
 
@@ -91,7 +111,7 @@ describe('/hdc/approval', () => {
                         expect(licenceServiceStub.update).to.be.calledOnce();
                         expect(licenceServiceStub.update).to.be.calledWith({
                             nomisId: '1',
-                            fieldMap: formConfig.release.fields,
+                            fieldMap: formConfig[route.formName].fields,
                             userInput: route.body,
                             licenceSection: 'approval',
                             formName: route.section

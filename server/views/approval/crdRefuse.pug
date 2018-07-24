@@ -1,0 +1,24 @@
+extends ../layout
+include ../includes/errorBannerWithDetail
+
+block content
+
+    div.pure-g.pure-u-1.largeMarginBottom
+
+        include ../includes/backToCheckList
+
+        include ../taskList/prisonerDetails
+
+        div.pure-u-md-1-2
+            h2.heading-large HDC refused
+
+            form(method="post").largeMarginTop
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="nomisId" value=nomisId || '')
+                input#releaseYes(type="hidden"  name="decision" value="No")
+
+                div.paddingBottom.largeMarginBottom
+                    div HDC refused because there is not enough time. (Less than 4 weeks to conditional release date)
+                    br
+                    div.paddingBottom.smallPaddingTop
+                        input#continueBtn.requiredButton.button(type="submit" value="Save and continue")

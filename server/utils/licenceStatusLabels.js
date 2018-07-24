@@ -39,7 +39,7 @@ function statusLabels(licenceStatus, role) {
         [licenceStages.APPROVAL]: {
             CA: () => 'Submitted to DM',
             RO: () => 'Submitted to DM',
-            DM: () => 'Awaiting decision'
+            DM: dmProcessingLabel
         },
         [licenceStages.DECIDED]: {
             CA: decisionLabel,
@@ -112,6 +112,14 @@ function roProcessingCaLabel(licenceStatus) {
     ];
 
     return getLabel(labels, licenceStatus) || 'With responsible officer';
+}
+
+function dmProcessingLabel(licenceStatus) {
+    const labels = [
+        {decision: 'insufficientTimeStop', label: 'Awaiting refusal'}
+    ];
+
+    return getLabel(labels, licenceStatus) || 'Awaiting decision';
 }
 
 function decisionLabel(licenceStatus) {

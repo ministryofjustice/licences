@@ -62,15 +62,19 @@ block content
             include roSubmitTask
 
         if user.role === 'DM'
-            include curfewAddressTask
-            if (licenceStatus.decisions.curfewAddressApproved === 'approved')
-                include riskManagementTask
-                include curfewHoursTask
-                include additionalConditionsTask
-                include reportingInstructionsTask
-                include finalChecksTask
-            if licenceStatus.decisions.confiscationOrder
-                include postponementTask
+            if licenceStatus.decisions.insufficientTimeStop
+                include eligibilitySummaryTask
+                include refusalTask
 
-            include returnToCaTask
-            include approvalTask
+            else
+                include curfewAddressTask
+                if (licenceStatus.decisions.curfewAddressApproved === 'approved')
+                    include riskManagementTask
+                    include curfewHoursTask
+                    include additionalConditionsTask
+                    include reportingInstructionsTask
+                    include finalChecksTask
+                if licenceStatus.decisions.confiscationOrder
+                    include postponementTask
+                include returnToCaTask
+                include approvalTask
