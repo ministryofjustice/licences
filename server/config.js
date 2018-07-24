@@ -29,22 +29,14 @@ module.exports = {
     nomis: {
         apiUrl: get('NOMIS_API_URL', 'http://localhost:9090/elite2api'),
         timeout: {
-            response: 10000,
-            deadline: 15000
+            response: 30000,
+            deadline: 35000
         },
         licenceRolePrefix: get('LICENCE_ROLE_PREFIX', 'LICENCE'),
         apiClientId: get('API_CLIENT_ID', 'licences'),
         apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret'),
         licencesAdminApiClientId: get('ADMIN_API_CLIENT_ID', 'licencesadmin'),
         licencesAdminApiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'clientsecret')
-    },
-
-    establishments: {
-        apiUrl: get('ESTABLISHMENTS_API_URL', 'http://licences-nomis-mocks.herokuapp.com'),
-        timeout: {
-            response: 2000,
-            deadline: 2500
-        }
     },
 
     https: production,

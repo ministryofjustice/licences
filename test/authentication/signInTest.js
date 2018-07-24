@@ -234,10 +234,10 @@ describe('signInService', () => {
             expect(fakeStore.store).to.be.calledWith('un', 'RO', 'type token', 'refresh');
         });
 
-        it('should throw if there is a non 400 error with authentication', () => {
+        it('should throw if there is an error with authentication', () => {
             fakeOauth
                 .post(`/oauth/token`)
-                .reply(500, {token_type: 'type', access_token: 'token'});
+                .reply(403, {token_type: 'type', access_token: 'token'});
 
             return expect(service.refresh('un')).to.eventually.be.rejected();
         });
