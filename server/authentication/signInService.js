@@ -65,11 +65,6 @@ function signInService(tokenStore, audit) {
                 tokenStore.store(username, oldTokenObject.role, token, refreshToken);
 
             } catch (error) {
-                if (unauthorised(error)) {
-                    logger.error(`Forbidden Elite2 token refresh for [${username}]:`, error.stack);
-                    return {};
-                }
-
                 logger.error(`Elite 2 token refresh error [${username}]:`, error.stack);
                 throw error;
             }
