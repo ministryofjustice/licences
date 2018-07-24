@@ -4,7 +4,7 @@ const EST_PREMISE = {
 };
 
 const EST_PHONE = {
-    paths: [['establishment', 'phones', 0, 'number']],
+    paths: [['establishment', 'phones', 'number']],
     displayName: 'Prison telephone number'
 };
 

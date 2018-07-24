@@ -29,9 +29,8 @@ module.exports = (tokenStore, signInService) => username => {
         },
 
         getBookings: function(nomisId) {
-            const path = `${apiUrl}/bookings`;
-            const query = {query: `offenderNo:eq:'${nomisId}'`};
-            return nomisGet({path, query});
+            const path = `${apiUrl}/bookings/offenderNo/${nomisId}`;
+            return nomisGet({path});
         },
 
         getBooking: function(bookingId) {
@@ -56,7 +55,7 @@ module.exports = (tokenStore, signInService) => username => {
 
         getComRelation: function(bookingId) {
             const path = `${apiUrl}/bookings/${bookingId}/relationships`;
-            const query = {query: `relationshipType:eq:'COM'`};
+            const query = {relationshipType: 'COM'};
             return nomisGet({path, query});
         },
 

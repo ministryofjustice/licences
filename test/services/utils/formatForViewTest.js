@@ -109,6 +109,43 @@ describe('formatForView', () => {
         });
     });
 
+    describe('agency phone number', () => {
+
+        it('should take first BUS phone', () => {
+
+            const object = {
+                phones: [
+                    {type: 'FAX', number: '111'},
+                    {type: 'BUS', number: '222'},
+                    {type: 'BUS', number: '333'}
+                ]
+            };
+            const expectedOutput = {phones: {type: 'BUS', number: '222'}};
+
+            expect(formatObjectForView(object)).to.eql(expectedOutput);
+        });
+
+        it('should be empty string if no phones', () => {
+
+            const object = {
+                phones: []
+            };
+            const expectedOutput = {phones: ''};
+
+            expect(formatObjectForView(object)).to.eql(expectedOutput);
+        });
+
+        it('should be empty string if no BUS phone', () => {
+
+            const object = {
+                phones: [{type: 'FAX', number: '111'}]
+            };
+            const expectedOutput = {phones: ''};
+
+            expect(formatObjectForView(object)).to.eql(expectedOutput);
+        });
+    });
+
     describe('com', () => {
 
         it('should extract first coms first and last name and capitalise', () => {
