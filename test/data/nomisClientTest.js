@@ -58,25 +58,6 @@ describe('nomisClient', function() {
         });
     });
 
-    describe('getBookings', () => {
-
-        it('should return data from api', () => {
-            fakeNomis
-                .get(`/bookings/offenderNo/A1235HG`)
-                .reply(200, {key: 'value'});
-
-            return expect(nomisClient.getBookings('A1235HG')).to.eventually.eql({key: 'value'});
-        });
-
-        it('should reject if api fails', () => {
-            fakeNomis
-                .get(`/bookings?query=offenderNo%3Aeq%3AA1235HG`)
-                .reply(500);
-
-            return expect(nomisClient.getBookings('A1235HG')).to.be.rejected();
-        });
-    });
-
     describe('getBooking', () => {
 
         it('should return data from api', () => {
