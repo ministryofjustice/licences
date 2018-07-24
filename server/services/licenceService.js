@@ -11,7 +11,7 @@ const {
     mergeWithRight,
     removePath
 } = require('../utils/functionalHelpers');
-const {transitions} = require('../models/licenceStages');
+const {transitions, licenceStages} = require('../models/licenceStages');
 const {getConfiscationOrderState} = require('../utils/licenceStatus');
 const validate = require('./utils/licenceValidation');
 const addressHelpers = require('./utils/addressHelpers');
@@ -36,8 +36,9 @@ module.exports = function createLicenceService(licenceClient) {
             }
             const formattedLicence = formatObjectForView(licence);
             const stage = getIn(rawLicence, ['stage']);
+            const version = getIn(rawLicence, ['version']);
 
-            return {licence: formattedLicence, stage};
+            return {licence: formattedLicence, stage, version};
 
         } catch (error) {
             logger.error('Error during getLicence', error.stack);
@@ -132,6 +133,10 @@ module.exports = function createLicenceService(licenceClient) {
 
         if (!newStage) {
             throw new Error('Invalid handover transition: ' + transitionType);
+        }
+
+        if (newStage === licenceStages.DECIDED) {
+            return licenceClient.updateStageAndVersion(nomisId, newStage);
         }
 
         return licenceClient.updateStage(nomisId, newStage);

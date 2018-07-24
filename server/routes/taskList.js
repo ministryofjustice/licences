@@ -29,6 +29,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
 
         res.render('taskList/taskList', {
             licenceStatus,
+            licenceVersion: licence.version,
             allowedTransition,
             statusLabel,
             prisonerInfo,
