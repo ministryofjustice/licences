@@ -27,13 +27,8 @@ block content
                     div#postCode #{submissionTarget.postCode}
 
                 if submissionTarget.phones
-                    each phone, index in submissionTarget.phones
-                        div(id="phone"+index).bold.smallPaddingTop
-                            if phone.type
-                                | #{phone.type}:
-                            else
-                                | Tel:
-                            |  #{phone.number}
+                    div(id="phone"+index).bold.smallPaddingTop
+                        | #{submissionTarget.phones.number}
 
                 div.paddingBottom
                     if submissionTarget.email
