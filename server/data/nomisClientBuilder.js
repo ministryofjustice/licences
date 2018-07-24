@@ -28,11 +28,6 @@ module.exports = (tokenStore, signInService) => username => {
             return nomisGet({path, query, headers});
         },
 
-        getBookings: function(nomisId) {
-            const path = `${apiUrl}/bookings/offenderNo/${nomisId}`;
-            return nomisGet({path});
-        },
-
         getBooking: function(bookingId) {
             const path = `${apiUrl}/bookings/${bookingId}`;
             return nomisGet({path});
