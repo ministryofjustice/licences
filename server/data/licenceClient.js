@@ -38,7 +38,7 @@ module.exports = {
         return {};
     },
 
-    createLicence: function(nomisId, licence = {}, stage = licenceStages.DEFAULT, version = '0') {
+    createLicence: function(nomisId, licence = {}, stage = licenceStages.DEFAULT, version = 1) {
         const query = {
             text: 'insert into licences (nomis_id, licence, stage, version) values ($1, $2, $3, $4)',
             values: [nomisId, licence, stage, version]
@@ -102,14 +102,13 @@ module.exports = {
     },
 
     updateStageAndVersion: async function(nomisId, stage) {
-        const incrementVersionNumber = `update licences set version = version + 1 where nomis_id = '${nomisId}'; `;
 
         const updateStage = `update licences set stage = '${stage}' where nomis_id = '${nomisId}'; `;
 
         const saveVersionData = `insert into licence_versions (nomis_id, licence, version) select nomis_id, licence, 
         version from licences where nomis_id = '${nomisId}'; `;
 
-        return db.query('begin transaction; ' + incrementVersionNumber + updateStage + saveVersionData + 'commit;');
+        return db.query('begin transaction; ' + updateStage + saveVersionData + 'commit;');
     }
 };
 

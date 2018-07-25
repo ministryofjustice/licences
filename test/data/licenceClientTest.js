@@ -64,7 +64,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedClause = 'insert into licences (nomis_id, licence, stage) values ($1, $2, $3)';
+            const expectedClause = 'insert into licences (nomis_id, licence, stage, version) values ($1, $2, $3, $4)';
 
             const result = licencesProxy().createLicence('ABC123');
 
@@ -75,7 +75,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct parameters', () => {
 
-            const expectedParameters = ['ABC123', {}, 'ELIGIBILITY'];
+            const expectedParameters = ['ABC123', {}, 'ELIGIBILITY', 1];
 
             const result = licencesProxy().createLicence('ABC123');
 
@@ -87,7 +87,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct parameters if licence passed in', () => {
 
-            const expectedParameters = ['ABC123', {a: 'b'}, 'ELIGIBILITY'];
+            const expectedParameters = ['ABC123', {a: 'b'}, 'ELIGIBILITY', 1];
 
             const result = licencesProxy().createLicence('ABC123', {a: 'b'});
 
@@ -99,7 +99,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct parameters if stage passed in', () => {
 
-            const expectedParameters = ['ABC123', {a: 'b'}, 'SENT'];
+            const expectedParameters = ['ABC123', {a: 'b'}, 'SENT', 1];
 
             const result = licencesProxy().createLicence('ABC123', {a: 'b'}, 'SENT');
 
@@ -245,6 +245,28 @@ describe('licenceClient', () => {
                 expect(values).to.eql([5]);
             });
         });
+    });
+
+    describe('updateStageAndVersion', () => {
+
+        it('should pass in the correct sql', () => {
+
+            const expectedTransaction = 'begin transaction';
+            const expectedUpdate = 'set stage = \'NEW_STAGE\'';
+            const expectedWhere = 'where nomis_id = \'ABC123\'';
+            const expectedVersionUpdate = 'insert into licence_versions';
+
+            const result = licencesProxy().updateStageAndVersion('ABC123', 'NEW_STAGE');
+
+            return result.then(data => {
+                const sql = queryStub.getCalls()[0].args[0];
+                expect(sql).to.include(expectedTransaction);
+                expect(sql).to.include(expectedUpdate);
+                expect(sql).to.include(expectedWhere);
+                expect(sql).to.include(expectedVersionUpdate);
+            });
+        });
+
     });
 });
 

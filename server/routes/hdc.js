@@ -138,8 +138,6 @@ module.exports = function(
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.username);
 
-        console.log(licenceVersion)
-
         res.render(`review/${sectionName}`, {
             nomisId,
             data,

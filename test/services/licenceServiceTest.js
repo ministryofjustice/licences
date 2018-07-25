@@ -16,7 +16,8 @@ describe('licenceService', () => {
             updateStage: sinon.stub().resolves(),
             getAdditionalConditions: sinon.stub().resolves([
                 {user_input: 1, id: 1, field_position: null}]),
-            updateLicence: sinon.stub().resolves()
+            updateLicence: sinon.stub().resolves(),
+            updateStageAndVersion: sinon.stub().resolves()
         };
         service = createLicenceService(licenceClient, establishmentsClient);
     });
@@ -30,7 +31,11 @@ describe('licenceService', () => {
         });
 
         it('should return licence', () => {
-            return expect(service.getLicence('123')).to.eventually.eql({licence: {a: 'b'}, stage: undefined});
+            return expect(service.getLicence('123')).to.eventually.eql({
+                licence: {a: 'b'},
+                stage: undefined,
+                version: undefined
+            });
         });
 
         it('should throw if error getting licence', () => {
@@ -170,12 +175,14 @@ describe('licenceService', () => {
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_RO');
         });
 
-        it('should pick the right stage based on sender and receiver', () => {
+        it('should change stage according to transition', () => {
             service.markForHandover('ab1', {}, 'caToDm');
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'APPROVAL');
+        });
 
+        it('should increment version on transition to DECIDED', () => {
             service.markForHandover('ab1', {}, 'dmToCa');
-            expect(licenceClient.updateStage).to.be.calledWith('ab1', 'DECIDED');
+            expect(licenceClient.updateStageAndVersion).to.be.calledWith('ab1', 'DECIDED');
         });
 
         it('should return to ELIGIBILITY when RO sends to CA after opt out', () => {
@@ -2915,13 +2922,18 @@ describe('licenceService', () => {
 
                 const output = service.getValidationErrorsForReview({
                     licenceStatus: {stage: 'ELIGIBILITY'},
-                    licence: missingFieldProposedAddress});
+                    licence: missingFieldProposedAddress
+                });
 
                 expect(output).to.eql(
-                    {proposedAddress: {curfewAddress: {
+                    {
+                        proposedAddress: {
+                            curfewAddress: {
                                 telephone: 'Invalid entry - number required',
                                 cautionedAgainstResident: 'Not answered'
-                            }}}
+                            }
+                        }
+                    }
                 );
             });
 
@@ -2936,7 +2948,8 @@ describe('licenceService', () => {
 
                 const output = service.getValidationErrorsForReview({
                     licenceStatus: {stage: 'ELIGIBILITY'},
-                    licence: missingFieldProposedAddress});
+                    licence: missingFieldProposedAddress
+                });
 
                 expect(output).to.eql(
                     {proposedAddress: {curfewAddress: 'Not answered'}}
@@ -2958,7 +2971,8 @@ describe('licenceService', () => {
 
                 const output = service.getValidationErrorsForReview({
                     licenceStatus: {stage: 'ELIGIBILITY'},
-                    licence: missingFieldProposedAddress});
+                    licence: missingFieldProposedAddress
+                });
 
                 expect(output).to.eql({});
             });
@@ -2984,7 +2998,8 @@ describe('licenceService', () => {
 
                 const output = service.getValidationErrorsForReview({
                     licenceStatus: {stage: 'PROCESSING_RO', decisions: {curfewAddressApproved: 'rejected'}},
-                    licence});
+                    licence
+                });
 
                 expect(output).to.eql({
                     proposedAddress: {
@@ -3015,20 +3030,22 @@ describe('licenceService', () => {
 
                 const output = service.getValidationErrorsForReview({
                     licenceStatus: {stage: 'PROCESSING_CA', tasks: {curfewAddressReview: 'STARTED'}},
-                    licence: missingFieldProposedAddress});
+                    licence: missingFieldProposedAddress
+                });
 
                 expect(output).to.eql(
-                    {proposedAddress: {
-                        curfewAddress: {
-                            telephone: 'Invalid entry - number required',
-                            cautionedAgainstResident: 'Not answered',
-                            consent: 'Not answered'
-                        }
-                    },
-                    curfew: 'Not answered',
-                    licenceConditions: 'Not answered',
-                    reporting: 'Not answered',
-                    risk: 'Not answered'
+                    {
+                        proposedAddress: {
+                            curfewAddress: {
+                                telephone: 'Invalid entry - number required',
+                                cautionedAgainstResident: 'Not answered',
+                                consent: 'Not answered'
+                            }
+                        },
+                        curfew: 'Not answered',
+                        licenceConditions: 'Not answered',
+                        reporting: 'Not answered',
+                        risk: 'Not answered'
                     }
                 );
             });
@@ -3050,13 +3067,18 @@ describe('licenceService', () => {
 
                 const output = service.getValidationErrorsForReview({
                     licenceStatus: {stage: 'PROCESSING_CA', tasks: {curfewAddressReview: 'UNSTARTED'}},
-                    licence: missingFieldProposedAddress});
+                    licence: missingFieldProposedAddress
+                });
 
                 expect(output).to.eql(
-                    {proposedAddress: {curfewAddress: {
+                    {
+                        proposedAddress: {
+                            curfewAddress: {
                                 telephone: 'Invalid entry - number required',
                                 cautionedAgainstResident: 'Not answered'
-                            }}}
+                            }
+                        }
+                    }
                 );
             });
         });
