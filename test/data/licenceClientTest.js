@@ -266,6 +266,44 @@ describe('licenceClient', () => {
                 expect(sql).to.include(expectedVersionUpdate);
             });
         });
+    });
+
+
+    describe('getApprovedLicenceVersion', () => {
+
+        it('should call query', () => {
+            licencesProxy().getApprovedLicenceVersion(['ABC123']);
+            expect(queryStub).to.have.callCount(1);
+        });
+
+        it('should pass in the correct sql', () => {
+
+            const expectedSelect = 'select version, timestamp from licence_versions';
+            const expectedWhere = 'where nomis_id = $1';
+            const expectedOrder = 'order by version desc limit 1';
+
+            const result = licencesProxy().getApprovedLicenceVersion('ABC123');
+
+            return result.then(data => {
+                const sql = queryStub.getCalls()[0].args[0].text;
+                expect(sql).to.include(expectedSelect);
+                expect(sql).to.include(expectedWhere);
+                expect(sql).to.include(expectedOrder);
+            });
+        });
+
+        it('should pass in the correct parameters', () => {
+
+            const expectedParameters = ['ABC123'];
+
+            const result = licencesProxy().getApprovedLicenceVersion('ABC123');
+
+            return result.then(data => {
+                const values = queryStub.getCalls()[0].args[0].values;
+                expect(values).to.eql(expectedParameters);
+            });
+        });
+
 
     });
 });

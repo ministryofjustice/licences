@@ -17,7 +17,8 @@ describe('licenceService', () => {
             getAdditionalConditions: sinon.stub().resolves([
                 {user_input: 1, id: 1, field_position: null}]),
             updateLicence: sinon.stub().resolves(),
-            updateStageAndVersion: sinon.stub().resolves()
+            updateStageAndVersion: sinon.stub().resolves(),
+            getApprovedLicenceVersion: sinon.stub().resolves()
         };
         service = createLicenceService(licenceClient, establishmentsClient);
     });
@@ -34,7 +35,8 @@ describe('licenceService', () => {
             return expect(service.getLicence('123')).to.eventually.eql({
                 licence: {a: 'b'},
                 stage: undefined,
-                version: undefined
+                version: undefined,
+                approvedVersion: undefined
             });
         });
 

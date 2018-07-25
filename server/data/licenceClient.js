@@ -38,6 +38,21 @@ module.exports = {
         return {};
     },
 
+    getApprovedLicenceVersion: async function(nomisId) {
+        const query = {
+            text: `select version, timestamp from licence_versions where nomis_id = $1 order by version desc limit 1`,
+            values: [nomisId]
+        };
+
+        const {rows} = await db.query(query);
+
+        if (rows && rows[0]) {
+            return rows[0];
+        }
+
+        return null;
+    },
+
     createLicence: function(nomisId, licence = {}, stage = licenceStages.DEFAULT, version = 1) {
         const query = {
             text: 'insert into licences (nomis_id, licence, stage, version) values ($1, $2, $3, $4)',

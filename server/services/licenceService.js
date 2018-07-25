@@ -29,16 +29,24 @@ module.exports = function createLicenceService(licenceClient) {
 
     async function getLicence(nomisId) {
         try {
-            const rawLicence = await licenceClient.getLicence(nomisId);
+            const getLicence = licenceClient.getLicence(nomisId);
+            const getApprovedVersion = await licenceClient.getApprovedLicenceVersion(nomisId);
+
+            const details = await Promise.all([getLicence, getApprovedVersion]);
+
+            const rawLicence = details[0];
+            const versionDetails = details[1];
+
             const licence = getIn(rawLicence, ['licence']);
             if (!licence) {
                 return null;
             }
             const formattedLicence = formatObjectForView(licence);
+            const approvedVersion = versionDetails ? formatObjectForView(versionDetails) : undefined;
             const stage = getIn(rawLicence, ['stage']);
             const version = getIn(rawLicence, ['version']);
 
-            return {licence: formattedLicence, stage, version};
+            return {licence: formattedLicence, stage, version, approvedVersion};
 
         } catch (error) {
             logger.error('Error during getLicence', error.stack);
