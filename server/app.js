@@ -13,6 +13,7 @@ const flash = require('connect-flash');
 const helmet = require('helmet');
 const csurf = require('csurf');
 const compression = require('compression');
+const ensureHttps = require('./utils/ensureHttps');
 
 const sassMiddleware = require('node-sass-middleware');
 
@@ -235,6 +236,10 @@ module.exports = function createApp({
     app.get('/feedback', (req, res) => {
         return res.render('feedback', {returnURL: req.get('referer')});
     });
+
+    if (production) {
+        app.use(ensureHttps);
+    }
 
     app.get('/notfound', (req, res) => {
         res.status(404);
