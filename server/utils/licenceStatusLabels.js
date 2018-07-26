@@ -34,7 +34,7 @@ function statusLabels(licenceStatus, role) {
         [licenceStages.PROCESSING_CA]: {
             CA: caProcessingLabel,
             RO: caProcessingRoLabel,
-            DM: () => 'Submitted to PCA'
+            DM: caProcessingDmLabel
         },
         [licenceStages.APPROVAL]: {
             CA: () => 'Submitted to DM',
@@ -59,7 +59,8 @@ function caEligibilityLabel(licenceStatus) {
         {decision: 'insufficientTime', label: 'Not enough time'},
         {decision: 'optedOut', label: 'Opted out'},
         {decision: 'bassReferralNeeded', label: 'Getting address'},
-        {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address rejected'}
+        {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address rejected'},
+        {decision: 'eligible', label: 'Eligible'}
     ];
 
     return getLabel(labels, licenceStatus) || 'Checking eligibility';
@@ -78,6 +79,15 @@ function caProcessingLabel(licenceStatus) {
 }
 
 function caProcessingRoLabel(licenceStatus) {
+
+    const labels = [
+        {decision: 'postponed', label: 'Postponed'}
+    ];
+
+    return getLabel(labels, licenceStatus) || 'Submitted to PCA';
+}
+
+function caProcessingDmLabel(licenceStatus) {
 
     const labels = [
         {decision: 'postponed', label: 'Postponed'}

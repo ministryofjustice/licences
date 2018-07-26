@@ -79,6 +79,28 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Processing CA not postponed Andrews');
                         expect(res.text).to.not.include('Processing CA postponed Andrews');
                         expect(res.text).to.not.include('Opted out Andrews');
+                        expect(res.text).to.not.include('Eligible Andrews');
+                    });
+            });
+        });
+        context('tab is getAddress', () => {
+            it('should filter out offenders unless stage ELIGIBILTY and status Eligible (or address related)', () => {
+                return request(app)
+                    .get('/getAddress')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.not.include('RO Processing Andrews');
+                        expect(res.text).to.not.include('Unstarted Andrews');
+                        expect(res.text).to.not.include('Eligibility Andrews');
+                        expect(res.text).to.not.include('Approval Andrews');
+                        expect(res.text).to.not.include('Approved Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
+                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.not.include('Processing CA postponed Andrews');
+                        expect(res.text).to.not.include('Opted out Andrews');
+                        expect(res.text).to.include('Eligible Andrews');
+                        expect(res.text).to.include('GettingAddress Andrews');
+                        expect(res.text).to.include('AddressRejected Andrews');
                     });
             });
         });
@@ -97,13 +119,14 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Processing CA not postponed Andrews');
                         expect(res.text).to.not.include('Processing CA postponed Andrews');
                         expect(res.text).to.not.include('Opted out Andrews');
+                        expect(res.text).to.not.include('Eligible Andrews');
                     });
             });
         });
         context('tab is submittedRo', () => {
             it('should filter out offenders at a stage that isnt PROCESSING_CA', () => {
                 return request(app)
-                    .get('/finalChecks')
+                    .get('/reviewCase')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('RO Processing Andrews');
@@ -115,10 +138,11 @@ describe('GET /caseList', () => {
                         expect(res.text).to.include('Processing CA not postponed Andrews');
                         expect(res.text).to.include('Processing CA postponed Andrews');
                         expect(res.text).to.not.include('Opted out Andrews');
+                        expect(res.text).to.not.include('Eligible Andrews');
                     });
             });
         });
-        context('tab is submitterDm', () => {
+        context('tab is submittedDm', () => {
             it('should filter out offenders at a stage that isnt APPROVAL', () => {
                 return request(app)
                     .get('/submittedDm')
@@ -133,13 +157,14 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Processing CA not postponed Andrews');
                         expect(res.text).to.not.include('Processing CA postponed Andrews');
                         expect(res.text).to.not.include('Opted out Andrews');
+                        expect(res.text).to.not.include('Eligible Andrews');
                     });
             });
         });
         context('tab is decided', () => {
-            it('should filter out offenders at a stage that isnt DECIDED', () => {
+            it('should filter out offenders at a stage that isnt DECIDED with status Approved', () => {
                 return request(app)
-                    .get('/decided')
+                    .get('/create')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('RO Processing Andrews');
@@ -147,68 +172,15 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Eligibility Andrews');
                         expect(res.text).to.not.include('Approval Andrews');
                         expect(res.text).to.include('Approved Andrews');
-                        expect(res.text).to.include('Refused Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
                         expect(res.text).to.not.include('Processing CA not postponed Andrews');
                         expect(res.text).to.not.include('Processing CA postponed Andrews');
                         expect(res.text).to.not.include('Opted out Andrews');
+                        expect(res.text).to.not.include('Eligible Andrews');
                     });
             });
         });
 
-        context('tab is optedOut', () => {
-            it('should filter out offenders at a stage that isnt ELIGIBILITY with status of Opted out', () => {
-                return request(app)
-                    .get('/optedOut')
-                    .expect(200)
-                    .expect(res => {
-                        expect(res.text).to.not.include('RO Processing Andrews');
-                        expect(res.text).to.not.include('Unstarted Andrews');
-                        expect(res.text).to.not.include('Eligibility Andrews');
-                        expect(res.text).to.not.include('Approval Andrews');
-                        expect(res.text).to.not.include('Approved Andrews');
-                        expect(res.text).to.not.include('Refused Andrews');
-                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
-                        expect(res.text).to.not.include('Processing CA postponed Andrews');
-                        expect(res.text).to.include('Opted out Andrews');
-                    });
-            });
-        });
-
-        // skipped, rather than deleted, while it is decided what tabs are necessary
-        context('tab is approved', () => {
-            it.skip('should filter out offenders at a stage that isnt DECIDED with status of Approved', () => {
-                return request(app)
-                    .get('/approved')
-                    .expect(200)
-                    .expect(res => {
-                        expect(res.text).to.not.include('RO Processing Andrews');
-                        expect(res.text).to.not.include('Unstarted Andrews');
-                        expect(res.text).to.not.include('Eligibility Andrews');
-                        expect(res.text).to.not.include('Approval Andrews');
-                        expect(res.text).to.include('Approved Andrews');
-                        expect(res.text).to.not.include('Refused Andrews');
-                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
-                        expect(res.text).to.not.include('Processing CA postponed Andrews');
-                    });
-            });
-        });
-        context('tab is refused', () => {
-            it.skip('should filter out offenders at a stage that isnt DECIDED with status of Refused', () => {
-                return request(app)
-                    .get('/refused')
-                    .expect(200)
-                    .expect(res => {
-                        expect(res.text).to.not.include('RO Processing Andrews');
-                        expect(res.text).to.not.include('Unstarted Andrews');
-                        expect(res.text).to.not.include('Eligibility Andrews');
-                        expect(res.text).to.not.include('Approval Andrews');
-                        expect(res.text).to.not.include('Approved Andrews');
-                        expect(res.text).to.include('Refused Andrews');
-                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
-                        expect(res.text).to.not.include('Processing CA postponed Andrews');
-                    });
-            });
-        });
     });
 
     context('user is RO', () => {
@@ -233,24 +205,9 @@ describe('GET /caseList', () => {
         });
 
         context('tab is ready', () => {
-            it('should filter out offenders at a stage that isnt PROCESSING_RO', () => {
+            it('should filter out offenders at a stage that isnt PROCESSING_RO with status Ready to check', () => {
                 return request(app)
                     .get('/ready')
-                    .expect(200)
-                    .expect(res => {
-                        expect(res.text).to.include('RO Processing Andrews');
-                        expect(res.text).to.not.include('Unstarted Andrews');
-                        expect(res.text).to.not.include('Eligibility Andrews');
-                        expect(res.text).to.not.include('Approval Andrews');
-                        expect(res.text).to.not.include('Approved Andrews');
-                        expect(res.text).to.not.include('Refused Andrews');
-                    });
-            });
-        });
-        context('tab is Final checks', () => {
-            it('should filter out offenders at a stage that isnt PROCESSING_CA', () => {
-                return request(app)
-                    .get('/finalChecks')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('RO Processing Andrews');
@@ -259,15 +216,14 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Approval Andrews');
                         expect(res.text).to.not.include('Approved Andrews');
                         expect(res.text).to.not.include('Refused Andrews');
-                        expect(res.text).to.include('Processing CA not postponed Andrews');
-                        expect(res.text).to.include('Processing CA postponed Andrews');
+                        expect(res.text).to.include('ReadyToCheck Andrews');
                     });
             });
         });
-        context('tab is submitted to DM', () => {
-            it('should filter out offenders at a stage that isnt APPROVAL', () => {
+        context('tab is withPrison', () => {
+            it('should filter out offenders at a stage that isnt PROCESSING_CA or APPROVAL', () => {
                 return request(app)
-                    .get('/submittedDm')
+                    .get('/withPrison')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('RO Processing Andrews');
@@ -276,15 +232,15 @@ describe('GET /caseList', () => {
                         expect(res.text).to.include('Approval Andrews');
                         expect(res.text).to.not.include('Approved Andrews');
                         expect(res.text).to.not.include('Refused Andrews');
-                        expect(res.text).to.not.include('Processing CA not postponed Andrews');
-                        expect(res.text).to.not.include('Processing CA postponed Andrews');
+                        expect(res.text).to.include('Processing CA not postponed Andrews');
+                        expect(res.text).to.include('Processing CA postponed Andrews');
                     });
             });
         });
-        context('tab is active', () => {
-            it('should filter out offenders at a stage that isnt DECIDED', () => {
+        context('tab is approved', () => {
+            it('should filter out offenders at a stage that isnt DECIDED with status Approved', () => {
                 return request(app)
-                    .get('/active')
+                    .get('/approved')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('RO Processing Andrews');
@@ -292,7 +248,7 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Eligibility Andrews');
                         expect(res.text).to.not.include('Approval Andrews');
                         expect(res.text).to.include('Approved Andrews');
-                        expect(res.text).to.include('Refused Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
                         expect(res.text).to.not.include('Processing CA not postponed Andrews');
                         expect(res.text).to.not.include('Processing CA postponed Andrews');
                     });
@@ -334,7 +290,7 @@ describe('GET /caseList', () => {
                     });
             });
         });
-        context('tab is submittedPca', () => {
+        context('tab is approved', () => {
             it('should filter out offenders at a stage that isnt DECIDED with status Approved', () => {
                 return request(app)
                     .get('/approved')
@@ -351,10 +307,10 @@ describe('GET /caseList', () => {
                     });
             });
         });
-        context('tab is refused', () => {
-            it('should filter out offenders at a stage that isnt DECIDED with status Refused', () => {
+        context('tab is postponed', () => {
+            it('should filter out offenders at a stage that isnt with status Postponed', () => {
                 return request(app)
-                    .get('/refused')
+                    .get('/postponed')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('RO Processing Andrews');
@@ -362,9 +318,9 @@ describe('GET /caseList', () => {
                         expect(res.text).to.not.include('Eligibility Andrews');
                         expect(res.text).to.not.include('Approval Andrews');
                         expect(res.text).to.not.include('Approved Andrews');
-                        expect(res.text).to.include('Refused Andrews');
+                        expect(res.text).to.not.include('Refused Andrews');
                         expect(res.text).to.not.include('Processing CA not postponed Andrews');
-                        expect(res.text).to.not.include('Processing CA postponed Andrews');
+                        expect(res.text).to.include('Processing CA postponed Andrews');
                     });
             });
         });
