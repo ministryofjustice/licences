@@ -394,15 +394,16 @@ function getReportingInstructionsState(licence) {
 
     function getState(licence) {
 
-        if (isEmpty(getIn(licence, ['reporting', 'reportingInstructions']))) {
+        const reportingInstructions = getIn(licence, ['reporting', 'reportingInstructions']);
+
+        if (isEmpty(reportingInstructions)) {
             return taskStates.UNSTARTED;
         }
 
-        if (isEmpty(getIn(licence, ['reporting', 'reportingInstructions', 'name']))) {
-            return taskStates.UNSTARTED;
+        const required = ['name', 'buildingAndStreet1', 'townOrCity', 'postcode', 'telephone'];
+        if (required.some(field => isEmpty(getIn(reportingInstructions, [field])))) {
+            return taskStates.STARTED;
         }
-
-        // todo mandatory reporting instructions elements
 
         return taskStates.DONE;
     }
