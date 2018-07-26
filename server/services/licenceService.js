@@ -9,7 +9,8 @@ const {
     getFirstArrayItems,
     flatten,
     mergeWithRight,
-    removePath
+    removePath,
+    equals
 } = require('../utils/functionalHelpers');
 const {transitions} = require('../models/licenceStages');
 const {getConfiscationOrderState} = require('../utils/licenceStatus');
@@ -143,6 +144,7 @@ module.exports = function createLicenceService(licenceClient) {
         const rawLicence = await licenceClient.getLicence(nomisId);
 
         const licence = getIn(rawLicence, ['licence']);
+        const stage = getIn(rawLicence, ['stage']);
 
         if (!licence) {
             return null;
@@ -156,7 +158,10 @@ module.exports = function createLicenceService(licenceClient) {
             formName
         });
 
-        await licenceClient.updateLicence(nomisId, updatedLicence);
+        const updatedPostApproval = stage === 'DECIDED' && !equals(licence, updatedLicence);
+        const newLicence = updatedPostApproval ? removeApproval(updatedLicence) : updatedLicence;
+
+        await licenceClient.updateLicence(nomisId, newLicence);
 
         return updatedLicence;
     }
@@ -268,7 +273,8 @@ module.exports = function createLicenceService(licenceClient) {
 
     const getValidationErrorsForReview = ({licenceStatus, licence}) => {
         const {stage, decisions, tasks} = licenceStatus;
-        const newAddressAddedForReview = stage === 'PROCESSING_CA' && tasks.curfewAddressReview === 'UNSTARTED';
+        const newAddressAddedForReview =
+            (stage === 'PROCESSING_CA' || stage === 'DECIDED') && tasks.curfewAddressReview === 'UNSTARTED';
 
         if (stage === 'ELIGIBILITY' || newAddressAddedForReview) {
             return getEligibilityErrors({licence});
@@ -328,6 +334,10 @@ module.exports = function createLicenceService(licenceClient) {
         }
 
         return errorsWithoutNotedComments;
+    }
+
+    function removeApproval(licence) {
+        return removePath(['approval'], licence);
     }
 
     return {

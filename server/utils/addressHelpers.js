@@ -8,12 +8,16 @@ module.exports = {
     isRejectedAddress
 };
 
-function getCurfewAddressFormData(addressList) {
+function getCurfewAddressFormData(addressList, stage) {
 
     const candidate = lastItem(addressList);
 
     if (isEmpty(addressList)) {
         return {submitPath: null, addressToShow: {}};
+    }
+
+    if (stage === 'DECIDED') {
+        return {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: candidate};
     }
 
     if (isRejectedAddress(candidate) || isWithdrawnAddress(candidate)) {

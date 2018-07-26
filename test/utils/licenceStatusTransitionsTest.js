@@ -206,6 +206,19 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql('caToDm');
     });
 
+    it('should allow CA to DM in the DECIDED stage when approval is unstarted', () => {
+        const status = {
+            stage: 'DECIDED',
+            tasks: {
+                approval: 'UNSTARTED'
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+
+        expect(allowed).to.eql('caToDm');
+    });
+
     it('should not allow CA to DM in the PROCESSING_CA when any CA tasks not done and decisions not OK', () => {
         const status = {
             stage: 'PROCESSING_CA',
@@ -343,6 +356,29 @@ describe('getAllowedTransition', () => {
     it('should allow CA to RO when address review has not been started', () => {
         const status = {
             stage: 'PROCESSING_CA',
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                curfewAddress: 'DONE',
+                curfewAddressReview: 'UNSTARTED'
+            },
+            decisions: {
+                postponed: null,
+                curfewAddressApproved: 'approved',
+                excluded: null,
+                finalChecksRefused: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToRo');
+    });
+
+    it('should allow CA to RO when address review has not been started and stage is DECIDED', () => {
+        const status = {
+            stage: 'DECIDED',
             tasks: {
                 exclusion: 'DONE',
                 crdTime: 'DONE',

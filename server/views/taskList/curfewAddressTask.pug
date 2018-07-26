@@ -25,5 +25,8 @@ div.taskListItem
             div.pure-u-1-4.center
                 if user.role === 'RO'
                     +startContinueView(licenceStatus.tasks.curfewAddressReview, "/hdc/curfew/curfewAddressReview/" + prisonerInfo.offenderNo)
+                else if user.role === 'CA' && licenceStatus.stage === 'DECIDED'
+                    // TODO awaiting design on how this section will be updated
+                    a.taskListAction.center.button.button-secondary(href="/hdc/proposedAddress/curfewAddress/" + prisonerInfo.offenderNo) View/Edit
                 else
                     a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.offenderNo) View
