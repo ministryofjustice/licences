@@ -14,7 +14,6 @@ describe('getLicenceStatus', () => {
         expect(status.stage).to.eql('ELIGIBILITY');
     });
 
-
     it('should show no decisions when empty licence', () => {
         const licence = {};
 
@@ -536,7 +535,11 @@ describe('getLicenceStatus', () => {
                 },
                 reporting: {
                     reportingInstructions: {
-                        name: 'name'
+                        name: 'name',
+                        buildingAndStreet1: 1,
+                        townOrCity: 2,
+                        postcode: 3,
+                        telephone: 4
                     }
                 },
                 finalChecks: {
