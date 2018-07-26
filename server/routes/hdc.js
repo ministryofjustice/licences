@@ -225,12 +225,13 @@ module.exports = function(
     router.get('/proposedAddress/curfewAddress/:nomisId', checkLicence, (req, res) => {
         const {nomisId} = req.params;
         const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+        const stage = getIn(res.locals.licence, ['stage']);
 
         if (!addresses) {
             return res.render('proposedAddress/curfewAddress', {nomisId, data: []});
         }
 
-        const {submitPath, addressToShow} = getCurfewAddressFormData(addresses);
+        const {submitPath, addressToShow} = getCurfewAddressFormData(addresses, stage);
 
         res.render('proposedAddress/curfewAddress', {nomisId, data: addressToShow, submitPath});
     });

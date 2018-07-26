@@ -21,3 +21,4 @@ coverage
 root.cert
 yarn-error.log
 .vscode/
+licence-json/*

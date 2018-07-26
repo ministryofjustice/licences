@@ -46,6 +46,12 @@ describe('addressHelpers', () => {
                 {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}}
             );
         });
+
+        it('should return add and an the final address if in post approval', () => {
+            expect(getCurfewAddressFormData(addressList, 'DECIDED')).to.eql(
+                {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: addressList[4]}
+            );
+        });
     });
 
     describe('isAcceptedAddress', () => {

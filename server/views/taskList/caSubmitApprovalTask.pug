@@ -16,6 +16,8 @@ div.largeMarginBottom.borderTop
                 | Submission unavailable - HDC application postponed
             else if licenceStatus.decisions.finalChecksRefused
                 | Submission unavailable - HDC refused
+            else if licenceStatus.stage === 'DECIDED' && licenceStatus.tasks.approval !== 'UNSTARTED'
+                | Submission unavailable - No changes to approve
             else
                 | Submission unavailable - Tasks not yet complete
 

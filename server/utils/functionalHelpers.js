@@ -15,7 +15,7 @@ module.exports = {
     lastIndex,
     removePath,
     interleave,
-    arrayEquals,
+    equals,
     difference,
     getUniqueStrings,
     pipe,
@@ -94,7 +94,7 @@ function interleave(firstArray, secondArray) {
         .join('');
 }
 
-function arrayEquals(firstArray, secondArray) {
+function equals(firstArray, secondArray) {
     return R.equals(firstArray, secondArray);
 }
 

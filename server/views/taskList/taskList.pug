@@ -33,6 +33,20 @@ block content
                 else if allowedTransition === 'caToDmRefusal'
                     include caSubmitRefusalTask
 
+            else if licenceStatus.stage === 'DECIDED'
+                include curfewAddressTask
+                include riskManagementTask
+                include curfewHoursTask
+                include additionalConditionsTask
+                include reportingInstructionsTask
+                include finalChecksTask
+                include postponementTask
+                include HDCRefusalTask
+                if allowedTransition === 'caToRo'
+                    include caSubmitAddressReviewTask
+                else
+                    include caSubmitApprovalTask
+
             else
                 include curfewAddressTask
                 if (['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved))

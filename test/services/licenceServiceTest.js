@@ -853,6 +853,38 @@ describe('licenceService', () => {
             };
             expect(output).to.eql(expectedLicence);
         });
+
+        context('when licence is in DECIDED stage', () => {
+            it('should remove the approval section when it is updated', async () => {
+                const rawLicence = {
+                    stage: 'DECIDED',
+                    licence: {
+                        approval: {
+                            release: {
+                                decision: 'YES'
+                            }
+                        }
+                    }
+                };
+                const fieldMap = [{decision: {}}];
+                const userInput = {decision: 'Yes'};
+                const licenceSection = 'section';
+                const formName = 'form';
+
+                licenceClient.getLicence.resolves(rawLicence);
+                await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+
+                const expectedLicence = {
+                    section: {
+                        form: {
+                            decision: 'Yes'
+                        }
+                    }
+                };
+                expect(licenceClient.updateLicence).to.be.calledOnce();
+                expect(licenceClient.updateLicence).to.be.calledWith('ab1', expectedLicence);
+            });
+        });
     });
 
     describe('updateAddress', () => {
@@ -3033,7 +3065,7 @@ describe('licenceService', () => {
                 );
             });
 
-            it('should validate only ELIGIBILITY fields id curfewAddressReview is unstarted', () => {
+            it('should validate only ELIGIBILITY fields if curfewAddressReview is unstarted', () => {
                 const missingFieldProposedAddress = {
                     ...baseLicence,
                     proposedAddress: {
@@ -3050,6 +3082,33 @@ describe('licenceService', () => {
 
                 const output = service.getValidationErrorsForReview({
                     licenceStatus: {stage: 'PROCESSING_CA', tasks: {curfewAddressReview: 'UNSTARTED'}},
+                    licence: missingFieldProposedAddress});
+
+                expect(output).to.eql(
+                    {proposedAddress: {curfewAddress: {
+                                telephone: 'Invalid entry - number required',
+                                cautionedAgainstResident: 'Not answered'
+                            }}}
+                );
+            });
+
+            it('should validate only ELIGIBILITY fields if curfewAddressReview unstarted and in post approval', () => {
+                const missingFieldProposedAddress = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            telephone: 'abc',
+                            cautionedAgainstResident: '',
+                            consent: '',
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'DECIDED', tasks: {curfewAddressReview: 'UNSTARTED'}},
                     licence: missingFieldProposedAddress});
 
                 expect(output).to.eql(
