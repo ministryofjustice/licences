@@ -10,7 +10,8 @@ module.exports = {
                 No: '/hdc/taskList/'
             },
             path: '/hdc/taskList/'
-        }
+        },
+        modificationRequiresApproval: true
     },
     conditionsSummary: {
         nextPath: {

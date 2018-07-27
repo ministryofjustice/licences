@@ -20,5 +20,7 @@ div.taskListItem
         div.pure-u-1-4.center
             if user.role === 'RO'
                 +startContinueView(licenceStatus.tasks.licenceConditions, "/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo)
+            else if user.role === 'CA' && (licenceStatus.stage === 'DECIDED' || licenceStatus.stage === 'MODIFIED_APPROVAL')
+                a.taskListAction.center.button.button-secondary(href="/hdc/licenceConditions/standard/" + prisonerInfo.offenderNo) View/Edit
             else
                 a.taskListAction.center.button.button-secondary(href="/hdc/review/conditions/" + prisonerInfo.offenderNo) View

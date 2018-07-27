@@ -132,6 +132,10 @@ function canSendCaToDm(licenceStatus) {
     const decisions = licenceStatus.decisions;
     const stage = licenceStatus.stage;
 
+    if (stage === 'MODIFIED_APPROVAL') {
+        return true;
+    }
+
     if (stage !== 'PROCESSING_CA') {
         return false;
     }

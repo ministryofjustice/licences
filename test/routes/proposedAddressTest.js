@@ -100,7 +100,7 @@ describe('/hdc/proposedAddress', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             nomisId: '1',
-                            fieldMap: formConfig[route.section].fields,
+                            config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'proposedAddress',
                             formName: route.section

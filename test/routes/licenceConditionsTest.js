@@ -73,7 +73,7 @@ describe('/hdc/licenceConditions', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             nomisId: '1',
-                            fieldMap: formConfig[route.formName].fields,
+                            config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'licenceConditions',
                             formName: route.formName
