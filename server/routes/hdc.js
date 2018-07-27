@@ -318,7 +318,7 @@ module.exports = function(
         if (formConfig[formName].fields) {
             const updatedLicence = await licenceService.update({
                 nomisId: nomisId,
-                fieldMap: formConfig[formName].fields,
+                config: formConfig[formName],
                 userInput: req.body,
                 licenceSection: saveSection[0] || sectionName,
                 formName: saveSection[1] || formName

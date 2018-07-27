@@ -101,6 +101,32 @@ describe('licenceService', () => {
             const args = {nomisId: 'ab1', additionalConditions: ['Scotland Street']};
             return expect(service.updateLicenceConditions(args)).to.eventually.be.rejected();
         });
+
+        describe('post approval modifications', () => {
+
+            it('should change stage to MODIFIED_APPROVAL when updates occur', async () => {
+                licenceClient.getLicence.resolves({stage: 'DECIDED', licence: {a: 'b'}});
+                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+
+                expect(licenceClient.updateStage).to.be.calledOnce();
+                expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED_APPROVAL');
+            });
+
+            it('should not change stage if not DECIDED', async () => {
+                licenceClient.getLicence.resolves({stage: 'PROCESSING_RO', licence: {a: 'b'}});
+                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+
+                expect(licenceClient.updateStage).to.not.be.calledOnce();
+            });
+
+            it('should not change stage if no changes', async () => {
+                licenceClient.getLicence.resolves({stage: 'PROCESSING_RO',
+                    licence: {licenceConditions: {additionalConditions: {additional: {key: 'var'}}}}});
+                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+
+                expect(licenceClient.updateStage).to.not.be.calledOnce();
+            });
+        });
     });
 
     describe('deleteLicenceCondition', () => {
@@ -268,7 +294,8 @@ describe('licenceService', () => {
                 const formName = 'form3';
 
                 licenceClient.getLicence.resolves({licence});
-                const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+                const output = await service.update(
+                    {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -294,7 +321,8 @@ describe('licenceService', () => {
                 const formName = 'form3';
 
                 licenceClient.getLicence.resolves({licence});
-                const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+                const output = await service.update(
+                    {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -340,7 +368,8 @@ describe('licenceService', () => {
                 const formName = 'form3';
 
                 licenceClient.getLicence.resolves({licence});
-                const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+                const output = await service.update(
+                    {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -386,7 +415,8 @@ describe('licenceService', () => {
             const formName = 'form3';
 
             licenceClient.getLicence.resolves({licence});
-            await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+            await service.update(
+                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -429,7 +459,8 @@ describe('licenceService', () => {
             const formName = 'form3';
 
             licenceClient.getLicence.resolves({licence});
-            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+            const output = await service.update(
+                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -471,7 +502,8 @@ describe('licenceService', () => {
             const formName = 'form3';
 
             licenceClient.getLicence.resolves({licence});
-            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+            const output = await service.update(
+                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -536,7 +568,8 @@ describe('licenceService', () => {
             const formName = 'form3';
 
             licenceClient.getLicence.resolves({licence});
-            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+            const output = await service.update(
+                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -604,7 +637,8 @@ describe('licenceService', () => {
             const formName = 'form3';
 
             licenceClient.getLicence.resolves({licence});
-            const output = await service.update({nomisId, licence, fieldMap, userInput, licenceSection, formName});
+            const output = await service.update(
+                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -676,7 +710,8 @@ describe('licenceService', () => {
             const formName = 'form3';
 
             licenceClient.getLicence.resolves({licence});
-            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+            const output = await service.update(
+                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -747,7 +782,8 @@ describe('licenceService', () => {
             const formName = 'form3';
 
             licenceClient.getLicence.resolves({licence});
-            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+            const output = await service.update(
+                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -826,7 +862,8 @@ describe('licenceService', () => {
             const formName = 'form3';
 
             licenceClient.getLicence.resolves({licence});
-            const output = await service.update({nomisId, fieldMap, userInput, licenceSection, formName});
+            const output = await service.update(
+                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -852,6 +889,77 @@ describe('licenceService', () => {
                 }
             };
             expect(output).to.eql(expectedLicence);
+        });
+
+        context('modificationRequiresApproval = true', () => {
+
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4,
+                    form3: {
+                        decision: ''
+                    }
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}}
+            ];
+
+            const licenceSection = 'section4';
+            const formName = 'form3';
+            const userInput = {
+                decision: 'Yes'
+            };
+
+            it('should not update stage if not in config', async () => {
+                licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
+                await service.update({nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+
+                expect(licenceClient.updateStage).to.be.not.be.called();
+            });
+
+            it('should not update stage if in config', async () => {
+                licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
+                const config = {
+                    fields: fieldMap,
+                    modificationRequiresApproval: true
+                };
+                await service.update({nomisId, config, userInput, licenceSection, formName});
+
+                expect(licenceClient.updateStage).to.be.calledOnce();
+                expect(licenceClient.updateStage).to.be.calledWith(nomisId, 'MODIFIED_APPROVAL');
+            });
+
+            it('should not update stage if no change', async () => {
+                licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
+                const config = {
+                    fields: fieldMap,
+                    modificationRequiresApproval: true
+                };
+                const userInput = {
+                    decision: ''
+                };
+                await service.update({nomisId, config, userInput, licenceSection, formName});
+
+                expect(licenceClient.updateStage).to.not.be.calledOnce();
+            });
+
+            it('should not update stage if not in DECIDED state', async () => {
+                licenceClient.getLicence.resolves({stage: 'PROCESSING_RO', licence});
+                const config = {
+                    fields: fieldMap,
+                    modificationRequiresApproval: true
+                };
+                const userInput = {
+                    decision: ''
+                };
+                await service.update({nomisId, config, userInput, licenceSection, formName});
+
+                expect(licenceClient.updateStage).to.not.be.calledOnce();
+            });
         });
     });
 

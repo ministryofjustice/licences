@@ -9,9 +9,10 @@ const {
     getFirstArrayItems,
     flatten,
     mergeWithRight,
-    removePath
+    removePath,
+    equals
 } = require('../utils/functionalHelpers');
-const {transitions} = require('../models/licenceStages');
+const {licenceStages, transitions} = require('../models/licenceStages');
 const {getConfiscationOrderState} = require('../utils/licenceStatus');
 const validate = require('./utils/licenceValidation');
 const addressHelpers = require('./utils/addressHelpers');
@@ -56,6 +57,11 @@ module.exports = function createLicenceService(licenceClient) {
             const conditionsObject = await getConditionsObject(additional, bespoke);
 
             const licenceConditions = {...existingLicenceConditions, ...conditionsObject};
+
+            if (existingLicence.stage === 'DECIDED' && !equals(existingLicenceConditions, licenceConditions)) {
+                await markAsModifiedRequiresApproval(nomisId);
+            }
+
             return licenceClient.updateSection('licenceConditions', nomisId, licenceConditions);
         } catch (error) {
             logger.error('Error during updateAdditionalConditions', error.stack);
@@ -137,11 +143,15 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateStage(nomisId, newStage);
     }
 
+    function markAsModifiedRequiresApproval(nomisId) {
+        return licenceClient.updateStage(nomisId, licenceStages.MODIFIED_APPROVAL);
+    }
+
     const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
 
-    async function update({nomisId, fieldMap, userInput, licenceSection, formName}) {
+    async function update({nomisId, config, userInput, licenceSection, formName}) {
         const rawLicence = await licenceClient.getLicence(nomisId);
-
+        const stage = getIn(rawLicence, ['stage']);
         const licence = getIn(rawLicence, ['licence']);
 
         if (!licence) {
@@ -150,13 +160,19 @@ module.exports = function createLicenceService(licenceClient) {
 
         const updatedLicence = getUpdatedLicence({
             licence,
-            fieldMap,
+            fieldMap: config.fields,
             userInput,
             licenceSection,
             formName
         });
 
         await licenceClient.updateLicence(nomisId, updatedLicence);
+
+        if (stage === licenceStages.DECIDED && config.modificationRequiresApproval) {
+            if (!equals(licence, updatedLicence)) {
+                await markAsModifiedRequiresApproval(nomisId);
+            }
+        }
 
         return updatedLicence;
     }
