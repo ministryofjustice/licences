@@ -34,9 +34,12 @@ function createPrisonerService(nomisClientBuilder) {
 
             const bookingId = prisoner.bookingId;
 
-            const aliases = await nomisClient.getAliases(bookingId);
-            const offences = await nomisClient.getMainOffence(bookingId);
-            const com = await nomisClient.getComRelation(bookingId);
+            const [aliases, offences, com] = await Promise.all([
+                nomisClient.getAliases(bookingId),
+                nomisClient.getMainOffence(bookingId),
+                nomisClient.getComRelation(bookingId)
+            ]);
+
             const {CRO, PNC} = selectFrom(await nomisClient.getIdentifiers(bookingId));
 
             const image = prisoner.facialImageId ?
