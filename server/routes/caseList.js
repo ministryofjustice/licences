@@ -18,7 +18,7 @@ const caseListTabs = {
             id: 'optedOut', text: 'Opted out', licenceStages: ['ELIGIBILITY', 'PROCESSING_RO'],
             licenceStatus: 'Opted out'
         },
-        {id: 'decided', text: 'Decided', licenceStages: ['DECIDED', 'MODIFIED_APPROVAL']}
+        {id: 'decided', text: 'Decided', licenceStages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}
     ],
     RO: [
         {id: 'ready', text: 'Ready to process', licenceStages: ['PROCESSING_RO']},
