@@ -46,6 +46,11 @@ function statusLabels(licenceStatus, role) {
             RO: decisionLabel,
             DM: decisionLabel
         },
+        [licenceStages.MODIFIED]: {
+            CA: () => 'Modified',
+            RO: () => 'Modified',
+            DM: () => 'Modified'
+        },
         [licenceStages.MODIFIED_APPROVAL]: {
             CA: () => 'Modified',
             RO: () => 'Modified',

@@ -51,6 +51,8 @@ function getRequiredState(stage, licence) {
         [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState, getCaStageState],
         [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
         [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
+        [licenceStages.MODIFIED]:
+            [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
         [licenceStages.MODIFIED_APPROVAL]:
             [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
     };

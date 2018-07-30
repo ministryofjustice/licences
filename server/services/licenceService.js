@@ -59,7 +59,7 @@ module.exports = function createLicenceService(licenceClient) {
             const licenceConditions = {...existingLicenceConditions, ...conditionsObject};
 
             if (existingLicence.stage === 'DECIDED' && !equals(existingLicenceConditions, licenceConditions)) {
-                await markAsModifiedRequiresApproval(nomisId);
+                await markAsModified(nomisId, {requiresApproval: true});
             }
 
             return licenceClient.updateSection('licenceConditions', nomisId, licenceConditions);
@@ -143,8 +143,11 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateStage(nomisId, newStage);
     }
 
-    function markAsModifiedRequiresApproval(nomisId) {
-        return licenceClient.updateStage(nomisId, licenceStages.MODIFIED_APPROVAL);
+    function markAsModified(nomisId, {requiresApproval}) {
+
+        const newStage = requiresApproval ? licenceStages.MODIFIED_APPROVAL : licenceStages.MODIFIED;
+
+        return licenceClient.updateStage(nomisId, newStage);
     }
 
     const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
@@ -168,10 +171,8 @@ module.exports = function createLicenceService(licenceClient) {
 
         await licenceClient.updateLicence(nomisId, updatedLicence);
 
-        if (stage === licenceStages.DECIDED && config.modificationRequiresApproval) {
-            if (!equals(licence, updatedLicence)) {
-                await markAsModifiedRequiresApproval(nomisId);
-            }
+        if (stage === licenceStages.DECIDED && !equals(licence, updatedLicence)) {
+            await markAsModified(nomisId, {requiresApproval: config.modificationRequiresApproval});
         }
 
         return updatedLicence;
