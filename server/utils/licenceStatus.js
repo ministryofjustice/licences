@@ -344,7 +344,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
             return taskStates.UNSTARTED;
         }
 
-        const required = ['occupier', 'cautionedAgainstResident'];
+        const required = ['cautionedAgainstResident'];
         if (required.some(field => !addresses.find(address => address[field]))) {
             return taskStates.STARTED;
         }
