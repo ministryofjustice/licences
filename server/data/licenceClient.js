@@ -8,7 +8,7 @@ module.exports = {
     },
 
     deleteAllTest: function() {
-        return db.query(`delete from licences where nomis_id like '%XX'`);
+        return db.query(`delete from licences where nomis_id like '%XX' or nomis_id like 'A5001DY'`);
     },
 
     getLicences: async function(nomisIds) {
