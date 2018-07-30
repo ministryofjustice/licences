@@ -4,7 +4,7 @@
 - var sufficientTime = (licenceStatus.decisions.insufficientTime ? 'less' : 'more') + ' than 4 weeks until release date'
 
 
-div.taskListItem.borderBottom.largeMarginBottom
+div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : "taskListItem")
     h2.heading-medium Eligibility and presumed suitability
 
     div.pure-g
