@@ -4,14 +4,14 @@ div.largeMarginBottom.borderTop
 
     div.pure-g
         div.pure-u-3-4
-            if allowedTransition === 'caToRo'
+            if ['STARTED', 'DONE'].includes(licenceStatus.tasks.curfewAddress)
                 | Ready to submit
             else
                 | Submission unavailable - Tasks not yet complete
 
         div.pure-u-1-4.center
 
-            if allowedTransition === 'caToRo'
+            if ['STARTED', 'DONE'].includes(licenceStatus.tasks.curfewAddress)
                 a#continueBtn.taskListAction.center.button(href='/hdc/review/curfewAddress/' + prisonerInfo.offenderNo)
                     | Continue
 
