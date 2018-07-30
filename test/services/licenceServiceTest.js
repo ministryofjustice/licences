@@ -914,11 +914,12 @@ describe('licenceService', () => {
                 decision: 'Yes'
             };
 
-            it('should not update stage if not in config', async () => {
+            it('should update stage to MODIFIED if not in config', async () => {
                 licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
                 await service.update({nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
-                expect(licenceClient.updateStage).to.be.not.be.called();
+                expect(licenceClient.updateStage).to.be.calledOnce();
+                expect(licenceClient.updateStage).to.be.calledWith(nomisId, 'MODIFIED');
             });
 
             it('should not update stage if in config', async () => {
