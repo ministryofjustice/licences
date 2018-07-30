@@ -34,6 +34,7 @@ block content
                     include caSubmitRefusalTask
 
             else if (['DECIDED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage))
+                include eligibilitySummaryTask
                 include curfewAddressTask
                 include riskManagementTask
                 include curfewHoursTask
