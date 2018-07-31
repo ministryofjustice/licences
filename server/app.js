@@ -85,7 +85,7 @@ module.exports = function createApp({
     app.use(cookieSession({
         name: 'session',
         keys: [config.sessionSecret],
-        maxAge: 2 * 60 * 1000,
+        maxAge: 60 * 60 * 1000,
         secure: config.https,
         httpOnly: true,
         signed: true,
