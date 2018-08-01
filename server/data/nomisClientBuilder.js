@@ -1,3 +1,4 @@
+const logger = require('../../log');
 const config = require('../config');
 const {merge, pipe} = require('../utils/functionalHelpers');
 const superagent = require('superagent');
@@ -108,6 +109,8 @@ function nomisGetBuilder(tokenStore, signInService, username) {
             throw new NoTokenError();
         }
 
+        logger.info(`Calling nomis with token: ${tokens.token}`);
+
         try {
             const result = await superagent
                 .get(path)
@@ -121,6 +124,10 @@ function nomisGetBuilder(tokenStore, signInService, username) {
             return result.body;
 
         } catch (error) {
+
+            logger.warn('Error calling nomis');
+            logger.warn(error);
+
             if (canRetry(error, tokens)) {
                 return refreshAndRetry(username, {path, query, headers, responseType});
             }
@@ -137,6 +144,8 @@ function nomisGetBuilder(tokenStore, signInService, username) {
     }
 
     async function refreshAndRetry(username, {path, query, headers, responseType}) {
+
+        logger.info('Retrying nomis call');
 
         await signInService.refresh(username);
 

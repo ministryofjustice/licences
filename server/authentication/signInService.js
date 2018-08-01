@@ -22,6 +22,7 @@ function signInService(tokenStore, audit) {
 
             try {
                 const {profile, role, token, refreshToken} = await login(username, password);
+                logger.info(`Log in success - token: ${token}`);
                 tokenStore.store(username, role, token, refreshToken);
 
                 const userDetail = profile.staffId || profile.username || profile.lastName || 'no user id';
