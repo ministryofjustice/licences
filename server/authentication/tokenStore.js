@@ -23,7 +23,8 @@ TokenStore.prototype.store = function(username, role, token, refreshToken) {
 TokenStore.prototype.get = function(username) {
 
     const tokens = getIn(this.tokens, [username]);
-    logger.info(`Returning token for: ${username}, token: ${tokens.token}`);
+    logger.info(`Returning token for: ${username}`);
+    logger.info(tokens);
 
     return tokens;
 };
