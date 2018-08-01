@@ -120,9 +120,15 @@ module.exports = function createApp({
             } else {
                 // token store is more up-to-date than cookie so update tokens
                 if (tokens.token !== req.user.token) {
-                    logger.info('Middleware updating cookie from token store');
-                    req.user.token = tokens.token;
-                    req.user.refreshToken = tokens.refreshToken;
+
+                    if (tokens.timestamp > req.user.timestamp) {
+                        logger.info('Middleware updating cookie from token store');
+                        req.user.token = tokens.token;
+                        req.user.refreshToken = tokens.refreshToken;
+                    } else {
+                        logger.info('Middleware updating token store from cookie');
+                        tokenStore.store(req.user.username, req.user.role, req.user.token, req.user.refreshToken);
+                    }
                 }
             }
         }

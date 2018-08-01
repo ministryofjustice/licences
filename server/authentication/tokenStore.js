@@ -16,14 +16,16 @@ TokenStore.prototype.store = function(username, role, token, refreshToken) {
 
     const timestamp = new Date();
     this.tokens = mergeWithRight(this.tokens, {[username]: {role, token, refreshToken, timestamp}});
+
+    return timestamp;
 };
 
 TokenStore.prototype.get = function(username) {
 
-    const token = getIn(this.tokens, [username]);
-    logger.info(`Returning token for: ${username}, token: ${token}`);
+    const tokens = getIn(this.tokens, [username]);
+    logger.info(`Returning token for: ${username}, token: ${tokens.token}`);
 
-    return token;
+    return tokens;
 };
 
 module.exports = TokenStore;
