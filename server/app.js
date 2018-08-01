@@ -112,7 +112,7 @@ module.exports = function createApp({
         if (req.user) {
             const tokens = tokenStore.get(req.user.username);
 
-            logger.info(`Middleware tokens for user: ${tokens.token}`);
+            logger.info(`Middleware tokens for user: ${tokens}`);
 
             if (!tokens) {
                 logger.info('Middleware storing new tokens for user');
