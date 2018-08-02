@@ -1,11 +1,15 @@
 const EST_PREMISE = {
     paths: [['establishment', 'premise']],
-    displayName: 'Prison name'
+    displayName: 'Prison name',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const EST_PHONE = {
     paths: [['establishment', 'phones', 'number']],
-    displayName: 'Prison telephone number'
+    displayName: 'Prison telephone number',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const OFF_NAME = {
@@ -15,67 +19,95 @@ const OFF_NAME = {
         ['prisonerInfo', 'lastName']
     ],
     separator: ' ',
-    displayName: 'Offender name'
+    displayName: 'Offender name',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const OFF_DOB = {
     paths: [['prisonerInfo', 'dateOfBirth']],
-    displayName: 'Offender date of birth'
+    displayName: 'Offender date of birth',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const OFF_PHOTO = {
     paths: [['photo']],
-    displayName: 'Offender photograph'
+    displayName: 'Offender photograph',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const OFF_BOOKING = {
     paths: [['prisonerInfo', 'bookingId']],
-    displayName: 'Offender booking ID'
+    displayName: 'Booking ID',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const OFF_NOMS = {
     paths: [['nomisId']],
-    displayName: 'Offender Noms ID'
+    displayName: 'Noms ID',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const OFF_CRO = {
     paths: [['prisonerInfo', 'CRO']],
-    displayName: 'Offender CRO'
+    displayName: 'CRO number',
+    group: 'sentence',
+    required: 'optional',
+    noPlaceholder: true
 };
 
 const OFF_PNC = {
     paths: [['prisonerInfo', 'PNC']],
-    displayName: 'Offender PNC'
+    displayName: 'PNC ID',
+    group: 'sentence',
+    required: 'optional',
+    noPlaceholder: true
 };
 
 const SENT_HDCAD = {
     paths: [['prisonerInfo', 'sentenceDetail', 'homeDetentionCurfewActualDate']],
-    displayName: 'HDCAD'
+    displayName: 'HDC approved date (HDCAD)',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const SENT_CRD = {
     paths: [['prisonerInfo', 'sentenceDetail', 'releaseDate']],
-    displayName: 'CRD'
+    displayName: 'Conditional release date (CRD)',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const SENT_LED = {
     paths: [['prisonerInfo', 'sentenceDetail', 'licenceExpiryDate']],
-    displayName: 'LED'
+    displayName: 'Licence expiry date (LED)',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const SENT_SED = {
     paths: [['prisonerInfo', 'sentenceDetail', 'sentenceExpiryDate']],
-    displayName: 'SED'
+    displayName: 'Sentence expiry date (SED)',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const SENT_TUSED = {
     paths: [['prisonerInfo', 'sentenceDetail', 'topupSupervisionExpiryDate']],
-    displayName: 'TUSED'
+    displayName: 'Top-up supervision end date (TUSED)',
+    group: 'sentence',
+    required: 'mandatory'
 };
 
 const REPORTING_NAME = {
     paths: [['licence', 'reporting', 'reportingInstructions', 'name']],
-    displayName: 'Reporting name'
+    displayName: 'Reporting name',
+    group: 'reporting',
+    required: 'mandatory'
 };
 
 const REPORTING_ADDRESS = {
@@ -86,17 +118,23 @@ const REPORTING_ADDRESS = {
         ['licence', 'reporting', 'reportingInstructions', 'postcode']
     ],
     separator: '\n',
-    displayName: 'Reporting address'
+    displayName: 'Reporting address',
+    group: 'reporting',
+    required: 'mandatory'
 };
 
 const REPORTING_AT = {
-    paths: [['licence', 'reporting', 'reportingInstructions', 'at']],
-    displayName: 'Reporting at'
+    paths: [['licence', 'reporting', 'reportingDate', 'reportingTime']],
+    displayName: 'Reporting at',
+    group: 'reporting',
+    required: 'mandatory'
 };
 
 const REPORTING_ON = {
-    paths: [['licence', 'reporting', 'reportingInstructions', 'on']],
-    displayName: 'Reporting on'
+    paths: [['licence', 'reporting', 'reportingDate', 'reportingDate']],
+    displayName: 'Reporting on',
+    group: 'reporting',
+    required: 'mandatory'
 };
 
 const CURFEW_ADDRESS = {
@@ -107,77 +145,113 @@ const CURFEW_ADDRESS = {
         ['licence', 'proposedAddress', 'curfewAddress', 'addresses', 0, 'postCode']
     ],
     separator: '\n',
-    displayName: 'Curfew address'
+    displayName: 'Curfew address',
+    group: 'curfew',
+    required: 'mandatory'
 };
 
 const CURFEW_FIRST_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'firstNightFrom']],
-    displayName: 'Curfew first night from'
+    displayName: 'Curfew first night from',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_FIRST_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'firstNightUntil']],
-    displayName: 'Curfew first night until'
+    displayName: 'Curfew first night until',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_MON_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'mondayFrom']],
-    displayName: 'Curfew Monday from'
+    displayName: 'Curfew Monday from',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_MON_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'mondayUntil']],
-    displayName: 'Curfew Monday until'
+    displayName: 'Curfew Monday until',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_TUE_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'tuesdayFrom']],
-    displayName: 'Curfew Tuesday from'
+    displayName: 'Curfew Tuesday from',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_TUE_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'tuesdayUntil']],
-    displayName: 'Curfew Tuesday until'
+    displayName: 'Curfew Tuesday until',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_WED_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'wednesdayFrom']],
-    displayName: 'Curfew Wednesday from'
+    displayName: 'Curfew Wednesday from',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_WED_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'wednesdayUntil']],
-    displayName: 'Curfew Wednesday until'
+    displayName: 'Curfew Wednesday until',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_THU_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'thursdayFrom']],
-    displayName: 'Curfew Thursday from'
+    displayName: 'Curfew Thursday from',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_THU_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'thursdayUntil']],
-    displayName: 'Curfew Thursday until'
+    displayName: 'Curfew Thursday until',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_FRI_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'fridayFrom']],
-    displayName: 'Curfew Friday from'
+    displayName: 'Curfew Friday from',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_FRI_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'fridayUntil']],
-    displayName: 'Curfew Friday until'
+    displayName: 'Curfew Friday until',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_SAT_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'saturdayFrom']],
-    displayName: 'Curfew Saturday from'
+    displayName: 'Curfew Saturday from',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_SAT_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'saturdayUntil']],
-    displayName: 'Curfew Saturday until'
+    displayName: 'Curfew Saturday until',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_SUN_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'sundayFrom']],
-    displayName: 'Curfew Sunday from'
+    displayName: 'Curfew Sunday from',
+    group: 'curfew',
+    required: 'mandatory'
 };
 const CURFEW_SUN_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'sundayUntil']],
-    displayName: 'Curfew Sunday until'
+    displayName: 'Curfew Sunday until',
+    group: 'curfew',
+    required: 'mandatory'
 };
 
 const MONITOR = {
-    paths: [['licence', 'monitoring', 'telephone']],
-    displayName: 'Monitoring company telephone number'
+    paths: [['licence', 'monitoring', 'taggingCompany', 'telephone']],
+    displayName: 'Monitoring company telephone number',
+    group: 'monitoring',
+    required: 'mandatory'
 };
 
 const OFFENDER = {
@@ -239,7 +313,9 @@ module.exports = {
             divider: '\n\n',
             terminator: ';',
             filtered: ['ATTENDSAMPLE', 'ATTENDDEPENDENCY'],
-            filter: filtered => condition => !filtered.includes(condition.id)
+            filter: filtered => condition => !filtered.includes(condition.id),
+            group: 'conditions',
+            required: 'optional'
         },
         PSS: {
             noPlaceholder: true,
@@ -249,7 +325,9 @@ module.exports = {
             divider: '\n\n',
             terminator: ';',
             filtered: ['ATTENDSAMPLE', 'ATTENDDEPENDENCY'],
-            filter: filtered => condition => filtered.includes(condition.id)
+            filter: filtered => condition => filtered.includes(condition.id),
+            group: 'conditions',
+            required: 'optional'
         }
     },
 
@@ -272,7 +350,9 @@ module.exports = {
             displayName: 'Additional conditions',
             startIndex: 8,
             divider: '\n\n',
-            terminator: ';'
+            terminator: ';',
+            group: 'conditions',
+            required: 'optional'
         }
     },
 
@@ -295,7 +375,9 @@ module.exports = {
             displayName: 'Additional conditions',
             startIndex: 8,
             divider: '\n\n',
-            terminator: ';'
+            terminator: ';',
+            group: 'conditions',
+            required: 'optional'
         }
     },
 
@@ -319,7 +401,9 @@ module.exports = {
             displayName: 'Additional conditions',
             startIndex: 9,
             divider: '\n\n',
-            terminator: ';'
+            terminator: ';',
+            group: 'conditions',
+            required: 'optional'
         }
     }
 

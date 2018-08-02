@@ -1,0 +1,19 @@
+
+- var incomplete = incompleteGroups.includes('monitoring')
+- var buttonState = incomplete ? 'UNSTARTED' : 'DONE'
+
+div.taskListItem.borderBottomLight.largeMarginBottom
+    h2.heading-medium Tagging company
+
+    div.pure-g
+        div.pure-u-3-4
+            if incomplete
+                | Not complete
+            else
+                | Complete
+        div.pure-u-1-4.center
+            +startContinueView(buttonState, "/hdc/monitoring/taggingCompany/" + templateName + "/" + prisoner.offenderNo)
+
+
+
+

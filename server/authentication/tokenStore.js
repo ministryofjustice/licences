@@ -8,7 +8,7 @@ function TokenStore() {
 
 TokenStore.prototype.store = function(username, role, token, refreshToken) {
 
-    logger.info(`Storing token for: ${username}, token: ${token}`);
+    logger.debug(`Storing token for: ${username}, token: ${token}`);
 
     if (!(username && role && token)) {
         throw new Error('Invalid token store entry');
@@ -23,8 +23,8 @@ TokenStore.prototype.store = function(username, role, token, refreshToken) {
 TokenStore.prototype.get = function(username) {
 
     const tokens = getIn(this.tokens, [username]);
-    logger.info(`Returning token for: ${username}`);
-    logger.info(tokens);
+    logger.debug(`Returning token for: ${username}`);
+    logger.debug(tokens);
 
     return tokens;
 };

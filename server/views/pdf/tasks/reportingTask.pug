@@ -1,0 +1,19 @@
+
+- var incomplete = incompleteGroups.includes('reporting')
+- var buttonState = incomplete ? 'UNSTARTED' : 'DONE'
+
+div.taskListItem.borderBottomLight.largeMarginBottom
+    h2.heading-medium Reporting dates
+
+    div.pure-g
+        div.pure-u-3-4
+            if incomplete
+                | Not complete
+            else
+                | Complete
+        div.pure-u-1-4.center
+            +startContinueView(buttonState, "/hdc/reporting/reportingDate/" + templateName + "/" + prisoner.offenderNo)
+
+
+
+

@@ -158,6 +158,11 @@ const reportingInstructions = joi.object({
     telephone: requiredPhone
 });
 
+const reportingDate = joi.object({
+    reportingDate: requiredDate,
+    reportingTime: requiredTime
+});
+
 const standard = joi.object({
     additionalConditionsRequired: requiredString
 });
@@ -274,15 +279,21 @@ const release = {
     notedComments: requiredIf('decision', 'Yes')
 };
 
+const taggingCompany = {
+    telephone: requiredPhone
+};
+
+
 const schema = {
     eligibility: {excluded, suitability, crdTime},
     proposedAddress: {optOut, addressProposed, bassReferral, curfewAddress},
     curfew: {curfewHours},
     risk: {riskManagement},
-    reporting: {reportingInstructions},
+    reporting: {reportingInstructions, reportingDate},
     licenceConditions: {standard, additional, bespoke},
     finalChecks: {seriousOffence, onRemand, confiscationOrder},
-    approval: {release}
+    approval: {release},
+    monitoring: {taggingCompany}
 };
 
 module.exports = function(licence) {

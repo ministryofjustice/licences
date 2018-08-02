@@ -19,6 +19,7 @@ const reportingConfig = require('../server/routes/config/reporting');
 const riskConfig = require('../server/routes/config/risk');
 const finalChecksConfig = require('../server/routes/config/finalChecks');
 const approvalConfig = require('../server/routes/config/approval');
+const createPdfConfig = require('../server/routes/config/createPdf');
 const formConfig = {
     ...licenceConditionsConfig,
     ...eligibilityConfig,
@@ -27,7 +28,8 @@ const formConfig = {
     ...riskConfig,
     ...reportingConfig,
     ...finalChecksConfig,
-    ...approvalConfig
+    ...approvalConfig,
+    ...createPdfConfig
 };
 
 const authenticationMiddleware = auth.authenticationMiddleware;

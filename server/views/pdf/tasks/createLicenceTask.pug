@@ -1,0 +1,15 @@
+div.taskListItem.borderBottomLight.largeMarginBottom
+    h2.heading-medium Create #{templateTitle}
+
+    div.pure-g
+        div.pure-u-3-4
+            if canPrint
+                | Ready to create
+            else
+                | All sections not completed
+        div.pure-u-1-4.center
+            a#createPdf.taskListAction.center.button(href="/hdc/pdf/create/"+templateName+"/"+nomisId role="button" target="_blank") Continue
+
+
+
+
