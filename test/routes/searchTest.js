@@ -20,7 +20,7 @@ describe('Search:', () => {
     describe('When role is RO', () => {
 
         const testUser = {
-            username: 'my-username',
+            token: 'token',
             role: 'RO'
         };
 
@@ -104,7 +104,7 @@ describe('Search:', () => {
                     .expect(() => {
                         expect(searchServiceStub.searchOffenders).to.be.calledOnce();
                         expect(searchServiceStub.searchOffenders)
-                            .to.be.calledWith('A0001XX', testUser.username, testUser.role);
+                            .to.be.calledWith('A0001XX', testUser.token, testUser.role);
                     });
             });
 

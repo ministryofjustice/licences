@@ -19,7 +19,7 @@ function checkLicenceMiddleWare(licenceService, prisonerService) {
             const nomisId = req.params.nomisId;
 
             const getLicence = licenceService.getLicence(nomisId);
-            const getPrisoner = prisonerService.getPrisonerPersonalDetails(nomisId, req.user.username);
+            const getPrisoner = prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token);
             const details = await Promise.all([getLicence, getPrisoner]);
 
             if (!details[0] || !details[1]) {

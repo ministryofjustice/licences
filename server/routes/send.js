@@ -30,7 +30,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         };
 
         const transition = transitionForDestination[destination];
-        const submissionTarget = await getSubmissionTarget(transition, nomisId, req.user.username);
+        const submissionTarget = await getSubmissionTarget(transition, nomisId, req.user.token);
 
         res.render('send/' + transition, {nomisId, submissionTarget});
     });
@@ -46,14 +46,14 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         res.redirect(`/hdc/sent/${transitionType}`);
     }));
 
-    function getSubmissionTarget(transitionType, nomisId, username) {
+    function getSubmissionTarget(transitionType, nomisId, token) {
 
         if (transitionType === 'caToRo') {
-            return prisonerService.getComForPrisoner(nomisId, username);
+            return prisonerService.getComForPrisoner(nomisId, token);
         }
 
         if (transitionType === 'roToCa') {
-            return prisonerService.getEstablishmentForPrisoner(nomisId, username);
+            return prisonerService.getEstablishmentForPrisoner(nomisId, token);
         }
 
         return null;

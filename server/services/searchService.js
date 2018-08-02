@@ -2,12 +2,12 @@ const {isEmpty, getUniqueStrings} = require('../utils/functionalHelpers');
 
 module.exports = function createSearchService(logger, nomisClientBuilder, caseListFormatter) {
 
-    async function searchOffenders(nomisIds, username, role) {
+    async function searchOffenders(nomisIds, token, role) {
 
         logger.info(`searching for ${JSON.stringify(nomisIds)}`);
 
         try {
-            const nomisClient = nomisClientBuilder(username);
+            const nomisClient = nomisClientBuilder(token);
             const uniqueNomisIds = getUniqueStrings([nomisIds]);
 
             if (isEmpty(uniqueNomisIds)) {

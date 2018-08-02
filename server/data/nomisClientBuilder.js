@@ -12,9 +12,9 @@ const timeoutSpec = {
 const apiUrl = config.nomis.apiUrl;
 const invalidDate = 'Invalid date';
 
-module.exports = (tokenStore, signInService) => username => {
+module.exports = token => {
 
-    const nomisGet = nomisGetBuilder(tokenStore, signInService, username);
+    const nomisGet = nomisGetBuilder(token);
     const addReleaseDatesToPrisoner = pipe(
         addReleaseDate,
         addEffectiveConditionalReleaseDate,
@@ -99,24 +99,22 @@ module.exports = (tokenStore, signInService) => username => {
     };
 };
 
-function nomisGetBuilder(tokenStore, signInService, username) {
+function nomisGetBuilder(token) {
 
     return async ({path, query = '', headers = {}, responseType = ''} = {}) => {
 
-        const tokens = tokenStore.get(username);
-
-        if (!tokens) {
+        if (!token) {
             throw new NoTokenError();
         }
 
-        logger.info(`Calling nomis with token: ${tokens.token}`);
+        logger.info(`Calling nomis with token: ${token}`);
 
         try {
             const result = await superagent
                 .get(path)
                 .query(query)
-                .set('Authorization', tokens.token)
-                .set('Elite-Authorization', tokens.token)
+                .set('Authorization', token)
+                .set('Elite-Authorization', token)
                 .set(headers)
                 .responseType(responseType)
                 .timeout(timeoutSpec);
@@ -128,30 +126,9 @@ function nomisGetBuilder(tokenStore, signInService, username) {
             logger.warn('Error calling nomis');
             logger.warn(error);
 
-            if (canRetry(error, tokens)) {
-                return refreshAndRetry(username, {path, query, headers, responseType});
-            }
-
             throw error;
         }
     };
-
-    function canRetry(error, tokens) {
-        const unauthorisedError = [400, 401, 403].includes(error.status);
-        const refreshAllowed = Date.now() - tokens.timestamp >= 5000;
-
-        return unauthorisedError && refreshAllowed;
-    }
-
-    async function refreshAndRetry(username, {path, query, headers, responseType}) {
-
-        logger.info('Retrying nomis call');
-
-        await signInService.refresh(username);
-
-        const nomisGet = nomisGetBuilder(tokenStore, signInService, username);
-        return nomisGet({path, query, headers, responseType});
-    }
 }
 
 

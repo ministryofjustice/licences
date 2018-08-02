@@ -1,23 +1,15 @@
 const nock = require('nock');
 
-const {signInServiceStub} = require('../supertestSetup');
 const config = require('../../server/config');
 const nomisClientBuilder = require('../../server/data/nomisClientBuilder');
 
 describe('nomisClient', function() {
     let fakeNomis;
-    let fakeStore;
     let nomisClient;
 
     beforeEach(() => {
         fakeNomis = nock(`${config.nomis.apiUrl}`);
-        fakeStore = {
-            get: sinon.stub().returns(
-                {token: 'token', refreshToken: 'refresh', timestamp: new Date('May 31, 2018 11:00:00').getTime()}
-            ),
-            store: sinon.stub()
-        };
-        nomisClient = nomisClientBuilder(fakeStore, signInServiceStub)('CA', 'username');
+        nomisClient = nomisClientBuilder('token');
     });
 
     afterEach(() => {
@@ -446,20 +438,6 @@ describe('nomisClient', function() {
 
         afterEach(() => {
             clock.restore();
-        });
-
-        it('should try to refresh if it returns an unauthorised response', async () => {
-            fakeNomis
-                .get(`/agencies/prison/1`)
-                .reply(401)
-                .get(`/agencies/prison/1`)
-                .reply(200, {response: 'this'});
-
-            const result = await nomisClient.getEstablishment('1');
-
-            expect(signInServiceStub.refresh).to.be.calledOnce();
-            expect(fakeStore.get).to.be.calledTwice(); // get expired token, refresh, get new token
-            expect(result).to.eql({response: 'this'});
         });
 
         it('should not try to refresh if not an unauthorised response', () => {

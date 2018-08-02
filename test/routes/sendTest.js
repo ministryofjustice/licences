@@ -175,7 +175,7 @@ describe('send', () => {
 
 const caUser = {
     staffId: 'my-staff-id',
-    username: 'my-username',
+    token: 'my-token',
     email: 'user@email',
     role: 'CA'
 };
