@@ -34,7 +34,7 @@ module.exports = function({logger, searchService, authenticationMiddleware}) {
     router.get('/offender/results', asyncMiddleware(async (req, res) => {
         logger.debug('GET /search/offender/results');
 
-        const hdcEligible = await searchService.searchOffenders(req.query.nomisId, req.user.username, req.user.role);
+        const hdcEligible = await searchService.searchOffenders(req.query.nomisId, req.user.token, req.user.role);
 
         res.render('search/results', {hdcEligible});
     }));

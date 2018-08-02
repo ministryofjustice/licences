@@ -2,7 +2,6 @@ const superagent = require('superagent');
 const querystring = require('querystring');
 const config = require('../config');
 const {generateOauthClientToken, generateAdminOauthClientToken} = require('./oauth');
-const {NoTokenError} = require('../utils/errors');
 const logger = require('../../log');
 
 const timeoutSpec = {
@@ -12,7 +11,7 @@ const timeoutSpec = {
 
 const RO_ROLE_CODE = 'RO';
 
-function signInService(tokenStore, audit) {
+function signInService(audit) {
 
     return {
 
@@ -21,12 +20,10 @@ function signInService(tokenStore, audit) {
             logger.info(`Log in for: ${username}`);
 
             try {
-                const {profile, role, token, refreshToken} = await login(username, password);
+                const {profile, role, token, refreshToken, expiresIn} = await login(username, password);
                 logger.info(`Log in success - token: ${token}`);
-                const timestamp = tokenStore.store(username, role, token, refreshToken);
 
                 const userDetail = profile.staffId || profile.username || profile.lastName || 'no user id';
-
                 audit.record('LOGIN', userDetail);
 
                 const activeCaseLoad = await getCaseLoad(token, profile.activeCaseLoadId);
@@ -35,7 +32,7 @@ function signInService(tokenStore, audit) {
                     ...profile,
                     token,
                     refreshToken,
-                    timestamp,
+                    refreshTime: getRefreshTime(expiresIn),
                     role,
                     activeCaseLoad,
                     username
@@ -52,30 +49,30 @@ function signInService(tokenStore, audit) {
             }
         },
 
-        refresh: async function(username) {
+        getRefreshedToken: async function(user) {
+            logger.info(`Refreshing token for : ${user.username}`);
 
-            logger.info(`Token refresh for: ${username}`);
+            const {token, refreshToken, expiresIn} = await getRefreshTokens(
+                user.username, user.role, user.refreshToken
+            );
 
-            const oldTokenObject = tokenStore.get(username);
+            const refreshTime = getRefreshTime(expiresIn);
 
-            if (!oldTokenObject) {
-                throw new NoTokenError();
-            }
+            return {token, refreshToken, refreshTime};
 
-            try {
-                const {token, refreshToken} = await getRefreshTokens(username, oldTokenObject);
-                tokenStore.store(username, oldTokenObject.role, token, refreshToken);
-
-            } catch (error) {
-                logger.error(`Elite 2 token refresh error [${username}]:`, error.stack);
-                throw error;
-            }
         }
     };
 
+    function getRefreshTime(expiresIn) {
+        // arbitrary five minute before expiry time
+        const now = new Date();
+        const secondsUntilExpiry = now.getSeconds() + (expiresIn - 300);
+        return now.setSeconds(secondsUntilExpiry);
+    }
+
     async function login(username, password) {
 
-        const {token, refreshToken} = await getPasswordTokens(username, password);
+        const {token, refreshToken, expiresIn} = await getPasswordTokens(username, password);
 
         const [profile, role] = await Promise.all([
             getUserProfile(token, username),
@@ -87,7 +84,7 @@ function signInService(tokenStore, audit) {
             return {profile, role, ...roToken};
         }
 
-        return {profile, role, token, refreshToken};
+        return {profile, role, token, refreshToken, expiresIn};
     }
 
     async function getPasswordTokens(username, password) {
@@ -104,15 +101,15 @@ function signInService(tokenStore, audit) {
         return oauthTokenRequest(oauthAdminClientToken, oauthRequest);
     }
 
-    async function getRefreshTokens(username, oldTokenObject) {
+    async function getRefreshTokens(username, role, refreshToken) {
 
-        if (oldTokenObject.role === RO_ROLE_CODE) {
+        if (role === RO_ROLE_CODE) {
             logger.info('RO client credentials token refresh');
             return getClientCredentialsTokens(username);
         }
 
         const oauthClientToken = generateOauthClientToken();
-        const oauthRequest = {grant_type: 'refresh_token', refresh_token: oldTokenObject.refreshToken};
+        const oauthRequest = {grant_type: 'refresh_token', refresh_token: refreshToken};
 
         return oauthTokenRequest(oauthClientToken, oauthRequest);
     }
@@ -142,8 +139,9 @@ function parseOauthTokens(oauthResult) {
 
     const token = `${oauthResult.body.token_type} ${oauthResult.body.access_token}`;
     const refreshToken = oauthResult.body.refresh_token;
+    const expiresIn = oauthResult.body.expires_in;
 
-    return {token, refreshToken};
+    return {token, refreshToken, expiresIn};
 }
 
 async function getUserProfile(token, username) {

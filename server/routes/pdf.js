@@ -18,7 +18,7 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
     router.get('/select/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
 
-        const prisoner = await prisonerService.getPrisonerPersonalDetails(nomisId, req.user.username);
+        const prisoner = await prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token);
         const errors = firstItem(req.flash('errors')) || {};
 
         return res.render('pdf/select', {nomisId, templates, prisoner, errors});
@@ -48,7 +48,7 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
             throw new Error('Invalid licence template name');
         }
 
-        const {missing} = await pdfService.getPdfLicenceData(templateName, nomisId, req.user.username);
+        const {missing} = await pdfService.getPdfLicenceData(templateName, nomisId, req.user.token);
 
         if (missing) {
             return res.render('pdf/errors', {nomisId, missing, templateName});
@@ -61,7 +61,7 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
 
         const {nomisId, templateName} = req.params;
         logger.debug(`GET pdf/create/${nomisId}/${templateName}`);
-        const pdf = await pdfService.generatePdf(templateName, nomisId, req.user.username);
+        const pdf = await pdfService.generatePdf(templateName, nomisId, req.user.token);
 
         audit.record('CREATE_PDF', req.user.staffId, {templateName, nomisId});
 

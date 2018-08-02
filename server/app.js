@@ -46,7 +46,6 @@ module.exports = function createApp({
                                         caseListService,
                                         pdfService,
                                         searchService,
-                                        tokenStore,
                                         audit
                                     }) {
     const app = express();
@@ -107,32 +106,25 @@ module.exports = function createApp({
     app.use(cookieParser());
     app.use(csurf({cookie: true}));
 
-    // token retrieval
-    app.use((req, res, next) => {
-        if (req.user) {
-            const tokens = tokenStore.get(req.user.username);
+    // token refresh
+    app.use(async (req, res, next) => {
 
-            logger.info(`Middleware tokens for user: ${tokens}`);
+        if (production && req.user) {
 
-            if (!tokens) {
-                logger.info('Middleware storing new tokens for user');
-                tokenStore.store(req.user.username, req.user.role, req.user.token, req.user.refreshToken);
-            } else {
-                // token store is more up-to-date than cookie so update tokens
-                if (tokens.token !== req.user.token) {
+            const timeToRefresh = new Date() > req.user.refreshTime;
 
-                    if (tokens.timestamp > req.user.timestamp) {
-                        logger.info('Middleware updating cookie from token store');
-                        req.user.token = tokens.token;
-                        req.user.refreshToken = tokens.refreshToken;
-                    } else {
-                        logger.info('Middleware updating token store from cookie');
-                        tokenStore.store(req.user.username, req.user.role, req.user.token, req.user.refreshToken);
-                    }
+            if (timeToRefresh) {
+                try {
+                    const newToken = await signInService.getRefreshedToken(req.user);
+
+                    req.user.token = newToken.token;
+                    req.user.refreshToken = newToken.refreshToken;
+                    req.user.refreshTime = newToken.refreshTime;
+                } catch (error) {
+                    logger.error(`Elite 2 token refresh error: ${req.user.username}`, error.stack);
                 }
             }
         }
-
         next();
     });
 
