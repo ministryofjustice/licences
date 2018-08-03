@@ -967,12 +967,15 @@ describe('licenceService', () => {
     describe('updateAddress', () => {
 
         const baseLicence = {
-            proposedAddress: {
-                curfewAddress: {
-                    addresses: [
-                        {postCode: 'pc1'},
-                        {postCode: 'pc2'}
-                    ]
+            stage: 'ELIGIBILITY',
+            licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1'},
+                            {postCode: 'pc2'}
+                        ]
+                    }
                 }
             }
         };
@@ -982,7 +985,7 @@ describe('licenceService', () => {
 
             const output = await service.updateAddress({
                 index: 1,
-                licence: baseLicence,
+                rawLicence: baseLicence,
                 userInput: {addresses: [{newField: 'newField'}]},
                 fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             });
@@ -1005,7 +1008,7 @@ describe('licenceService', () => {
 
             const output = await service.updateAddress({
                 index: 1,
-                licence: baseLicence,
+                rawLicence: baseLicence,
                 userInput: {addresses: [{postCode: ''}]},
                 fieldMap: [{addresses: {isList: true, contains: [{postCode: {}}]}}]
             });
@@ -1027,7 +1030,7 @@ describe('licenceService', () => {
 
             const output = await service.updateAddress({
                 index: 1,
-                licence: baseLicence,
+                rawLicence: baseLicence,
                 userInput: {addresses: [{postCode: 'pc3'}]},
                 fieldMap: [{addresses: {isList: true, contains: [{postCode: {}}]}}]
             });
@@ -1049,7 +1052,7 @@ describe('licenceService', () => {
         it('should use the form config', async () => {
             const output = await service.updateAddress({
                 index: 0,
-                licence: baseLicence,
+                rawLicence: baseLicence,
                 userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
                 fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             });
@@ -1071,7 +1074,7 @@ describe('licenceService', () => {
         it('should not change the rest of the licence', async () => {
             const output = await service.updateAddress({
                 index: 0,
-                licence: {...baseLicence, otherfield: 'other'},
+                rawLicence: {...baseLicence, licence: {...baseLicence.licence, otherfield: 'other'}},
                 userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
                 fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             });
@@ -1095,7 +1098,7 @@ describe('licenceService', () => {
             await service.updateAddress({
                 nomisId: 1,
                 index: 0,
-                licence: baseLicence,
+                rawLicence: baseLicence,
                 userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
                 fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             });
@@ -1119,21 +1122,52 @@ describe('licenceService', () => {
             expect(service.updateAddress({
                 nomisId: 1,
                 index: 3,
-                licence: baseLicence,
+                rawLicence: baseLicence,
                 userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
                 fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
             })).to.eventually.throw('No address to update');
+        });
+
+        describe('post approval modifications', () => {
+
+            it('should change stage to MODIFIED_APPROVAL when updates occur', async () => {
+                await service.updateAddress({
+                    nomisId: 'ab1',
+                    index: 1,
+                    rawLicence: {...baseLicence, stage: 'DECIDED'},
+                    userInput: {addresses: [{newField: 'newField'}]},
+                    fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
+                });
+
+                expect(licenceClient.updateStage).to.be.calledOnce();
+                expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED');
+            });
+
+            it('should not change stage if not DECIDED', async () => {
+                await service.updateAddress({
+                    nomisId: 'ab1',
+                    index: 1,
+                    rawLicence: {...baseLicence, stage: 'PROCESSING_CA'},
+                    userInput: {addresses: [{newField: 'newField'}]},
+                    fieldMap: [{addresses: {isList: true, contains: [{newField: {}}]}}]
+                });
+
+                expect(licenceClient.updateStage).to.not.be.calledOnce();
+            });
         });
     });
 
     describe('addAddress', () => {
         const baseLicence = {
-            proposedAddress: {
-                curfewAddress: {
-                    addresses: [
-                        {postCode: 'pc1'},
-                        {postCode: 'pc2'}
-                    ]
+            stage: 'ELIGIBILITY',
+            licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: [
+                            {postCode: 'pc1'},
+                            {postCode: 'pc2'}
+                        ]
+                    }
                 }
             }
         };
@@ -1142,7 +1176,7 @@ describe('licenceService', () => {
 
             const output = await service.addAddress({
                 nomisId: 1,
-                licence: baseLicence,
+                rawLicence: baseLicence,
                 userInput: {addresses: [{postCode: 'pc3'}]},
                 fieldMap: [{addresses: {}, isList: true, contains: [{postCode: {}}]}]
             });

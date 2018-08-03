@@ -19,7 +19,7 @@ const caseListTabs = {
             id: 'create',
             text: 'Create licence',
             licenceStages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
-            licenceStatus: 'Approved'
+            licenceStatus: ['Approved', 'Modified']
         }
     ],
     RO: [

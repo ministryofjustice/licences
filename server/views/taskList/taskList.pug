@@ -34,15 +34,17 @@ block content
                     include caSubmitAddressReviewTask
 
             else if (['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage))
-                include eligibilitySummaryTask
+                if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
+                    include eligibilitySummaryTask
                 if licenceStatus.decisions.eligible
                     include curfewAddressTask
-                    include riskManagementTask
-                    include curfewHoursTask
-                    include additionalConditionsTask
-                    include reportingInstructionsTask
-                    include finalChecksTask
-                    include postponementTask
+                    if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
+                        include riskManagementTask
+                        include curfewHoursTask
+                        include additionalConditionsTask
+                        include reportingInstructionsTask
+                        include finalChecksTask
+                        include postponementTask
                     include HDCRefusalTask
                     if allowedTransition === 'caToDm'
                         include caSubmitApprovalTask
