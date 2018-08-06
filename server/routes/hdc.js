@@ -263,7 +263,7 @@ module.exports = function(
         const addressIndex = lastIndex(getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']));
 
         await licenceService.updateAddress({
-            licence: rawLicence,
+            rawLicence,
             nomisId: nomisId,
             fieldMap: formConfig.curfewAddress.fields,
             userInput: req.body,
