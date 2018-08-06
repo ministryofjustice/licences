@@ -6,7 +6,9 @@ const licenceStages = {
     PROCESSING_RO: 'PROCESSING_RO',
     PROCESSING_CA: 'PROCESSING_CA',
     APPROVAL: 'APPROVAL',
-    DECIDED: 'DECIDED'
+    DECIDED: 'DECIDED',
+    MODIFIED: 'MODIFIED',
+    MODIFIED_APPROVAL: 'MODIFIED_APPROVAL'
 };
 
 const transitions = {

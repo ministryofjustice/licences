@@ -45,7 +45,7 @@ describe('/hdc/risk', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             nomisId: '1',
-                            fieldMap: formConfig.riskManagement.fields,
+                            config: formConfig.riskManagement,
                             userInput: formResponse,
                             licenceSection: 'risk',
                             formName: 'riskManagement'

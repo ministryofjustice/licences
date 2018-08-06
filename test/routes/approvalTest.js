@@ -111,7 +111,7 @@ describe('/hdc/approval', () => {
                         expect(licenceServiceStub.update).to.be.calledOnce();
                         expect(licenceServiceStub.update).to.be.calledWith({
                             nomisId: '1',
-                            fieldMap: formConfig[route.formName].fields,
+                            config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'approval',
                             formName: route.section

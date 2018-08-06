@@ -19,10 +19,10 @@ else
                         if ['PROCESSING_RO'].includes(prisoner.stage)
                             a(href="/hdc/taskList/" + prisoner.offenderNo)
                                 |
+                                if prisoner.firstName
+                                    | #{prisoner.firstName}
                                 if prisoner.lastName
-                                    | #{prisoner.lastName}
-                                    if prisoner.firstName
-                                        | , #{prisoner.firstName}
+                                    |  #{prisoner.lastName}
 
                         else if ['UNSTARTED'].includes(prisoner.stage)
                             if prisoner.lastName

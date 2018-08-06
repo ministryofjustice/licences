@@ -28,10 +28,26 @@ block content
                 include eligibilityTask
                 if licenceStatus.decisions.eligible
                     include proposedAddressTask
-                if allowedTransition === 'caToRo'
-                    include caSubmitAddressReviewTask
-                else if allowedTransition === 'caToDmRefusal'
+                if allowedTransition === 'caToDmRefusal'
                     include caSubmitRefusalTask
+                else
+                    include caSubmitAddressReviewTask
+
+            else if (['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage))
+                if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
+                    include eligibilitySummaryTask
+                if licenceStatus.decisions.eligible
+                    include curfewAddressTask
+                    if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
+                        include riskManagementTask
+                        include curfewHoursTask
+                        include additionalConditionsTask
+                        include reportingInstructionsTask
+                        include finalChecksTask
+                        include postponementTask
+                    include HDCRefusalTask
+                    if allowedTransition === 'caToDm'
+                        include caSubmitApprovalTask
 
             else
                 include curfewAddressTask

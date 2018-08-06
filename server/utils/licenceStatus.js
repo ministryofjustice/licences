@@ -50,7 +50,11 @@ function getRequiredState(stage, licence) {
         [licenceStages.PROCESSING_RO]: [getEligibilityStageState, getRoStageState],
         [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState, getCaStageState],
         [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
-        [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
+        [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
+        [licenceStages.MODIFIED]:
+            [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
+        [licenceStages.MODIFIED_APPROVAL]:
+            [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
     };
 
     return config[stage].map(getStateMethod => getStateMethod(licence));
@@ -342,7 +346,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
             return taskStates.UNSTARTED;
         }
 
-        const required = ['occupier', 'cautionedAgainstResident'];
+        const required = ['cautionedAgainstResident'];
         if (required.some(field => !addresses.find(address => address[field]))) {
             return taskStates.STARTED;
         }
@@ -394,15 +398,16 @@ function getReportingInstructionsState(licence) {
 
     function getState(licence) {
 
-        if (isEmpty(getIn(licence, ['reporting', 'reportingInstructions']))) {
+        const reportingInstructions = getIn(licence, ['reporting', 'reportingInstructions']);
+
+        if (isEmpty(reportingInstructions)) {
             return taskStates.UNSTARTED;
         }
 
-        if (isEmpty(getIn(licence, ['reporting', 'reportingInstructions', 'name']))) {
-            return taskStates.UNSTARTED;
+        const required = ['name', 'buildingAndStreet1', 'townOrCity', 'postcode', 'telephone'];
+        if (required.some(field => isEmpty(getIn(reportingInstructions, [field])))) {
+            return taskStates.STARTED;
         }
-
-        // todo mandatory reporting instructions elements
 
         return taskStates.DONE;
     }

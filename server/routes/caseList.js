@@ -5,29 +5,37 @@ const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const caseListTabs = {
     CA: [
         {
-            id: 'ready', text: 'Ready to process', licenceStages: ['UNSTARTED', 'ELIGIBILITY'],
-            statusFilter: {ELIGIBILITY: 'Opted out'}
+            id: 'ready', text: 'Check eligibility', licenceStages: ['UNSTARTED', 'ELIGIBILITY'],
+            statusFilter: {ELIGIBILITY: ['Opted out', 'Eligible']}
         },
         {
-            id: 'submittedRo', text: 'Submitted to RO', licenceStages: ['PROCESSING_RO'],
-            statusFilter: {PROCESSING_RO: 'Opted out'}
+            id: 'getAddress', text: 'Get address', licenceStages: ['ELIGIBILITY'],
+            licenceStatus: ['Eligible', 'Getting address', 'Address rejected', 'Opted out']
         },
-        {id: 'finalChecks', text: 'Final checks', licenceStages: ['PROCESSING_CA']},
-        {id: 'submittedDm', text: 'Submitted to DM', licenceStages: ['APPROVAL']},
+        {id: 'submittedRo', text: 'Responsible officer', licenceStages: ['PROCESSING_RO']},
+        {id: 'reviewCase', text: 'Review case', licenceStages: ['PROCESSING_CA']},
+        {id: 'submittedDm', text: 'Decision maker', licenceStages: ['APPROVAL']},
         {
-            id: 'optedOut', text: 'Opted out', licenceStages: ['ELIGIBILITY', 'PROCESSING_RO'],
-            licenceStatus: 'Opted out'
-        },
-        {id: 'decided', text: 'Decided', licenceStages: ['DECIDED']}
+            id: 'create',
+            text: 'Create licence',
+            licenceStages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
+            licenceStatus: ['Approved', 'Modified']
+        }
     ],
     RO: [
-        {id: 'ready', text: 'Ready to process', licenceStages: ['PROCESSING_RO']},
-        {id: 'finalChecks', text: 'Final checks', licenceStages: ['PROCESSING_CA']},
-        {id: 'submittedDm', text: 'Submitted to DM', licenceStages: ['APPROVAL']},
-        {id: 'active', text: 'Active licences', licenceStages: ['DECIDED']}
+        {id: 'ready', text: 'Ready to check', licenceStages: ['PROCESSING_RO'], licenceStatus: 'Ready to check'},
+        {id: 'checking', text: 'Checking', licenceStages: ['PROCESSING_RO'], licenceStatus: 'Assessment ongoing'},
+        {id: 'withPrison', text: 'With prison', licenceStages: ['PROCESSING_CA', 'APPROVAL']},
+        {id: 'approved', text: 'Approved', licenceStages: ['DECIDED'], licenceStatus: 'Approved'}
     ],
     DM: [
         {id: 'ready', text: 'Ready to approve', licenceStages: ['APPROVAL']},
+        {
+            id: 'postponed',
+            text: 'Postponed',
+            licenceStages: ['PROCESSING_CA'],
+            licenceStatus: 'Postponed'
+        },
         {id: 'approved', text: 'Approved', licenceStages: ['DECIDED'], licenceStatus: 'Approved'},
         {id: 'refused', text: 'Refused', licenceStages: ['DECIDED'], licenceStatus: 'Refused'}
     ]
@@ -51,7 +59,7 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
             res.redirect('/caseList/' + tabsForRole[0].id);
         }
 
-        const hdcEligible = await caseListService.getHdcCaseList(req.user.username, req.user.role);
+        const hdcEligible = await caseListService.getHdcCaseList(req.user.token, req.user.username, req.user.role);
         const filteredToTabs = filterToTabs(hdcEligible, selectedTabConfig);
 
         return res.render('caseList/index', {hdcEligible: filteredToTabs, tabsForRole, selectedTabConfig});
@@ -64,8 +72,10 @@ function filterToTabs(offenders, tabConfig) {
     return offenders.filter(offender => {
 
         const correctStage = tabConfig.licenceStages.includes(offender.stage);
-        const correctStatus = tabConfig.licenceStatus ? tabConfig.licenceStatus === offender.status : true;
-        const filterStatus = getIn(tabConfig, ['statusFilter', offender.stage]) === offender.status;
+        const correctStatus = tabConfig.licenceStatus ? tabConfig.licenceStatus.includes(offender.status) : true;
+
+        const statusFilter = getIn(tabConfig, ['statusFilter', offender.stage]);
+        const filterStatus = statusFilter && statusFilter.includes(offender.status);
 
         return correctStage && correctStatus && !filterStatus;
     });

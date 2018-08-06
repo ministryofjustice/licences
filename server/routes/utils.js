@@ -41,11 +41,6 @@ module.exports = function({logger, licenceService}) {
             return res.status(404).send({});
         }
 
-        if (!nomisId.endsWith('XX')) {
-            logger.warn('Test licences must have nomis ID ending XX');
-            return res.status(404).send({});
-        }
-
         try {
             await licenceClient.createLicence(nomisId, licence, stage);
             logger.info('Created licence');

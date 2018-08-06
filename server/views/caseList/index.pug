@@ -3,7 +3,6 @@ extends ../layout
 block content
     div.pure-g.pure-u-1
         div.pure-u-1-2
-            h1#pageHeading.heading-large HDC eligible offenders
         div.pure-u-1-2.searchLink
             if user.role === 'RO'
                 a#searchOffenderLink(href='/hdc/search/offender') Search for an offender

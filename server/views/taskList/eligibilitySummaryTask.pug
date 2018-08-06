@@ -4,14 +4,17 @@
 - var sufficientTime = (licenceStatus.decisions.insufficientTime ? 'less' : 'more') + ' than 4 weeks until release date'
 
 
-div.taskListItem.borderBottom.largeMarginBottom
+div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : "taskListItem")
     h2.heading-medium Eligibility and presumed suitability
 
     div.pure-g
         div.pure-u-3-4
             | #{eligible}, #{suitable}, #{sufficientTime}
         div.pure-u-1-4.center
-            a.taskListAction.center.button.button-secondary(href="/hdc/review/eligibility/" + prisonerInfo.offenderNo) View
+            if user.role === 'CA'
+                a.taskListAction.center.button.button-secondary(href="/hdc/eligibility/excluded/" + prisonerInfo.offenderNo) View/Edit
+            else
+                a.taskListAction.center.button.button-secondary(href="/hdc/review/eligibility/" + prisonerInfo.offenderNo) View
 
 
 

@@ -59,21 +59,21 @@ describe('/hdc/finalChecks', () => {
             {
                 url: '/finalChecks/refuse/1',
                 body: {nomisId: 1, decision: 'Yes'},
-                fieldMap: formConfig.refuse.fields,
+                fieldMap: formConfig.refuse,
                 formName: 'refusal',
                 nextPath: '/hdc/finalChecks/refusal/1'
             },
             {
                 url: '/finalChecks/refuse/1',
                 body: {nomisId: 1, decision: 'No'},
-                fieldMap: formConfig.refuse.fields,
+                fieldMap: formConfig.refuse,
                 formName: 'refusal',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/finalChecks/refusal/1',
                 body: {nomisId: 1, reason: 'something', outOfTimeReasons: []},
-                fieldMap: formConfig.refusal.fields,
+                fieldMap: formConfig.refusal,
                 formName: 'refusal',
                 nextPath: '/hdc/taskList/1'
             }
@@ -92,7 +92,7 @@ describe('/hdc/finalChecks', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             nomisId: '1',
-                            fieldMap: route.fieldMap || formConfig[route.formName].fields,
+                            config: route.fieldMap || formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: route.sectionName || 'finalChecks',
                             formName: route.formName

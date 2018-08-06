@@ -117,5 +117,14 @@ module.exports = {
             ],
             path: '/hdc/taskList/'
         }
+    },
+    reinstateAddress: {
+        fields: [
+            {consentWithdrawn: {}},
+            {addressWithdrawn: {}}
+        ],
+        nextPath: {
+            path: '/hdc/taskList/'
+        }
     }
 };

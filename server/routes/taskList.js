@@ -20,7 +20,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         logger.debug('GET /taskList');
 
         const {nomisId} = req.params;
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.username);
+        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
         const licence = await licenceService.getLicence(nomisId);
 
         const licenceStatus = getLicenceStatus(licence);
@@ -56,7 +56,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
     router.get('/image/:imageId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /image');
 
-        const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, req.user.username);
+        const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, req.user.token);
 
         if (!prisonerImage) {
             const placeHolder = path.join(__dirname, '../../assets/images/no-photo.png');
