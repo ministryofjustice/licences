@@ -9,8 +9,17 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
                 img#prisonerImage.pure-img(src= "/hdc/taskList/image/" + prisonerInfo.imageId)
             else
                 img#prisonerImage.pure-img(src= "/public/images/no-photo.png")
-            if(prisonerInfo.captureDate)
-        p.subText#prisonerPhotoDate Uploaded: #{prisonerInfo.captureDate}
+
+        if licenceVersion
+            div.largeMarginTop
+                div Working version
+                div
+                    span.bold V#{licenceVersion}
+        if approvedVersion
+            div.largeMarginTop
+                div Approved version
+                div
+                    span.bold V#{approvedVersion.version}, #{approvedVersion.timestamp}
 
     div.pure-u-1.pure-u-md-5-24.padRight15
         div.midMarginBottom

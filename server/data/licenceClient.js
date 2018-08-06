@@ -4,16 +4,18 @@ const db = require('./dataAccess/db');
 module.exports = {
 
     deleteAll: function() {
-        return db.query(`delete from licences where nomis_id not like '%XX'`);
+        return db.query(`delete from licences where nomis_id not like '%XX'; 
+        delete from licence_versions where nomis_id not like '%XX'`);
     },
 
     deleteAllTest: function() {
-        return db.query(`delete from licences where nomis_id like '%XX' or nomis_id like 'A5001DY'`);
+        return db.query(`delete from licences where nomis_id like '%XX' or nomis_id like 'A5001DY'; 
+          delete from licence_versions where nomis_id like '%XX'`);
     },
 
     getLicences: async function(nomisIds) {
         const query = {
-            text: `select licence, nomis_id, stage from licences 
+            text: `select licence, nomis_id, stage, version from licences 
                    where nomis_id in (${nomisIds.map(id => `'${id}'`).join(',')})`
         };
 
@@ -23,7 +25,7 @@ module.exports = {
 
     getLicence: async function(nomisId) {
         const query = {
-            text: `select licence, nomis_id, stage from licences where nomis_id = $1`,
+            text: `select licence, nomis_id, stage, version from licences where nomis_id = $1`,
             values: [nomisId]
         };
 
@@ -36,10 +38,25 @@ module.exports = {
         return {};
     },
 
-    createLicence: function(nomisId, licence = {}, stage = licenceStages.DEFAULT) {
+    getApprovedLicenceVersion: async function(nomisId) {
         const query = {
-            text: 'insert into licences (nomis_id, licence, stage) values ($1, $2, $3)',
-            values: [nomisId, licence, stage]
+            text: `select version, timestamp from licence_versions where nomis_id = $1 order by version desc limit 1`,
+            values: [nomisId]
+        };
+
+        const {rows} = await db.query(query);
+
+        if (rows && rows[0]) {
+            return rows[0];
+        }
+
+        return null;
+    },
+
+    createLicence: function(nomisId, licence = {}, stage = licenceStages.DEFAULT, version = 1) {
+        const query = {
+            text: 'insert into licences (nomis_id, licence, stage, version) values ($1, $2, $3, $4)',
+            values: [nomisId, licence, stage, version]
         };
 
         return db.query(query);
@@ -97,6 +114,16 @@ module.exports = {
         }
 
         return undefined;
+    },
+
+    updateStageAndVersion: async function(nomisId, stage) {
+
+        const updateStage = `update licences set stage = '${stage}' where nomis_id = '${nomisId}'; `;
+
+        const saveVersionData = `insert into licence_versions (nomis_id, licence, version) select nomis_id, licence, 
+        version from licences where nomis_id = '${nomisId}'; `;
+
+        return db.query('begin transaction; ' + updateStage + saveVersionData + 'commit;');
     }
 };
 

@@ -129,6 +129,7 @@ module.exports = function(
 
         const licence = getIn(res.locals.licence, ['licence']) || {};
         const stage = getIn(res.locals.licence, ['stage']) || {};
+        const licenceVersion = getIn(res.locals.licence, ['version']) || {};
         const licenceStatus = getLicenceStatus(res.locals.licence);
 
         const licenceWithAddress = addAddressTo(licence);
@@ -137,7 +138,15 @@ module.exports = function(
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
 
-        res.render(`review/${sectionName}`, {nomisId, data, prisonerInfo, stage, licenceStatus, errorObject});
+        res.render(`review/${sectionName}`, {
+            nomisId,
+            data,
+            prisonerInfo,
+            stage,
+            licenceVersion,
+            licenceStatus,
+            errorObject
+        });
     }));
 
     function addAddressTo(licence) {

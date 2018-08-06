@@ -54,6 +54,22 @@ describe('formatForView', () => {
             expect(formatObjectForViewWithOptions(object, {dates: ['a', 'f'], capitalise: ['o']}))
                 .to.eql(expectedOutput);
         });
+
+        it('should format passed in Date objects', () => {
+            const object = {
+                a: 'hi',
+                b: 'ho',
+                c: new Date(Date.parse('2018-07-25T14:54:43.316Z'))
+            };
+
+            const expectedOutput = {
+                a: 'hi',
+                b: 'ho',
+                c: '25/07/2018'
+            };
+
+            expect(formatObjectForView(object)).to.eql(expectedOutput);
+        });
     });
 
     describe('names', () => {
