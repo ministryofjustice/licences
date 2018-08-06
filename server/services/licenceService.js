@@ -254,10 +254,15 @@ module.exports = function createLicenceService(licenceClient) {
     const addAddress = updateAddressArray(addressHelpers.add);
 
     function updateAddressArray(addressesUpdateMethod) {
-        return async ({nomisId, licence, fieldMap, userInput, index}) => {
+        return async ({nomisId, rawLicence, fieldMap, userInput, index}) => {
+            const {stage, licence} = rawLicence;
             const formResponse = getFormResponse(fieldMap, userInput);
             const newAddress = Array.isArray(formResponse.addresses) ? formResponse.addresses[0] : formResponse;
             const updatedLicence = addressesUpdateMethod({nomisId, licence, newAddress, index});
+
+            if (stage === licenceStages.DECIDED && !equals(licence, updatedLicence)) {
+                await markAsModified(nomisId, {requiresApproval: false});
+            }
 
             await licenceClient.updateLicence(nomisId, updatedLicence);
 

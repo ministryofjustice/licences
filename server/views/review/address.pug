@@ -28,7 +28,7 @@ block content
 
                 +addressDetail('curfew', address, review, addressSafety)
 
-                if stage === 'PROCESSING_CA'
+                if ['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
                     div.borderBottomLightMedium.borderTopLight.marginBottomLarge
                         include ./includes/addressActions
 

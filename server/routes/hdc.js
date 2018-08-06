@@ -197,6 +197,7 @@ module.exports = function(
     router.post('/curfew/addressSafety/:nomisId', asyncMiddleware(addressReviewPosts('addressSafety')));
     router.post('/curfew/withdrawAddress/:nomisId', asyncMiddleware(addressReviewPosts('withdrawAddress')));
     router.post('/curfew/withdrawConsent/:nomisId', asyncMiddleware(addressReviewPosts('withdrawConsent')));
+    router.post('/curfew/reinstateAddress/:nomisId', asyncMiddleware(addressReviewPosts('reinstateAddress')));
 
     function addressReviewPosts(formName) {
         return async (req, res) => {
@@ -206,11 +207,13 @@ module.exports = function(
             const rawLicence = await licenceService.getLicence(nomisId);
             const addresses = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
             const addressIndex = lastIndex(addresses);
-            const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
+            const modifyingLicence = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(rawLicence.stage);
+            const nextPath = modifyingLicence ? '/hdc/taskList/' :
+                getPathFor({data: req.body, config: formConfig[formName]});
 
             await licenceService.updateAddress({
-                licence: rawLicence.licence,
-                nomisId: nomisId,
+                rawLicence,
+                nomisId,
                 fieldMap: formConfig[formName].fields,
                 userInput: req.body,
                 index: addressIndex
@@ -242,8 +245,8 @@ module.exports = function(
 
         if (formConfig.curfewAddress.fields) {
             await licenceService.addAddress({
-                licence: rawLicence.licence,
-                nomisId: nomisId,
+                rawLicence,
+                nomisId,
                 fieldMap: formConfig.curfewAddress.fields,
                 userInput: req.body
             });
@@ -260,7 +263,7 @@ module.exports = function(
         const addressIndex = lastIndex(getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']));
 
         await licenceService.updateAddress({
-            licence: rawLicence.licence,
+            licence: rawLicence,
             nomisId: nomisId,
             fieldMap: formConfig.curfewAddress.fields,
             userInput: req.body,

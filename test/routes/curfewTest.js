@@ -143,6 +143,12 @@ describe('/hdc/curfew', () => {
                 body: {withdrawAddress: 'Yes'},
                 section: 'withdrawAddress',
                 nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/curfew/reinstateAddress/1',
+                body: {withdrawAddress: 'No', withdrawConsent: 'No'},
+                section: 'reinstateAddress',
+                nextPath: '/hdc/taskList/1'
             }
         ];
 
@@ -158,7 +164,7 @@ describe('/hdc/curfew', () => {
                     .expect(res => {
                         expect(licenceService.updateAddress).to.be.calledOnce();
                         expect(licenceService.updateAddress).to.be.calledWith({
-                            licence: licence.licence,
+                            rawLicence: licence,
                             nomisId: '1',
                             fieldMap: formConfig[route.section].fields,
                             userInput: route.body,

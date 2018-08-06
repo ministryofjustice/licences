@@ -21,14 +21,15 @@ div
 
     else
         div.pure-g
-            div.pure-u-md-1-2
-                p Enter a new curfew address for review
-                a.largeMarginBottom.button(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Add a new address
+            if !['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
+                div.pure-u-md-1-2
+                    p Enter a new curfew address for review
+                    a.largeMarginBottom.button(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Add a new address
 
             div.pure-u-md-1-2
                 p Reinstate this address
                 div
-                    form(method="post", name="withdrawConsent", action="/hdc/curfew/withdrawConsent/" + nomisId)
+                    form(method="post", name="reinstateAddress", action="/hdc/curfew/reinstateAddress/" + nomisId)
                         input(type="hidden" name="_csrf" value=csrfToken)
                         input(type="hidden" name="consentWithdrawn" value="No")
                         input(type="hidden" name="addressWithdrawn" value="No")
