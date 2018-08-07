@@ -72,9 +72,7 @@ module.exports = function createLicenceService(licenceClient) {
                 return;
             }
 
-            if (existingLicence.stage === 'DECIDED') {
-                await markAsModified(nomisId, {requiresApproval: true});
-            }
+            await updateModificationStage(nomisId, existingLicence.stage, {requiresApproval: true});
 
             return licenceClient.updateSection('licenceConditions', nomisId, licenceConditions);
         } catch (error) {
@@ -161,11 +159,16 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateStage(nomisId, newStage);
     }
 
-    function markAsModified(nomisId, {requiresApproval}) {
+    function updateModificationStage(nomisId, stage, {requiresApproval}) {
 
-        const newStage = requiresApproval ? licenceStages.MODIFIED_APPROVAL : licenceStages.MODIFIED;
+        if (requiresApproval && (stage === 'DECIDED' || stage === 'MODIFIED')) {
+            return licenceClient.updateStage(nomisId, licenceStages.MODIFIED_APPROVAL);
+        }
 
-        return licenceClient.updateStage(nomisId, newStage);
+        if (stage === 'DECIDED') {
+            return licenceClient.updateStage(nomisId, licenceStages.MODIFIED);
+        }
+
     }
 
     const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
@@ -193,9 +196,7 @@ module.exports = function createLicenceService(licenceClient) {
 
         await licenceClient.updateLicence(nomisId, updatedLicence);
 
-        if (stage === licenceStages.DECIDED) {
-            await markAsModified(nomisId, {requiresApproval: config.modificationRequiresApproval});
-        }
+        await updateModificationStage(nomisId, stage, {requiresApproval: config.modificationRequiresApproval});
 
         return updatedLicence;
     }
@@ -286,11 +287,10 @@ module.exports = function createLicenceService(licenceClient) {
                 return licence;
             }
 
-            if (stage === licenceStages.DECIDED) {
-                await markAsModified(nomisId, {requiresApproval: false});
-            }
+            await updateModificationStage(nomisId, stage, {requiresApproval: false});
 
             await licenceClient.updateLicence(nomisId, updatedLicence);
+
             return updatedLicence;
         };
     }

@@ -138,6 +138,14 @@ describe('licenceService', () => {
                 expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED_APPROVAL');
             });
 
+            it('should change stage to MODIFIED_APPROVAL when updates occur in MODIFIED stage', async () => {
+                licenceClient.getLicence.resolves({stage: 'MODIFIED', licence: {a: 'b'}});
+                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+
+                expect(licenceClient.updateStage).to.be.calledOnce();
+                expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED_APPROVAL');
+            });
+
             it('should not change stage if not DECIDED', async () => {
                 licenceClient.getLicence.resolves({stage: 'PROCESSING_RO', licence: {a: 'b'}});
                 await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
@@ -934,7 +942,7 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
 
-        context('modificationRequiresApproval = true', () => {
+        context('modificationRequiresApproval', () => {
 
             const licence = {
                 ...baseLicence,
@@ -957,12 +965,19 @@ describe('licenceService', () => {
                 decision: 'Yes'
             };
 
-            it('should update stage to MODIFIED if not in config', async () => {
+            it('should update stage to MODIFIED if modificationRequiresApproval = true is not in config', async () => {
                 licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
                 await service.update({nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
                 expect(licenceClient.updateStage).to.be.calledWith(nomisId, 'MODIFIED');
+            });
+
+            it('should not update stage to MODIFIED if in MODIFIED_APPROVAL', async () => {
+                licenceClient.getLicence.resolves({stage: 'MODIFIED_APPROVAL', licence});
+                await service.update({nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+
+                expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
 
             it('should not update stage if in config', async () => {
