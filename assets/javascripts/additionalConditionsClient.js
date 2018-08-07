@@ -9,4 +9,3 @@ datepicker('#appointmentDate', {
         textField.value = day + '/' + month + '/' + year;
     }
 });
-
