@@ -23,8 +23,7 @@ module.exports = {
         licenceSection: 'suitability',
         fields: [
             {decision: {}},
-            {reason: {dependentOn: 'decision', predicate: 'Yes'}},
-            {exceptionalCircumstances: {}}
+            {reason: {dependentOn: 'decision', predicate: 'Yes'}}
         ],
         validateInPlace: true,
         nextPath: {

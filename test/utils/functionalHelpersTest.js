@@ -1,4 +1,4 @@
-const {allValuesEmpty, interleave} = require('../../server/utils/functionalHelpers');
+const {allValuesEmpty, interleave, equals} = require('../../server/utils/functionalHelpers');
 
 describe('functionalHelpers', () => {
     describe('allValuesEmpty', () => {
@@ -43,6 +43,28 @@ describe('functionalHelpers', () => {
                     expect(interleave(first, second)).to.equal(result);
                 });
             });
+    });
+
+    describe('equals', () => {
+        it('should return true if objects are equal', () => {
+            expect(equals({a: 'a'}, {a: 'a'})).to.eql(true);
+        });
+
+        it('should return true if deep nested objects are equal', () => {
+            expect(equals({a: 'a', b: {c: {d: 'e'}}}, {b: {c: {d: 'e'}}, a: 'a'})).to.eql(true);
+        });
+
+        it('should return false if deep nested objects are not equal', () => {
+            expect(equals({a: 'a', b: {c: {d: 'e'}}}, {b: {c: {d: 'f'}}, a: 'a'})).to.eql(false);
+        });
+
+        it('should return true if arrays are equal', () => {
+            expect(equals(['a', 'b'], ['a', 'b'])).to.eql(true);
+        });
+
+        it('should return false if arrays arent equal', () => {
+            expect(equals(['a', 'b'], ['b', 'a'])).to.eql(false);
+        });
     });
 
 });

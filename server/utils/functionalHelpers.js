@@ -94,8 +94,9 @@ function interleave(firstArray, secondArray) {
         .join('');
 }
 
-function equals(firstArray, secondArray) {
-    return R.equals(firstArray, secondArray);
+// arguments can be objects or arrays
+function equals(firstItem, secondItem) {
+    return R.equals(firstItem, secondItem);
 }
 
 function difference(firstArray, secondArray) {

@@ -68,7 +68,11 @@ module.exports = function createLicenceService(licenceClient) {
 
             const licenceConditions = {...existingLicenceConditions, ...conditionsObject};
 
-            if (existingLicence.stage === 'DECIDED' && !equals(existingLicenceConditions, licenceConditions)) {
+            if (equals(existingLicenceConditions, licenceConditions)) {
+                return;
+            }
+
+            if (existingLicence.stage === 'DECIDED') {
                 await markAsModified(nomisId, {requiresApproval: true});
             }
 
@@ -183,9 +187,13 @@ module.exports = function createLicenceService(licenceClient) {
             formName
         });
 
+        if (equals(licence, updatedLicence)) {
+            return licence;
+        }
+
         await licenceClient.updateLicence(nomisId, updatedLicence);
 
-        if (stage === licenceStages.DECIDED && !equals(licence, updatedLicence)) {
+        if (stage === licenceStages.DECIDED) {
             await markAsModified(nomisId, {requiresApproval: config.modificationRequiresApproval});
         }
 
@@ -274,12 +282,15 @@ module.exports = function createLicenceService(licenceClient) {
             const newAddress = Array.isArray(formResponse.addresses) ? formResponse.addresses[0] : formResponse;
             const updatedLicence = addressesUpdateMethod({nomisId, licence, newAddress, index});
 
-            if (stage === licenceStages.DECIDED && !equals(licence, updatedLicence)) {
+            if (equals(licence, updatedLicence)) {
+                return licence;
+            }
+
+            if (stage === licenceStages.DECIDED) {
                 await markAsModified(nomisId, {requiresApproval: false});
             }
 
             await licenceClient.updateLicence(nomisId, updatedLicence);
-
             return updatedLicence;
         };
     }
