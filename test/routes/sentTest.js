@@ -48,7 +48,7 @@ describe('GET sent', () => {
             .get('/dmToCa')
             .expect(200)
             .expect(res => {
-                expect(res.text).to.include('Submitted to the prison case admin');
+                expect(res.text).to.include('Submitted to Prison Case Admin');
             });
     });
 
