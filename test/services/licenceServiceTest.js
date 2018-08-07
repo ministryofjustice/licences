@@ -103,6 +103,25 @@ describe('licenceService', () => {
             );
         });
 
+        it('should not call update section if no changes have been made', async () => {
+            licenceClient.getLicence.resolves({
+                licence: {
+                    licenceConditions:
+                        {
+                            standard: {additionalConditionsRequired: 'Yes'},
+                            additional: {1: {}},
+                            bespoke: [{text: 'bespoke'}]
+                        }
+                }
+            });
+            licenceClient.getAdditionalConditions.resolves([
+                {user_input: 1, id: 1, field_position: null}]);
+
+            await service.updateLicenceConditions('ab1', {additionalConditions: '1'}, [{text: 'bespoke'}]);
+
+            expect(licenceClient.updateSection).to.not.be.called();
+        });
+
         it('should throw if error updating licence', () => {
             licenceClient.updateSection.rejects();
             const args = {nomisId: 'ab1', additionalConditions: ['Scotland Street']};
@@ -440,6 +459,21 @@ describe('licenceService', () => {
             };
             expect(licenceClient.updateLicence).to.be.calledOnce();
             expect(licenceClient.updateLicence).to.be.calledWith('ab1', expectedLicence);
+        });
+
+        it('should not call updateLicence if there are no changes', async () => {
+
+            const fieldMap = [{answer: {}}];
+            const userInput = {answer: 'answer'};
+            const licenceSection = 'section4';
+            const formName = 'form2';
+
+            licenceClient.getLicence.resolves({licence: baseLicence});
+            const output = await service.update(
+                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+
+            expect(licenceClient.updateLicence).to.not.be.called();
+            expect(output).to.be.eql(baseLicence);
         });
 
         it('should add new form to the licence', async () => {
@@ -1125,6 +1159,19 @@ describe('licenceService', () => {
 
             expect(licenceClient.updateLicence).to.be.calledOnce();
             expect(licenceClient.updateLicence).to.be.calledWith(1, expectedOutput);
+        });
+
+        it('should not update the saved licence if there are no changes', async () => {
+            const output = await service.updateAddress({
+                nomisId: 1,
+                index: 1,
+                rawLicence: baseLicence,
+                userInput: {addresses: [{postCode: 'pc2'}]},
+                fieldMap: [{addresses: {isList: true, contains: [{postCode: 'pc2'}]}}]
+            });
+
+            expect(licenceClient.updateLicence).to.not.be.called();
+            expect(output).to.eql(baseLicence.licence);
         });
 
         it('should throw if there is no address to update', async () => {
