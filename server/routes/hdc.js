@@ -293,7 +293,7 @@ module.exports = function(
 
         await licenceService.update({
             nomisId: nomisId,
-            fieldMap: [{decision: {}}],
+            config: {fields: [{decision: {}}]},
             userInput: req.body,
             licenceSection: 'proposedAddress',
             formName: 'optOut'

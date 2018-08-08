@@ -25,7 +25,7 @@ describe('/hdc/optOut', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             nomisId: '1',
-                            fieldMap: [{decision: {}}],
+                            config: {fields: [{decision: {}}]},
                             userInput: formResponse,
                             licenceSection: 'proposedAddress',
                             formName: 'optOut'
