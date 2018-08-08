@@ -48,6 +48,7 @@ block content
                     include HDCRefusalTask
                     if allowedTransition === 'caToDm'
                         include caSubmitApprovalTask
+                    include createLicenceTask
 
             else
                 include curfewAddressTask

@@ -35,26 +35,59 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
             return res.redirect(`/hdc/pdf/select/${nomisId}`);
         }
 
-        res.redirect(`/hdc/pdf/view/${decision}/${nomisId}`);
+        res.redirect(`/hdc/pdf/taskList/${decision}/${nomisId}`);
     });
 
-    router.get('/view/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/taskList/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
 
         const {nomisId, templateName} = req.params;
-        logger.debug(`GET pdf/view/${templateName}/${nomisId}`);
+        logger.debug(`GET pdf/taskList/${templateName}/${nomisId}`);
 
-        const templateIds = templates.map(template => template.id);
-        if (!templateIds.includes(templateName)) {
+        const templateConfig = templates.find(template => template.id === templateName);
+        if (!templateConfig) {
             throw new Error('Invalid licence template name');
         }
 
-        const {missing} = await pdfService.getPdfLicenceData(templateName, nomisId, req.user.token);
+        const templateTitle = templateConfig.label;
 
-        if (missing) {
-            return res.render('pdf/errors', {nomisId, missing, templateName});
-        }
+        const [prisoner, {missing}] = await Promise.all([
+            prisonerService.getPrisonerPersonalDetails(nomisId, req.user.username, req.user.token),
+            pdfService.getPdfLicenceData(templateName, nomisId, req.user.username, req.user.token)
+        ]);
 
-        return res.redirect(`/hdc/pdf/create/${templateName}/${nomisId}`);
+        const incompleteGroups = Object.keys(missing);
+        const canPrint = !incompleteGroups.find(group => missing[group].mandatory);
+
+        return res.render('pdf/createLicenceTaskList', {
+            nomisId,
+            missing,
+            templateName,
+            prisoner,
+            templateTitle,
+            incompleteGroups,
+            canPrint
+        });
+    }));
+
+    router.get('/missing/:section/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+
+        const {nomisId, templateName, section} = req.params;
+        logger.debug(`GET pdf/missing/${section}/${templateName}/${nomisId}`);
+
+        const [prisoner, {missing}] = await Promise.all([
+            prisonerService.getPrisonerPersonalDetails(nomisId, req.user.username, req.user.token),
+            pdfService.getPdfLicenceData(templateName, nomisId, req.user.username, req.user.token)
+        ]);
+
+        const data = {};
+
+        return res.render(`pdf/missing/${section}`, {
+            nomisId,
+            missing,
+            templateName,
+            prisoner,
+            data
+        });
     }));
 
     router.get('/create/:templateName/:nomisId', asyncMiddleware(async (req, res) => {

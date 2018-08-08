@@ -107,8 +107,6 @@ function nomisGetBuilder(token) {
             throw new NoTokenError();
         }
 
-        logger.info(`Calling nomis with token: ${token}`);
-
         try {
             const result = await superagent
                 .get(path)

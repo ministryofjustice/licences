@@ -12,11 +12,10 @@ const testUser = {
     roleCode: 'CA'
 };
 
-describe('/hdc/reporting', () => {
+describe('/hdc/monitoring', () => {
     describe('routes', () => {
         const routes = [
-            {url: '/reporting/reportingInstructions/1', content: 'Reporting instructions'},
-            {url: '/reporting/reportingDate/1', content: 'Enter reporting date and time'}
+            {url: '/monitoring/taggingCompany/1', content: 'Enter tagging company details'}
         ];
 
         routes.forEach(route => {
@@ -38,15 +37,9 @@ describe('/hdc/reporting', () => {
     describe('POST /hdc/licenceConditions/:section/:nomisId', () => {
         const routes = [
             {
-                url: '/reporting/reportingInstructions/1',
+                url: '/monitoring/taggingCompany/1',
                 body: {nomisId: 1},
-                section: 'reportingInstructions',
-                nextPath: '/hdc/taskList/1'
-            },
-            {
-                url: '/reporting/reportingDate/1',
-                body: {nomisId: 1},
-                section: 'reportingDate',
+                section: 'taggingCompany',
                 nextPath: '/hdc/pdf/taskList/1'
             }
         ];
@@ -66,7 +59,7 @@ describe('/hdc/reporting', () => {
                             nomisId: '1',
                             config: formConfig[route.section],
                             userInput: route.body,
-                            licenceSection: 'reporting',
+                            licenceSection: 'monitoring',
                             formName: route.section
                         });
 

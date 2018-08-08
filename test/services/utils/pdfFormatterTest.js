@@ -206,12 +206,12 @@ const allValuesEmpty = {
     EST_PREMISE: 'PLACEHOLDER',
     MONITOR: 'PLACEHOLDER',
     OFF_BOOKING: 'PLACEHOLDER',
-    OFF_CRO: 'PLACEHOLDER',
+    OFF_CRO: '',
     OFF_DOB: 'PLACEHOLDER',
     OFF_NAME: 'PLACEHOLDER',
     OFF_NOMS: 'PLACEHOLDER',
     OFF_PHOTO: 'PLACEHOLDER',
-    OFF_PNC: 'PLACEHOLDER',
+    OFF_PNC: '',
     PSS: '',
     REPORTING_ADDRESS: 'PLACEHOLDER',
     REPORTING_AT: 'PLACEHOLDER',
@@ -225,41 +225,63 @@ const allValuesEmpty = {
 };
 
 const displayNames = {
-    CONDITIONS: 'Additional conditions',
-    CURFEW_ADDRESS: 'Curfew address',
-    CURFEW_FIRST_FROM: 'Curfew first night from',
-    CURFEW_FIRST_UNTIL: 'Curfew first night until',
-    CURFEW_FRI_FROM: 'Curfew Friday from',
-    CURFEW_FRI_UNTIL: 'Curfew Friday until',
-    CURFEW_MON_FROM: 'Curfew Monday from',
-    CURFEW_MON_UNTIL: 'Curfew Monday until',
-    CURFEW_SAT_FROM: 'Curfew Saturday from',
-    CURFEW_SAT_UNTIL: 'Curfew Saturday until',
-    CURFEW_SUN_FROM: 'Curfew Sunday from',
-    CURFEW_SUN_UNTIL: 'Curfew Sunday until',
-    CURFEW_THU_FROM: 'Curfew Thursday from',
-    CURFEW_THU_UNTIL: 'Curfew Thursday until',
-    CURFEW_TUE_FROM: 'Curfew Tuesday from',
-    CURFEW_TUE_UNTIL: 'Curfew Tuesday until',
-    CURFEW_WED_FROM: 'Curfew Wednesday from',
-    CURFEW_WED_UNTIL: 'Curfew Wednesday until',
-    EST_PHONE: 'Prison telephone number',
-    EST_PREMISE: 'Prison name',
-    MONITOR: 'Monitoring company telephone number',
-    OFF_BOOKING: 'Offender booking ID',
-    OFF_CRO: 'Offender CRO',
-    OFF_DOB: 'Offender date of birth',
-    OFF_NAME: 'Offender name',
-    OFF_NOMS: 'Offender Noms ID',
-    OFF_PNC: 'Offender PNC',
-    PSS: 'Post-sentence supervision conditions',
-    REPORTING_ADDRESS: 'Reporting address',
-    REPORTING_AT: 'Reporting at',
-    REPORTING_NAME: 'Reporting name',
-    REPORTING_ON: 'Reporting on',
-    SENT_CRD: 'CRD',
-    SENT_HDCAD: 'HDCAD',
-    SENT_LED: 'LED',
-    SENT_SED: 'SED',
-    SENT_TUSED: 'TUSED'
+    conditions: {
+        optional: {
+            CONDITIONS: 'Additional conditions',
+            PSS: 'Post-sentence supervision conditions'
+        }
+    },
+    curfew: {
+        mandatory: {
+            CURFEW_ADDRESS: 'Curfew address',
+            CURFEW_FIRST_FROM: 'Curfew first night from',
+            CURFEW_FIRST_UNTIL: 'Curfew first night until',
+            CURFEW_FRI_FROM: 'Curfew Friday from',
+            CURFEW_FRI_UNTIL: 'Curfew Friday until',
+            CURFEW_MON_FROM: 'Curfew Monday from',
+            CURFEW_MON_UNTIL: 'Curfew Monday until',
+            CURFEW_SAT_FROM: 'Curfew Saturday from',
+            CURFEW_SAT_UNTIL: 'Curfew Saturday until',
+            CURFEW_SUN_FROM: 'Curfew Sunday from',
+            CURFEW_SUN_UNTIL: 'Curfew Sunday until',
+            CURFEW_THU_FROM: 'Curfew Thursday from',
+            CURFEW_THU_UNTIL: 'Curfew Thursday until',
+            CURFEW_TUE_FROM: 'Curfew Tuesday from',
+            CURFEW_TUE_UNTIL: 'Curfew Tuesday until',
+            CURFEW_WED_FROM: 'Curfew Wednesday from',
+            CURFEW_WED_UNTIL: 'Curfew Wednesday until'
+        }
+    },
+    monitoring: {
+        mandatory: {
+            MONITOR: 'Monitoring company telephone number'
+        }
+    },
+    reporting: {
+        mandatory: {
+            REPORTING_ADDRESS: 'Reporting address',
+            REPORTING_AT: 'Reporting at',
+            REPORTING_NAME: 'Reporting name',
+            REPORTING_ON: 'Reporting on'
+        }
+    },
+    sentence: {
+        mandatory: {
+            EST_PHONE: 'Prison telephone number',
+            EST_PREMISE: 'Prison name',
+            OFF_BOOKING: 'Booking ID',
+            OFF_DOB: 'Offender date of birth',
+            OFF_NAME: 'Offender name',
+            OFF_NOMS: 'Noms ID',
+            SENT_CRD: 'Conditional release date (CRD)',
+            SENT_HDCAD: 'HDC approved date (HDCAD)',
+            SENT_LED: 'Licence expiry date (LED)',
+            SENT_SED: 'Sentence expiry date (SED)',
+            SENT_TUSED: 'Top-up supervision end date (TUSED)'
+        },
+        optional: {
+            OFF_CRO: 'CRO number',
+            OFF_PNC: 'PNC ID'
+        }
+    }
 };

@@ -15,7 +15,8 @@ const testUser = {
     staffId: 'my-staff-id',
     token: 'my-token',
     email: 'user@email',
-    role: 'CA'
+    role: 'CA',
+    username: 'my-username'
 };
 
 const prisonerService = createPrisonerServiceStub();
@@ -33,14 +34,8 @@ const valuesWithMissing = {
         OFF_NAME: 'FIRST LAST'
     },
     missing: {
-        OFF_DOB: 'Missing 1',
-        OFF_PNC: 'Missing 2'
-    }
-};
-
-const valuesOnly = {
-    values: {
-        OFF_NAME: 'FIRST LAST'
+        monitoring:
+            {mandatory: {MONITOR: 'Monitoring company telephone number'}}
     }
 };
 
@@ -48,6 +43,7 @@ describe('PDF:', () => {
 
     beforeEach(() => {
         auditStub.record.reset();
+        pdfServiceStub.getPdfLicenceData.reset();
     });
 
     describe('GET /select', () => {
@@ -73,7 +69,7 @@ describe('PDF:', () => {
                 .post('/select/123')
                 .send({decision: 'hdc_ap_pss'})
                 .expect(302)
-                .expect('Location', '/hdc/pdf/view/hdc_ap_pss/123');
+                .expect('Location', '/hdc/pdf/taskList/hdc_ap_pss/123');
         });
 
         it('redirects back to the select page if nothing selected', () => {
@@ -87,32 +83,36 @@ describe('PDF:', () => {
 
     describe('GET /view', () => {
 
-        it('Shows display labels when missing values', () => {
+        it('Shows incomplete tasks when missing values', () => {
 
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
 
             return request(app)
-                .get('/view/hdc_ap_pss/123')
+                .get('/taskList/hdc_ap_pss/123')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.include('Missing 1');
-                    expect(res.text).to.include('Missing 2');
+                    expect(res.text).to.include('Not complete');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
-                        'hdc_ap_pss', '123', 'my-token');
+                        'hdc_ap_pss', '123', 'my-username', 'my-token');
                 });
         });
 
-        it('Redirects to create when all values present', () => {
 
-            pdfServiceStub.getPdfLicenceData.resolves(valuesOnly);
+        it('Does not allow print when missing values', () => {
+
+            pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
 
             return request(app)
-                .get('/view/hdc_ap_pss/123')
-                .expect(302)
+                .get('/taskList/hdc_ap_pss/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.header.location).to.equal('/hdc/pdf/create/hdc_ap_pss/123');
+                    expect(res.text).not.to.include('Ready to create');
+                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
+                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
+                        'hdc_ap_pss', '123', 'my-username', 'my-token');
                 });
         });
     });

@@ -1,0 +1,15 @@
+div.taskListItem.borderBottom.largeMarginBottom
+    h2.heading-medium Create licence
+
+    div.pure-g
+        div.pure-u-3-4
+            | #{statusLabel}
+            | licence version number and timestamp?
+        div.pure-u-1-4.center
+            if (['DECIDED', 'MODIFIED'].includes(licenceStatus.stage))
+                if user.role === 'CA' && licenceStatus.decisions.approved
+                    a#createPdf.taskListAction.center.button(href="/hdc/pdf/select/" + nomisId role="button") Create licence PDF
+
+
+
+

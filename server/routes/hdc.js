@@ -14,6 +14,7 @@ const reportingConfig = require('./config/reporting');
 const finalChecksConfig = require('./config/finalChecks');
 const approvalConfig = require('./config/approval');
 const riskConfig = require('./config/risk');
+const createPdfConfig = require('./config/createPdf');
 
 const formConfig = {
     ...licenceConditionsConfig,
@@ -23,7 +24,8 @@ const formConfig = {
     ...riskConfig,
     ...reportingConfig,
     ...finalChecksConfig,
-    ...approvalConfig
+    ...approvalConfig,
+    ...createPdfConfig
 };
 
 module.exports = function(
@@ -285,22 +287,6 @@ module.exports = function(
         res.redirect(`${nextPath}${nomisId}`);
     }));
 
-    router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
-        const {sectionName, formName, nomisId} = req.params;
-        logger.debug(`GET ${sectionName}/${formName}/${nomisId}`);
-
-        const {licenceSection, nextPath, pageDataMap, validateInPlace} = formConfig[formName];
-        const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
-        const data = getIn(res.locals.licence, dataPath) || {};
-        const licenceStatus = getLicenceStatus(res.locals.licence);
-
-        const errors = validateInPlace && firstItem(req.flash('errors'));
-        const errorObject = getIn(errors, [sectionName, formName]) || {};
-
-        const viewData = {nomisId, data, nextPath, licenceStatus, errorObject};
-
-        res.render(`${sectionName}/${formName}`, viewData);
-    });
 
     router.post('/optOut/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.body;
@@ -319,11 +305,49 @@ module.exports = function(
         res.redirect(`${nextPath}${nomisId}`);
     }));
 
+    router.get('/:sectionName/:formName/:path/:nomisId', checkLicence, (req, res) => {
+        const {sectionName, formName, path, nomisId} = req.params;
+        logger.debug(`GET ${sectionName}/${formName}/${path}/${nomisId}`);
+
+        return formGet(req, res, sectionName, formName, nomisId);
+    });
+
+    router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
+        const {sectionName, formName, nomisId} = req.params;
+        logger.debug(`GET ${sectionName}/${formName}/${nomisId}`);
+
+        return formGet(req, res, sectionName, formName, nomisId);
+    });
+
+    function formGet(req, res, sectionName, formName, nomisId) {
+        const {licenceSection, nextPath, pageDataMap, validateInPlace} = formConfig[formName];
+        const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
+        const data = getIn(res.locals.licence, dataPath) || {};
+        const licenceStatus = getLicenceStatus(res.locals.licence);
+
+        const errors = validateInPlace && firstItem(req.flash('errors'));
+        const errorObject = getIn(errors, [sectionName, formName]) || {};
+
+        const viewData = {nomisId, data, nextPath, licenceStatus, errorObject};
+
+        res.render(`${sectionName}/${formName}`, viewData);
+    }
+
     router.post('/:sectionName/:formName/:nomisId', asyncMiddleware(async (req, res) => {
         const {sectionName, formName, nomisId} = req.params;
-
         logger.debug(`POST ${sectionName}/${formName}/${nomisId}`);
 
+        return formPost(req, res, sectionName, formName, nomisId);
+    }));
+
+    router.post('/:sectionName/:formName/:path/:nomisId', asyncMiddleware(async (req, res) => {
+        const {sectionName, formName, path, nomisId} = req.params;
+        logger.debug(`POST ${sectionName}/${formName}/${path}/${nomisId}`);
+
+        return formPost(req, res, sectionName, formName, nomisId, path + '/');
+    }));
+
+    async function formPost(req, res, sectionName, formName, nomisId, path = '') {
         const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
         const saveSection = formConfig[formName].saveSection || [];
 
@@ -341,7 +365,7 @@ module.exports = function(
 
                 if (!isEmpty(getIn(errors, [sectionName, formName]))) {
                     req.flash('errors', errors);
-                    return res.redirect(`/hdc/${sectionName}/${formName}/${nomisId}`);
+                    return res.redirect(`/hdc/${sectionName}/${formName}/${path}${nomisId}`);
                 }
             }
         }
@@ -349,11 +373,12 @@ module.exports = function(
         auditUpdateEvent(req, nomisId, sectionName, formName);
 
         if (req.body.anchor) {
-            return res.redirect(`${nextPath}${nomisId}#${req.body.anchor}`);
+            return res.redirect(`${nextPath}${path}${nomisId}#${req.body.anchor}`);
         }
 
-        res.redirect(`${nextPath}${nomisId}`);
-    }));
+        res.redirect(`${nextPath}${path}${nomisId}`);
+    };
+
 
     function auditUpdateEvent(req, nomisId, sectionName, formName) {
         auditUpdateEventWithAction(req, nomisId, sectionName, formName, req.body.anchor || null);
