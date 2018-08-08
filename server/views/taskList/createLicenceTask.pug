@@ -4,7 +4,6 @@ div.taskListItem.borderBottom.largeMarginBottom
     div.pure-g
         div.pure-u-3-4
             | #{statusLabel}
-            | licence version number and timestamp?
         div.pure-u-1-4.center
             if (['DECIDED', 'MODIFIED'].includes(licenceStatus.stage))
                 if user.role === 'CA' && licenceStatus.decisions.approved
