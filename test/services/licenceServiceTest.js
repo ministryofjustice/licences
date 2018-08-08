@@ -235,11 +235,6 @@ describe('licenceService', () => {
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'APPROVAL');
         });
 
-        it('should increment version on transition to DECIDED', () => {
-            service.markForHandover('ab1', {}, 'dmToCa');
-            expect(licenceClient.updateStageAndVersion).to.be.calledWith('ab1', 'DECIDED');
-        });
-
         it('should return to ELIGIBILITY when RO sends to CA after opt out', () => {
             service.markForHandover('ab1', {}, 'roToCaOptedOut');
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'ELIGIBILITY');

@@ -6,7 +6,8 @@ const {
     authenticationMiddleware,
     appSetup,
     auditStub,
-    createPrisonerServiceStub
+    createPrisonerServiceStub,
+    createLicenceServiceStub
 } = require('../supertestSetup');
 
 const createPdfRoute = require('../../server/routes/pdf');
@@ -19,13 +20,15 @@ const testUser = {
 };
 
 const prisonerService = createPrisonerServiceStub();
+const licenceService = createLicenceServiceStub();
 
 const app = appSetup(createPdfRoute({
     logger: loggerStub,
     pdfService: pdfServiceStub,
     authenticationMiddleware,
     audit: auditStub,
-    prisonerService
+    prisonerService,
+    licenceService
 }), testUser);
 
 const valuesWithMissing = {
@@ -94,7 +97,7 @@ describe('PDF:', () => {
                     expect(res.text).to.include('Not complete');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
-                        'hdc_ap_pss', '123', 'my-token');
+                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'my-token');
                 });
         });
 
@@ -111,7 +114,7 @@ describe('PDF:', () => {
                     expect(res.text).not.to.include('Ready to create');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
-                        'hdc_ap_pss', '123', 'my-token');
+                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'my-token');
                 });
         });
     });
@@ -129,7 +132,8 @@ describe('PDF:', () => {
                 .expect('Content-Type', 'application/pdf')
                 .expect(res => {
                     expect(pdfServiceStub.generatePdf).to.be.calledOnce();
-                    expect(pdfServiceStub.generatePdf).to.be.calledWith('hdc_ap_pss', '123', 'my-token');
+                    expect(pdfServiceStub.generatePdf).to.be.calledWith(
+                        'hdc_ap_pss', '123', {licence: {key: 'value'}});
                     expect(res.body.toString()).to.include('PDF-1');
                 });
         });

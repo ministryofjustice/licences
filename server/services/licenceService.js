@@ -152,10 +152,6 @@ module.exports = function createLicenceService(licenceClient) {
             throw new Error('Invalid handover transition: ' + transitionType);
         }
 
-        if (newStage === licenceStages.DECIDED) {
-            return licenceClient.updateStageAndVersion(nomisId, newStage);
-        }
-
         return licenceClient.updateStage(nomisId, newStage);
     }
 
@@ -392,6 +388,7 @@ module.exports = function createLicenceService(licenceClient) {
         getConditionsErrors,
         getEligibilityErrors,
         getValidationErrorsForReview,
-        getValidationErrorsForPage
+        getValidationErrorsForPage,
+        updateVersion: licenceClient.updateVersion
     };
 };

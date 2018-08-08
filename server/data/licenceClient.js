@@ -116,14 +116,12 @@ module.exports = {
         return undefined;
     },
 
-    updateStageAndVersion: async function(nomisId, stage) {
-
-        const updateStage = `update licences set stage = '${stage}' where nomis_id = '${nomisId}'; `;
+    updateVersion: function(nomisId) {
 
         const saveVersionData = `insert into licence_versions (nomis_id, licence, version) select nomis_id, licence, 
         version from licences where nomis_id = '${nomisId}'; `;
 
-        return db.query('begin transaction; ' + updateStage + saveVersionData + 'commit;');
+        return db.query(saveVersionData);
     }
 };
 

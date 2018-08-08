@@ -28,7 +28,8 @@ describe('pdfService', () => {
 
     beforeEach(() => {
         licenceService = {
-            getLicence: sinon.stub().resolves(licenceResponse)
+            getLicence: sinon.stub().resolves(licenceResponse),
+            updateVersion: sinon.stub().resolves(licenceResponse)
         };
 
         conditionsService = {
@@ -59,9 +60,8 @@ describe('pdfService', () => {
                 .post('/generate', {templateName, values})
                 .reply(200, pdf1AsBytes);
 
-            const result = await service.generatePdf(templateName, '123', 'username');
+            const result = await service.generatePdf(templateName, '123', {licence: {key: 'value'}}, 'username');
 
-            expect(licenceService.getLicence).to.be.calledOnce();
             expect(conditionsService.populateLicenceWithConditions).to.be.calledOnce();
             expect(prisonerService.getPrisonerDetails).to.be.calledOnce();
             expect(prisonerService.getEstablishmentForPrisoner).to.be.calledOnce();
@@ -71,6 +71,40 @@ describe('pdfService', () => {
             expect(result).to.eql(new Buffer(pdf1AsBytes));
         });
 
+        it('should increment the version if first version', async () => {
+            fakePdfGenerator
+                .post('/generate', {templateName, values})
+                .reply(200, pdf1AsBytes);
+
+            const rawLicence = {licence: {key: 'value'}};
+            await service.generatePdf(templateName, '123', rawLicence, 'username');
+
+            expect(licenceService.updateVersion).to.be.calledOnce();
+            expect(licenceService.updateVersion).to.be.calledWith('123');
+        });
+
+        it('should increment the version if approved version is lower than current version', async () => {
+            fakePdfGenerator
+                .post('/generate', {templateName, values})
+                .reply(200, pdf1AsBytes);
+
+            const rawLicence = {licence: {key: 'value'}, version: 4, approvedVersion: {version: 3}};
+            await service.generatePdf(templateName, '123', rawLicence, 'username');
+
+            expect(licenceService.updateVersion).to.be.calledOnce();
+            expect(licenceService.updateVersion).to.be.calledWith('123');
+        });
+
+        it('should not increment the version if approved version is lower than current version', async () => {
+            fakePdfGenerator
+                .post('/generate', {templateName, values})
+                .reply(200, pdf1AsBytes);
+
+            const rawLicence = {licence: {key: 'value'}, version: 4, approvedVersion: {version: 4}};
+            await service.generatePdf(templateName, '123', rawLicence, 'username');
+
+            expect(licenceService.updateVersion).to.not.be.called();
+        });
     });
 
     describe('getPdf', () => {
@@ -94,10 +128,7 @@ describe('pdfService', () => {
 
     describe('getPdfLicenceData', () => {
         it('should request details from services and pass to formatter', async () => {
-            await service.getPdfLicenceData(templateName, '123', 'token');
-
-            expect(licenceService.getLicence).to.be.calledOnce();
-            expect(licenceService.getLicence).to.be.calledWith('123');
+            await service.getPdfLicenceData(templateName, '123', {licence: {key: 'value'}}, 'token');
 
             expect(conditionsService.populateLicenceWithConditions).to.be.calledOnce();
             expect(conditionsService.populateLicenceWithConditions).to.be.calledWith(licence);
@@ -117,10 +148,10 @@ describe('pdfService', () => {
                 {licence, prisonerInfo: prisonerResponse, establishment: establishmentResponse}, imageResponse);
         });
 
-
         it('should throw if error in other service', () => {
-            licenceService.getLicence.rejects(new Error('dead'));
-            return expect(service.getPdfLicenceData(templateName, '123', 'token')).to.be.rejected();
+            prisonerService.getPrisonerDetails.rejects(new Error('dead'));
+            return expect(service.getPdfLicenceData(
+                templateName, '123', {licence: {key: 'value'}}, 'token')).to.be.rejected();
         });
     });
 });
