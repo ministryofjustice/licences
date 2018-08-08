@@ -17,12 +17,7 @@ block content
             include tasks/reportingTask
             include tasks/taggingTask
 
-        if canPrint
-            div.pure-u-1.borderTop
-                include tasks/createLicenceTask
-        else
-            div.pure-u-1.borderTop.paddingTop
-                div.pure-u-3-4 Some sections not completed
-                p
-                    a#selctTemplate(href="/hdc/pdf/select/" + nomisId) Select a different template
+        div.pure-u-1.borderTop
+            include tasks/createLicenceTask
+
 
