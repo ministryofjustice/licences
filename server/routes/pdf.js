@@ -51,8 +51,8 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
         const templateTitle = templateConfig.label;
 
         const [prisoner, {missing}] = await Promise.all([
-            prisonerService.getPrisonerPersonalDetails(nomisId, req.user.username, req.user.token),
-            pdfService.getPdfLicenceData(templateName, nomisId, req.user.username, req.user.token)
+            prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token),
+            pdfService.getPdfLicenceData(templateName, nomisId, req.user.token)
         ]);
 
         const incompleteGroups = Object.keys(missing);
@@ -75,8 +75,8 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
         logger.debug(`GET pdf/missing/${section}/${templateName}/${nomisId}`);
 
         const [prisoner, {missing}] = await Promise.all([
-            prisonerService.getPrisonerPersonalDetails(nomisId, req.user.username, req.user.token),
-            pdfService.getPdfLicenceData(templateName, nomisId, req.user.username, req.user.token)
+            prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token),
+            pdfService.getPdfLicenceData(templateName, nomisId, req.user.token)
         ]);
 
         const data = {};

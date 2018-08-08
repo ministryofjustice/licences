@@ -15,8 +15,7 @@ const testUser = {
     staffId: 'my-staff-id',
     token: 'my-token',
     email: 'user@email',
-    role: 'CA',
-    username: 'my-username'
+    role: 'CA'
 };
 
 const prisonerService = createPrisonerServiceStub();
@@ -95,7 +94,7 @@ describe('PDF:', () => {
                     expect(res.text).to.include('Not complete');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
-                        'hdc_ap_pss', '123', 'my-username', 'my-token');
+                        'hdc_ap_pss', '123', 'my-token');
                 });
         });
 
@@ -112,7 +111,7 @@ describe('PDF:', () => {
                     expect(res.text).not.to.include('Ready to create');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
-                        'hdc_ap_pss', '123', 'my-username', 'my-token');
+                        'hdc_ap_pss', '123', 'my-token');
                 });
         });
     });
