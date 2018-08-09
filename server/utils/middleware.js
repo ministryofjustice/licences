@@ -18,16 +18,17 @@ function checkLicenceMiddleWare(licenceService, prisonerService) {
 
             const nomisId = req.params.nomisId;
 
-            const getLicence = licenceService.getLicence(nomisId);
-            const getPrisoner = prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token);
-            const details = await Promise.all([getLicence, getPrisoner]);
+            const [licence, prisoner] = await Promise.all([
+                licenceService.getLicence(nomisId),
+                prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token)
+            ]);
 
-            if (!details[0] || !details[1]) {
+            if (!licence || !prisoner) {
                 return res.redirect('/');
             }
 
-            res.locals.licence = details[0];
-            res.locals.prisoner = details[1];
+            res.locals.licence = licence;
+            res.locals.prisoner = prisoner;
             next();
 
         } catch (error) {

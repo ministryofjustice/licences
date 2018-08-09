@@ -247,21 +247,17 @@ describe('licenceClient', () => {
         });
     });
 
-    describe('updateStageAndVersion', () => {
+    describe('updateVersion', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedTransaction = 'begin transaction';
-            const expectedUpdate = 'set stage = \'NEW_STAGE\'';
             const expectedWhere = 'where nomis_id = \'ABC123\'';
             const expectedVersionUpdate = 'insert into licence_versions';
 
-            const result = licencesProxy().updateStageAndVersion('ABC123', 'NEW_STAGE');
+            const result = licencesProxy().updateVersion('ABC123');
 
             return result.then(data => {
                 const sql = queryStub.getCalls()[0].args[0];
-                expect(sql).to.include(expectedTransaction);
-                expect(sql).to.include(expectedUpdate);
                 expect(sql).to.include(expectedWhere);
                 expect(sql).to.include(expectedVersionUpdate);
             });

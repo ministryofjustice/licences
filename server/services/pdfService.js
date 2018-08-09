@@ -5,12 +5,13 @@ const pdfGenPath = `${config.pdf.pdfServiceHost}/generate`;
 
 module.exports = function createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter) {
 
-    async function getPdfLicenceData(templateName, nomisId, token) {
+    async function getPdfLicenceData(templateName, nomisId, rawLicence, token) {
 
-        const rawLicence = await licenceService.getLicence(nomisId);
-        const licence = await conditionsService.populateLicenceWithConditions(rawLicence.licence);
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, token);
-        const establishment = await prisonerService.getEstablishmentForPrisoner(nomisId, token);
+        const [licence, prisonerInfo, establishment] = await Promise.all([
+            conditionsService.populateLicenceWithConditions(rawLicence.licence),
+            prisonerService.getPrisonerDetails(nomisId, token),
+            prisonerService.getEstablishmentForPrisoner(nomisId, token)
+        ]);
         const image = await prisonerService.getPrisonerImage(prisonerInfo.facialImageId, token);
 
         return pdfFormatter.formatPdfData(templateName, nomisId, {licence, prisonerInfo, establishment}, image);
@@ -35,8 +36,15 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
         }
     }
 
-    async function generatePdf(templateName, nomisId, token) {
-        const {values} = await getPdfLicenceData(templateName, nomisId, token);
+    async function generatePdf(templateName, nomisId, rawLicence, token) {
+        const {values} = await getPdfLicenceData(templateName, nomisId, rawLicence, token);
+
+        const {version, approvedVersion} = rawLicence;
+
+        if (!approvedVersion || version > approvedVersion.version) {
+            await licenceService.updateVersion(nomisId);
+        }
+
         return getPdf(templateName, values);
     }
 

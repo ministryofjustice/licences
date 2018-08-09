@@ -1,9 +1,10 @@
 const express = require('express');
-const {asyncMiddleware} = require('../utils/middleware');
+const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
 const {templates} = require('./config/pdf');
 const {firstItem} = require('../utils/functionalHelpers');
 
-module.exports = function({logger, pdfService, prisonerService, authenticationMiddleware, audit}) {
+module.exports = function(
+    {logger, pdfService, prisonerService, authenticationMiddleware, licenceService, conditionsService, audit}) {
 
     const router = express.Router();
     router.use(authenticationMiddleware());
@@ -15,7 +16,9 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
         next();
     });
 
-    router.get('/select/:nomisId', asyncMiddleware(async (req, res) => {
+    const checkLicence = checkLicenceMiddleWare(licenceService, prisonerService);
+
+    router.get('/select/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
 
         const prisoner = await prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token);
@@ -38,9 +41,10 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
         res.redirect(`/hdc/pdf/taskList/${decision}/${nomisId}`);
     });
 
-    router.get('/taskList/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/taskList/:templateName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
 
         const {nomisId, templateName} = req.params;
+        const {licence} = res.locals;
         logger.debug(`GET pdf/taskList/${templateName}/${nomisId}`);
 
         const templateConfig = templates.find(template => template.id === templateName);
@@ -52,7 +56,7 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
 
         const [prisoner, {missing}] = await Promise.all([
             prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token),
-            pdfService.getPdfLicenceData(templateName, nomisId, req.user.token)
+            pdfService.getPdfLicenceData(templateName, nomisId, licence, req.user.token)
         ]);
 
         const incompleteGroups = Object.keys(missing);
@@ -69,14 +73,15 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
         });
     }));
 
-    router.get('/missing/:section/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/missing/:section/:templateName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
 
         const {nomisId, templateName, section} = req.params;
+        const {licence} = res.locals;
         logger.debug(`GET pdf/missing/${section}/${templateName}/${nomisId}`);
 
         const [prisoner, {missing}] = await Promise.all([
             prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token),
-            pdfService.getPdfLicenceData(templateName, nomisId, req.user.token)
+            pdfService.getPdfLicenceData(templateName, nomisId, licence, req.user.token)
         ]);
 
         const data = {};
@@ -90,11 +95,13 @@ module.exports = function({logger, pdfService, prisonerService, authenticationMi
         });
     }));
 
-    router.get('/create/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/create/:templateName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
 
         const {nomisId, templateName} = req.params;
+        const {licence} = res.locals;
         logger.debug(`GET pdf/create/${nomisId}/${templateName}`);
-        const pdf = await pdfService.generatePdf(templateName, nomisId, req.user.token);
+
+        const pdf = await pdfService.generatePdf(templateName, nomisId, licence, req.user.token);
 
         audit.record('CREATE_PDF', req.user.staffId, {templateName, nomisId});
 
