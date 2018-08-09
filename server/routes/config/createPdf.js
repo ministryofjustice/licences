@@ -6,6 +6,7 @@ module.exports = {
             {reportingTime: {}}
         ],
         validateInPlace: true,
+        noModify: true,
         nextPath: {
             path: '/hdc/pdf/taskList/'
         }
@@ -16,6 +17,7 @@ module.exports = {
             {telephone: {}}
         ],
         validateInPlace: true,
+        noModify: true,
         nextPath: {
             path: '/hdc/pdf/taskList/'
         }
