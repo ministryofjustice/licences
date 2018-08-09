@@ -155,7 +155,11 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateStage(nomisId, newStage);
     }
 
-    function updateModificationStage(nomisId, stage, {requiresApproval}) {
+    function updateModificationStage(nomisId, stage, {requiresApproval, noModify}) {
+
+        if (noModify) {
+            return;
+        }
 
         if (requiresApproval && (stage === 'DECIDED' || stage === 'MODIFIED')) {
             return licenceClient.updateStage(nomisId, licenceStages.MODIFIED_APPROVAL);
@@ -192,7 +196,10 @@ module.exports = function createLicenceService(licenceClient) {
 
         await licenceClient.updateLicence(nomisId, updatedLicence);
 
-        await updateModificationStage(nomisId, stage, {requiresApproval: config.modificationRequiresApproval});
+        await updateModificationStage(nomisId, stage, {
+            requiresApproval: config.modificationRequiresApproval,
+            noModify: config.noModify
+        });
 
         return updatedLicence;
     }

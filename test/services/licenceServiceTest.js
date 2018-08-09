@@ -968,6 +968,17 @@ describe('licenceService', () => {
                 expect(licenceClient.updateStage).to.be.calledWith(nomisId, 'MODIFIED');
             });
 
+            it('should not update stage to MODIFIED if noModify is set in config', async () => {
+                licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
+                const config = {
+                    fields: fieldMap,
+                    noModify: true
+                };
+                await service.update({nomisId, config, userInput, licenceSection, formName});
+
+                expect(licenceClient.updateStage).to.not.be.called();
+            });
+
             it('should not update stage to MODIFIED if in MODIFIED_APPROVAL', async () => {
                 licenceClient.getLicence.resolves({stage: 'MODIFIED_APPROVAL', licence});
                 await service.update({nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
