@@ -23,75 +23,84 @@ block content
 
         include prisonerDetails
 
-        if user.role === 'CA'
-            if (['UNSTARTED', 'ELIGIBILITY'].includes(licenceStatus.stage))
-                include eligibilityTask
-                if licenceStatus.decisions.eligible
-                    include proposedAddressTask
-                if allowedTransition === 'caToDmRefusal'
-                    include caSubmitRefusalTask
-                else
-                    include caSubmitAddressReviewTask
+        div.paddingBottom
+            if user.role === 'CA'
+                if (['UNSTARTED', 'ELIGIBILITY'].includes(licenceStatus.stage))
+                    include eligibilityTask
+                    if licenceStatus.decisions.eligible
+                        include proposedAddressTask
+                    if allowedTransition === 'caToDmRefusal'
+                        include caSubmitRefusalTask
+                    else
+                        include caSubmitAddressReviewTask
 
-            else if (['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage))
-                if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
-                    include eligibilitySummaryTask
-                if licenceStatus.decisions.eligible
-                    include curfewAddressTask
+                else if (['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage))
                     if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
+                        include eligibilitySummaryTask
+                    if licenceStatus.decisions.eligible
+                        include curfewAddressTask
+                        if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
+                            include riskManagementTask
+                            include curfewHoursTask
+                            include additionalConditionsTask
+                            include reportingInstructionsTask
+                            include finalChecksTask
+                            include postponementTask
+                        include HDCRefusalTask
+                        if allowedTransition === 'caToDm'
+                            include caSubmitApprovalTask
+                        include createLicenceTask
+
+                else
+                    include curfewAddressTask
+                    if (['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved))
                         include riskManagementTask
                         include curfewHoursTask
                         include additionalConditionsTask
                         include reportingInstructionsTask
                         include finalChecksTask
-                        include postponementTask
-                    include HDCRefusalTask
-                    if allowedTransition === 'caToDm'
-                        include caSubmitApprovalTask
-                    include createLicenceTask
-
-            else
-                include curfewAddressTask
-                if (['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved))
-                    include riskManagementTask
-                    include curfewHoursTask
-                    include additionalConditionsTask
-                    include reportingInstructionsTask
-                    include finalChecksTask
-                include postponementTask
-                include HDCRefusalTask
-                if allowedTransition === 'caToDmRefusal'
-                    include caSubmitRefusalTask
-                else
-                    include caSubmitApprovalTask
-
-        if user.role === 'RO'
-            if (licenceStatus.decisions.optedOut)
-                include optOutTask
-            else
-                include curfewAddressTask
-                if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
-                    include riskManagementTask
-                    include curfewHoursTask
-                    include additionalConditionsTask
-                    include reportingInstructionsTask
-                    include optOutTask
-            include roSubmitTask
-
-        if user.role === 'DM'
-            if licenceStatus.decisions.insufficientTimeStop
-                include eligibilitySummaryTask
-                include refusalTask
-
-            else
-                include curfewAddressTask
-                if (licenceStatus.decisions.curfewAddressApproved === 'approved')
-                    include riskManagementTask
-                    include curfewHoursTask
-                    include additionalConditionsTask
-                    include reportingInstructionsTask
-                    include finalChecksTask
-                if licenceStatus.decisions.confiscationOrder
                     include postponementTask
-                include returnToCaTask
-                include approvalTask
+                    include HDCRefusalTask
+                    if allowedTransition === 'caToDmRefusal'
+                        include caSubmitRefusalTask
+                    else
+                        include caSubmitApprovalTask
+
+            if user.role === 'RO'
+
+                if (['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage))
+                    include riskManagementTask
+                    include curfewHoursTask
+                    include additionalConditionsTask
+                    include reportingInstructionsTask
+
+                else
+                    if (licenceStatus.decisions.optedOut)
+                        include optOutTask
+                    else
+                        include curfewAddressTask
+                        if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+                            include riskManagementTask
+                            include curfewHoursTask
+                            include additionalConditionsTask
+                            include reportingInstructionsTask
+                            include optOutTask
+                    include roSubmitTask
+
+            if user.role === 'DM'
+                if licenceStatus.decisions.insufficientTimeStop
+                    include eligibilitySummaryTask
+                    include refusalTask
+
+                else
+                    include curfewAddressTask
+                    if (licenceStatus.decisions.curfewAddressApproved === 'approved')
+                        include riskManagementTask
+                        include curfewHoursTask
+                        include additionalConditionsTask
+                        include reportingInstructionsTask
+                        include finalChecksTask
+                    if licenceStatus.decisions.confiscationOrder
+                        include postponementTask
+                    include returnToCaTask
+                    include approvalTask

@@ -41,13 +41,13 @@ table#hdcEligiblePrisoners.largeMarginBottom
                             | #{prisoner.status}
 
                     td
-                        if ['PROCESSING_RO'].includes(prisoner.stage)
+                        if ['PROCESSING_RO', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
                             if ['Ready to check'].includes(prisoner.status)
                                 a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.offenderNo role="button")
                                     | Start
                             else
                                 a.button.button-secondary.fullWidth.center(href="/hdc/taskList/" + prisoner.offenderNo role="button")
                                     | View
-                        else if ['PROCESSING_CA', 'APPROVAL', 'DECIDED'].includes(prisoner.stage)
+                        else if ['PROCESSING_CA', 'APPROVAL'].includes(prisoner.stage)
                             a.button.button-secondary.fullWidth.center(href="/hdc/review/licence/" + prisoner.offenderNo role="button")
                                 | View

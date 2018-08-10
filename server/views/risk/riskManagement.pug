@@ -47,7 +47,7 @@ block content
                         if data.awaitingInformationDetails
                             | #{data.awaitingInformationDetails}
 
-            div.largePaddingBottom
+            div
                 h3.heading-medium Victim liaison
                 div.form-group.inline.smallPaddingTop
                     p Is this a Victim Contact Service qualifying case where the victim has opted in?
@@ -65,4 +65,5 @@ block content
                         if data.victimLiaisonDetails
                             | #{data.victimLiaisonDetails}
 
-            include ../includes/saveAndReturn
+        include ../includes/roModificationWarning
+        include ../includes/saveAndReturn
