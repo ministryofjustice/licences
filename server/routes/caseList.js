@@ -26,7 +26,12 @@ const caseListTabs = {
         {id: 'ready', text: 'Ready to check', licenceStages: ['PROCESSING_RO'], licenceStatus: 'Ready to check'},
         {id: 'checking', text: 'Checking', licenceStages: ['PROCESSING_RO'], licenceStatus: 'Assessment ongoing'},
         {id: 'withPrison', text: 'With prison', licenceStages: ['PROCESSING_CA', 'APPROVAL']},
-        {id: 'approved', text: 'Approved', licenceStages: ['DECIDED'], licenceStatus: 'Approved'}
+        {
+            id: 'approved',
+            text: 'Approved',
+            licenceStages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
+            licenceStatus: ['Approved', 'Modified']
+        }
     ],
     DM: [
         {id: 'ready', text: 'Ready to approve', licenceStages: ['APPROVAL']},

@@ -50,10 +50,10 @@ module.exports = function(
 
         const nomisId = req.params.nomisId;
         const conditions = await conditionsService.getStandardConditions();
-
+        const licenceStatus = getLicenceStatus(res.locals.licence);
         const data = getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {};
 
-        res.render('licenceConditions/standard', {nomisId, conditions, data});
+        res.render('licenceConditions/standard', {nomisId, conditions, data, licenceStatus});
     }));
 
     router.get('/licenceConditions/additionalConditions/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
@@ -63,8 +63,9 @@ module.exports = function(
         const licence = getIn(res.locals.licence, ['licence']);
         const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
         const conditions = await conditionsService.getAdditionalConditions(licence);
+        const licenceStatus = getLicenceStatus(res.locals.licence);
 
-        res.render('licenceConditions/additionalConditions', {nomisId, conditions, bespokeConditions});
+        res.render('licenceConditions/additionalConditions', {nomisId, conditions, bespokeConditions, licenceStatus});
     }));
 
     router.post('/licenceConditions/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {

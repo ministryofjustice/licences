@@ -58,7 +58,8 @@ module.exports = {
         ],
         nextPath: {
             path: '/hdc/taskList/'
-        }
+        },
+        modificationRequiresApproval: true
     },
     withdrawAddress: {
         pageDataMap: ['licence'],

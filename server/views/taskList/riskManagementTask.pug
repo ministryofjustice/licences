@@ -15,9 +15,14 @@ div.taskListItem
             else
                 | Not completed
         div.pure-u-1-4.center
-            if user.role === 'RO'
-                +startContinueView(licenceStatus.tasks.riskManagement, "/hdc/risk/riskManagement/" + prisonerInfo.offenderNo)
-            else if user.role === 'CA' && ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
+            -var postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
+            -var roleCanModify = (user.role === 'RO' || user.role === 'CA')
+
+            if postApproval && roleCanModify
                 a.taskListAction.center.button.button-secondary(href="/hdc/risk/riskManagement/" + prisonerInfo.offenderNo) View/Edit
+
+            else if user.role === 'RO'
+                +startContinueView(licenceStatus.tasks.riskManagement, "/hdc/risk/riskManagement/" + prisonerInfo.offenderNo)
+
             else
                 a.taskListAction.center.button.button-secondary(href="/hdc/review/risk/" + prisonerInfo.offenderNo) View

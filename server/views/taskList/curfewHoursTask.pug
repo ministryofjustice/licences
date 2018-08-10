@@ -8,9 +8,15 @@ div.taskListItem
             else
                 | Not completed
         div.pure-u-1-4.center
-            if user.role === 'RO'
-                +startContinueView(licenceStatus.tasks.curfewHours, "/hdc/curfew/curfewHours/" + prisonerInfo.offenderNo)
-            else if user.role === 'CA' && ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
+
+            -var postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
+            -var roleCanModify = (user.role === 'RO' || user.role === 'CA')
+
+            if postApproval && roleCanModify
                 a.taskListAction.center.button.button-secondary(href="/hdc/curfew/curfewHours/" + prisonerInfo.offenderNo) View/Edit
+
+            else if user.role === 'RO'
+                +startContinueView(licenceStatus.tasks.curfewHours, "/hdc/curfew/curfewHours/" + prisonerInfo.offenderNo)
+
             else
                 a.taskListAction.center.button.button-secondary(href="/hdc/review/curfewHours/" + prisonerInfo.offenderNo) View
