@@ -81,6 +81,7 @@ describe('pdfService', () => {
 
             expect(licenceService.updateVersion).to.be.calledOnce();
             expect(licenceService.updateVersion).to.be.calledWith('123');
+            expect(licenceService.getLicence).to.be.calledOnce();
         });
 
         it('should increment the version if approved version is lower than current version', async () => {
@@ -93,6 +94,7 @@ describe('pdfService', () => {
 
             expect(licenceService.updateVersion).to.be.calledOnce();
             expect(licenceService.updateVersion).to.be.calledWith('123');
+            expect(licenceService.getLicence).to.be.calledOnce();
         });
 
         it('should not increment the version if approved version is lower than current version', async () => {

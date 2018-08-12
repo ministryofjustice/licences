@@ -9,9 +9,14 @@ describe('pdfFormatter', () => {
                             prisonerInfo = {},
                             establishment = {},
                             image = '',
+                            approvedVersion = {},
                             placeholder = 'PLACEHOLDER'
                         }) {
-        return formatPdfData(templateName, nomisId, {licence, prisonerInfo, establishment}, image, placeholder);
+        return formatPdfData(templateName, nomisId, {
+            licence,
+            prisonerInfo,
+            establishment
+        }, image, approvedVersion, placeholder);
     }
 
     it('should give placeholders and display names for everything when all inputs missing', () => {
@@ -181,6 +186,20 @@ describe('pdfFormatter', () => {
         expect(data.missing['CONDITIONS']).to.eql(displayNames['CONDITIONS']);
         expect(data.missing['PSS']).to.eql(displayNames['PSS']);
     });
+
+    it('should take version number and date from approvedVersion', () => {
+        const approvedVersion = {
+            version: 111,
+            timestamp: '123'
+        };
+
+        const data = formatWith({approvedVersion: approvedVersion});
+
+        expect(data.values.VERSION_DATE).to.eql('123');
+        expect(data.values.VERSION_NUMBER).to.eql('111');
+        expect(data.missing).to.not.have.property('VERSION_DATE');
+        expect(data.missing).to.not.have.property('VERSION_NUMBER');
+    });
 });
 
 const allValuesEmpty = {
@@ -221,10 +240,18 @@ const allValuesEmpty = {
     SENT_HDCAD: 'PLACEHOLDER',
     SENT_LED: 'PLACEHOLDER',
     SENT_SED: 'PLACEHOLDER',
-    SENT_TUSED: 'PLACEHOLDER'
+    SENT_TUSED: 'PLACEHOLDER',
+    VERSION_DATE: 'PLACEHOLDER',
+    VERSION_NUMBER: 'PLACEHOLDER'
 };
 
 const displayNames = {
+    document: {
+        mandatory: {
+            VERSION_DATE: 'Version date',
+            VERSION_NUMBER: 'Version number'
+        }
+    },
     conditions: {
         optional: {
             CONDITIONS: 'Additional conditions',

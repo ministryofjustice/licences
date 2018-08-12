@@ -14,7 +14,11 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
         ]);
         const image = await prisonerService.getPrisonerImage(prisonerInfo.facialImageId, token);
 
-        return pdfFormatter.formatPdfData(templateName, nomisId, {licence, prisonerInfo, establishment}, image);
+        return pdfFormatter.formatPdfData(templateName, nomisId, {
+            licence,
+            prisonerInfo,
+            establishment
+        }, image, rawLicence.approvedVersion);
     }
 
     async function getPdf(templateName, values) {
@@ -37,15 +41,24 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     }
 
     async function generatePdf(templateName, nomisId, rawLicence, token) {
-        const {values} = await getPdfLicenceData(templateName, nomisId, rawLicence, token);
+
+        const versionedLicence = await checkAndUpdateVersion(rawLicence, nomisId, templateName);
+
+        const {values} = await getPdfLicenceData(templateName, nomisId, versionedLicence, token);
+
+        return getPdf(templateName, values);
+    }
+
+    async function checkAndUpdateVersion(rawLicence, nomisId, template) {
 
         const {version, approvedVersion} = rawLicence;
 
         if (!approvedVersion || version > approvedVersion.version) {
-            await licenceService.updateVersion(nomisId);
+            await licenceService.updateVersion(nomisId, template);
+            return licenceService.getLicence(nomisId);
         }
 
-        return getPdf(templateName, values);
+        return rawLicence;
     }
 
     return {
