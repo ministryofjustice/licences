@@ -1,8 +1,7 @@
 const {
     createAdditionalConditionsObject,
     populateAdditionalConditionsAsString,
-    populateAdditionalConditionsAsObject,
-    createInputWithReasonObject
+    populateAdditionalConditionsAsObject
 } = require('../../server/utils/licenceFactory');
 
 describe('licenceFactory', () => {
@@ -123,7 +122,8 @@ describe('licenceFactory', () => {
                         content: [{text: 'The condition'}],
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: false
                     }
                 ]
             };
@@ -157,7 +157,8 @@ describe('licenceFactory', () => {
                         content: [{text: 'The condition'}],
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: false
                     },
                     {
                         content: [{text: 'bespoke1'}],
@@ -205,7 +206,8 @@ describe('licenceFactory', () => {
                         ],
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     }
 
                 ]
@@ -248,7 +250,8 @@ describe('licenceFactory', () => {
                     ],
                     group: 'g',
                     subgroup: 'sg',
-                    id: 1
+                    id: 1,
+                    inputRequired: true
                 }]
             };
 
@@ -289,7 +292,8 @@ describe('licenceFactory', () => {
                     ],
                     group: 'g',
                     subgroup: 'sg',
-                    id: 1
+                    id: 1,
+                    inputRequired: true
                 }]
             };
 
@@ -329,7 +333,8 @@ describe('licenceFactory', () => {
                     ],
                     group: 'g',
                     subgroup: 'sg',
-                    id: 1
+                    id: 1,
+                    inputRequired: true
                 }]
             };
 
@@ -367,7 +372,8 @@ describe('licenceFactory', () => {
                     ],
                     group: 'g',
                     subgroup: 'sg',
-                    id: 1
+                    id: 1,
+                    inputRequired: true
                 }]
             };
 
@@ -406,7 +412,8 @@ describe('licenceFactory', () => {
                     ],
                     group: 'g',
                     subgroup: 'sg',
-                    id: 1
+                    id: 1,
+                    inputRequired: true
                 }]
             };
 
@@ -431,7 +438,8 @@ describe('licenceFactory', () => {
                     text: 'The condition [placeholder] with input [placeholder2] and another',
                     field_position: {field: 0, appointmentTime: 1},
                     group_name: 'g',
-                    subgroup_name: 'sg'
+                    subgroup_name: 'sg',
+                    inputRequired: true
                 },
                 {
                     id: 2,
@@ -439,7 +447,8 @@ describe('licenceFactory', () => {
                     text: 'The condition [placeholder]',
                     field_position: {groupsOrOrganisation: 0},
                     group_name: 'g2',
-                    subgroup_name: 'sg2'
+                    subgroup_name: 'sg2',
+                    inputRequired: true
                 }
             ];
 
@@ -457,7 +466,8 @@ describe('licenceFactory', () => {
                         ],
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     },
                     {
                         content: [
@@ -466,7 +476,8 @@ describe('licenceFactory', () => {
                         ],
                         group: 'g2',
                         subgroup: 'sg2',
-                        id: 2
+                        id: 2,
+                        inputRequired: true
                     }]
             };
 
@@ -502,7 +513,8 @@ describe('licenceFactory', () => {
                             ],
                             group: 'g',
                             subgroup: 'sg',
-                            id: 1
+                            id: 1,
+                            inputRequired: true
                         }
 
                     ]
@@ -551,7 +563,8 @@ describe('licenceFactory', () => {
                         ],
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     }]
                 };
 
@@ -598,7 +611,8 @@ describe('licenceFactory', () => {
                         ],
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     }]
                 };
 
@@ -631,7 +645,8 @@ describe('licenceFactory', () => {
                         content: 'The condition injected with input',
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     }
                 ]
             };
@@ -657,7 +672,8 @@ describe('licenceFactory', () => {
                     text: 'The condition [placeholder] with input',
                     field_position: {appointmentAddress: 0, appointmentDate: 1, appointmentTime: 2},
                     group_name: 'g',
-                    subgroup_name: 'sg'
+                    subgroup_name: 'sg',
+                    inputRequired: true
                 }
             ];
 
@@ -669,7 +685,8 @@ describe('licenceFactory', () => {
                         content: 'The condition Address 1 on 21/01/2018 at 15:30 with input',
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     }
                 ]
             };
@@ -707,7 +724,8 @@ describe('licenceFactory', () => {
                         content: 'The condition name, address with input',
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     }
                 ]
             };
@@ -745,7 +763,8 @@ describe('licenceFactory', () => {
                         content: 'The condition Address 1 on  at 15:30 with input',
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     }
                 ]
             };
@@ -778,7 +797,8 @@ describe('licenceFactory', () => {
                         content: 'The condition injected with input injected2 and another',
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     }
                 ]
             };
@@ -812,7 +832,8 @@ describe('licenceFactory', () => {
                         content: 'The condition injected with input injected2 and another',
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     }
                 ]
             };
@@ -838,7 +859,8 @@ describe('licenceFactory', () => {
                     text: 'The condition [placeholder] with input [placeholder2] and another',
                     field_position: {field: 0, appointmentTime: 1},
                     group_name: 'g',
-                    subgroup_name: 'sg'
+                    subgroup_name: 'sg',
+                    inputRequired: true
                 },
                 {
                     id: 2,
@@ -846,7 +868,8 @@ describe('licenceFactory', () => {
                     text: 'The condition [placeholder]',
                     field_position: {groupsOrOrganisation: 0},
                     group_name: 'g',
-                    subgroup_name: 'sg'
+                    subgroup_name: 'sg',
+                    inputRequired: true
                 }
             ];
 
@@ -858,39 +881,21 @@ describe('licenceFactory', () => {
                         content: 'The condition injected with input injected2 and another',
                         group: 'g',
                         subgroup: 'sg',
-                        id: 1
+                        id: 1,
+                        inputRequired: true
                     },
                     {
                         content: 'The condition injected3',
                         group: 'g',
                         subgroup: 'sg',
-                        id: 2
+                        id: 2,
+                        inputRequired: true
                     }
                 ]
             };
 
             expect(output).to.eql(expectedOutput);
 
-        });
-    });
-
-    describe('createInputWithReasonObject', () => {
-
-        const model = {
-            decision: {
-                reason: 'reason'
-            }
-        };
-
-        it('should filter out any unacceptable data', () => {
-            const input = {decision: 'Yes', reason: 'Yes', bad: 'yes'};
-            expect(createInputWithReasonObject({inputObject: input, model})).to.eql({decision: 'Yes', reason: 'Yes'});
-        });
-        context('When answer is changed to No from Yes', () => {
-            it('should remove reason', () => {
-                const input = {decision: 'No', reason: 'Reason'};
-                expect(createInputWithReasonObject({inputObject: input, model})).to.eql({decision: 'No', reason: null});
-            });
         });
     });
 });

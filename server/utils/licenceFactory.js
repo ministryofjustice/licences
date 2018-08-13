@@ -5,21 +5,7 @@ const {getIn, interleave} = require('../utils/functionalHelpers');
 module.exports = {
     createAdditionalConditionsObject,
     populateAdditionalConditionsAsObject,
-    populateAdditionalConditionsAsString,
-    createInputWithReasonObject
-};
-
-const filteredToAttributes = (input, acceptedKeys, notAcceptedKeys = []) => {
-    return Object.keys(input).reduce((objectBuilt, key) => {
-        if (acceptedKeys.includes(key)) {
-            const value = input[key] || '';
-            return {...objectBuilt, ...{[key]: value}};
-        }
-        if (notAcceptedKeys.includes(key)) {
-            return {...objectBuilt, ...{[key]: null}};
-        }
-        return objectBuilt;
-    }, {});
+    populateAdditionalConditionsAsString
 };
 
 function createAdditionalConditionsObject(selectedConditions, formInputs) {
@@ -34,29 +20,6 @@ function createAdditionalConditionsObject(selectedConditions, formInputs) {
             }
         };
     }, {});
-}
-
-function createInputWithReasonObject({model, inputObject}) {
-    const acceptedSelectors = Object.keys(model);
-    const reducer = addReasonIfSelected(inputObject, model);
-    const {accepted, notAccepted} = acceptedSelectors.reduce(reducer, {accepted: [], notAccepted: []});
-
-    return filteredToAttributes(inputObject, accepted, notAccepted);
-}
-
-function addReasonIfSelected(formInput, licenceSection) {
-    return (attributes, selector) => {
-
-        const accepted = formInput[selector] === 'Yes' ?
-            [...attributes.accepted, selector, licenceSection[selector].reason] :
-            [...attributes.accepted, selector];
-
-        const notAccepted = formInput[selector] === 'No' ?
-            [...attributes.notAccepted, licenceSection[selector].reason] :
-            attributes.notAccepted;
-
-        return {accepted, notAccepted};
-    };
 }
 
 // For html page
@@ -92,7 +55,8 @@ function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputM
             content,
             group: selectedCondition.group_name,
             subgroup: selectedCondition.subgroup_name,
-            id: selectedCondition.id
+            id: selectedCondition.id,
+            inputRequired: !!(selectedCondition.user_input)
         };
     };
 }
