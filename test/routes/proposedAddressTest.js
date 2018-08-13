@@ -311,9 +311,34 @@ describe('/hdc/proposedAddress', () => {
 
             return request(app)
                 .post('/proposedAddress/curfewAddress/add')
-                .send({nomisId: '1'})
+                .send({nomisId: '1', addresses: [{addressLine1: 'something'}]})
                 .expect(302)
                 .expect('Location', '/hdc/taskList/1');
+
+        });
+
+        it('should redirect to form if empty address is passed in', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.getLicence.resolves({
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [
+                                {addressLine1: 'address1', consent: 'No'}
+                            ]
+                        }
+                    }
+                },
+                stage: 'PROCESSING_CA'
+            });
+
+            const app = createApp({licenceService});
+
+            return request(app)
+                .post('/proposedAddress/curfewAddress/add')
+                .send({nomisId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}]})
+                .expect(302)
+                .expect('Location', '/hdc/proposedAddress/curfewAddress/1');
 
         });
     });

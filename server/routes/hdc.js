@@ -252,6 +252,11 @@ module.exports = function(
 
     router.post('/proposedAddress/curfewAddress/add/', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.body;
+        const {addressLine1, addressTown, postCode} = req.body.addresses[0];
+        if (!addressLine1 && !addressTown && !postCode) {
+            return res.redirect(`/hdc/proposedAddress/curfewAddress/${nomisId}`);
+        }
+
         const rawLicence = await licenceService.getLicence(nomisId);
         const nextPath = '/hdc/taskList/';
 
