@@ -5,7 +5,8 @@ exports.seed = knex =>
                 {
                     ui_id: "appointmentName",
                     field_position: '{' +
-                    '"appointmentName": "0"' +
+                    '"appointmentName": "0",' +
+                    '"appointmentProfession": "1"' +
                     '}'
                 },
                 {

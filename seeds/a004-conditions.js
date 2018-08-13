@@ -161,7 +161,7 @@ exports.seed = knex =>
                 {
                     id: 'ATTENDALL',
                     type: 'ADDITIONAL',
-                    text: 'Attend all appointments arranged for you with [INSERT NAME], a psychiatrist / psychologist / medical practitioner and co-operate fully with any care or treatment they recommend.',
+                    text: 'Attend all appointments arranged for you with [INSERT NAME], a [PSYCHIATRIST / PSYCHOLOGIST / MEDICAL PRACTITIONER] and co-operate fully with any care or treatment they recommend.',
                     user_input: 'appointmentName',
                     group: 'DRUGS',
                     active: 1
