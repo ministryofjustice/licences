@@ -200,7 +200,8 @@ const additional = joi.object({
         courseOrCentre: requiredString
     }),
     ATTENDALL: joi.object({
-        appointmentName: requiredString
+        appointmentName: requiredString,
+        appointmentProfession: requiredString
     }),
     HOMEVISITS: joi.object({
         mentalHealthName: requiredString

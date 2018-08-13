@@ -2376,7 +2376,8 @@ describe('licenceService', () => {
                             ...baseLicence.licenceConditions,
                             additional: {
                                 ATTENDALL: {
-                                    appointmentName: '12'
+                                    appointmentName: '12',
+                                    appointmentProfession: 'Psych'
                                 }
                             }
                         }
@@ -2387,7 +2388,7 @@ describe('licenceService', () => {
                     expect(output).to.eql({});
                 });
 
-                it('should return error if appointmentName is not filled in', () => {
+                it('should return error if appointmentName or appointmentProfession is not filled in', () => {
 
                     const newLicence = {
                         ...baseLicence,
@@ -2406,7 +2407,8 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     ATTENDALL: {
-                                        appointmentName: 'Not answered'
+                                        appointmentName: 'Not answered',
+                                        appointmentProfession: 'Not answered'
                                     }
                                 }
                             }
