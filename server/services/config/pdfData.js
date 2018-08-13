@@ -1,3 +1,17 @@
+const VERSION_NUMBER = {
+    paths: [['approvedVersion', 'version']],
+    displayName: 'Version number',
+    group: 'document',
+    required: 'mandatory'
+};
+
+const VERSION_DATE = {
+    paths: [['approvedVersion', 'timestamp']],
+    displayName: 'Version date',
+    group: 'document',
+    required: 'mandatory'
+};
+
 const EST_PREMISE = {
     paths: [['establishment', 'premise']],
     displayName: 'Prison name',
@@ -254,6 +268,11 @@ const MONITOR = {
     required: 'mandatory'
 };
 
+const VERSION = {
+    VERSION_NUMBER,
+    VERSION_DATE
+};
+
 const OFFENDER = {
     OFF_NAME,
     OFF_DOB,
@@ -291,6 +310,7 @@ const REPORTING = {
 module.exports = {
 
     hdc_ap_pss: {
+        ...VERSION,
         EST_PREMISE,
         EST_PHONE,
         ...OFFENDER,
@@ -332,6 +352,7 @@ module.exports = {
     },
 
     hdc_yn: {
+        ...VERSION,
         EST_PREMISE,
         EST_PHONE,
         ...OFFENDER,
@@ -357,6 +378,7 @@ module.exports = {
     },
 
     hdc_ap: {
+        ...VERSION,
         EST_PREMISE,
         EST_PHONE,
         ...OFFENDER,
@@ -382,6 +404,7 @@ module.exports = {
     },
 
     hdc_pss: {
+        ...VERSION,
         EST_PREMISE,
         EST_PHONE,
         ...OFFENDER,
