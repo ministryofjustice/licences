@@ -33,8 +33,9 @@ mixin additionalConditions(editable)
             if allowEdit
                 div.pure-u-2-24
                 div.pure-u-4-24
-                    div
-                        a.link(href="/hdc/licenceConditions/additionalConditions/" + nomisId + "#" + condition.id) Change
+                    if condition.inputRequired || condition.group === 'Bespoke'
+                        div
+                            a.link(href="/hdc/licenceConditions/additionalConditions/" + nomisId + "#" + condition.id) Change
                     div
                         form(method="post" action="/hdc/licenceConditions/additionalConditions/" + nomisId + "/delete/" + condition.id)
                             input(type="hidden" name="_csrf" value=csrfToken)
