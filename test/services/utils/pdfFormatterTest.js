@@ -2,6 +2,16 @@ const {formatPdfData} = require('../../../server/services/utils/pdfFormatter');
 
 describe('pdfFormatter', () => {
 
+    let clock;
+
+    beforeEach(() => {
+        clock = sinon.useFakeTimers(new Date('January 1, 2001 12:00:00').getTime());
+    });
+
+    afterEach(() => {
+        clock.restore();
+    });
+
     function formatWith({
                             templateName = 'hdc_ap_pss',
                             nomisId = '',
@@ -200,6 +210,21 @@ describe('pdfFormatter', () => {
         expect(data.missing).to.not.have.property('VERSION_DATE');
         expect(data.missing).to.not.have.property('VERSION_NUMBER');
     });
+
+    it('should add name of decision maker', () => {
+        const licence = {
+            approval: {
+                release: {
+                    decisionMaker: 'first last'
+                }
+            }
+        };
+
+        const data = formatWith({licence: licence});
+
+        expect(data.values.APPROVER).to.eql('first last');
+        expect(data.missing).to.not.have.property('APPROVER');
+    });
 });
 
 const allValuesEmpty = {
@@ -242,14 +267,17 @@ const allValuesEmpty = {
     SENT_SED: 'PLACEHOLDER',
     SENT_TUSED: 'PLACEHOLDER',
     VERSION_DATE: 'PLACEHOLDER',
-    VERSION_NUMBER: 'PLACEHOLDER'
+    VERSION_NUMBER: 'PLACEHOLDER',
+    APPROVER: 'PLACEHOLDER',
+    CREATION_DATE: '01/01/2001'
 };
 
 const displayNames = {
     document: {
         mandatory: {
             VERSION_DATE: 'Version date',
-            VERSION_NUMBER: 'Version number'
+            VERSION_NUMBER: 'Version number',
+            APPROVER: 'Name of decision maker'
         }
     },
     conditions: {

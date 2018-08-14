@@ -12,6 +12,13 @@ const VERSION_DATE = {
     required: 'mandatory'
 };
 
+const APPROVER = {
+    paths: [['licence', 'approval', 'release', 'decisionMaker']],
+    displayName: 'Name of decision maker',
+    group: 'document',
+    required: 'mandatory'
+};
+
 const EST_PREMISE = {
     paths: [['establishment', 'premise']],
     displayName: 'Prison name',
@@ -270,7 +277,8 @@ const MONITOR = {
 
 const VERSION = {
     VERSION_NUMBER,
-    VERSION_DATE
+    VERSION_DATE,
+    APPROVER
 };
 
 const OFFENDER = {
