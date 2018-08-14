@@ -3,6 +3,7 @@ const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 const {all, pipe, getIn, isEmpty} = require('../../utils/functionalHelpers');
+const validationErrors = require('./conditionsValidationMessages');
 
 const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
@@ -18,39 +19,41 @@ const requiredIf = (field, answer, typeRequired = requiredString, ifNot = option
     return joi.when(field, {is: answer, then: typeRequired, otherwise: ifNot});
 };
 
-function getMessage(errorType, errorMessage) {
+function getMessage(errorType, errorMessage, errorPath) {
+
     if (errorType === 'date.format') {
         if (errorMessage.includes('[HH:mm]')) {
-            return 'Invalid time';
+            return 'Enter a valid time';
         }
-        return 'Invalid or incorrectly formatted date';
-    }
-
-    if (errorType === 'string.alphanum') {
-        return 'Invalid entry - letters and numbers only';
+        return 'Enter a valid date';
     }
 
     if (errorType === 'number.base') {
-        return 'Invalid entry - number required';
+        return 'Enter a valid number';
     }
 
     if (errorType === 'string.regex.base') {
         if (errorMessage.includes('telephone')) {
-            return 'Invalid entry - number required';
+            return 'Enter a valid phone number';
         }
-        return 'Invalid postcode';
+        return 'Enter a valid postcode';
     }
 
     if (errorType === 'number.min') {
-        return 'Invalid age - must be 0 or above';
+        return 'Enter a valid age';
     }
 
     if (errorType === 'number.max') {
-        return 'Invalid age - must be 110 or below';
+        return 'Enter a valid age';
     }
 
     if (errorType === 'date.min') {
-        return 'Invalid date - must not be in the past';
+        return 'Enter a date that is not in the past';
+    }
+
+    const path = errorPath.join('_');
+    if (validationErrors[path]) {
+        return validationErrors[path];
     }
 
     return 'Not answered';
@@ -209,8 +212,7 @@ const additional = joi.object({
     REMAINADDRESS: joi.object({
         curfewAddress: requiredString,
         curfewFrom: requiredString,
-        curfewTo: requiredString,
-        curfewTagRequired: requiredString
+        curfewTo: requiredString
     }),
     CONFINEADDRESS: joi.object({
         confinedTo: requiredString,
@@ -320,7 +322,7 @@ module.exports = function(licence) {
                 path: {
                     [section]: error.path.reduceRight((object, key) => {
                         return {[key]: object};
-                    }, getMessage(error.type, error.message))
+                    }, getMessage(error.type, error.message, error.path))
                 }
             };
         });
