@@ -8,7 +8,7 @@ exports.up = knex =>
             table.integer('version').notNullable();
             table.string('template').notNullable();
             table.index(['nomis_id', 'version', 'id', 'template'], 'licence_version_by_nomis_id');
-            table.unique(['nomis_id', 'version', 'template']);
+            table.unique(['nomis_id', 'version']);
         })
     ]);
 
