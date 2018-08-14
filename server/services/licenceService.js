@@ -396,6 +396,6 @@ module.exports = function createLicenceService(licenceClient) {
         getEligibilityErrors,
         getValidationErrorsForReview,
         getValidationErrorsForPage,
-        updateVersion: licenceClient.updateVersion
+        saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion
     };
 };

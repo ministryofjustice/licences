@@ -46,6 +46,7 @@ describe('PDF:', () => {
     beforeEach(() => {
         auditStub.record.reset();
         pdfServiceStub.getPdfLicenceData.reset();
+        licenceService.getLicence.resolves({licence: {key: 'value'}});
     });
 
     describe('GET /select', () => {
@@ -59,6 +60,22 @@ describe('PDF:', () => {
                     expect(res.text).to.include('<option value="hdc_ap_pss">AP PSS HDC Licence</option>');
                     expect(res.text).to.include('<option value="hdc_yn">HDC Young Person\'s Licence</option>');
                     expect(res.text).to.include('<option value="hdc_ap">AP HDC Licence</option>');
+                    expect(res.text).to.include('<option value="hdc_pss">HDC PSS Notice of Supervision</option>');
+                });
+        });
+
+        it('defaults to type used in last approved version', () => {
+
+            licenceService.getLicence.resolves({approvedVersion: {template: 'hdc_ap'}});
+
+            return request(app)
+                .get('/select/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.include('<option value="hdc_ap_pss">AP PSS HDC Licence</option>');
+                    expect(res.text).to.include('<option value="hdc_yn">HDC Young Person\'s Licence</option>');
+                    expect(res.text).to.include('<option value="hdc_ap" selected>AP HDC Licence</option>');
                     expect(res.text).to.include('<option value="hdc_pss">HDC PSS Notice of Supervision</option>');
                 });
         });
@@ -83,7 +100,7 @@ describe('PDF:', () => {
         });
     });
 
-    describe('GET /view', () => {
+    describe('GET /tasklist', () => {
 
         it('Shows incomplete tasks when missing values', () => {
 
@@ -115,6 +132,63 @@ describe('PDF:', () => {
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
                         'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'my-token');
+                });
+        });
+
+        it('Shows template version info - same version when same template', () => {
+
+            pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
+
+            licenceService.getLicence.resolves({
+                version: 1,
+                approvedVersion: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
+            });
+
+            return request(app)
+                .get('/taskList/hdc_ap/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.include('Creating version: 1');
+                    expect(res.text).to.include('Last version: 1, AP HDC Licence, on 11/12/13');
+                });
+        });
+
+        it('Shows template version info - new version when new template', () => {
+
+            pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
+
+            licenceService.getLicence.resolves({
+                version: 1,
+                approvedVersion: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
+            });
+
+            return request(app)
+                .get('/taskList/hdc_ap_pss/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.include('Creating new version: 2');
+                    expect(res.text).to.include('Last version: 1, AP HDC Licence, on 11/12/13');
+                });
+        });
+
+        it('Shows template version info - new version when modified licence version', () => {
+
+            pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
+
+            licenceService.getLicence.resolves({
+                version: 2,
+                approvedVersion: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
+            });
+
+            return request(app)
+                .get('/taskList/hdc_ap/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.include('Creating new version: 2');
+                    expect(res.text).to.include('Last version: 1, AP HDC Licence, on 11/12/13');
                 });
         });
     });

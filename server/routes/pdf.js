@@ -1,7 +1,7 @@
 const express = require('express');
 const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
 const {templates} = require('./config/pdf');
-const {firstItem} = require('../utils/functionalHelpers');
+const {firstItem, getIn} = require('../utils/functionalHelpers');
 
 module.exports = function(
     {logger, pdfService, prisonerService, authenticationMiddleware, licenceService, conditionsService, audit}) {
@@ -24,7 +24,9 @@ module.exports = function(
         const prisoner = await prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token);
         const errors = firstItem(req.flash('errors')) || {};
 
-        return res.render('pdf/select', {nomisId, templates, prisoner, errors});
+        const lastTemplate = getIn(res.locals.licence, ['approvedVersion', 'template']);
+
+        return res.render('pdf/select', {nomisId, templates, prisoner, errors, lastTemplate});
     }));
 
     router.post('/select/:nomisId', (req, res) => {
@@ -47,12 +49,11 @@ module.exports = function(
         const {licence} = res.locals;
         logger.debug(`GET pdf/taskList/${templateName}/${nomisId}`);
 
-        const templateConfig = templates.find(template => template.id === templateName);
-        if (!templateConfig) {
-            throw new Error('Invalid licence template name');
-        }
+        const templateLabel = getTemplateLabel(templateName);
 
-        const templateTitle = templateConfig.label;
+        if (!templateLabel) {
+            throw new Error('Invalid licence template name: ' + templateName);
+        }
 
         const [prisoner, {missing}] = await Promise.all([
             prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token),
@@ -67,11 +68,33 @@ module.exports = function(
             missing,
             templateName,
             prisoner,
-            templateTitle,
             incompleteGroups,
-            canPrint
+            canPrint,
+            versionInfo: getVersionInfo(licence, templateLabel)
         });
     }));
+
+    function getTemplateLabel(templateName) {
+        const templateConfig = templates.find(template => template.id === templateName);
+        return getIn(templateConfig, ['label']);
+    }
+
+    function getVersionInfo(licence, templateLabel) {
+
+        const lastTemplateLabel = licence.approvedVersion ?
+            getTemplateLabel(licence.approvedVersion.template) : undefined;
+        const isNewTemplate = licence.approvedVersion && templateLabel !== lastTemplateLabel;
+        const isNewVersion = !licence.approvedVersion || licence.version > licence.approvedVersion.version;
+
+        return {
+            currentVersion: licence.version,
+            lastVersion: licence.approvedVersion,
+            isNewVersion,
+            templateLabel,
+            lastTemplateLabel,
+            isNewTemplate
+        };
+    }
 
     router.get('/missing/:section/:templateName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
 

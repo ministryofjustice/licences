@@ -53,8 +53,20 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
 
         const {version, approvedVersion} = rawLicence;
 
-        if (!approvedVersion || version > approvedVersion.version) {
-            await licenceService.updateVersion(nomisId, template);
+        const templateChange = approvedVersion && template !== approvedVersion.template;
+
+        if (templateChange) {
+            await licenceService.update({
+                nomisId: nomisId,
+                config: {fields: [{decision: {}}], noModify: true},
+                userInput: {decision: template},
+                licenceSection: 'document',
+                formName: 'template'
+            });
+        }
+
+        if (!approvedVersion || version > approvedVersion.version || templateChange) {
+            await licenceService.saveApprovedLicenceVersion(nomisId, template);
             return licenceService.getLicence(nomisId);
         }
 
