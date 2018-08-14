@@ -24,6 +24,7 @@ block content
             form(method="post").largeMarginTop
                 input(type="hidden" name="_csrf" value=csrfToken)
                 input(type="hidden" name="nomisId" value=nomisId || '')
+                input(type="hidden" name="decisionMaker" value=user.firstName + ' ' + user.lastName)
                 div.paddingBottom.largeMarginBottom
 
                     div#error-anchor.form-group

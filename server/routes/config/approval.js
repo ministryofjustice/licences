@@ -4,6 +4,7 @@ module.exports = {
         validateInPlace: true,
         fields: [
             {decision: {}},
+            {decisionMaker: {}},
             {notedComments: {dependentOn: 'decision', predicate: 'Yes'}},
             {reason: {dependentOn: 'decision', predicate: 'No'}}
         ],

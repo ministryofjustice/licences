@@ -1,6 +1,7 @@
 const {getIn, isEmpty, mergeWithRight} = require('../../utils/functionalHelpers');
 const pdfData = require('../config/pdfData');
 const {romanise} = require('../../utils/romanise');
+const moment = require('moment');
 
 module.exports = {formatPdfData};
 
@@ -30,8 +31,11 @@ function formatPdfData(templateName, nomisId,
 }
 
 function valueOrPlaceholder(allData, placeholder, templateName) {
+
+    const dateNow = moment().format('DD/MM/YYYY');
+
     return Object.entries(pdfData[templateName])
-        .reduce(readValuesReducer(allData, placeholder), {values: {}, missing: {}});
+        .reduce(readValuesReducer(allData, placeholder), {values: {CREATION_DATE: dateNow}, missing: {}});
 }
 
 const readValuesReducer = (allData, placeholder) => (summary, [key, spec]) => {
