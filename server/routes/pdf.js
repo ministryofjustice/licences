@@ -60,8 +60,8 @@ module.exports = function(
             pdfService.getPdfLicenceData(templateName, nomisId, licence, req.user.token)
         ]);
 
-        const incompleteGroups = Object.keys(missing);
-        const canPrint = !incompleteGroups.find(group => missing[group].mandatory);
+        const incompleteGroups = Object.keys(missing).find(group => missing[group].mandatory);
+        const canPrint = !incompleteGroups;
 
         return res.render('pdf/createLicenceTaskList', {
             nomisId,

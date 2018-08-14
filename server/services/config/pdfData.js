@@ -2,21 +2,21 @@ const VERSION_NUMBER = {
     paths: [['approvedVersion', 'version']],
     displayName: 'Version number',
     group: 'document',
-    required: 'mandatory'
+    required: 'optional'
 };
 
 const VERSION_DATE = {
     paths: [['approvedVersion', 'timestamp']],
     displayName: 'Version date',
     group: 'document',
-    required: 'mandatory'
+    required: 'optional'
 };
 
 const APPROVER = {
     paths: [['licence', 'approval', 'release', 'decisionMaker']],
     displayName: 'Name of decision maker',
     group: 'document',
-    required: 'mandatory'
+    required: 'optional'
 };
 
 const EST_PREMISE = {
@@ -128,7 +128,7 @@ const REPORTING_NAME = {
     paths: [['licence', 'reporting', 'reportingInstructions', 'name']],
     displayName: 'Reporting name',
     group: 'reporting',
-    required: 'mandatory'
+    required: 'optional'
 };
 
 const REPORTING_ADDRESS = {
@@ -141,7 +141,7 @@ const REPORTING_ADDRESS = {
     separator: '\n',
     displayName: 'Reporting address',
     group: 'reporting',
-    required: 'mandatory'
+    required: 'optional'
 };
 
 const REPORTING_AT = {
@@ -168,104 +168,104 @@ const CURFEW_ADDRESS = {
     separator: '\n',
     displayName: 'Curfew address',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 
 const CURFEW_FIRST_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'firstNightFrom']],
     displayName: 'Curfew first night from',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_FIRST_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'firstNightUntil']],
     displayName: 'Curfew first night until',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_MON_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'mondayFrom']],
     displayName: 'Curfew Monday from',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_MON_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'mondayUntil']],
     displayName: 'Curfew Monday until',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_TUE_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'tuesdayFrom']],
     displayName: 'Curfew Tuesday from',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_TUE_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'tuesdayUntil']],
     displayName: 'Curfew Tuesday until',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_WED_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'wednesdayFrom']],
     displayName: 'Curfew Wednesday from',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_WED_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'wednesdayUntil']],
     displayName: 'Curfew Wednesday until',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_THU_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'thursdayFrom']],
     displayName: 'Curfew Thursday from',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_THU_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'thursdayUntil']],
     displayName: 'Curfew Thursday until',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_FRI_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'fridayFrom']],
     displayName: 'Curfew Friday from',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_FRI_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'fridayUntil']],
     displayName: 'Curfew Friday until',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_SAT_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'saturdayFrom']],
     displayName: 'Curfew Saturday from',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_SAT_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'saturdayUntil']],
     displayName: 'Curfew Saturday until',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_SUN_FROM = {
     paths: [['licence', 'curfew', 'curfewHours', 'sundayFrom']],
     displayName: 'Curfew Sunday from',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 const CURFEW_SUN_UNTIL = {
     paths: [['licence', 'curfew', 'curfewHours', 'sundayUntil']],
     displayName: 'Curfew Sunday until',
     group: 'curfew',
-    required: 'mandatory'
+    required: 'optional'
 };
 
 const MONITOR = {
