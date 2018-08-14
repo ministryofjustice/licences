@@ -6,8 +6,9 @@ exports.up = knex =>
             table.jsonb('licence').nullable();
             table.string('nomis_id').notNullable();
             table.integer('version').notNullable();
-            table.index(['nomis_id', 'version', 'id'], 'licence_version_by_nomis_id');
-            table.unique(['nomis_id', 'version']);
+            table.string('template').notNullable();
+            table.index(['nomis_id', 'version', 'id', 'template'], 'licence_version_by_nomis_id');
+            table.unique(['nomis_id', 'version', 'template']);
         })
     ]);
 

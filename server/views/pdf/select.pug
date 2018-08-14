@@ -21,7 +21,7 @@ block content
                     select.form-control#selectLicence(name="decision")
                         option(value="" disabled selected) -- select --
                         for template in templates
-                            option(value=template.id) #{template.label}
+                            option(value=template.id, selected = template.id===lastTemplate) #{template.label}
 
                 div.largePaddingBottom.smallPaddingTop
                     div.inlineButtons

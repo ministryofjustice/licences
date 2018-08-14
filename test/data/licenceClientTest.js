@@ -247,19 +247,30 @@ describe('licenceClient', () => {
         });
     });
 
-    describe('updateVersion', () => {
+    describe('saveApprovedVersion', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedWhere = 'where nomis_id = \'ABC123\'';
             const expectedVersionUpdate = 'insert into licence_versions';
+            const expectedSelect = 'select nomis_id, licence, version, $1';
+            const expectedWhere = 'where nomis_id = $2';
 
-            const result = licencesProxy().updateVersion('ABC123');
+            const result = licencesProxy().saveApprovedLicenceVersion('ABC123', 'templateName');
 
             return result.then(data => {
-                const sql = queryStub.getCalls()[0].args[0];
+                const sql = queryStub.getCalls()[0].args[0].text;
                 expect(sql).to.include(expectedWhere);
                 expect(sql).to.include(expectedVersionUpdate);
+                expect(sql).to.include(expectedSelect);
+            });
+        });
+
+        it('should pass in the correct parameters', () => {
+            const result = licencesProxy().saveApprovedLicenceVersion('ABC123', 'templateName');
+
+            return result.then(data => {
+                const values = queryStub.getCalls()[0].args[0].values;
+                expect(values).to.eql(['templateName', 'ABC123']);
             });
         });
     });
@@ -274,7 +285,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedSelect = 'select version, timestamp from licence_versions';
+            const expectedSelect = 'select version, template, timestamp from licence_versions';
             const expectedWhere = 'where nomis_id = $1';
             const expectedOrder = 'order by version desc limit 1';
 

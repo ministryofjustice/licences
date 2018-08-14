@@ -40,7 +40,8 @@ module.exports = {
 
     getApprovedLicenceVersion: async function(nomisId) {
         const query = {
-            text: `select version, timestamp from licence_versions where nomis_id = $1 order by version desc limit 1`,
+            text: `select version, template, timestamp from licence_versions 
+                    where nomis_id = $1 order by version desc limit 1`,
             values: [nomisId]
         };
 
@@ -116,12 +117,15 @@ module.exports = {
         return undefined;
     },
 
-    updateVersion: function(nomisId) {
+    saveApprovedLicenceVersion: function(nomisId, template) {
+        const query = {
+            text: `insert into licence_versions (nomis_id, licence, version, template)
+                    select nomis_id, licence, version, $1
+                    from licences where nomis_id = $2`,
+            values: [template, nomisId]
+        };
 
-        const saveVersionData = `insert into licence_versions (nomis_id, licence, version) select nomis_id, licence, 
-        version from licences where nomis_id = '${nomisId}'; `;
-
-        return db.query(saveVersionData);
+        return db.query(query);
     }
 };
 
