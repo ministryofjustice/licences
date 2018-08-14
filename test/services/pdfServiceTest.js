@@ -29,7 +29,8 @@ describe('pdfService', () => {
     beforeEach(() => {
         licenceService = {
             getLicence: sinon.stub().resolves(licenceResponse),
-            updateVersion: sinon.stub().resolves(licenceResponse)
+            saveApprovedLicenceVersion: sinon.stub().resolves({}),
+            update: sinon.stub().resolves({})
         };
 
         conditionsService = {
@@ -79,8 +80,8 @@ describe('pdfService', () => {
             const rawLicence = {licence: {key: 'value'}};
             await service.generatePdf(templateName, '123', rawLicence, 'username');
 
-            expect(licenceService.updateVersion).to.be.calledOnce();
-            expect(licenceService.updateVersion).to.be.calledWith('123');
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce();
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledWith('123');
             expect(licenceService.getLicence).to.be.calledOnce();
         });
 
@@ -92,8 +93,64 @@ describe('pdfService', () => {
             const rawLicence = {licence: {key: 'value'}, version: 4, approvedVersion: {version: 3}};
             await service.generatePdf(templateName, '123', rawLicence, 'username');
 
-            expect(licenceService.updateVersion).to.be.calledOnce();
-            expect(licenceService.updateVersion).to.be.calledWith('123');
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce();
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledWith('123');
+            expect(licenceService.getLicence).to.be.calledOnce();
+        });
+
+        it('should update licence & increment version if template is different', async () => {
+            fakePdfGenerator
+                .post('/generate', {templateName, values})
+                .reply(200, pdf1AsBytes);
+
+            const rawLicence = {
+                licence: {key: 'value'},
+                version: 4,
+                approvedVersion: {version: 4, template: 'other_template'}
+            };
+
+            await service.generatePdf(templateName, '123', rawLicence, 'username');
+
+            expect(licenceService.update).to.be.calledOnce();
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce();
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledWith('123');
+            expect(licenceService.getLicence).to.be.calledOnce();
+        });
+
+        it('should not update licence when incrementing version if template is same', async () => {
+            fakePdfGenerator
+                .post('/generate', {templateName, values})
+                .reply(200, pdf1AsBytes);
+
+            const rawLicence = {
+                licence: {key: 'value'},
+                version: 4,
+                approvedVersion: {version: 3, template: 'hdc_ap_pss'}
+            };
+
+            await service.generatePdf(templateName, '123', rawLicence, 'username');
+
+            expect(licenceService.update).not.to.be.calledOnce();
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce();
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledWith('123');
+            expect(licenceService.getLicence).to.be.calledOnce();
+        });
+
+        it('should not update licence when incrementing version if first version', async () => {
+            fakePdfGenerator
+                .post('/generate', {templateName, values})
+                .reply(200, pdf1AsBytes);
+
+            const rawLicence = {
+                licence: {key: 'value'},
+                version: 1
+            };
+
+            await service.generatePdf(templateName, '123', rawLicence, 'username');
+
+            expect(licenceService.update).not.to.be.calledOnce();
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce();
+            expect(licenceService.saveApprovedLicenceVersion).to.be.calledWith('123');
             expect(licenceService.getLicence).to.be.calledOnce();
         });
 
@@ -102,10 +159,15 @@ describe('pdfService', () => {
                 .post('/generate', {templateName, values})
                 .reply(200, pdf1AsBytes);
 
-            const rawLicence = {licence: {key: 'value'}, version: 4, approvedVersion: {version: 4}};
+            const rawLicence = {
+                licence: {key: 'value'},
+                version: 4,
+                approvedVersion: {version: 4, template: 'hdc_ap_pss'}
+            };
+
             await service.generatePdf(templateName, '123', rawLicence, 'username');
 
-            expect(licenceService.updateVersion).to.not.be.called();
+            expect(licenceService.saveApprovedLicenceVersion).to.not.be.called();
         });
     });
 

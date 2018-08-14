@@ -1,5 +1,5 @@
 div.taskListItem.borderBottomLight.largeMarginBottom
-    h2.heading-medium Create #{templateTitle}
+    h2.heading-medium Create #{versionInfo.templateLabel}
 
     div.pure-g
         div.pure-u-3-4
@@ -7,8 +7,25 @@ div.taskListItem.borderBottomLight.largeMarginBottom
                 | Ready to create
             else
                 | All sections not completed
+            p
+
+            if versionInfo.isNewTemplate
+                p Selected template is different from last version.
+                    ="  "
+                    a(href="/hdc/pdf/select/" + nomisId) (Choose again)
+
+            if versionInfo.isNewVersion
+                p Creating new version: #{versionInfo.currentVersion}
+            else
+                if versionInfo.isNewTemplate
+                    p Creating new version: #{versionInfo.currentVersion + 1}
+                else
+                    p Creating version: #{versionInfo.currentVersion}
+
+            if versionInfo.lastVersion
+                p Last version: #{versionInfo.lastVersion.version}, #{versionInfo.lastTemplateLabel}, on #{versionInfo.lastVersion.timestamp}
         div.pure-u-1-4.center
-            a#createPdf.taskListAction.center.button(href="/hdc/pdf/create/"+templateName+"/"+nomisId role="button" target="_blank") Continue
+            a#createPdf.taskListAction.center.button(href="/hdc/pdf/create/" + templateName + "/" + nomisId role="button" target="_blank") Continue
 
 
 
