@@ -274,7 +274,7 @@ const allValuesEmpty = {
 
 const displayNames = {
     document: {
-        mandatory: {
+        optional: {
             VERSION_DATE: 'Version date',
             VERSION_NUMBER: 'Version number',
             APPROVER: 'Name of decision maker'
@@ -287,7 +287,7 @@ const displayNames = {
         }
     },
     curfew: {
-        mandatory: {
+        optional: {
             CURFEW_ADDRESS: 'Curfew address',
             CURFEW_FIRST_FROM: 'Curfew first night from',
             CURFEW_FIRST_UNTIL: 'Curfew first night until',
@@ -314,10 +314,12 @@ const displayNames = {
     },
     reporting: {
         mandatory: {
-            REPORTING_ADDRESS: 'Reporting address',
             REPORTING_AT: 'Reporting at',
-            REPORTING_NAME: 'Reporting name',
             REPORTING_ON: 'Reporting on'
+        },
+        optional: {
+            REPORTING_ADDRESS: 'Reporting address',
+            REPORTING_NAME: 'Reporting name'
         }
     },
     sentence: {
