@@ -17,7 +17,7 @@ module.exports = {
             label: 'HDC PSS Notice of Supervision'
         },
         {
-            id: '',
+            id: 'hdc_u12',
             label: 'HDC Under 12 month licence'
         }
     ]
