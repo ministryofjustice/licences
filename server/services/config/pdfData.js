@@ -436,6 +436,21 @@ module.exports = {
             group: 'conditions',
             required: 'optional'
         }
+    },
+
+    hdc_u12: {
+        ...VERSION,
+        EST_PREMISE,
+        EST_PHONE,
+        ...OFFENDER,
+        SENT_HDCAD,
+        SENT_CRD,
+        SENT_SED,
+        ...REPORTING,
+        CURFEW_ADDRESS,
+        CURFEW_FIRST_FROM,
+        ...CURFEW_HOURS,
+        MONITOR
     }
 
 };
