@@ -1553,7 +1553,7 @@ describe('licenceService', () => {
             };
 
             expect(service.getLicenceErrors({licence: missingFieldProposedAddress})).to.eql(
-                {proposedAddress: {curfewAddress: {telephone: 'Invalid entry - number required'}}}
+                {proposedAddress: {curfewAddress: {telephone: 'Enter a valid phone number'}}}
             );
         });
 
@@ -1571,7 +1571,7 @@ describe('licenceService', () => {
             };
 
             expect(service.getLicenceErrors({licence: missingFieldProposedAddress})).to.eql(
-                {proposedAddress: {curfewAddress: {postCode: 'Invalid postcode'}}}
+                {proposedAddress: {curfewAddress: {postCode: 'Enter a valid postcode'}}}
             );
         });
 
@@ -1844,8 +1844,8 @@ describe('licenceService', () => {
                 curfew: {
                     curfewHours: {
                         wednesdayFrom: 'Not answered',
-                        wednesdayUntil: 'Invalid time',
-                        thursdayUntil: 'Invalid time'
+                        wednesdayUntil: 'Enter a valid time',
+                        thursdayUntil: 'Enter a valid time'
                     }
                 }
             });
@@ -1972,7 +1972,8 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     NOCONTACTASSOCIATE: {
-                                        groupsOrOrganisation: 'Not answered'
+                                        groupsOrOrganisation:
+                                            'Enter a name or describe specific groups or organisations'
                                     }
                                 }
                             }
@@ -2019,7 +2020,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     INTIMATERELATIONSHIP: {
-                                        intimateGender: 'Not answered'
+                                        intimateGender: 'Select women / men / women or men'
                                     }
                                 }
                             }
@@ -2066,7 +2067,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     NOCONTACTNAMED: {
-                                        noContactOffenders: 'Not answered'
+                                        noContactOffenders: 'Enter named offender(s) or individual(s)'
                                     }
                                 }
                             }
@@ -2114,8 +2115,8 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     NORESIDE: {
-                                        notResideWithGender: 'Not answered',
-                                        notResideWithAge: 'Not answered'
+                                        notResideWithGender: 'Select any / any female / any male',
+                                        notResideWithAge: 'Enter age'
                                     }
                                 }
                             }
@@ -2167,9 +2168,9 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     NOUNSUPERVISEDCONTACT: {
-                                        unsupervisedContactGender: 'Not answered',
-                                        unsupervisedContactAge: 'Not answered',
-                                        unsupervisedContactSocial: 'Not answered'
+                                        unsupervisedContactGender: 'Select any / any female / any male',
+                                        unsupervisedContactAge: 'Enter age',
+                                        unsupervisedContactSocial: 'Enter name of appropriate social service department'
                                     }
                                 }
                             }
@@ -2216,7 +2217,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     NOCHILDRENSAREA: {
-                                        notInSightOf: 'Not answered'
+                                        notInSightOf: 'Enter location, for example children\'s play area'
                                     }
                                 }
                             }
@@ -2263,7 +2264,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     NOWORKWITHAGE: {
-                                        noWorkWithAge: 'Not answered'
+                                        noWorkWithAge: 'Enter age'
                                     }
                                 }
                             }
@@ -2311,8 +2312,8 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     NOCOMMUNICATEVICTIM: {
-                                        victimFamilyMembers: 'Not answered',
-                                        socialServicesDept: 'Not answered'
+                                        victimFamilyMembers: 'Enter name of victim and /or family members',
+                                        socialServicesDept: 'Enter name of appropriate social service department'
                                     }
                                 }
                             }
@@ -2359,7 +2360,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     COMPLYREQUIREMENTS: {
-                                        courseOrCentre: 'Not answered'
+                                        courseOrCentre: 'Enter name of course / centre'
                                     }
                                 }
                             }
@@ -2407,8 +2408,9 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     ATTENDALL: {
-                                        appointmentName: 'Not answered',
-                                        appointmentProfession: 'Not answered'
+                                        appointmentName: 'Enter name',
+                                        appointmentProfession:
+                                            'Select psychiatrist / psychologist / medical practitioner'
                                     }
                                 }
                             }
@@ -2455,7 +2457,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     HOMEVISITS: {
-                                        mentalHealthName: 'Not answered'
+                                        mentalHealthName: 'Enter name'
                                     }
                                 }
                             }
@@ -2507,10 +2509,9 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     REMAINADDRESS: {
-                                        curfewAddress: 'Not answered',
-                                        curfewFrom: 'Not answered',
-                                        curfewTo: 'Not answered',
-                                        curfewTagRequired: 'Not answered'
+                                        curfewAddress: 'Enter curfew address',
+                                        curfewFrom: 'Enter start of curfew hours',
+                                        curfewTo: 'Enter end of curfew hours'
                                     }
                                 }
                             }
@@ -2562,9 +2563,9 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     CONFINEADDRESS: {
-                                        confinedTo: 'Not answered',
-                                        confinedFrom: 'Not answered',
-                                        confinedReviewFrequency: 'Not answered'
+                                        confinedTo: 'Enter time',
+                                        confinedFrom: 'Enter time',
+                                        confinedReviewFrequency: 'Enter frequency, for example weekly'
                                     }
                                 }
                             }
@@ -2642,7 +2643,7 @@ describe('licenceService', () => {
                         licenceConditions: {
                             additional: {
                                 REPORTTO: {
-                                    reportingDaily: 'Not answered'
+                                    reportingDaily: 'Enter time / daily'
                                 }
                             }
                         }
@@ -2672,7 +2673,7 @@ describe('licenceService', () => {
                         licenceConditions: {
                             additional: {
                                 REPORTTO: {
-                                    reportingDaily: 'Not answered'
+                                    reportingDaily: 'Enter time / daily'
                                 }
                             }
                         }
@@ -2699,8 +2700,8 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     REPORTTO: {
-                                        reportingAddress: 'Not answered',
-                                        reportingFrequency: 'Not answered'
+                                        reportingAddress: 'Enter name of approved premises / police station',
+                                        reportingFrequency: 'Enter frequency, for example weekly'
                                     }
                                 }
                             }
@@ -2747,7 +2748,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     VEHICLEDETAILS: {
-                                        vehicleDetails: 'Not answered'
+                                        vehicleDetails: 'Enter details, for example make, model'
                                     }
                                 }
                             }
@@ -2794,7 +2795,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     EXCLUSIONADDRESS: {
-                                        noEnterPlace: 'Not answered'
+                                        noEnterPlace: 'Enter name / type of premises / address / road'
                                     }
                                 }
                             }
@@ -2841,7 +2842,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     EXCLUSIONAREA: {
-                                        exclusionArea: 'Not answered'
+                                        exclusionArea: 'Enter clearly specified area'
                                     }
                                 }
                             }
@@ -2922,9 +2923,9 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     ATTENDDEPENDENCY: {
-                                        appointmentDate: 'Not answered',
-                                        appointmentTime: 'Not answered',
-                                        appointmentAddress: 'Not answered'
+                                        appointmentDate: 'Enter appointment date',
+                                        appointmentTime: 'Enter appointment time',
+                                        appointmentAddress: 'Enter appointment name and address'
                                     }
                                 }
                             }
@@ -2954,7 +2955,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     ATTENDDEPENDENCY: {
-                                        appointmentDate: 'Invalid or incorrectly formatted date'
+                                        appointmentDate: 'Enter a valid date'
                                     }
                                 }
                             }
@@ -2983,7 +2984,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     ATTENDDEPENDENCY: {
-                                        appointmentDate: 'Invalid or incorrectly formatted date'
+                                        appointmentDate: 'Enter a valid date'
                                     }
                                 }
                             }
@@ -3012,7 +3013,7 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     ATTENDDEPENDENCY: {
-                                        appointmentDate: 'Invalid date - must not be in the past'
+                                        appointmentDate: 'Enter a date that is not in the past'
                                     }
                                 }
                             }
@@ -3060,8 +3061,8 @@ describe('licenceService', () => {
                             licenceConditions: {
                                 additional: {
                                     ATTENDSAMPLE: {
-                                        attendSampleDetailsName: 'Not answered',
-                                        attendSampleDetailsAddress: 'Not answered'
+                                        attendSampleDetailsName: 'Enter appointment name',
+                                        attendSampleDetailsAddress: 'Enter appointment address'
                                     }
                                 }
                             }
@@ -3144,7 +3145,7 @@ describe('licenceService', () => {
                     {
                         proposedAddress: {
                             curfewAddress: {
-                                telephone: 'Invalid entry - number required',
+                                telephone: 'Enter a valid phone number',
                                 cautionedAgainstResident: 'Not answered'
                             }
                         }
@@ -3252,7 +3253,7 @@ describe('licenceService', () => {
                     {
                         proposedAddress: {
                             curfewAddress: {
-                                telephone: 'Invalid entry - number required',
+                                telephone: 'Enter a valid phone number',
                                 cautionedAgainstResident: 'Not answered',
                                 consent: 'Not answered'
                             }
@@ -3289,7 +3290,7 @@ describe('licenceService', () => {
                     {
                         proposedAddress: {
                             curfewAddress: {
-                                telephone: 'Invalid entry - number required',
+                                telephone: 'Enter a valid phone number',
                                 cautionedAgainstResident: 'Not answered'
                             }
                         }
