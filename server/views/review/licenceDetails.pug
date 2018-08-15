@@ -1,15 +1,18 @@
+//- Review licence content prior to submission to next stage eg RO submit to CA
 extends ../layout
 include ../includes/errorBannerWithDetail
 
 block content
 
-    include ../includes/backToTaskList
+    include ../includes/back
 
     if Object.keys(errorObject).length !== 0
         div.error-summary(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
             h2.heading-medium.error-summary-heading.center.noMargin#error-summary-heading
                 | There is a problem
 
+    h1.heading-large Check the information before submitting the case
+    include ../includes/personalDetailsSummary
     include includes/licenceSummary
 
     div.paddingBottom.smallPaddingTop
