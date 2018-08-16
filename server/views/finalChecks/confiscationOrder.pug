@@ -8,9 +8,9 @@ block content
     div.pure-g.pure-u-1
         include ../includes/back
         +errorBannerWithDetail(errorObject, [
-            {field: 'decision', message: 'Select yes or no'},
-            {field: 'confiscationUnitConsulted', message: 'Select yes or no'},
-            {field: 'comments', message: 'Provide details'}
+            {field: 'decision'},
+            {field: 'confiscationUnitConsulted'},
+            {field: 'comments'}
         ])
         include ../includes/personalDetailsSummary
 
@@ -18,7 +18,7 @@ block content
             h2.heading-large Is the offender subject to a confiscation order?
 
     if errorObject.decision
-        p.block.error-message Select yes or no
+        p.block.error-message #{errorObject.decision}
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
@@ -36,7 +36,7 @@ block content
                 div#consultedForm.panel.panel-border-narrow.js-hidden
                     p Has the prosecuting/enforcement authority and regional confiscation unit been consulted regarding the proposed release on HDC?
                     if errorObject.confiscationUnitConsulted
-                        span.block.error-message Select yes or no
+                        span.block.error-message #{errorObject.confiscationUnitConsulted}
                     div.form-group.inline
                         div.multiple-choice
                             input#confiscationUnitConsultedYes(type="radio" checked=confiscationOrderValue === 'Yes'  name="confiscationUnitConsulted" value="Yes")
@@ -47,7 +47,7 @@ block content
 
                     label(for='comments') Comments
                     if errorObject.comments
-                        span.block.error-message Provide details
+                        span.block.error-message #{errorObject.comments}
                     textarea(name='comments' id='comments' class='form-control' rows='4')
                         if data.comments
                             | #{data.comments}

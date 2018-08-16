@@ -7,16 +7,14 @@ block content
 
     div.pure-g.pure-u-1
         include ../includes/back
-        +errorBannerWithDetail(errorObject, [
-            {field: 'decision', message: 'Select yes or no'}
-        ])
+        +errorBannerWithDetail(errorObject, [{field: 'decision'}])
         include ../includes/personalDetailsSummary
 
         div.pure-u-1-2
             h2.heading-large Is the offender currently on remand for another offence?
 
     if errorObject.decision
-        p.block.error-message Select yes or no
+        p.block.error-message #{errorObject.decision}
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')

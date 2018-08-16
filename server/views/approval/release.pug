@@ -10,9 +10,9 @@ block content
 
         include ../includes/backToCheckList
         +errorBannerWithDetail(errorObject, [
-            {field: 'decision', message: 'Select yes or no'},
-            {field: 'notedComments', message: 'Add a comment'},
-            {field: 'reason', message: 'Select a reason'}
+            {field: 'decision'},
+            {field: 'notedComments'},
+            {field: 'reason'}
         ])
         include ../taskList/prisonerDetails
 
@@ -20,7 +20,7 @@ block content
             h2.heading-large Do you approve HDC release for this offender?
 
             if errorObject.decision
-                p.error-message Select yes or no
+                p.error-message #{errorObject.decision}
             form(method="post").largeMarginTop
                 input(type="hidden" name="_csrf" value=csrfToken)
                 input(type="hidden" name="nomisId" value=nomisId || '')
@@ -37,7 +37,7 @@ block content
                                     span.bold Confiscation order
                                     span.block Have you noted the comments of the enforcement area regarding release on HDC?
                                     if errorObject.notedComments
-                                        span.block.error-message Add a comment
+                                        span.block.error-message #{errorObject.notedComments}
                                 div.multiple-choice
                                     input#notedCommentsYes(type="radio" checked=notedCommentsValue === 'Yes'  name="notedComments" value="Yes")
                                     label(for="notedCommentsYes") Yes
