@@ -1,4 +1,5 @@
 module.exports = {
+    // ELIGIBILITY forms
     excluded_decision: 'Select yes or no',
     excluded_reason: 'Select one or more reasons',
     suitability_decision: 'Select yes or no',
@@ -16,6 +17,24 @@ module.exports = {
     curfewAddress_cautionedAgainstResident: 'Select yes or no',
     curfewAddress_residents_name: 'Enter a name',
     curfewAddress_residents_relationship: 'Enter a relationship',
+
+    // PROCESSING_RO forms
+    curfewAddress_consent: 'Say if the homeowner consents to HDC',
+    curfewAddress_electricity: 'Say if there is an electricity supply',
+    curfewAddress_homeVisitConducted: 'Say if you did a home visit',
+    curfewAddress_deemedSafe: 'Say if you approve the address',
+    curfewAddress_unsafeReason: 'Explain why you did not approve the address',
+    riskManagement_planningActions: 'Say if there are risk management actions',
+    riskManagement_planningActionsDetails: 'Provide details of the risk management actions',
+    riskManagement_awaitingInformation: 'Say if you are still awaiting information',
+    riskManagement_awaitingInformationDetails: 'Provide details of information that you are waiting for',
+    riskManagement_victimLiaison: 'Say if it is a victim liaison case',
+    riskManagement_victimLiaisonDetails: 'Provide details of the victim liaison case',
+    reportingInstructions_name: 'Enter a name',
+    reportingInstructions_buildingAndStreet1: 'Enter a building or street',
+    reportingInstructions_townOrCity: 'Enter a town or city',
+    reportingInstructions_postcode: 'Enter a postcode in the right format',
+    reportingInstructions_telephone: 'Enter a telephone number in the right format',
 
     additional_NOCONTACTASSOCIATE_groupsOrOrganisation: 'Enter a name or describe specific groups or organisations',
     additional_INTIMATERELATIONSHIP_intimateGender: 'Select women / men / women or men',
@@ -50,5 +69,22 @@ module.exports = {
     additional_ATTENDDEPENDENCY_appointmentTime: 'Enter appointment time',
     additional_ATTENDDEPENDENCY_appointmentAddress: 'Enter appointment name and address',
     additional_ATTENDSAMPLE_attendSampleDetailsName: 'Enter appointment name',
-    additional_ATTENDSAMPLE_attendSampleDetailsAddress: 'Enter appointment address'
+    additional_ATTENDSAMPLE_attendSampleDetailsAddress: 'Enter appointment address',
+
+    // PROCESSING_CA forms
+    seriousOffence_decision: 'Select yes or no',
+    onRemand_decision: 'Select yes or no',
+    confiscationOrder_decision: 'Select yes or no',
+    confiscationOrder_confiscationUnitConsulted: 'Select yes or no',
+    confiscationOrder_comments: 'Provide details',
+
+    // APPROVAL forms
+    release_decision: 'Select yes or no',
+    release_notedComments: 'Add a comment',
+    release_reason: 'Select a reason',
+
+    // template forms
+    reportingDate_reportingDate: 'Enter a valid date',
+    reportingDate_reportingTime: 'Enter a valid time',
+    taggingCompany_telephone: 'Enter a valid telephone number'
 };

@@ -76,25 +76,25 @@ if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
         div.pure-u-1-2
             div#dischargeHomeAddress
                 #{errors.electricity}
-                +itemAndError(address.consent, errors.consent && 'Say if the homeowner consents to HDC', "consent-curfew")
+                +itemAndError(address.consent, errors.consent, "consent-curfew")
 
     if(address.consent === 'Yes')
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
                 span Is there an electricity supply?
             div.pure-u-1-2
-                +itemAndError(address.electricity, errors.electricity && 'Say if there is an electricity supply', "electricity-curfew")
+                +itemAndError(address.electricity, errors.electricity, "electricity-curfew")
 
         if(address.electricity === 'Yes')
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     span Was a home visit conducted in this case?
                 div.pure-u-1-2
-                    +itemAndError(address.homeVisitConducted, errors.homeVisitConducted && 'Say if you did a home visit', "homeVisit-curfew")
+                    +itemAndError(address.homeVisitConducted, errors.homeVisitConducted, "homeVisit-curfew")
 
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     span Could this offender be managed safely at address?
                 div.pure-u-1-2
-                    +itemAndError(address.deemedSafe, errors.deemedSafe && 'Say if you approve the address', "deemedSafe-curfew")
-                    +itemAndError('', errors.unsafeReason && 'Explain why you did not approve the address', "unsafeReason-curfew")
+                    +itemAndError(address.deemedSafe, errors.deemedSafe, "deemedSafe-curfew")
+                    +itemAndError('', errors.unsafeReason, "unsafeReason-curfew")

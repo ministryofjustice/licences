@@ -7,16 +7,14 @@ block content
 
     div.pure-g.pure-u-1
         include ../includes/backToCheckList
-        +errorBannerWithDetail(errorObject, [
-            {field: 'decision', message: 'Select yes or no'}
-        ])
+        +errorBannerWithDetail(errorObject, [{field: 'decision'}])
         include ../includes/personalDetailsSummary
 
         div.pure-u-2-3
             h2.heading-large Has the offender committed an offence in prison which was referred to the police or independent adjudicator and is not resolved?
 
     if errorObject.decision
-        p.block.error-message Select yes or no
+        p.block.error-message #{errorObject.decision}
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')

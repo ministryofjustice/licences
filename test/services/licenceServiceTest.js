@@ -1796,7 +1796,8 @@ describe('licenceService', () => {
 
             const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {consent: 'Not answered'}}});
+            expect(output).to.eql({proposedAddress: {curfewAddress: {
+                consent: 'Say if the homeowner consents to HDC'}}});
         });
 
         it('should require an answer for electricity if consent is yes', () => {
@@ -1815,7 +1816,8 @@ describe('licenceService', () => {
 
             const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {electricity: 'Not answered'}}});
+            expect(output).to.eql({proposedAddress: {curfewAddress: {
+                electricity: 'Say if there is an electricity supply'}}});
         });
 
         it('should require an answer for homeVisitConducted if electricity is yes', () => {
@@ -1835,7 +1837,8 @@ describe('licenceService', () => {
 
             const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {homeVisitConducted: 'Not answered'}}});
+            expect(output).to.eql({proposedAddress: {curfewAddress: {
+                homeVisitConducted: 'Say if you did a home visit'}}});
         });
 
         it('should not require an answer for homeVisitConducted if consent is no', () => {
@@ -1873,7 +1876,7 @@ describe('licenceService', () => {
 
             const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {deemedSafe: 'Not answered'}}});
+            expect(output).to.eql({proposedAddress: {curfewAddress: {deemedSafe: 'Say if you approve the address'}}});
         });
 
         it('should not require an answer for address safety if other curfew address questions are No', () => {
@@ -1913,7 +1916,8 @@ describe('licenceService', () => {
 
             const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {unsafeReason: 'Not answered'}}});
+            expect(output).to.eql({proposedAddress: {curfewAddress: {
+                unsafeReason: 'Explain why you did not approve the address'}}});
         });
 
         it('should require curfew hours', () => {
@@ -1961,9 +1965,9 @@ describe('licenceService', () => {
             const expectedOutput = {
                 risk: {
                     riskManagement: {
-                        planningActions: 'Not answered',
-                        awaitingInformation: 'Not answered',
-                        victimLiaison: 'Not answered'
+                        planningActions: 'Say if there are risk management actions',
+                        awaitingInformation: 'Say if you are still awaiting information',
+                        victimLiaison: 'Say if it is a victim liaison case'
                     }
                 }
             };
@@ -1987,9 +1991,9 @@ describe('licenceService', () => {
             const expectedOutput = {
                 risk: {
                     riskManagement: {
-                        planningActionsDetails: 'Not answered',
-                        awaitingInformationDetails: 'Not answered',
-                        victimLiaisonDetails: 'Not answered'
+                        planningActionsDetails: 'Provide details of the risk management actions',
+                        awaitingInformationDetails: 'Provide details of information that you are waiting for',
+                        victimLiaisonDetails: 'Provide details of the victim liaison case'
                     }
                 }
             };
@@ -2009,11 +2013,11 @@ describe('licenceService', () => {
             const expectedOutput = {
                 reporting: {
                     reportingInstructions: {
-                        name: 'Not answered',
-                        buildingAndStreet1: 'Not answered',
-                        townOrCity: 'Not answered',
-                        postcode: 'Not answered',
-                        telephone: 'Not answered'
+                        name: 'Enter a name',
+                        buildingAndStreet1: 'Enter a building or street',
+                        townOrCity: 'Enter a town or city',
+                        postcode: 'Enter a postcode in the right format',
+                        telephone: 'Enter a telephone number in the right format'
                     }
                 }
             };
@@ -3314,7 +3318,7 @@ describe('licenceService', () => {
                 expect(output).to.eql({
                     proposedAddress: {
                         curfewAddress: {
-                            deemedSafe: 'Not answered'
+                            deemedSafe: 'Say if you approve the address'
                         }
                     }
                 });
@@ -3349,7 +3353,7 @@ describe('licenceService', () => {
                             curfewAddress: {
                                 telephone: 'Enter a valid phone number',
                                 cautionedAgainstResident: 'Select yes or no',
-                                consent: 'Not answered'
+                                consent: 'Say if the homeowner consents to HDC'
                             }
                         },
                         curfew: 'Not answered',
@@ -3436,7 +3440,7 @@ describe('licenceService', () => {
 
                 const output = service.getValidationErrorsForPage(licence, 'approval');
 
-                expect(output).to.eql({approval: {release: {reason: 'Not answered'}}});
+                expect(output).to.eql({approval: {release: {reason: 'Select a reason'}}});
             });
 
             it('should return error if decision is Yes and notedComments is not answered', () => {
@@ -3457,7 +3461,7 @@ describe('licenceService', () => {
 
                 const output = service.getValidationErrorsForPage(licence, 'approval');
 
-                expect(output).to.eql({approval: {release: {notedComments: 'Not answered'}}});
+                expect(output).to.eql({approval: {release: {notedComments: 'Add a comment'}}});
             });
         });
 
