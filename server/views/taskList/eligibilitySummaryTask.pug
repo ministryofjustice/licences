@@ -1,15 +1,20 @@
-
-- var eligible = licenceStatus.decisions.eligible ? 'Eligible' : 'Not eligible'
-- var suitable = licenceStatus.decisions.unsuitable ? 'unsuitable' : 'presumed suitable'
-- var sufficientTime = (licenceStatus.decisions.insufficientTime ? 'less' : 'more') + ' than 4 weeks until release date'
-
-
 div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : "taskListItem")
     h2.heading-medium Eligibility and presumed suitability
 
     div.pure-g
         div.pure-u-3-4
-            | #{eligible}, #{suitable}, #{sufficientTime}
+            if licenceStatus.decisions.excluded
+                | Not eligible
+            else if licenceStatus.decisions.unsuitable
+                | Unsuitable
+                if licenceStatus.decisions.exceptionalCircumstances
+                    |  with exceptional circumstances
+            else if licenceStatus.decisions.insufficientTime
+                | Less than 4 weeks until release date
+                if licenceStatus.decisions.insufficientTimeContinue
+                    | , with approval to continue
+            else
+                | Eligible
         div.pure-u-1-4.center
             if user.role === 'CA'
                 a.taskListAction.center.button.button-secondary(href="/hdc/eligibility/excluded/" + prisonerInfo.offenderNo) View/Edit
