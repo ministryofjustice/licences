@@ -4,7 +4,7 @@ div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : 
     div.pure-g
         div.pure-u-3-4
             if licenceStatus.decisions.excluded
-                | Excluded
+                | Not eligible
             else if licenceStatus.decisions.unsuitable
                 | Unsuitable
                 if licenceStatus.decisions.exceptionalCircumstances
@@ -12,9 +12,9 @@ div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : 
             else if licenceStatus.decisions.insufficientTime
                 | Less than 4 weeks until release date
                 if licenceStatus.decisions.insufficientTimeContinue
-                    | , with DM approval to continue
+                    | , with approval to continue
             else
-                | Eligible, presumed suitable, more than 4 weeks until release date
+                | Eligible
         div.pure-u-1-4.center
             if user.role === 'CA'
                 a.taskListAction.center.button.button-secondary(href="/hdc/eligibility/excluded/" + prisonerInfo.offenderNo) View/Edit
