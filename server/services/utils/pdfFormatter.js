@@ -2,6 +2,7 @@ const {getIn, isEmpty, mergeWithRight} = require('../../utils/functionalHelpers'
 const pdfData = require('../config/pdfData');
 const {romanise} = require('../../utils/romanise');
 const moment = require('moment');
+const config = require('../../config');
 
 module.exports = {formatPdfData};
 
@@ -13,8 +14,8 @@ function formatPdfData(templateName, nomisId,
 
     const conditions = getConditionsForConfig(licence, templateName, 'CONDITIONS');
     const pss = getConditionsForConfig(licence, templateName, 'PSS');
-
     const photo = image ? image.toString('base64') : placeholder.toString('base64');
+    const taggingCompany = {telephone: config.pdf.taggingCompanyTelephone};
 
     const allData = {
         licence,
@@ -24,6 +25,7 @@ function formatPdfData(templateName, nomisId,
         conditions,
         pss,
         photo,
+        taggingCompany,
         approvedVersion
     };
 

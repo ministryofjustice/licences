@@ -269,10 +269,10 @@ const CURFEW_SUN_UNTIL = {
 };
 
 const MONITOR = {
-    paths: [['licence', 'monitoring', 'taggingCompany', 'telephone']],
+    paths: [['taggingCompany', 'telephone']],
     displayName: 'Monitoring company telephone number',
     group: 'monitoring',
-    required: 'mandatory'
+    required: 'optional'
 };
 
 const VERSION = {
