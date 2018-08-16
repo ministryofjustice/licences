@@ -21,7 +21,8 @@ module.exports = {
     pipe,
     removeFromArray,
     all,
-    omit
+    omit,
+    getWhereKeyLike
 };
 
 // pass in your object and a path in array format
@@ -118,4 +119,15 @@ function removeFromArray(index, end, array) {
 
 function omit(namesList, sourceObject) {
     return R.omit(namesList, sourceObject);
+}
+
+function getWhereKeyLike(string, object) {
+    const stringIncludesKey = (value, key) => {
+        return string.includes(key);
+    };
+
+    return R.pipe(
+        R.pickBy(stringIncludesKey),
+        R.values
+    )(object)[0];
 }

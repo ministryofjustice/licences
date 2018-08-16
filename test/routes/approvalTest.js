@@ -14,7 +14,7 @@ const {roles} = require('../../server/models/roles');
 const testUser = {
     staffId: 'my-staff-id',
     token: 'my-token',
-    roleCode: roles.DM
+    role: roles.DM
 };
 
 const prisonerInfoResponse = {
@@ -73,6 +73,21 @@ describe('/hdc/approval', () => {
                     expect(res.text).to.contain('23/12/1971');
 
                 });
+        });
+
+        it('should throw if requested by non-DM user', () => {
+
+            const user = {
+                staffId: 'my-staff-id',
+                token: 'my-token',
+                role: roles.CA
+            };
+
+            const caApp = createApp({licenceServiceStub, user});
+
+            return request(caApp)
+                .get('/approval/release/1')
+                .expect(403);
         });
     });
 
@@ -137,10 +152,26 @@ describe('/hdc/approval', () => {
                 .expect(302)
                 .expect('Location', '/hdc/approval/release/1');
         });
+
+        it('should throw if submitted by non-DM user', () => {
+
+            const user = {
+                staffId: 'my-staff-id',
+                token: 'my-token',
+                role: roles.CA
+            };
+
+            const caApp = createApp({licenceServiceStub, user});
+
+            return request(caApp)
+                .post('/approval/release/1')
+                .send({decision: 'Yes'})
+                .expect(403);
+        });
     });
 });
 
-function createApp({licenceServiceStub}) {
+function createApp({licenceServiceStub, user}) {
     const prisonerServiceStub = createPrisonerServiceStub();
     prisonerServiceStub.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse);
     licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
@@ -150,5 +181,5 @@ function createApp({licenceServiceStub}) {
         prisonerService: prisonerServiceStub
     });
 
-    return appSetup(hdcRoute, testUser);
+    return appSetup(hdcRoute, user || testUser);
 }

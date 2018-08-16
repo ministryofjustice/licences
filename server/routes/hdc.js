@@ -1,6 +1,6 @@
 const express = require('express');
 
-const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
+const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
 const {getIn, lastItem, isEmpty, firstItem, lastIndex, omit} = require('../utils/functionalHelpers');
 const {getPathFor} = require('../utils/routes');
 const {getLicenceStatus} = require('../utils/licenceStatus');
@@ -33,6 +33,7 @@ module.exports = function(
 
     const router = express.Router();
     router.use(authenticationMiddleware());
+    router.use(authorisationMiddleware);
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -383,7 +384,7 @@ module.exports = function(
         }
 
         res.redirect(`${nextPath}${path}${nomisId}`);
-    };
+    }
 
 
     function auditUpdateEvent(req, nomisId, sectionName, formName) {
