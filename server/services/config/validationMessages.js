@@ -85,6 +85,5 @@ module.exports = {
 
     // template forms
     reportingDate_reportingDate: 'Enter a valid date',
-    reportingDate_reportingTime: 'Enter a valid time',
-    taggingCompany_telephone: 'Enter a valid telephone number'
+    reportingDate_reportingTime: 'Enter a valid time'
 };
