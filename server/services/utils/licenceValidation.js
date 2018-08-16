@@ -2,8 +2,8 @@ const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
-const {all, pipe, getIn, isEmpty} = require('../../utils/functionalHelpers');
-const validationErrors = require('./conditionsValidationMessages');
+const {all, pipe, getIn, isEmpty, merge} = require('../../utils/functionalHelpers');
+const validationMessages = require('../config/validationMessages');
 
 const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
@@ -51,9 +51,12 @@ function getMessage(errorType, errorMessage, errorPath) {
         return 'Enter a date that is not in the past';
     }
 
-    const path = errorPath.join('_');
-    if (validationErrors[path]) {
-        return validationErrors[path];
+    const path = errorPath
+        .filter(pathItem => !Number.isInteger(pathItem))
+        .join('_');
+
+    if (validationMessages[path]) {
+        return validationMessages[path];
     }
 
     return 'Not answered';
@@ -90,6 +93,12 @@ const bassReferral = joi.object().keys({
     proposedCounty: requiredIf('decision', 'Yes')
 });
 
+const residentSchema = joi.object({
+    name: requiredString,
+    age: optionalAge,
+    relationship: requiredString
+});
+
 const curfewAddress = joi.object().keys({
     addressLine1: requiredString,
     addressLine2: optionalString,
@@ -100,11 +109,6 @@ const curfewAddress = joi.object().keys({
         name: requiredString,
         relationship: requiredString
     }),
-    residents: joi.array().items(joi.object().keys({
-        name: requiredString,
-        age: optionalAge,
-        relationship: requiredString
-    })),
     cautionedAgainstResident: requiredYesNo,
     consent: requiredYesNo,
     electricity: requiredIf('consent', 'Yes'),
@@ -313,30 +317,84 @@ module.exports = function(licence) {
             {stripUnknown: true, abortEarly: false}
         ).error;
 
-        if (!errorsForSection) {
+        const allErrorsForSection = section === 'proposedAddress' ?
+            addResidentErrors(errorsForSection, licence[section]) :
+            errorsForSection;
+
+        if (!allErrorsForSection) {
             return [];
         }
 
-        const errorObject = errorsForSection.details.map(error => {
-            return {
-                path: {
-                    [section]: error.path.reduceRight((object, key) => {
-                        return {[key]: object};
-                    }, getMessage(error.type, error.message, error.path))
-                }
-            };
-        });
+        const errorsArray = getArrayOfPathsAndMessages(section, allErrorsForSection);
 
-        return updateWithSpecialCases(errorObject);
+        return updateWithSpecialCases(errorsArray);
     };
 };
+
+function getArrayOfPathsAndMessages(section, allErrorsForSection) {
+
+    return allErrorsForSection.details.map(error => {
+        // error object may have multiple error objects e.g. list of residents errors
+        if (Array.isArray(error)) {
+            return error.map(createPathWithErrorMessage);
+        }
+
+        return createPathWithErrorMessage(error);
+    });
+
+    function createPathWithErrorMessage(errorItem) {
+        return {
+            path: {
+                [section]: errorItem.path.reduceRight((object, key) => {
+                    return {[key]: object};
+                }, getMessage(errorItem.type, errorItem.message, errorItem.path))
+            }
+        };
+    }
+}
+
+function addResidentErrors(errorsForSection, licenceSection) {
+    // resident errors handled separately as can't successfully get errors from list of objects using standard joi
+    const residents = getIn(licenceSection, ['curfewAddress', 'residents']);
+    if (!residents) {
+        return errorsForSection;
+    }
+
+    return residents.reduce((allErrors, resident, index) => {
+        const residentErrors = joi.validate(
+            resident,
+            residentSchema,
+            {stripUnknown: true, abortEarly: false}
+        ).error;
+
+        if (!residentErrors) {
+            return allErrors;
+        }
+
+        // merge the details of the resident errors into same object
+        const residentDetails = residentErrors.details.map(detail => {
+            return merge(detail, {path: ['curfewAddress', 'residents', index, ...detail.path]});
+        });
+
+        return {...allErrors, details: [...allErrors.details, residentDetails]};
+
+    }, errorsForSection || {details: []});
+
+}
 
 const specialCases = [
     {
         path: ['proposedAddress', 'curfewAddress', 'occupier', 'name'],
-        method: removeErrorsIfAll('Not answered', [
-            ['path', 'proposedAddress', 'curfewAddress', 'occupier', 'name'],
-            ['path', 'proposedAddress', 'curfewAddress', 'occupier', 'relationship']
+        method: removeErrorsIfAllMatch([
+            {
+                path: ['path', 'proposedAddress', 'curfewAddress', 'occupier', 'name'],
+                value: validationMessages.curfewAddress_occupier_name
+            },
+            {
+                path: ['path', 'proposedAddress', 'curfewAddress', 'occupier', 'relationship'],
+                value: validationMessages.curfewAddress_occupier_relationship
+            }
+
         ])
     }
 ];
@@ -357,14 +415,14 @@ function updateWithSpecialCases(errorObject) {
     return pipe(...methodsToRunOnObject)(errorObject);
 }
 
-function removeErrorsIfAll(errorLabel, pathsToTest) {
+function removeErrorsIfAllMatch(pathsToTest) {
     return errors => {
-        const errorsListContainsObject = path => {
-            return errors.find(error => getIn(error, path) === errorLabel);
+        const errorsListContainsObject = pathsToTest => {
+            return errors.find(error => getIn(error, pathsToTest.path) === pathsToTest.value);
         };
 
         if (all(errorsListContainsObject, pathsToTest)) {
-            return errors.filter(error => !pathsToTest.find(path => getIn(error, path)));
+            return errors.filter(error => !pathsToTest.find(path => getIn(error, path.path)));
         }
 
         return errors;

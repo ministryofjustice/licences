@@ -6,15 +6,13 @@ block content
     div.pure-g.pure-u-1
         include ../includes/back
         include ../includes/personalDetailsSummary
-        +errorBannerWithDetail(errorObject, [
-            {field: 'decision', message: 'Select yes or no'}
-        ])
+        +errorBannerWithDetail(errorObject, [{field: 'decision'}])
 
         div.pure-u-1-2
             h2.heading-large Has the offender proposed a curfew address?
 
     if errorObject.decision
-        p.error-message Select yes or no
+        p.error-message #{errorObject.decision}
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')

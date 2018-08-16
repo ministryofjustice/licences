@@ -8,11 +8,11 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
             div.pure-u-1-2#addressDetails
-                +itemAndError(address.addressLine1, errors.addressLine1 && 'Address line 1 - not answered', "address1-curfew")
+                +itemAndError(address.addressLine1, errors.addressLine1, "address1-curfew")
                 if address.addressLine2
                     span#address2-curfew.block.bold #{address.addressLine2}
-                +itemAndError(address.addressTown, errors.addressTown && 'Town or city - not answered', "town-curfew")
-                +itemAndError(address.postCode, errors.postCode && 'Postcode - not answered or invalid', "postCode-curfew")
+                +itemAndError(address.addressTown, errors.addressTown, "town-curfew")
+                +itemAndError(address.postCode, errors.postCode, "postCode-curfew")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
