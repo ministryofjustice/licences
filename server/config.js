@@ -46,6 +46,7 @@ module.exports = {
     sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', {requireInProduction: true}),
 
     pdf: {
-        pdfServiceHost: get('PDF_SERVICE_HOST', 'http://localhost:8081')
+        pdfServiceHost: get('PDF_SERVICE_HOST', 'http://localhost:8081'),
+        taggingCompanyTelephone: get('TAGGING_CO_PHONE', '01234 567890')
     }
 };

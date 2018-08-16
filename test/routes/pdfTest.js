@@ -36,9 +36,16 @@ const valuesWithMissing = {
         OFF_NAME: 'FIRST LAST'
     },
     missing: {
-        monitoring:
-            {mandatory: {MONITOR: 'Monitoring company telephone number'}}
+        reporting:
+            {mandatory: {REPORTING_AT: 'reporting date'}}
     }
+};
+
+const valuesWithoutMissing = {
+    values: {
+        OFF_NAME: 'FIRST LAST'
+    },
+    missing: {}
 };
 
 describe('PDF:', () => {
@@ -137,7 +144,7 @@ describe('PDF:', () => {
 
         it('Shows template version info - same version when same template', () => {
 
-            pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
+            pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
             licenceService.getLicence.resolves({
                 version: 1,
@@ -149,14 +156,14 @@ describe('PDF:', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.include('Creating version: 1');
-                    expect(res.text).to.include('Last version: 1, AP HDC Licence, on 11/12/13');
+                    expect(res.text).to.include('Ready to print');
+                    expect(res.text).to.include('Last printed version 1, AP HDC Licence, on 11/12/13');
                 });
         });
 
         it('Shows template version info - new version when new template', () => {
 
-            pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
+            pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
             licenceService.getLicence.resolves({
                 version: 1,
@@ -168,14 +175,17 @@ describe('PDF:', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.include('Creating new version: 2');
-                    expect(res.text).to.include('Last version: 1, AP HDC Licence, on 11/12/13');
+                    expect(res.text).to.include('Ready to print version 2');
+                    expect(res.text).to.include('AP PSS HDC Licence');
+                    expect(res.text).to.include('Last printed version 1');
+                    expect(res.text).to.include('AP HDC Licence');
+                    expect(res.text).to.include('on 11/12/13');
                 });
         });
 
         it('Shows template version info - new version when modified licence version', () => {
 
-            pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
+            pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
             licenceService.getLicence.resolves({
                 version: 2,
@@ -187,8 +197,8 @@ describe('PDF:', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.include('Creating new version: 2');
-                    expect(res.text).to.include('Last version: 1, AP HDC Licence, on 11/12/13');
+                    expect(res.text).to.include('Ready to print version 2');
+                    expect(res.text).to.include('Last printed version 1, AP HDC Licence, on 11/12/13');
                 });
         });
     });

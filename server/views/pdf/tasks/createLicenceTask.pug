@@ -1,29 +1,31 @@
+
+-var creationMessage = versionInfo.isNewVersion ? "version " + versionInfo.currentVersion : versionInfo.isNewTemplate ? "version " + (versionInfo.currentVersion + 1) : ""
+
 div.taskListItem.borderBottomLight.largeMarginBottom
-    h2.heading-medium Create #{versionInfo.templateLabel}
+
+    div.pure-g
+        div.pure-u-3-4
+            h2.heading-medium Create #{versionInfo.templateLabel}
+        div.pure-u-1-4.center
+            a(href="/hdc/pdf/select/" + nomisId) Change template
 
     div.pure-g
         div.pure-u-3-4
             if canPrint
-                | Ready to create
+                | Ready to print #{creationMessage}
+                if versionInfo.isNewTemplate
+                    | ,
+                    span.bold  #{versionInfo.templateLabel}
             else
                 | All sections not completed
-            p
-
-            if versionInfo.isNewTemplate
-                p Selected template is different from last version.
-                    ="  "
-                    a(href="/hdc/pdf/select/" + nomisId) (Choose again)
-
-            if versionInfo.isNewVersion
-                p Creating new version: #{versionInfo.currentVersion}
-            else
-                if versionInfo.isNewTemplate
-                    p Creating new version: #{versionInfo.currentVersion + 1}
-                else
-                    p Creating version: #{versionInfo.currentVersion}
 
             if versionInfo.lastVersion
-                p Last version: #{versionInfo.lastVersion.version}, #{versionInfo.lastTemplateLabel}, on #{versionInfo.lastVersion.timestamp}
+                p Last printed version #{versionInfo.lastVersion.version},
+                    if versionInfo.isNewTemplate
+                        span.bold  #{versionInfo.lastTemplateLabel}
+                    else
+                        |  #{versionInfo.lastTemplateLabel}
+                    |, on #{versionInfo.lastVersion.timestamp}
         div.pure-u-1-4.center
             a#createPdf.taskListAction.center.button(href="/hdc/pdf/create/" + templateName + "/" + nomisId role="button" target="_blank") Continue
 

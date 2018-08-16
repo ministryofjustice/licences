@@ -248,7 +248,7 @@ const allValuesEmpty = {
     CURFEW_WED_UNTIL: 'PLACEHOLDER',
     EST_PHONE: 'PLACEHOLDER',
     EST_PREMISE: 'PLACEHOLDER',
-    MONITOR: 'PLACEHOLDER',
+    MONITOR: '01234 567890', // tagging co phone is hardcoded so always present
     OFF_BOOKING: 'PLACEHOLDER',
     OFF_CRO: '',
     OFF_DOB: 'PLACEHOLDER',
@@ -305,11 +305,6 @@ const displayNames = {
             CURFEW_TUE_UNTIL: 'Curfew Tuesday until',
             CURFEW_WED_FROM: 'Curfew Wednesday from',
             CURFEW_WED_UNTIL: 'Curfew Wednesday until'
-        }
-    },
-    monitoring: {
-        mandatory: {
-            MONITOR: 'Monitoring company telephone number'
         }
     },
     reporting: {
