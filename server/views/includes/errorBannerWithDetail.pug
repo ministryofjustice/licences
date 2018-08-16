@@ -8,4 +8,4 @@ mixin errorBannerWithDetail(errorObject, errors)
                     each error in errors
                         if errorObject[error.field]
                             li
-                                a(href="#error-anchor") #{error.message}
+                                a(href="#error-anchor")  #{error.message || errorObject[error.field]}

@@ -9,16 +9,13 @@ block content
     div.pure-g.pure-u-1
         include ../includes/back
         include ../includes/personalDetailsSummary
-        +errorBannerWithDetail(errorObject, [
-            {field: 'decision', message: 'Select yes or no'},
-            {field: 'dmApproval', message: 'Select yes or no'}
-        ])
+        +errorBannerWithDetail(errorObject, [{field: 'decision'}, {field: 'dmApproval'}])
 
         div.pure-u-1-2
             h2.heading-large Are there less than 4 weeks to the conditional release date?
 
     if errorObject.decision
-        p.error-message Select yes or no
+        p.error-message #{errorObject.decision}
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=nomisId || '')
@@ -36,7 +33,7 @@ block content
                     div#dmApprovalForm(class=errorObject.dmApproval ? 'form-group-error panel panel-border-narrow': 'panel panel-border-narrow js-hidden')
                         p Has the decision maker given approval to continue the HDC case?
                             if errorObject.dmApproval
-                                span.error-message Select yes or no
+                                span.error-message #{errorObject.dmApproval}
                         div.multiple-choice.smallPaddingBottom
                             input#dmApprovalYes(type="radio" checked=dmApprovedValue === 'Yes' name="dmApproval" value="Yes")
                             label(for="dmApprovalYes") Yes
