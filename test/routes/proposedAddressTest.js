@@ -47,41 +47,41 @@ describe('/hdc/proposedAddress', () => {
         testFormPageGets(app, routes, licenceService);
     });
 
-    describe('POST /hdc/proposedAddress/:section/:nomisId', () => {
+    describe('POST /hdc/proposedAddress/:section/:bookingId', () => {
         const routes = [
             {
                 url: '/proposedAddress/optOut/1',
-                body: {nomisId: 1, decision: 'Yes'},
+                body: {bookingId: 1, decision: 'Yes'},
                 section: 'optOut',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/proposedAddress/optOut/1',
-                body: {nomisId: 1, decision: 'No'},
+                body: {bookingId: 1, decision: 'No'},
                 section: 'optOut',
                 nextPath: '/hdc/proposedAddress/addressProposed/1'
             },
             {
                 url: '/proposedAddress/addressProposed/1',
-                body: {nomisId: 1, decision: 'Yes'},
+                body: {bookingId: 1, decision: 'Yes'},
                 section: 'addressProposed',
                 nextPath: '/hdc/proposedAddress/curfewAddress/1'
             },
             {
                 url: '/proposedAddress/addressProposed/1',
-                body: {nomisId: 1, decision: 'No'},
+                body: {bookingId: 1, decision: 'No'},
                 section: 'addressProposed',
                 nextPath: '/hdc/proposedAddress/bassReferral/1'
             },
             {
                 url: '/proposedAddress/bassReferral/1',
-                body: {nomisId: 1},
+                body: {bookingId: 1},
                 section: 'bassReferral',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/proposedAddress/curfewAddress/1',
-                body: {nomisId: 1},
+                body: {bookingId: 1},
                 section: 'curfewAddress',
                 nextPath: '/hdc/taskList/1'
             }
@@ -99,7 +99,7 @@ describe('/hdc/proposedAddress', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'proposedAddress',
@@ -311,7 +311,7 @@ describe('/hdc/proposedAddress', () => {
 
             return request(app)
                 .post('/proposedAddress/curfewAddress/add')
-                .send({nomisId: '1', addresses: [{addressLine1: 'something'}]})
+                .send({bookingId: '1', addresses: [{addressLine1: 'something'}]})
                 .expect(302)
                 .expect('Location', '/hdc/taskList/1');
 
@@ -336,7 +336,7 @@ describe('/hdc/proposedAddress', () => {
 
             return request(app)
                 .post('/proposedAddress/curfewAddress/add')
-                .send({nomisId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}]})
+                .send({bookingId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}]})
                 .expect(302)
                 .expect('Location', '/hdc/proposedAddress/curfewAddress/1');
 

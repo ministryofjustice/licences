@@ -23,9 +23,9 @@ block content
             div.pure-u-md-1-2.alignRight
                 div.pure-u-md-1-2.change-details
                     if (stage === 'PROCESSING_RO' && user.role === 'RO')
-                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
+                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + bookingId) Change these details
                     if(user.role === 'CA' && (stage === 'ELIGIBILITY' || addressChanged))
-                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Change these details
+                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Change these details
 
         if typeof errorObject.proposedAddress === 'string'
             p.alert.bold(id='proposed-address-error') #{errorObject.proposedAddress}
@@ -37,7 +37,7 @@ block content
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons
             if !errorsOnPage
-                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/addressReview/" + nomisId role="button")
+                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/addressReview/" + bookingId role="button")
                     | Continue
             else
-                a#correctAddressLink(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Correct the errors before continuing
+                a#correctAddressLink(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Correct the errors before continuing

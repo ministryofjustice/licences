@@ -11,22 +11,26 @@ block content
         div.pure-u-2-3
             h2.heading-large.midPaddingBottom Sentence dates and offender information
 
-            if missing.sentence.mandatory
-                p Before you can create the licences you must enter the following mandatory details in Prison-NOMIS.
-                p Prison-NOMIS will automatically send the details to this service.
+            if !missing || !missing.sentence
+                p All required details are present
+            else
 
-                ul.list-bullet
-                    each item in missing.sentence.mandatory
-                        li.bold #{item}
+                if missing.sentence.mandatory
+                    p Before you can create the licences you must enter the following mandatory details in Prison-NOMIS.
+                    p Prison-NOMIS will automatically send the details to this service.
 
-            if missing.sentence.optional
-                br
-                p The following details should be entered in Prison-NOMIS if possible.
+                    ul.list-bullet
+                        each item in missing.sentence.mandatory
+                            li.bold #{item}
 
-                ul.list-bullet
-                    each item in missing.sentence.optional
-                        li.bold #{item}
+                if missing.sentence.optional
+                    br
+                    p The following details should be entered in Prison-NOMIS if possible.
+
+                    ul.list-bullet
+                        each item in missing.sentence.optional
+                            li.bold #{item}
 
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons
-            a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/hdc/pdf/taskList/" + templateName + "/" + prisoner.offenderNo role="button") Return to task list
+            a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/hdc/pdf/taskList/" + templateName + "/" + prisoner.bookingId role="button") Return to task list

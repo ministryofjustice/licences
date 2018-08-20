@@ -83,7 +83,7 @@ const createConditionsServiceStub = () => ({
 
 const createPrisonerServiceStub = () =>({
     getEstablishmentForPrisoner: sinon.stub().resolves(),
-    getComForPrisoner: sinon.stub().resolves(),
+    getCom: sinon.stub().resolves(),
     getPrisonerDetails: sinon.stub().resolves({}),
     getPrisonerImage: sinon.stub().resolves({image: 'image'}),
     getPrisonerPersonalDetails: sinon.stub().resolves(
@@ -115,7 +115,7 @@ const caseListServiceStub = {
 };
 
 function testFormPageGets(app, routes, licenceServiceStub) {
-    context('licence exists for nomisId', () => {
+    context('licence exists for bookingId', () => {
         routes.forEach(route => {
             it(`renders the ${route.url} page`, () => {
                 return request(app)
@@ -129,7 +129,7 @@ function testFormPageGets(app, routes, licenceServiceStub) {
         });
     });
 
-    context('licence doesnt exists for nomisId', () => {
+    context('licence doesnt exists for bookingId', () => {
         beforeEach(() => {
             licenceServiceStub.getLicence.resolves(null);
         });

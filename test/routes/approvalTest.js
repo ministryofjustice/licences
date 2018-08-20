@@ -53,7 +53,7 @@ describe('/hdc/approval', () => {
         testFormPageGets(app, routes, service);
     });
 
-    describe('GET /approval/routes/:nomisId', () => {
+    describe('GET /approval/routes/:bookingId', () => {
         it('should display the offender details - release', () => {
             return request(app)
                 .get('/approval/release/1')
@@ -76,7 +76,7 @@ describe('/hdc/approval', () => {
         });
     });
 
-    describe('POST /hdc/approval/:form/:nomisId', () => {
+    describe('POST /hdc/approval/:form/:bookingId', () => {
         const routes = [
             {
                 url: '/approval/release/1',
@@ -110,7 +110,7 @@ describe('/hdc/approval', () => {
                     .expect(res => {
                         expect(licenceServiceStub.update).to.be.calledOnce();
                         expect(licenceServiceStub.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'approval',

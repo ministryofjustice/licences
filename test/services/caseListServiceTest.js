@@ -8,9 +8,9 @@ describe('caseListService', () => {
     let licenceClient;
 
     const roPrisoners = [
-        {offenderNo: 'A'},
-        {offenderNo: 'B'},
-        {offenderNo: 'C'}
+        {bookingId: 'A'},
+        {bookingId: 'B'},
+        {bookingId: 'C'}
     ];
     const hdcEligiblePrisoners = [
         {
@@ -43,7 +43,7 @@ describe('caseListService', () => {
     beforeEach(() => {
         nomisClient = {
             getHdcEligiblePrisoners: sinon.stub(),
-            getOffenderSentences: sinon.stub().resolves([
+            getOffenderSentencesByBookingId: sinon.stub().resolves([
                 {
                     bookingId: 0,
                     offenderNo: 'A12345',
@@ -131,24 +131,24 @@ describe('caseListService', () => {
         });
 
         context('when user is a RO', () => {
-            it('should call getROPrisoners && getOffenderSentences from nomisClient', async () => {
+            it('should call getROPrisoners && getOffenderSentencesByBookingId from nomisClient', async () => {
                 nomisClient.getROPrisoners.resolves(roPrisoners);
 
                 await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role);
 
                 expect(nomisClient.getROPrisoners).to.be.calledOnce();
-                expect(nomisClient.getOffenderSentences).to.be.calledOnce();
-                expect(nomisClient.getOffenderSentences).to.be.calledWith(['A', 'B', 'C']);
+                expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledOnce();
+                expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledWith(['A', 'B', 'C']);
             });
 
-            it('should not call getOffenderSentences when no results from getROPrisoners', async () => {
+            it('should not call getOffenderSentencesByBookingId when no results from getROPrisoners', async () => {
 
                 nomisClient.getROPrisoners.resolves([]);
 
                 await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role);
 
                 expect(nomisClient.getROPrisoners).to.be.calledOnce();
-                expect(nomisClient.getOffenderSentences).not.to.be.calledOnce();
+                expect(nomisClient.getOffenderSentencesByBookingId).not.to.be.calledOnce();
             });
 
             it('should return empty array if no delius user name found', async () => {

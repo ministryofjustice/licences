@@ -17,7 +17,7 @@ block content
         p.block.error-message #{errorObject.decision}
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="nomisId" value=nomisId || '')
+        input(type="hidden" name="bookingId" value=bookingId || '')
         div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
 
             div.largePaddingBottom

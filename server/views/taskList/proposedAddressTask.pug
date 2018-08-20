@@ -17,6 +17,6 @@ div.largeMarginBottom.borderTop
 
         div.pure-u-1-4.center
             if licenceStatus.decisions.curfewAddressApproved === 'rejected'
-                +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/rejected/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/rejected/" + prisonerInfo.bookingId)
             else
-                +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/optOut/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/optOut/" + prisonerInfo.bookingId)

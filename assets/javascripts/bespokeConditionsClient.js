@@ -29,7 +29,6 @@ function addBespokeFields() {
 
     var newBespoke = finalBespoke.clone();
     newBespoke.find('textarea.bespokeInput').attr('name', newTextbox).attr('id', newTextbox).val('');
-    console.log(newApprovedYes);
     newBespoke.find('#bespokeApprovedYes input.bespokeApproved').attr('name', newApprovedYes).attr('id', newApprovedYes).prop('checked', false);
     newBespoke.find('#bespokeApprovedNo input.bespokeApproved').attr('name', newApprovedNo).attr('id', newApprovedNo).prop('checked', false);
     newBespoke.find('label.bespokeCheckboxLabelYes').attr('for', newApprovedYes);

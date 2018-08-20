@@ -13,10 +13,10 @@ div.taskListItem
             -var roleCanModify = (user.role === 'RO' || user.role === 'CA')
 
             if postApproval && roleCanModify
-                a.taskListAction.center.button.button-secondary(href="/hdc/curfew/curfewHours/" + prisonerInfo.offenderNo) View/Edit
+                a.taskListAction.center.button.button-secondary(href="/hdc/curfew/curfewHours/" + prisonerInfo.bookingId) View/Edit
 
             else if user.role === 'RO'
-                +startContinueView(licenceStatus.tasks.curfewHours, "/hdc/curfew/curfewHours/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.curfewHours, "/hdc/curfew/curfewHours/" + prisonerInfo.bookingId)
 
             else
-                a.taskListAction.center.button.button-secondary(href="/hdc/review/curfewHours/" + prisonerInfo.offenderNo) View
+                a.taskListAction.center.button.button-secondary(href="/hdc/review/curfewHours/" + prisonerInfo.bookingId) View

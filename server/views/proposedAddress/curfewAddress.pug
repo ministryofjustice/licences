@@ -11,7 +11,7 @@ block content
 
     form(method="post" action=submitPath)
         input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="nomisId" value=nomisId || '')
+        input(type="hidden" name="bookingId" value=bookingId || '')
         div.paddingBottom.largeMarginBottom
             +addressForm(0)
 

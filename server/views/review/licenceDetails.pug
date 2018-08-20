@@ -19,13 +19,13 @@ block content
         div.pure-u-1.inlineButtons
 
             if licenceStatus.decisions.optedOut
-                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/optedOut/" + nomisId role="button")
+                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/optedOut/" + bookingId role="button")
                     | Continue
 
             else if licenceStatus.decisions.curfewAddressApproved === 'rejected'
-                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/addressRejected/" + nomisId role="button")
+                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/addressRejected/" + bookingId role="button")
                     | Continue
 
             else
-                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/finalChecks/" + nomisId role="button")
+                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/finalChecks/" + bookingId role="button")
                     | Continue

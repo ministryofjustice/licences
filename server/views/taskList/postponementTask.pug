@@ -17,9 +17,9 @@ div.taskListItem.borderTop
                 p.namedAnchor
                     a.namedAnchor(name="postpone")
 
-                form(method="post" action="/hdc/finalChecks/postpone/" + nomisId)
+                form(method="post" action="/hdc/finalChecks/postpone/" + bookingId)
                     input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="nomisId" value=nomisId || '')
+                    input(type="hidden" name="bookingId" value=bookingId || '')
                     input(type="hidden" name="anchor" value='postpone')
 
                     if licenceStatus.decisions.postponed

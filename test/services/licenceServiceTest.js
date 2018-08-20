@@ -124,7 +124,7 @@ describe('licenceService', () => {
 
         it('should throw if error updating licence', () => {
             licenceClient.updateSection.rejects();
-            const args = {nomisId: 'ab1', additionalConditions: ['Scotland Street']};
+            const args = {bookingId: 'ab1', additionalConditions: ['Scotland Street']};
             return expect(service.updateLicenceConditions(args)).to.eventually.be.rejected();
         });
 
@@ -271,7 +271,7 @@ describe('licenceService', () => {
 
     describe('update', () => {
 
-        const nomisId = 'ab1';
+        const bookingId = 'ab1';
 
         const baseLicence = {
             section1: '',
@@ -326,7 +326,7 @@ describe('licenceService', () => {
 
                 licenceClient.getLicence.resolves({licence});
                 const output = await service.update(
-                    {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                    {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -353,7 +353,7 @@ describe('licenceService', () => {
 
                 licenceClient.getLicence.resolves({licence});
                 const output = await service.update(
-                    {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                    {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -400,7 +400,7 @@ describe('licenceService', () => {
 
                 licenceClient.getLicence.resolves({licence});
                 const output = await service.update(
-                    {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                    {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -447,7 +447,7 @@ describe('licenceService', () => {
 
             licenceClient.getLicence.resolves({licence});
             await service.update(
-                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -473,7 +473,7 @@ describe('licenceService', () => {
 
             licenceClient.getLicence.resolves({licence: baseLicence});
             const output = await service.update(
-                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             expect(licenceClient.updateLicence).to.not.be.called();
             expect(output).to.be.eql(baseLicence);
@@ -506,7 +506,7 @@ describe('licenceService', () => {
 
             licenceClient.getLicence.resolves({licence});
             const output = await service.update(
-                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -549,7 +549,7 @@ describe('licenceService', () => {
 
             licenceClient.getLicence.resolves({licence});
             const output = await service.update(
-                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -615,7 +615,7 @@ describe('licenceService', () => {
 
             licenceClient.getLicence.resolves({licence});
             const output = await service.update(
-                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -684,7 +684,7 @@ describe('licenceService', () => {
 
             licenceClient.getLicence.resolves({licence});
             const output = await service.update(
-                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -757,7 +757,7 @@ describe('licenceService', () => {
 
             licenceClient.getLicence.resolves({licence});
             const output = await service.update(
-                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -829,7 +829,7 @@ describe('licenceService', () => {
 
             licenceClient.getLicence.resolves({licence});
             const output = await service.update(
-                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -909,7 +909,7 @@ describe('licenceService', () => {
 
             licenceClient.getLicence.resolves({licence});
             const output = await service.update(
-                {nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -962,10 +962,10 @@ describe('licenceService', () => {
 
             it('should update stage to MODIFIED if modificationRequiresApproval = true is not in config', async () => {
                 licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
-                await service.update({nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                await service.update({bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
-                expect(licenceClient.updateStage).to.be.calledWith(nomisId, 'MODIFIED');
+                expect(licenceClient.updateStage).to.be.calledWith(bookingId, 'MODIFIED');
             });
 
             it('should not update stage to MODIFIED if noModify is set in config', async () => {
@@ -974,14 +974,14 @@ describe('licenceService', () => {
                     fields: fieldMap,
                     noModify: true
                 };
-                await service.update({nomisId, config, userInput, licenceSection, formName});
+                await service.update({bookingId, config, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.not.be.called();
             });
 
             it('should not update stage to MODIFIED if in MODIFIED_APPROVAL', async () => {
                 licenceClient.getLicence.resolves({stage: 'MODIFIED_APPROVAL', licence});
-                await service.update({nomisId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                await service.update({bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
@@ -992,10 +992,10 @@ describe('licenceService', () => {
                     fields: fieldMap,
                     modificationRequiresApproval: true
                 };
-                await service.update({nomisId, config, userInput, licenceSection, formName});
+                await service.update({bookingId, config, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
-                expect(licenceClient.updateStage).to.be.calledWith(nomisId, 'MODIFIED_APPROVAL');
+                expect(licenceClient.updateStage).to.be.calledWith(bookingId, 'MODIFIED_APPROVAL');
             });
 
             it('should not update stage if no change', async () => {
@@ -1007,7 +1007,7 @@ describe('licenceService', () => {
                 const userInput = {
                     decision: ''
                 };
-                await service.update({nomisId, config, userInput, licenceSection, formName});
+                await service.update({bookingId, config, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
@@ -1021,7 +1021,7 @@ describe('licenceService', () => {
                 const userInput = {
                     decision: ''
                 };
-                await service.update({nomisId, config, userInput, licenceSection, formName});
+                await service.update({bookingId, config, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
@@ -1160,7 +1160,7 @@ describe('licenceService', () => {
 
         it('should update the saved licence', async () => {
             await service.updateAddress({
-                nomisId: 1,
+                bookingId: 1,
                 index: 0,
                 rawLicence: baseLicence,
                 userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
@@ -1184,7 +1184,7 @@ describe('licenceService', () => {
 
         it('should not update the saved licence if there are no changes', async () => {
             const output = await service.updateAddress({
-                nomisId: 1,
+                bookingId: 1,
                 index: 1,
                 rawLicence: baseLicence,
                 userInput: {addresses: [{postCode: 'pc2'}]},
@@ -1197,7 +1197,7 @@ describe('licenceService', () => {
 
         it('should throw if there is no address to update', async () => {
             expect(service.updateAddress({
-                nomisId: 1,
+                bookingId: 1,
                 index: 3,
                 rawLicence: baseLicence,
                 userInput: {addresses: [{newField: 'newField', unwantedField: 'unwanted'}]},
@@ -1209,7 +1209,7 @@ describe('licenceService', () => {
 
             it('should change stage to MODIFIED_APPROVAL when updates occur', async () => {
                 await service.updateAddress({
-                    nomisId: 'ab1',
+                    bookingId: 'ab1',
                     index: 1,
                     rawLicence: {...baseLicence, stage: 'DECIDED'},
                     userInput: {addresses: [{newField: 'newField'}]},
@@ -1222,7 +1222,7 @@ describe('licenceService', () => {
 
             it('should not change stage if not DECIDED', async () => {
                 await service.updateAddress({
-                    nomisId: 'ab1',
+                    bookingId: 'ab1',
                     index: 1,
                     rawLicence: {...baseLicence, stage: 'PROCESSING_CA'},
                     userInput: {addresses: [{newField: 'newField'}]},
@@ -1252,7 +1252,7 @@ describe('licenceService', () => {
         it('should add form items to address array', async () => {
 
             const output = await service.addAddress({
-                nomisId: 1,
+                bookingId: 1,
                 rawLicence: baseLicence,
                 userInput: {addresses: [{postCode: 'pc3'}]},
                 fieldMap: [{addresses: {}, isList: true, contains: [{postCode: {}}]}]

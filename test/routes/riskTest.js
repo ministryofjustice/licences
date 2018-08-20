@@ -25,14 +25,14 @@ describe('/hdc/risk', () => {
     });
 
 
-    describe('POST /risk/:formName/:nomisId', () => {
+    describe('POST /risk/:formName/:bookingId', () => {
         context('When page contains form fields', () => {
             it('calls updateLicence from licenceService', () => {
                 const licenceService = createLicenceServiceStub();
                 const app = createApp({licenceService}, testUser);
 
                 const formResponse = {
-                    nomisId: '1',
+                    bookingId: '1',
                     planningActions: 'Yes',
                     planningActionsDetails: 'details'
                 };
@@ -44,7 +44,7 @@ describe('/hdc/risk', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: formConfig.riskManagement,
                             userInput: formResponse,
                             licenceSection: 'risk',

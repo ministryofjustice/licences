@@ -47,7 +47,7 @@ block content
                 div.form-group.paddingBottom
                     p Do you want to enter an alternative address?
                     input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="nomisId" value=nomisId || '')
+                    input(type="hidden" name="bookingId" value=bookingId || '')
                     div.multiple-choice(data-target="enterAlternative")
                         input#enterAlternativeYes(type="radio" name="enterAlternative" value="Yes" checked=savedData === "Yes")
                         label(for="enterAlternativeYes") Yes

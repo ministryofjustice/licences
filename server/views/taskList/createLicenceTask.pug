@@ -7,7 +7,7 @@ div.taskListItem.borderBottom.largeMarginBottom
         div.pure-u-1-4.center
             if (['DECIDED', 'MODIFIED'].includes(licenceStatus.stage))
                 if user.role === 'CA' && licenceStatus.decisions.approved
-                    a#createPdf.taskListAction.center.button(href="/hdc/pdf/select/" + nomisId role="button") Continue
+                    a#createPdf.taskListAction.center.button(href="/hdc/pdf/select/" + bookingId role="button") Continue
 
 
 

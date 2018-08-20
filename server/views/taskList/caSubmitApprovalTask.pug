@@ -21,8 +21,8 @@ div.largeMarginBottom.borderTop
 
         div.pure-u-1-4.center
             if addressReviewNeeded
-                a#continueBtn.taskListAction.center.button(href='/hdc/send/addressReview/' + prisonerInfo.offenderNo)
+                a#continueBtn.taskListAction.center.button(href='/hdc/send/addressReview/' + prisonerInfo.bookingId)
                     | Continue
             if approvalNeeded
-                a#continueBtn.taskListAction.center.button(href='/hdc/send/approval/' + prisonerInfo.offenderNo)
+                a#continueBtn.taskListAction.center.button(href='/hdc/send/approval/' + prisonerInfo.bookingId)
                     | Continue

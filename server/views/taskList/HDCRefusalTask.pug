@@ -5,7 +5,7 @@ div.taskListItem
                 span.alert.bold HDC refused
 
         div.pure-u-1-4.center
-            a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/refuse/" + prisonerInfo.offenderNo)
+            a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/refuse/" + prisonerInfo.bookingId)
                 if licenceStatus.decisions.refused
                     | Update refusal
                 else

@@ -38,11 +38,11 @@ describe('/hdc/curfew', () => {
         testFormPageGets(app, routes, licenceService);
     });
 
-    describe('POST /hdc/curfew/:form/:nomisId', () => {
+    describe('POST /hdc/curfew/:form/:bookingId', () => {
         const routes = [
             {
                 url: '/curfew/curfewHours/1',
-                body: {nomisId: 1},
+                body: {bookingId: 1},
                 section: 'curfewHours',
                 nextPath: '/hdc/taskList/1'
             },
@@ -83,7 +83,7 @@ describe('/hdc/curfew', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'curfew',
@@ -110,31 +110,31 @@ describe('/hdc/curfew', () => {
         const routes = [
             {
                 url: '/curfew/curfewAddressReview/1',
-                body: {nomisId: 1, consent: 'No'},
+                body: {bookingId: 1, consent: 'No'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/curfew/curfewAddressReview/1',
-                body: {nomisId: 1, consent: 'Yes', electricity: 'No'},
+                body: {bookingId: 1, consent: 'Yes', electricity: 'No'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/curfew/curfewAddressReview/1',
-                body: {nomisId: 1, consent: 'Yes'},
+                body: {bookingId: 1, consent: 'Yes'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/curfew/addressSafety/1'
             },
             {
                 url: '/curfew/addressSafety/1',
-                body: {nomisId: 1, deemedSafe: 'No'},
+                body: {bookingId: 1, deemedSafe: 'No'},
                 section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/curfew/addressSafety/1',
-                body: {nomisId: 1, deemedSafe: 'Yes'},
+                body: {bookingId: 1, deemedSafe: 'Yes'},
                 section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
             },
@@ -165,7 +165,7 @@ describe('/hdc/curfew', () => {
                         expect(licenceService.updateAddress).to.be.calledOnce();
                         expect(licenceService.updateAddress).to.be.calledWith({
                             rawLicence: licence,
-                            nomisId: '1',
+                            bookingId: '1',
                             fieldMap: formConfig[route.section].fields,
                             userInput: route.body,
                             index: 5

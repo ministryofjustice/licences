@@ -28,7 +28,7 @@ describe('/hdc/eligibility', () => {
         testFormPageGets(app, routes, licenceService);
     });
 
-    describe('GET /eligibility/excluded/:nomisId', () => {
+    describe('GET /eligibility/excluded/:bookingId', () => {
         it('does not pre-populates input if it does not exist on licence', () => {
             const licenceService = createLicenceServiceStub();
             const app = createApp({licenceService}, testUser);
@@ -69,7 +69,7 @@ describe('/hdc/eligibility', () => {
         });
     });
 
-    describe('POST /hdc/eligibility/:form/:nomisId', () => {
+    describe('POST /hdc/eligibility/:form/:bookingId', () => {
         const routes = [
             {
                 url: '/eligibility/excluded/1',
@@ -134,7 +134,7 @@ describe('/hdc/eligibility', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'eligibility',

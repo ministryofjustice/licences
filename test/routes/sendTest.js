@@ -22,12 +22,12 @@ describe('send', () => {
 
         prisonerService.getLicence = sinon.stub().resolves({});
         prisonerService.getEstablishmentForPrisoner = sinon.stub().resolves({premise: 'HMP Blah'});
-        prisonerService.getComForPrisoner = sinon.stub().resolves({com: 'Something'});
+        prisonerService.getCom = sinon.stub().resolves({com: 'Something'});
 
         auditStub.record.reset();
     });
 
-    describe('Get send/:destination/:nomisId', () => {
+    describe('Get send/:destination/:bookingId', () => {
 
         it('renders caToRo form when addressReview is destination', () => {
             const app = createApp({licenceService, prisonerService});
@@ -124,7 +124,7 @@ describe('send', () => {
 
             return request(app)
                 .post('/')
-                .send({nomisId: 123, transitionType: 'caToRo'})
+                .send({bookingId: 123, transitionType: 'caToRo'})
                 .expect(() => {
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
@@ -140,7 +140,7 @@ describe('send', () => {
             return request(app)
                 .post('/')
                 .send({
-                    nomisId: 123,
+                    bookingId: 123,
                     sender: 'from',
                     receiver: 'to',
                     transitionType: 'type',
@@ -150,7 +150,7 @@ describe('send', () => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith('SEND', 'my-staff-id',
                         {
-                            nomisId: 123,
+                            bookingId: 123,
                             transitionType: 'type',
                             submissionTarget: 'target'
                         });
@@ -163,7 +163,7 @@ describe('send', () => {
 
             return request(app)
                 .post('/')
-                .send({nomisId: 123, sender: 'from', receiver: 'to', transitionType: 'foobar'})
+                .send({bookingId: 123, sender: 'from', receiver: 'to', transitionType: 'foobar'})
                 .expect(302)
                 .expect(res => {
                     expect(res.header['location']).to.eql('/hdc/sent/foobar');
