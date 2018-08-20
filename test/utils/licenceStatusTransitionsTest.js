@@ -76,6 +76,25 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql('roToCa');
     });
 
+    it('should allow RO to CA for RO whenopted out even when other tasks not done', () => {
+        const status = {
+            stage: 'PROCESSING_RO',
+            tasks: {
+                curfewAddressReview: 'DONE',
+                curfewHours: 'UNSTARTED',
+                licenceConditions: 'UNSTARTED',
+                riskManagement: 'UNSTARTED',
+                reportingInstructions: 'UNSTARTED'
+            },
+            decisions: {
+                optedOut: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'RO');
+        expect(allowed).to.eql('roToCa');
+    });
+
     it('should not allow RO to CA for RO when address undecided', () => {
         const status = {
             stage: 'PROCESSING_RO',
