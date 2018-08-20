@@ -8,8 +8,8 @@ module.exports = function(
 
     const router = express.Router();
     router.use(authenticationMiddleware());
-    router.param('nomisId', checkLicenceMiddleWare(licenceService, prisonerService));
-    router.param('nomisId', authorisationMiddleware);
+    router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
+    router.param('bookingId', authorisationMiddleware);
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -18,8 +18,8 @@ module.exports = function(
         next();
     });
 
-    router.get('/select/:nomisId', asyncMiddleware(async (req, res) => {
-        const {nomisId} = req.params;
+    router.get('/select/:bookingId', asyncMiddleware(async (req, res) => {
+        const {bookingId} = req.params;
 
         const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token);
         const errors = firstItem(req.flash('errors')) || {};
@@ -43,7 +43,7 @@ module.exports = function(
         res.redirect(`/hdc/pdf/taskList/${decision}/${bookingId}`);
     });
 
-    router.get('/taskList/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/taskList/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
 
         const {bookingId, templateName} = req.params;
         const {licence} = res.locals;
@@ -96,7 +96,7 @@ module.exports = function(
         };
     }
 
-    router.get('/missing/:section/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/missing/:section/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
 
         const {bookingId, templateName, section} = req.params;
         const {licence} = res.locals;
@@ -118,7 +118,7 @@ module.exports = function(
         });
     }));
 
-    router.get('/create/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/create/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
 
         const {bookingId, templateName} = req.params;
         const {licence} = res.locals;

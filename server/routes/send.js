@@ -5,8 +5,8 @@ const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = requi
 module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
-    router.param('nomisId', checkLicenceMiddleWare(licenceService, prisonerService));
-    router.param('nomisId', authorisationMiddleware);
+    router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
+    router.param('bookingId', authorisationMiddleware);
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -15,8 +15,8 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         next();
     });
 
-    router.get('/:destination/:nomisId', async (req, res) => {
-        const {destination, nomisId} = req.params;
+    router.get('/:destination/:bookingId', async (req, res) => {
+        const {destination, bookingId} = req.params;
 
         const transitionForDestination = {
             addressReview: 'caToRo',
@@ -35,9 +35,9 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         res.render('send/' + transition, {bookingId, submissionTarget});
     });
 
-    router.post('/:destination/:nomisId', asyncMiddleware(async (req, res) => {
-        const {nomisId, transitionType, submissionTarget} = req.body;
-        const licence = await licenceService.getLicence(nomisId);
+    router.post('/:destination/:bookingId', asyncMiddleware(async (req, res) => {
+        const {bookingId, transitionType, submissionTarget} = req.body;
+        const licence = await licenceService.getLicence(bookingId);
 
         await licenceService.markForHandover(bookingId, licence, transitionType);
 

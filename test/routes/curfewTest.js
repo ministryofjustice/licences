@@ -58,7 +58,7 @@ describe('/hdc/curfew', () => {
     describe('POST /hdc/curfew/:form/:bookingId', () => {
         const routes = [
             {
-                url: '/curfew/curfewHours/1',
+                url: '/hdc/curfew/curfewHours/1',
                 body: {bookingId: 1},
                 section: 'curfewHours',
                 nextPath: '/hdc/taskList/1'
@@ -130,32 +130,32 @@ describe('/hdc/curfew', () => {
 
         const routes = [
             {
-                url: '/curfew/curfewAddressReview/1',
+                url: '/hdc/curfew/curfewAddressReview/1',
                 body: {bookingId: 1, consent: 'No'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/curfewAddressReview/1',
+                url: '/hdc/curfew/curfewAddressReview/1',
                 body: {bookingId: 1, consent: 'Yes', electricity: 'No'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/curfewAddressReview/1',
+                url: '/hdc/curfew/curfewAddressReview/1',
                 body: {bookingId: 1, consent: 'Yes'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/curfew/addressSafety/1',
                 nextPathCa: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/addressSafety/1',
+                url: '/hdc/curfew/addressSafety/1',
                 body: {bookingId: 1, deemedSafe: 'No'},
                 section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/addressSafety/1',
+                url: '/hdc/curfew/addressSafety/1',
                 body: {bookingId: 1, deemedSafe: 'Yes'},
                 section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
@@ -175,7 +175,7 @@ describe('/hdc/curfew', () => {
                         expect(licenceService.updateAddress).to.be.calledOnce();
                         expect(licenceService.updateAddress).to.be.calledWith({
                             rawLicence: licence,
-                            nomisId: '1',
+                            bookingId: '1',
                             fieldMap: formConfig[route.section].fields,
                             userInput: route.body,
                             index: 5
@@ -209,7 +209,7 @@ describe('/hdc/curfew', () => {
                         expect(licenceService.updateAddress).to.be.calledOnce();
                         expect(licenceService.updateAddress).to.be.calledWith({
                             rawLicence: licence,
-                            nomisId: '1',
+                            bookingId: '1',
                             fieldMap: formConfig[route.section].fields,
                             userInput: route.body,
                             index: 5

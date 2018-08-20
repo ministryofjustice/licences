@@ -47,13 +47,13 @@ describe('/hdc/licenceConditions', () => {
     describe('POST /hdc/licenceConditions/:section/:bookingId', () => {
         const routes = [
             {
-                url: '/licenceConditions/standard/1',
+                url: '/hdc/licenceConditions/standard/1',
                 body: {additionalConditionsRequired: 'Yes', bookingId: 1},
                 nextPath: '/hdc/licenceConditions/additionalConditions/1',
                 formName: 'standard'
             },
             {
-                url: '/licenceConditions/standard/1',
+                url: '/hdc/licenceConditions/standard/1',
                 body: {additionalConditionsRequired: 'No', bookingId: 1},
                 nextPath: '/hdc/taskList/1',
                 formName: 'standard'
@@ -95,7 +95,7 @@ describe('/hdc/licenceConditions', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'licenceConditions',

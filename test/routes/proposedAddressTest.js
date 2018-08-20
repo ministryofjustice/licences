@@ -50,42 +50,42 @@ describe('/hdc/proposedAddress', () => {
     describe('POST /hdc/proposedAddress/:section/:bookingId', () => {
         const routes = [
             {
-                url: '/proposedAddress/optOut/1',
+                url: '/hdc/proposedAddress/optOut/1',
                 body: {bookingId: 1, decision: 'Yes'},
                 section: 'optOut',
                 nextPath: '/hdc/taskList/1',
                 user: 'caUser'
             },
             {
-                url: '/proposedAddress/optOut/1',
+                url: '/hdc/proposedAddress/optOut/1',
                 body: {bookingId: 1, decision: 'No'},
                 section: 'optOut',
                 nextPath: '/hdc/proposedAddress/addressProposed/1',
                 user: 'caUser'
             },
             {
-                url: '/proposedAddress/addressProposed/1',
+                url: '/hdc/proposedAddress/addressProposed/1',
                 body: {bookingId: 1, decision: 'Yes'},
                 section: 'addressProposed',
                 nextPath: '/hdc/proposedAddress/curfewAddress/1',
                 user: 'caUser'
             },
             {
-                url: '/proposedAddress/addressProposed/1',
+                url: '/hdc/proposedAddress/addressProposed/1',
                 body: {bookingId: 1, decision: 'No'},
                 section: 'addressProposed',
                 nextPath: '/hdc/proposedAddress/bassReferral/1',
                 user: 'caUser'
             },
             {
-                url: '/proposedAddress/bassReferral/1',
+                url: '/hdc/proposedAddress/bassReferral/1',
                 body: {bookingId: 1},
                 section: 'bassReferral',
                 nextPath: '/hdc/taskList/1',
                 user: 'caUser'
             },
             {
-                url: '/proposedAddress/curfewAddress/1',
+                url: '/hdc/proposedAddress/curfewAddress/1',
                 body: {bookingId: 1},
                 section: 'curfewAddress',
                 nextPath: '/hdc/taskList/1',
@@ -267,7 +267,7 @@ describe('/hdc/proposedAddress', () => {
                     .expect('Content-Type', /html/)
                     .expect(res => {
                         expect(res.text).to.include(
-                            '<form method="post" action="/hdc/proposedAddress/curfewAddress/update/">');
+                            '<form method="post" action="/hdc/proposedAddress/curfewAddress/update/1">');
                         expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address1"/>');
                     });
 
@@ -345,7 +345,7 @@ describe('/hdc/proposedAddress', () => {
             const app = createApp({licenceService});
 
             return request(app)
-                .post('/proposedAddress/curfewAddress/add')
+                .post('/hdc/proposedAddress/curfewAddress/add/1')
                 .send({bookingId: '1', addresses: [{addressLine1: 'something'}]})
                 .expect(302)
                 .expect('Location', '/hdc/taskList/1');
@@ -370,7 +370,7 @@ describe('/hdc/proposedAddress', () => {
             const app = createApp({licenceService});
 
             return request(app)
-                .post('/proposedAddress/curfewAddress/add')
+                .post('/hdc/proposedAddress/curfewAddress/add/1')
                 .send({bookingId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}]})
                 .expect(302)
                 .expect('Location', '/hdc/proposedAddress/curfewAddress/1');

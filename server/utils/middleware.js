@@ -18,7 +18,7 @@ function asyncMiddleware(fn) {
 }
 
 function checkLicenceMiddleWare(licenceService, prisonerService) {
-    return async (req, res, next, nomisId) => {
+    return async (req, res, next, bookingId) => {
         try {
 
             const [licence, prisoner] = await Promise.all([

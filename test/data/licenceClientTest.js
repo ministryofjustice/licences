@@ -10,7 +10,7 @@ describe('licenceClient', () => {
             stage: 'ELIGIBILITY',
             licence: {
                 name: 'Bryanston, David',
-                bookingId: 'A6627JH',
+                nomisId: 'A6627JH',
                 establishment: 'HMP Birmingham',
                 dischargeDate: '2017-07-10'
             }

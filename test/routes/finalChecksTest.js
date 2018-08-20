@@ -33,39 +33,39 @@ describe('/hdc/finalChecks', () => {
     describe('POST /hdc/finalChecks/:section/:bookingId', () => {
         const routes = [
             {
-                url: '/finalChecks/seriousOffence/1',
+                url: '/hdc/finalChecks/seriousOffence/1',
                 body: {bookingId: 1},
                 formName: 'seriousOffence',
                 nextPath: '/hdc/finalChecks/onRemand/1'
             },
             {
-                url: '/finalChecks/onRemand/1',
+                url: '/hdc/finalChecks/onRemand/1',
                 body: {bookingId: 1},
                 formName: 'onRemand',
                 nextPath: '/hdc/finalChecks/confiscationOrder/1'
             },
             {
-                url: '/finalChecks/confiscationOrder/1',
+                url: '/hdc/finalChecks/confiscationOrder/1',
                 body: {bookingId: 1},
                 formName: 'confiscationOrder',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/finalChecks/refuse/1',
+                url: '/hdc/finalChecks/refuse/1',
                 body: {bookingId: 1, decision: 'Yes'},
                 fieldMap: formConfig.refuse,
                 formName: 'refusal',
                 nextPath: '/hdc/finalChecks/refusal/1'
             },
             {
-                url: '/finalChecks/refuse/1',
+                url: '/hdc/finalChecks/refuse/1',
                 body: {bookingId: 1, decision: 'No'},
                 fieldMap: formConfig.refuse,
                 formName: 'refusal',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/finalChecks/refusal/1',
+                url: '/hdc/finalChecks/refusal/1',
                 body: {bookingId: 1, reason: 'something', outOfTimeReasons: []},
                 fieldMap: formConfig.refusal,
                 formName: 'refusal',

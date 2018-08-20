@@ -33,13 +33,13 @@ describe('/hdc/reporting', () => {
     describe('POST /hdc/licenceConditions/:section/:bookingId', () => {
         const routes = [
             {
-                url: '/reporting/reportingInstructions/1',
+                url: '/hdc/reporting/reportingInstructions/1',
                 body: {bookingId: 1},
                 section: 'reportingInstructions',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/reporting/reportingDate/1',
+                url: '/hdc/reporting/reportingDate/1',
                 body: {bookingId: 1},
                 section: 'reportingDate',
                 nextPath: '/hdc/pdf/taskList/1'
@@ -81,7 +81,7 @@ describe('/hdc/reporting', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'reporting',
