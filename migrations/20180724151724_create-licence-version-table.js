@@ -4,11 +4,11 @@ exports.up = knex =>
             table.increments('id').primary('pk_licence');
             table.timestamp('timestamp').notNullable().defaultTo(knex.fn.now());
             table.jsonb('licence').nullable();
-            table.string('nomis_id').notNullable();
+            table.integer('booking_id').notNullable();
             table.integer('version').notNullable();
             table.string('template').notNullable();
-            table.index(['nomis_id', 'version', 'id', 'template'], 'licence_version_by_nomis_id');
-            table.unique(['nomis_id', 'version']);
+            table.index(['booking_id', 'version', 'id', 'template'], 'licence_version_by_booking_id');
+            table.unique(['booking_id', 'version']);
         })
     ]);
 

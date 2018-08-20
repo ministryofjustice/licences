@@ -15,6 +15,6 @@ block content
         div.pure-u-1
             form#acceptanceForm(method='POST')
                 input(type="hidden" name="_csrf" value=csrfToken)
-                input(type="hidden" name="nomisId" value=nomisId)
+                input(type="hidden" name="bookingId" value=bookingId)
                 input(type="hidden" name="transitionType" value="dmToCaReturn")
                 include includes/sendButtons

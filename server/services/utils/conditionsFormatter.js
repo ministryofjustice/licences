@@ -1,6 +1,6 @@
 const moment = require('moment');
 const DATE_FIELD = 'appointmentDate';
-const ALWAYS_REQUIRED = ['additionalConditions', 'nomisId'];
+const ALWAYS_REQUIRED = ['additionalConditions', 'bookingId'];
 
 module.exports = {formatConditionsInput};
 

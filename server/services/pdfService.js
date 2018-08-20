@@ -5,16 +5,16 @@ const pdfGenPath = `${config.pdf.pdfServiceHost}/generate`;
 
 module.exports = function createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter) {
 
-    async function getPdfLicenceData(templateName, nomisId, rawLicence, token) {
+    async function getPdfLicenceData(templateName, bookingId, rawLicence, token) {
 
         const [licence, prisonerInfo, establishment] = await Promise.all([
             conditionsService.populateLicenceWithConditions(rawLicence.licence),
-            prisonerService.getPrisonerDetails(nomisId, token),
-            prisonerService.getEstablishmentForPrisoner(nomisId, token)
+            prisonerService.getPrisonerDetails(bookingId, token),
+            prisonerService.getEstablishmentForPrisoner(bookingId, token)
         ]);
         const image = await prisonerService.getPrisonerImage(prisonerInfo.facialImageId, token);
 
-        return pdfFormatter.formatPdfData(templateName, nomisId, {
+        return pdfFormatter.formatPdfData(templateName, {
             licence,
             prisonerInfo,
             establishment
@@ -40,16 +40,16 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
         }
     }
 
-    async function generatePdf(templateName, nomisId, rawLicence, token) {
+    async function generatePdf(templateName, bookingId, rawLicence, token) {
 
-        const versionedLicence = await checkAndUpdateVersion(rawLicence, nomisId, templateName);
+        const versionedLicence = await checkAndUpdateVersion(rawLicence, bookingId, templateName);
 
-        const {values} = await getPdfLicenceData(templateName, nomisId, versionedLicence, token);
+        const {values} = await getPdfLicenceData(templateName, bookingId, versionedLicence, token);
 
         return getPdf(templateName, values);
     }
 
-    async function checkAndUpdateVersion(rawLicence, nomisId, template) {
+    async function checkAndUpdateVersion(rawLicence, bookingId, template) {
 
         const {version, approvedVersion} = rawLicence;
 
@@ -57,7 +57,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
 
         if (templateChange) {
             await licenceService.update({
-                nomisId: nomisId,
+                bookingId: bookingId,
                 config: {fields: [{decision: {}}], noModify: true},
                 userInput: {decision: template},
                 licenceSection: 'document',
@@ -66,8 +66,8 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
         }
 
         if (!approvedVersion || version > approvedVersion.version || templateChange) {
-            await licenceService.saveApprovedLicenceVersion(nomisId, template);
-            return licenceService.getLicence(nomisId);
+            await licenceService.saveApprovedLicenceVersion(bookingId, template);
+            return licenceService.getLicence(bookingId);
         }
 
         return rawLicence;

@@ -235,11 +235,11 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/1233456')
+                    .get('/1')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
-                        expect(res.text).to.include('/hdc/send/refusal/noms');
+                        expect(res.text).to.include('/hdc/send/refusal/1');
                     });
             });
         });
@@ -543,7 +543,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         describe('POST /eligibilityStart', () => {
             beforeEach(() => {
-                licenceService.getLicence.resolves({nomisId: '1'});
+                licenceService.getLicence.resolves({bookingId: '1'});
                 licenceService.createLicence.resolves();
             });
 
@@ -552,7 +552,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
                 return request(app)
                     .post('/eligibilityStart')
-                    .send({nomisId: '123'})
+                    .send({bookingId: '123'})
                     .expect(302)
                     .expect(res => {
                         expect(res.header['location']).to.include('/hdc/eligibility/excluded/123');
@@ -565,7 +565,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
                     return request(app)
                         .post('/eligibilityStart')
-                        .send({nomisId: '123'})
+                        .send({bookingId: '123'})
                         .expect(302)
                         .expect(res => {
                             expect(licenceService.createLicence).to.not.be.called();
@@ -582,7 +582,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
                     return request(app)
                         .post('/eligibilityStart')
-                        .send({nomisId: '123'})
+                        .send({bookingId: '123'})
                         .expect(302)
                         .expect(res => {
                             expect(licenceService.createLicence).to.be.called();
@@ -598,7 +598,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
                     return request(app)
                         .post('/eligibilityStart')
-                        .send({nomisId: '123', firstName: 'fn', lastName: 'ln', dateOfBirth: '13/01/1980'})
+                        .send({bookingId: '123', firstName: 'fn', lastName: 'ln', dateOfBirth: '13/01/1980'})
                         .expect(302)
                         .expect(res => {
                             expect(licenceService.createLicence).to.be.called();
@@ -614,12 +614,12 @@ describe('GET /taskList/:prisonNumber', () => {
 
                     return request(app)
                         .post('/eligibilityStart')
-                        .send({nomisId: '123'})
+                        .send({bookingId: '123'})
                         .expect(302)
                         .expect(res => {
                             expect(auditStub.record).to.be.called();
                             expect(auditStub.record).to.be.calledWith(
-                                'LICENCE_RECORD_STARTED', 'id', {nomisId: '123'});
+                                'LICENCE_RECORD_STARTED', 'my-staff-id', {bookingId: '123'});
                         });
                 });
             });
@@ -662,7 +662,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">Start');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/1">Start');
                     });
 
             });
@@ -690,7 +690,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">Continue');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/1">Continue');
                     });
 
             });
@@ -722,7 +722,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/noms">View');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/1">View');
                     });
 
             });
@@ -739,7 +739,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/standard/noms">Start');
+                        expect(res.text).to.include('/hdc/licenceConditions/standard/1">Start');
                     });
 
             });
@@ -760,7 +760,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/standard/noms">Continue');
+                        expect(res.text).to.include('/hdc/licenceConditions/standard/1">Continue');
                     });
 
             });
@@ -781,7 +781,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/standard/noms">View');
+                        expect(res.text).to.include('/hdc/licenceConditions/standard/1">View');
                     });
 
             });
@@ -801,7 +801,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/risk/riskManagement/noms">Start');
+                        expect(res.text).to.include('/hdc/risk/riskManagement/1">Start');
                     });
 
             });
@@ -827,7 +827,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/risk/riskManagement/noms">Continue');
+                        expect(res.text).to.include('/hdc/risk/riskManagement/1">Continue');
                     });
 
             });
@@ -855,7 +855,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/risk/riskManagement/noms">View');
+                        expect(res.text).to.include('/hdc/risk/riskManagement/1">View');
                     });
 
             });
@@ -899,7 +899,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/review/licenceDetails/noms">Continue');
+                        expect(res.text).to.include('/hdc/review/licenceDetails/1">Continue');
                     });
 
             });
@@ -981,10 +981,10 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/review/risk/noms">View');
-                        expect(res.text).to.include('/hdc/review/curfewHours/noms">View');
-                        expect(res.text).to.include('/hdc/review/conditions/noms">View');
-                        expect(res.text).to.include('/hdc/review/reporting/noms">View');
+                        expect(res.text).to.include('/hdc/review/risk/1">View');
+                        expect(res.text).to.include('/hdc/review/curfewHours/1">View');
+                        expect(res.text).to.include('/hdc/review/conditions/1">View');
+                        expect(res.text).to.include('/hdc/review/reporting/1">View');
                         expect(res.text).to.include('Final checks');
                     });
 
@@ -1012,10 +1012,10 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).not.to.include('/hdc/review/risk/noms">View');
-                        expect(res.text).not.to.include('/hdc/review/curfewHours/noms">View');
-                        expect(res.text).not.to.include('/hdc/review/conditions/noms">View');
-                        expect(res.text).not.to.include('/hdc/review/reporting/noms">View');
+                        expect(res.text).not.to.include('/hdc/review/risk/1">View');
+                        expect(res.text).not.to.include('/hdc/review/curfewHours/1">View');
+                        expect(res.text).not.to.include('/hdc/review/conditions/1">View');
+                        expect(res.text).not.to.include('/hdc/review/reporting/1">View');
                         expect(res.text).not.to.include('Final checks');
                     });
 

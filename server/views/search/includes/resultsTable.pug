@@ -17,7 +17,7 @@ else
 
                     td.name
                         if ['PROCESSING_RO'].includes(prisoner.stage)
-                            a(href="/hdc/taskList/" + prisoner.offenderNo)
+                            a(href="/hdc/taskList/" + prisoner.bookingId)
                                 |
                                 if prisoner.firstName
                                     | #{prisoner.firstName}
@@ -31,7 +31,7 @@ else
                                     | , #{prisoner.firstName}
 
                         else
-                            a(href="/hdc/review/licence/" + prisoner.offenderNo)
+                            a(href="/hdc/review/licence/" + prisoner.bookingId)
                                 |
                                 if prisoner.lastName
                                     | #{prisoner.lastName}
@@ -39,9 +39,9 @@ else
                                         | , #{prisoner.firstName}
 
 
-                    td.offenderNo
-                        if prisoner.offenderNo
-                            | #{prisoner.offenderNo}
+                    td.bookingId
+                        if prisoner.bookingId
+                            | #{prisoner.bookingId}
 
                     td.location
                         if prisoner.internalLocationDesc

@@ -23,7 +23,7 @@ block content
                 p.error-message #{errorObject.decision}
             form(method="post").largeMarginTop
                 input(type="hidden" name="_csrf" value=csrfToken)
-                input(type="hidden" name="nomisId" value=nomisId || '')
+                input(type="hidden" name="bookingId" value=bookingId || '')
                 input(type="hidden" name="decisionMaker" value=user.firstName + ' ' + user.lastName)
                 div.paddingBottom.largeMarginBottom
 

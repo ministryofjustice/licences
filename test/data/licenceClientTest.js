@@ -6,11 +6,11 @@ describe('licenceClient', () => {
 
     const standardResponse = {
         rows: [{
-            nomis_id: 'A6627JH',
+            booking_id: 'A6627JH',
             stage: 'ELIGIBILITY',
             licence: {
                 name: 'Bryanston, David',
-                nomisId: 'A6627JH',
+                bookingId: 'A6627JH',
                 establishment: 'HMP Birmingham',
                 dischargeDate: '2017-07-10'
             }
@@ -38,7 +38,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql for multiple nomis IDs', () => {
 
-            const expectedClause = 'where nomis_id in (\'ABC123\',\'DEF456\',\'XYZ789\')';
+            const expectedClause = 'where booking_id in (\'ABC123\',\'DEF456\',\'XYZ789\')';
 
             const result = licencesProxy().getLicences(['ABC123', 'DEF456', 'XYZ789']);
 
@@ -49,7 +49,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql for a single nomis ID', () => {
 
-            const expectedClause = `where nomis_id in ('ABC123')`;
+            const expectedClause = `where booking_id in ('ABC123')`;
 
             const result = licencesProxy().getLicences(['ABC123']);
 
@@ -64,7 +64,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedClause = 'insert into licences (nomis_id, licence, stage, version) values ($1, $2, $3, $4)';
+            const expectedClause = 'insert into licences (booking_id, licence, stage, version) values ($1, $2, $3, $4)';
 
             const result = licencesProxy().createLicence('ABC123');
 
@@ -115,7 +115,7 @@ describe('licenceClient', () => {
         it('should pass in the correct sql', () => {
 
             const expectedUpdate = 'update licences set licence = jsonb_set(licence, $1, $2)';
-            const expectedWhere = 'where nomis_id=$3';
+            const expectedWhere = 'where booking_id=$3';
 
             const result = licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
 
@@ -205,7 +205,7 @@ describe('licenceClient', () => {
         it('should pass in the correct sql', () => {
 
             const expectedUpdate = 'set stage = $1';
-            const expectedWhere = 'where nomis_id = $2';
+            const expectedWhere = 'where booking_id = $2';
 
             const result = licencesProxy().updateStage('ABC123', 'NEW_STAGE');
 
@@ -252,8 +252,8 @@ describe('licenceClient', () => {
         it('should pass in the correct sql', () => {
 
             const expectedVersionUpdate = 'insert into licence_versions';
-            const expectedSelect = 'select nomis_id, licence, version, $1';
-            const expectedWhere = 'where nomis_id = $2';
+            const expectedSelect = 'select booking_id, licence, version, $1';
+            const expectedWhere = 'where booking_id = $2';
 
             const result = licencesProxy().saveApprovedLicenceVersion('ABC123', 'templateName');
 
@@ -286,7 +286,7 @@ describe('licenceClient', () => {
         it('should pass in the correct sql', () => {
 
             const expectedSelect = 'select version, template, timestamp from licence_versions';
-            const expectedWhere = 'where nomis_id = $1';
+            const expectedWhere = 'where booking_id = $1';
             const expectedOrder = 'order by version desc limit 1';
 
             const result = licencesProxy().getApprovedLicenceVersion('ABC123');

@@ -22,12 +22,12 @@ describe('send', () => {
 
         prisonerService.getLicence = sinon.stub().resolves({});
         prisonerService.getEstablishmentForPrisoner = sinon.stub().resolves({premise: 'HMP Blah'});
-        prisonerService.getComForPrisoner = sinon.stub().resolves({com: 'Something'});
+        prisonerService.getCom = sinon.stub().resolves({com: 'Something'});
 
         auditStub.record.reset();
     });
 
-    describe('Get send/:destination/:nomisId', () => {
+    describe('Get send/:destination/:bookingId', () => {
 
         it('renders caToRo form when addressReview is destination', () => {
             const app = createApp({licenceService, prisonerService}, 'caUser');
@@ -220,7 +220,7 @@ describe('send', () => {
             return request(app)
                 .post('/hdc/send/return/123')
                 .send({
-                    nomisId: 123,
+                    bookingId: 123,
                     sender: 'from',
                     receiver: 'to',
                     transitionType: 'type',
@@ -230,7 +230,7 @@ describe('send', () => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith('SEND', 'id',
                         {
-                            nomisId: 123,
+                            bookingId: 123,
                             transitionType: 'type',
                             submissionTarget: 'target'
                         });

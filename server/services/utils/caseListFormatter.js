@@ -9,7 +9,8 @@ module.exports = function createCaseListFormatter(logger, licenceClient) {
 
     async function formatCaseList(hdcEligibleReleases, role) {
 
-        const licences = await licenceClient.getLicences(getOffenderIds(hdcEligibleReleases));
+        const licences = await licenceClient.getLicences(getBookingIds(hdcEligibleReleases));
+
         return hdcEligibleReleases
             .filter(prisoner => getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
             .map(decoratePrisonerDetails(licences, role))
@@ -19,8 +20,8 @@ module.exports = function createCaseListFormatter(logger, licenceClient) {
     return {formatCaseList};
 };
 
-function getOffenderIds(releases) {
-    return releases.map(offender => offender.offenderNo);
+function getBookingIds(releases) {
+    return releases.map(offender => offender.bookingId);
 }
 
 function decoratePrisonerDetails(licences, role) {
@@ -34,7 +35,7 @@ function decoratePrisonerDetails(licences, role) {
 function getStatus(prisoner, licences, role) {
 
     const licenceForPrisoner = licences.find(rawLicence => {
-        return prisoner.offenderNo === rawLicence.nomis_id;
+        return prisoner.bookingId === rawLicence.booking_id;
     });
 
     if (!licenceForPrisoner) {

@@ -29,10 +29,10 @@ module.exports = function createLicenceService(licenceClient) {
         }
     }
 
-    async function getLicence(nomisId) {
+    async function getLicence(bookingId) {
         try {
-            const getLicence = licenceClient.getLicence(nomisId);
-            const getApprovedVersion = await licenceClient.getApprovedLicenceVersion(nomisId);
+            const getLicence = licenceClient.getLicence(bookingId);
+            const getApprovedVersion = await licenceClient.getApprovedLicenceVersion(bookingId);
 
             const details = await Promise.all([getLicence, getApprovedVersion]);
 
@@ -56,13 +56,13 @@ module.exports = function createLicenceService(licenceClient) {
         }
     }
 
-    function createLicence(nomisId, data = {}) {
-        return licenceClient.createLicence(nomisId, data);
+    function createLicence(bookingId, data = {}) {
+        return licenceClient.createLicence(bookingId, data);
     }
 
-    async function updateLicenceConditions(nomisId, additional = {}, bespoke = []) {
+    async function updateLicenceConditions(bookingId, additional = {}, bespoke = []) {
         try {
-            const existingLicence = await licenceClient.getLicence(nomisId);
+            const existingLicence = await licenceClient.getLicence(bookingId);
             const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
             const conditionsObject = await getConditionsObject(additional, bespoke);
 
@@ -72,9 +72,9 @@ module.exports = function createLicenceService(licenceClient) {
                 return;
             }
 
-            await updateModificationStage(nomisId, existingLicence.stage, {requiresApproval: true});
+            await updateModificationStage(bookingId, existingLicence.stage, {requiresApproval: true});
 
-            return licenceClient.updateSection('licenceConditions', nomisId, licenceConditions);
+            return licenceClient.updateSection('licenceConditions', bookingId, licenceConditions);
         } catch (error) {
             logger.error('Error during updateAdditionalConditions', error.stack);
             throw error;
@@ -97,14 +97,14 @@ module.exports = function createLicenceService(licenceClient) {
         return {additional: {...additionalConditionsObject}, bespoke};
     }
 
-    async function deleteLicenceCondition(nomisId, conditionId) {
+    async function deleteLicenceCondition(bookingId, conditionId) {
         try {
-            const existingLicence = await licenceClient.getLicence(nomisId);
+            const existingLicence = await licenceClient.getLicence(bookingId);
             const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
 
-            const newConditions = removeCondition(existingLicenceConditions, conditionId, nomisId);
+            const newConditions = removeCondition(existingLicenceConditions, conditionId, bookingId);
 
-            return licenceClient.updateSection('licenceConditions', nomisId, newConditions);
+            return licenceClient.updateSection('licenceConditions', bookingId, newConditions);
 
         } catch (error) {
             logger.error('Error during updateAdditionalConditions', error.stack);
@@ -144,7 +144,7 @@ module.exports = function createLicenceService(licenceClient) {
         return {...oldConditions, bespoke: theRest};
     }
 
-    function markForHandover(nomisId, licence, transitionType) {
+    function markForHandover(bookingId, licence, transitionType) {
 
         const newStage = getIn(transitions, [transitionType]);
 
@@ -152,29 +152,29 @@ module.exports = function createLicenceService(licenceClient) {
             throw new Error('Invalid handover transition: ' + transitionType);
         }
 
-        return licenceClient.updateStage(nomisId, newStage);
+        return licenceClient.updateStage(bookingId, newStage);
     }
 
-    function updateModificationStage(nomisId, stage, {requiresApproval, noModify}) {
+    function updateModificationStage(bookingId, stage, {requiresApproval, noModify}) {
 
         if (noModify) {
             return;
         }
 
         if (requiresApproval && (stage === 'DECIDED' || stage === 'MODIFIED')) {
-            return licenceClient.updateStage(nomisId, licenceStages.MODIFIED_APPROVAL);
+            return licenceClient.updateStage(bookingId, licenceStages.MODIFIED_APPROVAL);
         }
 
         if (stage === 'DECIDED') {
-            return licenceClient.updateStage(nomisId, licenceStages.MODIFIED);
+            return licenceClient.updateStage(bookingId, licenceStages.MODIFIED);
         }
 
     }
 
     const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
 
-    async function update({nomisId, config, userInput, licenceSection, formName}) {
-        const rawLicence = await licenceClient.getLicence(nomisId);
+    async function update({bookingId, config, userInput, licenceSection, formName}) {
+        const rawLicence = await licenceClient.getLicence(bookingId);
         const stage = getIn(rawLicence, ['stage']);
         const licence = getIn(rawLicence, ['licence']);
 
@@ -194,9 +194,9 @@ module.exports = function createLicenceService(licenceClient) {
             return licence;
         }
 
-        await licenceClient.updateLicence(nomisId, updatedLicence);
+        await licenceClient.updateLicence(bookingId, updatedLicence);
 
-        await updateModificationStage(nomisId, stage, {
+        await updateModificationStage(bookingId, stage, {
             requiresApproval: config.modificationRequiresApproval,
             noModify: config.noModify
         });
@@ -272,27 +272,27 @@ module.exports = function createLicenceService(licenceClient) {
         return userInput[fieldName];
     }
 
-    function updateStage(nomisId, status) {
-        return licenceClient.updateStage(nomisId, status);
+    function updateStage(bookingId, status) {
+        return licenceClient.updateStage(bookingId, status);
     }
 
     const updateAddress = updateAddressArray(addressHelpers.update);
     const addAddress = updateAddressArray(addressHelpers.add);
 
     function updateAddressArray(addressesUpdateMethod) {
-        return async ({nomisId, rawLicence, fieldMap, userInput, index}) => {
+        return async ({bookingId, rawLicence, fieldMap, userInput, index}) => {
             const {stage, licence} = rawLicence;
             const formResponse = getFormResponse(fieldMap, userInput);
             const newAddress = Array.isArray(formResponse.addresses) ? formResponse.addresses[0] : formResponse;
-            const updatedLicence = addressesUpdateMethod({nomisId, licence, newAddress, index});
+            const updatedLicence = addressesUpdateMethod({bookingId, licence, newAddress, index});
 
             if (equals(licence, updatedLicence)) {
                 return licence;
             }
 
-            await updateModificationStage(nomisId, stage, {requiresApproval: false});
+            await updateModificationStage(bookingId, stage, {requiresApproval: false});
 
-            await licenceClient.updateLicence(nomisId, updatedLicence);
+            await licenceClient.updateLicence(bookingId, updatedLicence);
 
             return updatedLicence;
         };

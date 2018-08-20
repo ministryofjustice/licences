@@ -22,8 +22,8 @@ function checkLicenceMiddleWare(licenceService, prisonerService) {
         try {
 
             const [licence, prisoner] = await Promise.all([
-                licenceService.getLicence(nomisId),
-                prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token)
+                licenceService.getLicence(bookingId),
+                prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token)
             ]);
 
             if (!licence || !prisoner) {

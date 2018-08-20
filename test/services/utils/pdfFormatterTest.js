@@ -14,7 +14,6 @@ describe('pdfFormatter', () => {
 
     function formatWith({
                             templateName = 'hdc_ap_pss',
-                            nomisId = '',
                             licence = {},
                             prisonerInfo = {},
                             establishment = {},
@@ -22,7 +21,7 @@ describe('pdfFormatter', () => {
                             approvedVersion = {},
                             placeholder = 'PLACEHOLDER'
                         }) {
-        return formatPdfData(templateName, nomisId, {
+        return formatPdfData(templateName, {
             licence,
             prisonerInfo,
             establishment

@@ -21,9 +21,9 @@ div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : 
                 | Eligible
         div.pure-u-1-4.center
             if user.role === 'CA'
-                a.taskListAction.center.button.button-secondary(href="/hdc/eligibility/excluded/" + prisonerInfo.offenderNo) View/Edit
+                a.taskListAction.center.button.button-secondary(href="/hdc/eligibility/excluded/" + prisonerInfo.bookingId) View/Edit
             else
-                a.taskListAction.center.button.button-secondary(href="/hdc/review/eligibility/" + prisonerInfo.offenderNo) View
+                a.taskListAction.center.button.button-secondary(href="/hdc/review/eligibility/" + prisonerInfo.bookingId) View
 
 
 

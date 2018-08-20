@@ -44,17 +44,17 @@ describe('/hdc/licenceConditions', () => {
         testFormPageGets(app, routes, licenceService);
     });
 
-    describe('POST /hdc/licenceConditions/:section/:nomisId', () => {
+    describe('POST /hdc/licenceConditions/:section/:bookingId', () => {
         const routes = [
             {
-                url: '/hdc/licenceConditions/standard/1',
-                body: {additionalConditionsRequired: 'Yes', nomisId: 1},
+                url: '/licenceConditions/standard/1',
+                body: {additionalConditionsRequired: 'Yes', bookingId: 1},
                 nextPath: '/hdc/licenceConditions/additionalConditions/1',
                 formName: 'standard'
             },
             {
-                url: '/hdc/licenceConditions/standard/1',
-                body: {additionalConditionsRequired: 'No', nomisId: 1},
+                url: '/licenceConditions/standard/1',
+                body: {additionalConditionsRequired: 'No', bookingId: 1},
                 nextPath: '/hdc/taskList/1',
                 formName: 'standard'
             }
@@ -72,7 +72,7 @@ describe('/hdc/licenceConditions', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'licenceConditions',
@@ -121,10 +121,10 @@ describe('/hdc/licenceConditions', () => {
         });
     });
 
-    describe('POST /additionalConditions/:nomisId/delete/:conditionId', () => {
+    describe('POST /additionalConditions/:bookingId/delete/:conditionId', () => {
 
         const formResponse = {
-            nomisId: '123',
+            bookingId: '123',
             conditionId: 'ABC'
         };
 
@@ -144,7 +144,7 @@ describe('/hdc/licenceConditions', () => {
         });
     });
 
-    describe('GET /additionalConditions/conditionsSummary:nomisId', () => {
+    describe('GET /additionalConditions/conditionsSummary:bookingId', () => {
         it('should validate the conditions', () => {
             const licenceService = createLicenceServiceStub();
             licenceService.getConditionsErrors = sinon.stub().returns({error: 'object'});

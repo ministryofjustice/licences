@@ -8,9 +8,9 @@ div.taskListItem
             else
                 | Offender has opted in
         div.pure-u-1-4.center
-            form(method="post" action="/hdc/optOut/" + nomisId)
+            form(method="post" action="/hdc/optOut/" + bookingId)
                 input(type="hidden" name="_csrf" value=csrfToken)
-                input(type="hidden" name="nomisId" value=nomisId || '')
+                input(type="hidden" name="bookingId" value=bookingId || '')
 
                 if licenceStatus.decisions.optedOut
                     input#optedOut(type="hidden" name="decision" value="No")

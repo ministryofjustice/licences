@@ -22,12 +22,6 @@ module.exports = token => {
     );
 
     return {
-        getUpcomingReleasesByOffenders: function(nomisIds) {
-            const path = `${apiUrl}/offender-releases`;
-            const query = {offenderNo: nomisIds}; // todo add cutoff date
-            const headers = {'Page-Limit': nomisIds.length};
-            return nomisGet({path, query, headers});
-        },
 
         getBooking: function(bookingId) {
             const path = `${apiUrl}/bookings/${bookingId}`;
@@ -68,9 +62,18 @@ module.exports = token => {
             return prisoners.map(addReleaseDatesToPrisoner);
         },
 
-        getOffenderSentences: async function(nomisIds) {
+        getOffenderSentencesByNomisId: async function(nomisIds) {
             const path = `${apiUrl}/offender-sentences`;
             const query = {offenderNo: nomisIds};
+            const headers = {'Page-Limit': 10000};
+
+            const prisoners = await nomisGet({path, query, headers});
+            return prisoners.map(addReleaseDatesToPrisoner);
+        },
+
+        getOffenderSentencesByBookingId: async function(bookingIds) {
+            const path = `${apiUrl}/offender-sentences`;
+            const query = {bookingId: bookingIds};
             const headers = {'Page-Limit': 10000};
 
             const prisoners = await nomisGet({path, query, headers});
@@ -90,11 +93,6 @@ module.exports = token => {
         getEstablishment: async function(agencyLocationId) {
             const path = `${apiUrl}/agencies/prison/${agencyLocationId}`;
             return nomisGet({path});
-        },
-
-        getPrisoners: async function(query) {
-            const path = `${apiUrl}/prisoners`;
-            return nomisGet({path, query});
         }
     };
 };

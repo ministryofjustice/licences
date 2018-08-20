@@ -5,13 +5,13 @@ module.exports = {createPrisonerService};
 
 function createPrisonerService(nomisClientBuilder) {
 
-    async function getPrisonerPersonalDetails(nomisId, token) {
+    async function getPrisonerPersonalDetails(bookingId, token) {
         try {
-            logger.info(`getPrisonerPersonalDetails: ${nomisId}`);
+            logger.info(`getPrisonerPersonalDetails: ${bookingId}`);
 
             const nomisClient = nomisClientBuilder(token);
 
-            const prisoners = await nomisClient.getOffenderSentences(nomisId);
+            const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId);
 
             return formatObjectForView(prisoners[0]);
         } catch (error) {
@@ -20,19 +20,17 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getPrisonerDetails(nomisId, token) {
+    async function getPrisonerDetails(bookingId, token) {
         try {
-            logger.info(`getPrisonerDetail: ${nomisId}`);
+            logger.info(`getPrisonerDetail: ${bookingId}`);
 
             const nomisClient = nomisClientBuilder(token);
 
-            const prisoners = await nomisClient.getOffenderSentences(nomisId);
+            const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId);
             const prisoner = prisoners[0];
             if (!prisoner) {
                 return;
             }
-
-            const bookingId = prisoner.bookingId;
 
             const [aliases, offences, com] = await Promise.all([
                 nomisClient.getAliases(bookingId),
@@ -68,13 +66,13 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    async function getEstablishmentForPrisoner(nomisId, token) {
+    async function getEstablishmentForPrisoner(bookingId, token) {
         try {
-            logger.info(`getEstablishmentForPrisoner: ${nomisId}`);
+            logger.info(`getEstablishmentForPrisoner: ${bookingId}`);
 
             const nomisClient = nomisClientBuilder(token);
 
-            const prisoners = await nomisClient.getOffenderSentences(nomisId);
+            const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId);
             const prisoner = prisoners[0];
             if (!prisoner) {
                 return;
@@ -105,26 +103,6 @@ function createPrisonerService(nomisClientBuilder) {
             }
 
             logger.error('Error getting establishment', error.stack);
-            throw error;
-        }
-    }
-
-    async function getComForPrisoner(nomisId, token) {
-        try {
-            logger.info(`getComForPrisoner: ${nomisId}`);
-
-            const nomisClient = nomisClientBuilder(token);
-
-            const prisoners = await nomisClient.getOffenderSentences(nomisId);
-            const prisoner = prisoners[0];
-            if (!prisoner) {
-                return;
-            }
-
-            return getCom(prisoner.bookingId, token);
-
-        } catch (error) {
-            logger.error('Error getting prisoner establishment', error.stack);
             throw error;
         }
     }
@@ -164,7 +142,6 @@ function createPrisonerService(nomisClientBuilder) {
         getPrisonerImage,
         getEstablishmentForPrisoner,
         getEstablishment,
-        getComForPrisoner,
         getCom,
         getPrisonerPersonalDetails
     };

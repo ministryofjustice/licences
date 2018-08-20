@@ -4,29 +4,29 @@ const db = require('./dataAccess/db');
 module.exports = {
 
     deleteAll: function() {
-        return db.query(`delete from licences where nomis_id not like '%XX'; 
-        delete from licence_versions where nomis_id not like '%XX'`);
+        return db.query(`delete from licences where booking_id != 1; 
+        delete from licence_versions where booking_id != 1`);
     },
 
     deleteAllTest: function() {
-        return db.query(`delete from licences where nomis_id like '%XX' or nomis_id like 'A5001DY'; 
-          delete from licence_versions where nomis_id like '%XX'`);
+        return db.query(`delete from licences where booking_id < 23; 
+          delete from licence_versions where booking_id < 23`);
     },
 
-    getLicences: async function(nomisIds) {
+    getLicences: async function(bookingIds) {
         const query = {
-            text: `select licence, nomis_id, stage, version from licences 
-                   where nomis_id in (${nomisIds.map(id => `'${id}'`).join(',')})`
+            text: `select licence, booking_id, stage, version from licences 
+                   where booking_id in (${bookingIds.map(id => `'${id}'`).join(',')})`
         };
 
         const {rows} = await db.query(query);
         return rows;
     },
 
-    getLicence: async function(nomisId) {
+    getLicence: async function(bookingId) {
         const query = {
-            text: `select licence, nomis_id, stage, version from licences where nomis_id = $1`,
-            values: [nomisId]
+            text: `select licence, booking_id, stage, version from licences where booking_id = $1`,
+            values: [bookingId]
         };
 
         const {rows} = await db.query(query);
@@ -38,11 +38,11 @@ module.exports = {
         return {};
     },
 
-    getApprovedLicenceVersion: async function(nomisId) {
+    getApprovedLicenceVersion: async function(bookingId) {
         const query = {
             text: `select version, template, timestamp from licence_versions 
-                    where nomis_id = $1 order by version desc limit 1`,
-            values: [nomisId]
+                    where booking_id = $1 order by version desc limit 1`,
+            values: [bookingId]
         };
 
         const {rows} = await db.query(query);
@@ -54,30 +54,30 @@ module.exports = {
         return null;
     },
 
-    createLicence: function(nomisId, licence = {}, stage = licenceStages.DEFAULT, version = 1) {
+    createLicence: function(bookingId, licence = {}, stage = licenceStages.DEFAULT, version = 1) {
         const query = {
-            text: 'insert into licences (nomis_id, licence, stage, version) values ($1, $2, $3, $4)',
-            values: [nomisId, licence, stage, version]
+            text: 'insert into licences (booking_id, licence, stage, version) values ($1, $2, $3, $4)',
+            values: [bookingId, licence, stage, version]
         };
 
         return db.query(query);
     },
 
-    updateLicence: function(nomisId, licence = {}) {
+    updateLicence: function(bookingId, licence = {}) {
         const query = {
-            text: 'update licences set licence = $1 where nomis_id=$2',
-            values: [licence, nomisId]
+            text: 'update licences set licence = $1 where booking_id=$2',
+            values: [licence, bookingId]
         };
 
         return db.query(query);
     },
 
-    updateSection: function(section, nomisId, object) {
+    updateSection: function(section, bookingId, object) {
         const path = '{licenceConditions}';
 
         const query = {
-            text: 'update licences set licence = jsonb_set(licence, $1, $2) where nomis_id=$3',
-            values: [path, object, nomisId]
+            text: 'update licences set licence = jsonb_set(licence, $1, $2) where booking_id=$3',
+            values: [path, object, bookingId]
         };
 
         return db.query(query);
@@ -93,10 +93,10 @@ module.exports = {
         return rows;
     },
 
-    updateStage: function(nomisId, stage) {
+    updateStage: function(bookingId, stage) {
         const query = {
-            text: 'update licences set stage = $1 where nomis_id = $2',
-            values: [stage, nomisId]
+            text: 'update licences set stage = $1 where booking_id = $2',
+            values: [stage, bookingId]
         };
 
         return db.query(query);
@@ -117,12 +117,12 @@ module.exports = {
         return undefined;
     },
 
-    saveApprovedLicenceVersion: function(nomisId, template) {
+    saveApprovedLicenceVersion: function(bookingId, template) {
         const query = {
-            text: `insert into licence_versions (nomis_id, licence, version, template)
-                    select nomis_id, licence, version, $1
-                    from licences where nomis_id = $2`,
-            values: [template, nomisId]
+            text: `insert into licence_versions (booking_id, licence, version, template)
+                    select booking_id, licence, version, $1
+                    from licences where booking_id = $2`,
+            values: [template, bookingId]
         };
 
         return db.query(query);

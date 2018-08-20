@@ -14,9 +14,9 @@ block content
 
     h1.heading-large Select additional conditions
 
-    form#additionalConditions(method='POST', action="/hdc/licenceConditions/additionalConditions/" + nomisId)
+    form#additionalConditions(method='POST', action="/hdc/licenceConditions/additionalConditions/" + bookingId)
         input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="nomisId" value=nomisId)
+        input(type="hidden" name="bookingId" value=bookingId)
 
         div#conditionsInstructions
             div.pure-g

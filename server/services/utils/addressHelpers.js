@@ -6,7 +6,7 @@ module.exports = {
 };
 
 function editAddressesArray(updateMethod) {
-    return ({nomisId, licence, newAddress, index = null} = {}) => {
+    return ({bookingId, licence, newAddress, index = null} = {}) => {
         return updateAddressesInLicence({
             updateMethod,
             licence,

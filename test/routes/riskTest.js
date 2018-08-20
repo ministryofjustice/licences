@@ -58,7 +58,7 @@ describe('/hdc/risk', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: formConfig.riskManagement,
                             userInput: formResponse,
                             licenceSection: 'risk',

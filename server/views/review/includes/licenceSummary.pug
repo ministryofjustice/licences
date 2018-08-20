@@ -10,9 +10,9 @@ div.largeMarginBottom
             div.pure-u-md-1-2.alignRight
                 div.pure-u-md-1-2.change-details
                     if (stage === 'PROCESSING_RO' && user.role === 'RO')
-                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + nomisId) Change these details
+                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + bookingId) Change these details
                     if(stage === 'ELIGIBILITY' && user.role === 'CA')
-                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + nomisId) Change these details
+                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Change these details
 
         if typeof errorObject.proposedAddress === 'string'
             p.alert.bold(id='proposed-address-error') #{errorObject.proposedAddress}
@@ -29,7 +29,7 @@ div.largeMarginBottom
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#riskEditLink(href="/hdc/risk/riskManagement/" + nomisId) Change these details
+                            a#riskEditLink(href="/hdc/risk/riskManagement/" + bookingId) Change these details
 
             if typeof errorObject.risk === 'string'
                 p.alert.bold(id='risk-error') Enter the risk management and victim liaison details
@@ -44,7 +44,7 @@ div.largeMarginBottom
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/" + nomisId) Change these details
+                            a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/" + bookingId) Change these details
 
             if typeof errorObject.curfew === 'string'
                 p.alert.bold(id='curfew-hours-error') Select the proposed curfew hours
@@ -62,7 +62,7 @@ div.largeMarginBottom
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#conditionsEditLink(href="/hdc/licenceConditions/" + linkTo + "/" + nomisId) Change these details
+                            a#conditionsEditLink(href="/hdc/licenceConditions/" + linkTo + "/" + bookingId) Change these details
 
             if typeof errorObject.licenceConditions === 'string'
                 p.alert.bold(id='additional-conditions-error') #{errorObject.licenceConditions}
@@ -82,7 +82,7 @@ div.largeMarginBottom
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#reportingEditLink(href="/hdc/reporting/reportingInstructions/" + nomisId) Change these details
+                            a#reportingEditLink(href="/hdc/reporting/reportingInstructions/" + bookingId) Change these details
 
             if typeof errorObject.reporting === 'string'
                 p.alert.bold(id='reporting-error') Enter the reporting instructions
