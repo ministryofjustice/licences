@@ -1,4 +1,9 @@
-const {allValuesEmpty, interleave, equals} = require('../../server/utils/functionalHelpers');
+const {
+    allValuesEmpty,
+    interleave,
+    equals,
+    getWhereKeyLike
+} = require('../../server/utils/functionalHelpers');
 
 describe('functionalHelpers', () => {
     describe('allValuesEmpty', () => {
@@ -64,6 +69,17 @@ describe('functionalHelpers', () => {
 
         it('should return false if arrays arent equal', () => {
             expect(equals(['a', 'b'], ['b', 'a'])).to.eql(false);
+        });
+    });
+
+    describe('getWhereKeyLike', () => {
+        it('should return the value if the key contains the string passed in', () => {
+            const object = {
+                abcd: 'value1',
+                cdef: 'value2'
+            };
+
+            expect(getWhereKeyLike('abcd/arg', object)).to.eql('value1');
         });
     });
 
