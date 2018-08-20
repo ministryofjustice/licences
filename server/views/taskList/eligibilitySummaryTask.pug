@@ -1,3 +1,7 @@
+-var crdTimeText = licenceStatus.decisions.insufficientTime ? 'Less than 4 weeks until release date' : ''
+-var crdTimeContinueText = licenceStatus.decisions.insufficientTimeContinue? ', with approval to continue' : ''
+
+
 div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : "taskListItem")
     h2.heading-medium Eligibility and presumed suitability
 
@@ -9,10 +13,10 @@ div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : 
                 | Unsuitable
                 if licenceStatus.decisions.exceptionalCircumstances
                     |  with exceptional circumstances
+                    br
+                    | #{crdTimeText}#{crdTimeContinueText}
             else if licenceStatus.decisions.insufficientTime
-                | Less than 4 weeks until release date
-                if licenceStatus.decisions.insufficientTimeContinue
-                    | , with approval to continue
+                | #{crdTimeText}#{crdTimeContinueText}
             else
                 | Eligible
         div.pure-u-1-4.center
