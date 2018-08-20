@@ -57,6 +57,10 @@ function canSendRoToCa(licenceStatus) {
         return true;
     }
 
+    if (decisions.optedOut) {
+        return true;
+    }
+
     const required = [
         tasks.curfewAddressReview,
         tasks.curfewHours,
