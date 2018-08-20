@@ -165,7 +165,7 @@ const setup = {
 
         return setup.appSetup(hdcRoute, user);
     },
-    appSetup(route, user = testUser) {
+    appSetup(route, user = testUser, prefix = '') {
         const app = express();
 
         app.set('views', path.join(__dirname, '../server/views'));
@@ -180,7 +180,7 @@ const setup = {
         app.use(flash());
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: false}));
-        app.use(route);
+        app.use(prefix, route);
 
         return app;
     }

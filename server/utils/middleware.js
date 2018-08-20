@@ -44,7 +44,7 @@ function checkLicenceMiddleWare(licenceService, prisonerService) {
 }
 
 function authorisationMiddleware(req, res, next) {
-    const config = getWhereKeyLike(req.path, authorisationConfig);
+    const config = getWhereKeyLike(req.originalUrl, authorisationConfig);
 
     const unauthorised = !isEmpty(config) && !config.authorisedRoles.includes(req.user.role);
 

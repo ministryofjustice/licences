@@ -1,10 +1,11 @@
 const express = require('express');
 
-const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
+const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
 
 module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
+    router.use(authorisationMiddleware);
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -35,7 +36,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         res.render('send/' + transition, {nomisId, submissionTarget});
     });
 
-    router.post('/', asyncMiddleware(async (req, res) => {
+    router.post('/:destination/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId, transitionType, submissionTarget} = req.body;
         const licence = await licenceService.getLicence(nomisId);
 
