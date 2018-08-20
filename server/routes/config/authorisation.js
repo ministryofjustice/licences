@@ -1,8 +1,31 @@
 module.exports = {
+
+    // eligibility
+    '/hdc/eligibility/': {
+        authorisedRoles: ['CA']
+    },
+    '/hdc/proposedAddress/optOut/': {
+        authorisedRoles: ['CA']
+    },
+    '/hdc/proposedAddress/addressProposed/': {
+        authorisedRoles: ['CA']
+    },
+    'hdc/proposedAddress/bassReferral/': {
+        authorisedRoles: ['CA']
+    },
+    'hdc/proposedAddress/curfewAddress': {
+        authorisedRoles: ['CA', 'RO']
+    },
+    'hdc/eligibility/exceptionalCircumstances/': {
+        authorisedRoles: ['CA']
+    },
+
+    // approval
     '/hdc/approval/': {
         authorisedRoles: ['DM']
     },
 
+    // send
     '/hdc/send/addressReview/': {
         authorisedRoles: ['CA']
     },
@@ -27,4 +50,5 @@ module.exports = {
     '/hdc/send/optedOut/': {
         authorisedRoles: ['RO']
     }
+
 };

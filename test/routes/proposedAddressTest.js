@@ -38,10 +38,10 @@ describe('/hdc/proposedAddress', () => {
         const app = createApp({licenceService});
 
         const routes = [
-            {url: '/proposedAddress/optOut/1', content: 'decided to opt out'},
-            {url: '/proposedAddress/addressProposed/1', content: 'proposed a curfew address?'},
-            {url: '/proposedAddress/bassReferral/1', content: 'BASS referral'},
-            {url: '/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'}
+            {url: '/hdc/proposedAddress/optOut/1', content: 'decided to opt out'},
+            {url: '/hdc/proposedAddress/addressProposed/1', content: 'proposed a curfew address?'},
+            {url: '/hdc/proposedAddress/bassReferral/1', content: 'BASS referral'},
+            {url: '/hdc/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'}
         ];
 
         testFormPageGets(app, routes, licenceService);
@@ -50,40 +50,46 @@ describe('/hdc/proposedAddress', () => {
     describe('POST /hdc/proposedAddress/:section/:nomisId', () => {
         const routes = [
             {
-                url: '/proposedAddress/optOut/1',
+                url: '/hdc/proposedAddress/optOut/1',
                 body: {nomisId: 1, decision: 'Yes'},
                 section: 'optOut',
-                nextPath: '/hdc/taskList/1'
+                nextPath: '/hdc/taskList/1',
+                user: 'caUser'
             },
             {
-                url: '/proposedAddress/optOut/1',
+                url: '/hdc/proposedAddress/optOut/1',
                 body: {nomisId: 1, decision: 'No'},
                 section: 'optOut',
-                nextPath: '/hdc/proposedAddress/addressProposed/1'
+                nextPath: '/hdc/proposedAddress/addressProposed/1',
+                user: 'caUser'
             },
             {
-                url: '/proposedAddress/addressProposed/1',
+                url: '/hdc/proposedAddress/addressProposed/1',
                 body: {nomisId: 1, decision: 'Yes'},
                 section: 'addressProposed',
-                nextPath: '/hdc/proposedAddress/curfewAddress/1'
+                nextPath: '/hdc/proposedAddress/curfewAddress/1',
+                user: 'caUser'
             },
             {
-                url: '/proposedAddress/addressProposed/1',
+                url: '/hdc/proposedAddress/addressProposed/1',
                 body: {nomisId: 1, decision: 'No'},
                 section: 'addressProposed',
-                nextPath: '/hdc/proposedAddress/bassReferral/1'
+                nextPath: '/hdc/proposedAddress/bassReferral/1',
+                user: 'caUser'
             },
             {
-                url: '/proposedAddress/bassReferral/1',
+                url: '/hdc/proposedAddress/bassReferral/1',
                 body: {nomisId: 1},
                 section: 'bassReferral',
-                nextPath: '/hdc/taskList/1'
+                nextPath: '/hdc/taskList/1',
+                user: 'caUser'
             },
             {
-                url: '/proposedAddress/curfewAddress/1',
+                url: '/hdc/proposedAddress/curfewAddress/1',
                 body: {nomisId: 1},
                 section: 'curfewAddress',
-                nextPath: '/hdc/taskList/1'
+                nextPath: '/hdc/taskList/1',
+                user: 'caUser'
             }
         ];
 
@@ -109,6 +115,35 @@ describe('/hdc/proposedAddress', () => {
                         expect(res.header.location).to.equal(route.nextPath);
                     });
             });
+
+            it('throws an error if logged in as dm', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, 'dmUser');
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(403);
+
+            });
+
+            it('throws an error if logged in as ro except for curfew address', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, 'roUser');
+
+                if (route.url === '/hdc/proposedAddress/curfewAddress/1') {
+                    return request(app)
+                        .post(route.url)
+                        .send(route.body)
+                        .expect(302);
+                }
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(403);
+
+            });
         });
 
         it('should redirect back to optOut page if there is an error in the submission', () => {
@@ -123,7 +158,7 @@ describe('/hdc/proposedAddress', () => {
             const app = createApp({licenceService});
 
             return request(app)
-                .post('/proposedAddress/optOut/1')
+                .post('/hdc/proposedAddress/optOut/1')
                 .send({})
                 .expect(302)
                 .expect('Location', '/hdc/proposedAddress/optOut/1');
@@ -150,7 +185,7 @@ describe('/hdc/proposedAddress', () => {
                 const app = createApp({licenceService});
 
                 return request(app)
-                    .get('/proposedAddress/curfewAddress/1')
+                    .get('/hdc/proposedAddress/curfewAddress/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -171,7 +206,7 @@ describe('/hdc/proposedAddress', () => {
                 const app = createApp({licenceService});
 
                 return request(app)
-                    .get('/proposedAddress/curfewAddress/1')
+                    .get('/hdc/proposedAddress/curfewAddress/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -199,7 +234,7 @@ describe('/hdc/proposedAddress', () => {
                 const app = createApp({licenceService});
 
                 return request(app)
-                    .get('/proposedAddress/curfewAddress/1')
+                    .get('/hdc/proposedAddress/curfewAddress/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -227,7 +262,7 @@ describe('/hdc/proposedAddress', () => {
                 const app = createApp({licenceService});
 
                 return request(app)
-                    .get('/proposedAddress/curfewAddress/1')
+                    .get('/hdc/proposedAddress/curfewAddress/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -257,7 +292,7 @@ describe('/hdc/proposedAddress', () => {
             const app = createApp({licenceService});
 
             return request(app)
-                .get('/proposedAddress/rejected/1')
+                .get('/hdc/proposedAddress/rejected/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -284,7 +319,7 @@ describe('/hdc/proposedAddress', () => {
             const app = createApp({licenceService});
 
             return request(app)
-                .get('/proposedAddress/rejected/1')
+                .get('/hdc/proposedAddress/rejected/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -310,7 +345,7 @@ describe('/hdc/proposedAddress', () => {
             const app = createApp({licenceService});
 
             return request(app)
-                .post('/proposedAddress/curfewAddress/add')
+                .post('/hdc/proposedAddress/curfewAddress/add')
                 .send({nomisId: '1', addresses: [{addressLine1: 'something'}]})
                 .expect(302)
                 .expect('Location', '/hdc/taskList/1');
@@ -335,7 +370,7 @@ describe('/hdc/proposedAddress', () => {
             const app = createApp({licenceService});
 
             return request(app)
-                .post('/proposedAddress/curfewAddress/add')
+                .post('/hdc/proposedAddress/curfewAddress/add')
                 .send({nomisId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}]})
                 .expect(302)
                 .expect('Location', '/hdc/proposedAddress/curfewAddress/1');

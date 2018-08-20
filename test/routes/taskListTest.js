@@ -619,7 +619,7 @@ describe('GET /taskList/:prisonNumber', () => {
                         .expect(res => {
                             expect(auditStub.record).to.be.called();
                             expect(auditStub.record).to.be.calledWith(
-                                'LICENCE_RECORD_STARTED', 'my-staff-id', {nomisId: '123'});
+                                'LICENCE_RECORD_STARTED', 'id', {nomisId: '123'});
                         });
                 });
             });
@@ -650,17 +650,12 @@ describe('GET /taskList/:prisonNumber', () => {
     });
 
     describe('User is RO', () => {
-        const roUser = {
-            staffId: 'my-staff-id',
-            token: 'my-token',
-            role: 'RO'
-        };
 
         context('curfew address not started', () => {
             it('should display a start button for curfew address', () => {
                 licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -688,7 +683,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -720,7 +715,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -737,7 +732,7 @@ describe('GET /taskList/:prisonNumber', () => {
             it('should display a start button for additional conditions task', () => {
                 licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -758,7 +753,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     licence: {licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}}}
                 });
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -779,7 +774,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     licence: {licenceConditions: {standard: {additionalConditionsRequired: 'No'}}}
                 });
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -799,7 +794,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     licence: {licenceConditions: {standard: {additionalConditionsRequired: 'No'}}}
                 });
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -825,7 +820,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -853,7 +848,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -897,7 +892,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
-                const app = createApp({licenceService, prisonerService}, roUser);
+                const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
                     .get('/123')
@@ -912,12 +907,6 @@ describe('GET /taskList/:prisonNumber', () => {
     });
 
     context('User is DM', () => {
-        const dmUser = {
-            staffId: 'my-staff-id',
-            token: 'my-token',
-            role: 'DM'
-        };
-
 
         context('When there is a confiscation order', () => {
             it('should display the postpone HDC button', () => {
@@ -933,7 +922,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
-                const app = createApp({licenceService, prisonerService}, dmUser);
+                const app = createApp({licenceService, prisonerService}, 'dmUser');
 
                 return request(app)
                     .get('/123')
@@ -957,7 +946,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
-                const app = createApp({licenceService, prisonerService}, dmUser);
+                const app = createApp({licenceService, prisonerService}, 'dmUser');
 
                 return request(app)
                     .get('/123')
@@ -985,7 +974,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
-                const app = createApp({licenceService, prisonerService}, dmUser);
+                const app = createApp({licenceService, prisonerService}, 'dmUser');
 
                 return request(app)
                     .get('/123')
@@ -1016,7 +1005,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     }
                 });
 
-                const app = createApp({licenceService, prisonerService}, dmUser);
+                const app = createApp({licenceService, prisonerService}, 'dmUser');
 
                 return request(app)
                     .get('/123')
@@ -1035,14 +1024,7 @@ describe('GET /taskList/:prisonNumber', () => {
     });
 });
 
-const caUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    email: 'user@email',
-    role: 'CA'
-};
-
-function createApp({prisonerService, licenceService}, user = caUser) {
+function createApp({prisonerService, licenceService}, user) {
     const route = createTaskListRoute({
         prisonerService,
         licenceService,

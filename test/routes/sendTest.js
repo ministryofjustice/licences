@@ -30,7 +30,7 @@ describe('send', () => {
     describe('Get send/:destination/:nomisId', () => {
 
         it('renders caToRo form when addressReview is destination', () => {
-            const app = createApp({licenceService, prisonerService}, caUser);
+            const app = createApp({licenceService, prisonerService}, 'caUser');
             return request(app)
                 .get('/hdc/send/addressReview/123')
                 .expect(200)
@@ -41,7 +41,7 @@ describe('send', () => {
         });
 
         it('renders roToCa form when finalChecks is destination', () => {
-            const app = createApp({licenceService, prisonerService}, roUser);
+            const app = createApp({licenceService, prisonerService}, 'roUser');
             return request(app)
                 .get('/hdc/send/finalChecks/123')
                 .expect(200)
@@ -52,7 +52,7 @@ describe('send', () => {
         });
 
         it('renders caToDm form when approval is destination', () => {
-            const app = createApp({licenceService, prisonerService}, caUser);
+            const app = createApp({licenceService, prisonerService}, 'caUser');
             return request(app)
                 .get('/hdc/send/approval/123')
                 .expect(200)
@@ -63,7 +63,7 @@ describe('send', () => {
         });
 
         it('renders dmToCa form when decided is destination', () => {
-            const app = createApp({licenceService, prisonerService}, dmUser);
+            const app = createApp({licenceService, prisonerService}, 'dmUser');
             return request(app)
                 .get('/hdc/send/decided/123')
                 .expect(200)
@@ -74,7 +74,7 @@ describe('send', () => {
         });
 
         it('renders caToDmRefusal form when refusal is destination', () => {
-            const app = createApp({licenceService, prisonerService}, caUser);
+            const app = createApp({licenceService, prisonerService}, 'caUser');
             return request(app)
                 .get('/hdc/send/refusal/123')
                 .expect(200)
@@ -85,7 +85,7 @@ describe('send', () => {
         });
 
         it('renders dmToCaReturn form when return is destination', () => {
-            const app = createApp({licenceService, prisonerService}, dmUser);
+            const app = createApp({licenceService, prisonerService}, 'dmUser');
             return request(app)
                 .get('/hdc/send/return/123')
                 .expect(200)
@@ -96,7 +96,7 @@ describe('send', () => {
         });
 
         it('gets a submission target for caToRo', () => {
-            const app = createApp({licenceService, prisonerService}, caUser);
+            const app = createApp({licenceService, prisonerService}, 'caUser');
             return request(app)
                 .get('/hdc/send/addressReview/123')
                 .expect(200)
@@ -107,7 +107,7 @@ describe('send', () => {
         });
 
         it('gets a submission target for roToCa', () => {
-            const app = createApp({licenceService, prisonerService}, roUser);
+            const app = createApp({licenceService, prisonerService}, 'roUser');
             return request(app)
                 .get('/hdc/send/finalChecks/123')
                 .expect(200)
@@ -119,7 +119,7 @@ describe('send', () => {
 
         it('should throw if get requested by wrong user', () => {
 
-            const app = createApp({licenceService, prisonerService}, roUser);
+            const app = createApp({licenceService, prisonerService}, 'roUser');
             return request(app)
                 .get('/hdc/send/refusal/123')
                 .expect(403);
@@ -144,7 +144,7 @@ describe('send', () => {
         });
 
         it('calls markForHandover via licenceService for finalChecks', () => {
-            const app = createApp({licenceService, prisonerService}, roUser);
+            const app = createApp({licenceService, prisonerService}, 'roUser');
 
             return request(app)
                 .post('/hdc/send/finalChecks/123')
@@ -158,7 +158,7 @@ describe('send', () => {
         });
 
         it('calls markForHandover via licenceService for approval', () => {
-            const app = createApp({licenceService, prisonerService}, caUser);
+            const app = createApp({licenceService, prisonerService}, 'caUser');
 
             return request(app)
                 .post('/hdc/send/approval/123')
@@ -172,7 +172,7 @@ describe('send', () => {
         });
 
         it('calls markForHandover via licenceService for decided', () => {
-            const app = createApp({licenceService, prisonerService}, dmUser);
+            const app = createApp({licenceService, prisonerService}, 'dmUser');
 
             return request(app)
                 .post('/hdc/send/decided/123')
@@ -186,7 +186,7 @@ describe('send', () => {
         });
 
         it('calls markForHandover via licenceService for refusal', () => {
-            const app = createApp({licenceService, prisonerService}, caUser);
+            const app = createApp({licenceService, prisonerService}, 'caUser');
 
             return request(app)
                 .post('/hdc/send/refusal/123')
@@ -200,7 +200,7 @@ describe('send', () => {
         });
 
         it('calls markForHandover via licenceService for return', () => {
-            const app = createApp({licenceService, prisonerService}, dmUser);
+            const app = createApp({licenceService, prisonerService}, 'dmUser');
 
             return request(app)
                 .post('/hdc/send/return/123')
@@ -215,7 +215,7 @@ describe('send', () => {
 
 
         it('audits the send event', () => {
-            const app = createApp({licenceService, prisonerService}, dmUser);
+            const app = createApp({licenceService, prisonerService}, 'dmUser');
 
             return request(app)
                 .post('/hdc/send/return/123')
@@ -228,7 +228,7 @@ describe('send', () => {
                 })
                 .expect(() => {
                     expect(auditStub.record).to.be.calledOnce();
-                    expect(auditStub.record).to.be.calledWith('SEND', 'my-staff-id',
+                    expect(auditStub.record).to.be.calledWith('SEND', 'id',
                         {
                             nomisId: 123,
                             transitionType: 'type',
@@ -239,7 +239,7 @@ describe('send', () => {
         });
 
         it('shows sent confirmation', () => {
-            const app = createApp({licenceService, prisonerService}, dmUser);
+            const app = createApp({licenceService, prisonerService}, 'dmUser');
 
             return request(app)
                 .post('/hdc/send/return/123')
@@ -253,7 +253,7 @@ describe('send', () => {
 
         it('should throw if post requested by wrong user', () => {
 
-            const app = createApp({licenceService, prisonerService}, caUser);
+            const app = createApp({licenceService, prisonerService}, 'caUser');
 
             return request(app)
                 .post('/hdc/send/return/123')
@@ -264,28 +264,7 @@ describe('send', () => {
     });
 });
 
-const caUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    email: 'user@email',
-    role: 'CA'
-};
-
-const roUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    email: 'user@email',
-    role: 'RO'
-};
-
-const dmUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    email: 'user@email',
-    role: 'DM'
-};
-
-function createApp({licenceService, prisonerService}, user = caUser) {
+function createApp({licenceService, prisonerService}, user) {
     return appSetup(createSendRoute({
         licenceService,
         prisonerService,

@@ -12,13 +12,6 @@ const {
 
 const createPdfRoute = require('../../server/routes/pdf');
 
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    email: 'user@email',
-    role: 'CA'
-};
-
 const prisonerService = createPrisonerServiceStub();
 const licenceService = createLicenceServiceStub();
 
@@ -29,7 +22,7 @@ const app = appSetup(createPdfRoute({
     audit: auditStub,
     prisonerService,
     licenceService
-}), testUser);
+}));
 
 const valuesWithMissing = {
     values: {
@@ -121,7 +114,7 @@ describe('PDF:', () => {
                     expect(res.text).to.include('Not complete');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
-                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'my-token');
+                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'token');
                 });
         });
 
@@ -138,7 +131,7 @@ describe('PDF:', () => {
                     expect(res.text).not.to.include('Ready to create');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
-                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'my-token');
+                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'token');
                 });
         });
 
@@ -234,7 +227,7 @@ describe('PDF:', () => {
                 .expect(res => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
-                        'CREATE_PDF', 'my-staff-id', {nomisId: '123', templateName: 'hdc_ap_pss'});
+                        'CREATE_PDF', 'id', {nomisId: '123', templateName: 'hdc_ap_pss'});
                 });
         });
     });

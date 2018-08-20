@@ -19,17 +19,12 @@ describe('Search:', () => {
 
     describe('When role is RO', () => {
 
-        const testUser = {
-            token: 'token',
-            role: 'RO'
-        };
-
         const app = appSetup(createSearchRoute({
             searchService: searchServiceStub,
             logger: loggerStub,
             authenticationMiddleware,
             audit: auditStub
-        }), testUser);
+        }), 'roUser');
 
         describe('GET /search/offender', () => {
 
@@ -104,7 +99,7 @@ describe('Search:', () => {
                     .expect(() => {
                         expect(searchServiceStub.searchOffenders).to.be.calledOnce();
                         expect(searchServiceStub.searchOffenders)
-                            .to.be.calledWith('A0001XX', testUser.token, testUser.role);
+                            .to.be.calledWith('A0001XX', 'token', 'RO');
                     });
             });
 

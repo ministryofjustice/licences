@@ -35,10 +35,10 @@ describe('/hdc/licenceConditions', () => {
         conditionsServiceStub.populateLicenceWithConditions = sinon.stub().resolves({licence: {}});
         const app = createApp({licenceService, conditionsService: conditionsServiceStub});
         const routes = [
-            {url: '/licenceConditions/standard/1', content: 'Not commit any offence'},
-            {url: '/licenceConditions/additionalConditions/1', content: 'Select additional conditions</h1>'},
-            {url: '/licenceConditions/conditionsSummary/1', content: 'Add additional condition'},
-            {url: '/reporting/reportingInstructions/1', content: 'Reporting instructions'}
+            {url: '/hdc/licenceConditions/standard/1', content: 'Not commit any offence'},
+            {url: '/hdc/licenceConditions/additionalConditions/1', content: 'Select additional conditions</h1>'},
+            {url: '/hdc/licenceConditions/conditionsSummary/1', content: 'Add additional condition'},
+            {url: '/hdc/reporting/reportingInstructions/1', content: 'Reporting instructions'}
         ];
 
         testFormPageGets(app, routes, licenceService);
@@ -47,13 +47,13 @@ describe('/hdc/licenceConditions', () => {
     describe('POST /hdc/licenceConditions/:section/:nomisId', () => {
         const routes = [
             {
-                url: '/licenceConditions/standard/1',
+                url: '/hdc/licenceConditions/standard/1',
                 body: {additionalConditionsRequired: 'Yes', nomisId: 1},
                 nextPath: '/hdc/licenceConditions/additionalConditions/1',
                 formName: 'standard'
             },
             {
-                url: '/licenceConditions/standard/1',
+                url: '/hdc/licenceConditions/standard/1',
                 body: {additionalConditionsRequired: 'No', nomisId: 1},
                 nextPath: '/hdc/taskList/1',
                 formName: 'standard'
@@ -97,7 +97,7 @@ describe('/hdc/licenceConditions', () => {
             const app = createApp({licenceService, conditionsService});
 
             return request(app)
-                .post('/licenceConditions/additionalConditions/1/delete/ABC')
+                .post('/hdc/licenceConditions/additionalConditions/1/delete/ABC')
                 .send(formResponse)
                 .expect(302)
                 .expect(res => {
@@ -115,7 +115,7 @@ describe('/hdc/licenceConditions', () => {
             const app = createApp({licenceService, conditionsService});
 
             return request(app)
-                .get('/licenceConditions/conditionsSummary/1')
+                .get('/hdc/licenceConditions/conditionsSummary/1')
                 .expect(200)
                 .expect(res => {
                     expect(licenceService.getConditionsErrors).to.be.calledWith({key: 'value'});

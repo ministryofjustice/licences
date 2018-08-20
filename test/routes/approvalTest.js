@@ -9,14 +9,6 @@ const {
     testFormPageGets
 } = require('../supertestSetup');
 
-const {roles} = require('../../server/models/roles');
-
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    role: roles.DM
-};
-
 const prisonerInfoResponse = {
     bookingId: 1,
     facialImageId: 2,
@@ -39,12 +31,12 @@ describe('/hdc/approval', () => {
 
     beforeEach(() => {
         licenceServiceStub = createLicenceServiceStub();
-        app = createApp({licenceServiceStub});
+        app = createApp({licenceServiceStub}, 'dmUser');
     });
 
     describe('approval routes', () => {
         const service = createLicenceServiceStub();
-        const app = createApp({licenceServiceStub: service});
+        const app = createApp({licenceServiceStub: service}, 'dmUser');
         const routes = [
             {url: '/hdc/approval/release/1', content: 'Do you approve HDC release for this offender?'},
             {url: '/hdc/approval/crdRefuse/1', content: 'HDC refused because there is not enough time'}
@@ -77,13 +69,7 @@ describe('/hdc/approval', () => {
 
         it('should throw if requested by non-DM user', () => {
 
-            const user = {
-                staffId: 'my-staff-id',
-                token: 'my-token',
-                role: roles.CA
-            };
-
-            const caApp = createApp({licenceServiceStub, user});
+            const caApp = createApp({licenceServiceStub}, 'caUser');
 
             return request(caApp)
                 .get('/hdc/approval/release/1')
@@ -155,13 +141,7 @@ describe('/hdc/approval', () => {
 
         it('should throw if submitted by non-DM user', () => {
 
-            const user = {
-                staffId: 'my-staff-id',
-                token: 'my-token',
-                role: roles.CA
-            };
-
-            const caApp = createApp({licenceServiceStub, user});
+            const caApp = createApp({licenceServiceStub}, 'caUser');
 
             return request(caApp)
                 .post('/hdc/approval/release/1')
@@ -171,7 +151,7 @@ describe('/hdc/approval', () => {
     });
 });
 
-function createApp({licenceServiceStub, user}) {
+function createApp({licenceServiceStub}, user) {
     const prisonerServiceStub = createPrisonerServiceStub();
     prisonerServiceStub.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse);
     licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
@@ -181,5 +161,5 @@ function createApp({licenceServiceStub, user}) {
         prisonerService: prisonerServiceStub
     });
 
-    return appSetup(hdcRoute, user || testUser, '/hdc/');
+    return appSetup(hdcRoute, user, '/hdc/');
 }

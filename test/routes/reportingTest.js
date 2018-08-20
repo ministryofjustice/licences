@@ -6,23 +6,18 @@ const {
     createApp
 } = require('../supertestSetup');
 
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    roleCode: 'CA'
-};
 
 describe('/hdc/reporting', () => {
     describe('routes', () => {
         const routes = [
-            {url: '/reporting/reportingInstructions/1', content: 'Reporting instructions'},
-            {url: '/reporting/reportingDate/1', content: 'Enter reporting date and time'}
+            {url: '/hdc/reporting/reportingInstructions/1', content: 'Reporting instructions'},
+            {url: '/hdc/reporting/reportingDate/1', content: 'Enter reporting date and time'}
         ];
 
         routes.forEach(route => {
             it(`renders the ${route.url} page`, () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService}, testUser);
+                const app = createApp({licenceService});
 
                 return request(app)
                     .get(route.url)
@@ -38,13 +33,13 @@ describe('/hdc/reporting', () => {
     describe('POST /hdc/licenceConditions/:section/:nomisId', () => {
         const routes = [
             {
-                url: '/reporting/reportingInstructions/1',
+                url: '/hdc/reporting/reportingInstructions/1',
                 body: {nomisId: 1},
                 section: 'reportingInstructions',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/reporting/reportingDate/1',
+                url: '/hdc/reporting/reportingDate/1',
                 body: {nomisId: 1},
                 section: 'reportingDate',
                 nextPath: '/hdc/pdf/taskList/1'
@@ -54,7 +49,7 @@ describe('/hdc/reporting', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService}, testUser);
+                const app = createApp({licenceService});
 
                 return request(app)
                     .post(route.url)

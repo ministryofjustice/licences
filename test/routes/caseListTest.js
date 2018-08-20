@@ -8,8 +8,6 @@ const {
     auditStub
 } = require('../supertestSetup');
 
-const {roles} = require('../../server/models/roles');
-
 const caseListResponse = require('./stubs/caseListResponse');
 
 const createCaseListRoute = require('../../server/routes/caseList');
@@ -185,20 +183,12 @@ describe('GET /caseList', () => {
 
     context('user is RO', () => {
 
-        const testUser = {
-            firstName: 'first',
-            lastName: 'last',
-            staffId: 'id',
-            token: 'token',
-            role: roles.RO
-        };
-
         const app = appSetup(createCaseListRoute({
             logger: loggerStub,
             caseListService: caseListServiceStub,
             authenticationMiddleware,
             audit: auditStub
-        }), testUser);
+        }), 'roUser');
 
         beforeEach(() => {
             caseListServiceStub.getHdcCaseList.resolves(caseListResponse);
@@ -257,21 +247,12 @@ describe('GET /caseList', () => {
     });
 
     context('user is DM', () => {
-
-        const testUser = {
-            firstName: 'first',
-            lastName: 'last',
-            staffId: 'id',
-            token: 'token',
-            role: roles.DM
-        };
-
         const app = appSetup(createCaseListRoute({
             logger: loggerStub,
             caseListService: caseListServiceStub,
             authenticationMiddleware,
             audit: auditStub
-        }), testUser);
+        }), 'dmUser');
 
         context('tab is ready', () => {
             it('should filter out offenders at a stage that isnt APPROVAL', () => {
