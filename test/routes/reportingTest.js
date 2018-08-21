@@ -17,7 +17,7 @@ describe('/hdc/reporting', () => {
         routes.forEach(route => {
             it(`renders the ${route.url} page`, () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService});
+                const app = createApp({licenceService}, 'roUser');
 
                 return request(app)
                     .get(route.url)
@@ -49,7 +49,7 @@ describe('/hdc/reporting', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService});
+                const app = createApp({licenceService}, 'roUser');
 
                 return request(app)
                     .post(route.url)
@@ -67,6 +67,42 @@ describe('/hdc/reporting', () => {
 
                         expect(res.header.location).to.equal(route.nextPath);
                     });
+            });
+
+            it(`renders the correct path '${route.nextPath}' page when ca in post approval`, () => {
+                const licenceService = createLicenceServiceStub();
+                licenceService.getLicence.resolves({stage: 'DECIDED', licence: {key: 'value'}});
+                const app = createApp({licenceService}, 'caUser');
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
+                            nomisId: '1',
+                            config: formConfig[route.section],
+                            userInput: route.body,
+                            licenceSection: 'reporting',
+                            formName: route.section
+                        });
+
+                        expect(res.header.location).to.equal(route.nextPath);
+                    });
+            });
+
+            it(`throws when posting to '${route.nextPath}' when ca in non-post approval`, () => {
+
+                const licenceService = createLicenceServiceStub();
+                licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {key: 'value'}});
+                const app = createApp({licenceService}, 'caUser');
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(403);
+
             });
         });
     });

@@ -2,77 +2,77 @@ module.exports = {
 
     // eligibility
     '/hdc/eligibility/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
     '/hdc/proposedAddress/optOut/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
     '/hdc/proposedAddress/addressProposed/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
     'hdc/proposedAddress/bassReferral/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
     'hdc/proposedAddress/curfewAddress': {
-        authorisedRoles: ['CA', 'RO']
+        authorised: [{role: 'CA'}, {role: 'RO'}]
     },
     'hdc/eligibility/exceptionalCircumstances/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
 
     // processing ro
     '/hdc/curfew/': {
-        authorisedRoles: ['RO', 'CA']
+        authorised: [{role: 'RO'}, {role: 'CA', stage: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
     },
     '/hdc/risk/': {
-        authorisedRoles: ['RO', 'CA']
+        authorised: [{role: 'RO'}, {role: 'CA', stage: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
     },
     '/hdc/licenceConditions/': {
-        authorisedRoles: ['RO', 'CA']
+        authorised: [{role: 'RO'}, {role: 'CA', stage: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
     },
     '/hdc/reporting/': {
-        authorisedRoles: ['RO', 'CA']
+        authorised: [{role: 'RO'}, {role: 'CA', stage: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
     },
 
     // processing ca
     '/hdc/finalChecks/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
 
     // approval
     '/hdc/approval/': {
-        authorisedRoles: ['DM']
+        authorised: [{role: 'DM'}]
     },
 
     // post approval
     '/hdc/pdf/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
 
     // send
     '/hdc/send/addressReview/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
     '/hdc/send/finalChecks/': {
-        authorisedRoles: ['RO']
+        authorised: [{role: 'RO'}]
     },
     '/hdc/send/approval/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
     '/hdc/send/decided/': {
-        authorisedRoles: ['DM']
+        authorised: [{role: 'DM'}]
     },
     '/hdc/send/return/': {
-        authorisedRoles: ['DM']
+        authorised: [{role: 'DM'}]
     },
     '/hdc/send/refusal/': {
-        authorisedRoles: ['CA']
+        authorised: [{role: 'CA'}]
     },
     '/hdc/send/addressRejected/': {
-        authorisedRoles: ['RO']
+        authorised: [{role: 'RO'}]
     },
     '/hdc/send/optedOut/': {
-        authorisedRoles: ['RO']
+        authorised: [{role: 'RO'}]
     }
 
 };

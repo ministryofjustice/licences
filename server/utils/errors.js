@@ -1,9 +1,9 @@
 module.exports = {
-    NoTokenError
+    unauthorisedError
 };
 
-function NoTokenError() {
-    const error = new Error('No token for user');
-    error.name = 'NoToken';
+function unauthorisedError() {
+    const error = new Error('Unauthorised access');
+    error.status = 403;
     return error;
 }

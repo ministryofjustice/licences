@@ -33,7 +33,7 @@ describe('/hdc/licenceConditions', () => {
         });
 
         conditionsServiceStub.populateLicenceWithConditions = sinon.stub().resolves({licence: {}});
-        const app = createApp({licenceService, conditionsService: conditionsServiceStub});
+        const app = createApp({licenceService, conditionsService: conditionsServiceStub}, 'roUser');
         const routes = [
             {url: '/hdc/licenceConditions/standard/1', content: 'Not commit any offence'},
             {url: '/hdc/licenceConditions/additionalConditions/1', content: 'Select additional conditions</h1>'},
@@ -63,7 +63,7 @@ describe('/hdc/licenceConditions', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService, conditionsService});
+                const app = createApp({licenceService, conditionsService}, 'roUser');
 
                 return request(app)
                     .post(route.url)
@@ -82,6 +82,42 @@ describe('/hdc/licenceConditions', () => {
                         expect(res.header.location).to.equal(route.nextPath);
                     });
             });
+
+            it(`renders the correct path '${route.nextPath}' page when ca in post approval`, () => {
+                const licenceService = createLicenceServiceStub();
+                licenceService.getLicence.resolves({stage: 'DECIDED', licence: {key: 'value'}});
+                const app = createApp({licenceService, conditionsService}, 'caUser');
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
+                            nomisId: '1',
+                            config: formConfig[route.formName],
+                            userInput: route.body,
+                            licenceSection: 'licenceConditions',
+                            formName: route.formName
+                        });
+
+                        expect(res.header.location).to.equal(route.nextPath);
+                    });
+            });
+
+            it(`throws when posting to '${route.nextPath}' when ca in non-post approval`, () => {
+
+                const licenceService = createLicenceServiceStub();
+                licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {key: 'value'}});
+                const app = createApp({licenceService, conditionsService}, 'caUser');
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(403);
+
+            });
         });
     });
 
@@ -94,7 +130,7 @@ describe('/hdc/licenceConditions', () => {
 
         it('calls licence service delete and returns to summary page', () => {
             const licenceService = createLicenceServiceStub();
-            const app = createApp({licenceService, conditionsService});
+            const app = createApp({licenceService, conditionsService}, 'roUser');
 
             return request(app)
                 .post('/hdc/licenceConditions/additionalConditions/1/delete/ABC')
@@ -112,7 +148,7 @@ describe('/hdc/licenceConditions', () => {
         it('should validate the conditions', () => {
             const licenceService = createLicenceServiceStub();
             licenceService.getConditionsErrors = sinon.stub().returns({error: 'object'});
-            const app = createApp({licenceService, conditionsService});
+            const app = createApp({licenceService, conditionsService}, 'roUser');
 
             return request(app)
                 .get('/hdc/licenceConditions/conditionsSummary/1')
