@@ -1,6 +1,5 @@
 module.exports = {
 
-    // eligibility
     '/hdc/eligibility/': {
         authorised: [{role: 'CA'}]
     },
@@ -20,7 +19,21 @@ module.exports = {
         authorised: [{role: 'CA'}]
     },
 
-    // processing ro
+    '/hdc/curfew/withdrawAddress/': {
+        authorised: [{role: 'CA'}]
+    },
+    '/hdc/curfew/withdrawConsent/': {
+        authorised: [{role: 'CA'}]
+    },
+    '/hdc/curfew/reinstateAddress/': {
+        authorised: [{role: 'CA'}]
+    },
+    '/hdc/curfew/consentWithdrawn/': {
+        authorised: [{role: 'CA'}]
+    },
+    '/hdc/curfew/addressWithdrawn/': {
+        authorised: [{role: 'CA'}]
+    },
     '/hdc/curfew/': {
         authorised: [{role: 'RO'}, {role: 'CA', stage: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
     },
@@ -34,22 +47,18 @@ module.exports = {
         authorised: [{role: 'RO'}, {role: 'CA', stage: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
     },
 
-    // processing ca
     '/hdc/finalChecks/': {
         authorised: [{role: 'CA'}]
     },
 
-    // approval
     '/hdc/approval/': {
         authorised: [{role: 'DM'}]
     },
 
-    // post approval
     '/hdc/pdf/': {
         authorised: [{role: 'CA'}]
     },
 
-    // send
     '/hdc/send/addressReview/': {
         authorised: [{role: 'CA'}]
     },
@@ -74,5 +83,4 @@ module.exports = {
     '/hdc/send/optedOut/': {
         authorised: [{role: 'RO'}]
     }
-
 };
