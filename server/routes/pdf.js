@@ -8,7 +8,8 @@ module.exports = function(
 
     const router = express.Router();
     router.use(authenticationMiddleware());
-    router.use(authorisationMiddleware);
+    router.param('nomisId', checkLicenceMiddleWare(licenceService, prisonerService));
+    router.param('nomisId', authorisationMiddleware);
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -17,9 +18,7 @@ module.exports = function(
         next();
     });
 
-    const checkLicence = checkLicenceMiddleWare(licenceService, prisonerService);
-
-    router.get('/select/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/select/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
 
         const prisoner = await prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token);
@@ -44,7 +43,7 @@ module.exports = function(
         res.redirect(`/hdc/pdf/taskList/${decision}/${nomisId}`);
     });
 
-    router.get('/taskList/:templateName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/taskList/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
 
         const {nomisId, templateName} = req.params;
         const {licence} = res.locals;
@@ -97,7 +96,7 @@ module.exports = function(
         };
     }
 
-    router.get('/missing/:section/:templateName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/missing/:section/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
 
         const {nomisId, templateName, section} = req.params;
         const {licence} = res.locals;
@@ -119,7 +118,7 @@ module.exports = function(
         });
     }));
 
-    router.get('/create/:templateName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/create/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
 
         const {nomisId, templateName} = req.params;
         const {licence} = res.locals;

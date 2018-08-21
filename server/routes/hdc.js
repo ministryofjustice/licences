@@ -33,8 +33,8 @@ module.exports = function(
 
     const router = express.Router();
     router.use(authenticationMiddleware());
-    router.use(checkLicenceMiddleWare(licenceService, prisonerService));
-    router.use(authorisationMiddleware);
+    router.param('nomisId', checkLicenceMiddleWare(licenceService, prisonerService));
+    router.param('nomisId', authorisationMiddleware);
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {

@@ -18,10 +18,8 @@ function asyncMiddleware(fn) {
 }
 
 function checkLicenceMiddleWare(licenceService, prisonerService) {
-    return async (req, res, next) => {
+    return async (req, res, next, nomisId) => {
         try {
-
-            const nomisId = req.params.nomisId;
 
             const [licence, prisoner] = await Promise.all([
                 licenceService.getLicence(nomisId),
