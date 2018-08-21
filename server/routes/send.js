@@ -5,7 +5,8 @@ const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = requi
 module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
-    router.use(authorisationMiddleware);
+    router.param('nomisId', checkLicenceMiddleWare(licenceService, prisonerService));
+    router.param('nomisId', authorisationMiddleware);
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -14,9 +15,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         next();
     });
 
-    const checkLicence = checkLicenceMiddleWare(licenceService, prisonerService);
-
-    router.get('/:destination/:nomisId', checkLicence, async (req, res) => {
+    router.get('/:destination/:nomisId', async (req, res) => {
         const {destination, nomisId} = req.params;
 
         const transitionForDestination = {
