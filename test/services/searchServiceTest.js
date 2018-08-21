@@ -9,7 +9,7 @@ describe('searchService', () => {
 
     beforeEach(() => {
         nomisClient = {
-            getOffenderSentences: sinon.stub().resolves([
+            getOffenderSentencesByNomisId: sinon.stub().resolves([
                 {
                     bookingId: 123456,
                     offenderNo: 'A12345',
@@ -25,7 +25,6 @@ describe('searchService', () => {
                     }
                 }
             ]),
-            getPrisoners: sinon.stub().resolves([{offenderNo: 'A0001AA'}, {offenderNo: 'A0001BB'}]),
             getComRelation: sinon.stub().resolves({comName: 'COMNAME'})
         };
 
@@ -54,8 +53,8 @@ describe('searchService', () => {
 
             const result = await service.searchOffenders('A0001AA', {});
 
-            expect(nomisClient.getOffenderSentences).to.be.calledOnce();
-            expect(nomisClient.getOffenderSentences).to.be.calledWith(['A0001AA']);
+            expect(nomisClient.getOffenderSentencesByNomisId).to.be.calledOnce();
+            expect(nomisClient.getOffenderSentencesByNomisId).to.be.calledWith(['A0001AA']);
 
             expect(nomisClient.getComRelation).to.be.calledOnce();
             expect(nomisClient.getComRelation).to.be.calledWith(123456);
@@ -66,15 +65,15 @@ describe('searchService', () => {
         it('should remove duplicate nomis IDs before searching nomis', async () => {
             await service.searchOffenders(['A0001AA', 'A0001AA', 'A0002AA'], {});
 
-            expect(nomisClient.getOffenderSentences).to.be.calledOnce();
-            expect(nomisClient.getOffenderSentences).to.be.calledWith(['A0001AA', 'A0002AA']);
+            expect(nomisClient.getOffenderSentencesByNomisId).to.be.calledOnce();
+            expect(nomisClient.getOffenderSentencesByNomisId).to.be.calledWith(['A0001AA', 'A0002AA']);
         });
 
         it('should not search nomis if no nomis iDs', async () => {
 
             await service.searchOffenders(['', '   '], {});
 
-            expect(nomisClient.getOffenderSentences).to.not.be.calledOnce();
+            expect(nomisClient.getOffenderSentencesByNomisId).to.not.be.calledOnce();
         });
     });
 

@@ -7,7 +7,7 @@ div.taskListItem.borderBottomLight.largeMarginBottom
         div.pure-u-3-4
             h2.heading-medium Create #{versionInfo.templateLabel}
         div.pure-u-1-4.center
-            a(href="/hdc/pdf/select/" + nomisId) Change template
+            a(href="/hdc/pdf/select/" + bookingId) Change template
 
     div.pure-g
         div.pure-u-3-4
@@ -27,7 +27,7 @@ div.taskListItem.borderBottomLight.largeMarginBottom
                         |  #{versionInfo.lastTemplateLabel}
                     |, on #{versionInfo.lastVersion.timestamp}
         div.pure-u-1-4.center
-            a#createPdf.taskListAction.center.button(href="/hdc/pdf/create/" + templateName + "/" + nomisId role="button" target="_blank") Continue
+            a#createPdf.taskListAction.center.button(href="/hdc/pdf/create/" + templateName + "/" + bookingId role="button" target="_blank") Continue
 
 
 

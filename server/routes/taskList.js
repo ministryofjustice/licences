@@ -16,12 +16,12 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         next();
     });
 
-    router.get('/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/:bookingId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /taskList');
 
-        const {nomisId} = req.params;
-        const prisonerInfo = await prisonerService.getPrisonerDetails(nomisId, req.user.token);
-        const licence = await licenceService.getLicence(nomisId);
+        const {bookingId} = req.params;
+        const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, req.user.token);
+        const licence = await licenceService.getLicence(bookingId);
 
         const licenceStatus = getLicenceStatus(licence);
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
@@ -34,23 +34,23 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
             allowedTransition,
             statusLabel,
             prisonerInfo,
-            nomisId
+            bookingId
         });
     }));
 
     router.post('/eligibilityStart', asyncMiddleware(async (req, res) => {
         logger.debug('POST /eligibilityStart');
 
-        const {nomisId} = req.body;
+        const {bookingId} = req.body;
 
-        const existingLicence = await licenceService.getLicence(nomisId);
+        const existingLicence = await licenceService.getLicence(bookingId);
 
         if (!existingLicence) {
-            await licenceService.createLicence(nomisId);
-            audit.record('LICENCE_RECORD_STARTED', req.user.staffId, {nomisId});
+            await licenceService.createLicence(bookingId);
+            audit.record('LICENCE_RECORD_STARTED', req.user.staffId, {bookingId});
         }
 
-        res.redirect(`/hdc/eligibility/excluded/${nomisId}`);
+        res.redirect(`/hdc/eligibility/excluded/${bookingId}`);
     }));
 
     router.get('/image/:imageId', asyncMiddleware(async (req, res) => {

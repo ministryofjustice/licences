@@ -8,8 +8,8 @@ module.exports = function(
 
     const router = express.Router();
     router.use(authenticationMiddleware());
-    router.param('nomisId', checkLicenceMiddleWare(licenceService, prisonerService));
-    router.param('nomisId', authorisationMiddleware);
+    router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
+    router.param('bookingId', authorisationMiddleware);
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -18,36 +18,36 @@ module.exports = function(
         next();
     });
 
-    router.get('/select/:nomisId', asyncMiddleware(async (req, res) => {
-        const {nomisId} = req.params;
+    router.get('/select/:bookingId', asyncMiddleware(async (req, res) => {
+        const {bookingId} = req.params;
 
-        const prisoner = await prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token);
+        const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token);
         const errors = firstItem(req.flash('errors')) || {};
 
         const lastTemplate = getIn(res.locals.licence, ['approvedVersion', 'template']);
 
-        return res.render('pdf/select', {nomisId, templates, prisoner, errors, lastTemplate});
+        return res.render('pdf/select', {bookingId, templates, prisoner, errors, lastTemplate});
     }));
 
-    router.post('/select/:nomisId', (req, res) => {
-        const {nomisId} = req.params;
+    router.post('/select/:bookingId', (req, res) => {
+        const {bookingId} = req.params;
         const {decision} = req.body;
 
         const templateIds = templates.map(template => template.id);
 
         if (decision === '' || !templateIds.includes(decision)) {
             req.flash('errors', {decision: 'Select a licence type'});
-            return res.redirect(`/hdc/pdf/select/${nomisId}`);
+            return res.redirect(`/hdc/pdf/select/${bookingId}`);
         }
 
-        res.redirect(`/hdc/pdf/taskList/${decision}/${nomisId}`);
+        res.redirect(`/hdc/pdf/taskList/${decision}/${bookingId}`);
     });
 
-    router.get('/taskList/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/taskList/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
 
-        const {nomisId, templateName} = req.params;
+        const {bookingId, templateName} = req.params;
         const {licence} = res.locals;
-        logger.debug(`GET pdf/taskList/${templateName}/${nomisId}`);
+        logger.debug(`GET pdf/taskList/${templateName}/${bookingId}`);
 
         const templateLabel = getTemplateLabel(templateName);
 
@@ -56,15 +56,15 @@ module.exports = function(
         }
 
         const [prisoner, {missing}] = await Promise.all([
-            prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token),
-            pdfService.getPdfLicenceData(templateName, nomisId, licence, req.user.token)
+            prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token),
+            pdfService.getPdfLicenceData(templateName, bookingId, licence, req.user.token)
         ]);
 
         const incompleteGroups = Object.keys(missing).find(group => missing[group].mandatory);
         const canPrint = !incompleteGroups;
 
         return res.render('pdf/createLicenceTaskList', {
-            nomisId,
+            bookingId,
             missing,
             templateName,
             prisoner,
@@ -96,21 +96,21 @@ module.exports = function(
         };
     }
 
-    router.get('/missing/:section/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/missing/:section/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
 
-        const {nomisId, templateName, section} = req.params;
+        const {bookingId, templateName, section} = req.params;
         const {licence} = res.locals;
-        logger.debug(`GET pdf/missing/${section}/${templateName}/${nomisId}`);
+        logger.debug(`GET pdf/missing/${section}/${templateName}/${bookingId}`);
 
         const [prisoner, {missing}] = await Promise.all([
-            prisonerService.getPrisonerPersonalDetails(nomisId, req.user.token),
-            pdfService.getPdfLicenceData(templateName, nomisId, licence, req.user.token)
+            prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token),
+            pdfService.getPdfLicenceData(templateName, bookingId, licence, req.user.token)
         ]);
 
         const data = {};
 
         return res.render(`pdf/missing/${section}`, {
-            nomisId,
+            bookingId,
             missing,
             templateName,
             prisoner,
@@ -118,15 +118,15 @@ module.exports = function(
         });
     }));
 
-    router.get('/create/:templateName/:nomisId', asyncMiddleware(async (req, res) => {
+    router.get('/create/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
 
-        const {nomisId, templateName} = req.params;
+        const {bookingId, templateName} = req.params;
         const {licence} = res.locals;
-        logger.debug(`GET pdf/create/${nomisId}/${templateName}`);
+        logger.debug(`GET pdf/create/${bookingId}/${templateName}`);
 
-        const pdf = await pdfService.generatePdf(templateName, nomisId, licence, req.user.token);
+        const pdf = await pdfService.generatePdf(templateName, bookingId, licence, req.user.token);
 
-        audit.record('CREATE_PDF', req.user.staffId, {templateName, nomisId});
+        audit.record('CREATE_PDF', req.user.staffId, {templateName, bookingId});
 
         res.type('application/pdf');
         return res.end(pdf, 'binary');

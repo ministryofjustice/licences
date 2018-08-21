@@ -45,8 +45,8 @@ function getROCaseList(nomisClient, licenceClient, username) {
         const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName);
 
         if (!isEmpty(requiredPrisoners)) {
-            const requiredIDs = requiredPrisoners.map(prisoner => prisoner.offenderNo);
-            const offenders = await nomisClient.getOffenderSentences(requiredIDs);
+            const requiredIDs = requiredPrisoners.map(prisoner => prisoner.bookingId);
+            const offenders = await nomisClient.getOffenderSentencesByBookingId(requiredIDs);
             return offenders
                 .filter(prisoner => getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']));
         }

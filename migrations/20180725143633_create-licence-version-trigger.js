@@ -4,10 +4,10 @@ const versionFunction = `
     $func$
         BEGIN
             update licences set version = version + 1
-            where nomis_id = NEW.nomis_id and version in (
+            where booking_id = NEW.booking_id and version in (
                 select max(version)
                 from licence_versions
-                where nomis_id = NEW.nomis_id
+                where booking_id = NEW.booking_id
             );
         return new;
         END

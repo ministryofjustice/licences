@@ -19,10 +19,10 @@ div.taskListItem
             -var roleCanModify = (user.role === 'RO' || user.role === 'CA')
 
             if postApproval && roleCanModify
-                a.taskListAction.center.button.button-secondary(href="/hdc/risk/riskManagement/" + prisonerInfo.offenderNo) View/Edit
+                a.taskListAction.center.button.button-secondary(href="/hdc/risk/riskManagement/" + prisonerInfo.bookingId) View/Edit
 
             else if user.role === 'RO'
-                +startContinueView(licenceStatus.tasks.riskManagement, "/hdc/risk/riskManagement/" + prisonerInfo.offenderNo)
+                +startContinueView(licenceStatus.tasks.riskManagement, "/hdc/risk/riskManagement/" + prisonerInfo.bookingId)
 
             else
-                a.taskListAction.center.button.button-secondary(href="/hdc/review/risk/" + prisonerInfo.offenderNo) View
+                a.taskListAction.center.button.button-secondary(href="/hdc/review/risk/" + prisonerInfo.bookingId) View

@@ -2,6 +2,7 @@ extends ../layout
 include ./includes/addressForm
 block content
     -var savedAddress = data || {}
+    -var action = submitPath ? `${submitPath}${bookingId}` : undefined;
 
     div.pure-g.pure-u-1
         include ../includes/back
@@ -9,9 +10,9 @@ block content
 
         h2.heading-large Proposed curfew address
 
-    form(method="post" action=submitPath)
+    form(method="post" action=action)
         input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="nomisId" value=nomisId || '')
+        input(type="hidden" name="bookingId" value=bookingId || '')
         div.paddingBottom.largeMarginBottom
             +addressForm(0)
 

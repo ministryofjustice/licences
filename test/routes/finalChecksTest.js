@@ -30,43 +30,43 @@ describe('/hdc/finalChecks', () => {
         });
     });
 
-    describe('POST /hdc/finalChecks/:section/:nomisId', () => {
+    describe('POST /hdc/finalChecks/:section/:bookingId', () => {
         const routes = [
             {
                 url: '/hdc/finalChecks/seriousOffence/1',
-                body: {nomisId: 1},
+                body: {bookingId: 1},
                 formName: 'seriousOffence',
                 nextPath: '/hdc/finalChecks/onRemand/1'
             },
             {
                 url: '/hdc/finalChecks/onRemand/1',
-                body: {nomisId: 1},
+                body: {bookingId: 1},
                 formName: 'onRemand',
                 nextPath: '/hdc/finalChecks/confiscationOrder/1'
             },
             {
                 url: '/hdc/finalChecks/confiscationOrder/1',
-                body: {nomisId: 1},
+                body: {bookingId: 1},
                 formName: 'confiscationOrder',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/hdc/finalChecks/refuse/1',
-                body: {nomisId: 1, decision: 'Yes'},
+                body: {bookingId: 1, decision: 'Yes'},
                 fieldMap: formConfig.refuse,
                 formName: 'refusal',
                 nextPath: '/hdc/finalChecks/refusal/1'
             },
             {
                 url: '/hdc/finalChecks/refuse/1',
-                body: {nomisId: 1, decision: 'No'},
+                body: {bookingId: 1, decision: 'No'},
                 fieldMap: formConfig.refuse,
                 formName: 'refusal',
                 nextPath: '/hdc/taskList/1'
             },
             {
                 url: '/hdc/finalChecks/refusal/1',
-                body: {nomisId: 1, reason: 'something', outOfTimeReasons: []},
+                body: {bookingId: 1, reason: 'something', outOfTimeReasons: []},
                 fieldMap: formConfig.refusal,
                 formName: 'refusal',
                 nextPath: '/hdc/taskList/1'
@@ -85,7 +85,7 @@ describe('/hdc/finalChecks', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            nomisId: '1',
+                            bookingId: '1',
                             config: route.fieldMap || formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: route.sectionName || 'finalChecks',

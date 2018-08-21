@@ -67,7 +67,7 @@ const OFF_BOOKING = {
 };
 
 const OFF_NOMS = {
-    paths: [['nomisId']],
+    paths: [['prisonerInfo', 'offenderNo']],
     displayName: 'Noms ID',
     group: 'sentence',
     required: 'mandatory'

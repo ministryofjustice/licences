@@ -208,8 +208,11 @@ describe('pdfService', () => {
 
             expect(pdfFormatter.formatPdfData).to.be.calledOnce();
             expect(pdfFormatter.formatPdfData).to.be.calledWith(
-                templateName, '123',
-                {licence, prisonerInfo: prisonerResponse, establishment: establishmentResponse}, imageResponse);
+                templateName, {
+                    licence,
+                    prisonerInfo: prisonerResponse,
+                    establishment: establishmentResponse
+                }, imageResponse);
         });
 
         it('should throw if error in other service', () => {

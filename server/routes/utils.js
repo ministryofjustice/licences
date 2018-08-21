@@ -26,23 +26,23 @@ module.exports = function({logger, licenceService}) {
 
     }));
 
-    router.post('/create/:nomisId', asyncMiddleware(async (req, res, next) => {
+    router.post('/create/:bookingId', asyncMiddleware(async (req, res, next) => {
         logger.info('Creating test licence record');
 
-        const {nomisId} = req.params;
+        const {bookingId} = req.params;
         const {licence, stage} = req.body;
 
-        logger.info('nomisId: ', nomisId);
+        logger.info('bookingId: ', bookingId);
         logger.info('stage: ', stage);
         logger.info('licence: ', licence);
 
-        if (!nomisId || !licence || !stage) {
+        if (!bookingId || !licence || !stage) {
             logger.warn('Missing input for create test licence');
             return res.status(404).send({});
         }
 
         try {
-            await licenceClient.createLicence(nomisId, licence, stage);
+            await licenceClient.createLicence(bookingId, licence, stage);
             logger.info('Created licence');
             return res.status(201).send({});
         } catch (error) {

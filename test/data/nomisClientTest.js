@@ -16,40 +16,6 @@ describe('nomisClient', function() {
         nock.cleanAll();
     });
 
-    describe('getUpcomingReleasesByOffenders', () => {
-
-        it('should return data from api', () => {
-            fakeNomis
-                .get(`/offender-releases?offenderNo=a`)
-                .reply(200, {key: 'value'});
-
-            return expect(nomisClient.getUpcomingReleasesByOffenders('a')).to.eventually.eql({key: 'value'});
-        });
-
-        it('should set the page-count header to match the number of offenders', () => {
-            fakeNomis
-                .get(`/offender-releases?offenderNo=a&offenderNo=b&offenderNo=c`)
-                .reply(function(uri, requestBody) {
-                    // The documented way to specify request headers doesn't work so this is a workaround
-                    if (this.req.headers['page-limit'] === 3) { // eslint-disable-line
-                        return 200, {key: 'value'};
-                    }
-                    return null;
-                });
-
-            return expect(nomisClient.getUpcomingReleasesByOffenders(['a', 'b', 'c']))
-                .to.eventually.eql({key: 'value'});
-        });
-
-        it('should reject if api fails', () => {
-            fakeNomis
-                .get(`/offender-releases?offenderNo=a`)
-                .reply(500);
-
-            return expect(nomisClient.getUpcomingReleasesByOffenders('a')).to.be.rejected();
-        });
-    });
-
     describe('getBooking', () => {
 
         it('should return data from api', () => {
@@ -406,25 +372,6 @@ describe('nomisClient', function() {
                 .reply(500);
 
             return expect(nomisClient.getEstablishment('1')).to.be.rejected();
-        });
-    });
-
-    describe('getPrisoners', () => {
-
-        it('should return data from api', () => {
-            fakeNomis
-                .get(`/prisoners?lastName=LAST`)
-                .reply(200, {key: 'value'});
-
-            return expect(nomisClient.getPrisoners('lastName=LAST')).to.eventually.eql({key: 'value'});
-        });
-
-        it('should reject if api fails', () => {
-            fakeNomis
-                .get(`/prisoners?lastName=bill`)
-                .reply(500);
-
-            return expect(nomisClient.getPrisoners('lastName=LAST')).to.be.rejected();
         });
     });
 

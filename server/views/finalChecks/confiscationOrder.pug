@@ -21,7 +21,7 @@ block content
         p.block.error-message #{errorObject.decision}
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="nomisId" value=nomisId || '')
+        input(type="hidden" name="bookingId" value=bookingId || '')
         div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
 
             div.pure-u-md-1-2.largeMarginBottom
@@ -55,4 +55,4 @@ block content
             div.paddingBottom.smallPaddingTop
                 div.pure-u-1.inlineButtons
                     input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
-                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + nomisId role="button") Return to tasklist
+                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + bookingId role="button") Return to tasklist

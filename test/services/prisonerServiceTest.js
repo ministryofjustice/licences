@@ -28,7 +28,7 @@ describe('prisonerDetailsService', () => {
 
     beforeEach(() => {
         nomisClientMock = {
-            getOffenderSentences: sinon.stub().resolves(hdcPrisonersResponse),
+            getOffenderSentencesByBookingId: sinon.stub().resolves(hdcPrisonersResponse),
             getIdentifiers: sinon.stub().resolves(identifiersResponse),
             getAliases: sinon.stub().resolves(aliasesResponse),
             getMainOffence: sinon.stub().resolves(mainOffenceResponse),
@@ -42,17 +42,17 @@ describe('prisonerDetailsService', () => {
     });
 
     describe('getPrisonerDetails', () => {
-        it('should call the api with the nomis id then booking id', async () => {
-            await service.getPrisonerDetails('123', 'username');
+        it('should call the api with the booking id', async () => {
+            await service.getPrisonerDetails(1, 'username');
 
-            expect(nomisClientMock.getOffenderSentences).to.be.calledOnce();
+            expect(nomisClientMock.getOffenderSentencesByBookingId).to.be.calledOnce();
             expect(nomisClientMock.getAliases).to.be.calledOnce();
             expect(nomisClientMock.getMainOffence).to.be.calledOnce();
             expect(nomisClientMock.getComRelation).to.be.calledOnce();
             expect(nomisClientMock.getImageInfo).to.be.calledOnce();
             expect(nomisClientMock.getIdentifiers).to.be.calledOnce();
 
-            expect(nomisClientMock.getOffenderSentences).to.be.calledWith('123');
+            expect(nomisClientMock.getOffenderSentencesByBookingId).to.be.calledWith(1);
             expect(nomisClientMock.getAliases).to.be.calledWith(1);
             expect(nomisClientMock.getMainOffence).to.be.calledWith(1);
             expect(nomisClientMock.getComRelation).to.be.calledWith(1);
@@ -79,7 +79,7 @@ describe('prisonerDetailsService', () => {
         });
 
         it('should throw if error in api', () => {
-            nomisClientMock.getOffenderSentences.rejects(new Error('dead'));
+            nomisClientMock.getOffenderSentencesByBookingId.rejects(new Error('dead'));
 
             return expect(service.getPrisonerDetails('123', 'username')).to.be.rejected();
         });
@@ -87,7 +87,7 @@ describe('prisonerDetailsService', () => {
         it('it should return false for imageId of no image', async () => {
             const prisonerResponse2 = [{bookingId: 1, facialImageId: null}];
 
-            nomisClientMock.getOffenderSentences.resolves(prisonerResponse2);
+            nomisClientMock.getOffenderSentencesByBookingId.resolves(prisonerResponse2);
 
             const result = await service.getPrisonerDetails('123', 'username');
             return expect(result.imageId).to.eql(false);
@@ -120,13 +120,13 @@ describe('prisonerDetailsService', () => {
     describe('getEstablishmentForPrisoner', () => {
         it('should call the api with the nomis id', async () => {
 
-            nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
+            nomisClientMock.getOffenderSentencesByBookingId.resolves(hdcPrisonersResponse);
 
             await service.getEstablishmentForPrisoner('123', 'username');
 
-            expect(nomisClientMock.getOffenderSentences).to.be.calledOnce();
+            expect(nomisClientMock.getOffenderSentencesByBookingId).to.be.calledOnce();
             expect(nomisClientMock.getEstablishment).to.be.calledOnce();
-            expect(nomisClientMock.getOffenderSentences).to.be.calledWith('123');
+            expect(nomisClientMock.getOffenderSentencesByBookingId).to.be.calledWith('123');
             expect(nomisClientMock.getEstablishment).to.be.calledWith('ABC');
         });
 
@@ -136,39 +136,36 @@ describe('prisonerDetailsService', () => {
         });
 
         it('should throw if error in api when getting offender', () => {
-            nomisClientMock.getOffenderSentences.rejects(new Error('dead'));
+            nomisClientMock.getOffenderSentencesByBookingId.rejects(new Error('dead'));
             return expect(service.getEstablishmentForPrisoner('123', 'username')).to.be.rejected();
         });
 
         it('should throw if error in api when getting establishment', () => {
-            nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
+            nomisClientMock.getOffenderSentencesByBookingId.resolves(hdcPrisonersResponse);
             nomisClientMock.getEstablishment.rejects(new Error('dead'));
             return expect(service.getEstablishmentForPrisoner('123', 'username')).to.be.rejected();
         });
 
         it('should NOT throw but return null if 404 in api when getting establishment', () => {
-            nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
+            nomisClientMock.getOffenderSentencesByBookingId.resolves(hdcPrisonersResponse);
             nomisClientMock.getEstablishment.rejects({status: 404});
             return expect(service.getEstablishmentForPrisoner('123', 'username')).to.eventually.eql(null);
         });
 
         it('should throw if error in api when getting establishment if error ststus other than 404', () => {
-            nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
+            nomisClientMock.getOffenderSentencesByBookingId.resolves(hdcPrisonersResponse);
             nomisClientMock.getEstablishment.rejects({status: 401});
             return expect(service.getEstablishmentForPrisoner('123', 'username')).to.be.rejected();
         });
     });
 
-    describe('getComForPrisoner', () => {
+    describe('getCom', () => {
         it('should call the api with the nomis id', async () => {
-            nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
 
-            await service.getComForPrisoner('123', 'username');
+            await service.getCom('123', 'username');
 
-            expect(nomisClientMock.getOffenderSentences).to.be.calledOnce();
             expect(nomisClientMock.getComRelation).to.be.calledOnce();
-            expect(nomisClientMock.getOffenderSentences).to.be.calledWith('123');
-            expect(nomisClientMock.getComRelation).to.be.calledWith(1);
+            expect(nomisClientMock.getComRelation).to.be.calledWith('123');
         });
 
         it('should return the result of the api call', () => {
@@ -177,31 +174,23 @@ describe('prisonerDetailsService', () => {
                 com: 'Comfirst Comlast'
             };
 
-            return expect(service.getComForPrisoner('123', 'username'))
+            return expect(service.getCom('123', 'username'))
                 .to.eventually.eql(expectedComData);
         });
 
-        it('should throw if error in api when getting offender', () => {
-            nomisClientMock.getOffenderSentences.rejects(new Error('dead'));
-            return expect(service.getComForPrisoner('123', 'username')).to.be.rejected();
-        });
-
         it('should throw if error in api when getting establishment', () => {
-            nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
             nomisClientMock.getComRelation.rejects(new Error('dead'));
-            return expect(service.getComForPrisoner('123', 'username')).to.be.rejected();
+            return expect(service.getCom('123', 'username')).to.be.rejected();
         });
 
         it('should NOT throw but return null if 404 in api when getting establishment', () => {
-            nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
             nomisClientMock.getComRelation.rejects({status: 404});
-            return expect(service.getComForPrisoner('123', 'username')).to.eventually.eql(null);
+            return expect(service.getCom('123', 'username')).to.eventually.eql(null);
         });
 
         it('should throw if error in api when getting establishment if error ststus other than 404', () => {
-            nomisClientMock.getOffenderSentences.resolves(hdcPrisonersResponse);
             nomisClientMock.getComRelation.rejects({status: 401});
-            return expect(service.getComForPrisoner('123', 'username')).to.be.rejected();
+            return expect(service.getCom('123', 'username')).to.be.rejected();
         });
     });
 });
