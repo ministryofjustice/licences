@@ -14,7 +14,3 @@ div.largeMarginBottom.borderTop
             if ['STARTED', 'DONE'].includes(licenceStatus.tasks.curfewAddress)
                 a#continueBtn.taskListAction.center.button(href='/hdc/review/curfewAddress/' + prisonerInfo.offenderNo)
                     | Continue
-
-            else if allowedTransition === 'caToDm'
-                a#continueBtn.taskListAction.center.button(href='/hdc/send/refusal/' + prisonerInfo.offenderNo)
-                    | Continue
