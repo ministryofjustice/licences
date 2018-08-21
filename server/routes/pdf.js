@@ -1,5 +1,5 @@
 const express = require('express');
-const {asyncMiddleware, checkLicenceMiddleWare} = require('../utils/middleware');
+const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
 const {templates} = require('./config/pdf');
 const {firstItem, getIn} = require('../utils/functionalHelpers');
 
@@ -8,6 +8,7 @@ module.exports = function(
 
     const router = express.Router();
     router.use(authenticationMiddleware());
+    router.use(authorisationMiddleware);
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
