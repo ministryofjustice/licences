@@ -33,6 +33,7 @@ module.exports = function(
 
     const router = express.Router();
     router.use(authenticationMiddleware());
+    router.use(checkLicenceMiddleWare(licenceService, prisonerService));
     router.use(authorisationMiddleware);
 
     router.use(function(req, res, next) {
@@ -42,11 +43,9 @@ module.exports = function(
         next();
     });
 
-    const checkLicence = checkLicenceMiddleWare(licenceService, prisonerService);
-
     // bespoke routes
 
-    router.get('/licenceConditions/standard/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/licenceConditions/standard/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /standard/:nomisId');
 
         const nomisId = req.params.nomisId;
@@ -57,7 +56,7 @@ module.exports = function(
         res.render('licenceConditions/standard', {nomisId, conditions, data, licenceStatus});
     }));
 
-    router.get('/licenceConditions/additionalConditions/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/licenceConditions/additionalConditions/:nomisId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /additionalConditions');
 
         const nomisId = req.params.nomisId;
@@ -98,7 +97,7 @@ module.exports = function(
         return conditionsService.formatConditionInputs(input);
     }
 
-    router.get('/licenceConditions/conditionsSummary/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/licenceConditions/conditionsSummary/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         logger.debug('GET licenceConditions/conditionsSummary/:nomisId');
 
@@ -127,7 +126,7 @@ module.exports = function(
         })
     );
 
-    router.get('/review/:sectionName/:nomisId', checkLicence, asyncMiddleware(async (req, res) => {
+    router.get('/review/:sectionName/:nomisId', asyncMiddleware(async (req, res) => {
         const {sectionName, nomisId} = req.params;
         logger.debug(`GET /review/${sectionName}/${nomisId}`);
 
@@ -170,8 +169,8 @@ module.exports = function(
         };
     }
 
-    router.get('/approval/release/:nomisId', checkLicence, asyncMiddleware(approvalGets('release')));
-    router.get('/approval/crdRefuse/:nomisId', checkLicence, asyncMiddleware(approvalGets('crdRefuse')));
+    router.get('/approval/release/:nomisId', asyncMiddleware(approvalGets('release')));
+    router.get('/approval/crdRefuse/:nomisId', asyncMiddleware(approvalGets('crdRefuse')));
 
     function approvalGets(formName) {
         return async (req, res) => {
@@ -191,8 +190,8 @@ module.exports = function(
         };
     }
 
-    router.get('/curfew/curfewAddressReview/:nomisId', checkLicence, addressReviewGets('curfewAddressReview'));
-    router.get('/curfew/addressSafety/:nomisId', checkLicence, addressReviewGets('addressSafety'));
+    router.get('/curfew/curfewAddressReview/:nomisId', addressReviewGets('curfewAddressReview'));
+    router.get('/curfew/addressSafety/:nomisId', addressReviewGets('addressSafety'));
 
     function addressReviewGets(formName) {
         return (req, res) => {
@@ -238,7 +237,7 @@ module.exports = function(
         };
     }
 
-    router.get('/proposedAddress/curfewAddress/:nomisId', checkLicence, (req, res) => {
+    router.get('/proposedAddress/curfewAddress/:nomisId', (req, res) => {
         const {nomisId} = req.params;
         const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
 
@@ -312,14 +311,14 @@ module.exports = function(
         res.redirect(`${nextPath}${nomisId}`);
     }));
 
-    router.get('/:sectionName/:formName/:path/:nomisId', checkLicence, (req, res) => {
+    router.get('/:sectionName/:formName/:path/:nomisId', (req, res) => {
         const {sectionName, formName, path, nomisId} = req.params;
         logger.debug(`GET ${sectionName}/${formName}/${path}/${nomisId}`);
 
         return formGet(req, res, sectionName, formName, nomisId);
     });
 
-    router.get('/:sectionName/:formName/:nomisId', checkLicence, (req, res) => {
+    router.get('/:sectionName/:formName/:nomisId', (req, res) => {
         const {sectionName, formName, nomisId} = req.params;
         logger.debug(`GET ${sectionName}/${formName}/${nomisId}`);
 

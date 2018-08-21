@@ -1,6 +1,7 @@
 const logger = require('../../log.js');
 const authorisationConfig = require('../routes/config/authorisation');
 const {getWhereKeyLike, isEmpty} = require('../utils/functionalHelpers');
+const {unauthorisedError} = require('../utils/errors');
 
 module.exports = {
     asyncMiddleware,
@@ -45,13 +46,18 @@ function checkLicenceMiddleWare(licenceService, prisonerService) {
 
 function authorisationMiddleware(req, res, next) {
     const config = getWhereKeyLike(req.originalUrl, authorisationConfig);
+    if (isEmpty(config)) {
+        return next();
+    }
 
-    const unauthorised = !isEmpty(config) && !config.authorisedRoles.includes(req.user.role);
+    const authorisedRole = config.authorised.find(authorisedRole => req.user.role === authorisedRole.role);
+    if (!authorisedRole) {
+        return next(unauthorisedError());
+    }
 
-    if (unauthorised) {
-        const error = new Error('Unauthorised access');
-        error.status = 403;
-        next(error);
+    const authorisedForStage = isEmpty(authorisedRole.stage) || authorisedRole.stage.includes(res.locals.licence.stage);
+    if (!authorisedForStage) {
+        return next(unauthorisedError());
     }
 
     next();
