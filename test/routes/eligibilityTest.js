@@ -7,23 +7,16 @@ const {
     testFormPageGets
 } = require('../supertestSetup');
 
-const {roles} = require('../../server/models/roles');
-
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    roleCode: roles.CA
-};
 
 describe('/hdc/eligibility', () => {
     describe('eligibility routes', () => {
         const routes = [
-            {url: '/eligibility/excluded/1', content: 'statutorily excluded'},
-            {url: '/eligibility/suitability/1', content: 'presumed unsuitable'},
-            {url: '/eligibility/crdTime/1', content: '4 weeks to the conditional release date?'}
+            {url: '/hdc/eligibility/excluded/1', content: 'statutorily excluded'},
+            {url: '/hdc/eligibility/suitability/1', content: 'presumed unsuitable'},
+            {url: '/hdc/eligibility/crdTime/1', content: '4 weeks to the conditional release date?'}
         ];
         const licenceService = createLicenceServiceStub();
-        const app = createApp({licenceService}, testUser);
+        const app = createApp({licenceService}, 'caUser');
 
         testFormPageGets(app, routes, licenceService);
     });
@@ -31,10 +24,10 @@ describe('/hdc/eligibility', () => {
     describe('GET /eligibility/excluded/:nomisId', () => {
         it('does not pre-populates input if it does not exist on licence', () => {
             const licenceService = createLicenceServiceStub();
-            const app = createApp({licenceService}, testUser);
+            const app = createApp({licenceService});
 
             return request(app)
-                .get('/eligibility/excluded/1')
+                .get('/hdc/eligibility/excluded/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -56,10 +49,10 @@ describe('/hdc/eligibility', () => {
                     }
                 }
             });
-            const app = createApp({licenceService}, testUser);
+            const app = createApp({licenceService});
 
             return request(app)
-                .get('/eligibility/excluded/1')
+                .get('/hdc/eligibility/excluded/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -72,59 +65,67 @@ describe('/hdc/eligibility', () => {
     describe('POST /hdc/eligibility/:form/:nomisId', () => {
         const routes = [
             {
-                url: '/eligibility/excluded/1',
+                url: '/hdc/eligibility/excluded/1',
                 body: {decision: 'No'},
                 section: 'excluded',
-                nextPath: '/hdc/eligibility/suitability/1'
+                nextPath: '/hdc/eligibility/suitability/1',
+                user: 'caUser'
             },
             {
-                url: '/eligibility/excluded/1',
+                url: '/hdc/eligibility/excluded/1',
                 body: {decision: 'Yes'},
                 section: 'excluded',
-                nextPath: '/hdc/taskList/1'
+                nextPath: '/hdc/taskList/1',
+                user: 'caUser'
             },
             {
-                url: '/eligibility/suitability/1',
+                url: '/hdc/eligibility/suitability/1',
                 body: {decision: 'No'},
                 section: 'suitability',
-                nextPath: '/hdc/eligibility/crdTime/1'
+                nextPath: '/hdc/eligibility/crdTime/1',
+                user: 'caUser'
             },
             {
-                url: '/eligibility/suitability/1',
+                url: '/hdc/eligibility/suitability/1',
                 body: {decision: 'Yes'},
                 section: 'suitability',
-                nextPath: '/hdc/eligibility/exceptionalCircumstances/1'
+                nextPath: '/hdc/eligibility/exceptionalCircumstances/1',
+                user: 'caUser'
             },
             {
-                url: '/eligibility/exceptionalCircumstances/1',
+                url: '/hdc/eligibility/exceptionalCircumstances/1',
                 body: {decision: 'Yes'},
                 section: 'exceptionalCircumstances',
-                nextPath: '/hdc/eligibility/crdTime/1'
+                nextPath: '/hdc/eligibility/crdTime/1',
+                user: 'caUser'
             },
             {
-                url: '/eligibility/exceptionalCircumstances/1',
+                url: '/hdc/eligibility/exceptionalCircumstances/1',
                 body: {decision: 'No'},
                 section: 'exceptionalCircumstances',
-                nextPath: '/hdc/taskList/1'
+                nextPath: '/hdc/taskList/1',
+                user: 'caUser'
             },
             {
-                url: '/eligibility/crdTime/1',
+                url: '/hdc/eligibility/crdTime/1',
                 body: {decision: 'Yes'},
                 section: 'crdTime',
-                nextPath: '/hdc/taskList/1'
+                nextPath: '/hdc/taskList/1',
+                user: 'caUser'
             },
             {
-                url: '/eligibility/crdTime/1',
+                url: '/hdc/eligibility/crdTime/1',
                 body: {decision: 'No'},
                 section: 'crdTime',
-                nextPath: '/hdc/taskList/1'
+                nextPath: '/hdc/taskList/1',
+                user: 'caUser'
             }
         ];
 
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService}, testUser);
+                const app = createApp({licenceService}, route.user);
 
                 return request(app)
                     .post(route.url)
@@ -142,6 +143,26 @@ describe('/hdc/eligibility', () => {
                         });
                     });
             });
+
+            it('throws an error if logged in as dm', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, 'dmUser');
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(403);
+            });
+
+            it('throws an error if logged in as ro', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, 'roUser');
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(403);
+            });
         });
 
         it('should redirect back to excluded page if there is an error in the submission', () => {
@@ -153,10 +174,10 @@ describe('/hdc/eligibility', () => {
                     }
                 }
             });
-            const app = createApp({licenceService}, testUser);
+            const app = createApp({licenceService});
 
             return request(app)
-                .post('/eligibility/excluded/1')
+                .post('/hdc/eligibility/excluded/1')
                 .send({})
                 .expect(302)
                 .expect('Location', '/hdc/eligibility/excluded/1');
@@ -172,10 +193,10 @@ describe('/hdc/eligibility', () => {
                     }
                 }
             });
-            const app = createApp({licenceService}, testUser);
+            const app = createApp({licenceService});
 
             return request(app)
-                .post('/eligibility/excluded/1')
+                .post('/hdc/eligibility/excluded/1')
                 .send({decision: 'No'})
                 .expect(302)
                 .expect('Location', '/hdc/eligibility/suitability/1');
@@ -191,10 +212,10 @@ describe('/hdc/eligibility', () => {
                     }
                 }
             });
-            const app = createApp({licenceService}, testUser);
+            const app = createApp({licenceService});
 
             return request(app)
-                .post('/eligibility/suitability/1')
+                .post('/hdc/eligibility/suitability/1')
                 .send({})
                 .expect(302)
                 .expect('Location', '/hdc/eligibility/suitability/1');
@@ -210,10 +231,10 @@ describe('/hdc/eligibility', () => {
                     }
                 }
             });
-            const app = createApp({licenceService}, testUser);
+            const app = createApp({licenceService});
 
             return request(app)
-                .post('/eligibility/crdTime/1')
+                .post('/hdc/eligibility/crdTime/1')
                 .send({})
                 .expect(302)
                 .expect('Location', '/hdc/eligibility/crdTime/1');

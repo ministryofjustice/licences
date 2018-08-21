@@ -6,14 +6,6 @@ const {
     createApp
 } = require('../supertestSetup');
 
-const {roles} = require('../../server/models/roles');
-
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    roleCode: roles.CA
-};
-
 describe('/review/', () => {
     const prisonerService = createPrisonerServiceStub();
     prisonerService.getPrisonerDetails = sinon.stub().resolves({});
@@ -38,10 +30,10 @@ describe('/review/', () => {
 
         it('shows a link to the send page if there are no errors', () => {
             licenceService.getValidationErrorsForReview = sinon.stub().returns({});
-            const app = createApp({licenceService, prisonerService}, testUser);
+            const app = createApp({licenceService, prisonerService});
 
             return request(app)
-                .get('/review/curfewAddress/1')
+                .get('/hdc/review/curfewAddress/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -52,10 +44,10 @@ describe('/review/', () => {
 
         it('shows a link to the address page if there are errors', () => {
             licenceService.getValidationErrorsForReview = sinon.stub().returns({a: 'b'});
-            const app = createApp({licenceService, prisonerService}, testUser);
+            const app = createApp({licenceService, prisonerService});
 
             return request(app)
-                .get('/review/curfewAddress/1')
+                .get('/hdc/review/curfewAddress/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -67,12 +59,6 @@ describe('/review/', () => {
     });
 
     describe('/licenceDetails/', () => {
-        const roUser = {
-            staffId: 'my-staff-id',
-            token: 'my-token',
-            roleCode: roles.RO
-        };
-
         let licenceService;
         const licence = {
             licence: {
@@ -99,10 +85,10 @@ describe('/review/', () => {
                 },
                 stage: 'PROCESSING_RO'
             });
-            const app = createApp({licenceService, prisonerService}, roUser);
+            const app = createApp({licenceService, prisonerService}, 'roUser');
 
             return request(app)
-                .get('/review/licenceDetails/1')
+                .get('/hdc/review/licenceDetails/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -123,10 +109,10 @@ describe('/review/', () => {
                 },
                 stage: 'PROCESSING_RO'
             });
-            const app = createApp({licenceService, prisonerService}, roUser);
+            const app = createApp({licenceService, prisonerService}, 'roUser');
 
             return request(app)
-                .get('/review/licenceDetails/1')
+                .get('/hdc/review/licenceDetails/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -147,10 +133,10 @@ describe('/review/', () => {
                 },
                 stage: 'PROCESSING_RO'
             });
-            const app = createApp({licenceService, prisonerService}, roUser);
+            const app = createApp({licenceService, prisonerService}, 'roUser');
 
             return request(app)
-                .get('/review/licenceDetails/1')
+                .get('/hdc/review/licenceDetails/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -177,10 +163,10 @@ describe('/review/', () => {
                 },
                 stage: 'PROCESSING_CA'
             });
-            const app = createApp({licenceService, prisonerService}, testUser);
+            const app = createApp({licenceService, prisonerService});
 
             return request(app)
-                .get('/review/address/1')
+                .get('/hdc/review/address/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -199,10 +185,10 @@ describe('/review/', () => {
                 },
                 stage: 'ELIGIBILITY'
             });
-            const app = createApp({licenceService, prisonerService}, testUser);
+            const app = createApp({licenceService, prisonerService});
 
             return request(app)
-                .get('/review/address/1')
+                .get('/hdc/review/address/1')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {

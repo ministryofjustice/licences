@@ -7,12 +7,6 @@ const {
     testFormPageGets
 } = require('../supertestSetup');
 
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    roleCode: 'CA'
-};
-
 describe('/hdc/curfew', () => {
     describe('curfew routes', () => {
         const licenceService = createLicenceServiceStub();
@@ -25,14 +19,14 @@ describe('/hdc/curfew', () => {
                }
             }
         });
-        const app = createApp({licenceService}, testUser);
+        const app = createApp({licenceService});
 
         const routes = [
-            {url: '/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
-            {url: '/curfew/addressSafety/1', content: 'Could this offender be managed safely at this address?'},
-            {url: '/curfew/curfewHours/1', content: 'Curfew hours'},
-            {url: '/curfew/addressWithdrawn/1', content: 'Prisoner has withdrawn the address'},
-            {url: '/curfew/consentWithdrawn/1', content: 'The landlord/homeowner has withdrawn consent'}
+            {url: '/hdc/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
+            {url: '/hdc/curfew/addressSafety/1', content: 'Could this offender be managed safely at this address?'},
+            {url: '/hdc/curfew/curfewHours/1', content: 'Curfew hours'},
+            {url: '/hdc/curfew/addressWithdrawn/1', content: 'Prisoner has withdrawn the address'},
+            {url: '/hdc/curfew/consentWithdrawn/1', content: 'The landlord/homeowner has withdrawn consent'}
         ];
 
         testFormPageGets(app, routes, licenceService);
@@ -41,31 +35,31 @@ describe('/hdc/curfew', () => {
     describe('POST /hdc/curfew/:form/:nomisId', () => {
         const routes = [
             {
-                url: '/curfew/curfewHours/1',
+                url: '/hdc/curfew/curfewHours/1',
                 body: {nomisId: 1},
                 section: 'curfewHours',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/addressWithdrawn/1',
+                url: '/hdc/curfew/addressWithdrawn/1',
                 body: {decision: 'Yes'},
                 section: 'addressWithdrawn',
                 nextPath: '/hdc/proposedAddress/curfewAddress/1'
             },
             {
-                url: '/curfew/addressWithdrawn/1',
+                url: '/hdc/curfew/addressWithdrawn/1',
                 body: {decision: 'No'},
                 section: 'addressWithdrawn',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/consentWithdrawn/1',
+                url: '/hdc/curfew/consentWithdrawn/1',
                 body: {decision: 'Yes'},
                 section: 'consentWithdrawn',
                 nextPath: '/hdc/proposedAddress/curfewAddress/1'
             },
             {
-                url: '/curfew/consentWithdrawn/1',
+                url: '/hdc/curfew/consentWithdrawn/1',
                 body: {decision: 'No'},
                 section: 'consentWithdrawn',
                 nextPath: '/hdc/taskList/1'
@@ -75,7 +69,7 @@ describe('/hdc/curfew', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService}, testUser);
+                const app = createApp({licenceService});
                 return request(app)
                     .post(route.url)
                     .send(route.body)
@@ -96,7 +90,7 @@ describe('/hdc/curfew', () => {
         });
     });
 
-    describe('/curfew/curfewAddressReview/1', () => {
+    describe('/hdc/curfew/curfewAddressReview/1', () => {
         const licence = {
             licence: {
                 proposedAddress: {
@@ -109,43 +103,43 @@ describe('/hdc/curfew', () => {
 
         const routes = [
             {
-                url: '/curfew/curfewAddressReview/1',
+                url: '/hdc/curfew/curfewAddressReview/1',
                 body: {nomisId: 1, consent: 'No'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/curfewAddressReview/1',
+                url: '/hdc/curfew/curfewAddressReview/1',
                 body: {nomisId: 1, consent: 'Yes', electricity: 'No'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/curfewAddressReview/1',
+                url: '/hdc/curfew/curfewAddressReview/1',
                 body: {nomisId: 1, consent: 'Yes'},
                 section: 'curfewAddressReview',
                 nextPath: '/hdc/curfew/addressSafety/1'
             },
             {
-                url: '/curfew/addressSafety/1',
+                url: '/hdc/curfew/addressSafety/1',
                 body: {nomisId: 1, deemedSafe: 'No'},
                 section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/addressSafety/1',
+                url: '/hdc/curfew/addressSafety/1',
                 body: {nomisId: 1, deemedSafe: 'Yes'},
                 section: 'addressSafety',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/withdrawAddress/1',
+                url: '/hdc/curfew/withdrawAddress/1',
                 body: {withdrawAddress: 'Yes'},
                 section: 'withdrawAddress',
                 nextPath: '/hdc/taskList/1'
             },
             {
-                url: '/curfew/reinstateAddress/1',
+                url: '/hdc/curfew/reinstateAddress/1',
                 body: {withdrawAddress: 'No', withdrawConsent: 'No'},
                 section: 'reinstateAddress',
                 nextPath: '/hdc/taskList/1'

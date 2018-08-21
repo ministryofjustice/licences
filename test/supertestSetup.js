@@ -5,7 +5,6 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const createLicenceConditionsRoute = require('../server/routes/hdc');
 const auth = require('./mockAuthentication');
-
 const cookieSession = require('cookie-session');
 const flash = require('connect-flash');
 
@@ -33,14 +32,6 @@ const formConfig = {
 };
 
 const authenticationMiddleware = auth.authenticationMiddleware;
-
-const testUser = {
-    firstName: 'first',
-    lastName: 'last',
-    staffId: 'id',
-    token: 'token',
-    role: roles.CA
-};
 
 const loggerStub = {
     debug: sinon.stub(),
@@ -146,6 +137,30 @@ function testFormPageGets(app, routes, licenceServiceStub) {
     });
 };
 
+const users = {
+    caUser: {
+        firstName: 'first',
+        lastName: 'last',
+        staffId: 'id',
+        token: 'token',
+        role: roles.CA
+    },
+    roUser: {
+        firstName: 'first',
+        lastName: 'last',
+        staffId: 'id',
+        token: 'token',
+        role: roles.RO
+    },
+    dmUser: {
+        firstName: 'first',
+        lastName: 'last',
+        staffId: 'id',
+        token: 'token',
+        role: roles.DM
+    }
+};
+
 const setup = {
     loggerStub,
     auditStub,
@@ -160,20 +175,22 @@ const setup = {
     formConfig,
     authenticationMiddleware,
     testFormPageGets,
-    createApp(opts, user = testUser) {
+    createApp(opts, user = 'caUser') {
+
         const hdcRoute = createHdcRoute({...opts});
 
-        return setup.appSetup(hdcRoute, user);
+        return setup.appSetup(hdcRoute, user, '/hdc/');
     },
-    appSetup(route, user = testUser, prefix = '') {
+    appSetup(route, user = 'caUser', prefix = '') {
         const app = express();
 
         app.set('views', path.join(__dirname, '../server/views'));
         app.set('view engine', 'pug');
 
+        const userObj = users[user];
         app.use((req, res, next) => {
-            req.user = user;
-            res.locals.user = user;
+            req.user = userObj;
+            res.locals.user = userObj;
             next();
         });
         app.use(cookieSession({keys: ['']}));

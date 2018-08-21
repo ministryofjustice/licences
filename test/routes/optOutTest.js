@@ -18,7 +18,7 @@ describe('/hdc/optOut', () => {
                 };
 
                 return request(app)
-                    .post('/optOut/1')
+                    .post('/hdc/optOut/1')
                     .send(formResponse)
                     .expect(302)
                     .expect(res => {

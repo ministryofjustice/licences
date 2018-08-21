@@ -7,19 +7,13 @@ const {
     testFormPageGets
 } = require('../supertestSetup');
 
-const testUser = {
-    staffId: 'my-staff-id',
-    token: 'my-token',
-    roleCode: 'CA'
-};
-
 describe('/hdc/risk', () => {
     describe('risk routes', () => {
         const routes = [
-            {url: '/risk/riskManagement/1', content: 'Risk management and victim liaison'}
+            {url: '/hdc/risk/riskManagement/1', content: 'Risk management and victim liaison'}
         ];
         const licenceService = createLicenceServiceStub();
-        const app = createApp({licenceService}, testUser);
+        const app = createApp({licenceService});
 
         testFormPageGets(app, routes, licenceService);
     });
@@ -29,7 +23,7 @@ describe('/hdc/risk', () => {
         context('When page contains form fields', () => {
             it('calls updateLicence from licenceService', () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService}, testUser);
+                const app = createApp({licenceService});
 
                 const formResponse = {
                     nomisId: '1',
@@ -38,7 +32,7 @@ describe('/hdc/risk', () => {
                 };
 
                 return request(app)
-                    .post('/risk/riskManagement/1')
+                    .post('/hdc/risk/riskManagement/1')
                     .send(formResponse)
                     .expect(302)
                     .expect(res => {
