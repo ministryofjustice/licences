@@ -1,16 +1,10 @@
 div.largeMarginBottom.borderTop
 
-    - var addressReviewNeeded = allowedTransition === 'caToRo'
-    - var approvalNeeded = allowedTransition === 'caToDm'
-
-    if addressReviewNeeded
-        h2.heading-medium Submit to responsible officer
-    else
-        h2.heading-medium Submit to decision maker
+    h2.heading-medium Submit to decision maker
 
     div.pure-g
         div.pure-u-3-4
-            if approvalNeeded || addressReviewNeeded
+            if allowedTransition === 'caToDm'
                 | Ready to submit
             else if licenceStatus.decisions.postponed
                 | Submission unavailable - HDC application postponed
@@ -19,10 +13,7 @@ div.largeMarginBottom.borderTop
             else
                 | Submission unavailable - Tasks not yet complete
 
-        div.pure-u-1-4.center
-            if addressReviewNeeded
-                a#continueBtn.taskListAction.center.button(href='/hdc/send/addressReview/' + prisonerInfo.offenderNo)
-                    | Continue
-            if approvalNeeded
+        if allowedTransition === 'caToDm'
+            div.pure-u-1-4.center
                 a#continueBtn.taskListAction.center.button(href='/hdc/send/approval/' + prisonerInfo.offenderNo)
                     | Continue

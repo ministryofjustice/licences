@@ -63,6 +63,8 @@ block content
                     include HDCRefusalTask
                     if allowedTransition === 'caToDmRefusal'
                         include caSubmitRefusalTask
+                    else if allowedTransition === 'caToRo'
+                        include caSubmitAddressReviewTask
                     else
                         include caSubmitApprovalTask
 
