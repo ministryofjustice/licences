@@ -95,6 +95,16 @@ describe('/hdc/finalChecks', () => {
                         expect(res.header.location).to.equal(route.nextPath);
                     });
             });
+
+            it('throws an error if logged in as ro', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceService}, 'roUser');
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(403);
+            });
         });
 
         context('when there are errors', () => {

@@ -20,9 +20,33 @@ module.exports = {
         authorisedRoles: ['CA']
     },
 
+    // processing ro
+    '/hdc/curfew/': {
+        authorisedRoles: ['RO', 'CA']
+    },
+    '/hdc/risk/': {
+        authorisedRoles: ['RO', 'CA']
+    },
+    '/hdc/licenceConditions/': {
+        authorisedRoles: ['RO', 'CA']
+    },
+    '/hdc/reporting/': {
+        authorisedRoles: ['RO', 'CA']
+    },
+
+    // processing ca
+    '/hdc/finalChecks/': {
+        authorisedRoles: ['CA']
+    },
+
     // approval
     '/hdc/approval/': {
         authorisedRoles: ['DM']
+    },
+
+    // post approval
+    '/hdc/pdf/': {
+        authorisedRoles: ['CA']
     },
 
     // send
