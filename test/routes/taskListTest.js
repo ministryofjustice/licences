@@ -24,7 +24,10 @@ const prisonerInfoResponse = {
     physicalAttributes: {gender: 'Male'},
     imageId: 'imgId',
     captureDate: '23/11/1971',
-    sentenceExpiryDate: '03/12/1985'
+    sentenceExpiryDate: '03/12/1985',
+    sentenceDetail: {
+        effectiveAutomaticReleaseDate: '01/01/2001'
+    }
 };
 
 describe('GET /taskList/:prisonNumber', () => {
@@ -47,6 +50,19 @@ describe('GET /taskList/:prisonNumber', () => {
                 .expect(res => {
                     expect(prisonerService.getPrisonerDetails).to.be.calledOnce();
                     expect(prisonerService.getPrisonerDetails).to.be.calledWith('123');
+                });
+
+        });
+
+        it('should should show ARD if no CRD', () => {
+            const app = createApp({licenceService, prisonerService});
+            return request(app)
+                .get('/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.not.include('id="prisonerCrd"');
+                    expect(res.text).to.include('id="prisonerArd"> 01/01/2001');
                 });
 
         });

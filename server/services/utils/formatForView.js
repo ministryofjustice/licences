@@ -9,7 +9,7 @@ function formatObjectForView(object) {
 function formatObjectForViewWithOptions(object, options) {
     return Object.keys(object).reduce((builtObject, itemKey) => {
 
-        if (object[itemKey] instanceof Date || options.dates && options.dates.includes(itemKey)) {
+        if (object[itemKey] instanceof Date || object[itemKey] && options.dates && options.dates.includes(itemKey)) {
             return {...builtObject, [itemKey]: moment(object[itemKey]).format('DD/MM/YYYY')};
         }
 
