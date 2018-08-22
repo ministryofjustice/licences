@@ -324,6 +324,7 @@ const displayNames = {
             OFF_DOB: 'Offender date of birth',
             OFF_NAME: 'Offender name',
             OFF_NOMS: 'Noms ID',
+            OFF_PHOTO: 'Offender photograph',
             SENT_CRD: 'Conditional release date (CRD)',
             SENT_HDCAD: 'HDC approved date (HDCAD)',
             SENT_LED: 'Licence expiry date (LED)',
