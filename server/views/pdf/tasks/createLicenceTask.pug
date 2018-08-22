@@ -27,8 +27,8 @@ div.taskListItem.borderBottomLight.largeMarginBottom
                         |  #{versionInfo.lastTemplateLabel}
                     |, on #{versionInfo.lastVersion.timestamp}
         div.pure-u-1-4.center
-            a#createPdf.taskListAction.center.button(href="/hdc/pdf/create/" + templateName + "/" + bookingId role="button" target="_blank") Continue
-
-
-
+            a#createPdf.taskListAction.center.button(href="/hdc/pdf/create/" + templateName + "/" + bookingId
+            role="button"
+            target="_blank"
+            onClick="setTimeout(function(){javascript:window.location.reload()}, 200)") Continue
 
