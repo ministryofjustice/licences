@@ -14,7 +14,7 @@ function formatPdfData(templateName,
 
     const conditions = getConditionsForConfig(licence, templateName, 'CONDITIONS');
     const pss = getConditionsForConfig(licence, templateName, 'PSS');
-    const photo = image ? image.toString('base64') : placeholder.toString('base64');
+    const photo = image ? image.toString('base64') : null;
     const taggingCompany = {telephone: config.pdf.taggingCompanyTelephone};
 
     const allData = {
