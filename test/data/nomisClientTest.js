@@ -95,12 +95,14 @@ describe('nomisClient', function() {
                 }]);
 
             return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
-                {sentenceDetail: {
-                    conditionalReleaseDate: 'a',
-                    releaseDate: 'a',
-                    effectiveAutomaticReleaseDate: null,
-                    effectiveConditionalReleaseDate: 'a'
-                }}]);
+                {
+                    sentenceDetail: {
+                        conditionalReleaseDate: 'a',
+                        releaseDate: 'a',
+                        effectiveAutomaticReleaseDate: null,
+                        effectiveConditionalReleaseDate: 'a'
+                    }
+                }]);
         });
 
         it('should reject if api fails', () => {
@@ -115,33 +117,41 @@ describe('nomisClient', function() {
             fakeNomis
                 .get(url)
                 .reply(200, [
-                    {sentenceDetail: {
-                        conditionalReleaseOverrideDate: 'a',
-                        conditionalReleaseDate: 'b'
-                    }},
-                    {sentenceDetail: {
-                        conditionalReleaseOverrideDate: 'c',
-                        conditionalReleaseDate: 'd',
-                        automaticReleaseDate: 'y'
-                    }}
+                    {
+                        sentenceDetail: {
+                            conditionalReleaseOverrideDate: 'a',
+                            conditionalReleaseDate: 'b'
+                        }
+                    },
+                    {
+                        sentenceDetail: {
+                            conditionalReleaseOverrideDate: 'c',
+                            conditionalReleaseDate: 'd',
+                            automaticReleaseDate: 'y'
+                        }
+                    }
                 ]);
 
             return expect(nomisClient.getHdcEligiblePrisoners()).to.eventually.eql([
-                {sentenceDetail: {
-                    conditionalReleaseOverrideDate: 'a',
-                    conditionalReleaseDate: 'b',
-                    releaseDate: 'a',
-                    effectiveAutomaticReleaseDate: null,
-                    effectiveConditionalReleaseDate: 'a'
-                }},
-                {sentenceDetail: {
-                    conditionalReleaseOverrideDate: 'c',
-                    conditionalReleaseDate: 'd',
-                    automaticReleaseDate: 'y',
-                    releaseDate: 'c',
-                    effectiveAutomaticReleaseDate: 'y',
-                    effectiveConditionalReleaseDate: 'c'
-                }}
+                {
+                    sentenceDetail: {
+                        conditionalReleaseOverrideDate: 'a',
+                        conditionalReleaseDate: 'b',
+                        releaseDate: 'a',
+                        effectiveAutomaticReleaseDate: null,
+                        effectiveConditionalReleaseDate: 'a'
+                    }
+                },
+                {
+                    sentenceDetail: {
+                        conditionalReleaseOverrideDate: 'c',
+                        conditionalReleaseDate: 'd',
+                        automaticReleaseDate: 'y',
+                        releaseDate: 'c',
+                        effectiveAutomaticReleaseDate: 'y',
+                        effectiveConditionalReleaseDate: 'c'
+                    }
+                }
             ]);
         });
 
@@ -405,6 +415,34 @@ describe('nomisClient', function() {
                 .reply(401, {response: 'this'});
 
             return expect(nomisClient.getEstablishment('1')).to.be.rejected();
+        });
+    });
+
+
+    describe('getOffenderSentencesByBookingId', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .post(`/offender-sentences`, ['1'])
+                .reply(200, [{sentenceDetail: {conditionalReleaseDate: 'a'}}]);
+
+            return expect(nomisClient.getOffenderSentencesByBookingId(['1'])).to.eventually.eql([
+                {
+                    sentenceDetail: {
+                        conditionalReleaseDate: 'a',
+                        releaseDate: 'a',
+                        effectiveAutomaticReleaseDate: null,
+                        effectiveConditionalReleaseDate: 'a'
+                    }
+                }]);
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .post(`/offender-sentences`, ['1'])
+                .reply(500);
+
+            return expect(nomisClient.getOffenderSentencesByBookingId(['1'])).to.be.rejected();
         });
     });
 });

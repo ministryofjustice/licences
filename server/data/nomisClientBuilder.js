@@ -15,6 +15,8 @@ const invalidDate = 'Invalid date';
 module.exports = token => {
 
     const nomisGet = nomisGetBuilder(token);
+    const nomisPost = nomisPostBuilder(token);
+
     const addReleaseDatesToPrisoner = pipe(
         addReleaseDate,
         addEffectiveConditionalReleaseDate,
@@ -73,10 +75,10 @@ module.exports = token => {
 
         getOffenderSentencesByBookingId: async function(bookingIds) {
             const path = `${apiUrl}/offender-sentences`;
-            const query = {bookingId: bookingIds};
             const headers = {'Page-Limit': 10000};
+            const body = bookingIds;
 
-            const prisoners = await nomisGet({path, query, headers});
+            const prisoners = await nomisPost({path, body, headers});
             return prisoners.map(addReleaseDatesToPrisoner);
         },
 
@@ -127,6 +129,35 @@ function nomisGetBuilder(token) {
     };
 }
 
+function nomisPostBuilder(token) {
+
+    return async ({path, body = '', headers = {}, responseType = ''} = {}) => {
+
+        if (!token) {
+            throw new NoTokenError();
+        }
+
+        try {
+            const result = await superagent
+                .post(path)
+                .send(body)
+                .set('Authorization', token)
+                .set('Elite-Authorization', token)
+                .set(headers)
+                .responseType(responseType)
+                .timeout(timeoutSpec);
+
+            return result.body;
+
+        } catch (error) {
+
+            logger.warn('Error calling nomis');
+            logger.warn(error);
+
+            throw error;
+        }
+    };
+}
 
 function findFirstValid(datesList) {
     return datesList.find(date => date && date !== invalidDate) || null;
