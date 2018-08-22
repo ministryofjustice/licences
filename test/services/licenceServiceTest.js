@@ -154,8 +154,10 @@ describe('licenceService', () => {
             });
 
             it('should not change stage if no changes', async () => {
-                licenceClient.getLicence.resolves({stage: 'PROCESSING_RO',
-                    licence: {licenceConditions: {additionalConditions: {additional: {key: 'var'}}}}});
+                licenceClient.getLicence.resolves({
+                    stage: 'PROCESSING_RO',
+                    licence: {licenceConditions: {additionalConditions: {additional: {key: 'var'}}}}
+                });
                 await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
@@ -774,6 +776,62 @@ describe('licenceService', () => {
                                 innerQuestion2: 'Yes'
                             }
                         ],
+                        followUp2: 'Town'
+                    }
+                }
+            };
+            expect(output).to.eql(expectedLicence);
+        });
+
+        it('should not filter out empty list items marked saveEmpty', async () => {
+
+            const licence = {
+                ...baseLicence,
+                section4: {
+                    ...baseLicence.section4
+                }
+
+            };
+
+            const fieldMap = [
+                {decision: {}},
+                {
+                    listItem: {
+                        contains: [
+                            {innerQuestion: {}},
+                            {innerQuestion2: {}}
+                        ],
+                        saveEmpty: true
+                    }
+                },
+                {followUp2: {}}
+            ];
+
+            const userInput = {
+                decision: 'Yes',
+                listItem: {
+                    innerQuestion: '',
+                    innerQuestion2: ''
+                },
+                followUp2: 'Town'
+            };
+
+            const licenceSection = 'section5';
+            const formName = 'form3';
+
+            licenceClient.getLicence.resolves({licence});
+            const output = await service.update(
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+
+            const expectedLicence = {
+                ...licence,
+                section5: {
+                    form3: {
+                        decision: 'Yes',
+                        listItem: {
+                            innerQuestion: '',
+                            innerQuestion2: ''
+                        },
                         followUp2: 'Town'
                     }
                 }
@@ -1662,10 +1720,10 @@ describe('licenceService', () => {
                                 name: 'name',
                                 relationship: ''
                             },
-                            {
-                                name: '',
-                                relationship: 'relationship'
-                            }]
+                                {
+                                    name: '',
+                                    relationship: 'relationship'
+                                }]
                         }
                     }
                 };
@@ -1796,8 +1854,13 @@ describe('licenceService', () => {
 
             const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {
-                consent: 'Say if the homeowner consents to HDC'}}});
+            expect(output).to.eql({
+                proposedAddress: {
+                    curfewAddress: {
+                        consent: 'Say if the homeowner consents to HDC'
+                    }
+                }
+            });
         });
 
         it('should require an answer for electricity if consent is yes', () => {
@@ -1816,8 +1879,13 @@ describe('licenceService', () => {
 
             const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {
-                electricity: 'Say if there is an electricity supply'}}});
+            expect(output).to.eql({
+                proposedAddress: {
+                    curfewAddress: {
+                        electricity: 'Say if there is an electricity supply'
+                    }
+                }
+            });
         });
 
         it('should require an answer for homeVisitConducted if electricity is yes', () => {
@@ -1837,8 +1905,13 @@ describe('licenceService', () => {
 
             const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {
-                homeVisitConducted: 'Say if you did a home visit'}}});
+            expect(output).to.eql({
+                proposedAddress: {
+                    curfewAddress: {
+                        homeVisitConducted: 'Say if you did a home visit'
+                    }
+                }
+            });
         });
 
         it('should not require an answer for homeVisitConducted if consent is no', () => {
@@ -1916,8 +1989,13 @@ describe('licenceService', () => {
 
             const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {
-                unsafeReason: 'Explain why you did not approve the address'}}});
+            expect(output).to.eql({
+                proposedAddress: {
+                    curfewAddress: {
+                        unsafeReason: 'Explain why you did not approve the address'
+                    }
+                }
+            });
         });
 
         it('should require curfew hours', () => {

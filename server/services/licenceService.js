@@ -230,10 +230,11 @@ module.exports = function createLicenceService(licenceClient) {
             }
 
             if (!isEmpty(innerFields)) {
+
                 const innerFieldMap = field[fieldName].contains;
                 const innerAnswers = getFormResponse(innerFieldMap, userInput[fieldName]);
 
-                if (allValuesEmpty(innerAnswers)) {
+                if (!fieldConfig.saveEmpty && allValuesEmpty(innerAnswers)) {
                     return answersAccumulator;
                 }
 
@@ -283,6 +284,7 @@ module.exports = function createLicenceService(licenceClient) {
         return async ({bookingId, rawLicence, fieldMap, userInput, index}) => {
             const {stage, licence} = rawLicence;
             const formResponse = getFormResponse(fieldMap, userInput);
+
             const newAddress = Array.isArray(formResponse.addresses) ? formResponse.addresses[0] : formResponse;
             const updatedLicence = addressesUpdateMethod({bookingId, licence, newAddress, index});
 

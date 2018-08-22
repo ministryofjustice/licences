@@ -55,7 +55,8 @@ module.exports = {
                         contains: [
                             {name: {}},
                             {relationship: {}}
-                        ]
+                        ],
+                        saveEmpty: true
                     }},
                     {residents: {
                         isList: true,
