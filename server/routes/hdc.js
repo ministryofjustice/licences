@@ -216,7 +216,7 @@ module.exports = function(
             const {bookingId} = req.params;
             logger.debug(`POST /curfew/${formName}/${bookingId}`);
 
-            const rawLicence = await licenceService.getLicence(bookingId);
+            const rawLicence = res.locals.licence;
             const addresses = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
             const addressIndex = lastIndex(addresses);
             const modifyingLicence = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(rawLicence.stage);
@@ -253,11 +253,12 @@ module.exports = function(
     router.post('/proposedAddress/curfewAddress/add/:bookingId', asyncMiddleware(async (req, res) => {
         const {bookingId} = req.body;
         const {addressLine1, addressTown, postCode} = req.body.addresses[0];
+
         if (!addressLine1 && !addressTown && !postCode) {
             return res.redirect(`/hdc/proposedAddress/curfewAddress/${bookingId}`);
         }
 
-        const rawLicence = await licenceService.getLicence(bookingId);
+        const rawLicence = res.locals.licence;
         const nextPath = '/hdc/taskList/';
 
         if (formConfig.curfewAddress.fields) {
@@ -276,7 +277,8 @@ module.exports = function(
 
     router.post('/proposedAddress/curfewAddress/update/:bookingId', asyncMiddleware(async (req, res) => {
         const {bookingId} = req.body;
-        const rawLicence = await licenceService.getLicence(bookingId);
+        const rawLicence = await res.locals.licence;
+
         const addressIndex = lastIndex(getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']));
 
         await licenceService.updateAddress({
