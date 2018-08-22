@@ -56,14 +56,18 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
                 span#prisonerOffences.block.bold #{prisonerInfo.offences}
 
     div.pure-u-1.pure-u-md-5-24
-        div.midMarginBottom
-            | Conditional release date
-            if (sentenceDetail.effectiveConditionalReleaseDate)
+        if (sentenceDetail.effectiveConditionalReleaseDate && sentenceDetail.effectiveConditionalReleaseDate !== 'Invalid date')
+            div.midMarginBottom
+                | Conditional release date
                 span#prisonerCrd.block.bold  #{sentenceDetail.effectiveConditionalReleaseDate}
+        else if (sentenceDetail.effectiveAutomaticReleaseDate && sentenceDetail.effectiveAutomaticReleaseDate !== 'Invalid date')
+            div.midMarginBottom
+                | Automatic release date
+                span#prisonerArd.block.bold  #{sentenceDetail.effectiveAutomaticReleaseDate}
 
-        div.midMarginBottom
-            | HDC eligibility date
-            if (sentenceDetail.homeDetentionCurfewEligibilityDate)
+        if (sentenceDetail.homeDetentionCurfewEligibilityDate)
+            div.midMarginBottom
+                | HDC eligibility date
                 span#prisonerHdced.block.bold  #{sentenceDetail.homeDetentionCurfewEligibilityDate}
 
         if (sentenceDetail.sentenceExpiryDate && sentenceDetail.sentenceExpiryDate !== 'Invalid date')
