@@ -1,0 +1,15 @@
+extends taskListTemplate
+
+block tasks
+
+    if licenceStatus.decisions.optedOut
+        include tasks/optOutTask
+    else
+        include tasks/curfewAddressTask
+        if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+            include tasks/riskManagementTask
+            include tasks/curfewHoursTask
+            include tasks/additionalConditionsTask
+            include tasks/reportingInstructionsTask
+            include tasks/optOutTask
+    include tasks/roSubmitTask

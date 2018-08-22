@@ -42,6 +42,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
     describe('User is CA', () => {
         it('should call getPrisonerDetails from prisonerDetailsService', () => {
+            licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: {}});
             const app = createApp({licenceService, prisonerService});
             return request(app)
                 .get('/123')
@@ -55,6 +56,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         it('should should show ARD if no CRD', () => {
+            licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: {}});
             const app = createApp({licenceService, prisonerService});
             return request(app)
                 .get('/123')
@@ -368,6 +370,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('when offender has opted out', () => {
             it('should display that user has opted out', () => {
                 licenceService.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
                     licence: {
                         proposedAddress: {
                             optOut: {decision: 'Yes'}
@@ -390,6 +393,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('when address has been submitted', () => {
             it('should display that it has been submitted', () => {
                 licenceService.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
                     licence: {
                         proposedAddress: {
                             optOut: {licenceStatus: 'ADDRESS_SUBMITTED'}
@@ -411,6 +415,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('when bass has been requested', () => {
             it('should display that it has been requested', () => {
                 licenceService.getLicence.resolves({
+                    stage: 'ELIGIBILITY',
                     licence: {
                         proposedAddress: {
                             bassReferral: {decision: 'Yes'}

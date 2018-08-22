@@ -22,7 +22,8 @@ module.exports = {
     removeFromArray,
     all,
     omit,
-    getWhereKeyLike
+    getWhereKeyLike,
+    pickKey
 };
 
 // pass in your object and a path in array format
@@ -129,5 +130,12 @@ function getWhereKeyLike(string, object) {
     return R.pipe(
         R.pickBy(stringIncludesKey),
         R.values
+    )(object)[0];
+}
+
+function pickKey(predicate, object) {
+    return R.pipe(
+        R.pickBy(predicate),
+        R.keys,
     )(object)[0];
 }

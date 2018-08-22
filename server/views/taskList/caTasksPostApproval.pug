@@ -1,0 +1,19 @@
+extends taskListTemplate
+
+block tasks
+
+    if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
+        include tasks/eligibilitySummaryTask
+    if licenceStatus.decisions.eligible
+        include tasks/curfewAddressTask
+        if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
+            include tasks/riskManagementTask
+            include tasks/curfewHoursTask
+            include tasks/additionalConditionsTask
+            include tasks/reportingInstructionsTask
+            include tasks/finalChecksTask
+            include tasks/postponementTask
+        include tasks/HDCRefusalTask
+        if allowedTransition === 'caToDm'
+            include tasks/caSubmitApprovalTask
+        include tasks/createLicenceTask
