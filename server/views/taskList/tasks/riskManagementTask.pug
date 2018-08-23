@@ -15,9 +15,8 @@ div.taskListItem
             else
                 | Not completed
         div.pure-u-1-4.center
-            -var postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
-            -var roleCanModify = (user.role === 'RO' || user.role === 'CA')
-            -var editable = (['PROCESSING_CA'].includes(licenceStatus.stage) && user.role === 'CA')
+            -var roleCanModify = user.role === 'RO' || user.role === 'CA'
+            -var editable = licenceStatus.stage === 'PROCESSING_CA' && user.role === 'CA'
 
             if (postApproval && roleCanModify || editable)
                 a.taskListAction.center.button.button-secondary(href="/hdc/risk/riskManagement/" + prisonerInfo.bookingId) View/Edit

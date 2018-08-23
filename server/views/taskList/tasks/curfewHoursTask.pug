@@ -9,8 +9,7 @@ div.taskListItem
                 | Not completed
         div.pure-u-1-4.center
 
-            -var postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
-            -var roleCanModify = (user.role === 'RO' || user.role === 'CA')
+            -var roleCanModify = user.role === 'RO' || user.role === 'CA'
 
             if postApproval && roleCanModify
                 a.taskListAction.center.button.button-secondary(href="/hdc/curfew/curfewHours/" + prisonerInfo.bookingId) View/Edit
