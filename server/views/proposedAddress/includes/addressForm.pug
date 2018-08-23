@@ -9,7 +9,7 @@ mixin addressForm(index, alternative)
                 div.pure-u-1.pure-u-md-3-5
                     div.form-group.midMarginBottom
                         label.form-label(for="address1-"+index) Building and street
-                        input.form-control(id="address1-"+index name=addressPosition+"[addressLine1]" value=thisAddress.addressLine1)
+                        input.form-control(id="address1-"+index name=addressPosition+"[addressLine1]" value=thisAddress.addressLine1 autofocus)
                         input.form-control.smallMarginTop(id="address2-"+index name=addressPosition+"[addressLine2]" value=thisAddress.addressLine2)
 
                     div.form-group.midMarginBottom
