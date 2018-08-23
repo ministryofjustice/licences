@@ -4,6 +4,7 @@ const path = require('path');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
+const {pickKey} = require('../utils/functionalHelpers');
 
 module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware, audit}) {
     const router = express.Router();
@@ -26,8 +27,9 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const licenceStatus = getLicenceStatus(licence);
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
+        const tasklistView = getTasklistView(req.user.role, licence.stage);
 
-        res.render('taskList/taskList', {
+        res.render(`taskList/${tasklistView}`, {
             licenceStatus,
             licenceVersion: licence ? licence.version : 0,
             approvedVersion: licence ? licence.approvedVersion : 0,
@@ -70,4 +72,42 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
     return router;
 };
 
+const tasklistConfig = {
+    caTasksEligibility: {
+        stages: ['ELIGIBILITY', 'UNSTARTED'],
+        role: 'CA'
+    },
+    caTasksPostApproval: {
+        stages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
+        role: 'CA'
+    },
+    caTasksFinalChecks: {
+        stages: ['PROCESSING_CA', 'PROCESSING_RO', 'APPROVAL'],
+        role: 'CA'
+    },
+    roTasks: {
+        stages: ['PROCESSING_RO', 'PROCESSING_CA', 'APPROVAL', 'ELIGIBILITY'],
+        role: 'RO'
+    },
+    roTasksPostApproval: {
+        stages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
+        role: 'RO'
+    },
+    dmTasks: {
+        role: 'DM'
+    }
+};
 
+function getTasklistView(role, stage) {
+    function roleAndStageMatch(view) {
+        if (view.role !== role) {
+            return false;
+        }
+        if (!view.stages) {
+            return true;
+        }
+        return view.stages.includes(stage);
+    }
+
+    return pickKey(roleAndStageMatch, tasklistConfig);
+}

@@ -1,0 +1,27 @@
+extends ../layout
+include ./includes/startContinueViewButton
+include ./includes/utils
+
+
+block content
+
+    div.back-link-container
+        a.link-back(href="/") Back to case list
+
+        if licenceStatus.decisions.excluded
+            div.error-banner.marginTopMedium
+                strong.bold The offender is statutorily excluded from HDC
+        else if licenceStatus.decisions.unsuitableResult
+            div.error-banner.marginTopMedium
+                strong.bold The offender is presumed unsuitable for HDC release
+
+    if !user.role
+        p Error
+    else if !prisonerInfo
+        p No offender details found
+    else
+
+        include prisonerDetails
+
+        div.paddingBottom
+            block tasks

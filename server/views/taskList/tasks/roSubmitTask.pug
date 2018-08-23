@@ -12,6 +12,11 @@ div.taskListItem.submit
                 | #{statusLabel}
         div.pure-u-1-4.center
             if licenceStatus.stage === 'PROCESSING_RO'
-                a.taskListAction.center.button(href="/hdc/review/licenceDetails/" + prisonerInfo.bookingId)
-                    | Continue
 
+                if licenceStatus.decisions.optedOut
+                    a.taskListAction.center.button(href="/hdc/send/optedOut/" + prisonerInfo.bookingId)
+                        | Continue
+
+                else
+                    a.taskListAction.center.button(href="/hdc/review/licenceDetails/" + prisonerInfo.bookingId)
+                        | Continue

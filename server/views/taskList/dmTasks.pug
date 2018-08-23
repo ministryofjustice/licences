@@ -1,0 +1,20 @@
+extends taskListTemplate
+
+block tasks
+
+    if licenceStatus.decisions.insufficientTimeStop
+        include tasks/eligibilitySummaryTask
+        include tasks/refusalTask
+
+    else
+        include tasks/curfewAddressTask
+        if (licenceStatus.decisions.curfewAddressApproved === 'approved')
+            include tasks/riskManagementTask
+            include tasks/curfewHoursTask
+            include tasks/additionalConditionsTask
+            include tasks/reportingInstructionsTask
+            include tasks/finalChecksTask
+        if licenceStatus.decisions.confiscationOrder
+            include tasks/postponementTask
+        include tasks/returnToCaTask
+        include tasks/approvalTask
