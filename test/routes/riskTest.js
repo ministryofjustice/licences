@@ -67,7 +67,7 @@ describe('/hdc/risk', () => {
                     });
             });
 
-            it('throws when ca not in post approval', () => {
+            it('throws when ca not in final checks or post approval', () => {
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: {key: 'value'}});
                 const app = createApp({licenceService}, 'caUser');

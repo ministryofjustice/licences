@@ -17,8 +17,9 @@ div.taskListItem
         div.pure-u-1-4.center
             -var postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
             -var roleCanModify = (user.role === 'RO' || user.role === 'CA')
+            -var editable = (['PROCESSING_CA'].includes(licenceStatus.stage) && user.role === 'CA')
 
-            if postApproval && roleCanModify
+            if (postApproval && roleCanModify || editable)
                 a.taskListAction.center.button.button-secondary(href="/hdc/risk/riskManagement/" + prisonerInfo.bookingId) View/Edit
 
             else if user.role === 'RO'
