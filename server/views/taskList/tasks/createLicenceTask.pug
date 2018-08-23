@@ -5,7 +5,7 @@ div.taskListItem.borderBottom.largeMarginBottom
         div.pure-u-3-4
             | #{statusLabel}
         div.pure-u-1-4.center
-            if (['DECIDED', 'MODIFIED'].includes(licenceStatus.stage))
+            if postApproval && licenceStatus.stage !== 'MODIFIED_APPROVAL'
                 if user.role === 'CA' && licenceStatus.decisions.approved
                     a#createPdf.taskListAction.center.button(href="/hdc/pdf/select/" + bookingId role="button") Continue
 

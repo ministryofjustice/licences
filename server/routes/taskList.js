@@ -36,7 +36,8 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
             allowedTransition,
             statusLabel,
             prisonerInfo,
-            bookingId
+            bookingId,
+            postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
         });
     }));
 
