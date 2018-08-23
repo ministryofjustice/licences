@@ -14,4 +14,4 @@ header(role="banner", id="global-header", class="with-proposition")
                         span.bold #{user.firstName} #{user.lastName} &nbsp;&nbsp;|&nbsp;&nbsp;
                         if user.activeCaseLoad
                             span.bold #{user.activeCaseLoad.description} &nbsp;&nbsp;|&nbsp;&nbsp;
-                        a(href="/logout") Sign out
+                        a(href="/logout" title="Sign out" aria-label="Sign out of HDC") Sign out
