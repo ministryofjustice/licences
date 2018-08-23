@@ -8,7 +8,7 @@
 1. Install the dependencies required to run the service:
 
   ```
-  $ yarn
+  $ npm install
   ```  
 2. Supply environment variables. The required environment variables are defined in server/config.js.
 
@@ -16,23 +16,23 @@
 3. Start the server
 
   ```   
-  $ yarn run start
+  $ npm run start
   ```
 
    Or, for development, run inspections, tests, watch for changes and start the server:
    
   ```   
-  $ yarn run dev
+  $ npm run dev
   ```
   
 4. Visit [localhost:3000](http://localhost:3000/)
 
 ## Developer Commands
 
- - `yarn run lint` -> style checks using eslint
- - `yarn run test` -> runs all unit tests
- - `yarn run clean` -> cleans previously generated files
- - `yarn run build` -> cleans and regenerates assets.
+ - `npm run lint` -> style checks using eslint
+ - `npm run test` -> runs all unit tests
+ - `npm run clean` -> cleans previously generated files
+ - `npm run build` -> cleans and regenerates assets.
  
 
 # Environment variables
@@ -53,7 +53,6 @@ For the database:
 
 For the PDF generator service
 
-* PDF_TEMPLATE_NAME - Name of template to use eg 'hdc_ap_pss'
 * PDF_SERVICE_HOST - Root of PDF generator service eg 'http://localhost:8081' or 'http://localhost:9090' if using wiremock
 
 # AWS database access
@@ -70,13 +69,13 @@ Migrations are managed using [knex](http://knexjs.org/#Migrations-CLI) and [knex
 Execute migration
 
 ```
-yarn migrate
+npm migrate
 ```
 
 Other migration commands
 
 ```
-yarn run knex-migrate <command>
+npm run knex-migrate <command>
 ```
 
 Commands
@@ -90,7 +89,7 @@ Commands
 Create a new migration script
 
 ```
-yarn run knex migrate:make <script-name>
+npm run knex migrate:make <script-name>
 ```
 
 ## Seed data
@@ -98,13 +97,13 @@ yarn run knex migrate:make <script-name>
 Execute seed scripts to populate DB with test data
 
 ```
-yarn seed
+npm seed
 ```
 
 Create a new seed file
 
 ```
-yarn run knex seed:make <script-name>
+npm run knex seed:make <script-name>
 ```
 
 ## Local database set up
