@@ -211,7 +211,7 @@ describe('/hdc/proposedAddress', () => {
                     .expect('Content-Type', /html/)
                     .expect(res => {
                         expect(res.text).to.include('<form method="post">');
-                        expect(res.text).to.include('name="[addresses][0][addressLine1]"/>');
+                        expect(res.text).to.include('name="[addresses][0][addressLine1]"');
                     });
 
             });
@@ -239,7 +239,7 @@ describe('/hdc/proposedAddress', () => {
                     .expect('Content-Type', /html/)
                     .expect(res => {
                         expect(res.text).to.include('/proposedAddress/curfewAddress/add');
-                        expect(res.text).to.include('name="[addresses][0][addressLine1]"/>');
+                        expect(res.text).to.include('name="[addresses][0][addressLine1]"');
                     });
 
             });
@@ -268,7 +268,7 @@ describe('/hdc/proposedAddress', () => {
                     .expect(res => {
                         expect(res.text).to.include(
                             '<form method="post" action="/hdc/proposedAddress/curfewAddress/update/1">');
-                        expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address1"/>');
+                        expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address1"');
                     });
 
             });
