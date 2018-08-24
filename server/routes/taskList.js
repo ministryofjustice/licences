@@ -27,7 +27,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const licenceStatus = getLicenceStatus(licence);
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
-        const tasklistView = getTasklistView(req.user.role, licence.stage);
+        const tasklistView = getTasklistView(req.user.role, licence ? licence.stage : 'UNSTARTED');
 
         res.render(`taskList/${tasklistView}`, {
             licenceStatus,

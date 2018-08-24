@@ -76,7 +76,7 @@ module.exports = token => {
         getOffenderSentencesByBookingId: async function(bookingIds) {
             const path = `${apiUrl}/offender-sentences/bookings`;
             const headers = {'Page-Limit': 10000};
-            const body = bookingIds;
+            const body = [].concat(bookingIds);
 
             const prisoners = await nomisPost({path, body, headers});
             return prisoners.map(addReleaseDatesToPrisoner);
