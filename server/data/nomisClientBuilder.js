@@ -74,7 +74,7 @@ module.exports = token => {
         },
 
         getOffenderSentencesByBookingId: async function(bookingIds) {
-            const path = `${apiUrl}/offender-sentences`;
+            const path = `${apiUrl}/offender-sentences/bookings`;
             const headers = {'Page-Limit': 10000};
             const body = bookingIds;
 

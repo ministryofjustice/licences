@@ -423,7 +423,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .post(`/offender-sentences`, ['1'])
+                .post(`/offender-sentences/bookings`, ['1'])
                 .reply(200, [{sentenceDetail: {conditionalReleaseDate: 'a'}}]);
 
             return expect(nomisClient.getOffenderSentencesByBookingId(['1'])).to.eventually.eql([
