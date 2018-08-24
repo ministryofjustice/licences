@@ -18,9 +18,9 @@ block content
         include ../includes/personalDetailsSummary
 
         div.pure-g.borderBottomLight
-            div.pure-u-md-1-2
+            div.pure-u-1.pure-u-md-1-2
                 h2#curfewAddressDetails.heading-medium Proposed curfew address
-            div.pure-u-md-1-2.alignRight
+            div.pure-u-1.pure-u-md-1-2.alignRight
                 div.pure-u-md-1-2.change-details
                     if (stage === 'PROCESSING_RO' && user.role === 'RO')
                         a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + bookingId) Change these details

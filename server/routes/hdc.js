@@ -335,7 +335,6 @@ module.exports = function(
 
         const errors = validateInPlace && firstItem(req.flash('errors'));
         const errorObject = getIn(errors, [sectionName, formName]) || {};
-
         const viewData = {bookingId, data, nextPath, licenceStatus, errorObject};
 
         res.render(`${sectionName}/${formName}`, viewData);

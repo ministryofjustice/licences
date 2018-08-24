@@ -1,38 +1,21 @@
-extends ../layout
-include ../includes/errorBannerWithDetail
+extends ../formTemplates/eligibilityFormTemplate
 
-block content
+block question
+    | Has the offender decided to opt out of the HDC process?
 
-    div.pure-g.pure-u-1
-        include ../includes/back
-        include ../includes/personalDetailsSummary
-        +errorBannerWithDetail(errorObject, [{field: 'decision'}, {field: 'reason'}])
+block formItems
+    div.form-group.inline
+        div.multiple-choice(data-target="optOutForm")
+            input#optOutYes(type="radio" checked=data && data.decision === 'Yes' name="decision" value="Yes")
+            label(for="optOutYes") Yes
+        div.multiple-choice
+            input#optOutNo(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
+            label(for="optOutNo") No
 
-        div.pure-u-1-2
-            h2.heading-large Has the offender decided to opt out of the HDC process?
-
-            if errorObject.decision
-                p.error-message #{errorObject.decision}
-            form(method="post")
-                input(type="hidden" name="_csrf" value=csrfToken)
-                input(type="hidden" name="bookingId" value=bookingId || '')
-                div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
-                    div.largePaddingBottom
-                        div.form-group.inline.smallPaddingTop
-
-                            div.multiple-choice(data-target="optOutForm")
-                                input#optOutYes(type="radio" checked=data && data.decision === 'Yes' name="decision" value="Yes")
-                                label(for="optOutYes") Yes
-                            div.multiple-choice
-                                input#optOutNo(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
-                                label(for="optOutNo") No
-
-                        div#optOutForm(class=errorObject.reason ? 'form-group-error': 'panel panel-border-narrow js-hidden')
-                            label(for='optOutDetails') Please give details
-                                if errorObject.reason
-                                    span.error-message #{errorObject.reason}
-                            textarea(name='reason' id='optOutDetails' class='form-control' rows='4')
-                                if data && data.reason
-                                    | #{data.reason}
-
-                    include ../includes/formButtons
+        div#optOutForm(class=errorObject.reason ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
+            label(for='optOutDetails') Please give details
+                if errorObject.reason
+                    span.error-message #{errorObject.reason}
+            textarea(name='reason' id='optOutDetails' class='form-control' rows='4')
+                if data && data.reason
+                    | #{data.reason}

@@ -1,39 +1,16 @@
-extends ../layout
-include ../includes/errorBannerWithDetail
 
-block content
+extends ../formTemplates/eligibilityFormTemplate
 
+block question
+    | Have exceptional circumstances been accepted?
+
+block formItems
     - var exceptionalCircumstancesValue = data.decision || null;
 
-    div.pure-g
-
-        div.pure-u-1
-            include ../includes/back
-            include ../includes/personalDetailsSummary
-            +errorBannerWithDetail(errorObject, [
-                {field: 'decision', message: 'Select yes or no'}
-            ])
-
-        div.pure-u-1-2
-            h2.heading-large Have exceptional circumstances been accepted?
-
-            if errorObject.decision
-                p.error-message Select yes or no
-
-            form(method="post")
-                input(type="hidden" name="_csrf" value=csrfToken)
-                input(type="hidden" name="bookingId" value=bookingId || '')
-
-                div#error-anchor.largePaddingBottom
-                    div.form-group.inline.smallPaddingTop.largePaddingBottom
-                        .multiple-choice
-                            input#exceptionalCircumstancesYes(type='radio', checked=exceptionalCircumstancesValue === 'Yes' name='decision', value='Yes')
-                            label(for='exceptionalCircumstancesYes') Yes
-                        .multiple-choice
-                            input#exceptionalCircumstancesNo(type='radio', checked=exceptionalCircumstancesValue === 'No' name='decision', value='No')
-                            label(for='exceptionalCircumstancesNo') No
-
-                    div.largePaddingBottom.smallPaddingTop
-                        div.inlineButtons
-                            input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
-                            a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + bookingId role="button") Return to tasklist
+    div.form-group.inline
+        div.multiple-choice
+            input#exceptionalCircumstancesYes(type='radio', checked=exceptionalCircumstancesValue === 'Yes' name='decision', value='Yes')
+            label(for='exceptionalCircumstancesYes') Yes
+        div.multiple-choice
+            input#exceptionalCircumstancesNo(type='radio', checked=exceptionalCircumstancesValue === 'No' name='decision', value='No')
+            label(for='exceptionalCircumstancesNo') No

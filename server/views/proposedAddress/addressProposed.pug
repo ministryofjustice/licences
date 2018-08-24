@@ -1,30 +1,14 @@
-extends ../layout
-include ../includes/errorBannerWithDetail
+extends ../formTemplates/eligibilityFormTemplate
 
-block content
+block question
+    | Has the offender proposed a curfew address?
 
-    div.pure-g.pure-u-1
-        include ../includes/back
-        include ../includes/personalDetailsSummary
-        +errorBannerWithDetail(errorObject, [{field: 'decision'}])
+block formItems
+    div.form-group.inline.smallPaddingTop
 
-        div.pure-u-1-2
-            h2.heading-large Has the offender proposed a curfew address?
-
-    if errorObject.decision
-        p.error-message #{errorObject.decision}
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
-            div.largePaddingBottom
-                div.form-group.inline.smallPaddingTop
-
-                    div.multiple-choice()
-                        input#yes(type="radio" checked=data && data.decision === 'Yes' name="decision" value="Yes")
-                        label(for="yes") Yes
-                    div.multiple-choice
-                        input#no(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
-                        label(for="no") No
-
-            include ../includes/formButtons
+        div.multiple-choice()
+            input#yes(type="radio" checked=data && data.decision === 'Yes' name="decision" value="Yes")
+            label(for="yes") Yes
+        div.multiple-choice
+            input#no(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
+            label(for="no") No

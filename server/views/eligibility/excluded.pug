@@ -1,38 +1,18 @@
-extends ../layout
-include ../includes/errorBannerWithDetail
+extends ../formTemplates/eligibilityFormTemplate
 
-block content
+block question
+    | Is the offender statutorily excluded from HDC?
 
+block formItems
     - var exclusionValue = data.decision || null;
 
-    div.pure-g.pure-u-1
-        include ../includes/back
-        include ../includes/personalDetailsSummary
-        +errorBannerWithDetail(errorObject, [{field: 'decision'}, {field: 'reason'}])
+    div.form-group.inline
+        div.multiple-choice(data-target="excludedForm")
+            input#excludedYes(type="radio" checked=exclusionValue === 'Yes'  name="decision" value="Yes")
+            label(for="excludedYes") Yes
+        div.multiple-choice
+            input#excludedNo(type="radio" checked=exclusionValue === 'No' name="decision" value="No")
+            label(for="excludedNo") No
 
-        div.pure-u-1-2
-            h2.heading-large Is the offender statutorily excluded from HDC?
-
-    if errorObject.decision
-        p.error-message #{errorObject.decision}
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
-
-            div.largePaddingBottom
-                div.form-group.inline
-                    div.multiple-choice(data-target="excludedForm")
-                        input#excludedYes(type="radio" checked=exclusionValue === 'Yes'  name="decision" value="Yes")
-                        label(for="excludedYes") Yes
-                    div.multiple-choice
-                        input#excludedNo(type="radio" checked=exclusionValue === 'No' name="decision" value="No")
-                        label(for="excludedNo") No
-
-                div#excludedForm(class=errorObject.reason ? 'form-group-error': 'panel panel-border-narrow js-hidden')
-                    include includes/excluded
-
-            div.paddingBottom.smallPaddingTop
-                div.pure-u-1.inlineButtons
-                    input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
-                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + bookingId role="button") Return to tasklist
+    div#excludedForm(class=errorObject.reason ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
+        include includes/excluded
