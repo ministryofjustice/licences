@@ -6,7 +6,7 @@ block excludedForm
         if errorObject.reason
             span.error-message #{errorObject.reason}
     div.pure-g
-        div.pure-u-10-24
+        div.pure-u-1.pure-u-md-10-24
             div.multiple-choice
                 input(type='checkbox' name='reason[]' id='sexOffenderRegister' value='sexOffenderRegister' checked=vals.indexOf('sexOffenderRegister') !== -1)
                 label(for='sexOffenderRegister') Sex offender required to register
@@ -25,7 +25,7 @@ block excludedForm
                 input(type='checkbox' name='reason[]' id='returnedAtRisk' value='returnedAtRisk' checked=vals.indexOf('returnedAtRisk') !== -1)
                 label(for='returnedAtRisk') Offender returned to custody during at risk period
         div.pure-u-4-24
-        div.pure-u-10-24
+        div.pure-u-1.pure-u-md-10-24
             div.multiple-choice
                 input(type='checkbox' name='reason[]' id='hdcCurfewConditions' value='hdcCurfewConditions' checked=vals.indexOf('hdcCurfewConditions') !== -1)
                 label(for='hdcCurfewConditions') Recalled to prison for failing to comply with the HDC

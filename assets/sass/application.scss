@@ -153,6 +153,21 @@ $path: "/public/images/";
     width: 66%;
 }
 
+@media only screen and (max-width:640px) {
+    .taskListAction {margin: 0; width: 100%; margin-top: 20px};
+    .change {padding-top: 2em};
+    .hideMobile {display:none};
+    .u-paddingBottom {padding-bottom: 30px;}
+    .change-details {margin: 1em 0}
+}
+
+@media only screen and (min-width:640px) {
+    .sm-PadLeftRight15 {padding: 0 15px};
+    .sm-smallPaddingBottom {padding-bottom: 10px};
+    .hideNonMobile {display:none};
+    .change-details {margin-top: 2.5em;}
+}
+
 .midPaddingTopBottom {
     padding-top: 20px;
     padding-bottom: 20px;
@@ -210,9 +225,9 @@ $path: "/public/images/";
     font-size: 80%;
 }
 
-#continueBtns a{
-    margin-right: 15px;
-}
+//#continueBtns a{
+//    margin-right: 15px;
+//}
 
 .inlineButtons > a, .inlineButtons > form, .inlineButtons > input {
     margin-right: 15px;
@@ -376,7 +391,7 @@ a.namedAnchor {
 
 .button-start-height {
     line-height: 1.55em;
-    margin-left: 15px;
+   // margin-left: 15px;
 }
 
 input[type="time"] {
@@ -393,6 +408,4 @@ input[type="time"] {
     border: solid 3px #E78E5F;
 }
 
-.change-details {
-    margin-top: 2.5em;
-}
+

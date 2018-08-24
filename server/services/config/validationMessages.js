@@ -17,6 +17,9 @@ module.exports = {
     curfewAddress_cautionedAgainstResident: 'Select yes or no',
     curfewAddress_residents_name: 'Enter a name',
     curfewAddress_residents_relationship: 'Enter a relationship',
+    bassReferral_decision: 'Select yes or no',
+    bassReferral_proposedCounty: 'Enter a county',
+    bassReferral_proposedTown: 'Enter a town',
 
     // PROCESSING_RO forms
     curfewAddress_consent: 'Say if the homeowner consents to HDC',

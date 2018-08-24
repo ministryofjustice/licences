@@ -1,47 +1,27 @@
-extends ../layout
-include ../includes/errorBannerWithDetail
+extends ../formTemplates/eligibilityFormTemplate
 
-block content
+block question
+    | Are there less than 4 weeks to the conditional release date?
 
+block formItems
     - var crdTimeValue = data ? data.decision : null;
     - var dmApprovedValue = data ? data.dmApproval : null;
 
-    div.pure-g.pure-u-1
-        include ../includes/back
-        include ../includes/personalDetailsSummary
-        +errorBannerWithDetail(errorObject, [{field: 'decision'}, {field: 'dmApproval'}])
+    div.form-group.inline
+        div.multiple-choice(data-target="dmApprovalForm")
+            input#crdTimeYes(type="radio" checked=crdTimeValue === 'Yes' name="decision" value="Yes")
+            label(for="crdTimeYes") Yes
+        div.multiple-choice
+            input#crdTimeNo(type="radio" checked=crdTimeValue === 'No' name="decision" value="No")
+            label(for="crdTimeNo") No
 
-        div.pure-u-1-2
-            h2.heading-large Are there less than 4 weeks to the conditional release date?
-
-    if errorObject.decision
-        p.error-message #{errorObject.decision}
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
-            div.largePaddingBottom
-                div.form-group.inline.smallPaddingTop.pure-u-1-2
-
-                    div.multiple-choice(data-target="dmApprovalForm")
-                        input#crdTimeYes(type="radio" checked=crdTimeValue === 'Yes' name="decision" value="Yes")
-                        label(for="crdTimeYes") Yes
-                    div.multiple-choice
-                        input#crdTimeNo(type="radio" checked=crdTimeValue === 'No' name="decision" value="No")
-                        label(for="crdTimeNo") No
-
-                    div#dmApprovalForm(class=errorObject.dmApproval ? 'form-group-error panel panel-border-narrow': 'panel panel-border-narrow js-hidden')
-                        p Has the decision maker given approval to continue the HDC case?
-                            if errorObject.dmApproval
-                                span.error-message #{errorObject.dmApproval}
-                        div.multiple-choice.smallPaddingBottom
-                            input#dmApprovalYes(type="radio" checked=dmApprovedValue === 'Yes' name="dmApproval" value="Yes")
-                            label(for="dmApprovalYes") Yes
-                        div.multiple-choice
-                            input#dmApprovalNo(type="radio" checked=dmApprovedValue === 'No' name="dmApproval" value="No")
-                            label(for="dmApprovalNo") No
-
-            div.paddingBottom
-                div.pure-u-1.inlineButtons.smallPaddingTop
-                    input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
-                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + bookingId role="button") Return to tasklist
+        div#dmApprovalForm(class=errorObject.dmApproval ? 'form-group-error panel panel-border-narrow' : 'panel panel-border-narrow js-hidden')
+            p Has the decision maker given approval to continue the HDC case?
+                if errorObject.dmApproval
+                    span.error-message #{errorObject.dmApproval}
+            div.multiple-choice.smallPaddingBottom
+                input#dmApprovalYes(type="radio" checked=dmApprovedValue === 'Yes' name="dmApproval" value="Yes")
+                label(for="dmApprovalYes") Yes
+            div.multiple-choice
+                input#dmApprovalNo(type="radio" checked=dmApprovedValue === 'No' name="dmApproval" value="No")
+                label(for="dmApprovalNo") No
