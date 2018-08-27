@@ -8,7 +8,6 @@ module.exports = {
         delete from licence_versions where booking_id != 1200635`);
     },
 
-    // feature tests
     deleteAllTest: function() {
         return db.query(`delete from licences where booking_id < 23 or booking_id = '1200635'; 
           delete from licence_versions where booking_id < 23 or booking_id = '1200635'`);

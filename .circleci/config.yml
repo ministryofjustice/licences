@@ -112,21 +112,23 @@ jobs:
             curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
 
   deploy_stage:
-      <<: *defaults
+      working_directory: ~/noms-digital-studio/licences
+      docker:
+        - image: mojdigitalstudio/circleci-node-awsebcli
       steps:
         - checkout
         - attach_workspace:
             at: ~/noms-digital-studio/licences
         - deploy:
-            name: Install elastic beanstalk CLI
-            command: |
-              sudo apt-get install python-pip python-dev
-              pip install --user 'six>-1.9.0' awsebcli --ignore-installed
-        - deploy:
             name: Deploy to Elastic Beanstalk Stage
             command: |
               VERSION=$(egrep licences Dockerrun.aws.json | awk -F"\"" '{print $4}' |  awk -F":" '{print $2}')
+              npm run plant-beanstalk ${VERSION}
               ~/.local/bin/eb deploy licences-stage --label ${VERSION}
+        - persist_to_workspace:
+            root: .
+            paths:
+              - Dockerrun.aws.json
 
   accept_stage:
     docker:
