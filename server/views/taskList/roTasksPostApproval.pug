@@ -2,7 +2,11 @@ extends taskListTemplate
 
 block tasks
 
-    include tasks/riskManagementTask
-    include tasks/curfewHoursTask
-    include tasks/additionalConditionsTask
-    include tasks/reportingInstructionsTask
+    div.taskListItem.borderBottomLight
+        include tasks/riskManagementTask
+    div.taskListItem.borderBottomLight
+        include tasks/curfewHoursTask
+    div.taskListItem.borderBottomLight
+        include tasks/additionalConditionsTask
+    div.taskListItem.borderBottomLight
+        include tasks/reportingInstructionsTask

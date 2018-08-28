@@ -1,19 +1,35 @@
 extends taskListTemplate
 
 block tasks
+    div.taskListItem.borderBottomLight
+        include tasks/curfewAddressTask
 
-    include tasks/curfewAddressTask
     if (['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved))
-        include tasks/riskManagementTask
-        include tasks/curfewHoursTask
-        include tasks/additionalConditionsTask
-        include tasks/reportingInstructionsTask
-        include tasks/finalChecksTask
-        include tasks/postponementTask
-    include tasks/HDCRefusalTask
-    if allowedTransition === 'caToDmRefusal'
-        include tasks/caSubmitRefusalTask
-    else if allowedTransition === 'caToRo'
-        include tasks/caSubmitAddressReviewTask
-    else
-        include tasks/caSubmitApprovalTask
+        div.taskListItem.borderBottomLight
+            include tasks/riskManagementTask
+
+        div.taskListItem.borderBottomLight
+            include tasks/curfewHoursTask
+
+        div.taskListItem.borderBottomLight
+            include tasks/additionalConditionsTask
+
+        div.taskListItem.borderBottomLight
+            include tasks/reportingInstructionsTask
+
+        div.taskListItem.borderBottom
+            include tasks/finalChecksTask
+
+        div.taskListItem.borderBottomLight
+            include tasks/postponementTask
+
+    div.taskListItem.borderBottom
+        include tasks/HDCRefusalTask
+
+    div.taskListItem.borderBottom
+        if allowedTransition === 'caToDmRefusal'
+            include tasks/caSubmitRefusalTask
+        else if allowedTransition === 'caToRo'
+            include tasks/caSubmitAddressReviewTask
+        else
+            include tasks/caSubmitApprovalTask

@@ -1,11 +1,11 @@
-div.taskListItem.borderTop
+div.paddingBottom
     h2.heading-medium Postponement / refuse HDC
 
-    div.borderBottomLight
+    div
         div.pure-g
-            div.pure-u-3-4
+            div.pure-u-1.pure-u-md-3-4
                 .pure-g
-                    .pure-u-3-5
+                    .pure-u-1.pure-u-3-5
                         if licenceStatus.decisions.postponed
                             | HDC application postponed
                         else if licenceStatus.decisions.confiscationOrder
@@ -13,7 +13,7 @@ div.taskListItem.borderTop
                         else
                             | Use this to indicate that the process is postponed while any risk management planning actions remain outstanding
 
-            div.pure-u-1-4.center
+            div.pure-u-1.pure-u-md-1-4.center
                 p.namedAnchor
                     a.namedAnchor(name="postpone")
 

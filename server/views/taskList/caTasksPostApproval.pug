@@ -3,17 +3,37 @@ extends taskListTemplate
 block tasks
 
     if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
-        include tasks/eligibilitySummaryTask
+        div.taskListItem.borderBottomLight
+            include tasks/eligibilitySummaryTask
+
     if licenceStatus.decisions.eligible
-        include tasks/curfewAddressTask
+        div.taskListItem.borderBottomLight
+            include tasks/curfewAddressTask
+
         if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
-            include tasks/riskManagementTask
-            include tasks/curfewHoursTask
-            include tasks/additionalConditionsTask
-            include tasks/reportingInstructionsTask
-            include tasks/finalChecksTask
-            include tasks/postponementTask
-        include tasks/HDCRefusalTask
+            div.taskListItem.borderBottomLight
+                include tasks/riskManagementTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/curfewHoursTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/additionalConditionsTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/reportingInstructionsTask
+
+            div.taskListItem.borderBottom
+                include tasks/finalChecksTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/postponementTask
+
+        div.taskListItem.borderBottom
+            include tasks/HDCRefusalTask
+
         if allowedTransition === 'caToDm'
-            include tasks/caSubmitApprovalTask
-        include tasks/createLicenceTask
+            div.taskListItem.borderBottom
+                include tasks/caSubmitApprovalTask
+        div.taskListItem.borderBottom
+            include tasks/createLicenceTask

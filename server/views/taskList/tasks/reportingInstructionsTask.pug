@@ -1,13 +1,14 @@
-div.taskListItem
+div.paddingBottom
     h2.heading-medium Reporting instructions
 
     div.pure-g
-        div.pure-u-3-4
+        div.pure-u-1.pure-u-md-3-4
             if licenceStatus.tasks.reportingInstructions === 'DONE'
                 div Confirmed
             else
                 | Not completed
-        div.pure-u-1-4.center
+
+        div.pure-u-1.pure-u-md-1-4.center
 
             -var roleCanModify = user.role === 'RO' || user.role === 'CA'
 

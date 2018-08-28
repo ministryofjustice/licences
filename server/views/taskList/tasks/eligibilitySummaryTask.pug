@@ -2,11 +2,11 @@
 -var crdTimeContinueText = licenceStatus.decisions.insufficientTimeContinue? ', with approval to continue' : ''
 
 
-div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : "taskListItem")
+div.paddingBottom
     h2.heading-medium Eligibility and presumed suitability
 
     div.pure-g
-        div.pure-u-3-4
+        div.pure-u-1.pure-u-md-3-4
             if licenceStatus.decisions.excluded
                 | Not eligible
             else if licenceStatus.decisions.unsuitable
@@ -19,7 +19,7 @@ div(class= user.role === 'DM' ? "taskListItem borderBottom largeMarginBottom" : 
                 | #{crdTimeText}#{crdTimeContinueText}
             else
                 | Eligible
-        div.pure-u-1-4.center
+        div.pure-u-1.pure-u-md-1-4.center
             if user.role === 'CA'
                 a.taskListAction.center.button.button-secondary(href="/hdc/eligibility/excluded/" + prisonerInfo.bookingId) View/Edit
             else
