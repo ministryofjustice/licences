@@ -50,7 +50,7 @@ mixin addressDetail(type, address)
 
     if address.consent
         div.pure-g.largeMarginTop.paddingTop.smallPaddingBottom.borderTopLight
-            div.pure-u-1-2
+            div.pure-u-1.pure-u-md-1-2
                 div.pure-u-md-4-5
                     | Does the main occupier consent to HDC?
                     p.bold(id="consent-"+type) #{address.consent}
@@ -63,9 +63,9 @@ mixin addressDetail(type, address)
                                 p.bold(id="deemedSafe-" + type) #{address.deemedSafe}
 
             if(address.consent === 'Yes')
-                div.pure-u-1-2
+                div.pure-u-1.pure-u-md-1-2.midPaddingBottom
                     if address.electricity
-                        div.pure-u-md-4-5.midPaddingBottom
+                        div.pure-u-md-4-5
                             | Is there an electricity supply?
                             p.bold(id="electricity-"+type) #{address.electricity}
 
