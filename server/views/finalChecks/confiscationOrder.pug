@@ -1,58 +1,34 @@
-extends ../layout
-include ../includes/errorBannerWithDetail
+extends ../formTemplates/formTemplate
 
-block content
+block question
+    | Is the offender subject to a confiscation order?
 
+block formItems
     - var confiscationOrderValue = data.decision || null;
 
-    div.pure-g.pure-u-1
-        include ../includes/back
-        +errorBannerWithDetail(errorObject, [
-            {field: 'decision'},
-            {field: 'confiscationUnitConsulted'},
-            {field: 'comments'}
-        ])
-        include ../includes/personalDetailsSummary
+    div.form-group.inline
+        div.multiple-choice(data-target="consultedForm")
+            input#confiscationOrderYes(type="radio" checked=confiscationOrderValue === 'Yes'  name="decision" value="Yes")
+            label(for="confiscationOrderYes") Yes
+        div.multiple-choice
+            input#confiscationOrderNo(type="radio" checked=confiscationOrderValue === 'No' name="decision" value="No")
+            label(for="confiscationOrderNo") No
 
-        div.pure-u-1-2
-            h2.heading-large Is the offender subject to a confiscation order?
+    div#consultedForm.panel.panel-border-narrow.js-hidden
+        p Has the prosecuting/enforcement authority and regional confiscation unit been consulted regarding the proposed release on HDC?
+        if errorObject.confiscationUnitConsulted
+            span.block.error-message #{errorObject.confiscationUnitConsulted}
+        div.form-group.inline
+            div.multiple-choice
+                input#confiscationUnitConsultedYes(type="radio" checked=confiscationOrderValue === 'Yes'  name="confiscationUnitConsulted" value="Yes")
+                label(for="confiscationUnitConsultedYes") Yes
+            div.multiple-choice
+                input#confiscationUnitConsultedNo(type="radio" checked=confiscationOrderValue === 'No' name="confiscationUnitConsulted" value="No")
+                label(for="confiscationUnitConsultedNo") No
 
-    if errorObject.decision
-        p.block.error-message #{errorObject.decision}
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
-
-            div.pure-u-md-1-2.largeMarginBottom
-                div.form-group.inline
-                    div.multiple-choice(data-target="consultedForm")
-                        input#confiscationOrderYes(type="radio" checked=confiscationOrderValue === 'Yes'  name="decision" value="Yes")
-                        label(for="confiscationOrderYes") Yes
-                    div.multiple-choice
-                        input#confiscationOrderNo(type="radio" checked=confiscationOrderValue === 'No' name="decision" value="No")
-                        label(for="confiscationOrderNo") No
-
-                div#consultedForm.panel.panel-border-narrow.js-hidden
-                    p Has the prosecuting/enforcement authority and regional confiscation unit been consulted regarding the proposed release on HDC?
-                    if errorObject.confiscationUnitConsulted
-                        span.block.error-message #{errorObject.confiscationUnitConsulted}
-                    div.form-group.inline
-                        div.multiple-choice
-                            input#confiscationUnitConsultedYes(type="radio" checked=confiscationOrderValue === 'Yes'  name="confiscationUnitConsulted" value="Yes")
-                            label(for="confiscationUnitConsultedYes") Yes
-                        div.multiple-choice
-                            input#confiscationUnitConsultedNo(type="radio" checked=confiscationOrderValue === 'No' name="confiscationUnitConsulted" value="No")
-                            label(for="confiscationUnitConsultedNo") No
-
-                    label(for='comments') Comments
-                    if errorObject.comments
-                        span.block.error-message #{errorObject.comments}
-                    textarea(name='comments' id='comments' class='form-control' rows='4')
-                        if data.comments
-                            | #{data.comments}
-
-            div.paddingBottom.smallPaddingTop
-                div.pure-u-1.inlineButtons
-                    input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
-                    a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + bookingId role="button") Return to tasklist
+        label(for='comments') Comments
+        if errorObject.comments
+            span.block.error-message #{errorObject.comments}
+        textarea(name='comments' id='comments' class='form-control' rows='4')
+            if data.comments
+                | #{data.comments}
