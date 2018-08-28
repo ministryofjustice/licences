@@ -7,7 +7,7 @@ function init() {
         '<a class="button button-secondary addBespokeButton smallMarginTop">Add another</a>'
     );
     $('#bespokeConditionsForm a').on('click', addBespokeFields);
-    $('.bespokeTitleWrapper .removeWrapper').append('<a class="link removeBespoke">Remove</a>');
+    $('.bespokeTitleWrapper .removeWrapper').append('<div><a class="link removeBespoke">Remove</a>');
     $('.removeBespoke').on('click', removeBespoke);
 }
 
