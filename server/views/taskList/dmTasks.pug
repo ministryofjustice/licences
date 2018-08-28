@@ -3,18 +3,37 @@ extends taskListTemplate
 block tasks
 
     if licenceStatus.decisions.insufficientTimeStop
-        include tasks/eligibilitySummaryTask
-        include tasks/refusalTask
+        div.taskListItem.borderBottom.largeMarginBottom
+            include tasks/eligibilitySummaryTask
+        div.taskListItem.borderBottom
+            include tasks/refusalTask
 
     else
-        include tasks/curfewAddressTask
+        div.taskListItem.borderBottomLight
+            include tasks/curfewAddressTask
+
         if (licenceStatus.decisions.curfewAddressApproved === 'approved')
-            include tasks/riskManagementTask
-            include tasks/curfewHoursTask
-            include tasks/additionalConditionsTask
-            include tasks/reportingInstructionsTask
-            include tasks/finalChecksTask
+            div.taskListItem.borderBottomLight
+                include tasks/riskManagementTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/curfewHoursTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/additionalConditionsTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/reportingInstructionsTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/finalChecksTask
+
         if licenceStatus.decisions.confiscationOrder
-            include tasks/postponementTask
-        include tasks/returnToCaTask
-        include tasks/approvalTask
+            div.taskListItem.borderBottomLight
+                include tasks/postponementTask
+
+        div.taskListItem.borderBottom
+            include tasks/returnToCaTask
+
+        div.taskListItem.borderBottom
+            include tasks/approvalTask

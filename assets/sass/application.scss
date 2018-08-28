@@ -111,43 +111,6 @@ $path: "/public/images/";
     padding-bottom: 10px;
 }
 
-.taskListItem {
-    border-bottom: solid $grey-2 1px;
-    padding-top: 15px;
-    h2 {
-        padding-top: 10px;
-        padding-bottom: 10px;
-        margin: 0;
-    }
-    .pure-g {
-        padding: 15px 0;
-        display: table;
-        width: 100%;
-
-        div {
-            display: table-cell;
-            vertical-align: middle;
-
-            div {
-                display: block;
-            }
-        }
-    }
-
-    &.submit {
-        border-top: solid $grey-1 3px;
-        margin-bottom: 100px
-    }
-}
-
-.taskListSingleLineItem {
-    padding: 1em 0 0.9em 0;
-
-    .buttonContainer {
-        padding-top: 0.5em;
-    }
-}
-
 .taskListAction {
     margin-top: -5px;
     width: 66%;
@@ -164,8 +127,10 @@ $path: "/public/images/";
 @media only screen and (min-width:640px) {
     .sm-PadLeftRight15 {padding: 0 15px};
     .sm-smallPaddingBottom {padding-bottom: 10px};
+    .sm-midPaddingBottom {padding-bottom: 20px};
     .hideNonMobile {display:none};
     .change-details {margin-top: 2.5em;}
+    .taskListSingleLineItem .buttonContainer{margin-top: 2.3em;}
 }
 
 .midPaddingTopBottom {

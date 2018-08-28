@@ -3,13 +3,26 @@ extends taskListTemplate
 block tasks
 
     if licenceStatus.decisions.optedOut
-        include tasks/optOutTask
-    else
-        include tasks/curfewAddressTask
-        if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
-            include tasks/riskManagementTask
-            include tasks/curfewHoursTask
-            include tasks/additionalConditionsTask
-            include tasks/reportingInstructionsTask
+        div.taskListItem.borderBottom
             include tasks/optOutTask
-    include tasks/roSubmitTask
+    else
+        div.taskListItem.borderBottomLight
+            include tasks/curfewAddressTask
+        if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+            div.taskListItem.borderBottomLight
+                include tasks/riskManagementTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/curfewHoursTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/additionalConditionsTask
+
+            div.taskListItem.borderBottomLight
+                include tasks/reportingInstructionsTask
+
+            div.taskListItem.borderBottom
+                include tasks/optOutTask
+
+    div.taskListItem.borderBottom
+        include tasks/roSubmitTask

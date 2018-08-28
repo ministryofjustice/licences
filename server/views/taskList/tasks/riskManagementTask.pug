@@ -1,8 +1,8 @@
-div.taskListItem
+div.paddingBottom
     h2.heading-medium Risk management and victim liaison
 
     div.pure-g
-        div.pure-u-3-4
+        div.pure-u-1.pure-u-md-3-4
             if licenceStatus.tasks.riskManagement === 'DONE'
                 if licenceStatus.decisions.riskManagementNeeded
                     div Risk management required
@@ -14,7 +14,8 @@ div.taskListItem
                     div No victim liaison required
             else
                 | Not completed
-        div.pure-u-1-4.center
+
+        div.pure-u-1.pure-u-md-1-4.center
             -var roleCanModify = user.role === 'RO' || user.role === 'CA'
             -var editable = licenceStatus.stage === 'PROCESSING_CA' && user.role === 'CA'
 

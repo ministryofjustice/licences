@@ -1,12 +1,11 @@
-div.taskListItem
-    div.pure-g.midPaddingBottom
-        div.pure-u-3-4
-            if licenceStatus.decisions.refused
-                span.alert.bold HDC refused
+div.pure-g
+    div.pure-u-1.pure-u-md-3-4
+        if licenceStatus.decisions.refused
+            span.alert.bold HDC refused
 
-        div.pure-u-1-4.center
-            a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/refuse/" + prisonerInfo.bookingId)
-                if licenceStatus.decisions.refused
-                    | Update refusal
-                else
-                    | Refuse HDC
+    div.pure-u-1.pure-u-md-1-4.center.midPaddingTopBottom
+        a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/refuse/" + prisonerInfo.bookingId)
+            if licenceStatus.decisions.refused
+                | Update refusal
+            else
+                | Refuse HDC

@@ -1,13 +1,14 @@
-div.taskListItem
+div.paddingBottom
     h2.heading-medium Offender opt out
 
     div.pure-g
-        div.pure-u-3-4
+        div.pure-u-1.pure-u-md-3-4
             if licenceStatus.decisions.optedOut
                 | Offender has opted out
             else
                 | Offender has opted in
-        div.pure-u-1-4.center
+
+        div.pure-u-1.pure-u-md-1-4.center
             form(method="post" action="/hdc/optOut/" + bookingId)
                 input(type="hidden" name="_csrf" value=csrfToken)
                 input(type="hidden" name="bookingId" value=bookingId || '')
