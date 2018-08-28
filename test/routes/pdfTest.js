@@ -263,7 +263,13 @@ describe('PDF:', () => {
                 .expect(res => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
-                        'CREATE_PDF', 'id', {bookingId: '123', templateName: 'hdc_ap_pss'});
+                        'CREATE_PDF', 'id', {
+                            action: [],
+                            bookingId: '123',
+                            formName: 'hdc_ap_pss',
+                            sectionName: 'create',
+                            userInput: {}
+                        });
                 });
         });
 

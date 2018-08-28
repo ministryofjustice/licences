@@ -1,7 +1,8 @@
 const express = require('express');
 
-const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
-const {getIn, lastItem, isEmpty, firstItem, lastIndex, omit} = require('../utils/functionalHelpers');
+const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware}
+    = require('../utils/middleware');
+const {getIn, lastItem, isEmpty, firstItem, lastIndex} = require('../utils/functionalHelpers');
 const {getPathFor} = require('../utils/routes');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getCurfewAddressFormData} = require('../utils/addressHelpers');
@@ -36,6 +37,8 @@ module.exports = function(
     router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
     router.param('bookingId', authorisationMiddleware);
 
+    const audited = auditMiddleware(audit, 'UPDATE_SECTION');
+
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
             res.locals.csrfToken = req.csrfToken();
@@ -68,7 +71,7 @@ module.exports = function(
         res.render('licenceConditions/additionalConditions', {bookingId, conditions, bespokeConditions, licenceStatus});
     }));
 
-    router.post('/licenceConditions/additionalConditions/:bookingId', asyncMiddleware(async (req, res) => {
+    router.post('/licenceConditions/additionalConditions/:bookingId', audited, asyncMiddleware(async (req, res) => {
         logger.debug('POST /additionalConditions');
         const {bookingId, additionalConditions, bespokeDecision, bespokeConditions} = req.body;
 
@@ -81,11 +84,6 @@ module.exports = function(
         }
 
         await licenceService.updateLicenceConditions(bookingId, additional, bespoke);
-
-        auditUpdateEventWithData(req, bookingId, 'licenceConditions', 'additionalConditions', 'update', {
-            bespokeConditions,
-            additional
-        });
 
         res.redirect('/hdc/licenceConditions/conditionsSummary/' + bookingId);
     }));
@@ -109,7 +107,7 @@ module.exports = function(
         res.render(`licenceConditions/conditionsSummary`, {bookingId, data, nextPath});
     }));
 
-    router.post('/licenceConditions/additionalConditions/:bookingId/delete/:conditionId',
+    router.post('/licenceConditions/additionalConditions/:bookingId/delete/:conditionId', audited,
         asyncMiddleware(async (req, res) => {
             logger.debug('POST /additionalConditions/delete');
             const {bookingId, conditionId} = req.body;
@@ -117,10 +115,6 @@ module.exports = function(
             if (conditionId) {
                 await licenceService.deleteLicenceCondition(bookingId, conditionId);
             }
-
-            auditUpdateEventWithData(req, bookingId, 'licenceConditions', 'additionalConditions', 'delete', {
-                conditionId
-            });
 
             res.redirect('/hdc/licenceConditions/conditionsSummary/' + bookingId);
         })
@@ -205,11 +199,13 @@ module.exports = function(
         };
     }
 
-    router.post('/curfew/curfewAddressReview/:bookingId', asyncMiddleware(addressReviewPosts('curfewAddressReview')));
-    router.post('/curfew/addressSafety/:bookingId', asyncMiddleware(addressReviewPosts('addressSafety')));
-    router.post('/curfew/withdrawAddress/:bookingId', asyncMiddleware(addressReviewPosts('withdrawAddress')));
-    router.post('/curfew/withdrawConsent/:bookingId', asyncMiddleware(addressReviewPosts('withdrawConsent')));
-    router.post('/curfew/reinstateAddress/:bookingId', asyncMiddleware(addressReviewPosts('reinstateAddress')));
+    router.post('/curfew/curfewAddressReview/:bookingId', audited,
+        asyncMiddleware(addressReviewPosts('curfewAddressReview')));
+    router.post('/curfew/addressSafety/:bookingId', audited, asyncMiddleware(addressReviewPosts('addressSafety')));
+    router.post('/curfew/withdrawAddress/:bookingId', audited, asyncMiddleware(addressReviewPosts('withdrawAddress')));
+    router.post('/curfew/withdrawConsent/:bookingId', audited, asyncMiddleware(addressReviewPosts('withdrawConsent')));
+    router.post('/curfew/reinstateAddress/:bookingId', audited,
+        asyncMiddleware(addressReviewPosts('reinstateAddress')));
 
     function addressReviewPosts(formName) {
         return async (req, res) => {
@@ -231,8 +227,6 @@ module.exports = function(
                 index: addressIndex
             });
 
-            auditUpdateEvent(req, bookingId, 'curfew', formName);
-
             res.redirect(`${nextPath}${bookingId}`);
         };
     }
@@ -250,7 +244,7 @@ module.exports = function(
         res.render('proposedAddress/curfewAddress', {bookingId, data: addressToShow, submitPath});
     });
 
-    router.post('/proposedAddress/curfewAddress/add/:bookingId', asyncMiddleware(async (req, res) => {
+    router.post('/proposedAddress/curfewAddress/add/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {bookingId} = req.body;
         const {addressLine1, addressTown, postCode} = req.body.addresses[0];
 
@@ -270,12 +264,10 @@ module.exports = function(
             });
         }
 
-        auditUpdateEventWithAction(req, bookingId, 'proposedAddress', 'curfewAddress', 'add');
-
         res.redirect(`${nextPath}${bookingId}`);
     }));
 
-    router.post('/proposedAddress/curfewAddress/update/:bookingId', asyncMiddleware(async (req, res) => {
+    router.post('/proposedAddress/curfewAddress/update/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {bookingId} = req.body;
         const rawLicence = await res.locals.licence;
 
@@ -289,14 +281,12 @@ module.exports = function(
             index: addressIndex
         });
 
-        auditUpdateEventWithAction(req, bookingId, 'proposedAddress', 'curfewAddress', 'update');
-
         const nextPath = formConfig.curfewAddress.nextPath.path;
         res.redirect(`${nextPath}${bookingId}`);
     }));
 
 
-    router.post('/optOut/:bookingId', asyncMiddleware(async (req, res) => {
+    router.post('/optOut/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {bookingId} = req.body;
 
         await licenceService.update({
@@ -306,8 +296,6 @@ module.exports = function(
             licenceSection: 'proposedAddress',
             formName: 'optOut'
         });
-
-        auditUpdateEvent(req, bookingId, 'optOut', 'optOut');
 
         const nextPath = '/hdc/taskList/';
         res.redirect(`${nextPath}${bookingId}`);
@@ -340,14 +328,14 @@ module.exports = function(
         res.render(`${sectionName}/${formName}`, viewData);
     }
 
-    router.post('/:sectionName/:formName/:bookingId', asyncMiddleware(async (req, res) => {
+    router.post('/:sectionName/:formName/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {sectionName, formName, bookingId} = req.params;
         logger.debug(`POST ${sectionName}/${formName}/${bookingId}`);
 
         return formPost(req, res, sectionName, formName, bookingId);
     }));
 
-    router.post('/:sectionName/:formName/:path/:bookingId', asyncMiddleware(async (req, res) => {
+    router.post('/:sectionName/:formName/:path/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {sectionName, formName, path, bookingId} = req.params;
         logger.debug(`POST ${sectionName}/${formName}/${path}/${bookingId}`);
 
@@ -377,36 +365,11 @@ module.exports = function(
             }
         }
 
-        auditUpdateEvent(req, bookingId, sectionName, formName);
-
         if (req.body.anchor) {
             return res.redirect(`${nextPath}${path}${bookingId}#${req.body.anchor}`);
         }
 
         res.redirect(`${nextPath}${path}${bookingId}`);
-    }
-
-
-    function auditUpdateEvent(req, bookingId, sectionName, formName) {
-        auditUpdateEventWithAction(req, bookingId, sectionName, formName, req.body.anchor || null);
-    }
-
-    function auditUpdateEventWithAction(req, bookingId, sectionName, formName, action) {
-        auditUpdateEventWithData(req, bookingId, sectionName, formName, action, userInputFrom(req.body));
-    }
-
-    function auditUpdateEventWithData(req, bookingId, sectionName, formName, action, userInput) {
-        audit.record('UPDATE_SECTION', req.user.staffId, {
-            bookingId,
-            sectionName,
-            formName,
-            action,
-            userInput
-        });
-    }
-
-    function userInputFrom(data) {
-        return omit(['bookingId', '_csrf', 'anchor'], data);
     }
 
     return router;

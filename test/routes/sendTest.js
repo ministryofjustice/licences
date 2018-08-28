@@ -220,9 +220,7 @@ describe('send', () => {
             return request(app)
                 .post('/hdc/send/return/123')
                 .send({
-                    bookingId: 123,
-                    sender: 'from',
-                    receiver: 'to',
+                    bookingId: '123',
                     transitionType: 'type',
                     submissionTarget: 'target'
                 })
@@ -230,12 +228,16 @@ describe('send', () => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith('SEND', 'id',
                         {
-                            bookingId: 123,
-                            transitionType: 'type',
-                            submissionTarget: 'target'
+                            action: [],
+                            bookingId: '123',
+                            sectionName: 'return',
+                            formName: undefined,
+                            userInput: {
+                                transitionType: 'type',
+                                submissionTarget: 'target'
+                            }
                         });
                 });
-
         });
 
         it('shows sent confirmation', () => {
