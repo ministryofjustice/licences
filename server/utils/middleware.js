@@ -2,11 +2,13 @@ const logger = require('../../log.js');
 const authorisationConfig = require('../routes/config/authorisation');
 const {getWhereKeyLike, isEmpty} = require('../utils/functionalHelpers');
 const {unauthorisedError} = require('../utils/errors');
+const {merge} = require('../utils/functionalHelpers');
 
 module.exports = {
     asyncMiddleware,
     checkLicenceMiddleWare,
-    authorisationMiddleware
+    authorisationMiddleware,
+    auditMiddleware
 };
 
 function asyncMiddleware(fn) {
@@ -59,4 +61,39 @@ function authorisationMiddleware(req, res, next) {
     }
 
     next();
+}
+
+function auditMiddleware(audit, key) {
+    return async (req, res, next) => {
+
+        const bookingId = req.body.bookingId || req.params.bookingId;
+        const inputs = userInputFrom(req.body);
+
+        const pathSegments = req.path.split('/').filter(s => s && s !== bookingId);
+        const [sectionName, formName, ...rest] = pathSegments;
+        const action = req.body.anchor || rest;
+
+        auditEvent(req.user.staffId, bookingId, sectionName, formName, action, inputs);
+
+        next();
+    };
+
+    function userInputFrom(data) {
+        const nonEmptyKeys = Object.keys(data).filter(key => data[key] &&
+            !['bookingId', '_csrf', 'anchor'].includes(key));
+
+        return nonEmptyKeys.reduce((object, key) => {
+            return merge(object, {[key]: data[key]});
+        }, {});
+    }
+
+    function auditEvent(user, bookingId, sectionName, formName, action, userInput) {
+        audit.record(key, user, {
+            bookingId,
+            sectionName,
+            formName,
+            action,
+            userInput
+        });
+    }
 }

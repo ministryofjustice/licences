@@ -4,10 +4,19 @@ const {
     createLicenceServiceStub,
     createApp,
     formConfig,
-    testFormPageGets
+    testFormPageGets,
+    auditStub
 } = require('../supertestSetup');
 
 describe('/hdc/risk', () => {
+
+    let licenceService;
+
+    beforeEach(() => {
+        licenceService = createLicenceServiceStub();
+        auditStub.record.reset();
+    });
+
     describe('risk routes', () => {
         const routes = [
             {url: '/hdc/risk/riskManagement/1', content: 'Risk management and victim liaison'}
@@ -21,6 +30,7 @@ describe('/hdc/risk', () => {
 
     describe('POST /risk/:formName/:bookingId', () => {
 
+
         const formResponse = {
             bookingId: '1',
             planningActions: 'Yes',
@@ -29,7 +39,6 @@ describe('/hdc/risk', () => {
 
         context('When page contains form fields', () => {
             it('calls updateLicence from licenceService', () => {
-                const licenceService = createLicenceServiceStub();
                 const app = createApp({licenceService}, 'roUser');
                 return request(app)
                     .post('/hdc/risk/riskManagement/1')
@@ -48,7 +57,6 @@ describe('/hdc/risk', () => {
             });
 
             it('calls updateLicence from licenceService when ca in post approval', () => {
-                const licenceService = createLicenceServiceStub();
                 licenceService.getLicence.resolves({stage: 'DECIDED', licence: {key: 'value'}});
                 const app = createApp({licenceService}, 'caUser');
                 return request(app)
@@ -64,6 +72,28 @@ describe('/hdc/risk', () => {
                             licenceSection: 'risk',
                             formName: 'riskManagement'
                         });
+                    });
+            });
+
+            it('audits the update event', () => {
+                const app = createApp({licenceService}, 'roUser');
+
+                return request(app)
+                    .post('/hdc/risk/riskManagement/1')
+                    .send(formResponse)
+                    .expect(() => {
+                        expect(auditStub.record).to.be.calledOnce();
+                        expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'id',
+                            {
+                                action: [],
+                                bookingId: '1',
+                                sectionName: 'risk',
+                                formName: 'riskManagement',
+                                userInput: {
+                                    planningActions: 'Yes',
+                                    planningActionsDetails: 'details'
+                                }
+                            });
                     });
             });
 

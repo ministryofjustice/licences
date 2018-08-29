@@ -1,5 +1,6 @@
 const express = require('express');
-const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
+const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} =
+    require('../utils/middleware');
 const {templates} = require('./config/pdf');
 const {firstItem, getIn} = require('../utils/functionalHelpers');
 
@@ -10,6 +11,8 @@ module.exports = function(
     router.use(authenticationMiddleware());
     router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
     router.param('bookingId', authorisationMiddleware);
+
+    const audited = auditMiddleware(audit, 'CREATE_PDF');
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -118,15 +121,13 @@ module.exports = function(
         });
     }));
 
-    router.get('/create/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
+    router.get('/create/:templateName/:bookingId', audited, asyncMiddleware(async (req, res) => {
 
         const {bookingId, templateName} = req.params;
         const {licence} = res.locals;
         logger.debug(`GET pdf/create/${bookingId}/${templateName}`);
 
         const pdf = await pdfService.generatePdf(templateName, bookingId, licence, req.user.token);
-
-        audit.record('CREATE_PDF', req.user.staffId, {templateName, bookingId});
 
         res.type('application/pdf');
         return res.end(pdf, 'binary');

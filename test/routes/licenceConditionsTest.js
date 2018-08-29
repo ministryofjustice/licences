@@ -5,7 +5,8 @@ const {
     createConditionsServiceStub,
     createApp,
     formConfig,
-    testFormPageGets
+    testFormPageGets,
+    auditStub
 } = require('../supertestSetup');
 
 describe('/hdc/licenceConditions', () => {
@@ -20,6 +21,7 @@ describe('/hdc/licenceConditions', () => {
             }
         });
         conditionsService.populateLicenceWithConditions = sinon.stub().resolves({licence: {}});
+        auditStub.record.reset();
     });
 
     describe('licenceConditions routes', () => {
@@ -133,14 +135,35 @@ describe('/hdc/licenceConditions', () => {
             const app = createApp({licenceService, conditionsService}, 'roUser');
 
             return request(app)
-                .post('/hdc/licenceConditions/additionalConditions/1/delete/ABC')
+                .post('/hdc/licenceConditions/additionalConditions/123/delete/ABC')
                 .send(formResponse)
                 .expect(302)
                 .expect(res => {
                     expect(licenceService.deleteLicenceCondition).to.be.calledWith('123', 'ABC');
                     expect(res.header.location).to.equal('/hdc/licenceConditions/conditionsSummary/123');
                 });
+        });
 
+        it('audits the delete event', () => {
+            const licenceService = createLicenceServiceStub();
+            const app = createApp({licenceService, conditionsService}, 'roUser');
+
+            return request(app)
+                .post('/hdc/licenceConditions/additionalConditions/123/delete/ABC')
+                .send(formResponse)
+                .expect(() => {
+                    expect(auditStub.record).to.be.calledOnce();
+                    expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'id',
+                        {
+                            action: ['delete', 'ABC'],
+                            bookingId: '123',
+                            sectionName: 'licenceConditions',
+                            formName: 'additionalConditions',
+                            userInput: {
+                                conditionId: 'ABC'
+                            }
+                        });
+                });
         });
     });
 

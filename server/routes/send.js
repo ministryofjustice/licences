@@ -1,12 +1,15 @@
 const express = require('express');
 
-const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
+const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} =
+    require('../utils/middleware');
 
 module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
     router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
     router.param('bookingId', authorisationMiddleware);
+
+    const audited = auditMiddleware(audit, 'SEND');
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -35,13 +38,11 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         res.render('send/' + transition, {bookingId, submissionTarget});
     });
 
-    router.post('/:destination/:bookingId', asyncMiddleware(async (req, res) => {
-        const {bookingId, transitionType, submissionTarget} = req.body;
+    router.post('/:destination/:bookingId', audited, asyncMiddleware(async (req, res) => {
+        const {bookingId, transitionType} = req.body;
         const licence = await licenceService.getLicence(bookingId);
 
         await licenceService.markForHandover(bookingId, licence, transitionType);
-
-        audit.record('SEND', req.user.staffId, {bookingId, transitionType, submissionTarget});
 
         res.redirect(`/hdc/sent/${transitionType}`);
     }));
