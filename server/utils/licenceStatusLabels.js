@@ -47,14 +47,14 @@ function statusLabels(licenceStatus, role) {
             DM: decisionLabel
         },
         [licenceStages.MODIFIED]: {
-            CA: () => 'Modified',
-            RO: () => 'Modified',
-            DM: () => 'Modified'
+            CA: postApprovalLabel,
+            RO: postApprovalLabel,
+            DM: postApprovalLabel
         },
         [licenceStages.MODIFIED_APPROVAL]: {
-            CA: () => 'Modified',
-            RO: () => 'Modified',
-            DM: () => 'Modified'
+            CA: postApprovalLabel,
+            RO: postApprovalLabel,
+            DM: postApprovalLabel
         }
     };
 
@@ -150,6 +150,15 @@ function decisionLabel(licenceStatus) {
     ];
 
     return getLabel(labels, licenceStatus) || 'Not complete';
+}
+
+function postApprovalLabel(licenceStatus) {
+
+    const labels = [
+        {decision: 'refused', label: 'Refused'}
+    ];
+
+    return getLabel(labels, licenceStatus) || 'Modified';
 }
 
 function getLabel(labels, licenceStatus) {
