@@ -120,6 +120,7 @@ $path: "/public/images/";
     .taskListAction {margin: 0; width: 100%; margin-top: 20px};
     .change {padding-top: 2em};
     .hideMobile {display:none};
+    .u-paddingTop {padding-top: 30px};
     .u-paddingBottom {padding-bottom: 30px;}
     .change-details {margin: 1em 0}
 }
@@ -132,6 +133,7 @@ $path: "/public/images/";
     .hideNonMobile {display:none};
     .change-details {margin-top: 2.5em;}
     .taskListSingleLineItem .buttonContainer{margin-top: 2.3em;}
+    .sm-padTop55 {padding-top: 55px};
 }
 
 .midPaddingTopBottom {
@@ -178,11 +180,6 @@ $path: "/public/images/";
     margin-bottom: 0px
 }
 
-.searchLink {
-    text-align: right;
-    padding-top: 55px;
-}
-
 .searchForm {
     background-color: $highlight-colour;
 }
@@ -190,10 +187,6 @@ $path: "/public/images/";
 .subText {
     font-size: 80%;
 }
-
-//#continueBtns a{
-//    margin-right: 15px;
-//}
 
 .inlineButtons > a, .inlineButtons > form, .inlineButtons > input {
     margin-right: 15px;

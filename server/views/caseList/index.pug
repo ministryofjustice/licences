@@ -1,29 +1,35 @@
 extends ../layout
 
 block content
-    div.pure-g.pure-u-1
-        div.pure-u-1-2
-        div.pure-u-1-2.searchLink
-            if user.role === 'RO'
+    div.pure-g
+        if user.role === 'RO'
+            div.pure-u-1.searchLink.alignRight.sm-padTop55.u-paddingTop
                 a#searchOffenderLink(href='/hdc/search/offender') Search for an offender
 
-    div.pure-u-1
-        div#tabBar
-            ul
-                each tab in tabsForRole
-                    li(class=selectedTabConfig.id === tab.id ? 'selected' : undefined)
-                        a(href=tab.id) #{tab.text}
+        div.pure-u-1
+            div#tabBar(class = user.role === 'RO' ? "hideMobile" : "hideMobile alignRight")
+                ul
+                    each tab in tabsForRole
+                        li(class=selectedTabConfig.id === tab.id ? 'selected' : undefined)
+                            a(href=tab.id) #{tab.text}
 
-        h2.heading-medium #{selectedTabConfig.text}
+            div.hideNonMobile.form-group.paddingTop.paddingBottom
+                label.form-label(for="licenceFilters") Filters case list by
+                select.form-control#licenceFilters
+                    each tab in tabsForRole
+                        option(value=tab.id selected=selectedTabConfig.id === tab.id) #{tab.text}
 
-        if user.role === 'CA'
-            include CATable
+            h2.heading-medium #{selectedTabConfig.text}
 
-        if user.role === 'RO'
-            include ROTable
+            if user.role === 'CA'
+                include CATable
 
-        if user.role === 'DM'
-            include DMTable
+            if user.role === 'RO'
+                include ROTable
+
+            if user.role === 'DM'
+                include DMTable
 
 block append scripts
     script(src="/public/javascripts/pagination.js?"+version)
+    script(src="/public/javascripts/caseListFiltersClient.js?"+version)

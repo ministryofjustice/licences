@@ -13,8 +13,8 @@
         float: left;
         padding: 10px 20px;
         border-bottom: solid #ffffff 10px;
-        @media (max-width: 650px) {
-            clear: both
+        @media (max-width: 640px) {
+           clear: both
         }
     }
     li.selected {
