@@ -5,7 +5,7 @@ ignore:
   'npm:jquery:20150627':
     - jquery:
         reason: None given
-        expires: '2017-10-18T07:32:37.852Z'
+        expires: '2018-09-28T09:43:59.168Z'
   'npm:minimatch:20160620':
     - gulp-nodemon > gulp > vinyl-fs > glob-watcher > gaze > globule > glob > minimatch:
         reason: None given
@@ -39,6 +39,10 @@ ignore:
     - jade > transformers > uglify-js:
         reason: None given
         expires: '2017-10-18T07:32:37.858Z'
+  'npm:extend:20180424':
+    - knex > liftoff > extend:
+        reason: None given
+        expires: '2018-09-28T09:43:59.168Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:minimatch:20160620':

@@ -63,7 +63,7 @@
     "knex": "^0.15.0",
     "knex-migrate": "^1.6.1",
     "moment": "^2.22.2",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.1",
     "node-sass-middleware": "^0.11.0",
     "nodemon": "^1.17.5",
     "passport": "^0.4.0",
