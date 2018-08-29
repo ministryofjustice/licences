@@ -3,10 +3,10 @@ table#hdcEligiblePrisoners.largeMarginBottom
         tr
             th Name
             th Prison no.
-            th Location
-            th HDCED
-            th CRD / ARD
-            th Status
+            th.hideMobile Location
+            th.hideMobile HDCED
+            th.hideMobile CRD / ARD
+            th.hideMobile Status
             th
     tbody
         if hdcEligible && hdcEligible.length > 0
@@ -22,21 +22,21 @@ table#hdcEligiblePrisoners.largeMarginBottom
                         if prisoner.offenderNo
                             | #{prisoner.offenderNo}
 
-                    td.location
+                    td.location.hideMobile
                         if prisoner.internalLocationDesc
                             | #{prisoner.internalLocationDesc}
                         if prisoner.internalLocationDesc && prisoner.agencyLocationDesc
                             |  - #{prisoner.agencyLocationDesc}
 
-                    td.hdced
+                    td.hdced.hideMobile
                         if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
                             | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
 
-                    td.crd
+                    td.crd.hideMobile
                         if prisoner.sentenceDetail.releaseDate
                             | #{prisoner.sentenceDetail.releaseDate}
 
-                    td.status
+                    td.status.hideMobile
                         if prisoner.status
                             | #{prisoner.status}
 
