@@ -7,7 +7,7 @@ block content
                 a#searchOffenderLink(href='/hdc/search/offender') Search for an offender
 
         div.pure-u-1
-            div#tabBar(class = user.role === 'RO' ? "hideMobile" : "hideMobile alignRight")
+            div#tabBar(class = user.role === 'RO' ? "hideMobile" : "hideMobile sm-padTop55")
                 ul
                     each tab in tabsForRole
                         li(class=selectedTabConfig.id === tab.id ? 'selected' : undefined)
