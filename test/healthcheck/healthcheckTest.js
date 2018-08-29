@@ -21,23 +21,19 @@ describe('healthcheck', () => {
     describe('healthcheck', () => {
         let dbCheckStub;
         let nomisApiCheckStub;
-        let pdfApiCheckStub;
 
         beforeEach(() => {
             dbCheckStub = sandbox.stub().resolves([{totalRows: {value: 0}}]);
             nomisApiCheckStub = sandbox.stub().resolves('OK');
-            pdfApiCheckStub = sandbox.stub().resolves('OK');
         });
 
         const healthcheckProxy = (
             dbCheck = dbCheckStub,
-            nomisApiCheck = nomisApiCheckStub,
-            pdfApiCheck = pdfApiCheckStub) => {
+            nomisApiCheck = nomisApiCheckStub) => {
             return proxyquire('../../server/healthcheck', {
                 './data/healthcheck': {
                     dbCheck: dbCheck,
-                    nomisApiCheck: nomisApiCheck,
-                    pdfApiCheck: pdfApiCheck
+                    nomisApiCheck: nomisApiCheck
                 }
             });
         };
@@ -53,7 +49,6 @@ describe('healthcheck', () => {
 
                 expect(calledWith.checks.db).to.eql('OK');
                 expect(calledWith.checks.nomis).to.eql('OK');
-                expect(calledWith.checks.pdf).to.eql('OK');
             });
         });
 
@@ -75,7 +70,7 @@ describe('healthcheck', () => {
 
             const nomisApiCheckStubReject = sandbox.stub().rejects(404);
 
-            return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject, pdfApiCheckStub)(callback).then(() => {
+            return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject)(callback).then(() => {
 
                 const calledWith = callback.getCalls()[0].args[1];
 
@@ -86,19 +81,5 @@ describe('healthcheck', () => {
             });
         });
 
-        it('should return unhealthy if pdf rejects promise', () => {
-
-            const pdfApiCheckStubReject = sandbox.stub().rejects(404);
-
-            return healthcheckProxy(dbCheckStub, nomisApiCheckStub, pdfApiCheckStubReject)(callback).then(() => {
-
-                const calledWith = callback.getCalls()[0].args[1];
-
-                expect(callback).to.have.callCount(1);
-                expect(calledWith.healthy).to.eql(false);
-                expect(calledWith.checks.db).to.eql('OK');
-                expect(calledWith.checks.pdf).to.eql(404);
-            });
-        });
     });
 });
