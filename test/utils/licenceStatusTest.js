@@ -113,9 +113,6 @@ describe('getLicenceStatus', () => {
                     },
                     postpone: {
                         decision: 'Yes'
-                    },
-                    refusal: {
-                        decision: 'Yes'
                     }
                 },
                 approval: {
@@ -143,6 +140,40 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.postponed).to.eql(true);
         expect(status.decisions.approved).to.eql(true);
         expect(status.decisions.refused).to.eql(false);
+    });
+
+    it('should account for refusal from ca as well as dm', () => {
+        const licence = {
+            stage: 'APPROVAL',
+            licence: {
+                finalChecks: {
+                    seriousOffence: {
+                        decision: 'Yes'
+                    },
+                    onRemand: {
+                        decision: 'Yes'
+                    },
+                    confiscationOrder: {
+                        decision: 'Yes'
+                    },
+                    postpone: {
+                        decision: 'Yes'
+                    },
+                    refusal: {
+                        decision: 'Yes'
+                    }
+                },
+                approval: {
+                    release: {
+                        decision: 'Yes'
+                    }
+                }
+            }
+        };
+
+        const status = getLicenceStatus(licence);
+
+        expect(status.decisions.approved).to.eql(false);
         expect(status.decisions.finalChecksRefused).to.eql(true);
     });
 

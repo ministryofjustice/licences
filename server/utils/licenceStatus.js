@@ -73,6 +73,7 @@ const combiner = (acc, data) => {
 
 function getApprovalStageState(licence) {
     const {approved, refused, approval, refusalReason} = getApprovalState(licence);
+
     return {
         decisions: {
             approved,
@@ -312,6 +313,18 @@ function getRiskManagementState(licence) {
 
 function getApprovalState(licence) {
 
+    const dmApproval = getDmApproval(licence);
+    const caRefusal = getCaRefusal(licence);
+
+    return {
+        approved: dmApproval.approved && !caRefusal.refused,
+        refused: dmApproval.refused || caRefusal.refused,
+        approval: dmApproval.approval,
+        refusalReason: dmApproval.refusalReason || caRefusal.refusalReason
+    };
+}
+
+function getDmApproval(licence) {
     const refusalReasons = {
         addressUnsuitable: 'Address unsuitable',
         insufficientTime: 'Insufficient time'
@@ -323,8 +336,23 @@ function getApprovalState(licence) {
     return {
         approved: decision === 'Yes',
         refused: decision === 'No',
-        approval: isEmpty(decision) ? taskStates.UNSTARTED : taskStates.DONE,
-        refusalReason: refusalReasons[reason]
+        refusalReason: refusalReasons[reason],
+        approval: isEmpty(decision) ? taskStates.UNSTARTED : taskStates.DONE
+    };
+}
+
+function getCaRefusal(licence) {
+    const refusalReasons = {
+        addressUnsuitable: 'No available address',
+        insufficientTime: 'Out of time'
+    };
+
+    const finalChecksRefused = getIn(licence, ['finalChecks', 'refusal', 'decision']);
+    const finalChecksRefusalReason = getIn(licence, ['finalChecks', 'refusal', 'reason']);
+
+    return {
+        refused: finalChecksRefused === 'Yes',
+        refusalReason: refusalReasons[finalChecksRefusalReason]
     };
 }
 
