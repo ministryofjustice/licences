@@ -5,7 +5,7 @@ const {unauthorisedError} = require('../utils/errors');
 const {merge} = require('../utils/functionalHelpers');
 
 module.exports = {
-    asyncMiddleware,
+    async: asyncMiddleware,
     checkLicenceMiddleWare,
     authorisationMiddleware,
     auditMiddleware

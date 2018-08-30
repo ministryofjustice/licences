@@ -1,11 +1,11 @@
 const express = require('express');
-const {asyncMiddleware} = require('../utils/middleware');
+const {async} = require('../utils/middleware');
 const licenceClient = require('../data/licenceClient');
 
-module.exports = function({logger, licenceService}) {
+module.exports = function({logger}) {
     const router = express.Router();
 
-    router.get('/reset', asyncMiddleware(async (req, res, next) => {
+    router.get('/reset', async(async (req, res, next) => {
         logger.info('Deleting licence records');
 
         await licenceClient.deleteAll();
@@ -13,7 +13,7 @@ module.exports = function({logger, licenceService}) {
         return res.redirect('/');
     }));
 
-    router.get('/reset-test', asyncMiddleware(async (req, res, next) => {
+    router.get('/reset-test', async(async (req, res, next) => {
         logger.info('Deleting test licence records');
 
         try {
@@ -26,7 +26,7 @@ module.exports = function({logger, licenceService}) {
 
     }));
 
-    router.post('/create/:bookingId', asyncMiddleware(async (req, res, next) => {
+    router.post('/create/:bookingId', async(async (req, res, next) => {
         logger.info('Creating test licence record');
 
         const {bookingId} = req.params;
