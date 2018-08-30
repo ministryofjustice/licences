@@ -1,0 +1,42 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+
+    include ../../includes/back
+    +errorBannerWithDetail(errors, [
+        {field: 'newNomisId'}
+    ])
+
+    h2.heading-large Edit RO user
+
+
+    form#reportingForm(method='POST')
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=user.nomis_id)
+
+        div#address.pure-g
+            div.pure-u-1.pure-u-md-2-5
+                div.pure-g.largeMarginBottom.midPaddingBottom
+                    div.pure-u-1.pure-u-md-4-5
+                        div.form-group
+                            label.form-label(for="deliusId") Delius ID
+                            input#deliusId.form-control(name="deliusId" type="text" value=roUser.staff_id)
+
+                        div.form-group
+                            label.form-label(for="first") First name
+                            input#first.form-control(name="first" type="text" value=roUser.first_name)
+
+                        div.form-group
+                            label.form-label(for="last") Last name
+                            input#last.form-control(name="last" type="text" value=roUser.last_name)
+
+        div.paddingBottom.smallPaddingTop
+            div.pure-u-1.inlineButtons
+                input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save")
+                a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/roUsers" role="button") Cancel
+
+        div.paddingBottom.smallPaddingTop
+            div.pure-u-1.inlineButtons
+                a.button.button-secondary.center(href="/admin/roUsers/delete/" + roUser.nomis_id role="button")
+                    | Delete user

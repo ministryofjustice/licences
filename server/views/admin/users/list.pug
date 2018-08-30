@@ -2,9 +2,11 @@ extends ../../layout
 
 block content
     div.pure-g
-        div.pure-u-1.largeMarginTop
-            h2.heading-medium RO users
-                include usersTable
+        div.pure-u-1.searchLink.alignRight.sm-padTop55.u-paddingTop
+            a#addUserLink(href='/admin/roUsers/add') Add user
 
-block append scripts
-    script(src="/public/javascripts/pagination.js?"+version)
+        include userSearchForm
+
+        div.pure-u-1.largeMarginTop
+            h2.heading-medium #{heading}
+                include usersTable

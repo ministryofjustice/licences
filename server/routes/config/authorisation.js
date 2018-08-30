@@ -1,4 +1,13 @@
+
+// TODO How are we managing admin users?
+const adminUsers = [{username: 'CA_USER_TEST'}];
+
 module.exports = {
+
+    '/admin': {
+        authorisedUser: adminUsers,
+        authorised: []
+    },
 
     '/hdc/eligibility/': {
         authorised: [{role: 'CA'}]
@@ -84,3 +93,4 @@ module.exports = {
         authorised: [{role: 'RO'}]
     }
 };
+
