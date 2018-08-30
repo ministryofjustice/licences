@@ -129,7 +129,6 @@ function getOauthToken(oauthClientToken, requestSpec) {
     return superagent
         .post(`${getOauthUrl()}/oauth/token`)
         .set('Authorization', oauthClientToken)
-        .set('Elite-Authorization', oauthClientToken)
         .set('content-type', 'application/x-www-form-urlencoded')
         .send(oauthRequest)
         .timeout(timeoutSpec);
@@ -193,7 +192,6 @@ function nomisGet(path, token) {
     return superagent
         .get(`${config.nomis.apiUrl}${path}`)
         .set('Authorization', token)
-        .set('Elite-Authorization', token)
         .timeout(timeoutSpec);
 }
 
