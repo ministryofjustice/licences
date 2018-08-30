@@ -19,11 +19,17 @@ module.exports = function createRouter() {
 
     router.use(bodyParser.urlencoded({extended: true}));
 
-    router.post('/', passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/login',
-        failureFlash: true
-    }));
+    router.post('/', (req, res) => {
+
+        const target = req.query.target || '/';
+
+        return passport.authenticate('local', {
+            successRedirect: target,
+            failureRedirect: '/login',
+            failureFlash: true
+        })(req, res);
+    });
 
     return router;
 };
+

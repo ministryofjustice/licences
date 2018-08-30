@@ -81,11 +81,11 @@ describe('signInService', () => {
 
         it('should get RO client credentials token when user role is RO', async () => {
             fakeOauth
-                .post(`/oauth/token`, 'grant_type=password&username=un&password=pw')
+                .post(`/oauth/token`, 'grant_type=password&username=UN&password=pw')
                 .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
 
             fakeOauth
-                .post(`/oauth/token`, 'grant_type=client_credentials&username=un')
+                .post(`/oauth/token`, 'grant_type=client_credentials&username=UN')
                 .reply(200,
                     {token_type: 'type', access_token: 'token_2', refresh_token: 'refresh', expires_in: '1200'});
 

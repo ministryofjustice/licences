@@ -20,7 +20,7 @@ function signInService(audit) {
             logger.info(`Log in for: ${username}`);
 
             try {
-                const {profile, role, token, refreshToken, expiresIn} = await login(username, password);
+                const {profile, role, token, refreshToken, expiresIn} = await login(username.toUpperCase(), password);
                 logger.info(`Log in success - token: ${token}`);
 
                 const userDetail = profile.staffId || profile.username || profile.lastName || 'no user id';
