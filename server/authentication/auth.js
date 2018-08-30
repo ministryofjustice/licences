@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const {isEmpty} = require('../utils/functionalHelpers');
+const {URLSearchParams} = require('url');
 
 function authenticationMiddleware() {
     // eslint-disable-next-line
@@ -8,7 +9,11 @@ function authenticationMiddleware() {
         if (req.isAuthenticated()) {
             return next();
         }
-        res.redirect('/login');
+
+        const redirectPath = '/login';
+        const query = new URLSearchParams({target: req.get('referrer')});
+        const redirectUrl = query ? redirectPath + '?' + query : redirectPath;
+        return res.redirect(redirectUrl);
     };
 }
 
