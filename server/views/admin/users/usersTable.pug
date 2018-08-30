@@ -1,0 +1,23 @@
+table#users.largeMarginBottom
+    thead
+        tr
+            th Nomis ID
+            th Delius ID
+            th First
+            th Last
+    tbody
+        if users && users.length > 0
+            each user, index in users
+                tr.user(class=index % 2 === 1 ? 'greyRow' : undefined)
+                    td.nomisId
+                        if user.nomis_id
+                            | #{user.nomis_id}
+                    td.deliusId
+                        if user.staff_id
+                            | #{user.staff_id}
+                    td.firstName
+                        if user.first_name
+                            | #{user.first_name}
+                    td.lastName
+                        if user.last_name
+                            |  #{user.last_name}
