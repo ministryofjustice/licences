@@ -1,6 +1,6 @@
 const express = require('express');
 
-const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} =
+const {async, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} =
     require('../utils/middleware');
 
 module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware, audit}) {
@@ -38,7 +38,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
         res.render('send/' + transition, {bookingId, submissionTarget});
     });
 
-    router.post('/:destination/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/:destination/:bookingId', audited, async(async (req, res) => {
         const {bookingId, transitionType} = req.body;
         const licence = await licenceService.getLicence(bookingId);
 

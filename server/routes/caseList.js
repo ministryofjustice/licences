@@ -1,5 +1,5 @@
 const express = require('express');
-const {asyncMiddleware} = require('../utils/middleware');
+const {async} = require('../utils/middleware');
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
 
 const caseListTabs = {
@@ -55,7 +55,7 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
         res.redirect('/caseList/' + tabsForRole[0].id);
     });
 
-    router.get('/:tab', asyncMiddleware(async (req, res) => {
+    router.get('/:tab', async(async (req, res) => {
         logger.debug('GET /caseList');
         const tabsForRole = getIn(caseListTabs, [req.user.role]);
         const selectedTabConfig = tabsForRole.find(tab => tab.id === req.params.tab);

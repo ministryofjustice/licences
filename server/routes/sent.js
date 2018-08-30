@@ -1,5 +1,5 @@
 const express = require('express');
-const {asyncMiddleware} = require('../utils/middleware');
+const {async} = require('../utils/middleware');
 
 module.exports = function({logger, licenceService, authenticationMiddleware}) {
     const router = express.Router();
@@ -13,7 +13,7 @@ module.exports = function({logger, licenceService, authenticationMiddleware}) {
         next();
     });
 
-    router.get('/:handoverType', asyncMiddleware(async (req, res) => {
+    router.get('/:handoverType', async(async (req, res) => {
         res.render(`sent/${req.params.handoverType}`);
     }));
 
