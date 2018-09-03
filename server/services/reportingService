@@ -1,0 +1,13 @@
+module.exports = function(audit) {
+
+    function getAddressSubmission(bookingId) {
+        if (bookingId) {
+            return audit.getEvents('SEND', {bookingId, transitionType: 'caToRo'});
+        }
+        return audit.getEvents('SEND', {transitionType: 'caToRo'});
+    }
+
+    return {
+        getAddressSubmission
+    }
+};

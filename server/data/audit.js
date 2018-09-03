@@ -9,21 +9,35 @@ const keys = [
     'CREATE_PDF'
 ];
 
-exports.record = function record(key, user, data) {
+module.exports = {
 
-    if (!keys.includes(key)) {
-        throw new Error(`Unknown audit key: ${key}`);
+    record: function(key, user, data) {
+
+        if (!keys.includes(key)) {
+            throw new Error(`Unknown audit key: ${key}`);
+        }
+
+        logger.audit('AUDIT', {key});
+
+        return addItem(key, user, data)
+            .then(res => {
+                    logger.info('Audit item inserted');
+                }
+            ).catch(error => {
+                logger.error('Error during audit insertion ', error.stack);
+            });
+    },
+
+    getEvents: async function(action, filters = {}) {
+
+        const query = {
+            text: `select * from audit where action = $1 and details @> $2`,
+            values: [action, filters]
+        };
+
+        const {rows} = await db.query(query);
+        return rows;
     }
-
-    logger.audit('AUDIT', {key});
-
-    return addItem(key, user, data)
-        .then(res => {
-                logger.info('Audit item inserted');
-            }
-        ).catch(error => {
-            logger.error('Error during audit insertion ', error.stack);
-        });
 };
 
 function addItem(key, user, data) {
