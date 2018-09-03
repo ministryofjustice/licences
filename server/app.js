@@ -33,6 +33,7 @@ const createUtilsRouter = require('../server/routes/utils');
 const createCaseListRouter = require('../server/routes/caseList');
 const createPdfRouter = require('../server/routes/pdf');
 const createSearchRouter = require('../server/routes/search');
+const createApiRouter = require('../server/routes/api');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -46,7 +47,8 @@ module.exports = function createApp({
                                         caseListService,
                                         pdfService,
                                         searchService,
-                                        audit
+                                        audit,
+                                        reportingService
                                     }) {
     const app = express();
 
@@ -270,6 +272,11 @@ module.exports = function createApp({
         createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware, audit}));
     app.use('/hdc/',
         createHdcRouter({logger, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
+
+    // hide functionality until authorisation strategy is established
+    if (!production) {
+        app.use('/api/', createApiRouter({reportingService}));
+    }
 
     // Error Handler
     app.use(function(req, res, next) {

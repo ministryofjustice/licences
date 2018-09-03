@@ -14,6 +14,7 @@ const createConditionsService = require('./services/conditionsService');
 const createCaseListService = require('./services/caseListService');
 const createPdfService = require('./services/pdfService');
 const createSearchService = require('./services/searchService');
+const createReportingService = require('./services/reportingService');
 const createCaseListFormatter = require('./services/utils/caseListFormatter');
 
 const signInService = createSignInService(audit);
@@ -25,6 +26,7 @@ const caseListService =
     createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter);
 const pdfService = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter);
 const searchService = createSearchService(logger, nomisClientBuilder, caseListFormatter);
+const reportingService = createReportingService(audit);
 
 const app = createApp({
     logger,
@@ -35,7 +37,8 @@ const app = createApp({
     caseListService,
     pdfService,
     searchService,
-    audit
+    audit,
+    reportingService
 });
 
 module.exports = app;
