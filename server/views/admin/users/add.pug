@@ -1,0 +1,42 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+
+    include ../../includes/back
+    +errorBannerWithDetail(errors, [
+        {field: 'nomisId'}
+    ])
+
+    h2.heading-large Add RO user
+
+
+    form#reportingForm(method='POST')
+        input(type="hidden" name="_csrf" value=csrfToken)
+
+        div#address.pure-g
+            div.pure-u-1.pure-u-md-2-5
+                div.pure-g.largeMarginBottom.midPaddingBottom
+                    div.pure-u-1.pure-u-md-4-5
+                        div.form-group
+                            label.form-label(for="nomisId") Nomis ID
+                            input#nomisId.form-control(name="nomisId" type="text")
+
+                        div.form-group
+                            label.form-label(for="deliusId") Delius ID
+                            input#deliusId.form-control(name="deliusId" type="text")
+
+                        div.form-group
+                            label.form-label(for="first") First name
+                            input#first.form-control(name="first" type="text")
+
+                        div.form-group
+                            label.form-label(for="last") Last name
+                            input#last.form-control(name="last" type="text")
+
+
+        div.paddingBottom.smallPaddingTop
+            div.pure-u-1.inlineButtons
+                input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Add user")
+                a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/roUsers" role="button") Cancel
+
