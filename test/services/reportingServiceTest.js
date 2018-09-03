@@ -34,4 +34,26 @@ describe('reportingServiceTest', () => {
         });
 
     });
+
+    describe('getAssessmentComplete', () => {
+        context('booking id supplied', () => {
+            it('should call getEvents from the audit client', async () => {
+                await service.getAssessmentComplete('123');
+
+                expect(audit.getEvents).to.be.calledOnce();
+                expect(audit.getEvents).to.be.calledWith('SEND', {bookingId: '123', transitionType: 'roToCa'});
+            });
+        });
+
+        context('booking id not supplied', () => {
+            it('should call getEvents from the audit client without bookingId filter', async () => {
+                await service.getAssessmentComplete();
+
+                expect(audit.getEvents).to.be.calledOnce();
+                expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'roToCa'});
+            });
+
+        });
+
+    });
 });
