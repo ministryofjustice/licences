@@ -67,14 +67,13 @@ describe('/admin', () => {
                 });
         });
 
-        it('should display the user details - release', () => {
+        it('should display the user details', () => {
             return request(app)
                 .get('/admin/roUsers')
                 .expect(200)
                 .expect(res => {
                     expect(res.text).to.contain('user1');
                     expect(res.text).to.contain('user2');
-
                 });
         });
 
