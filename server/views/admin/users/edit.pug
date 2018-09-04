@@ -7,7 +7,7 @@ block content
         a#backBtn.link-back(href="/admin/") Back
     +errorBannerWithDetail(errors, [
         {field: 'newNomisId'},
-        {field: 'deliusId'}
+        {field: 'newDeliusId'}
     ])
 
     h2.heading-large Edit RO user
@@ -18,8 +18,8 @@ block content
         input(type="hidden" name="nomisId" value=roUser.nomis_id)
         input(type="hidden" name="deliusId" value=roUser.staff_id)
 
-        div#address.pure-g
-            div.pure-u-1.pure-u-md-2-5
+        div#user.pure-g
+            div.pure-u-1-2.pure-u-md-2-5
                 div.pure-g.largeMarginBottom.midPaddingBottom
                     div.pure-u-1.pure-u-md-4-5
                         div.form-group
@@ -27,16 +27,36 @@ block content
                             input#newNomisId.form-control(name="newNomisId" type="text" value=roUser.nomis_id)
 
                         div.form-group
-                            label.form-label(for="newDeliusId") Delius ID
-                            input#newDeliusId.form-control(name="newDeliusId" type="text" value=roUser.staff_id)
-
-                        div.form-group
                             label.form-label(for="first") First name
                             input#first.form-control(name="first" type="text" value=roUser.first_name)
 
                         div.form-group
+                            label.form-label(for="organisation") Organisation
+                            input#organisation.form-control(name="organisation" type="text" value=roUser.organisation)
+
+                        div.form-group
+                            label.form-label(for="email") Email
+                            input#email.form-control(name="email" type="text" value=roUser.email)
+
+            div.pure-u-1-2.pure-u-md-2-5
+                div.pure-g.largeMarginBottom.midPaddingBottom
+                    div.pure-u-1.pure-u-md-4-5
+                        div.form-group
+                            label.form-label(for="newDeliusId") Delius ID
+                            input#newDeliusId.form-control(name="newDeliusId" type="text" value=roUser.staff_id)
+
+                        div.form-group
                             label.form-label(for="last") Last name
                             input#last.form-control(name="last" type="text" value=roUser.last_name)
+
+
+                        div.form-group
+                            label.form-label(for="jobRole") Job Role
+                            input#jobRole.form-control(name="jobRole" type="text" value=roUser.job_role)
+
+                        div.form-group
+                            label.form-label(for="telephone") Telephone
+                            input#telephone.form-control(name="telephone" type="text" value=roUser.telephone)
 
         div.paddingBottom.smallPaddingTop
             div.pure-u-1.inlineButtons
