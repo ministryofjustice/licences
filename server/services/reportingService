@@ -1,11 +1,9 @@
 module.exports = function(audit) {
 
     function getSend(transitionType) {
-        return (bookingId) => {
-            if (bookingId) {
-                return audit.getEvents('SEND', {bookingId, transitionType});
-            }
-            return audit.getEvents('SEND', {transitionType});
+        return (startMoment, endMoment) => {
+
+            return audit.getEvents('SEND', {transitionType}, startMoment, endMoment);
         }
     }
 

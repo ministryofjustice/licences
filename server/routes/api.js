@@ -1,6 +1,7 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./config/swagger');
+const moment = require('moment');
 
 module.exports = function({reportingService}) {
     const router = express.Router();
@@ -16,28 +17,21 @@ module.exports = function({reportingService}) {
 
     router.get('/:report/', async (req, res) => {
         const {report} = req.params;
-        if (!getMethods[report]) {
-            return res.status(404).json({message: 'Not found'});
+        const {start, end} = req.query;
+
+        const startDate = start ? moment(start, 'DD-MM-YYYY') : null;
+        const endDate = end ? moment(end, 'DD-MM-YYYY').set({h: 23, m: 59}) : null;
+        const invalidDate = (startDate && !startDate.isValid()) || (endDate && !endDate.isValid());
+        if (invalidDate) {
+            return res.status(400).json({message: 'Invalid date format'});
         }
-
-        try {
-            const response = await getMethods[report]();
-            return res.send(response);
-
-        } catch (err) {
-            return res.status(500).json({message: 'Error accessing data'});
-        }
-    });
-
-    router.get('/:report/:bookingId', async (req, res) => {
-        const {report, bookingId} = req.params;
 
         if (!getMethods[report]) {
             return res.status(404).json({message: 'Not found'});
         }
 
         try {
-            const response = await getMethods[report](bookingId);
+            const response = await getMethods[report](startDate, endDate);
             return res.send(response);
 
         } catch (err) {
