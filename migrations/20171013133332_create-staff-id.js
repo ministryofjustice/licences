@@ -5,6 +5,10 @@ exports.up = knex =>
             table.string('staff_id', 255).notNullable();
             table.string('first_name').nullable();
             table.string('last_name').nullable();
+            table.string('organisation').nullable();
+            table.string('job_role').nullable();
+            table.string('email').nullable();
+            table.string('telephone').nullable();
         })
     ]);
 
