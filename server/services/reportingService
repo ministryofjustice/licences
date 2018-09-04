@@ -11,6 +11,8 @@ module.exports = function(audit) {
 
     return {
         getAddressSubmission: getSend('caToRo'),
-        getAssessmentComplete: getSend('roToCa')
+        getAssessmentComplete: getSend('roToCa'),
+        getFinalChecksComplete: getSend('caToDm'),
+        getApprovalComplete: getSend('dmToCa')
     }
 };

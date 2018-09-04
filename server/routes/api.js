@@ -5,7 +5,9 @@ module.exports = function({reportingService}) {
 
     const getMethods = {
         addressSubmission: reportingService.getAddressSubmission,
-        assessmentComplete: reportingService.getAssessmentComplete
+        assessmentComplete: reportingService.getAssessmentComplete,
+        finalChecksComplete: reportingService.getFinalChecksComplete,
+        decisionMade: reportingService.getApprovalComplete
     };
 
     router.get('/:report/', async (req, res) => {
