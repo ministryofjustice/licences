@@ -1,5 +1,6 @@
 const request = require('supertest');
 const express = require('express');
+const moment = require('moment');
 
 const createApiRoute = require('../../server/routes/api');
 let reportingService;
@@ -12,19 +13,8 @@ describe('/api/', () => {
 
     describe('address submission', () => {
 
+
         it('returns json', () => {
-
-            const app = createApp(reportingService);
-            return request(app)
-                .get('/api/addressSubmission/:bookingId')
-                .expect('Content-Type', /json/)
-                .expect(200)
-                .then(response => {
-                    expect(response.body.msg).to.eql('hello');
-                });
-        });
-
-        it('returns json if no booking id', () => {
 
             const app = createApp(reportingService);
             return request(app)
@@ -43,18 +33,6 @@ describe('/api/', () => {
 
             const app = createApp(reportingService);
             return request(app)
-                .get('/api/assessmentComplete/:bookingId')
-                .expect('Content-Type', /json/)
-                .expect(200)
-                .then(response => {
-                    expect(response.body.assessment).to.eql('complete');
-                });
-        });
-
-        it('returns json if no booking id', () => {
-
-            const app = createApp(reportingService);
-            return request(app)
                 .get('/api/assessmentComplete/')
                 .expect('Content-Type', /json/)
                 .expect(200)
@@ -67,18 +45,6 @@ describe('/api/', () => {
     describe('final checks complete', () => {
 
         it('returns json', () => {
-
-            const app = createApp(reportingService);
-            return request(app)
-                .get('/api/finalChecksComplete/:bookingId')
-                .expect('Content-Type', /json/)
-                .expect(200)
-                .then(response => {
-                    expect(response.body.finalChecks).to.eql('complete');
-                });
-        });
-
-        it('returns json if no booking id', () => {
 
             const app = createApp(reportingService);
             return request(app)
@@ -97,18 +63,6 @@ describe('/api/', () => {
 
             const app = createApp(reportingService);
             return request(app)
-                .get('/api/decisionMade/:bookingId')
-                .expect('Content-Type', /json/)
-                .expect(200)
-                .then(response => {
-                    expect(response.body.approval).to.eql('complete');
-                });
-        });
-
-        it('returns json if no booking id', () => {
-
-            const app = createApp(reportingService);
-            return request(app)
                 .get('/api/decisionMade/')
                 .expect('Content-Type', /json/)
                 .expect(200)
@@ -116,6 +70,33 @@ describe('/api/', () => {
                     expect(response.body.approval).to.eql('complete');
                 });
         });
+
+        it('uses start and end query parameters', () => {
+
+            const app = createApp(reportingService);
+            return request(app)
+                .get('/api/decisionMade?start=22-11-2017&end=04-09-2018')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .then(response => {
+                    expect(reportingService.getApprovalComplete).to.be.calledOnce();
+                    expect(reportingService.getApprovalComplete).to.be.calledWith(
+                        moment('22-11-2017', 'DD-MM-YYYY'), moment('04-09-2018', 'DD-MM-YYYY'));
+                });
+        });
+
+        it('returns a bad request if invalid date used', () => {
+
+            const app = createApp(reportingService);
+            return request(app)
+                .get('/api/decisionMade?start=22-13-2017&end=04-09-2018')
+                .expect('Content-Type', /json/)
+                .expect(400)
+                .then(response => {
+                    expect(response.body.message).to.eql('Invalid date format');
+                });
+        });
+
     });
 
     describe('unknown report', () => {

@@ -14,82 +14,51 @@ describe('reportingServiceTest', () => {
     });
 
     describe('getCurfewAddressSubmission', () => {
-        context('booking id supplied', () => {
-            it('should call getEvents from the audit client', async () => {
-                await service.getAddressSubmission('123');
 
-                expect(audit.getEvents).to.be.calledOnce();
-                expect(audit.getEvents).to.be.calledWith('SEND', {bookingId: '123', transitionType: 'caToRo'});
-            });
+        it('should call getEvents from the audit client ', async () => {
+            await service.getAddressSubmission();
+
+            expect(audit.getEvents).to.be.calledOnce();
+            expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'caToRo'});
         });
 
-        context('booking id not supplied', () => {
-            it('should call getEvents from the audit client without bookingId filter', async () => {
-                await service.getAddressSubmission();
+        it('should pass in dates if they are supplied', async () => {
+            await service.getAddressSubmission('start', 'end');
 
-                expect(audit.getEvents).to.be.calledOnce();
-                expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'caToRo'});
-            });
+            expect(audit.getEvents).to.be.calledOnce();
+            expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'caToRo'}, 'start', 'end');
         });
     });
 
     describe('getAssessmentComplete', () => {
-        context('booking id supplied', () => {
-            it('should call getEvents from the audit client', async () => {
-                await service.getAssessmentComplete('123');
 
-                expect(audit.getEvents).to.be.calledOnce();
-                expect(audit.getEvents).to.be.calledWith('SEND', {bookingId: '123', transitionType: 'roToCa'});
-            });
+        it('should call getEvents from the audit client', async () => {
+            await service.getAssessmentComplete();
+
+            expect(audit.getEvents).to.be.calledOnce();
+            expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'roToCa'});
         });
 
-        context('booking id not supplied', () => {
-            it('should call getEvents from the audit client without bookingId filter', async () => {
-                await service.getAssessmentComplete();
-
-                expect(audit.getEvents).to.be.calledOnce();
-                expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'roToCa'});
-            });
-        });
     });
 
     describe('getFinalChecksComplete', () => {
-        context('booking id supplied', () => {
-            it('should call getEvents from the audit client', async () => {
-                await service.getFinalChecksComplete('123');
 
-                expect(audit.getEvents).to.be.calledOnce();
-                expect(audit.getEvents).to.be.calledWith('SEND', {bookingId: '123', transitionType: 'caToDm'});
-            });
-        });
+        it('should call getEvents from the audit client', async () => {
+            await service.getFinalChecksComplete('123');
 
-        context('booking id not supplied', () => {
-            it('should call getEvents from the audit client without bookingId filter', async () => {
-                await service.getFinalChecksComplete();
-
-                expect(audit.getEvents).to.be.calledOnce();
-                expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'caToDm'});
-            });
+            expect(audit.getEvents).to.be.calledOnce();
+            expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'caToDm'});
         });
     });
 
     describe('getApprovalComplete', () => {
-        context('booking id supplied', () => {
-            it('should call getEvents from the audit client', async () => {
-                await service.getApprovalComplete('123');
 
-                expect(audit.getEvents).to.be.calledOnce();
-                expect(audit.getEvents).to.be.calledWith('SEND', {bookingId: '123', transitionType: 'dmToCa'});
-            });
+        it('should call getEvents from the audit client', async () => {
+            await service.getApprovalComplete('123');
+
+            expect(audit.getEvents).to.be.calledOnce();
+            expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'dmToCa'});
         });
 
-        context('booking id not supplied', () => {
-            it('should call getEvents from the audit client without bookingId filter', async () => {
-                await service.getApprovalComplete();
-
-                expect(audit.getEvents).to.be.calledOnce();
-                expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'dmToCa'});
-            });
-        });
     });
 });
