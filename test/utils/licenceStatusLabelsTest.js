@@ -1,5 +1,4 @@
 const {getStatusLabel} = require('../../server/utils/licenceStatusLabels');
-const {roles} = require('../../server/models/roles');
 const {licenceStages} = require('../../server/models/licenceStages');
 
 describe('getStatusLabel', () => {
@@ -17,7 +16,7 @@ describe('getStatusLabel', () => {
 
         examples.forEach(example => {
             it(`should give default label when licence is ${example.reason}`, () => {
-                expect(getStatusLabel(example.status, roles.CA)).to.eql(defaultLabel);
+                expect(getStatusLabel(example.status, 'CA')).to.eql(defaultLabel);
             });
         });
     });
@@ -77,7 +76,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.CA);
+            assertLabels(examples, 'CA');
         });
 
         describe('ELIGIBILITY stage - message priority when multiple reasons', () => {
@@ -99,7 +98,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.CA);
+            assertLabels(examples, 'CA');
         });
 
 
@@ -127,7 +126,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.CA);
+            assertLabels(examples, 'CA');
         });
 
         describe('PROCESSING_CA stage - message priority when multiple reasons', () => {
@@ -149,7 +148,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.CA);
+            assertLabels(examples, 'CA');
         });
 
         describe('Other stages', () => {
@@ -173,7 +172,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.CA);
+            assertLabels(examples, 'CA');
         });
 
     });
@@ -208,7 +207,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.RO);
+            assertLabels(examples, 'RO');
         });
 
         describe('PROCESSING_CA stage', () => {
@@ -235,7 +234,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.RO);
+            assertLabels(examples, 'RO');
         });
 
         describe('Other stages', () => {
@@ -259,7 +258,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.RO);
+            assertLabels(examples, 'RO');
         });
     });
 
@@ -278,7 +277,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.DM);
+            assertLabels(examples, 'DM');
         });
 
         describe('Other stages', () => {
@@ -306,7 +305,7 @@ describe('getStatusLabel', () => {
                 }
             ];
 
-            assertLabels(examples, roles.DM);
+            assertLabels(examples, 'DM');
         });
     });
 

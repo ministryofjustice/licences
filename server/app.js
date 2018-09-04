@@ -24,6 +24,7 @@ const passport = require('passport');
 const auth = require('./authentication/auth');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
+const createDefaultRouter = require('../server/routes/default');
 const createSignInRouter = require('./routes/signIn');
 const createTaskListRouter = require('./routes/taskList');
 const createHdcRouter = require('./routes/hdc');
@@ -261,7 +262,7 @@ module.exports = function createApp({
         }
     });
 
-    app.get('/', (req, res) => res.redirect('/caseList/'));
+    app.use('/', createDefaultRouter());
     app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
     app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));

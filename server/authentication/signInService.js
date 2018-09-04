@@ -26,7 +26,8 @@ function signInService(audit) {
                 const userDetail = profile.staffId || profile.username || profile.lastName || 'no user id';
                 audit.record('LOGIN', userDetail);
 
-                const activeCaseLoad = await getCaseLoad(token, profile.activeCaseLoadId);
+                const activeCaseLoad =
+                    profile.activeCaseLoadId ? await getCaseLoad(token, profile.activeCaseLoadId) : null;
 
                 return {
                     ...profile,
@@ -129,7 +130,6 @@ function getOauthToken(oauthClientToken, requestSpec) {
     return superagent
         .post(`${getOauthUrl()}/oauth/token`)
         .set('Authorization', oauthClientToken)
-        .set('Elite-Authorization', oauthClientToken)
         .set('content-type', 'application/x-www-form-urlencoded')
         .send(oauthRequest)
         .timeout(timeoutSpec);
@@ -150,14 +150,9 @@ async function getUserProfile(token, username) {
     return profileResult.body;
 }
 
-async function getRoleCode(token) {
-    const role = await getRole(token);
-    const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
-    logger.info(`Elite2 got user role code [${roleCode}]`);
-    return roleCode;
-}
+const allowedRoles = config.roles.admin.concat(config.roles.user);
 
-async function getRole(token) {
+async function getRoleCode(token) {
 
     const rolesResult = await nomisGet('/users/me/roles', token);
     const roles = rolesResult.body;
@@ -165,12 +160,14 @@ async function getRole(token) {
 
     if (roles && roles.length > 0) {
         const role = roles.find(role => {
-            return role.roleCode.includes(config.nomis.licenceRolePrefix);
+            const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
+            return allowedRoles.includes(roleCode);
         });
 
-        logger.info(`Selected role: ${role.roleCode}`);
         if (role) {
-            return role;
+            const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
+            logger.info(`Selected role: ${role.roleCode}, giving role code: ${roleCode}`);
+            return roleCode;
         }
     }
 
@@ -193,7 +190,6 @@ function nomisGet(path, token) {
     return superagent
         .get(`${config.nomis.apiUrl}${path}`)
         .set('Authorization', token)
-        .set('Elite-Authorization', token)
         .timeout(timeoutSpec);
 }
 

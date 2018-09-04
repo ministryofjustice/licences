@@ -32,7 +32,6 @@ module.exports = {
             response: 30000,
             deadline: 35000
         },
-        licenceRolePrefix: get('LICENCE_ROLE_PREFIX', 'LICENCE'),
         apiClientId: get('API_CLIENT_ID', 'licences'),
         apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret'),
         licencesAdminApiClientId: get('ADMIN_API_CLIENT_ID', 'licencesadmin'),
@@ -48,5 +47,16 @@ module.exports = {
     pdf: {
         pdfServiceHost: get('PDF_SERVICE_HOST', 'http://localhost:8081'),
         taggingCompanyTelephone: get('TAGGING_CO_PHONE', '01234 567890')
+    },
+
+    roles: {
+        admin: [
+            'BATCHLOAD'
+        ],
+        user: [
+            'CA',
+            'RO',
+            'DM'
+        ]
     }
 };
