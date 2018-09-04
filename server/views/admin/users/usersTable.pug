@@ -1,23 +1,31 @@
-table#users.largeMarginBottom
+table#hdcEligiblePrisoners.largeMarginBottom
     thead
         tr
             th Nomis ID
             th Delius ID
             th First
             th Last
+            th
+            th
     tbody
-        if users && users.length > 0
-            each user, index in users
-                tr.user(class=index % 2 === 1 ? 'greyRow' : undefined)
+        if roUsers && roUsers.length > 0
+            each roUser, index in roUsers
+                tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
                     td.nomisId
-                        if user.nomis_id
-                            | #{user.nomis_id}
+                        if roUser.nomis_id
+                            | #{roUser.nomis_id}
                     td.deliusId
-                        if user.staff_id
-                            | #{user.staff_id}
+                        if roUser.staff_id
+                            | #{roUser.staff_id}
                     td.firstName
-                        if user.first_name
-                            | #{user.first_name}
+                        if roUser.first_name
+                            | #{roUser.first_name}
                     td.lastName
-                        if user.last_name
-                            |  #{user.last_name}
+                        if roUser.last_name
+                            |  #{roUser.last_name}
+                    td.edit
+                        a.button.button-primary.fullWidth.center(href="/admin/roUsers/edit/" + roUser.nomis_id role="button")
+                            | Edit
+                    td.delete
+                        a.button.button-secondary.fullWidth.center(href="/admin/roUsers/delete/" + roUser.nomis_id role="button")
+                            | Delete

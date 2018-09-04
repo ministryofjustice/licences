@@ -89,6 +89,15 @@ const searchServiceStub = {
     searchOffenders: sinon.stub().resolves()
 };
 
+const userServiceStub = {
+    getRoUsers: sinon.stub().resolves(),
+    getRoUser: sinon.stub().resolves(),
+    updateRoUser: sinon.stub().resolves(),
+    deleteRoUser: sinon.stub().resolves(),
+    addRoUser: sinon.stub().resolves(),
+    findRoUsers: sinon.stub().resolves()
+};
+
 const createHdcRoute = overrides => createLicenceConditionsRoute({
     licenceService: createLicenceServiceStub(),
     logger: loggerStub,
@@ -177,6 +186,7 @@ const setup = {
     caseListServiceStub,
     pdfServiceStub,
     searchServiceStub,
+    userServiceStub,
     createHdcRoute,
     formConfig,
     authenticationMiddleware,

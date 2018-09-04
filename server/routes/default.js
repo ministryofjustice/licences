@@ -6,8 +6,7 @@ module.exports = function() {
 
     router.get('/', (req, res) => {
         if (req.user && config.roles.admin.includes(req.user.role)) {
-            // TODO next
-            //  return res.redirect('/admin/');
+            return res.redirect('/admin/');
         }
         res.redirect('/caseList/');
     });

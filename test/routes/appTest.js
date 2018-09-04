@@ -16,7 +16,7 @@ describe('GET /', () => {
             .expect('Location', '/caseList/');
     });
 
-    it.skip('redirects to admin for admin users', () => {
+    it('redirects to admin for admin users', () => {
 
         const app = appSetup(defaultRoute(), 'batchUser');
 
@@ -26,3 +26,5 @@ describe('GET /', () => {
             .expect('Location', '/admin/');
     });
 });
+
+
