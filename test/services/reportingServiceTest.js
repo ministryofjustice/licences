@@ -30,9 +30,7 @@ describe('reportingServiceTest', () => {
                 expect(audit.getEvents).to.be.calledOnce();
                 expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'caToRo'});
             });
-
         });
-
     });
 
     describe('getAssessmentComplete', () => {
@@ -52,8 +50,46 @@ describe('reportingServiceTest', () => {
                 expect(audit.getEvents).to.be.calledOnce();
                 expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'roToCa'});
             });
+        });
+    });
 
+    describe('getFinalChecksComplete', () => {
+        context('booking id supplied', () => {
+            it('should call getEvents from the audit client', async () => {
+                await service.getFinalChecksComplete('123');
+
+                expect(audit.getEvents).to.be.calledOnce();
+                expect(audit.getEvents).to.be.calledWith('SEND', {bookingId: '123', transitionType: 'caToDm'});
+            });
         });
 
+        context('booking id not supplied', () => {
+            it('should call getEvents from the audit client without bookingId filter', async () => {
+                await service.getFinalChecksComplete();
+
+                expect(audit.getEvents).to.be.calledOnce();
+                expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'caToDm'});
+            });
+        });
+    });
+
+    describe('getApprovalComplete', () => {
+        context('booking id supplied', () => {
+            it('should call getEvents from the audit client', async () => {
+                await service.getApprovalComplete('123');
+
+                expect(audit.getEvents).to.be.calledOnce();
+                expect(audit.getEvents).to.be.calledWith('SEND', {bookingId: '123', transitionType: 'dmToCa'});
+            });
+        });
+
+        context('booking id not supplied', () => {
+            it('should call getEvents from the audit client without bookingId filter', async () => {
+                await service.getApprovalComplete();
+
+                expect(audit.getEvents).to.be.calledOnce();
+                expect(audit.getEvents).to.be.calledWith('SEND', {transitionType: 'dmToCa'});
+            });
+        });
     });
 });
