@@ -65,6 +65,15 @@ module.exports = function(
         res.redirect('/admin/roUsers');
     });
 
+    function validate(userInput) {
+        if (userInput.newNomisId.trim() === '') {
+            return {newNomisId: 'Nomis id is required'};
+        }
+        if (userInput.newDeliusId.trim() === '') {
+            return {newDeliusId: 'Delius staff id is required'};
+        }
+    }
+
     router.get('/roUsers/delete/:nomisId', async(async (req, res) => {
         const {nomisId} = req.params;
         const roUser = await userService.getRoUser(nomisId);
