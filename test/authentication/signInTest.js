@@ -38,7 +38,7 @@ describe('signInService', () => {
 
             fakeNomis
                 .get(`/users/me/roles`)
-                .reply(200, [{roleCode: 'LICENCE'}]);
+                .reply(200, [{roleCode: 'CA'}]);
 
             fakeNomis
                 .get(`/users/me/caseLoads`)
@@ -48,7 +48,7 @@ describe('signInService', () => {
                 key: 'value',
                 token: 'type token',
                 refreshToken: 'refresh',
-                role: 'LICENCE',
+                role: 'CA',
                 username: 'un',
                 activeCaseLoadId: 'ID',
                 activeCaseLoad: {description: 'Prison', caseLoadId: 'ID'},
@@ -162,7 +162,7 @@ describe('signInService', () => {
 
             fakeNomis
                 .get(`/users/me/roles`)
-                .reply(500, [{roleCode: 'LICENCE'}]);
+                .reply(500, [{roleCode: 'CA'}]);
 
             return expect(service.signIn('un', 'pw')).to.eventually.be.rejected();
         });
@@ -178,7 +178,7 @@ describe('signInService', () => {
 
             fakeNomis
                 .get(`/users/me/roles`)
-                .reply(200, [{roleCode: 'LICENCE'}]);
+                .reply(200, [{roleCode: 'CA'}]);
 
             fakeNomis
                 .get(`/users/me/caseLoads`)
@@ -188,9 +188,36 @@ describe('signInService', () => {
                 key: 'value',
                 token: 'type token',
                 refreshToken: 'refresh',
-                role: 'LICENCE',
+                role: 'CA',
                 username: 'un',
                 activeCaseLoadId: 'ID',
+                activeCaseLoad: null,
+                refreshTime: in15Mins
+            };
+
+            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
+        });
+
+        it('should not get caseload but return null if there is no active caseload ID', () => {
+            fakeOauth
+                .post(`/oauth/token`)
+                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
+
+            fakeNomis
+                .get(`/users/me`)
+                .reply(200, {key: 'value', activeCaseLoadId: ''});
+
+            fakeNomis
+                .get(`/users/me/roles`)
+                .reply(200, [{roleCode: 'CA'}]);
+
+            const expectedOutput = {
+                key: 'value',
+                token: 'type token',
+                refreshToken: 'refresh',
+                role: 'CA',
+                username: 'un',
+                activeCaseLoadId: '',
                 activeCaseLoad: null,
                 refreshTime: in15Mins
             };
@@ -226,4 +253,59 @@ describe('signInService', () => {
         });
 
     });
+
+    describe('find role code', () => {
+
+        it('should find matching role code appearing at end of role', () => {
+            fakeOauth
+                .post(`/oauth/token`)
+                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
+
+            fakeNomis
+                .get(`/users/me`)
+                .reply(200);
+
+            fakeNomis
+                .get(`/users/me/roles`)
+                .reply(200, [{roleCode: 'ANYTHING_SOMETHING_CA'}]);
+
+            const expectedOutput = {
+                token: 'type token',
+                refreshToken: 'refresh',
+                role: 'CA',
+                username: 'un',
+                activeCaseLoad: null,
+                refreshTime: in15Mins
+            };
+
+            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
+        });
+
+        it('should not find matching role code appearing when not at end of role', () => {
+            fakeOauth
+                .post(`/oauth/token`)
+                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
+
+            fakeNomis
+                .get(`/users/me`)
+                .reply(200);
+
+            fakeNomis
+                .get(`/users/me/roles`)
+                .reply(200, [{roleCode: 'CA_DM'}]);
+
+            const expectedOutput = {
+                token: 'type token',
+                refreshToken: 'refresh',
+                role: 'DM',
+                username: 'un',
+                activeCaseLoad: null,
+                refreshTime: in15Mins
+            };
+
+            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
+        });
+
+    });
+
 });

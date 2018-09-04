@@ -112,7 +112,6 @@ function nomisGetBuilder(token) {
                 .get(path)
                 .query(query)
                 .set('Authorization', token)
-                .set('Elite-Authorization', token)
                 .set(headers)
                 .responseType(responseType)
                 .timeout(timeoutSpec);
@@ -142,7 +141,6 @@ function nomisPostBuilder(token) {
                 .post(path)
                 .send(body)
                 .set('Authorization', token)
-                .set('Elite-Authorization', token)
                 .set(headers)
                 .responseType(responseType)
                 .timeout(timeoutSpec);

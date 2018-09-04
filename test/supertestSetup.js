@@ -8,8 +8,6 @@ const auth = require('./mockAuthentication');
 const cookieSession = require('cookie-session');
 const flash = require('connect-flash');
 
-const {roles} = require('../server/models/roles');
-
 const licenceConditionsConfig = require('../server/routes/config/licenceConditions');
 const eligibilityConfig = require('../server/routes/config/eligibility');
 const proposedAddressConfig = require('../server/routes/config/proposedAddress');
@@ -143,21 +141,29 @@ const users = {
         lastName: 'last',
         staffId: 'id',
         token: 'token',
-        role: roles.CA
+        role: 'CA',
+        username: 'CA_USER_TEST'
     },
     roUser: {
         firstName: 'first',
         lastName: 'last',
         staffId: 'id',
         token: 'token',
-        role: roles.RO
+        role: 'RO'
     },
     dmUser: {
         firstName: 'first',
         lastName: 'last',
         staffId: 'id',
         token: 'token',
-        role: roles.DM
+        role: 'DM'
+    },
+    batchUser: {
+        firstName: 'first',
+        lastName: 'last',
+        staffId: 'id',
+        token: 'token',
+        role: 'BATCHLOAD'
     }
 };
 
