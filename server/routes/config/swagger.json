@@ -1,0 +1,145 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "API to expost data about the HDC process",
+    "version": "1.0.0",
+    "title": "Home Detention Curfew"
+  },
+  "tags": [
+    {
+      "name": "Send Events",
+      "description": "Transitions between actors in the HDC application process"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/addressSubmission": {
+      "get": {
+        "tags": [
+          "Send Events"
+        ],
+        "summary": "Returns all address submissions from Prison Case Admin to Responsible Officer",
+        "description": "Returns all submissions from Responsible Officer to Prison Case Admin on addition of a proposed curfew address to be assessed",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SendEvent"
+            }
+          },
+          "500": {
+            "description": "Error accessing data"
+          }
+        }
+      }
+    },
+    "/assessmentComplete": {
+      "get": {
+        "tags": [
+          "Send Events"
+        ],
+        "summary": "Returns all submissions from Responsible Officer to Prison Case Admin",
+        "description": "Returns all submissions from Responsible Officer to Prison Case Admin on completion of curfew address assessment, risk management, curfew hours, licence conditions and reporting instructions",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SendEvent"
+            }
+          },
+          "500": {
+            "description": "Error accessing data"
+          }
+        }
+      }
+    },
+    "/finalChecksComplete": {
+      "get": {
+        "tags": [
+          "Send Events"
+        ],
+        "summary": "Returns all submissions from Prison Case Admin to Decision Maker",
+        "description": "Returns all submissions from Prison Case Admin to Decision Maker for a decision to be made",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SendEvent"
+            }
+          },
+          "500": {
+            "description": "Error accessing data"
+          }
+        }
+      }
+    },
+    "/decisionMade": {
+      "get": {
+        "tags": [
+          "Send Events"
+        ],
+        "summary": "Returns all submissions from Decision Maker to Prison Case Admin",
+        "description": "Returns all submissions from Decision Maker to Prison Case Admin when the licence application has been approved or rejected",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/SendEvent"
+            }
+          },
+          "500": {
+            "description": "Error accessing data"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SendEvent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object",
+          "properties": {
+            "bookingId": {
+              "type": "string"
+            },
+            "transitionType": {
+              "type": "string"
+            },
+            "submissionTarget": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
