@@ -1,7 +1,11 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./config/swagger');
 
 module.exports = function({reportingService}) {
     const router = express.Router();
+
+    router.use('/docs/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     const getMethods = {
         addressSubmission: reportingService.getAddressSubmission,
