@@ -100,7 +100,8 @@ const createHdcRoute = overrides => createLicenceConditionsRoute({
 });
 
 const caseListServiceStub = {
-    getHdcCaseList: sinon.stub().resolves([])
+    getHdcCaseList: sinon.stub().resolves([]),
+    addTabToCases: sinon.stub().returns([])
 };
 
 function testFormPageGets(app, routes, licenceServiceStub) {
