@@ -3,20 +3,23 @@ include ../taskList/includes/startContinueViewButton
 
 block content
 
-    div.pure-g
-        div.pure-u-1
-            include ../includes/backToTaskList
-            include ../includes/personalDetailsSummary
+    div.back-link-container
+        include ../includes/backToTaskList
 
-        div.pure-u-1.borderBottom
-            h2.heading-large #{templateTitle}
-            p You need to complete the following before you create the licence
+    include ../includes/personalDetailsSummary
 
-        div.pure-u-1.largePaddingBottom
+    div.pure-u-1.borderBottom
+        h2.heading-large #{templateTitle}
+        p You need to complete the following before you create the licence
+
+    div.paddingBottom
+        div.taskListItem.borderBottomLight
             include tasks/sentenceInfoTask
+
+        div.taskListItem.borderBottom
             include tasks/reportingTask
 
-        div.pure-u-1.borderTop
+        div.taskListItem.borderBottom
             include tasks/createLicenceTask
 
 

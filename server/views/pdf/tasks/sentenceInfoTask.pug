@@ -1,17 +1,17 @@
 
 - var incomplete = incompleteGroups && incompleteGroups.includes('sentence')
 
-div.taskListItem.borderBottomLight.largeMarginBottom
+div.paddingBottom
     h2.heading-medium Sentence dates and offender information
 
     div.pure-g
         if incomplete
-            div.pure-u-3-4
+            div.pure-u-1.pure-u-md-3-4
                 | Not complete
-            div.pure-u-1-4.center
+            div.pure-u-1.pure-u-md-1-4.center
                 +startContinueView('UNSTARTED', "/hdc/pdf/missing/sentenceInfo/" + templateName + "/" + prisoner.bookingId)
         else
-            div.pure-u-3-4
+            div.pure-u-1.pure-u-md-3-4
                 | Complete
 
 

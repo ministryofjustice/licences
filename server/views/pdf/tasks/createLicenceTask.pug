@@ -1,16 +1,16 @@
 
 -var creationMessage = versionInfo.isNewVersion ? "version " + versionInfo.currentVersion : versionInfo.isNewTemplate ? "version " + (versionInfo.currentVersion + 1) : ""
 
-div.taskListItem.borderBottomLight.largeMarginBottom
+div.paddingBottom
 
     div.pure-g
-        div.pure-u-3-4
+        div.pure-u-1.pure-u-md-3-4
             h2.heading-medium Create #{versionInfo.templateLabel}
-        div.pure-u-1-4.center
+        div.pure-u-1.pure-u-md-1-4.center.largeMarginTop
             a(href="/hdc/pdf/select/" + bookingId) Change template
 
     div.pure-g
-        div.pure-u-3-4
+        div.pure-u-1.pure-u-md-3-4
             if canPrint
                 | Ready to print #{creationMessage}
                 if versionInfo.isNewTemplate
@@ -26,7 +26,7 @@ div.taskListItem.borderBottomLight.largeMarginBottom
                     else
                         |  #{versionInfo.lastTemplateLabel}
                     |, on #{versionInfo.lastVersion.timestamp}
-        div.pure-u-1-4.center
+        div.pure-u-1.pure-u-md-1-4.center
             a#createPdf.taskListAction.center.button(href="/hdc/pdf/create/" + templateName + "/" + bookingId
             role="button"
             target="_blank"
