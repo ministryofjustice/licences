@@ -30,7 +30,9 @@ const valuesWithMissing = {
     },
     missing: {
         reporting:
-            {mandatory: {REPORTING_AT: 'reporting date'}}
+            {mandatory: {REPORTING_AT: 'reporting date'}},
+        sentence:
+            {mandatory: {OFF_NOMS: 'noms id'}}
     }
 };
 
@@ -122,7 +124,7 @@ describe('PDF:', () => {
 
     describe('GET /tasklist', () => {
 
-        it('Shows incomplete tasks when missing values', () => {
+        it('Shows incomplete status on each task with missing data', () => {
 
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
 
@@ -131,7 +133,8 @@ describe('PDF:', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.include('Not complete');
+                    expect(res.text).to.include('id="reportingTaskStatus">Not complete');
+                    expect(res.text).to.include('id="sentenceTaskStatus">Not complete');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
                         'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'token');

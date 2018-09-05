@@ -6,12 +6,12 @@ div.paddingBottom
 
     div.pure-g
         if incomplete
-            div.pure-u-1.pure-u-md-3-4
+            div.pure-u-1.pure-u-md-3-4#sentenceTaskStatus
                 | Not complete
             div.pure-u-1.pure-u-md-1-4.center
                 +startContinueView('UNSTARTED', "/hdc/pdf/missing/sentenceInfo/" + templateName + "/" + prisoner.bookingId)
         else
-            div.pure-u-1.pure-u-md-3-4
+            div.pure-u-1.pure-u-md-3-4#sentenceTaskStatus
                 | Complete
 
 
