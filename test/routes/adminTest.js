@@ -213,7 +213,7 @@ describe('/admin', () => {
         it('redirects back to page and does not call user service when missing nomis id', () => {
             return request(app)
                 .post('/admin/roUsers/add/')
-                .send({nomisId: '   ', deliusId: 'delius', first: 'first', last: 'last'})
+                .send({newNomisId: '   ', newDeliusId: 'delius', first: 'first', last: 'last'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers/add')
                 .expect(res => {
@@ -224,7 +224,7 @@ describe('/admin', () => {
         it('redirects back to page and does not call user service when missing delius id', () => {
             return request(app)
                 .post('/admin/roUsers/add/')
-                .send({nomisId: 'nomisId', deliusId: '  ', first: 'first', last: 'last'})
+                .send({newNomisId: 'nomisId', newDeliusId: '  ', first: 'first', last: 'last'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers/add')
                 .expect(res => {
@@ -235,16 +235,16 @@ describe('/admin', () => {
         it('calls user service and redirects to user list', () => {
             return request(app)
                 .post('/admin/roUsers/add/')
-                .send({nomisId: 'nomisId', deliusId: 'deliusId', first: 'first', last: 'last'})
+                .send({newNomisId: 'nomisId', newDeliusId: 'deliusId', first: 'first', last: 'last'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
                     expect(userServiceStub.addRoUser).to.be.calledOnce();
                     expect(userServiceStub.addRoUser).to.be.calledWith({
-                        deliusId: 'deliusId',
+                        newDeliusId: 'deliusId',
                         first: 'first',
                         last: 'last',
-                        nomisId: 'nomisId'
+                        newNomisId: 'nomisId'
                     });
                 });
         });

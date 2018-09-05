@@ -115,8 +115,8 @@ describe('userService', () => {
             userClient.getRoUserByDeliusId.resolves();
 
             await service.addRoUser({
-                nomisId: 'nomisId',
-                deliusId: 2,
+                newNomisId: 'nomisId',
+                newDeliusId: 2,
                 first: 3,
                 last: 4,
                 organisation: 5,

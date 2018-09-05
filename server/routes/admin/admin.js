@@ -48,7 +48,7 @@ module.exports = function(
         const {nomisId} = req.params;
         const userInput = req.body;
 
-        const error = validate(userInput);
+        const error = validateIdentifiers(userInput);
         if (error) {
             req.flash('errors', error);
             return res.redirect(`/admin/roUsers/edit/${nomisId}`);
@@ -64,15 +64,6 @@ module.exports = function(
 
         res.redirect('/admin/roUsers');
     }));
-
-    function validate(userInput) {
-        if (userInput.newNomisId.trim() === '') {
-            return {newNomisId: 'Nomis id is required'};
-        }
-        if (userInput.newDeliusId.trim() === '') {
-            return {newDeliusId: 'Delius staff id is required'};
-        }
-    }
 
     router.get('/roUsers/delete/:nomisId', async(async (req, res) => {
         const {nomisId} = req.params;
@@ -94,8 +85,9 @@ module.exports = function(
     router.post('/roUsers/add', async(async (req, res) => {
         const userInput = req.body;
 
-        if (userInput.nomisId.trim() === '' || userInput.deliusId.trim() === '') {
-            req.flash('errors', {nomisId: 'Enter nomis ID and Delius ID'});
+        const error = validateIdentifiers(userInput);
+        if (error) {
+            req.flash('errors', error);
             return res.redirect('/admin/roUsers/add');
         }
 
@@ -104,10 +96,19 @@ module.exports = function(
             res.redirect('/admin/roUsers');
 
         } catch (error) {
-            req.flash('errors', {nomisId: error.message});
+            req.flash('errors', {newNomisId: error.message});
             return res.redirect('/admin/roUsers/add');
         }
     }));
+
+    function validateIdentifiers(userInput) {
+        if (userInput.newNomisId.trim() === '') {
+            return {newNomisId: 'Nomis id is required'};
+        }
+        if (userInput.newDeliusId.trim() === '') {
+            return {newDeliusId: 'Delius staff id is required'};
+        }
+    }
 
     return router;
 };

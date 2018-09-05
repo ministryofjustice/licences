@@ -15,14 +15,14 @@ module.exports = function createUserService(userClient) {
             nomisId, newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone);
     }
 
-    async function addRoUser({nomisId, deliusId, first, last, organisation, jobRole, email, telephone}) {
+    async function addRoUser({newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone}) {
 
         await Promise.all([
-            checkExistingNomis(nomisId),
-            checkExistingDelius(deliusId)
+            checkExistingNomis(newNomisId),
+            checkExistingDelius(newDeliusId)
         ]);
 
-        return userClient.addRoUser(nomisId, deliusId, first, last, organisation, jobRole, email, telephone);
+        return userClient.addRoUser(newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone);
     }
 
     async function checkExistingNomis(nomisId) {
