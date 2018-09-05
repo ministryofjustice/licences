@@ -4,14 +4,32 @@ div.paddingBottom
     div.pure-g
         div.pure-u-1.pure-u-md-3-4
             if licenceStatus.tasks.riskManagement === 'DONE'
-                if licenceStatus.decisions.riskManagementNeeded
-                    div Risk management required
+
+                if licenceStatus.decisions.riskManagementNeeded || licenceStatus.decisions.victimLiasionNeeded
+                    div.pure-g
+                        div.pure-u-1.pure-u-sm-3-5.notice-container
+                            div.notice
+                                i.icon.icon-important
+                                    span.visually-hidden Warning
+
+                                if licenceStatus.decisions.riskManagementNeeded
+                                    strong.bold-small
+                                        | Risk management required
+                                else
+                                    strong
+                                        | No risks
+
+                                if licenceStatus.decisions.victimLiasionNeeded
+                                    strong.bold-small
+                                        | Victim liaison required
+                                else
+                                    strong
+                                        | No victim liaison required
                 else
+
                     div No risks
-                if licenceStatus.decisions.victimLiasionNeeded
-                    div Victim liaison required
-                else
                     div No victim liaison required
+
             else
                 | Not completed
 
