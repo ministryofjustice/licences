@@ -6,7 +6,7 @@ include ./includes/utils
 block content
 
     div.back-link-container
-        a.link-back(href="/") Back to case list
+        a.link-back(href="/caselist/" + caseListTab) Back to case list
 
         if licenceStatus.decisions.excluded
             div.error-banner.marginTopMedium

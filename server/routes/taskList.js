@@ -6,7 +6,7 @@ const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
 const {pickKey} = require('../utils/functionalHelpers');
 
-module.exports = function({logger, prisonerService, licenceService, authenticationMiddleware, audit}) {
+module.exports = function({logger, prisonerService, licenceService, caseListService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -23,6 +23,7 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
         const {bookingId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, req.user.token);
         const licence = await licenceService.getLicence(bookingId);
+        const licenceWithTab = caseListService.addTabToCase(req.user.role, licence);
 
         const licenceStatus = getLicenceStatus(licence);
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
@@ -37,7 +38,8 @@ module.exports = function({logger, prisonerService, licenceService, authenticati
             statusLabel,
             prisonerInfo,
             bookingId,
-            postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
+            postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage),
+            caseListTab: licenceWithTab.tab
         });
     }));
 

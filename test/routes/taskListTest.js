@@ -4,6 +4,7 @@ const {
     loggerStub,
     createPrisonerServiceStub,
     createLicenceServiceStub,
+    caseListServiceStub,
     authenticationMiddleware,
     appSetup,
     auditStub
@@ -1049,6 +1050,7 @@ function createApp({prisonerService, licenceService}, user) {
     const route = createTaskListRoute({
         prisonerService,
         licenceService,
+        caseListService: caseListServiceStub,
         logger: loggerStub,
         authenticationMiddleware,
         audit: auditStub
