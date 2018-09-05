@@ -74,11 +74,21 @@ describe('userService', () => {
             userClient.getRoUser.resolves();
             userClient.getRoUserByDeliusId.resolves();
 
-            await service.updateRoUser('nomisId', 'newNomisId', 'deliusId', 'newDeliusId', 'first', 'last');
+            await service.updateRoUser(
+                'nomisId', {
+                    newNomisId: 1,
+                    deliusId: 2,
+                    newDeliusId: 3,
+                    first: 4,
+                    last: 5,
+                    organisation: 6,
+                    jobRole: 7,
+                    email: 8,
+                    telephone: 9
+                });
 
             expect(userClient.updateRoUser).to.be.calledOnce();
-            expect(userClient.updateRoUser)
-                .to.be.calledWith('nomisId', 'newNomisId', 'newDeliusId', 'first', 'last');
+            expect(userClient.updateRoUser).to.be.calledWith('nomisId', 1, 3, 4, 5, 6, 7, 8, 9);
         });
     });
 
@@ -104,13 +114,22 @@ describe('userService', () => {
             userClient.getRoUser.resolves();
             userClient.getRoUserByDeliusId.resolves();
 
-            await service.addRoUser('nomisId', 'deliusId', 'first', 'last');
+            await service.addRoUser({
+                newNomisId: 'nomisId',
+                newDeliusId: 2,
+                first: 3,
+                last: 4,
+                organisation: 5,
+                jobRole: 6,
+                email: 7,
+                telephone: 8
+            });
 
             expect(userClient.getRoUser).to.be.calledOnce();
             expect(userClient.getRoUser).to.be.calledWith('nomisId');
 
             expect(userClient.addRoUser).to.be.calledOnce();
-            expect(userClient.addRoUser).to.be.calledWith('nomisId', 'deliusId', 'first', 'last');
+            expect(userClient.addRoUser).to.be.calledWith('nomisId', 2, 3, 4, 5, 6, 7, 8);
         });
     });
 });

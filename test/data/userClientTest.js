@@ -67,17 +67,19 @@ describe('userClient', () => {
         it('should pass in the correct sql and params', () => {
 
             const expectedUpdateClause = 'update staff_ids';
-            const expectedSetClause= 'set nomis_id = $1, staff_id = $2, first_name = $3, last_name = $4';
-            const expectedWhereClause = 'where nomis_id = $5';
+            const expectedSetClause = 'set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5';
+            const expectedWhereClause = 'where nomis_id = $1';
 
-            const result = userProxy().updateRoUser('nomisId', 'newNomisId', 'newDeliusId', 'first', 'last');
+            const result = userProxy().updateRoUser(
+                'nomisId', 'newNomisId', 'newDeliusId', 'first', 'last', 'org', 'role', 'email', 'phone');
 
             return result.then(data => {
                 const call = queryStub.getCalls()[0].args[0];
                 expect(call.text).includes(expectedUpdateClause);
                 expect(call.text).includes(expectedSetClause);
                 expect(call.text).includes(expectedWhereClause);
-                expect(call.values).to.eql(['newNomisId', 'newDeliusId', 'first', 'last', 'nomisId']);
+                expect(call.values).to.eql([
+                    'nomisId', 'newNomisId', 'newDeliusId', 'first', 'last', 'org', 'role', 'email', 'phone']);
             });
         });
     });
@@ -102,15 +104,21 @@ describe('userClient', () => {
 
         it('should pass in the correct sql and params', () => {
 
-            const expectedClause =
-                'insert into staff_ids (nomis_id, staff_id, first_name, last_name) values($1, $2, $3, $4)';
+            const expectedInsertClause = 'insert into staff_ids';
+            const expectedColsClause =
+                '(nomis_id, staff_id, first_name, last_name, organisation, job_role, email, telephone)';
+            const expectedValuesClause = 'values($1, $2, $3, $4, $5, $6, $7, $8)';
 
-            const result = userProxy().addRoUser('nomisId', 'deliusId', 'first', 'last');
+            const result = userProxy().addRoUser(
+                'nomisId', 'deliusId', 'first', 'last', 'org', 'role', 'email', 'phone');
 
             return result.then(data => {
                 const call = queryStub.getCalls()[0].args[0];
-                expect(call.text).includes(expectedClause);
-                expect(call.values).to.eql(['nomisId', 'deliusId', 'first', 'last']);
+                expect(call.text).includes(expectedInsertClause);
+                expect(call.text).includes(expectedColsClause);
+                expect(call.text).includes(expectedValuesClause);
+                expect(call.values).to.eql([
+                    'nomisId', 'deliusId', 'first', 'last', 'org', 'role', 'email', 'phone']);
             });
         });
     });
@@ -119,13 +127,17 @@ describe('userClient', () => {
 
         it('should pass in the correct sql and params with wildcard searchterm', () => {
 
-            const expectedSelectClause = 'select nomis_id, staff_id, first_name, last_name from staff_ids';
+            const expectedSelectClause = 'select * from staff_ids';
 
             const expectedWhereClauses = [
                 'upper(nomis_id) like upper($1) or',
                 'upper(staff_id) like upper($1) or',
                 'upper(first_name) like upper($1) or',
-                'upper(last_name) like upper($1)'
+                'upper(last_name) like upper($1) or',
+                'upper(organisation) like upper($1) or',
+                'upper(job_role) like upper($1) or',
+                'upper(email) like upper($1) or',
+                'upper(telephone) like upper($1)'
             ];
 
             const expectedOrderByClause = 'order by nomis_id asc';

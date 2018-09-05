@@ -20,7 +20,7 @@ module.exports = {
     getRoUsers: async function() {
 
         const query = {
-            text: 'select nomis_id, staff_id, first_name, last_name from staff_ids order by nomis_id asc'
+            text: 'select * from staff_ids order by nomis_id asc'
         };
 
         const {rows} = await db.query(query);
@@ -31,7 +31,7 @@ module.exports = {
     getRoUser: async function(nomisId) {
 
         const query = {
-            text: 'select nomis_id, staff_id, first_name, last_name from staff_ids where nomis_id = $1',
+            text: 'select * from staff_ids where nomis_id = $1',
             values: [nomisId]
         };
 
@@ -43,7 +43,7 @@ module.exports = {
     getRoUserByDeliusId: async function(deliusId) {
 
         const query = {
-            text: 'select nomis_id, staff_id, first_name, last_name from staff_ids where staff_id = $1',
+            text: 'select * from staff_ids where staff_id = $1',
             values: [deliusId]
         };
 
@@ -52,13 +52,15 @@ module.exports = {
         return rows[0];
     },
 
-    updateRoUser: async function(nomisId, newNomisId, newDeliusId, first, last) {
+    updateRoUser: async function(
+        nomisId, newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone) {
 
         const query = {
             text: `update staff_ids 
-                    set nomis_id = $1, staff_id = $2, first_name = $3, last_name = $4 
-                    where nomis_id = $5`,
-            values: [newNomisId, newDeliusId, first, last, nomisId]
+                    set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5, 
+                    organisation = $6, job_role = $7, email = $8, telephone = $9 
+                    where nomis_id = $1`,
+            values: [nomisId, newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone]
         };
 
         return db.query(query);
@@ -74,11 +76,13 @@ module.exports = {
         return db.query(query);
     },
 
-    addRoUser: async function(nomisId, deliusId, first, last) {
+    addRoUser: async function(nomisId, deliusId, first, last, organisation, jobRole, email, telephone) {
 
         const query = {
-            text: 'insert into staff_ids (nomis_id, staff_id, first_name, last_name) values($1, $2, $3, $4)',
-            values: [nomisId, deliusId, first, last]
+            text: `insert into staff_ids
+                (nomis_id, staff_id, first_name, last_name, organisation, job_role, email, telephone)
+                values($1, $2, $3, $4, $5, $6, $7, $8)`,
+            values: [nomisId, deliusId, first, last, organisation, jobRole, email, telephone]
         };
 
         return db.query(query);
@@ -87,12 +91,16 @@ module.exports = {
     findRoUsers: async function(searchTerm) {
 
         const query = {
-            text: `select nomis_id, staff_id, first_name, last_name from staff_ids 
+            text: `select * from staff_ids 
                 where 
                     upper(nomis_id) like upper($1) or 
                     upper(staff_id) like upper($1) or
                     upper(first_name) like upper($1) or
-                    upper(last_name) like upper($1) 
+                    upper(last_name) like upper($1) or
+                    upper(organisation) like upper($1) or
+                    upper(job_role) like upper($1) or
+                    upper(email) like upper($1) or
+                    upper(telephone) like upper($1)
                 order by nomis_id asc`,
             values: [`%${searchTerm}%`]
         };

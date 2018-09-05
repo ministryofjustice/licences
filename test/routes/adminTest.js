@@ -151,7 +151,13 @@ describe('/admin', () => {
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
                     expect(userServiceStub.updateRoUser).to.be.calledOnce();
-                    expect(userServiceStub.updateRoUser).to.be.calledWith('1', '1n', 'd', 'dn', 'f', 'l');
+                    expect(userServiceStub.updateRoUser).to.be.calledWith('1', {
+                        deliusId: 'd',
+                        first: 'f',
+                        last: 'l',
+                        newDeliusId: 'dn',
+                        newNomisId: '1n'
+                    });
                 });
         });
     });
@@ -207,7 +213,7 @@ describe('/admin', () => {
         it('redirects back to page and does not call user service when missing nomis id', () => {
             return request(app)
                 .post('/admin/roUsers/add/')
-                .send({nomisId: '   ', deliusId: 'delius', first: 'first', last: 'last'})
+                .send({newNomisId: '   ', newDeliusId: 'delius', first: 'first', last: 'last'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers/add')
                 .expect(res => {
@@ -218,7 +224,7 @@ describe('/admin', () => {
         it('redirects back to page and does not call user service when missing delius id', () => {
             return request(app)
                 .post('/admin/roUsers/add/')
-                .send({nomisId: 'nomisId', deliusId: '  ', first: 'first', last: 'last'})
+                .send({newNomisId: 'nomisId', newDeliusId: '  ', first: 'first', last: 'last'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers/add')
                 .expect(res => {
@@ -229,12 +235,17 @@ describe('/admin', () => {
         it('calls user service and redirects to user list', () => {
             return request(app)
                 .post('/admin/roUsers/add/')
-                .send({nomisId: 'nomisId', deliusId: 'deliusId', first: 'first', last: 'last'})
+                .send({newNomisId: 'nomisId', newDeliusId: 'deliusId', first: 'first', last: 'last'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
                     expect(userServiceStub.addRoUser).to.be.calledOnce();
-                    expect(userServiceStub.addRoUser).to.be.calledWith('nomisId', 'deliusId', 'first', 'last');
+                    expect(userServiceStub.addRoUser).to.be.calledWith({
+                        newDeliusId: 'deliusId',
+                        first: 'first',
+                        last: 'last',
+                        newNomisId: 'nomisId'
+                    });
                 });
         });
     });
