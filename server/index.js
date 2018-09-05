@@ -4,6 +4,7 @@ const logger = require('../log');
 const audit = require('./data/audit');
 
 const licenceClient = require('./data/licenceClient');
+const userClient = require('./data/userClient');
 const nomisClientBuilder = require('./data/nomisClientBuilder');
 const pdfFormatter = require('./services/utils/pdfFormatter');
 
@@ -16,6 +17,7 @@ const createPdfService = require('./services/pdfService');
 const createSearchService = require('./services/searchService');
 const createReportingService = require('./services/reportingService');
 const createCaseListFormatter = require('./services/utils/caseListFormatter');
+const createUserService = require('./services/admin/userService');
 
 const signInService = createSignInService(audit);
 const licenceService = createLicenceService(licenceClient);
@@ -27,6 +29,7 @@ const caseListService =
 const pdfService = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter);
 const searchService = createSearchService(logger, nomisClientBuilder, caseListFormatter);
 const reportingService = createReportingService(audit);
+const userService = createUserService(userClient);
 
 const app = createApp({
     logger,
@@ -37,8 +40,9 @@ const app = createApp({
     caseListService,
     pdfService,
     searchService,
-    audit,
-    reportingService
+    reportingService,
+    userService,
+    audit
 });
 
 module.exports = app;

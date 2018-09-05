@@ -35,6 +35,7 @@ const createCaseListRouter = require('../server/routes/caseList');
 const createPdfRouter = require('../server/routes/pdf');
 const createSearchRouter = require('../server/routes/search');
 const createApiRouter = require('../server/routes/api');
+const createAdminRouter = require('../server/routes/admin/admin');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -48,8 +49,9 @@ module.exports = function createApp({
                                         caseListService,
                                         pdfService,
                                         searchService,
-                                        audit,
-                                        reportingService
+                                        userService,
+                                        reportingService,
+                                        audit
                                     }) {
     const app = express();
 
@@ -264,6 +266,7 @@ module.exports = function createApp({
 
     app.use('/', createDefaultRouter());
     app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
+    app.use('/admin/', createAdminRouter({logger, userService, authenticationMiddleware}));
     app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/hdc/pdf/', createPdfRouter(

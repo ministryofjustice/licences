@@ -1,0 +1,45 @@
+extends ../../layout
+
+block content
+
+    div.back-link-container.smallPaddingTop
+            a#backBtn.link-back(href="/admin/") Back
+
+    h2.heading-large Delete RO user?
+
+
+    form#reportingForm(method='POST')
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="nomisId" value=roUser.nomis_id)
+
+        div#address.pure-g
+            div.pure-u-1.pure-u-md-2-5
+                table#users.largeMarginBottom
+                    thead
+                        tr
+                            th Nomis ID
+                            th Delius ID
+                            th First
+                            th Last
+                            th
+                    tbody
+                        tr.user
+                            td.nomisId
+                                if roUser.nomis_id
+                                    | #{roUser.nomis_id}
+                            td.deliusId
+                                if roUser.staff_id
+                                    | #{roUser.staff_id}
+                            td.firstName
+                                if roUser.first_name
+                                    | #{roUser.first_name}
+                            td.lastName
+                                if roUser.last_name
+                                    | #{roUser.last_name}
+
+
+        div.paddingBottom.smallPaddingTop
+            div.pure-u-1.inlineButtons
+                input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Delete user")
+                a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/roUsers" role="button") Cancel
+

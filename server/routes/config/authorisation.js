@@ -1,5 +1,9 @@
 module.exports = {
 
+    '/admin': {
+        authorised: [{role: 'BATCHLOAD'}]
+    },
+
     '/hdc/eligibility/': {
         authorised: [{role: 'CA'}]
     },
@@ -84,3 +88,4 @@ module.exports = {
         authorised: [{role: 'RO'}]
     }
 };
+
