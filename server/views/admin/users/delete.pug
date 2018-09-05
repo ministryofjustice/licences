@@ -3,7 +3,7 @@ extends ../../layout
 block content
 
     div.back-link-container.smallPaddingTop
-            a#backBtn.link-back(href="/admin/") Back
+        a#backBtn.link-back(href="/admin/") Back
 
     h2.heading-large Delete RO user?
 
@@ -13,7 +13,7 @@ block content
         input(type="hidden" name="nomisId" value=roUser.nomis_id)
 
         div#address.pure-g
-            div.pure-u-1.pure-u-md-2-5
+            div.pure-u-1
                 table#users.largeMarginBottom
                     thead
                         tr
@@ -21,6 +21,10 @@ block content
                             th Delius ID
                             th First
                             th Last
+                            th Organisation
+                            th Job Role
+                            th Email
+                            th Telephone
                             th
                     tbody
                         tr.user
@@ -36,6 +40,18 @@ block content
                             td.lastName
                                 if roUser.last_name
                                     | #{roUser.last_name}
+                            td.organisation
+                                if roUser.organisation
+                                    | #{roUser.organisation}
+                            td.jobRole
+                                if roUser.job_role
+                                    | #{roUser.job_role}
+                            td.email
+                                if roUser.email
+                                    | #{roUser.email}
+                            td.telephone
+                                if roUser.telephone
+                                    | #{roUser.telephone}
 
 
         div.paddingBottom.smallPaddingTop

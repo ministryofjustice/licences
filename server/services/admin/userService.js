@@ -1,6 +1,7 @@
 module.exports = function createUserService(userClient) {
 
-    async function updateRoUser(nomisId, newNomisId, deliusId, newDeliusId, first, last) {
+    async function updateRoUser(
+        nomisId, {newNomisId, deliusId, newDeliusId, first, last, organisation, jobRole, email, telephone}) {
 
         if (newNomisId !== nomisId) {
             await checkExistingNomis(newNomisId, newDeliusId);
@@ -10,17 +11,18 @@ module.exports = function createUserService(userClient) {
             await checkExistingDelius(newDeliusId);
         }
 
-        return userClient.updateRoUser(nomisId, newNomisId, newDeliusId, first, last);
+        return userClient.updateRoUser(
+            nomisId, newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone);
     }
 
-    async function addRoUser(nomisId, deliusId, first, last) {
+    async function addRoUser({nomisId, deliusId, first, last, organisation, jobRole, email, telephone}) {
 
         await Promise.all([
             checkExistingNomis(nomisId),
             checkExistingDelius(deliusId)
         ]);
 
-        return userClient.addRoUser(nomisId, deliusId, first, last);
+        return userClient.addRoUser(nomisId, deliusId, first, last, organisation, jobRole, email, telephone);
     }
 
     async function checkExistingNomis(nomisId) {

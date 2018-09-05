@@ -46,26 +46,33 @@ module.exports = function(
 
     router.post('/roUsers/edit/:nomisId', async(async (req, res) => {
         const {nomisId} = req.params;
-        const {newNomisId, deliusId, newDeliusId, first, last} = req.body;
+        const userInput = req.body;
 
-        if (newNomisId.trim() === '') {
-            req.flash('errors', {newNomisId: 'Nomis id is required'});
-            return res.redirect(`/admin/roUsers/edit/${nomisId}`);
-        }
-        if (newDeliusId.trim() === '') {
-            req.flash('errors', {newDeliusId: 'Delius staff id is required'});
+        const error = validate(userInput);
+        if (error) {
+            req.flash('errors', error);
             return res.redirect(`/admin/roUsers/edit/${nomisId}`);
         }
 
         try {
-            await userService.updateRoUser(nomisId, newNomisId, deliusId, newDeliusId, first, last);
+            await userService.updateRoUser(nomisId, userInput);
 
         } catch (error) {
             req.flash('errors', {newNomisId: error.message});
             return res.redirect(`/admin/roUsers/edit/${nomisId}`);
         }
+
         res.redirect('/admin/roUsers');
     }));
+
+    function validate(userInput) {
+        if (userInput.newNomisId.trim() === '') {
+            return {newNomisId: 'Nomis id is required'};
+        }
+        if (userInput.newDeliusId.trim() === '') {
+            return {newDeliusId: 'Delius staff id is required'};
+        }
+    }
 
     router.get('/roUsers/delete/:nomisId', async(async (req, res) => {
         const {nomisId} = req.params;
@@ -75,9 +82,7 @@ module.exports = function(
 
     router.post('/roUsers/delete/:nomisId', async(async (req, res) => {
         const {nomisId} = req.params;
-
         await userService.deleteRoUser(nomisId);
-
         res.redirect('/admin/roUsers');
     }));
 
@@ -87,15 +92,15 @@ module.exports = function(
     }));
 
     router.post('/roUsers/add', async(async (req, res) => {
-        const {nomisId, deliusId, first, last} = req.body;
+        const userInput = req.body;
 
-        if (nomisId.trim() === '' || deliusId.trim() === '') {
+        if (userInput.nomisId.trim() === '' || userInput.deliusId.trim() === '') {
             req.flash('errors', {nomisId: 'Enter nomis ID and Delius ID'});
             return res.redirect('/admin/roUsers/add');
         }
 
         try {
-            await userService.addRoUser(nomisId, deliusId, first, last);
+            await userService.addRoUser(userInput);
             res.redirect('/admin/roUsers');
 
         } catch (error) {

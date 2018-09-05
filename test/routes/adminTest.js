@@ -151,7 +151,13 @@ describe('/admin', () => {
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
                     expect(userServiceStub.updateRoUser).to.be.calledOnce();
-                    expect(userServiceStub.updateRoUser).to.be.calledWith('1', '1n', 'd', 'dn', 'f', 'l');
+                    expect(userServiceStub.updateRoUser).to.be.calledWith('1', {
+                        deliusId: 'd',
+                        first: 'f',
+                        last: 'l',
+                        newDeliusId: 'dn',
+                        newNomisId: '1n'
+                    });
                 });
         });
     });
@@ -234,7 +240,12 @@ describe('/admin', () => {
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
                     expect(userServiceStub.addRoUser).to.be.calledOnce();
-                    expect(userServiceStub.addRoUser).to.be.calledWith('nomisId', 'deliusId', 'first', 'last');
+                    expect(userServiceStub.addRoUser).to.be.calledWith({
+                        deliusId: 'deliusId',
+                        first: 'first',
+                        last: 'last',
+                        nomisId: 'nomisId'
+                    });
                 });
         });
     });
