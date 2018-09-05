@@ -3,13 +3,17 @@ module.exports = function createUserService(userClient) {
     async function updateRoUser(
         nomisId, {newNomisId, deliusId, newDeliusId, first, last, organisation, jobRole, email, telephone}) {
 
+        const existingIdChecks = [];
+
         if (newNomisId !== nomisId) {
-            await checkExistingNomis(newNomisId, newDeliusId);
+            existingIdChecks.push(checkExistingNomis(newNomisId));
         }
 
         if (newDeliusId !== deliusId) {
-            await checkExistingDelius(newDeliusId);
+            existingIdChecks.push(checkExistingDelius(newDeliusId));
         }
+
+        await Promise.all(existingIdChecks);
 
         return userClient.updateRoUser(
             nomisId, newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone);

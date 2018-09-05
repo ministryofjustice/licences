@@ -44,7 +44,7 @@ module.exports = function(
         return res.render('admin/users/edit', {roUser, errors});
     }));
 
-    router.post('/roUsers/edit/:nomisId', async(async (req, res) => {
+    router.post('/roUsers/edit/:nomisId', async (req, res) => {
         const {nomisId} = req.params;
         const userInput = req.body;
 
@@ -63,7 +63,7 @@ module.exports = function(
         }
 
         res.redirect('/admin/roUsers');
-    }));
+    });
 
     router.get('/roUsers/delete/:nomisId', async(async (req, res) => {
         const {nomisId} = req.params;
@@ -77,12 +77,12 @@ module.exports = function(
         res.redirect('/admin/roUsers');
     }));
 
-    router.get('/roUsers/add', async(async (req, res) => {
+    router.get('/roUsers/add', async (req, res) => {
         const errors = firstItem(req.flash('errors')) || {};
         return res.render('admin/users/add', {errors});
-    }));
+    });
 
-    router.post('/roUsers/add', async(async (req, res) => {
+    router.post('/roUsers/add', async (req, res) => {
         const userInput = req.body;
 
         const error = validateIdentifiers(userInput);
@@ -99,7 +99,7 @@ module.exports = function(
             req.flash('errors', {newNomisId: error.message});
             return res.redirect('/admin/roUsers/add');
         }
-    }));
+    });
 
     function validateIdentifiers(userInput) {
         if (userInput.newNomisId.trim() === '') {
