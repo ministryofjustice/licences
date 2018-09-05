@@ -270,7 +270,8 @@ module.exports = function createApp({
         {logger, pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/search/', createSearchRouter({logger, searchService, authenticationMiddleware}));
     app.use('/hdc/taskList/',
-        createTaskListRouter({logger, prisonerService, licenceService, authenticationMiddleware, audit}));
+        createTaskListRouter(
+            {logger, prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));
     app.use('/hdc/',
         createHdcRouter({logger, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
 
