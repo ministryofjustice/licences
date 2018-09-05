@@ -4,6 +4,7 @@ const {
     loggerStub,
     userServiceStub,
     authenticationMiddleware,
+    auditStub,
     appSetup
 } = require('../supertestSetup');
 
@@ -11,7 +12,8 @@ const createAdminRoute = require('../../server/routes/admin/admin');
 const adminRoute = createAdminRoute({
     userService: userServiceStub,
     logger: loggerStub,
-    authenticationMiddleware
+    authenticationMiddleware,
+    audit: auditStub
 });
 
 let app;
@@ -34,6 +36,8 @@ describe('/admin', () => {
 
     beforeEach(() => {
         app = appSetup(adminRoute, 'batchUser', '/admin/');
+
+        auditStub.record.reset();
 
         userServiceStub.findRoUsers.reset();
         userServiceStub.getRoUsers.reset();
@@ -160,6 +164,26 @@ describe('/admin', () => {
                     });
                 });
         });
+
+        it('Audits the edit user event', () => {
+
+            return request(app)
+                .post('/admin/roUsers/edit/1')
+                .send({newNomisId: 'nid', newDeliusId: 'did'})
+                .expect(302)
+                .expect('Location', '/admin/roUsers')
+                .expect(res => {
+                    expect(auditStub.record).to.be.calledOnce();
+                    expect(auditStub.record).to.be.calledWith(
+                        'USER_MANAGEMENT', 'id', {
+                            action: ['1'],
+                            bookingId: undefined,
+                            formName: 'edit',
+                            sectionName: 'roUsers',
+                            userInput: {newNomisId: 'nid', newDeliusId: 'did'}
+                        });
+                });
+        });
     });
 
     describe('GET /admin/roUsers/delete', () => {
@@ -191,6 +215,25 @@ describe('/admin', () => {
                 .expect(res => {
                     expect(userServiceStub.deleteRoUser).to.be.calledOnce();
                     expect(userServiceStub.deleteRoUser).to.be.calledWith('1');
+                });
+        });
+
+        it('Audits the delete user event', () => {
+
+            return request(app)
+                .post('/admin/roUsers/delete/1')
+                .expect(302)
+                .expect('Location', '/admin/roUsers')
+                .expect(res => {
+                    expect(auditStub.record).to.be.calledOnce();
+                    expect(auditStub.record).to.be.calledWith(
+                        'USER_MANAGEMENT', 'id', {
+                            action: ['1'],
+                            bookingId: undefined,
+                            formName: 'delete',
+                            sectionName: 'roUsers',
+                            userInput: {}
+                        });
                 });
         });
     });
@@ -246,6 +289,26 @@ describe('/admin', () => {
                         last: 'last',
                         newNomisId: 'nomisId'
                     });
+                });
+        });
+
+        it('Audits the add user event', () => {
+
+            return request(app)
+                .post('/admin/roUsers/add/')
+                .send({newNomisId: 'nid', newDeliusId: 'did'})
+                .expect(302)
+                .expect('Location', '/admin/roUsers')
+                .expect(res => {
+                    expect(auditStub.record).to.be.calledOnce();
+                    expect(auditStub.record).to.be.calledWith(
+                        'USER_MANAGEMENT', 'id', {
+                            action: [],
+                            bookingId: undefined,
+                            formName: 'add',
+                            sectionName: 'roUsers',
+                            userInput: {newNomisId: 'nid', newDeliusId: 'did'}
+                        });
                 });
         });
     });

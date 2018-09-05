@@ -6,7 +6,8 @@ const keys = [
     'LICENCE_RECORD_STARTED',
     'UPDATE_SECTION',
     'SEND',
-    'CREATE_PDF'
+    'CREATE_PDF',
+    'USER_MANAGEMENT'
 ];
 
 module.exports = {

@@ -266,7 +266,7 @@ module.exports = function createApp({
 
     app.use('/', createDefaultRouter());
     app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
-    app.use('/admin/', createAdminRouter({logger, userService, authenticationMiddleware}));
+    app.use('/admin/', createAdminRouter({logger, userService, authenticationMiddleware, audit}));
     app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
     app.use('/hdc/pdf/', createPdfRouter(

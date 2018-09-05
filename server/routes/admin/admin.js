@@ -1,13 +1,15 @@
 const express = require('express');
-const {async, authorisationMiddleware} = require('../../utils/middleware');
+const {async, authorisationMiddleware, auditMiddleware} = require('../../utils/middleware');
 const {firstItem} = require('../../utils/functionalHelpers');
 
 module.exports = function(
-    {logger, userService, authenticationMiddleware}) {
+    {logger, userService, authenticationMiddleware, audit}) {
 
     const router = express.Router();
     router.use(authenticationMiddleware());
     router.use(authorisationMiddleware);
+
+    const audited = auditMiddleware(audit, 'USER_MANAGEMENT');
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -44,7 +46,7 @@ module.exports = function(
         return res.render('admin/users/edit', {roUser, errors});
     }));
 
-    router.post('/roUsers/edit/:nomisId', async (req, res) => {
+    router.post('/roUsers/edit/:nomisId', audited, async (req, res) => {
         const {nomisId} = req.params;
         const userInput = req.body;
 
@@ -71,7 +73,7 @@ module.exports = function(
         return res.render('admin/users/delete', {roUser});
     }));
 
-    router.post('/roUsers/delete/:nomisId', async(async (req, res) => {
+    router.post('/roUsers/delete/:nomisId', audited, async(async (req, res) => {
         const {nomisId} = req.params;
         await userService.deleteRoUser(nomisId);
         res.redirect('/admin/roUsers');
@@ -82,7 +84,7 @@ module.exports = function(
         return res.render('admin/users/add', {errors});
     });
 
-    router.post('/roUsers/add', async (req, res) => {
+    router.post('/roUsers/add', audited, async (req, res) => {
         const userInput = req.body;
 
         const error = validateIdentifiers(userInput);
@@ -93,7 +95,7 @@ module.exports = function(
 
         try {
             await userService.addRoUser(userInput);
-            res.redirect('/admin/roUsers');
+            return res.redirect('/admin/roUsers');
 
         } catch (error) {
             req.flash('errors', {newNomisId: error.message});
