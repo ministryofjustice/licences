@@ -29,7 +29,7 @@ const caseListService =
 const pdfService = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter);
 const searchService = createSearchService(logger, nomisClientBuilder, caseListFormatter);
 const reportingService = createReportingService(audit);
-const userService = createUserService(userClient);
+const userService = createUserService(nomisClientBuilder, userClient);
 
 const app = createApp({
     logger,

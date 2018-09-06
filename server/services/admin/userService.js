@@ -1,30 +1,47 @@
-module.exports = function createUserService(userClient) {
+module.exports = function createUserService(nomisClientBuilder, userClient) {
 
     async function updateRoUser(
-        nomisId, {newNomisId, deliusId, newDeliusId, first, last, organisation, jobRole, email, telephone}) {
+        token, nomisId,
+        {newNomisId, deliusId, newDeliusId, first, last, organisation, jobRole, email, telephone, verify}) {
 
-        const existingIdChecks = [];
+        const idChecks = [];
 
         if (newNomisId !== nomisId) {
-            existingIdChecks.push(checkExistingNomis(newNomisId));
+            idChecks.push(checkExistingNomis(newNomisId));
+
+            if (verify === 'Yes') {
+                idChecks.push(checkInvalidNomis(token, newNomisId));
+            }
         }
 
         if (newDeliusId !== deliusId) {
-            existingIdChecks.push(checkExistingDelius(newDeliusId));
+            idChecks.push(checkExistingDelius(newDeliusId));
         }
 
-        await Promise.all(existingIdChecks);
+        await Promise.all(idChecks);
 
         return userClient.updateRoUser(
             nomisId, newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone);
     }
 
-    async function addRoUser({newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone}) {
+    async function verifyUserDetails(token, nomisUserName) {
+        const nomisClient = nomisClientBuilder(token);
+        return nomisClient.getUserInfo(nomisUserName);
+    }
 
-        await Promise.all([
+    async function addRoUser(
+        token, {newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone, verify}) {
+
+        const idChecks = [
             checkExistingNomis(newNomisId),
             checkExistingDelius(newDeliusId)
-        ]);
+        ];
+
+        if (verify === 'Yes') {
+            idChecks.push(checkInvalidNomis(token, newNomisId));
+        }
+
+        await Promise.all(idChecks);
 
         return userClient.addRoUser(newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone);
     }
@@ -33,7 +50,7 @@ module.exports = function createUserService(userClient) {
         const existing = await userClient.getRoUser(nomisId);
 
         if (existing) {
-            throw Error('Nomis ID already exists');
+            throw Error('Nomis ID already exists in RO mappings');
         }
     }
 
@@ -41,11 +58,26 @@ module.exports = function createUserService(userClient) {
         const existing = await userClient.getRoUserByDeliusId(deliusId);
 
         if (existing) {
-            throw Error('Delius staff ID already exists');
+            throw Error('Delius staff ID already exists in RO mappings');
+        }
+    }
+
+    async function checkInvalidNomis(token, nomisId) {
+        try {
+            const nomisClient = nomisClientBuilder(token);
+            await nomisClient.getUserInfo(nomisId);
+        } catch (error) {
+
+            if (error.status === 404) {
+                throw Error('Nomis ID not found in Nomis');
+            }
+
+            throw error;
         }
     }
 
     return {
+        verifyUserDetails,
         addRoUser,
         updateRoUser,
         getRoUsers: userClient.getRoUsers,

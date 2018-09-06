@@ -1,5 +1,5 @@
 const logger = require('../../log.js');
-const {isEmpty, getIn} = require('../utils/functionalHelpers');
+const {isEmpty, getIn, firstItem} = require('../utils/functionalHelpers');
 const caseListTabs = require('../routes/config/caseListTabs');
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter) {
@@ -28,19 +28,7 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
     function addTabToCase(role, offender) {
         const tabsConfigForRole = getIn(caseListTabs, [role]);
 
-        const correctTab = tabsConfigForRole.find(tab => {
-
-            const stage = offender ? offender.stage : 'ELIGIBILITY';
-            const status = offender ? offender.status : '';
-
-            const correctStage = tab.licenceStages.includes(stage);
-            const correctStatus = tab.licenceStatus ? tab.licenceStatus.includes(status) : true;
-
-            const statusFilter = getIn(tab, ['statusFilter', stage]);
-            const filterStatus = statusFilter && statusFilter.includes(status);
-
-            return correctStage && correctStatus && !filterStatus;
-        });
+        const correctTab = offender ? tabsConfigForRole.find(correctTabFor(offender)) : firstItem(tabsConfigForRole);
 
         return {
             ...offender,
@@ -81,4 +69,16 @@ function getROCaseList(nomisClient, licenceClient, username) {
 
         return [];
     };
+}
+
+function correctTabFor(offender) {
+   return tab => {
+       const correctStage = tab.licenceStages.includes(offender.stage);
+       const correctStatus = tab.licenceStatus ? tab.licenceStatus.includes(offender.status) : true;
+
+       const statusFilter = getIn(tab, ['statusFilter', offender.stage]);
+       const filterStatus = statusFilter && statusFilter.includes(offender.status);
+
+       return correctStage && correctStatus && !filterStatus;
+   };
 }

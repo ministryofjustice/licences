@@ -95,7 +95,8 @@ const userServiceStub = {
     updateRoUser: sinon.stub().resolves(),
     deleteRoUser: sinon.stub().resolves(),
     addRoUser: sinon.stub().resolves(),
-    findRoUsers: sinon.stub().resolves()
+    findRoUsers: sinon.stub().resolves(),
+    verifyUserDetails: sinon.stub().resolves()
 };
 
 const createHdcRoute = overrides => createLicenceConditionsRoute({

@@ -242,6 +242,15 @@ describe('caseListService', () => {
 
             const caselist = [
                 {
+                    // UNSTARTED
+                    offender: null,
+                    context: [
+                        {role: 'CA', tab: 'ready'},
+                        {role: 'RO', tab: 'ready'},
+                        {role: 'DM', tab: 'ready'}
+                    ]
+                },
+                {
                     // PROCESSING_RO
                     offender: caseList[0],
                     context: [
