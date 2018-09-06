@@ -53,7 +53,7 @@ module.exports = function({logger, licenceService, prisonerService, authenticati
             return prisonerService.getCom(bookingId, token);
         }
 
-        if (transitionType === 'roToCa') {
+        if (transitionType.startsWith('roToCa')) {
             return prisonerService.getEstablishmentForPrisoner(bookingId, token);
         }
 
