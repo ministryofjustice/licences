@@ -2,7 +2,7 @@ const express = require('express');
 const {async, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} =
     require('../utils/middleware');
 const {templates} = require('./config/pdf');
-const {firstItem, getIn} = require('../utils/functionalHelpers');
+const {firstItem, getIn, isEmpty} = require('../utils/functionalHelpers');
 
 module.exports = function(
     {logger, pdfService, prisonerService, authenticationMiddleware, licenceService, conditionsService, audit}) {
@@ -64,7 +64,7 @@ module.exports = function(
         ]);
 
         const incompleteGroups = Object.keys(missing).filter(group => missing[group].mandatory);
-        const canPrint = !(incompleteGroups && incompleteGroups.length > 0);
+        const canPrint = !incompleteGroups || isEmpty(incompleteGroups);
 
         return res.render('pdf/createLicenceTaskList', {
             bookingId,
