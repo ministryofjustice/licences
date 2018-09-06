@@ -29,11 +29,15 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
         const tabsConfigForRole = getIn(caseListTabs, [role]);
 
         const correctTab = tabsConfigForRole.find(tab => {
-            const correctStage = tab.licenceStages.includes(offender.stage);
-            const correctStatus = tab.licenceStatus ? tab.licenceStatus.includes(offender.status) : true;
 
-            const statusFilter = getIn(tab, ['statusFilter', offender.stage]);
-            const filterStatus = statusFilter && statusFilter.includes(offender.status);
+            const stage = offender ? offender.stage : 'ELIGIBILITY';
+            const status = offender ? offender.status : '';
+
+            const correctStage = tab.licenceStages.includes(stage);
+            const correctStatus = tab.licenceStatus ? tab.licenceStatus.includes(status) : true;
+
+            const statusFilter = getIn(tab, ['statusFilter', stage]);
+            const filterStatus = statusFilter && statusFilter.includes(status);
 
             return correctStage && correctStatus && !filterStatus;
         });
