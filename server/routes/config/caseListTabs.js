@@ -2,7 +2,7 @@ module.exports = {
     CA: [
         {
             id: 'ready', text: 'Check eligibility', licenceStages: ['UNSTARTED', 'ELIGIBILITY'],
-            statusFilter: {ELIGIBILITY: ['Opted out', 'Eligible']}
+            statusFilter: {ELIGIBILITY: ['Opted out', 'Eligible', 'Address rejected']}
         },
         {
             id: 'getAddress', text: 'Get address', licenceStages: ['ELIGIBILITY'],

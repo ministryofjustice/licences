@@ -353,7 +353,7 @@ describe('caseListService', () => {
                     // ELIGIBILITY, address rejected
                     offender: caseList[12],
                     context: [
-                        {role: 'CA', tab: 'ready'},
+                        {role: 'CA', tab: 'getAddress'},
                         {role: 'RO', tab: null},
                         {role: 'DM', tab: null}
                     ]
@@ -388,7 +388,7 @@ describe('caseListService', () => {
             expect(res[9].tab).to.eql('getAddress');
             expect(res[10].tab).to.eql('submittedRo');
             expect(res[11].tab).to.eql('ready');
-            expect(res[12].tab).to.eql('ready');
+            expect(res[12].tab).to.eql('getAddress');
         });
     });
 });
