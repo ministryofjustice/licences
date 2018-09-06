@@ -12,10 +12,12 @@ block formItems
             input#optOutNo(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
             label(for="optOutNo") No
 
-        div#optOutForm(class=errorObject.reason ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
-            label(for='optOutDetails') Please give details
-                if errorObject.reason
-                    span.error-message #{errorObject.reason}
-            textarea(name='reason' id='optOutDetails' class='form-control' rows='4')
-                if data && data.reason
-                    | #{data.reason}
+    div.pure-g
+        div.pure-u-1.pure-u-md-3-5
+            div#optOutForm(class=errorObject.reason ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
+                label(for='optOutDetails') Please give details
+                    if errorObject.reason
+                        span.error-message #{errorObject.reason}
+                textarea(name='reason' id='optOutDetails' class='form-control' rows='4')
+                    if data && data.reason
+                        | #{data.reason}

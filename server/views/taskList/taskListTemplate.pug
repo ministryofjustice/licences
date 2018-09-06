@@ -17,6 +17,9 @@ block content
         else if licenceStatus.decisions.refused
             div.error-banner.marginTopMedium
                 strong.bold Home detention curfew refused - #{licenceStatus.decisions.refusalReason}
+        else if licenceStatus.decisions.optedOut
+            div.error-banner.marginTopMedium
+                strong.bold The offender has opted out from Home Detention Curfew
 
     if !user.role
         p Error
