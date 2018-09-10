@@ -18,9 +18,9 @@ block formItems
             span.error-message #{errorObject.proposedTown}
         div.form-group
             label(for='proposedTown') Proposed town:
-            input(type='text' name='proposedTown' id='proposedTown' class='form-control' value=data && data.proposedTown)
+            input(type='text' name='proposedTown' id='proposedTown' class='form-control' value=data && data.proposedTown aria-label="Proposed town")
         if errorObject.proposedCounty
             span.error-message #{errorObject.proposedCounty}
         div.form-group
             label(for='proposedCounty') Proposed county or borough:
-            input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=data && data.proposedCounty)
+            input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=data && data.proposedCounty aria-label="Proposed county or borough")

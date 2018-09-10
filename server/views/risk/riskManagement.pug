@@ -26,7 +26,7 @@ block content
 
                 div#planningForm.panel.panel-border-narrow.js-hidden
                     label(for='planningActionsDetails') Please give details
-                    textarea(name='planningActionsDetails' id='planningActionsDetails' class='form-control' rows='4')
+                    textarea(name='planningActionsDetails' id='planningActionsDetails' class='form-control' rows='4' aria-label="Provide details of risk management planning actions")
                         if data.planningActionsDetails
                             | #{data.planningActionsDetails}
 
@@ -43,7 +43,7 @@ block content
 
                 div#awaitingForm.panel.panel-border-narrow.js-hidden
                     label(for='awaitingInformationDetails') Please provide details including the following: a) type of information required b) indicative timelines c) any third-party dependencies
-                    textarea(name='awaitingInformationDetails' id='awaitingInformationDetails' class='form-control' rows='4')
+                    textarea(name='awaitingInformationDetails' id='awaitingInformationDetails' class='form-control' rows='4' aria-label="Provide details of any information you're waiting for, including timescales and dependencies")
                         if data.awaitingInformationDetails
                             | #{data.awaitingInformationDetails}
 
@@ -61,7 +61,7 @@ block content
 
                 div#victimForm.panel.panel-border-narrow.js-hidden
                     label(for='victimLiaisonDetails') Please give details of when they were invited to provide comments and any comments that were provided
-                    textarea(name='victimLiaisonDetails' id='victimLiaisonDetails' class='form-control' rows='4')
+                    textarea(name='victimLiaisonDetails' id='victimLiaisonDetails' class='form-control' rows='4' aria-label="Provide details of when the victim was asked to comment and any comments they made")
                         if data.victimLiaisonDetails
                             | #{data.victimLiaisonDetails}
 

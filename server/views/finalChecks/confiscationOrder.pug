@@ -29,6 +29,6 @@ block formItems
         label(for='comments') Comments
         if errorObject.comments
             span.block.error-message #{errorObject.comments}
-        textarea(name='comments' id='comments' class='form-control' rows='4')
+        textarea(name='comments' id='comments' class='form-control' rows='4' aria-label="Enter comments about the offender's confiscation order")
             if data.comments
                 | #{data.comments}

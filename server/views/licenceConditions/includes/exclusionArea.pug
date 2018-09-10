@@ -1,4 +1,4 @@
 label(for='exclusionArea') Exclusion area
-textarea(name='exclusionArea' id='exclusionArea' class='form-control' rows='3')
+textarea(name='exclusionArea' id='exclusionArea' class='form-control' rows='3' aria-label="Exclusion area")
     if condition.user_submission && condition.user_submission.exclusionArea
         | #{condition.user_submission.exclusionArea}

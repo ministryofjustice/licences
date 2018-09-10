@@ -40,7 +40,7 @@ block content
 
                         div#reasonForm.panel.panel-border-narrow.js-hidden
                             label(for='unsafeReason') Please explain why you have made this decision
-                                textarea(name='unsafeReason' id='unsafeReason' class='form-control' rows='5')
+                                textarea(name='unsafeReason' id='unsafeReason' class='form-control' rows='5' aria-label="Explain why the offender cannot be managed safely at the address")
                                     if address.unsafeReason
                                         | #{address.unsafeReason}
 
