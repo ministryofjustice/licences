@@ -4,7 +4,7 @@ include ../../includes/errorBannerWithDetail
 block content
 
     div.back-link-container.smallPaddingTop
-            a#backBtn.link-back(href="/admin/") Back
+        a#backBtn.link-back(href="/admin/") Back
     +errorBannerWithDetail(errors, [
         {field: 'newNomisId'},
         {field: 'newDeliusId'}
@@ -16,46 +16,54 @@ block content
     form#reportingForm(method='POST')
         input(type="hidden" name="_csrf" value=csrfToken)
 
-        div#address.pure-g
+        div#user.pure-g
             div.pure-u-1.pure-u-md-2-5
-                div.pure-g.largeMarginBottom.midPaddingBottom
-                    div.pure-u-1.pure-u-md-4-5
-                        div.form-group
-                            label.form-label(for="newNomisId") Nomis ID
-                            input#newNomisId.form-control(name="newNomisId" type="text")
-
-                        div.form-group
-                            label.form-label(for="first") First name
-                            input#first.form-control(name="first" type="text")
-
-                        div.form-group
-                            label.form-label(for="organisation") Organisation
-                            input#organisation.form-control(name="organisation" type="text")
-
-                        div.form-group
-                            label.form-label(for="email") Email
-                            input#email.form-control(name="email" type="text")
+                div.pure-u-1.pure-u-md-4-5
+                    div.form-group
+                        label.form-label(for="newNomisId") Nomis ID
+                        input#newNomisId.form-control(name="newNomisId" type="text")
 
             div.pure-u-1.pure-u-md-2-5
-                div.pure-g.largeMarginBottom.midPaddingBottom
-                    div.pure-u-1.pure-u-md-4-5
+                div.pure-u-1.pure-u-md-4-5
+                    div.form-group
+                        label.form-label(for="newDeliusId") Delius ID
+                        input#newDeliusId.form-control(name="newDeliusId" type="text")
 
-                        div.form-group
-                            label.form-label(for="newDeliusId") Delius ID
-                            input#newDeliusId.form-control(name="newDeliusId" type="text")
+            div.pure-u-1.pure-u-md-2-5
+                div.pure-u-1.pure-u-md-4-5
+                    div.form-group
+                        label.form-label(for="first") First name
+                        input#first.form-control(name="first" type="text")
 
-                        div.form-group
-                            label.form-label(for="last") Last name
-                            input#last.form-control(name="last" type="text")
+            div.pure-u-1.pure-u-md-2-5
+                div.pure-u-1.pure-u-md-4-5
+                    div.form-group
+                        label.form-label(for="last") Last name
+                        input#last.form-control(name="last" type="text")
 
-                        div.form-group
-                            label.form-label(for="jobRole") Job Role
-                            input#jobRole.form-control(name="jobRole" type="text")
+            div.pure-u-1.pure-u-md-2-5
+                div.pure-u-1.pure-u-md-4-5
+                    div.form-group
+                        label.form-label(for="organisation") Organisation
+                        input#organisation.form-control(name="organisation" type="text")
 
-                        div.form-group
-                            label.form-label(for="telephone") Telephone
-                            input#telephone.form-control(name="telephone" type="text")
+            div.pure-u-1.pure-u-md-2-5
+                div.pure-u-1.pure-u-md-4-5
+                    div.form-group
+                        label.form-label(for="jobRole") Job Role
+                        input#jobRole.form-control(name="jobRole" type="text")
 
+            div.pure-u-1.pure-u-md-2-5.largeMarginBottom.midPaddingBottom
+                div.pure-u-1.pure-u-md-4-5
+                    div.form-group
+                        label.form-label(for="email") Email
+                        input#email.form-control(name="email" type="text")
+
+            div.pure-u-1.pure-u-md-2-5.largeMarginBottom.midPaddingBottom
+                div.pure-u-1.pure-u-md-4-5
+                    div.form-group
+                        label.form-label(for="telephone") Telephone
+                        input#telephone.form-control(name="telephone" type="text")
 
         div.paddingBottom.smallPaddingTop
             div.pure-u-1.inlineButtons
