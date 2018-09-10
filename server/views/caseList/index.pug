@@ -12,6 +12,7 @@ block content
                     each tab in tabsForRole
                         li(class=selectedTabConfig.id === tab.id ? 'selected' : undefined)
                             a(href=tab.id) #{tab.text}
+                            sup #{caseCounts[tab.id]}
 
             div.hideNonMobile.form-group.paddingTop.paddingBottom
                 label.form-label(for="licenceFilters") Filters case list by

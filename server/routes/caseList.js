@@ -1,6 +1,6 @@
 const express = require('express');
 const {async} = require('../utils/middleware');
-const {getIn, isEmpty} = require('../utils/functionalHelpers');
+const {getIn, isEmpty, freq} = require('../utils/functionalHelpers');
 const caseListTabs = require('./config/caseListTabs');
 
 module.exports = function({logger, caseListService, authenticationMiddleware}) {
@@ -25,7 +25,9 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
         const caseListWithTabs = caseListService.addTabToCases(req.user.role, hdcEligible);
         const filteredToTabs = caseListWithTabs.filter(offender => offender && offender.tab === req.params.tab);
 
-        return res.render('caseList/index', {hdcEligible: filteredToTabs, tabsForRole, selectedTabConfig});
+        const caseCounts = freq(caseListWithTabs.map(offender => offender.tab));
+
+        return res.render('caseList/index', {hdcEligible: filteredToTabs, tabsForRole, selectedTabConfig, caseCounts});
     }));
 
     return router;
