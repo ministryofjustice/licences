@@ -18,7 +18,7 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
         const selectedTabConfig = tabsForRole.find(tab => tab.id === req.params.tab);
 
         if (isEmpty(selectedTabConfig)) {
-            res.redirect('/caseList/' + tabsForRole[0].id);
+            return res.redirect('/caseList/' + tabsForRole[0].id);
         }
 
         const hdcEligible = await caseListService.getHdcCaseList(req.user.token, req.user.username, req.user.role);
