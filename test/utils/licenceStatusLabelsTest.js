@@ -186,6 +186,14 @@ describe('getStatusLabel', () => {
                     label: 'Ready to check'
                 },
                 {
+                    status: {
+                        stage: licenceStages.PROCESSING_RO,
+                        decisions: {},
+                        tasks: {curfewAddressReview: 'UNSTARTED', reportingInstructions: 'DONE'}
+                    },
+                    label: 'Ready to check'
+                },
+                {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {curfewAddressReview: 'DONE'}},
                     label: 'Assessment ongoing'
                 },
