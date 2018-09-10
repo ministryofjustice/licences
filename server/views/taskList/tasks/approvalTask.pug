@@ -4,7 +4,7 @@ div.paddingBottom
     div.pure-g
         div.pure-u-1.pure-u-md-3-4
             | #{statusLabel}
-            if (licenceStatus.decisions.refusalReason)
+            if (licenceStatus.decisions.refused && licenceStatus.decisions.refusalReason)
                 | : #{licenceStatus.decisions.refusalReason}
         div.pure-u-1.pure-u-md-1-4.center
             if (licenceStatus.stage === 'APPROVAL')
