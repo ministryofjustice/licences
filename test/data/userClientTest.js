@@ -62,6 +62,27 @@ describe('userClient', () => {
         });
     });
 
+    describe('getRoUserByDeliusId', function() {
+
+        it('should call query', () => {
+            userProxy().getRoUserByDeliusId('id');
+            expect(queryStub).to.have.callCount(1);
+        });
+
+        it('should pass in the correct sql and params', () => {
+
+            const expectedClause = 'where staff_id = $1';
+
+            const result = userProxy().getRoUserByDeliusId('id');
+
+            return result.then(data => {
+                const call = queryStub.getCalls()[0].args[0];
+                expect(call.text).includes(expectedClause);
+                expect(call.values).to.eql(['id']);
+            });
+        });
+    });
+
     describe('updateRoUser', function() {
 
         it('should pass in the correct sql and params', () => {

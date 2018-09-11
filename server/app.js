@@ -36,6 +36,7 @@ const createPdfRouter = require('../server/routes/pdf');
 const createSearchRouter = require('../server/routes/search');
 const createApiRouter = require('../server/routes/api');
 const createAdminRouter = require('../server/routes/admin/admin');
+const createContactRouter = require('../server/routes/contact');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -272,6 +273,7 @@ module.exports = function createApp({
     app.use('/hdc/pdf/', createPdfRouter(
         {logger, pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/search/', createSearchRouter({logger, searchService, authenticationMiddleware}));
+    app.use('/hdc/contact/', createContactRouter({logger, userService, authenticationMiddleware}));
     app.use('/hdc/taskList/',
         createTaskListRouter(
             {logger, prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));

@@ -92,6 +92,7 @@ const searchServiceStub = {
 const userServiceStub = {
     getRoUsers: sinon.stub().resolves(),
     getRoUser: sinon.stub().resolves(),
+    getRoUserByDeliusId: sinon.stub().resolves(),
     updateRoUser: sinon.stub().resolves(),
     deleteRoUser: sinon.stub().resolves(),
     addRoUser: sinon.stub().resolves(),
