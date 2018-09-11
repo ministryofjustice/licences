@@ -82,6 +82,7 @@ module.exports = function createUserService(nomisClientBuilder, userClient) {
         updateRoUser,
         getRoUsers: userClient.getRoUsers,
         getRoUser: userClient.getRoUser,
+        getRoUserByDeliusId: userClient.getRoUserByDeliusId,
         deleteRoUser: userClient.deleteRoUser,
         findRoUsers: userClient.findRoUsers
     };
