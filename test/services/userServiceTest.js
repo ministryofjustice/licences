@@ -69,6 +69,18 @@ describe('userService', () => {
         });
     });
 
+    describe('getRoUserByDeliusId', () => {
+
+        it('should call user client with params', async () => {
+
+            const result = await service.getRoUserByDeliusId('id');
+
+            expect(userClient.getRoUserByDeliusId).to.be.calledOnce();
+            expect(userClient.getRoUserByDeliusId).to.be.calledWith('id');
+            expect(result.nomis_id).to.eql('user2');
+        });
+    });
+
     describe('updateRoUser', () => {
 
         it('should reject when user already exists', async () => {
@@ -99,7 +111,7 @@ describe('userService', () => {
         });
     });
 
-    describe('getRoUser', () => {
+    describe('deleteRoUser', () => {
 
         it('should call user client with params', async () => {
 

@@ -42,7 +42,9 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
         div.midMarginBottom
             | Responsible officer
             if (prisonerInfo.com)
-                span#prisonerComName.block.bold  #{prisonerInfo.com}
+                span#prisonerComName.block.bold
+                    if (prisonerInfo.com && prisonerInfo.com.deliusId)
+                        a(href="/hdc/contact/ro/" + prisonerInfo.com.deliusId) #{prisonerInfo.com.name}
 
         div.midMarginBottom
             | Location
