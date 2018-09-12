@@ -16,11 +16,11 @@ mixin otherResidents(prefix, savedAddress)
             div.pure-g.u-paddingBottom.sm-smallPaddingBottom.resident
                 div.pure-u-1.pure-u-sm-5-12
                     label.form-label.hideNonMobile(for="residentName-"+n) Name
-                    input.form-control.residentName(id="residentName-"+n name=prefix+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name autocomplete="off")
+                    input.form-control.residentName(id="residentName-"+n name=prefix+"[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name autocomplete="off" aria-label="Other resident's name")
                 div.pure-u-1.pure-u-sm-5-12.sm-PadLeftRight15
                     label.form-label.hideNonMobile(for="residentRelation-"+n) Relation to offender
-                    input.form-control.residentRelation(id="residentRelation-"+n name=prefix+"[residents]["+n+"][relationship]" value=savedResidents[n] && savedResidents[n].relationship autocomplete = "off")
+                    input.form-control.residentRelation(id="residentRelation-"+n name=prefix+"[residents]["+n+"][relationship]" value=savedResidents[n] && savedResidents[n].relationship autocomplete = "off" aria-label="Other resident's relationship to offender")
                 div.pure-u-1.pure-u-sm-1-6
                     label.form-label.hideNonMobile(for="residentAge-"+n) Age
-                    input.form-control.residentAge(id="residentAge-"+n name=prefix+"[residents]["+n+"][age]" value=savedResidents[n] && savedResidents[n].age autocomplete="off")
+                    input.form-control.residentAge(id="residentAge-"+n name=prefix+"[residents]["+n+"][age]" value=savedResidents[n] && savedResidents[n].age autocomplete="off" aria-label="Other resident's age")
             - n++
