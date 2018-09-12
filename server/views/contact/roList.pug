@@ -1,0 +1,33 @@
+extends ../layout
+
+block content
+
+    div.pure-g
+        div.pure-u-1
+            include ../includes/back
+
+    div.pure-g.largePaddingBottom
+        div.pure-u-1
+            h2.heading-large.midPaddingBottom Responsible officers
+
+            div.pure-u-1
+                table#contact.largeMarginBottom
+                    thead
+                        tr
+                            th Delius user
+                            th Name
+                            th Organisation
+                            th Job Role
+                            th Email
+                            th Telephone
+                    tbody
+                        if roUsers && roUsers.length > 0
+                            each contact, index in roUsers
+                                tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
+                                    td.username #{contact.staff_id}
+                                    td.name #{contact.first_name} #{contact.last_name}
+                                    td.organisation #{contact.organisation}
+                                    td.jobRole #{contact.job_role}
+                                    td.email #{contact.email}
+                                    td.telephone #{contact.telephone}
+
