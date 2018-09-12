@@ -57,7 +57,7 @@ describe('GET /caseList', () => {
             .get('/ready')
             .expect(200)
             .expect(res => {
-                expect(res.text).to.include('id="hdcEligiblePrisoners">');
+                expect(res.text).to.include('No offenders in this view');
             });
     });
 

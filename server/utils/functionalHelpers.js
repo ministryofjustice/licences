@@ -23,7 +23,8 @@ module.exports = {
     all,
     omit,
     getWhereKeyLike,
-    pickKey
+    pickKey,
+    freq
 };
 
 // pass in your object and a path in array format
@@ -138,4 +139,8 @@ function pickKey(predicate, object) {
         R.pickBy(predicate),
         R.keys,
     )(object)[0];
+}
+
+function freq(list) {
+    return R.countBy(i=>i)(list);
 }
