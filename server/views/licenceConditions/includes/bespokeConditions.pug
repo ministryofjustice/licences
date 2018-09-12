@@ -26,7 +26,7 @@ div.pure-g
                     div.pure-g.smallPaddingBottom
                         div.pure-u-1
                             div.form-group
-                                textarea(name="bespokeConditions[" + n + "][text]" id="bespokeConditions[" + n + "][text]" class='form-control bespokeInput' rows='4')
+                                textarea(name="bespokeConditions[" + n + "][text]" id="bespokeConditions[" + n + "][text]" class='form-control bespokeInput' rows='4' aria-label="Enter bespoke condition")
                                     if bespokeConditions && bespokeConditions[n]
                                         | #{bespokeConditions[n].text}
 

@@ -18,6 +18,6 @@ block formItems
                 label(for='optOutDetails') Please give details
                     if errorObject.reason
                         span.error-message #{errorObject.reason}
-                textarea(name='reason' id='optOutDetails' class='form-control' rows='4')
+                textarea(name='reason' id='optOutDetails' class='form-control' rows='4' aria-label="Explain why the offender decided to opt out")
                     if data && data.reason
                         | #{data.reason}

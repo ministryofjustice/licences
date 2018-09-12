@@ -123,6 +123,10 @@ describe('getStatusLabel', () => {
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {postponed: true}, tasks: {}},
                     label: 'Postponed'
+                },
+                {
+                    status: {stage: licenceStages.PROCESSING_CA, decisions: {finalChecksRefused: true}, tasks: {}},
+                    label: 'Refused'
                 }
             ];
 
@@ -145,6 +149,14 @@ describe('getStatusLabel', () => {
                         decisions: {excluded: true, curfewAddressApproved: 'rejected'}, tasks: {}
                     },
                     label: 'Excluded (Ineligible)'
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_CA,
+                        decisions: {excluded: true, curfewAddressApproved: 'rejected', finalChecksRefused: true},
+                        tasks: {}
+                    },
+                    label: 'Refused'
                 }
             ];
 
@@ -183,6 +195,14 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {}},
+                    label: 'Ready to check'
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_RO,
+                        decisions: {},
+                        tasks: {curfewAddressReview: 'UNSTARTED', reportingInstructions: 'DONE'}
+                    },
                     label: 'Ready to check'
                 },
                 {
