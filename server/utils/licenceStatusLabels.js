@@ -79,6 +79,7 @@ function caEligibilityLabel(licenceStatus) {
 function caProcessingLabel(licenceStatus) {
 
     const labels = [
+        {decision: 'finalChecksRefused', label: 'Refused'},
         {decision: 'postponed', label: 'Postponed'},
         {decision: 'excluded', label: 'Excluded (Ineligible)'},
         {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address not suitable'},
