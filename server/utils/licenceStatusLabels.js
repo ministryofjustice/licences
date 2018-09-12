@@ -114,6 +114,10 @@ function roProcessingLabel(licenceStatus) {
         return optOutLabel;
     }
 
+    if (licenceStatus.tasks.curfewAddressReview === taskStates.UNSTARTED) {
+        return 'Ready to check';
+    }
+
     if (anyStarted([
             licenceStatus.tasks.curfewAddressReview,
             licenceStatus.tasks.curfewHours,
