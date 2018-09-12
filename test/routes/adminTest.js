@@ -19,17 +19,17 @@ const adminRoute = createAdminRoute({
 let app;
 
 const user1 = {
-    nomis_id: 'user1',
-    staff_id: 'd1',
-    first_name: 'f1',
-    last_name: 'l1'
+    nomisId: 'user1',
+    deliusId: 'd1',
+    first: 'f1',
+    last: 'l1'
 };
 
 const user2 = {
-    nomis_id: 'user2',
-    staff_id: 'd2',
-    first_name: 'f2',
-    last_name: 'l2'
+    nomisId: 'user2',
+    deliusId: 'd2',
+    first: 'f2',
+    last: 'l2'
 };
 
 describe('/admin', () => {
@@ -156,17 +156,17 @@ describe('/admin', () => {
         it('calls user service and redirects to user list', () => {
             return request(app)
                 .post('/admin/roUsers/edit/1')
-                .send({newNomisId: '1n', deliusId: 'd', newDeliusId: 'dn', first: 'f', last: 'l'})
+                .send({nomisId: '1n', originalDeliusId: 'd', deliusId: 'dn', first: 'f', last: 'l'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
                     expect(userServiceStub.updateRoUser).to.be.calledOnce();
                     expect(userServiceStub.updateRoUser).to.be.calledWith('token', '1', {
-                        deliusId: 'd',
+                        originalDeliusId: 'd',
                         first: 'f',
                         last: 'l',
-                        newDeliusId: 'dn',
-                        newNomisId: '1n'
+                        deliusId: 'dn',
+                        nomisId: '1n'
                     });
                 });
         });
@@ -175,7 +175,7 @@ describe('/admin', () => {
 
             return request(app)
                 .post('/admin/roUsers/edit/1')
-                .send({newNomisId: 'nid', newDeliusId: 'did'})
+                .send({nomisId: 'nid', deliusId: 'did'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
@@ -186,7 +186,7 @@ describe('/admin', () => {
                             bookingId: undefined,
                             formName: 'edit',
                             sectionName: 'roUsers',
-                            userInput: {newNomisId: 'nid', newDeliusId: 'did'}
+                            userInput: {nomisId: 'nid', deliusId: 'did'}
                         });
                 });
         });
@@ -284,16 +284,16 @@ describe('/admin', () => {
         it('calls user service and redirects to user list', () => {
             return request(app)
                 .post('/admin/roUsers/add/')
-                .send({newNomisId: 'nomisId', newDeliusId: 'deliusId', first: 'first', last: 'last'})
+                .send({nomisId: 'nomisId', deliusId: 'deliusId', first: 'first', last: 'last'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
                     expect(userServiceStub.addRoUser).to.be.calledOnce();
                     expect(userServiceStub.addRoUser).to.be.calledWith('token', {
-                        newDeliusId: 'deliusId',
+                        deliusId: 'deliusId',
                         first: 'first',
                         last: 'last',
-                        newNomisId: 'nomisId'
+                        nomisId: 'nomisId'
                     });
                 });
         });
@@ -302,7 +302,7 @@ describe('/admin', () => {
 
             return request(app)
                 .post('/admin/roUsers/add/')
-                .send({newNomisId: 'nid', newDeliusId: 'did'})
+                .send({nomisId: 'nid', deliusId: 'did'})
                 .expect(302)
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
@@ -313,7 +313,7 @@ describe('/admin', () => {
                             bookingId: undefined,
                             formName: 'add',
                             sectionName: 'roUsers',
-                            userInput: {newNomisId: 'nid', newDeliusId: 'did'}
+                            userInput: {nomisId: 'nid', deliusId: 'did'}
                         });
                 });
         });

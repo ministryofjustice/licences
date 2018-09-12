@@ -1,27 +1,27 @@
 module.exports = function createUserService(nomisClientBuilder, userClient) {
 
     async function updateRoUser(
-        token, nomisId,
-        {newNomisId, deliusId, newDeliusId, first, last, organisation, jobRole, email, telephone, verify}) {
+        token, originalNomisId,
+        {nomisId, originalDeliusId, deliusId, first, last, organisation, jobRole, email, telephone, verify}) {
 
         const idChecks = [];
 
-        if (newNomisId !== nomisId) {
-            idChecks.push(checkExistingNomis(newNomisId));
+        if (nomisId !== originalNomisId) {
+            idChecks.push(checkExistingNomis(nomisId));
 
             if (verify === 'Yes') {
-                idChecks.push(checkInvalidNomis(token, newNomisId));
+                idChecks.push(checkInvalidNomis(token, nomisId));
             }
         }
 
-        if (newDeliusId !== deliusId) {
-            idChecks.push(checkExistingDelius(newDeliusId));
+        if (deliusId !== originalDeliusId) {
+            idChecks.push(checkExistingDelius(deliusId));
         }
 
         await Promise.all(idChecks);
 
         return userClient.updateRoUser(
-            nomisId, newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone);
+            originalNomisId, nomisId, deliusId, first, last, organisation, jobRole, email, telephone);
     }
 
     async function verifyUserDetails(token, nomisUserName) {
@@ -30,20 +30,20 @@ module.exports = function createUserService(nomisClientBuilder, userClient) {
     }
 
     async function addRoUser(
-        token, {newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone, verify}) {
+        token, {nomisId, deliusId, first, last, organisation, jobRole, email, telephone, verify}) {
 
         const idChecks = [
-            checkExistingNomis(newNomisId),
-            checkExistingDelius(newDeliusId)
+            checkExistingNomis(nomisId),
+            checkExistingDelius(deliusId)
         ];
 
         if (verify === 'Yes') {
-            idChecks.push(checkInvalidNomis(token, newNomisId));
+            idChecks.push(checkInvalidNomis(token, nomisId));
         }
 
         await Promise.all(idChecks);
 
-        return userClient.addRoUser(newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone);
+        return userClient.addRoUser(nomisId, deliusId, first, last, organisation, jobRole, email, telephone);
     }
 
     async function checkExistingNomis(nomisId) {
