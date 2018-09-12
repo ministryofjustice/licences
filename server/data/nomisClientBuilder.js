@@ -82,18 +82,23 @@ module.exports = token => {
             return prisoners.map(addReleaseDatesToPrisoner);
         },
 
-        getImageData: async function(id) {
+        getImageData: function(id) {
             const path = `${apiUrl}/images/${id}/data`;
             return nomisGet({path, responseType: 'blob'});
         },
 
-        getROPrisoners: async function(deliusUserName) {
+        getROPrisoners: function(deliusUserName) {
             const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/COM`;
             return nomisGet({path});
         },
 
-        getEstablishment: async function(agencyLocationId) {
+        getEstablishment: function(agencyLocationId) {
             const path = `${apiUrl}/agencies/prison/${agencyLocationId}`;
+            return nomisGet({path});
+        },
+
+        getUserInfo: function(userName) {
+            const path = `${apiUrl}/users/${userName}`;
             return nomisGet({path});
         }
     };

@@ -3,22 +3,22 @@ extends ../../layout
 block content
 
     div.back-link-container.smallPaddingTop
-        a#backBtn.link-back(href="/admin/") Back
+        a#back.link-back(href="/admin/") Back
 
     h2.heading-large Delete RO user?
 
 
-    form#reportingForm(method='POST')
+    form#deleteUserForm(method='POST')
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=roUser.nomis_id)
 
-        div#address.pure-g
+        div#user.pure-g
             div.pure-u-1
                 table#users.largeMarginBottom
                     thead
                         tr
-                            th Nomis ID
-                            th Delius ID
+                            th Nomis Username
+                            th Delius Staff ID
                             th First
                             th Last
                             th Organisation

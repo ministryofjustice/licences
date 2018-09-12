@@ -1,0 +1,15 @@
+div.pure-g.largeMarginBottom.midPaddingBottom.paddingTop
+    div.pure-u-1.pure-u-md-1-5
+        input#verifyBtn.requiredButton.button(type="button" onClick="getNomisUserDetails();" value="Check Nomis User")
+    div.pure-u-1.pure-u-md-2-5
+        table#nomisData
+            thead
+                tr
+                    th Nomis Username
+                    th First name
+                    th Last name
+            tbody
+                tr.user
+                    td#nomisUserName &nbsp
+                    td#nomisFirstName
+                    td#nomisLastName

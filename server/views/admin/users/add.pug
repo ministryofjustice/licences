@@ -12,7 +12,6 @@ block content
 
     h2.heading-large Add RO user
 
-
     form#reportingForm(method='POST')
         input(type="hidden" name="_csrf" value=csrfToken)
 
@@ -40,6 +39,15 @@ block content
                     div.form-group
                         label.form-label(for="last") Last name
                         input#last.form-control(name="last" type="text")
+
+                        div.form-group.inline
+                            div Verify Nomis user name
+                            div.multiple-choice
+                                input#verifyYes(type="radio" value="Yes" name="verify" checked)
+                                label(for="verifyYes") Yes
+                            div.multiple-choice
+                                input#verifyNo(type="radio" value="No" name="verify")
+                                label(for="verifyNo") No
 
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
@@ -70,3 +78,9 @@ block content
                 input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Add user")
                 a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/roUsers" role="button") Cancel
 
+    hr
+    include verifyNomis
+
+
+block append scripts
+    script(src="/public/javascripts/verifyNomisId.js?"+version)

@@ -3,7 +3,7 @@ const {async, authorisationMiddleware, auditMiddleware} = require('../../utils/m
 const {firstItem} = require('../../utils/functionalHelpers');
 
 module.exports = function(
-    {logger, userService, authenticationMiddleware, audit}) {
+    {userService, authenticationMiddleware, audit}) {
 
     const router = express.Router();
     router.use(authenticationMiddleware());
@@ -43,6 +43,7 @@ module.exports = function(
         const {nomisId} = req.params;
         const roUser = await userService.getRoUser(nomisId);
         const errors = firstItem(req.flash('errors')) || {};
+
         return res.render('admin/users/edit', {roUser, errors});
     }));
 
@@ -57,7 +58,7 @@ module.exports = function(
         }
 
         try {
-            await userService.updateRoUser(nomisId, userInput);
+            await userService.updateRoUser(req.user.token, nomisId, userInput);
 
         } catch (error) {
             req.flash('errors', {newNomisId: error.message});
@@ -79,6 +80,18 @@ module.exports = function(
         res.redirect('/admin/roUsers');
     }));
 
+    router.get('/roUsers/verify/', audited, async (req, res) => {
+        const {nomisUserName} = req.query;
+
+        try {
+            const userInfo = await userService.verifyUserDetails(req.user.token, nomisUserName);
+            return res.json(userInfo);
+
+        } catch (error) {
+            return res.status(404).json('not found');
+        }
+    });
+
     router.get('/roUsers/add', async (req, res) => {
         const errors = firstItem(req.flash('errors')) || {};
         return res.render('admin/users/add', {errors});
@@ -94,7 +107,7 @@ module.exports = function(
         }
 
         try {
-            await userService.addRoUser(userInput);
+            await userService.addRoUser(req.user.token, userInput);
             return res.redirect('/admin/roUsers');
 
         } catch (error) {

@@ -46,6 +46,12 @@ describe('/admin', () => {
         userServiceStub.getRoUsers.resolves([user1, user2]);
         userServiceStub.findRoUsers.resolves([user1]);
         userServiceStub.getRoUser.resolves(user1);
+
+        userServiceStub.verifyUserDetails.resolves({
+            username: 'nomisUser',
+            firstName: 'nomisFirst',
+            lastName: 'nomisLast'
+        });
     });
 
     describe('GET /admin', () => {
@@ -155,7 +161,7 @@ describe('/admin', () => {
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
                     expect(userServiceStub.updateRoUser).to.be.calledOnce();
-                    expect(userServiceStub.updateRoUser).to.be.calledWith('1', {
+                    expect(userServiceStub.updateRoUser).to.be.calledWith('token', '1', {
                         deliusId: 'd',
                         first: 'f',
                         last: 'l',
@@ -283,7 +289,7 @@ describe('/admin', () => {
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
                     expect(userServiceStub.addRoUser).to.be.calledOnce();
-                    expect(userServiceStub.addRoUser).to.be.calledWith({
+                    expect(userServiceStub.addRoUser).to.be.calledWith('token', {
                         newDeliusId: 'deliusId',
                         first: 'first',
                         last: 'last',
@@ -310,6 +316,48 @@ describe('/admin', () => {
                             userInput: {newNomisId: 'nid', newDeliusId: 'did'}
                         });
                 });
+        });
+    });
+
+    describe('GET /admin/roUsers/verify', () => {
+
+        it('calls nomis and returns JSON', () => {
+            return request(app)
+                .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .expect(() => {
+                    expect(userServiceStub.verifyUserDetails).to.be.calledOnce();
+                    expect(userServiceStub.verifyUserDetails).to.be.calledWith('token', 'USER_NAME');
+                });
+        });
+
+        it('should display the user details', () => {
+            return request(app)
+                .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
+                .expect(200)
+                .expect(res => {
+                    expect(res.body.username).to.contain('nomisUser');
+                    expect(res.body.firstName).to.contain('nomisFirst');
+                    expect(res.body.lastName).to.contain('nomisLast');
+                });
+        });
+
+        it('should give 404 when no match for user name', () => {
+
+            userServiceStub.verifyUserDetails.rejects();
+
+            return request(app)
+                .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
+                .expect(404)
+                .expect('Content-Type', /json/);
+        });
+
+        it('should throw if submitted by non-authorised user', () => {
+            app = appSetup(adminRoute, 'roUser', '/admin/');
+            return request(app)
+                .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
+                .expect(403);
         });
     });
 });

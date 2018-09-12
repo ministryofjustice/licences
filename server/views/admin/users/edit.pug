@@ -4,14 +4,13 @@ include ../../includes/errorBannerWithDetail
 block content
 
     div.back-link-container.smallPaddingTop
-        a#backBtn.link-back(href="/admin/") Back
+        a#back.link-back(href="/admin/") Back
     +errorBannerWithDetail(errors, [
         {field: 'newNomisId'},
         {field: 'newDeliusId'}
     ])
 
     h2.heading-large Edit RO user
-
 
     form#reportingForm(method='POST')
         input(type="hidden" name="_csrf" value=csrfToken)
@@ -55,19 +54,38 @@ block content
                         label.form-label(for="jobRole") Job Role
                         input#jobRole.form-control(name="jobRole" type="text" value=roUser.job_role)
 
-            div.pure-u-1.pure-u-md-2-5.largeMarginBottom.midPaddingBottom
+            div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
                         label.form-label(for="email") Email
                         input#email.form-control(name="email" type="text" value=roUser.email)
 
-            div.pure-u-1.pure-u-md-2-5.largeMarginBottom.midPaddingBottom
+            div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
                         label.form-label(for="telephone") Telephone
                         input#telephone.form-control(name="telephone" type="text" value=roUser.telephone)
+                        
+            div.pure-u-1.pure-u-md-2-5
+                div.pure-u-1.pure-u-md-4-5
+                    div.form-group.inline
+                        div Verify Nomis user name
+                        div.multiple-choice
+                            input#verifyYes(type="radio" value="Yes" name="verify" checked)
+                            label(for="verifyYes") Yes
+                        div.multiple-choice
+                            input#verifyNo(type="radio" value="No" name="verify")
+                            label(for="verifyNo") No
 
         div.paddingBottom.smallPaddingTop
             div.pure-u-1.inlineButtons
                 input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save")
                 a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/roUsers" role="button") Cancel
+
+
+    hr
+    include verifyNomis
+
+
+block append scripts
+    script(src="/public/javascripts/verifyNomisId.js?" + version)

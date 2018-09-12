@@ -445,5 +445,24 @@ describe('nomisClient', function() {
             return expect(nomisClient.getOffenderSentencesByBookingId(['1'])).to.be.rejected();
         });
     });
+
+    describe('getUserInfo', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get('/users/userName')
+                .reply(200, {username: 'result'});
+
+            return expect(nomisClient.getUserInfo('userName')).to.eventually.eql({username: 'result'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get('/users/userName')
+                .reply(500);
+
+            return expect(nomisClient.getUserInfo('userName')).to.be.rejected();
+        });
+    });
 });
 

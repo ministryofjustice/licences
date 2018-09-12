@@ -5,6 +5,7 @@ const createUserService = require('../../server/services/admin/userService');
 describe('userService', () => {
 
     let userClient;
+    let nomisClient;
     let service;
 
     const user1 = {
@@ -31,7 +32,13 @@ describe('userService', () => {
             addRoUser: sinon.stub().resolves({})
         };
 
-        service = createUserService(userClient);
+        nomisClient = {
+            getUserInfo: sinon.stub().resolves({})
+        };
+
+        const nomisClientBuilder = sinon.stub().returns(nomisClient);
+
+        service = createUserService(nomisClientBuilder, userClient);
     });
 
     afterEach(() => {
@@ -75,7 +82,7 @@ describe('userService', () => {
             userClient.getRoUserByDeliusId.resolves();
 
             await service.updateRoUser(
-                'nomisId', {
+                'token', 'nomisId', {
                     newNomisId: 1,
                     deliusId: 2,
                     newDeliusId: 3,
@@ -114,22 +121,34 @@ describe('userService', () => {
             userClient.getRoUser.resolves();
             userClient.getRoUserByDeliusId.resolves();
 
-            await service.addRoUser({
-                newNomisId: 'nomisId',
-                newDeliusId: 2,
-                first: 3,
-                last: 4,
-                organisation: 5,
-                jobRole: 6,
-                email: 7,
-                telephone: 8
-            });
+            await service.addRoUser(
+                'token', {
+                    newNomisId: 'nomisId',
+                    newDeliusId: 2,
+                    first: 3,
+                    last: 4,
+                    organisation: 5,
+                    jobRole: 6,
+                    email: 7,
+                    telephone: 8
+                });
 
             expect(userClient.getRoUser).to.be.calledOnce();
             expect(userClient.getRoUser).to.be.calledWith('nomisId');
 
             expect(userClient.addRoUser).to.be.calledOnce();
             expect(userClient.addRoUser).to.be.calledWith('nomisId', 2, 3, 4, 5, 6, 7, 8);
+        });
+    });
+
+    describe('verifyUserDetails', () => {
+
+        it('should call nomis client with params', async () => {
+
+            await service.verifyUserDetails('token', 'userName');
+
+            expect(nomisClient.getUserInfo).to.be.calledOnce();
+            expect(nomisClient.getUserInfo).to.be.calledWith('userName');
         });
     });
 });
