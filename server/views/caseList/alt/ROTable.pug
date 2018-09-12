@@ -12,25 +12,31 @@ table#hdcEligiblePrisoners.largeMarginBottom
         if hdcEligible && hdcEligible.length > 0
             each prisoner, index in hdcEligible
                 tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
-                    td.name.searchable
+                    td.name
                         if prisoner.firstName
                             | #{prisoner.firstName}
                         if prisoner.lastName
                             |  #{prisoner.lastName}
 
-                    td.offenderNo.searchable
+                    td.offenderNo
                         if prisoner.offenderNo
                             | #{prisoner.offenderNo}
 
-                    td.hdced.hideMobile.searchable
+                    td.location.hideMobile
+                        if prisoner.internalLocationDesc
+                            | #{prisoner.internalLocationDesc}
+                        if prisoner.internalLocationDesc && prisoner.agencyLocationDesc
+                            |  - #{prisoner.agencyLocationDesc}
+
+                    td.hdced.hideMobile
                         if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
                             | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
 
-                    td.crd.hideMobile.searchable
+                    td.crd.hideMobile
                         if prisoner.sentenceDetail.releaseDate
                             | #{prisoner.sentenceDetail.releaseDate}
 
-                    td.status.hideMobile.searchable
+                    td.status.hideMobile
                         if prisoner.status
                             | #{prisoner.status}
 

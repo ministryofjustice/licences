@@ -3,9 +3,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
         tr
             th Name
             th Prison no.
-            th.hideMobile Location
             th.hideMobile HDCED
-            th.hideMobile CRD / ARD
             th.hideMobile Status
             th
     tbody
@@ -26,22 +24,24 @@ table#hdcEligiblePrisoners.largeMarginBottom
                         if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
                             | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
 
-                    td.crd.hideMobile.searchable
-                        if prisoner.sentenceDetail.releaseDate
-                            | #{prisoner.sentenceDetail.releaseDate}
-
-                    td.status.hideMobile.searchable
-                        if prisoner.status
+                    if ['Address not suitable', 'Address rejected'].includes(prisoner.status)
+                        td.status.terminalStateAlert.hideMobile.searchable
+                            | #{prisoner.status}
+                    else if (prisoner.status == 'Postponed')
+                        td.status.terminalStateWarn.hideMobile.searchable
+                            | #{prisoner.status}
+                    else
+                        td.status.hideMobile.searchable
                             | #{prisoner.status}
 
                     td
-                        if ['PROCESSING_RO', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
-                            if ['Ready to check'].includes(prisoner.status)
+                        if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
+                            if ['Not started', 'Reviewing case'].includes(prisoner.status)
                                 a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
                                     | Start
                             else
                                 a.button.button-secondary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
                                     | View
-                        else if ['PROCESSING_CA', 'APPROVAL'].includes(prisoner.stage)
+                        else if ['PROCESSING_RO', 'APPROVAL'].includes(prisoner.stage)
                             a.button.button-secondary.fullWidth.center(href="/hdc/review/licence/" + prisoner.bookingId role="button")
                                 | View
