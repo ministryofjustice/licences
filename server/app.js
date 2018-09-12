@@ -32,6 +32,7 @@ const createSendRouter = require('../server/routes/send');
 const createSentRouter = require('../server/routes/sent');
 const createUtilsRouter = require('../server/routes/utils');
 const createCaseListRouter = require('../server/routes/caseList');
+const createAltCaseListRouter = require('../server/routes/caseListAlt');
 const createPdfRouter = require('../server/routes/pdf');
 const createSearchRouter = require('../server/routes/search');
 const createApiRouter = require('../server/routes/api');
@@ -265,7 +266,13 @@ module.exports = function createApp({
     });
 
     app.use('/', createDefaultRouter());
-    app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
+
+    if (config.alternativeCaseList) {
+        app.use('/caseList/', createAltCaseListRouter({logger, caseListService, authenticationMiddleware}));
+    } else {
+        app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
+    }
+
     app.use('/admin/', createAdminRouter({logger, userService, authenticationMiddleware, audit}));
     app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
