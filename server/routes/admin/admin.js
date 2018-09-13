@@ -43,26 +43,29 @@ module.exports = function(
         const {nomisId} = req.params;
         const roUser = await userService.getRoUser(nomisId);
         const errors = firstItem(req.flash('errors')) || {};
+        const userInput = firstItem(req.flash('userInput')) || null;
 
-        return res.render('admin/users/edit', {roUser, errors});
+        return res.render('admin/users/roUserDetails', {roUser, errors, userInput});
     }));
 
-    router.post('/roUsers/edit/:nomisId', audited, async (req, res) => {
-        const {nomisId} = req.params;
+    router.post('/roUsers/edit/:originalNomisId', audited, async (req, res) => {
+        const {originalNomisId} = req.params;
         const userInput = req.body;
 
         const error = validateIdentifiers(userInput);
         if (error) {
             req.flash('errors', error);
-            return res.redirect(`/admin/roUsers/edit/${nomisId}`);
+            req.flash('userInput', userInput);
+            return res.redirect(`/admin/roUsers/edit/${originalNomisId}`);
         }
 
         try {
-            await userService.updateRoUser(req.user.token, nomisId, userInput);
+            await userService.updateRoUser(req.user.token, originalNomisId, userInput);
 
         } catch (error) {
-            req.flash('errors', {newNomisId: error.message});
-            return res.redirect(`/admin/roUsers/edit/${nomisId}`);
+            req.flash('errors', {nomisId: error.message});
+            req.flash('userInput', userInput);
+            return res.redirect(`/admin/roUsers/edit/${originalNomisId}`);
         }
 
         res.redirect('/admin/roUsers');
@@ -94,7 +97,9 @@ module.exports = function(
 
     router.get('/roUsers/add', async (req, res) => {
         const errors = firstItem(req.flash('errors')) || {};
-        return res.render('admin/users/add', {errors});
+        const userInput = firstItem(req.flash('userInput')) || null;
+
+        return res.render('admin/users/roUserDetails', {errors, userInput});
     });
 
     router.post('/roUsers/add', audited, async (req, res) => {
@@ -103,6 +108,7 @@ module.exports = function(
         const error = validateIdentifiers(userInput);
         if (error) {
             req.flash('errors', error);
+            req.flash('userInput', userInput);
             return res.redirect('/admin/roUsers/add');
         }
 
@@ -111,17 +117,18 @@ module.exports = function(
             return res.redirect('/admin/roUsers');
 
         } catch (error) {
-            req.flash('errors', {newNomisId: error.message});
+            req.flash('errors', {nomisId: error.message});
+            req.flash('userInput', userInput);
             return res.redirect('/admin/roUsers/add');
         }
     });
 
     function validateIdentifiers(userInput) {
-        if (userInput.newNomisId.trim() === '') {
-            return {newNomisId: 'Nomis id is required'};
+        if (!userInput.nomisId || userInput.nomisId.trim() === '') {
+            return {nomisId: 'Nomis id is required'};
         }
-        if (userInput.newDeliusId.trim() === '') {
-            return {newDeliusId: 'Delius staff id is required'};
+        if (!userInput.deliusId || userInput.deliusId.trim() === '') {
+            return {deliusId: 'Delius staff id is required'};
         }
     }
 

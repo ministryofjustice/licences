@@ -7,7 +7,6 @@ block content
 
     h2.heading-large Delete RO user?
 
-
     form#deleteUserForm(method='POST')
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="nomisId" value=roUser.nomis_id)
@@ -29,23 +28,23 @@ block content
                     tbody
                         tr.user
                             td.nomisId
-                                if roUser.nomis_id
-                                    | #{roUser.nomis_id}
+                                if roUser.nomisId
+                                    | #{roUser.nomisId}
                             td.deliusId
-                                if roUser.staff_id
-                                    | #{roUser.staff_id}
+                                if roUser.deliusId
+                                    | #{roUser.deliusId}
                             td.firstName
-                                if roUser.first_name
-                                    | #{roUser.first_name}
+                                if roUser.first
+                                    | #{roUser.first}
                             td.lastName
-                                if roUser.last_name
-                                    | #{roUser.last_name}
+                                if roUser.last
+                                    | #{roUser.last}
                             td.organisation
                                 if roUser.organisation
                                     | #{roUser.organisation}
                             td.jobRole
-                                if roUser.job_role
-                                    | #{roUser.job_role}
+                                if roUser.jobRole
+                                    | #{roUser.jobRole}
                             td.email
                                 if roUser.email
                                     | #{roUser.email}

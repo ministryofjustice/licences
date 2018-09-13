@@ -12,20 +12,20 @@ table#hdcEligiblePrisoners.largeMarginBottom
             each roUser, index in roUsers
                 tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
                     td.nomisId
-                        if roUser.nomis_id
-                            | #{roUser.nomis_id}
+                        if roUser.nomisId
+                            | #{roUser.nomisId}
                     td.deliusId
-                        if roUser.staff_id
-                            | #{roUser.staff_id}
+                        if roUser.deliusId
+                            | #{roUser.deliusId}
                     td.firstName
-                        if roUser.first_name
-                            | #{roUser.first_name}
+                        if roUser.first
+                            | #{roUser.first}
                     td.lastName
-                        if roUser.last_name
-                            |  #{roUser.last_name}
+                        if roUser.last
+                            |  #{roUser.last}
                     td.edit
-                        a.button.button-primary.fullWidth.center(href="/admin/roUsers/edit/" + roUser.nomis_id role="button")
+                        a.button.button-primary.fullWidth.center(href="/admin/roUsers/edit/" + roUser.nomisId role="button")
                             | Edit
                     td.delete
-                        a.button.button-secondary.fullWidth.center(href="/admin/roUsers/delete/" + roUser.nomis_id role="button")
+                        a.button.button-secondary.fullWidth.center(href="/admin/roUsers/delete/" + roUser.nomisId role="button")
                             | Delete

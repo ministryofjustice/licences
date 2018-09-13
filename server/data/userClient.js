@@ -25,7 +25,7 @@ module.exports = {
 
         const {rows} = await db.query(query);
 
-        return rows;
+        return rows.map(convertPropertyNames);
     },
 
     getRoUser: async function(nomisId) {
@@ -37,7 +37,7 @@ module.exports = {
 
         const {rows} = await db.query(query);
 
-        return rows[0];
+        return convertPropertyNames(rows[0]);
     },
 
     getRoUserByDeliusId: async function(deliusId) {
@@ -49,18 +49,18 @@ module.exports = {
 
         const {rows} = await db.query(query);
 
-        return rows[0];
+        return convertPropertyNames(rows[0]);
     },
 
     updateRoUser: async function(
-        nomisId, newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone) {
+        originalNomisId, nomisId, deliusId, first, last, organisation, jobRole, email, telephone) {
 
         const query = {
             text: `update staff_ids 
                     set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5, 
                     organisation = $6, job_role = $7, email = $8, telephone = $9 
                     where nomis_id = $1`,
-            values: [nomisId, newNomisId, newDeliusId, first, last, organisation, jobRole, email, telephone]
+            values: [originalNomisId, nomisId, deliusId, first, last, organisation, jobRole, email, telephone]
         };
 
         return db.query(query);
@@ -107,7 +107,20 @@ module.exports = {
 
         const {rows} = await db.query(query);
 
-        return rows;
+        return rows.map(convertPropertyNames);
     }
 };
+
+function convertPropertyNames(user) {
+    return user ? {
+        nomisId: user.nomis_id,
+        deliusId: user.staff_id,
+        first: user.first_name,
+        last: user.last_name,
+        organisation: user.organisation,
+        jobRole: user.job_role,
+        email: user.email,
+        telephone: user.telephone
+    } : null;
+}
 

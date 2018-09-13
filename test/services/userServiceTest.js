@@ -83,9 +83,9 @@ describe('userService', () => {
 
             await service.updateRoUser(
                 'token', 'nomisId', {
-                    newNomisId: 1,
-                    deliusId: 2,
-                    newDeliusId: 3,
+                    nomisId: 1,
+                    originalDeliusId: 2,
+                    deliusId: 3,
                     first: 4,
                     last: 5,
                     organisation: 6,
@@ -123,8 +123,8 @@ describe('userService', () => {
 
             await service.addRoUser(
                 'token', {
-                    newNomisId: 'nomisId',
-                    newDeliusId: 2,
+                    nomisId: 'nomisId',
+                    deliusId: 2,
                     first: 3,
                     last: 4,
                     organisation: 5,

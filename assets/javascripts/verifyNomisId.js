@@ -1,7 +1,7 @@
 /* eslint-disable */
 function getNomisUserDetails() {
 
-    const nomisUserName = $('#newNomisId').val();
+    const nomisUserName = $('#nomisId').val();
 
     $('#nomisUserName').text('');
     $('#nomisFirstName').text('');

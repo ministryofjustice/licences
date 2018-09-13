@@ -3,69 +3,75 @@ include ../../includes/errorBannerWithDetail
 
 block content
 
+    -var inputs = userInput ? userInput : roUser ? roUser : {}
+
     div.back-link-container.smallPaddingTop
         a#back.link-back(href="/admin/") Back
     +errorBannerWithDetail(errors, [
-        {field: 'newNomisId'},
-        {field: 'newDeliusId'}
+        {field: 'nomisId'},
+        {field: 'deliusId'}
     ])
 
-    h2.heading-large Edit RO user
+    h2.heading-large
+        if roUser
+            | Edit RO user
+        else
+            | Add RO user
 
     form#reportingForm(method='POST')
         input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="nomisId" value=roUser.nomis_id)
-        input(type="hidden" name="deliusId" value=roUser.staff_id)
+        if (roUser)
+            input(type="hidden" name="originalDeliusId" value=roUser.deliusId)
 
         div#user.pure-g
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
-                        label.form-label(for="newNomisId") Nomis Username
-                        input#newNomisId.form-control(name="newNomisId" type="text" value=roUser.nomis_id)
+                        label.form-label(for="nomisId") Nomis Username
+                        input#nomisId.form-control(name="nomisId" type="text" value=inputs.nomisId)
 
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
-                        label.form-label(for="newDeliusId") Delius ID
-                        input#newDeliusId.form-control(name="newDeliusId" type="text" value=roUser.staff_id)
+                        label.form-label(for="deliusId") Delius ID
+                        input#deliusId.form-control(name="deliusId" type="text" value=inputs.deliusId)
 
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
                         label.form-label(for="first") First name
-                        input#first.form-control(name="first" type="text" value=roUser.first_name)
+                        input#first.form-control(name="first" type="text" value=inputs.first)
 
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
                         label.form-label(for="last") Last name
-                        input#last.form-control(name="last" type="text" value=roUser.last_name)
+                        input#last.form-control(name="last" type="text" value=inputs.last)
 
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
                         label.form-label(for="organisation") Organisation
-                        input#organisation.form-control(name="organisation" type="text" value=roUser.organisation)
+                        input#organisation.form-control(name="organisation" type="text" value=inputs.organisation)
 
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
                         label.form-label(for="jobRole") Job Role
-                        input#jobRole.form-control(name="jobRole" type="text" value=roUser.job_role)
+                        input#jobRole.form-control(name="jobRole" type="text" value=inputs.jobRole)
 
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
                         label.form-label(for="email") Email
-                        input#email.form-control(name="email" type="text" value=roUser.email)
+                        input#email.form-control(name="email" type="text" value=inputs.email)
 
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group
                         label.form-label(for="telephone") Telephone
-                        input#telephone.form-control(name="telephone" type="text" value=roUser.telephone)
-                        
+                        input#telephone.form-control(name="telephone" type="text" value=inputs.telephone)
+
             div.pure-u-1.pure-u-md-2-5
                 div.pure-u-1.pure-u-md-4-5
                     div.form-group.inline
@@ -81,7 +87,6 @@ block content
             div.pure-u-1.inlineButtons
                 input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save")
                 a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/roUsers" role="button") Cancel
-
 
     hr
     include verifyNomis
