@@ -1,0 +1,51 @@
+table#hdcEligiblePrisoners.largeMarginBottom
+    thead
+        tr
+            th Name
+            th.hideMobile Prison no.
+            th Time to HDCED
+            th.hideMobile Status
+            th
+    tbody
+        if hdcEligible && hdcEligible.length > 0
+            each prisoner, index in hdcEligible
+                tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
+                    td.name.searchable
+                        if prisoner.firstName
+                            | #{prisoner.firstName}
+                        if prisoner.lastName
+                            |  #{prisoner.lastName}
+
+                    td.offenderNo.hideMobile.searchable
+                        if prisoner.offenderNo
+                            | #{prisoner.offenderNo}
+
+                    td.hdced.hideMobile
+                        if prisoner.due.status === 'OVERDUE'
+                            div.alert.bold-small.searchable
+                                |#{prisoner.due.text} overdue
+                        else
+                            div.searchable
+                                |#{prisoner.due.text}
+
+                    if ['Address not suitable', 'Address rejected'].includes(prisoner.status)
+                        td.status.terminalStateAlert.hideMobile.searchable
+                            | #{prisoner.status}
+                    else if (prisoner.status === 'Postponed')
+                        td.status.terminalStateWarn.hideMobile.searchable
+                            | #{prisoner.status}
+                    else
+                        td.status.hideMobile.searchable
+                            | #{prisoner.status}
+
+                    td
+                        if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
+                            if ['Not started', 'Reviewing case'].includes(prisoner.status)
+                                a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
+                                    | Start
+                            else
+                                a.button.button-secondary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
+                                    | View
+                        else if ['PROCESSING_RO', 'APPROVAL'].includes(prisoner.stage)
+                            a.button.button-secondary.fullWidth.center(href="/hdc/review/licence/" + prisoner.bookingId role="button")
+                                | View

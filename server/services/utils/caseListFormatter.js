@@ -27,8 +27,9 @@ function getBookingIds(releases) {
 function decoratePrisonerDetails(licences, role) {
     return prisoner => {
         const formattedPrisoner = formatObjectForView(prisoner);
+        const decoratedPrisoner = addRoleSpecificDecoration(formattedPrisoner, role);
         const {stage, status} = getStatus(prisoner, licences, role);
-        return {...formattedPrisoner, stage, status};
+        return {...decoratedPrisoner, stage, status};
     };
 }
 
@@ -62,4 +63,46 @@ function compareReleaseDates(address1, address2) {
 
 function dateDifference(address1, address2) {
     return moment(address1, 'DD-MM-YYYY').diff(moment(address2, 'DD-MM-YYYY'));
+}
+
+function addRoleSpecificDecoration(prisoner, role) {
+    if (role === 'CA') {
+        return addHDCEDCountdown(prisoner);
+    }
+    return prisoner;
+}
+
+function addHDCEDCountdown(prisoner) {
+    const dueDate = moment(prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate, 'DD/MM/YYYY');
+    const now = moment();
+
+    return {...prisoner, due: getDueText(dueDate, now)};
+}
+
+function getDueText(dueDate, now) {
+    const years = dueDate.diff(now, 'years');
+    const months = dueDate.diff(now, 'months');
+    const weeks = dueDate.diff(now, 'weeks');
+    const days = dueDate.diff(now, 'days');
+
+    if (years >= 1) {
+        const unit = years === 1 ? 'year' : 'years';
+        return {text: `${years} ${unit}`};
+    }
+
+    if (months >= 3) {
+        return {text: `${months} months`};
+    }
+
+    if (weeks >= 2) {
+        return {text: `${weeks} weeks`};
+    }
+
+    if (Math.sign(days) === 1) {
+        const unit = days === 1 ? 'day' : 'days';
+        return {text: `${days} ${unit}`};
+    }
+
+    const unit = days === 1 ? 'day' : 'days';
+    return {text: `${Math.abs(days)} ${unit}`, status: 'OVERDUE'};
 }

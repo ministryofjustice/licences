@@ -1,0 +1,43 @@
+table#hdcEligiblePrisoners.largeMarginBottom
+    thead
+        tr
+            th Name
+            th Prison no.
+            th.hideMobile HDCED
+            th.hideMobile CRD / ARD
+            th.hideMobile Status
+            th
+    tbody
+        if hdcEligible && hdcEligible.length > 0
+            each prisoner, index in hdcEligible
+                tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
+                    td.name.searchable
+                        if prisoner.firstName
+                            | #{prisoner.firstName}
+                        if prisoner.lastName
+                            |  #{prisoner.lastName}
+
+                    td.offenderNo.searchable
+                        if prisoner.offenderNo
+                            | #{prisoner.offenderNo}
+
+                    td.hdced.hideMobile.searchable
+                        if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
+                            | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
+
+                    td.crd.hideMobile.searchable
+                        if prisoner.sentenceDetail.releaseDate
+                            | #{prisoner.sentenceDetail.releaseDate}
+
+                    td.status.hideMobile.searchable
+                        if prisoner.status
+                            | #{prisoner.status}
+
+                    td
+                        if ['APPROVAL', 'DECIDED'].includes(prisoner.stage)
+                            if ['Awaiting decision'].includes(prisoner.status)
+                                a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
+                                    | Start
+                            else
+                                a.button.button-secondary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
+                                    | View
