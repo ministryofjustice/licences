@@ -25,7 +25,7 @@ module.exports = {
 
         const {rows} = await db.query(query);
 
-        return rows.map(user => convertPropertyNames(user));
+        return rows.map(convertPropertyNames);
     },
 
     getRoUser: async function(nomisId) {
@@ -107,7 +107,7 @@ module.exports = {
 
         const {rows} = await db.query(query);
 
-        return rows.map(user => convertPropertyNames(user));
+        return rows.map(convertPropertyNames);
     }
 };
 
