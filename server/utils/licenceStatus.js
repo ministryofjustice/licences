@@ -151,7 +151,7 @@ function getEligibilityStageState(licence) {
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
     const {bassReferralNeeded, bassReferral} = getBassReferralState(licence);
-    const {curfewAddress} = getCurfewAddressState(licence, optedOut, bassReferralNeeded);
+    const {curfewAddress} = getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved);
 
     return {
         decisions: {
@@ -356,7 +356,7 @@ function getCaRefusal(licence) {
     };
 }
 
-function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
+function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved) {
 
     return {
         curfewAddress: getState(licence)
@@ -372,6 +372,10 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded) {
 
         if (!addresses) {
             return taskStates.UNSTARTED;
+        }
+
+        if (curfewAddressApproved === 'rejected') {
+            return taskStates.STARTED;
         }
 
         const required = ['cautionedAgainstResident'];

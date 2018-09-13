@@ -7,7 +7,7 @@ block content
     -var savedData = data.proposedAddress && data.proposedAddress.rejected && data.proposedAddress.rejected.enterAlternative || {}
 
     div.pure-g.pure-u-1
-        include ../includes/backToTaskList
+        include ../includes/back
 
         h2.heading-large Curfew address rejected
         p The following address has been returned by the Responsible Officer:
@@ -42,10 +42,9 @@ block content
 
 
         div.largePaddingBottom
-            h3.heading-medium Enter alternative address?
             form(id="enterAlternativeForm" method="post")
                 div.form-group.paddingBottom
-                    p Do you want to enter an alternative address?
+                    h2.heading-medium Do you want to enter an alternative address?
                     input(type="hidden" name="_csrf" value=csrfToken)
                     input(type="hidden" name="bookingId" value=bookingId || '')
                     div.multiple-choice(data-target="enterAlternative")

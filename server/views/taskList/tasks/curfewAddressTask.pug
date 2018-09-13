@@ -24,7 +24,10 @@ div.paddingBottom
                     | Not completed
             div.pure-u-1.pure-u-md-1-4.center
                 if user.role === 'RO'
-                    +startContinueView(licenceStatus.tasks.curfewAddressReview, "/hdc/curfew/curfewAddressReview/" + prisonerInfo.bookingId)
+                    if curfewAddressApproved === 'rejected'
+                        a(href='/hdc/curfew/curfewAddressReview/' + prisonerInfo.bookingId) Change
+                    else
+                        +startContinueView(licenceStatus.tasks.curfewAddressReview, "/hdc/curfew/curfewAddressReview/" + prisonerInfo.bookingId)
                 else if user.role === 'CA' && postApproval
                     a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.bookingId) View/Edit
                 else
