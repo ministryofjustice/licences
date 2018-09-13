@@ -10,7 +10,7 @@ block tasks
             include tasks/refusalTask
 
 
-    if licenceStatus.decisions.curfewAddressApproved === 'rejected'
+    else if licenceStatus.decisions.curfewAddressApproved === 'rejected'
         div.taskListItem.borderBottom.largeMarginBottom
             include tasks/eligibilitySummaryTask
 
