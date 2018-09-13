@@ -240,6 +240,19 @@ module.exports = function createApp({
         });
     });
 
+    app.get('/health-detailed', (req, res, next) => {
+        healthcheck((err, result) => {
+            if (err) {
+                return next(err);
+            }
+            if (!result.healthy) {
+                res.status(503);
+            }
+
+            res.json(result);
+        }, true);
+    });
+
     app.get('/feedback', (req, res) => {
         return res.render('feedback', {returnURL: req.get('referer')});
     });
