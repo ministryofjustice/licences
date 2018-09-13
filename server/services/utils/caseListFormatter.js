@@ -73,36 +73,40 @@ function addRoleSpecificDecoration(prisoner, role) {
 }
 
 function addHDCEDCountdown(prisoner) {
-    const dueDate = moment(prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate, 'DD/MM/YYYY');
-    const now = moment();
+    const hdced = getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
+    if (!hdced) {
+        return {...prisoner, due: {text: 'No HDCED'}};
+    }
 
-    return {...prisoner, due: getDueText(dueDate, now)};
+    const dueDate = moment(hdced, 'DD/MM/YYYY');
+
+    return {...prisoner, due: getDueText(dueDate)};
 }
 
-function getDueText(dueDate, now) {
-    const years = dueDate.diff(now, 'years');
-    const months = dueDate.diff(now, 'months');
-    const weeks = dueDate.diff(now, 'weeks');
-    const days = dueDate.diff(now, 'days');
+function getDueText(dueDate) {
 
-    if (years >= 1) {
-        const unit = years === 1 ? 'year' : 'years';
-        return {text: `${years} ${unit}`};
-    }
+    const text = dueDate.fromNow();
+    const sanitisedText = text === '0 days overdue' ? '0 days' : text;
+    const overdue = sanitisedText.includes('overdue');
 
-    if (months >= 3) {
-        return {text: `${months} months`};
-    }
-
-    if (weeks >= 2) {
-        return {text: `${weeks} weeks`};
-    }
-
-    if (Math.sign(days) === 1) {
-        const unit = days === 1 ? 'day' : 'days';
-        return {text: `${days} ${unit}`};
-    }
-
-    const unit = days === 1 ? 'day' : 'days';
-    return {text: `${Math.abs(days)} ${unit}`, status: 'OVERDUE'};
+    return {text: sanitisedText, overdue};
 }
+
+moment.updateLocale('en', {
+    relativeTime: {
+        future: '%s',
+        past: '%s overdue',
+        s: '0 days',
+        ss: '0 days',
+        m: '0 days',
+        mm: '0 days',
+        h: '0 days',
+        hh: '0 days',
+        d: '%d day',
+        dd: '%d days',
+        M: '%d month',
+        MM: '%d months',
+        y: '%d year',
+        yy: '%d years'
+    }
+});

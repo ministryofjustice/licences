@@ -21,12 +21,8 @@ table#hdcEligiblePrisoners.largeMarginBottom
                             | #{prisoner.offenderNo}
 
                     td.hdced.hideMobile
-                        if prisoner.due.status === 'OVERDUE'
-                            div.alert.bold-small.searchable
-                                |#{prisoner.due.text} overdue
-                        else
-                            div.searchable
-                                |#{prisoner.due.text}
+                        div(class=prisoner.due.overdue ? "alert bold-small searchable" : "searchable")
+                            |#{prisoner.due.text}
 
                     if ['Address not suitable', 'Address rejected'].includes(prisoner.status)
                         td.status.terminalStateAlert.hideMobile.searchable

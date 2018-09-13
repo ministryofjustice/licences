@@ -153,21 +153,35 @@ describe('caseListService', () => {
                     }]);
 
                     const result = await service.getHdcCaseList(user.token, user.username, user.role);
-                    expect(result[0].due).to.eql({text: '1 day'});
+                    expect(result[0].due).to.eql({text: '1 day', overdue: false});
                 });
 
-                it('should add in weeks if longer than 2 weeks', async () => {
+                it('should show 0 days if it is today', async () => {
 
                     nomisClient.getHdcEligiblePrisoners.returns([{
                         ...hdcEligiblePrisoners[0],
                         sentenceDetail: {
                             ...hdcEligiblePrisoners[0].sentenceDetail,
-                            homeDetentionCurfewEligibilityDate: '2018-07-01'
+                            homeDetentionCurfewEligibilityDate: '2018-05-31'
                         }
                     }]);
 
                     const result = await service.getHdcCaseList(user.token, user.username, user.role);
-                    expect(result[0].due).to.eql({text: '4 weeks'});
+                    expect(result[0].due).to.eql({text: '0 days', overdue: false});
+                });
+
+                it('should set overdue if in the past', async () => {
+
+                    nomisClient.getHdcEligiblePrisoners.returns([{
+                        ...hdcEligiblePrisoners[0],
+                        sentenceDetail: {
+                            ...hdcEligiblePrisoners[0].sentenceDetail,
+                            homeDetentionCurfewEligibilityDate: '2018-05-30'
+                        }
+                    }]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, user.role);
+                    expect(result[0].due).to.eql({text: '1 day overdue', overdue: true});
                 });
 
                 it('should add in months if longer than 3 months', async () => {
@@ -181,7 +195,7 @@ describe('caseListService', () => {
                     }]);
 
                     const result = await service.getHdcCaseList(user.token, user.username, user.role);
-                    expect(result[0].due).to.eql({text: '6 months'});
+                    expect(result[0].due).to.eql({text: '6 months', overdue: false});
                 });
 
                 it('should add in years if longer than 1 year', async () => {
@@ -195,7 +209,7 @@ describe('caseListService', () => {
                     }]);
 
                     const result = await service.getHdcCaseList(user.token, user.username, user.role);
-                    expect(result[0].due).to.eql({text: '2 years'});
+                    expect(result[0].due).to.eql({text: '2 years', overdue: false});
                 });
 
             });
