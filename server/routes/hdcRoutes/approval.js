@@ -18,12 +18,19 @@ module.exports = ({prisonerService, logger}) => {
             const errorObject = getIn(errors, ['approval', 'release']) || {};
             const licenceStatus = getLicenceStatus(res.locals.licence);
 
-            res.render(`approval/${formName}`, {prisonerInfo, bookingId, data, nextPath, errorObject, licenceStatus});
+            res.render(`approval/${formName}`, {
+                prisonerInfo,
+                bookingId,
+                data,
+                nextPath,
+                errorObject,
+                licenceStatus
+            });
         };
     }
 
     return {
         getApprovalRelease: approvalGets('release'),
-        getApprovalCrdRefuse: approvalGets('crdRefuse')
+        getRefuseReason: approvalGets('refuseReason')
     };
 };

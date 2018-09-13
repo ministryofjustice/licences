@@ -5,8 +5,24 @@ block tasks
     if licenceStatus.decisions.insufficientTimeStop
         div.taskListItem.borderBottom.largeMarginBottom
             include tasks/eligibilitySummaryTask
+
         div.taskListItem.borderBottom
             include tasks/refusalTask
+
+
+    if licenceStatus.decisions.curfewAddressApproved === 'rejected'
+        div.taskListItem.borderBottom.largeMarginBottom
+            include tasks/eligibilitySummaryTask
+
+        div.taskListItem.borderBottomLight
+            include tasks/curfewAddressTask
+
+        div.taskListItem.borderBottom
+            include tasks/returnToCaTask
+
+        div.taskListItem.borderBottom
+            include tasks/refusalTask
+
 
     else
         div.taskListItem.borderBottomLight
