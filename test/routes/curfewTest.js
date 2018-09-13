@@ -219,7 +219,7 @@ describe('/hdc/curfew', () => {
                     });
             });
 
-            it(`throws when posting to '${route.nextPath}' when ca in non-post approval`, () => {
+            it(`throws when posting to '${route.nextPath}' when ca except post-approval or final checks`, () => {
 
                 const licence = {
                     licence: {
@@ -229,7 +229,7 @@ describe('/hdc/curfew', () => {
                             }
                         }
                     },
-                    stage: 'PROCESSING_CA'
+                    stage: 'ELIGIBILITY'
                 };
 
                 const licenceService = createLicenceServiceStub();

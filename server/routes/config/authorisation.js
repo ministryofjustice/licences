@@ -39,7 +39,7 @@ module.exports = {
         authorised: [{role: 'CA'}]
     },
     '/hdc/curfew/': {
-        authorised: [{role: 'RO'}, {role: 'CA', stage: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
+        authorised: [{role: 'RO'}, {role: 'CA', stage: ['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
     },
     '/hdc/risk/': {
         authorised: [{role: 'RO'}, {role: 'CA', stage: ['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]

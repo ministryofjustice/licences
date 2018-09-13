@@ -10,8 +10,9 @@ div.paddingBottom
 
         div.pure-u-1.pure-u-md-1-4.center
             -var roleCanModify = user.role === 'RO' || user.role === 'CA'
+            -var editable = licenceStatus.stage === 'PROCESSING_CA' && user.role === 'CA'
 
-            if postApproval && roleCanModify
+            if (postApproval && roleCanModify || editable)
                 a.taskListAction.center.button.button-secondary(href="/hdc/curfew/curfewHours/" + prisonerInfo.bookingId) View/Edit
 
             else if user.role === 'RO'
