@@ -63,7 +63,7 @@ module.exports = function(
 
     const approval = createApprovalRoutes({conditionsService, licenceService, prisonerService, logger});
     router.get('/approval/release/:bookingId', async(approval.getApprovalRelease));
-    router.get('/approval/crdRefuse/:bookingId', async(approval.getApprovalCrdRefuse));
+    router.get('/approval/refuseReason/:bookingId', async(approval.getRefuseReason));
 
     const curfew = createCurfewRoutes({licenceService, logger});
     router.get('/curfew/curfewAddressReview/:bookingId', curfew.getCurfewAddressReview);

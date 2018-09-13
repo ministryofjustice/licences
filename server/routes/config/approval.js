@@ -12,7 +12,7 @@ module.exports = {
             path: '/hdc/send/decided/'
         }
     },
-    crdRefuse: {
+    refuseReason: {
         licenceSection: 'release',
         validateInPlace: false,
         fields: [
