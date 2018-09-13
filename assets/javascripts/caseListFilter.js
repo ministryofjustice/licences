@@ -2,6 +2,7 @@
 
 $(document).ready(init);
 
+// to use add .searchable class to the parent of the text
 function init() {
     $("#caseListFilter").keyup(function(){
         var rows = $("#hdcEligiblePrisoners").find("tbody tr");
@@ -13,7 +14,7 @@ function init() {
 
             if (searchText.length === 0 || rowText.indexOf(searchText) > -1) {
                 $(this).show();
-                $(this).find('td.searchable').each(function() {
+                $(this).find('.searchable').each(function() {
                     var text = $(this).text();
 
                     $(this).html(text.replace(searchRegExp, '<span class="highlighted-string">$1</span>'))

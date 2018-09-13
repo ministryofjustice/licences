@@ -13,6 +13,7 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
         logger.debug('GET /caseList');
 
         const hdcEligible = await caseListService.getHdcCaseList(req.user.token, req.user.username, req.user.role);
+        // TODO filter caselist to cases the RO and DM are interested in
 
         return res.render('caseList/alt/index', {hdcEligible});
     }));
