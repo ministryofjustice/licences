@@ -36,7 +36,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
 
                     td
                         if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
-                            if ['Not started', 'Reviewing case'].includes(prisoner.status)
+                            if ['Not started', 'Reviewing case', 'Address rejected'].includes(prisoner.status)
                                 a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
                                     | Start
                             else
