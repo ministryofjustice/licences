@@ -7,6 +7,7 @@ exports.up = knex =>
             table.string('stage').notNullable();
             table.integer('version').notNullable();
             table.index(['booking_id', 'id', 'stage', 'version'], 'licence_by_booking_id');
+            table.datetime('transition_date');
         })
     ]);
 

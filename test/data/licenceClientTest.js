@@ -204,7 +204,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedUpdate = 'set stage = $1';
+            const expectedUpdate = 'set (stage, transition_date) = ($1, current_timestamp) ';
             const expectedWhere = 'where booking_id = $2';
 
             const result = licencesProxy().updateStage('ABC123', 'NEW_STAGE');

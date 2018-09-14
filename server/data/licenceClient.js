@@ -95,7 +95,7 @@ module.exports = {
 
     updateStage: function(bookingId, stage) {
         const query = {
-            text: 'update licences set stage = $1 where booking_id = $2',
+            text: 'update licences set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',
             values: [stage, bookingId]
         };
 
