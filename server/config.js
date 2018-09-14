@@ -60,5 +60,5 @@ module.exports = {
         ]
     },
 
-    alternativeCaseList: get('ALTERNATIVE_CASELIST', false)
+    alternativeCaseList: get('ALTERNATIVE_CASELIST', true)
 };

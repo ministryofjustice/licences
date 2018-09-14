@@ -245,6 +245,122 @@ describe('caseListService', () => {
                 expect(nomisClient.getROPrisoners).not.to.be.calledOnce();
                 expect(nomisClient.getHdcEligiblePrisoners).not.to.be.calledOnce();
             });
+
+            describe('days since case received', () => {
+
+                let clock;
+                const offender1 = {
+                    name: 'offender1',
+                    bookingId: 'a',
+                    sentenceDetail: {
+                        homeDetentionCurfewEligibilityDate: '2017-09-14',
+                        conditionalReleaseDate: '2017-12-15',
+                        releaseDate: '2017-12-15'
+                    }
+                };
+                const offender2 = {
+                    name: 'offender2',
+                    bookingId: 'b',
+                    sentenceDetail: {
+                        homeDetentionCurfewEligibilityDate: '2017-10-07',
+                        conditionalReleaseDate: '2017-12-15',
+                        releaseDate: '2017-12-15'
+                    }
+                };
+
+                beforeEach(() => {
+                    clock = sinon.useFakeTimers(new Date('May 31, 2018 00:00:00').getTime());
+                });
+
+                afterEach(() => {
+                    clock.restore();
+                });
+
+                it('should add Today to those received today', async () => {
+                    nomisClient.getROPrisoners.resolves(['a']);
+                    nomisClient.getOffenderSentencesByBookingId.resolves([offender1]);
+                    licenceClient.getLicences.resolves([
+                        {booking_id: 'a', transition_date: '2018-05-31 15:23:39.530927', stage: 'PROCESSING_RO'}
+                    ]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, 'RO');
+                    expect(result[0].received).to.eql({text: 'Today', days: '0'});
+                });
+
+                it('should add the number of days until hdced', async () => {
+                    nomisClient.getROPrisoners.resolves(['a']);
+                    nomisClient.getOffenderSentencesByBookingId.resolves([offender1]);
+                    licenceClient.getLicences.resolves([
+                        {booking_id: 'a', transition_date: '2018-05-16 15:23:39.530927', stage: 'PROCESSING_RO'}
+                    ]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, 'RO');
+                    expect(result[0].received).to.eql({text: '14 days ago', days: '14'});
+                });
+
+                it('should not add the number of days if not in PROCESSING_RO', async () => {
+                    nomisClient.getROPrisoners.resolves(['a']);
+                    nomisClient.getOffenderSentencesByBookingId.resolves([offender1]);
+                    licenceClient.getLicences.resolves([
+                        {booking_id: 'a', transition_date: '2018-05-16 15:23:39.530927', stage: 'MODIFIED'}
+                    ]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, 'RO');
+                    expect(result[0].received).to.be.undefined();
+                });
+
+                it('should order on days since received first', async () => {
+                    nomisClient.getROPrisoners.resolves(['a']);
+                    nomisClient.getOffenderSentencesByBookingId.resolves([offender1, offender2]);
+                    licenceClient.getLicences.resolves([
+                        {booking_id: 'a', transition_date: '2018-05-20 15:23:39.530927', stage: 'PROCESSING_RO'},
+                        {booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO'}
+                    ]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, 'RO');
+                    expect(result[0].bookingId).to.eql('b');
+                    expect(result[1].bookingId).to.eql('a');
+                });
+
+                it('should order on days since received first', async () => {
+                    nomisClient.getROPrisoners.resolves(['a']);
+                    nomisClient.getOffenderSentencesByBookingId.resolves([offender1, offender2]);
+                    licenceClient.getLicences.resolves([
+                        {booking_id: 'a', transition_date: '2018-05-17 15:23:39.530927', stage: 'PROCESSING_RO'},
+                        {booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO'}
+                    ]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, 'RO');
+                    expect(result[0].bookingId).to.eql('a');
+                    expect(result[1].bookingId).to.eql('b');
+                });
+
+                it('should prioritise those with received date', async () => {
+                    nomisClient.getROPrisoners.resolves(['a']);
+                    nomisClient.getOffenderSentencesByBookingId.resolves([offender1, offender2]);
+                    licenceClient.getLicences.resolves([
+                        {booking_id: 'a', transition_date: '2018-05-17 15:23:39.530927', stage: 'MODIFIED'},
+                        {booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO'}
+                    ]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, 'RO');
+                    expect(result[0].bookingId).to.eql('b');
+                    expect(result[1].bookingId).to.eql('a');
+                });
+
+                it('should sort by release date if neither have received date', async () => {
+                    nomisClient.getROPrisoners.resolves(['a']);
+                    nomisClient.getOffenderSentencesByBookingId.resolves([offender2, offender1]);
+                    licenceClient.getLicences.resolves([
+                        {booking_id: 'a', transition_date: '2018-05-17 15:23:39.530927', stage: 'MODIFIED'},
+                        {booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'MODIFIED'}
+                    ]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, 'RO');
+                    expect(result[0].bookingId).to.eql('a');
+                    expect(result[1].bookingId).to.eql('b');
+                });
+            });
         });
 
         describe('sorting', () => {

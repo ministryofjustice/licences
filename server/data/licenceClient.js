@@ -15,7 +15,7 @@ module.exports = {
 
     getLicences: async function(bookingIds) {
         const query = {
-            text: `select licence, booking_id, stage, version from licences 
+            text: `select licence, booking_id, stage, version, transition_date from licences 
                    where booking_id in (${bookingIds.map(id => `'${id}'`).join(',')})`
         };
 
