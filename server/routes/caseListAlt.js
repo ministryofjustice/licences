@@ -24,13 +24,36 @@ module.exports = function({logger, caseListService, authenticationMiddleware}) {
 function getFilteredList(caseList, role) {
 
     const interestedStatuses = {
-        RO: ['PROCESSING_RO', 'PROCESSING_CA', 'APPROVAL', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
-        DM: ['APPROVAL', 'DECIDED']
+        RO: [
+            {stage: 'PROCESSING_RO'},
+            {stage: 'PROCESSING_CA'},
+            {stage: 'APPROVAL'},
+            {stage: 'DECIDED'},
+            {stage: 'MODIFIED'},
+            {stage: 'MODIFIED_APPROVAL'}
+        ],
+        DM: [
+            {stage: 'APPROVAL'},
+            {stage: 'DECIDED'},
+            {stage: 'PROCESSING_CA', status: 'Postponed'}
+        ]
     };
 
     if (!interestedStatuses[role]) {
         return caseList;
     }
 
-    return caseList.filter(prisoner => interestedStatuses[role].includes(prisoner.stage));
+    return caseList.filter(prisoner => {
+        const includedStage = interestedStatuses[role].find(config => prisoner.stage === config.stage);
+
+        if (!includedStage) {
+            return false;
+        }
+
+        if (includedStage.status) {
+            return includedStage.status === prisoner.status;
+        }
+
+        return true;
+    });
 }
