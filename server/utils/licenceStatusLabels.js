@@ -95,7 +95,7 @@ function caProcessingRoLabel(licenceStatus) {
         {decision: 'postponed', label: 'Postponed'}
     ];
 
-    return getLabel(labels, licenceStatus) || 'Submitted to PCA';
+    return getLabel(labels, licenceStatus) || 'Submitted to prison case admin';
 }
 
 function caProcessingDmLabel(licenceStatus) {
@@ -104,7 +104,7 @@ function caProcessingDmLabel(licenceStatus) {
         {decision: 'postponed', label: 'Postponed'}
     ];
 
-    return getLabel(labels, licenceStatus) || 'Submitted to PCA';
+    return getLabel(labels, licenceStatus) || 'Submitted to prison case admin';
 }
 
 function roProcessingLabel(licenceStatus) {

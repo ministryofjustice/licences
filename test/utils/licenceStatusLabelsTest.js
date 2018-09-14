@@ -234,11 +234,11 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
-                    label: 'Submitted to PCA'
+                    label: 'Submitted to prison case admin'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {excluded: true}, tasks: {}},
-                    label: 'Submitted to PCA'
+                    label: 'Submitted to prison case admin'
                 },
                 {
                     status: {
@@ -246,7 +246,7 @@ describe('getStatusLabel', () => {
                         decisions: {curfewAddressApproved: 'rejected'},
                         tasks: {}
                     },
-                    label: 'Submitted to PCA'
+                    label: 'Submitted to prison case admin'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {postponed: true}, tasks: {}},
@@ -313,7 +313,7 @@ describe('getStatusLabel', () => {
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
-                    label: 'Submitted to PCA'
+                    label: 'Submitted to prison case admin'
                 },
                 {
                     status: {stage: licenceStages.DECIDED, decisions: {approved: true}, tasks: {}},
