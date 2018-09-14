@@ -4,12 +4,12 @@ include ../taskList/includes/startContinueViewButton
 block content
 
     div.back-link-container
-        include ../includes/backToTaskList
+        a#backBtn.link-back(href="/hdc/pdf/select/" + bookingId) Back
 
     include ../includes/personalDetailsSummary
 
     div.pure-u-1.borderBottom
-        h2.heading-large #{templateTitle}
+        h2.heading-large #{versionInfo.templateLabel}
         p You need to complete the following before you create the licence
 
     div.paddingBottom
