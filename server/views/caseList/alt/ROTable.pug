@@ -3,8 +3,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
         tr
             th Name
             th Prison no.
-            th.hideMobile HDCED
-            th.hideMobile CRD / ARD
+            th.hideMobile Request received
             th.hideMobile Status
             th
     tbody
@@ -17,17 +16,13 @@ table#hdcEligiblePrisoners.largeMarginBottom
                         if prisoner.lastName
                             |  #{prisoner.lastName}
 
-                    td.offenderNo.searchable
+                    td.offenderNo.hideMobile.searchable
                         if prisoner.offenderNo
                             | #{prisoner.offenderNo}
 
-                    td.hdced.hideMobile.searchable
-                        if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
-                            | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
-
-                    td.crd.hideMobile.searchable
-                        if prisoner.sentenceDetail.releaseDate
-                            | #{prisoner.sentenceDetail.releaseDate}
+                    td.crd.searchable
+                        if prisoner.received
+                            | #{prisoner.received.text}
 
                     td.status.hideMobile.searchable
                         if prisoner.status

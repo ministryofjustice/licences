@@ -32,5 +32,5 @@ function getFilteredList(caseList, role) {
         return caseList;
     }
 
-    return caseList.filter(prisoner => interestedStatuses.includes(prisoner.status));
+    return caseList.filter(prisoner => interestedStatuses[role].includes(prisoner.stage));
 }

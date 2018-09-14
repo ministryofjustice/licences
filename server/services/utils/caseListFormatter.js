@@ -14,7 +14,7 @@ module.exports = function createCaseListFormatter(logger, licenceClient) {
         return hdcEligibleReleases
             .filter(prisoner => getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
             .map(decoratePrisonerDetails(licences, role))
-            .sort(compareReleaseDates);
+            .sort(sortList(role));
     }
 
     return {formatCaseList};
@@ -27,7 +27,7 @@ function getBookingIds(releases) {
 function decoratePrisonerDetails(licences, role) {
     return prisoner => {
         const formattedPrisoner = formatObjectForView(prisoner);
-        const decoratedPrisoner = addRoleSpecificDecoration(formattedPrisoner, role);
+        const decoratedPrisoner = addRoleSpecificDecoration(formattedPrisoner, role, licences);
         const {stage, status} = getStatus(prisoner, licences, role);
         return {...decoratedPrisoner, stage, status};
     };
@@ -47,37 +47,63 @@ function getStatus(prisoner, licences, role) {
     return {stage: licenceForPrisoner.stage, status: getStatusLabel(licenceStatus, role)};
 }
 
-function compareReleaseDates(address1, address2) {
-    const hdced1 = getIn(address1, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
-    const hdced2 = getIn(address2, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
+function sortList(role) {
+    if (role === 'RO') {
+        return sortByDaysReceived;
+    }
+    return sortByReleaseDate;
+}
+
+function sortByReleaseDate(prisoner1, prisoner2) {
+    const hdced1 = getIn(prisoner1, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
+    const hdced2 = getIn(prisoner2, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
 
     if (hdced1 !== hdced2) {
         return dateDifference(hdced1, hdced2);
     }
 
-    const rd1 = getIn(address1, ['sentenceDetail', 'releaseDate']);
-    const rd2 = getIn(address2, ['sentenceDetail', 'releaseDate']);
+    const rd1 = getIn(prisoner1, ['sentenceDetail', 'releaseDate']);
+    const rd2 = getIn(prisoner2, ['sentenceDetail', 'releaseDate']);
 
     return dateDifference(rd1, rd2);
+}
+
+function sortByDaysReceived(prisoner1, prisoner2) {
+
+    const prisoner1Received = getIn(prisoner1, ['received']);
+    const prisoner2Received = getIn(prisoner2, ['received']);
+
+    if (!prisoner1Received && !prisoner2Received) {
+        return sortByReleaseDate(prisoner1, prisoner2);
+    }
+
+    if (!prisoner1Received && prisoner2Received) {
+        return 1;
+    }
+
+    if (prisoner1Received && !prisoner2Received) {
+        return -1;
+    }
+
+    return prisoner2Received.days - prisoner1Received.days;
 }
 
 function dateDifference(address1, address2) {
     return moment(address1, 'DD-MM-YYYY').diff(moment(address2, 'DD-MM-YYYY'));
 }
 
-function addRoleSpecificDecoration(prisoner, role) {
+function addRoleSpecificDecoration(prisoner, role, licences) {
     if (role === 'CA') {
         return addHDCEDCountdown(prisoner);
+    }
+    if (role === 'RO') {
+        return addReceivedTime(prisoner, licences);
     }
     return prisoner;
 }
 
 function addHDCEDCountdown(prisoner) {
     const hdced = getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']);
-    if (!hdced) {
-        return {...prisoner, due: {text: 'No HDCED'}};
-    }
-
     const dueDate = moment(hdced, 'DD/MM/YYYY');
 
     return {...prisoner, due: getDueText(dueDate)};
@@ -90,6 +116,20 @@ function getDueText(dueDate) {
     const overdue = sanitisedText.includes('overdue');
 
     return {text: sanitisedText, overdue};
+}
+
+function addReceivedTime(prisoner, licences) {
+    const licence = licences.find(licence => licence.booking_id === prisoner.bookingId);
+
+    if (!licence || licence.stage !== 'PROCESSING_RO') {
+        return prisoner;
+    }
+
+    const text = moment(licence.transition_date).toNow();
+    const days = text.split(' ')[0];
+    const sanitisedText = text.includes('0 days') ? 'Today' : `${text} ago`;
+
+    return {...prisoner, received: {text: sanitisedText, days}};
 }
 
 moment.updateLocale('en', {
