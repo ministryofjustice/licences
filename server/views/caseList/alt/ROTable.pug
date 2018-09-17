@@ -1,15 +1,15 @@
-table#hdcEligiblePrisoners.largeMarginBottom
+table#hdcEligiblePrisoners.sortcolumns.largeMarginBottom
     thead
         tr
-            th Name
-            th Prison no.
-            th.hideMobile Request received
+            th.sortable Name
+            th.hideMobile Prison no.
+            th.sortable Request received
             th.hideMobile Status
             th
     tbody
         if hdcEligible && hdcEligible.length > 0
             each prisoner, index in hdcEligible
-                tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
+                tr.hdcEligible
                     td.name.searchable
                         if prisoner.firstName
                             | #{prisoner.firstName}
