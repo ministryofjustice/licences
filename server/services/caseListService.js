@@ -51,10 +51,11 @@ async function getCaseList(nomisClient, licenceClient, username, role) {
 
 function getROCaseList(nomisClient, licenceClient, username) {
     return async () => {
-        const deliusUserName = await licenceClient.getDeliusUserName(username);
+        const upperCaseUserName = username.toUpperCase();
+        const deliusUserName = await licenceClient.getDeliusUserName(upperCaseUserName);
 
         if (!deliusUserName) {
-            logger.warn(`No delius user ID for nomis ID '${username}'`);
+            logger.warn(`No delius user ID for nomis ID '${upperCaseUserName}'`);
             return [];
         }
 
