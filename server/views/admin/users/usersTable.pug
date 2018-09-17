@@ -10,7 +10,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
     tbody
         if roUsers && roUsers.length > 0
             each roUser, index in roUsers
-                tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
+                tr.hdcEligible
                     td.nomisId
                         if roUser.nomisId
                             | #{roUser.nomisId}

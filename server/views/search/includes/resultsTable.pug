@@ -13,7 +13,7 @@ else
                 th Current status
         tbody
             each prisoner, index in hdcEligible
-                tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
+                tr.hdcEligible
 
                     td.name
                         if ['PROCESSING_RO'].includes(prisoner.stage)

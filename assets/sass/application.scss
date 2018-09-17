@@ -7,7 +7,7 @@ $path: "/public/images/";
 @import 'govuk-elements';
 @import "./header";
 @import './layout';
-@import './tabs';
+@import './caselist';
 @import './pagination';
 @import './additionalConditions';
 
@@ -291,10 +291,6 @@ td.spacer {
 
 .capitalize {
     text-transform: capitalize;
-}
-
-.greyRow {
-    background-color: $highlight-colour;
 }
 
 .addResidentButton {
