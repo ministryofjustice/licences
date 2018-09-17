@@ -23,7 +23,7 @@ module.exports = {
         nextPath: {
             decisions: {
                 discriminator: 'decision',
-                Yes: '/hdc/proposedAddress/curfewAddress/',
+                Yes: '/hdc/proposedAddress/curfewAddress/do/',
                 No: '/hdc/proposedAddress/bassReferral/'
             }
         }
@@ -71,7 +71,11 @@ module.exports = {
             }}
         ],
         nextPath: {
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            'do': '/hdc/taskList/',
+            add: '/hdc/taskList/',
+            update: '/hdc/taskList/',
+            change: '/hdc/review/curfewAddress/'
         }
     },
     rejected: {
@@ -82,7 +86,7 @@ module.exports = {
         nextPath: {
             decisions: {
                 discriminator: 'enterAlternative',
-                Yes: '/hdc/proposedAddress/curfewAddress/',
+                Yes: '/hdc/proposedAddress/curfewAddress/add/',
                 No: '/hdc/taskList/'
             }
         }

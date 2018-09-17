@@ -41,7 +41,7 @@ describe('/hdc/proposedAddress', () => {
             {url: '/hdc/proposedAddress/optOut/1', content: 'decided to opt out'},
             {url: '/hdc/proposedAddress/addressProposed/1', content: 'proposed a curfew address?'},
             {url: '/hdc/proposedAddress/bassReferral/1', content: 'BASS referral'},
-            {url: '/hdc/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'}
+            {url: '/hdc/proposedAddress/curfewAddress/do/1', content: 'Proposed curfew address'}
         ];
 
         testFormPageGets(app, routes, licenceService);
@@ -67,7 +67,7 @@ describe('/hdc/proposedAddress', () => {
                 url: '/hdc/proposedAddress/addressProposed/1',
                 body: {bookingId: 1, decision: 'Yes'},
                 section: 'addressProposed',
-                nextPath: '/hdc/proposedAddress/curfewAddress/1',
+                nextPath: '/hdc/proposedAddress/curfewAddress/do/1',
                 user: 'caUser'
             },
             {
@@ -185,7 +185,7 @@ describe('/hdc/proposedAddress', () => {
                 const app = createApp({licenceService});
 
                 return request(app)
-                    .get('/hdc/proposedAddress/curfewAddress/1')
+                    .get('/hdc/proposedAddress/curfewAddress/update/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -200,7 +200,7 @@ describe('/hdc/proposedAddress', () => {
             it('should post to standard route', () => {
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence = sinon.stub().resolves({
-                    licence: { }
+                    licence: {}
                 });
 
                 const app = createApp({licenceService});
@@ -210,7 +210,8 @@ describe('/hdc/proposedAddress', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('<form method="post">');
+                        expect(res.text)
+                            .to.include('<form method="post">');
                         expect(res.text).to.include('name="[addresses][0][addressLine1]"');
                     });
 
@@ -234,7 +235,7 @@ describe('/hdc/proposedAddress', () => {
                 const app = createApp({licenceService});
 
                 return request(app)
-                    .get('/hdc/proposedAddress/curfewAddress/1')
+                    .get('/hdc/proposedAddress/curfewAddress/add/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -262,7 +263,7 @@ describe('/hdc/proposedAddress', () => {
                 const app = createApp({licenceService});
 
                 return request(app)
-                    .get('/hdc/proposedAddress/curfewAddress/1')
+                    .get('/hdc/proposedAddress/curfewAddress/update/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -346,7 +347,7 @@ describe('/hdc/proposedAddress', () => {
 
             return request(app)
                 .post('/hdc/proposedAddress/curfewAddress/add/1')
-                .send({bookingId: '1', addresses: [{addressLine1: 'something'}]})
+                .send({bookingId: '1', addresses: [{addressLine1: 'something'}], action: 'add'})
                 .expect(302)
                 .expect('Location', '/hdc/taskList/1');
 
@@ -371,9 +372,9 @@ describe('/hdc/proposedAddress', () => {
 
             return request(app)
                 .post('/hdc/proposedAddress/curfewAddress/add/1')
-                .send({bookingId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}]})
+                .send({bookingId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}], action: 'add'})
                 .expect(302)
-                .expect('Location', '/hdc/proposedAddress/curfewAddress/1');
+                .expect('Location', '/hdc/proposedAddress/curfewAddress/add/1');
 
         });
     });

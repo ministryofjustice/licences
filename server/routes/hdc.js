@@ -50,6 +50,14 @@ module.exports = function(
         next();
     });
 
+
+    router.post('/:sectionName/:formName/do/:bookingId', audited, async(async (req, res) => {
+        const {sectionName, formName, bookingId} = req.params;
+        logger.debug(`POST ${sectionName}/${formName}/${bookingId}`);
+
+        return formPost(req, res, sectionName, formName, bookingId);
+    }));
+
     const conditions = createConditionsRoutes({conditionsService, licenceService, logger});
     router.get('/licenceConditions/standard/:bookingId', async(conditions.getStandard));
     router.get('/licenceConditions/additionalConditions/:bookingId', async(conditions.getAdditional));
@@ -68,6 +76,7 @@ module.exports = function(
     const curfew = createCurfewRoutes({licenceService, logger});
     router.get('/curfew/curfewAddressReview/:bookingId', curfew.getCurfewAddressReview);
     router.get('/curfew/addressSafety/:bookingId', curfew.getAddressSafetyReview);
+
     router.post('/curfew/curfewAddressReview/:bookingId', audited, async(curfew.postCurfewAddressReview));
     router.post('/curfew/addressSafety/:bookingId', audited, async(curfew.postAddressSafetyReview));
     router.post('/curfew/withdrawAddress/:bookingId', audited, async(curfew.postWithdrawAddress));
@@ -75,9 +84,8 @@ module.exports = function(
     router.post('/curfew/reinstateAddress/:bookingId', audited, async(curfew.postReinstateAddress));
 
     const proposedAddress = createProposedAddressRoutes({licenceService, logger});
-    router.get('/proposedAddress/curfewAddress/:bookingId', proposedAddress.getAddress);
-    router.post('/proposedAddress/curfewAddress/add/:bookingId', audited, async(proposedAddress.postAddAddress));
-    router.post('/proposedAddress/curfewAddress/update/:bookingId', audited, async(proposedAddress.postUpdateAddress));
+    router.get('/proposedAddress/curfewAddress/:action/:bookingId', proposedAddress.getAddress);
+    router.post('/proposedAddress/curfewAddress/:action/:bookingId', audited, async(proposedAddress.postAddress));
 
     router.post('/optOut/:bookingId', audited, async(async (req, res) => {
         const {bookingId} = req.body;
@@ -120,6 +128,7 @@ module.exports = function(
 
         res.render(`${sectionName}/${formName}`, viewData);
     }
+
 
     router.post('/:sectionName/:formName/:bookingId', audited, async(async (req, res) => {
         const {sectionName, formName, bookingId} = req.params;

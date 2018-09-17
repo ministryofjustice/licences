@@ -22,10 +22,8 @@ block content
                 h2#curfewAddressDetails.heading-medium Proposed curfew address
             div.pure-u-1.pure-u-md-1-2.alignRight
                 div.change-details
-                    if (stage === 'PROCESSING_RO' && user.role === 'RO')
-                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + bookingId) Change these details
                     if(user.role === 'CA' && (stage === 'ELIGIBILITY' || addressChanged))
-                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Change these details
+                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change these details
 
             div.pure-u-1
                 if typeof errorObject.proposedAddress === 'string'
@@ -41,4 +39,4 @@ block content
                 a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/addressReview/" + bookingId role="button")
                     | Continue
             else
-                a#correctAddressLink(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Correct the errors before continuing
+                a#correctAddressLink(href="/hdc/proposedAddress/curfewAddress/do/" + bookingId) Correct the errors before continuing
