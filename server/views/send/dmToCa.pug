@@ -9,8 +9,8 @@ block content
 
     div.pure-g.largePaddingBottom
         div.pure-u-2-3
-            h2.heading-large.midPaddingBottom Submit to the Prison Case Admin
-            p.lede The HDC decision can now be submitted back to the Prison Case Admin or you can return to the task list and send it later.
+            h2.heading-large.midPaddingBottom Submit to the prison case admin
+            p.lede The case is ready to be submitted to prison case admin.
 
     div#continueBtns.pure-g.paddingBottom
         div.pure-u-1
@@ -18,4 +18,7 @@ block content
                 input(type="hidden" name="_csrf" value=csrfToken)
                 input(type="hidden" name="bookingId" value=bookingId)
                 input(type="hidden" name="transitionType" value='dmToCa')
-                include includes/sendButtons
+
+                div.pure-u-1.inlineButtons.paddingBottom
+                    input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Submit")
+                    a#backBtn.requiredButton.button.button-secondary.button-start-height(href="/hdc/taskList/" + bookingId role="button") Cancel

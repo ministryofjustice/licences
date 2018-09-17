@@ -8,4 +8,7 @@ block form
         input(type="hidden" name="transitionType" value='roToCa')
         if submissionTarget && submissionTarget.premise
             input(type="hidden" name="submissionTarget" value=submissionTarget.premise)
-        include includes/sendButtons
+
+        div.pure-u-1.inlineButtons.paddingBottom
+            input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Submit")
+            a#backBtn.requiredButton.button.button-secondary.button-start-height(href="/hdc/taskList/" + bookingId role="button") Cancel
