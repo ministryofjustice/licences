@@ -368,45 +368,6 @@ describe('GET /taskList/:prisonNumber', () => {
             });
         });
 
-        context('when offender has opted out', () => {
-            it('should display that user has opted out', () => {
-                licenceService.getLicence.resolves({
-                    stage: 'ELIGIBILITY',
-                    licence: {
-                        eligibility: {
-                            excluded: {
-                                decision: 'No'
-                            },
-                            suitability: {
-                                decision: 'No'
-                            },
-                            exceptionalCircumstances: {
-                                decision: 'No'
-                            }
-                        },
-                        proposedAddress: {
-                            curfewAddress: {
-                                addresses: [{
-                                    addressLine1: 'Something'
-                                }]
-                            },
-                            optOut: {decision: 'Yes'}
-                        }
-                    }
-                });
-
-                const app = createApp({licenceService, prisonerService});
-
-                return request(app)
-                    .get('/1233456')
-                    .expect(200)
-                    .expect(res => {
-                        expect(res.text).to.not.include('Prisoner has opted out of HDC');
-                        expect(res.text).to.not.include('href="/hdc/review/curfewAddress/');
-                    });
-            });
-        });
-
         context('when address has been submitted', () => {
             it('should display that it has been submitted', () => {
                 licenceService.getLicence.resolves({

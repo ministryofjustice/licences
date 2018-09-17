@@ -236,6 +236,14 @@ describe('caseListService', () => {
                 expect(nomisClient.getOffenderSentencesByBookingId).not.to.be.calledOnce();
             });
 
+            it('should call getDeliusUserName with capitalises username', async () => {
+                licenceClient.getDeliusUserName.resolves(undefined);
+
+                await service.getHdcCaseList(ROUser.token, 'aaa', ROUser.role);
+
+                expect(licenceClient.getDeliusUserName).to.be.calledWith('AAA');
+            });
+
             it('should return empty array if no delius user name found', async () => {
                 licenceClient.getDeliusUserName.resolves(undefined);
 

@@ -79,21 +79,6 @@ module.exports = function(
     router.post('/proposedAddress/curfewAddress/add/:bookingId', audited, async(proposedAddress.postAddAddress));
     router.post('/proposedAddress/curfewAddress/update/:bookingId', audited, async(proposedAddress.postUpdateAddress));
 
-    router.post('/optOut/:bookingId', audited, async(async (req, res) => {
-        const {bookingId} = req.body;
-
-        await licenceService.update({
-            bookingId: bookingId,
-            config: {fields: [{decision: {}}]},
-            userInput: req.body,
-            licenceSection: 'proposedAddress',
-            formName: 'optOut'
-        });
-
-        const nextPath = '/hdc/taskList/';
-        res.redirect(`${nextPath}${bookingId}`);
-    }));
-
     router.get('/:sectionName/:formName/:path/:bookingId', (req, res) => {
         const {sectionName, formName, path, bookingId} = req.params;
         logger.debug(`GET ${sectionName}/${formName}/${path}/${bookingId}`);
