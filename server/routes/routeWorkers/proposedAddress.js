@@ -1,10 +1,10 @@
 const {getCurfewAddressFormData} = require('../../utils/addressHelpers');
 const {getIn, lastIndex} = require('../../utils/functionalHelpers');
-const formConfig = require('../config/proposedAddress');
 
-module.exports = ({licenceService}) => {
+module.exports = ({formConfig, licenceService}) => {
 
     function getAddress(req, res) {
+
         const {bookingId} = req.params;
         const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
 
@@ -18,6 +18,7 @@ module.exports = ({licenceService}) => {
     }
 
     async function postAddAddress(req, res) {
+
         const {bookingId} = req.body;
         const {addressLine1, addressTown, postCode} = req.body.addresses[0];
 
@@ -41,6 +42,7 @@ module.exports = ({licenceService}) => {
     }
 
     async function postUpdateAddress(req, res) {
+
         const {bookingId} = req.body;
         const rawLicence = await res.locals.licence;
 

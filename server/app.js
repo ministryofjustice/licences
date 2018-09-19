@@ -24,20 +24,31 @@ const passport = require('passport');
 const auth = require('./authentication/auth');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
-const createDefaultRouter = require('../server/routes/default');
-const createSignInRouter = require('./routes/signIn');
-const createTaskListRouter = require('./routes/taskList');
-const createHdcRouter = require('./routes/hdc');
-const createSendRouter = require('../server/routes/send');
-const createSentRouter = require('../server/routes/sent');
-const createUtilsRouter = require('../server/routes/utils');
-const createCaseListRouter = require('../server/routes/caseList');
-const createAltCaseListRouter = require('../server/routes/caseListAlt');
-const createPdfRouter = require('../server/routes/pdf');
-const createSearchRouter = require('../server/routes/search');
-const createApiRouter = require('../server/routes/api');
-const createAdminRouter = require('../server/routes/admin/admin');
 const createContactRouter = require('../server/routes/contact');
+const defaultRouter = require('../server/routes/default');
+const signInRouter = require('./routes/signIn');
+
+const adminRouter = require('../server/routes/admin/admin');
+const apiRouter = require('../server/routes/api');
+const caseListRouter = require('../server/routes/caseList');
+const altCaseListRouter = require('../server/routes/caseListAlt');
+const pdfRouter = require('../server/routes/pdf');
+const searchRouter = require('../server/routes/search');
+const sendRouter = require('../server/routes/send');
+const sentRouter = require('../server/routes/sent');
+const taskListRouter = require('./routes/taskList');
+const utilsRouter = require('../server/routes/utils');
+
+const addressRouter = require('./routes/address');
+const approvalRouter = require('./routes/approval');
+const conditionsRouter = require('./routes/conditions');
+const curfewRouter = require('./routes/curfew');
+const eligibilityRouter = require('./routes/eligibility');
+const finalChecksRouter = require('./routes/finalChecks');
+const reviewRouter = require('./routes/review');
+const reportingRouter = require('./routes/reporting');
+const riskRouter = require('./routes/risk');
+
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -107,7 +118,7 @@ module.exports = function createApp({
     app.use(bodyParser.urlencoded({extended: true}));
 
     if (config.enableTestUtils) {
-        app.use('/utils/', createUtilsRouter({logger, licenceService}));
+        app.use('/utils/', utilsRouter({logger, licenceService}));
     }
 
     app.use(cookieParser());
@@ -268,7 +279,7 @@ module.exports = function createApp({
         return res.render('notfound');
     });
 
-    app.use('/login', createSignInRouter(passport));
+    app.use('/login', signInRouter(passport));
 
     app.use('/logout', (req, res) => {
         if (req.user) {
@@ -279,30 +290,35 @@ module.exports = function createApp({
         }
     });
 
-    app.use('/', createDefaultRouter());
+    app.use('/', defaultRouter());
 
     if (config.alternativeCaseList) {
-        app.use('/caseList/', createAltCaseListRouter({logger, caseListService, authenticationMiddleware}));
+        app.use('/caseList/', altCaseListRouter({caseListService, authenticationMiddleware}));
     } else {
-        app.use('/caseList/', createCaseListRouter({logger, caseListService, authenticationMiddleware}));
+        app.use('/caseList/', caseListRouter({caseListService, authenticationMiddleware}));
     }
 
-    app.use('/admin/', createAdminRouter({logger, userService, authenticationMiddleware, audit}));
-    app.use('/hdc/send/', createSendRouter({logger, licenceService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/sent/', createSentRouter({logger, licenceService, authenticationMiddleware}));
-    app.use('/hdc/pdf/', createPdfRouter(
-        {logger, pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/search/', createSearchRouter({logger, searchService, authenticationMiddleware}));
+    app.use('/admin/', adminRouter({userService, authenticationMiddleware, audit}));
+    app.use('/hdc/pdf/', pdfRouter({pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/search/', searchRouter({searchService, authenticationMiddleware}));
+    app.use('/hdc/send/', sendRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/sent/', sentRouter({licenceService, authenticationMiddleware}));
+    app.use('/hdc/taskList/', taskListRouter({prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));
     app.use('/hdc/contact/', createContactRouter({logger, userService, authenticationMiddleware}));
-    app.use('/hdc/taskList/',
-        createTaskListRouter(
-            {logger, prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));
-    app.use('/hdc/',
-        createHdcRouter({logger, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
+
+    app.use('/hdc/', addressRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', approvalRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', conditionsRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', curfewRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', eligibilityRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', finalChecksRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', reviewRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', reportingRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', riskRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
 
     // hide functionality until authorisation strategy is established
     if (!production) {
-        app.use('/api/', createApiRouter({reportingService}));
+        app.use('/api/', apiRouter({reportingService}));
     }
 
     // Error Handler

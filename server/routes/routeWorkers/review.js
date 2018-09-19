@@ -1,7 +1,9 @@
+const logger = require('../../../log');
+
 const {getLicenceStatus} = require('../../utils/licenceStatus');
 const {getIn, lastItem} = require('../../utils/functionalHelpers');
 
-module.exports = ({conditionsService, licenceService, prisonerService, logger}) => {
+module.exports = ({conditionsService, licenceService, prisonerService}) => {
 
     async function getReviewSection(req, res) {
         const {sectionName, bookingId} = req.params;

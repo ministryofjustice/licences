@@ -3,7 +3,7 @@ const express = require('express');
 const {async, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} =
     require('../utils/middleware');
 
-module.exports = function({logger, licenceService, prisonerService, authenticationMiddleware, audit}) {
+module.exports = function({licenceService, prisonerService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
     router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));

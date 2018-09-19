@@ -1,10 +1,15 @@
 const request = require('supertest');
 
 const {
+    createPrisonerServiceStub,
     createLicenceServiceStub,
-    createApp,
-    formConfig
+    authenticationMiddleware,
+    auditStub,
+    appSetup
 } = require('../supertestSetup');
+
+const createRoute = require('../../server/routes/finalChecks');
+const formConfig = require('../../server/routes/config/finalChecks');
 
 describe('/hdc/finalChecks', () => {
     describe('routes', () => {
@@ -167,3 +172,17 @@ describe('/hdc/finalChecks', () => {
         });
     });
 });
+
+function createApp({licenceService}, user) {
+    const prisonerServiceStub = createPrisonerServiceStub();
+    licenceService = licenceService || createLicenceServiceStub();
+
+    const route = createRoute({
+        licenceService,
+        prisonerService: prisonerServiceStub,
+        authenticationMiddleware,
+        audit: auditStub
+    });
+
+    return appSetup(route, user, '/hdc');
+}

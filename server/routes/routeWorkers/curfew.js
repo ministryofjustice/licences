@@ -1,8 +1,8 @@
+const logger = require('../../../log');
 const {getPathFor} = require('../../utils/routes');
 const {getIn, lastItem, lastIndex} = require('../../utils/functionalHelpers');
-const formConfig = require('../config/curfew');
 
-module.exports = ({licenceService, logger}) => {
+module.exports = ({formConfig, licenceService}) => {
 
     function addressReviewGets(formName) {
         return (req, res) => {
@@ -43,6 +43,7 @@ module.exports = ({licenceService, logger}) => {
     return {
         getCurfewAddressReview: addressReviewGets('curfewAddressReview'),
         getAddressSafetyReview: addressReviewGets('addressSafety'),
+
         postCurfewAddressReview: addressReviewPosts('curfewAddressReview'),
         postAddressSafetyReview: addressReviewPosts('addressSafety'),
         postWithdrawAddress: addressReviewPosts('withdrawAddress'),

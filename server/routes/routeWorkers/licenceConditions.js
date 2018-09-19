@@ -1,8 +1,8 @@
+const logger = require('../../../log');
 const {getLicenceStatus} = require('../../utils/licenceStatus');
-const formConfig = require('../config/licenceConditions');
 const {getIn} = require('../../utils/functionalHelpers');
 
-module.exports = ({conditionsService, licenceService, logger}) => {
+module.exports = ({formConfig, conditionsService, licenceService}) => {
 
     async function getStandard(req, res) {
         logger.debug('GET /standard/:bookingId');

@@ -3,7 +3,7 @@ const {urlencoded} = require('body-parser');
 const express = require('express');
 const flash = require('connect-flash');
 
-const createSignInEndpoint = require('../../server/routes/signIn');
+const createRoute = require('../../server/routes/signIn');
 const mockAuthentication = require('../mockAuthentication');
 
 describe('POST /login', () => {
@@ -57,7 +57,7 @@ function createSignInApp(fakeSignInService) {
     mockAuthentication.setupMockAuthentication(app, fakeSignInService);
     app.use(urlencoded({extended: true}));
     app.use(flash());
-    app.use(createSignInEndpoint());
+    app.use(createRoute());
 
     return app;
 }

@@ -7,9 +7,9 @@ const {
     appSetup
 } = require('../supertestSetup');
 
-const createSendRoute = require('../../server/routes/sent');
+const createRoute = require('../../server/routes/sent');
 
-const app = appSetup(createSendRoute({
+const app = appSetup(createRoute({
     licenceService: licenceServiceStub,
     logger: loggerStub,
     authenticationMiddleware

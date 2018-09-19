@@ -1,7 +1,8 @@
+const logger = require('../../log');
 const express = require('express');
 const {async} = require('../utils/middleware');
 
-module.exports = function({logger, caseListService, authenticationMiddleware}) {
+module.exports = function({caseListService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 

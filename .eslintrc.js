@@ -16,7 +16,7 @@ module.exports = {
     },
     "rules": {
         "comma-dangle": ["error", "never"],
-        "max-len": ["error", 120, 4],
+        "max-len": ["error", 140, 4],
         "padded-blocks": "off",
         "no-trailing-spaces": "off",
         "require-jsdoc": "off",

@@ -1,36 +1,56 @@
 const request = require('supertest');
 
 const {
+    loggerStub,
     createLicenceServiceStub,
     createPrisonerServiceStub,
-    createApp
+    createConditionsServiceStub,
+    authenticationMiddleware,
+    appSetup,
+    auditStub
 } = require('../supertestSetup');
+
+const createRoute = require('../../server/routes/review');
+
+const prisonerService = createPrisonerServiceStub();
+const licenceService = createLicenceServiceStub();
+const conditionsService = createConditionsServiceStub();
+
+const reviewRoute = createRoute({
+    logger: loggerStub,
+    authenticationMiddleware,
+    audit: auditStub,
+    prisonerService,
+    licenceService,
+    conditionsService
+});
+
+let app;
 
 describe('/review/', () => {
     const prisonerService = createPrisonerServiceStub();
     prisonerService.getPrisonerDetails = sinon.stub().resolves({});
 
-    describe('/curfewAddress/', () => {
-        let licenceService;
-        const licence = {
-            licence: {
-                eligibility: {
-                    proposedAddress: {
-                        addressLine1: 'line1'
-                    }
+    const licence = {
+        licence: {
+            eligibility: {
+                proposedAddress: {
+                    addressLine1: 'line1'
                 }
-            },
-            stage: 'ELIGIBILITY'
-        };
+            }
+        },
+        stage: 'ELIGIBILITY'
+    };
+
+    describe('/curfewAddress/', () => {
 
         beforeEach(() => {
-            licenceService = createLicenceServiceStub();
+            app = appSetup(reviewRoute, 'caUser', '/hdc/');
             licenceService.getLicence = sinon.stub().resolves(licence);
         });
 
         it('shows a link to the send page if there are no errors', () => {
             licenceService.getValidationErrorsForReview = sinon.stub().returns({});
-            const app = createApp({licenceService, prisonerService});
 
             return request(app)
                 .get('/hdc/review/curfewAddress/1')
@@ -44,7 +64,6 @@ describe('/review/', () => {
 
         it('shows a link to the address page if there are errors', () => {
             licenceService.getValidationErrorsForReview = sinon.stub().returns({a: 'b'});
-            const app = createApp({licenceService, prisonerService});
 
             return request(app)
                 .get('/hdc/review/curfewAddress/1')
@@ -59,20 +78,9 @@ describe('/review/', () => {
     });
 
     describe('/licenceDetails/', () => {
-        let licenceService;
-        const licence = {
-            licence: {
-                eligibility: {
-                    proposedAddress: {
-                        addressLine1: 'line1'
-                    }
-                }
-            },
-            stage: 'ELIGIBILITY'
-        };
 
         beforeEach(() => {
-            licenceService = createLicenceServiceStub();
+            app = appSetup(reviewRoute, 'roUser', '/hdc/');
             licenceService.getLicence = sinon.stub().resolves(licence);
         });
 
@@ -85,7 +93,6 @@ describe('/review/', () => {
                 },
                 stage: 'PROCESSING_RO'
             });
-            const app = createApp({licenceService, prisonerService}, 'roUser');
 
             return request(app)
                 .get('/hdc/review/licenceDetails/1')
@@ -109,7 +116,6 @@ describe('/review/', () => {
                 },
                 stage: 'PROCESSING_RO'
             });
-            const app = createApp({licenceService, prisonerService}, 'roUser');
 
             return request(app)
                 .get('/hdc/review/licenceDetails/1')
@@ -133,7 +139,6 @@ describe('/review/', () => {
                 },
                 stage: 'PROCESSING_RO'
             });
-            const app = createApp({licenceService, prisonerService}, 'roUser');
 
             return request(app)
                 .get('/hdc/review/licenceDetails/1')
@@ -147,11 +152,11 @@ describe('/review/', () => {
     });
 
     describe('/address/', () => {
-        let licenceService;
 
         beforeEach(() => {
-            licenceService = createLicenceServiceStub();
+            app = appSetup(reviewRoute, 'caUser', '/hdc/');
         });
+
         it('shows an actions panel if in PROCESSING_CA stage', () => {
             licenceService.getLicence = sinon.stub().resolves({
                 licence: {
@@ -163,7 +168,6 @@ describe('/review/', () => {
                 },
                 stage: 'PROCESSING_CA'
             });
-            const app = createApp({licenceService, prisonerService});
 
             return request(app)
                 .get('/hdc/review/address/1')
@@ -185,7 +189,6 @@ describe('/review/', () => {
                 },
                 stage: 'ELIGIBILITY'
             });
-            const app = createApp({licenceService, prisonerService});
 
             return request(app)
                 .get('/hdc/review/address/1')

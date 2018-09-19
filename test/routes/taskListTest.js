@@ -10,7 +10,7 @@ const {
     auditStub
 } = require('../supertestSetup');
 
-const createTaskListRoute = require('../../server/routes/taskList');
+const createRoute = require('../../server/routes/taskList');
 
 const prisonerInfoResponse = {
     bookingId: 1,
@@ -1024,7 +1024,7 @@ describe('GET /taskList/:prisonNumber', () => {
 });
 
 function createApp({prisonerService, licenceService}, user) {
-    const route = createTaskListRoute({
+    const route = createRoute({
         prisonerService,
         licenceService,
         caseListService: caseListServiceStub,

@@ -1,13 +1,19 @@
 const request = require('supertest');
 
 const {
+    createPrisonerServiceStub,
     createLicenceServiceStub,
-    createApp,
-    formConfig,
+    authenticationMiddleware,
+    auditStub,
+    appSetup,
     testFormPageGets
 } = require('../supertestSetup');
 
+const createRoute = require('../../server/routes/curfew');
+const formConfig = require('../../server/routes/config/curfew');
+
 describe('/hdc/curfew', () => {
+
     describe('curfew routes', () => {
         const licenceService = createLicenceServiceStub();
         licenceService.getLicence = sinon.stub().resolves({
@@ -19,7 +25,7 @@ describe('/hdc/curfew', () => {
                }
             }
         });
-        const app = createApp({licenceService}, 'roUser');
+        const app = createApp({licenceServiceStub: licenceService}, 'roUser');
 
         const routes = [
             {url: '/hdc/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
@@ -41,7 +47,7 @@ describe('/hdc/curfew', () => {
                 }
             }
         });
-        const app = createApp({licenceService}, 'caUser');
+        const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
         const routes = [
             {url: '/hdc/curfew/addressWithdrawn/1', content: 'Prisoner has withdrawn the address', user: 'caUser'},
@@ -96,7 +102,7 @@ describe('/hdc/curfew', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService}, route.user || 'roUser');
+                const app = createApp({licenceServiceStub: licenceService}, route.user || 'roUser');
                 return request(app)
                     .post(route.url)
                     .send(route.body)
@@ -166,7 +172,7 @@ describe('/hdc/curfew', () => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence = sinon.stub().resolves(licence);
-                const app = createApp({licenceService}, 'roUser');
+                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
                 return request(app)
                     .post(route.url)
                     .send(route.body)
@@ -200,7 +206,7 @@ describe('/hdc/curfew', () => {
 
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence = sinon.stub().resolves(licence);
-                const app = createApp({licenceService}, 'caUser');
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
                 return request(app)
                     .post(route.url)
                     .send(route.body)
@@ -234,7 +240,7 @@ describe('/hdc/curfew', () => {
 
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence = sinon.stub().resolves(licence);
-                const app = createApp({licenceService}, 'caUser');
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
                 return request(app)
                     .post(route.url)
                     .send(route.body)
@@ -274,7 +280,7 @@ describe('/hdc/curfew', () => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence = sinon.stub().resolves(licence);
-                const app = createApp({licenceService}, 'caUser');
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
                 return request(app)
                     .post(route.url)
                     .send(route.body)
@@ -309,7 +315,7 @@ describe('/hdc/curfew', () => {
 
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence = sinon.stub().resolves(licence);
-                const app = createApp({licenceService}, 'roUser');
+                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
                 return request(app)
                     .post(route.url)
                     .send(route.body)
@@ -319,3 +325,17 @@ describe('/hdc/curfew', () => {
         });
     });
 });
+
+function createApp({licenceServiceStub}, user) {
+    const prisonerServiceStub = createPrisonerServiceStub();
+    licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
+
+    const route = createRoute({
+        licenceService: licenceServiceStub,
+        prisonerService: prisonerServiceStub,
+        authenticationMiddleware,
+        audit: auditStub
+    });
+
+    return appSetup(route, user, '/hdc');
+}

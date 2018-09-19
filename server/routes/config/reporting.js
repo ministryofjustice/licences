@@ -12,5 +12,17 @@ module.exports = {
         nextPath: {
             path: '/hdc/taskList/'
         }
+    },
+    reportingDate: {
+        licenceSection: 'reportingDate',
+        fields: [
+            {reportingDate: {}},
+            {reportingTime: {}}
+        ],
+        validateInPlace: true,
+        noModify: true,
+        nextPath: {
+            path: '/hdc/pdf/taskList/'
+        }
     }
 };

@@ -1,7 +1,8 @@
 const express = require('express');
+
 const {async} = require('../utils/middleware');
 
-module.exports = function({logger, licenceService, authenticationMiddleware}) {
+module.exports = function({licenceService, authenticationMiddleware}) {
     const router = express.Router();
 
     router.use(authenticationMiddleware());
