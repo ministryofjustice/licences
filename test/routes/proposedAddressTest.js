@@ -240,7 +240,7 @@ describe('/hdc/proposedAddress', () => {
                 const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
                 return request(app)
-                    .get('/hdc/proposedAddress/curfewAddress/1')
+                    .get('/hdc/proposedAddress/curfewAddress/add/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -378,7 +378,7 @@ describe('/hdc/proposedAddress', () => {
                 .post('/hdc/proposedAddress/curfewAddress/add/1')
                 .send({bookingId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}]})
                 .expect(302)
-                .expect('Location', '/hdc/proposedAddress/curfewAddress/1');
+                .expect('Location', '/hdc/proposedAddress/curfewAddress/add/1');
 
         });
     });

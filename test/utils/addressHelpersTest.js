@@ -1,6 +1,5 @@
 const {
     addressReviewStarted,
-    getCurfewAddressFormData,
     isAcceptedAddress,
     isRejectedAddress
 } = require('../../server/utils/addressHelpers');
@@ -21,30 +20,6 @@ describe('addressHelpers', () => {
 
         it('should return false if none of consent, electricity or deemedSafe have a value', () => {
             expect(addressReviewStarted(addressList[3])).to.eql(false);
-        });
-    });
-
-    describe('getCurfewAddressFormData', () => {
-        it('should return {submitPath: null, addressToShow: {}} if no addresses', () => {
-            expect(getCurfewAddressFormData([])).to.eql({submitPath: null, addressToShow: {}});
-        });
-
-        it('should return update and the address if the final address has not been rejected', () => {
-            expect(getCurfewAddressFormData(addressList)).to.eql(
-                {submitPath: '/hdc/proposedAddress/curfewAddress/update/', addressToShow: addressList[4]}
-            );
-        });
-
-        it('should return add and an empty object if final address is rejected', () => {
-            expect(getCurfewAddressFormData([addressList[1], addressList[2]])).to.eql(
-                {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}}
-            );
-        });
-
-        it('should return add and an empty object if final address has been withdrawn', () => {
-            expect(getCurfewAddressFormData([addressList[1], {...addressList[0], addressWithdrawn: 'Yes'}])).to.eql(
-                {submitPath: '/hdc/proposedAddress/curfewAddress/add/', addressToShow: {}}
-            );
         });
     });
 

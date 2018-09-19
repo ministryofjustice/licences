@@ -24,8 +24,8 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'proposedAddress'});
 
     router.get('/proposedAddress/curfewAddress/:bookingId', proposedAddress.getAddress);
-    router.post('/proposedAddress/curfewAddress/add/:bookingId', audited, async(proposedAddress.postAddAddress));
-    router.post('/proposedAddress/curfewAddress/update/:bookingId', audited, async(proposedAddress.postUpdateAddress));
+    router.get('/proposedAddress/curfewAddress/:action/:bookingId', proposedAddress.getAddress);
+    router.post('/proposedAddress/curfewAddress/:action/:bookingId', audited, async(proposedAddress.postAddress));
 
     router.get('/proposedAddress/:formName/:bookingId', async(standard.get));
     router.post('/proposedAddress/:formName/:bookingId', audited, async(standard.post));

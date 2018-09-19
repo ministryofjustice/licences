@@ -71,7 +71,8 @@ module.exports = {
             }}
         ],
         nextPath: {
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/curfewAddress/'
         }
     },
     rejected: {

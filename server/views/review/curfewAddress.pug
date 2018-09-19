@@ -25,7 +25,7 @@ block content
                     if (stage === 'PROCESSING_RO' && user.role === 'RO')
                         a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + bookingId) Change
                     if(user.role === 'CA' && (stage === 'ELIGIBILITY' || addressChanged))
-                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Change
+                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change these details
 
             div.pure-u-1
                 if typeof errorObject.proposedAddress === 'string'
