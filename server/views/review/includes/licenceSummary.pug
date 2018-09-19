@@ -10,9 +10,9 @@ div.largeMarginBottom
             div.pure-u-1.pure-u-md-1-2.alignRight
                 div.pure-u-md-1-2.change-details
                     if (stage === 'PROCESSING_RO' && user.role === 'RO')
-                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + bookingId) Change
+                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/change/" + bookingId) Change
                     if(stage === 'ELIGIBILITY' && user.role === 'CA')
-                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Change
+                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change
 
         if typeof errorObject.proposedAddress === 'string'
             p.alert.bold(id='proposed-address-error') #{errorObject.proposedAddress}

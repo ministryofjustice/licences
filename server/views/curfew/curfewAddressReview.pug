@@ -4,6 +4,7 @@ include ../proposedAddress/includes/addressDetail
 block content
 
     -var address = data || {}
+    -var submitAction = action ? `/hdc/curfew/curfewAddressReview/${action}/${bookingId}` : undefined;
 
     div.pure-g.pure-u-1
         div.borderBottomLight
@@ -16,7 +17,7 @@ block content
 
                 +addressDetail('curfew', address)
 
-        form(method="post")
+        form(method="post" action=submitAction)
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="bookingId" value=bookingId || '')
             input(type="hidden" name="addressIndex" value=address.index || '')

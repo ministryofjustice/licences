@@ -24,10 +24,19 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'curfew'});
 
     router.get('/curfew/curfewAddressReview/:bookingId', curfew.getCurfewAddressReview);
-    router.get('/curfew/addressSafety/:bookingId', curfew.getAddressSafetyReview);
-
     router.post('/curfew/curfewAddressReview/:bookingId', audited, async(curfew.postCurfewAddressReview));
+
+    router.get('/curfew/curfewAddressReview/:action/:bookingId', curfew.getCurfewAddressReview);
+    router.post('/curfew/curfewAddressReview/:action/:bookingId', audited, async(curfew.postCurfewAddressReview));
+
+
+    router.get('/curfew/addressSafety/:bookingId', curfew.getAddressSafetyReview);
     router.post('/curfew/addressSafety/:bookingId', audited, async(curfew.postAddressSafetyReview));
+
+    router.get('/curfew/addressSafety/:action/:bookingId', curfew.getAddressSafetyReview);
+    router.post('/curfew/addressSafety/:action/:bookingId', audited, async(curfew.postAddressSafetyReview));
+
+
     router.post('/curfew/withdrawAddress/:bookingId', audited, async(curfew.postWithdrawAddress));
     router.post('/curfew/withdrawConsent/:bookingId', audited, async(curfew.postWithdrawConsent));
     router.post('/curfew/reinstateAddress/:bookingId', audited, async(curfew.postReinstateAddress));

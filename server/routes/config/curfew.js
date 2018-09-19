@@ -10,14 +10,22 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'consent',
-                    No: '/hdc/taskList/'
+                    No: {
+                        path: '/hdc/taskList/',
+                        change: '/hdc/review/licenceDetails/'
+                    }
                 },
                 {
                     discriminator: 'electricity',
-                    No: '/hdc/taskList/'
+                    No: {
+                        path: '/hdc/taskList/',
+                        change: '/hdc/review/licenceDetails/'
+                    }
                 }
             ],
-            path: '/hdc/curfew/addressSafety/'
+            path: '/hdc/curfew/addressSafety/',
+            change: '/hdc/curfew/addressSafety/change/',
+            modify: '/hdc/taskList/'
         }
     },
     addressSafety: {
@@ -30,10 +38,14 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'deemedSafe',
-                    No: '/hdc/taskList/'
+                    No: {
+                        path: '/hdc/taskList/',
+                        change: '/hdc/review/licenceDetails/'
+                    }
                 }
             ],
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/'
         }
     },
     curfewHours: {
@@ -57,7 +69,8 @@ module.exports = {
             {sundayUntil: {}}
         ],
         nextPath: {
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/'
         },
         modificationRequiresApproval: true
     },

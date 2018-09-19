@@ -1,4 +1,3 @@
-const logger = require('../../../log');
 const {getPathFor} = require('../../utils/routes');
 const {getIn, lastItem, lastIndex} = require('../../utils/functionalHelpers');
 
@@ -18,15 +17,12 @@ module.exports = ({formConfig, licenceService}) => {
 
     function addressReviewPosts(formName) {
         return async (req, res) => {
-            const {bookingId} = req.params;
-            logger.debug(`POST /curfew/${formName}/${bookingId}`);
+            const {action, bookingId} = req.params;
+
 
             const rawLicence = res.locals.licence;
             const addresses = getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
             const addressIndex = lastIndex(addresses);
-            const modifyingLicence = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(rawLicence.stage);
-            const nextPath = modifyingLicence ? '/hdc/taskList/' :
-                getPathFor({data: req.body, config: formConfig[formName]});
 
             await licenceService.updateAddress({
                 rawLicence,
@@ -36,16 +32,28 @@ module.exports = ({formConfig, licenceService}) => {
                 index: addressIndex
             });
 
+            // to do - use explicit action instead of working it out
+            const modify = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(rawLicence.stage);
+            const modifyAction = (!action && modify) ? 'modify' : action;
+
+            const nextPath = getPathFor({
+                data: req.body,
+                config: formConfig[formName],
+                action: modifyAction
+            });
+
             res.redirect(`${nextPath}${bookingId}`);
         };
     }
 
+
     return {
         getCurfewAddressReview: addressReviewGets('curfewAddressReview'),
-        getAddressSafetyReview: addressReviewGets('addressSafety'),
-
         postCurfewAddressReview: addressReviewPosts('curfewAddressReview'),
+
+        getAddressSafetyReview: addressReviewGets('addressSafety'),
         postAddressSafetyReview: addressReviewPosts('addressSafety'),
+
         postWithdrawAddress: addressReviewPosts('withdrawAddress'),
         postWithdrawConsent: addressReviewPosts('withdrawConsent'),
         postReinstateAddress: addressReviewPosts('reinstateAddress')
