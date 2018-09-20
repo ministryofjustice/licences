@@ -74,5 +74,9 @@ block content
                                         div.pure-u-2-3
 
         include ../includes/roModificationWarning
-        include ../includes/saveAndReturn
+
+        if (action === 'change')
+            include ../includes/formSubmit
+        else
+            include ../includes/saveAndReturn
 

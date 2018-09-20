@@ -2,25 +2,25 @@ module.exports = {
     getPathFor
 };
 
-function getPathFor({data, config, action}) {
+function getPathFor({data, config, action = 'path'}) {
 
     const {nextPath} = config;
 
     if (!nextPath.decisions) {
-        return nextPath.path;
+        return nextPath[action] || nextPath['path'];
     }
 
     if (Array.isArray(nextPath.decisions)) {
         const path = determinePathFromDecisions({decisions: nextPath.decisions, data, action});
 
         if (path) {
-            return path[action] || path['path'] || path;
+            return path[action] || path;
         }
 
-        return nextPath[action] || nextPath.path;
+        return nextPath[action];
     }
 
-    return getPathFromAnswer({nextPath: nextPath.decisions, data, action}) || nextPath.path;
+    return getPathFromAnswer({nextPath: nextPath.decisions, data, action}) || nextPath[action];
 }
 
 function getPathFromAnswer({nextPath, data, action}) {

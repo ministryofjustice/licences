@@ -12,14 +12,16 @@ module.exports = {
                     discriminator: 'consent',
                     No: {
                         path: '/hdc/taskList/',
-                        change: '/hdc/review/licenceDetails/'
+                        change: '/hdc/review/licenceDetails/',
+                        modify: '/hdc/taskList/'
                     }
                 },
                 {
                     discriminator: 'electricity',
                     No: {
                         path: '/hdc/taskList/',
-                        change: '/hdc/review/licenceDetails/'
+                        change: '/hdc/review/licenceDetails/',
+                        modify: '/hdc/taskList/'
                     }
                 }
             ],
@@ -40,12 +42,14 @@ module.exports = {
                     discriminator: 'deemedSafe',
                     No: {
                         path: '/hdc/taskList/',
-                        change: '/hdc/review/licenceDetails/'
+                        change: '/hdc/review/licenceDetails/',
+                        modify: '/hdc/taskList/'
                     }
                 }
             ],
             path: '/hdc/taskList/',
-            change: '/hdc/review/licenceDetails/'
+            change: '/hdc/review/licenceDetails/',
+            modify: '/hdc/taskList/'
         }
     },
     curfewHours: {

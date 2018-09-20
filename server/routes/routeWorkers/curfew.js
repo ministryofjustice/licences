@@ -5,13 +5,13 @@ module.exports = ({formConfig, licenceService}) => {
 
     function addressReviewGets(formName) {
         return (req, res) => {
-            const {bookingId} = req.params;
+            const {action, bookingId} = req.params;
 
             const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
             const data = lastItem(addresses);
             const nextPath = formConfig[formName].nextPath;
 
-            res.render(`curfew/${formName}`, {bookingId, data, nextPath});
+            res.render(`curfew/${formName}`, {bookingId, data, nextPath, action});
         };
     }
 
@@ -32,7 +32,6 @@ module.exports = ({formConfig, licenceService}) => {
                 index: addressIndex
             });
 
-            // to do - use explicit action instead of working it out
             const modify = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(rawLicence.stage);
             const modifyAction = (!action && modify) ? 'modify' : action;
 

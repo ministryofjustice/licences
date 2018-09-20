@@ -195,7 +195,6 @@ describe('/hdc/proposedAddress', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/proposedAddress/curfewAddress/update/');
                         expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address2"');
                     });
 
@@ -224,7 +223,7 @@ describe('/hdc/proposedAddress', () => {
         });
 
         context('there are only rejected addresses', () => {
-            it('should display no address and post to add', () => {
+            it('should display no address', () => {
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence = sinon.stub().resolves({
                     licence: {
@@ -244,7 +243,6 @@ describe('/hdc/proposedAddress', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/proposedAddress/curfewAddress/add');
                         expect(res.text).to.include('name="[addresses][0][addressLine1]"');
                     });
 
@@ -272,8 +270,6 @@ describe('/hdc/proposedAddress', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include(
-                            '<form method="post" action="/hdc/proposedAddress/curfewAddress/update/1">');
                         expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address1"');
                     });
 

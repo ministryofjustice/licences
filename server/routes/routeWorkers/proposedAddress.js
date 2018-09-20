@@ -5,47 +5,57 @@ module.exports = ({formConfig, licenceService}) => {
     function getAddress(req, res) {
 
         const {bookingId, action} = req.params;
-
-        const addresses = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+        const addresses = getAddresses(res.locals.licence);
 
         if (!addresses) {
             return res.render('proposedAddress/curfewAddress', {bookingId, data: []});
         }
 
-        if (action === 'add' || isEmpty(addresses)) {
-            return res.render('proposedAddress/curfewAddress', {bookingId, data: {}, action: 'add'});
+        if (isAddingAddress(addresses, action)) {
+            return res.render('proposedAddress/curfewAddress', {bookingId, data: {}});
         }
 
-        return res.render('proposedAddress/curfewAddress', {bookingId, data: lastItem(addresses), action: action || 'update'});
+        return res.render('proposedAddress/curfewAddress', {bookingId, data: lastItem(addresses)});
     }
 
     async function postAddress(req, res) {
-        const {bookingId} = req.body;
-        const {action} = req.params;
+
+        const {bookingId, action} = req.params;
+        const addresses = getAddresses(res.locals.licence);
 
         const rawLicence = res.locals.licence;
         const userInput = req.body;
 
-        if (action === 'add') {
+        if (isAddingAddress(addresses, action)) {
 
-            const {addressLine1, addressTown, postCode} = userInput.addresses[0];
-
-            if (!addressLine1 && !addressTown && !postCode) {
+            if (isEmptySubmission(userInput)) {
                 return res.redirect(`/hdc/proposedAddress/curfewAddress/${action}/${bookingId}`);
             }
 
             await addressAdd(bookingId, rawLicence, userInput);
 
         } else {
-            await addressUpdate(bookingId, rawLicence, userInput);
+            await addressUpdate(bookingId, rawLicence, userInput, lastIndex(addresses));
         }
 
         const nextPath = formConfig.curfewAddress.nextPath[action] || formConfig.curfewAddress.nextPath['path'];
         res.redirect(`${nextPath}${bookingId}`);
     }
 
-    async function addressAdd(bookingId, rawLicence, userInput) {
+    function getAddresses(licence) {
+        return getIn(licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
+    }
 
+    function isAddingAddress(addresses, action) {
+        return isEmpty(addresses) || ['rejected', 'add'].includes(action);
+    }
+
+    function isEmptySubmission(userInput) {
+        const {addressLine1, addressTown, postCode} = userInput.addresses[0];
+        return !addressLine1 && !addressTown && !postCode;
+    }
+
+    async function addressAdd(bookingId, rawLicence, userInput) {
         await licenceService.addAddress({
             rawLicence,
             bookingId,
@@ -54,10 +64,7 @@ module.exports = ({formConfig, licenceService}) => {
         });
     }
 
-    async function addressUpdate(bookingId, rawLicence, userInput) {
-
-        const addressIndex = lastIndex(getIn(rawLicence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']));
-
+    async function addressUpdate(bookingId, rawLicence, userInput, addressIndex) {
         await licenceService.updateAddress({
             rawLicence,
             bookingId,
@@ -65,7 +72,6 @@ module.exports = ({formConfig, licenceService}) => {
             userInput,
             index: addressIndex
         });
-
     }
 
     return {

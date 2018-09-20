@@ -2,7 +2,6 @@ extends ../layout
 include ./includes/addressForm
 block content
     -var savedAddress = data || {}
-    -var submitAction = action ? `/hdc/proposedAddress/curfewAddress/${action}/${bookingId}` : undefined;
 
     div.pure-g.pure-u-1
         include ../includes/back
@@ -10,7 +9,7 @@ block content
 
         h2.heading-large Proposed curfew address
 
-    form(method="post" action=submitAction)
+    form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId || '')
         div.paddingBottom.largeMarginBottom

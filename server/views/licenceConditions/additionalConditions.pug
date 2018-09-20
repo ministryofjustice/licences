@@ -1,7 +1,6 @@
 extends ../layout
 
 block content
-
     if submissionError
         div.pure-g
             div#submissionError.pure-u-2-3.error-summary(role="alert" aria-labelledby="error-summary-missing-input" tabindex="-1")
@@ -14,7 +13,7 @@ block content
 
     h1.heading-large Select additional conditions
 
-    form#additionalConditions(method='POST', action="/hdc/licenceConditions/additionalConditions/" + bookingId)
+    form#additionalConditions(method='post')
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId)
 

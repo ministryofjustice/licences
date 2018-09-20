@@ -29,7 +29,7 @@ div.largeMarginBottom
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-1.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#riskEditLink(href="/hdc/risk/riskManagement/" + bookingId) Change
+                            a#riskEditLink(href="/hdc/risk/riskManagement/change/" + bookingId) Change
 
             if typeof errorObject.risk === 'string'
                 p.alert.bold(id='risk-error') Enter the risk management and victim liaison details
@@ -44,7 +44,7 @@ div.largeMarginBottom
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-1.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/" + bookingId) Change
+                            a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/change/" + bookingId) Change
 
             if typeof errorObject.curfew === 'string'
                 p.alert.bold(id='curfew-hours-error') Select the proposed curfew hours
@@ -53,16 +53,13 @@ div.largeMarginBottom
 
         // Additional condition
         div.borderBottom
-            -var standardOnly = licenceStatus.decisions.standardOnly
-            -var linkTo = standardOnly ?  'standard' : 'additionalConditions'
-
             div.pure-g
                 div.pure-u-1.pure-u-md-1-2
                     h2.heading-medium Additional conditions
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-1.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#conditionsEditLink(href="/hdc/licenceConditions/" + linkTo + "/" + bookingId) Change
+                            a#conditionsEditLink(href="/hdc/licenceConditions/standard/change/" + bookingId) Change
 
             if typeof errorObject.licenceConditions === 'string'
                 p.alert.bold(id='additional-conditions-error') #{errorObject.licenceConditions}
@@ -82,7 +79,7 @@ div.largeMarginBottom
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-1.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#reportingEditLink(href="/hdc/reporting/reportingInstructions/" + bookingId) Change
+                            a#reportingEditLink(href="/hdc/reporting/reportingInstructions/change/" + bookingId) Change
 
             if typeof errorObject.reporting === 'string'
                 p.alert.bold(id='reporting-error') Enter the reporting instructions

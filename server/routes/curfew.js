@@ -44,6 +44,9 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
     router.get('/curfew/:formName/:bookingId', async(standard.get));
     router.post('/curfew/:formName/:bookingId', audited, async(standard.post));
 
+    router.get('/curfew/:formName/:action/:bookingId', async(standard.get));
+    router.post('/curfew/:formName/:action/:bookingId', audited, async(standard.post));
+
     return router;
 };
 

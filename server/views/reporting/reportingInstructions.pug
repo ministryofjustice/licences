@@ -9,7 +9,7 @@ block content
     p Enter the details of where the offender should report
 
 
-    form#reportingForm(method='POST')
+    form#reportingForm(method='post')
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId)
 
@@ -42,5 +42,9 @@ block content
                                     input#telephone.form-control.small(name="telephone" type="text" value=data.telephone aria-label="Telephone")
 
         include ../includes/roModificationWarning
-        include ../includes/saveAndReturn
+
+        if (action === 'change')
+            include ../includes/formSubmit
+        else
+            include ../includes/saveAndReturn
 

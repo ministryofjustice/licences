@@ -10,7 +10,8 @@ module.exports = {
             {telephone: {}}
         ],
         nextPath: {
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/'
         }
     },
     reportingDate: {

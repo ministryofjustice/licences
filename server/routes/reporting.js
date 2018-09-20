@@ -21,8 +21,8 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
     const formConfig = require('./config/reporting');
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'reporting'});
 
-    router.get('/reporting/:formName/:path/:bookingId', async(standard.get));
-    router.post('/reporting/:formName/:path/:bookingId', audited, async(standard.pathPost));
+    router.get('/reporting/:formName/:action/:bookingId', async(standard.get));
+    router.post('/reporting/:formName/:action/:bookingId', audited, async(standard.post));
 
     router.get('/reporting/:formName/:bookingId', async(standard.get));
     router.post('/reporting/:formName/:bookingId', audited, async(standard.post));

@@ -24,14 +24,23 @@ module.exports = function({licenceService, conditionsService, prisonerService, a
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'licenceConditions'});
 
     router.get('/licenceConditions/standard/:bookingId', async(conditions.getStandard));
+    router.get('/licenceConditions/standard/:action/:bookingId', async(conditions.getStandard));
+
     router.get('/licenceConditions/additionalConditions/:bookingId', async(conditions.getAdditional));
     router.post('/licenceConditions/additionalConditions/:bookingId', audited, async(conditions.postAdditional));
+
+    router.get('/licenceConditions/additionalConditions/:action/:bookingId', async(conditions.getAdditional));
+    router.post('/licenceConditions/additionalConditions/:action/:bookingId', audited, async(conditions.postAdditional));
+
     router.get('/licenceConditions/conditionsSummary/:bookingId', async(conditions.getConditionsSummary));
-    router.post('/licenceConditions/additionalConditions/:bookingId/delete/:conditionId', audited,
-        async(conditions.postDeleteAdditionalCondition));
+    router.get('/licenceConditions/conditionsSummary/:action/:bookingId', async(conditions.getConditionsSummary));
+
+    router.post('/licenceConditions/additionalConditions/:bookingId/delete/:conditionId', audited, async(conditions.postDelete));
+    router.post('/licenceConditions/additionalConditions/:action/:bookingId/delete/:conditionId', audited, async(conditions.postDelete));
 
     router.get('/licenceConditions/:formName/:bookingId', async(standard.get));
     router.post('/licenceConditions/:formName/:bookingId', audited, async(standard.post));
+    router.post('/licenceConditions/:formName/:action/:bookingId', audited, async(standard.post));
 
     return router;
 };

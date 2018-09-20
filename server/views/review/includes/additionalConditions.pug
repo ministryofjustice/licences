@@ -34,11 +34,12 @@ mixin additionalConditions(editable)
                 div.pure-u-2-24
                 div.pure-u-1.pure-u-md-4-24
                     div.pure-g
+                        - var destination = action ? action + '/' : ''
                         if condition.inputRequired || condition.group === 'Bespoke'
                             div.pure-u-1-2.center
-                                a.link(href="/hdc/licenceConditions/additionalConditions/" + bookingId + "#" + condition.id) Change
+                                a.link(href="/hdc/licenceConditions/additionalConditions/" + destination + bookingId + "#" + condition.id) Change
                         div.pure-u-1-2.center
-                            form(method="post" action="/hdc/licenceConditions/additionalConditions/" + bookingId + "/delete/" + condition.id)
+                            form(method="post" action="/hdc/licenceConditions/additionalConditions/" + destination + bookingId + "/delete/" + condition.id)
                                 input(type="hidden" name="_csrf" value=csrfToken)
                                 input(type="hidden" name="bookingId" value=bookingId || '')
                                 input(type="hidden" name="conditionId" value=condition.id || '')
