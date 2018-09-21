@@ -97,7 +97,7 @@ npm run knex migrate:make <script-name>
 Execute seed scripts to populate DB with test data
 
 ```
-npm seed
+npm run seed
 ```
 
 Create a new seed file
