@@ -17,10 +17,10 @@ const contactRoute = createContactRoute({
 let app;
 
 const roUser = {
-    first_name: 'f1',
-    last_name: 'l1',
+    first: 'f1',
+    last: 'l1',
     organisation: 'o1',
-    job_role: 'j1',
+    jobRole: 'j1',
     email: 'e1',
     telephone: 't1'
 };

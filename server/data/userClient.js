@@ -1,4 +1,5 @@
 const db = require('./dataAccess/db');
+const setCase = require('case');
 
 module.exports = {
 
@@ -114,12 +115,12 @@ module.exports = {
 function convertPropertyNames(user) {
     return user ? {
         nomisId: user.nomis_id,
-        deliusId: user.staff_id,
-        first: user.first_name,
-        last: user.last_name,
-        organisation: user.organisation,
-        jobRole: user.job_role,
-        email: user.email,
+        deliusId: setCase.upper(user.staff_id),
+        first: setCase.capital(user.first_name),
+        last: setCase.capital(user.last_name),
+        organisation: setCase.capital(user.organisation),
+        jobRole: setCase.capital(user.job_role),
+        email: setCase.lower(user.email),
         telephone: user.telephone
     } : null;
 }
