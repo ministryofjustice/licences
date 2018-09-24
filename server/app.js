@@ -70,7 +70,7 @@ module.exports = function createApp({
     app.set('view engine', 'pug');
 
     // Server Configuration
-    app.set('port', process.env.PORT || 3001);
+    app.set('port', process.env.PORT || 3000);
 
     // HACK: Azure doesn't support X-Forwarded-Proto so we add it manually
     // http://stackoverflow.com/a/18455265/173062
