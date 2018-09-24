@@ -167,7 +167,12 @@ describe('formatForView', () => {
         it('should extract first coms first and last name and capitalise', () => {
 
             const object = {com: [{firstName: 'first', lastName: 'last'}]};
-            const expectedOutput = {com: 'First Last'};
+            const expectedOutput = {
+                com: {
+                    deliusId: undefined,
+                    name: 'First Last'
+                }
+            };
 
             expect(formatObjectForView(object)).to.eql(expectedOutput);
         });
@@ -175,7 +180,7 @@ describe('formatForView', () => {
         it('should give empty if com list missing', () => {
 
             const object = {com: undefined};
-            const expectedOutput = {com: ''};
+            const expectedOutput = {com: {}};
 
             expect(formatObjectForView(object)).to.eql(expectedOutput);
         });
@@ -183,7 +188,7 @@ describe('formatForView', () => {
         it('should give empty if com list empty', () => {
 
             const object = {com: []};
-            const expectedOutput = {com: ''};
+            const expectedOutput = {com: {}};
 
             expect(formatObjectForView(object)).to.eql(expectedOutput);
         });

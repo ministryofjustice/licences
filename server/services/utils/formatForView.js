@@ -50,8 +50,13 @@ function formatOffences(offences) {
 }
 
 function formatCom(com) {
-    const name = com && com[0] ? [com[0].firstName, com[0].lastName].join(' ') : '';
-    return setCase.capital(name.toLowerCase());
+
+    if (com && com[0]) {
+        const name = setCase.capital([com[0].firstName, com[0].lastName].join(' ').toLowerCase());
+        return {name, deliusId: com[0].deliusId};
+    }
+
+    return {};
 }
 
 function formatAliases(aliasesList) {

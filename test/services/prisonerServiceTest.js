@@ -8,10 +8,15 @@ describe('prisonerDetailsService', () => {
     const identifiersResponse = [{type: 'PNC', value: 'PNC001'}, {type: 'CRO', value: 'CRO001'}];
     const aliasesResponse = [{firstName: 'ALIAS', lastName: 'One'}, {firstName: 'AKA', lastName: 'Two'}];
     const mainOffenceResponse = [{offenceDescription: 'Robbery, conspiracy to rob'}];
-    const comRelationResponse = [{firstName: 'COMFIRST', lastName: 'comLast'}];
+    const comRelationResponse = [{
+        firstName: 'COMFIRST',
+        lastName: 'comLast',
+        personId: 'personId'
+    }];
     const imageInfoResponse = {imageId: 'imgId', captureDate: '1971-11-23'};
     const imageDataResponse = Buffer.from('image');
     const establishmentResponse = {premise: 'HMP Licence Test Prison'};
+    const comIdentifiersResponse = [{identifierType: 'EXTERNAL_REL', identifierValue: 'delius1'}];
     const prisonerInfoResponse = {
         bookingId: 1,
         facialImageId: 2,
@@ -19,7 +24,10 @@ describe('prisonerDetailsService', () => {
         captureDate: '23/11/1971',
         aliases: 'Alias One, Aka Two',
         offences: 'Robbery, conspiracy to rob',
-        com: 'Comfirst Comlast',
+        com: {
+            deliusId: 'delius1',
+            name: 'Comfirst Comlast'
+        },
         agencyLocationId: 'ABC',
         CRO: 'CRO001',
         PNC: 'PNC001',
@@ -35,7 +43,8 @@ describe('prisonerDetailsService', () => {
             getImageInfo: sinon.stub().resolves(imageInfoResponse),
             getImageData: sinon.stub().resolves(imageDataResponse),
             getEstablishment: sinon.stub().resolves(establishmentResponse),
-            getComRelation: sinon.stub().resolves(comRelationResponse)
+            getComRelation: sinon.stub().resolves(comRelationResponse),
+            getPersonIdentifiers: sinon.stub().resolves(comIdentifiersResponse)
         };
         const nomisClientBuilder = sinon.stub().returns(nomisClientMock);
         service = createPrisonerService(nomisClientBuilder);
@@ -49,6 +58,7 @@ describe('prisonerDetailsService', () => {
             expect(nomisClientMock.getAliases).to.be.calledOnce();
             expect(nomisClientMock.getMainOffence).to.be.calledOnce();
             expect(nomisClientMock.getComRelation).to.be.calledOnce();
+            expect(nomisClientMock.getPersonIdentifiers).to.be.calledOnce();
             expect(nomisClientMock.getImageInfo).to.be.calledOnce();
             expect(nomisClientMock.getIdentifiers).to.be.calledOnce();
 
@@ -56,13 +66,13 @@ describe('prisonerDetailsService', () => {
             expect(nomisClientMock.getAliases).to.be.calledWith(1);
             expect(nomisClientMock.getMainOffence).to.be.calledWith(1);
             expect(nomisClientMock.getComRelation).to.be.calledWith(1);
+            expect(nomisClientMock.getPersonIdentifiers).to.be.calledWith('personId');
             expect(nomisClientMock.getImageInfo).to.be.calledWith(2);
             expect(nomisClientMock.getIdentifiers).to.be.calledWith(1);
         });
 
         it('should return the result of the api call', () => {
-            return expect(service.getPrisonerDetails('123', 'username'))
-                .to.eventually.eql(prisonerInfoResponse);
+            return expect(service.getPrisonerDetails('123', 'username')).to.eventually.eql(prisonerInfoResponse);
         });
 
         it('should return the only selected identifiers', () => {
@@ -171,11 +181,13 @@ describe('prisonerDetailsService', () => {
         it('should return the result of the api call', () => {
 
             const expectedComData = {
-                com: 'Comfirst Comlast'
+                com: {
+                    deliusId: 'delius1',
+                    name: 'Comfirst Comlast'
+                }
             };
 
-            return expect(service.getCom('123', 'username'))
-                .to.eventually.eql(expectedComData);
+            return expect(service.getCom('123', 'username')).to.eventually.eql(expectedComData);
         });
 
         it('should throw if error in api when getting establishment', () => {
@@ -191,6 +203,18 @@ describe('prisonerDetailsService', () => {
         it('should throw if error in api when getting establishment if error ststus other than 404', () => {
             nomisClientMock.getComRelation.rejects({status: 401});
             return expect(service.getCom('123', 'username')).to.be.rejected();
+        });
+
+        it('should obtain delius user id from first identifer of type delius', () => {
+
+            const expectedComData = {
+                com: {
+                    deliusId: 'delius1',
+                    name: 'Comfirst Comlast'
+                }
+            };
+
+            return expect(service.getCom('123', 'username')).to.eventually.eql(expectedComData);
         });
     });
 });

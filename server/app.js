@@ -37,6 +37,7 @@ const createPdfRouter = require('../server/routes/pdf');
 const createSearchRouter = require('../server/routes/search');
 const createApiRouter = require('../server/routes/api');
 const createAdminRouter = require('../server/routes/admin/admin');
+const createContactRouter = require('../server/routes/contact');
 
 const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
@@ -69,7 +70,7 @@ module.exports = function createApp({
     app.set('view engine', 'pug');
 
     // Server Configuration
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT || 3001);
 
     // HACK: Azure doesn't support X-Forwarded-Proto so we add it manually
     // http://stackoverflow.com/a/18455265/173062
@@ -292,6 +293,7 @@ module.exports = function createApp({
     app.use('/hdc/pdf/', createPdfRouter(
         {logger, pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/search/', createSearchRouter({logger, searchService, authenticationMiddleware}));
+    app.use('/hdc/contact/', createContactRouter({logger, userService, authenticationMiddleware}));
     app.use('/hdc/taskList/',
         createTaskListRouter(
             {logger, prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));

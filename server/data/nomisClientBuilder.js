@@ -40,6 +40,11 @@ module.exports = token => {
             return nomisGet({path});
         },
 
+        getPersonIdentifiers: function(personId) {
+            const path = `${apiUrl}/persons/${personId}/identifiers`;
+            return nomisGet({path});
+        },
+
         getMainOffence: function(bookingId) {
             const path = `${apiUrl}/bookings/${bookingId}/mainOffence`;
             return nomisGet({path});

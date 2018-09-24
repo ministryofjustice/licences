@@ -1,0 +1,63 @@
+const request = require('supertest');
+
+const {
+    loggerStub,
+    userServiceStub,
+    authenticationMiddleware,
+    appSetup
+} = require('../supertestSetup');
+
+const createContactRoute = require('../../server/routes/contact');
+const contactRoute = createContactRoute({
+    userService: userServiceStub,
+    logger: loggerStub,
+    authenticationMiddleware
+});
+
+let app;
+
+const roUser = {
+    first_name: 'f1',
+    last_name: 'l1',
+    organisation: 'o1',
+    job_role: 'j1',
+    email: 'e1',
+    telephone: 't1'
+};
+
+describe('/contact', () => {
+
+    beforeEach(() => {
+        app = appSetup(contactRoute, 'caUser', '/contact/');
+        userServiceStub.getRoUserByDeliusId.reset();
+        userServiceStub.getRoUserByDeliusId.resolves(roUser);
+    });
+
+    describe('GET /ro/deliusUserId', () => {
+
+        it('calls user service and returns html', () => {
+            return request(app)
+                .get('/contact/ro/RO_USER_ID')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(() => {
+                    expect(userServiceStub.getRoUserByDeliusId).to.be.calledOnce();
+                });
+        });
+
+        it('should display the user details', () => {
+            return request(app)
+                .get('/contact/ro/RO_USER_ID')
+                .expect(200)
+                .expect(res => {
+                    expect(res.text).to.contain('f1 l1');
+                    expect(res.text).to.contain('o1');
+                    expect(res.text).to.contain('j1');
+                    expect(res.text).to.contain('e1');
+                    expect(res.text).to.contain('t1');
+                });
+        });
+    });
+
+});
+
