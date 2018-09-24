@@ -11,15 +11,12 @@ describe('prisonerDetailsService', () => {
     const comRelationResponse = [{
         firstName: 'COMFIRST',
         lastName: 'comLast',
-        identifiers: [
-            {other: 'other'},
-            {delius: 'delius1'},
-            {delius: 'delius2'}
-        ]
+        personId: 'personId'
     }];
     const imageInfoResponse = {imageId: 'imgId', captureDate: '1971-11-23'};
     const imageDataResponse = Buffer.from('image');
     const establishmentResponse = {premise: 'HMP Licence Test Prison'};
+    const comIdentifiersResponse = [{identifierType: 'EXTERNAL_REL', identifierValue: 'delius1'}];
     const prisonerInfoResponse = {
         bookingId: 1,
         facialImageId: 2,
@@ -46,7 +43,8 @@ describe('prisonerDetailsService', () => {
             getImageInfo: sinon.stub().resolves(imageInfoResponse),
             getImageData: sinon.stub().resolves(imageDataResponse),
             getEstablishment: sinon.stub().resolves(establishmentResponse),
-            getComRelation: sinon.stub().resolves(comRelationResponse)
+            getComRelation: sinon.stub().resolves(comRelationResponse),
+            getPersonIdentifiers: sinon.stub().resolves(comIdentifiersResponse)
         };
         const nomisClientBuilder = sinon.stub().returns(nomisClientMock);
         service = createPrisonerService(nomisClientBuilder);
@@ -60,6 +58,7 @@ describe('prisonerDetailsService', () => {
             expect(nomisClientMock.getAliases).to.be.calledOnce();
             expect(nomisClientMock.getMainOffence).to.be.calledOnce();
             expect(nomisClientMock.getComRelation).to.be.calledOnce();
+            expect(nomisClientMock.getPersonIdentifiers).to.be.calledOnce();
             expect(nomisClientMock.getImageInfo).to.be.calledOnce();
             expect(nomisClientMock.getIdentifiers).to.be.calledOnce();
 
@@ -67,6 +66,7 @@ describe('prisonerDetailsService', () => {
             expect(nomisClientMock.getAliases).to.be.calledWith(1);
             expect(nomisClientMock.getMainOffence).to.be.calledWith(1);
             expect(nomisClientMock.getComRelation).to.be.calledWith(1);
+            expect(nomisClientMock.getPersonIdentifiers).to.be.calledWith('personId');
             expect(nomisClientMock.getImageInfo).to.be.calledWith(2);
             expect(nomisClientMock.getIdentifiers).to.be.calledWith(1);
         });

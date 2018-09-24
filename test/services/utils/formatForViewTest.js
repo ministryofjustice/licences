@@ -169,7 +169,7 @@ describe('formatForView', () => {
             const object = {com: [{firstName: 'first', lastName: 'last'}]};
             const expectedOutput = {
                 com: {
-                    deliusId: '',
+                    deliusId: undefined,
                     name: 'First Last'
                 }
             };

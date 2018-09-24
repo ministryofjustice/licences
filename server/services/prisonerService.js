@@ -1,5 +1,6 @@
 const logger = require('../../log.js');
 const {formatObjectForView} = require('./utils/formatForView');
+const {merge} = require('../utils/functionalHelpers');
 
 module.exports = {createPrisonerService};
 
@@ -32,13 +33,15 @@ function createPrisonerService(nomisClientBuilder) {
                 return;
             }
 
-            const [aliases, offences, com] = await Promise.all([
+            const [aliases, offences, coms] = await Promise.all([
                 nomisClient.getAliases(bookingId),
                 nomisClient.getMainOffence(bookingId),
                 nomisClient.getComRelation(bookingId)
             ]);
 
-            const {CRO, PNC} = selectFrom(await nomisClient.getIdentifiers(bookingId));
+            const com = await getComDetails(nomisClient, coms);
+
+            const {CRO, PNC} = selectEntriesWithTypes(await nomisClient.getIdentifiers(bookingId), ['PNC', 'CRO']);
 
             const image = prisoner.facialImageId ?
                 await nomisClient.getImageInfo(prisoner.facialImageId) : {imageId: false};
@@ -51,6 +54,18 @@ function createPrisonerService(nomisClientBuilder) {
             logger.error('Error getting prisoner info', error.stack);
             throw error;
         }
+    }
+
+    async function getComDetails(nomisClient, coms) {
+
+        if (!coms[0]) {
+            return null;
+        }
+
+        const personIdentifiers = await nomisClient.getPersonIdentifiers(coms[0].personId);
+
+        const id = personIdentifiers.find(id => id.identifierType === 'EXTERNAL_REL');
+        return [merge(coms[0], {deliusId: id.identifierValue})];
     }
 
     async function getPrisonerImage(imageId, token) {
@@ -112,7 +127,9 @@ function createPrisonerService(nomisClientBuilder) {
             logger.info(`getCom: ${bookingId}`);
 
             const nomisClient = nomisClientBuilder(token);
-            const com = await nomisClient.getComRelation(bookingId);
+            const coms = await nomisClient.getComRelation(bookingId);
+
+            const com = await getComDetails(nomisClient, coms);
 
             return formatObjectForView({com});
 
@@ -128,9 +145,9 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
-    function selectFrom(identifiers) {
+    function selectEntriesWithTypes(identifiers, types) {
         return identifiers.reduce((selected, element) => {
-            if (['PNC', 'CRO'].includes(element.type)) {
+            if (types.includes(element.type)) {
                 selected[element.type] = element.value;
             }
             return selected;
