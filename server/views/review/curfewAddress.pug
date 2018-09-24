@@ -23,9 +23,9 @@ block content
             div.pure-u-1.pure-u-md-1-2.alignRight
                 div.change-details
                     if (stage === 'PROCESSING_RO' && user.role === 'RO')
-                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + bookingId) Change these details
+                        a#addressEditLink(href="/hdc/curfew/curfewAddressReview/" + bookingId) Change
                     if(user.role === 'CA' && (stage === 'ELIGIBILITY' || addressChanged))
-                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Change these details
+                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Change
 
             div.pure-u-1
                 if typeof errorObject.proposedAddress === 'string'

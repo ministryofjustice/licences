@@ -39,7 +39,7 @@ describe('GET sent', () => {
             .get('/roToCa')
             .expect(200)
             .expect(res => {
-                expect(res.text).to.include('Licence information sent');
+                expect(res.text).to.include('Case submitted');
             });
     });
 
@@ -48,7 +48,7 @@ describe('GET sent', () => {
             .get('/dmToCa')
             .expect(200)
             .expect(res => {
-                expect(res.text).to.include('Submitted to Prison Case Admin');
+                expect(res.text).to.include('Submitted to prison case admin');
             });
     });
 
