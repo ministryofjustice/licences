@@ -15,7 +15,7 @@ block content
             p The information will be submitted to:
 
             if submissionTarget && submissionTarget.com
-                div#ro.bold.paddingBottom #{submissionTarget.com}
+                div#ro.bold.paddingBottom #{submissionTarget.com.name}
             else
                 div.paddingBottom No responsible officer found
 
@@ -26,7 +26,7 @@ block content
                 input(type="hidden" name="bookingId" value=bookingId)
                 input(type="hidden" name="transitionType" value='caToRo')
                 if submissionTarget && submissionTarget.com
-                    input(type="hidden" name="submissionTarget" value=submissionTarget.com)
+                    input(type="hidden" name="submissionTarget" value=submissionTarget.com.name)
 
                 div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
                     input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Submit address")

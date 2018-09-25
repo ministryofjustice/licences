@@ -22,7 +22,7 @@ describe('send', () => {
 
         prisonerService.getLicence = sinon.stub().resolves({});
         prisonerService.getEstablishmentForPrisoner = sinon.stub().resolves({premise: 'HMP Blah'});
-        prisonerService.getCom = sinon.stub().resolves({com: 'Something'});
+        prisonerService.getCom = sinon.stub().resolves({com: {name: 'Something'}});
 
         auditStub.record.reset();
     });
