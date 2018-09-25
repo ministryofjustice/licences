@@ -44,5 +44,7 @@ block content
                                     if address.unsafeReason
                                         | #{address.unsafeReason}
 
-
-            include ../includes/saveAndReturn
+            if (action === 'change')
+                include ../includes/formSubmit
+            else
+                include ../includes/saveAndReturn

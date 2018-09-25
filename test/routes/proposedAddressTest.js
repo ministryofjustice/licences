@@ -1,13 +1,20 @@
 const request = require('supertest');
 
 const {
+    createPrisonerServiceStub,
     createLicenceServiceStub,
-    createApp,
-    formConfig,
-    testFormPageGets
+    authenticationMiddleware,
+    auditStub,
+    appSetup,
+    testFormPageGets,
+    loggerStub
 } = require('../supertestSetup');
 
+const createRoute = require('../../server/routes/address');
+const formConfig = require('../../server/routes/config/proposedAddress');
+
 describe('/hdc/proposedAddress', () => {
+
     describe('proposed address routes', () => {
         const licenceService = createLicenceServiceStub();
         licenceService.getLicence = sinon.stub().resolves({
@@ -35,7 +42,7 @@ describe('/hdc/proposedAddress', () => {
             stage: 'ELIGIBILITY'
         });
 
-        const app = createApp({licenceService});
+        const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
         const routes = [
             {url: '/hdc/proposedAddress/optOut/1', content: 'decided to opt out'},
@@ -96,8 +103,7 @@ describe('/hdc/proposedAddress', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService});
-
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
                 return request(app)
                     .post(route.url)
                     .send(route.body)
@@ -118,7 +124,7 @@ describe('/hdc/proposedAddress', () => {
 
             it('throws an error if logged in as dm', () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService}, 'dmUser');
+                const app = createApp({licenceServiceStub: licenceService}, 'dmUser');
 
                 return request(app)
                     .post(route.url)
@@ -129,7 +135,7 @@ describe('/hdc/proposedAddress', () => {
 
             it('throws an error if logged in as ro except for curfew address', () => {
                 const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceService}, 'roUser');
+                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
 
                 if (route.url === '/hdc/proposedAddress/curfewAddress/1') {
                     return request(app)
@@ -155,7 +161,7 @@ describe('/hdc/proposedAddress', () => {
                     }
                 }
             });
-            const app = createApp({licenceService});
+            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
             return request(app)
                 .post('/hdc/proposedAddress/optOut/1')
@@ -170,7 +176,7 @@ describe('/hdc/proposedAddress', () => {
         context('there is a rejected address and active', () => {
             it('should display the active and post to update', () => {
                 const licenceService = createLicenceServiceStub();
-                licenceService.getLicence.resolves({
+                 licenceService.getLicence.resolves({
                     licence: {
                         proposedAddress: {
                             curfewAddress: {
@@ -182,14 +188,13 @@ describe('/hdc/proposedAddress', () => {
                         }
                     }
                 });
-                const app = createApp({licenceService});
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
                 return request(app)
                     .get('/hdc/proposedAddress/curfewAddress/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/proposedAddress/curfewAddress/update/');
                         expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address2"');
                     });
 
@@ -203,7 +208,7 @@ describe('/hdc/proposedAddress', () => {
                     licence: { }
                 });
 
-                const app = createApp({licenceService});
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
                 return request(app)
                     .get('/hdc/proposedAddress/curfewAddress/1')
@@ -218,7 +223,7 @@ describe('/hdc/proposedAddress', () => {
         });
 
         context('there are only rejected addresses', () => {
-            it('should display no address and post to add', () => {
+            it('should display no address', () => {
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence = sinon.stub().resolves({
                     licence: {
@@ -231,14 +236,13 @@ describe('/hdc/proposedAddress', () => {
                         }
                     }
                 });
-                const app = createApp({licenceService});
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
                 return request(app)
-                    .get('/hdc/proposedAddress/curfewAddress/1')
+                    .get('/hdc/proposedAddress/curfewAddress/add/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/proposedAddress/curfewAddress/add');
                         expect(res.text).to.include('name="[addresses][0][addressLine1]"');
                     });
 
@@ -259,15 +263,13 @@ describe('/hdc/proposedAddress', () => {
                         }
                     }
                 });
-                const app = createApp({licenceService});
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
                 return request(app)
                     .get('/hdc/proposedAddress/curfewAddress/1')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include(
-                            '<form method="post" action="/hdc/proposedAddress/curfewAddress/update/1">');
                         expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address1"');
                     });
 
@@ -289,7 +291,7 @@ describe('/hdc/proposedAddress', () => {
                     }
                 }
             });
-            const app = createApp({licenceService});
+            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
             return request(app)
                 .get('/hdc/proposedAddress/rejected/1')
@@ -303,7 +305,6 @@ describe('/hdc/proposedAddress', () => {
 
         it('should show the form to enter new address', () => {
             const licenceService = createLicenceServiceStub();
-
             licenceService.getLicence.resolves({
                 licence: {
                     proposedAddress: {
@@ -316,7 +317,7 @@ describe('/hdc/proposedAddress', () => {
                     }
                 }
             });
-            const app = createApp({licenceService});
+            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
             return request(app)
                 .get('/hdc/proposedAddress/rejected/1')
@@ -342,7 +343,7 @@ describe('/hdc/proposedAddress', () => {
                 stage: 'PROCESSING_CA'
             });
 
-            const app = createApp({licenceService});
+            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
             return request(app)
                 .post('/hdc/proposedAddress/curfewAddress/add/1')
@@ -367,14 +368,29 @@ describe('/hdc/proposedAddress', () => {
                 stage: 'PROCESSING_CA'
             });
 
-            const app = createApp({licenceService});
+            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
             return request(app)
                 .post('/hdc/proposedAddress/curfewAddress/add/1')
                 .send({bookingId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}]})
                 .expect(302)
-                .expect('Location', '/hdc/proposedAddress/curfewAddress/1');
+                .expect('Location', '/hdc/proposedAddress/curfewAddress/add/1');
 
         });
     });
 });
+
+function createApp({licenceServiceStub}, user) {
+    const prisonerServiceStub = createPrisonerServiceStub();
+    licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
+
+    const route = createRoute({
+        logger: loggerStub,
+        licenceService: licenceServiceStub,
+        prisonerService: prisonerServiceStub,
+        authenticationMiddleware,
+        audit: auditStub
+    });
+
+    return appSetup(route, user, '/hdc');
+}

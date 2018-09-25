@@ -8,7 +8,7 @@ const {
     auditStub
 } = require('../supertestSetup');
 
-const createSearchRoute = require('../../server/routes/search');
+const createRoute = require('../../server/routes/search');
 
 
 describe('Search:', () => {
@@ -19,7 +19,7 @@ describe('Search:', () => {
 
     describe('When role is RO', () => {
 
-        const app = appSetup(createSearchRoute({
+        const app = appSetup(createRoute({
             searchService: searchServiceStub,
             logger: loggerStub,
             authenticationMiddleware,

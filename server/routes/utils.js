@@ -1,15 +1,15 @@
+const logger = require('../../log');
 const express = require('express');
+
 const {async} = require('../utils/middleware');
 const licenceClient = require('../data/licenceClient');
 
-module.exports = function({logger}) {
+module.exports = function() {
     const router = express.Router();
 
     router.get('/reset', async(async (req, res, next) => {
         logger.info('Deleting licence records');
-
         await licenceClient.deleteAll();
-
         return res.redirect('/');
     }));
 
@@ -31,10 +31,6 @@ module.exports = function({logger}) {
 
         const {bookingId} = req.params;
         const {licence, stage} = req.body;
-
-        logger.info('bookingId: ', bookingId);
-        logger.info('stage: ', stage);
-        logger.info('licence: ', licence);
 
         if (!bookingId || !licence || !stage) {
             logger.warn('Missing input for create test licence');

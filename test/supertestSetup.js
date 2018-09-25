@@ -3,31 +3,9 @@ const sinon = require('sinon');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const createLicenceConditionsRoute = require('../server/routes/hdc');
 const auth = require('./mockAuthentication');
 const cookieSession = require('cookie-session');
 const flash = require('connect-flash');
-
-const licenceConditionsConfig = require('../server/routes/config/licenceConditions');
-const eligibilityConfig = require('../server/routes/config/eligibility');
-const proposedAddressConfig = require('../server/routes/config/proposedAddress');
-const curfewConfig = require('../server/routes/config/curfew');
-const reportingConfig = require('../server/routes/config/reporting');
-const riskConfig = require('../server/routes/config/risk');
-const finalChecksConfig = require('../server/routes/config/finalChecks');
-const approvalConfig = require('../server/routes/config/approval');
-const createPdfConfig = require('../server/routes/config/createPdf');
-const formConfig = {
-    ...licenceConditionsConfig,
-    ...eligibilityConfig,
-    ...proposedAddressConfig,
-    ...curfewConfig,
-    ...riskConfig,
-    ...reportingConfig,
-    ...finalChecksConfig,
-    ...approvalConfig,
-    ...createPdfConfig
-};
 
 const authenticationMiddleware = auth.authenticationMiddleware;
 
@@ -99,16 +77,6 @@ const userServiceStub = {
     findRoUsers: sinon.stub().resolves(),
     verifyUserDetails: sinon.stub().resolves()
 };
-
-const createHdcRoute = overrides => createLicenceConditionsRoute({
-    licenceService: createLicenceServiceStub(),
-    logger: loggerStub,
-    conditionsService: createConditionsServiceStub(),
-    prisonerService: createPrisonerServiceStub(),
-    authenticationMiddleware,
-    audit: auditStub,
-    ...overrides
-});
 
 const caseListServiceStub = {
     getHdcCaseList: sinon.stub().resolves([]),
@@ -191,16 +159,8 @@ const setup = {
     pdfServiceStub,
     searchServiceStub,
     userServiceStub,
-    createHdcRoute,
-    formConfig,
     authenticationMiddleware,
     testFormPageGets,
-    createApp(opts, user = 'caUser') {
-
-        const hdcRoute = createHdcRoute({...opts});
-
-        return setup.appSetup(hdcRoute, user, '/hdc/');
-    },
     appSetup(route, user = 'caUser', prefix = '') {
         const app = express();
 

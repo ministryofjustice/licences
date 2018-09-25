@@ -1,8 +1,9 @@
 const express = require('express');
+
 const {async} = require('../utils/middleware');
 const {parseSearchTerms} = require('../utils/searchParser');
 
-module.exports = function({logger, searchService, authenticationMiddleware}) {
+module.exports = function({searchService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
@@ -14,13 +15,10 @@ module.exports = function({logger, searchService, authenticationMiddleware}) {
     });
 
     router.get('/offender', (req, res) => {
-        logger.debug('GET /search/offender');
         res.render('search/offender');
     });
 
     router.post(['/offender', '/offender/results'], (req, res) => {
-        logger.debug('POST /search/offender');
-
         const {searchTerm} = req.body;
         const {error, query} = parseSearchTerms(searchTerm);
 
@@ -32,10 +30,7 @@ module.exports = function({logger, searchService, authenticationMiddleware}) {
     });
 
     router.get('/offender/results', async(async (req, res) => {
-        logger.debug('GET /search/offender/results');
-
         const hdcEligible = await searchService.searchOffenders(req.query.nomisId, req.user.token, req.user.role);
-
         res.render('search/results', {hdcEligible});
     }));
 

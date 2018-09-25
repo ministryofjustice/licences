@@ -6,16 +6,24 @@ module.exports = {
         nextPath: {
             decisions: {
                 discriminator: 'additionalConditionsRequired',
-                Yes: '/hdc/licenceConditions/additionalConditions/',
-                No: '/hdc/taskList/'
+                Yes: {
+                    path: '/hdc/licenceConditions/additionalConditions/',
+                    change: '/hdc/licenceConditions/additionalConditions/change/'
+                },
+                No: {
+                    path: '/hdc/taskList/',
+                    change: '/hdc/review/licenceDetails/'
+                }
             },
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/'
         },
         modificationRequiresApproval: true
     },
     conditionsSummary: {
         nextPath: {
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/'
         }
     }
 };

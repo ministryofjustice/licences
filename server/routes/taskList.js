@@ -1,4 +1,6 @@
+const logger = require('../../log');
 const express = require('express');
+
 const {async} = require('../utils/middleware');
 const path = require('path');
 const {getLicenceStatus} = require('../utils/licenceStatus');
@@ -6,7 +8,7 @@ const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
 const {pickKey} = require('../utils/functionalHelpers');
 
-module.exports = function({logger, prisonerService, licenceService, caseListService, authenticationMiddleware, audit}) {
+module.exports = function({prisonerService, licenceService, caseListService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 

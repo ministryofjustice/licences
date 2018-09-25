@@ -1,12 +1,16 @@
 const request = require('supertest');
 
 const {
+    createPrisonerServiceStub,
     createLicenceServiceStub,
-    createApp,
-    formConfig,
-    testFormPageGets,
-    auditStub
+    authenticationMiddleware,
+    auditStub,
+    appSetup,
+    testFormPageGets
 } = require('../supertestSetup');
+
+const createRoute = require('../../server/routes/risk');
+const formConfig = require('../../server/routes/config/risk');
 
 describe('/hdc/risk', () => {
 
@@ -110,3 +114,17 @@ describe('/hdc/risk', () => {
         });
     });
 });
+
+function createApp({licenceService}, user) {
+    const prisonerServiceStub = createPrisonerServiceStub();
+    licenceService = licenceService || createLicenceServiceStub();
+
+    const route = createRoute({
+        licenceService,
+        prisonerService: prisonerServiceStub,
+        authenticationMiddleware,
+        audit: auditStub
+    });
+
+    return appSetup(route, user, '/hdc');
+}

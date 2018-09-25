@@ -10,7 +10,20 @@ module.exports = {
             {telephone: {}}
         ],
         nextPath: {
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/'
+        }
+    },
+    reportingDate: {
+        licenceSection: 'reportingDate',
+        fields: [
+            {reportingDate: {}},
+            {reportingTime: {}}
+        ],
+        validateInPlace: true,
+        noModify: true,
+        nextPath: {
+            path: '/hdc/pdf/taskList/'
         }
     }
 };

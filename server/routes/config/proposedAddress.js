@@ -71,7 +71,8 @@ module.exports = {
             }}
         ],
         nextPath: {
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/curfewAddress/'
         }
     },
     rejected: {
@@ -82,7 +83,7 @@ module.exports = {
         nextPath: {
             decisions: {
                 discriminator: 'enterAlternative',
-                Yes: '/hdc/proposedAddress/curfewAddress/',
+                Yes: '/hdc/proposedAddress/curfewAddress/rejected/',
                 No: '/hdc/taskList/'
             }
         }

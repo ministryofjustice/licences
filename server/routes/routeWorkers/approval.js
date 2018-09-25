@@ -1,8 +1,8 @@
+const logger = require('../../../log');
 const {getLicenceStatus} = require('../../utils/licenceStatus');
 const {getIn, firstItem} = require('../../utils/functionalHelpers');
-const formConfig = require('../config/approval');
 
-module.exports = ({prisonerService, logger}) => {
+module.exports = ({formConfig, prisonerService}) => {
 
     function approvalGets(formName) {
         return async (req, res) => {

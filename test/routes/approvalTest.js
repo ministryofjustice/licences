@@ -3,11 +3,15 @@ const request = require('supertest');
 const {
     createPrisonerServiceStub,
     createLicenceServiceStub,
-    createHdcRoute,
-    formConfig,
+    authenticationMiddleware,
+    auditStub,
     appSetup,
-    testFormPageGets
+    testFormPageGets,
+    createConditionsServiceStub
 } = require('../supertestSetup');
+
+const createRoute = require('../../server/routes/approval');
+const formConfig = require('../../server/routes/config/approval');
 
 const prisonerInfoResponse = {
     bookingId: 1,
@@ -159,11 +163,15 @@ function createApp({licenceServiceStub}, user) {
     const prisonerServiceStub = createPrisonerServiceStub();
     prisonerServiceStub.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse);
     licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
+    const conditionsService = createConditionsServiceStub();
 
-    const hdcRoute = createHdcRoute({
+    const route = createRoute({
         licenceService: licenceServiceStub,
-        prisonerService: prisonerServiceStub
+        prisonerService: prisonerServiceStub,
+        conditionsService,
+        authenticationMiddleware,
+        audit: auditStub
     });
 
-    return appSetup(hdcRoute, user, '/hdc/');
+    return appSetup(route, user, '/hdc');
 }

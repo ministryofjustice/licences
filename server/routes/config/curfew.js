@@ -10,14 +10,24 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'consent',
-                    No: '/hdc/taskList/'
+                    No: {
+                        path: '/hdc/taskList/',
+                        change: '/hdc/review/licenceDetails/',
+                        modify: '/hdc/taskList/'
+                    }
                 },
                 {
                     discriminator: 'electricity',
-                    No: '/hdc/taskList/'
+                    No: {
+                        path: '/hdc/taskList/',
+                        change: '/hdc/review/licenceDetails/',
+                        modify: '/hdc/taskList/'
+                    }
                 }
             ],
-            path: '/hdc/curfew/addressSafety/'
+            path: '/hdc/curfew/addressSafety/',
+            change: '/hdc/curfew/addressSafety/change/',
+            modify: '/hdc/taskList/'
         }
     },
     addressSafety: {
@@ -30,10 +40,16 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'deemedSafe',
-                    No: '/hdc/taskList/'
+                    No: {
+                        path: '/hdc/taskList/',
+                        change: '/hdc/review/licenceDetails/',
+                        modify: '/hdc/taskList/'
+                    }
                 }
             ],
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/',
+            modify: '/hdc/taskList/'
         }
     },
     curfewHours: {
@@ -57,7 +73,8 @@ module.exports = {
             {sundayUntil: {}}
         ],
         nextPath: {
-            path: '/hdc/taskList/'
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/'
         },
         modificationRequiresApproval: true
     },
@@ -84,7 +101,7 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'decision',
-                    Yes: '/hdc/proposedAddress/curfewAddress/'
+                    Yes: '/hdc/proposedAddress/curfewAddress/add/'
                 }
             ],
             path: '/hdc/taskList/'
@@ -113,7 +130,7 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'decision',
-                    Yes: '/hdc/proposedAddress/curfewAddress/'
+                    Yes: '/hdc/proposedAddress/curfewAddress/add/'
                 }
             ],
             path: '/hdc/taskList/'

@@ -15,7 +15,8 @@ block content
         else
             h2.heading-medium You have not selected any conditions.
 
-    a#addAnother.button.button-secondary.largeMarginBottom(href="/hdc/licenceConditions/additionalConditions/" + bookingId role="button")
+    - var destination = action ? action + '/' : ''
+    a#addAnother.button.button-secondary.largeMarginBottom(href="/hdc/licenceConditions/additionalConditions/" + destination + bookingId role="button")
         if data.licenceConditions && data.licenceConditions.length > 0
             |Add another condition
         else
@@ -32,6 +33,8 @@ block content
                             strong.bold-small
                                 | Any additional conditions selected must be reasonable and proportionate to manage the offender's risk
 
+    -var actionText = action === 'change' ? 'Save and continue' : 'Save and return to task list'
+
     div.paddingBottom.smallPaddingTop
         div.pure-u-1.inlineButtons
-            a#continueBtn.requiredButton.button.smallMarginTop(href=nextPath.path + bookingId role="button") Save and return to task list
+            a#continueBtn.requiredButton.button.smallMarginTop(href=nextPath + bookingId role="button") #{actionText}

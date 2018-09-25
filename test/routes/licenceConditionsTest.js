@@ -1,13 +1,17 @@
 const request = require('supertest');
 
 const {
+    createPrisonerServiceStub,
     createLicenceServiceStub,
-    createConditionsServiceStub,
-    createApp,
-    formConfig,
+    authenticationMiddleware,
+    auditStub,
+    appSetup,
     testFormPageGets,
-    auditStub
+    createConditionsServiceStub
 } = require('../supertestSetup');
+
+const createRoute = require('../../server/routes/conditions');
+const formConfig = require('../../server/routes/config/licenceConditions');
 
 describe('/hdc/licenceConditions', () => {
     let conditionsService;
@@ -39,8 +43,10 @@ describe('/hdc/licenceConditions', () => {
         const routes = [
             {url: '/hdc/licenceConditions/standard/1', content: 'Not commit any offence'},
             {url: '/hdc/licenceConditions/additionalConditions/1', content: 'Select additional conditions</h1>'},
-            {url: '/hdc/licenceConditions/conditionsSummary/1', content: 'Add additional condition'},
-            {url: '/hdc/reporting/reportingInstructions/1', content: 'Reporting instructions'}
+            {url: '/hdc/licenceConditions/conditionsSummary/1', content: 'Add additional condition'}
+
+            // Is this meant to be here?
+            // {url: '/hdc/reporting/reportingInstructions/1', content: 'Reporting instructions'}
         ];
 
         testFormPageGets(app, routes, licenceService);
@@ -167,7 +173,7 @@ describe('/hdc/licenceConditions', () => {
         });
     });
 
-    describe('GET /additionalConditions/conditionsSummary:bookingId', () => {
+    describe('GET /additionalConditions/conditionsSummary/:bookingId', () => {
         it('should validate the conditions', () => {
             const licenceService = createLicenceServiceStub();
             licenceService.getConditionsErrors = sinon.stub().returns({error: 'object'});
@@ -185,3 +191,18 @@ describe('/hdc/licenceConditions', () => {
         });
     });
 });
+
+function createApp({licenceService, conditionsService}, user) {
+
+    const prisonerServiceStub = createPrisonerServiceStub();
+
+    const route = createRoute({
+        licenceService,
+        conditionsService,
+        prisonerService: prisonerServiceStub,
+        authenticationMiddleware,
+        audit: auditStub
+    });
+
+    return appSetup(route, user, '/hdc');
+}

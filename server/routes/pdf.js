@@ -1,11 +1,11 @@
+const logger = require('../../log');
 const express = require('express');
-const {async, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} =
-    require('../utils/middleware');
+
+const {async, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} = require('../utils/middleware');
 const {templates} = require('./config/pdf');
 const {firstItem, getIn, isEmpty} = require('../utils/functionalHelpers');
 
-module.exports = function(
-    {logger, pdfService, prisonerService, authenticationMiddleware, licenceService, conditionsService, audit}) {
+module.exports = function({pdfService, prisonerService, authenticationMiddleware, licenceService, conditionsService, audit}) {
 
     const router = express.Router();
     router.use(authenticationMiddleware());

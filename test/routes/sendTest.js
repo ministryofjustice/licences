@@ -9,7 +9,7 @@ const {
     auditStub
 } = require('../supertestSetup');
 
-const createSendRoute = require('../../server/routes/send');
+const createRoute = require('../../server/routes/send');
 
 describe('send', () => {
 
@@ -267,7 +267,7 @@ describe('send', () => {
 });
 
 function createApp({licenceService, prisonerService}, user) {
-    return appSetup(createSendRoute({
+    return appSetup(createRoute({
         licenceService,
         prisonerService,
         logger: loggerStub,

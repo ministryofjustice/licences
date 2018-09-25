@@ -1,11 +1,15 @@
 const request = require('supertest');
 
 const {
+    createPrisonerServiceStub,
     createLicenceServiceStub,
-    formConfig,
-    createApp
+    authenticationMiddleware,
+    auditStub,
+    appSetup
 } = require('../supertestSetup');
 
+const createRoute = require('../../server/routes/reporting');
+const formConfig = require('../../server/routes/config/reporting');
 
 describe('/hdc/reporting', () => {
     describe('routes', () => {
@@ -30,7 +34,7 @@ describe('/hdc/reporting', () => {
         });
     });
 
-    describe('POST /hdc/licenceConditions/:section/:bookingId', () => {
+    describe('POST /hdc/reporting/reportingInstructions/:bookingId', () => {
         const routes = [
             {
                 url: '/hdc/reporting/reportingInstructions/1',
@@ -107,3 +111,17 @@ describe('/hdc/reporting', () => {
         });
     });
 });
+
+function createApp({licenceService}, user) {
+    const prisonerServiceStub = createPrisonerServiceStub();
+    licenceService = licenceService || createLicenceServiceStub();
+
+    const route = createRoute({
+        licenceService,
+        prisonerService: prisonerServiceStub,
+        authenticationMiddleware,
+        audit: auditStub
+    });
+
+    return appSetup(route, user, '/hdc');
+}

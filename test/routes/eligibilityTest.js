@@ -1,12 +1,16 @@
 const request = require('supertest');
 
 const {
+    createPrisonerServiceStub,
     createLicenceServiceStub,
-    formConfig,
-    createApp,
+    authenticationMiddleware,
+    auditStub,
+    appSetup,
     testFormPageGets
 } = require('../supertestSetup');
 
+const createRoute = require('../../server/routes/eligibility');
+const formConfig = require('../../server/routes/config/eligibility');
 
 describe('/hdc/eligibility', () => {
     describe('eligibility routes', () => {
@@ -242,3 +246,17 @@ describe('/hdc/eligibility', () => {
         });
     });
 });
+
+function createApp({licenceService}, user) {
+    const prisonerServiceStub = createPrisonerServiceStub();
+    licenceService = licenceService || createLicenceServiceStub();
+
+    const route = createRoute({
+        licenceService,
+        prisonerService: prisonerServiceStub,
+        authenticationMiddleware,
+        audit: auditStub
+    });
+
+    return appSetup(route, user, '/hdc');
+}
