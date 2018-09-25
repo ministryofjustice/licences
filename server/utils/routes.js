@@ -7,7 +7,7 @@ function getPathFor({data, config, action = 'path'}) {
     const {nextPath} = config;
 
     if (!nextPath.decisions) {
-        return nextPath[action] || nextPath['path'];
+        return nextPath[action] || nextPath.path;
     }
 
     if (Array.isArray(nextPath.decisions)) {
