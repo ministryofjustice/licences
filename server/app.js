@@ -24,13 +24,13 @@ const passport = require('passport');
 const auth = require('./authentication/auth');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
-const createContactRouter = require('../server/routes/contact');
 const defaultRouter = require('../server/routes/default');
 const signInRouter = require('./routes/signIn');
 
 const adminRouter = require('../server/routes/admin/admin');
 const apiRouter = require('../server/routes/api');
 const caseListRouter = require('../server/routes/caseList');
+const contactRouter = require('../server/routes/contact');
 const altCaseListRouter = require('../server/routes/caseListAlt');
 const pdfRouter = require('../server/routes/pdf');
 const searchRouter = require('../server/routes/search');
@@ -299,12 +299,12 @@ module.exports = function createApp({
     }
 
     app.use('/admin/', adminRouter({userService, authenticationMiddleware, audit}));
+    app.use('/hdc/contact/', contactRouter({logger, userService, authenticationMiddleware}));
     app.use('/hdc/pdf/', pdfRouter({pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/search/', searchRouter({searchService, authenticationMiddleware}));
     app.use('/hdc/send/', sendRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/sent/', sentRouter({licenceService, authenticationMiddleware}));
     app.use('/hdc/taskList/', taskListRouter({prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));
-    app.use('/hdc/contact/', createContactRouter({logger, userService, authenticationMiddleware}));
 
     app.use('/hdc/', addressRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/', approvalRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
