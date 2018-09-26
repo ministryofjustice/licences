@@ -36,6 +36,27 @@ describe('/hdc/curfew', () => {
         testFormPageGets(app, routes, licenceService);
     });
 
+    describe('first night route', () => {
+        const licenceService = createLicenceServiceStub();
+        licenceService.getLicence = sinon.stub().resolves({
+            licence: {
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: []
+                    }
+                }
+            }
+        });
+
+        const app = createApp({licenceServiceStub: licenceService}, 'caUser');
+
+        const routes = [
+            {url: '/hdc/curfew/firstNight/1', content: 'First night curfew hours'}
+        ];
+
+        testFormPageGets(app, routes, licenceService);
+    });
+
     describe('address withdrawal routes', () => {
         const licenceService = createLicenceServiceStub();
         licenceService.getLicence = sinon.stub().resolves({
@@ -95,6 +116,13 @@ describe('/hdc/curfew', () => {
                 body: {decision: 'No'},
                 section: 'consentWithdrawn',
                 nextPath: '/hdc/taskList/1',
+                user: 'caUser'
+            },
+            {
+                url: '/hdc/curfew/firstNight/licence_type/1',
+                body: {bookingId: 1, path: 'licence_type'},
+                section: 'firstNight',
+                nextPath: '/hdc/pdf/taskList/licence_type/1',
                 user: 'caUser'
             }
         ];

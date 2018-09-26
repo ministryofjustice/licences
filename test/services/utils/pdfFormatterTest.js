@@ -288,8 +288,6 @@ const displayNames = {
     curfew: {
         optional: {
             CURFEW_ADDRESS: 'Curfew address',
-            CURFEW_FIRST_FROM: 'Curfew first night from',
-            CURFEW_FIRST_UNTIL: 'Curfew first night until',
             CURFEW_FRI_FROM: 'Curfew Friday from',
             CURFEW_FRI_UNTIL: 'Curfew Friday until',
             CURFEW_MON_FROM: 'Curfew Monday from',
@@ -304,6 +302,12 @@ const displayNames = {
             CURFEW_TUE_UNTIL: 'Curfew Tuesday until',
             CURFEW_WED_FROM: 'Curfew Wednesday from',
             CURFEW_WED_UNTIL: 'Curfew Wednesday until'
+        }
+    },
+    firstNight: {
+        mandatory: {
+            CURFEW_FIRST_FROM: 'Curfew first night from',
+            CURFEW_FIRST_UNTIL: 'Curfew first night until'
         }
     },
     reporting: {

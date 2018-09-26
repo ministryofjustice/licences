@@ -55,8 +55,6 @@ module.exports = {
     curfewHours: {
         licenceSection: 'curfewHours',
         fields: [
-            {firstNightFrom: {}},
-            {firstNightUntil: {}},
             {mondayFrom: {}},
             {mondayUntil: {}},
             {tuesdayFrom: {}},
@@ -143,6 +141,17 @@ module.exports = {
         ],
         nextPath: {
             path: '/hdc/taskList/'
+        }
+    },
+    firstNight: {
+        licenceSection: 'firstNight',
+        fields: [
+            {firstNightFrom: {}},
+            {firstNightUntil: {}}
+        ],
+        validateInPlace: true,
+        nextPath: {
+            path: '/hdc/pdf/taskList/'
         }
     }
 };

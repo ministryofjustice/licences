@@ -7,40 +7,11 @@ block content
     include ../includes/personalDetailsSummary
 
     h2.heading-large Curfew hours
-    h2.heading-medium.smallMarginTop First night curfew hours
+    h2.heading-medium.smallMarginTop HDC curfew hours
 
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId || '')
-
-        div.pure-g.borderBottom.midPaddingBottom
-            div.pure-u-1.pure-u-md-14-24
-                div.pure-g.smallPaddingBottom
-                    div.pure-u-1-4
-                        span.bold From
-                    div.pure-u-3-4
-                        span.bold Until
-                div.pure-g
-                    div.pure-u-1-4
-                        div.tinyPaddingBottom
-                            label(for="firstNightFrom", class="form-label")
-                                div.pure-g.content-pull
-                                    div.pure-u-1-
-                                        div.l-box
-                                            input(name="firstNightFrom", id="firstNightFrom" class="form-control", value=data['firstNightFrom'] || "19:00", type="time")
-                                    div.pure-u-1-2
-
-                    div.pure-u-3-4
-                        div.tinyPaddingBottom
-                            label(for="firstNightUntil", class="form-label")
-                                div.pure-g.content-pull
-                                    div.pure-u-7-24
-                                        div.l-box
-                                            input(name="firstNightUntil", id="firstNightUntil" class="form-control", value=data['firstNightUntil'] || "07:00", type="time")
-                                    div.pure-u-17-24
-            div.pure-u-1.pure-u-md-10-24
-
-        h2.heading-medium Regular HDC curfew hours
 
         div.pure-g.largePaddingBottom.largeMarginBottom
             div.pure-u-1.pure-u-md-4-5
