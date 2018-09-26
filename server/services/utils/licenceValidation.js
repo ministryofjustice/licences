@@ -129,8 +129,6 @@ const curfewAddress = joi.object().keys({
 // PROCESSING_RO
 
 const curfewHours = joi.object().keys({
-    firstNightFrom: requiredTime,
-    firstNightUntil: requiredTime,
     mondayFrom: requiredTime,
     mondayUntil: requiredTime,
     tuesdayFrom: requiredTime,

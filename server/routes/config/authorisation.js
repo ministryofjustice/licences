@@ -38,6 +38,9 @@ module.exports = {
     '/hdc/curfew/addressWithdrawn/': {
         authorised: [{role: 'CA'}]
     },
+    '/hdc/curfew/firstNight/': {
+        authorised: [{role: 'CA'}]
+    },
     '/hdc/curfew/': {
         authorised: [{role: 'RO'}, {role: 'CA', stage: ['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
     },

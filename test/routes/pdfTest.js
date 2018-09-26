@@ -29,6 +29,8 @@ const valuesWithMissing = {
         OFF_NAME: 'FIRST LAST'
     },
     missing: {
+        firstNight:
+            {mandatory: {CURFEW_FIRST_FROM: 'Curfew first night from'}},
         reporting:
             {mandatory: {REPORTING_AT: 'reporting date'}},
         sentence:
@@ -133,6 +135,7 @@ describe('PDF:', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
+                    expect(res.text).to.include('id="firstNightTaskStatus">Not complete');
                     expect(res.text).to.include('id="reportingTaskStatus">Not complete');
                     expect(res.text).to.include('id="sentenceTaskStatus">Not complete');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
