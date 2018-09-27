@@ -1,34 +1,26 @@
 div.paddingBottom
     h2.heading-medium Risk management and victim liaison
 
+    - var alertBoxNeeded = licenceStatus.decisions.awaitingRiskInformation
+    - var riskText = licenceStatus.decisions.riskManagementNeeded ? 'Risk management required' : 'No risks'
+    - var victimLiasionText = licenceStatus.decisions.victimLiasionNeeded ? 'Victim liaison required' : 'No victim liaison required'
+
     div.pure-g
         div.pure-u-1.pure-u-md-3-4
             if licenceStatus.tasks.riskManagement === 'DONE'
 
-                if licenceStatus.decisions.riskManagementNeeded || licenceStatus.decisions.victimLiasionNeeded
+                if alertBoxNeeded
                     div.pure-g
                         div.pure-u-1.pure-u-sm-3-5.notice-container
                             div.notice
                                 i.icon.icon-important
                                     span.visually-hidden Warning
 
-                                if licenceStatus.decisions.riskManagementNeeded
-                                    strong.bold-small
-                                        | Risk management required
-                                else
-                                    strong
-                                        | No risks
+                                strong.bold-small Still waiting for information
 
-                                if licenceStatus.decisions.victimLiasionNeeded
-                                    strong.bold-small
-                                        | Victim liaison required
-                                else
-                                    strong
-                                        | No victim liaison required
                 else
-
-                    div No risks
-                    div No victim liaison required
+                    div #{riskText}
+                    div #{victimLiasionText}
 
             else
                 | Not completed

@@ -15,7 +15,8 @@ block content
             div
                 h3.heading-medium Risk management
                 div.form-group.inline.smallPaddingTop
-                    p Are there any risk management planning actions that must take place prior to release?
+                    p Are there any risk management planning actions that must take place before the address can be considered suitable?
+                    p The actions must take place before the offender is released.
 
                     div.multiple-choice(data-target="planningForm")
                         input#planningYes(type="radio" checked=data.planningActions === 'Yes' name="planningActions" value="Yes")
@@ -25,14 +26,14 @@ block content
                         label(for="planningNo") No
 
                 div#planningForm.panel.panel-border-narrow.js-hidden
-                    label(for='planningActionsDetails') Please give details
+                    label(for='planningActionsDetails') Explain what the actions are and why the address is unsuitable until they are in place
                     textarea(name='planningActionsDetails' id='planningActionsDetails' class='form-control' rows='4' aria-label="Provide details of risk management planning actions")
                         if data.planningActionsDetails
                             | #{data.planningActionsDetails}
 
             div
                 div.form-group.inline.smallPaddingTop
-                    p Are you still awaiting information?
+                    p Are you still waiting for information?
 
                     div.multiple-choice(data-target="awaitingForm")
                         input#awaitingYes(type="radio" checked=data.awaitingInformation === 'Yes' name="awaitingInformation" value="Yes")
@@ -42,8 +43,8 @@ block content
                         label(for="awaitingNo") No
 
                 div#awaitingForm.panel.panel-border-narrow.js-hidden
-                    label(for='awaitingInformationDetails') Please provide details including the following: a) type of information required b) indicative timelines c) any third-party dependencies
-                    textarea(name='awaitingInformationDetails' id='awaitingInformationDetails' class='form-control' rows='4' aria-label="Provide details of any information you're waiting for, including timescales and dependencies")
+                    label(for='awaitingInformationDetails') When do you expect to get the information?
+                    textarea(name='awaitingInformationDetails' id='awaitingInformationDetails' class='form-control' rows='2' aria-label="Provide details of when you expect to get the information")
                         if data.awaitingInformationDetails
                             | #{data.awaitingInformationDetails}
 

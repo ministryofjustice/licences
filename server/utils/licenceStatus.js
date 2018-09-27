@@ -88,7 +88,7 @@ function getApprovalStageState(licence) {
 
 function getRoStageState(licence) {
 
-    const {riskManagementNeeded, victimLiasionNeeded, riskManagement} = getRiskManagementState(licence);
+    const {riskManagementNeeded, victimLiasionNeeded, riskManagement, awaitingRiskInformation} = getRiskManagementState(licence);
     const {curfewAddressReview, curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {curfewHours} = getCurfewHoursState(licence);
     const {reportingInstructions} = getReportingInstructionsState(licence);
@@ -97,6 +97,7 @@ function getRoStageState(licence) {
     return {
         decisions: {
             riskManagementNeeded,
+            awaitingRiskInformation,
             victimLiasionNeeded,
             curfewAddressApproved,
             standardOnly,
@@ -286,10 +287,12 @@ function getRiskManagementState(licence) {
 
     const riskManagementAnswer = getIn(licence, ['risk', 'riskManagement', 'planningActions']);
     const victimLiaisonAnswer = getIn(licence, ['risk', 'riskManagement', 'victimLiaison']);
+    const awaitingInformationAnswer = getIn(licence, ['risk', 'riskManagement', 'awaitingInformation']);
 
     return {
         riskManagementNeeded: riskManagementAnswer === 'Yes',
         victimLiasionNeeded: victimLiaisonAnswer === 'Yes',
+        awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
         riskManagement: getState(licence)
     };
 
