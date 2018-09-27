@@ -1,6 +1,7 @@
 div.largeMarginBottom
 
-    h2.heading-medium Submit to responsible officer
+    if ['STARTED', 'DONE'].includes(licenceStatus.tasks.curfewAddress)
+        h2.heading-medium Submit to responsible officer
 
     div.pure-g
 
@@ -13,7 +14,7 @@ div.largeMarginBottom
                 if ['STARTED', 'DONE'].includes(licenceStatus.tasks.curfewAddress)
                     | Ready to submit
                 else
-                    | Submission unavailable - Tasks not yet complete
+                    | Not completed
 
             div.pure-u-1.pure-u-md-1-4.center
                 if ['STARTED', 'DONE'].includes(licenceStatus.tasks.curfewAddress) && !licenceStatus.decisions.optedOut
