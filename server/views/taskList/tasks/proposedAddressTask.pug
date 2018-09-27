@@ -16,11 +16,15 @@ div.largeMarginBottom
                 | Information not yet submitted
 
         div.pure-u-1.pure-u-md-1-4.center
+
             if (licenceStatus.decisions.curfewAddressApproved === 'rejected')
                 +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/rejected/" + prisonerInfo.bookingId)
 
-            else if (licenceStatus.tasks.curfewAddress === 'DONE' && licenceStatus.decisions.curfewAddressApproved === 'unstarted')
-                a(href='/hdc/proposedAddress/curfewAddress/update/' + prisonerInfo.bookingId) Change
+            else if (licenceStatus.tasks.optedOut || licenceStatus.tasks.curfewAddress === 'DONE')
+                a(href='/hdc/proposedAddress/optOut/' + prisonerInfo.bookingId) Change
+
+            else if (licenceStatus.tasks.optOut === 'DONE' && licenceStatus.tasks.curfewAddress !== 'DONE')
+                +startContinueView('STARTED', "/hdc/proposedAddress/optOut/" + prisonerInfo.bookingId)
 
             else
                 +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/optOut/" + prisonerInfo.bookingId)
