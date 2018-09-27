@@ -445,7 +445,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .get('/1233456')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.include('Submit to responsible officer');
+                        expect(res.text).to.include('Submit curfew address');
                     });
             });
 
