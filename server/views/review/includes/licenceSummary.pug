@@ -64,7 +64,7 @@ div.largeMarginBottom
             if typeof errorObject.licenceConditions === 'string'
                 p.alert.bold(id='additional-conditions-error') #{errorObject.licenceConditions}
             else
-                if standardOnly
+                if licenceStatus.decisions.standardOnly
                     p No additional conditions selected
                 else if data.licenceConditions && data.licenceConditions.length > 0
                     +additionalConditions()
