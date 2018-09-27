@@ -19,8 +19,19 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-3-4
                 span Are you still waiting for information to inform risk management planning?
     div.pure-u-1-2
-        +itemAndError(risk.awaitingInformation, errors.awaitingInformation, "awaitingInformation")
-        +itemAndError('', errors.awaitingInformationDetails, "awaitingInformationDetails")
+        if risk.awaitingInformation !== 'Yes'
+            +itemAndError(risk.awaitingInformation, errors.awaitingInformation, "awaitingInformation")
+            +itemAndError('', errors.awaitingInformationDetails, "awaitingInformationDetails")
+        else
+            div.pure-g
+                div.pure-u-1.pure-u-sm-3-5.notice-container
+                    div.notice
+                        i.icon.icon-important
+                            span.visually-hidden Warning
+
+                        strong.bold-small Still waiting for information
+            div.smallPaddingTop
+                +itemAndError('', errors.awaitingInformationDetails, "awaitingInformationDetails")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
