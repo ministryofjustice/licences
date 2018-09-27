@@ -176,7 +176,9 @@ describe('PDF:', () => {
                 .expect('Content-Type', /html/)
                 .expect(res => {
                     expect(res.text).to.include('Ready to print');
-                    expect(res.text).to.include('Last printed version 1, AP HDC Licence, on 11/12/13');
+                    expect(res.text).to.include('11/12/13');
+                    expect(res.text).to.include('AP HDC Licence');
+                    expect(res.text).to.include('Version 1');
                 });
         });
 
@@ -196,9 +198,9 @@ describe('PDF:', () => {
                 .expect(res => {
                     expect(res.text).to.include('Ready to print version 2');
                     expect(res.text).to.include('AP PSS HDC Licence');
-                    expect(res.text).to.include('Last printed version 1');
+                    expect(res.text).to.include('11/12/13');
                     expect(res.text).to.include('AP HDC Licence');
-                    expect(res.text).to.include('on 11/12/13');
+                    expect(res.text).to.include('Version 1');
                 });
         });
 
@@ -217,7 +219,9 @@ describe('PDF:', () => {
                 .expect('Content-Type', /html/)
                 .expect(res => {
                     expect(res.text).to.include('Ready to print version 2');
-                    expect(res.text).to.include('Last printed version 1, AP HDC Licence, on 11/12/13');
+                    expect(res.text).to.include('11/12/13');
+                    expect(res.text).to.include('AP HDC Licence');
+                    expect(res.text).to.include('Version 1');
                 });
         });
 
