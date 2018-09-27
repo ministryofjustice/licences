@@ -1,9 +1,11 @@
 extends ../layout
+include ../includes/errorBannerWithDetailObject
 
 block content
 
     include ../includes/back
     include ../includes/personalDetailsSummary
+    +errorBannerWithDetail(errorObject)
 
     h2.heading-large First night curfew hours
 

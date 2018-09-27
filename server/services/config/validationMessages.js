@@ -88,5 +88,7 @@ module.exports = {
 
     // template forms
     reportingDate_reportingDate: 'Enter a valid date',
-    reportingDate_reportingTime: 'Enter a valid time'
+    reportingDate_reportingTime: 'Enter a valid time',
+    firstNight_firstNightFrom: 'Enter a valid from time',
+    firstNight_firstNightUntil: 'Enter a valid until time'
 };

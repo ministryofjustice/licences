@@ -168,6 +168,11 @@ const reportingDate = joi.object({
     reportingTime: requiredTime
 });
 
+const firstNight = joi.object({
+    firstNightFrom: requiredTime,
+    firstNightUntil: requiredTime
+});
+
 const standard = joi.object({
     additionalConditionsRequired: requiredString
 });
@@ -292,7 +297,7 @@ const taggingCompany = {
 const schema = {
     eligibility: {excluded, suitability, crdTime},
     proposedAddress: {optOut, addressProposed, bassReferral, curfewAddress},
-    curfew: {curfewHours},
+    curfew: {curfewHours, firstNight},
     risk: {riskManagement},
     reporting: {reportingInstructions, reportingDate},
     licenceConditions: {standard, additional, bespoke},
