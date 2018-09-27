@@ -29,7 +29,10 @@ div.paddingBottom
                     else
                         +startContinueView(licenceStatus.tasks.curfewAddressReview, "/hdc/curfew/curfewAddressReview/" + prisonerInfo.bookingId)
                 else if user.role === 'CA' && postApproval
-                    a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.bookingId) View/Edit
+                    if curfewAddressApproved === 'withdrawn'
+                        a.taskListAction.center.button.button-secondary(href="/hdc/curfew/consentWithdrawn/" + prisonerInfo.bookingId) View/Edit
+                    else
+                        a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.bookingId) View/Edit
 
                 else
                     a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.bookingId) View

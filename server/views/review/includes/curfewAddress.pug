@@ -64,7 +64,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         div#dischargeContactNumber
             +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
 
-- var addressReviewNeeded = licenceStatus.stage === 'PROCESSING_CA' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
+- var addressReviewNeeded = licenceStatus.stage !== 'PROCESSING_RO' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
 
 if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
     div.pure-g.borderBottomLight.midPaddingTopBottom

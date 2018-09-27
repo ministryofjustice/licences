@@ -1,31 +1,30 @@
 div.paddingBottom
     h2.heading-medium Postponement / refuse HDC
 
-    div
-        div.pure-g
-            div.pure-u-1.pure-u-md-3-4
-                .pure-g
-                    .pure-u-1.pure-u-3-5
-                        if licenceStatus.decisions.postponed
-                            | HDC application postponed
-                        else if licenceStatus.decisions.confiscationOrder
-                            | Use this to indicate that the process is postponed if a confiscation order is in place
-                        else
-                            | Use this to indicate that the process is postponed while any risk management planning actions remain outstanding
-
-            div.pure-u-1.pure-u-md-1-4.center
-                p.namedAnchor
-                    a.namedAnchor(name="postpone")
-
-                form(method="post" action="/hdc/finalChecks/postpone/" + bookingId)
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="bookingId" value=bookingId || '')
-                    input(type="hidden" name="anchor" value='postpone')
-
+    div.pure-g
+        div.pure-u-1.pure-u-md-3-4
+            .pure-g
+                .pure-u-1.pure-u-3-5
                     if licenceStatus.decisions.postponed
-                        input#postponed(type="hidden" name="decision" value="No")
-                        input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Resume")
-
+                        | HDC application postponed
+                    else if licenceStatus.decisions.confiscationOrder
+                        | Use this to indicate that the process is postponed if a confiscation order is in place
                     else
-                        input#postponed(type="hidden" name="decision" value="Yes")
-                        input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Postpone")
+                        | Use this to indicate that the process is postponed while any risk management planning actions remain outstanding
+
+        div.pure-u-1.pure-u-md-1-4.center
+            p.namedAnchor
+                a.namedAnchor(name="postpone")
+
+            form(method="post" action="/hdc/finalChecks/postpone/" + bookingId)
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="bookingId" value=bookingId || '')
+                input(type="hidden" name="anchor" value='postpone')
+
+                if licenceStatus.decisions.postponed
+                    input#postponed(type="hidden" name="decision" value="No")
+                    input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Resume")
+
+                else
+                    input#postponed(type="hidden" name="decision" value="Yes")
+                    input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Postpone")
