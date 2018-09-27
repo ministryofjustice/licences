@@ -32,8 +32,12 @@ block tasks
         div.taskListItem.borderBottom
             include tasks/HDCRefusalTask
 
-        if allowedTransition === 'caToDm'
-            div.taskListItem.borderBottom
-                include tasks/caSubmitApprovalTask
         div.taskListItem.borderBottom
-            include tasks/createLicenceTask
+            if allowedTransition === 'caToDm'
+                include tasks/caSubmitApprovalTask
+            else if allowedTransition === 'caToDmRefusal'
+                include tasks/caSubmitRefusalTask
+            else if allowedTransition === 'caToRo'
+                include tasks/caSubmitAddressReviewTask
+            else
+                include tasks/createLicenceTask

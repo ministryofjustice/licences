@@ -79,7 +79,8 @@ function canSendDmToCa(licenceStatus) {
 function canSendCaToRo(licenceStatus) {
     const {tasks, decisions, stage} = licenceStatus;
 
-    const addressReviewNeeded = stage === 'PROCESSING_CA' && tasks.curfewAddressReview === 'UNSTARTED';
+    const addressReviewNeeded =
+        ['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage) && tasks.curfewAddressReview === 'UNSTARTED';
 
     if (addressReviewNeeded) {
         return true;
@@ -113,7 +114,7 @@ function canSendCaToRo(licenceStatus) {
 function canSendCaToDmRefusal(licenceStatus) {
     const {stage, decisions} = licenceStatus;
 
-    if (stage === 'PROCESSING_CA') {
+    if (['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
         return decisions.curfewAddressApproved === 'withdrawn';
     }
 

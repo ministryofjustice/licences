@@ -3313,7 +3313,7 @@ describe('licenceService', () => {
                 };
 
                 const output = service.getValidationErrorsForReview({
-                    licenceStatus: {stage: 'ELIGIBILITY'},
+                    licenceStatus: {stage: 'ELIGIBILITY', tasks: {}},
                     licence: missingFieldProposedAddress
                 });
 
@@ -3339,7 +3339,7 @@ describe('licenceService', () => {
                 };
 
                 const output = service.getValidationErrorsForReview({
-                    licenceStatus: {stage: 'ELIGIBILITY'},
+                    licenceStatus: {stage: 'ELIGIBILITY', tasks: {}},
                     licence: missingFieldProposedAddress
                 });
 
@@ -3362,7 +3362,7 @@ describe('licenceService', () => {
                 };
 
                 const output = service.getValidationErrorsForReview({
-                    licenceStatus: {stage: 'ELIGIBILITY'},
+                    licenceStatus: {stage: 'ELIGIBILITY', tasks: {}},
                     licence: missingFieldProposedAddress
                 });
 

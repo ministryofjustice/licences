@@ -394,4 +394,31 @@ describe('getAllowedTransition', () => {
         const allowed = getAllowedTransition(status, 'CA');
         expect(allowed).to.eql('caToDmRefusal');
     });
+
+    it('should allow CA to DM when address has been withdrawn (but no new address added) in Post-decision', () => {
+        const status = {
+            stage: 'MODIFIED',
+            tasks: {},
+            decisions: {
+                curfewAddressApproved: 'withdrawn'
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
+    });
+
+    it('should allow CA to RO when address has been withdrawn and a new address added in Post-decision', () => {
+        const status = {
+            stage: 'MODIFIED',
+            tasks: {
+                curfewAddressReview: 'UNSTARTED'
+            },
+            decisions: {}
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToRo');
+    });
+
 });

@@ -99,7 +99,8 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'decision',
-                    Yes: '/hdc/proposedAddress/curfewAddress/add/'
+                    Yes: '/hdc/proposedAddress/curfewAddress/add/',
+                    No: '/hdc/taskList/'
                 }
             ],
             path: '/hdc/taskList/'
@@ -128,7 +129,8 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'decision',
-                    Yes: '/hdc/proposedAddress/curfewAddress/add/'
+                    Yes: '/hdc/proposedAddress/curfewAddress/add/',
+                    No: '/hdc/taskList/'
                 }
             ],
             path: '/hdc/taskList/'
