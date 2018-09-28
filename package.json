@@ -23,8 +23,9 @@
     "start-watchmode": "nodemon --watch server server.js",
     "knex": "knex",
     "knex-migrate": "knex-migrate",
-    "migrate": "knex migrate:latest",
-    "seed": "knex seed:run"
+    "migrate": "knex migrate:latest --env standard",
+    "seed": "knex seed:run --env standard",
+    "demo": "knex seed:run --env demo"
   },
   "repository": {
     "type": "git",
