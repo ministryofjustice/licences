@@ -17,14 +17,11 @@ div.largeMarginBottom
 
         div.pure-u-1.pure-u-md-1-4.center
 
+            -var rejectedPath = "/hdc/proposedAddress/rejected/" + prisonerInfo.bookingId
+            -var optoutPath = '/hdc/proposedAddress/optOut/' + prisonerInfo.bookingId
+
             if (licenceStatus.decisions.curfewAddressApproved === 'rejected')
-                +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/rejected/" + prisonerInfo.bookingId)
-
-            else if (licenceStatus.tasks.optedOut || licenceStatus.tasks.curfewAddress === 'DONE')
-                a(href='/hdc/proposedAddress/optOut/' + prisonerInfo.bookingId) Change
-
-            else if (licenceStatus.tasks.optOut === 'DONE' && licenceStatus.tasks.curfewAddress !== 'DONE')
-                +startContinueView('STARTED', "/hdc/proposedAddress/optOut/" + prisonerInfo.bookingId)
+                +startContinueChange(licenceStatus.tasks.curfewAddress, rejectedPath)
 
             else
-                +startContinueView(licenceStatus.tasks.curfewAddress, "/hdc/proposedAddress/optOut/" + prisonerInfo.bookingId)
+                +startContinueChangeMulti([licenceStatus.tasks.optOut, licenceStatus.tasks.curfewAddress], optoutPath)

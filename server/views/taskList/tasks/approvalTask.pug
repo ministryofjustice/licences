@@ -8,4 +8,5 @@ div.paddingBottom
                 | : #{licenceStatus.decisions.refusalReason}
         div.pure-u-1.pure-u-md-1-4.center
             if (licenceStatus.stage === 'APPROVAL')
-                +startContinueView(licenceStatus.tasks.approval, "/hdc/approval/release/" + prisonerInfo.bookingId)
+                -var path = '/hdc/approval/release/' + prisonerInfo.bookingId
+                +continue(path)

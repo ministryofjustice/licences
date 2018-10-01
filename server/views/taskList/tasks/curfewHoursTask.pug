@@ -9,14 +9,19 @@ div.paddingBottom
                 | Not completed
 
         div.pure-u-1.pure-u-md-1-4.center
-            -var roleCanModify = user.role === 'RO' || user.role === 'CA'
-            -var editable = licenceStatus.stage === 'PROCESSING_CA' && user.role === 'CA'
 
-            if (postApproval && roleCanModify || editable)
-                a.taskListAction.center.button.button-secondary(href="/hdc/curfew/curfewHours/" + prisonerInfo.bookingId) View/Edit
+            -var path = '/hdc/curfew/curfewHours/' + prisonerInfo.bookingId
+            -var reviewPath = '/hdc/review/curfewHours/' + prisonerInfo.bookingId
+
+            -var canModify = postApproval && ['RO', 'CA'].includes(user.role)
+            -var isFinalChecks = licenceStatus.stage === 'PROCESSING_CA' && user.role === 'CA'
+            -var editable = canModify || isFinalChecks
+
+            if editable
+                +viewEdit(path)
 
             else if user.role === 'RO'
-                +startContinueView(licenceStatus.tasks.curfewHours, "/hdc/curfew/curfewHours/" + prisonerInfo.bookingId)
+                +startContinueChange(licenceStatus.tasks.curfewHours, path)
 
             else
-                a.taskListAction.center.button.button-secondary(href="/hdc/review/curfewHours/" + prisonerInfo.bookingId) View
+                +view(reviewPath)

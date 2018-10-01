@@ -23,8 +23,7 @@ div.paddingBottom
 
                 if licenceStatus.decisions.postponed
                     input#postponed(type="hidden" name="decision" value="No")
-                    input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Resume")
-
                 else
                     input#postponed(type="hidden" name="decision" value="Yes")
-                    input#continueBtn.taskListAction.center.button.button-secondary(type="submit" value="Postpone")
+
+                +conditionalFormButton(licenceStatus.decisions.postponed, 'Resume', 'Postpone', 'continueBtn')
