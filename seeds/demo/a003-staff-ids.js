@@ -74,6 +74,17 @@ exports.seed = knex =>
                     email: 'email@6',
                     telephone: '6666'
                 }
+                ,
+                {
+                    nomis_id: "RO_DEMO",
+                    staff_id: "DELIUS_ID_DEMO",
+                    first_name: 'Ryan',
+                    last_name: 'Orton',
+                    organisation: 'NPS Darlington',
+                    job_role: 'Responsible Officer',
+                    email: 'email@7',
+                    telephone: '6666'
+                }
             ])
         );
 
