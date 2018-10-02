@@ -41,3 +41,6 @@ block tasks
                 include tasks/caSubmitAddressReviewTask
             else
                 include tasks/createLicenceTask
+
+    else if licenceStatus.decisions.excluded || licenceStatus.decisions.unsuitableResult
+        include tasks/notEligibleTask
