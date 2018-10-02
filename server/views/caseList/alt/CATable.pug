@@ -22,7 +22,7 @@ table#hdcEligiblePrisoners.sortcolumns.largeMarginBottom
 
                     td.hdced.hideMobile
                         div(class=prisoner.due.overdue ? "alert bold-small searchable" : "searchable")
-                            |#{prisoner.due.text}
+                            | #{prisoner.due.text}
 
                     if ['Address not suitable', 'Address rejected'].includes(prisoner.status)
                         td.status.terminalStateAlert.hideMobile.searchable
@@ -35,13 +35,15 @@ table#hdcEligiblePrisoners.sortcolumns.largeMarginBottom
                             | #{prisoner.status}
 
                     td
+                        -var label = labels.ca[prisoner.status] || 'View'
+
                         if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
-                            if ['Not started', 'Reviewing case', 'Address rejected'].includes(prisoner.status)
-                                a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
-                                    | Start
+                            -var path = "/hdc/taskList/" + prisoner.bookingId
+                            if (['Start now', 'Continue'].includes(label))
+                                a.button.button-primary.fullWidth.center(href=path role="button") #{label}
                             else
-                                a.button.button-secondary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
-                                    | View
+                                a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
+
                         else if ['PROCESSING_RO', 'APPROVAL'].includes(prisoner.stage)
-                            a.button.button-secondary.fullWidth.center(href="/hdc/review/licence/" + prisoner.bookingId role="button")
-                                | View
+                            -var path = "/hdc/review/licence/" + prisoner.bookingId
+                            a.button.button-secondary.fullWidth.center(href=path role="button") #{label}

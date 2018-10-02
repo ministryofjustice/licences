@@ -37,8 +37,8 @@ function statusLabels(licenceStatus, role) {
             DM: caProcessingDmLabel
         },
         [licenceStages.APPROVAL]: {
-            CA: () => 'Submitted to DM',
-            RO: () => 'Submitted to DM',
+            CA: () => 'With decision maker',
+            RO: () => 'With decision maker',
             DM: dmProcessingLabel
         },
         [licenceStages.DECIDED]: {
@@ -82,11 +82,12 @@ function caProcessingLabel(licenceStatus) {
         {decision: 'finalChecksRefused', label: 'Refused'},
         {decision: 'postponed', label: 'Postponed'},
         {decision: 'excluded', label: 'Excluded (Ineligible)'},
-        {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address not suitable'},
-        {decision: 'curfewAddressApproved', value: 'withdrawn', label: 'Address withdrawn'}
+        {decision: 'curfewAddressApproved', value: 'withdrawn', label: 'Address withdrawn'},
+        // Is this one ever possible?
+        {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address not suitable'}
     ];
 
-    return getLabel(labels, licenceStatus) || 'Reviewing case';
+    return getLabel(labels, licenceStatus) || 'Review case';
 }
 
 function caProcessingRoLabel(licenceStatus) {
@@ -116,19 +117,19 @@ function roProcessingLabel(licenceStatus) {
     }
 
     if (licenceStatus.tasks.curfewAddressReview === taskStates.UNSTARTED) {
-        return 'Ready to check';
+        return 'Address provided';
     }
 
     if (anyStarted([
-            licenceStatus.tasks.curfewAddressReview,
-            licenceStatus.tasks.curfewHours,
-            licenceStatus.tasks.licenceConditions,
-            licenceStatus.tasks.riskManagement,
-            licenceStatus.tasks.reportingInstructions])) {
+        licenceStatus.tasks.curfewAddressReview,
+        licenceStatus.tasks.curfewHours,
+        licenceStatus.tasks.licenceConditions,
+        licenceStatus.tasks.riskManagement,
+        licenceStatus.tasks.reportingInstructions])) {
         return 'Assessment ongoing';
     }
 
-    return 'Ready to check';
+    return 'Address provided';
 }
 
 function roProcessingCaLabel(licenceStatus) {
@@ -144,7 +145,7 @@ function dmProcessingLabel(licenceStatus) {
         {decision: 'insufficientTimeStop', label: 'Awaiting refusal'}
     ];
 
-    return getLabel(labels, licenceStatus) || 'Awaiting decision';
+    return getLabel(labels, licenceStatus) || 'Make decision';
 }
 
 function decisionLabel(licenceStatus) {
@@ -163,7 +164,7 @@ function postApprovalLabel(licenceStatus) {
         {decision: 'refused', label: 'Refused'}
     ];
 
-    return getLabel(labels, licenceStatus) || 'Modified';
+    return getLabel(labels, licenceStatus) || 'Licence updated';
 }
 
 function getLabel(labels, licenceStatus) {
