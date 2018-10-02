@@ -1,13 +1,29 @@
 const config = require('./server/config');
 
 module.exports = {
-    client: 'pg',
-    connection: {
-        host: config.db.server,
-        user: config.db.username,
-        password: config.db.password,
-        database: config.db.database,
-        ssl: config.db.sslEnabled === 'true'
+    standard: {
+        client: 'pg',
+        connection: {
+            host: config.db.server,
+            user: config.db.username,
+            password: config.db.password,
+            database: config.db.database,
+            ssl: config.db.sslEnabled === 'true'
+        },
+        acquireConnectionTimeout: 5000
     },
-    acquireConnectionTimeout: 5000
+    demo: {
+        client: 'pg',
+        connection: {
+            host: config.db.server,
+            user: config.db.username,
+            password: config.db.password,
+            database: config.db.database,
+            ssl: config.db.sslEnabled === 'true'
+        },
+        acquireConnectionTimeout: 5000,
+        seeds: {
+            directory: './seeds/demo'
+        }
+    }
 };
