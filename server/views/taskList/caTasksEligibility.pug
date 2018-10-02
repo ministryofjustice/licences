@@ -1,17 +1,21 @@
 extends taskListTemplate
 
 block tasks
-    div.taskListItem.borderBottomLight
+    div.taskListItem.borderBottom
         include tasks/eligibilityTask
+
+    if licenceStatus.tasks.eligibility === 'DONE' && licenceStatus.tasks.optOut === 'UNSTARTED'
+        div.taskListItem.borderBottom
+            include tasks/informOffenderTask
 
     if licenceStatus.decisions.eligible
         div.taskListItem.borderBottom
             include tasks/proposedAddressTask
 
-    div.taskListItem.borderBottom
-        if allowedTransition === 'caToDmRefusal'
+    if allowedTransition === 'caToDmRefusal'
+        div.taskListItem.borderBottom
             include tasks/caSubmitRefusalTask
-        else if licenceStatus.decisions.excluded || licenceStatus.decisions.unsuitableResult
-            include tasks/notEligibleTask
-        else
+
+    else if licenceStatus.tasks.optOut === 'DONE'
+        div.taskListItem.borderBottom
             include tasks/caSubmitAddressReviewTask
