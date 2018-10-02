@@ -38,7 +38,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql for multiple nomis IDs', () => {
 
-            const expectedClause = 'where booking_id in (\'ABC123\',\'DEF456\',\'XYZ789\')';
+            const expectedClause = 'where l.booking_id in (\'ABC123\',\'DEF456\',\'XYZ789\')';
 
             const result = licencesProxy().getLicences(['ABC123', 'DEF456', 'XYZ789']);
 
@@ -49,7 +49,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql for a single nomis ID', () => {
 
-            const expectedClause = `where booking_id in ('ABC123')`;
+            const expectedClause = `where l.booking_id in ('ABC123')`;
 
             const result = licencesProxy().getLicences(['ABC123']);
 

@@ -71,7 +71,7 @@ describe('PDF:', () => {
 
         it('defaults to type used in last approved version', () => {
 
-            licenceService.getLicence.resolves({approvedVersion: {template: 'hdc_ap'}});
+            licenceService.getLicence.resolves({approvedVersionDetails: {template: 'hdc_ap'}});
 
             return request(app)
                 .get('/hdc/pdf/select/123')
@@ -88,7 +88,7 @@ describe('PDF:', () => {
         it('should throw if a non ca tries to access the page', () => {
             app = appSetup(pdfRoute, 'roUser', '/hdc/pdf');
 
-            licenceService.getLicence.resolves({approvedVersion: {template: 'hdc_ap'}});
+            licenceService.getLicence.resolves({approvedVersionDetails: {template: 'hdc_ap'}});
 
             return request(app)
                 .get('/hdc/pdf/select/123')
@@ -167,7 +167,7 @@ describe('PDF:', () => {
 
             licenceService.getLicence.resolves({
                 version: 1,
-                approvedVersion: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
+                approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
             });
 
             return request(app)
@@ -188,7 +188,7 @@ describe('PDF:', () => {
 
             licenceService.getLicence.resolves({
                 version: 1,
-                approvedVersion: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
+                approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
             });
 
             return request(app)
@@ -210,7 +210,7 @@ describe('PDF:', () => {
 
             licenceService.getLicence.resolves({
                 version: 2,
-                approvedVersion: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
+                approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
             });
 
             return request(app)
@@ -232,7 +232,7 @@ describe('PDF:', () => {
 
             licenceService.getLicence.resolves({
                 version: 2,
-                approvedVersion: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
+                approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
             });
 
             return request(app)

@@ -33,14 +33,16 @@ function getLicenceStatus(licenceRecord) {
                 onRemandCheck: taskStates.UNSTARTED,
                 confiscationOrderCheck: taskStates.UNSTARTED,
                 finalChecks: taskStates.UNSTARTED,
-                approval: taskStates.UNSTARTED
+                approval: taskStates.UNSTARTED,
+                createLicence: taskStates.UNSTARTED
             }
         };
     }
     const stage = licenceRecord.stage;
-
     const results = getRequiredState(stage, licenceRecord.licence);
-    return results.reduce(combiner, {stage, decisions: {}, tasks: {}});
+    const createLicence = isPostDecision(stage) ? getLicenceCreatedTaskState(licenceRecord) : taskStates.UNSTARTED;
+
+    return results.reduce(combiner, {stage, decisions: {}, tasks: {createLicence}});
 }
 
 function getRequiredState(stage, licence) {
@@ -538,3 +540,12 @@ function getOverallState(tasks) {
 }
 
 
+function isPostDecision(stage) {
+    return ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage);
+}
+
+function getLicenceCreatedTaskState(licenceRecord) {
+    const approvedVersion = getIn(licenceRecord, ['approvedVersion']);
+
+    return approvedVersion && licenceRecord.version === approvedVersion ? 'DONE' : 'UNSTARTED';
+}

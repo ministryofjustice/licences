@@ -36,7 +36,8 @@ describe('licenceService', () => {
                 licence: {a: 'b'},
                 stage: undefined,
                 version: undefined,
-                approvedVersion: undefined
+                approvedVersion: undefined,
+                approvedVersionDetails: undefined
             });
         });
 

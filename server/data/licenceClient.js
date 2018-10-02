@@ -15,8 +15,15 @@ module.exports = {
 
     getLicences: async function(bookingIds) {
         const query = {
-            text: `select licence, booking_id, stage, version, transition_date from licences 
-                   where booking_id in (${bookingIds.map(id => `'${id}'`).join(',')})`
+            text: `select l.licence, l.booking_id, l.stage, l.version, l.transition_date,
+                   v.version as approvedVersion 
+                   from licences l 
+                   left outer join licence_versions v on v.id = (
+                   select id from licence_versions
+                   where booking_id = l.booking_id
+                   order by version desc limit 1
+                   )
+                   where l.booking_id in (${bookingIds.map(id => `'${id}'`).join(',')})`
         };
 
         const {rows} = await db.query(query);

@@ -42,7 +42,7 @@ function statusLabels(licenceStatus, role) {
             DM: dmProcessingLabel
         },
         [licenceStages.DECIDED]: {
-            CA: decisionLabel,
+            CA: caDecisionLabel,
             RO: decisionLabel,
             DM: decisionLabel
         },
@@ -147,7 +147,26 @@ function dmProcessingLabel(licenceStatus) {
     return getLabel(labels, licenceStatus) || 'Awaiting decision';
 }
 
+function caDecisionLabel(licenceStatus) {
+
+    if (licenceStatus.decisions.approved) {
+        if (licenceStatus.tasks.createLicence === taskStates.DONE) {
+            return 'Licence created';
+        }
+
+        return 'Create licence';
+    }
+
+    return decisionLabel(licenceStatus);
+}
+
 function decisionLabel(licenceStatus) {
+
+    if (licenceStatus.decisions.approved) {
+        if (licenceStatus.tasks.createLicence === taskStates.DONE) {
+            return 'Licence created';
+        }
+    }
 
     const labels = [
         {decision: 'approved', label: 'Approved'},

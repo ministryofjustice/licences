@@ -9,7 +9,7 @@ module.exports = {formatPdfData};
 const DEFAULT_PLACEHOLDER = '(DATA MISSING)';
 
 function formatPdfData(templateName,
-                       {licence, prisonerInfo, establishment}, image, approvedVersion,
+                       {licence, prisonerInfo, establishment}, image, approvedVersionDetails,
                        placeholder = DEFAULT_PLACEHOLDER) {
 
     const conditions = getConditionsForConfig(licence, templateName, 'CONDITIONS');
@@ -25,7 +25,7 @@ function formatPdfData(templateName,
         pss,
         photo,
         taggingCompany,
-        approvedVersion
+        approvedVersionDetails
     };
 
     return valueOrPlaceholder(allData, placeholder, templateName);

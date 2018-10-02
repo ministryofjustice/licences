@@ -35,7 +35,7 @@ module.exports = function({prisonerService, licenceService, caseListService, aut
         res.render(`taskList/${tasklistView}`, {
             licenceStatus,
             licenceVersion: licence ? licence.version : 0,
-            approvedVersion: licence ? licence.approvedVersion : 0,
+            approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
             allowedTransition,
             statusLabel,
             prisonerInfo,

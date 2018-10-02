@@ -18,14 +18,14 @@ describe('pdfFormatter', () => {
                             prisonerInfo = {},
                             establishment = {},
                             image = '',
-                            approvedVersion = {},
+                            approvedVersionDetails = {},
                             placeholder = 'PLACEHOLDER'
                         }) {
         return formatPdfData(templateName, {
             licence,
             prisonerInfo,
             establishment
-        }, image, approvedVersion, placeholder);
+        }, image, approvedVersionDetails, placeholder);
     }
 
     it('should give placeholders and display names for everything when all inputs missing', () => {
@@ -196,13 +196,13 @@ describe('pdfFormatter', () => {
         expect(data.missing['PSS']).to.eql(displayNames['PSS']);
     });
 
-    it('should take version number and date from approvedVersion', () => {
-        const approvedVersion = {
+    it('should take version number and date from approvedVersionDetails', () => {
+        const approvedVersionDetails = {
             version: 111,
             timestamp: '123'
         };
 
-        const data = formatWith({approvedVersion: approvedVersion});
+        const data = formatWith({approvedVersionDetails});
 
         expect(data.values.VERSION_DATE).to.eql('123');
         expect(data.values.VERSION_NUMBER).to.eql('111');

@@ -1,12 +1,12 @@
 const VERSION_NUMBER = {
-    paths: [['approvedVersion', 'version']],
+    paths: [['approvedVersionDetails', 'version']],
     displayName: 'Version number',
     group: 'document',
     required: 'optional'
 };
 
 const VERSION_DATE = {
-    paths: [['approvedVersion', 'timestamp']],
+    paths: [['approvedVersionDetails', 'timestamp']],
     displayName: 'Version date',
     group: 'document',
     required: 'optional'
