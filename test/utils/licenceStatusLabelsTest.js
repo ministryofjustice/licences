@@ -106,7 +106,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
-                    label: 'Reviewing case'
+                    label: 'Review case'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {excluded: true}, tasks: {}},
@@ -172,7 +172,7 @@ describe('getStatusLabel', () => {
                 },
                 {
                     status: {stage: licenceStages.APPROVAL, decisions: {}, tasks: {}},
-                    label: 'Submitted to DM'
+                    label: 'With decision maker'
                 },
                 {
                     status: {stage: licenceStages.DECIDED, decisions: {approved: true}, tasks: {}},
@@ -195,7 +195,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {}},
-                    label: 'Ready to check'
+                    label: 'Address provided'
                 },
                 {
                     status: {
@@ -203,7 +203,7 @@ describe('getStatusLabel', () => {
                         decisions: {},
                         tasks: {curfewAddressReview: 'UNSTARTED', reportingInstructions: 'DONE'}
                     },
-                    label: 'Ready to check'
+                    label: 'Address provided'
                 },
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {curfewAddressReview: 'DONE'}},
@@ -266,7 +266,7 @@ describe('getStatusLabel', () => {
                 },
                 {
                     status: {stage: licenceStages.APPROVAL, decisions: {approved: true}, tasks: {}},
-                    label: 'Submitted to DM'
+                    label: 'With decision maker'
                 },
                 {
                     status: {stage: licenceStages.DECIDED, decisions: {approved: true}, tasks: {}},
@@ -289,7 +289,7 @@ describe('getStatusLabel', () => {
             const examples = [
                 {
                     status: {stage: licenceStages.APPROVAL, decisions: {}, tasks: {}},
-                    label: 'Awaiting decision'
+                    label: 'Make decision'
                 },
                 {
                     status: {stage: licenceStages.APPROVAL, decisions: {insufficientTimeStop: true}, tasks: {}},

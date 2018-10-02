@@ -29,13 +29,15 @@ table#hdcEligiblePrisoners.sortcolumns.largeMarginBottom
                             | #{prisoner.status}
 
                     td
+                        -var label = labels.ro[prisoner.status] || 'View'
+
                         if ['PROCESSING_RO', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
-                            if ['Ready to check'].includes(prisoner.status)
-                                a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
-                                    | Start
+                            -var path = "/hdc/taskList/" + prisoner.bookingId
+                            if (['Start now', 'Continue'].includes(label))
+                                a.button.button-primary.fullWidth.center(href=path role="button") #{label}
                             else
-                                a.button.button-secondary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
-                                    | View
+                                a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
+
                         else if ['PROCESSING_CA', 'APPROVAL'].includes(prisoner.stage)
-                            a.button.button-secondary.fullWidth.center(href="/hdc/review/licence/" + prisoner.bookingId role="button")
-                                | View
+                            -var path = "/hdc/review/licence/" + prisoner.bookingId
+                            a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
