@@ -27,7 +27,7 @@ module.exports = function({pdfService, prisonerService, authenticationMiddleware
         const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token);
         const errors = firstItem(req.flash('errors')) || {};
 
-        const lastTemplate = getIn(res.locals.licence, ['approvedVersion', 'template']);
+        const lastTemplate = getIn(res.locals.licence, ['approvedVersionDetails', 'template']);
 
         return res.render('pdf/select', {bookingId, templates, prisoner, errors, lastTemplate});
     }));
@@ -84,14 +84,14 @@ module.exports = function({pdfService, prisonerService, authenticationMiddleware
 
     function getVersionInfo(licence, templateLabel) {
 
-        const lastTemplateLabel = licence.approvedVersion ?
-            getTemplateLabel(licence.approvedVersion.template) : undefined;
-        const isNewTemplate = licence.approvedVersion && templateLabel !== lastTemplateLabel;
-        const isNewVersion = !licence.approvedVersion || licence.version > licence.approvedVersion.version;
+        const lastTemplateLabel = licence.approvedVersionDetails ?
+            getTemplateLabel(licence.approvedVersionDetails.template) : undefined;
+        const isNewTemplate = licence.approvedVersionDetails && templateLabel !== lastTemplateLabel;
+        const isNewVersion = !licence.approvedVersionDetails || licence.version > licence.approvedVersionDetails.version;
 
         return {
             currentVersion: licence.version,
-            lastVersion: licence.approvedVersion,
+            lastVersion: licence.approvedVersionDetails,
             isNewVersion,
             templateLabel,
             lastTemplateLabel,

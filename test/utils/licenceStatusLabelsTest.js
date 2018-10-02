@@ -176,7 +176,7 @@ describe('getStatusLabel', () => {
                 },
                 {
                     status: {stage: licenceStages.DECIDED, decisions: {approved: true}, tasks: {}},
-                    label: 'Approved'
+                    label: 'Create licence'
                 },
                 {
                     status: {stage: licenceStages.DECIDED, decisions: {refused: true}, tasks: {}},

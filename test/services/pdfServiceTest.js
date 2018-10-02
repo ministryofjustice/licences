@@ -90,7 +90,7 @@ describe('pdfService', () => {
                 .post('/generate', {templateName, values})
                 .reply(200, pdf1AsBytes);
 
-            const rawLicence = {licence: {key: 'value'}, version: 4, approvedVersion: {version: 3}};
+            const rawLicence = {licence: {key: 'value'}, version: 4, approvedVersionDetails: {version: 3}};
             await service.generatePdf(templateName, '123', rawLicence, 'username');
 
             expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce();
@@ -106,7 +106,7 @@ describe('pdfService', () => {
             const rawLicence = {
                 licence: {key: 'value'},
                 version: 4,
-                approvedVersion: {version: 4, template: 'other_template'}
+                approvedVersionDetails: {version: 4, template: 'other_template'}
             };
 
             await service.generatePdf(templateName, '123', rawLicence, 'username');
@@ -125,7 +125,7 @@ describe('pdfService', () => {
             const rawLicence = {
                 licence: {key: 'value'},
                 version: 4,
-                approvedVersion: {version: 3, template: 'hdc_ap_pss'}
+                approvedVersionDetails: {version: 3, template: 'hdc_ap_pss'}
             };
 
             await service.generatePdf(templateName, '123', rawLicence, 'username');
@@ -162,7 +162,7 @@ describe('pdfService', () => {
             const rawLicence = {
                 licence: {key: 'value'},
                 version: 4,
-                approvedVersion: {version: 4, template: 'hdc_ap_pss'}
+                approvedVersionDetails: {version: 4, template: 'hdc_ap_pss'}
             };
 
             await service.generatePdf(templateName, '123', rawLicence, 'username');

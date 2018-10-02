@@ -18,7 +18,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
             licence,
             prisonerInfo,
             establishment
-        }, image, rawLicence.approvedVersion);
+        }, image, rawLicence.approvedVersionDetails);
     }
 
     async function getPdf(templateName, values) {
@@ -51,9 +51,9 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
 
     async function checkAndUpdateVersion(rawLicence, bookingId, template) {
 
-        const {version, approvedVersion} = rawLicence;
+        const {version, approvedVersionDetails} = rawLicence;
 
-        const templateChange = approvedVersion && template !== approvedVersion.template;
+        const templateChange = approvedVersionDetails && template !== approvedVersionDetails.template;
 
         if (templateChange) {
             await licenceService.update({
@@ -65,7 +65,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
             });
         }
 
-        if (!approvedVersion || version > approvedVersion.version || templateChange) {
+        if (!approvedVersionDetails || version > approvedVersionDetails.version || templateChange) {
             await licenceService.saveApprovedLicenceVersion(bookingId, template);
             return licenceService.getLicence(bookingId);
         }

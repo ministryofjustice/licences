@@ -44,11 +44,12 @@ module.exports = function createLicenceService(licenceClient) {
                 return null;
             }
             const formattedLicence = formatObjectForView(licence);
-            const approvedVersion = versionDetails ? formatObjectForView(versionDetails) : undefined;
+            const approvedVersionDetails = versionDetails ? formatObjectForView(versionDetails) : undefined;
             const stage = getIn(rawLicence, ['stage']);
             const version = getIn(rawLicence, ['version']);
+            const approvedVersion = getIn(approvedVersionDetails, ['version']);
 
-            return {licence: formattedLicence, stage, version, approvedVersion};
+            return {licence: formattedLicence, stage, version, approvedVersion, approvedVersionDetails};
 
         } catch (error) {
             logger.error('Error during getLicence', error.stack);

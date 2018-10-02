@@ -52,7 +52,8 @@ describe('getLicenceStatus', () => {
             onRemandCheck: taskStates.UNSTARTED,
             confiscationOrderCheck: taskStates.UNSTARTED,
             finalChecks: taskStates.UNSTARTED,
-            approval: taskStates.UNSTARTED
+            approval: taskStates.UNSTARTED,
+            createLicence: taskStates.UNSTARTED
         });
     });
 
@@ -305,7 +306,8 @@ describe('getLicenceStatus', () => {
             onRemandCheck: taskStates.UNSTARTED,
             confiscationOrderCheck: taskStates.UNSTARTED,
             finalChecks: taskStates.UNSTARTED,
-            approval: taskStates.UNSTARTED
+            approval: taskStates.UNSTARTED,
+            createLicence: taskStates.UNSTARTED
         });
     });
 
@@ -512,6 +514,8 @@ describe('getLicenceStatus', () => {
     it('should show tasks DONE when task data complete', () => {
         const licence = {
             stage: 'DECIDED',
+            approvedVersion: 1,
+            version: 1,
             licence: {
                 eligibility: {
                     excluded: {
@@ -617,6 +621,7 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.confiscationOrderCheck).to.eql(taskStates.DONE);
         expect(status.tasks.finalChecks).to.eql(taskStates.DONE);
         expect(status.tasks.approval).to.eql(taskStates.DONE);
+        expect(status.tasks.createLicence).to.eql(taskStates.DONE);
     });
 
     it('should show address review DONE when deemed safe is pending', () => {
@@ -790,6 +795,53 @@ describe('getLicenceStatus', () => {
 
         expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
         expect(status.decisions.curfewAddressApproved).to.eql('unstarted');
+    });
+
+    context('Post-decision', () => {
+
+        it('should show createLicence task UNSTARTED when no approved version', () => {
+            const licence = {
+                stage: 'DECIDED',
+                version: 1,
+                licence: {
+                    notEmpty: true
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED);
+        });
+
+        it('should show createLicence task UNSTARTED when working version higher than approved version', () => {
+            const licence = {
+                stage: 'DECIDED',
+                version: 2,
+                approvedVersion: 1,
+                licence: {
+                    notEmpty: true
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED);
+        });
+
+        it('should show createLicence task DONE when working version is the same as approved version', () => {
+            const licence = {
+                stage: 'DECIDED',
+                version: 2,
+                approvedVersion: 2,
+                licence: {
+                    notEmpty: true
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.createLicence).to.eql(taskStates.DONE);
+        });
     });
 
     context('Eligibility', () => {
