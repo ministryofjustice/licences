@@ -4,36 +4,111 @@ exports.seed = function (knex, Promise) {
         .then(function () {
             // Inserts seed entries
             return knex('licences').insert([{
-                "id": 61,
+                "id": 1,
+                "licence": {"eligibility": {"excluded": {"reason": ["sexOffenderRegister"], "decision": "Yes"}}},
+                "booking_id": 2200635,
+                "stage": "ELIGIBILITY",
+                "version": 1,
+                "transition_date": null
+            }, {
+                "id": 2,
                 "licence": {
                     "eligibility": {
                         "crdTime": {"decision": "No"},
                         "excluded": {"decision": "No"},
                         "suitability": {"decision": "No"}
+                    }, "proposedAddress": {"optOut": {"reason": "Like it here too much.", "decision": "Yes"}}
+                },
+                "booking_id": 1130463,
+                "stage": "ELIGIBILITY",
+                "version": 1,
+                "transition_date": null
+            }, {
+                "id": 3,
+                "licence": {
+                    "risk": {
+                        "riskManagement": {
+                            "victimLiaison": "No",
+                            "planningActions": "No",
+                            "awaitingInformation": "No"
+                        }
+                    },
+                    "curfew": {
+                        "firstNight": {"firstNightFrom": "19:00", "firstNightUntil": "07:00"},
+                        "curfewHours": {
+                            "fridayFrom": "19:00",
+                            "mondayFrom": "19:00",
+                            "sundayFrom": "19:00",
+                            "fridayUntil": "07:00",
+                            "mondayUntil": "07:00",
+                            "sundayUntil": "07:00",
+                            "tuesdayFrom": "19:00",
+                            "saturdayFrom": "19:00",
+                            "thursdayFrom": "19:00",
+                            "tuesdayUntil": "07:00",
+                            "saturdayUntil": "07:00",
+                            "thursdayUntil": "07:00",
+                            "wednesdayFrom": "19:00",
+                            "wednesdayUntil": "07:00"
+                        }
+                    },
+                    "approval": {"release": {"decision": "Yes", "decisionMaker": "Dianne Matthews"}},
+                    "reporting": {
+                        "reportingDate": {"reportingDate": "10/10/2018", "reportingTime": "10:00"},
+                        "reportingInstructions": {
+                            "name": "Duty Officer",
+                            "postcode": "YO1 7DY",
+                            "telephone": "01493 2678766",
+                            "townOrCity": "York",
+                            "buildingAndStreet1": "1, Probation House",
+                            "buildingAndStreet2": ""
+                        }
+                    },
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "finalChecks": {
+                        "onRemand": {"decision": "No"},
+                        "seriousOffence": {"decision": "No"},
+                        "confiscationOrder": {"decision": "No"}
                     },
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
                             "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
+                                "consent": "Yes",
+                                "occupier": {"name": "Richard Hunt", "relationship": "Uncle"},
+                                "postCode": "LS16 6AA",
                                 "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
+                                "telephone": "07958 809442",
+                                "deemedSafe": "Yes",
+                                "addressTown": "Leeds",
+                                "electricity": "Yes",
+                                "addressLine1": "31, The Road",
+                                "addressLine2": "Horsforth",
+                                "homeVisitConducted": "No",
                                 "cautionedAgainstResident": "No"
                             }]
                         },
                         "addressProposed": {"decision": "Yes"}
+                    },
+                    "licenceConditions": {
+                        "bespoke": [],
+                        "standard": {"additionalConditionsRequired": "Yes"},
+                        "additional": {
+                            "NORESIDE": {"notResideWithAge": "18", "notResideWithGender": "any"},
+                            "NOCONTACTPRISONER": {}
+                        }
                     }
                 },
-                "booking_id": 1200664,
-                "stage": "PROCESSING_RO",
+                "booking_id": 1167792,
+                "stage": "MODIFIED",
                 "version": 1,
-                "transition_date": null
+                "transition_date": "2018-10-02T12:33:15.09014+00:00"
             }, {
-                "id": 37,
+                "id": 5,
                 "licence": {
                     "risk": {
                         "riskManagement": {
@@ -57,20 +132,295 @@ exports.seed = function (knex, Promise) {
                             "saturdayUntil": "07:00",
                             "thursdayUntil": "07:00",
                             "wednesdayFrom": "19:00",
-                            "firstNightFrom": "19:00",
-                            "wednesdayUntil": "07:00",
-                            "firstNightUntil": "07:00"
+                            "wednesdayUntil": "07:00"
                         }
                     },
-                    "approval": {"release": {"decision": "Yes", "decisionMaker": "DECISION MAKER"}},
                     "reporting": {
-                        "reportingDate": {"reportingDate": "25/09/2018", "reportingTime": "09:00"},
                         "reportingInstructions": {
                             "name": "Duty Officer",
-                            "postcode": "LS166AA",
-                            "telephone": "01234567890",
+                            "postcode": "LS6 6ER",
+                            "telephone": "0113 2727272",
                             "townOrCity": "Leeds",
-                            "buildingAndStreet1": "31 The Crescent",
+                            "buildingAndStreet1": "12 Ellis Street",
+                            "buildingAndStreet2": ""
+                        }
+                    },
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "consent": "Yes",
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "LS12 1YT",
+                                "residents": [],
+                                "telephone": "0113 2627272",
+                                "deemedSafe": "Yes",
+                                "addressTown": "Leeds",
+                                "electricity": "Yes",
+                                "addressLine1": "12 High Street",
+                                "addressLine2": "Horsforth",
+                                "homeVisitConducted": "No",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    },
+                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
+                },
+                "booking_id": 1200666,
+                "stage": "PROCESSING_CA",
+                "version": 1,
+                "transition_date": "2018-10-02T12:39:29.924871+00:00"
+            }, {
+                "id": 4,
+                "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "consent": "Yes",
+                                "occupier": {"name": "Mr J Thomas", "relationship": "N/A"},
+                                "postCode": "LS1 1LD",
+                                "residents": [],
+                                "telephone": "07986 2765411",
+                                "deemedSafe": "No",
+                                "addressTown": "Leeds",
+                                "electricity": "Yes",
+                                "addressLine1": "18, Albion Street",
+                                "addressLine2": "",
+                                "unsafeReason": "Risk too high.",
+                                "homeVisitConducted": "No",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1080794,
+                "stage": "ELIGIBILITY",
+                "version": 1,
+                "transition_date": "2018-10-02T12:37:07.183618+00:00"
+            }, {
+                "id": 6,
+                "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "Yes", "dmApproval": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"reason": ["deportationLiable"], "decision": "Yes"},
+                        "exceptionalCircumstances": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1068733,
+                "stage": "ELIGIBILITY",
+                "version": 1,
+                "transition_date": null
+            }, {
+                "id": 7,
+                "licence": {
+                    "risk": {
+                        "riskManagement": {
+                            "victimLiaison": "No",
+                            "planningActions": "No",
+                            "awaitingInformation": "No"
+                        }
+                    },
+                    "curfew": {
+                        "curfewHours": {
+                            "fridayFrom": "19:00",
+                            "mondayFrom": "19:00",
+                            "sundayFrom": "19:00",
+                            "fridayUntil": "07:00",
+                            "mondayUntil": "07:00",
+                            "sundayUntil": "07:00",
+                            "tuesdayFrom": "19:00",
+                            "saturdayFrom": "19:00",
+                            "thursdayFrom": "19:00",
+                            "tuesdayUntil": "07:00",
+                            "saturdayUntil": "07:00",
+                            "thursdayUntil": "07:00",
+                            "wednesdayFrom": "19:00",
+                            "wednesdayUntil": "07:00"
+                        }
+                    },
+                    "reporting": {
+                        "reportingInstructions": {
+                            "name": "Duty Officer",
+                            "postcode": "LS1 87Y",
+                            "telephone": "07976 526262",
+                            "townOrCity": "Leeds",
+                            "buildingAndStreet1": "19 Wandsworth Road",
+                            "buildingAndStreet2": ""
+                        }
+                    },
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"reason": ["deportationLiable"], "decision": "Yes"},
+                        "exceptionalCircumstances": {"decision": "Yes"}
+                    },
+                    "finalChecks": {
+                        "onRemand": {"decision": "Yes"},
+                        "postpone": {"decision": "Yes"},
+                        "seriousOffence": {"decision": "No"},
+                        "confiscationOrder": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "consent": "Yes",
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "HL1 7TY",
+                                "residents": [{"age": "", "name": "Mrs J Smith", "relationship": "Aunty"}],
+                                "telephone": "07865 2345786",
+                                "deemedSafe": "Yes",
+                                "addressTown": "Hull",
+                                "electricity": "Yes",
+                                "addressLine1": "25 Hilton Place",
+                                "addressLine2": "",
+                                "homeVisitConducted": "No",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    },
+                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
+                },
+                "booking_id": 1152613,
+                "stage": "PROCESSING_CA",
+                "version": 1,
+                "transition_date": "2018-10-02T13:04:27.302446+00:00"
+            }, {
+                "id": 8,
+                "licence": {
+                    "risk": {
+                        "riskManagement": {
+                            "victimLiaison": "No",
+                            "planningActions": "Yes",
+                            "awaitingInformation": "Yes",
+                            "planningActionsDetails": "Social services to investigate the neighbourhood",
+                            "awaitingInformationDetails": ""
+                        }
+                    },
+                    "curfew": {
+                        "curfewHours": {
+                            "fridayFrom": "19:00",
+                            "mondayFrom": "19:00",
+                            "sundayFrom": "19:00",
+                            "fridayUntil": "07:00",
+                            "mondayUntil": "07:00",
+                            "sundayUntil": "07:00",
+                            "tuesdayFrom": "19:00",
+                            "saturdayFrom": "19:00",
+                            "thursdayFrom": "19:00",
+                            "tuesdayUntil": "07:00",
+                            "saturdayUntil": "07:00",
+                            "thursdayUntil": "07:00",
+                            "wednesdayFrom": "19:00",
+                            "wednesdayUntil": "07:00"
+                        }
+                    },
+                    "reporting": {
+                        "reportingInstructions": {
+                            "name": "Duty Officer",
+                            "postcode": "S1 18UT",
+                            "telephone": "07685 2929292",
+                            "townOrCity": "Sheffield",
+                            "buildingAndStreet1": "19 Town Street",
+                            "buildingAndStreet2": ""
+                        }
+                    },
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"reason": ["sentenceCategory"], "decision": "Yes"},
+                        "exceptionalCircumstances": {"decision": "Yes"}
+                    },
+                    "finalChecks": {
+                        "refusal": {
+                            "reason": "insufficientTime",
+                            "decision": "Yes",
+                            "outOfTimeReasons": "riskManagement"
+                        }
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "consent": "Yes",
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "S1 9OP",
+                                "residents": [],
+                                "telephone": "07648272611",
+                                "deemedSafe": "Yes",
+                                "addressTown": "Sheffield",
+                                "electricity": "Yes",
+                                "addressLine1": "1 Kelham Island Street",
+                                "addressLine2": "",
+                                "homeVisitConducted": "Yes",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    },
+                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
+                },
+                "booking_id": 1200665,
+                "stage": "PROCESSING_CA",
+                "version": 1,
+                "transition_date": "2018-10-02T13:10:08.379656+00:00"
+            }, {
+                "id": 9,
+                "licence": {
+                    "risk": {
+                        "riskManagement": {
+                            "victimLiaison": "No",
+                            "planningActions": "No",
+                            "awaitingInformation": "No"
+                        }
+                    },
+                    "curfew": {
+                        "curfewHours": {
+                            "fridayFrom": "19:00",
+                            "mondayFrom": "19:00",
+                            "sundayFrom": "19:00",
+                            "fridayUntil": "07:00",
+                            "mondayUntil": "07:00",
+                            "sundayUntil": "07:00",
+                            "tuesdayFrom": "19:00",
+                            "saturdayFrom": "19:00",
+                            "thursdayFrom": "19:00",
+                            "tuesdayUntil": "07:00",
+                            "saturdayUntil": "07:00",
+                            "thursdayUntil": "07:00",
+                            "wednesdayFrom": "19:00",
+                            "wednesdayUntil": "07:00"
+                        }
+                    },
+                    "approval": {
+                        "release": {
+                            "reason": "insufficientTime",
+                            "decision": "No",
+                            "decisionMaker": "Dianne Matthews"
+                        }
+                    },
+                    "reporting": {
+                        "reportingInstructions": {
+                            "name": "Duty Officer",
+                            "postcode": "BD8 5TY",
+                            "telephone": "01274 2627272",
+                            "townOrCity": "Bradford",
+                            "buildingAndStreet1": "Probation House",
                             "buildingAndStreet2": ""
                         }
                     },
@@ -89,15 +439,15 @@ exports.seed = function (knex, Promise) {
                         "curfewAddress": {
                             "addresses": [{
                                 "consent": "Yes",
-                                "occupier": {"name": "Mr Landlord", "relationship": "ererqe"},
-                                "postCode": "LS16 6BA",
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "BD11 8UY",
                                 "residents": [],
-                                "telephone": "07957809355",
+                                "telephone": "01274 7654782",
                                 "deemedSafe": "Yes",
-                                "addressTown": "Leeds",
+                                "addressTown": "Bradford",
                                 "electricity": "Yes",
-                                "addressLine1": "42 The Crescent",
-                                "addressLine2": "Adel",
+                                "addressLine1": "4 Smithfield Terrace",
+                                "addressLine2": "",
                                 "homeVisitConducted": "No",
                                 "cautionedAgainstResident": "No"
                             }]
@@ -106,163 +456,168 @@ exports.seed = function (knex, Promise) {
                     },
                     "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
                 },
-                "booking_id": 1160362,
+                "booking_id": 1068236,
                 "stage": "DECIDED",
                 "version": 1,
-                "transition_date": null
+                "transition_date": "2018-10-02T13:57:15.156181+00:00"
             }, {
-                "id": 45,
+                "id": 10,
                 "licence": {
+                    "risk": {
+                        "riskManagement": {
+                            "victimLiaison": "No",
+                            "planningActions": "No",
+                            "awaitingInformation": "No"
+                        }
+                    },
+                    "curfew": {
+                        "curfewHours": {
+                            "fridayFrom": "19:00",
+                            "mondayFrom": "19:00",
+                            "sundayFrom": "19:00",
+                            "fridayUntil": "07:00",
+                            "mondayUntil": "07:00",
+                            "sundayUntil": "07:00",
+                            "tuesdayFrom": "19:00",
+                            "saturdayFrom": "19:00",
+                            "thursdayFrom": "19:00",
+                            "tuesdayUntil": "07:00",
+                            "saturdayUntil": "07:00",
+                            "thursdayUntil": "07:00",
+                            "wednesdayFrom": "19:00",
+                            "wednesdayUntil": "07:00"
+                        }
+                    },
+                    "approval": {"release": {"decision": "Yes", "decisionMaker": "Dianne Matthews"}},
+                    "reporting": {
+                        "reportingInstructions": {
+                            "name": "J Smith",
+                            "postcode": "LE14 5PO",
+                            "telephone": "07869 7286413",
+                            "townOrCity": "Leicester",
+                            "buildingAndStreet1": "19 High Street",
+                            "buildingAndStreet2": ""
+                        }
+                    },
                     "eligibility": {
                         "crdTime": {"decision": "No"},
                         "excluded": {"decision": "No"},
                         "suitability": {"decision": "No"}
                     },
+                    "finalChecks": {
+                        "onRemand": {"decision": "No"},
+                        "seriousOffence": {"decision": "No"},
+                        "confiscationOrder": {"decision": "No"}
+                    },
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
                             "addresses": [{
-                                "occupier": {"name": "Liz McDonald", "relationship": "Mother"},
-                                "postCode": "M12 3AB",
+                                "consent": "Yes",
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "LE16 9UH",
                                 "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
+                                "telephone": "07968 7865426",
+                                "deemedSafe": "Yes",
+                                "addressTown": "Leicester",
+                                "electricity": "Yes",
+                                "addressLine1": "18 Queen Square",
                                 "addressLine2": "",
+                                "homeVisitConducted": "Yes",
                                 "cautionedAgainstResident": "No"
                             }]
                         },
                         "addressProposed": {"decision": "Yes"}
-                    }
+                    },
+                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
                 },
-                "booking_id": 1200616,
-                "stage": "PROCESSING_RO",
+                "booking_id": 1200659,
+                "stage": "DECIDED",
                 "version": 1,
-                "transition_date": null
+                "transition_date": "2018-10-02T14:00:49.625837+00:00"
             }, {
-                "id": 41,
+                "id": 11,
                 "licence": {
+                    "risk": {
+                        "riskManagement": {
+                            "victimLiaison": "No",
+                            "planningActions": "No",
+                            "awaitingInformation": "No"
+                        }
+                    },
+                    "curfew": {
+                        "curfewHours": {
+                            "fridayFrom": "19:00",
+                            "mondayFrom": "19:00",
+                            "sundayFrom": "19:00",
+                            "fridayUntil": "07:00",
+                            "mondayUntil": "07:00",
+                            "sundayUntil": "07:00",
+                            "tuesdayFrom": "19:00",
+                            "saturdayFrom": "19:00",
+                            "thursdayFrom": "19:00",
+                            "tuesdayUntil": "07:00",
+                            "saturdayUntil": "07:00",
+                            "thursdayUntil": "07:00",
+                            "wednesdayFrom": "19:00",
+                            "wednesdayUntil": "07:00"
+                        }
+                    },
+                    "reporting": {
+                        "reportingInstructions": {
+                            "name": "Duty Officer",
+                            "postcode": "ST7 6YU",
+                            "telephone": "0795872827123",
+                            "townOrCity": "Stoke-on-Trent",
+                            "buildingAndStreet1": "18 High Lane",
+                            "buildingAndStreet2": ""
+                        }
+                    },
                     "eligibility": {
                         "crdTime": {"decision": "No"},
                         "excluded": {"decision": "No"},
                         "suitability": {"decision": "No"}
                     },
+                    "finalChecks": {
+                        "onRemand": {"decision": "No"},
+                        "seriousOffence": {"decision": "No"},
+                        "confiscationOrder": {
+                            "comments": "Still waiting",
+                            "decision": "Yes",
+                            "confiscationUnitConsulted": "No"
+                        }
+                    },
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
                             "addresses": [{
-                                "occupier": {
-                                    "name": "Ansgar Kupper",
-                                    "relationship": "l;khjo;ij"
-                                },
-                                "postCode": "Tn10 3DT",
+                                "consent": "Yes",
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "ST5 8UY",
                                 "residents": [],
-                                "telephone": "07766554433",
-                                "addressTown": "Tonbridge",
-                                "addressLine1": "p;oujopik",
-                                "addressLine2": "Manor Grove",
+                                "telephone": "078652987651",
+                                "deemedSafe": "Yes",
+                                "addressTown": "Stoke-on-Trent",
+                                "electricity": "Yes",
+                                "addressLine1": "18 Swift Crescent",
+                                "addressLine2": "",
+                                "homeVisitConducted": "No",
                                 "cautionedAgainstResident": "No"
                             }]
                         },
                         "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1200649,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 54,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
                     },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "Liz McDonald", "relationship": "Mother"},
-                                "postCode": "M12 3AB",
-                                "residents": [{"age": "14", "name": "Amy Barlow", "relationship": "Daughter"}],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
+                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
                 },
-                "booking_id": 1200657,
-                "stage": "PROCESSING_RO",
+                "booking_id": 1200637,
+                "stage": "APPROVAL",
                 "version": 1,
-                "transition_date": null
+                "transition_date": "2018-10-02T14:08:08.081346+00:00"
             }, {
-                "id": 62,
+                "id": 14,
                 "licence": {
                     "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "Liz McDonald", "relationship": "Mother"},
-                                "postCode": "M12 3AB",
-                                "residents": [{"age": "14", "name": "Amy Barlow", "relationship": "Daughter"}],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "Yes"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1200669,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 55,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "Liz McDonald", "relationship": "Mother"},
-                                "postCode": "M12 3AB",
-                                "residents": [{"age": "14", "name": "Amy Barlow", "relationship": "Daughter"}],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1129006,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 46,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
+                        "crdTime": {"decision": "Yes", "dmApproval": "Yes"},
                         "excluded": {"decision": "No"},
                         "suitability": {"decision": "No"}
                     },
@@ -271,69 +626,11 @@ exports.seed = function (knex, Promise) {
                         "curfewAddress": {
                             "addresses": [{
                                 "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
+                                "postCode": "SK10 9TY",
                                 "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1088811,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 56,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "Liz McDonald", "relationship": "Mother"},
-                                "postCode": "M12 3AB",
-                                "residents": [{"age": "14", "name": "Amy Barlow", "relationship": "Daughter"}],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1200667,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 47,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
+                                "telephone": "07896786572",
+                                "addressTown": "Macclesfield",
+                                "addressLine1": "15 New Street",
                                 "addressLine2": "",
                                 "cautionedAgainstResident": "No"
                             }]
@@ -344,1022 +641,46 @@ exports.seed = function (knex, Promise) {
                 "booking_id": 1062084,
                 "stage": "PROCESSING_RO",
                 "version": 1,
-                "transition_date": null
+                "transition_date": "2018-10-02T14:42:18.887093+00:00"
             }, {
-                "id": 1,
-                "licence": {},
-                "booking_id": 1200635,
+                "id": 12,
+                "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "",
+                                "residents": [],
+                                "telephone": "",
+                                "addressTown": "",
+                                "addressLine1": "18 New Road",
+                                "addressLine2": ""
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1200616,
                 "stage": "ELIGIBILITY",
                 "version": 1,
                 "transition_date": null
             }, {
-                "id": 38,
+                "id": 13,
                 "licence": {
-                    "risk": {
-                        "riskManagement": {
-                            "victimLiaison": "No",
-                            "planningActions": "No",
-                            "awaitingInformation": "No"
-                        }
-                    },
-                    "curfew": {
-                        "curfewHours": {
-                            "fridayFrom": "19:00",
-                            "mondayFrom": "19:00",
-                            "sundayFrom": "19:00",
-                            "fridayUntil": "07:00",
-                            "mondayUntil": "07:00",
-                            "sundayUntil": "07:00",
-                            "tuesdayFrom": "19:00",
-                            "saturdayFrom": "19:00",
-                            "thursdayFrom": "19:00",
-                            "tuesdayUntil": "07:00",
-                            "saturdayUntil": "07:00",
-                            "thursdayUntil": "07:00",
-                            "wednesdayFrom": "19:00",
-                            "firstNightFrom": "19:00",
-                            "wednesdayUntil": "07:00",
-                            "firstNightUntil": "07:00"
-                        }, "addressWithdrawn": {"decision": "Yes"}
-                    },
-                    "approval": {"release": {"decision": "Yes", "decisionMaker": "DECISION MAKER"}},
-                    "reporting": {
-                        "reportingInstructions": {
-                            "name": "louise",
-                            "postcode": "pr1 0aa",
-                            "telephone": "01772 666666",
-                            "townOrCity": "preston",
-                            "buildingAndStreet1": "1 street",
-                            "buildingAndStreet2": ""
-                        }
-                    },
                     "eligibility": {
-                        "crdTime": {"decision": "No"},
                         "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "finalChecks": {
-                        "onRemand": {"decision": "No"},
-                        "seriousOffence": {"decision": "No"},
-                        "confiscationOrder": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "Liz McDonald", "relationship": "Mother"},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Wetherfield",
-                                "electricity": "Yes",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "addressWithdrawn": "Yes",
-                                "homeVisitConducted": "Yes",
-                                "cautionedAgainstResident": "No"
-                            }, {
-                                "consent": "Yes",
-                                "occupier": {"name": "Tom", "relationship": "sgsdfd"},
-                                "postCode": "LS1 1LD",
-                                "residents": [],
-                                "telephone": "+441131234567",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Leeds",
-                                "electricity": "Yes",
-                                "addressLine1": "31 The Road",
-                                "addressLine2": "Adel",
-                                "addressWithdrawn": "No",
-                                "consentWithdrawn": "No",
-                                "homeVisitConducted": "Yes",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    },
-                    "licenceConditions": {
-                        "bespoke": [],
-                        "standard": {"additionalConditionsRequired": "Yes"},
-                        "additional": {"NOCONTACTPRISONER": {}}
+                        "suitability": {"reason": ["sentenceCategory"], "decision": "Yes"},
+                        "exceptionalCircumstances": {"decision": "No"}
                     }
                 },
-                "booking_id": 1200642,
-                "stage": "DECIDED",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 49,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1110602,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 57,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1200668,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 20,
-                "licence": {
-                    "risk": {
-                        "riskManagement": {
-                            "victimLiaison": "No",
-                            "planningActions": "No",
-                            "awaitingInformation": "No"
-                        }
-                    },
-                    "curfew": {
-                        "curfewHours": {
-                            "fridayFrom": "19:00",
-                            "mondayFrom": "19:00",
-                            "sundayFrom": "19:00",
-                            "fridayUntil": "07:00",
-                            "mondayUntil": "07:00",
-                            "sundayUntil": "07:00",
-                            "tuesdayFrom": "19:00",
-                            "saturdayFrom": "19:00",
-                            "thursdayFrom": "19:00",
-                            "tuesdayUntil": "07:00",
-                            "saturdayUntil": "07:00",
-                            "thursdayUntil": "07:00",
-                            "wednesdayFrom": "19:00",
-                            "firstNightFrom": "19:00",
-                            "wednesdayUntil": "07:00",
-                            "firstNightUntil": "07:00"
-                        }
-                    },
-                    "approval": {
-                        "release": {
-                            "reason": "insufficientTime",
-                            "decision": "No",
-                            "decisionMaker": "DECISION MAKER"
-                        }
-                    },
-                    "reporting": {
-                        "reportingInstructions": {
-                            "name": "Tom",
-                            "postcode": "LS16 6AA",
-                            "telephone": "0132613899",
-                            "townOrCity": "Leeds",
-                            "buildingAndStreet1": "31 The Crescent",
-                            "buildingAndStreet2": "Adel"
-                        }
-                    },
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "finalChecks": {
-                        "refusal": {
-                            "reason": "insufficientTime",
-                            "decision": "No",
-                            "outOfTimeReasons": "onRemand"
-                        },
-                        "onRemand": {"decision": "No"},
-                        "seriousOffence": {"decision": "No"},
-                        "confiscationOrder": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "a a", "relationship": "fff"},
-                                "postCode": "LS166AA",
-                                "residents": [],
-                                "telephone": "01234567890",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Leeds",
-                                "electricity": "Yes",
-                                "addressLine1": "31 The Crescent",
-                                "addressLine2": "",
-                                "homeVisitConducted": "No",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    },
-                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
-                },
-                "booking_id": 1165795,
-                "stage": "DECIDED",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 34,
-                "licence": {
-                    "risk": {
-                        "riskManagement": {
-                            "victimLiaison": "No",
-                            "planningActions": "No",
-                            "awaitingInformation": "No"
-                        }
-                    },
-                    "curfew": {
-                        "curfewHours": {
-                            "fridayFrom": "19:00",
-                            "mondayFrom": "21:22",
-                            "sundayFrom": "18:19",
-                            "fridayUntil": "07:00",
-                            "mondayUntil": "08:09",
-                            "sundayUntil": "06:07",
-                            "tuesdayFrom": "19:00",
-                            "saturdayFrom": "19:00",
-                            "thursdayFrom": "19:00",
-                            "tuesdayUntil": "07:00",
-                            "saturdayUntil": "07:00",
-                            "thursdayUntil": "07:00",
-                            "wednesdayFrom": "19:00",
-                            "firstNightFrom": "18:30",
-                            "wednesdayUntil": "07:00",
-                            "firstNightUntil": "10:11"
-                        }
-                    },
-                    "reporting": {
-                        "reportingInstructions": {
-                            "name": "Reporting Name",
-                            "postcode": "AB1 1AB",
-                            "telephone": "0123456789",
-                            "townOrCity": "Town",
-                            "buildingAndStreet1": "Street",
-                            "buildingAndStreet2": ""
-                        }
-                    },
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "bassReferral": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"age": "21", "name": "Main Occupier", "relationship": "Brother"},
-                                "postCode": "AB1 1AB",
-                                "residents": [{
-                                    "age": "10",
-                                    "name": "Other Resident",
-                                    "relationship": "Son"
-                                }, {"age": "20", "name": "Yet Another", "relationship": "Wife"}],
-                                "telephone": "0123456789",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Town",
-                                "electricity": "Yes",
-                                "addressLine1": "Street",
-                                "addressLine2": "",
-                                "homeVisitConducted": "Yes",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        }
-                    },
-                    "licenceConditions": {
-                        "bespoke": [{"text": "First bespoke condition", "approved": "Yes"}],
-                        "standard": {"additionalConditionsRequired": "Yes"},
-                        "additional": {"NOCAMERAPHONE": {}}
-                    }
-                },
-                "booking_id": 1200635,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 43,
-                "licence": {
-                    "approval": {"release": {"decision": "No"}},
-                    "eligibility": {
-                        "crdTime": {"decision": "Yes", "dmApproval": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    }
-                },
-                "booking_id": 1173571,
-                "stage": "DECIDED",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 36,
-                "licence": {
-                    "risk": {
-                        "riskManagement": {
-                            "victimLiaison": "No",
-                            "planningActions": "No",
-                            "awaitingInformation": "No"
-                        }
-                    },
-                    "curfew": {
-                        "curfewHours": {
-                            "fridayFrom": "19:00",
-                            "mondayFrom": "19:00",
-                            "sundayFrom": "19:00",
-                            "fridayUntil": "07:00",
-                            "mondayUntil": "08:00",
-                            "sundayUntil": "07:00",
-                            "tuesdayFrom": "19:00",
-                            "saturdayFrom": "19:00",
-                            "thursdayFrom": "19:00",
-                            "tuesdayUntil": "07:00",
-                            "saturdayUntil": "07:00",
-                            "thursdayUntil": "07:00",
-                            "wednesdayFrom": "19:00",
-                            "firstNightFrom": "19:00",
-                            "wednesdayUntil": "07:00",
-                            "firstNightUntil": "07:00"
-                        }
-                    },
-                    "approval": {"release": {"decision": "Yes", "decisionMaker": "DECISION MAKER"}},
-                    "reporting": {
-                        "reportingInstructions": {
-                            "name": "louise",
-                            "postcode": "pr1 0aa",
-                            "telephone": "01772 666666",
-                            "townOrCity": "preston",
-                            "buildingAndStreet1": "1 street",
-                            "buildingAndStreet2": ""
-                        }
-                    },
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "finalChecks": {
-                        "onRemand": {"decision": "No"},
-                        "seriousOffence": {"decision": "No"},
-                        "confiscationOrder": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Wetherfield",
-                                "electricity": "Yes",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "homeVisitConducted": "Yes",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    },
-                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
-                },
-                "booking_id": 1167792,
-                "stage": "DECIDED",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 50,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1080794,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 58,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "Liz McDonald", "relationship": "Mother"},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1200666,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 44,
-                "licence": {
-                    "risk": {
-                        "riskManagement": {
-                            "victimLiaison": "No",
-                            "planningActions": "No",
-                            "awaitingInformation": "No"
-                        }
-                    },
-                    "curfew": {
-                        "curfewHours": {
-                            "fridayFrom": "19:00",
-                            "mondayFrom": "19:00",
-                            "sundayFrom": "19:00",
-                            "fridayUntil": "07:00",
-                            "mondayUntil": "07:00",
-                            "sundayUntil": "07:00",
-                            "tuesdayFrom": "19:00",
-                            "saturdayFrom": "19:00",
-                            "thursdayFrom": "19:00",
-                            "tuesdayUntil": "07:00",
-                            "saturdayUntil": "07:00",
-                            "thursdayUntil": "07:00",
-                            "wednesdayFrom": "19:00",
-                            "firstNightFrom": "19:00",
-                            "wednesdayUntil": "07:00",
-                            "firstNightUntil": "07:00"
-                        }
-                    },
-                    "approval": {"release": {"decision": "Yes", "decisionMaker": "DECISION MAKER"}},
-                    "reporting": {
-                        "reportingInstructions": {
-                            "name": "louise",
-                            "postcode": "pr1 0aa",
-                            "telephone": "01772 666666",
-                            "townOrCity": "preston",
-                            "buildingAndStreet1": "1 street",
-                            "buildingAndStreet2": ""
-                        }
-                    },
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "finalChecks": {
-                        "onRemand": {"decision": "No"},
-                        "seriousOffence": {"decision": "No"},
-                        "confiscationOrder": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Wetherfield",
-                                "electricity": "Yes",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "homeVisitConducted": "Yes",
-                                "cautionedAgainstResident": "Yes"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    },
-                    "licenceConditions": {
-                        "bespoke": [],
-                        "standard": {"additionalConditionsRequired": "Yes"},
-                        "additional": {"NOCONTACTASSOCIATE": {"groupsOrOrganisation": "Kirk Sutherland"}}
-                    }
-                },
-                "booking_id": 1068733,
-                "stage": "DECIDED",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 51,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1152613,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 59,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "Yes"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1200665,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 52,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "Liz McDonald", "relationship": "Mother"},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1068236,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 60,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1200659,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 42,
-                "licence": {
-                    "risk": {
-                        "riskManagement": {
-                            "victimLiaison": "No",
-                            "planningActions": "No",
-                            "awaitingInformation": "No"
-                        }
-                    },
-                    "curfew": {
-                        "curfewHours": {
-                            "fridayFrom": "19:00",
-                            "mondayFrom": "19:00",
-                            "sundayFrom": "19:00",
-                            "fridayUntil": "07:00",
-                            "mondayUntil": "07:00",
-                            "sundayUntil": "07:00",
-                            "tuesdayFrom": "19:00",
-                            "saturdayFrom": "19:00",
-                            "thursdayFrom": "19:00",
-                            "tuesdayUntil": "07:00",
-                            "saturdayUntil": "07:00",
-                            "thursdayUntil": "07:00",
-                            "wednesdayFrom": "19:00",
-                            "firstNightFrom": "19:00",
-                            "wednesdayUntil": "07:00",
-                            "firstNightUntil": "07:00"
-                        }
-                    },
-                    "approval": {"release": {"decision": "Yes", "decisionMaker": "DECISION MAKER"}},
-                    "reporting": {
-                        "reportingInstructions": {
-                            "name": "louise",
-                            "postcode": "pr1 0aa",
-                            "telephone": "01772 666666",
-                            "townOrCity": "preston",
-                            "buildingAndStreet1": "1 street",
-                            "buildingAndStreet2": ""
-                        }
-                    },
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "finalChecks": {
-                        "onRemand": {"decision": "No"},
-                        "seriousOffence": {"decision": "No"},
-                        "confiscationOrder": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "Tom", "relationship": "dddd"},
-                                "postCode": "LS16 6AA",
-                                "residents": [],
-                                "telephone": "0132613899",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Leeds",
-                                "electricity": "Yes",
-                                "addressLine1": "31 The Crescent",
-                                "addressLine2": "Adel",
-                                "homeVisitConducted": "Yes",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    },
-                    "licenceConditions": {
-                        "bespoke": [],
-                        "standard": {"additionalConditionsRequired": "Yes"},
-                        "additional": {"HOMEVISITS": {"mentalHealthName": "Cain Dingle"}}
-                    }
-                },
-                "booking_id": 1200637,
-                "stage": "DECIDED",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 53,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1130463,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 40,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {
-                                    "name": "Ansgar Kupper",
-                                    "relationship": "';kl;'l"
-                                },
-                                "postCode": "Tn10 3DT",
-                                "residents": [],
-                                "telephone": "07766554433",
-                                "addressTown": "Tonbridge",
-                                "addressLine1": "A.ljk;lk",
-                                "addressLine2": "Manor Grove",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1200617,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 39,
-                "licence": {
-                    "risk": {
-                        "riskManagement": {
-                            "victimLiaison": "No",
-                            "planningActions": "No",
-                            "awaitingInformation": "No"
-                        }
-                    },
-                    "curfew": {
-                        "curfewHours": {
-                            "fridayFrom": "19:00",
-                            "mondayFrom": "19:00",
-                            "sundayFrom": "19:00",
-                            "fridayUntil": "07:00",
-                            "mondayUntil": "07:00",
-                            "sundayUntil": "07:00",
-                            "tuesdayFrom": "19:00",
-                            "saturdayFrom": "19:00",
-                            "thursdayFrom": "19:00",
-                            "tuesdayUntil": "07:00",
-                            "saturdayUntil": "07:00",
-                            "thursdayUntil": "07:00",
-                            "wednesdayFrom": "19:00",
-                            "firstNightFrom": "19:00",
-                            "wednesdayUntil": "07:00",
-                            "firstNightUntil": "07:00"
-                        }
-                    },
-                    "approval": {
-                        "release": {
-                            "reason": "insufficientTime",
-                            "decision": "No",
-                            "decisionMaker": "DECISION MAKER"
-                        }
-                    },
-                    "reporting": {
-                        "reportingInstructions": {
-                            "name": "Ansgar Kupper",
-                            "postcode": "Tn10 3DT",
-                            "telephone": "07766554433",
-                            "townOrCity": "l;k",
-                            "buildingAndStreet1": ";'k",
-                            "buildingAndStreet2": ";lk"
-                        }
-                    },
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "finalChecks": {
-                        "refusal": {
-                            "reason": "addressUnsuitable",
-                            "decision": "No",
-                            "outOfTimeReasons": "[]"
-                        },
-                        "onRemand": {"decision": "No"},
-                        "seriousOffence": {"decision": "No"},
-                        "confiscationOrder": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "Ansgar Kupper", "relationship": "l;khjo;ij"},
-                                "postCode": "Tn10 3DT",
-                                "residents": [],
-                                "telephone": "07766554433",
-                                "deemedSafe": "Yes",
-                                "addressTown": "l;k",
-                                "electricity": "Yes",
-                                "addressLine1": ";'k",
-                                "addressLine2": ";lk",
-                                "homeVisitConducted": "Yes",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    },
-                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
-                },
-                "booking_id": 1200645,
-                "stage": "DECIDED",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "id": 35,
-                "licence": {
-                    "risk": {
-                        "riskManagement": {
-                            "victimLiaison": "No",
-                            "planningActions": "No",
-                            "awaitingInformation": "No"
-                        }
-                    },
-                    "curfew": {
-                        "curfewHours": {
-                            "fridayFrom": "19:00",
-                            "mondayFrom": "19:00",
-                            "sundayFrom": "19:00",
-                            "fridayUntil": "07:00",
-                            "mondayUntil": "07:00",
-                            "sundayUntil": "07:00",
-                            "tuesdayFrom": "19:00",
-                            "saturdayFrom": "19:00",
-                            "thursdayFrom": "19:00",
-                            "tuesdayUntil": "07:00",
-                            "saturdayUntil": "07:00",
-                            "thursdayUntil": "07:00",
-                            "wednesdayFrom": "19:00",
-                            "firstNightFrom": "19:00",
-                            "wednesdayUntil": "07:00",
-                            "firstNightUntil": "07:00"
-                        }
-                    },
-                    "approval": {"release": {"decision": "Yes", "decisionMaker": "DECISION MAKER"}},
-                    "document": {"template": {"decision": "hdc_ap_pss"}},
-                    "reporting": {
-                        "reportingDate": {"reportingDate": "28/09/2018", "reportingTime": "09:00"},
-                        "reportingInstructions": {
-                            "name": "Duty Officer",
-                            "postcode": "LS166AA",
-                            "telephone": "01234567890",
-                            "townOrCity": "Leeds",
-                            "buildingAndStreet1": "31 The Crescent",
-                            "buildingAndStreet2": ""
-                        }
-                    },
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "finalChecks": {
-                        "onRemand": {"decision": "No"},
-                        "seriousOffence": {"decision": "No"},
-                        "confiscationOrder": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "Tom", "relationship": "fdfdfdf"},
-                                "postCode": "LS16 6AA",
-                                "residents": [],
-                                "telephone": "0132613899",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Leeds",
-                                "electricity": "Yes",
-                                "addressLine1": "31 The Crescent",
-                                "addressLine2": "Adel",
-                                "homeVisitConducted": "No",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    },
-                    "licenceConditions": {
-                        "bespoke": [],
-                        "standard": {"additionalConditionsRequired": "Yes"},
-                        "additional": {"NOCONTACTPRISONER": {}}
-                    }
-                },
-                "booking_id": 1173494,
-                "stage": "DECIDED",
-                "version": 3,
-                "transition_date": null
-            }, {
-                "id": 48,
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "Liz McDonald", "relationship": "Mother"},
-                                "postCode": "M12 3AB",
-                                "residents": [],
-                                "telephone": "01611234567",
-                                "addressTown": "Wetherfield",
-                                "addressLine1": "1 coronation street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1131447,
-                "stage": "PROCESSING_RO",
+                "booking_id": 1200664,
+                "stage": "ELIGIBILITY",
                 "version": 1,
                 "transition_date": null
             }]);
