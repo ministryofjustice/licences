@@ -15,17 +15,35 @@ block content
     include ../includes/personalDetailsSummary
     include includes/licenceSummary
 
-    div.paddingBottom.smallPaddingTop
+    div.paddingBottom
+
+        h2.heading-medium Now send the case
+
+        div.pure-u-1.pure-u-md-3-4
+            | The case is ready to send to the prison case admin
+
         div.pure-u-1.inlineButtons
 
             if licenceStatus.decisions.optedOut
-                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/optedOut/" + bookingId role="button")
-                    | Continue
+                form#licenceDetailsForm(method='POST', action='/hdc/send/optedOut/' + bookingId)
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    input(type="hidden" name="transitionType" value='roToCaOptedOut')
+                    div.pure-u-1.inlineButtons
+                        div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+                            input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
 
             else if licenceStatus.decisions.curfewAddressApproved === 'rejected'
-                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/addressRejected/" + bookingId role="button")
-                    | Continue
+                form#licenceDetailsForm(method='POST', action='/hdc/send/addressRejected/' + bookingId)
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    input(type="hidden" name="transitionType" value='roToCaAddressRejected')
+                    div.pure-u-1.inlineButtons
+                        div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+                            input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
 
             else
-                a#continueBtn.button.button-primary.smallMarginTop(href="/hdc/send/finalChecks/" + bookingId role="button")
-                    | Continue
+                form#licenceDetailsForm(method='POST', action='/hdc/send/finalChecks/' + bookingId)
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    input(type="hidden" name="transitionType" value='roToCa')
+                    div.pure-u-1.inlineButtons
+                        div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+                            input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")

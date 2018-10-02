@@ -303,7 +303,7 @@ module.exports = function createApp({
     app.use('/hdc/pdf/', pdfRouter({pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/search/', searchRouter({searchService, authenticationMiddleware}));
     app.use('/hdc/send/', sendRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/sent/', sentRouter({licenceService, authenticationMiddleware}));
+    app.use('/hdc/sent/', sentRouter({licenceService, prisonerService, authenticationMiddleware}));
     app.use('/hdc/taskList/', taskListRouter({prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));
 
     app.use('/hdc/', addressRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
