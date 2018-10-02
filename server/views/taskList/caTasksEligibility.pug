@@ -11,5 +11,7 @@ block tasks
     div.taskListItem.borderBottom
         if allowedTransition === 'caToDmRefusal'
             include tasks/caSubmitRefusalTask
+        else if licenceStatus.decisions.excluded || licenceStatus.decisions.unsuitableResult
+            include tasks/notEligibleTask
         else
             include tasks/caSubmitAddressReviewTask
