@@ -696,7 +696,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('curfew address task complete', () => {
-            it('should display a view button for curfew address task', () => {
+            it('should display a change button for curfew address task', () => {
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {
@@ -721,7 +721,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/1">View');
+                        expect(res.text).to.include('/hdc/curfew/curfewAddressReview/1">Change');
                     });
 
             });
@@ -766,7 +766,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('additional conditions task complete', () => {
-            it('should display a view button for additional conditions', () => {
+            it('should display a change button for additional conditions', () => {
 
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
@@ -780,7 +780,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/licenceConditions/standard/1">View');
+                        expect(res.text).to.include('/hdc/licenceConditions/standard/1">Change');
                     });
 
             });
@@ -833,7 +833,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('risk management task complete', () => {
-            it('should display a view button for riskManagement', () => {
+            it('should display a change button for riskManagement', () => {
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {
@@ -854,7 +854,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/risk/riskManagement/1">View');
+                        expect(res.text).to.include('/hdc/risk/riskManagement/1">Change');
                     });
 
             });
@@ -960,7 +960,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('Curfew address approved', () => {
             it('should display all other tasks', () => {
                 licenceService.getLicence.resolves({
-                    stage: 'PROCESSING_RO', licence: {
+                    stage: 'APPROVAL', licence: {
                         proposedAddress: {
                             curfewAddress: {
                                 addresses: [{
@@ -993,7 +993,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('Curfew address rejected', () => {
             it('should NOT display all other tasks', () => {
                 licenceService.getLicence.resolves({
-                    stage: 'PROCESSING_RO', licence: {
+                    stage: 'APPROVAL', licence: {
                         proposedAddress: {
                             curfewAddress: {
                                 addresses: [{

@@ -20,13 +20,16 @@ div.paddingBottom
 
         div.pure-u-1.pure-u-md-1-4.center
 
-            -var roleCanModify = (user.role === 'RO' || user.role === 'CA')
+            -var path = '/hdc/licenceConditions/standard/' + prisonerInfo.bookingId
+            -var reviewPath = '/hdc/review/conditions/' + prisonerInfo.bookingId
 
-            if postApproval && roleCanModify
-                a.taskListAction.center.button.button-secondary(href="/hdc/licenceConditions/standard/" + prisonerInfo.bookingId) View/Edit
+            -var canModify = postApproval && ['RO', 'CA'].includes(user.role)
+
+            if canModify
+                +viewEdit(path)
 
             else if user.role === 'RO'
-                +startContinueView(licenceStatus.tasks.licenceConditions, "/hdc/licenceConditions/standard/" + prisonerInfo.bookingId)
+                +startContinueChange(licenceStatus.tasks.licenceConditions, path)
 
             else
-                a.taskListAction.center.button.button-secondary(href="/hdc/review/conditions/" + prisonerInfo.bookingId) View
+                +view(reviewPath)

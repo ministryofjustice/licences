@@ -1,0 +1,15 @@
+mixin startContinueChangeMulti(tasks, path, id)
+
+    - var unstarted = tasks.every(task => task === 'UNSTARTED')
+    - var complete = tasks.every(task => task === 'DONE')
+
+    if unstarted
+        a.taskListAction.center.button(href=path, id=id) Start now
+
+    else if complete
+        a(href=path, id=id) Change
+
+    else
+        a.taskListAction.center.button(class='button-secondary', href=path, id=id) Continue
+
+

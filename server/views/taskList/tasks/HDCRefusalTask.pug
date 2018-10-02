@@ -4,8 +4,8 @@ div.pure-g
             span.alert.bold HDC refused
 
     div.pure-u-1.pure-u-md-1-4.center.midPaddingTopBottom
-        a.taskListAction.center.button.button-secondary(href="/hdc/finalChecks/refuse/" + prisonerInfo.bookingId)
-            if licenceStatus.decisions.refused
-                | Update refusal
-            else
-                | Refuse HDC
+        -var path = '/hdc/finalChecks/refuse/' + prisonerInfo.bookingId
+        if licenceStatus.decisions.refused
+            +taskButton(path, 'Update refusal')
+        else
+            +taskButton(path, 'Refuse HDC')

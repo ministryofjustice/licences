@@ -14,9 +14,7 @@ div.paddingBottom.borderBottomLight
             if licenceStatus.stage === 'PROCESSING_RO'
 
                 if licenceStatus.decisions.optedOut
-                    a.taskListAction.center.button(href="/hdc/send/optedOut/" + prisonerInfo.bookingId)
-                        | Continue
+                    +taskButton('/hdc/send/optedOut/' + prisonerInfo.bookingId, 'Continue')
 
                 else
-                    a.taskListAction.center.button(href="/hdc/review/licenceDetails/" + prisonerInfo.bookingId)
-                        | Continue
+                    +taskButton("/hdc/review/licenceDetails/" + prisonerInfo.bookingId, 'Continue')

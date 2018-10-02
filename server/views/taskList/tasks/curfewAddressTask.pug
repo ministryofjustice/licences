@@ -22,17 +22,24 @@ div.paddingBottom
                     span.bold.alert Address rejected
                 else
                     | Not completed
+
             div.pure-u-1.pure-u-md-1-4.center
+
+                -var path = "/hdc/curfew/curfewAddressReview/" + prisonerInfo.bookingId
+                -var withdrawnPath = "/hdc/curfew/consentWithdrawn/" + prisonerInfo.bookingId
+                -var reviewPath = "/hdc/review/address/" + prisonerInfo.bookingId
+
                 if user.role === 'RO'
                     if curfewAddressApproved === 'rejected'
-                        a(href='/hdc/curfew/curfewAddressReview/' + prisonerInfo.bookingId).taskListAction Change
+                        +change(path)
                     else
-                        +startContinueView(licenceStatus.tasks.curfewAddressReview, "/hdc/curfew/curfewAddressReview/" + prisonerInfo.bookingId)
+                        +startContinueChange(licenceStatus.tasks.curfewAddressReview, path)
+
                 else if user.role === 'CA' && postApproval
                     if curfewAddressApproved === 'withdrawn'
-                        a.taskListAction.center.button.button-secondary(href="/hdc/curfew/consentWithdrawn/" + prisonerInfo.bookingId) View/Edit
+                        +viewEdit(withdrawnPath)
                     else
-                        a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.bookingId) View/Edit
+                        +viewEdit(reviewPath)
 
                 else
-                    a.taskListAction.center.button.button-secondary(href="/hdc/review/address/" + prisonerInfo.bookingId) View
+                    +view(reviewPath)
