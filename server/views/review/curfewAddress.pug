@@ -23,7 +23,7 @@ block content
             div.pure-u-1.pure-u-md-1-2.alignRight
                 div.change-details
                     if(user.role === 'CA' && (stage === 'ELIGIBILITY' || addressChanged))
-                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change these details
+                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change
 
             div.pure-u-1
                 if typeof errorObject.proposedAddress === 'string'
