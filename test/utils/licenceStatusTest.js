@@ -143,6 +143,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.postponed).to.eql(true);
         expect(status.decisions.approved).to.eql(true);
         expect(status.decisions.refused).to.eql(false);
+        expect(status.decisions.dmRefused).to.eql(false);
     });
 
     it('should account for refusal from ca as well as dm', () => {
@@ -176,8 +177,9 @@ describe('getLicenceStatus', () => {
 
         const status = getLicenceStatus(licence);
 
-        expect(status.decisions.approved).to.eql(false);
+        expect(status.decisions.refused).to.eql(true);
         expect(status.decisions.finalChecksRefused).to.eql(true);
+        expect(status.decisions.dmRefused).to.eql(false);
     });
 
     it('should show licence conditions data', () => {
@@ -281,6 +283,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.postponed).to.eql(false);
         expect(status.decisions.approved).to.eql(false);
         expect(status.decisions.refused).to.eql(true);
+        expect(status.decisions.dmRefused).to.eql(true);
         expect(status.decisions.finalChecksRefused).to.eql(false);
     });
 

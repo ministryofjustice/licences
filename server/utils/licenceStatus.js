@@ -74,12 +74,13 @@ const combiner = (acc, data) => {
 };
 
 function getApprovalStageState(licence) {
-    const {approved, refused, approval, refusalReason} = getApprovalState(licence);
+    const {approved, refused, dmRefused, approval, refusalReason} = getApprovalState(licence);
 
     return {
         decisions: {
             approved,
             refused,
+            dmRefused,
             refusalReason
         },
         tasks: {
@@ -325,6 +326,7 @@ function getApprovalState(licence) {
         approved: dmApproval.approved && !caRefusal.refused,
         refused: dmApproval.refused || caRefusal.refused,
         approval: dmApproval.approval,
+        dmRefused: dmApproval.refused,
         refusalReason: dmApproval.refusalReason || caRefusal.refusalReason
     };
 }
