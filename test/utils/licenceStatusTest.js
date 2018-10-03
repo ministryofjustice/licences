@@ -624,59 +624,6 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.createLicence).to.eql(taskStates.DONE);
     });
 
-    it('should show address review DONE when deemed safe is pending', () => {
-        const licence = {
-            stage: 'PROCESSING_CA',
-            licence: {
-                proposedAddress: {
-                    curfewAddress: {
-                        addresses: [
-                            {
-                                consent: 'Yes',
-                                electricity: 'Yes',
-                                homeVisitConducted: 'Yes',
-                                deemedSafe: 'Yes - pending confirmation of risk management planning'
-                            }
-                        ]
-                    }
-                },
-                curfew: {
-                    curfewHours: 'anything'
-                }
-            }
-        };
-
-        const status = getLicenceStatus(licence);
-
-        expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE);
-    });
-
-    it('should show address review APPROVED when deemed safe is pending and home visit is no', () => {
-        const licence = {
-            stage: 'PROCESSING_CA',
-            licence: {
-                proposedAddress: {
-                    curfewAddress: {
-                        addresses: [
-                            {
-                                consent: 'Yes',
-                                electricity: 'Yes',
-                                homeVisitConducted: 'No',
-                                deemedSafe: 'Yes - pending confirmation of risk management planning'
-                            }
-                        ]
-                    }
-                },
-                curfew: {
-                    curfewHours: 'anything'
-                }
-            }
-        };
-
-        const status = getLicenceStatus(licence);
-
-        expect(status.decisions.curfewAddressApproved).to.eql('approved');
-    });
 
     it('should show address review APPROVED when any address is approved', () => {
         const licence = {
@@ -689,13 +636,13 @@ describe('getLicenceStatus', () => {
                                 consent: 'No',
                                 electricity: 'Yes',
                                 homeVisitConducted: 'No',
-                                deemedSafe: 'Yes - pending confirmation of risk management planning'
+                                deemedSafe: 'Yes'
                             },
                             {
                                 consent: 'Yes',
                                 electricity: 'Yes',
                                 homeVisitConducted: 'No',
-                                deemedSafe: 'Yes - pending confirmation of risk management planning'
+                                deemedSafe: 'Yes'
                             }
                         ]
                     }

@@ -18,7 +18,6 @@ block content
 
         h3.heading-medium Decision
 
-        -var pendingText = "Yes - pending confirmation of risk management planning"
         form(method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="bookingId" value=bookingId || '')
@@ -31,9 +30,6 @@ block content
                         div.multiple-choice
                             input#deemedSafeYes(type="radio" checked=address.deemedSafe === 'Yes' name="deemedSafe" value="Yes")
                             label(for="deemedSafeYes") Yes
-                        div.multiple-choice
-                            input#deemedSafePending(type="radio" checked=address.deemedSafe === pendingText name="deemedSafe" value=pendingText)
-                            label(for="deemedSafePending") #{pendingText}
                         div.multiple-choice(data-target="reasonForm")
                             input#deemedSafeNo(type="radio" checked=address.deemedSafe === 'No' name="deemedSafe" value="No")
                             label(for="deemedSafeNo") No
