@@ -4,14 +4,12 @@ exports.seed = function (knex, Promise) {
         .then(function () {
             // Inserts seed entries
             return knex('licences').insert([{
-                "id": 1,
                 "licence": {"eligibility": {"excluded": {"reason": ["sexOffenderRegister"], "decision": "Yes"}}},
                 "booking_id": 2200635,
                 "stage": "ELIGIBILITY",
                 "version": 1,
                 "transition_date": null
             }, {
-                "id": 2,
                 "licence": {
                     "eligibility": {
                         "crdTime": {"decision": "No"},
@@ -24,7 +22,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": null
             }, {
-                "id": 3,
                 "licence": {
                     "risk": {
                         "riskManagement": {
@@ -108,7 +105,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": "2018-10-02T12:33:15.09014+00:00"
             }, {
-                "id": 5,
                 "licence": {
                     "risk": {
                         "riskManagement": {
@@ -177,7 +173,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": "2018-10-02T12:39:29.924871+00:00"
             }, {
-                "id": 4,
                 "licence": {
                     "eligibility": {
                         "crdTime": {"decision": "No"},
@@ -211,7 +206,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": "2018-10-02T12:37:07.183618+00:00"
             }, {
-                "id": 6,
                 "licence": {
                     "eligibility": {
                         "crdTime": {"decision": "Yes", "dmApproval": "No"},
@@ -301,7 +295,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": "2018-10-02T13:04:27.302446+00:00"
             }, {
-                "id": 8,
                 "licence": {
                     "risk": {
                         "riskManagement": {
@@ -380,7 +373,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": "2018-10-02T13:10:08.379656+00:00"
             }, {
-                "id": 9,
                 "licence": {
                     "risk": {
                         "riskManagement": {
@@ -461,7 +453,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": "2018-10-02T13:57:15.156181+00:00"
             }, {
-                "id": 10,
                 "licence": {
                     "risk": {
                         "riskManagement": {
@@ -536,7 +527,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": "2018-10-02T14:00:49.625837+00:00"
             }, {
-                "id": 11,
                 "licence": {
                     "risk": {
                         "riskManagement": {
@@ -614,7 +604,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": "2018-10-02T14:08:08.081346+00:00"
             }, {
-                "id": 14,
                 "licence": {
                     "eligibility": {
                         "crdTime": {"decision": "Yes", "dmApproval": "Yes"},
@@ -643,7 +632,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": "2018-10-02T14:42:18.887093+00:00"
             }, {
-                "id": 12,
                 "licence": {
                     "eligibility": {
                         "crdTime": {"decision": "No"},
@@ -671,7 +659,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": null
             }, {
-                "id": 13,
                 "licence": {
                     "eligibility": {
                         "excluded": {"decision": "No"},
