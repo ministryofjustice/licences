@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 exports.seed = function (knex, Promise) {
     // Deletes ALL existing entries
     return knex('licences').del()
@@ -219,7 +221,6 @@ exports.seed = function (knex, Promise) {
                 "version": 1,
                 "transition_date": null
             }, {
-                "id": 7,
                 "licence": {
                     "risk": {
                         "riskManagement": {
@@ -630,7 +631,7 @@ exports.seed = function (knex, Promise) {
                 "booking_id": 1062084,
                 "stage": "PROCESSING_RO",
                 "version": 1,
-                "transition_date": "2018-10-02T14:42:18.887093+00:00"
+                "transition_date": moment().subtract(2, 'days').format(),
             }, {
                 "licence": {
                     "eligibility": {
@@ -670,6 +671,152 @@ exports.seed = function (knex, Promise) {
                 "stage": "ELIGIBILITY",
                 "version": 1,
                 "transition_date": null
+            }, {
+                "licence": {},
+                "booking_id": 1173571,
+                "stage": "ELIGIBILITY",
+                "version": 1,
+                "transition_date": null
+            }, {
+                "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "DL13 8JU",
+                                "residents": [],
+                                "telephone": "07896 6377611",
+                                "addressTown": "Darlington",
+                                "addressLine1": "45 The Street",
+                                "addressLine2": "",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1129006,
+                "stage": "PROCESSING_RO",
+                "version": 1,
+                "transition_date": moment().subtract(7, 'days').format(),
+            }, {
+                "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "DL11 7UK",
+                                "residents": [],
+                                "telephone": "07896 53637211",
+                                "addressTown": "Richmond",
+                                "addressLine1": "24 The Street",
+                                "addressLine2": "",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1200645,
+                "stage": "PROCESSING_RO",
+                "version": 1,
+                "transition_date": moment().subtract(2, 'days').format(),
+            }, {
+                "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "DL11 8UY",
+                                "residents": [],
+                                "telephone": "07896 5627711",
+                                "addressTown": "Richmond",
+                                "addressLine1": "26 The Square",
+                                "addressLine2": "",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1173494,
+                "stage": "PROCESSING_RO",
+                "version": 1,
+                "transition_date": moment().format(),
+            }, {
+                "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "DL11 7HX",
+                                "residents": [],
+                                "telephone": "07896 7353531",
+                                "addressTown": "Darlington",
+                                "addressLine1": "31 The Road",
+                                "addressLine2": "",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1200667,
+                "stage": "PROCESSING_RO",
+                "version": 1,
+                "transition_date": moment().subtract(13, 'days').format(),
+            }, {
+                "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "DL11 7HX",
+                                "residents": [],
+                                "telephone": "07896 786573",
+                                "addressTown": "Darlington",
+                                "addressLine1": "31 The Road",
+                                "addressLine2": "",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1200668,
+                "stage": "PROCESSING_RO",
+                "version": 1,
+                "transition_date": moment().subtract(5, 'days').format()
             }]);
         });
 };

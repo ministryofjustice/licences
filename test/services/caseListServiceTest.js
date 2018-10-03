@@ -299,11 +299,11 @@ describe('caseListService', () => {
                     nomisClient.getROPrisoners.resolves(['a']);
                     nomisClient.getOffenderSentencesByBookingId.resolves([offender1]);
                     licenceClient.getLicences.resolves([
-                        {booking_id: 'a', transition_date: '2018-05-16 15:23:39.530927', stage: 'PROCESSING_RO'}
+                        {booking_id: 'a', transition_date: '2018-05-20 15:23:39.530927', stage: 'PROCESSING_RO'}
                     ]);
 
                     const result = await service.getHdcCaseList(user.token, user.username, 'RO');
-                    expect(result[0].received).to.eql({text: '14 days ago', days: '14'});
+                    expect(result[0].received).to.eql({text: '10 days ago', days: '10'});
                 });
 
                 it('should not add the number of days if not in PROCESSING_RO', async () => {

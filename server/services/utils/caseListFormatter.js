@@ -127,7 +127,7 @@ function addReceivedTime(prisoner, licences) {
 
     const text = moment(licence.transition_date).toNow();
     const days = text.split(' ')[0];
-    const sanitisedText = text.includes('0 days') ? 'Today' : `${text} ago`;
+    const sanitisedText = Number(days) === 0 ? 'Today' : `${text} ago`;
 
     return {...prisoner, received: {text: sanitisedText, days}};
 }
