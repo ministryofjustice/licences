@@ -383,7 +383,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
             return taskStates.STARTED;
         }
 
-        const required = ['cautionedAgainstResident'];
+        const required = ['cautionedAgainstResident', 'addressLine1', 'addressTown', 'postCode', 'telephone'];
         if (required.some(field => !addresses.find(address => address[field]))) {
             return taskStates.STARTED;
         }

@@ -897,8 +897,7 @@ describe('getLicenceStatus', () => {
                         suitability: {
                             decision: 'Yes'
                         },
-                        exceptionalCircumstances: {
-                        }
+                        exceptionalCircumstances: {}
                     }
                 }
             };
@@ -950,6 +949,83 @@ describe('getLicenceStatus', () => {
             const status = getLicenceStatus(licence);
 
             expect(status.tasks.eligibility).to.eql(taskStates.DONE);
+        });
+    });
+
+    context('Eligibility - Proposed Address', () => {
+
+        it('should show curfew address DONE when opted out', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {proposedAddress: {optOut: {decision: 'Yes'}}}
+            };
+
+            const status = getLicenceStatus(licence);
+            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
+        });
+
+        it('should show curfew address DONE when bass referral needed', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {proposedAddress: {bassReferral: {decision: 'Yes'}, addressProposed: {decision: 'No'}}}
+            };
+
+            const status = getLicenceStatus(licence);
+            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
+        });
+
+        it('should show curfew address UNSTARTED when no addresses', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {proposedAddress: {}}
+            };
+
+            const status = getLicenceStatus(licence);
+            expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED);
+        });
+
+        it('should show curfew address DONE when minimum fields not empty', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [{
+                                addressLine1: 'a',
+                                addressTown: 'b',
+                                postCode: 'c',
+                                telephone: 'd',
+                                cautionedAgainstResident: 'e'
+                            }]
+                        }
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
+        });
+
+        it('should show curfew address STARTED if any of minimum fields empty', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [{
+                                addressLine1: '',
+                                addressTown: 'b',
+                                postCode: 'c',
+                                telephone: 'd',
+                                cautionedAgainstResident: 'e'
+                            }]
+                        }
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+            expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED);
         });
     });
 });
