@@ -1,59 +1,49 @@
-table#hdcEligiblePrisoners.largeMarginBottom
+table#hdcEligiblePrisoners.sortcolumns.largeMarginBottom
     thead
         tr
-            th Name
-            th Prison no.
-            th.hideMobile Location
-            th.hideMobile HDCED
-            th.hideMobile CRD / ARD
+            th.sortable Name
+            th.hideMobile Prison no.
+            th.sortable Time to HDCED
             th.hideMobile Status
             th
     tbody
         if hdcEligible && hdcEligible.length > 0
             each prisoner, index in hdcEligible
                 tr.hdcEligible
-                    td.name
+                    td.name.searchable
                         if prisoner.firstName
                             | #{prisoner.firstName}
                         if prisoner.lastName
                             |  #{prisoner.lastName}
 
-                    td.offenderNo
+                    td.offenderNo.hideMobile.searchable
                         if prisoner.offenderNo
                             | #{prisoner.offenderNo}
 
-                    td.location.hideMobile
-                        if prisoner.internalLocationDesc
-                            | #{prisoner.internalLocationDesc}
-                        if prisoner.internalLocationDesc && prisoner.agencyLocationDesc
-                            |  - #{prisoner.agencyLocationDesc}
-
                     td.hdced.hideMobile
-                        if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
-                            | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
-
-                    td.crd.hideMobile
-                        if prisoner.sentenceDetail.releaseDate
-                            | #{prisoner.sentenceDetail.releaseDate}
+                        div(class=prisoner.due.overdue ? "alert bold-small searchable" : "searchable")
+                            | #{prisoner.due.text}
 
                     if ['Address not suitable', 'Address rejected'].includes(prisoner.status)
-                        td.status.terminalStateAlert.hideMobile
+                        td.status.terminalStateAlert.hideMobile.searchable
                             | #{prisoner.status}
-                    else if (prisoner.status == 'Postponed')
-                        td.status.terminalStateWarn.hideMobile
+                    else if (prisoner.status === 'Postponed')
+                        td.status.terminalStateWarn.hideMobile.searchable
                             | #{prisoner.status}
                     else
-                        td.status.hideMobile
+                        td.status.hideMobile.searchable
                             | #{prisoner.status}
 
                     td
+                        -var label = labels.ca[prisoner.status] || 'View'
+
                         if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
-                            if ['Not started', 'Reviewing case', 'Address rejected'].includes(prisoner.status)
-                                a.button.button-primary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
-                                    | Start
+                            -var path = "/hdc/taskList/" + prisoner.bookingId
+                            if (['Start now', 'Continue'].includes(label))
+                                a.button.button-primary.fullWidth.center(href=path role="button") #{label}
                             else
-                                a.button.button-secondary.fullWidth.center(href="/hdc/taskList/" + prisoner.bookingId role="button")
-                                    | View
+                                a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
+
                         else if ['PROCESSING_RO', 'APPROVAL'].includes(prisoner.stage)
-                            a.button.button-secondary.fullWidth.center(href="/hdc/review/licence/" + prisoner.bookingId role="button")
-                                | View
+                            -var path = "/hdc/review/licence/" + prisoner.bookingId
+                            a.button.button-secondary.fullWidth.center(href=path role="button") #{label}

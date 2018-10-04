@@ -31,7 +31,6 @@ const adminRouter = require('../server/routes/admin/admin');
 const apiRouter = require('../server/routes/api');
 const caseListRouter = require('../server/routes/caseList');
 const contactRouter = require('../server/routes/contact');
-const altCaseListRouter = require('../server/routes/caseListAlt');
 const pdfRouter = require('../server/routes/pdf');
 const searchRouter = require('../server/routes/search');
 const sendRouter = require('../server/routes/send');
@@ -292,12 +291,7 @@ module.exports = function createApp({
 
     app.use('/', defaultRouter());
 
-    if (config.alternativeCaseList) {
-        app.use('/caseList/', altCaseListRouter({caseListService, authenticationMiddleware}));
-    } else {
-        app.use('/caseList/', caseListRouter({caseListService, authenticationMiddleware}));
-    }
-
+    app.use('/caseList/', caseListRouter({caseListService, authenticationMiddleware}));
     app.use('/admin/', adminRouter({userService, authenticationMiddleware, audit}));
     app.use('/hdc/contact/', contactRouter({logger, userService, authenticationMiddleware}));
     app.use('/hdc/pdf/', pdfRouter({pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
