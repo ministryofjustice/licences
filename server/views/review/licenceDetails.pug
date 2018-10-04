@@ -27,7 +27,6 @@ block content
             if licenceStatus.decisions.optedOut
                 form#licenceDetailsForm(method='POST', action='/hdc/send/optedOut/' + bookingId)
                     input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="transitionType" value='roToCaOptedOut')
                     div.pure-u-1.inlineButtons
                         div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
                             input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
@@ -35,7 +34,6 @@ block content
             else if licenceStatus.decisions.curfewAddressApproved === 'rejected'
                 form#licenceDetailsForm(method='POST', action='/hdc/send/addressRejected/' + bookingId)
                     input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="transitionType" value='roToCaAddressRejected')
                     div.pure-u-1.inlineButtons
                         div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
                             input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
@@ -43,7 +41,6 @@ block content
             else
                 form#licenceDetailsForm(method='POST', action='/hdc/send/finalChecks/' + bookingId)
                     input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="transitionType" value='roToCa')
                     div.pure-u-1.inlineButtons
                         div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
                             input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
