@@ -18,7 +18,7 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
     router.get('/:destination/:bookingId', async (req, res) => {
         const {destination, bookingId} = req.params;
         const transition = transitionForDestination[destination];
-        const submissionTarget = await getSubmissionTarget(transition.receiver, bookingId, req.user.token);
+        const submissionTarget = await prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, req.user.token);
 
         res.render('send/' + transition.type, {bookingId, submissionTarget});
     });
@@ -29,7 +29,7 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
 
         const [licence, submissionTarget] = await Promise.all([
             licenceService.getLicence(bookingId),
-            getSubmissionTarget(transition.receiver, bookingId, req.user.token)
+            prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, req.user.token)
         ]);
 
         await licenceService.markForHandover(bookingId, licence, transition.type);
@@ -48,10 +48,6 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
         addressRejected: {type: 'roToCaAddressRejected', receiver: 'CA'},
         optedOut: {type: 'roToCaOptedOut', receiver: 'CA'}
     };
-
-    function getSubmissionTarget(target, bookingId, token) {
-        return prisonerService.getOrganisationContactDetails(target, bookingId, token);
-    }
 
     function auditEvent(user, bookingId, transitionType, submissionTarget) {
         audit.record('SEND', user, {

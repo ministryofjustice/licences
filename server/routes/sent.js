@@ -16,14 +16,10 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
 
     router.get('/:receiver/:type/:bookingId', async(async (req, res) => {
         const {receiver, type, bookingId} = req.params;
-        const submissionTarget = await getSubmissionTarget(receiver, bookingId, req.user.token);
+        const submissionTarget = await prisonerService.getOrganisationContactDetails(receiver, bookingId, req.user.token);
 
         res.render(`sent/${type}`, {submissionTarget});
     }));
-
-    function getSubmissionTarget(target, bookingId, token) {
-        return prisonerService.getOrganisationContactDetails(target, bookingId, token);
-    }
 
     return router;
 };
