@@ -131,7 +131,6 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/addressReview/123')
-                .send({transitionType: 'caToRo'})
                 .expect(() => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('RO', '123', 'token');
@@ -147,7 +146,6 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/finalChecks/123')
-                .send({transitionType: 'roToCa'})
                 .expect(() => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
@@ -162,7 +160,6 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/approval/123')
-                .send({transitionType: 'caToDm'})
                 .expect(() => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
@@ -177,7 +174,6 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/decided/123')
-                .send({transitionType: 'dmToCa'})
                 .expect(() => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
@@ -192,7 +188,6 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/refusal/123')
-                .send({transitionType: 'caToDmRefusal'})
                 .expect(() => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
@@ -207,7 +202,6 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/return/123')
-                .send({transitionType: 'dmToCaReturn'})
                 .expect(() => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
