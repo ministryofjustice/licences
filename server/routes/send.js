@@ -1,15 +1,12 @@
 const express = require('express');
 
-const {async, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} =
-    require('../utils/middleware');
+const {async, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
 
 module.exports = function({licenceService, prisonerService, authenticationMiddleware, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
     router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
     router.param('bookingId', authorisationMiddleware);
-
-    const audited = auditMiddleware(audit, 'SEND');
 
     router.use(function(req, res, next) {
         if (typeof req.csrfToken === 'function') {
@@ -20,44 +17,44 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
 
     router.get('/:destination/:bookingId', async (req, res) => {
         const {destination, bookingId} = req.params;
-
-        const transitionForDestination = {
-            addressReview: 'caToRo',
-            finalChecks: 'roToCa',
-            approval: 'caToDm',
-            decided: 'dmToCa',
-            'return': 'dmToCaReturn',
-            refusal: 'caToDmRefusal',
-            addressRejected: 'roToCaAddressRejected',
-            optedOut: 'roToCaOptedOut'
-        };
-
         const transition = transitionForDestination[destination];
-        const submissionTarget = await getSubmissionTarget(transition, bookingId, req.user.token);
+        const submissionTarget = await prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, req.user.token);
 
-        res.render('send/' + transition, {bookingId, submissionTarget});
+        res.render('send/' + transition.type, {bookingId, submissionTarget});
     });
 
-    router.post('/:destination/:bookingId', audited, async(async (req, res) => {
-        const {bookingId, transitionType} = req.body;
-        const licence = await licenceService.getLicence(bookingId);
+    router.post('/:destination/:bookingId', async(async (req, res) => {
+        const {destination, bookingId} = req.params;
+        const transition = transitionForDestination[destination];
 
-        await licenceService.markForHandover(bookingId, licence, transitionType);
+        const [licence, submissionTarget] = await Promise.all([
+            licenceService.getLicence(bookingId),
+            prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, req.user.token)
+        ]);
 
-        res.redirect(`/hdc/sent/${transitionType}`);
+        await licenceService.markForHandover(bookingId, licence, transition.type);
+        auditEvent(req.user.staffId, bookingId, transition.type, submissionTarget);
+
+        res.redirect(`/hdc/sent/${transition.receiver}/${transition.type}/${bookingId}`);
     }));
 
-    function getSubmissionTarget(transitionType, bookingId, token) {
+    const transitionForDestination = {
+        addressReview: {type: 'caToRo', receiver: 'RO'},
+        finalChecks: {type: 'roToCa', receiver: 'CA'},
+        approval: {type: 'caToDm', receiver: 'DM'},
+        decided: {type: 'dmToCa', receiver: 'CA'},
+        'return': {type: 'dmToCaReturn', receiver: 'CA'},
+        refusal: {type: 'caToDmRefusal', receiver: 'DM'},
+        addressRejected: {type: 'roToCaAddressRejected', receiver: 'CA'},
+        optedOut: {type: 'roToCaOptedOut', receiver: 'CA'}
+    };
 
-        if (transitionType === 'caToRo') {
-            return prisonerService.getCom(bookingId, token);
-        }
-
-        if (transitionType.startsWith('roToCa')) {
-            return prisonerService.getEstablishmentForPrisoner(bookingId, token);
-        }
-
-        return null;
+    function auditEvent(user, bookingId, transitionType, submissionTarget) {
+        audit.record('SEND', user, {
+            bookingId,
+            transitionType,
+            submissionTarget
+        });
     }
 
     return router;

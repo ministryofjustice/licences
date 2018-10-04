@@ -145,6 +145,19 @@ function createPrisonerService(nomisClientBuilder) {
         }
     }
 
+    async function getOrganisationContactDetails(role, bookingId, token) {
+
+        if (role.toUpperCase() === 'RO') {
+            return getCom(bookingId, token);
+        }
+
+        if (role.toUpperCase() === 'CA') {
+            return getEstablishmentForPrisoner(bookingId, token);
+        }
+
+        return null;
+    }
+
     function selectEntriesWithTypes(identifiers, types) {
         return identifiers.reduce((selected, element) => {
             if (types.includes(element.type)) {
@@ -160,7 +173,8 @@ function createPrisonerService(nomisClientBuilder) {
         getEstablishmentForPrisoner,
         getEstablishment,
         getCom,
-        getPrisonerPersonalDetails
+        getPrisonerPersonalDetails,
+        getOrganisationContactDetails
     };
 };
 

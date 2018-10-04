@@ -17,12 +17,9 @@ describe('send', () => {
     let licenceService;
 
     beforeEach(() => {
-        prisonerService = createPrisonerServiceStub();
         licenceService = createLicenceServiceStub();
-
-        prisonerService.getLicence = sinon.stub().resolves({});
-        prisonerService.getEstablishmentForPrisoner = sinon.stub().resolves({premise: 'HMP Blah'});
-        prisonerService.getCom = sinon.stub().resolves({com: {name: 'Something'}});
+        prisonerService = createPrisonerServiceStub();
+        prisonerService.getOrganisationContactDetails = sinon.stub().resolves({premise: 'HMP Blah', com: {name: 'Something'}});
 
         auditStub.record.reset();
     });
@@ -134,11 +131,12 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/addressReview/123')
-                .send({bookingId: 123, transitionType: 'caToRo'})
                 .expect(() => {
+                    expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
+                    expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('RO', '123', 'token');
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        123, {licence: {key: 'value'}}, 'caToRo'
+                        '123', {licence: {key: 'value'}}, 'caToRo'
                     );
                 });
         });
@@ -148,11 +146,11 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/finalChecks/123')
-                .send({bookingId: 123, transitionType: 'roToCa'})
                 .expect(() => {
+                    expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        123, {licence: {key: 'value'}}, 'roToCa'
+                        '123', {licence: {key: 'value'}}, 'roToCa'
                     );
                 });
         });
@@ -162,11 +160,11 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/approval/123')
-                .send({bookingId: 123, transitionType: 'caToDm'})
                 .expect(() => {
+                    expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        123, {licence: {key: 'value'}}, 'caToDm'
+                        '123', {licence: {key: 'value'}}, 'caToDm'
                     );
                 });
         });
@@ -176,11 +174,11 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/decided/123')
-                .send({bookingId: 123, transitionType: 'dmToCa'})
                 .expect(() => {
+                    expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        123, {licence: {key: 'value'}}, 'dmToCa'
+                        '123', {licence: {key: 'value'}}, 'dmToCa'
                     );
                 });
         });
@@ -190,11 +188,11 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/refusal/123')
-                .send({bookingId: 123, transitionType: 'caToDmRefusal'})
                 .expect(() => {
+                    expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        123, {licence: {key: 'value'}}, 'caToDmRefusal'
+                        '123', {licence: {key: 'value'}}, 'caToDmRefusal'
                     );
                 });
         });
@@ -204,11 +202,11 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/return/123')
-                .send({bookingId: 123, transitionType: 'dmToCaReturn'})
                 .expect(() => {
+                    expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        123, {licence: {key: 'value'}}, 'dmToCaReturn'
+                        '123', {licence: {key: 'value'}}, 'dmToCaReturn'
                     );
                 });
         });
@@ -219,23 +217,14 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/return/123')
-                .send({
-                    bookingId: '123',
-                    transitionType: 'type',
-                    submissionTarget: 'target'
-                })
                 .expect(() => {
+                    expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith('SEND', 'id',
                         {
-                            action: [],
                             bookingId: '123',
-                            sectionName: 'return',
-                            formName: undefined,
-                            userInput: {
-                                transitionType: 'type',
-                                submissionTarget: 'target'
-                            }
+                            transitionType: 'dmToCaReturn',
+                            submissionTarget: {com: {name: 'Something'}, premise: 'HMP Blah'}
                         });
                 });
         });
@@ -245,10 +234,9 @@ describe('send', () => {
 
             return request(app)
                 .post('/hdc/send/return/123')
-                .send({bookingId: 123, sender: 'from', receiver: 'to', transitionType: 'foobar'})
                 .expect(302)
                 .expect(res => {
-                    expect(res.header['location']).to.eql('/hdc/sent/foobar');
+                    expect(res.header['location']).to.eql('/hdc/sent/CA/dmToCaReturn/123');
                 });
 
         });

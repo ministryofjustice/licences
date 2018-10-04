@@ -217,4 +217,24 @@ describe('prisonerDetailsService', () => {
             return expect(service.getCom('123', 'username')).to.eventually.eql(expectedComData);
         });
     });
+
+
+    describe('getOrganisationContactDetails', () => {
+
+        it('should get COM for RO', async () => {
+            await service.getOrganisationContactDetails('RO', '123', 'token');
+            expect(nomisClientMock.getComRelation).to.be.calledOnce();
+        });
+
+        it('should get establishment for CA', async () => {
+            await service.getOrganisationContactDetails('CA', '123', 'token');
+            expect(nomisClientMock.getEstablishment).to.be.calledOnce();
+        });
+
+        it('should not call anything for DM', async () => {
+            await service.getOrganisationContactDetails('DM', '123', 'token');
+            expect(nomisClientMock.getEstablishment).to.not.be.calledOnce();
+            expect(nomisClientMock.getComRelation).to.not.be.calledOnce();
+        });
+    });
 });

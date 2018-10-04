@@ -49,7 +49,7 @@ describe('/review/', () => {
             licenceService.getLicence = sinon.stub().resolves(licence);
         });
 
-        it('shows a link to the send page if there are no errors', () => {
+        it('shows a button to send the case if there are no errors', () => {
             licenceService.getValidationErrorsForReview = sinon.stub().returns({});
 
             return request(app)
@@ -57,7 +57,7 @@ describe('/review/', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.contain('href="/hdc/send/');
+                    expect(res.text).to.contain('The case is ready to send to the responsible officer for address checks');
                     expect(res.text).to.not.contain('class="error-summary"');
                 });
         });
@@ -99,7 +99,7 @@ describe('/review/', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.contain('href="/hdc/send/optedOut/1');
+                    expect(res.text).to.contain('/hdc/send/optedOut/1');
                 });
         });
 
@@ -122,7 +122,7 @@ describe('/review/', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.contain('href="/hdc/send/addressRejected/1');
+                    expect(res.text).to.contain('/hdc/send/addressRejected/1');
                 });
         });
 
@@ -145,7 +145,7 @@ describe('/review/', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.contain('href="/hdc/send/finalChecks/1');
+                    expect(res.text).to.contain('/hdc/send/finalChecks/1');
                 });
         });
 

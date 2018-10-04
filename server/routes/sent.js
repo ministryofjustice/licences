@@ -2,7 +2,7 @@ const express = require('express');
 
 const {async} = require('../utils/middleware');
 
-module.exports = function({licenceService, authenticationMiddleware}) {
+module.exports = function({licenceService, prisonerService, authenticationMiddleware}) {
     const router = express.Router();
 
     router.use(authenticationMiddleware());
@@ -14,8 +14,11 @@ module.exports = function({licenceService, authenticationMiddleware}) {
         next();
     });
 
-    router.get('/:handoverType', async(async (req, res) => {
-        res.render(`sent/${req.params.handoverType}`);
+    router.get('/:receiver/:type/:bookingId', async(async (req, res) => {
+        const {receiver, type, bookingId} = req.params;
+        const submissionTarget = await prisonerService.getOrganisationContactDetails(receiver, bookingId, req.user.token);
+
+        res.render(`sent/${type}`, {submissionTarget});
     }));
 
     return router;
