@@ -15,12 +15,12 @@ function signInService(audit) {
 
     return {
 
-        signIn: async function(username, password) {
+        signIn: async function(token, refreshToken, expiresIn, username) {
 
             logger.info(`Log in for: ${username}`);
 
             try {
-                const {profile, role, token, refreshToken, expiresIn} = await login(username.toUpperCase(), password);
+                const {profile, role} = await login(token, username);
                 logger.info(`Log in success - token: ${token}`);
 
                 const userDetail = profile.staffId || profile.username || profile.lastName || 'no user id';
@@ -71,9 +71,7 @@ function signInService(audit) {
         return now.setSeconds(secondsUntilExpiry);
     }
 
-    async function login(username, password) {
-
-        const {token, refreshToken, expiresIn} = await getPasswordTokens(username, password);
+    async function login(token, username) {
 
         const [profile, role] = await Promise.all([
             getUserProfile(token, username),
@@ -85,14 +83,7 @@ function signInService(audit) {
             return {profile, role, ...roToken};
         }
 
-        return {profile, role, token, refreshToken, expiresIn};
-    }
-
-    async function getPasswordTokens(username, password) {
-        const oauthClientToken = generateOauthClientToken();
-        const oauthRequest = {grant_type: 'password', username, password};
-
-        return oauthTokenRequest(oauthClientToken, oauthRequest);
+        return {profile, role};
     }
 
     async function getClientCredentialsTokens(username) {
@@ -189,7 +180,7 @@ async function getCaseLoad(token, id) {
 function nomisGet(path, token) {
     return superagent
         .get(`${config.nomis.apiUrl}${path}`)
-        .set('Authorization', token)
+        .set('Authorization', `Bearer ${token}`)
         .timeout(timeoutSpec);
 }
 

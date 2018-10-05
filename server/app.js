@@ -25,7 +25,6 @@ const auth = require('./authentication/auth');
 const authenticationMiddleware = auth.authenticationMiddleware;
 
 const defaultRouter = require('../server/routes/default');
-const signInRouter = require('./routes/signIn');
 
 const adminRouter = require('../server/routes/admin/admin');
 const apiRouter = require('../server/routes/api');
@@ -279,7 +278,14 @@ module.exports = function createApp({
         return res.render('notfound');
     });
 
-    app.use('/login', signInRouter(passport));
+    app.get('/login',
+        passport.authenticate('oauth2'));
+
+    app.get('/login/callback',
+        passport.authenticate('oauth2', {failureRedirect: '/login'}),
+        function(req, res) {
+            res.redirect('/');
+        });
 
     app.use('/logout', (req, res) => {
         if (req.user) {

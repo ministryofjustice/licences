@@ -121,7 +121,7 @@ function nomisGetBuilder(token) {
             const result = await superagent
                 .get(path)
                 .query(query)
-                .set('Authorization', token)
+                .set('Authorization', `Bearer ${token}`)
                 .set(headers)
                 .responseType(responseType)
                 .timeout(timeoutSpec);
@@ -150,7 +150,7 @@ function nomisPostBuilder(token) {
             const result = await superagent
                 .post(path)
                 .send(body)
-                .set('Authorization', token)
+                .set('Authorization', `Bearer ${token}`)
                 .set(headers)
                 .responseType(responseType)
                 .timeout(timeoutSpec);
