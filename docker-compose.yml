@@ -29,7 +29,7 @@ services:
       - hmpps
     container_name: licences-nomis-mocks
     ports:
-      - "9090:9090"
+      - "8080:9090"
 
   licence-db:
     image: postgres
