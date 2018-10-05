@@ -20,6 +20,7 @@ module.exports = {
     bassReferral_decision: 'Select yes or no',
     bassReferral_proposedCounty: 'Enter a county',
     bassReferral_proposedTown: 'Enter a town',
+    exceptionalCircumstances_decision: 'Select yes or no',
 
     // PROCESSING_RO forms
     curfewAddress_consent: 'Say if the homeowner consents to HDC',

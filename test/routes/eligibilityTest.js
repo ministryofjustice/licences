@@ -244,6 +244,25 @@ describe('/hdc/eligibility', () => {
                 .expect('Location', '/hdc/eligibility/crdTime/1');
 
         });
+
+        it('should redirect back to exceptions circumstances page if there is an error in the submission', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.getValidationErrorsForPage = sinon.stub().returns({
+                eligibility: {
+                    exceptionalCircumstances: {
+                        reason: 'error'
+                    }
+                }
+            });
+            const app = createApp({licenceService});
+
+            return request(app)
+                .post('/hdc/eligibility/exceptionalCircumstances/1')
+                .send({})
+                .expect(302)
+                .expect('Location', '/hdc/eligibility/exceptionalCircumstances/1');
+
+        });
     });
 });
 
