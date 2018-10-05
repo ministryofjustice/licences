@@ -29,8 +29,9 @@ block tasks
             div.taskListItem.borderBottomLight
                 include tasks/postponementTask
 
-        div.taskListItem.borderBottom
-            include tasks/HDCRefusalTask
+        if !licenceStatus.decisions.dmRefused
+            div.taskListItem.borderBottom
+                include tasks/HDCRefusalTask
 
         div.taskListItem.borderBottom
             if allowedTransition === 'caToDm'
