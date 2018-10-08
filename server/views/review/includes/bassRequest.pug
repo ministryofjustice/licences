@@ -3,13 +3,13 @@ include ./itemAndError
 -var errors = errorObject.bassReferral && errorObject.bassReferral.bassRequest || {}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
+    div.pure-u-1.pure-u-md-1-2
         span Proposed town
-    div.pure-u-1-2#bassTownDetails
+    div.pure-u-1.pure-u-md-1-2#bassTownDetails
         +itemAndError(request.proposedTown, errors.proposedTown, "proposedTown")
 
     div.pure-u-1-2
         span Proposed county
-    div.pure-u-1-2#bassCountyDetails
+    div.pure-u-1.pure-u-md-1-2#bassCountyDetails
         +itemAndError(request.proposedCounty, errors.proposedCounty, "proposedCounty")
 
