@@ -75,6 +75,9 @@ describe('getLicenceStatus', () => {
                         },
                         bassAreaCheck: {
                             bassAreaSuitable: 'Yes'
+                        },
+                        bassOffer: {
+                            bassAccepted: 'Yes'
                         }
                     },
                     risk: {
@@ -115,6 +118,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.bassReferralNeeded).to.eql(true);
             expect(status.decisions.bassAreaSuitable).to.eql(true);
             expect(status.decisions.bassAreaNotSuitable).to.eql(false);
+            expect(status.decisions.bassAccepted).to.eql('Yes');
             expect(status.decisions.curfewAddressApproved).to.eql('approved');
             expect(status.decisions.riskManagementNeeded).to.eql(true);
             expect(status.decisions.awaitingRiskInformation).to.eql(true);
@@ -165,6 +169,9 @@ describe('getLicenceStatus', () => {
                         },
                         bassAreaCheck: {
                             bassAreaSuitable: 'No'
+                        },
+                        bassOffer: {
+                            bassAccepted: 'No'
                         }
                     },
                     finalChecks: {
@@ -198,6 +205,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.bassReferralNeeded).to.eql(false);
             expect(status.decisions.bassAreaSuitable).to.eql(false);
             expect(status.decisions.bassAreaNotSuitable).to.eql(true);
+            expect(status.decisions.bassAccepted).to.eql('No');
             expect(status.decisions.curfewAddressApproved).to.eql('rejected');
             expect(status.decisions.riskManagementNeeded).to.eql(false);
             expect(status.decisions.awaitingRiskInformation).to.eql(false);
@@ -227,6 +235,7 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.optOut).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.bassRequest).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED);
+            expect(status.tasks.bassOffer).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewHours).to.eql(taskStates.UNSTARTED);
@@ -256,6 +265,7 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.optOut).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.bassRequest).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED);
+            expect(status.tasks.bassOffer).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewHours).to.eql(taskStates.UNSTARTED);
@@ -365,6 +375,9 @@ describe('getLicenceStatus', () => {
                         },
                         bassAreaCheck: {
                             bassAreaSuitable: 'Yes'
+                        },
+                        bassOffer: {
+                            bassAccepted: 'No'
                         }
                     },
                     curfew: {
@@ -421,6 +434,7 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.optOut).to.eql(taskStates.DONE);
             expect(status.tasks.bassRequest).to.eql(taskStates.DONE);
             expect(status.tasks.bassAreaCheck).to.eql(taskStates.DONE);
+            expect(status.tasks.bassOffer).to.eql(taskStates.DONE);
             expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
             expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE);
             expect(status.tasks.curfewHours).to.eql(taskStates.DONE);
