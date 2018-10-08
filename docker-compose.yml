@@ -31,7 +31,7 @@ services:
       - hmpps
     container_name: licences-nomis-mocks
     ports:
-      - "8080:9090"
+      - "9090:9090"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9090/elite2api/health"]
 
@@ -67,7 +67,7 @@ services:
       - hmpps
       container_name: nomis-oauth2-server
       ports:
-      - "9090:8080"
+      - "8080:8080"
       healthcheck:
           test: ["CMD", "curl", "-f", "http://localhost:8080/auth/health"]
       environment:
