@@ -55,6 +55,9 @@ module.exports = {
     curfewHours: {
         licenceSection: 'curfewHours',
         fields: [
+            {daySpecificInputs: {}},
+            {allFrom: {}},
+            {allUntil: {}},
             {mondayFrom: {}},
             {mondayUntil: {}},
             {tuesdayFrom: {}},
