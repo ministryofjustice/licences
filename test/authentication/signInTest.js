@@ -13,7 +13,7 @@ describe('signInService', () => {
 
     beforeEach(() => {
         fakeNomis = nock(`${config.nomis.apiUrl}`);
-        fakeOauth = nock(`${config.nomis.apiUrl.replace('/api', '')}`);
+        fakeOauth = nock(`${config.nomis.authUrl}`);
         auditStub = {record: sinon.stub()};
         service = signInService(auditStub);
         clock = sinon.useFakeTimers(new Date('May 31, 2018 12:00:00').getTime());
