@@ -1,13 +1,10 @@
 div.paddingBottom
     h2.heading-medium Proposed curfew address
 
-    if licenceStatus.decisions.bassReferralNeeded || licenceStatus.decisions.optedOut
+    if licenceStatus.decisions.optedOut
         div.pure-g
-            div.pure-u-1
-                if licenceStatus.decisions.bassReferralNeeded
-                    | BASS referral requested
-                if licenceStatus.decisions.optedOut
-                    | Opted out
+            div.pure-u-1.pure-u-md-3-4
+                | Opted out
 
     else
         div.pure-g

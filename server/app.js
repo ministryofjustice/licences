@@ -40,6 +40,7 @@ const utilsRouter = require('../server/routes/utils');
 
 const addressRouter = require('./routes/address');
 const approvalRouter = require('./routes/approval');
+const bassReferralRouter = require('./routes/bassReferral');
 const conditionsRouter = require('./routes/conditions');
 const curfewRouter = require('./routes/curfew');
 const eligibilityRouter = require('./routes/eligibility');
@@ -303,6 +304,7 @@ module.exports = function createApp({
 
     app.use('/hdc/', addressRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/', approvalRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', bassReferralRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/', conditionsRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/', curfewRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/', eligibilityRouter({licenceService, prisonerService, authenticationMiddleware, audit}));

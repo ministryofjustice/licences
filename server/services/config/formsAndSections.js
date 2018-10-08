@@ -1,6 +1,7 @@
 const formsInSection = {
     eligibility: ['excluded', 'suitability', 'crdTime', 'exceptionalCircumstances'],
-    proposedAddress: ['optOut', 'addressProposed', 'bassReferral', 'curfewAddress'],
+    proposedAddress: ['optOut', 'addressProposed', 'curfewAddress'],
+    bassReferral: ['bassRequest'],
     curfew: ['curfewHours', 'firstNight'],
     risk: ['riskManagement'],
     reporting: ['reportingInstructions', 'reportingDate'],
@@ -10,6 +11,7 @@ const formsInSection = {
 const sectionContaining = {
     excluded: 'eligibility', suitability: 'eligibility', crdTime: 'eligibility', exceptionalCircumstances: 'eligibility',
     optOut: 'proposedAddress', addressProposed: 'proposedAddress', bassReferral: 'proposedAddress', curfewAddress: 'proposedAddress',
+    bassRequest: 'bassReferral',
     curfewHours: 'curfew', firstNight: 'curfew',
     riskManagement: 'risk',
     reportingInstructions: 'reporting', reportingDate: 'reporting',
@@ -22,20 +24,15 @@ const sectionContaining = {
 const reviewForms = [
     ...formsInSection['eligibility'],
     ...formsInSection['proposedAddress'],
+    ...formsInSection['bassReferral'],
     ...formsInSection['curfew'],
     ...formsInSection['risk'],
     ...formsInSection['reporting'],
     ...formsInSection['licenceConditions']
 ];
 
-const eligibilityForms = [
-    ...formsInSection['eligibility'],
-    ...formsInSection['proposedAddress']
-];
-
 module.exports = {
     formsInSection,
     sectionContaining,
-    reviewForms,
-    eligibilityForms
+    reviewForms
 };

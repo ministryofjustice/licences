@@ -57,6 +57,7 @@ function getMessage(errorType, errorMessage, errorPath) {
         .filter(pathItem => !Number.isInteger(pathItem))
         .join('_');
 
+    // Shouldn't this be first? Custom messages for postcode or telephone don't get used
     if (validationMessages[path]) {
         return validationMessages[path];
     }
@@ -93,10 +94,10 @@ const addressProposed = joi.object().keys({
     decision: requiredYesNo
 });
 
-const bassReferral = joi.object().keys({
-    decision: requiredYesNo,
-    proposedTown: requiredIf('decision', 'Yes'),
-    proposedCounty: requiredIf('decision', 'Yes')
+const bassRequest = joi.object().keys({
+    bassRequested: requiredYesNo,
+    proposedTown: requiredIf('bassRequested', 'Yes'),
+    proposedCounty: requiredIf('bassRequested', 'Yes')
 });
 
 const residentSchema = joi.object({
@@ -302,7 +303,8 @@ const taggingCompany = {
 
 const schema = {
     eligibility: {excluded, suitability, crdTime, exceptionalCircumstances},
-    proposedAddress: {optOut, addressProposed, bassReferral, curfewAddress},
+    proposedAddress: {optOut, addressProposed, curfewAddress},
+    bassReferral: {bassRequest},
     curfew: {curfewHours, firstNight},
     risk: {riskManagement},
     reporting: {reportingInstructions, reportingDate},

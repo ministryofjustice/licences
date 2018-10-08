@@ -1373,6 +1373,12 @@ describe('licenceService', () => {
             }
         };
 
+        const bassReferral = {
+            bassRequest: {
+                bassRequested: 'No'
+            }
+        };
+
         const curfewHours = {
             firstNightFrom: '09:00',
             firstNightUntil: '09:00',
@@ -1417,6 +1423,7 @@ describe('licenceService', () => {
         const baseLicence = {
             eligibility,
             proposedAddress,
+            bassReferral,
             curfew: {
                 curfewHours
             },
@@ -1437,7 +1444,8 @@ describe('licenceService', () => {
             licenceConditions: 'Not answered',
             proposedAddress: 'Not answered',
             reporting: 'Not answered',
-            risk: 'Not answered'
+            risk: 'Not answered',
+            bassReferral: 'Not answered'
         };
 
         it('should return error if section is missing from licence', () => {
@@ -3369,6 +3377,33 @@ describe('licenceService', () => {
 
                 expect(output).to.eql({});
             });
+
+            it('should validate bassRequest when bassReferral', () => {
+                const bassRequest = {
+                    ...baseLicence,
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes'
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'ELIGIBILITY', tasks: {}, decisions: {bassReferralNeeded: true}},
+                    licence: bassRequest
+                });
+
+                expect(output).to.eql(
+                    {
+                        bassReferral: {
+                            bassRequest: {
+                                proposedCounty: 'Enter a county',
+                                proposedTown: 'Enter a town'
+                            }
+                        }
+                    }
+                );
+            });
         });
 
         context('Stage === PROCESSING_RO, curfewAddressApproved === rejected', () => {
@@ -3438,12 +3473,13 @@ describe('licenceService', () => {
                         curfew: 'Not answered',
                         licenceConditions: 'Not answered',
                         reporting: 'Not answered',
-                        risk: 'Not answered'
+                        risk: 'Not answered',
+                        bassReferral: 'Not answered'
                     }
                 );
             });
 
-            it('should validate only ELIGIBILITY fields id curfewAddressReview is unstarted', () => {
+            it('should validate only ELIGIBILITY fields if curfewAddressReview is unstarted', () => {
                 const missingFieldProposedAddress = {
                     ...baseLicence,
                     proposedAddress: {

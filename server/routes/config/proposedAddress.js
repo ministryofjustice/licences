@@ -24,51 +24,45 @@ module.exports = {
             decisions: {
                 discriminator: 'decision',
                 Yes: '/hdc/proposedAddress/curfewAddress/',
-                No: '/hdc/proposedAddress/bassReferral/'
+                No: '/hdc/bassReferral/bassRequest/'
             }
-        }
-    },
-    bassReferral: {
-        licenceSection: 'bassReferral',
-        fields: [
-            {decision: {}},
-            {proposedTown: {dependentOn: 'decision', predicate: 'Yes'}},
-            {proposedCounty: {dependentOn: 'decision', predicate: 'Yes'}}
-        ],
-        validateInPlace: true,
-        nextPath: {
-            path: '/hdc/taskList/'
         }
     },
     curfewAddress: {
         licenceSection: 'curfewAddress',
         fields: [
-            {addresses: {
-                isList: true,
-                contains: [
-                    {addressLine1: {}},
-                    {addressLine2: {}},
-                    {addressTown: {}},
-                    {postCode: {}},
-                    {telephone: {}},
-                    {occupier: {
-                        contains: [
-                            {name: {}},
-                            {relationship: {}}
-                        ],
-                        saveEmpty: true
-                    }},
-                    {residents: {
-                        isList: true,
-                        contains: [
-                            {name: {}},
-                            {relationship: {}},
-                            {age: {}}
-                        ]
-                    }},
-                    {cautionedAgainstResident: {}}
-                ]
-            }}
+            {
+                addresses: {
+                    isList: true,
+                    contains: [
+                        {addressLine1: {}},
+                        {addressLine2: {}},
+                        {addressTown: {}},
+                        {postCode: {}},
+                        {telephone: {}},
+                        {
+                            occupier: {
+                                contains: [
+                                    {name: {}},
+                                    {relationship: {}}
+                                ],
+                                saveEmpty: true
+                            }
+                        },
+                        {
+                            residents: {
+                                isList: true,
+                                contains: [
+                                    {name: {}},
+                                    {relationship: {}},
+                                    {age: {}}
+                                ]
+                            }
+                        },
+                        {cautionedAgainstResident: {}}
+                    ]
+                }
+            }
         ],
         nextPath: {
             path: '/hdc/taskList/',

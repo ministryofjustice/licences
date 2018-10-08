@@ -13,7 +13,7 @@ module.exports = {
     '/hdc/proposedAddress/addressProposed/': {
         authorised: [{role: 'CA'}]
     },
-    'hdc/proposedAddress/bassReferral/': {
+    'hdc/bassReferral/bassRequest': {
         authorised: [{role: 'CA'}]
     },
     'hdc/proposedAddress/curfewAddress': {

@@ -22,8 +22,8 @@ function getLicenceStatus(licenceRecord) {
                 suitability: taskStates.UNSTARTED,
                 eligibility: taskStates.UNSTARTED,
                 optOut: taskStates.UNSTARTED,
-                bassReferral: taskStates.UNSTARTED,
                 curfewAddress: taskStates.UNSTARTED,
+                bassRequest: taskStates.UNSTARTED,
                 riskManagement: taskStates.UNSTARTED,
                 curfewAddressReview: taskStates.UNSTARTED,
                 curfewHours: taskStates.UNSTARTED,
@@ -154,7 +154,7 @@ function getEligibilityStageState(licence) {
 
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
-    const {bassReferralNeeded, bassReferral} = getBassReferralState(licence);
+    const {bassReferralNeeded, bassRequest} = getBassRequestState(licence);
     const {curfewAddress} = getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved);
 
     return {
@@ -177,7 +177,7 @@ function getEligibilityStageState(licence) {
             suitability,
             eligibility,
             optOut,
-            bassReferral,
+            bassRequest,
             curfewAddress
         }
     };
@@ -274,14 +274,14 @@ function getOptOutState(licence) {
     };
 }
 
-function getBassReferralState(licence) {
+function getBassRequestState(licence) {
 
-    const bassReferralAnswer = getIn(licence, ['proposedAddress', 'bassReferral', 'decision']);
+    const bassRequestAnswer = getIn(licence, ['bassReferral', 'bassRequest', 'bassRequested']);
     const addressProposedAnswer = getIn(licence, ['proposedAddress', 'addressProposed', 'decision']);
 
     return {
-        bassReferralNeeded: bassReferralAnswer === 'Yes' && addressProposedAnswer === 'No',
-        bassReferral: bassReferralAnswer ? taskStates.DONE : taskStates.UNSTARTED
+        bassReferralNeeded: bassRequestAnswer === 'Yes' && addressProposedAnswer === 'No',
+        bassRequest: bassRequestAnswer ? taskStates.DONE : taskStates.UNSTARTED
     };
 
 }
@@ -321,6 +321,7 @@ function getApprovalState(licence) {
 
     const dmApproval = getDmApproval(licence);
     const caRefusal = getCaRefusal(licence);
+
 
     return {
         approved: dmApproval.approved && !caRefusal.refused,

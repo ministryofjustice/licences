@@ -1,7 +1,7 @@
 const logger = require('../../log.js');
 const {createAdditionalConditionsObject} = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
-const {formsInSection, reviewForms, eligibilityForms} = require('./config/formsAndSections');
+const {formsInSection, reviewForms} = require('./config/formsAndSections');
 const {
     getIn,
     isEmpty,
@@ -325,6 +325,13 @@ module.exports = function createLicenceService(licenceClient) {
         const {stage, decisions, tasks} = licenceStatus;
         const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED';
 
+        if (stage === 'ELIGIBILITY' && decisions && decisions.bassReferralNeeded) {
+           return getLicenceErrors({licence, forms: [
+                   ...formsInSection['eligibility'],
+                   ...formsInSection['bassReferral']
+               ]});
+        }
+
         if (stage === 'ELIGIBILITY' || newAddressAddedForReview) {
             return getEligibilityErrors({licence});
         }
@@ -337,7 +344,10 @@ module.exports = function createLicenceService(licenceClient) {
     };
 
     function getEligibilityErrors({licence}) {
-        const errorObject = getLicenceErrors({licence, forms: eligibilityForms});
+        const errorObject = getLicenceErrors({licence, forms: [
+                ...formsInSection['eligibility'],
+                ...formsInSection['proposedAddress']
+            ]});
 
         const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
 
