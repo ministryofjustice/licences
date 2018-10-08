@@ -216,6 +216,7 @@ module.exports = function createLicenceService(licenceClient) {
     function answersFromMapReducer(userInput) {
 
         return (answersAccumulator, field) => {
+
             const {fieldName, answerIsRequired, innerFields, inputIsList, fieldConfig} = getFieldInfo(field, userInput);
 
             if (!answerIsRequired) {
@@ -250,6 +251,7 @@ module.exports = function createLicenceService(licenceClient) {
     function getFieldInfo(field, userInput) {
         const fieldName = Object.keys(field)[0];
         const fieldConfig = field[fieldName];
+
         const fieldDependentOn = userInput[fieldConfig.dependentOn];
         const predicateResponse = fieldConfig.predicate;
         const dependentMatchesPredicate = fieldConfig.dependentOn && fieldDependentOn === predicateResponse;

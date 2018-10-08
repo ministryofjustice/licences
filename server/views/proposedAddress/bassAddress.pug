@@ -1,0 +1,71 @@
+extends ../layout
+include ./includes/bassAddressForm
+include ../includes/errorBannerWithDetail
+
+block content
+
+    div.pure-g.pure-u-1
+        include ../includes/back
+        include ../includes/personalDetailsSummary
+        +errorBannerWithDetail(errorObject.bassAddress, [
+            {field: 'bassArea'},
+            {field: 'addressLine1'},
+            {field: 'addressLine2'},
+            {field: 'addressTown'},
+            {field: 'postCode'},
+            {field: 'telephone'}
+        ])
+
+        h2.heading-large BASS area suitable
+
+        div.pure-u-1-2
+            | The following area was checked and accepted by the RO:
+
+            div.paddingTop.paddingBottom
+                div.pure-u-1-2
+                    div Town
+                    div.bold #{data.proposedTown}
+                div.pure-u-1-2
+                    div County
+                    div.bold #{data.proposedCounty}
+        div.pure-u-1-2
+
+        div.pure-u-1-2.smallPaddingTop
+            | Please submit the request to the BASS team. When the response is received enter the details below.
+
+        hr
+
+        h2.heading-medium BASS request outcome
+
+        div.pure-u-1-2.smallPaddingBottom
+            | Has the offender been accepted ofr BASS in the area?
+
+        form(method="post")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="bookingId" value=bookingId || '')
+            input(type="hidden" name="decision" value=data.decision)
+            input(type="hidden" name="proposedTown" value=data.proposedTown)
+            input(type="hidden" name="proposedCounty" value=data.proposedCounty)
+            div.paddingBottom.largeMarginBottom
+
+                div.form-group.smallPaddingTop
+                    div.multiple-choice(data-target="bassAddress")
+                        input#yes(type="radio" checked=data && data.bassOffer === 'Yes' name="bassOffer" value="Yes")
+                        label(for="yes") Yes - offer made and property available
+
+                    div#bassAddress(class="panel panel-border-narrow js-hidden")
+                        +bassAddressForm
+
+                    div.multiple-choice
+                        input#waiting(type="radio" checked=data && data.bassOffer === 'Waiting' name="bassOffer" value="Waiting")
+                        label(for="waiting") Yes - offer made and on waiting list
+                    div.multiple-choice
+                        input#unsuitable(type="radio" checked=data && data.bassOffer === 'Unsuitable' name="bassOffer" value="Unsuitable")
+                        label(for="unsuitable") No - not suitable for BASS
+                    div.multiple-choice
+                        input#unavailable(type="radio" checked=data && data.bassOffer === 'Unavailable' name="bassOffer" value="Unavailable")
+                        label(for="unavailable") No - address not available
+
+            include ../includes/saveAndReturn
+
+

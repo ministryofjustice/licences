@@ -74,17 +74,19 @@ const combiner = (acc, data) => {
 };
 
 function getApprovalStageState(licence) {
-    const {approved, refused, dmRefused, approval, refusalReason} = getApprovalState(licence);
+    const {approved, refused, dmRefused, approval, refusalReason, bassAddress, bassOffer} = getApprovalState(licence);
 
     return {
         decisions: {
             approved,
             refused,
             dmRefused,
-            refusalReason
+            refusalReason,
+            bassOffer
         },
         tasks: {
-            approval
+            approval,
+            bassAddress
         }
     };
 }
@@ -321,6 +323,8 @@ function getApprovalState(licence) {
 
     const dmApproval = getDmApproval(licence);
     const caRefusal = getCaRefusal(licence);
+    const bassOffer = getIn(licence, ['proposedAddress', 'bassReferral', 'bassOffer']);
+    const bassAddress = getBassAddressState(licence, bassOffer);
 
 
     return {
@@ -328,8 +332,34 @@ function getApprovalState(licence) {
         refused: dmApproval.refused || caRefusal.refused,
         approval: dmApproval.approval,
         dmRefused: dmApproval.refused,
-        refusalReason: dmApproval.refusalReason || caRefusal.refusalReason
+        refusalReason: dmApproval.refusalReason || caRefusal.refusalReason,
+        bassOffer,
+        bassAddress
     };
+}
+
+function getBassAddressState(licence, bassOffer) {
+
+    if (!bassOffer) {
+        return taskStates.UNSTARTED;
+    }
+
+    if (bassOffer && bassOffer !== 'Yes') {
+        return taskStates.DONE;
+    }
+
+    const address = getIn(licence, ['proposedAddress', 'bassReferral', 'bassAddress']);
+
+    if (!address) {
+        return taskStates.STARTED;
+    }
+
+    const required = ['addressTown', 'addressLine1', 'postCode', 'telephone'];
+    if (required.some(field => !address[field])) {
+        return taskStates.STARTED;
+    }
+
+    return taskStates.DONE;
 }
 
 function getDmApproval(licence) {

@@ -1,0 +1,32 @@
+include otherResidents
+mixin bassAddressForm
+    -var bassAddress = data.bassAddress || {}
+
+    div.pure-g.paddingBottom
+        div.pure-u-1.pure-u-md-1-2
+            div.pure-g
+                div.pure-u-1.pure-u-md-3-5
+
+                    div.form-group.midMarginBottom
+                        div.bold Area provided
+                        input.form-control(id="bassArea" name="bassAddress[bassArea]" value=bassAddress.bassArea autofocus aria-label="Area provided")
+
+                    div.form-group.midMarginBottom.paddingTop
+                        div.bold.smallPaddingBottom Address provided by BASS
+                        label.form-label(for="address1") Building and street
+                        input.form-control(id="address1" name="bassAddress[addressLine1]" value=bassAddress.addressLine1 autofocus aria-label="Building and street")
+                        input.form-control.smallMarginTop(id="address2" name="bassAddress[addressLine2]" value=bassAddress.addressLine2)
+
+                    div.form-group.midMarginBottom
+                        label.form-label(for="town") Town or city
+                        input.form-control(id="town" name="bassAddress[addressTown]" value=bassAddress.addressTown aria-label="Town or city")
+
+                    div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
+                        label.form-label(for="postCode") Postcode
+                        input.form-control(id="postCode" name="bassAddress[postCode]" value=bassAddress.postCode aria-label="Postcode")
+
+                    div.form-group.pure-u-sm-1.pure-u-md-3-4
+                        label.form-label(for="telephone") Telephone (optional)
+                        input.form-control(id="telephone" name="bassAddress[telephone]" value=bassAddress.telephone aria-label="Telephone")
+
+
