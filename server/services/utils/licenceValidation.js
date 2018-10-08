@@ -78,6 +78,10 @@ const crdTime = joi.object().keys({
     dmApproval: requiredIf('decision', 'Yes')
 });
 
+const exceptionalCircumstances = joi.object().keys({
+    decision: requiredYesNo
+});
+
 const optOut = joi.object().keys({
     decision: requiredYesNo,
     reason: requiredIf('decision', 'Yes')
@@ -295,7 +299,7 @@ const taggingCompany = {
 
 
 const schema = {
-    eligibility: {excluded, suitability, crdTime},
+    eligibility: {excluded, suitability, crdTime, exceptionalCircumstances},
     proposedAddress: {optOut, addressProposed, bassReferral, curfewAddress},
     curfew: {curfewHours, firstNight},
     risk: {riskManagement},
