@@ -39,8 +39,8 @@
 
 The following environment variables are used and values should be supplied for correct operation but have defaults.
 
-* NOMIS_API_URL - url for nomis elite2 api entry point eg http://localhost:8080/elite2api
-* NOMIS_AUTH_URL - url for nomis oauth server eg http://localhost:9090/auth
+* NOMIS_API_URL - url for nomis elite2 api entry point eg http://localhost:9090/elite2api
+* NOMIS_AUTH_URL - url for nomis oauth server eg http://localhost:8080/auth
 * NOMIS_GW_TOKEN - MoJ dev token for nomis elite2 access
 * NOMIS_GW_KEY - Base64 encoded private key corresponding to the public key used when generating the NOMIS_GW_TOKEN
 
