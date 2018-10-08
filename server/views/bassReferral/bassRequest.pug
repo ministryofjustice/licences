@@ -7,10 +7,10 @@ block formItems
     div.form-group.inline.smallPaddingTop
 
         div.multiple-choice(data-target="bassFollowUps")
-            input#yes(type="radio" checked=data && data.decision === 'Yes' name="decision" value="Yes")
+            input#yes(type="radio" checked=data && data.bassRequested === 'Yes' name="bassRequested" value="Yes")
             label(for="yes") Yes
         div.multiple-choice
-            input#no(type="radio" checked=data && data.decision === 'No' name="decision" value="No")
+            input#no(type="radio" checked=data && data.bassRequested === 'No' name="bassRequested" value="No")
             label(for="no") No
 
     div#bassFollowUps.pure-u-1-2(class=errorObject.proposedTown || errorObject.proposedCounty ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
