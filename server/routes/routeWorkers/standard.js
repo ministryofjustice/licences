@@ -32,19 +32,22 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
         const nextPath = getPathFor({data: req.body, config: formConfig[formName], action});
         const saveSection = formConfig[formName].saveSection || [];
 
+        const targetSection = saveSection[0] || sectionName;
+        const targetForm = saveSection[1] || formName;
+
         if (formConfig[formName].fields) {
             const updatedLicence = await licenceService.update({
                 bookingId: bookingId,
                 config: formConfig[formName],
                 userInput: req.body,
-                licenceSection: saveSection[0] || sectionName,
-                formName: saveSection[1] || formName
+                licenceSection: targetSection,
+                formName: targetForm
             });
 
             if (formConfig[formName].validateInPlace) {
-                const errors = licenceService.getValidationErrorsForPage(updatedLicence, sectionName);
+                const errors = licenceService.getValidationErrorsForPage(updatedLicence, [targetForm]);
 
-                if (!isEmpty(getIn(errors, [sectionName, formName]))) {
+                if (!isEmpty(getIn(errors, [targetSection, targetForm]))) {
                     req.flash('errors', errors);
                     const actionPath = action ? action + '/' : '';
                     return res.redirect(`/hdc/${sectionName}/${formName}/${actionPath}${bookingId}`);

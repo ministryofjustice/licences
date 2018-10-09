@@ -5,6 +5,8 @@ const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 const {all, pipe, getIn, isEmpty, merge} = require('../../utils/functionalHelpers');
 const validationMessages = require('../config/validationMessages');
 
+const {sectionContaining} = require('../config/formsAndSections');
+
 const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
@@ -311,36 +313,36 @@ const schema = {
 };
 
 module.exports = function(licence) {
-    return section => {
+    return form => {
+        const section = sectionContaining[form];
+
         if (!licence[section]) {
             return [{
                 path: {[section]: 'Not answered'}
             }];
         }
 
-        const errorsForSection = joi.validate(
-            licence[section],
-            schema[section],
+        const errors = joi.validate(
+            licence[section][form],
+            schema[section][form],
             {stripUnknown: true, abortEarly: false}
         ).error;
 
-        const allErrorsForSection = section === 'proposedAddress' ?
-            addResidentErrors(errorsForSection, licence[section]) :
-            errorsForSection;
+        const allErrors = form === 'curfewAddress' ? addResidentErrors(errors, licence[section]) : errors;
 
-        if (!allErrorsForSection) {
+        if (!allErrors) {
             return [];
         }
 
-        const errorsArray = getArrayOfPathsAndMessages(section, allErrorsForSection);
+        const errorsArray = getArrayOfPathsAndMessages(section, form, allErrors);
 
         return updateWithSpecialCases(errorsArray);
     };
 };
 
-function getArrayOfPathsAndMessages(section, allErrorsForSection) {
+function getArrayOfPathsAndMessages(section, form, allErrors) {
 
-    return allErrorsForSection.details.map(error => {
+    return allErrors.details.map(error => {
         // error object may have multiple error objects e.g. list of residents errors
         if (Array.isArray(error)) {
             return error.map(createPathWithErrorMessage);
@@ -352,9 +354,11 @@ function getArrayOfPathsAndMessages(section, allErrorsForSection) {
     function createPathWithErrorMessage(errorItem) {
         return {
             path: {
-                [section]: errorItem.path.reduceRight((object, key) => {
-                    return {[key]: object};
-                }, getMessage(errorItem.type, errorItem.message, errorItem.path))
+                [section]: {
+                    [form]: errorItem.path.reduceRight((object, key) => {
+                        return {[key]: object};
+                    }, getMessage(errorItem.type, errorItem.message, [form, ...errorItem.path]))
+                }
             }
         };
     }
@@ -380,7 +384,7 @@ function addResidentErrors(errorsForSection, licenceSection) {
 
         // merge the details of the resident errors into same object
         const residentDetails = residentErrors.details.map(detail => {
-            return merge(detail, {path: ['curfewAddress', 'residents', index, ...detail.path]});
+            return merge(detail, {path: ['residents', index, ...detail.path]});
         });
 
         return {...allErrors, details: [...allErrors.details, residentDetails]};
