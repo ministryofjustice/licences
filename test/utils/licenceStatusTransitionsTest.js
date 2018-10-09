@@ -76,7 +76,7 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql('roToCa');
     });
 
-    it('should allow RO to CA for RO whenopted out even when other tasks not done', () => {
+    it('should allow RO to CA for RO when opted out even when other tasks not done', () => {
         const status = {
             stage: 'PROCESSING_RO',
             tasks: {
@@ -88,6 +88,26 @@ describe('getAllowedTransition', () => {
             },
             decisions: {
                 optedOut: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'RO');
+        expect(allowed).to.eql('roToCa');
+    });
+
+    it('should allow RO to CA for RO when bass area rejected even when other tasks not done', () => {
+        const status = {
+            stage: 'PROCESSING_RO',
+            tasks: {
+                curfewAddressReview: 'DONE',
+                bassAreaCheck: 'DONE',
+                curfewHours: 'UNSTARTED',
+                licenceConditions: 'UNSTARTED',
+                riskManagement: 'UNSTARTED',
+                reportingInstructions: 'UNSTARTED'
+            },
+            decisions: {
+                bassReferralNeeded: true
             }
         };
 

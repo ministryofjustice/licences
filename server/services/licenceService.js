@@ -306,10 +306,6 @@ module.exports = function createLicenceService(licenceClient) {
 
     function getLicenceErrors({licence, forms = reviewForms}) {
 
-        if (isEmpty(forms)) {
-            return [];
-        }
-
         const validationErrors = forms.map(validate(licence)).filter(item => item);
 
         if (isEmpty(validationErrors)) {

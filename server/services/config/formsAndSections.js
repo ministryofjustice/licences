@@ -1,7 +1,7 @@
 const formsInSection = {
     eligibility: ['excluded', 'suitability', 'crdTime', 'exceptionalCircumstances'],
     proposedAddress: ['optOut', 'addressProposed', 'curfewAddress'],
-    bassReferral: ['bassRequest'],
+    bassReferral: ['bassRequest', 'bassAreaCheck'],
     curfew: ['curfewHours', 'firstNight'],
     risk: ['riskManagement'],
     reporting: ['reportingInstructions', 'reportingDate'],
@@ -11,7 +11,7 @@ const formsInSection = {
 const sectionContaining = {
     excluded: 'eligibility', suitability: 'eligibility', crdTime: 'eligibility', exceptionalCircumstances: 'eligibility',
     optOut: 'proposedAddress', addressProposed: 'proposedAddress', bassReferral: 'proposedAddress', curfewAddress: 'proposedAddress',
-    bassRequest: 'bassReferral',
+    bassRequest: 'bassReferral', bassAreaCheck: 'bassReferral',
     curfewHours: 'curfew', firstNight: 'curfew',
     riskManagement: 'risk',
     reportingInstructions: 'reporting', reportingDate: 'reporting',

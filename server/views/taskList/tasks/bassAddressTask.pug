@@ -4,30 +4,48 @@ div.paddingBottom
     div.pure-g
         div.pure-u-1.pure-u-md-3-4
 
-            if licenceStatus.tasks.bassAddress !== 'DONE'
-                | BASS referral requested
-            else
-                -var offer = licenceStatus.decisions.bassOffer
+            if user.role === 'RO'
+                if licenceStatus.tasks.bassAreaCheck === 'DONE'
+                    -var approved = licenceStatus.decisions.bassAreaSuitable
 
-                if offer === 'Yes'
-                    | Offer made and property available
-                else if offer === 'Waiting'
-                    | Offer made and on waiting list
+                    if approved
+                        | Suitable BASS area given
+                    else
+                        | BASS area is not suitable
+                else
+                    | BASS referral requested
+
+            else if user.role === 'CA'
+                if licenceStatus.tasks.bassAddress === 'DONE'
+                    -var offer = licenceStatus.decisions.bassOffer
+
+                    if offer === 'Yes'
+                        | Offer made and property available
+                    else if offer === 'Waiting'
+                        | Offer made and on waiting list
+
+                    else
+                        div.pure-g
+                            div.pure-u-1.pure-u-sm-3-5.notice-container
+                                div.notice
+                                    i.icon.icon-important
+                                        span.visually-hidden Warning
+                                    strong.bold-small
+                                        if offer === 'Unsuitable'
+                                            | Not suitable for BASS
+                                        else if offer === 'Unavailable'
+                                           | Address not available
 
                 else
-                    div.pure-g
-                        div.pure-u-1.pure-u-sm-3-5.notice-container
-                            div.notice
-                                i.icon.icon-important
-                                    span.visually-hidden Warning
-                                strong.bold-small
-                                    if offer === 'Unsuitable'
-                                        | Not suitable for BASS
-                                    else if offer === 'Unavailable'
-                                       | Address not available
+                    | BASS referral requested
 
 
         div.pure-u-1.pure-u-md-1-4.center
-            if user.role === 'CA' && postApproval
-                -var bassReferralPath = "/hdc/proposedAddress/bassAddress/" + prisonerInfo.bookingId
-                +startContinueChange(licenceStatus.tasks.bassAddress, bassReferralPath)
+            -var bassAddressPath = "/hdc/bassReferral/bassAddress/" + prisonerInfo.bookingId
+            -var bassAreaCheckPath = "/hdc/bassReferral/bassAreaCheck/" + prisonerInfo.bookingId
+
+            if user.role === 'RO'
+                +startContinueChange(licenceStatus.tasks.bassAreaCheck, bassAreaCheckPath)
+
+            else if user.role === 'CA' && postApproval
+                +startContinueChange(licenceStatus.tasks.bassAddress, bassAddressPath)

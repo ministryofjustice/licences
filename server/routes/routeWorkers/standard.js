@@ -9,7 +9,7 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
     }
 
     function formGet(req, res, sectionName, formName, bookingId, action) {
-        const {licenceSection, nextPath, pageDataMap, validateInPlace, saveSection} = formConfig[formName];
+        const {licenceSection, nextPath, pageDataMap, validateInPlace} = formConfig[formName];
         const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
         const data = getIn(res.locals.licence, dataPath) || {};
 
