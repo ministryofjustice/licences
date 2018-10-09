@@ -3,6 +3,7 @@ const authorisationConfig = require('../routes/config/authorisation');
 const {getWhereKeyLike, isEmpty} = require('../utils/functionalHelpers');
 const {unauthorisedError} = require('../utils/errors');
 const {merge} = require('../utils/functionalHelpers');
+const {getLicenceStatus} = require('./licenceStatus');
 
 module.exports = {
     async: asyncMiddleware,
@@ -32,8 +33,11 @@ function checkLicenceMiddleWare(licenceService, prisonerService) {
                 return res.redirect('/');
             }
 
+            const licenceStatus = getLicenceStatus(licence);
+
             res.locals.licence = licence;
             res.locals.prisoner = prisoner;
+            res.locals.licenceStatus = licenceStatus;
             next();
 
         } catch (error) {

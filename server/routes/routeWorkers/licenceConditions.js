@@ -1,5 +1,4 @@
 const logger = require('../../../log');
-const {getLicenceStatus} = require('../../utils/licenceStatus');
 const {getIn} = require('../../utils/functionalHelpers');
 
 module.exports = ({formConfig, conditionsService, licenceService}) => {
@@ -9,10 +8,9 @@ module.exports = ({formConfig, conditionsService, licenceService}) => {
 
         const {action, bookingId} = req.params;
         const conditions = await conditionsService.getStandardConditions();
-        const licenceStatus = getLicenceStatus(res.locals.licence);
         const data = getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {};
 
-        res.render('licenceConditions/standard', {action, bookingId, conditions, data, licenceStatus});
+        res.render('licenceConditions/standard', {action, bookingId, conditions, data});
     }
 
     async function getAdditional(req, res) {
@@ -22,9 +20,8 @@ module.exports = ({formConfig, conditionsService, licenceService}) => {
         const licence = getIn(res.locals.licence, ['licence']);
         const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
         const conditions = await conditionsService.getAdditionalConditions(licence);
-        const licenceStatus = getLicenceStatus(res.locals.licence);
 
-        res.render('licenceConditions/additionalConditions', {action, bookingId, conditions, bespokeConditions, licenceStatus});
+        res.render('licenceConditions/additionalConditions', {action, bookingId, conditions, bespokeConditions});
     }
 
     async function postAdditional(req, res) {

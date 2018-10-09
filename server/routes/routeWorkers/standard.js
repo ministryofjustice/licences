@@ -1,5 +1,4 @@
 const {getIn, isEmpty, firstItem} = require('../../utils/functionalHelpers');
-const {getLicenceStatus} = require('../../utils/licenceStatus');
 const {getPathFor} = require('../../utils/routes');
 
 module.exports = ({formConfig, licenceService, sectionName}) => {
@@ -13,11 +12,10 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
         const {licenceSection, nextPath, pageDataMap, validateInPlace} = formConfig[formName];
         const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
         const data = getIn(res.locals.licence, dataPath) || {};
-        const licenceStatus = getLicenceStatus(res.locals.licence);
 
         const errors = validateInPlace && firstItem(req.flash('errors'));
         const errorObject = getIn(errors, [sectionName, formName]) || {};
-        const viewData = {bookingId, data, nextPath, licenceStatus, errorObject, action, sectionName, formName};
+        const viewData = {bookingId, data, nextPath, errorObject, action, sectionName, formName};
 
         res.render(`${sectionName}/${formName}`, viewData);
     }
