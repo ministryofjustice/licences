@@ -156,6 +156,16 @@ describe('/hdc/approval', () => {
                 .send({decision: 'Yes'})
                 .expect(403);
         });
+
+        it('should throw if submitted by non-DM user case insensitively', () => {
+
+            const caApp = createApp({licenceServiceStub}, 'caUser');
+
+            return request(caApp)
+                .post('/hdc/Approval/release/1')
+                .send({decision: 'Yes'})
+                .expect(403);
+        });
     });
 });
 
