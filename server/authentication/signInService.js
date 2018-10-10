@@ -17,11 +17,11 @@ function signInService(audit) {
 
         signIn: async function(token, refreshToken, expiresIn, username) {
 
-            logger.info(`Log in for: ${username}`);
+            logger.info(`User profile for: ${username}`);
 
             try {
-                const {profile, role} = await login(token, username);
-                logger.info(`Log in success - token: ${token}`);
+                const {profile, role} = await getUser(token, username);
+                logger.info(`User profile success - token: ${token}`);
 
                 const userDetail = profile.staffId || profile.username || profile.lastName || 'no user id';
                 audit.record('LOGIN', userDetail);
@@ -71,7 +71,7 @@ function signInService(audit) {
         return now.setSeconds(secondsUntilExpiry);
     }
 
-    async function login(token, username) {
+    async function getUser(token, username) {
 
         const [profile, role] = await Promise.all([
             getUserProfile(token, username),

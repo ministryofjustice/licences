@@ -278,11 +278,20 @@ module.exports = function createApp({
         return res.render('notfound');
     });
 
+    const authLogoutUrl = `${config.nomis.authUrl}/logout?client_id=${config.nomis.apiClientId}&redirect_uri=${config.nomis.licencesUrl}`;
+
+    app.get('/autherror', (req, res) => {
+        res.status(401);
+        return res.render('autherror', {
+            authURL: authLogoutUrl
+        });
+    });
+
     app.get('/login',
         passport.authenticate('oauth2'));
 
     app.get('/login/callback',
-        passport.authenticate('oauth2', {failureRedirect: '/login'}),
+        passport.authenticate('oauth2', {failureRedirect: '/autherror'}),
         function(req, res) {
             res.redirect('/');
         });
@@ -290,10 +299,8 @@ module.exports = function createApp({
     app.use('/logout', (req, res) => {
         if (req.user) {
             req.logout();
-            res.redirect('/login');
-        } else {
-            res.redirect('/login');
         }
+        res.redirect(authLogoutUrl);
     });
 
     app.use('/', defaultRouter());

@@ -28,10 +28,6 @@ describe('signInService', () => {
     describe('signIn', () => {
 
         it('should return user object if all apis succeed', () => {
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
-
             fakeNomis
                 .get(`/users/me`)
                 .reply(200, {key: 'value', activeCaseLoadId: 'ID'});
@@ -55,14 +51,10 @@ describe('signInService', () => {
                 refreshTime: in15Mins
             };
 
-            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
+            return expect(service.signIn('type token', 'refresh', '1200', 'un')).to.eventually.eql(expectedOutput);
         });
 
         it('should audit the login', async () => {
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh'});
-
             fakeNomis
                 .get(`/users/me`)
                 .reply(200, {key: 'value', activeCaseLoadId: 'ID', staffId: 'staff-id'});
@@ -75,15 +67,11 @@ describe('signInService', () => {
                 .get(`/users/me/caseLoads`)
                 .reply(200, [{description: 'Prison', caseLoadId: 'ID'}, {description: 'None', caseLoadId: 'wrong'}]);
 
-            await service.signIn('un', 'pw');
+            await service.signIn('type token', 'refresh', '1200', 'un');
             return expect(auditStub.record).to.be.calledWith('LOGIN', 'staff-id');
         });
 
         it('should get RO client credentials token when user role is RO', async () => {
-            fakeOauth
-                .post(`/oauth/token`, 'grant_type=password&username=UN&password=pw')
-                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
-
             fakeOauth
                 .post(`/oauth/token`, 'grant_type=client_credentials&username=UN')
                 .reply(200,
@@ -112,50 +100,13 @@ describe('signInService', () => {
                 refreshToken: 'refresh',
                 role: 'RO',
                 token: 'type token_2',
-                username: 'un'
+                username: 'UN'
             };
 
-            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
-
-        });
-
-
-        it('should return empty object if authentication forbidden', () => {
-            nock.cleanAll();
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(400, {token_type: 'type', access_token: 'token'});
-
-            const expectedOutput = {};
-
-            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
-        });
-
-        it('should throw if there is a non 400 error with authentication', () => {
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(500, {token_type: 'type', access_token: 'token'});
-
-            return expect(service.signIn('un', 'pw')).to.eventually.be.rejected();
-        });
-
-        it('should throw if there is an non-200 response from user api', () => {
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {token_type: 'type', access_token: 'token'});
-
-            fakeNomis
-                .get(`/users/me`)
-                .reply(300, {key: 'value'});
-
-            return expect(service.signIn('un', 'pw')).to.eventually.be.rejected();
+            return expect(service.signIn('type token_2', 'refresh', '1200', 'UN')).to.eventually.eql(expectedOutput);
         });
 
         it('should throw if there is an error with roles api', () => {
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {token_type: 'type', access_token: 'token'});
-
             fakeNomis
                 .get(`/users/me`)
                 .reply(200, {key: 'value'});
@@ -164,14 +115,10 @@ describe('signInService', () => {
                 .get(`/users/me/roles`)
                 .reply(500, [{roleCode: 'CA'}]);
 
-            return expect(service.signIn('un', 'pw')).to.eventually.be.rejected();
+            return expect(service.signIn('type token', 'refresh', '1200', 'un')).to.eventually.be.rejected();
         });
 
         it('should return null if there is no active caseload', () => {
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
-
             fakeNomis
                 .get(`/users/me`)
                 .reply(200, {key: 'value', activeCaseLoadId: 'ID'});
@@ -195,14 +142,10 @@ describe('signInService', () => {
                 refreshTime: in15Mins
             };
 
-            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
+            return expect(service.signIn('type token', 'refresh', '1200', 'un')).to.eventually.eql(expectedOutput);
         });
 
         it('should not get caseload but return null if there is no active caseload ID', () => {
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
-
             fakeNomis
                 .get(`/users/me`)
                 .reply(200, {key: 'value', activeCaseLoadId: ''});
@@ -222,7 +165,7 @@ describe('signInService', () => {
                 refreshTime: in15Mins
             };
 
-            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
+            return expect(service.signIn('type token', 'refresh', '1200', 'un')).to.eventually.eql(expectedOutput);
         });
     });
 
@@ -257,10 +200,6 @@ describe('signInService', () => {
     describe('find role code', () => {
 
         it('should find matching role code appearing at end of role', () => {
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
-
             fakeNomis
                 .get(`/users/me`)
                 .reply(200);
@@ -278,14 +217,10 @@ describe('signInService', () => {
                 refreshTime: in15Mins
             };
 
-            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
+            return expect(service.signIn('type token', 'refresh', '1200', 'un')).to.eventually.eql(expectedOutput);
         });
 
         it('should not find matching role code appearing when not at end of role', () => {
-            fakeOauth
-                .post(`/oauth/token`)
-                .reply(200, {token_type: 'type', access_token: 'token', refresh_token: 'refresh', expires_in: '1200'});
-
             fakeNomis
                 .get(`/users/me`)
                 .reply(200);
@@ -303,7 +238,7 @@ describe('signInService', () => {
                 refreshTime: in15Mins
             };
 
-            return expect(service.signIn('un', 'pw')).to.eventually.eql(expectedOutput);
+            return expect(service.signIn('type token', 'refresh', '1200', 'un')).to.eventually.eql(expectedOutput);
         });
 
     });

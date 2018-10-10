@@ -38,7 +38,7 @@ function init(signInService) {
             state: true,
             customHeaders: {Authorization: generateOauthClientToken()}
         },
-        async function(accessToken, refreshToken, params, profile, done) {
+        async (accessToken, refreshToken, params, profile, done) => {
             try {
                 const user = await signInService.signIn(accessToken, refreshToken, params.expires_in, params.user_name);
                 return done(null, user);
