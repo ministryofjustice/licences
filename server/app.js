@@ -140,6 +140,7 @@ module.exports = function createApp({
                     req.user.refreshTime = newToken.refreshTime;
                 } catch (error) {
                     logger.error(`Elite 2 token refresh error: ${req.user.username}`, error.stack);
+                    return res.redirect('/logout');
                 }
             }
         }
