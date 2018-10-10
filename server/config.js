@@ -58,7 +58,5 @@ module.exports = {
             'RO',
             'DM'
         ]
-    },
-
-    alternativeCaseList: get('ALTERNATIVE_CASELIST', true)
+    }
 };
