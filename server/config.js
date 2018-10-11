@@ -58,5 +58,7 @@ module.exports = {
             'RO',
             'DM'
         ]
-    }
+    },
+
+    domain: get('DOMAIN', 'http://localhost:3000')
 };

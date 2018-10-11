@@ -27,6 +27,42 @@ describe('POST /login', () => {
                     expect(res.headers.location).to.eql('/');
                 });
         });
+
+        it('redirects to target if on same domain', () => {
+            const fakeSignInService = {
+                signIn: sinon.stub().resolves({
+                    firstName: 'staff',
+                    lastName: 'user',
+                    token: 'aToken'
+                })
+            };
+
+            const app = createSignInApp(fakeSignInService);
+
+            return request(app)
+                .post('/?target=/some/page')
+                .send('username=auser&password=apass')
+                .expect(302)
+                .expect('Location', 'http://localhost:3000/some/page');
+        });
+
+        it('redirects to / if target from different domain', () => {
+            const fakeSignInService = {
+                signIn: sinon.stub().resolves({
+                    firstName: 'staff',
+                    lastName: 'user',
+                    token: 'aToken'
+                })
+            };
+
+            const app = createSignInApp(fakeSignInService);
+
+            return request(app)
+                .post('/?target=http://evil.com')
+                .send('username=auser&password=apass')
+                .expect(302)
+                .expect('Location', '/');
+        });
     });
 
     context('Unsuccessful sign in', () => {

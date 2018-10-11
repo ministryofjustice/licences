@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const {domain} = require('../config');
 
 module.exports = function createRouter() {
     const router = express.Router();
@@ -21,7 +22,7 @@ module.exports = function createRouter() {
 
     router.post('/', (req, res) => {
 
-        const target = req.query.target || '/';
+        const target = getTarget(req.query.target);
 
         return passport.authenticate('local', {
             successRedirect: target,
@@ -33,3 +34,11 @@ module.exports = function createRouter() {
     return router;
 };
 
+function getTarget(target) {
+
+    if (target && target.match(/^\/(?!\/)/)) {
+        return `${domain}${target}`;
+    }
+
+    return '/';
+}
