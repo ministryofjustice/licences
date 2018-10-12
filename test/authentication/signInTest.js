@@ -169,34 +169,6 @@ describe('signInService', () => {
         });
     });
 
-    describe('getRefreshedToken', () => {
-
-        it('should get and return new token using refresh token when not RO', async () => {
-
-            fakeOauth
-                .post(`/oauth/token`, 'grant_type=refresh_token&refresh_token=refresh')
-                .reply(200,
-                    {token_type: 'type', access_token: 'token', refresh_token: 'refreshed', expires_in: '1200'});
-
-            const newToken = await service.getRefreshedToken({username: 'un', role: 'CA', refreshToken: 'refresh'});
-
-            expect(newToken).to.be.eql({refreshToken: 'refreshed', refreshTime: in15Mins, token: 'type token'});
-        });
-
-        it('should get and store new token using client credentials when RO', async () => {
-
-            fakeOauth
-                .post(`/oauth/token`, 'grant_type=client_credentials&username=un')
-                .reply(200,
-                    {token_type: 'type', access_token: 'token', refresh_token: 'refreshed', expires_in: '1200'});
-
-            const newToken = await service.getRefreshedToken({username: 'un', role: 'RO', refreshToken: 'refresh'});
-
-            expect(newToken).to.be.eql({refreshToken: 'refreshed', refreshTime: in15Mins, token: 'type token'});
-        });
-
-    });
-
     describe('find role code', () => {
 
         it('should find matching role code appearing at end of role', () => {

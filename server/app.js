@@ -123,35 +123,6 @@ module.exports = function createApp({
     app.use(cookieParser());
     app.use(csurf({cookie: true}));
 
-    // token refresh
-    app.use(async (req, res, next) => {
-
-        if (production && req.user) {
-
-            const timeToRefresh = new Date() > req.user.refreshTime;
-
-            if (timeToRefresh) {
-                try {
-                    const newToken = await signInService.getRefreshedToken(req.user);
-
-                    req.user.token = newToken.token;
-                    req.user.refreshToken = newToken.refreshToken;
-                    req.user.refreshTime = newToken.refreshTime;
-                } catch (error) {
-                    logger.error(`Elite 2 token refresh error: ${req.user.username}`, error.stack);
-                }
-            }
-        }
-        next();
-    });
-
-    // Update a value in the cookie so that the set-cookie will be sent.
-    // Only changes every minute so that it's not sent with every request.
-    app.use(function(req, res, next) {
-        req.session.nowInMinutes = Math.floor(Date.now() / 60e3);
-        next();
-    });
-
     // Resource Delivery Configuration
     app.use(compression());
 
@@ -238,6 +209,28 @@ module.exports = function createApp({
 
     app.use(flash());
 
+    // token refresh
+    app.use((req, res, next) => {
+        if (req.user) {
+            const timeToRefresh = new Date() > req.user.refreshTime;
+
+            if (timeToRefresh) {
+                // stash where the user was
+                req.session.returnTo = req.originalUrl;
+                res.redirect('/login');
+                return;
+            }
+        }
+        next();
+    });
+
+    // Update a value in the cookie so that the set-cookie will be sent.
+    // Only changes every minute so that it's not sent with every request.
+    app.use(function(req, res, next) {
+        req.session.nowInMinutes = Math.floor(Date.now() / 60e3);
+        next();
+    });
+
     // Express Routing Configuration
     app.get('/health', (req, res, next) => {
         healthcheck((err, result) => {
@@ -291,10 +284,7 @@ module.exports = function createApp({
         passport.authenticate('oauth2'));
 
     app.get('/login/callback',
-        passport.authenticate('oauth2', {failureRedirect: '/autherror'}),
-        function(req, res) {
-            res.redirect('/');
-        });
+        passport.authenticate('oauth2', {successReturnToOrRedirect: '/', failureRedirect: '/autherror'}));
 
     app.use('/logout', (req, res) => {
         if (req.user) {

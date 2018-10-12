@@ -48,19 +48,6 @@ function signInService(audit) {
                 logger.error(`Auth login error [${username}]:`, error.stack);
                 throw error;
             }
-        },
-
-        getRefreshedToken: async function(user) {
-            logger.info(`Refreshing token for : ${user.username}`);
-
-            const {token, refreshToken, expiresIn} = await getRefreshTokens(
-                user.username, user.role, user.refreshToken
-            );
-
-            const refreshTime = getRefreshTime(expiresIn);
-
-            return {token, refreshToken, refreshTime};
-
         }
     };
 
