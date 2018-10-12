@@ -1,7 +1,7 @@
 const superagent = require('superagent');
 const querystring = require('querystring');
 const config = require('../config');
-const {generateOauthClientToken, generateAdminOauthClientToken} = require('./oauth');
+const {generateAdminOauthClientToken} = require('./oauth');
 const logger = require('../../log');
 
 const timeoutSpec = {
@@ -78,14 +78,6 @@ function signInService(audit) {
         const oauthRequest = {grant_type: 'client_credentials', username};
 
         return oauthTokenRequest(oauthAdminClientToken, oauthRequest);
-    }
-
-    async function getRefreshTokens(username, role, refreshToken) {
-
-        const oauthClientToken = generateOauthClientToken();
-        const oauthRequest = {grant_type: 'refresh_token', refresh_token: refreshToken};
-
-        return oauthTokenRequest(oauthClientToken, oauthRequest);
     }
 }
 
