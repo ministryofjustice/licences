@@ -42,12 +42,25 @@ $.tablesorter.addParser({
 function init() {
     $("#hdcEligiblePrisoners.sortcolumns").tablesorter({
         emptyTo: 'bottom',
+        dateFormat: "uk",
         headers: {
             0: {sorter: 'offenderName'},
             1: {sorter: false},
             2: {sorter: 'timeReference'},
             3: {sorter: false},
+            4: {sorter: false}
+        }
+    });
+
+    $("#hdcEligiblePrisoners.caSortcolumns").tablesorter({
+        emptyTo: 'bottom',
+        dateFormat: "uk",
+        headers: {
+            0: {sorter: 'offenderName'},
+            1: {sorter: false},
+            2: {sorter: 'shortDate'},
             3: {sorter: false},
+            4: {sorter: false}
         }
     });
 
