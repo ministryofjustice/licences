@@ -126,7 +126,7 @@ module.exports = function createApp({
     // token refresh
     app.use(async (req, res, next) => {
 
-        if (production && req.user) {
+        if (production && req.user && req.user.role !== 'RO') {
 
             const timeToRefresh = new Date() > req.user.refreshTime;
 
