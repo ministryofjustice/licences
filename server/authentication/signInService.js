@@ -82,11 +82,6 @@ function signInService(audit) {
 
     async function getRefreshTokens(username, role, refreshToken) {
 
-        if (role === RO_ROLE_CODE) {
-            logger.info('RO client credentials token refresh');
-            return getClientCredentialsTokens(username);
-        }
-
         const oauthClientToken = generateOauthClientToken();
         const oauthRequest = {grant_type: 'refresh_token', refresh_token: refreshToken};
 

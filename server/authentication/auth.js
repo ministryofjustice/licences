@@ -12,7 +12,7 @@ function authenticationMiddleware() {
         }
 
         const redirectPath = '/login';
-        const query = req.get('referrer') ? new URLSearchParams({target: req.get('referrer')}) : null;
+        const query = req.get('referrer') ? new URLSearchParams({target: req.originalUrl}) : null;
         const redirectUrl = query ? redirectPath + '?' + query : redirectPath;
         return res.redirect(redirectUrl);
     };

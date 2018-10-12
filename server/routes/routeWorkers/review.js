@@ -1,6 +1,5 @@
 const logger = require('../../../log');
 
-const {getLicenceStatus} = require('../../utils/licenceStatus');
 const {getIn, lastItem} = require('../../utils/functionalHelpers');
 
 module.exports = ({conditionsService, licenceService, prisonerService}) => {
@@ -12,10 +11,12 @@ module.exports = ({conditionsService, licenceService, prisonerService}) => {
         const licence = getIn(res.locals.licence, ['licence']) || {};
         const stage = getIn(res.locals.licence, ['stage']) || {};
         const licenceVersion = getIn(res.locals.licence, ['version']) || {};
-        const licenceStatus = getLicenceStatus(res.locals.licence);
 
         const licenceWithAddress = addAddressTo(licence);
-        const errorObject = licenceService.getValidationErrorsForReview({licenceStatus, licence: licenceWithAddress});
+        const errorObject = licenceService.getValidationErrorsForReview({
+            licenceStatus: res.locals.licenceStatus,
+            licence: licenceWithAddress
+        });
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, req.user.token);
@@ -26,7 +27,6 @@ module.exports = ({conditionsService, licenceService, prisonerService}) => {
             prisonerInfo,
             stage,
             licenceVersion,
-            licenceStatus,
             errorObject
         });
     }

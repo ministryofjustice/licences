@@ -1452,7 +1452,7 @@ describe('licenceService', () => {
                 licenceConditions: 'Not answered'
             };
 
-            expect(service.getLicenceErrors({licence, sections: ['licenceConditions']})).to.eql(expectedOutput);
+            expect(service.getLicenceErrors({licence, forms: ['additional']})).to.eql(expectedOutput);
         });
 
         it('should return null if the licence is valid', () => {
@@ -3497,7 +3497,7 @@ describe('licenceService', () => {
                     }
                 };
 
-                const output = service.getValidationErrorsForPage(licence, 'approval');
+                const output = service.getValidationErrorsForPage(licence, ['release']);
 
                 expect(output).to.eql({});
             });
@@ -3517,7 +3517,7 @@ describe('licenceService', () => {
                     }
                 };
 
-                const output = service.getValidationErrorsForPage(licence, 'approval');
+                const output = service.getValidationErrorsForPage(licence, ['release']);
 
                 expect(output).to.eql({approval: {release: {reason: 'Select a reason'}}});
             });
@@ -3538,7 +3538,7 @@ describe('licenceService', () => {
                     }
                 };
 
-                const output = service.getValidationErrorsForPage(licence, 'approval');
+                const output = service.getValidationErrorsForPage(licence, ['release']);
 
                 expect(output).to.eql({approval: {release: {notedComments: 'Add a comment'}}});
             });
@@ -3555,7 +3555,7 @@ describe('licenceService', () => {
                     }
                 };
 
-                const output = service.getValidationErrorsForPage(licence, 'approval');
+                const output = service.getValidationErrorsForPage(licence, ['release']);
 
                 expect(output).to.eql({});
             });
@@ -3568,7 +3568,7 @@ describe('licenceService', () => {
                     licenceConditions: 'Not answered'
                 };
 
-                expect(service.getValidationErrorsForPage(licence, 'licenceConditions')).to.eql(expectedOutput);
+                expect(service.getValidationErrorsForPage(licence, ['additional'])).to.eql(expectedOutput);
             });
         });
     });

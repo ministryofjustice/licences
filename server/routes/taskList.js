@@ -25,7 +25,6 @@ module.exports = function({prisonerService, licenceService, caseListService, aut
         const {bookingId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, req.user.token);
         const licence = await licenceService.getLicence(bookingId);
-        const licenceWithTab = caseListService.addTabToCase(req.user.role, licence);
 
         const licenceStatus = getLicenceStatus(licence);
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
@@ -40,8 +39,7 @@ module.exports = function({prisonerService, licenceService, caseListService, aut
             statusLabel,
             prisonerInfo,
             bookingId,
-            postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage),
-            caseListTab: licenceWithTab.tab
+            postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
         });
     }));
 

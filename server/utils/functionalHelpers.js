@@ -124,7 +124,8 @@ function omit(namesList, sourceObject) {
 
 function getWhereKeyLike(string, object) {
     const stringIncludesKey = (value, key) => {
-        return string.includes(key);
+        const lowerCaseString = string.toLowerCase();
+        return lowerCaseString.includes(key.toLowerCase());
     };
 
     return R.pipe(

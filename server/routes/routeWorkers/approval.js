@@ -1,5 +1,4 @@
 const logger = require('../../../log');
-const {getLicenceStatus} = require('../../utils/licenceStatus');
 const {getIn, firstItem} = require('../../utils/functionalHelpers');
 
 module.exports = ({formConfig, prisonerService}) => {
@@ -16,15 +15,13 @@ module.exports = ({formConfig, prisonerService}) => {
             const data = getIn(res.locals.licence, dataPath) || {};
             const errors = firstItem(req.flash('errors'));
             const errorObject = getIn(errors, ['approval', 'release']) || {};
-            const licenceStatus = getLicenceStatus(res.locals.licence);
 
             res.render(`approval/${formName}`, {
                 prisonerInfo,
                 bookingId,
                 data,
                 nextPath,
-                errorObject,
-                licenceStatus
+                errorObject
             });
         };
     }

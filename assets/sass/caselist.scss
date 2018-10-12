@@ -26,7 +26,7 @@
     }
 }
 
-#hdcEligiblePrisoners.sortcolumns {
+#hdcEligiblePrisoners.sortcolumns, #hdcEligiblePrisoners.caSortcolumns{
     thead tr .sortable {
         background-image: url($path+'/bg.gif');
         background-repeat: no-repeat;
