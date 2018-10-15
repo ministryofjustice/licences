@@ -37,6 +37,17 @@ describe('send', () => {
                 });
         });
 
+        it('renders caToRo form when bassReview is destination', () => {
+            const app = createApp({licenceService, prisonerService}, 'caUser');
+            return request(app)
+                .get('/hdc/send/bassReview/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('<input type="hidden" name="transitionType" value="caToRo">');
+                });
+        });
+
         it('renders roToCa form when finalChecks is destination', () => {
             const app = createApp({licenceService, prisonerService}, 'roUser');
             return request(app)

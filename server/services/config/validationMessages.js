@@ -17,10 +17,11 @@ module.exports = {
     curfewAddress_cautionedAgainstResident: 'Select yes or no',
     curfewAddress_residents_name: 'Enter a name',
     curfewAddress_residents_relationship: 'Enter a relationship',
-    bassReferral_decision: 'Select yes or no',
-    bassReferral_proposedCounty: 'Enter a county',
-    bassReferral_proposedTown: 'Enter a town',
     exceptionalCircumstances_decision: 'Select yes or no',
+
+    bassRequest_bassRequested: 'Select yes or no',
+    bassRequest_proposedCounty: 'Enter a county',
+    bassRequest_proposedTown: 'Enter a town',
 
     // PROCESSING_RO forms
     curfewAddress_consent: 'Say if the homeowner consents to HDC',
@@ -87,7 +88,7 @@ module.exports = {
     release_notedComments: 'Add a comment',
     release_reason: 'Select a reason',
 
-    // template forms
+    // LICENCE CREATION forms
     reportingDate_reportingDate: 'Enter a valid date',
     reportingDate_reportingTime: 'Enter a valid time',
     firstNight_firstNightFrom: 'Enter a valid from time',

@@ -1,0 +1,49 @@
+extends ../layout
+
+block content
+
+    - var errorsOnPage = Object.keys(errorObject).length !== 0;
+
+    include ../includes/back
+
+    if errorsOnPage
+        div.error-summary(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
+            h2.heading-medium.error-summary-heading.center.noMargin#error-summary-heading
+                | There are unanswered questions - see below
+
+    h1.heading-large Check the information before submitting the case
+    div.largeMarginBottom
+
+        include ../includes/personalDetailsSummary
+
+        div.pure-g.borderBottomLight
+            div.pure-u-1.pure-u-md-1-2
+                h2#bassRequestDetails.heading-medium Proposed BASS area
+            div.pure-u-1.pure-u-md-1-2.alignRight
+                div.change-details
+                    if(user.role === 'CA' && stage === 'ELIGIBILITY')
+                        a#bassEditLink(href="/hdc/bassReferral/bassRequest/change/" + bookingId) Change
+
+            div.pure-u-1
+                if typeof errorObject.bassReferral === 'string'
+                    p.alert.bold(id='proposed-bass-error') Enter a BASS area
+                else if errorObject.bassReferral && typeof errorObject.bassReferral.bassRequest === 'string'
+                    p.alert.bold(id='proposed-bass-error') Enter a BASS area
+                else
+                    include ./includes/bassRequest
+
+    if !errorsOnPage
+        h2.heading-medium Now send the case
+
+        div.pure-u-1.pure-u-md-3-4
+            | The case is ready to send to the responsible officer for BASS area checks.
+
+        div.paddingBottom.smallPaddingTop
+            form#addressReviewForm(method='POST', action='/hdc/send/bassReview/' + bookingId)
+                input(type="hidden" name="_csrf" value=csrfToken)
+                div.pure-u-1.inlineButtons
+                    div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+                        input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
+    else
+        div.paddingBottom.smallPaddingTop
+            a#correctAddressLink(href="/hdc/bassReferral/bassRequest/change/" + bookingId) Correct the errors before continuing
