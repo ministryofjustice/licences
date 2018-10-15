@@ -12,6 +12,7 @@ module.exports = [
         {bookingId: 1,
             conditionalReleaseDate: '15/10/2019',
             homeDetentionCurfewEligibilityDate: '13/07/2019'},
+    due: {text: '1 year', overdue: false},
     stage: 'PROCESSING_RO',
     status: 'Submitted to RO'},
 
@@ -28,6 +29,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'UNSTARTED',
         status: 'Submitted to RO'},
 
@@ -44,6 +46,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'ELIGIBILITY',
         status: 'Submitted to RO'},
 
@@ -60,6 +63,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'APPROVAL',
         status: 'Submitted to RO'},
 
@@ -76,6 +80,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'DECIDED',
         status: 'Approved'},
 
@@ -92,6 +97,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'DECIDED',
         status: 'Refused'},
 
@@ -108,6 +114,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'PROCESSING_CA',
         status: 'Refused'},
 
@@ -124,6 +131,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'PROCESSING_CA',
         status: 'Postponed'},
 
@@ -140,6 +148,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'ELIGIBILITY',
         status: 'Opted out'},
 
@@ -156,6 +165,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'ELIGIBILITY',
         status: 'Eligible'},
 
@@ -172,6 +182,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'PROCESSING_RO',
         status: 'Ready to check'},
 
@@ -188,6 +199,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'ELIGIBILITY',
         status: 'Getting address'},
 
@@ -204,6 +216,7 @@ module.exports = [
             {bookingId: 1,
                 conditionalReleaseDate: '15/10/2019',
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
+        due: {text: '1 year', overdue: false},
         stage: 'ELIGIBILITY',
         status: 'Address rejected'}
 ];

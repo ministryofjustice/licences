@@ -292,6 +292,8 @@ const OFFENDER = {
 };
 
 const CURFEW_HOURS = {
+    CURFEW_FIRST_FROM,
+    CURFEW_FIRST_UNTIL,
     CURFEW_MON_FROM,
     CURFEW_MON_UNTIL,
     CURFEW_TUE_FROM,
@@ -329,8 +331,6 @@ module.exports = {
         SENT_TUSED,
         ...REPORTING,
         CURFEW_ADDRESS,
-        CURFEW_FIRST_FROM,
-        CURFEW_FIRST_UNTIL,
         ...CURFEW_HOURS,
         MONITOR,
         CONDITIONS: {
@@ -370,7 +370,6 @@ module.exports = {
         SENT_SED,
         ...REPORTING,
         CURFEW_ADDRESS,
-        CURFEW_FIRST_FROM,
         ...CURFEW_HOURS,
         MONITOR,
         CONDITIONS: {
@@ -396,7 +395,6 @@ module.exports = {
         SENT_SED,
         ...REPORTING,
         CURFEW_ADDRESS,
-        CURFEW_FIRST_FROM,
         ...CURFEW_HOURS,
         MONITOR,
         CONDITIONS: {
@@ -422,8 +420,6 @@ module.exports = {
         SENT_TUSED,
         ...REPORTING,
         CURFEW_ADDRESS,
-        CURFEW_FIRST_FROM,
-        CURFEW_FIRST_UNTIL,
         ...CURFEW_HOURS,
         MONITOR,
         CONDITIONS: {
@@ -448,7 +444,6 @@ module.exports = {
         SENT_SED,
         ...REPORTING,
         CURFEW_ADDRESS,
-        CURFEW_FIRST_FROM,
         ...CURFEW_HOURS,
         MONITOR
     }

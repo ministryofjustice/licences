@@ -79,9 +79,7 @@ const userServiceStub = {
 };
 
 const caseListServiceStub = {
-    getHdcCaseList: sinon.stub().resolves([]),
-    addTabToCases: sinon.stub().returns([]),
-    addTabToCase: sinon.stub().returns({tab: 'ready'})
+    getHdcCaseList: sinon.stub().resolves([])
 };
 
 function testFormPageGets(app, routes, licenceServiceStub) {

@@ -19,6 +19,18 @@ $path: "/public/images/";
     font-family: "nta",Arial,sans-serif;
 }
 
+.front-end-control {
+    display: none;
+    visibility: hidden;
+}
+
+.js-enabled {
+    .front-end-control {
+        display: initial;
+        visibility: visible;
+    }
+}
+
 #proposition-links li { color: $grey-4; }
 
 .app-container {

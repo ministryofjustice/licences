@@ -5,6 +5,8 @@ const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 const {all, pipe, getIn, isEmpty, merge} = require('../../utils/functionalHelpers');
 const validationMessages = require('../config/validationMessages');
 
+const {sectionContaining} = require('../config/formsAndSections');
+
 const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
@@ -55,6 +57,7 @@ function getMessage(errorType, errorMessage, errorPath) {
         .filter(pathItem => !Number.isInteger(pathItem))
         .join('_');
 
+    // Shouldn't this be first? Custom messages for postcode or telephone don't get used
     if (validationMessages[path]) {
         return validationMessages[path];
     }
@@ -91,10 +94,10 @@ const addressProposed = joi.object().keys({
     decision: requiredYesNo
 });
 
-const bassReferral = joi.object().keys({
-    decision: requiredYesNo,
-    proposedTown: requiredIf('decision', 'Yes'),
-    proposedCounty: requiredIf('decision', 'Yes')
+const bassRequest = joi.object().keys({
+    bassRequested: requiredYesNo,
+    proposedTown: requiredIf('bassRequested', 'Yes'),
+    proposedCounty: requiredIf('bassRequested', 'Yes')
 });
 
 const residentSchema = joi.object({
@@ -300,7 +303,8 @@ const taggingCompany = {
 
 const schema = {
     eligibility: {excluded, suitability, crdTime, exceptionalCircumstances},
-    proposedAddress: {optOut, addressProposed, bassReferral, curfewAddress},
+    proposedAddress: {optOut, addressProposed, curfewAddress},
+    bassReferral: {bassRequest},
     curfew: {curfewHours, firstNight},
     risk: {riskManagement},
     reporting: {reportingInstructions, reportingDate},
@@ -311,36 +315,36 @@ const schema = {
 };
 
 module.exports = function(licence) {
-    return section => {
+    return form => {
+        const section = sectionContaining[form];
+
         if (!licence[section]) {
             return [{
                 path: {[section]: 'Not answered'}
             }];
         }
 
-        const errorsForSection = joi.validate(
-            licence[section],
-            schema[section],
+        const errors = joi.validate(
+            licence[section][form],
+            schema[section][form],
             {stripUnknown: true, abortEarly: false}
         ).error;
 
-        const allErrorsForSection = section === 'proposedAddress' ?
-            addResidentErrors(errorsForSection, licence[section]) :
-            errorsForSection;
+        const allErrors = form === 'curfewAddress' ? addResidentErrors(errors, licence[section]) : errors;
 
-        if (!allErrorsForSection) {
+        if (!allErrors) {
             return [];
         }
 
-        const errorsArray = getArrayOfPathsAndMessages(section, allErrorsForSection);
+        const errorsArray = getArrayOfPathsAndMessages(section, form, allErrors);
 
         return updateWithSpecialCases(errorsArray);
     };
 };
 
-function getArrayOfPathsAndMessages(section, allErrorsForSection) {
+function getArrayOfPathsAndMessages(section, form, allErrors) {
 
-    return allErrorsForSection.details.map(error => {
+    return allErrors.details.map(error => {
         // error object may have multiple error objects e.g. list of residents errors
         if (Array.isArray(error)) {
             return error.map(createPathWithErrorMessage);
@@ -352,9 +356,11 @@ function getArrayOfPathsAndMessages(section, allErrorsForSection) {
     function createPathWithErrorMessage(errorItem) {
         return {
             path: {
-                [section]: errorItem.path.reduceRight((object, key) => {
-                    return {[key]: object};
-                }, getMessage(errorItem.type, errorItem.message, errorItem.path))
+                [section]: {
+                    [form]: errorItem.path.reduceRight((object, key) => {
+                        return {[key]: object};
+                    }, getMessage(errorItem.type, errorItem.message, [form, ...errorItem.path]))
+                }
             }
         };
     }
@@ -380,7 +386,7 @@ function addResidentErrors(errorsForSection, licenceSection) {
 
         // merge the details of the resident errors into same object
         const residentDetails = residentErrors.details.map(detail => {
-            return merge(detail, {path: ['curfewAddress', 'residents', index, ...detail.path]});
+            return merge(detail, {path: ['residents', index, ...detail.path]});
         });
 
         return {...allErrors, details: [...allErrors.details, residentDetails]};

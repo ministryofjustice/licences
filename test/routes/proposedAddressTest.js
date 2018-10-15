@@ -47,7 +47,6 @@ describe('/hdc/proposedAddress', () => {
         const routes = [
             {url: '/hdc/proposedAddress/optOut/1', content: 'decided to opt out'},
             {url: '/hdc/proposedAddress/addressProposed/1', content: 'proposed a curfew address?'},
-            {url: '/hdc/proposedAddress/bassReferral/1', content: 'BASS referral'},
             {url: '/hdc/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'}
         ];
 
@@ -81,14 +80,7 @@ describe('/hdc/proposedAddress', () => {
                 url: '/hdc/proposedAddress/addressProposed/1',
                 body: {bookingId: 1, decision: 'No'},
                 section: 'addressProposed',
-                nextPath: '/hdc/proposedAddress/bassReferral/1',
-                user: 'caUser'
-            },
-            {
-                url: '/hdc/proposedAddress/bassReferral/1',
-                body: {bookingId: 1},
-                section: 'bassReferral',
-                nextPath: '/hdc/taskList/1',
+                nextPath: '/hdc/bassReferral/bassRequest/1',
                 user: 'caUser'
             },
             {

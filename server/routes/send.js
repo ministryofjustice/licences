@@ -40,6 +40,7 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
 
     const transitionForDestination = {
         addressReview: {type: 'caToRo', receiver: 'RO'},
+        bassReview: {type: 'caToRo', receiver: 'RO'},
         finalChecks: {type: 'roToCa', receiver: 'CA'},
         approval: {type: 'caToDm', receiver: 'DM'},
         decided: {type: 'dmToCa', receiver: 'CA'},

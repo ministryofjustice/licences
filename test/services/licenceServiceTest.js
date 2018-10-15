@@ -1373,6 +1373,12 @@ describe('licenceService', () => {
             }
         };
 
+        const bassReferral = {
+            bassRequest: {
+                bassRequested: 'No'
+            }
+        };
+
         const curfewHours = {
             firstNightFrom: '09:00',
             firstNightUntil: '09:00',
@@ -1417,6 +1423,7 @@ describe('licenceService', () => {
         const baseLicence = {
             eligibility,
             proposedAddress,
+            bassReferral,
             curfew: {
                 curfewHours
             },
@@ -1437,7 +1444,8 @@ describe('licenceService', () => {
             licenceConditions: 'Not answered',
             proposedAddress: 'Not answered',
             reporting: 'Not answered',
-            risk: 'Not answered'
+            risk: 'Not answered',
+            bassReferral: 'Not answered'
         };
 
         it('should return error if section is missing from licence', () => {
@@ -1452,7 +1460,7 @@ describe('licenceService', () => {
                 licenceConditions: 'Not answered'
             };
 
-            expect(service.getLicenceErrors({licence, sections: ['licenceConditions']})).to.eql(expectedOutput);
+            expect(service.getLicenceErrors({licence, forms: ['additional']})).to.eql(expectedOutput);
         });
 
         it('should return null if the licence is valid', () => {
@@ -3369,6 +3377,33 @@ describe('licenceService', () => {
 
                 expect(output).to.eql({});
             });
+
+            it('should validate bassRequest when bassReferral', () => {
+                const bassRequest = {
+                    ...baseLicence,
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes'
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'ELIGIBILITY', tasks: {}, decisions: {bassReferralNeeded: true}},
+                    licence: bassRequest
+                });
+
+                expect(output).to.eql(
+                    {
+                        bassReferral: {
+                            bassRequest: {
+                                proposedCounty: 'Enter a county',
+                                proposedTown: 'Enter a town'
+                            }
+                        }
+                    }
+                );
+            });
         });
 
         context('Stage === PROCESSING_RO, curfewAddressApproved === rejected', () => {
@@ -3438,12 +3473,13 @@ describe('licenceService', () => {
                         curfew: 'Not answered',
                         licenceConditions: 'Not answered',
                         reporting: 'Not answered',
-                        risk: 'Not answered'
+                        risk: 'Not answered',
+                        bassReferral: 'Not answered'
                     }
                 );
             });
 
-            it('should validate only ELIGIBILITY fields id curfewAddressReview is unstarted', () => {
+            it('should validate only ELIGIBILITY fields if curfewAddressReview is unstarted', () => {
                 const missingFieldProposedAddress = {
                     ...baseLicence,
                     proposedAddress: {
@@ -3497,7 +3533,7 @@ describe('licenceService', () => {
                     }
                 };
 
-                const output = service.getValidationErrorsForPage(licence, 'approval');
+                const output = service.getValidationErrorsForPage(licence, ['release']);
 
                 expect(output).to.eql({});
             });
@@ -3517,7 +3553,7 @@ describe('licenceService', () => {
                     }
                 };
 
-                const output = service.getValidationErrorsForPage(licence, 'approval');
+                const output = service.getValidationErrorsForPage(licence, ['release']);
 
                 expect(output).to.eql({approval: {release: {reason: 'Select a reason'}}});
             });
@@ -3538,7 +3574,7 @@ describe('licenceService', () => {
                     }
                 };
 
-                const output = service.getValidationErrorsForPage(licence, 'approval');
+                const output = service.getValidationErrorsForPage(licence, ['release']);
 
                 expect(output).to.eql({approval: {release: {notedComments: 'Add a comment'}}});
             });
@@ -3555,7 +3591,7 @@ describe('licenceService', () => {
                     }
                 };
 
-                const output = service.getValidationErrorsForPage(licence, 'approval');
+                const output = service.getValidationErrorsForPage(licence, ['release']);
 
                 expect(output).to.eql({});
             });
@@ -3568,7 +3604,7 @@ describe('licenceService', () => {
                     licenceConditions: 'Not answered'
                 };
 
-                expect(service.getValidationErrorsForPage(licence, 'licenceConditions')).to.eql(expectedOutput);
+                expect(service.getValidationErrorsForPage(licence, ['additional'])).to.eql(expectedOutput);
             });
         });
     });

@@ -61,5 +61,5 @@ module.exports = {
         ]
     },
 
-    alternativeCaseList: get('ALTERNATIVE_CASELIST', true)
+    domain: get('DOMAIN', 'http://localhost:3000')
 };

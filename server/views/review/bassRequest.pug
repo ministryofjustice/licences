@@ -3,7 +3,6 @@ extends ../layout
 block content
 
     - var errorsOnPage = Object.keys(errorObject).length !== 0;
-    - var addressChanged = licenceStatus.stage === 'PROCESSING_CA' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
 
     include ../includes/back
 
@@ -19,32 +18,32 @@ block content
 
         div.pure-g.borderBottomLight
             div.pure-u-1.pure-u-md-1-2
-                h2#curfewAddressDetails.heading-medium Proposed curfew address
+                h2#bassRequestDetails.heading-medium Proposed BASS area
             div.pure-u-1.pure-u-md-1-2.alignRight
                 div.change-details
-                    if(user.role === 'CA' && (stage === 'ELIGIBILITY' || addressChanged))
-                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change
+                    if(user.role === 'CA' && stage === 'ELIGIBILITY')
+                        a#bassEditLink(href="/hdc/bassReferral/bassRequest/change/" + bookingId) Change
 
             div.pure-u-1
-                if typeof errorObject.proposedAddress === 'string'
-                    p.alert.bold(id='proposed-address-error') Enter a curfew address
-                else if errorObject.proposedAddress && typeof errorObject.proposedAddress.curfewAddress === 'string'
-                    p.alert.bold(id='proposed-address-error') Enter a curfew address
+                if typeof errorObject.bassReferral === 'string'
+                    p.alert.bold(id='proposed-bass-error') Enter a BASS area
+                else if errorObject.bassReferral && typeof errorObject.bassReferral.bassRequest === 'string'
+                    p.alert.bold(id='proposed-bass-error') Enter a BASS area
                 else
-                    include ./includes/curfewAddress
+                    include ./includes/bassRequest
 
     if !errorsOnPage
         h2.heading-medium Now send the case
 
         div.pure-u-1.pure-u-md-3-4
-            | The case is ready to send to the responsible officer for address checks.
+            | The case is ready to send to the responsible officer for BASS area checks.
 
         div.paddingBottom.smallPaddingTop
-            form#addressReviewForm(method='POST', action='/hdc/send/addressReview/' + bookingId)
+            form#addressReviewForm(method='POST', action='/hdc/send/bassReview/' + bookingId)
                 input(type="hidden" name="_csrf" value=csrfToken)
                 div.pure-u-1.inlineButtons
                     div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
                         input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
     else
         div.paddingBottom.smallPaddingTop
-            a#correctAddressLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Correct the errors before continuing
+            a#correctAddressLink(href="/hdc/bassReferral/bassRequest/change/" + bookingId) Correct the errors before continuing

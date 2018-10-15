@@ -41,7 +41,7 @@ describe('getLicenceStatus', () => {
             suitability: taskStates.UNSTARTED,
             eligibility: taskStates.UNSTARTED,
             optOut: taskStates.UNSTARTED,
-            bassReferral: taskStates.UNSTARTED,
+            bassRequest: taskStates.UNSTARTED,
             curfewAddress: taskStates.UNSTARTED,
             riskManagement: taskStates.UNSTARTED,
             curfewAddressReview: taskStates.UNSTARTED,
@@ -79,9 +79,6 @@ describe('getLicenceStatus', () => {
                     optOut: {
                         decision: 'Yes'
                     },
-                    bassReferral: {
-                        decision: 'Yes'
-                    },
                     addressProposed: {
                         decision: 'No'
                     },
@@ -94,6 +91,13 @@ describe('getLicenceStatus', () => {
                                 deemedSafe: 'Yes'
                             }
                         ]
+                    }
+                },
+                bassReferral: {
+                    bassRequest: {
+                        bassRequested: 'Yes',
+                        town: 'blah',
+                        county: 'blah'
                     }
                 },
                 risk: {
@@ -229,9 +233,6 @@ describe('getLicenceStatus', () => {
                     optOut: {
                         decision: 'No'
                     },
-                    bassReferral: {
-                        decision: 'No'
-                    },
                     curfewAddress: {
                         addresses: [
                             {
@@ -241,6 +242,11 @@ describe('getLicenceStatus', () => {
                                 deemedSafe: 'Yes'
                             }
                         ]
+                    }
+                },
+                bassReferral: {
+                    bassRequest: {
+                        bassRequested: 'No'
                     }
                 },
                 finalChecks: {
@@ -298,7 +304,7 @@ describe('getLicenceStatus', () => {
             suitability: taskStates.UNSTARTED,
             eligibility: taskStates.UNSTARTED,
             optOut: taskStates.UNSTARTED,
-            bassReferral: taskStates.UNSTARTED,
+            bassRequest: taskStates.UNSTARTED,
             curfewAddress: taskStates.UNSTARTED,
             riskManagement: taskStates.UNSTARTED,
             curfewAddressReview: taskStates.UNSTARTED,
@@ -455,7 +461,7 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.suitability).to.eql(taskStates.UNSTARTED);
         expect(status.tasks.eligibility).to.eql(taskStates.UNSTARTED);
         expect(status.tasks.optOut).to.eql(taskStates.UNSTARTED);
-        expect(status.tasks.bassReferral).to.eql(taskStates.UNSTARTED);
+        expect(status.tasks.bassRequest).to.eql(taskStates.UNSTARTED);
         expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED);
         expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
         expect(status.tasks.curfewHours).to.eql(taskStates.UNSTARTED);
@@ -541,11 +547,6 @@ describe('getLicenceStatus', () => {
                         decision: 'Yes',
                         reason: 'blah'
                     },
-                    bassReferral: {
-                        decision: 'Yes',
-                        town: 'blah',
-                        county: 'blah'
-                    },
                     curfewAddress: {
                         addresses: [
                             {
@@ -558,6 +559,13 @@ describe('getLicenceStatus', () => {
                                 deemedSafe: 'Yes'
                             }
                         ]
+                    }
+                },
+                bassReferral: {
+                    bassRequest: {
+                        bassRequested: 'Yes',
+                        town: 'blah',
+                        county: 'blah'
                     }
                 },
                 curfew: {
@@ -612,7 +620,7 @@ describe('getLicenceStatus', () => {
         expect(status.tasks.suitability).to.eql(taskStates.DONE);
         expect(status.tasks.eligibility).to.eql(taskStates.DONE);
         expect(status.tasks.optOut).to.eql(taskStates.DONE);
-        expect(status.tasks.bassReferral).to.eql(taskStates.DONE);
+        expect(status.tasks.bassRequest).to.eql(taskStates.DONE);
         expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
         expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE);
         expect(status.tasks.curfewHours).to.eql(taskStates.DONE);
@@ -917,7 +925,7 @@ describe('getLicenceStatus', () => {
         it('should show curfew address DONE when bass referral needed', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
-                licence: {proposedAddress: {bassReferral: {decision: 'Yes'}, addressProposed: {decision: 'No'}}}
+                licence: {proposedAddress: {addressProposed: {decision: 'No'}}, bassReferral: {bassRequest: {bassRequested: 'Yes'}}}
             };
 
             const status = getLicenceStatus(licence);

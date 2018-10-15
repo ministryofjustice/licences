@@ -31,7 +31,6 @@ const adminRouter = require('../server/routes/admin/admin');
 const apiRouter = require('../server/routes/api');
 const caseListRouter = require('../server/routes/caseList');
 const contactRouter = require('../server/routes/contact');
-const altCaseListRouter = require('../server/routes/caseListAlt');
 const pdfRouter = require('../server/routes/pdf');
 const searchRouter = require('../server/routes/search');
 const sendRouter = require('../server/routes/send');
@@ -41,6 +40,7 @@ const utilsRouter = require('../server/routes/utils');
 
 const addressRouter = require('./routes/address');
 const approvalRouter = require('./routes/approval');
+const bassReferralRouter = require('./routes/bassReferral');
 const conditionsRouter = require('./routes/conditions');
 const curfewRouter = require('./routes/curfew');
 const eligibilityRouter = require('./routes/eligibility');
@@ -127,7 +127,7 @@ module.exports = function createApp({
     // token refresh
     app.use(async (req, res, next) => {
 
-        if (production && req.user) {
+        if (production && req.user && req.user.role !== 'RO') {
 
             const timeToRefresh = new Date() > req.user.refreshTime;
 
@@ -140,6 +140,7 @@ module.exports = function createApp({
                     req.user.refreshTime = newToken.refreshTime;
                 } catch (error) {
                     logger.error(`Elite 2 token refresh error: ${req.user.username}`, error.stack);
+                    return res.redirect('/logout');
                 }
             }
         }
@@ -292,12 +293,7 @@ module.exports = function createApp({
 
     app.use('/', defaultRouter());
 
-    if (config.alternativeCaseList) {
-        app.use('/caseList/', altCaseListRouter({caseListService, authenticationMiddleware}));
-    } else {
-        app.use('/caseList/', caseListRouter({caseListService, authenticationMiddleware}));
-    }
-
+    app.use('/caseList/', caseListRouter({caseListService, authenticationMiddleware}));
     app.use('/admin/', adminRouter({userService, authenticationMiddleware, audit}));
     app.use('/hdc/contact/', contactRouter({logger, userService, authenticationMiddleware}));
     app.use('/hdc/pdf/', pdfRouter({pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
@@ -308,6 +304,7 @@ module.exports = function createApp({
 
     app.use('/hdc/', addressRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/', approvalRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', bassReferralRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/', conditionsRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/', curfewRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/', eligibilityRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
