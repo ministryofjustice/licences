@@ -8,6 +8,7 @@ services:
       - licence-db
       - licences-nomis-mocks
       - hdc-pdfgenerator
+      - nomis-oauth2-server
     ports:
       - "3000:3000"
     healthcheck:
@@ -20,6 +21,7 @@ services:
       - DB_NAME=licences
       - DB_SSL_ENABLED=no
       - NOMIS_API_URL=http://licences-nomis-mocks:9090/elite2api
+      - NOMIS_AUTH_URL=http://nomis-oauth2-server:8080/auth
       - HOST=licences.hmpps.dsd.test
       - PDF_SERVICE_HOST=http://hdc-pdfgenerator:8080
 
@@ -30,6 +32,8 @@ services:
     container_name: licences-nomis-mocks
     ports:
       - "9090:9090"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/elite2api/health"]
 
   licence-db:
     image: postgres
@@ -56,6 +60,18 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
     environment:
       - PORT=8080
+
+  nomis-oauth2-server:
+      image: mojdigitalstudio/nomis-oauth2-server:latest
+      networks:
+      - hmpps
+      container_name: nomis-oauth2-server
+      ports:
+      - "8080:8080"
+      healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:8080/auth/health"]
+      environment:
+      - SPRING_PROFILES_ACTIVE=dev
 
 networks:
   hmpps:

@@ -41,11 +41,11 @@ function signInService(audit) {
 
             } catch (error) {
                 if (unauthorised(error)) {
-                    logger.error(`Forbidden Elite2 login for [${username}]:`, error.stack);
+                    logger.error(`Forbidden auth login for [${username}]:`, error.stack);
                     return {};
                 }
 
-                logger.error(`Elite 2 login error [${username}]:`, error.stack);
+                logger.error(`Auth login error [${username}]:`, error.stack);
                 throw error;
             }
         },
@@ -189,7 +189,7 @@ function nomisGet(path, token) {
 }
 
 function getOauthUrl() {
-    return config.nomis.apiUrl.replace('/api', '');
+    return config.nomis.authUrl;
 }
 
 function unauthorised(error) {

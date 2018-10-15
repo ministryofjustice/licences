@@ -28,6 +28,7 @@ module.exports = {
 
     nomis: {
         apiUrl: get('NOMIS_API_URL', 'http://localhost:9090/elite2api'),
+        authUrl: get('NOMIS_AUTH_URL', 'http://localhost:8080/auth'),
         timeout: {
             response: 30000,
             deadline: 35000
