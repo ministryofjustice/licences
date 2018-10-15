@@ -1,6 +1,6 @@
 mixin startContinueChange(task, path, id)
 
-    - var unstarted = task === 'UNSTARTED'
+    - var unstarted = !task || task === 'UNSTARTED'
     - var complete = task === 'DONE'
 
     if unstarted

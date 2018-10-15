@@ -52,6 +52,10 @@ function canSendRoToCa(licenceStatus) {
         return false;
     }
 
+    if (decisions.bassReferralNeeded && tasks.bassAreaCheck === taskStates.DONE) {
+        return true;
+    }
+
     if (decisions.curfewAddressApproved === 'rejected') {
         return true;
     }

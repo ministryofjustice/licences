@@ -216,6 +216,7 @@ module.exports = function createLicenceService(licenceClient) {
     function answersFromMapReducer(userInput) {
 
         return (answersAccumulator, field) => {
+
             const {fieldName, answerIsRequired, innerFields, inputIsList, fieldConfig} = getFieldInfo(field, userInput);
 
             if (!answerIsRequired) {
@@ -250,6 +251,7 @@ module.exports = function createLicenceService(licenceClient) {
     function getFieldInfo(field, userInput) {
         const fieldName = Object.keys(field)[0];
         const fieldConfig = field[fieldName];
+
         const fieldDependentOn = userInput[fieldConfig.dependentOn];
         const predicateResponse = fieldConfig.predicate;
         const dependentMatchesPredicate = fieldConfig.dependentOn && fieldDependentOn === predicateResponse;
@@ -304,10 +306,6 @@ module.exports = function createLicenceService(licenceClient) {
 
     function getLicenceErrors({licence, forms = reviewForms}) {
 
-        if (isEmpty(forms)) {
-            return [];
-        }
-
         const validationErrors = forms.map(validate(licence)).filter(item => item);
 
         if (isEmpty(validationErrors)) {
@@ -338,6 +336,10 @@ module.exports = function createLicenceService(licenceClient) {
 
         if (stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
             return getLicenceErrors({licence, forms: formsInSection['proposedAddress']});
+        }
+
+        if (stage === 'PROCESSING_RO' && decisions.bassAreaNotSuitable) {
+            return getLicenceErrors({licence, forms: formsInSection['bassReferral']});
         }
 
         return getLicenceErrors({licence, forms: reviewForms});

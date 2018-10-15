@@ -3,8 +3,12 @@ extends taskListTemplate
 block tasks
 
     div.taskListItem.borderBottomLight
-        include tasks/curfewAddressTask
-    if (licenceStatus.decisions.curfewAddressApproved !== 'rejected')
+        if (licenceStatus.decisions.bassReferralNeeded)
+            include tasks/bassAddressTask
+        else
+            include tasks/curfewAddressTask
+
+    if (licenceStatus.decisions.curfewAddressApproved !== 'rejected' && !licenceStatus.decisions.bassAreaNotSuitable)
         div.taskListItem.borderBottomLight
             include tasks/riskManagementTask
 

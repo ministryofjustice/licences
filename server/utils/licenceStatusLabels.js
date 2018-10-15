@@ -116,11 +116,23 @@ function roProcessingLabel(licenceStatus) {
         return optOutLabel;
     }
 
+    if (licenceStatus.decisions.bassReferralNeeded) {
+
+        if (licenceStatus.tasks.bassAreaCheck === taskStates.UNSTARTED) {
+            return 'BASS referral requested';
+        }
+
+        if (licenceStatus.decisions.bassAreaNotSuitable) {
+            return 'BASS area rejected';
+        }
+    }
+
     if (licenceStatus.tasks.curfewAddressReview === taskStates.UNSTARTED) {
         return 'Address provided';
     }
 
     if (anyStarted([
+        licenceStatus.tasks.bassAreaCheck,
         licenceStatus.tasks.curfewAddressReview,
         licenceStatus.tasks.curfewHours,
         licenceStatus.tasks.licenceConditions,
@@ -128,6 +140,7 @@ function roProcessingLabel(licenceStatus) {
         licenceStatus.tasks.reportingInstructions])) {
         return 'Assessment ongoing';
     }
+
 
     return 'Address provided';
 }

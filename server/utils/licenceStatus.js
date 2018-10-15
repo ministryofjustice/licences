@@ -24,6 +24,7 @@ function getLicenceStatus(licenceRecord) {
                 optOut: taskStates.UNSTARTED,
                 curfewAddress: taskStates.UNSTARTED,
                 bassRequest: taskStates.UNSTARTED,
+                bassAreaCheck: taskStates.UNSTARTED,
                 riskManagement: taskStates.UNSTARTED,
                 curfewAddressReview: taskStates.UNSTARTED,
                 curfewHours: taskStates.UNSTARTED,
@@ -96,6 +97,7 @@ function getRoStageState(licence) {
     const {curfewHours} = getCurfewHoursState(licence);
     const {reportingInstructions} = getReportingInstructionsState(licence);
     const {licenceConditions, standardOnly, additional, bespoke} = getLicenceConditionsState(licence);
+    const {bassAreaCheck, bassAreaSuitable, bassAreaNotSuitable} = getBassAreaState(licence);
 
     return {
         decisions: {
@@ -105,14 +107,17 @@ function getRoStageState(licence) {
             curfewAddressApproved,
             standardOnly,
             additional,
-            bespoke
+            bespoke,
+            bassAreaSuitable,
+            bassAreaNotSuitable
         },
         tasks: {
             riskManagement,
             curfewAddressReview,
             curfewHours,
             reportingInstructions,
-            licenceConditions
+            licenceConditions,
+            bassAreaCheck
         }
     };
 }
@@ -279,11 +284,29 @@ function getBassRequestState(licence) {
     const bassRequestAnswer = getIn(licence, ['bassReferral', 'bassRequest', 'bassRequested']);
     const addressProposedAnswer = getIn(licence, ['proposedAddress', 'addressProposed', 'decision']);
 
+    const bassReferralNeeded = bassRequestAnswer === 'Yes' && addressProposedAnswer === 'No';
+    const bassRequest = getState(bassReferralNeeded, bassRequestAnswer, licence);
+
     return {
-        bassReferralNeeded: bassRequestAnswer === 'Yes' && addressProposedAnswer === 'No',
-        bassRequest: bassRequestAnswer ? taskStates.DONE : taskStates.UNSTARTED
+        bassReferralNeeded,
+        bassRequest
     };
 
+    function getState(bassReferralNeeded, bassRequestAnswer, licence) {
+
+        if (bassReferralNeeded) {
+            const bassRequestTown = getIn(licence, ['bassReferral', 'bassRequest', 'proposedTown']);
+            const bassRequestCounty = getIn(licence, ['bassReferral', 'bassRequest', 'proposedCounty']);
+
+            if (bassRequestTown && bassRequestCounty) {
+                return taskStates.DONE;
+            }
+
+            return taskStates.STARTED;
+        }
+
+        return bassRequestAnswer ? taskStates.DONE : taskStates.UNSTARTED;
+    }
 }
 
 function getRiskManagementState(licence) {
@@ -483,6 +506,35 @@ function getLicenceConditionsState(licence) {
         totalCount,
         licenceConditions: (standardOnly || totalCount > 0) ? taskStates.DONE : taskStates.STARTED
     };
+}
+
+function getBassAreaState(licence) {
+
+    const bassAreaSuitableAnswer = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaSuitable']);
+    const bassAreaReason = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaReason']);
+
+    const bassAreaSuitable = bassAreaSuitableAnswer && bassAreaSuitableAnswer === 'Yes';
+    const bassAreaNotSuitable = bassAreaSuitableAnswer && bassAreaSuitableAnswer === 'No';
+    const bassAreaCheck = getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason, bassAreaSuitable);
+
+    return {
+        bassAreaSuitable,
+        bassAreaNotSuitable,
+        bassAreaCheck
+    };
+}
+
+function getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason) {
+
+    if (!bassAreaSuitableAnswer) {
+        return taskStates.UNSTARTED;
+    }
+
+    if (bassAreaSuitableAnswer === 'No' && !bassAreaReason) {
+        return taskStates.STARTED;
+    }
+
+    return taskStates.DONE;
 }
 
 function getSeriousOffenceCheckState(licence) {

@@ -100,6 +100,11 @@ const bassRequest = joi.object().keys({
     proposedCounty: requiredIf('bassRequested', 'Yes')
 });
 
+const bassAreaCheck = joi.object().keys({
+    bassAreaSuitable: requiredYesNo,
+    bassAreaReason: requiredIf('bassAreaSuitable', 'No')
+});
+
 const residentSchema = joi.object({
     name: requiredString,
     age: optionalAge,
@@ -304,7 +309,7 @@ const taggingCompany = {
 const schema = {
     eligibility: {excluded, suitability, crdTime, exceptionalCircumstances},
     proposedAddress: {optOut, addressProposed, curfewAddress},
-    bassReferral: {bassRequest},
+    bassReferral: {bassRequest, bassAreaCheck},
     curfew: {curfewHours, firstNight},
     risk: {riskManagement},
     reporting: {reportingInstructions, reportingDate},

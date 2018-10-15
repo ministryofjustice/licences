@@ -224,6 +224,30 @@ describe('getStatusLabel', () => {
                 {
                     status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {reportingInstructions: 'DONE'}},
                     label: 'Assessment ongoing'
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_RO,
+                        decisions: {bassReferralNeeded: true},
+                        tasks: {bassAreaCheck: 'UNSTARTED'}
+                    },
+                    label: 'BASS referral requested'
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_RO,
+                        decisions: {bassReferralNeeded: true},
+                        tasks: {bassAreaCheck: 'STARTED'}
+                    },
+                    label: 'Assessment ongoing'
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_RO,
+                        decisions: {bassReferralNeeded: true, bassAreaNotSuitable: true},
+                        tasks: {}
+                    },
+                    label: 'BASS area rejected'
                 }
             ];
 

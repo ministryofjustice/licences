@@ -47,6 +47,7 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
         'return': {type: 'dmToCaReturn', receiver: 'CA'},
         refusal: {type: 'caToDmRefusal', receiver: 'DM'},
         addressRejected: {type: 'roToCaAddressRejected', receiver: 'CA'},
+        bassAreaRejected: {type: 'roToCaAddressRejected', receiver: 'CA'},
         optedOut: {type: 'roToCaOptedOut', receiver: 'CA'}
     };
 
