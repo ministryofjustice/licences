@@ -44,7 +44,8 @@ module.exports = {
                             occupier: {
                                 contains: [
                                     {name: {}},
-                                    {relationship: {}}
+                                    {relationship: {}},
+                                    {isOffender: {}}
                                 ],
                                 saveEmpty: true
                             }

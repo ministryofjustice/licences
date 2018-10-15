@@ -160,7 +160,8 @@ function getEligibilityStageState(licence) {
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
     const {bassReferralNeeded, bassRequest} = getBassRequestState(licence);
-    const {curfewAddress} = getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved);
+    const {curfewAddress, offenderIsMainOccupier} = getCurfewAddressState(
+        licence, optedOut, bassReferralNeeded, curfewAddressApproved);
 
     return {
         decisions: {
@@ -174,7 +175,8 @@ function getEligibilityStageState(licence) {
             eligible,
             optedOut,
             bassReferralNeeded,
-            curfewAddressApproved
+            curfewAddressApproved,
+            offenderIsMainOccupier
         },
         tasks: {
             exclusion,
@@ -390,6 +392,7 @@ function getCaRefusal(licence) {
 function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved) {
 
     return {
+        offenderIsMainOccupier: true,
         curfewAddress: getState(licence)
     };
 
