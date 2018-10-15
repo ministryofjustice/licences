@@ -1,6 +1,7 @@
 include ./itemAndError
 -var address = data.proposedAddress && data.proposedAddress.curfewAddress || {}
 -var errors = errorObject.proposedAddress && errorObject.proposedAddress.curfewAddress || {}
+- var offenderIsMainOccupier = licenceStatus.decisions.offenderIsMainOccupier;
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
@@ -28,6 +29,9 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             if typeof errors.occupier === 'string'
                 div.pure-u-1.pure-u-md-2-5
                     span#occupierFull-error.alert.bold #{errors.occupier}
+            else if offenderIsMainOccupier
+                div.pure-u-1.pure-u-md-2-5.bold
+                    | The offender is the main occupier
             else if address.occupier
                 div.pure-u-1.pure-u-md-2-5
                     span#occupierName-curfew.bold #{address.occupier.name}
@@ -67,17 +71,18 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
 - var addressReviewNeeded = licenceStatus.stage !== 'PROCESSING_RO' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
 
 if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
-    div.pure-g.borderBottomLight.midPaddingTopBottom
-        div.pure-u-1-2
-            div.pure-g
-                div.pure-u-3-4
-                    span Does the main occupier consent to HDC?
-        div.pure-u-1-2
-            div#dischargeHomeAddress
-                #{errors.electricity}
-                +itemAndError(address.consent, errors.consent, "consent-curfew")
+    if !offenderIsMainOccupier
+        div.pure-g.borderBottomLight.midPaddingTopBottom
+            div.pure-u-1-2
+                div.pure-g
+                    div.pure-u-3-4
+                        span Does the main occupier consent to HDC?
+            div.pure-u-1-2
+                div#dischargeHomeAddress
+                    #{errors.electricity}
+                    +itemAndError(address.consent, errors.consent, "consent-curfew")
 
-    if(address.consent === 'Yes')
+    if(address.consent === 'Yes' || offenderIsMainOccupier)
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
                 span Is there an electricity supply?
