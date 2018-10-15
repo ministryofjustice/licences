@@ -271,7 +271,7 @@ module.exports = function createApp({
         return res.render('notfound');
     });
 
-    const authLogoutUrl = `${config.nomis.authUrl}/logout?client_id=${config.nomis.apiClientId}&redirect_uri=${config.nomis.licencesUrl}`;
+    const authLogoutUrl = `${config.nomis.authUrl}/logout?client_id=${config.nomis.apiClientId}&redirect_uri=${config.domain}`;
 
     app.get('/autherror', (req, res) => {
         res.status(401);

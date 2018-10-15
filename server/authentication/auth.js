@@ -34,7 +34,7 @@ function init(signInService) {
             tokenURL: `${config.nomis.authUrl}/oauth/token`,
             clientID: config.nomis.apiClientId,
             clientSecret: config.nomis.apiClientSecret,
-            callbackURL: `${config.nomis.licencesUrl}/login/callback`,
+            callbackURL: `${config.domainx`1`}/login/callback`,
             state: true,
             customHeaders: {Authorization: generateOauthClientToken()}
         },
