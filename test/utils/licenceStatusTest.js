@@ -62,7 +62,10 @@ describe('getLicenceStatus', () => {
                                     consent: 'Yes',
                                     electricity: 'Yes',
                                     homeVisitConducted: 'Yes',
-                                    deemedSafe: 'Yes'
+                                    deemedSafe: 'Yes',
+                                    occupier: {
+                                        isOffender: 'Yes'
+                                    }
                                 }
                             ]
                         }
@@ -127,6 +130,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.approved).to.eql(true);
             expect(status.decisions.refused).to.eql(false);
             expect(status.decisions.dmRefused).to.eql(false);
+            expect(status.decisions.offenderIsMainOccupier).to.eql(true);
         });
 
         it('should show false decisions when decision data is present for false', () => {
@@ -211,6 +215,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.refused).to.eql(true);
             expect(status.decisions.dmRefused).to.eql(true);
             expect(status.decisions.finalChecksRefused).to.eql(false);
+            expect(status.decisions.offenderIsMainOccupier).to.eql(false);
         });
     });
 
@@ -438,40 +443,40 @@ describe('getLicenceStatus', () => {
 
     context('APPROVAL', () => {
         it('should account for refusal from ca as well as dm', () => {
-        const licence = {
-            stage: 'APPROVAL',
-            licence: {
-                finalChecks: {
-                    seriousOffence: {
-                        decision: 'Yes'
+            const licence = {
+                stage: 'APPROVAL',
+                licence: {
+                    finalChecks: {
+                        seriousOffence: {
+                            decision: 'Yes'
+                        },
+                        onRemand: {
+                            decision: 'Yes'
+                        },
+                        confiscationOrder: {
+                            decision: 'Yes'
+                        },
+                        postpone: {
+                            decision: 'Yes'
+                        },
+                        refusal: {
+                            decision: 'Yes'
+                        }
                     },
-                    onRemand: {
-                        decision: 'Yes'
-                    },
-                    confiscationOrder: {
-                        decision: 'Yes'
-                    },
-                    postpone: {
-                        decision: 'Yes'
-                    },
-                    refusal: {
-                        decision: 'Yes'
-                    }
-                },
-                approval: {
-                    release: {
-                        decision: 'Yes'
+                    approval: {
+                        release: {
+                            decision: 'Yes'
+                        }
                     }
                 }
-            }
-        };
+            };
 
-        const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence);
 
-        expect(status.decisions.refused).to.eql(true);
-        expect(status.decisions.finalChecksRefused).to.eql(true);
-        expect(status.decisions.dmRefused).to.eql(false);
-    });
+            expect(status.decisions.refused).to.eql(true);
+            expect(status.decisions.finalChecksRefused).to.eql(true);
+            expect(status.decisions.dmRefused).to.eql(false);
+        });
     });
 
     context('PROCESSING_RO', () => {
