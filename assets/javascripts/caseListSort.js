@@ -47,7 +47,7 @@ function init() {
             0: {sorter: 'offenderName'},
             1: {sorter: false},
             2: {sorter: 'timeReference'},
-            3: {sorter: false},
+            3: {sorter: 'text'},
             4: {sorter: false}
         }
     });
@@ -59,7 +59,7 @@ function init() {
             0: {sorter: 'offenderName'},
             1: {sorter: false},
             2: {sorter: 'shortDate'},
-            3: {sorter: false},
+            3: {sorter: 'text'},
             4: {sorter: false}
         }
     });
