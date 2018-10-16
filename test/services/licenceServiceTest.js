@@ -3661,6 +3661,7 @@ describe('licenceService', () => {
                     }
                 );
             });
+
         });
     });
 
@@ -3756,6 +3757,45 @@ describe('licenceService', () => {
                 };
 
                 expect(service.getValidationErrorsForPage(licence, ['additional'])).to.eql(expectedOutput);
+            });
+        });
+
+        context('section !== approval', () => {
+            it('should validate bassOffer when bassReferral', () => {
+                const licence = {
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes',
+                            proposedTown: 't',
+                            proposedCounty: 'c'
+                        },
+                        bassAreaCheck: {
+                            bassAreaSuitable: 'Yes'
+                        },
+                        bassOffer: {
+                            bassAccepted: 'Yes',
+                            bassAddress: {
+                                bassArea: 'a'
+                            }
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForPage(licence, ['bassOffer']);
+
+                expect(output).to.eql(
+                    {
+                        bassReferral: {
+                            bassOffer: {
+                                bassAddress: {
+                                    addressLine1: 'Enter a building or street',
+                                    addressTown: 'Enter a town or city',
+                                    postCode: 'Enter a postcode in the right format'
+                                }
+                            }
+                        }
+                    }
+                );
             });
         });
     });

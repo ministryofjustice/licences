@@ -11,6 +11,7 @@ const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
 const requiredPhone = joi.string().regex(/^[0-9\+\s]+$/).required();
+const optionalPhone = joi.string().regex(/^[0-9\+\s]+$/).allow('').optional();
 const optionalAge = joi.number().min(0).max(110).allow('').optional();
 const selection = joi.array().min(1).required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
@@ -103,6 +104,18 @@ const bassRequest = joi.object().keys({
 const bassAreaCheck = joi.object().keys({
     bassAreaSuitable: requiredYesNo,
     bassAreaReason: requiredIf('bassAreaSuitable', 'No')
+});
+
+const bassOffer = joi.object().keys({
+    bassAccepted: optionalString,
+    bassAddress: joi.object().keys({
+        bassArea: requiredString,
+        addressLine1: requiredString,
+        addressLine2: optionalString,
+        addressTown: requiredString,
+        postCode: requiredPostcode,
+        telephone: optionalPhone
+    })
 });
 
 const residentSchema = joi.object({
@@ -320,7 +333,7 @@ const taggingCompany = {
 const schema = {
     eligibility: {excluded, suitability, crdTime, exceptionalCircumstances},
     proposedAddress: {optOut, addressProposed, curfewAddress},
-    bassReferral: {bassRequest, bassAreaCheck},
+    bassReferral: {bassRequest, bassAreaCheck, bassOffer},
     curfew: {curfewHours, firstNight},
     risk: {riskManagement},
     reporting: {reportingInstructions, reportingDate},

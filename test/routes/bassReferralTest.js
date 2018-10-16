@@ -15,7 +15,7 @@ const formConfig = require('../../server/routes/config/bassReferral');
 
 describe('/hdc/bassReferral', () => {
 
-    context('CA user', () => {
+    context('CA', () => {
 
         describe('bass referral routes', () => {
             const licenceService = createLicenceServiceStub();
@@ -27,7 +27,8 @@ describe('/hdc/bassReferral', () => {
             const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
             const routes = [
-                {url: '/hdc/bassReferral/bassRequest/1', content: 'BASS referral'}
+                {url: '/hdc/bassReferral/bassRequest/1', content: 'BASS referral'},
+                {url: '/hdc/bassReferral/bassOffer/1', content: 'BASS area suitable'}
             ];
 
             testFormPageGets(app, routes, licenceService);
@@ -89,7 +90,7 @@ describe('/hdc/bassReferral', () => {
         });
     });
 
-    context('RO user', () => {
+    context('RO', () => {
 
         describe('bass referral routes', () => {
             const licenceService = createLicenceServiceStub();
@@ -163,7 +164,6 @@ describe('/hdc/bassReferral', () => {
             });
         });
     });
-
 });
 
 function createApp({licenceServiceStub}, user) {

@@ -83,14 +83,14 @@ function canSendDmToCa(licenceStatus) {
 function canSendCaToRo(licenceStatus) {
     const {tasks, decisions, stage} = licenceStatus;
 
-    const addressReviewNeeded =
+    const {eligible, optedOut, bassReferralNeeded, curfewAddressApproved} = decisions;
+
+    const addressReviewNeeded = !bassReferralNeeded &&
         ['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage) && tasks.curfewAddressReview === 'UNSTARTED';
 
     if (addressReviewNeeded) {
         return true;
     }
-
-    const {eligible, optedOut, bassReferralNeeded, curfewAddressApproved} = decisions;
 
     const notToProgress = !eligible || optedOut || curfewAddressApproved === 'rejected';
 
@@ -152,19 +152,30 @@ function canSendCaToDm(licenceStatus) {
         return true;
     }
 
-    const required = [
-        tasks.finalChecks
-    ];
-
+    const required = getRequiredTasks(decisions, tasks);
     const tasksComplete = required.every(it => it === taskStates.DONE);
+
+    const addressOk = decisions.bassReferralNeeded || decisions.curfewAddressApproved === 'approved';
 
     const decisionsOk =
         !decisions.excluded &&
         !decisions.postponed &&
         !decisions.finalChecksRefused &&
-        // todo should it be possible to send to DM if serious offence / on remand?
-        // decisions.finalCheckPass &&
-        decisions.curfewAddressApproved === 'approved';
+        addressOk;
 
     return tasksComplete && decisionsOk;
+}
+
+function getRequiredTasks(decisions, tasks) {
+
+    if (decisions.bassReferralNeeded) {
+        return [
+            tasks.bassOffer,
+            tasks.finalChecks
+        ];
+    }
+
+    return [
+        tasks.finalChecks
+    ];
 }

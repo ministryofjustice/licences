@@ -19,6 +19,9 @@ module.exports = {
     'hdc/bassReferral/bassAreaCheck': {
         authorised: [{role: 'RO'}]
     },
+    'hdc/bassReferral/bassOffer': {
+        authorised: [{role: 'CA'}]
+    },
     'hdc/proposedAddress/curfewAddress': {
         authorised: [{role: 'CA'}, {role: 'RO'}]
     },
