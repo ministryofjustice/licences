@@ -19,9 +19,12 @@ module.exports = {
     curfewAddress_residents_relationship: 'Enter a relationship',
     exceptionalCircumstances_decision: 'Select yes or no',
 
+    // BASS forms
     bassRequest_bassRequested: 'Select yes or no',
     bassRequest_proposedCounty: 'Enter a county',
     bassRequest_proposedTown: 'Enter a town',
+    bassAreaCheck_bassAreaSuitable: 'Select yes or no',
+    bassAreaCheck_bassAreaReason: 'Enter a reason',
 
     // PROCESSING_RO forms
     curfewAddress_consent: 'Say if the homeowner consents to HDC',

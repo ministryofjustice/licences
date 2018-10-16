@@ -1376,6 +1376,9 @@ describe('licenceService', () => {
         const bassReferral = {
             bassRequest: {
                 bassRequested: 'No'
+            },
+            bassAreaCheck: {
+                bassAreaSuitable: 'Yes'
             }
         };
 
@@ -3439,6 +3442,45 @@ describe('licenceService', () => {
             });
 
         });
+
+        context('Stage === PROCESSING_RO, bass referral needed', () => {
+
+            it('should validate bassAreaCheck when bassReferral', () => {
+                const bassRequest = {
+                    ...baseLicence,
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes',
+                            proposedTown: 't',
+                            proposedCounty: 'c'
+                        },
+                        bassAreaCheck: {
+                            bassAreaSuitable: 'No'
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'PROCESSING_RO', tasks: {}, decisions: {bassReferralNeeded: true}},
+                    licence: bassRequest
+                });
+
+                expect(output).to.eql(
+                    {
+                        bassReferral: {
+                            bassAreaCheck: {
+                                bassAreaReason: 'Enter a reason'
+                            }
+                        },
+                        curfew: 'Not answered',
+                        licenceConditions: 'Not answered',
+                        reporting: 'Not answered',
+                        risk: 'Not answered'
+                    }
+                );
+            });
+        });
+
 
         context('Stage === PROCESSING_CA', () => {
             it('should validate all fields if curfewAddressReview !== UNSTARTED', () => {

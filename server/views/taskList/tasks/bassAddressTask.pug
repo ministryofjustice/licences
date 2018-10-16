@@ -1,0 +1,51 @@
+div.paddingBottom
+    h2.heading-medium Proposed curfew address
+
+    div.pure-g
+        div.pure-u-1.pure-u-md-3-4
+
+            if user.role === 'RO'
+                if licenceStatus.tasks.bassAreaCheck === 'DONE'
+                    -var approved = licenceStatus.decisions.bassAreaSuitable
+
+                    if approved
+                        | Suitable BASS area given
+                    else
+                        | BASS area is not suitable
+                else
+                    | BASS referral requested
+
+            else if user.role === 'CA'
+                if licenceStatus.tasks.bassAddress === 'DONE'
+                    -var offer = licenceStatus.decisions.bassOffer
+
+                    if offer === 'Yes'
+                        | Offer made and property available
+                    else if offer === 'Waiting'
+                        | Offer made and on waiting list
+
+                    else
+                        div.pure-g
+                            div.pure-u-1.pure-u-sm-3-5.notice-container
+                                div.notice
+                                    i.icon.icon-important
+                                        span.visually-hidden Warning
+                                    strong.bold-small
+                                        if offer === 'Unsuitable'
+                                            | Not suitable for BASS
+                                        else if offer === 'Unavailable'
+                                           | Address not available
+
+                else
+                    | BASS referral requested
+
+
+        div.pure-u-1.pure-u-md-1-4.center
+            -var bassAddressPath = "/hdc/bassReferral/bassAddress/" + prisonerInfo.bookingId
+            -var bassAreaCheckPath = "/hdc/bassReferral/bassAreaCheck/" + prisonerInfo.bookingId
+
+            if user.role === 'RO'
+                +startContinueChange(licenceStatus.tasks.bassAreaCheck, bassAreaCheckPath)
+
+            else if user.role === 'CA' && postApproval
+                +startContinueChange(licenceStatus.tasks.bassAddress, bassAddressPath)

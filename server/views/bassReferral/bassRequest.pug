@@ -6,21 +6,23 @@ block question
 block formItems
     div.form-group.inline.smallPaddingTop
 
+        -var bassRequest = data && data.bassRequest || {}
+
         div.multiple-choice(data-target="bassFollowUps")
-            input#yes(type="radio" checked=data && data.bassRequested === 'Yes' name="bassRequested" value="Yes")
+            input#yes(type="radio" checked=bassRequest.bassRequested === 'Yes' name="bassRequested" value="Yes")
             label(for="yes") Yes
         div.multiple-choice
-            input#no(type="radio" checked=data && data.bassRequested === 'No' name="bassRequested" value="No")
+            input#no(type="radio" checked=bassRequest.bassRequested === 'No' name="bassRequested" value="No")
             label(for="no") No
 
-    div#bassFollowUps.pure-u-1-2(class=errorObject.proposedTown || errorObject.proposedCounty ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
+    div#bassFollowUps.pure-u-1.pure-u-md-1-2(class=errorObject.proposedTown || errorObject.proposedCounty ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
         if errorObject.proposedTown
             span.error-message #{errorObject.proposedTown}
         div.form-group
             label(for='proposedTown') Proposed town:
-            input(type='text' name='proposedTown' id='proposedTown' class='form-control' value=data && data.proposedTown aria-label="Proposed town")
+            input(type='text' name='proposedTown' id='proposedTown' class='form-control' value=bassRequest.proposedTown aria-label="Proposed town")
         if errorObject.proposedCounty
             span.error-message #{errorObject.proposedCounty}
         div.form-group
             label(for='proposedCounty') Proposed county or borough:
-            input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=data && data.proposedCounty aria-label="Proposed county or borough")
+            input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=bassRequest.proposedCounty aria-label="Proposed county or borough")
