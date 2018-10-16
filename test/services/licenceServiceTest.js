@@ -1343,8 +1343,7 @@ describe('licenceService', () => {
                 telephone: '+123',
                 occupier: {
                     name: 'occupier',
-                    relationship: 'rel',
-                    age: ''
+                    relationship: 'rel'
                 },
                 residents: [
                     {
@@ -1849,164 +1848,274 @@ describe('licenceService', () => {
             });
         });
 
+        context('offender is main occupier', () => {
+            it('should not require an answer for occupier consent', () => {
 
-        it('should require an answer for curfew address review', () => {
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: '',
+                            occupier: {
+                                ...baseLicence.proposedAddress.occupier,
+                                isOffender: 'Yes'
+                            }
 
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: '',
-                        electricity: ''
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({
-                proposedAddress: {
-                    curfewAddress: {
-                        consent: 'Say if the homeowner consents to HDC'
-                    }
-                }
+                expect(output).to.eql({});
             });
-        });
 
-        it('should require an answer for electricity if consent is yes', () => {
+            it('should require an answer for electricity if consent not given', () => {
 
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: 'Yes',
-                        electricity: ''
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: '',
+                            electricity: '',
+                            occupier: {
+                                ...baseLicence.proposedAddress.occupier,
+                                isOffender: 'Yes'
+                            }
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({
-                proposedAddress: {
-                    curfewAddress: {
-                        electricity: 'Say if there is an electricity supply'
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            electricity: 'Say if there is an electricity supply'
+                        }
                     }
-                }
+                });
             });
-        });
 
-        it('should require an answer for homeVisitConducted if electricity is yes', () => {
+            it('should require an answer for homeVisitConducted if electricity is yes', () => {
 
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: 'Yes',
-                        electricity: 'Yes',
-                        homeVisitConducted: ''
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: '',
+                            electricity: 'Yes',
+                            homeVisitConducted: '',
+                            occupier: {
+                                ...baseLicence.proposedAddress.occupier,
+                                isOffender: 'Yes'
+                            }
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({
-                proposedAddress: {
-                    curfewAddress: {
-                        homeVisitConducted: 'Say if you did a home visit'
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            homeVisitConducted: 'Say if you did a home visit'
+                        }
                     }
-                }
+                });
             });
+
         });
 
-        it('should not require an answer for homeVisitConducted if consent is no', () => {
+        context('offender is not main occupier', () => {
 
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: 'No',
-                        electricity: 'Yes',
-                        homeVisitConducted: ''
+            it('should require an answer for consent from occupier', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: '',
+                            occupier: {
+                                ...baseLicence.proposedAddress.occupier,
+                                isOffender: undefined
+                            }
+
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({});
-        });
-
-        it('should require an answer for address safety if other curfew address questions are Yes', () => {
-
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        deemedSafe: ''
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            consent: 'Say if the homeowner consents to HDC'
+                        }
                     }
-                }
-            };
+                });
+            });
 
-            const output = service.getLicenceErrors({licence});
+            it('should require an answer for electricity if consent is yes', () => {
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {deemedSafe: 'Say if you approve the address'}}});
-        });
-
-        it('should not require an answer for address safety if other curfew address questions are No', () => {
-
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: 'Yes',
-                        electricity: 'No',
-                        homeVisitConducted: 'Yes',
-                        deemedSafe: ''
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            electricity: ''
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({});
-        });
-
-        it('should require a reason if deemedSafe is no', () => {
-
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        deemedSafe: 'No',
-                        unsafeReason: ''
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            electricity: 'Say if there is an electricity supply'
+                        }
                     }
-                }
-            };
+                });
+            });
 
-            const output = service.getLicenceErrors({licence});
+            it('should not require an answer for electricity if consent not given', () => {
 
-            expect(output).to.eql({
-                proposedAddress: {
-                    curfewAddress: {
-                        unsafeReason: 'Explain why you did not approve the address'
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'No',
+                            electricity: ''
+                        }
                     }
-                }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({});
+            });
+
+            it('should require an answer for homeVisitConducted if electricity is yes', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            electricity: 'Yes',
+                            homeVisitConducted: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            homeVisitConducted: 'Say if you did a home visit'
+                        }
+                    }
+                });
+            });
+
+            it('should not require an answer for homeVisitConducted if consent is no', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'No',
+                            electricity: 'Yes',
+                            homeVisitConducted: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({});
+            });
+
+            it('should require an answer for address safety if other curfew address questions are Yes', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({proposedAddress: {curfewAddress: {deemedSafe: 'Say if you approve the address'}}});
+            });
+
+            it('should not require an answer for address safety if other curfew address questions are No', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            electricity: 'No',
+                            homeVisitConducted: 'Yes',
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({});
+            });
+
+            it('should require a reason if deemedSafe is no', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            deemedSafe: 'No',
+                            unsafeReason: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            unsafeReason: 'Explain why you did not approve the address'
+                        }
+                    }
+                });
             });
         });
 

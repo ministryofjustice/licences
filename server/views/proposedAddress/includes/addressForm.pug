@@ -24,18 +24,24 @@ mixin addressForm(index, alternative)
                         label.form-label(for="telephone-"+index) Telephone
                         input.form-control(id="telephone-"+index name=addressPosition+"[telephone]" value=thisAddress.telephone aria-label="Telephone")
 
-        div.pure-u-1.pure-u-md-1-2
-            div.pure-g
-                div.pure-u-1
-                    h4.heading-small Main occupier
-            div.pure-g
-                div.form-group.pure-u-1.pure-u-sm-10-24
-                    label.form-label(for="occupierName-"+index) Name
-                    input.form-control(id="occupierName-"+index name=addressPosition+"[occupier][name]" value=savedOccupier.name aria-label="Main occupier's name")
+        div.form-group.pure-u-1.pure-u-md-1-2
+            fieldset.paddingBottom
+                div.pure-g
+                    div.pure-u-1
+                        h4.heading-small Main occupier
+                div.pure-g
+                    div.form-group.pure-u-1.pure-u-sm-10-24
+                        label.form-label(for="occupierName-"+index) Name
+                        input.form-control(id="occupierName-"+index name=addressPosition+"[occupier][name]" value=savedOccupier.name aria-label="Main occupier's name")
 
-                div.form-group.pure-u-1.pure-u-sm-10-24.sm-PadLeftRight15
-                    label.form-label(for="occupierRelation-"+index) Relation to offender
-                    input.form-control(id="occupierRelation-"+index name=addressPosition+"[occupier][relationship]" value=savedOccupier.relationship aria-label="Main occupier's relationship to offender")
+                    div.form-group.pure-u-1.pure-u-sm-10-24.sm-PadLeftRight15
+                        label.form-label(for="occupierRelation-"+index) Relation to offender
+                        input.form-control(id="occupierRelation-"+index name=addressPosition+"[occupier][relationship]" value=savedOccupier.relationship aria-label="Main occupier's relationship to offender")
+
+                div.multiple-choice
+                    input(id="offenderIsOccupier-"+index, name=addressPosition+"[occupier][isOffender]" type="checkbox" value="Yes" checked = savedOccupier.isOffender === 'Yes')
+                    label(for="offenderIsOccupier-"+index) The offender is the main occupier
+
 
             +otherResidents(addressPosition, thisAddress)
 

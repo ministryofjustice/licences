@@ -276,6 +276,61 @@ describe('/hdc/curfew', () => {
 
             });
         });
+
+        describe('curfewAddressReview', () => {
+            it('shows three questions if main occupier is not the offender', () => {
+                const licence = {
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [{}]
+                            }
+                        }
+                    },
+                    stage: 'PROCESSING_RO'
+                };
+
+                const licenceService = createLicenceServiceStub();
+                licenceService.getLicence = sinon.stub().resolves(licence);
+                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+                return request(app)
+                    .get('/hdc/curfew/curfewAddressReview/1')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.contain('Does the main occupier consent to HDC?');
+                        expect(res.text).to.contain('Is there an electricity supply?');
+                        expect(res.text).to.contain('Did you do a home visit?');
+                    });
+
+
+            });
+
+            it('shows two questions if main occupier is the offender', () => {
+                const licence = {
+                    licence: {
+                        proposedAddress: {
+                            curfewAddress: {
+                                addresses: [{occupier: {isOffender: 'Yes'}}]
+                            }
+                        }
+                    },
+                    stage: 'PROCESSING_RO'
+                };
+
+                const licenceService = createLicenceServiceStub();
+                licenceService.getLicence = sinon.stub().resolves(licence);
+                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+                return request(app)
+                    .get('/hdc/curfew/curfewAddressReview/1')
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.text).to.not.contain('Does the main occupier consent to HDC?');
+                        expect(res.text).to.contain('Is there an electricity supply?');
+                        expect(res.text).to.contain('Did you do a home visit?');
+                    });
+
+            });
+        });
     });
 
     describe('address withdrawal posts', () => {

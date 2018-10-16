@@ -29,7 +29,7 @@ describe('addressHelpers', () => {
         const address2 = {consent: 'No', electricity: 'Yes', deemedSafe: 'Yes'};
         const address3 = {consent: 'Yes', electricity: 'No', deemedSafe: 'Yes'};
         const address4 = {consent: 'Yes', electricity: 'Yes', deemedSafe: 'No'};
-        const address5 = {consent: 'Yes', electricity: 'Yes', deemedSafe: 'Yes sir'};
+        const address5 = {occupier: {isOffender: 'Yes'}, electricity: 'Yes', deemedSafe: 'Yes'};
 
         it('should return true if all expected answers are Yes', () => {
             expect(isAcceptedAddress(address1)).to.eql(true);
@@ -41,9 +41,10 @@ describe('addressHelpers', () => {
             expect(isAcceptedAddress(address4)).to.eql(false);
         });
 
-        it('should return true if deemedSafe starts with yes', () => {
+        it('should return true if consent is missed but occupier is the offender', () => {
             expect(isAcceptedAddress(address5)).to.eql(true);
         });
+
     });
 
     describe('isRejectedAddress', () => {

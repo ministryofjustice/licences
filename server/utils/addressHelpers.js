@@ -1,3 +1,5 @@
+const {getIn} = require('../utils/functionalHelpers');
+
 module.exports = {
     addressReviewStarted,
     isWithdrawnAddress,
@@ -12,10 +14,14 @@ function isWithdrawnAddress(address) {
 }
 
 function isAcceptedAddress(address) {
-    const {consent, electricity} = address;
+    const {consent, electricity, occupier} = address;
     const deemedSafe = address.deemedSafe || '';
 
-    return consent === 'Yes' && electricity === 'Yes' && deemedSafe.startsWith('Yes');
+    if (getIn(occupier, ['isOffender']) === 'Yes') {
+        return electricity === 'Yes' && deemedSafe === 'Yes';
+    }
+
+    return consent === 'Yes' && electricity === 'Yes' && deemedSafe === 'Yes';
 }
 
 function isRejectedAddress(address) {

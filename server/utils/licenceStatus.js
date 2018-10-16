@@ -160,7 +160,8 @@ function getEligibilityStageState(licence) {
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
     const {bassReferralNeeded, bassRequest} = getBassRequestState(licence);
-    const {curfewAddress} = getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved);
+    const {curfewAddress, offenderIsMainOccupier} = getCurfewAddressState(
+        licence, optedOut, bassReferralNeeded, curfewAddressApproved);
 
     return {
         decisions: {
@@ -174,7 +175,8 @@ function getEligibilityStageState(licence) {
             eligible,
             optedOut,
             bassReferralNeeded,
-            curfewAddressApproved
+            curfewAddressApproved,
+            offenderIsMainOccupier
         },
         tasks: {
             exclusion,
@@ -388,20 +390,21 @@ function getCaRefusal(licence) {
 }
 
 function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved) {
+    const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || [];
+    const lastAddress = lastItem(addresses);
 
     return {
-        curfewAddress: getState(licence)
+        offenderIsMainOccupier: getIn(lastAddress, ['occupier', 'isOffender']) === 'Yes',
+        curfewAddress: getAddressState(licence)
     };
 
-    function getState(licence) {
-
-        const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
+    function getAddressState() {
 
         if (optedOut || bassReferralNeeded) {
             return taskStates.DONE;
         }
 
-        if (!addresses) {
+        if (isEmpty(addresses)) {
             return taskStates.UNSTARTED;
         }
 

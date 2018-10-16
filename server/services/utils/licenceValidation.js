@@ -119,23 +119,34 @@ const curfewAddress = joi.object().keys({
     telephone: requiredPhone,
     occupier: joi.object().keys({
         name: requiredString,
-        relationship: requiredString
+        relationship: requiredString,
+        isOffender: optionalString
     }),
     cautionedAgainstResident: requiredYesNo,
-    consent: requiredYesNo,
-    electricity: requiredIf('consent', 'Yes'),
-    homeVisitConducted:
-        requiredIf('consent', 'Yes',
-            requiredIf('electricity', 'Yes')),
-    deemedSafe:
-        requiredIf('consent', 'Yes',
-            requiredIf('electricity', 'Yes',
-                requiredIf('homeVisitConducted', 'Yes'))),
-    unsafeReason:
-        requiredIf('consent', 'Yes',
-            requiredIf('electricity', 'Yes',
-                requiredIf('homeVisitConducted', 'Yes',
-                    requiredIf('deemedSafe', 'No'))))
+    consent: requiredIf('occupier.isOffender', joi.not('Yes'), requiredYesNo),
+    electricity: joi.when('occupier.isOffender', {
+        is: joi.not('Yes'),
+        then: requiredIf('consent', 'Yes'),
+        otherwise: requiredYesNo
+    }),
+    homeVisitConducted: joi.when('occupier.isOffender', {
+        is: joi.not('Yes'),
+        then: requiredIf('consent', 'Yes'),
+        otherwise: requiredYesNo
+    }),
+    deemedSafe: joi.when('occupier.isOffender', {
+        is: joi.not('Yes'),
+        then: requiredIf('consent', 'Yes', requiredIf('electricity', 'Yes', requiredIf('homeVisitConducted', 'Yes'))),
+        otherwise: requiredIf('electricity', 'Yes', requiredIf('homeVisitConducted', 'Yes'))
+    }),
+    unsafeReason: joi.when('occupier.isOffender', {
+        is: joi.not('Yes'),
+        then: requiredIf('consent', 'Yes', requiredIf('electricity', 'Yes', requiredIf('homeVisitConducted', 'Yes',
+            requiredIf('deemedSafe', 'No')))),
+        otherwise: requiredIf('electricity', 'Yes', requiredIf('homeVisitConducted', 'Yes',
+            requiredIf('deemedSafe', 'No')))
+    })
+
 }).required();
 
 // PROCESSING_RO
