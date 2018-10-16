@@ -2,13 +2,14 @@ div
     h3.heading-small Actions
     if !addressWithdrawn && !consentWithdrawn
         div.pure-g
-            div.pure-u-1.pure-u-md-1-2
-                p Homeowner/landlord consent withdrawn
-                div
-                    form(method="post", name="withdrawConsent", action="/hdc/curfew/withdrawConsent/" + bookingId)
-                        input(type="hidden" name="_csrf" value=csrfToken)
-                        input(type="hidden" name="consentWithdrawn" value="Yes")
-                        button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw consent
+            if !licenceStatus.decisions.offenderIsMainOccupier
+                div.pure-u-1.pure-u-md-1-2
+                    p Homeowner/landlord consent withdrawn
+                    div
+                        form(method="post", name="withdrawConsent", action="/hdc/curfew/withdrawConsent/" + bookingId)
+                            input(type="hidden" name="_csrf" value=csrfToken)
+                            input(type="hidden" name="consentWithdrawn" value="Yes")
+                            button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw consent
 
             div.pure-u-1.pure-u-md-1-2
                 p Offender has requested to withdraw address
