@@ -122,7 +122,7 @@ module.exports = function createApp({
     }
 
     app.use(cookieParser());
-    app.use(csurf({cookie: true}));
+    app.use(csurf({cookie: {secure: config.https, httpOnly: true}}));
 
     // token refresh
     app.use(async (req, res, next) => {
