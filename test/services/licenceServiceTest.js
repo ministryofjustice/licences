@@ -1343,9 +1343,7 @@ describe('licenceService', () => {
                 telephone: '+123',
                 occupier: {
                     name: 'occupier',
-                    relationship: 'rel',
-                    age: '',
-                    isOffender: ''
+                    relationship: 'rel'
                 },
                 residents: [
                     {
@@ -1915,7 +1913,8 @@ describe('licenceService', () => {
                             electricity: 'Yes',
                             homeVisitConducted: '',
                             occupier: {
-                                ...baseLicence.proposedAddress.occupier
+                                ...baseLicence.proposedAddress.occupier,
+                                isOffender: 'Yes'
                             }
                         }
                     }
@@ -1947,7 +1946,7 @@ describe('licenceService', () => {
                             consent: '',
                             occupier: {
                                 ...baseLicence.proposedAddress.occupier,
-                                isOffender: ''
+                                isOffender: undefined
                             }
 
                         }
@@ -3383,8 +3382,7 @@ describe('licenceService', () => {
                 occupier: {
                     name: 'occupier',
                     relationship: 'rel',
-                    age: '',
-                    isOffender: ''
+                    age: ''
                 },
                 residents: [
                     {
