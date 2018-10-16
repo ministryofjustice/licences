@@ -25,6 +25,7 @@ function getLicenceStatus(licenceRecord) {
                 curfewAddress: taskStates.UNSTARTED,
                 bassRequest: taskStates.UNSTARTED,
                 bassAreaCheck: taskStates.UNSTARTED,
+                bassOffer: taskStates.UNSTARTED,
                 riskManagement: taskStates.UNSTARTED,
                 curfewAddressReview: taskStates.UNSTARTED,
                 curfewHours: taskStates.UNSTARTED,
@@ -75,17 +76,19 @@ const combiner = (acc, data) => {
 };
 
 function getApprovalStageState(licence) {
-    const {approved, refused, dmRefused, approval, refusalReason} = getApprovalState(licence);
+    const {approved, refused, dmRefused, approval, refusalReason, bassOffer, bassAccepted} = getApprovalState(licence);
 
     return {
         decisions: {
             approved,
             refused,
             dmRefused,
-            refusalReason
+            refusalReason,
+            bassAccepted
         },
         tasks: {
-            approval
+            approval,
+            bassOffer
         }
     };
 }
@@ -129,6 +132,7 @@ function getCaStageState(licence) {
     const {confiscationOrder, confiscationOrderCheck} = getConfiscationOrderState(licence);
     const {finalChecksPass, finalChecksRefused, postponed} = getFinalChecksState(licence, seriousOffence, onRemand);
     const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck, confiscationOrderCheck]);
+    const {bassAccepted, bassOffer} = getBassState(licence);
 
     return {
         decisions: {
@@ -137,13 +141,15 @@ function getCaStageState(licence) {
             confiscationOrder,
             postponed,
             finalChecksPass,
-            finalChecksRefused
+            finalChecksRefused,
+            bassAccepted
         },
         tasks: {
             seriousOffenceCheck,
             onRemandCheck,
             confiscationOrderCheck,
-            finalChecks
+            finalChecks,
+            bassOffer
         }
     };
 }
@@ -344,15 +350,50 @@ function getApprovalState(licence) {
 
     const dmApproval = getDmApproval(licence);
     const caRefusal = getCaRefusal(licence);
-
+    const {bassAccepted, bassOffer} = getBassState(licence);
 
     return {
         approved: dmApproval.approved && !caRefusal.refused,
         refused: dmApproval.refused || caRefusal.refused,
         approval: dmApproval.approval,
         dmRefused: dmApproval.refused,
-        refusalReason: dmApproval.refusalReason || caRefusal.refusalReason
+        refusalReason: dmApproval.refusalReason || caRefusal.refusalReason,
+        bassAccepted,
+        bassOffer
     };
+}
+
+function getBassState(licence) {
+
+    const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted']);
+    const bassOffer = getBassOfferState(licence, bassAccepted);
+
+    return {bassAccepted, bassOffer};
+}
+
+function getBassOfferState(licence, bassAccepted) {
+
+
+    if (!bassAccepted) {
+        return taskStates.UNSTARTED;
+    }
+
+    if (bassAccepted && bassAccepted !== 'Yes') {
+        return taskStates.DONE;
+    }
+
+    const address = getIn(licence, ['bassReferral', 'bassOffer', 'bassAddress']);
+
+    if (!address) {
+        return taskStates.STARTED;
+    }
+
+    const required = ['addressTown', 'addressLine1', 'postCode', 'telephone'];
+    if (required.some(field => !address[field])) {
+        return taskStates.STARTED;
+    }
+
+    return taskStates.DONE;
 }
 
 function getDmApproval(licence) {

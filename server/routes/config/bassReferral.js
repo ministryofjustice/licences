@@ -23,5 +23,29 @@ module.exports = {
             path: '/hdc/taskList/',
             change: '/hdc/review/licenceDetails/'
         }
+    },
+    bassOffer: {
+        licenceSection: 'bassOffer',
+        pageDataMap: ['licence', 'bassReferral'],
+        validateInPlace: true,
+        fields: [
+            {bassAccepted: {}},
+            {
+                bassAddress: {
+                    dependentOn: 'bassAccepted', predicate: 'Yes',
+                    contains: [
+                        {bassArea: {}},
+                        {addressLine1: {}},
+                        {addressLine2: {}},
+                        {addressTown: {}},
+                        {postCode: {}},
+                        {telephone: {}}
+                    ]
+                }
+            }
+        ],
+        nextPath: {
+            path: '/hdc/taskList/'
+        }
     }
 };

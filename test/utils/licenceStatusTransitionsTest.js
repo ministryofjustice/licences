@@ -267,6 +267,24 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql(null);
     });
 
+    it('should allow CA to DM in the PROCESSING_CA for BASS when only BASS offer and final checks tasks done', () => {
+        const status = {
+            stage: 'PROCESSING_CA',
+            tasks: {
+                curfewAddress: 'UNSTARTED',
+                bassOffer: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                bassReferralNeeded: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+
+        expect(allowed).to.eql('caToDm');
+    });
+
     it('should allow CA to DM refusal when eligible and insufficient time', () => {
         const status = {
             stage: 'ELIGIBILITY',

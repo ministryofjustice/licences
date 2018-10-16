@@ -25,6 +25,11 @@ module.exports = {
     bassRequest_proposedTown: 'Enter a town',
     bassAreaCheck_bassAreaSuitable: 'Select yes or no',
     bassAreaCheck_bassAreaReason: 'Enter a reason',
+    bassOffer_bassAddress_bassArea: 'Enter an area',
+    bassOffer_bassAddress_addressLine1: 'Enter a building or street',
+    bassOffer_bassAddress_addressTown: 'Enter a town or city',
+    bassOffer_bassAddress_postCode: 'Enter a postcode in the right format',
+    bassOffer_bassAddress_telephone: 'Enter a telephone number in the right format',
 
     // PROCESSING_RO forms
     curfewAddress_consent: 'Say if the homeowner consents to HDC',

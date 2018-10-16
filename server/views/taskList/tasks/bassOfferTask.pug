@@ -1,0 +1,34 @@
+div.paddingBottom
+    h2.heading-medium BASS address
+
+    div.pure-g
+        div.pure-u-1.pure-u-md-3-4
+
+            if licenceStatus.tasks.bassOffer === 'DONE'
+                -var offer = licenceStatus.decisions.bassAccepted
+
+                if offer === 'Yes'
+                    | Offer made and property available
+                else if offer === 'Waiting'
+                    | Offer made and on waiting list
+
+                else
+                    div.pure-g
+                        div.pure-u-1.pure-u-sm-3-5.notice-container
+                            div.notice
+                                i.icon.icon-important
+                                    span.visually-hidden Warning
+                                strong.bold-small
+                                    if offer === 'Unsuitable'
+                                        | Not suitable for BASS
+                                    else if offer === 'Unavailable'
+                                       | Address not available
+
+            else
+                | BASS referral requested
+
+
+        div.pure-u-1.pure-u-md-1-4.center
+            -var bassOfferPath = "/hdc/bassReferral/bassOffer/" + prisonerInfo.bookingId
+
+            +startContinueChange(licenceStatus.tasks.bassOffer, bassOfferPath)
