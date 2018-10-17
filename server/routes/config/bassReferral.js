@@ -12,6 +12,20 @@ module.exports = {
             change: '/hdc/review/bassRequest/'
         }
     },
+    rejected: {
+        licenceSection: 'bassRequest',
+        pageDataMap: ['licence', 'bassReferral'],
+        fields: [
+            {enterAlternative: {}}
+        ],
+        nextPath: {
+            decisions: {
+                discriminator: 'enterAlternative',
+                Yes: '/hdc/bassReferral/bassRequest/rejected/',
+                No: '/hdc/taskList/'
+            }
+        }
+    },
     bassAreaCheck: {
         licenceSection: 'bassAreaCheck',
         pageDataMap: ['licence', 'bassReferral'],

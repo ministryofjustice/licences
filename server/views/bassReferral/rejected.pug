@@ -1,0 +1,41 @@
+extends ../layout
+
+block content
+
+    -var bassRequest = data.bassRequest || {}
+    -var bassAreaCheck = data.bassAreaCheck || {}
+
+    div.pure-g.pure-u-1
+        include ../includes/back
+
+        h2.heading-large BASS area rejected
+        p The following BASS area has been returned by the Responsible Officer:
+
+        div.pure-g.borderBottomLight
+            div.pure-u-1.pure-u-md-1-2
+                p.smallMarginBottom Area
+                div.paddingBottom
+                    if bassRequest.proposedCounty
+                        p#rejectedCounty.bold.noMargin #{bassRequest.proposedCounty}
+                    if bassRequest.proposedTown
+                        p#rejectedTown.bold.noMargin #{bassRequest.proposedTown}
+
+            div.pure-u-1.pure-u-md-1-2.paddingBottom
+                p.smallMarginBottom Reason for rejection:
+                    p.bold #{bassAreaCheck.bassAreaReason}
+
+
+        div.largePaddingBottom
+            form(id="enterAlternativeForm" method="post")
+                div.form-group.paddingBottom
+                    h2.heading-medium Do you want to enter an alternative area?
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    input(type="hidden" name="bookingId" value=bookingId || '')
+                    div.multiple-choice(data-target="enterAlternative")
+                        input#enterAlternativeYes(type="radio" name="enterAlternative" value="Yes" checked=savedData === "Yes")
+                        label(for="enterAlternativeYes") Yes
+                    div.multiple-choice
+                        input#enterAlternativeNo(type="radio" name="enterAlternative" value="No" checked=savedData === "No")
+                        label(for="enterAlternativeNo") No
+
+                include ../includes/formSubmit
