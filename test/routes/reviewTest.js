@@ -1,7 +1,6 @@
 const request = require('supertest');
 
 const {
-    loggerStub,
     createLicenceServiceStub,
     createPrisonerServiceStub,
     createConditionsServiceStub,
@@ -10,20 +9,12 @@ const {
     auditStub
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/review');
 
 const prisonerService = createPrisonerServiceStub();
 const licenceService = createLicenceServiceStub();
 const conditionsService = createConditionsServiceStub();
-
-const reviewRoute = createRoute({
-    logger: loggerStub,
-    authenticationMiddleware,
-    audit: auditStub,
-    prisonerService,
-    licenceService,
-    conditionsService
-});
 
 let app;
 
@@ -45,7 +36,7 @@ describe('/review/', () => {
     describe('/curfewAddress/', () => {
 
         beforeEach(() => {
-            app = appSetup(reviewRoute, 'caUser', '/hdc/');
+            app = createApp('caUser');
             licenceService.getLicence = sinon.stub().resolves(licence);
         });
 
@@ -80,7 +71,7 @@ describe('/review/', () => {
     describe('/licenceDetails/', () => {
 
         beforeEach(() => {
-            app = appSetup(reviewRoute, 'roUser', '/hdc/');
+            app = createApp('roUser');
             licenceService.getLicence = sinon.stub().resolves(licence);
         });
 
@@ -154,7 +145,7 @@ describe('/review/', () => {
     describe('/address/', () => {
 
         beforeEach(() => {
-            app = appSetup(reviewRoute, 'caUser', '/hdc/');
+            app = app = createApp('caUser');
         });
 
         it('shows an actions panel if in PROCESSING_CA stage', () => {
@@ -200,3 +191,12 @@ describe('/review/', () => {
         });
     });
 });
+
+function createApp(user) {
+
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
+    const route = baseRouter(createRoute({licenceService, conditionsService, prisonerService}));
+
+    return appSetup(route, user, '/hdc');
+}
+

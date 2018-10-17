@@ -9,6 +9,7 @@ const {
     testFormPageGets
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/curfew');
 const formConfig = require('../../server/routes/config/curfew');
 
@@ -500,15 +501,11 @@ describe('/hdc/curfew', () => {
 });
 
 function createApp({licenceServiceStub}, user) {
-    const prisonerServiceStub = createPrisonerServiceStub();
-    licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
+    const prisonerService = createPrisonerServiceStub();
+    const licenceService = licenceServiceStub || createLicenceServiceStub();
 
-    const route = createRoute({
-        licenceService: licenceServiceStub,
-        prisonerService: prisonerServiceStub,
-        authenticationMiddleware,
-        audit: auditStub
-    });
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
+    const route = baseRouter(createRoute({licenceService}));
 
     return appSetup(route, user, '/hdc');
 }

@@ -1,12 +1,12 @@
 const logger = require('../../log');
 const express = require('express');
-const {async} = require('../utils/middleware');
+const {asyncMiddleware} = require('../utils/middleware');
 
 module.exports = function({caseListService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
-    router.get('/', async(async (req, res) => {
+    router.get('/', asyncMiddleware(async (req, res) => {
         logger.debug('GET /caseList');
 
         const hdcEligible = await caseListService.getHdcCaseList(req.user.token, req.user.username, req.user.role);

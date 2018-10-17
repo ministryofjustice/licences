@@ -38,6 +38,7 @@ const sentRouter = require('../server/routes/sent');
 const taskListRouter = require('./routes/taskList');
 const utilsRouter = require('../server/routes/utils');
 
+const standardRouter = require('./routes/routeWorkers/standardRouter');
 const addressRouter = require('./routes/address');
 const approvalRouter = require('./routes/approval');
 const bassReferralRouter = require('./routes/bassReferral');
@@ -291,6 +292,8 @@ module.exports = function createApp({
         }
     });
 
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit});
+
     app.use('/', defaultRouter());
 
     app.use('/caseList/', caseListRouter({caseListService, authenticationMiddleware}));
@@ -302,16 +305,16 @@ module.exports = function createApp({
     app.use('/hdc/sent/', sentRouter({licenceService, prisonerService, authenticationMiddleware}));
     app.use('/hdc/taskList/', taskListRouter({prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));
 
-    app.use('/hdc/', addressRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/', approvalRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/', bassReferralRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/', conditionsRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/', curfewRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/', eligibilityRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/', finalChecksRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/', reviewRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/', reportingRouter({licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/', riskRouter({licenceService, prisonerService, authenticationMiddleware, audit}));
+    app.use('/hdc/', baseRouter(addressRouter({licenceService})));
+    app.use('/hdc/', baseRouter(approvalRouter({licenceService, prisonerService})));
+    app.use('/hdc/', baseRouter(bassReferralRouter({licenceService})));
+    app.use('/hdc/', baseRouter(conditionsRouter({licenceService, conditionsService})));
+    app.use('/hdc/', baseRouter(curfewRouter({licenceService})));
+    app.use('/hdc/', baseRouter(eligibilityRouter({licenceService})));
+    app.use('/hdc/', baseRouter(finalChecksRouter({licenceService})));
+    app.use('/hdc/', baseRouter(reviewRouter({licenceService, conditionsService, prisonerService})));
+    app.use('/hdc/', baseRouter(reportingRouter({licenceService})));
+    app.use('/hdc/', baseRouter(riskRouter({licenceService})));
 
     // hide functionality until authorisation strategy is established
     if (!production) {

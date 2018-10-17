@@ -1,7 +1,7 @@
 const logger = require('../../log');
 const express = require('express');
 
-const {async, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} = require('../utils/middleware');
+const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} = require('../utils/middleware');
 const {templates} = require('./config/pdf');
 const {firstItem, getIn, isEmpty} = require('../utils/functionalHelpers');
 
@@ -21,7 +21,7 @@ module.exports = function({pdfService, prisonerService, authenticationMiddleware
         next();
     });
 
-    router.get('/select/:bookingId', async(async (req, res) => {
+    router.get('/select/:bookingId', asyncMiddleware(async (req, res) => {
         const {bookingId} = req.params;
 
         const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token);
@@ -46,7 +46,7 @@ module.exports = function({pdfService, prisonerService, authenticationMiddleware
         res.redirect(`/hdc/pdf/taskList/${decision}/${bookingId}`);
     });
 
-    router.get('/taskList/:templateName/:bookingId', async(async (req, res) => {
+    router.get('/taskList/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
 
         const {bookingId, templateName} = req.params;
         const {licence} = res.locals;
@@ -99,7 +99,7 @@ module.exports = function({pdfService, prisonerService, authenticationMiddleware
         };
     }
 
-    router.get('/missing/:section/:templateName/:bookingId', async(async (req, res) => {
+    router.get('/missing/:section/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
 
         const {bookingId, templateName, section} = req.params;
         const {licence} = res.locals;
@@ -121,7 +121,7 @@ module.exports = function({pdfService, prisonerService, authenticationMiddleware
         });
     }));
 
-    router.get('/create/:templateName/:bookingId', audited, async(async (req, res) => {
+    router.get('/create/:templateName/:bookingId', audited, asyncMiddleware(async (req, res) => {
 
         const {bookingId, templateName} = req.params;
         const {licence} = res.locals;
