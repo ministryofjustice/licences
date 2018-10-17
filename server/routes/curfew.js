@@ -1,48 +1,36 @@
-const express = require('express');
-const {async, checkLicenceMiddleWare, authorisationMiddleware, auditMiddleware} = require('../utils/middleware');
+const {asyncMiddleware} = require('../utils/middleware');
 const createStandardRoutes = require('./routeWorkers/standard');
 const {getPathFor} = require('../utils/routes');
 const {getIn, lastItem, lastIndex} = require('../utils/functionalHelpers');
 const formConfig = require('./config/curfew');
 
-module.exports = function({licenceService, prisonerService, authenticationMiddleware, audit}) {
-
-    const router = express.Router();
-    router.use(authenticationMiddleware());
-    router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
-    router.param('bookingId', authorisationMiddleware);
-
-    const audited = auditMiddleware(audit, 'UPDATE_SECTION');
-
-    router.use(function(req, res, next) {
-        if (typeof req.csrfToken === 'function') {
-            res.locals.csrfToken = req.csrfToken();
-        }
-        next();
-    });
+module.exports = ({licenceService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'curfew'});
 
     router.get('/curfew/curfewAddressReview/:bookingId', addressReviewGets('curfewAddressReview'));
-    router.post('/curfew/curfewAddressReview/:bookingId', audited, async(addressReviewPosts('curfewAddressReview')));
+    router.post('/curfew/curfewAddressReview/:bookingId', audited,
+        asyncMiddleware(addressReviewPosts('curfewAddressReview')));
 
     router.get('/curfew/curfewAddressReview/:action/:bookingId', addressReviewGets('curfewAddressReview'));
     router.post('/curfew/curfewAddressReview/:action/:bookingId', audited,
-        async(addressReviewPosts('curfewAddressReview')));
+        asyncMiddleware(addressReviewPosts('curfewAddressReview')));
 
 
     router.get('/curfew/addressSafety/:bookingId', addressReviewGets('addressSafety'));
-    router.post('/curfew/addressSafety/:bookingId', audited, async(addressReviewPosts('addressSafety')));
+    router.post('/curfew/addressSafety/:bookingId', audited, asyncMiddleware(addressReviewPosts('addressSafety')));
 
     router.get('/curfew/addressSafety/:action/:bookingId', addressReviewGets('addressSafety'));
-    router.post('/curfew/addressSafety/:action/:bookingId', audited, async(addressReviewPosts('addressSafety')));
+    router.post('/curfew/addressSafety/:action/:bookingId', audited,
+        asyncMiddleware(addressReviewPosts('addressSafety')));
 
 
-    router.post('/curfew/withdrawAddress/:bookingId', audited, async(addressReviewPosts('withdrawAddress')));
-    router.post('/curfew/withdrawConsent/:bookingId', audited, async(addressReviewPosts('withdrawConsent')));
-    router.post('/curfew/reinstateAddress/:bookingId', audited, async(addressReviewPosts('reinstateAddress')));
+    router.post('/curfew/withdrawAddress/:bookingId', audited, asyncMiddleware(addressReviewPosts('withdrawAddress')));
+    router.post('/curfew/withdrawConsent/:bookingId', audited, asyncMiddleware(addressReviewPosts('withdrawConsent')));
+    router.post('/curfew/reinstateAddress/:bookingId',
+        audited, asyncMiddleware(addressReviewPosts('reinstateAddress')));
 
-    router.post('/curfew/curfewHours/:bookingId', audited, async(async (req, res) => {
+    router.post('/curfew/curfewHours/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {bookingId} = req.params;
         const nextPath = getPathFor({data: req.body, config: formConfig.curfewHours});
 
@@ -59,11 +47,11 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
         res.redirect(`${nextPath}${bookingId}`);
     }));
 
-    router.get('/curfew/:formName/:bookingId', async(standard.get));
-    router.post('/curfew/:formName/:bookingId', audited, async(standard.post));
+    router.get('/curfew/:formName/:bookingId', asyncMiddleware(standard.get));
+    router.post('/curfew/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
-    router.get('/curfew/:formName/:action/:bookingId', async(standard.get));
-    router.post('/curfew/:formName/:action/:bookingId', audited, async(standard.post));
+    router.get('/curfew/:formName/:action/:bookingId', asyncMiddleware(standard.get));
+    router.post('/curfew/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
 
     function addressReviewGets(formName) {
         return (req, res) => {

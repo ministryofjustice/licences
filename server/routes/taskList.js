@@ -1,7 +1,7 @@
 const logger = require('../../log');
 const express = require('express');
 
-const {async} = require('../utils/middleware');
+const {asyncMiddleware} = require('../utils/middleware');
 const path = require('path');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
@@ -19,7 +19,7 @@ module.exports = function({prisonerService, licenceService, caseListService, aut
         next();
     });
 
-    router.get('/:bookingId', async(async (req, res) => {
+    router.get('/:bookingId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /taskList');
 
         const {bookingId} = req.params;
@@ -43,7 +43,7 @@ module.exports = function({prisonerService, licenceService, caseListService, aut
         });
     }));
 
-    router.post('/eligibilityStart', async(async (req, res) => {
+    router.post('/eligibilityStart', asyncMiddleware(async (req, res) => {
         logger.debug('POST /eligibilityStart');
 
         const {bookingId} = req.body;
@@ -58,7 +58,7 @@ module.exports = function({prisonerService, licenceService, caseListService, aut
         res.redirect(`/hdc/eligibility/excluded/${bookingId}`);
     }));
 
-    router.get('/image/:imageId', async(async (req, res) => {
+    router.get('/image/:imageId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /image');
 
         const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, req.user.token);

@@ -6,10 +6,10 @@ const {
     authenticationMiddleware,
     auditStub,
     appSetup,
-    testFormPageGets,
-    loggerStub
+    testFormPageGets
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/bassReferral');
 const formConfig = require('../../server/routes/config/bassReferral');
 
@@ -167,16 +167,11 @@ describe('/hdc/bassReferral', () => {
 });
 
 function createApp({licenceServiceStub}, user) {
-    const prisonerServiceStub = createPrisonerServiceStub();
-    licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
+    const prisonerService = createPrisonerServiceStub();
+    const licenceService = licenceServiceStub || createLicenceServiceStub();
 
-    const route = createRoute({
-        logger: loggerStub,
-        licenceService: licenceServiceStub,
-        prisonerService: prisonerServiceStub,
-        authenticationMiddleware,
-        audit: auditStub
-    });
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
+    const route = baseRouter(createRoute({licenceService, prisonerService}));
 
     return appSetup(route, user, '/hdc');
 }

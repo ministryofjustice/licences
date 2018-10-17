@@ -1,5 +1,5 @@
 const express = require('express');
-const {async, authorisationMiddleware, auditMiddleware} = require('../../utils/middleware');
+const {asyncMiddleware, authorisationMiddleware, auditMiddleware} = require('../../utils/middleware');
 const {firstItem} = require('../../utils/functionalHelpers');
 
 module.exports = function(
@@ -22,12 +22,12 @@ module.exports = function(
         res.redirect('/admin/roUsers');
     });
 
-    router.get('/roUsers', async(async (req, res) => {
+    router.get('/roUsers', asyncMiddleware(async (req, res) => {
         const roUsers = await userService.getRoUsers();
         return res.render('admin/users/list', {roUsers, heading: 'All RO users'});
     }));
 
-    router.post('/roUsers', async(async (req, res) => {
+    router.post('/roUsers', asyncMiddleware(async (req, res) => {
         const {searchTerm} = req.body;
 
         if (searchTerm.trim() === '') {
@@ -39,7 +39,7 @@ module.exports = function(
         return res.render('admin/users/list', {roUsers, heading: 'Search results'});
     }));
 
-    router.get('/roUsers/edit/:nomisId', async(async (req, res) => {
+    router.get('/roUsers/edit/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         const roUser = await userService.getRoUser(nomisId);
         const errors = firstItem(req.flash('errors')) || {};
@@ -71,13 +71,13 @@ module.exports = function(
         res.redirect('/admin/roUsers');
     });
 
-    router.get('/roUsers/delete/:nomisId', async(async (req, res) => {
+    router.get('/roUsers/delete/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         const roUser = await userService.getRoUser(nomisId);
         return res.render('admin/users/delete', {roUser});
     }));
 
-    router.post('/roUsers/delete/:nomisId', audited, async(async (req, res) => {
+    router.post('/roUsers/delete/:nomisId', audited, asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
         await userService.deleteRoUser(nomisId);
         res.redirect('/admin/roUsers');

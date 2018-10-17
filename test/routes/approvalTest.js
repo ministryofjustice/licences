@@ -6,10 +6,10 @@ const {
     authenticationMiddleware,
     auditStub,
     appSetup,
-    testFormPageGets,
-    createConditionsServiceStub
+    testFormPageGets
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/approval');
 const formConfig = require('../../server/routes/config/approval');
 
@@ -170,18 +170,12 @@ describe('/hdc/approval', () => {
 });
 
 function createApp({licenceServiceStub}, user) {
-    const prisonerServiceStub = createPrisonerServiceStub();
-    prisonerServiceStub.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse);
-    licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
-    const conditionsService = createConditionsServiceStub();
+    const prisonerService = createPrisonerServiceStub();
+    prisonerService.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse);
+    const licenceService = licenceServiceStub || createLicenceServiceStub();
 
-    const route = createRoute({
-        licenceService: licenceServiceStub,
-        prisonerService: prisonerServiceStub,
-        conditionsService,
-        authenticationMiddleware,
-        audit: auditStub
-    });
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
+    const route = baseRouter(createRoute({licenceService, prisonerService}));
 
     return appSetup(route, user, '/hdc');
 }
