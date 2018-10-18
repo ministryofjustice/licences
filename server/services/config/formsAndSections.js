@@ -24,6 +24,14 @@ const sectionContaining = {
 const reviewForms = [
     ...formsInSection['eligibility'],
     ...formsInSection['proposedAddress'],
+    ...formsInSection['curfew'],
+    ...formsInSection['risk'],
+    ...formsInSection['reporting'],
+    ...formsInSection['licenceConditions']
+];
+
+const bassReviewForms = [
+    ...formsInSection['eligibility'],
     ...formsInSection['bassReferral'],
     ...formsInSection['curfew'],
     ...formsInSection['risk'],
@@ -34,5 +42,6 @@ const reviewForms = [
 module.exports = {
     formsInSection,
     sectionContaining,
-    reviewForms
+    reviewForms,
+    bassReviewForms
 };
