@@ -125,36 +125,6 @@ module.exports = function createApp({
     app.use(cookieParser());
     app.use(csurf({cookie: {secure: config.https, httpOnly: true}}));
 
-    // token refresh
-    app.use(async (req, res, next) => {
-
-        if (production && req.user && req.user.role !== 'RO') {
-
-            const timeToRefresh = new Date() > req.user.refreshTime;
-
-            if (timeToRefresh) {
-                try {
-                    const newToken = await signInService.getRefreshedToken(req.user);
-
-                    req.user.token = newToken.token;
-                    req.user.refreshToken = newToken.refreshToken;
-                    req.user.refreshTime = newToken.refreshTime;
-                } catch (error) {
-                    logger.error(`Elite 2 token refresh error: ${req.user.username}`, error.stack);
-                    return res.redirect('/logout');
-                }
-            }
-        }
-        next();
-    });
-
-    // Update a value in the cookie so that the set-cookie will be sent.
-    // Only changes every minute so that it's not sent with every request.
-    app.use(function(req, res, next) {
-        req.session.nowInMinutes = Math.floor(Date.now() / 60e3);
-        next();
-    });
-
     // Resource Delivery Configuration
     app.use(compression());
 
@@ -240,6 +210,32 @@ module.exports = function createApp({
     }));
 
     app.use(flash());
+
+    // token refresh
+    app.use(async (req, res, next) => {
+        if (production && req.user && req.user.role !== 'RO') {
+            const timeToRefresh = new Date() > req.user.refreshTime;
+            if (timeToRefresh) {
+                try {
+                    const newToken = await signInService.getRefreshedToken(req.user);
+                    req.user.token = newToken.token;
+                    req.user.refreshToken = newToken.refreshToken;
+                    req.user.refreshTime = newToken.refreshTime;
+                } catch (error) {
+                    logger.error(`Elite 2 token refresh error: ${req.user.username}`, error.stack);
+                    return res.redirect('/logout');
+                }
+            }
+        }
+        next();
+    });
+
+    // Update a value in the cookie so that the set-cookie will be sent.
+    // Only changes every minute so that it's not sent with every request.
+    app.use(function(req, res, next) {
+        req.session.nowInMinutes = Math.floor(Date.now() / 60e3);
+        next();
+    });
 
     // Express Routing Configuration
     app.get('/health', (req, res, next) => {
