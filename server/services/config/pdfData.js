@@ -160,10 +160,10 @@ const REPORTING_ON = {
 
 const CURFEW_ADDRESS = {
     paths: [
-        ['licence', 'proposedAddress', 'curfewAddress', 'addresses', 0, 'addressLine1'],
-        ['licence', 'proposedAddress', 'curfewAddress', 'addresses', 0, 'addressLine2'],
-        ['licence', 'proposedAddress', 'curfewAddress', 'addresses', 0, 'addressTown'],
-        ['licence', 'proposedAddress', 'curfewAddress', 'addresses', 0, 'postCode']
+        ['curfewAddress', 'addressLine1'],
+        ['curfewAddress', 'addressLine2'],
+        ['curfewAddress', 'addressTown'],
+        ['curfewAddress', 'postCode']
     ],
     separator: '\n',
     displayName: 'Curfew address',
