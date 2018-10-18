@@ -31,7 +31,7 @@ describe('/hdc/curfew', () => {
         const routes = [
             {url: '/hdc/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
             {url: '/hdc/curfew/addressSafety/1', content: 'Could this offender be managed safely at this address?'},
-            {url: '/hdc/curfew/curfewHours/1', content: 'Curfew hours'}
+            {url: '/hdc/curfew/curfewHours/1', content: 'HDC curfew hours'}
         ];
 
         testFormPageGets(app, routes, licenceService);
