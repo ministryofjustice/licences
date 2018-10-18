@@ -1446,8 +1446,7 @@ describe('licenceService', () => {
             licenceConditions: 'Not answered',
             proposedAddress: 'Not answered',
             reporting: 'Not answered',
-            risk: 'Not answered',
-            bassReferral: 'Not answered'
+            risk: 'Not answered'
         };
 
         it('should return error if section is missing from licence', () => {
@@ -3554,7 +3553,7 @@ describe('licenceService', () => {
 
         context('Stage === PROCESSING_RO, bass referral needed', () => {
 
-            it('should validate bassAreaCheck when bassReferral', () => {
+            it('should validate bassAreaCheck when bassReferral, and ignore proposedAddress', () => {
                 const bassRequest = {
                     ...baseLicence,
                     bassReferral: {
@@ -3565,6 +3564,14 @@ describe('licenceService', () => {
                         },
                         bassAreaCheck: {
                             bassAreaSuitable: 'No'
+                        }
+                    },
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            deemedSafe: ''
                         }
                     }
                 };
@@ -3592,7 +3599,7 @@ describe('licenceService', () => {
 
 
         context('Stage === PROCESSING_CA', () => {
-            it('should validate all fields if curfewAddressReview !== UNSTARTED', () => {
+            it('should validate all fields if curfewAddressReview !== UNSTARTED, and ignore bass referral', () => {
                 const missingFieldProposedAddress = {
                     ...baseLicence,
                     proposedAddress: {
@@ -3604,11 +3611,22 @@ describe('licenceService', () => {
                             consent: '',
                             deemedSafe: ''
                         }
+                    }, bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes'
+                        },
+                        bassAreaCheck: {
+                            bassAreaSuitable: 'No'
+                        }
                     }
                 };
 
                 const output = service.getValidationErrorsForReview({
-                    licenceStatus: {stage: 'PROCESSING_CA', tasks: {curfewAddressReview: 'STARTED'}},
+                    licenceStatus: {
+                        stage: 'PROCESSING_CA',
+                        tasks: {curfewAddressReview: 'STARTED'},
+                        decisions: {bassReferralNeeded: false}
+                    },
                     licence: missingFieldProposedAddress
                 });
 
@@ -3624,8 +3642,7 @@ describe('licenceService', () => {
                         curfew: 'Not answered',
                         licenceConditions: 'Not answered',
                         reporting: 'Not answered',
-                        risk: 'Not answered',
-                        bassReferral: 'Not answered'
+                        risk: 'Not answered'
                     }
                 );
             });

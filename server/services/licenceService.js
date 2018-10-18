@@ -1,7 +1,7 @@
 const logger = require('../../log.js');
 const {createAdditionalConditionsObject} = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
-const {formsInSection, reviewForms} = require('./config/formsAndSections');
+const {formsInSection, reviewForms, bassReviewForms} = require('./config/formsAndSections');
 const {
     getIn,
     isEmpty,
@@ -340,6 +340,10 @@ module.exports = function createLicenceService(licenceClient) {
 
         if (stage === 'PROCESSING_RO' && decisions.bassAreaNotSuitable) {
             return getLicenceErrors({licence, forms: formsInSection['bassReferral']});
+        }
+
+        if (decisions.bassReferralNeeded) {
+            return getLicenceErrors({licence, forms: bassReviewForms});
         }
 
         return getLicenceErrors({licence, forms: reviewForms});
