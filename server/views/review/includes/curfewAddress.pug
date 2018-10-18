@@ -5,7 +5,7 @@ include ./itemAndError
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
-        span Address
+        | Address
     div.pure-u-1-2#addressDetails
 
         +itemAndError(address.addressLine1, errors.addressLine1, "address1-curfew")
@@ -16,14 +16,14 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
-        span Contact number
+        | Contact number
     div.pure-u-1-2
         div#dischargeContactName
             +itemAndError(address.telephone, errors.telephone, "telephone-curfew")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
-        span Main occupier
+        | Main occupier
     div.pure-u-1-2
         div.pure-g
             if typeof errors.occupier === 'string'
@@ -44,7 +44,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
-        span Other occupants
+        | Other occupants
     div.pure-u-1-2
         div.pure-g
             if address.residents
@@ -61,9 +61,7 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
-        div.pure-g
-            div.pure-u-3-4
-                span According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
+        span.pure-u-3-4 According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
     div.pure-u-1-2
         div#dischargeContactNumber
             +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
@@ -74,9 +72,8 @@ if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
     if !offenderIsMainOccupier
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
-                div.pure-g
-                    div.pure-u-3-4
-                        span Does the main occupier consent to HDC?
+                span.pure-u-3-4 Does the main occupier consent to HDC?
+
             div.pure-u-1-2
                 div#dischargeHomeAddress
                     #{errors.electricity}
@@ -85,20 +82,21 @@ if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
     if(address.consent === 'Yes' || offenderIsMainOccupier)
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
-                span Is there an electricity supply?
+                | Is there an electricity supply?
             div.pure-u-1-2
                 +itemAndError(address.electricity, errors.electricity, "electricity-curfew")
 
         if(address.electricity === 'Yes')
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
-                    span Was a home visit conducted in this case?
+                    | Was a home visit conducted in this case?
                 div.pure-u-1-2
                     +itemAndError(address.homeVisitConducted, errors.homeVisitConducted, "homeVisit-curfew")
 
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
-                    span Could this offender be managed safely at address?
+                    | Could this offender be managed safely at address?
                 div.pure-u-1-2
                     +itemAndError(address.deemedSafe, errors.deemedSafe, "deemedSafe-curfew")
-                    +itemAndError('', errors.unsafeReason, "unsafeReason-curfew")
+                    if address.deemedSafe === 'No'
+                        +itemAndError(address.unsafeReason, errors.unsafeReason, "unsafeReason-curfew")
