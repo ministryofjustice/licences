@@ -1,6 +1,6 @@
 extends ../layout
 include ./includes/bassAddressForm
-include ../includes/errorBannerWithDetail
+include ../includes/errorBannerWithDetailObject
 
 block content
 
@@ -10,14 +10,7 @@ block content
     div.pure-g.pure-u-1
         include ../includes/back
         include ../includes/personalDetailsSummary
-        +errorBannerWithDetail(errorObject.bassAddress, [
-            {field: 'bassArea'},
-            {field: 'addressLine1'},
-            {field: 'addressLine2'},
-            {field: 'addressTown'},
-            {field: 'postCode'},
-            {field: 'telephone'}
-        ])
+        +errorBannerWithDetail(errorObject)
 
         h2.heading-large BASS area suitable
 
