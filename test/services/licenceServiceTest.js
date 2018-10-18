@@ -3774,9 +3774,7 @@ describe('licenceService', () => {
                         },
                         bassOffer: {
                             bassAccepted: 'Yes',
-                            bassAddress: {
-                                bassArea: 'a'
-                            }
+                            bassArea: 'a'
                         }
                     }
                 };
@@ -3787,11 +3785,9 @@ describe('licenceService', () => {
                     {
                         bassReferral: {
                             bassOffer: {
-                                bassAddress: {
-                                    addressLine1: 'Enter a building or street',
-                                    addressTown: 'Enter a town or city',
-                                    postCode: 'Enter a postcode in the right format'
-                                }
+                                addressLine1: 'Enter a building or street',
+                                addressTown: 'Enter a town or city',
+                                postCode: 'Enter a postcode in the right format'
                             }
                         }
                     }

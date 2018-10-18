@@ -11,7 +11,6 @@ const optionalString = joi.string().allow('').optional();
 const forbidden = joi.valid(['']).optional();
 const requiredString = joi.string().required();
 const requiredPhone = joi.string().regex(/^[0-9\+\s]+$/).required();
-const optionalPhone = joi.string().regex(/^[0-9\+\s]+$/).allow('').optional();
 const optionalAge = joi.number().min(0).max(110).allow('').optional();
 const selection = joi.array().min(1).required();
 const requiredYesNo = joi.valid(['Yes', 'No']).required();
@@ -108,14 +107,12 @@ const bassAreaCheck = joi.object().keys({
 
 const bassOffer = joi.object().keys({
     bassAccepted: optionalString,
-    bassAddress: joi.object().keys({
-        bassArea: requiredString,
-        addressLine1: requiredString,
-        addressLine2: optionalString,
-        addressTown: requiredString,
-        postCode: requiredPostcode,
-        telephone: optionalPhone
-    })
+    bassArea: requiredIf('bassAccepted', 'Yes'),
+    addressLine1: requiredIf('bassAccepted', 'Yes'),
+    addressLine2: optionalString,
+    addressTown: requiredIf('bassAccepted', 'Yes'),
+    postCode: requiredIf('bassAccepted', 'Yes', requiredPostcode),
+    telephone: optionalString
 });
 
 const residentSchema = joi.object({

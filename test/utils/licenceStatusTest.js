@@ -301,6 +301,19 @@ describe('getLicenceStatus', () => {
                             ]
                         }
                     },
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes',
+                            town: 'blah',
+                            county: 'blah'
+                        },
+                        bassAreaCheck: {
+                            bassAreaSuitable: 'Yes'
+                        },
+                        bassOffer: {
+                            bassAccepted: 'Yes'
+                        }
+                    },
                     licenceConditions: {
                         standard: {
                             additionalConditionsRequired: 'Yes'
@@ -325,6 +338,7 @@ describe('getLicenceStatus', () => {
             const status = getLicenceStatus(licence);
 
             expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED);
+            expect(status.tasks.bassOffer).to.eql(taskStates.STARTED);
             expect(status.tasks.curfewAddressReview).to.eql(taskStates.STARTED);
             expect(status.tasks.licenceConditions).to.eql(taskStates.STARTED);
             expect(status.tasks.riskManagement).to.eql(taskStates.STARTED);

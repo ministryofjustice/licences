@@ -44,19 +44,12 @@ module.exports = {
         validateInPlace: true,
         fields: [
             {bassAccepted: {}},
-            {
-                bassAddress: {
-                    dependentOn: 'bassAccepted', predicate: 'Yes',
-                    contains: [
-                        {bassArea: {}},
-                        {addressLine1: {}},
-                        {addressLine2: {}},
-                        {addressTown: {}},
-                        {postCode: {}},
-                        {telephone: {}}
-                    ]
-                }
-            }
+            {bassArea: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
+            {addressLine1: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
+            {addressLine2: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
+            {addressTown: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
+            {postCode: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
+            {telephone: {dependentOn: 'bassAccepted', predicate: 'Yes'}}
         ],
         nextPath: {
             path: '/hdc/taskList/'

@@ -377,7 +377,6 @@ function getBassState(licence) {
 
 function getBassOfferState(licence, bassAccepted) {
 
-
     if (!bassAccepted) {
         return taskStates.UNSTARTED;
     }
@@ -386,14 +385,10 @@ function getBassOfferState(licence, bassAccepted) {
         return taskStates.DONE;
     }
 
-    const address = getIn(licence, ['bassReferral', 'bassOffer', 'bassAddress']);
+    const bassOffer = getIn(licence, ['bassReferral', 'bassOffer']);
 
-    if (!address) {
-        return taskStates.STARTED;
-    }
-
-    const required = ['addressTown', 'addressLine1', 'postCode', 'telephone'];
-    if (required.some(field => !address[field])) {
+    const required = ['addressTown', 'addressLine1', 'postCode'];
+    if (required.some(field => !bassOffer[field])) {
         return taskStates.STARTED;
     }
 
