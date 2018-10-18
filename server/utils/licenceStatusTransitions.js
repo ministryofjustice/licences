@@ -116,11 +116,13 @@ function canSendCaToRo(licenceStatus) {
 }
 
 function canSendCaToDmRefusal(licenceStatus) {
+
     const {stage, decisions} = licenceStatus;
-    const {curfewAddressApproved, bassAreaNotSuitable} = decisions;
+    const {curfewAddressApproved} = decisions;
+    const bassFailure = isBassFailure(decisions);
 
     if (['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
-        return curfewAddressApproved === 'withdrawn' || bassAreaNotSuitable;
+        return curfewAddressApproved === 'withdrawn' || bassFailure;
     }
 
     if (stage === 'ELIGIBILITY') {
@@ -130,10 +132,15 @@ function canSendCaToDmRefusal(licenceStatus) {
             return false;
         }
 
-        return insufficientTimeStop || curfewAddressApproved === 'rejected' || bassAreaNotSuitable;
+        return insufficientTimeStop || curfewAddressApproved === 'rejected' || bassFailure;
     }
 
     return false;
+}
+
+function isBassFailure(decisions) {
+    const {bassAreaNotSuitable, bassAccepted} = decisions;
+    return bassAreaNotSuitable || ['Unsuitable', 'Unavailable'].includes(bassAccepted);
 }
 
 function canSendCaToDm(licenceStatus) {
