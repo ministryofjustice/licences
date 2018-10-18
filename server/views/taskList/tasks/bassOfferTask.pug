@@ -4,13 +4,8 @@ div.paddingBottom
     div.pure-g
         div.pure-u-1.pure-u-md-3-4
 
-            if licenceStatus.tasks.bassAreaCheck === 'DONE'
-                if licenceStatus.decisions.bassAreaNotSuitable
-                    span.alert.bold  BASS area rejected
-                else if licenceStatus.decisions.bassAreaSuitable
-                    | BASS area approved
-                else
-                    | BASS referral requested
+            if licenceStatus.decisions.bassAreaNotSuitable
+                span.alert.bold  BASS area rejected
 
             else if licenceStatus.tasks.bassOffer === 'DONE'
                 -var offer = licenceStatus.decisions.bassAccepted
@@ -29,8 +24,14 @@ div.paddingBottom
                                 strong.bold-small
                                     if offer === 'Unsuitable'
                                         | Not suitable for BASS
-                                    else if offer === 'Unavailable'
+                                    else
                                        | Address not available
+
+            else if licenceStatus.tasks.bassAreaCheck === 'DONE'
+                if licenceStatus.decisions.bassAreaSuitable
+                    | BASS area approved
+                else
+                    | BASS referral requested
 
             else
                 | BASS referral requested

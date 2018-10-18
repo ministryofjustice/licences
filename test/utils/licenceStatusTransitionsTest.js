@@ -405,6 +405,40 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql('caToDmRefusal');
     });
 
+    it('should allow CA to DM refusal if BASS outcome is Unsuitable - POST_APPROVAL', () => {
+        const status = {
+            stage: 'MODIFIED',
+            tasks: {
+                bassReferral: 'DONE'
+            },
+            decisions: {
+                eligible: true,
+                bassAreaSuitable: true,
+                bassAccepted: 'Unsuitable'
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
+    });
+
+    it('should allow CA to DM refusal if BASS outcome is Unavailable - POST_APPROVAL', () => {
+        const status = {
+            stage: 'MODIFIED',
+            tasks: {
+                bassReferral: 'DONE'
+            },
+            decisions: {
+                eligible: true,
+                bassAreaSuitable: true,
+                bassAccepted: 'Unavailable'
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
+    });
+
     it('should not allow CA to DM when HDC refused', () => {
         const status = {
             stage: 'PROCESSING_CA',
