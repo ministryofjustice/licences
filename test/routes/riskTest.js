@@ -9,6 +9,7 @@ const {
     testFormPageGets
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/risk');
 const formConfig = require('../../server/routes/config/risk');
 
@@ -116,15 +117,11 @@ describe('/hdc/risk', () => {
 });
 
 function createApp({licenceService}, user) {
-    const prisonerServiceStub = createPrisonerServiceStub();
+    const prisonerService = createPrisonerServiceStub();
     licenceService = licenceService || createLicenceServiceStub();
 
-    const route = createRoute({
-        licenceService,
-        prisonerService: prisonerServiceStub,
-        authenticationMiddleware,
-        audit: auditStub
-    });
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
+    const route = baseRouter(createRoute({licenceService}));
 
     return appSetup(route, user, '/hdc');
 }

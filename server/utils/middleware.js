@@ -6,7 +6,7 @@ const {merge} = require('../utils/functionalHelpers');
 const {getLicenceStatus} = require('./licenceStatus');
 
 module.exports = {
-    async: asyncMiddleware,
+    asyncMiddleware,
     checkLicenceMiddleWare,
     authorisationMiddleware,
     auditMiddleware

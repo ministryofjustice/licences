@@ -1,24 +1,10 @@
-const express = require('express');
 const logger = require('../../log');
-const {async, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
+const {asyncMiddleware} = require('../utils/middleware');
 const {getIn, lastItem} = require('../utils/functionalHelpers');
 
-module.exports = function(
-    {licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}) {
+module.exports = ({licenceService, conditionsService, prisonerService}) => router => {
 
-    const router = express.Router();
-    router.use(authenticationMiddleware());
-    router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
-    router.param('bookingId', authorisationMiddleware);
-
-    router.use(function(req, res, next) {
-        if (typeof req.csrfToken === 'function') {
-            res.locals.csrfToken = req.csrfToken();
-        }
-        next();
-    });
-
-    router.get('/review/:sectionName/:bookingId', async(async (req, res) => {
+    router.get('/review/:sectionName/:bookingId', asyncMiddleware(async (req, res) => {
         const {sectionName, bookingId} = req.params;
         logger.debug(`GET /review/${sectionName}/${bookingId}`);
 

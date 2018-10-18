@@ -1,6 +1,6 @@
 const express = require('express');
 
-const {async} = require('../utils/middleware');
+const {asyncMiddleware} = require('../utils/middleware');
 const {parseSearchTerms} = require('../utils/searchParser');
 
 module.exports = function({searchService, authenticationMiddleware}) {
@@ -29,7 +29,7 @@ module.exports = function({searchService, authenticationMiddleware}) {
         res.redirect('/hdc/search/offender/results?' + query);
     });
 
-    router.get('/offender/results', async(async (req, res) => {
+    router.get('/offender/results', asyncMiddleware(async (req, res) => {
         const hdcEligible = await searchService.searchOffenders(req.query.nomisId, req.user.token, req.user.role);
         res.render('search/results', {hdcEligible});
     }));
