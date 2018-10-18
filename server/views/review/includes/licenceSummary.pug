@@ -14,10 +14,10 @@ div.largeMarginBottom
                         if (stage === 'PROCESSING_RO' && user.role === 'RO')
                             a#bassEditLink(href="/hdc/bassReferral/bassAreaCheck/change/" + bookingId) Change
 
-            if typeof errorObject.bassReferral === 'string'
-                p.alert.bold(id='bass-address-error') #{errorObject.bassReferral}
-            else
+            if data.bassReferral && data.bassReferral.bassAreaCheck
                 include bassArea
+            else
+                p.alert.bold(id='bass-address-error') Enter the BASS area details
 
     else
         // Proposed address
