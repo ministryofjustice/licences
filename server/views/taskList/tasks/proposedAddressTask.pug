@@ -1,27 +1,44 @@
+-var decisions = licenceStatus.decisions || {}
+-var tasks = licenceStatus.tasks || {}
+-var stage = licenceStatus.stage || {}
+
+-var addressRejectedPath = "/hdc/proposedAddress/rejected/" + prisonerInfo.bookingId
+-var bassRejectedPath = "/hdc/bassReferral/rejected/" + prisonerInfo.bookingId
+-var optOutPath = '/hdc/proposedAddress/optOut/' + prisonerInfo.bookingId
+
+
 div.largeMarginBottom
     h2.heading-medium Curfew address and opt out
     div.pure-g
         div.pure-u-1.pure-u-md-3-4
-            if licenceStatus.decisions.optedOut
+
+            if decisions.optedOut
                 | Offender has opted out of HDC
-            else if licenceStatus.decisions.bassReferralNeeded
-                | Offender has opted in and requested BASS referral
-            else if licenceStatus.decisions.curfewAddressApproved === 'rejected'
+
+            else if decisions.bassReferralNeeded
+                if decisions.bassAreaNotSuitable
+                    span.alert.bold BASS area rejected
+                else
+                    | Offender has opted in and requested BASS referral
+
+            else if decisions.curfewAddressApproved === 'rejected'
                 span.alert.bold Address rejected
-            else if licenceStatus.stage !== 'ELIGIBILITY'
+
+            else if stage !== 'ELIGIBILITY'
                 | Proposed address information sent to RO
-            else if licenceStatus.tasks.curfewAddress === 'DONE'
+
+            else if tasks.curfewAddress === 'DONE'
                 | Completed
+
             else
                 | Not completed
 
         div.pure-u-1.pure-u-md-1-4.center
+            if (decisions.curfewAddressApproved === 'rejected')
+                +startContinueChange(tasks.curfewAddress, addressRejectedPath)
 
-            -var rejectedPath = "/hdc/proposedAddress/rejected/" + prisonerInfo.bookingId
-            -var optoutPath = '/hdc/proposedAddress/optOut/' + prisonerInfo.bookingId
-
-            if (licenceStatus.decisions.curfewAddressApproved === 'rejected')
-                +startContinueChange(licenceStatus.tasks.curfewAddress, rejectedPath)
+            else if (decisions.bassAreaNotSuitable)
+                +startContinueChange(tasks.curfewAddress, bassRejectedPath)
 
             else
-                +startContinueChangeMulti([licenceStatus.tasks.optOut, licenceStatus.tasks.curfewAddress], optoutPath)
+                +startContinueChangeMulti([tasks.optOut, tasks.curfewAddress], optOutPath)

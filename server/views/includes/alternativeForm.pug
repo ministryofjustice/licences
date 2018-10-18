@@ -1,0 +1,13 @@
+form(id="enterAlternativeForm" method="post")
+    div.form-group.paddingBottom
+        h2.heading-medium Do you want to enter an alternative area?
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="bookingId" value=bookingId || '')
+        div.multiple-choice(data-target="enterAlternative")
+            input#enterAlternativeYes(type="radio" name="enterAlternative" value="Yes" checked=savedData === "Yes")
+            label(for="enterAlternativeYes") Yes
+        div.multiple-choice
+            input#enterAlternativeNo(type="radio" name="enterAlternative" value="No" checked=savedData === "No")
+            label(for="enterAlternativeNo") No
+
+    include ../includes/formSubmit
