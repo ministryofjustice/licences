@@ -5,24 +5,20 @@ include ./itemAndError
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
-            div.pure-u-3-4
-                span Are there any risk management planning actions that must take place prior to release?
+            span.pure-u-3-4 Are there any risk management planning actions that must take place prior to release?
     div.pure-u-1-2
-        div.pure-g
-            div.pure-u-2-3
-                +itemAndError(risk.planningActions, errors.planningActions, "planningActions")
-                +itemAndError('', errors.planningActionsDetails, "planningActionsDetails")
+
+        +itemAndError(risk.planningActions, errors.planningActions, "planningActions")
+        if risk.planningActions === 'Yes'
+            +itemAndError(risk.planningActionsDetails, errors.planningActionsDetails, "planningActionsDetails")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
-        div.pure-g
-            div.pure-u-3-4
-                span Are you still waiting for information to inform risk management planning?
-    div.pure-u-1-2
-        if risk.awaitingInformation !== 'Yes'
-            +itemAndError(risk.awaitingInformation, errors.awaitingInformation, "awaitingInformation")
-            +itemAndError('', errors.awaitingInformationDetails, "awaitingInformationDetails")
-        else
+    if risk.awaitingInformation === 'Yes'
+        div.pure-u-1-2
+            div.pure-g
+                span.pure-u-3-4 Are you still waiting for information to inform risk management planning?
+
+        div.pure-u-1-2
             div.pure-g
                 div.pure-u-1.pure-u-sm-3-5.notice-container
                     div.notice
@@ -30,14 +26,29 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
                             span.visually-hidden Warning
 
                         strong.bold-small Still waiting for information
-            div.smallPaddingTop
-                +itemAndError('', errors.awaitingInformationDetails, "awaitingInformationDetails")
+
+        div.pure-u-1.midMarginTop
+            div.pure-g
+                div.pure-u-1-2
+                    span.pure-u-3-4 When do you expect to get the information?
+
+                div.pure-u-1-2
+                    +itemAndError(risk.awaitingInformationDetails, errors.awaitingInformationDetails, "awaitingInformationDetails")
+
+    else
+        div.pure-u-1-2
+            div.pure-g
+                span.pure-u-3-4 Are you still waiting for information to inform risk management planning?
+
+        div.pure-u-1-2
+            +itemAndError(risk.awaitingInformation, errors.awaitingInformation, "awaitingInformation")
+
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
-            div.pure-u-3-4
-                span Is this a Victim Contact Service qualifying case where the victim has opted in?
+            span.pure-u-3-4 Is this a Victim Contact Service qualifying case where the victim has opted in?
     div.pure-u-1-2
         +itemAndError(risk.victimLiaison, errors.victimLiaison, "victimLiaison")
-        +itemAndError('', errors.victimLiaisonDetails, "victimLiaisonDetails")
+        if risk.victimLiaison === 'Yes'
+            +itemAndError(risk.victimLiaisonDetails, errors.victimLiaisonDetails, "victimLiaisonDetails")
