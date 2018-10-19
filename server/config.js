@@ -61,5 +61,7 @@ module.exports = {
         ]
     },
 
-    domain: get('DOMAIN', 'http://localhost:3000')
+    domain: get('DOMAIN', 'http://localhost:3000'),
+
+    notifyKey: get('NOTIFY_API_KEY', null)
 };
