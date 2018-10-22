@@ -100,3 +100,10 @@ if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
                     +itemAndError(address.deemedSafe, errors.deemedSafe, "deemedSafe-curfew")
                     if address.deemedSafe === 'No'
                         +itemAndError(address.unsafeReason, errors.unsafeReason, "unsafeReason-curfew")
+
+    if address.addressReviewComments
+        div.pure-g.borderBottomLight.midPaddingTopBottom
+            div.pure-u-1-2
+                | Address review details
+            div.pure-u-1-2
+                span.bold #{address.addressReviewComments}
