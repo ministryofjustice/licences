@@ -4,7 +4,8 @@ module.exports = {
         fields: [
             {consent: {}},
             {electricity: {dependentOn: 'consent', predicate: 'Yes'}},
-            {homeVisitConducted: {dependentOn: 'consent', predicate: 'Yes'}}
+            {homeVisitConducted: {dependentOn: 'consent', predicate: 'Yes'}},
+            {addressReviewComments: {}}
         ],
         nextPath: {
             decisions: [
