@@ -1,6 +1,7 @@
 const moment = require('moment');
 const templates = require('./config/notificationTemplates');
 const {domain} = require('../config');
+const logger = require('../../log.js');
 
 module.exports = function createNotificationService(notifyClient) {
 
@@ -8,13 +9,19 @@ module.exports = function createNotificationService(notifyClient) {
         const {templateId} = templates.sentToRo;
         const date = moment().format('Do MMMM YYYY');
 
-        return notifyClient.sendEmail(templateId, 'matthew.whitfield@digital.justice.org.uk', {
-            personalisation: {
-                name,
-                date,
-                domain
-            }
-        });
+        try {
+            notifyClient.sendEmail(templateId, 'some-email@someone.com', {
+                personalisation: {
+                    name,
+                    date,
+                    domain
+                }
+            });
+        } catch (error) {
+            // TODO what do we want to do if notification fails?
+            logger.error('Error sending notification email ', error.errors);
+            return error.errors;
+        }
     }
 
     return {
