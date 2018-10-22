@@ -119,15 +119,14 @@ function roProcessingLabel(licenceStatus) {
     if (licenceStatus.decisions.bassReferralNeeded) {
 
         if (licenceStatus.tasks.bassAreaCheck === taskStates.UNSTARTED) {
-            return 'BASS referral requested';
+            return 'BASS request';
         }
 
         if (licenceStatus.decisions.bassAreaNotSuitable) {
             return 'BASS area rejected';
         }
-    }
 
-    if (licenceStatus.tasks.curfewAddressReview === taskStates.UNSTARTED) {
+    } else if (licenceStatus.tasks.curfewAddressReview === taskStates.UNSTARTED) {
         return 'Address provided';
     }
 

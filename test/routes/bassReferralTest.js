@@ -28,7 +28,7 @@ describe('/hdc/bassReferral', () => {
 
             const routes = [
                 {url: '/hdc/bassReferral/bassRequest/1', content: 'BASS referral'},
-                {url: '/hdc/bassReferral/bassOffer/1', content: 'BASS area suitable'}
+                {url: '/hdc/bassReferral/bassOffer/1', content: 'BASS request decision'}
             ];
 
             testFormPageGets(app, routes, licenceService);
@@ -102,7 +102,7 @@ describe('/hdc/bassReferral', () => {
             const app = createApp({licenceServiceStub: licenceService}, 'roUser');
 
             const routes = [
-                {url: '/hdc/bassReferral/bassAreaCheck/1', content: 'BASS requested'}
+                {url: '/hdc/bassReferral/bassAreaCheck/1', content: 'BASS area check'}
             ];
 
             testFormPageGets(app, routes, licenceService);

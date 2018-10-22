@@ -73,6 +73,7 @@ const labels = {
     },
     ro: {
         'Address provided': 'Start now',
+        'BASS request': 'Start now',
         'Checking address': 'Continue',
         'Assessment ongoing': 'Continue'
     },

@@ -10,10 +10,10 @@ block content
         include ../includes/back
         include ../includes/personalDetailsSummary
 
-        h2.heading-large BASS requested
+        h2.heading-large BASS area check
 
         div.pure-u-1.pure-u-md-1-2
-            | The prisoner has requested the following area for a BASS property
+            | The offender has asked for a BASS property in the following area:
 
             div.paddingTop.paddingBottom
                 div.pure-u-1-2
@@ -26,10 +26,7 @@ block content
 
         hr
 
-        h2.heading-medium BASS area check
-
-        div.pure-u-1.pure-u-md-1-2.smallPaddingBottom
-            | Is the area suitable for the offender to live in while on HDC?
+        h2.heading-medium Is the area suitable for the offender to live in?
 
         form(method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
@@ -41,12 +38,12 @@ block content
                         input#yes(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'Yes' name="bassAreaSuitable" value="Yes")
                         label(for="yes") Yes
 
-                    div.multiple-choice(data-target="bassAreaDetails")
+                    div.multiple-choice
                         input#no(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'No' name="bassAreaSuitable" value="No")
                         label(for="no") No
 
-                div#bassAreaDetails.panel.panel-border-narrow.js-hidden
-                    label(for='bassAreaReason') What are the reasons?
+                div#bassAreaDetails.panel.panel-border-narrow
+                    label(for='bassAreaReason') Explain your decision
                         textarea(name='bassAreaReason' id='bassAreaReason' class='form-control' rows='2' aria-label="Provide reasons why the BASS area is unsuitable")
                             if bassAreaCheck.bassAreaReason
                                 | #{bassAreaCheck.bassAreaReason}
