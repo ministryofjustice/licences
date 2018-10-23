@@ -984,7 +984,7 @@ describe('GET /taskList/:prisonNumber', () => {
                         expect(res.text).to.include('/hdc/review/curfewHours/1">View');
                         expect(res.text).to.include('/hdc/review/conditions/1">View');
                         expect(res.text).to.include('/hdc/review/reporting/1">View');
-                        expect(res.text).to.include('Final checks');
+                        expect(res.text).to.include('Review case');
                     });
 
             });

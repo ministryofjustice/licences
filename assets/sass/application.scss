@@ -330,6 +330,7 @@ input.link:hover{
 // Move a named anchor up a bit so that linking to 'somepage#name' doesn't position up against the toolbar
 p.namedAnchor {
     position:relative;
+    margin: 0;
 }
 
 a.namedAnchor {
