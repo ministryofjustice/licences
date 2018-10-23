@@ -28,7 +28,7 @@ describe('/hdc/bassReferral', () => {
 
             const routes = [
                 {url: '/hdc/bassReferral/bassRequest/1', content: 'BASS referral'},
-                {url: '/hdc/bassReferral/bassOffer/1', content: 'BASS request decision'}
+                {url: '/hdc/bassReferral/bassOffer/1', content: 'BASS address'}
             ];
 
             testFormPageGets(app, routes, licenceService);
