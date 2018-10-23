@@ -115,7 +115,7 @@ module.exports = {
 function convertPropertyNames(user) {
     return user ? {
         nomisId: user.nomis_id,
-        deliusId: setCase.upper(user.staff_id),
+        deliusId: user.staff_id,
         first: setCase.capital(user.first_name),
         last: setCase.capital(user.last_name),
         organisation: setCase.capital(user.organisation),
