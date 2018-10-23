@@ -213,9 +213,14 @@ module.exports = function createApp({
 
     // token refresh
     app.use(async (req, res, next) => {
-        if (production && req.user && req.user.role !== 'RO') {
+        if (production && req.user) {
             const timeToRefresh = new Date() > req.user.refreshTime;
             if (timeToRefresh) {
+
+                if (req.user.role === 'RO') {
+                    return res.redirect('/logout');
+                }
+
                 try {
                     const newToken = await signInService.getRefreshedToken(req.user);
                     req.user.token = newToken.token;
