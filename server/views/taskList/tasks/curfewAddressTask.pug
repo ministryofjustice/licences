@@ -38,5 +38,7 @@ div.paddingBottom
                     else
                         +viewEdit(reviewPath)
 
+                else if user.role === 'CA' && licenceStatus.stage === 'PROCESSING_CA'
+                    +change(reviewPath)
                 else
                     +view(reviewPath)
