@@ -1,10 +1,14 @@
 extends taskListTemplate
 
 block tasks
-    div.taskListItem.borderBottomLight
-        if licenceStatus.decisions.bassReferralNeeded
+    if licenceStatus.decisions.bassReferralNeeded
+        div.taskListItem.borderBottomLight
+            include tasks/informBassTask
+
+        div.taskListItem.borderBottomLight
             include tasks/bassOfferTask
-        else
+    else
+        div.taskListItem.borderBottomLight
             include tasks/curfewAddressTask
 
     if (['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved) || licenceStatus.decisions.bassReferralNeeded)
