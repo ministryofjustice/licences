@@ -1,5 +1,5 @@
 div.paddingBottom
-    h2.heading-medium BASS address
+    h2.heading-medium BASS area check
 
     div.pure-g
         div.pure-u-1.pure-u-md-3-4
@@ -8,11 +8,11 @@ div.paddingBottom
                 -var approved = licenceStatus.decisions.bassAreaSuitable
 
                 if approved
-                    | Suitable BASS area given
+                    | BASS area suitable
                 else
                     | BASS area is not suitable
             else
-                | BASS referral requested
+                | Not completed
 
         div.pure-u-1.pure-u-md-1-4.center
             -var bassAreaCheckPath = "/hdc/bassReferral/bassAreaCheck/" + prisonerInfo.bookingId
