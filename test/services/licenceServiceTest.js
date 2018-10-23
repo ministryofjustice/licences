@@ -3489,13 +3489,14 @@ describe('licenceService', () => {
                 expect(output).to.eql({});
             });
 
-            it('should validate bassRequest when bassReferral', () => {
+            it('should validate bassRequest (only) when bassReferral', () => {
                 const bassRequest = {
                     ...baseLicence,
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes'
-                        }
+                        },
+                        bassAreaCheck: {}
                     }
                 };
 

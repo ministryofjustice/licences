@@ -326,7 +326,7 @@ module.exports = function createLicenceService(licenceClient) {
         if (stage === 'ELIGIBILITY' && decisions && decisions.bassReferralNeeded) {
            return getLicenceErrors({licence, forms: [
                    ...formsInSection['eligibility'],
-                   ...formsInSection['bassReferral']
+                   'bassRequest'
                ]});
         }
 
