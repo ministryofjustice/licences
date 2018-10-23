@@ -12,10 +12,10 @@ block content
         include ../includes/personalDetailsSummary
         +errorBannerWithDetail(errorObject)
 
-        h2.heading-large BASS area suitable
+        h2.heading-large BASS request decision
 
         div.pure-u-1-2
-            | The following area was checked and accepted by the RO:
+            | The responsible officer has approved the following BASS area:
 
             div.paddingTop.paddingBottom
                 div.pure-u-1-2
@@ -26,15 +26,9 @@ block content
                     div.bold#proposedCounty #{bassRequest.proposedCounty}
         div.pure-u-1-2
 
-        div.pure-u-1-2.smallPaddingTop
-            | Please submit the request to the BASS team. When the response is received enter the details below.
-
         hr
 
-        h2.heading-medium BASS request outcome
-
-        div.pure-u-1-2.smallPaddingBottom
-            | Has the offender been accepted for BASS in the area?
+        h2.heading-medium Has BASS made an offer to the offender?
 
         form(method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
@@ -44,20 +38,20 @@ block content
                 div.form-group.smallPaddingTop
                     div.multiple-choice(data-target="bassAddressForm")
                         input#yes(type="radio" checked=bassOffer.bassAccepted === 'Yes' name="bassAccepted" value="Yes")
-                        label(for="yes") Yes - offer made and property available
+                        label(for="yes") Yes, property is available
 
                     div#bassAddressForm(class="panel panel-border-narrow js-hidden")
                         +bassAddressForm
 
                     div.multiple-choice
                         input#waiting(type="radio" checked=bassOffer.bassAccepted === 'Waiting' name="bassAccepted" value="Waiting")
-                        label(for="waiting") Yes - offer made and on waiting list
+                        label(for="waiting") Yes, on waiting list
                     div.multiple-choice
                         input#unsuitable(type="radio" checked=bassOffer.bassAccepted === 'Unsuitable' name="bassAccepted" value="Unsuitable")
-                        label(for="unsuitable") No - not suitable for BASS
+                        label(for="unsuitable") No, offender not suitable
                     div.multiple-choice
                         input#unavailable(type="radio" checked=bassOffer.bassAccepted === 'Unavailable' name="bassAccepted" value="Unavailable")
-                        label(for="unavailable") No - address not available
+                        label(for="unavailable") No, address not available
 
             include ../includes/saveAndReturn
 

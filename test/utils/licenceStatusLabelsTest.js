@@ -231,7 +231,15 @@ describe('getStatusLabel', () => {
                         decisions: {bassReferralNeeded: true},
                         tasks: {bassAreaCheck: 'UNSTARTED'}
                     },
-                    label: 'BASS referral requested'
+                    label: 'BASS request'
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_RO,
+                        decisions: {bassReferralNeeded: true},
+                        tasks: {bassAreaCheck: 'DONE'}
+                    },
+                    label: 'Assessment ongoing'
                 },
                 {
                     status: {
