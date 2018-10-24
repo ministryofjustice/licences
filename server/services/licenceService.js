@@ -11,13 +11,15 @@ const {
     flatten,
     mergeWithRight,
     removePath,
-    equals
+    equals,
+    firstKey
 } = require('../utils/functionalHelpers');
 
 const {licenceStages, transitions} = require('../models/licenceStages');
 const {getConfiscationOrderState} = require('../utils/licenceStatus');
 const validate = require('./utils/licenceValidation');
 const addressHelpers = require('./utils/addressHelpers');
+const moment = require('moment');
 
 module.exports = function createLicenceService(licenceClient) {
 
@@ -265,6 +267,32 @@ module.exports = function createLicenceService(licenceClient) {
         return `${userInput[[day]]}/${userInput[[month]]}/${userInput[[year]]}`;
     }
 
+    function addSplitDateFields(rawData, formFieldsConfig) {
+        return formFieldsConfig.reduce((data, field) => {
+
+            const fieldKey = firstKey(field);
+            const fieldConfig = field[fieldKey];
+            const splitDateConfig = getIn(fieldConfig, ['splitDate']);
+
+            if (!rawData[fieldKey] || !splitDateConfig) {
+                return data;
+            }
+
+            const date = moment(rawData[fieldKey], 'DD/MM/YYYY');
+            if (!date.isValid()) {
+                return data;
+            }
+
+            return {
+                ...data,
+                [splitDateConfig.day]: date.format('DD'),
+                [splitDateConfig.month]: date.format('MM'),
+                [splitDateConfig.year]: date.format('YYYY')
+            };
+
+        }, rawData);
+    }
+
     function getFieldInfo(field, userInput) {
         const fieldName = Object.keys(field)[0];
         const fieldConfig = field[fieldName];
@@ -437,6 +465,7 @@ module.exports = function createLicenceService(licenceClient) {
         getEligibilityErrors,
         getValidationErrorsForReview,
         getValidationErrorsForPage,
-        saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion
+        saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
+        addSplitDateFields
     };
 };
