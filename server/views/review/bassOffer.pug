@@ -3,7 +3,6 @@ extends ../layout
 block content
 
     -var bassOffer = data && data.bassReferral && data.bassReferral.bassOffer || {}
-    -var bassAddress = bassOffer && bassAddress || {}
     -var bassRequest = data && data.bassReferral && data.bassReferral.bassRequest || {}
 
     div.pure-g.pure-u-1
@@ -43,22 +42,22 @@ block content
                 div.pure-u-1.pure-u-md-1-3.paddingTop
                     span Bass offer area
                 div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferArea
-                    if bassAddress.bassArea
-                        div.bold #{bassAddress.bassArea}
+                    if bassOffer.bassArea
+                        div.bold #{bassOffer.bassArea}
 
                 div.pure-u-1.pure-u-md-1-3.paddingTop
                     span Bass offer address
                 div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferAddress
-                    if bassAddress.addressLine1
-                        div.bold #{bassAddress.addressLine1}
-                    if bassAddress.addressLine2
-                        div.bold #{bassAddress.addressLine2}
-                    if bassAddress.addressTown
-                        div.bold #{bassAddress.addressTown}
-                    if bassAddress.postCode
-                        div.bold #{bassAddress.postCode}
-                    if bassAddress.telephone
-                        div.bold #{bassAddress.telephone}
+                    if bassOffer.addressLine1
+                        div.bold #{bassOffer.addressLine1}
+                    if bassOffer.addressLine2
+                        div.bold #{bassOffer.addressLine2}
+                    if bassOffer.addressTown
+                        div.bold #{bassOffer.addressTown}
+                    if bassOffer.postCode
+                        div.bold #{bassOffer.postCode}
+                    if bassOffer.telephone
+                        div.bold #{bassOffer.telephone}
 
 
 
