@@ -217,7 +217,14 @@ module.exports = function createLicenceService(licenceClient) {
 
         return (answersAccumulator, field) => {
 
-            const {fieldName, answerIsRequired, innerFields, inputIsList, fieldConfig} = getFieldInfo(field, userInput);
+            const {
+                fieldName,
+                answerIsRequired,
+                innerFields,
+                inputIsList,
+                fieldConfig,
+                inputIsSplitDate
+            } = getFieldInfo(field, userInput);
 
             if (!answerIsRequired) {
                 return answersAccumulator;
@@ -244,8 +251,18 @@ module.exports = function createLicenceService(licenceClient) {
                 return {...answersAccumulator, [fieldName]: innerAnswers};
             }
 
+            if (inputIsSplitDate) {
+                return {...answersAccumulator, [fieldName]: getCombinedDate(field[fieldName], userInput)};
+            }
+
             return {...answersAccumulator, [fieldName]: userInput[fieldName]};
         };
+    }
+
+    function getCombinedDate(dateConfig, userInput) {
+        const {day, month, year} = dateConfig.splitDate;
+
+        return `${userInput[[day]]}/${userInput[[month]]}/${userInput[[year]]}`;
     }
 
     function getFieldInfo(field, userInput) {
@@ -255,13 +272,15 @@ module.exports = function createLicenceService(licenceClient) {
         const fieldDependentOn = userInput[fieldConfig.dependentOn];
         const predicateResponse = fieldConfig.predicate;
         const dependentMatchesPredicate = fieldConfig.dependentOn && fieldDependentOn === predicateResponse;
+        const inputIsSplitDate = fieldConfig.splitDate;
 
         return {
             fieldName,
             answerIsRequired: !fieldDependentOn || dependentMatchesPredicate,
             innerFields: field[fieldName].contains,
             inputIsList: fieldConfig.isList,
-            fieldConfig
+            fieldConfig,
+            inputIsSplitDate
         };
     }
 

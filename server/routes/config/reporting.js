@@ -17,7 +17,11 @@ module.exports = {
     reportingDate: {
         licenceSection: 'reportingDate',
         fields: [
-            {reportingDate: {}},
+            {
+                reportingDate: {
+                    splitDate: {day: 'reportingDay', month: 'reportingMonth', year: 'reportingYear'}
+                }
+            },
             {reportingTime: {}}
         ],
         validateInPlace: true,

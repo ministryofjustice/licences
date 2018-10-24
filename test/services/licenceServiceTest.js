@@ -996,6 +996,36 @@ describe('licenceService', () => {
             expect(output).to.eql(expectedLicence);
         });
 
+        it('should piece together split dates', async () => {
+
+            const fieldMap = [
+                {someDate: {splitDate: {day: 'someDay', month: 'someMonth', year: 'someYear'}}}
+            ];
+
+            const userInput = {
+                someDay: '12',
+                someMonth: '03',
+                someYear: '1985'
+            };
+
+            const licenceSection = 'section5';
+            const formName = 'form3';
+
+            licenceClient.getLicence.resolves({licence: baseLicence});
+            const output = await service.update(
+                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+
+            const expectedLicence = {
+                ...baseLicence,
+                section5: {
+                    form3: {
+                        someDate: '12/03/1985'
+                    }
+                }
+            };
+            expect(output).to.eql(expectedLicence);
+        });
+
         context('modificationRequiresApproval', () => {
 
             const licence = {
