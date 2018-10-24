@@ -31,7 +31,7 @@ module.exports = {
         pageDataMap: ['licence', 'bassReferral'],
         fields: [
             {bassAreaSuitable: {}},
-            {bassAreaReason: {dependentOn: 'bassAreaSuitable', predicate: 'No'}}
+            {bassAreaReason: {}}
         ],
         nextPath: {
             path: '/hdc/taskList/',
