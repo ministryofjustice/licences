@@ -8,6 +8,7 @@ exports.up = knex =>
             table.string('organisation').nullable();
             table.string('job_role').nullable();
             table.string('email').nullable();
+            table.string('org_email').nullable();
             table.string('telephone').nullable();
         })
     ]);

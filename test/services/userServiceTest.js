@@ -103,11 +103,12 @@ describe('userService', () => {
                     organisation: 6,
                     jobRole: 7,
                     email: 8,
-                    telephone: 9
+                    orgEmail: 9,
+                    telephone: 10
                 });
 
             expect(userClient.updateRoUser).to.be.calledOnce();
-            expect(userClient.updateRoUser).to.be.calledWith('nomisId', 1, 3, 4, 5, 6, 7, 8, 9);
+            expect(userClient.updateRoUser).to.be.calledWith('nomisId', 1, 3, 4, 5, 6, 7, 8, 9, 10);
         });
     });
 
@@ -142,14 +143,15 @@ describe('userService', () => {
                     organisation: 5,
                     jobRole: 6,
                     email: 7,
-                    telephone: 8
+                    orgEmail: 8,
+                    telephone: 9
                 });
 
             expect(userClient.getRoUser).to.be.calledOnce();
             expect(userClient.getRoUser).to.be.calledWith('nomisId');
 
             expect(userClient.addRoUser).to.be.calledOnce();
-            expect(userClient.addRoUser).to.be.calledWith('nomisId', 2, 3, 4, 5, 6, 7, 8);
+            expect(userClient.addRoUser).to.be.calledWith('nomisId', 2, 3, 4, 5, 6, 7, 8, 9);
         });
     });
 

@@ -92,7 +92,7 @@ describe('userClient', () => {
             const expectedWhereClause = 'where nomis_id = $1';
 
             const result = userProxy().updateRoUser(
-                'nomisId', 'newNomisId', 'newDeliusId', 'first', 'last', 'org', 'role', 'email', 'phone');
+                'nomisId', 'newNomisId', 'newDeliusId', 'first', 'last', 'org', 'role', 'email', 'orgEmail', 'phone');
 
             return result.then(data => {
                 const call = queryStub.getCalls()[0].args[0];
@@ -100,7 +100,7 @@ describe('userClient', () => {
                 expect(call.text).includes(expectedSetClause);
                 expect(call.text).includes(expectedWhereClause);
                 expect(call.values).to.eql([
-                    'nomisId', 'newNomisId', 'newDeliusId', 'first', 'last', 'org', 'role', 'email', 'phone']);
+                    'nomisId', 'newNomisId', 'newDeliusId', 'first', 'last', 'org', 'role', 'email', 'orgEmail', 'phone']);
             });
         });
     });
@@ -127,11 +127,11 @@ describe('userClient', () => {
 
             const expectedInsertClause = 'insert into staff_ids';
             const expectedColsClause =
-                '(nomis_id, staff_id, first_name, last_name, organisation, job_role, email, telephone)';
-            const expectedValuesClause = 'values($1, $2, $3, $4, $5, $6, $7, $8)';
+                '(nomis_id, staff_id, first_name, last_name, organisation, job_role, email, org_email, telephone)';
+            const expectedValuesClause = 'values($1, $2, $3, $4, $5, $6, $7, $8, $9)';
 
             const result = userProxy().addRoUser(
-                'nomisId', 'deliusId', 'first', 'last', 'org', 'role', 'email', 'phone');
+                'nomisId', 'deliusId', 'first', 'last', 'org', 'role', 'email', 'orgEmail', 'phone');
 
             return result.then(data => {
                 const call = queryStub.getCalls()[0].args[0];
@@ -139,7 +139,7 @@ describe('userClient', () => {
                 expect(call.text).includes(expectedColsClause);
                 expect(call.text).includes(expectedValuesClause);
                 expect(call.values).to.eql([
-                    'nomisId', 'deliusId', 'first', 'last', 'org', 'role', 'email', 'phone']);
+                    'nomisId', 'deliusId', 'first', 'last', 'org', 'role', 'email', 'orgEmail', 'phone']);
             });
         });
     });

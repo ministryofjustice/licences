@@ -1,5 +1,4 @@
 const db = require('./dataAccess/db');
-const setCase = require('case');
 
 module.exports = {
 
@@ -54,14 +53,14 @@ module.exports = {
     },
 
     updateRoUser: async function(
-        originalNomisId, nomisId, deliusId, first, last, organisation, jobRole, email, telephone) {
+        originalNomisId, nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone) {
 
         const query = {
             text: `update staff_ids 
                     set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5, 
-                    organisation = $6, job_role = $7, email = $8, telephone = $9 
+                    organisation = $6, job_role = $7, email = $8, org_email = $9, telephone = $10 
                     where nomis_id = $1`,
-            values: [originalNomisId, nomisId, deliusId, first, last, organisation, jobRole, email, telephone]
+            values: [originalNomisId, nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone]
         };
 
         return db.query(query);
@@ -77,13 +76,13 @@ module.exports = {
         return db.query(query);
     },
 
-    addRoUser: async function(nomisId, deliusId, first, last, organisation, jobRole, email, telephone) {
+    addRoUser: async function(nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone) {
 
         const query = {
             text: `insert into staff_ids
-                (nomis_id, staff_id, first_name, last_name, organisation, job_role, email, telephone)
-                values($1, $2, $3, $4, $5, $6, $7, $8)`,
-            values: [nomisId, deliusId, first, last, organisation, jobRole, email, telephone]
+                (nomis_id, staff_id, first_name, last_name, organisation, job_role, email, org_email, telephone)
+                values($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+            values: [nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone]
         };
 
         return db.query(query);
@@ -101,6 +100,7 @@ module.exports = {
                     upper(organisation) like upper($1) or
                     upper(job_role) like upper($1) or
                     upper(email) like upper($1) or
+                    upper(org_email) like upper($1) or
                     upper(telephone) like upper($1)
                 order by nomis_id asc`,
             values: [`%${searchTerm}%`]
@@ -116,11 +116,12 @@ function convertPropertyNames(user) {
     return user ? {
         nomisId: user.nomis_id,
         deliusId: user.staff_id,
-        first: setCase.capital(user.first_name),
-        last: setCase.capital(user.last_name),
-        organisation: setCase.capital(user.organisation),
-        jobRole: setCase.capital(user.job_role),
-        email: setCase.lower(user.email),
+        first: user.first_name,
+        last: user.last_name,
+        organisation: user.organisation,
+        jobRole: user.job_role,
+        email: user.email,
+        orgEmail: user.org_email,
         telephone: user.telephone
     } : null;
 }
