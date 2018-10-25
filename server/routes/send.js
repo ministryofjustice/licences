@@ -64,7 +64,7 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
     }
 
     function notifyRecipient(transitionType) {
-        if (!notifyKey) {
+        if (notifyKey !== 'default_key') {
             return;
         }
 
