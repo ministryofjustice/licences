@@ -110,12 +110,28 @@ function addHDCEDCountdown(prisoner) {
 }
 
 function getDueText(dueDate) {
+    const today = moment();
+    const differenceInDays = dueDate.diff(today, 'days');
+    const overdue = differenceInDays < 0;
 
-    const text = dueDate.fromNow();
-    const sanitisedText = text === '0 days overdue' ? '0 days' : text;
-    const overdue = sanitisedText.includes('overdue');
+    if (differenceInDays < 7) {
+        const magnitude = Math.abs(differenceInDays);
+        const units = magnitude === 1 ? 'day' : 'days';
+        const extra = overdue ? ' overdue' : '';
+        return {text: `${magnitude} ${units}${extra}`, overdue};
+    }
 
-    return {text: sanitisedText, overdue};
+    const differenceInWeeks = dueDate.diff(today, 'weeks');
+    if (differenceInWeeks <= 12) {
+        return {text: `${differenceInWeeks} weeks`, overdue};
+    }
+
+    const differenceInMonths = dueDate.diff(today, 'months');
+    if (differenceInMonths <= 24) {
+        return {text: `${differenceInMonths} months`, overdue};
+    }
+
+    return {text: `${dueDate.diff(today, 'years')} years`, overdue};
 }
 
 function addReceivedTime(prisoner, licences) {
