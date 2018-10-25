@@ -23,7 +23,9 @@ module.exports = {
     all,
     omit,
     getWhereKeyLike,
-    pickKey
+    pickKey,
+    firstValue,
+    firstKey
 };
 
 // pass in your object and a path in array format
@@ -139,4 +141,12 @@ function pickKey(predicate, object) {
         R.pickBy(predicate),
         R.keys,
     )(object)[0];
+}
+
+function firstValue(object) {
+    return R.values(object)[0];
+}
+
+function firstKey(object) {
+    return R.keys(object)[0];
 }

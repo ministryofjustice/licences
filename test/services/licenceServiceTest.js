@@ -271,6 +271,80 @@ describe('licenceService', () => {
         });
     });
 
+    describe('addSplitDateFields', () => {
+        it('should add day, month and year fields to split dates', () => {
+            const rawData = {
+                someDate: '12/03/2019',
+                somethingElse: '19/03/2019'
+            };
+            const formFieldsConfig = [
+                {someDate: {splitDate: {day: 'someDay', month: 'someMonth', year: 'someYear'}}},
+                {somethingElse: {}}
+            ];
+
+            expect(service.addSplitDateFields(rawData, formFieldsConfig)).to.eql(
+                {
+                    someDate: '12/03/2019',
+                    someDay: '12',
+                    someMonth: '03',
+                    someYear: '2019',
+                    somethingElse: '19/03/2019'
+                }
+            );
+        });
+
+        it('should return as is if date is invalid', () => {
+            const rawData = {
+                someDate: '43/03/2019',
+                somethingElse: '19/03/2019'
+            };
+            const formFieldsConfig = [
+                {someDate: {splitDate: {day: 'someDay', month: 'someMonth', year: 'someYear'}}},
+                {somethingElse: {}}
+            ];
+
+            expect(service.addSplitDateFields(rawData, formFieldsConfig)).to.eql(
+                {
+                    someDate: '43/03/2019',
+                    somethingElse: '19/03/2019'
+                }
+            );
+        });
+
+        it('should return as is if date field is missing', () => {
+            const rawData = {
+                somethingElse: '19/03/2019'
+            };
+            const formFieldsConfig = [
+                {someDate: {splitDate: {day: 'someDay', month: 'someMonth', year: 'someYear'}}},
+                {somethingElse: {}}
+            ];
+
+            expect(service.addSplitDateFields(rawData, formFieldsConfig)).to.eql(
+                {
+                    somethingElse: '19/03/2019'
+                }
+            );
+        });
+
+        it('should return as is if no splitDate config', () => {
+            const rawData = {
+                someDate: '43/03/2019',
+                somethingElse: '19/03/2019'
+            };
+            const formFieldsConfig = [
+                {someDate: {}},
+                {somethingElse: {}}
+            ];
+
+            expect(service.addSplitDateFields(rawData, formFieldsConfig)).to.eql(
+                {
+                    someDate: '43/03/2019',
+                    somethingElse: '19/03/2019'
+                }
+            );
+        });
+    });
 
     describe('update', () => {
 
