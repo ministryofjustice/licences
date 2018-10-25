@@ -1,6 +1,19 @@
 const config = require('./server/config');
 
 module.exports = {
+
+    // knex-migrate doesn't work unless this is here
+    client: 'pg',
+    connection: {
+        host: config.db.server,
+        user: config.db.username,
+        password: config.db.password,
+        database: config.db.database,
+        ssl: config.db.sslEnabled === 'true'
+    },
+    acquireConnectionTimeout: 5000,
+
+    // don't really need this - could just use the above?
     standard: {
         client: 'pg',
         connection: {
