@@ -1,8 +1,8 @@
 const express = require('express');
-
 const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
+const {notifyKey} = require('../config');
 
-module.exports = function({licenceService, prisonerService, authenticationMiddleware, audit}) {
+module.exports = function({licenceService, prisonerService, authenticationMiddleware, notificationService, audit}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
     router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
@@ -32,7 +32,11 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
             prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, req.user.token)
         ]);
 
-        await licenceService.markForHandover(bookingId, licence, transition.type);
+        await Promise.all([
+            licenceService.markForHandover(bookingId, licence, transition.type),
+            notifyRecipient(transition.type)
+        ]);
+
         auditEvent(req.user.staffId, bookingId, transition.type, submissionTarget);
 
         res.redirect(`/hdc/sent/${transition.receiver}/${transition.type}/${bookingId}`);
@@ -57,6 +61,16 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
             transitionType,
             submissionTarget
         });
+    }
+
+    function notifyRecipient(transitionType) {
+        if (!notifyKey) {
+            return;
+        }
+
+        if (transitionType === 'caToRo') {
+            return notificationService.notifyRoOfNewCase('Matthew');
+        }
     }
 
     return router;
