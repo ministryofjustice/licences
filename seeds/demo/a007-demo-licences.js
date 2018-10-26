@@ -35,6 +35,9 @@ exports.seed = function (knex, Promise) {
                     "curfew": {
                         "firstNight": {"firstNightFrom": "19:00", "firstNightUntil": "07:00"},
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -117,6 +120,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -231,6 +237,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -381,6 +390,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -457,6 +469,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -537,6 +552,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -611,6 +629,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
