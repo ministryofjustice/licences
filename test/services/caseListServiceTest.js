@@ -183,21 +183,49 @@ describe('caseListService', () => {
                     expect(result[0].due).to.eql({text: '1 day overdue', overdue: true});
                 });
 
-                it('should add in months if longer than 3 months', async () => {
+                it('should add in weeks if longer than 14 days', async () => {
 
                     nomisClient.getHdcEligiblePrisoners.returns([{
                         ...hdcEligiblePrisoners[0],
                         sentenceDetail: {
                             ...hdcEligiblePrisoners[0].sentenceDetail,
-                            homeDetentionCurfewEligibilityDate: '2018-12-01'
+                            homeDetentionCurfewEligibilityDate: '2018-06-14'
                         }
                     }]);
 
                     const result = await service.getHdcCaseList(user.token, user.username, user.role);
-                    expect(result[0].due).to.eql({text: '6 months', overdue: false});
+                    expect(result[0].due).to.eql({text: '2 weeks', overdue: false});
                 });
 
-                it('should add in years if longer than 1 year', async () => {
+                it('should add in days if less than 14 days', async () => {
+
+                    nomisClient.getHdcEligiblePrisoners.returns([{
+                        ...hdcEligiblePrisoners[0],
+                        sentenceDetail: {
+                            ...hdcEligiblePrisoners[0].sentenceDetail,
+                            homeDetentionCurfewEligibilityDate: '2018-06-13'
+                        }
+                    }]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, user.role);
+                    expect(result[0].due).to.eql({text: '13 days', overdue: false});
+                });
+
+                it('should add in months if longer than 12 weeks', async () => {
+
+                    nomisClient.getHdcEligiblePrisoners.returns([{
+                        ...hdcEligiblePrisoners[0],
+                        sentenceDetail: {
+                            ...hdcEligiblePrisoners[0].sentenceDetail,
+                            homeDetentionCurfewEligibilityDate: '2019-01-19'
+                        }
+                    }]);
+
+                    const result = await service.getHdcCaseList(user.token, user.username, user.role);
+                    expect(result[0].due).to.eql({text: '7 months', overdue: false});
+                });
+
+                it('should add in years if longer than 18 months', async () => {
 
                     nomisClient.getHdcEligiblePrisoners.returns([{
                         ...hdcEligiblePrisoners[0],
