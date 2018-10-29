@@ -174,10 +174,9 @@ module.exports = function createLicenceService(licenceClient) {
 
     const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
 
-    async function update({bookingId, config, userInput, licenceSection, formName}) {
-        const rawLicence = await licenceClient.getLicence(bookingId);
-        const stage = getIn(rawLicence, ['stage']);
-        const licence = getIn(rawLicence, ['licence']);
+    async function update({bookingId, originalLicence, config, userInput, licenceSection, formName}) {
+        const stage = getIn(originalLicence, ['stage']);
+        const licence = getIn(originalLicence, ['licence']);
 
         if (!licence) {
             return null;
