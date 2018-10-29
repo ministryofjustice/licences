@@ -6,7 +6,6 @@ module.exports = {
     flatten,
     notAllValuesEmpty,
     allValuesEmpty,
-    getFirstArrayItems,
     replaceArrayItem,
     lastItem,
     merge,
@@ -21,10 +20,8 @@ module.exports = {
     pipe,
     removeFromArray,
     all,
-    omit,
     getWhereKeyLike,
     pickKey,
-    firstValue,
     firstKey
 };
 
@@ -52,10 +49,6 @@ function all(predicate, array) {
 
 function notAllValuesEmpty(object) {
     return !allValuesEmpty(object);
-}
-
-function getFirstArrayItems(array, number) {
-    return R.slice(0, number, array);
 }
 
 function replaceArrayItem(array, index, item) {
@@ -120,10 +113,6 @@ function removeFromArray(index, end, array) {
     return R.remove(index, end, array);
 }
 
-function omit(namesList, sourceObject) {
-    return R.omit(namesList, sourceObject);
-}
-
 function getWhereKeyLike(string, object) {
     const stringIncludesKey = (value, key) => {
         const lowerCaseString = string.toLowerCase();
@@ -141,10 +130,6 @@ function pickKey(predicate, object) {
         R.pickBy(predicate),
         R.keys,
     )(object)[0];
-}
-
-function firstValue(object) {
-    return R.values(object)[0];
 }
 
 function firstKey(object) {

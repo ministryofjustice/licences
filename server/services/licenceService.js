@@ -7,7 +7,6 @@ const {
     isEmpty,
     notAllValuesEmpty,
     allValuesEmpty,
-    getFirstArrayItems,
     flatten,
     mergeWithRight,
     removePath,
@@ -233,8 +232,7 @@ module.exports = function createLicenceService(licenceClient) {
             }
 
             if (inputIsList) {
-                const input = getLimitedInput(fieldConfig, fieldName, userInput);
-                const arrayOfInputs = input
+                const arrayOfInputs = userInput[fieldName]
                     .map(item => getFormResponse(field[fieldName].contains, item))
                     .filter(notAllValuesEmpty);
 
@@ -310,18 +308,6 @@ module.exports = function createLicenceService(licenceClient) {
             fieldConfig,
             inputIsSplitDate
         };
-    }
-
-    function getLimitedInput(fieldConfig, fieldName, userInput) {
-        const limitingField = getIn(fieldConfig, ['limitedBy', 'field']);
-        const limitingValue = userInput[limitingField];
-        const limitTo = getIn(fieldConfig, ['limitedBy', limitingValue]);
-
-        if (limitTo) {
-            return getFirstArrayItems(userInput[fieldName], limitTo);
-        }
-
-        return userInput[fieldName];
     }
 
     function updateStage(bookingId, status) {
