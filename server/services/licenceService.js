@@ -7,7 +7,6 @@ const {
     isEmpty,
     notAllValuesEmpty,
     allValuesEmpty,
-    getFirstArrayItems,
     flatten,
     mergeWithRight,
     removePath,
@@ -64,9 +63,8 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.createLicence(bookingId, data);
     }
 
-    async function updateLicenceConditions(bookingId, additional = {}, bespoke = []) {
+    async function updateLicenceConditions(bookingId, existingLicence, additional = {}, bespoke = []) {
         try {
-            const existingLicence = await licenceClient.getLicence(bookingId);
             const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
             const conditionsObject = await getConditionsObject(additional, bespoke);
 
@@ -101,9 +99,8 @@ module.exports = function createLicenceService(licenceClient) {
         return {additional: {...additionalConditionsObject}, bespoke};
     }
 
-    async function deleteLicenceCondition(bookingId, conditionId) {
+    async function deleteLicenceCondition(bookingId, existingLicence, conditionId) {
         try {
-            const existingLicence = await licenceClient.getLicence(bookingId);
             const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
 
             const newConditions = removeCondition(existingLicenceConditions, conditionId, bookingId);
@@ -177,10 +174,9 @@ module.exports = function createLicenceService(licenceClient) {
 
     const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
 
-    async function update({bookingId, config, userInput, licenceSection, formName}) {
-        const rawLicence = await licenceClient.getLicence(bookingId);
-        const stage = getIn(rawLicence, ['stage']);
-        const licence = getIn(rawLicence, ['licence']);
+    async function update({bookingId, originalLicence, config, userInput, licenceSection, formName}) {
+        const stage = getIn(originalLicence, ['stage']);
+        const licence = getIn(originalLicence, ['licence']);
 
         if (!licence) {
             return null;
@@ -233,8 +229,7 @@ module.exports = function createLicenceService(licenceClient) {
             }
 
             if (inputIsList) {
-                const input = getLimitedInput(fieldConfig, fieldName, userInput);
-                const arrayOfInputs = input
+                const arrayOfInputs = userInput[fieldName]
                     .map(item => getFormResponse(field[fieldName].contains, item))
                     .filter(notAllValuesEmpty);
 
@@ -310,18 +305,6 @@ module.exports = function createLicenceService(licenceClient) {
             fieldConfig,
             inputIsSplitDate
         };
-    }
-
-    function getLimitedInput(fieldConfig, fieldName, userInput) {
-        const limitingField = getIn(fieldConfig, ['limitedBy', 'field']);
-        const limitingValue = userInput[limitingField];
-        const limitTo = getIn(fieldConfig, ['limitedBy', limitingValue]);
-
-        if (limitTo) {
-            return getFirstArrayItems(userInput[fieldName], limitTo);
-        }
-
-        return userInput[fieldName];
     }
 
     function updateStage(bookingId, status) {

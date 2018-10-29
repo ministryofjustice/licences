@@ -92,6 +92,7 @@ describe('/hdc/finalChecks', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: route.fieldMap || formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: route.sectionName || 'finalChecks',

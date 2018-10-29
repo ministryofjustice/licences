@@ -37,7 +37,8 @@ module.exports = ({licenceService}) => (router, audited) => {
         const input = getCurfewHoursInput(req.body);
 
         await licenceService.update({
-            bookingId: bookingId,
+            bookingId,
+            originalLicence: res.locals.licence,
             config: formConfig.curfewHours,
             userInput: input,
             licenceSection: 'curfew',
