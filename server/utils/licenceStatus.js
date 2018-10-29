@@ -398,7 +398,9 @@ function getBassOfferState(licence, bassAccepted) {
 function getDmApproval(licence) {
     const refusalReasons = {
         addressUnsuitable: 'Address unsuitable',
-        insufficientTime: 'Insufficient time'
+        insufficientTime: 'Insufficient time',
+        noAvailableAddress: 'No available address',
+        outOfTime: 'Out of time'
     };
 
     const decision = getIn(licence, ['approval', 'release', 'decision']);
