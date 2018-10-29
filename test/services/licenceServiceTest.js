@@ -73,24 +73,29 @@ describe('licenceService', () => {
     });
 
     describe('updateLicenceConditions', () => {
+        let existingLicence;
+
+        beforeEach(() => {
+            existingLicence = {licence: {a: 'b'}};
+        });
 
         it('should get the selected licence conditions', async () => {
-            await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
             expect(licenceClient.getAdditionalConditions).to.be.calledOnce();
             expect(licenceClient.getAdditionalConditions).to.be.calledWith({additional: {key: 'var'}});
         });
 
         it('should call update section with conditions from the licence client merged with existing', async () => {
-            licenceClient.getLicence.resolves({
+            const existingLicence = {
                 licence: {
                     licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}}
                 }
-            });
+            };
             licenceClient.getAdditionalConditions.resolves([
                 {user_input: 1, id: 1, field_position: null}]);
 
-            await service.updateLicenceConditions('ab1', {additionalConditions: '1'}, [{text: 'bespoke'}]);
+            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: '1'}, [{text: 'bespoke'}]);
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
@@ -105,7 +110,7 @@ describe('licenceService', () => {
         });
 
         it('should not call update section if no changes have been made', async () => {
-            licenceClient.getLicence.resolves({
+            const existingLicence = {
                 licence: {
                     licenceConditions:
                         {
@@ -114,52 +119,52 @@ describe('licenceService', () => {
                             bespoke: [{text: 'bespoke'}]
                         }
                 }
-            });
+            };
             licenceClient.getAdditionalConditions.resolves([
                 {user_input: 1, id: 1, field_position: null}]);
 
-            await service.updateLicenceConditions('ab1', {additionalConditions: '1'}, [{text: 'bespoke'}]);
+            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: '1'}, [{text: 'bespoke'}]);
 
             expect(licenceClient.updateSection).to.not.be.called();
         });
 
         it('should throw if error updating licence', () => {
             licenceClient.updateSection.rejects();
-            const args = {bookingId: 'ab1', additionalConditions: ['Scotland Street']};
+            const args = {bookingId: 'ab1', existingLicence, additionalConditions: ['Scotland Street']};
             return expect(service.updateLicenceConditions(args)).to.eventually.be.rejected();
         });
 
         describe('post approval modifications', () => {
 
             it('should change stage to MODIFIED_APPROVAL when updates occur', async () => {
-                licenceClient.getLicence.resolves({stage: 'DECIDED', licence: {a: 'b'}});
-                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+                const existingLicence = {stage: 'DECIDED', licence: {a: 'b'}};
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
                 expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED_APPROVAL');
             });
 
             it('should change stage to MODIFIED_APPROVAL when updates occur in MODIFIED stage', async () => {
-                licenceClient.getLicence.resolves({stage: 'MODIFIED', licence: {a: 'b'}});
-                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+                const existingLicence = {stage: 'MODIFIED', licence: {a: 'b'}};
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
                 expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED_APPROVAL');
             });
 
             it('should not change stage if not DECIDED', async () => {
-                licenceClient.getLicence.resolves({stage: 'PROCESSING_RO', licence: {a: 'b'}});
-                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+                const existingLicence = {stage: 'PROCESSING_RO', licence: {a: 'b'}};
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
 
             it('should not change stage if no changes', async () => {
-                licenceClient.getLicence.resolves({
+                const existingLicence = {
                     stage: 'PROCESSING_RO',
                     licence: {licenceConditions: {additionalConditions: {additional: {key: 'var'}}}}
-                });
-                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+                };
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
@@ -169,7 +174,7 @@ describe('licenceService', () => {
     describe('deleteLicenceCondition', () => {
 
         it('should remove additional condition by ID and call update section', async () => {
-            licenceClient.getLicence.resolves({
+            const existingLicence = {
                 licence: {
                     licenceConditions: {
                         standard: {additionalConditionsRequired: 'Yes'},
@@ -177,9 +182,9 @@ describe('licenceService', () => {
                         bespoke: [{text: 'bespoke'}]
                     }
                 }
-            });
+            };
 
-            await service.deleteLicenceCondition('ab1', '2');
+            await service.deleteLicenceCondition('ab1', existingLicence, '2');
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
@@ -194,7 +199,7 @@ describe('licenceService', () => {
         });
 
         it('should remove bespoke condition by index when id is "bespoke-index", and call update section', async () => {
-            licenceClient.getLicence.resolves({
+            const existingLicence = {
                 licence: {
                     licenceConditions: {
                         standard: {additionalConditionsRequired: 'Yes'},
@@ -202,9 +207,9 @@ describe('licenceService', () => {
                         bespoke: [{text: '0'}, {text: '1'}, {text: '2'}]
                     }
                 }
-            });
+            };
 
-            await service.deleteLicenceCondition('ab1', 'bespoke-1');
+            await service.deleteLicenceCondition('ab1', existingLicence, 'bespoke-1');
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
@@ -220,7 +225,7 @@ describe('licenceService', () => {
 
         it('should throw if error updating licence', () => {
             licenceClient.updateSection.rejects();
-            return expect(service.deleteLicenceCondition('ab1', 'bespoke-1')).to.eventually.be.rejected();
+            return expect(service.deleteLicenceCondition('ab1', {}, 'bespoke-1')).to.eventually.be.rejected();
         });
     });
 

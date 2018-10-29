@@ -48,11 +48,11 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         const additional = await getAdditionalConditionsFrom(additionalConditions, req.body);
 
         if (!additional) {
-            await licenceService.updateLicenceConditions(bookingId, {}, bespoke);
+            await licenceService.updateLicenceConditions(bookingId, res.locals.licence, {}, bespoke);
             return res.redirect('/hdc/licenceConditions/conditionsSummary/' + destination);
         }
 
-        await licenceService.updateLicenceConditions(bookingId, additional, bespoke);
+        await licenceService.updateLicenceConditions(bookingId, res.locals.licence, additional, bespoke);
 
         res.redirect('/hdc/licenceConditions/conditionsSummary/' + destination);
     }
@@ -90,7 +90,7 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         const {action} = req.params;
 
         if (conditionId) {
-            await licenceService.deleteLicenceCondition(bookingId, conditionId);
+            await licenceService.deleteLicenceCondition(bookingId, res.locals.licence, conditionId);
         }
 
         const destination = action ? action + '/' : '';

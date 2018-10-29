@@ -146,7 +146,7 @@ describe('/hdc/licenceConditions', () => {
                 .send(formResponse)
                 .expect(302)
                 .expect(res => {
-                    expect(licenceService.deleteLicenceCondition).to.be.calledWith('123', 'ABC');
+                    expect(licenceService.deleteLicenceCondition).to.be.calledWith('123', {licence: {key: 'value'}}, 'ABC');
                     expect(res.header.location).to.equal('/hdc/licenceConditions/conditionsSummary/123');
                 });
         });

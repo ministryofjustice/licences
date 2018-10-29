@@ -63,9 +63,8 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.createLicence(bookingId, data);
     }
 
-    async function updateLicenceConditions(bookingId, additional = {}, bespoke = []) {
+    async function updateLicenceConditions(bookingId, existingLicence, additional = {}, bespoke = []) {
         try {
-            const existingLicence = await licenceClient.getLicence(bookingId);
             const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
             const conditionsObject = await getConditionsObject(additional, bespoke);
 
@@ -100,9 +99,8 @@ module.exports = function createLicenceService(licenceClient) {
         return {additional: {...additionalConditionsObject}, bespoke};
     }
 
-    async function deleteLicenceCondition(bookingId, conditionId) {
+    async function deleteLicenceCondition(bookingId, existingLicence, conditionId) {
         try {
-            const existingLicence = await licenceClient.getLicence(bookingId);
             const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
 
             const newConditions = removeCondition(existingLicenceConditions, conditionId, bookingId);
