@@ -114,7 +114,7 @@ function getDueText(dueDate) {
     const differenceInDays = dueDate.diff(today, 'days');
     const overdue = differenceInDays < 0;
 
-    if (differenceInDays < 7) {
+    if (differenceInDays < 14) {
         const magnitude = Math.abs(differenceInDays);
         const units = magnitude === 1 ? 'day' : 'days';
         const extra = overdue ? ' overdue' : '';
