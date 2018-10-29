@@ -119,7 +119,7 @@ describe('/hdc/approval', () => {
                     .expect(res => {
                         expect(licenceServiceStub.update).to.be.calledOnce();
                         expect(licenceServiceStub.update).to.be.calledWith({
-                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'approval',

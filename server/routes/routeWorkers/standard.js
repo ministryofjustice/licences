@@ -36,7 +36,7 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
 
         if (formConfig[formName].fields) {
             const updatedLicence = await licenceService.update({
-                bookingId: bookingId,
+                originalLicence: res.locals.licence,
                 config: formConfig[formName],
                 userInput: req.body,
                 licenceSection: targetSection,

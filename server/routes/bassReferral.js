@@ -20,14 +20,14 @@ module.exports = ({licenceService}) => (router, audited) => {
 
         await Promise.all([
             licenceService.update({
-                bookingId: bookingId,
+                originalLicence: res.locals.licence,
                 config: formConfig['bassRequest'],
                 userInput: req.body,
                 licenceSection: 'bassReferral',
                 formName: 'bassRequest'
             }),
             licenceService.update({
-                bookingId: bookingId,
+                originalLicence: res.locals.licence,
                 config: formConfig['bassAreaCheck'],
                 userInput: {bassAreaSuitable: undefined, bassAreaReason: undefined},
                 licenceSection: 'bassReferral',

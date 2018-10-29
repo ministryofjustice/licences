@@ -52,7 +52,7 @@ describe('/hdc/risk', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig.riskManagement,
                             userInput: formResponse,
                             licenceSection: 'risk',
@@ -71,7 +71,7 @@ describe('/hdc/risk', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}, stage: 'DECIDED'},
                             config: formConfig.riskManagement,
                             userInput: formResponse,
                             licenceSection: 'risk',

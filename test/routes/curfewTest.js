@@ -139,7 +139,7 @@ describe('/hdc/curfew', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'curfew',
@@ -462,7 +462,7 @@ describe('/hdc/curfew', () => {
                     .expect(302)
                     .expect(res => {
                         expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig.curfewHours,
                             userInput: expectedUserInput,
                             licenceSection: 'curfew',
@@ -487,7 +487,7 @@ describe('/hdc/curfew', () => {
                     .expect(302)
                     .expect(res => {
                         expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig.curfewHours,
                             userInput: daySpecificBody,
                             licenceSection: 'curfew',

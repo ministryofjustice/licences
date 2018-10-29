@@ -81,7 +81,7 @@ describe('/hdc/licenceConditions', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'licenceConditions',
@@ -104,7 +104,7 @@ describe('/hdc/licenceConditions', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}, stage: 'DECIDED'},
                             config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'licenceConditions',

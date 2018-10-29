@@ -57,7 +57,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
 
         if (templateChange) {
             await licenceService.update({
-                bookingId: bookingId,
+                originalLicence: rawLicence,
                 config: {fields: [{decision: {}}], noModify: true},
                 userInput: {decision: template},
                 licenceSection: 'document',

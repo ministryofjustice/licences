@@ -140,7 +140,7 @@ describe('/hdc/eligibility', () => {
                     .expect(res => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'eligibility',
