@@ -63,5 +63,6 @@ module.exports = {
 
     domain: get('DOMAIN', 'http://localhost:3000'),
 
-    notifyKey: get('NOTIFY_API_KEY', 'default_key')
+    notifyKey: get('NOTIFY_API_KEY', 'default_key'),
+    googleAnalyticsKey: get('GOOGLE_ANALYTICS_KEY', null)
 };

@@ -296,6 +296,11 @@ module.exports = function createApp({
 
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit});
 
+    app.use((req, res, next) => {
+        res.locals.googleAnalyticsKey = config.googleAnalyticsKey;
+        next();
+    });
+
     app.use('/', defaultRouter());
 
     app.use('/caseList/', caseListRouter({caseListService, authenticationMiddleware}));
