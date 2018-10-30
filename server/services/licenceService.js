@@ -1,22 +1,18 @@
 const logger = require('../../log.js');
 const {createAdditionalConditionsObject} = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
-const {formsInSection, reviewForms, bassReviewForms} = require('./config/formsAndSections');
+
 const {
     getIn,
     isEmpty,
     notAllValuesEmpty,
     allValuesEmpty,
-    flatten,
-    mergeWithRight,
-    removePath,
     equals,
     firstKey
 } = require('../utils/functionalHelpers');
 
 const {licenceStages, transitions} = require('../models/licenceStages');
-const {getConfiscationOrderState} = require('../utils/licenceStatus');
-const validate = require('./utils/licenceValidation');
+const licenceValidator = require('./utils/licenceValidation');
 const addressHelpers = require('./utils/addressHelpers');
 const moment = require('moment');
 
@@ -334,104 +330,6 @@ module.exports = function createLicenceService(licenceClient) {
         };
     }
 
-    function getLicenceErrors({licence, forms = reviewForms}) {
-
-        const validationErrors = forms.map(validate(licence)).filter(item => item);
-
-        if (isEmpty(validationErrors)) {
-            return [];
-        }
-
-        return flatten(validationErrors).reduce((errorObject, error) => mergeWithRight(errorObject, error.path), {});
-    }
-
-    function getConditionsErrors(licence) {
-        return getLicenceErrors({licence, forms: formsInSection['licenceConditions']});
-    }
-
-    const getValidationErrorsForReview = ({licenceStatus, licence}) => {
-        const {stage, decisions, tasks} = licenceStatus;
-        const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED';
-
-        if (stage === 'ELIGIBILITY' && decisions && decisions.bassReferralNeeded) {
-           return getLicenceErrors({licence, forms: [
-                   ...formsInSection['eligibility'],
-                   'bassRequest'
-               ]});
-        }
-
-        if (stage === 'ELIGIBILITY' || newAddressAddedForReview) {
-            return getEligibilityErrors({licence});
-        }
-
-        if (stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
-            return getLicenceErrors({licence, forms: formsInSection['proposedAddress']});
-        }
-
-        if (stage === 'PROCESSING_RO' && decisions.bassAreaNotSuitable) {
-            return getLicenceErrors({licence, forms: formsInSection['bassReferral']});
-        }
-
-        if (decisions.bassReferralNeeded) {
-            return getLicenceErrors({licence, forms: bassReviewForms});
-        }
-
-        return getLicenceErrors({licence, forms: reviewForms});
-    };
-
-    function getEligibilityErrors({licence}) {
-        const errorObject = getLicenceErrors({licence, forms: [
-                ...formsInSection['eligibility'],
-                ...formsInSection['proposedAddress']
-            ]});
-
-        const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
-
-        if (typeof getIn(errorObject, ['proposedAddress', 'curfewAddress']) === 'string') {
-            return errorObject;
-        }
-
-        return unwantedAddressFields.reduce(removeFromAddressReducer, errorObject);
-    }
-
-    function removeFromAddressReducer(errorObject, addressKey) {
-        const newObject = removePath(['proposedAddress', 'curfewAddress', addressKey], errorObject);
-
-        if (isEmpty(getIn(newObject, ['proposedAddress', 'curfewAddress']))) {
-            return removePath(['proposedAddress'], newObject);
-        }
-
-        return newObject;
-    }
-
-    function getValidationErrorsForPage(licence, forms) {
-        if (equals(forms, ['release'])) {
-            const {confiscationOrder} = getConfiscationOrderState(licence);
-            return getApprovalErrors({licence, confiscationOrder});
-        }
-
-        return getLicenceErrors({licence, forms});
-    }
-
-    function getApprovalErrors({licence, confiscationOrder}) {
-        const errorObject = getLicenceErrors({licence, forms: ['release']});
-
-        if (confiscationOrder) {
-            return errorObject;
-        }
-
-        const removeNotedCommentsError = removePath(['approval', 'release', 'notedComments']);
-        const errorsWithoutNotedComments = removeNotedCommentsError(errorObject);
-
-        const noErrorsInApproval = isEmpty(getIn(errorsWithoutNotedComments, ['approval', 'release']));
-        if (noErrorsInApproval) {
-            const removeApprovalError = removePath(['approval']);
-            return removeApprovalError(errorsWithoutNotedComments);
-        }
-
-        return errorsWithoutNotedComments;
-    }
-
     return {
         reset,
         getLicence,
@@ -443,11 +341,11 @@ module.exports = function createLicenceService(licenceClient) {
         updateStage,
         updateAddress,
         addAddress,
-        getLicenceErrors,
-        getConditionsErrors,
-        getEligibilityErrors,
-        getValidationErrorsForReview,
-        getValidationErrorsForPage,
+        getLicenceErrors: licenceValidator.getLicenceErrors,
+        getConditionsErrors: licenceValidator.getConditionsErrors,
+        getEligibilityErrors: licenceValidator.getEligibilityErrors,
+        getValidationErrorsForReview: licenceValidator.getValidationErrorsForReview,
+        getValidationErrorsForPage: licenceValidator.getValidationErrorsForPage,
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
         addSplitDateFields
     };
