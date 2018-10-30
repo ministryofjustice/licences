@@ -1,4 +1,4 @@
-module.exports = {
+const validationMessages = {
     // ELIGIBILITY forms
     excluded_decision: 'Select yes or no',
     excluded_reason: 'Select one or more reasons',
@@ -101,4 +101,47 @@ module.exports = {
     reportingDate_reportingTime: 'Enter a valid time',
     firstNight_firstNightFrom: 'Enter a valid from time',
     firstNight_firstNightUntil: 'Enter a valid until time'
+};
+
+module.exports = (errorType, errorMessage, errorPath) => {
+    if (errorType === 'date.format') {
+        if (errorMessage.includes('[HH:mm]')) {
+            return 'Enter a valid time';
+        }
+        return 'Enter a valid date';
+    }
+
+    if (errorType === 'number.base') {
+        return 'Enter a valid number';
+    }
+
+    if (errorType === 'string.regex.base') {
+        if (errorMessage.includes('telephone')) {
+            return 'Enter a valid phone number';
+        }
+        return 'Enter a valid postcode';
+    }
+
+    if (errorType === 'number.min') {
+        return 'Enter a valid age';
+    }
+
+    if (errorType === 'number.max') {
+        return 'Enter a valid age';
+    }
+
+    if (errorType === 'date.min') {
+        return 'Enter a date that is not in the past';
+    }
+
+    const path = errorPath
+        .filter(pathItem => !Number.isInteger(pathItem))
+        .join('_');
+
+    // Shouldn't this be first? Custom messages for postcode or telephone don't get used
+    if (validationMessages[path]) {
+        return validationMessages[path];
+    }
+
+    return 'Not answered';
 };
