@@ -9,7 +9,7 @@ html(lang="en")
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
 
-                gtag('config', #{googleAnalyticsKey});
+                gtag('config', '#{googleAnalyticsKey}');
 
         meta(charset="utf-8")
         meta(name="viewport" content="width=device-width, initial-scale=1")
@@ -64,6 +64,9 @@ html(lang="en")
 
         footer(class="group js-footer", id="footer", role="contentinfo")
             div(class="hdc-footer-wrapper")
+                p#sm-contactUs
+                    span.bold.hideMobile Contact us:&nbsp;
+                    a(href="mailto:hdc_private_beta_support@digital.justice.gov.uk") hdc_private_beta_support@digital.justice.gov.uk
                 div(class="footer-meta")
                     div(class="footer-meta-inner")
                         div(class="open-government-licence")
