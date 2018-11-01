@@ -298,6 +298,7 @@ module.exports = function createApp({
 
     app.use((req, res, next) => {
         res.locals.tagManagerKey = config.tagManagerKey;
+        res.locals.appInsightsKey = config.appInsightsKey;
         next();
     });
 
