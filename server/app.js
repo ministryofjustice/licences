@@ -297,7 +297,7 @@ module.exports = function createApp({
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit});
 
     app.use((req, res, next) => {
-        res.locals.googleAnalyticsKey = config.googleAnalyticsKey;
+        res.locals.tagManagerKey = config.tagManagerKey;
         next();
     });
 
