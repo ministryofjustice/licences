@@ -147,7 +147,7 @@ describe('send', () => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('RO', '123', 'token');
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        '123', {licence: {key: 'value'}}, 'caToRo'
+                        '123', 'caToRo'
                     );
                 });
         });
@@ -161,7 +161,7 @@ describe('send', () => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        '123', {licence: {key: 'value'}}, 'roToCa'
+                        '123', 'roToCa'
                     );
                 });
         });
@@ -175,7 +175,7 @@ describe('send', () => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        '123', {licence: {key: 'value'}}, 'caToDm'
+                        '123', 'caToDm'
                     );
                 });
         });
@@ -189,8 +189,18 @@ describe('send', () => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        '123', {licence: {key: 'value'}}, 'dmToCa'
+                        '123', 'dmToCa'
                     );
+                });
+        });
+
+        it('does not removeDecision when sending to decided', () => {
+            const app = createApp({licenceService, prisonerService}, 'dmUser');
+
+            return request(app)
+                .post('/hdc/send/decided/123')
+                .expect(() => {
+                    expect(licenceService.removeDecision).to.not.be.called();
                 });
         });
 
@@ -203,7 +213,7 @@ describe('send', () => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        '123', {licence: {key: 'value'}}, 'caToDmRefusal'
+                        '123', 'caToDmRefusal'
                     );
                 });
         });
@@ -217,7 +227,20 @@ describe('send', () => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledOnce();
                     expect(licenceService.markForHandover).to.be.calledWith(
-                        '123', {licence: {key: 'value'}}, 'dmToCaReturn'
+                        '123', 'dmToCaReturn'
+                    );
+                });
+        });
+
+        it('calls removeDecision via licenceService for return', () => {
+            const app = createApp({licenceService, prisonerService}, 'dmUser');
+
+            return request(app)
+                .post('/hdc/send/return/123')
+                .expect(() => {
+                    expect(licenceService.removeDecision).to.be.calledOnce();
+                    expect(licenceService.removeDecision).to.be.calledWith(
+                        '123', {licence: {key: 'value'}}
                     );
                 });
         });

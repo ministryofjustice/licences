@@ -27,15 +27,15 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
         const {destination, bookingId} = req.params;
         const transition = transitionForDestination[destination];
 
-        const [licence, submissionTarget] = await Promise.all([
-            licenceService.getLicence(bookingId),
-            prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, req.user.token)
-        ]);
-
+        const submissionTarget = await prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, req.user.token);
         await Promise.all([
-            licenceService.markForHandover(bookingId, licence, transition.type),
+            licenceService.markForHandover(bookingId, transition.type),
             notifyRecipient(transition.type)
         ]);
+
+        if (transition.type === 'dmToCaReturn') {
+            await licenceService.removeDecision(bookingId, res.locals.licence);
+        }
 
         auditEvent(req.user.staffId, bookingId, transition.type, submissionTarget);
 

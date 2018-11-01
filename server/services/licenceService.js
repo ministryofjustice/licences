@@ -8,7 +8,8 @@ const {
     notAllValuesEmpty,
     allValuesEmpty,
     equals,
-    firstKey
+    firstKey,
+    removePath
 } = require('../utils/functionalHelpers');
 
 const {licenceStages, transitions} = require('../models/licenceStages');
@@ -141,7 +142,7 @@ module.exports = function createLicenceService(licenceClient) {
         return {...oldConditions, bespoke: theRest};
     }
 
-    function markForHandover(bookingId, licence, transitionType) {
+    function markForHandover(bookingId, transitionType) {
 
         const newStage = getIn(transitions, [transitionType]);
 
@@ -303,10 +304,6 @@ module.exports = function createLicenceService(licenceClient) {
         };
     }
 
-    function updateStage(bookingId, status) {
-        return licenceClient.updateStage(bookingId, status);
-    }
-
     const updateAddress = updateAddressArray(addressHelpers.update);
     const addAddress = updateAddressArray(addressHelpers.add);
 
@@ -330,6 +327,14 @@ module.exports = function createLicenceService(licenceClient) {
         };
     }
 
+    async function removeDecision(bookingId, rawLicence) {
+        const {licence} = rawLicence;
+        const updatedLicence = removePath(['approval'], licence);
+
+        await licenceClient.updateLicence(bookingId, updatedLicence);
+        return updatedLicence;
+    }
+
     return {
         reset,
         getLicence,
@@ -338,7 +343,6 @@ module.exports = function createLicenceService(licenceClient) {
         deleteLicenceCondition,
         markForHandover,
         update,
-        updateStage,
         updateAddress,
         addAddress,
         getLicenceErrors: licenceValidator.getLicenceErrors,
@@ -347,6 +351,7 @@ module.exports = function createLicenceService(licenceClient) {
         getValidationErrorsForReview: licenceValidator.getValidationErrorsForReview,
         getValidationErrorsForPage: licenceValidator.getValidationErrorsForPage,
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
-        addSplitDateFields
+        addSplitDateFields,
+        removeDecision
     };
 };
