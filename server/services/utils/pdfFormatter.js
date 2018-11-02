@@ -75,7 +75,7 @@ function pickCurfewAddress(licence) {
     const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted']);
 
     if (bassAccepted === 'Yes') {
-        return getIn(licence, ['bassReferral', 'bassOffer', 'bassAddress']);
+        return getIn(licence, ['bassReferral', 'bassOffer']);
     }
 
     return getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses', 0]);
