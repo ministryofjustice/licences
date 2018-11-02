@@ -131,12 +131,10 @@ describe('pdfFormatter', () => {
             },
             bassReferral: {
                 bassOffer: {
-                    bassAddress: {
-                        postCode: 'BASS PC',
-                        addressTown: 'BASS Town',
-                        addressLine1: 'BASS 1',
-                        addressLine2: 'BASS 2'
-                    },
+                    postCode: 'BASS PC',
+                    addressTown: 'BASS Town',
+                    addressLine1: 'BASS 1',
+                    addressLine2: 'BASS 2',
                     bassAccepted: 'Yes'
                 }
             }
@@ -162,12 +160,10 @@ describe('pdfFormatter', () => {
             },
             bassReferral: {
                 bassOffer: {
-                    bassAddress: {
-                        postCode: 'BASS PC',
-                        addressTown: 'BASS Town',
-                        addressLine1: 'BASS 1',
-                        addressLine2: 'BASS 2'
-                    },
+                    postCode: 'BASS PC',
+                    addressTown: 'BASS Town',
+                    addressLine1: 'BASS 1',
+                    addressLine2: 'BASS 2',
                     bassAccepted: 'Not Yes'
                 }
             }
