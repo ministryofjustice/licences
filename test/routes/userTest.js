@@ -13,10 +13,10 @@ const createRoute = require('../../server/routes/user');
 
 describe('/user', () => {
 
-    let signInService;
+    let userService;
 
     beforeEach(() => {
-        signInService = {
+        userService = {
             getAllRoles: sinon.stub().resolves(['CA', 'RO']),
             setRole: sinon.stub().resolves()
         };
@@ -25,7 +25,7 @@ describe('/user', () => {
 
     describe('user page get', () => {
         it(`renders the /user page`, () => {
-            const app = createApp({signInService}, 'caUser');
+            const app = createApp({userService}, 'caUser');
             return request(app)
                 .get('/')
                 .expect(200)
@@ -41,19 +41,19 @@ describe('/user', () => {
     describe('user page post', () => {
 
         it(`calls setRole`, () => {
-            const app = createApp({signInService}, 'caUser');
+            const app = createApp({userService}, 'caUser');
             return request(app)
                 .post('/')
                 .send({role: 'RO'})
                 .expect(302)
                 .expect(res => {
-                    expect(signInService.setRole).to.be.calledOnce();
-                    expect(signInService.setRole).to.be.calledWith('RO');
+                    expect(userService.setRole).to.be.calledOnce();
+                    expect(userService.setRole).to.be.calledWith('RO');
                 });
         });
 
         it(`redirects to the /user page`, () => {
-            const app = createApp({signInService}, 'caUser');
+            const app = createApp({userService}, 'caUser');
             return request(app)
                 .post('/')
                 .send({role: 'RO'})
@@ -64,12 +64,12 @@ describe('/user', () => {
 
 });
 
-function createApp({signInService}, user) {
+function createApp({userService}, user) {
     const prisonerService = createPrisonerServiceStub();
     const licenceService = createLicenceServiceStub();
 
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
-    const route = baseRouter(createRoute({signInService}));
+    const route = baseRouter(createRoute({userService}));
 
     return appSetup(route, user);
 }

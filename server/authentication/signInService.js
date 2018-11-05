@@ -3,6 +3,7 @@ const querystring = require('querystring');
 const config = require('../config');
 const {generateOauthClientToken, generateAdminOauthClientToken} = require('./oauth');
 const logger = require('../../log');
+const allowedRoles = require('./roles');
 
 const timeoutSpec = {
     response: config.nomis.timeout.response,
@@ -61,26 +62,6 @@ function signInService(audit) {
 
             return {token, refreshToken, refreshTime};
 
-        },
-
-        getAllRoles: async function(user) {
-            const allRoles = await nomisGet('/users/me/roles', user.token);
-
-            return allRoles.body
-                .filter(role => {
-                    const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
-                    return allowedRoles.includes(roleCode);
-                })
-                .map(role => role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1));
-        },
-
-        setRole: function(newRole, user) {
-            if (!allowedRoles.includes(newRole)) {
-                return user;
-            }
-
-            user.role = newRole;
-            return user;
         }
     };
 
@@ -164,8 +145,6 @@ async function getUserProfile(token, username) {
     logger.info(`Elite2 profile success for [${username}]`);
     return profileResult.body;
 }
-
-const allowedRoles = config.roles.admin.concat(config.roles.user);
 
 async function getRoleCode(token) {
 

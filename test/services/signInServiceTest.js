@@ -1,61 +1,49 @@
-const nock = require('nock');
-const config = require('../../server/config');
-const createSignInService = require('../../server/authentication/signInService');
+const createUserService = require('../../server/services/userService');
 
-describe('prisonerDetailsService', () => {
+describe('userServiceTest', () => {
     let service;
-    let fakeNomis;
+    let nomisClient;
+
     let user = {token: 'token'};
-    const audit = sinon.stub();
 
     beforeEach(() => {
-        fakeNomis = nock(`${config.nomis.apiUrl}`);
-        service = createSignInService(audit);
-    });
-
-    afterEach(() => {
-        nock.cleanAll();
+        nomisClient = {
+            getUserRoles: sinon.stub().resolves([{
+                roleCode: 'LEI_LICENCE_CA'
+            }])
+        };
+        const nomisClientBuilder = sinon.stub().returns(nomisClient);
+        service = createUserService(nomisClientBuilder);
     });
 
     describe('getAllRoles', () => {
         it('should return the roles as an array', () => {
-            fakeNomis
-                .get(`/users/me/roles`)
-                .reply(200, [{
-                    roleCode: 'LEI_LICENCE_CA'
-                }]);
-
             return expect(service.getAllRoles(user)).to.eventually.eql(['CA']);
-
         });
 
         it('should allow multiple roles', () => {
-            fakeNomis
-                .get(`/users/me/roles`)
-                .reply(200, [{
-                    roleCode: 'LEI_LICENCE_CA'
-                }, {
-                    roleCode: 'LEI_LICENCE_RO'
-                }, {
-                    roleCode: 'LEI_LICENCE_DM'
-                }]);
+            nomisClient.getUserRoles.resolves([{
+                roleCode: 'LEI_LICENCE_CA'
+            }, {
+                roleCode: 'LEI_LICENCE_RO'
+            }, {
+                roleCode: 'LEI_LICENCE_DM'
+            }]);
 
             return expect(service.getAllRoles(user)).to.eventually.eql(['CA', 'RO', 'DM']);
 
         });
 
         it('should filter invalid roles', () => {
-            fakeNomis
-                .get(`/users/me/roles`)
-                .reply(200, [{
-                    roleCode: 'LEI_LICENCE_CA'
-                }, {
-                    roleCode: 'LEI_LICENCE_NO'
-                }, {
-                    roleCode: 'LEI_LICENCE_RO'
-                }, {
-                    roleCode: 'LEI_LICENCE_DM'
-                }]);
+            nomisClient.getUserRoles.resolves([{
+                roleCode: 'LEI_LICENCE_CA'
+            }, {
+                roleCode: 'LEI_LICENCE_NO'
+            }, {
+                roleCode: 'LEI_LICENCE_RO'
+            }, {
+                roleCode: 'LEI_LICENCE_DM'
+            }]);
 
             return expect(service.getAllRoles(user)).to.eventually.eql(['CA', 'RO', 'DM']);
 

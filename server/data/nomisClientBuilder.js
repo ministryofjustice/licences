@@ -105,6 +105,11 @@ module.exports = token => {
         getUserInfo: function(userName) {
             const path = `${apiUrl}/users/${userName}`;
             return nomisGet({path});
+        },
+
+        getUserRoles: function() {
+            const path = `${apiUrl}/users/me/roles`;
+            return nomisGet({path});
         }
     };
 };

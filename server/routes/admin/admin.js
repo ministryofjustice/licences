@@ -3,7 +3,7 @@ const {asyncMiddleware, authorisationMiddleware, auditMiddleware} = require('../
 const {firstItem} = require('../../utils/functionalHelpers');
 
 module.exports = function(
-    {userService, authenticationMiddleware, audit}) {
+    {userAdminService, authenticationMiddleware, audit}) {
 
     const router = express.Router();
     router.use(authenticationMiddleware());
@@ -23,7 +23,7 @@ module.exports = function(
     });
 
     router.get('/roUsers', asyncMiddleware(async (req, res) => {
-        const roUsers = await userService.getRoUsers();
+        const roUsers = await userAdminService.getRoUsers();
         return res.render('admin/users/list', {roUsers, heading: 'All RO users'});
     }));
 
@@ -34,14 +34,14 @@ module.exports = function(
             return res.redirect('/admin/roUsers');
         }
 
-        const roUsers = await userService.findRoUsers(searchTerm);
+        const roUsers = await userAdminService.findRoUsers(searchTerm);
 
         return res.render('admin/users/list', {roUsers, heading: 'Search results'});
     }));
 
     router.get('/roUsers/edit/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
-        const roUser = await userService.getRoUser(nomisId);
+        const roUser = await userAdminService.getRoUser(nomisId);
         const errors = firstItem(req.flash('errors')) || {};
         const userInput = firstItem(req.flash('userInput')) || null;
 
@@ -60,7 +60,7 @@ module.exports = function(
         }
 
         try {
-            await userService.updateRoUser(req.user.token, originalNomisId, userInput);
+            await userAdminService.updateRoUser(req.user.token, originalNomisId, userInput);
 
         } catch (error) {
             req.flash('errors', {nomisId: error.message});
@@ -73,13 +73,13 @@ module.exports = function(
 
     router.get('/roUsers/delete/:nomisId', asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
-        const roUser = await userService.getRoUser(nomisId);
+        const roUser = await userAdminService.getRoUser(nomisId);
         return res.render('admin/users/delete', {roUser});
     }));
 
     router.post('/roUsers/delete/:nomisId', audited, asyncMiddleware(async (req, res) => {
         const {nomisId} = req.params;
-        await userService.deleteRoUser(nomisId);
+        await userAdminService.deleteRoUser(nomisId);
         res.redirect('/admin/roUsers');
     }));
 
@@ -87,7 +87,7 @@ module.exports = function(
         const {nomisUserName} = req.query;
 
         try {
-            const userInfo = await userService.verifyUserDetails(req.user.token, nomisUserName);
+            const userInfo = await userAdminService.verifyUserDetails(req.user.token, nomisUserName);
             return res.json(userInfo);
 
         } catch (error) {
@@ -113,7 +113,7 @@ module.exports = function(
         }
 
         try {
-            await userService.addRoUser(req.user.token, userInput);
+            await userAdminService.addRoUser(req.user.token, userInput);
             return res.redirect('/admin/roUsers');
 
         } catch (error) {
