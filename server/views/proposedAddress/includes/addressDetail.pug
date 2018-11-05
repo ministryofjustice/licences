@@ -21,17 +21,23 @@ mixin addressDetail(type, address)
 
 
         div.pure-u-1.pure-u-md-1-2
-            if address.occupier
-                div Main occupier
-                div.pure-g.smallMarginTop.borderBottomLight.smallPaddingBottom
-                    p.bold.pure-u-1-2.noMargin(id="occupierName-"+type) #{address.occupier.name}
-                    p.bold.pure-u-1-3.noMargin(id="occupierRelation-"+type) #{address.occupier.relationship}
+            div.borderBottomLight.smallPaddingBottom
+                if address.occupier
+                    p Main occupier
+                    if address.occupier.isOffender
+                        p.bold.pure-u-1.noMargin The offender is the main occupier
+                    else if address.occupier.name || address.occupier.relationship
+                        div.pure-g.smallMarginTop
+                            p.bold.pure-u-1-2.noMargin(id="occupierName-"+type) #{address.occupier.name}
+                            p.bold.pure-u-1-3.noMargin(id="occupierRelation-"+type) #{address.occupier.relationship}
+                    else
+                        p.bold.pure-u-1.noMargin None
 
             div.largePaddingBottom.smallPaddingTop
                 p Other residents
                 if address.residents && address.residents.length > 0
                     for resident, index in address.residents
-                        if(resident.name != '' || resident.age != '' || resident.relationship != '')
+                        if(resident.name !== '' || resident.age !== '' || resident.relationship !== '')
                             div.pure-g.smallMarginTop.resident(class = "type"+type)
                                 p.bold.noMargin.pure-u-1-2(id="residentName-"+type+"-"+index) #{resident.name}
                                 p.bold.noMargin.pure-u-1-3(id="residentRelation-"+type+"-"+index) #{resident.relationship}
@@ -39,7 +45,7 @@ mixin addressDetail(type, address)
 
                 else
                     div.pure-u-1
-                        div.pure-g.smallMarginTop
+                        div.pure-g
                             p.bold.noMargin.pure-u-1-2 None
 
             if address.cautionedAgainstResident
