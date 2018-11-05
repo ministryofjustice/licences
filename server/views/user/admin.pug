@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+    div.notice-container.midMarginBottom
+        div.notice.center
+            strong.bold-small #{user.firstName} #{user.lastName}, #{user.role}
+    div.pure-g
+        .pure-u-1
+            include ../includes/back
+
+            h2.heading-large
+                | Select a role from the list
+
+        .pure-u-1.pure-u-sm-2-5
+            form(method="post")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="bookingId" value=bookingId || '')
+                div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
+                    div.form-group.largePaddingBottom
+                        select.form-control#selectRole(name="role")
+                            option(value="" disabled selected) -- select --
+                            for role in allRoles
+                                option(value=role, selected=role === user.role) #{role}
+
+                    div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+                        input#continueBtn.requiredButton.button.midMarginBottom(type="submit" value="Submit")
+                        a#backBtn.requiredButton.button.button-secondary(href="/caselist" role="button") Back to case list

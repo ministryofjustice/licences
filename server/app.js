@@ -37,6 +37,7 @@ const sendRouter = require('../server/routes/send');
 const sentRouter = require('../server/routes/sent');
 const taskListRouter = require('./routes/taskList');
 const utilsRouter = require('../server/routes/utils');
+const userRouter = require('../server/routes/user');
 
 const standardRouter = require('./routes/routeWorkers/standardRouter');
 const addressRouter = require('./routes/address');
@@ -311,6 +312,7 @@ module.exports = function createApp({
     app.use('/hdc/send/', sendRouter({licenceService, prisonerService, authenticationMiddleware, notificationService, audit}));
     app.use('/hdc/sent/', sentRouter({licenceService, prisonerService, authenticationMiddleware}));
     app.use('/hdc/taskList/', taskListRouter({prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));
+    app.use('/user/', baseRouter(userRouter({signInService})));
 
     app.use('/hdc/', baseRouter(addressRouter({licenceService})));
     app.use('/hdc/', baseRouter(approvalRouter({licenceService, prisonerService})));
