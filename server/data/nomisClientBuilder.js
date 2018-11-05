@@ -52,7 +52,7 @@ module.exports = token => {
 
         getComRelation: function(bookingId) {
             const path = `${apiUrl}/bookings/${bookingId}/relationships`;
-            const query = {relationshipType: 'COM'};
+            const query = {relationshipType: 'RO'};
             return nomisGet({path, query});
         },
 
@@ -93,7 +93,7 @@ module.exports = token => {
         },
 
         getROPrisoners: function(deliusUserName) {
-            const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/COM`;
+            const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/RO`;
             return nomisGet({path});
         },
 
