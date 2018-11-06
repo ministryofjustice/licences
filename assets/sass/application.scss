@@ -133,6 +133,10 @@ $path: "/public/images/";
     .hideMobile {display:none};
     .u-paddingTop {padding-top: 30px};
     .u-paddingBottom {padding-bottom: 30px;}
+    .u-padRight10 {padding-right: 10px;}
+    .u-padRightLeft10 {padding-right: 10px; padding-left: 10px}
+    .u-padLeft10 {padding-left: 10px}
+    .u-pad10 {padding: 10px}
     .change-details {margin: 1em 0}
 }
 
@@ -141,6 +145,8 @@ $path: "/public/images/";
     .sm-smallPaddingBottom {padding-bottom: 10px};
     .sm-midPaddingBottom {padding-bottom: 20px};
     .sm-padRight30 {padding-right: 30px};
+    .sm-padLeft30 {padding-left: 30px};
+    .sm-padLeftRight30 {padding-right: 30px; padding-left: 30px};
     .hideNonMobile {display:none};
     .change-details {margin-top: 2.5em;}
     .taskListSingleLineItem .buttonContainer{margin-top: 2.3em;}
@@ -149,6 +155,7 @@ $path: "/public/images/";
         position: relative;
         top: 90px;
     }
+    .sm-pad15 {padding: 15px};
 }
 
 .midPaddingTopBottom {
@@ -232,6 +239,11 @@ $path: "/public/images/";
 .padLeftRight15 {
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.padLeftRight25 {
+    padding-left: 25px;
+    padding-right: 25px;
 }
 
 .padRight15 {
@@ -381,4 +393,3 @@ input[type="time"] {
 .highlighted-string {
     background-color: darkorange;
 }
-

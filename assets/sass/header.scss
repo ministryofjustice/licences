@@ -40,6 +40,11 @@
         float: right;
         color: $white;
         background-color: $govuk-blue;
-        padding: 15px;
+        div {
+            float: left;
+            &:not(:last-child){
+                border-right: solid white 1px;
+            }
+        }
     }
 }
