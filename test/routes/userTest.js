@@ -31,7 +31,7 @@ describe('/user', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.contain('Select a role from the list');
+                    expect(res.text).to.contain('Select role');
                     expect(res.text).to.contain('<option value="CA"');
                     expect(res.text).to.contain('<option value="RO"');
                 });
