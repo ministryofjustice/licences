@@ -19,7 +19,8 @@ const createPdfService = require('./services/pdfService');
 const createSearchService = require('./services/searchService');
 const createReportingService = require('./services/reportingService');
 const createCaseListFormatter = require('./services/utils/caseListFormatter');
-const createUserService = require('./services/admin/userService');
+const createUserAdminService = require('./services/userAdminService');
+const createUserService = require('./services/userService');
 const createNotificationService = require('./services/notificationService');
 
 const signInService = createSignInService(audit);
@@ -32,7 +33,8 @@ const caseListService =
 const pdfService = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter);
 const searchService = createSearchService(logger, nomisClientBuilder, caseListFormatter);
 const reportingService = createReportingService(audit);
-const userService = createUserService(nomisClientBuilder, userClient);
+const userAdminService = createUserAdminService(nomisClientBuilder, userClient);
+const userService = createUserService(nomisClientBuilder);
 const notificationService = createNotificationService(notifyClient);
 
 const app = createApp({
@@ -45,8 +47,9 @@ const app = createApp({
     pdfService,
     searchService,
     reportingService,
-    userService,
+    userAdminService,
     notificationService,
+    userService,
     audit
 });
 

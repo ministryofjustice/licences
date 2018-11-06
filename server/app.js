@@ -37,6 +37,7 @@ const sendRouter = require('../server/routes/send');
 const sentRouter = require('../server/routes/sent');
 const taskListRouter = require('./routes/taskList');
 const utilsRouter = require('../server/routes/utils');
+const userRouter = require('../server/routes/user');
 
 const standardRouter = require('./routes/routeWorkers/standardRouter');
 const addressRouter = require('./routes/address');
@@ -63,9 +64,10 @@ module.exports = function createApp({
                                         caseListService,
                                         pdfService,
                                         searchService,
-                                        userService,
+                                        userAdminService,
                                         reportingService,
                                         notificationService,
+                                        userService,
                                         audit
                                     }) {
     const app = express();
@@ -304,13 +306,14 @@ module.exports = function createApp({
     app.use('/', defaultRouter());
 
     app.use('/caseList/', caseListRouter({caseListService, authenticationMiddleware}));
-    app.use('/admin/', adminRouter({userService, authenticationMiddleware, audit}));
-    app.use('/hdc/contact/', contactRouter({logger, userService, authenticationMiddleware}));
+    app.use('/admin/', adminRouter({userAdminService, authenticationMiddleware, audit}));
+    app.use('/hdc/contact/', contactRouter({logger, userAdminService, authenticationMiddleware}));
     app.use('/hdc/pdf/', pdfRouter({pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
     app.use('/hdc/search/', searchRouter({searchService, authenticationMiddleware}));
     app.use('/hdc/send/', sendRouter({licenceService, prisonerService, authenticationMiddleware, notificationService, audit}));
     app.use('/hdc/sent/', sentRouter({licenceService, prisonerService, authenticationMiddleware}));
     app.use('/hdc/taskList/', taskListRouter({prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));
+    app.use('/user/', baseRouter(userRouter({userService})));
 
     app.use('/hdc/', baseRouter(addressRouter({licenceService})));
     app.use('/hdc/', baseRouter(approvalRouter({licenceService, prisonerService})));

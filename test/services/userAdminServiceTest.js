@@ -1,8 +1,8 @@
 const nock = require('nock');
 
-const createUserService = require('../../server/services/admin/userService');
+const createUserService = require('../../server/services/userAdminService');
 
-describe('userService', () => {
+describe('userAdminService', () => {
 
     let userClient;
     let nomisClient;

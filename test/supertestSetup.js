@@ -69,7 +69,7 @@ const searchServiceStub = {
     searchOffenders: sinon.stub().resolves()
 };
 
-const userServiceStub = {
+const userAdminServiceStub = {
     getRoUsers: sinon.stub().resolves(),
     getRoUser: sinon.stub().resolves(),
     getRoUserByDeliusId: sinon.stub().resolves(),
@@ -158,7 +158,7 @@ const setup = {
     caseListServiceStub,
     pdfServiceStub,
     searchServiceStub,
-    userServiceStub,
+    userAdminServiceStub,
     authenticationMiddleware,
     testFormPageGets,
     appSetup(route, user = 'caUser', prefix = '') {

@@ -3,6 +3,7 @@ const querystring = require('querystring');
 const config = require('../config');
 const {generateOauthClientToken, generateAdminOauthClientToken} = require('./oauth');
 const logger = require('../../log');
+const allowedRoles = require('./roles');
 
 const timeoutSpec = {
     response: config.nomis.timeout.response,
@@ -144,8 +145,6 @@ async function getUserProfile(token, username) {
     logger.info(`Elite2 profile success for [${username}]`);
     return profileResult.body;
 }
-
-const allowedRoles = config.roles.admin.concat(config.roles.user);
 
 async function getRoleCode(token) {
 
