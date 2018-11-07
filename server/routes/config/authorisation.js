@@ -7,10 +7,7 @@ module.exports = {
     '/hdc/eligibility/': {
         authorised: [{role: 'CA'}]
     },
-    '/hdc/proposedAddress/optOut/': {
-        authorised: [{role: 'CA'}]
-    },
-    '/hdc/proposedAddress/addressProposed/': {
+    '/hdc/proposedAddress/curfewAddressChoice/': {
         authorised: [{role: 'CA'}]
     },
     'hdc/bassReferral/bassRequest': {

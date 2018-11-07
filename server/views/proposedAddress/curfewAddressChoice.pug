@@ -1,0 +1,17 @@
+extends ../formTemplates/formTemplate
+
+block question
+    | Has the offender provided a curfew address?
+
+block formItems
+    div.form-group.smallPaddingTop
+
+        div.multiple-choice()
+            input#address(type="radio" checked=data && data.decision === 'Address' name="decision" value="Address")
+            label(for="address") Yes, they provided an address
+        div.multiple-choice
+            input#bass(type="radio" checked=data && data.decision === 'Bass' name="decision" value="Bass")
+            label(for="bass") No, they asked for a BASS property
+        div.multiple-choice
+            input#optout(type="radio" checked=data && data.decision === 'OptOut' name="decision" value="OptOut")
+            label(for="optout") No, they opted out of HDC

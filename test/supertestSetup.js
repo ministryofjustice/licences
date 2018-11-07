@@ -27,6 +27,7 @@ const signInServiceStub = {
 const createLicenceServiceStub = () => ({
     getLicence: sinon.stub().resolves({licence: {key: 'value'}}),
     update: sinon.stub().resolves(),
+    updateSection: sinon.stub().resolves(),
     updateLicenceConditions: sinon.stub().resolves(),
     deleteLicenceCondition: sinon.stub().resolves(),
     markForHandover: sinon.stub().resolves(),

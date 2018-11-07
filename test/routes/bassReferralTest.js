@@ -27,7 +27,7 @@ describe('/hdc/bassReferral', () => {
             const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
             const routes = [
-                {url: '/hdc/bassReferral/bassRequest/1', content: 'BASS referral'},
+                {url: '/hdc/bassReferral/bassRequest/1', content: 'Requested BASS area'},
                 {url: '/hdc/bassReferral/bassOffer/1', content: 'BASS address'}
             ];
 

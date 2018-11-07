@@ -201,6 +201,7 @@ module.exports = function createLicenceService(licenceClient) {
         return updatedLicence;
     }
 
+
     function getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName}) {
 
         const answers = getFormResponse(fieldMap, userInput);
@@ -343,6 +344,7 @@ module.exports = function createLicenceService(licenceClient) {
         deleteLicenceCondition,
         markForHandover,
         update,
+        updateSection: licenceClient.updateSection,
         updateAddress,
         addAddress,
         getLicenceErrors: licenceValidator.getLicenceErrors,
