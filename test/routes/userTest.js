@@ -18,7 +18,9 @@ describe('/user', () => {
     beforeEach(() => {
         userService = {
             getAllRoles: sinon.stub().resolves(['CA', 'RO']),
-            setRole: sinon.stub().resolves()
+            getAllCaseLoads: sinon.stub().resolves([{caseLoadId: '1', description: 'a'}, {caseLoadId: '2', description: 'b'}]),
+            setRole: sinon.stub().resolves(),
+            setActiveCaseLoad: sinon.stub().resolves()
         };
         auditStub.record.reset();
     });
@@ -32,15 +34,37 @@ describe('/user', () => {
                 .expect('Content-Type', /html/)
                 .expect(res => {
                     expect(res.text).to.contain('Select role');
+                });
+        });
+
+        it(`renders the role dropdown if user has multiple roles`, () => {
+            const app = createApp({userService}, 'caUser');
+            return request(app)
+                .get('/')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
                     expect(res.text).to.contain('<option value="CA"');
                     expect(res.text).to.contain('<option value="RO"');
+                });
+        });
+
+        it(`renders the case load dropdown if user has multiple case loads`, () => {
+            const app = createApp({userService}, 'caUser');
+            return request(app)
+                .get('/')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.contain('<option value="1"');
+                    expect(res.text).to.contain('<option value="2"');
                 });
         });
     });
 
     describe('user page post', () => {
 
-        it(`calls setRole`, () => {
+        it(`calls setRole if role is different to that on user`, () => {
             const app = createApp({userService}, 'caUser');
             return request(app)
                 .post('/')
@@ -49,6 +73,39 @@ describe('/user', () => {
                 .expect(res => {
                     expect(userService.setRole).to.be.calledOnce();
                     expect(userService.setRole).to.be.calledWith('RO');
+                });
+        });
+
+        it(`does not call setRole if role is the same as that on user`, () => {
+            const app = createApp({userService}, 'caUser');
+            return request(app)
+                .post('/')
+                .send({role: 'CA'})
+                .expect(302)
+                .expect(res => {
+                    expect(userService.setRole).to.not.be.called();
+                });
+        });
+
+        it(`calls setActiveCaseload if caseLod is different to that on user`, () => {
+            const app = createApp({userService}, 'caUser');
+            return request(app)
+                .post('/')
+                .send({caseLoad: 'caseLoadId2'})
+                .expect(302)
+                .expect(res => {
+                    expect(userService.setActiveCaseLoad).to.be.calledOnce();
+                });
+        });
+
+        it(`does not call setActiveCaseload if caseLod is the same as that on user`, () => {
+            const app = createApp({userService}, 'caUser');
+            return request(app)
+                .post('/')
+                .send({caseLoad: 'caseLoadId'})
+                .expect(302)
+                .expect(res => {
+                    expect(userService.setActiveCaseLoad).to.not.be.called();
                 });
         });
 

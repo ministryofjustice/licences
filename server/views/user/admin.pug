@@ -25,25 +25,39 @@ block content
                             td Active case load
                             td #{user.activeCaseLoad.description}
 
-    if allRoles.length > 1
-        div.pure-g.borderTop
+    if allRoles.lengthinde > 1 || allCaseLoads.length > 1
 
-            h2.pure-u-1.heading-medium
-                | Edit settings
+        form(method="post")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="bookingId" value=bookingId || '')
 
-            div.pure-u-1.pure-u-sm-2-5
+            div.pure-g.borderTop
 
-                form(method="post")
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    input(type="hidden" name="bookingId" value=bookingId || '')
+                h2.pure-u-1.heading-medium
+                    | Edit settings
 
-                    div.form-group
-                        label.form-label(for="selectRole") Select role
-                        select.form-control#selectRole(name="role")
-                            option(value="" disabled selected) -- select --
-                            for role in allRoles
-                                option(value=role, selected=role === user.role) #{role}
+                if allRoles.length > 1
 
-                    div.pure-u-1.inlineButtons.paddingBottom.largeMarginTop
-                        input#continueBtn.requiredButton.button.midMarginBottom(type="submit" value="Submit")
-                        a#backBtn.requiredButton.button.button-secondary(href="/caselist" role="button") Back to case list
+                    div.pure-u-1.pure-u-sm-2-5
+                        div.form-group
+                            label.form-label(for="selectRole") Select role
+                            select.form-control#selectRole(name="role")
+                                option(value="" disabled selected) -- select --
+                                for role in allRoles
+                                    option(value=role, selected=role === user.role) #{role}
+
+                    div.pure-u-1.pure-u-sm-1-5
+
+                if allCaseLoads.length > 1
+
+                    div.pure-u-1.pure-u-sm-2-5
+                        div.form-group
+                            label.form-label(for="selectCaseLoad") Select active case load
+                            select.form-control#selectCaseLoad(name="caseLoad")
+                                option(value="" disabled selected) -- select --
+                                for caseLoad in allCaseLoads
+                                    option(value=caseLoad.caseLoadId, selected=caseLoad.caseLoadId === user.activeCaseLoad.caseLoadId) #{caseLoad.description}
+
+            div.pure-u-1.inlineButtons.paddingBottom.largeMarginTop
+                input#continueBtn.requiredButton.button.midMarginBottom(type="submit" value="Submit")
+                a#backBtn.requiredButton.button.button-secondary(href="/caselist" role="button") Back to case list
