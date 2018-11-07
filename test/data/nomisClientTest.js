@@ -464,5 +464,62 @@ describe('nomisClient', function() {
             return expect(nomisClient.getUserInfo('userName')).to.be.rejected();
         });
     });
+
+    describe('getLoggedInUserInfo', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get('/users/me')
+                .reply(200, {username: 'result'});
+
+            return expect(nomisClient.getLoggedInUserInfo()).to.eventually.eql({username: 'result'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get('/users/me')
+                .reply(500);
+
+            return expect(nomisClient.getLoggedInUserInfo()).to.be.rejected();
+        });
+    });
+
+    describe('getUserCaseLoads', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get('/users/me/caseLoads')
+                .reply(200, {username: 'result'});
+
+            return expect(nomisClient.getUserCaseLoads()).to.eventually.eql({username: 'result'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get('/users/me/caseLoads')
+                .reply(500);
+
+            return expect(nomisClient.getUserCaseLoads()).to.be.rejected();
+        });
+    });
+
+    describe('putActiveCaseLoad', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .put('/users/me/activeCaseLoad')
+                .reply(200, {});
+
+            return expect(nomisClient.putActiveCaseLoad('id')).to.eventually.eql({});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .put('/users/me/activeCaseLoad')
+                .reply(500);
+
+            return expect(nomisClient.putActiveCaseLoad('id')).to.be.rejected();
+        });
+    });
 });
 

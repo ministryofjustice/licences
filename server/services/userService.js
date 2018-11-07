@@ -23,9 +23,32 @@ module.exports = function(nomisClientBuilder) {
         return user;
     }
 
+    function getAllCaseLoads(token) {
+        const nomisClient = nomisClientBuilder(token);
+        return nomisClient.getUserCaseLoads();
+    }
+
+    async function setActiveCaseLoad(id, user) {
+
+        // set active caseload
+        const nomisClient = nomisClientBuilder(user.token);
+        await nomisClient.putActiveCaseLoad(id);
+
+        // find active caseload
+        const [userDetails, caseLoads] = await Promise.all([
+            nomisClient.getLoggedInUserInfo(),
+            nomisClient.getUserCaseLoads()
+        ]);
+
+        user.activeCaseLoad = caseLoads.find(caseLoad => caseLoad.caseLoadId === userDetails.activeCaseLoadId);
+        return user;
+    }
+
     return {
         getAllRoles,
-        setRole
+        setRole,
+        getAllCaseLoads,
+        setActiveCaseLoad
     };
 };
 

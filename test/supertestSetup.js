@@ -123,7 +123,10 @@ const users = {
         staffId: 'id',
         token: 'token',
         role: 'CA',
-        username: 'CA_USER_TEST'
+        username: 'CA_USER_TEST',
+        activeCaseLoad: {
+            caseLoadId: 'caseLoadId'
+        }
     },
     roUser: {
         firstName: 'first',

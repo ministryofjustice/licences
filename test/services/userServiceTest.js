@@ -5,12 +5,20 @@ describe('userServiceTest', () => {
     let nomisClient;
 
     let user = {token: 'token'};
+    const activeCaseLoads = [{
+        caseLoadId: 'this'
+    }, {
+        caseLoadId: 'that'
+    }];
 
     beforeEach(() => {
         nomisClient = {
             getUserRoles: sinon.stub().resolves([{
                 roleCode: 'LEI_LICENCE_CA'
-            }])
+            }]),
+            getUserCaseLoads: sinon.stub().resolves(activeCaseLoads),
+            putActiveCaseLoad: sinon.stub().resolves({}),
+            getLoggedInUserInfo: sinon.stub().resolves({activeCaseLoadId: 'this'})
         };
         const nomisClientBuilder = sinon.stub().returns(nomisClient);
         service = createUserService(nomisClientBuilder);
@@ -87,6 +95,46 @@ describe('userServiceTest', () => {
             expect(newUser).to.eql({
                 token: 'token',
                 role: 'OLD'
+            });
+        });
+    });
+
+    describe('getAllCaseLoads', () => {
+
+        it('should call getUserCaseLoads from nomis client', async () => {
+            await service.getAllCaseLoads('token');
+            expect(nomisClient.getUserCaseLoads).to.be.calledOnce();
+        });
+
+        it('should return results', async () => {
+            const answer = await service.getAllCaseLoads('token');
+            expect(answer).to.eql(activeCaseLoads);
+        });
+
+    });
+
+    describe('setActiveCaseLoad', () => {
+        it('should call putActiveCaseLoad from nomis client', async () => {
+            await service.setActiveCaseLoad('id', user);
+            expect(nomisClient.putActiveCaseLoad).to.be.calledOnce();
+            expect(nomisClient.putActiveCaseLoad).to.be.calledWith('id');
+        });
+
+        it('should call getLoggedInUserInfo from nomis client', async () => {
+            await service.setActiveCaseLoad('id', user);
+            expect(nomisClient.getLoggedInUserInfo).to.be.calledOnce();
+        });
+
+        it('should call getUserCaseLoads from nomis client', async () => {
+            await service.setActiveCaseLoad('id', user);
+            expect(nomisClient.getUserCaseLoads).to.be.calledOnce();
+        });
+
+        it('should set the user caseload with a corresponding id', async () => {
+            const result = await service.setActiveCaseLoad('id', user);
+            expect(result).to.eql({
+                ...user,
+                activeCaseLoad: {caseLoadId: 'this'}
             });
         });
     });
