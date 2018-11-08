@@ -13,7 +13,7 @@ describe('GET /', () => {
         return request(app)
             .get('/')
             .expect(302)
-            .expect('Location', '/caseList/');
+            .expect('Location', '/caseList/active');
     });
 
     it('redirects to admin for admin users', () => {

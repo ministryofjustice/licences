@@ -2,7 +2,7 @@ const logger = require('../../log.js');
 const {isEmpty, getIn} = require('../utils/functionalHelpers');
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter) {
-    async function getHdcCaseList(token, username, role) {
+    async function getHdcCaseList(token, username, role, tab) {
         try {
             const nomisClient = nomisClientBuilder(token);
             const hdcEligibleReleases = await getCaseList(nomisClient, licenceClient, username, role);
@@ -12,7 +12,8 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
                 return [];
             }
 
-            return caseListFormatter.formatCaseList(hdcEligibleReleases, role);
+            const formattedCaseList = await caseListFormatter.formatCaseList(hdcEligibleReleases, role);
+            return formattedCaseList.filter(prisoner => neededForRole(prisoner, role) && neededForTab(prisoner, tab));
 
         } catch (error) {
             logger.error('Error during getHdcCaseList: ', error.stack);
@@ -54,4 +55,53 @@ function getROCaseList(nomisClient, licenceClient, username) {
 
         return [];
     };
+}
+
+function neededForRole(prisoner, role) {
+    const interestedStatuses = {
+        RO: [
+            {stage: 'PROCESSING_RO'},
+            {stage: 'PROCESSING_CA'},
+            {stage: 'APPROVAL'},
+            {stage: 'DECIDED'},
+            {stage: 'MODIFIED'},
+            {stage: 'MODIFIED_APPROVAL'}
+        ],
+        DM: [
+            {stage: 'APPROVAL'},
+            {stage: 'DECIDED'},
+            {stage: 'PROCESSING_CA', status: 'Postponed'}
+        ]
+    };
+
+    if (!interestedStatuses[role]) {
+        return true;
+    }
+
+    const includedStage = interestedStatuses[role].find(config => prisoner.stage === config.stage);
+
+    if (!includedStage) {
+        return false;
+    }
+
+    if (includedStage.status) {
+        return includedStage.status === prisoner.status;
+    }
+
+    return true;
+}
+
+function neededForTab(prisoner, tab) {
+    const inactiveStatuses = [
+        'Excluded (Ineligible)',
+        'Presumed unsuitable',
+        'Not enough time',
+        'Opted out',
+        'Address not suitable',
+        'Address withdrawn',
+        'Refused'
+    ];
+
+    const isInactive = inactiveStatuses.includes(prisoner.status);
+    return isInactive === (tab === 'inactive');
 }
