@@ -1,5 +1,4 @@
 #tabBar {
-    margin-bottom: 60px;
     border-bottom: solid $grey-2 2px;
     font-size: larger;
 
@@ -11,11 +10,8 @@
     }
     li {
         float: left;
-        padding: 10px 20px;
+        width: 10%;
         border-bottom: solid #ffffff 10px;
-        @media (max-width: 640px) {
-           clear: both
-        }
     }
     li.selected {
         border-bottom: solid $govuk-blue 10px;
@@ -23,6 +19,7 @@
     a {
         text-decoration: none;
         color: black;
+        text-align: center;
     }
 }
 

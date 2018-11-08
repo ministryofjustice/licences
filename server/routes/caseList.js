@@ -18,7 +18,7 @@ module.exports = function({caseListService, authenticationMiddleware}) {
             req.params.tab
         );
 
-        return res.render('caseList/index', {hdcEligible, labels});
+        return res.render('caseList/index', {hdcEligible, labels, tab: req.params.tab});
     }));
 
     return router;
