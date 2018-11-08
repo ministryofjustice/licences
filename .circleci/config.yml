@@ -124,6 +124,8 @@ jobs:
             command: |
               VERSION=$(egrep licences Dockerrun.aws.json | awk -F"\"" '{print $4}' |  awk -F":" '{print $2}')
               GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
+              git config user.name "Circle CI"
+              git config user.email "circle@circleci.com"
               git tag -a ${VERSION} ${GIT_REF}
         - store_artifacts:
               path: Dockerrun.aws.json
