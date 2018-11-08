@@ -128,6 +128,7 @@ jobs:
               git config user.email "circle@circleci.com"
               git tag -a ${VERSION} ${GIT_REF} -m "${VERSION}"
               git push origin ${VERSION}
+              ~/.local/bin/eb deploy licences-stage --label ${VERSION}
         - store_artifacts:
               path: Dockerrun.aws.json
 
