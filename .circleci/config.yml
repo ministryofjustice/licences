@@ -127,6 +127,7 @@ jobs:
               git config user.name "Circle CI"
               git config user.email "circle@circleci.com"
               git tag -a ${VERSION} ${GIT_REF} -m "${VERSION}"
+              git push origin ${VERSION}
         - store_artifacts:
               path: Dockerrun.aws.json
 
