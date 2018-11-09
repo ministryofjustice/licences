@@ -26,6 +26,33 @@ module.exports = ({licenceService}) => (router, audited) => {
         return res.render('proposedAddress/curfewAddress', {bookingId, data: lastItem(addresses)});
     }
 
+    router.get('/proposedAddress/curfewAddressChoice/:bookingId', asyncMiddleware(async (req, res) => {
+
+        const licence = res.locals.licence;
+        const data = {decision: getCurfewAddressChoice(getIn(licence, ['licence']))};
+        const viewData = {data, errorObject: {}};
+
+        res.render('proposedAddress/curfewAddressChoice', viewData);
+    }));
+
+    router.post('/proposedAddress/curfewAddressChoice/:bookingId', audited, asyncMiddleware(async (req, res) => {
+
+        const {bookingId} = req.params;
+        const {decision} = req.body;
+        const licence = res.locals.licence;
+
+        const proposedAddress = proposedAddressContents[decision];
+        const bassReferral = getBassReferralContent(decision, licence);
+
+        await Promise.all([
+            licenceService.updateSection('proposedAddress', bookingId, proposedAddress),
+            licenceService.updateSection('bassReferral', bookingId, bassReferral)
+        ]);
+
+        const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/${bookingId}`;
+        res.redirect(`${nextPath}${bookingId}`);
+    }));
+
     router.post('/proposedAddress/curfewAddress/:action/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {bookingId, action} = req.params;
         const addresses = getAddresses(res.locals.licence);
@@ -60,7 +87,6 @@ module.exports = ({licenceService}) => (router, audited) => {
         res.redirect(`${nextPath}${bookingId}`);
     }));
 
-
     router.get('/proposedAddress/:formName/:bookingId', asyncMiddleware(standard.get));
     router.post('/proposedAddress/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
@@ -80,4 +106,38 @@ function isEmptySubmission(userInput) {
     return !addressLine1 && !addressTown && !postCode;
 }
 
+function getCurfewAddressChoice(licence) {
+    if (isYes(licence, ['proposedAddress', 'optOut', 'decision'])) {
+        return 'OptOut';
+    }
+
+    if (isYes(licence, ['proposedAddress', 'addressProposed', 'decision'])) {
+        return 'Address';
+    }
+
+    if (isYes(licence, ['bassReferral', 'bassRequest', 'bassRequested'])) {
+        return 'Bass';
+    }
+
+    return null;
+}
+
+function isYes(licence, pathSegments) {
+    const answer = getIn(licence, pathSegments);
+    return answer && answer === 'Yes';
+}
+
+function getBassReferralContent(decision, licence) {
+    const bassReferral = getIn(licence, ['licence', 'bassReferral']);
+    const bassRequest = getIn(bassReferral, ['bassRequest']);
+    const bassAnswer = decision === 'Bass' ? 'Yes' : 'No';
+
+    return {...bassReferral, bassRequest: {...bassRequest, bassRequested: bassAnswer}};
+}
+
+const proposedAddressContents = {
+    OptOut: {optOut: {decision: 'Yes'}, addressProposed: {decision: 'No'}},
+    Address: {optOut: {decision: 'No'}, addressProposed: {decision: 'Yes'}},
+    Bass: {optOut: {decision: 'No'}, addressProposed: {decision: 'No'}}
+};
 

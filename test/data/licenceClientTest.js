@@ -128,7 +128,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct parameters', () => {
 
-            const expectedParameters = ['{licenceConditions}', {hi: 'ho'}, 'ABC123'];
+            const expectedParameters = ['{section}', {hi: 'ho'}, 'ABC123'];
 
             const result = licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
 

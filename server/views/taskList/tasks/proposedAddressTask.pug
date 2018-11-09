@@ -4,7 +4,7 @@
 
 -var addressRejectedPath = "/hdc/proposedAddress/rejected/" + prisonerInfo.bookingId
 -var bassRejectedPath = "/hdc/bassReferral/rejected/" + prisonerInfo.bookingId
--var optOutPath = '/hdc/proposedAddress/optOut/' + prisonerInfo.bookingId
+-var curfewChoicePath = '/hdc/proposedAddress/curfewAddressChoice/' + prisonerInfo.bookingId
 
 
 div.largeMarginBottom
@@ -18,8 +18,10 @@ div.largeMarginBottom
             else if decisions.bassReferralNeeded
                 if decisions.bassAreaNotSuitable
                     span.alert.bold BASS area rejected
-                else
+                else if tasks.bassRequest === 'DONE'
                     | Offender has opted in and requested BASS referral
+                else
+                    | Not completed
 
             else if decisions.curfewAddressApproved === 'rejected'
                 span.alert.bold Address rejected
@@ -41,4 +43,4 @@ div.largeMarginBottom
                 +startContinueChange(tasks.curfewAddress, bassRejectedPath)
 
             else
-                +startContinueChangeMulti([tasks.optOut, tasks.curfewAddress], optOutPath)
+                +startContinueChangeMulti([tasks.optOut, tasks.curfewAddress, tasks.bassRequest], curfewChoicePath)
