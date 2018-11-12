@@ -470,7 +470,144 @@ describe('caseListService', () => {
                 expect(result[2].name).to.eql('offender5');
             });
         });
+
+        describe('Filtering', () => {
+            let caseListFormatter = {
+                formatCaseList: sinon.stub()
+            };
+
+            const caseListAllStatuses = [
+                {stage: 'ELIGIBILITY'},
+                {stage: 'PROCESSING_RO'},
+                {stage: 'PROCESSING_CA'},
+                {stage: 'APPROVAL'},
+                {stage: 'DECIDED'},
+                {stage: 'MODIFIED'},
+                {stage: 'MODIFIED_APPROVAL'},
+                {stage: 'PROCESSING_CA', status: 'Postponed'}
+            ];
+
+            beforeEach(() => {
+                nomisClient.getHdcEligiblePrisoners.resolves(['a']);
+                nomisClient.getOffenderSentencesByBookingId.resolves([{sentenceDetail: {homeDetentionCurfewEligibilityDate: 'a'}}]);
+                nomisClient.getROPrisoners.resolves(['a']);
+                const nomisClientBuilder = sinon.stub().returns(nomisClient);
+                service = createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter);
+            });
+
+            describe('By stage', () => {
+                context('user is CA', () => {
+                    it('should not filter any statuses out', () => {
+                        caseListFormatter.formatCaseList.resolves(caseListAllStatuses);
+
+                        return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'active'))
+                            .to.eventually.eql(caseListAllStatuses);
+                    });
+                });
+
+                context('user is RO', () => {
+                    it('should filter any statuses out', () => {
+                        caseListFormatter.formatCaseList.resolves(caseListAllStatuses);
+
+                        return expect(service.getHdcCaseList(user.token, user.username, 'RO', 'active')).to.eventually.eql(
+                            [
+                                {stage: 'PROCESSING_RO'},
+                                {stage: 'PROCESSING_CA'},
+                                {stage: 'APPROVAL'},
+                                {stage: 'DECIDED'},
+                                {stage: 'MODIFIED'},
+                                {stage: 'MODIFIED_APPROVAL'},
+                                {stage: 'PROCESSING_CA', status: 'Postponed'}
+                            ]
+                        );
+                    });
+                });
+
+                context('user is DM', () => {
+                    it('should filter any statuses out', () => {
+                        caseListFormatter.formatCaseList.resolves(caseListAllStatuses);
+
+                        return expect(service.getHdcCaseList(user.token, user.username, 'DM', 'active')).to.eventually.eql(
+                            [
+                                {stage: 'APPROVAL'},
+                                {stage: 'DECIDED'},
+                                {stage: 'PROCESSING_CA', status: 'Postponed'}
+
+                            ]
+                        );
+                    });
+                });
+            });
+
+            describe('by status', () => {
+
+                const allStatuses = [
+                    {stage: 'ELIGIBILITY', status: 'Not started'},
+                    {stage: 'ELIGIBILITY', status: 'Checking eligibility'},
+                    {stage: 'ELIGIBILITY', status: 'Excluded (Ineligible)'},
+                    {stage: 'ELIGIBILITY', status: 'Not enough time'},
+                    {stage: 'ELIGIBILITY', status: 'Presumed unsuitable'},
+                    {stage: 'ELIGIBILITY', status: 'Opted out'},
+                    {stage: 'ELIGIBILITY', status: 'Getting address'},
+                    {stage: 'ELIGIBILITY', status: 'Address rejected'},
+                    {stage: 'ELIGIBILITY', status: 'Review case'},
+                    {stage: 'ELIGIBILITY', status: 'Address not suitable'},
+                    {stage: 'ELIGIBILITY', status: 'Postponed'},
+                    {stage: 'ELIGIBILITY', status: 'Refused'},
+                    {stage: 'ELIGIBILITY', status: 'With responsible officer'},
+                    {stage: 'ELIGIBILITY', status: 'With decision maker'},
+                    {stage: 'ELIGIBILITY', status: 'Create licence'},
+                    {stage: 'ELIGIBILITY', status: 'Address provided'},
+                    {stage: 'ELIGIBILITY', status: 'Assessment ongoing'},
+                    {stage: 'ELIGIBILITY', status: 'BASS request'},
+                    {stage: 'ELIGIBILITY', status: 'BASS area rejected'},
+                    {stage: 'ELIGIBILITY', status: 'Submitted to prison case admin'},
+                    {stage: 'ELIGIBILITY', status: 'Approved'},
+                    {stage: 'ELIGIBILITY', status: 'Make decision'},
+                    {stage: 'ELIGIBILITY', status: 'Awaiting refusal'},
+                    {stage: 'ELIGIBILITY', status: 'Address withdrawn'}
+                ];
+
+                it('should remove inactive statuses when tab is active', () => {
+                    caseListFormatter.formatCaseList.resolves(allStatuses);
+
+                    return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'active'))
+                        .to.eventually.eql([
+                            {stage: 'ELIGIBILITY', status: 'Not started'},
+                            {stage: 'ELIGIBILITY', status: 'Checking eligibility'},
+                            {stage: 'ELIGIBILITY', status: 'Getting address'},
+                            {stage: 'ELIGIBILITY', status: 'Address rejected'},
+                            {stage: 'ELIGIBILITY', status: 'Review case'},
+                            {stage: 'ELIGIBILITY', status: 'Postponed'},
+                            {stage: 'ELIGIBILITY', status: 'With responsible officer'},
+                            {stage: 'ELIGIBILITY', status: 'With decision maker'},
+                            {stage: 'ELIGIBILITY', status: 'Create licence'},
+                            {stage: 'ELIGIBILITY', status: 'Address provided'},
+                            {stage: 'ELIGIBILITY', status: 'Assessment ongoing'},
+                            {stage: 'ELIGIBILITY', status: 'BASS request'},
+                            {stage: 'ELIGIBILITY', status: 'BASS area rejected'},
+                            {stage: 'ELIGIBILITY', status: 'Submitted to prison case admin'},
+                            {stage: 'ELIGIBILITY', status: 'Approved'},
+                            {stage: 'ELIGIBILITY', status: 'Make decision'},
+                            {stage: 'ELIGIBILITY', status: 'Awaiting refusal'}
+                        ]);
+                });
+
+                it('should remove active statuses when tab is inactive', () => {
+                    caseListFormatter.formatCaseList.resolves(allStatuses);
+
+                    return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'inactive'))
+                        .to.eventually.eql([
+                            {stage: 'ELIGIBILITY', status: 'Excluded (Ineligible)'},
+                            {stage: 'ELIGIBILITY', status: 'Not enough time'},
+                            {stage: 'ELIGIBILITY', status: 'Presumed unsuitable'},
+                            {stage: 'ELIGIBILITY', status: 'Opted out'},
+                            {stage: 'ELIGIBILITY', status: 'Address not suitable'},
+                            {stage: 'ELIGIBILITY', status: 'Refused'},
+                            {stage: 'ELIGIBILITY', status: 'Address withdrawn'}
+                        ]);
+                });
+            });
+        });
     });
-
-
 });

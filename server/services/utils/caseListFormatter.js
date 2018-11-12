@@ -12,7 +12,6 @@ module.exports = function createCaseListFormatter(logger, licenceClient) {
         const licences = await licenceClient.getLicences(getBookingIds(hdcEligibleReleases));
 
         return hdcEligibleReleases
-            .filter(prisoner => getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
             .map(decoratePrisonerDetails(licences, role))
             .sort(sortList(role));
     }

@@ -23,9 +23,7 @@ describe('POST /login', () => {
                 .post('/')
                 .send('username=auser&password=apass')
                 .expect(302)
-                .expect(res => {
-                    expect(res.headers.location).to.eql('/');
-                });
+                .expect('Location', '/caselist/active');
         });
 
         it('redirects to target if on same domain', () => {
@@ -61,7 +59,7 @@ describe('POST /login', () => {
                 .post('/?target=http://evil.com')
                 .send('username=auser&password=apass')
                 .expect(302)
-                .expect('Location', '/');
+                .expect('Location', '/caselist/active');
         });
     });
 
