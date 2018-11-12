@@ -6,7 +6,7 @@ module.exports = function({caseListService, authenticationMiddleware}) {
     const router = express.Router();
     router.use(authenticationMiddleware());
 
-    router.get('/', (req, res) => res.redirect('/caselist/active'));
+    router.get('/', (req, res) => res.redirect('/caseList/active'));
 
     router.get('/:tab', asyncMiddleware(async (req, res) => {
         logger.debug('GET /caseList');
