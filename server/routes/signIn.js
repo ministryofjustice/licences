@@ -40,5 +40,5 @@ function getTarget(target) {
         return `${domain}${target}`;
     }
 
-    return '/caselist/active';
+    return '/caseList/active';
 }

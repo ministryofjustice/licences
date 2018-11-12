@@ -22,7 +22,7 @@ describe('GET /caseList', () => {
         return request(app)
             .get('/')
             .expect(302)
-            .expect('Location', '/caselist/active');
+            .expect('Location', '/caseList/active');
     });
 
     it('renders the hdc eligible prisoners page', () => {

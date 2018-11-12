@@ -16,9 +16,9 @@ block content
                 div#tabBar.pure-u-1.form-group.center
                     ul
                         li(class=tab === 'active' ? 'selected' : undefined)
-                            a(href="/caselist/active") Active
+                            a(href="/caseList/active") Active
                         li(class=tab === 'inactive' ? 'selected' : undefined)
-                            a(href="/caselist/inactive") Inactive
+                            a(href="/caseList/inactive") Inactive
 
             if user.role === 'CA'
                 include ./CATable
