@@ -1,52 +1,19 @@
-const {getIn, replaceArrayItem, mergeWithRight, removeFromArray} = require('../../utils/functionalHelpers');
+const recordList = require('./recordList');
+const addressesPath = ['proposedAddress', 'curfewAddress', 'addresses'];
 
 module.exports = {
-    update: editAddressesArray(updateAddressInArray),
-    add: editAddressesArray(addAddressToArray)
+    update: edit,
+    add
 };
 
-function editAddressesArray(updateMethod) {
-    return ({bookingId, licence, newAddress, index = null} = {}) => {
-        return updateAddressesInLicence({
-            updateMethod,
-            licence,
-            newAddress,
-            index
-        });
-    };
-}
-
-function updateAddressesInLicence({updateMethod, licence, newAddress, index = null} = {}) {
-
-    const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
-
-    const newAddresses = updateMethod({addresses, index, newAddress});
-
-    return {
-        ...licence,
-        proposedAddress: {
-            ...licence.proposedAddress,
-            curfewAddress: {
-                ...licence.proposedAddress.curfewAddress,
-                addresses: newAddresses
-            }
-        }
-    };
-}
-
-function updateAddressInArray({addresses, index, newAddress}) {
-    if (!addresses[index]) {
-        throw new Error('No address to update: '+index);
-    }
-
+function edit({licence, index, newAddress}) {
     if (!newAddress) {
-        return removeFromArray(index, 1, addresses);
+        return recordList(licence, addressesPath).remove({index});
     }
 
-    const newAddressObject = mergeWithRight(addresses[index], newAddress);
-    return replaceArrayItem(addresses, index, newAddressObject);
+    return recordList(licence, addressesPath).edit({index, record: newAddress});
 }
 
-function addAddressToArray({addresses, newAddress}) {
-    return [...addresses, newAddress];
+function add({licence, newAddress}) {
+    return recordList(licence, addressesPath).add({record: newAddress});
 }

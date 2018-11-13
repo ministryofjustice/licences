@@ -13,12 +13,14 @@ module.exports = {
     firstItem,
     lastIndex,
     removePath,
+    replacePath,
     interleave,
     equals,
     difference,
     getUniqueStrings,
     pipe,
     removeFromArray,
+    addToArray,
     all,
     getWhereKeyLike,
     pickKey,
@@ -85,6 +87,10 @@ function removePath(...args) {
     return R.dissocPath(...args);
 }
 
+function replacePath(path, val, object) {
+    return R.assocPath(path, val, object);
+}
+
 function interleave(firstArray, secondArray) {
     return flatten(firstArray
         .map((item, index) => [item, secondArray[index] || '']))
@@ -111,6 +117,10 @@ function getUniqueStrings(array) {
 
 function removeFromArray(index, end, array) {
     return R.remove(index, end, array);
+}
+
+function addToArray(element, array) {
+    return R.append(element, array);
 }
 
 function getWhereKeyLike(string, object) {

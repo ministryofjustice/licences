@@ -314,7 +314,7 @@ module.exports = function createLicenceService(licenceClient) {
             const formResponse = getFormResponse(fieldMap, userInput);
 
             const newAddress = Array.isArray(formResponse.addresses) ? formResponse.addresses[0] : formResponse;
-            const updatedLicence = addressesUpdateMethod({bookingId, licence, newAddress, index});
+            const updatedLicence = addressesUpdateMethod({licence, newAddress, index});
 
             if (equals(licence, updatedLicence)) {
                 return licence;
