@@ -80,7 +80,7 @@ module.exports = {
     },
 
     updateSection: function(section, bookingId, object) {
-        const path = '{licenceConditions}';
+        const path = `{${section}}`;
 
         const query = {
             text: 'update licences set licence = jsonb_set(licence, $1, $2) where booking_id=$3',

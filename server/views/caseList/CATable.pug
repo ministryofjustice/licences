@@ -4,7 +4,8 @@ table#hdcEligiblePrisoners.caSortcolumns.largeMarginBottom
             th.sortable Name
             th.hideMobile Prison no.
             th.sortable HDCED
-            th.hideMobile Status
+            th.sortable.hideMobile Time to HDCED
+            th.sortable.hideMobile Status
             th
     tbody
         if hdcEligible && hdcEligible.length > 0
@@ -20,9 +21,13 @@ table#hdcEligiblePrisoners.caSortcolumns.largeMarginBottom
                         if prisoner.offenderNo
                             | #{prisoner.offenderNo}
 
-                    td.hdced.hideMobile
+                    td.hdced
+                        div.searchable
+                            | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
+
+                    td.timeToHdced.hideMobile
                         div(class=prisoner.due.overdue ? "alert bold-small searchable" : "searchable")
-                            | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate} (#{prisoner.due.text})
+                            | #{prisoner.due.text}
 
                     if ['Address not suitable', 'Address rejected'].includes(prisoner.status)
                         td.status.terminalStateAlert.hideMobile.searchable

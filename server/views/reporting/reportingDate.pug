@@ -19,10 +19,21 @@ block content
         input(type="hidden" name="path" value=action)
 
         div#address.pure-g
-            div#error-anchor.pure-u-1-8
+            div#error-anchor.pure-u-3-5
                 div.form-group
-                    label.form-label(for="reportingDate") Date
-                    input(type='text' name='reportingDate' id='reportingDate' class='form-control' value=data.reportingDate)
+                    fieldset
+                        div.form-date
+                            div.form-group.form-group-day
+                                label.form-label(for="reportingDay") Day
+                                input.form-control#reportingDay(name="reportingDay" type="number" pattern="[0-9]*" value=data.reportingDay)
+
+                            div.form-group.form-group-month
+                                label.form-label(for="reportingMonth") Month
+                                input.form-control#reportingMonth(name="reportingMonth" type="number" pattern="[0-9]*" value=data.reportingMonth)
+
+                            div.form-group.form-group-year
+                                label.form-label(for="reportingYear") Year
+                                input.form-control#reportingYear(name="reportingYear" type="number" pattern="[0-9]*" value=data.reportingYear)
 
                 div.form-group
                     label.form-label(for="reportingTime") Time

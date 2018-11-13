@@ -1,6 +1,6 @@
 mixin startContinueChange(task, path, id)
 
-    - var unstarted = task === 'UNSTARTED'
+    - var unstarted = !task || task === 'UNSTARTED'
     - var complete = task === 'DONE'
 
     if unstarted
@@ -10,6 +10,6 @@ mixin startContinueChange(task, path, id)
         a.taskListAction(href=path, id=id) Change
 
     else
-        a.taskListAction.center.button(class='button-secondary', href=path, id=id) Continue
+        a.taskListAction.center.button(href=path, id=id) Continue
 
 

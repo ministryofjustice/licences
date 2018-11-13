@@ -76,7 +76,7 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql('roToCa');
     });
 
-    it('should allow RO to CA for RO whenopted out even when other tasks not done', () => {
+    it('should allow RO to CA for RO when opted out even when other tasks not done', () => {
         const status = {
             stage: 'PROCESSING_RO',
             tasks: {
@@ -88,6 +88,26 @@ describe('getAllowedTransition', () => {
             },
             decisions: {
                 optedOut: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'RO');
+        expect(allowed).to.eql('roToCa');
+    });
+
+    it('should allow RO to CA for RO when bass area rejected even when other tasks not done', () => {
+        const status = {
+            stage: 'PROCESSING_RO',
+            tasks: {
+                curfewAddressReview: 'DONE',
+                bassAreaCheck: 'DONE',
+                curfewHours: 'UNSTARTED',
+                licenceConditions: 'UNSTARTED',
+                riskManagement: 'UNSTARTED',
+                reportingInstructions: 'UNSTARTED'
+            },
+            decisions: {
+                bassReferralNeeded: true
             }
         };
 
@@ -247,6 +267,24 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql(null);
     });
 
+    it('should allow CA to DM in the PROCESSING_CA for BASS when only BASS offer and final checks tasks done', () => {
+        const status = {
+            stage: 'PROCESSING_CA',
+            tasks: {
+                curfewAddress: 'UNSTARTED',
+                bassOffer: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                bassReferralNeeded: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+
+        expect(allowed).to.eql('caToDm');
+    });
+
     it('should allow CA to DM refusal when eligible and insufficient time', () => {
         const status = {
             stage: 'ELIGIBILITY',
@@ -328,6 +366,72 @@ describe('getAllowedTransition', () => {
             decisions: {
                 eligible: true,
                 curfewAddressApproved: 'rejected'
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
+    });
+
+    it('should allow CA to DM refusal if BASS area is rejected - ELIGIBILITY', () => {
+        const status = {
+            stage: 'ELIGIBILITY',
+            tasks: {
+                bassReferral: 'DONE'
+            },
+            decisions: {
+                eligible: true,
+                bassAreaNotSuitable: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
+    });
+
+    it('should allow CA to DM refusal if BASS area is rejected - POST_APPROVAL', () => {
+        const status = {
+            stage: 'MODIFIED',
+            tasks: {
+                bassReferral: 'DONE'
+            },
+            decisions: {
+                eligible: true,
+                bassAreaNotSuitable: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
+    });
+
+    it('should allow CA to DM refusal if BASS outcome is Unsuitable - POST_APPROVAL', () => {
+        const status = {
+            stage: 'MODIFIED',
+            tasks: {
+                bassReferral: 'DONE'
+            },
+            decisions: {
+                eligible: true,
+                bassAreaSuitable: true,
+                bassAccepted: 'Unsuitable'
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
+    });
+
+    it('should allow CA to DM refusal if BASS outcome is Unavailable - POST_APPROVAL', () => {
+        const status = {
+            stage: 'MODIFIED',
+            tasks: {
+                bassReferral: 'DONE'
+            },
+            decisions: {
+                eligible: true,
+                bassAreaSuitable: true,
+                bassAccepted: 'Unavailable'
             }
         };
 

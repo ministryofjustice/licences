@@ -8,7 +8,10 @@ block tasks
 
     if licenceStatus.decisions.eligible
         div.taskListItem.borderBottomLight
-            include tasks/curfewAddressTask
+            if licenceStatus.decisions.bassReferralNeeded
+                include tasks/bassOfferTask
+            else
+                include tasks/curfewAddressTask
 
         if (licenceStatus.decisions.curfewAddressApproved !== 'withdrawn')
             div.taskListItem.borderBottomLight

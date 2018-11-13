@@ -2,7 +2,7 @@ const request = require('supertest');
 
 const {
     loggerStub,
-    userServiceStub,
+    userAdminServiceStub,
     authenticationMiddleware,
     auditStub,
     appSetup
@@ -10,7 +10,7 @@ const {
 
 const createAdminRoute = require('../../server/routes/admin/admin');
 const adminRoute = createAdminRoute({
-    userService: userServiceStub,
+    userAdminService: userAdminServiceStub,
     logger: loggerStub,
     authenticationMiddleware,
     audit: auditStub
@@ -39,15 +39,15 @@ describe('/admin', () => {
 
         auditStub.record.reset();
 
-        userServiceStub.findRoUsers.reset();
-        userServiceStub.getRoUsers.reset();
-        userServiceStub.getRoUser.reset();
+        userAdminServiceStub.findRoUsers.reset();
+        userAdminServiceStub.getRoUsers.reset();
+        userAdminServiceStub.getRoUser.reset();
 
-        userServiceStub.getRoUsers.resolves([user1, user2]);
-        userServiceStub.findRoUsers.resolves([user1]);
-        userServiceStub.getRoUser.resolves(user1);
+        userAdminServiceStub.getRoUsers.resolves([user1, user2]);
+        userAdminServiceStub.findRoUsers.resolves([user1]);
+        userAdminServiceStub.getRoUser.resolves(user1);
 
-        userServiceStub.verifyUserDetails.resolves({
+        userAdminServiceStub.verifyUserDetails.resolves({
             username: 'nomisUser',
             firstName: 'nomisFirst',
             lastName: 'nomisLast'
@@ -73,7 +73,7 @@ describe('/admin', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(() => {
-                    expect(userServiceStub.getRoUsers).to.be.calledOnce();
+                    expect(userAdminServiceStub.getRoUsers).to.be.calledOnce();
                 });
         });
 
@@ -103,7 +103,7 @@ describe('/admin', () => {
                 .send({searchTerm: '  '})
                 .expect(302)
                 .expect(res => {
-                    expect(userServiceStub.findRoUsers).not.to.be.calledOnce();
+                    expect(userAdminServiceStub.findRoUsers).not.to.be.calledOnce();
                 });
         });
 
@@ -114,8 +114,8 @@ describe('/admin', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(userServiceStub.findRoUsers).to.be.calledOnce();
-                    expect(userServiceStub.findRoUsers).to.be.calledWith('aQuery');
+                    expect(userAdminServiceStub.findRoUsers).to.be.calledOnce();
+                    expect(userAdminServiceStub.findRoUsers).to.be.calledWith('aQuery');
                     expect(res.text).to.contain('user1');
                     expect(res.text).not.to.contain('user2');
                 });
@@ -130,8 +130,8 @@ describe('/admin', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(userServiceStub.getRoUser).to.be.calledOnce();
-                    expect(userServiceStub.getRoUser).to.be.calledWith('1');
+                    expect(userAdminServiceStub.getRoUser).to.be.calledOnce();
+                    expect(userAdminServiceStub.getRoUser).to.be.calledWith('1');
                     expect(res.text).to.contain('value="user1"');
                     expect(res.text).to.contain('value="d1"');
                     expect(res.text).to.contain('value="f1"');
@@ -149,7 +149,7 @@ describe('/admin', () => {
                 .expect(302)
                 .expect('Location', '/admin/roUsers/edit/1')
                 .expect(res => {
-                    expect(userServiceStub.findRoUsers).not.to.be.calledOnce();
+                    expect(userAdminServiceStub.findRoUsers).not.to.be.calledOnce();
                 });
         });
 
@@ -160,8 +160,8 @@ describe('/admin', () => {
                 .expect(302)
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
-                    expect(userServiceStub.updateRoUser).to.be.calledOnce();
-                    expect(userServiceStub.updateRoUser).to.be.calledWith('token', '1', {
+                    expect(userAdminServiceStub.updateRoUser).to.be.calledOnce();
+                    expect(userAdminServiceStub.updateRoUser).to.be.calledWith('token', '1', {
                         originalDeliusId: 'd',
                         first: 'f',
                         last: 'l',
@@ -200,8 +200,8 @@ describe('/admin', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(userServiceStub.getRoUser).to.be.calledOnce();
-                    expect(userServiceStub.getRoUser).to.be.calledWith('1');
+                    expect(userAdminServiceStub.getRoUser).to.be.calledOnce();
+                    expect(userAdminServiceStub.getRoUser).to.be.calledWith('1');
                     expect(res.text).to.contain('nomisId">user1');
                     expect(res.text).to.contain('deliusId">d1');
                     expect(res.text).to.contain('firstName">f1');
@@ -219,8 +219,8 @@ describe('/admin', () => {
                 .expect(302)
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
-                    expect(userServiceStub.deleteRoUser).to.be.calledOnce();
-                    expect(userServiceStub.deleteRoUser).to.be.calledWith('1');
+                    expect(userAdminServiceStub.deleteRoUser).to.be.calledOnce();
+                    expect(userAdminServiceStub.deleteRoUser).to.be.calledWith('1');
                 });
         });
 
@@ -266,7 +266,7 @@ describe('/admin', () => {
                 .expect(302)
                 .expect('Location', '/admin/roUsers/add')
                 .expect(res => {
-                    expect(userServiceStub.addRoUser).not.to.be.calledOnce();
+                    expect(userAdminServiceStub.addRoUser).not.to.be.calledOnce();
                 });
         });
 
@@ -277,7 +277,7 @@ describe('/admin', () => {
                 .expect(302)
                 .expect('Location', '/admin/roUsers/add')
                 .expect(res => {
-                    expect(userServiceStub.addRoUser).not.to.be.calledOnce();
+                    expect(userAdminServiceStub.addRoUser).not.to.be.calledOnce();
                 });
         });
 
@@ -288,8 +288,8 @@ describe('/admin', () => {
                 .expect(302)
                 .expect('Location', '/admin/roUsers')
                 .expect(res => {
-                    expect(userServiceStub.addRoUser).to.be.calledOnce();
-                    expect(userServiceStub.addRoUser).to.be.calledWith('token', {
+                    expect(userAdminServiceStub.addRoUser).to.be.calledOnce();
+                    expect(userAdminServiceStub.addRoUser).to.be.calledWith('token', {
                         deliusId: 'deliusId',
                         first: 'first',
                         last: 'last',
@@ -327,8 +327,8 @@ describe('/admin', () => {
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .expect(() => {
-                    expect(userServiceStub.verifyUserDetails).to.be.calledOnce();
-                    expect(userServiceStub.verifyUserDetails).to.be.calledWith('token', 'USER_NAME');
+                    expect(userAdminServiceStub.verifyUserDetails).to.be.calledOnce();
+                    expect(userAdminServiceStub.verifyUserDetails).to.be.calledWith('token', 'USER_NAME');
                 });
         });
 
@@ -345,7 +345,7 @@ describe('/admin', () => {
 
         it('should give 404 when no match for user name', () => {
 
-            userServiceStub.verifyUserDetails.rejects();
+            userAdminServiceStub.verifyUserDetails.rejects();
 
             return request(app)
                 .get('/admin/roUsers/verify?nomisUserName=USER_NAME')

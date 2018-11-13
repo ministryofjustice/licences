@@ -16,10 +16,12 @@ function formatPdfData(templateName,
     const pss = getConditionsForConfig(licence, templateName, 'PSS');
     const photo = image ? image.toString('base64') : null;
     const taggingCompany = {telephone: config.pdf.taggingCompanyTelephone};
+    const curfewAddress = pickCurfewAddress(licence);
 
     const allData = {
         licence,
         prisonerInfo,
+        curfewAddress,
         establishment,
         conditions,
         pss,
@@ -66,6 +68,17 @@ function readEntry(data, spec) {
         .map(path => getIn(data, path))
         .filter(x => x)
         .join(spec.separator);
+}
+
+function pickCurfewAddress(licence) {
+
+    const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted']);
+
+    if (bassAccepted === 'Yes') {
+        return getIn(licence, ['bassReferral', 'bassOffer']);
+    }
+
+    return getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses', 0]);
 }
 
 function getConditionsForConfig(licence, templateName, configName) {

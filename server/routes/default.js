@@ -8,7 +8,7 @@ module.exports = function() {
         if (req.user && config.roles.admin.includes(req.user.role)) {
             return res.redirect('/admin/');
         }
-        res.redirect('/caseList/');
+        res.redirect('/caseList/active');
     });
 
     return router;

@@ -27,6 +27,7 @@ const signInServiceStub = {
 const createLicenceServiceStub = () => ({
     getLicence: sinon.stub().resolves({licence: {key: 'value'}}),
     update: sinon.stub().resolves(),
+    updateSection: sinon.stub().resolves(),
     updateLicenceConditions: sinon.stub().resolves(),
     deleteLicenceCondition: sinon.stub().resolves(),
     markForHandover: sinon.stub().resolves(),
@@ -38,7 +39,9 @@ const createLicenceServiceStub = () => ({
     getEligibilityErrors: sinon.stub().returns(),
     getValidationErrorsForReview: sinon.stub().returns({}),
     addAddress: sinon.stub().resolves(),
-    getValidationErrorsForPage: sinon.stub().returns({})
+    getValidationErrorsForPage: sinon.stub().returns({}),
+    addSplitDateFields: sinon.stub().returnsArg(0),
+    removeDecision: sinon.stub().resolves({})
 });
 
 const createConditionsServiceStub = () => ({
@@ -67,7 +70,7 @@ const searchServiceStub = {
     searchOffenders: sinon.stub().resolves()
 };
 
-const userServiceStub = {
+const userAdminServiceStub = {
     getRoUsers: sinon.stub().resolves(),
     getRoUser: sinon.stub().resolves(),
     getRoUserByDeliusId: sinon.stub().resolves(),
@@ -121,7 +124,10 @@ const users = {
         staffId: 'id',
         token: 'token',
         role: 'CA',
-        username: 'CA_USER_TEST'
+        username: 'CA_USER_TEST',
+        activeCaseLoad: {
+            caseLoadId: 'caseLoadId'
+        }
     },
     roUser: {
         firstName: 'first',
@@ -156,7 +162,7 @@ const setup = {
     caseListServiceStub,
     pdfServiceStub,
     searchServiceStub,
-    userServiceStub,
+    userAdminServiceStub,
     authenticationMiddleware,
     testFormPageGets,
     appSetup(route, user = 'caUser', prefix = '') {

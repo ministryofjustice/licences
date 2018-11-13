@@ -117,6 +117,64 @@ describe('pdfFormatter', () => {
         expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
     });
 
+    it('should use BASS address instead of curfew address when BASS accepted', () => {
+        const licence = {
+            proposedAddress: {
+                curfewAddress: {
+                    addresses: [{
+                        addressLine1: 'first',
+                        addressLine2: 'second',
+                        addressTown: '',
+                        postCode: 'post'
+                    }]
+                }
+            },
+            bassReferral: {
+                bassOffer: {
+                    postCode: 'BASS PC',
+                    addressTown: 'BASS Town',
+                    addressLine1: 'BASS 1',
+                    addressLine2: 'BASS 2',
+                    bassAccepted: 'Yes'
+                }
+            }
+        };
+
+        const data = formatWith({licence: licence});
+
+        expect(data.values.CURFEW_ADDRESS).to.eql('BASS 1\nBASS 2\nBASS Town\nBASS PC');
+        expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
+    });
+
+    it('should use curfew address instead of BASS address when BASS not accepted', () => {
+        const licence = {
+            proposedAddress: {
+                curfewAddress: {
+                    addresses: [{
+                        addressLine1: 'first',
+                        addressLine2: 'second',
+                        addressTown: '',
+                        postCode: 'post'
+                    }]
+                }
+            },
+            bassReferral: {
+                bassOffer: {
+                    postCode: 'BASS PC',
+                    addressTown: 'BASS Town',
+                    addressLine1: 'BASS 1',
+                    addressLine2: 'BASS 2',
+                    bassAccepted: 'Not Yes'
+                }
+            }
+        };
+
+        const data = formatWith({licence: licence});
+
+        expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost');
+        expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
+    });
+
     it('should join conditions with newlines, terminated by semi-colons, with roman numeral index', () => {
 
         const licence = {

@@ -1,0 +1,34 @@
+mixin sentContent(title, submissionTarget)
+    div.pure-g.largeMarginBottom
+        div.pure-u-1.pure-u-lg-4-5
+            div.confirm-banner
+                div.pure-g
+                    div.pure-u-1.pure-u-md-1-8.smallMarginTop.smallPaddingTop.padLeft15
+                        img(src="/public/images/large_tick.svg" alt="white tick" height="80px")
+                    div.pure-u-1.pure-u-md-3-4
+                        h1.heading-large Case sent
+
+                        div The case has been sent to:
+                            if submissionTarget
+                                if submissionTarget.premise
+                                    div#premise.bold.smallPaddingTop #{submissionTarget.premise}
+                                if submissionTarget.city
+                                    div#city #{submissionTarget.city}
+                                if submissionTarget.locality
+                                    div#locality #{submissionTarget.locality}
+                                if submissionTarget.postCode
+                                    div#postCode #{submissionTarget.postCode}
+
+                                if submissionTarget.phones
+                                    div(id="phone" + index).bold.smallPaddingTop
+                                        | #{submissionTarget.phones.number}
+
+                                div.paddingBottom
+                                    if submissionTarget.email
+                                    | #{submissionTarget.email}
+                            else
+                                div.paddingBottom No prison address found
+                    div.pure-u-1.pure-u-md-1-8
+
+    div
+        a#backBtn.requiredButton.button.button-secondary.largeMarginBottom(href='/' role="button") Return to case list

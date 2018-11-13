@@ -15,7 +15,8 @@ const invalidDate = 'Invalid date';
 module.exports = token => {
 
     const nomisGet = nomisGetBuilder(token);
-    const nomisPost = nomisPostBuilder(token);
+    const nomisPost = nomisPushBuilder('post', token);
+    const nomisPut = nomisPushBuilder('put', token);
 
     const addReleaseDatesToPrisoner = pipe(
         addReleaseDate,
@@ -52,7 +53,7 @@ module.exports = token => {
 
         getComRelation: function(bookingId) {
             const path = `${apiUrl}/bookings/${bookingId}/relationships`;
-            const query = {relationshipType: 'COM'};
+            const query = {relationshipType: 'RO'};
             return nomisGet({path, query});
         },
 
@@ -93,7 +94,7 @@ module.exports = token => {
         },
 
         getROPrisoners: function(deliusUserName) {
-            const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/COM`;
+            const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/RO`;
             return nomisGet({path});
         },
 
@@ -105,6 +106,28 @@ module.exports = token => {
         getUserInfo: function(userName) {
             const path = `${apiUrl}/users/${userName}`;
             return nomisGet({path});
+        },
+
+        getLoggedInUserInfo: function() {
+            const path = `${apiUrl}/users/me`;
+            return nomisGet({path});
+        },
+
+        getUserRoles: function() {
+            const path = `${apiUrl}/users/me/roles`;
+            return nomisGet({path});
+        },
+
+        getUserCaseLoads: function() {
+            const path = `${apiUrl}/users/me/caseLoads`;
+            return nomisGet({path});
+        },
+
+        putActiveCaseLoad: async function(caseLoadId) {
+            const path = `${apiUrl}/users/me/activeCaseLoad`;
+            const body = {caseLoadId};
+
+            return nomisPut({path, body});
         }
     };
 };
@@ -138,7 +161,12 @@ function nomisGetBuilder(token) {
     };
 }
 
-function nomisPostBuilder(token) {
+function nomisPushBuilder(verb, token) {
+
+    const updateMethod = {
+        put: put,
+        post: post
+    };
 
     return async ({path, body = '', headers = {}, responseType = ''} = {}) => {
 
@@ -147,14 +175,7 @@ function nomisPostBuilder(token) {
         }
 
         try {
-            const result = await superagent
-                .post(path)
-                .send(body)
-                .set('Authorization', `Bearer ${token}`)
-                .set(headers)
-                .responseType(responseType)
-                .timeout(timeoutSpec);
-
+            const result = await updateMethod[verb](token, path, body, headers, responseType);
             return result.body;
 
         } catch (error) {
@@ -165,6 +186,26 @@ function nomisPostBuilder(token) {
             throw error;
         }
     };
+}
+
+async function post(token, path, body, headers, responseType) {
+    return superagent
+        .post(path)
+        .send(body)
+        .set('Authorization', `Bearer ${token}`)
+        .set(headers)
+        .responseType(responseType)
+        .timeout(timeoutSpec);
+}
+
+async function put(token, path, body, headers, responseType) {
+    return superagent
+        .put(path)
+        .send(body)
+        .set('Authorization', `Bearer ${token}`)
+        .set(headers)
+        .responseType(responseType)
+        .timeout(timeoutSpec);
 }
 
 function findFirstValid(datesList) {

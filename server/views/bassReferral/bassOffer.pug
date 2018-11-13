@@ -1,0 +1,58 @@
+extends ../layout
+include ./includes/bassAddressForm
+include ../includes/errorBannerWithDetailObject
+
+block content
+
+    -var bassRequest = data && data.bassRequest || {}
+    -var bassOffer = data && data.bassOffer || {}
+
+    div.pure-g.pure-u-1
+        include ../includes/back
+        include ../includes/personalDetailsSummary
+        +errorBannerWithDetail(errorObject)
+
+        h2.heading-large BASS address
+
+        div.pure-u-1-2
+            | The responsible officer has approved the following BASS area:
+
+            div.paddingTop.paddingBottom
+                div.pure-u-1-2
+                    div Town
+                    div.bold#proposedTown #{bassRequest.proposedTown}
+                div.pure-u-1-2
+                    div County
+                    div.bold#proposedCounty #{bassRequest.proposedCounty}
+        div.pure-u-1-2
+
+        hr
+
+        h2.heading-medium Has BASS made an offer to the offender?
+
+        form(method="post")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="bookingId" value=bookingId || '')
+            div.paddingBottom.largeMarginBottom
+
+                div.form-group.smallPaddingTop
+                    div.multiple-choice(data-target="bassAddressForm")
+                        input#yes(type="radio" checked=bassOffer.bassAccepted === 'Yes' name="bassAccepted" value="Yes")
+                        label(for="yes") Yes, property is available
+
+                    div#bassAddressForm(class="panel panel-border-narrow js-hidden")
+                        +bassAddressForm
+
+                    div.multiple-choice
+                        input#waiting(type="radio" checked=bassOffer.bassAccepted === 'Waiting' name="bassAccepted" value="Waiting")
+                        label(for="waiting") Yes, on waiting list
+                    div.multiple-choice
+                        input#unsuitable(type="radio" checked=bassOffer.bassAccepted === 'Unsuitable' name="bassAccepted" value="Unsuitable")
+                        label(for="unsuitable") No, offender not suitable
+                    div.multiple-choice
+                        input#unavailable(type="radio" checked=bassOffer.bassAccepted === 'Unavailable' name="bassAccepted" value="Unavailable")
+                        label(for="unavailable") No, address not available
+
+            include ../includes/saveAndReturn
+
+

@@ -28,7 +28,7 @@ module.exports = {
 
     nomis: {
         apiUrl: get('NOMIS_API_URL', 'http://localhost:9090/elite2api'),
-        authUrl: get('NOMIS_AUTH_URL', 'http://localhost:8080/auth'),
+        authUrl: get('NOMIS_AUTH_URL', 'http://localhost:9090/elite2api'),
         timeout: {
             response: 30000,
             deadline: 35000
@@ -61,5 +61,8 @@ module.exports = {
         ]
     },
 
-    domain: get('DOMAIN', 'http://localhost:3000')
+    domain: get('DOMAIN', 'http://localhost:3000'),
+
+    notifyKey: get('NOTIFY_API_KEY', 'default_key'),
+    tagManagerKey: get('TAG_MANAGER_KEY', null)
 };

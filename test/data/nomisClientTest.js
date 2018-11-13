@@ -330,7 +330,7 @@ describe('nomisClient', function() {
 
         it('should return data from api', () => {
             fakeNomis
-                .get(`/bookings/1/relationships?relationshipType=COM`)
+                .get(`/bookings/1/relationships?relationshipType=RO`)
                 .reply(200, {key: 'value'});
 
             return expect(nomisClient.getComRelation('1')).to.eventually.eql({key: 'value'});
@@ -338,7 +338,7 @@ describe('nomisClient', function() {
 
         it('should reject if api fails', () => {
             fakeNomis
-                .get(`/bookings/1/relationships?query=relationshipType%3Aeq%3A%27COM%27`)
+                .get(`/bookings/1/relationships?query=relationshipType%3Aeq%3A%27RO%27`)
                 .reply(500);
 
             return expect(nomisClient.getComRelation('1')).to.be.rejected();
@@ -347,7 +347,7 @@ describe('nomisClient', function() {
 
     describe('getROPrisoners', () => {
 
-        const url = '/offender-relationships/externalRef/1/COM';
+        const url = '/offender-relationships/externalRef/1/RO';
 
         it('should return data from api', () => {
             fakeNomis
@@ -462,6 +462,63 @@ describe('nomisClient', function() {
                 .reply(500);
 
             return expect(nomisClient.getUserInfo('userName')).to.be.rejected();
+        });
+    });
+
+    describe('getLoggedInUserInfo', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get('/users/me')
+                .reply(200, {username: 'result'});
+
+            return expect(nomisClient.getLoggedInUserInfo()).to.eventually.eql({username: 'result'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get('/users/me')
+                .reply(500);
+
+            return expect(nomisClient.getLoggedInUserInfo()).to.be.rejected();
+        });
+    });
+
+    describe('getUserCaseLoads', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .get('/users/me/caseLoads')
+                .reply(200, {username: 'result'});
+
+            return expect(nomisClient.getUserCaseLoads()).to.eventually.eql({username: 'result'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .get('/users/me/caseLoads')
+                .reply(500);
+
+            return expect(nomisClient.getUserCaseLoads()).to.be.rejected();
+        });
+    });
+
+    describe('putActiveCaseLoad', () => {
+
+        it('should return data from api', () => {
+            fakeNomis
+                .put('/users/me/activeCaseLoad')
+                .reply(200, {});
+
+            return expect(nomisClient.putActiveCaseLoad('id')).to.eventually.eql({});
+        });
+
+        it('should reject if api fails', () => {
+            fakeNomis
+                .put('/users/me/activeCaseLoad')
+                .reply(500);
+
+            return expect(nomisClient.putActiveCaseLoad('id')).to.be.rejected();
         });
     });
 });

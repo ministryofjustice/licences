@@ -11,4 +11,10 @@ block excludedForm
         div.multiple-choice
             input(type='checkbox' name='reason' id='insufficientTime' value='insufficientTime' checked=vals.indexOf('insufficientTime') !== -1)
             label(for='insufficientTime') There is insufficient time (less than 4 weeks to conditional release date)
+        div.multiple-choice
+            input(type='checkbox' name='reason' id='noAvailableAddress' value='noAvailableAddress' checked=vals.indexOf('noAvailableAddress') !== -1)
+            label(for='noAvailableAddress') No available address
+        div.multiple-choice
+            input(type='checkbox' name='reason' id='outOfTime' value='outOfTime' checked=vals.indexOf('outOfTime') !== -1)
+            label(for='outOfTime') Out of time (less than 10 days until conditional release date)
 

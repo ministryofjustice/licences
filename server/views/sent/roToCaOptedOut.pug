@@ -2,6 +2,9 @@ extends ../layout
 
 block content
 
-    include ./mixins/sentMixin
+    include ./mixins/sentCaMixin
 
-    +sentContent('Case submitted')
+        if submissionTarget && submissionTarget
+            +sentContent('Case sent', submissionTarget)
+        else
+            +sentContent('Case sent', 'No prison details found')

@@ -10,6 +10,7 @@ const {
     createConditionsServiceStub
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/conditions');
 const formConfig = require('../../server/routes/config/licenceConditions');
 
@@ -81,6 +82,7 @@ describe('/hdc/licenceConditions', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'licenceConditions',
@@ -104,6 +106,7 @@ describe('/hdc/licenceConditions', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}, stage: 'DECIDED'},
                             config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'licenceConditions',
@@ -145,7 +148,7 @@ describe('/hdc/licenceConditions', () => {
                 .send(formResponse)
                 .expect(302)
                 .expect(res => {
-                    expect(licenceService.deleteLicenceCondition).to.be.calledWith('123', 'ABC');
+                    expect(licenceService.deleteLicenceCondition).to.be.calledWith('123', {licence: {key: 'value'}}, 'ABC');
                     expect(res.header.location).to.equal('/hdc/licenceConditions/conditionsSummary/123');
                 });
         });
@@ -194,15 +197,10 @@ describe('/hdc/licenceConditions', () => {
 
 function createApp({licenceService, conditionsService}, user) {
 
-    const prisonerServiceStub = createPrisonerServiceStub();
+    const prisonerService = createPrisonerServiceStub();
 
-    const route = createRoute({
-        licenceService,
-        conditionsService,
-        prisonerService: prisonerServiceStub,
-        authenticationMiddleware,
-        audit: auditStub
-    });
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
+    const route = baseRouter(createRoute({licenceService, conditionsService}));
 
     return appSetup(route, user, '/hdc');
 }

@@ -23,6 +23,7 @@ block content
                             th Organisation
                             th Job Role
                             th Email
+                            th Organisation Email
                             th Telephone
                             th
                     tbody
@@ -48,6 +49,9 @@ block content
                             td.email
                                 if roUser.email
                                     | #{roUser.email}
+                            td.orgEmail
+                                if roUser.orgEmail
+                                    | #{roUser.orgEmail}
                             td.telephone
                                 if roUser.telephone
                                     | #{roUser.telephone}

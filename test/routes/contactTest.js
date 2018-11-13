@@ -2,14 +2,14 @@ const request = require('supertest');
 
 const {
     loggerStub,
-    userServiceStub,
+    userAdminServiceStub,
     authenticationMiddleware,
     appSetup
 } = require('../supertestSetup');
 
 const createContactRoute = require('../../server/routes/contact');
 const contactRoute = createContactRoute({
-    userService: userServiceStub,
+    userAdminService: userAdminServiceStub,
     logger: loggerStub,
     authenticationMiddleware
 });
@@ -29,8 +29,8 @@ describe('/contact', () => {
 
     beforeEach(() => {
         app = appSetup(contactRoute, 'caUser', '/contact/');
-        userServiceStub.getRoUserByDeliusId.reset();
-        userServiceStub.getRoUserByDeliusId.resolves(roUser);
+        userAdminServiceStub.getRoUserByDeliusId.reset();
+        userAdminServiceStub.getRoUserByDeliusId.resolves(roUser);
     });
 
     describe('GET /ro/deliusUserId', () => {
@@ -41,7 +41,7 @@ describe('/contact', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(() => {
-                    expect(userServiceStub.getRoUserByDeliusId).to.be.calledOnce();
+                    expect(userAdminServiceStub.getRoUserByDeliusId).to.be.calledOnce();
                 });
         });
 

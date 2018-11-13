@@ -9,6 +9,7 @@ const {
     testFormPageGets
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/eligibility');
 const formConfig = require('../../server/routes/config/eligibility');
 
@@ -140,6 +141,7 @@ describe('/hdc/eligibility', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'eligibility',
@@ -267,15 +269,11 @@ describe('/hdc/eligibility', () => {
 });
 
 function createApp({licenceService}, user) {
-    const prisonerServiceStub = createPrisonerServiceStub();
+    const prisonerService = createPrisonerServiceStub();
     licenceService = licenceService || createLicenceServiceStub();
 
-    const route = createRoute({
-        licenceService,
-        prisonerService: prisonerServiceStub,
-        authenticationMiddleware,
-        audit: auditStub
-    });
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
+    const route = baseRouter(createRoute({licenceService}));
 
     return appSetup(route, user, '/hdc');
 }

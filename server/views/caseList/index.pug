@@ -7,11 +7,18 @@ block content
                 a#searchOffenderLink(href='/hdc/search/offender') Search all offenders
 
         div.pure-u-1
-            h2.heading-medium Case list
-
-            div.pure-g
-                div.pure-u-1.pure-u-md-2-5.form-group
+            div(class= user.role === 'RO' ? "pure-g paddingTop" : "pure-g xlargePaddingTop")
+                div.pure-u-1.pure-u-md-1-2
+                    h2.heading-medium.noMargin Case list
+                div.pure-u-1.pure-u-md-1-2.form-group
                     input.front-end-control.form-control(type="text" id="caseListFilter" placeholder="Search your case list" title="Filter the case list by text content")
+
+                div#tabBar.pure-u-1.form-group.center
+                    ul
+                        li(class=tab === 'active' ? 'selected' : undefined)
+                            a(href="/caseList/active") Active
+                        li(class=tab === 'inactive' ? 'selected' : undefined)
+                            a(href="/caseList/inactive") Inactive
 
             if user.role === 'CA'
                 include ./CATable

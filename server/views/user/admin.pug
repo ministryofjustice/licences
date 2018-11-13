@@ -1,0 +1,63 @@
+extends ../layout
+
+block content
+
+    div.pure-g
+        div.pure-u-1
+            include ../includes/back
+
+        header.pure-u-1
+            h1.heading-medium
+                | User details
+
+        div.pure-u-1.pure-u-sm-2-5.largePaddingBottom
+            table
+                tbody
+                    tr
+                        td Name
+                        td #{user.firstName} #{user.lastName}
+                    tr
+                        td Role
+                        td #{user.role}
+
+                    if user.activeCaseLoad
+                        tr
+                            td Active case load
+                            td #{user.activeCaseLoad.description}
+
+    if allRoles.lengthinde > 1 || allCaseLoads.length > 1
+
+        form(method="post")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="bookingId" value=bookingId || '')
+
+            div.pure-g.borderTop
+
+                h2.pure-u-1.heading-medium
+                    | Edit settings
+
+                if allRoles.length > 1
+
+                    div.pure-u-1.pure-u-sm-2-5
+                        div.form-group
+                            label.form-label(for="selectRole") Select role
+                            select.form-control#selectRole(name="role")
+                                option(value="" disabled selected) -- select --
+                                for role in allRoles
+                                    option(value=role, selected=role === user.role) #{role}
+
+                    div.pure-u-1.pure-u-sm-1-5
+
+                if allCaseLoads.length > 1
+
+                    div.pure-u-1.pure-u-sm-2-5
+                        div.form-group
+                            label.form-label(for="selectCaseLoad") Select active case load
+                            select.form-control#selectCaseLoad(name="caseLoad")
+                                option(value="" disabled selected) -- select --
+                                for caseLoad in allCaseLoads
+                                    option(value=caseLoad.caseLoadId, selected=caseLoad.caseLoadId === user.activeCaseLoad.caseLoadId) #{caseLoad.description}
+
+            div.pure-u-1.inlineButtons.paddingBottom.largeMarginTop
+                input#continueBtn.requiredButton.button.midMarginBottom(type="submit" value="Submit")
+                a#backBtn.requiredButton.button.button-secondary(href="/caselist" role="button") Back to case list

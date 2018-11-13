@@ -73,24 +73,29 @@ describe('licenceService', () => {
     });
 
     describe('updateLicenceConditions', () => {
+        let existingLicence;
+
+        beforeEach(() => {
+            existingLicence = {licence: {a: 'b'}};
+        });
 
         it('should get the selected licence conditions', async () => {
-            await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
             expect(licenceClient.getAdditionalConditions).to.be.calledOnce();
             expect(licenceClient.getAdditionalConditions).to.be.calledWith({additional: {key: 'var'}});
         });
 
         it('should call update section with conditions from the licence client merged with existing', async () => {
-            licenceClient.getLicence.resolves({
+            const existingLicence = {
                 licence: {
                     licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}}
                 }
-            });
+            };
             licenceClient.getAdditionalConditions.resolves([
                 {user_input: 1, id: 1, field_position: null}]);
 
-            await service.updateLicenceConditions('ab1', {additionalConditions: '1'}, [{text: 'bespoke'}]);
+            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: '1'}, [{text: 'bespoke'}]);
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
@@ -105,7 +110,7 @@ describe('licenceService', () => {
         });
 
         it('should not call update section if no changes have been made', async () => {
-            licenceClient.getLicence.resolves({
+            const existingLicence = {
                 licence: {
                     licenceConditions:
                         {
@@ -114,52 +119,52 @@ describe('licenceService', () => {
                             bespoke: [{text: 'bespoke'}]
                         }
                 }
-            });
+            };
             licenceClient.getAdditionalConditions.resolves([
                 {user_input: 1, id: 1, field_position: null}]);
 
-            await service.updateLicenceConditions('ab1', {additionalConditions: '1'}, [{text: 'bespoke'}]);
+            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: '1'}, [{text: 'bespoke'}]);
 
             expect(licenceClient.updateSection).to.not.be.called();
         });
 
         it('should throw if error updating licence', () => {
             licenceClient.updateSection.rejects();
-            const args = {bookingId: 'ab1', additionalConditions: ['Scotland Street']};
+            const args = {bookingId: 'ab1', existingLicence, additionalConditions: ['Scotland Street']};
             return expect(service.updateLicenceConditions(args)).to.eventually.be.rejected();
         });
 
         describe('post approval modifications', () => {
 
             it('should change stage to MODIFIED_APPROVAL when updates occur', async () => {
-                licenceClient.getLicence.resolves({stage: 'DECIDED', licence: {a: 'b'}});
-                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+                const existingLicence = {stage: 'DECIDED', licence: {a: 'b'}};
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
                 expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED_APPROVAL');
             });
 
             it('should change stage to MODIFIED_APPROVAL when updates occur in MODIFIED stage', async () => {
-                licenceClient.getLicence.resolves({stage: 'MODIFIED', licence: {a: 'b'}});
-                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+                const existingLicence = {stage: 'MODIFIED', licence: {a: 'b'}};
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
                 expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED_APPROVAL');
             });
 
             it('should not change stage if not DECIDED', async () => {
-                licenceClient.getLicence.resolves({stage: 'PROCESSING_RO', licence: {a: 'b'}});
-                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+                const existingLicence = {stage: 'PROCESSING_RO', licence: {a: 'b'}};
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
 
             it('should not change stage if no changes', async () => {
-                licenceClient.getLicence.resolves({
+                const existingLicence = {
                     stage: 'PROCESSING_RO',
                     licence: {licenceConditions: {additionalConditions: {additional: {key: 'var'}}}}
-                });
-                await service.updateLicenceConditions('ab1', {additionalConditions: {additional: {key: 'var'}}});
+                };
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
@@ -169,7 +174,7 @@ describe('licenceService', () => {
     describe('deleteLicenceCondition', () => {
 
         it('should remove additional condition by ID and call update section', async () => {
-            licenceClient.getLicence.resolves({
+            const existingLicence = {
                 licence: {
                     licenceConditions: {
                         standard: {additionalConditionsRequired: 'Yes'},
@@ -177,9 +182,9 @@ describe('licenceService', () => {
                         bespoke: [{text: 'bespoke'}]
                     }
                 }
-            });
+            };
 
-            await service.deleteLicenceCondition('ab1', '2');
+            await service.deleteLicenceCondition('ab1', existingLicence, '2');
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
@@ -194,7 +199,7 @@ describe('licenceService', () => {
         });
 
         it('should remove bespoke condition by index when id is "bespoke-index", and call update section', async () => {
-            licenceClient.getLicence.resolves({
+            const existingLicence = {
                 licence: {
                     licenceConditions: {
                         standard: {additionalConditionsRequired: 'Yes'},
@@ -202,9 +207,9 @@ describe('licenceService', () => {
                         bespoke: [{text: '0'}, {text: '1'}, {text: '2'}]
                     }
                 }
-            });
+            };
 
-            await service.deleteLicenceCondition('ab1', 'bespoke-1');
+            await service.deleteLicenceCondition('ab1', existingLicence, 'bespoke-1');
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
@@ -220,31 +225,31 @@ describe('licenceService', () => {
 
         it('should throw if error updating licence', () => {
             licenceClient.updateSection.rejects();
-            return expect(service.deleteLicenceCondition('ab1', 'bespoke-1')).to.eventually.be.rejected();
+            return expect(service.deleteLicenceCondition('ab1', {}, 'bespoke-1')).to.eventually.be.rejected();
         });
     });
 
     describe('markForHandover', () => {
 
         it('should call updateStage from the licence client', () => {
-            service.markForHandover('ab1', {}, 'caToRo');
+            service.markForHandover('ab1', 'caToRo');
 
             expect(licenceClient.updateStage).to.be.calledOnce();
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_RO');
         });
 
         it('should change stage according to transition', () => {
-            service.markForHandover('ab1', {}, 'caToDm');
+            service.markForHandover('ab1', 'caToDm');
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'APPROVAL');
         });
 
         it('should return to ELIGIBILITY when RO sends to CA after opt out', () => {
-            service.markForHandover('ab1', {}, 'roToCaOptedOut');
+            service.markForHandover('ab1', 'roToCaOptedOut');
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'ELIGIBILITY');
         });
 
         it('should return to ELIGIBILITY when RO sends to CA after address rejected', () => {
-            service.markForHandover('ab1', {}, 'roToCaAddressRejected');
+            service.markForHandover('ab1', 'roToCaAddressRejected');
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'ELIGIBILITY');
         });
 
@@ -252,10 +257,6 @@ describe('licenceService', () => {
 
             service.markForHandover(
                 'ab1',
-                {
-                    stage: 'APPROVAL',
-                    licence: {proposedAddress: {optOut: {decision: 'No'}}}
-                },
                 'dmToCaReturn'
             );
             expect(licenceClient.updateStage).to.be.calledWith('ab1', 'PROCESSING_CA');
@@ -263,14 +264,110 @@ describe('licenceService', () => {
 
         it('should throw if error during update status', () => {
             licenceClient.updateStage.rejects();
-            return expect(service.markForHandover('ab1', {}, 'caToRo')).to.eventually.be.rejected();
+            return expect(service.markForHandover('ab1', 'caToRo')).to.eventually.be.rejected();
         });
 
         it('should throw if no matching transition type', () => {
-            expect(() => service.markForHandover('ab1', {}, 'caToBlah')).to.throw(Error);
+            expect(() => service.markForHandover('ab1', 'caToBlah')).to.throw(Error);
         });
     });
 
+    describe('removeDecision', () => {
+
+        const licence = {
+            licence: {
+                approval: {
+                    release: {
+                        decision: 'Yes'
+                    },
+                    also: 'This'
+                },
+                somethingElse: 'Yes'
+            }
+        };
+
+        it('should call updateStage from the licence client', async () => {
+            await service.removeDecision('ab1', licence);
+
+            expect(licenceClient.updateLicence).to.be.calledOnce();
+            expect(licenceClient.updateLicence).to.be.calledWith('ab1', {somethingElse: 'Yes'});
+        });
+    });
+
+    describe('addSplitDateFields', () => {
+        it('should add day, month and year fields to split dates', () => {
+            const rawData = {
+                someDate: '12/03/2019',
+                somethingElse: '19/03/2019'
+            };
+            const formFieldsConfig = [
+                {someDate: {splitDate: {day: 'someDay', month: 'someMonth', year: 'someYear'}}},
+                {somethingElse: {}}
+            ];
+
+            expect(service.addSplitDateFields(rawData, formFieldsConfig)).to.eql(
+                {
+                    someDate: '12/03/2019',
+                    someDay: '12',
+                    someMonth: '03',
+                    someYear: '2019',
+                    somethingElse: '19/03/2019'
+                }
+            );
+        });
+
+        it('should return as is if date is invalid', () => {
+            const rawData = {
+                someDate: '43/03/2019',
+                somethingElse: '19/03/2019'
+            };
+            const formFieldsConfig = [
+                {someDate: {splitDate: {day: 'someDay', month: 'someMonth', year: 'someYear'}}},
+                {somethingElse: {}}
+            ];
+
+            expect(service.addSplitDateFields(rawData, formFieldsConfig)).to.eql(
+                {
+                    someDate: '43/03/2019',
+                    somethingElse: '19/03/2019'
+                }
+            );
+        });
+
+        it('should return as is if date field is missing', () => {
+            const rawData = {
+                somethingElse: '19/03/2019'
+            };
+            const formFieldsConfig = [
+                {someDate: {splitDate: {day: 'someDay', month: 'someMonth', year: 'someYear'}}},
+                {somethingElse: {}}
+            ];
+
+            expect(service.addSplitDateFields(rawData, formFieldsConfig)).to.eql(
+                {
+                    somethingElse: '19/03/2019'
+                }
+            );
+        });
+
+        it('should return as is if no splitDate config', () => {
+            const rawData = {
+                someDate: '43/03/2019',
+                somethingElse: '19/03/2019'
+            };
+            const formFieldsConfig = [
+                {someDate: {}},
+                {somethingElse: {}}
+            ];
+
+            expect(service.addSplitDateFields(rawData, formFieldsConfig)).to.eql(
+                {
+                    someDate: '43/03/2019',
+                    somethingElse: '19/03/2019'
+                }
+            );
+        });
+    });
 
     describe('update', () => {
 
@@ -327,9 +424,9 @@ describe('licenceService', () => {
                 const licenceSection = 'section4';
                 const formName = 'form3';
 
-                licenceClient.getLicence.resolves({licence});
+                const originalLicence = {booking_id: bookingId, licence};
                 const output = await service.update(
-                    {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                    {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -354,9 +451,9 @@ describe('licenceService', () => {
                 const licenceSection = 'section4';
                 const formName = 'form3';
 
-                licenceClient.getLicence.resolves({licence});
+                const originalLicence = {booking_id: bookingId, licence};
                 const output = await service.update(
-                    {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                    {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -401,9 +498,9 @@ describe('licenceService', () => {
                 const licenceSection = 'section4';
                 const formName = 'form3';
 
-                licenceClient.getLicence.resolves({licence});
+                const originalLicence = {booking_id: bookingId, licence};
                 const output = await service.update(
-                    {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                    {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(output).to.eql({
                     ...licence,
@@ -448,9 +545,9 @@ describe('licenceService', () => {
             const licenceSection = 'section4';
             const formName = 'form3';
 
-            licenceClient.getLicence.resolves({licence});
+            const originalLicence = {booking_id: bookingId, licence};
             await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -474,9 +571,9 @@ describe('licenceService', () => {
             const licenceSection = 'section4';
             const formName = 'form2';
 
-            licenceClient.getLicence.resolves({licence: baseLicence});
+            const originalLicence = {booking_id: bookingId, licence: baseLicence};
             const output = await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             expect(licenceClient.updateLicence).to.not.be.called();
             expect(output).to.be.eql(baseLicence);
@@ -507,9 +604,9 @@ describe('licenceService', () => {
             const licenceSection = 'section4';
             const formName = 'form3';
 
-            licenceClient.getLicence.resolves({licence});
+            const originalLicence = {booking_id: bookingId, licence};
             const output = await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -550,9 +647,9 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            licenceClient.getLicence.resolves({licence});
+            const originalLicence = {booking_id: bookingId, licence};
             const output = await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -616,9 +713,9 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            licenceClient.getLicence.resolves({licence});
+            const originalLicence = {booking_id: bookingId, licence};
             const output = await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -685,9 +782,9 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            licenceClient.getLicence.resolves({licence});
+            const originalLicence = {booking_id: bookingId, licence};
             const output = await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -758,9 +855,9 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            licenceClient.getLicence.resolves({licence});
+            const originalLicence = {booking_id: bookingId, licence};
             const output = await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -820,9 +917,9 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            licenceClient.getLicence.resolves({licence});
+            const originalLicence = {booking_id: bookingId, licence};
             const output = await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -834,74 +931,6 @@ describe('licenceService', () => {
                             innerQuestion2: ''
                         },
                         followUp2: 'Town'
-                    }
-                }
-            };
-            expect(output).to.eql(expectedLicence);
-        });
-
-        it('should limit size of list by limitedBy flag', async () => {
-
-            const licence = {
-                ...baseLicence,
-                section4: {
-                    ...baseLicence.section4
-                }
-
-            };
-
-            const fieldMap = [
-                {decision: {}},
-                {
-                    listItem: {
-                        isList: true,
-                        contains: [
-                            {innerQuestion: {}},
-                            {innerQuestion2: {}}
-                        ],
-                        limitedBy: {
-                            field: 'limiter',
-                            No: 1
-                        }
-                    }
-                },
-                {limiter: {}}
-            ];
-
-            const userInput = {
-                decision: 'Yes',
-                listItem: [
-                    {
-                        innerQuestion: 'InnerAnswer',
-                        innerQuestion2: 'No'
-                    },
-                    {
-                        innerQuestion: 'InnerAnswer2',
-                        innerQuestion2: 'Yes'
-                    }
-                ],
-                limiter: 'No'
-            };
-
-            const licenceSection = 'section5';
-            const formName = 'form3';
-
-            licenceClient.getLicence.resolves({licence});
-            const output = await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
-
-            const expectedLicence = {
-                ...licence,
-                section5: {
-                    form3: {
-                        decision: 'Yes',
-                        listItem: [
-                            {
-                                innerQuestion: 'InnerAnswer',
-                                innerQuestion2: 'No'
-                            }
-                        ],
-                        limiter: 'No'
                     }
                 }
             };
@@ -966,9 +995,9 @@ describe('licenceService', () => {
             const licenceSection = 'section5';
             const formName = 'form3';
 
-            licenceClient.getLicence.resolves({licence});
+            const originalLicence = {booking_id: bookingId, licence};
             const output = await service.update(
-                {bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
             const expectedLicence = {
                 ...licence,
@@ -990,6 +1019,36 @@ describe('licenceService', () => {
                             }
                         ],
                         followUp2: 'Town'
+                    }
+                }
+            };
+            expect(output).to.eql(expectedLicence);
+        });
+
+        it('should piece together split dates', async () => {
+
+            const fieldMap = [
+                {someDate: {splitDate: {day: 'someDay', month: 'someMonth', year: 'someYear'}}}
+            ];
+
+            const userInput = {
+                someDay: '12',
+                someMonth: '03',
+                someYear: '1985'
+            };
+
+            const licenceSection = 'section5';
+            const formName = 'form3';
+
+            const originalLicence = {booking_id: bookingId, licence: baseLicence};
+            const output = await service.update(
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
+
+            const expectedLicence = {
+                ...baseLicence,
+                section5: {
+                    form3: {
+                        someDate: '12/03/1985'
                     }
                 }
             };
@@ -1020,45 +1079,46 @@ describe('licenceService', () => {
             };
 
             it('should update stage to MODIFIED if modificationRequiresApproval = true is not in config', async () => {
-                licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
-                await service.update({bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                const originalLicence = {booking_id: bookingId, stage: 'DECIDED', licence};
+                await service.update(
+                    {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
                 expect(licenceClient.updateStage).to.be.calledWith(bookingId, 'MODIFIED');
             });
 
             it('should not update stage to MODIFIED if noModify is set in config', async () => {
-                licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
+                const originalLicence = {booking_id: bookingId, stage: 'DECIDED', licence};
                 const config = {
                     fields: fieldMap,
                     noModify: true
                 };
-                await service.update({bookingId, config, userInput, licenceSection, formName});
+                await service.update({bookingId, originalLicence, config, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.not.be.called();
             });
 
             it('should not update stage to MODIFIED if in MODIFIED_APPROVAL', async () => {
-                licenceClient.getLicence.resolves({stage: 'MODIFIED_APPROVAL', licence});
-                await service.update({bookingId, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                const originalLicence = {booking_id: bookingId, stage: 'MODIFIED_APPROVAL', licence};
+                await service.update({bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
 
             it('should not update stage if in config', async () => {
-                licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
+                const originalLicence = {booking_id: bookingId, stage: 'DECIDED', licence};
                 const config = {
                     fields: fieldMap,
                     modificationRequiresApproval: true
                 };
-                await service.update({bookingId, config, userInput, licenceSection, formName});
+                await service.update({bookingId, originalLicence, config, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
                 expect(licenceClient.updateStage).to.be.calledWith(bookingId, 'MODIFIED_APPROVAL');
             });
 
             it('should not update stage if no change', async () => {
-                licenceClient.getLicence.resolves({stage: 'DECIDED', licence});
+                const originalLicence = {booking_id: bookingId, stage: 'DECIDED', licence};
                 const config = {
                     fields: fieldMap,
                     modificationRequiresApproval: true
@@ -1066,13 +1126,13 @@ describe('licenceService', () => {
                 const userInput = {
                     decision: ''
                 };
-                await service.update({bookingId, config, userInput, licenceSection, formName});
+                await service.update({bookingId, originalLicence, config, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
 
             it('should not update stage if not in DECIDED state', async () => {
-                licenceClient.getLicence.resolves({stage: 'PROCESSING_RO', licence});
+                const originalLicence = {booking_id: bookingId, stage: 'PROCESSING_RO', licence};
                 const config = {
                     fields: fieldMap,
                     modificationRequiresApproval: true
@@ -1080,7 +1140,7 @@ describe('licenceService', () => {
                 const userInput = {
                     decision: ''
                 };
-                await service.update({bookingId, config, userInput, licenceSection, formName});
+                await service.update({bookingId, originalLicence, config, userInput, licenceSection, formName});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
@@ -1343,8 +1403,7 @@ describe('licenceService', () => {
                 telephone: '+123',
                 occupier: {
                     name: 'occupier',
-                    relationship: 'rel',
-                    age: ''
+                    relationship: 'rel'
                 },
                 residents: [
                     {
@@ -1376,6 +1435,9 @@ describe('licenceService', () => {
         const bassReferral = {
             bassRequest: {
                 bassRequested: 'No'
+            },
+            bassAreaCheck: {
+                bassAreaSuitable: 'Yes'
             }
         };
 
@@ -1444,8 +1506,7 @@ describe('licenceService', () => {
             licenceConditions: 'Not answered',
             proposedAddress: 'Not answered',
             reporting: 'Not answered',
-            risk: 'Not answered',
-            bassReferral: 'Not answered'
+            risk: 'Not answered'
         };
 
         it('should return error if section is missing from licence', () => {
@@ -1846,164 +1907,274 @@ describe('licenceService', () => {
             });
         });
 
+        context('offender is main occupier', () => {
+            it('should not require an answer for occupier consent', () => {
 
-        it('should require an answer for curfew address review', () => {
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: '',
+                            occupier: {
+                                ...baseLicence.proposedAddress.occupier,
+                                isOffender: 'Yes'
+                            }
 
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: '',
-                        electricity: ''
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({
-                proposedAddress: {
-                    curfewAddress: {
-                        consent: 'Say if the homeowner consents to HDC'
-                    }
-                }
+                expect(output).to.eql({});
             });
-        });
 
-        it('should require an answer for electricity if consent is yes', () => {
+            it('should require an answer for electricity if consent not given', () => {
 
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: 'Yes',
-                        electricity: ''
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: '',
+                            electricity: '',
+                            occupier: {
+                                ...baseLicence.proposedAddress.occupier,
+                                isOffender: 'Yes'
+                            }
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({
-                proposedAddress: {
-                    curfewAddress: {
-                        electricity: 'Say if there is an electricity supply'
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            electricity: 'Say if there is an electricity supply'
+                        }
                     }
-                }
+                });
             });
-        });
 
-        it('should require an answer for homeVisitConducted if electricity is yes', () => {
+            it('should require an answer for homeVisitConducted if electricity is yes', () => {
 
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: 'Yes',
-                        electricity: 'Yes',
-                        homeVisitConducted: ''
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: '',
+                            electricity: 'Yes',
+                            homeVisitConducted: '',
+                            occupier: {
+                                ...baseLicence.proposedAddress.occupier,
+                                isOffender: 'Yes'
+                            }
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({
-                proposedAddress: {
-                    curfewAddress: {
-                        homeVisitConducted: 'Say if you did a home visit'
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            homeVisitConducted: 'Say if you did a home visit'
+                        }
                     }
-                }
+                });
             });
+
         });
 
-        it('should not require an answer for homeVisitConducted if consent is no', () => {
+        context('offender is not main occupier', () => {
 
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: 'No',
-                        electricity: 'Yes',
-                        homeVisitConducted: ''
+            it('should require an answer for consent from occupier', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: '',
+                            occupier: {
+                                ...baseLicence.proposedAddress.occupier,
+                                isOffender: undefined
+                            }
+
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({});
-        });
-
-        it('should require an answer for address safety if other curfew address questions are Yes', () => {
-
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        deemedSafe: ''
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            consent: 'Say if the homeowner consents to HDC'
+                        }
                     }
-                }
-            };
+                });
+            });
 
-            const output = service.getLicenceErrors({licence});
+            it('should require an answer for electricity if consent is yes', () => {
 
-            expect(output).to.eql({proposedAddress: {curfewAddress: {deemedSafe: 'Say if you approve the address'}}});
-        });
-
-        it('should not require an answer for address safety if other curfew address questions are No', () => {
-
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        consent: 'Yes',
-                        electricity: 'No',
-                        homeVisitConducted: 'Yes',
-                        deemedSafe: ''
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            electricity: ''
+                        }
                     }
-                }
-            };
+                };
 
-            const output = service.getLicenceErrors({licence});
+                const output = service.getLicenceErrors({licence});
 
-            expect(output).to.eql({});
-        });
-
-        it('should require a reason if deemedSafe is no', () => {
-
-            const licence = {
-                ...baseLicence,
-                proposedAddress: {
-                    ...baseLicence.proposedAddress,
-                    curfewAddress: {
-                        ...baseLicence.proposedAddress.curfewAddress,
-                        deemedSafe: 'No',
-                        unsafeReason: ''
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            electricity: 'Say if there is an electricity supply'
+                        }
                     }
-                }
-            };
+                });
+            });
 
-            const output = service.getLicenceErrors({licence});
+            it('should not require an answer for electricity if consent not given', () => {
 
-            expect(output).to.eql({
-                proposedAddress: {
-                    curfewAddress: {
-                        unsafeReason: 'Explain why you did not approve the address'
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'No',
+                            electricity: ''
+                        }
                     }
-                }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({});
+            });
+
+            it('should require an answer for homeVisitConducted if electricity is yes', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            electricity: 'Yes',
+                            homeVisitConducted: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            homeVisitConducted: 'Say if you did a home visit'
+                        }
+                    }
+                });
+            });
+
+            it('should not require an answer for homeVisitConducted if consent is no', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'No',
+                            electricity: 'Yes',
+                            homeVisitConducted: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({});
+            });
+
+            it('should require an answer for address safety if other curfew address questions are Yes', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({proposedAddress: {curfewAddress: {deemedSafe: 'Say if you approve the address'}}});
+            });
+
+            it('should not require an answer for address safety if other curfew address questions are No', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            electricity: 'No',
+                            homeVisitConducted: 'Yes',
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({});
+            });
+
+            it('should require a reason if deemedSafe is no', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            deemedSafe: 'No',
+                            unsafeReason: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({
+                    proposedAddress: {
+                        curfewAddress: {
+                            unsafeReason: 'Explain why you did not approve the address'
+                        }
+                    }
+                });
             });
         });
 
@@ -3378,13 +3549,14 @@ describe('licenceService', () => {
                 expect(output).to.eql({});
             });
 
-            it('should validate bassRequest when bassReferral', () => {
+            it('should validate bassRequest (only) when bassReferral', () => {
                 const bassRequest = {
                     ...baseLicence,
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes'
-                        }
+                        },
+                        bassAreaCheck: {}
                     }
                 };
 
@@ -3440,8 +3612,55 @@ describe('licenceService', () => {
 
         });
 
+        context('Stage === PROCESSING_RO, bass referral needed', () => {
+
+            it('should validate bassAreaCheck when bassReferral, and ignore proposedAddress', () => {
+                const bassRequest = {
+                    ...baseLicence,
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes',
+                            proposedTown: 't',
+                            proposedCounty: 'c'
+                        },
+                        bassAreaCheck: {
+                            bassAreaSuitable: 'No'
+                        }
+                    },
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            deemedSafe: ''
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForReview({
+                    licenceStatus: {stage: 'PROCESSING_RO', tasks: {}, decisions: {bassReferralNeeded: true}},
+                    licence: bassRequest
+                });
+
+                expect(output).to.eql(
+                    {
+                        bassReferral: {
+                            bassAreaCheck: {
+                                bassAreaReason: 'Enter a reason'
+                            }
+                        },
+                        curfew: 'Not answered',
+                        licenceConditions: 'Not answered',
+                        reporting: 'Not answered',
+                        risk: 'Not answered'
+                    }
+                );
+            });
+        });
+
+
         context('Stage === PROCESSING_CA', () => {
-            it('should validate all fields if curfewAddressReview !== UNSTARTED', () => {
+            it('should validate all fields if curfewAddressReview !== UNSTARTED, and ignore bass referral', () => {
                 const missingFieldProposedAddress = {
                     ...baseLicence,
                     proposedAddress: {
@@ -3453,11 +3672,22 @@ describe('licenceService', () => {
                             consent: '',
                             deemedSafe: ''
                         }
+                    }, bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes'
+                        },
+                        bassAreaCheck: {
+                            bassAreaSuitable: 'No'
+                        }
                     }
                 };
 
                 const output = service.getValidationErrorsForReview({
-                    licenceStatus: {stage: 'PROCESSING_CA', tasks: {curfewAddressReview: 'STARTED'}},
+                    licenceStatus: {
+                        stage: 'PROCESSING_CA',
+                        tasks: {curfewAddressReview: 'STARTED'},
+                        decisions: {bassReferralNeeded: false}
+                    },
                     licence: missingFieldProposedAddress
                 });
 
@@ -3473,8 +3703,7 @@ describe('licenceService', () => {
                         curfew: 'Not answered',
                         licenceConditions: 'Not answered',
                         reporting: 'Not answered',
-                        risk: 'Not answered',
-                        bassReferral: 'Not answered'
+                        risk: 'Not answered'
                     }
                 );
             });
@@ -3510,6 +3739,7 @@ describe('licenceService', () => {
                     }
                 );
             });
+
         });
     });
 
@@ -3605,6 +3835,41 @@ describe('licenceService', () => {
                 };
 
                 expect(service.getValidationErrorsForPage(licence, ['additional'])).to.eql(expectedOutput);
+            });
+        });
+
+        context('section !== approval', () => {
+            it('should validate bassOffer when bassReferral', () => {
+                const licence = {
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes',
+                            proposedTown: 't',
+                            proposedCounty: 'c'
+                        },
+                        bassAreaCheck: {
+                            bassAreaSuitable: 'Yes'
+                        },
+                        bassOffer: {
+                            bassAccepted: 'Yes',
+                            bassArea: 'a'
+                        }
+                    }
+                };
+
+                const output = service.getValidationErrorsForPage(licence, ['bassOffer']);
+
+                expect(output).to.eql(
+                    {
+                        bassReferral: {
+                            bassOffer: {
+                                addressLine1: 'Enter a building or street',
+                                addressTown: 'Enter a town or city',
+                                postCode: 'Enter a postcode in the right format'
+                            }
+                        }
+                    }
+                );
             });
         });
     });

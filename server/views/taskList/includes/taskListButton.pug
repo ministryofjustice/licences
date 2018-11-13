@@ -1,4 +1,6 @@
-mixin taskButton(path, label)
-    a.taskListAction.center.button(class='button-secondary', href=path) #{label}
-
+mixin taskButton(path, label, colour)
+    if colour === 'grey'
+        a.taskListAction.center.button(class='button-secondary', href=path) #{label}
+    else
+        a.taskListAction.center.button(href=path) #{label}
 

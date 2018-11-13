@@ -1,4 +1,4 @@
-module.exports = {
+const validationMessages = {
     // ELIGIBILITY forms
     excluded_decision: 'Select yes or no',
     excluded_reason: 'Select one or more reasons',
@@ -19,9 +19,17 @@ module.exports = {
     curfewAddress_residents_relationship: 'Enter a relationship',
     exceptionalCircumstances_decision: 'Select yes or no',
 
+    // BASS forms
     bassRequest_bassRequested: 'Select yes or no',
     bassRequest_proposedCounty: 'Enter a county',
     bassRequest_proposedTown: 'Enter a town',
+    bassAreaCheck_bassAreaSuitable: 'Select yes or no',
+    bassAreaCheck_bassAreaReason: 'Enter a reason',
+    bassOffer_bassArea: 'Enter the provided area',
+    bassOffer_addressLine1: 'Enter a building or street',
+    bassOffer_addressTown: 'Enter a town or city',
+    bassOffer_postCode: 'Enter a postcode in the right format',
+    bassOffer_telephone: 'Enter a telephone number in the right format',
 
     // PROCESSING_RO forms
     curfewAddress_consent: 'Say if the homeowner consents to HDC',
@@ -93,4 +101,47 @@ module.exports = {
     reportingDate_reportingTime: 'Enter a valid time',
     firstNight_firstNightFrom: 'Enter a valid from time',
     firstNight_firstNightUntil: 'Enter a valid until time'
+};
+
+module.exports = (errorType, errorMessage, errorPath) => {
+    if (errorType === 'date.format') {
+        if (errorMessage.includes('[HH:mm]')) {
+            return 'Enter a valid time';
+        }
+        return 'Enter a valid date';
+    }
+
+    if (errorType === 'number.base') {
+        return 'Enter a valid number';
+    }
+
+    if (errorType === 'string.regex.base') {
+        if (errorMessage.includes('telephone')) {
+            return 'Enter a valid phone number';
+        }
+        return 'Enter a valid postcode';
+    }
+
+    if (errorType === 'number.min') {
+        return 'Enter a valid age';
+    }
+
+    if (errorType === 'number.max') {
+        return 'Enter a valid age';
+    }
+
+    if (errorType === 'date.min') {
+        return 'Enter a date that is not in the past';
+    }
+
+    const path = errorPath
+        .filter(pathItem => !Number.isInteger(pathItem))
+        .join('_');
+
+    // Shouldn't this be first? Custom messages for postcode or telephone don't get used
+    if (validationMessages[path]) {
+        return validationMessages[path];
+    }
+
+    return 'Not answered';
 };

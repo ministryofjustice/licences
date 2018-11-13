@@ -1,6 +1,6 @@
 const express = require('express');
 
-const {async} = require('../utils/middleware');
+const {asyncMiddleware} = require('../utils/middleware');
 
 module.exports = function({licenceService, prisonerService, authenticationMiddleware}) {
     const router = express.Router();
@@ -14,7 +14,7 @@ module.exports = function({licenceService, prisonerService, authenticationMiddle
         next();
     });
 
-    router.get('/:receiver/:type/:bookingId', async(async (req, res) => {
+    router.get('/:receiver/:type/:bookingId', asyncMiddleware(async (req, res) => {
         const {receiver, type, bookingId} = req.params;
         const submissionTarget = await prisonerService.getOrganisationContactDetails(receiver, bookingId, req.user.token);
 

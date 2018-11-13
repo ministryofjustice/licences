@@ -1,28 +1,52 @@
-const express = require('express');
+const logger = require('../../log');
+const {asyncMiddleware} = require('../utils/middleware');
+const {getIn, lastItem} = require('../utils/functionalHelpers');
 
-const {async, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
-const createReviewRoutes = require('./routeWorkers/review');
+module.exports = ({licenceService, conditionsService, prisonerService}) => router => {
 
-module.exports = function(
-    {licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}) {
+    router.get('/review/:sectionName/:bookingId', asyncMiddleware(async (req, res) => {
+        const {sectionName, bookingId} = req.params;
+        logger.debug(`GET /review/${sectionName}/${bookingId}`);
 
-    const router = express.Router();
-    router.use(authenticationMiddleware());
-    router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
-    router.param('bookingId', authorisationMiddleware);
+        const licence = getIn(res.locals.licence, ['licence']) || {};
+        const stage = getIn(res.locals.licence, ['stage']) || {};
+        const licenceVersion = getIn(res.locals.licence, ['version']) || {};
 
-    router.use(function(req, res, next) {
-        if (typeof req.csrfToken === 'function') {
-            res.locals.csrfToken = req.csrfToken();
-        }
-        next();
-    });
+        const licenceWithAddress = addAddressTo(licence);
+        const errorObject = licenceService.getValidationErrorsForReview({
+            licenceStatus: res.locals.licenceStatus,
+            licence: licenceWithAddress
+        });
+        const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
-    const review = createReviewRoutes({conditionsService, licenceService, prisonerService});
+        const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, req.user.token);
 
-    router.get('/review/:sectionName/:bookingId', async(review.getReviewSection));
+        res.render(`review/${sectionName}`, {
+            bookingId,
+            data,
+            prisonerInfo,
+            stage,
+            licenceVersion,
+            errorObject
+        });
+    }));
 
     return router;
 };
 
+function addAddressTo(licence) {
+    const allAddresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
 
+    if (!allAddresses) {
+        return licence;
+    }
+
+    const address = lastItem(allAddresses);
+    return {
+        ...licence,
+        proposedAddress: {
+            ...licence.proposedAddress,
+            curfewAddress: address
+        }
+    };
+}

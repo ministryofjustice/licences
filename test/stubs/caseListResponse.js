@@ -31,7 +31,7 @@ module.exports = [
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
         due: {text: '1 year', overdue: false},
         stage: 'UNSTARTED',
-        status: 'Submitted to RO'},
+        status: 'Not started'},
 
     {bookingId: 3,
         offenderNo: 'A0001XX',
@@ -48,7 +48,7 @@ module.exports = [
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
         due: {text: '1 year', overdue: false},
         stage: 'ELIGIBILITY',
-        status: 'Submitted to RO'},
+        status: 'Checking eligibility'},
 
     {bookingId: 4,
         offenderNo: 'A0001XX',
@@ -65,7 +65,7 @@ module.exports = [
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
         due: {text: '1 year', overdue: false},
         stage: 'APPROVAL',
-        status: 'Submitted to RO'},
+        status: 'With decision maker'},
 
     {bookingId: 5,
         offenderNo: 'A0001XX',
@@ -116,7 +116,7 @@ module.exports = [
                 homeDetentionCurfewEligibilityDate: '13/07/2019'},
         due: {text: '1 year', overdue: false},
         stage: 'PROCESSING_CA',
-        status: 'Refused'},
+        status: 'Review case'},
 
     {bookingId: 7,
         offenderNo: 'A0001XX',

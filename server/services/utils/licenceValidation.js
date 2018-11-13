@@ -1,320 +1,120 @@
-const baseJoi = require('joi');
-const dateExtend = require('joi-date-extensions');
-const postcodeExtend = require('joi-postcode');
-const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
-const {all, pipe, getIn, isEmpty, merge} = require('../../utils/functionalHelpers');
-const validationMessages = require('../config/validationMessages');
+const {
+    all,
+    pipe,
+    getIn,
+    isEmpty,
+    merge,
+    flatten,
+    mergeWithRight,
+    removePath,
+    equals
+} = require('../../utils/functionalHelpers');
 
-const {sectionContaining} = require('../config/formsAndSections');
+const getValidationMessage = require('../config/validationMessages');
+const validator = require('../config/validationRules');
+const {sectionContaining, formsInSection, reviewForms, bassReviewForms} = require('../config/formsAndSections');
 
-const optionalString = joi.string().allow('').optional();
-const forbidden = joi.valid(['']).optional();
-const requiredString = joi.string().required();
-const requiredPhone = joi.string().regex(/^[0-9\+\s]+$/).required();
-const optionalAge = joi.number().min(0).max(110).allow('').optional();
-const selection = joi.array().min(1).required();
-const requiredYesNo = joi.valid(['Yes', 'No']).required();
-const requiredDate = joi.date().format('DD/MM/YYYY').min('now').required();
-const requiredTime = joi.date().format('HH:mm').required();
-const requiredPostcode = joi.postcode().required();
-const requiredIf = (field, answer, typeRequired = requiredString, ifNot = optionalString) => {
-    return joi.when(field, {is: answer, then: typeRequired, otherwise: ifNot});
-};
+const {getConfiscationOrderState} = require('../../utils/licenceStatus');
 
-function getMessage(errorType, errorMessage, errorPath) {
+function getLicenceErrors({licence, forms = reviewForms}) {
 
-    if (errorType === 'date.format') {
-        if (errorMessage.includes('[HH:mm]')) {
-            return 'Enter a valid time';
-        }
-        return 'Enter a valid date';
+    const validationErrors = forms.map(validate(licence)).filter(item => item);
+
+    if (isEmpty(validationErrors)) {
+        return [];
     }
 
-    if (errorType === 'number.base') {
-        return 'Enter a valid number';
-    }
-
-    if (errorType === 'string.regex.base') {
-        if (errorMessage.includes('telephone')) {
-            return 'Enter a valid phone number';
-        }
-        return 'Enter a valid postcode';
-    }
-
-    if (errorType === 'number.min') {
-        return 'Enter a valid age';
-    }
-
-    if (errorType === 'number.max') {
-        return 'Enter a valid age';
-    }
-
-    if (errorType === 'date.min') {
-        return 'Enter a date that is not in the past';
-    }
-
-    const path = errorPath
-        .filter(pathItem => !Number.isInteger(pathItem))
-        .join('_');
-
-    // Shouldn't this be first? Custom messages for postcode or telephone don't get used
-    if (validationMessages[path]) {
-        return validationMessages[path];
-    }
-
-    return 'Not answered';
+    return flatten(validationErrors).reduce((errorObject, error) => mergeWithRight(errorObject, error.path), {});
 }
 
-// ELIGIBILITY
-const excluded = joi.object().keys({
-    decision: requiredYesNo,
-    reason: requiredIf('decision', 'Yes', selection)
-});
+function getConditionsErrors(licence) {
+    return getLicenceErrors({licence, forms: formsInSection['licenceConditions']});
+}
 
-const suitability = joi.object().keys({
-    decision: requiredYesNo,
-    reason: requiredIf('decision', 'Yes', selection)
-});
+function getValidationErrorsForReview({licenceStatus, licence}) {
+    const {stage, decisions, tasks} = licenceStatus;
+    const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED';
 
-const crdTime = joi.object().keys({
-    decision: requiredYesNo,
-    dmApproval: requiredIf('decision', 'Yes')
-});
+    if (stage === 'ELIGIBILITY' && decisions && decisions.bassReferralNeeded) {
+        return getLicenceErrors({licence, forms: [
+                ...formsInSection['eligibility'],
+                'bassRequest'
+            ]});
+    }
 
-const exceptionalCircumstances = joi.object().keys({
-    decision: requiredYesNo
-});
+    if (stage === 'ELIGIBILITY' || newAddressAddedForReview) {
+        return getEligibilityErrors({licence});
+    }
 
-const optOut = joi.object().keys({
-    decision: requiredYesNo,
-    reason: requiredIf('decision', 'Yes')
-});
+    if (stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
+        return getLicenceErrors({licence, forms: formsInSection['proposedAddress']});
+    }
 
-const addressProposed = joi.object().keys({
-    decision: requiredYesNo
-});
+    if (stage === 'PROCESSING_RO' && decisions.bassAreaNotSuitable) {
+        return getLicenceErrors({licence, forms: formsInSection['bassReferral']});
+    }
 
-const bassRequest = joi.object().keys({
-    bassRequested: requiredYesNo,
-    proposedTown: requiredIf('bassRequested', 'Yes'),
-    proposedCounty: requiredIf('bassRequested', 'Yes')
-});
+    if (decisions.bassReferralNeeded) {
+        return getLicenceErrors({licence, forms: bassReviewForms});
+    }
 
-const residentSchema = joi.object({
-    name: requiredString,
-    age: optionalAge,
-    relationship: requiredString
-});
+    return getLicenceErrors({licence, forms: reviewForms});
+}
 
-const curfewAddress = joi.object().keys({
-    addressLine1: requiredString,
-    addressLine2: optionalString,
-    addressTown: requiredString,
-    postCode: requiredPostcode,
-    telephone: requiredPhone,
-    occupier: joi.object().keys({
-        name: requiredString,
-        relationship: requiredString
-    }),
-    cautionedAgainstResident: requiredYesNo,
-    consent: requiredYesNo,
-    electricity: requiredIf('consent', 'Yes'),
-    homeVisitConducted:
-        requiredIf('consent', 'Yes',
-            requiredIf('electricity', 'Yes')),
-    deemedSafe:
-        requiredIf('consent', 'Yes',
-            requiredIf('electricity', 'Yes',
-                requiredIf('homeVisitConducted', 'Yes'))),
-    unsafeReason:
-        requiredIf('consent', 'Yes',
-            requiredIf('electricity', 'Yes',
-                requiredIf('homeVisitConducted', 'Yes',
-                    requiredIf('deemedSafe', 'No'))))
-}).required();
+function getEligibilityErrors({licence}) {
+    const errorObject = getLicenceErrors({licence, forms: [
+            ...formsInSection['eligibility'],
+            ...formsInSection['proposedAddress']
+        ]});
 
-// PROCESSING_RO
+    const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
 
-const curfewHours = joi.object().keys({
-    mondayFrom: requiredTime,
-    mondayUntil: requiredTime,
-    tuesdayFrom: requiredTime,
-    tuesdayUntil: requiredTime,
-    wednesdayFrom: requiredTime,
-    wednesdayUntil: requiredTime,
-    thursdayFrom: requiredTime,
-    thursdayUntil: requiredTime,
-    fridayFrom: requiredTime,
-    fridayUntil: requiredTime,
-    saturdayFrom: requiredTime,
-    saturdayUntil: requiredTime,
-    sundayFrom: requiredTime,
-    sundayUntil: requiredTime
-});
+    if (typeof getIn(errorObject, ['proposedAddress', 'curfewAddress']) === 'string') {
+        return errorObject;
+    }
 
-const riskManagement = joi.object().keys({
-    planningActions: requiredYesNo,
-    planningActionsDetails: requiredIf('planningActions', 'Yes'),
-    awaitingInformation: requiredYesNo,
-    awaitingInformationDetails: requiredIf('awaitingInformation', 'Yes'),
-    victimLiaison: requiredYesNo,
-    victimLiaisonDetails: requiredIf('victimLiaison', 'Yes')
-});
+    return unwantedAddressFields.reduce(removeFromAddressReducer, errorObject);
+}
 
-const reportingInstructions = joi.object({
-    name: requiredString,
-    buildingAndStreet1: requiredString,
-    buildingAndStreet2: optionalString,
-    townOrCity: requiredString,
-    postcode: requiredPostcode,
-    telephone: requiredPhone
-});
+function removeFromAddressReducer(errorObject, addressKey) {
+    const newObject = removePath(['proposedAddress', 'curfewAddress', addressKey], errorObject);
 
-const reportingDate = joi.object({
-    reportingDate: requiredDate,
-    reportingTime: requiredTime
-});
+    if (isEmpty(getIn(newObject, ['proposedAddress', 'curfewAddress']))) {
+        return removePath(['proposedAddress'], newObject);
+    }
 
-const firstNight = joi.object({
-    firstNightFrom: requiredTime,
-    firstNightUntil: requiredTime
-});
+    return newObject;
+}
 
-const standard = joi.object({
-    additionalConditionsRequired: requiredString
-});
+function getValidationErrorsForPage(licence, forms) {
+    if (equals(forms, ['release'])) {
+        const {confiscationOrder} = getConfiscationOrderState(licence);
+        return getApprovalErrors({licence, confiscationOrder});
+    }
 
-const additional = joi.object({
-    NOCONTACTASSOCIATE: joi.object({
-        groupsOrOrganisation: requiredString
-    }),
-    INTIMATERELATIONSHIP: joi.object({
-        intimateGender: requiredString
-    }),
-    NOCONTACTNAMED: joi.object({
-        noContactOffenders: requiredString
-    }),
-    NORESIDE: joi.object({
-        notResideWithGender: requiredString,
-        notResideWithAge: requiredString
-    }),
-    NOUNSUPERVISEDCONTACT: joi.object({
-        unsupervisedContactGender: requiredString,
-        unsupervisedContactAge: requiredString,
-        unsupervisedContactSocial: requiredString
-    }),
-    NOCHILDRENSAREA: joi.object({
-        notInSightOf: requiredString
-    }),
-    NOWORKWITHAGE: joi.object({
-        noWorkWithAge: requiredString
-    }),
-    NOCOMMUNICATEVICTIM: joi.object({
-        victimFamilyMembers: requiredString,
-        socialServicesDept: requiredString
-    }),
-    COMPLYREQUIREMENTS: joi.object({
-        courseOrCentre: requiredString
-    }),
-    ATTENDALL: joi.object({
-        appointmentName: requiredString,
-        appointmentProfession: requiredString
-    }),
-    HOMEVISITS: joi.object({
-        mentalHealthName: requiredString
-    }),
-    REMAINADDRESS: joi.object({
-        curfewAddress: requiredString,
-        curfewFrom: requiredString,
-        curfewTo: requiredString
-    }),
-    CONFINEADDRESS: joi.object({
-        confinedTo: requiredString,
-        confinedFrom: requiredString,
-        confinedReviewFrequency: requiredString
-    }),
-    REPORTTO: joi.object({
-        reportingAddress: requiredString,
-        reportingTime: optionalString,
-        reportingDaily: requiredIf('reportingTime', '', requiredString, forbidden),
-        reportingFrequency: requiredString
-    }),
-    VEHICLEDETAILS: joi.object({
-        vehicleDetails: requiredString
-    }),
-    EXCLUSIONADDRESS: joi.object({
-        noEnterPlace: requiredString
-    }),
-    EXCLUSIONAREA: joi.object({
-        exclusionArea: requiredString
-    }),
-    NOTIFYRELATIONSHIP: joi.object({}),
-    NOCONTACTPRISONER: joi.object({}),
-    NOCONTACTSEXOFFENDER: joi.object({}),
-    CAMERAAPPROVAL: joi.object({}),
-    NOCAMERA: joi.object({}),
-    NOCAMERAPHONE: joi.object({}),
-    USAGEHISTORY: joi.object({}),
-    NOINTERNET: joi.object({}),
-    ONEPHONE: joi.object({}),
-    RETURNTOUK: joi.object({}),
-    SURRENDERPASSPORT: joi.object({}),
-    NOTIFYPASSPORT: joi.object({}),
-    ATTENDDEPENDENCY: joi.object({
-        appointmentDate: requiredDate,
-        appointmentTime: requiredString,
-        appointmentAddress: requiredString
-    }),
-    ATTENDSAMPLE: joi.object({
-        attendSampleDetailsName: requiredString,
-        attendSampleDetailsAddress: requiredString
-    })
-});
+    return getLicenceErrors({licence, forms});
+}
 
-const bespoke = joi.array().items(joi.object({
-    text: requiredString,
-    approved: requiredYesNo
-}));
+function getApprovalErrors({licence, confiscationOrder}) {
+    const errorObject = getLicenceErrors({licence, forms: ['release']});
 
-const seriousOffence = {
-    decision: requiredYesNo
-};
+    if (confiscationOrder) {
+        return errorObject;
+    }
 
-const onRemand = {
-    decision: requiredYesNo
-};
+    const removeNotedCommentsError = removePath(['approval', 'release', 'notedComments']);
+    const errorsWithoutNotedComments = removeNotedCommentsError(errorObject);
 
-const confiscationOrder = {
-    decision: requiredYesNo,
-    confiscationUnitConsulted: requiredIf('decision', 'Yes', requiredYesNo),
-    comments: requiredIf('confiscationUnitConsulted', 'Yes')
-};
+    const noErrorsInApproval = isEmpty(getIn(errorsWithoutNotedComments, ['approval', 'release']));
+    if (noErrorsInApproval) {
+        const removeApprovalError = removePath(['approval']);
+        return removeApprovalError(errorsWithoutNotedComments);
+    }
 
-const release = {
-    decision: requiredYesNo,
-    reason: requiredIf('decision', 'No'),
-    notedComments: requiredIf('decision', 'Yes')
-};
+    return errorsWithoutNotedComments;
+}
 
-const taggingCompany = {
-    telephone: requiredPhone
-};
-
-
-const schema = {
-    eligibility: {excluded, suitability, crdTime, exceptionalCircumstances},
-    proposedAddress: {optOut, addressProposed, curfewAddress},
-    bassReferral: {bassRequest},
-    curfew: {curfewHours, firstNight},
-    risk: {riskManagement},
-    reporting: {reportingInstructions, reportingDate},
-    licenceConditions: {standard, additional, bespoke},
-    finalChecks: {seriousOffence, onRemand, confiscationOrder},
-    approval: {release},
-    monitoring: {taggingCompany}
-};
-
-module.exports = function(licence) {
+function validate(licence) {
     return form => {
         const section = sectionContaining[form];
 
@@ -324,11 +124,7 @@ module.exports = function(licence) {
             }];
         }
 
-        const errors = joi.validate(
-            licence[section][form],
-            schema[section][form],
-            {stripUnknown: true, abortEarly: false}
-        ).error;
+        const errors = validator.validate(licence, section, form);
 
         const allErrors = form === 'curfewAddress' ? addResidentErrors(errors, licence[section]) : errors;
 
@@ -340,7 +136,7 @@ module.exports = function(licence) {
 
         return updateWithSpecialCases(errorsArray);
     };
-};
+}
 
 function getArrayOfPathsAndMessages(section, form, allErrors) {
 
@@ -359,7 +155,7 @@ function getArrayOfPathsAndMessages(section, form, allErrors) {
                 [section]: {
                     [form]: errorItem.path.reduceRight((object, key) => {
                         return {[key]: object};
-                    }, getMessage(errorItem.type, errorItem.message, [form, ...errorItem.path]))
+                    }, getValidationMessage(errorItem.type, errorItem.message, [form, ...errorItem.path]))
                 }
             }
         };
@@ -374,12 +170,8 @@ function addResidentErrors(errorsForSection, licenceSection) {
     }
 
     return residents.reduce((allErrors, resident, index) => {
-        const residentErrors = joi.validate(
-            resident,
-            residentSchema,
-            {stripUnknown: true, abortEarly: false}
-        ).error;
 
+        const residentErrors = validator.validateResident(resident);
         if (!residentErrors) {
             return allErrors;
         }
@@ -401,13 +193,12 @@ const specialCases = [
         method: removeErrorsIfAllMatch([
             {
                 path: ['path', 'proposedAddress', 'curfewAddress', 'occupier', 'name'],
-                value: validationMessages.curfewAddress_occupier_name
+                value: getValidationMessage('', '', ['curfewAddress', 'occupier', 'name'])
             },
             {
                 path: ['path', 'proposedAddress', 'curfewAddress', 'occupier', 'relationship'],
-                value: validationMessages.curfewAddress_occupier_relationship
+                value: getValidationMessage('', '', ['curfewAddress', 'occupier', 'relationship'])
             }
-
         ])
     }
 ];
@@ -441,3 +232,11 @@ function removeErrorsIfAllMatch(pathsToTest) {
         return errors;
     };
 }
+
+module.exports = {
+    getLicenceErrors,
+    getConditionsErrors,
+    getValidationErrorsForReview,
+    getValidationErrorsForPage,
+    getEligibilityErrors
+};

@@ -11,8 +11,9 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
     function formGet(req, res, sectionName, formName, bookingId, action) {
         const {licenceSection, nextPath, pageDataMap, validateInPlace} = formConfig[formName];
         const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
-        const data = getIn(res.locals.licence, dataPath) || {};
 
+        const rawData = getIn(res.locals.licence, dataPath) || {};
+        const data = licenceService.addSplitDateFields(rawData, formConfig[formName].fields);
         const errors = validateInPlace && firstItem(req.flash('errors'));
         const errorObject = getIn(errors, [sectionName, formName]) || {};
         const viewData = {bookingId, data, nextPath, errorObject, action, sectionName, formName};
@@ -35,7 +36,8 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
 
         if (formConfig[formName].fields) {
             const updatedLicence = await licenceService.update({
-                bookingId: bookingId,
+                bookingId,
+                originalLicence: res.locals.licence,
                 config: formConfig[formName],
                 userInput: req.body,
                 licenceSection: targetSection,

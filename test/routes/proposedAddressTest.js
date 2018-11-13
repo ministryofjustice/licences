@@ -6,10 +6,10 @@ const {
     authenticationMiddleware,
     auditStub,
     appSetup,
-    testFormPageGets,
-    loggerStub
+    testFormPageGets
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/address');
 const formConfig = require('../../server/routes/config/proposedAddress');
 
@@ -18,36 +18,14 @@ describe('/hdc/proposedAddress', () => {
     describe('proposed address routes', () => {
         const licenceService = createLicenceServiceStub();
         licenceService.getLicence = sinon.stub().resolves({
-            licence: {
-                proposedAddress: {
-                    curfewAddress: {
-                        addresses: [
-                            {
-                                addressLine1: 'line1',
-                                consent: 'No'
-                            },
-                            {
-                                addressLine1: 'line2',
-                                consent: 'Yes',
-                                electricity: 'Yes',
-                                deemedSafe: 'No'
-                            },
-                            {
-                                addressLine1: 'line3'
-                            }
-                        ]
-                    }
-                }
-            },
+            licence: {},
             stage: 'ELIGIBILITY'
         });
 
         const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
         const routes = [
-            {url: '/hdc/proposedAddress/optOut/1', content: 'decided to opt out'},
-            {url: '/hdc/proposedAddress/addressProposed/1', content: 'proposed a curfew address?'},
-            {url: '/hdc/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'}
+            {url: '/hdc/proposedAddress/curfewAddressChoice/1', content: 'Has the offender provided a curfew address?'}
         ];
 
         testFormPageGets(app, routes, licenceService);
@@ -55,34 +33,6 @@ describe('/hdc/proposedAddress', () => {
 
     describe('POST /hdc/proposedAddress/:section/:bookingId', () => {
         const routes = [
-            {
-                url: '/hdc/proposedAddress/optOut/1',
-                body: {bookingId: 1, decision: 'Yes'},
-                section: 'optOut',
-                nextPath: '/hdc/taskList/1',
-                user: 'caUser'
-            },
-            {
-                url: '/hdc/proposedAddress/optOut/1',
-                body: {bookingId: 1, decision: 'No'},
-                section: 'optOut',
-                nextPath: '/hdc/proposedAddress/addressProposed/1',
-                user: 'caUser'
-            },
-            {
-                url: '/hdc/proposedAddress/addressProposed/1',
-                body: {bookingId: 1, decision: 'Yes'},
-                section: 'addressProposed',
-                nextPath: '/hdc/proposedAddress/curfewAddress/1',
-                user: 'caUser'
-            },
-            {
-                url: '/hdc/proposedAddress/addressProposed/1',
-                body: {bookingId: 1, decision: 'No'},
-                section: 'addressProposed',
-                nextPath: '/hdc/bassReferral/bassRequest/1',
-                user: 'caUser'
-            },
             {
                 url: '/hdc/proposedAddress/curfewAddress/1',
                 body: {bookingId: 1},
@@ -104,6 +54,7 @@ describe('/hdc/proposedAddress', () => {
                         expect(licenceService.update).to.be.calledOnce();
                         expect(licenceService.update).to.be.calledWith({
                             bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'proposedAddress',
@@ -144,23 +95,135 @@ describe('/hdc/proposedAddress', () => {
             });
         });
 
-        it('should redirect back to optOut page if there is an error in the submission', () => {
-            const licenceService = createLicenceServiceStub();
-            licenceService.getValidationErrorsForPage = sinon.stub().returns({
-                proposedAddress: {
-                    optOut: {
-                        reason: 'error'
-                    }
-                }
+    });
+
+    describe('POST /hdc/proposedAddress/curfewAddressChoice/:bookingId', () => {
+        const routes = [
+            {
+                url: '/hdc/proposedAddress/curfewAddressChoice/1',
+                body: {bookingId: 1, decision: 'OptOut'},
+                nextPath: '/hdc/taskList/1',
+                user: 'caUser',
+                addressContent: {optOut: {decision: 'Yes'}, addressProposed: {decision: 'No'}},
+                bassContent: {bassRequest: {bassRequested: 'No'}}
+            },
+            {
+                url: '/hdc/proposedAddress/curfewAddressChoice/1',
+                body: {bookingId: 1, decision: 'Address'},
+                nextPath: '/hdc/proposedAddress/curfewAddress/1',
+                user: 'caUser',
+                addressContent: {optOut: {decision: 'No'}, addressProposed: {decision: 'Yes'}},
+                bassContent: {bassRequest: {bassRequested: 'No'}}
+            },
+            {
+                url: '/hdc/proposedAddress/curfewAddressChoice/1',
+                body: {bookingId: 1, decision: 'Bass'},
+                nextPath: '/hdc/bassReferral/bassRequest/1',
+                user: 'caUser',
+                addressContent: {optOut: {decision: 'No'}, addressProposed: {decision: 'No'}},
+                bassContent: {bassRequest: {bassRequested: 'Yes'}}
+            }
+        ];
+
+        routes.forEach(route => {
+            it(`renders the correct path '${route.nextPath}' page`, () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceService.updateSection).to.be.calledTwice();
+                        expect(licenceService.updateSection).to.be.calledWith('proposedAddress', '1', route.addressContent);
+                        expect(licenceService.updateSection).to.be.calledWith('bassReferral', '1', route.bassContent);
+                        expect(res.header.location).to.equal(route.nextPath);
+                    });
             });
-            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
-            return request(app)
-                .post('/hdc/proposedAddress/optOut/1')
-                .send({})
-                .expect(302)
-                .expect('Location', '/hdc/proposedAddress/optOut/1');
+            it('throws an error if logged in as dm', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceServiceStub: licenceService}, 'dmUser');
 
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(403);
+            });
+
+            it('throws an error if logged in as ro', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(403);
+            });
+        });
+    });
+
+    describe('curfewAddressChoice', () => {
+
+        const routes = [
+            {
+                answer: 'none',
+                licence: {},
+                yes: [],
+                no: [
+                    'input id="optout" type="radio" checked',
+                    'input id="address" type="radio" checked',
+                    'input id="bass" type="radio" checked'
+                ]
+            },
+            {
+                answer: 'optout',
+                licence: {proposedAddress: {optOut: {decision: 'Yes'}}},
+                yes: ['input id="optout" type="radio" checked'],
+                no: [
+                    'input id="address" type="radio" checked',
+                    'input id="bass" type="radio" checked'
+                ]
+            },
+            {
+                answer: 'bass',
+                licence: {bassReferral: {bassRequest: {bassRequested: 'Yes'}}},
+                yes: ['input id="bass" type="radio" checked'],
+                no: [
+                    'input id="optout" type="radio" checked',
+                    'input id="address" type="radio" checked'
+                ]
+            },
+            {
+                answer: 'address',
+                licence: {proposedAddress: {addressProposed: {decision: 'Yes'}}},
+                yes: ['input id="address" type="radio" checked'],
+                no: [
+                    'input id="optout" type="radio" checked',
+                    'input id="bass" type="radio" checked'
+                ]
+            }
+        ];
+
+        routes.forEach(route => {
+            it(`should show ${route.answer} selected`, () => {
+                const licenceService = createLicenceServiceStub();
+                licenceService.getLicence.resolves({licence: route.licence});
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
+
+                return request(app)
+                    .get('/hdc/proposedAddress/curfewAddressChoice/1')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        route.yes.forEach(content => {
+                            expect(res.text).to.include(content);
+                        });
+                        route.no.forEach(content => {
+                            expect(res.text).to.not.include(content);
+                        });
+                    });
+            });
         });
     });
 
@@ -168,7 +231,7 @@ describe('/hdc/proposedAddress', () => {
         context('there is a rejected address and active', () => {
             it('should display the active and post to update', () => {
                 const licenceService = createLicenceServiceStub();
-                 licenceService.getLicence.resolves({
+                licenceService.getLicence.resolves({
                     licence: {
                         proposedAddress: {
                             curfewAddress: {
@@ -197,7 +260,7 @@ describe('/hdc/proposedAddress', () => {
             it('should post to standard route', () => {
                 const licenceService = createLicenceServiceStub();
                 licenceService.getLicence = sinon.stub().resolves({
-                    licence: { }
+                    licence: {}
                 });
 
                 const app = createApp({licenceServiceStub: licenceService}, 'caUser');
@@ -373,16 +436,11 @@ describe('/hdc/proposedAddress', () => {
 });
 
 function createApp({licenceServiceStub}, user) {
-    const prisonerServiceStub = createPrisonerServiceStub();
-    licenceServiceStub = licenceServiceStub || createLicenceServiceStub();
+    const prisonerService = createPrisonerServiceStub();
+    const licenceService = licenceServiceStub || createLicenceServiceStub();
 
-    const route = createRoute({
-        logger: loggerStub,
-        licenceService: licenceServiceStub,
-        prisonerService: prisonerServiceStub,
-        authenticationMiddleware,
-        audit: auditStub
-    });
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
+    const route = baseRouter(createRoute({licenceService}));
 
     return appSetup(route, user, '/hdc');
 }

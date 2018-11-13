@@ -35,6 +35,9 @@ exports.seed = function (knex, Promise) {
                     "curfew": {
                         "firstNight": {"firstNightFrom": "19:00", "firstNightUntil": "07:00"},
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -117,6 +120,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -231,6 +237,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -297,6 +306,79 @@ exports.seed = function (knex, Promise) {
                 "transition_date": "2018-10-02T13:04:27.302446+00:00"
             }, {
                 "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "",
+                                "residents": [],
+                                "telephone": "",
+                                "addressTown": "",
+                                "addressLine1": "18 New Road",
+                                "addressLine2": ""
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1200616,
+                "stage": "ELIGIBILITY",
+                "version": 1,
+                "transition_date": null
+            }, {
+                "licence": {
+                    "eligibility": {
+                        "excluded": {"decision": "No"},
+                        "suitability": {"reason": ["sentenceCategory"], "decision": "Yes"},
+                        "exceptionalCircumstances": {"decision": "No"}
+                    }
+                },
+                "booking_id": 1200664,
+                "stage": "ELIGIBILITY",
+                "version": 1,
+                "transition_date": null
+            }, {
+                "licence": {},
+                "booking_id": 1173571,
+                "stage": "ELIGIBILITY",
+                "version": 1,
+                "transition_date": null
+            }, {
+                "licence": {
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "proposedAddress": {
+                        "optOut": {"decision": "No"},
+                        "curfewAddress": {
+                            "addresses": [{
+                                "occupier": {"name": "", "relationship": ""},
+                                "postCode": "DL13 8JU",
+                                "residents": [],
+                                "telephone": "07896 6377611",
+                                "addressTown": "Darlington",
+                                "addressLine1": "45 The Street",
+                                "addressLine2": "",
+                                "cautionedAgainstResident": "No"
+                            }]
+                        },
+                        "addressProposed": {"decision": "Yes"}
+                    }
+                },
+                "booking_id": 1129006,
+                "stage": "PROCESSING_RO",
+                "version": 1,
+                "transition_date": moment().subtract(5, 'days').format()
+            }, {
+                "licence": {
                     "risk": {
                         "riskManagement": {
                             "victimLiaison": "No",
@@ -308,6 +390,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -384,6 +469,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -464,6 +552,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -538,6 +629,9 @@ exports.seed = function (knex, Promise) {
                     },
                     "curfew": {
                         "curfewHours": {
+                            "daySpecificInputs": "No",
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
                             "fridayFrom": "19:00",
                             "mondayFrom": "19:00",
                             "sundayFrom": "19:00",
@@ -631,80 +725,7 @@ exports.seed = function (knex, Promise) {
                 "booking_id": 1062084,
                 "stage": "PROCESSING_RO",
                 "version": 1,
-                "transition_date": moment().subtract(2, 'days').format(),
-            }, {
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "",
-                                "residents": [],
-                                "telephone": "",
-                                "addressTown": "",
-                                "addressLine1": "18 New Road",
-                                "addressLine2": ""
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1200616,
-                "stage": "ELIGIBILITY",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "licence": {
-                    "eligibility": {
-                        "excluded": {"decision": "No"},
-                        "suitability": {"reason": ["sentenceCategory"], "decision": "Yes"},
-                        "exceptionalCircumstances": {"decision": "No"}
-                    }
-                },
-                "booking_id": 1200664,
-                "stage": "ELIGIBILITY",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "licence": {},
-                "booking_id": 1173571,
-                "stage": "ELIGIBILITY",
-                "version": 1,
-                "transition_date": null
-            }, {
-                "licence": {
-                    "eligibility": {
-                        "crdTime": {"decision": "No"},
-                        "excluded": {"decision": "No"},
-                        "suitability": {"decision": "No"}
-                    },
-                    "proposedAddress": {
-                        "optOut": {"decision": "No"},
-                        "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "DL13 8JU",
-                                "residents": [],
-                                "telephone": "07896 6377611",
-                                "addressTown": "Darlington",
-                                "addressLine1": "45 The Street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
-                        },
-                        "addressProposed": {"decision": "Yes"}
-                    }
-                },
-                "booking_id": 1129006,
-                "stage": "PROCESSING_RO",
-                "version": 1,
-                "transition_date": moment().subtract(7, 'days').format(),
+                "transition_date": moment().subtract(5, 'days').format()
             }, {
                 "licence": {
                     "eligibility": {
@@ -815,6 +836,183 @@ exports.seed = function (knex, Promise) {
                 },
                 "booking_id": 1200668,
                 "stage": "PROCESSING_RO",
+                "version": 1,
+                "transition_date": moment().subtract(5, 'days').format()
+            }, {
+                "licence": {
+                    "risk": {
+                        "riskManagement": {
+                            "victimLiaison": "No",
+                            "planningActions": "No",
+                            "awaitingInformation": "No"
+                        }
+                    },
+                    "curfew": {
+                        "curfewHours": {
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
+                            "fridayFrom": "19:00",
+                            "mondayFrom": "19:00",
+                            "sundayFrom": "19:00",
+                            "fridayUntil": "07:00",
+                            "mondayUntil": "07:00",
+                            "sundayUntil": "07:00",
+                            "tuesdayFrom": "19:00",
+                            "saturdayFrom": "19:00",
+                            "thursdayFrom": "19:00",
+                            "tuesdayUntil": "07:00",
+                            "saturdayUntil": "07:00",
+                            "thursdayUntil": "07:00",
+                            "wednesdayFrom": "19:00",
+                            "wednesdayUntil": "07:00",
+                            "daySpecificInputs": "No"
+                        }
+                    },
+                    "reporting": {
+                        "reportingInstructions": {
+                            "name": "Duty Officer",
+                            "postcode": "DL11 9HX",
+                            "telephone": "078494727272",
+                            "townOrCity": "Richmond",
+                            "buildingAndStreet1": "21 Main Road",
+                            "buildingAndStreet2": ""
+                        }
+                    },
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "bassReferral": {
+                        "bassRequest": {
+                            "proposedTown": "Leeds",
+                            "bassRequested": "Yes",
+                            "proposedCounty": "West Yorkshire"
+                        }, "bassAreaCheck": {"bassAreaSuitable": "Yes"}
+                    },
+                    "proposedAddress": {"optOut": {"decision": "No"}, "addressProposed": {"decision": "No"}},
+                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
+                },
+                "booking_id": 1200669,
+                "stage": "PROCESSING_CA",
+                "version": 1,
+                "transition_date": "2018-10-22T13:48:30.731019+00:00"
+            }, {
+                "licence": {
+                    "risk": {
+                        "riskManagement": {
+                            "victimLiaison": "No",
+                            "planningActions": "No",
+                            "awaitingInformation": "No"
+                        }
+                    },
+                    "curfew": {
+                        "curfewHours": {
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
+                            "fridayFrom": "19:00",
+                            "mondayFrom": "19:00",
+                            "sundayFrom": "19:00",
+                            "fridayUntil": "07:00",
+                            "mondayUntil": "07:00",
+                            "sundayUntil": "07:00",
+                            "tuesdayFrom": "19:00",
+                            "saturdayFrom": "19:00",
+                            "thursdayFrom": "19:00",
+                            "tuesdayUntil": "07:00",
+                            "saturdayUntil": "07:00",
+                            "thursdayUntil": "07:00",
+                            "wednesdayFrom": "19:00",
+                            "wednesdayUntil": "07:00",
+                            "daySpecificInputs": "No"
+                        }
+                    },
+                    "reporting": {
+                        "reportingInstructions": {
+                            "name": "Duty Officer",
+                            "postcode": "DL11 7HX",
+                            "telephone": "078896464646",
+                            "townOrCity": "Richmond",
+                            "buildingAndStreet1": "31 The Road",
+                            "buildingAndStreet2": ""
+                        }
+                    },
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "bassReferral": {
+                        "bassRequest": {
+                            "proposedTown": "Richmond",
+                            "bassRequested": "Yes",
+                            "proposedCounty": "North Yorkshire"
+                        }, "bassAreaCheck": {"bassAreaSuitable": "Yes"}
+                    },
+                    "proposedAddress": {"optOut": {"decision": "No"}, "addressProposed": {"decision": "No"}},
+                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
+                },
+                "booking_id": 1088811,
+                "stage": "PROCESSING_CA",
+                "version": 1,
+                "transition_date": "2018-10-22T13:46:36.185828+00:00"
+            }, {
+                "licence": {
+                    "risk": {
+                        "riskManagement": {
+                            "victimLiaison": "No",
+                            "planningActions": "No",
+                            "awaitingInformation": "No"
+                        }
+                    },
+                    "curfew": {
+                        "curfewHours": {
+                            "allFrom": "19:00",
+                            "allUntil": "07:00",
+                            "fridayFrom": "19:00",
+                            "mondayFrom": "19:00",
+                            "sundayFrom": "19:00",
+                            "fridayUntil": "07:00",
+                            "mondayUntil": "07:00",
+                            "sundayUntil": "07:00",
+                            "tuesdayFrom": "19:00",
+                            "saturdayFrom": "19:00",
+                            "thursdayFrom": "19:00",
+                            "tuesdayUntil": "07:00",
+                            "saturdayUntil": "07:00",
+                            "thursdayUntil": "07:00",
+                            "wednesdayFrom": "19:00",
+                            "wednesdayUntil": "07:00",
+                            "daySpecificInputs": "No"
+                        }
+                    },
+                    "reporting": {
+                        "reportingInstructions": {
+                            "name": "Duty Officer",
+                            "postcode": "DL11 7HX",
+                            "telephone": "078965151511",
+                            "townOrCity": "Darlington",
+                            "buildingAndStreet1": "25 High Street",
+                            "buildingAndStreet2": ""
+                        }
+                    },
+                    "eligibility": {
+                        "crdTime": {"decision": "No"},
+                        "excluded": {"decision": "No"},
+                        "suitability": {"decision": "No"}
+                    },
+                    "bassReferral": {
+                        "bassRequest": {
+                            "proposedTown": "Darlington",
+                            "bassRequested": "Yes",
+                            "proposedCounty": "County Durham"
+                        }, "bassAreaCheck": {"bassAreaSuitable": "Yes"}
+                    },
+                    "proposedAddress": {"optOut": {"decision": "No"}, "addressProposed": {"decision": "No"}},
+                    "licenceConditions": {"standard": {"additionalConditionsRequired": "No"}}
+                },
+                "booking_id": 1131447,
+                "stage": "PROCESSING_CA",
                 "version": 1,
                 "transition_date": moment().subtract(5, 'days').format()
             }]);

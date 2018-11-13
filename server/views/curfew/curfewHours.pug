@@ -6,14 +6,13 @@ block content
     include ../includes/backToTaskList
     include ../includes/personalDetailsSummary
 
-    h2.heading-large Curfew hours
-    h2.heading-medium.smallMarginTop HDC curfew hours
+    h2.heading-large HDC curfew hours
 
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId || '')
 
-        div.pure-g.largePaddingBottom.largeMarginBottom
+        div.pure-g.largePaddingBottom.largeMarginBottom.paddingTop
             div.pure-u-1.pure-u-md-4-5
                 div.pure-g.smallPaddingBottom
                     div.pure-u-1-4
@@ -45,7 +44,7 @@ block content
 
 
         div.largePaddingBottom
-            h2.heading-medium Do you need to enter a curfew time for each day manually?
+            h2.heading-medium Do you need to enter different times for each day?
 
             div.form-group.inline.smallPaddingTop
 

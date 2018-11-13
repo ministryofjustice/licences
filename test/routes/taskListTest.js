@@ -113,7 +113,7 @@ describe('GET /taskList/:prisonNumber', () => {
         });
 
         context('when offender is not excluded', () => {
-            it('should not display opt out form link if section is incomplete', () => {
+            it('should not display curfewAddressChoice link if section is incomplete', () => {
                 licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
@@ -134,11 +134,11 @@ describe('GET /taskList/:prisonNumber', () => {
                     .get('/1233456')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
+                        expect(res.text).to.not.include('/hdc/proposedAddress/curfewAddressChoice/');
                     });
             });
 
-            it('should display opt out form link if section is complete', () => {
+            it('should display curfewAddressChoice link if section is complete', () => {
                 licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
@@ -162,7 +162,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .get('/1233456')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/proposedAddress/optOut/');
+                        expect(res.text).to.include('/hdc/proposedAddress/curfewAddressChoice/');
                     });
             });
         });
@@ -195,13 +195,13 @@ describe('GET /taskList/:prisonNumber', () => {
                     .get('/1233456')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/proposedAddress/optOut/');
+                        expect(res.text).to.include('/hdc/proposedAddress/curfewAddressChoice/');
                     });
             });
         });
 
         context('when there is less 4 weeks for the offenders CRD but the DM approves to continue assessment', () => {
-            it('should display opt out form link', () => {
+            it('should display curfewAddressChoice link', () => {
                 licenceService.getLicence.resolves({
                     stage: 'ELIGIBILITY',
                     licence: {
@@ -226,7 +226,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     .get('/1233456')
                     .expect(200)
                     .expect(res => {
-                        expect(res.text).to.include('/hdc/proposedAddress/optOut/');
+                        expect(res.text).to.include('/hdc/proposedAddress/curfewAddressChoice/');
                     });
             });
         });
@@ -984,7 +984,7 @@ describe('GET /taskList/:prisonNumber', () => {
                         expect(res.text).to.include('/hdc/review/curfewHours/1">View');
                         expect(res.text).to.include('/hdc/review/conditions/1">View');
                         expect(res.text).to.include('/hdc/review/reporting/1">View');
-                        expect(res.text).to.include('Final checks');
+                        expect(res.text).to.include('Review case');
                     });
 
             });

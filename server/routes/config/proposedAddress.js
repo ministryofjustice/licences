@@ -1,31 +1,10 @@
 module.exports = {
-    optOut: {
-        licenceSection: 'optOut',
-        fields: [
-            {decision: {}},
-            {reason: {dependentOn: 'decision', predicate: 'Yes'}}
-        ],
-        validateInPlace: true,
+    curfewAddressChoice: {
         nextPath: {
-            decisions: {
                 discriminator: 'decision',
-                Yes: '/hdc/taskList/',
-                No: '/hdc/proposedAddress/addressProposed/'
-            }
-        }
-    },
-    addressProposed: {
-        licenceSection: 'addressProposed',
-        fields: [
-            {decision: {}}
-        ],
-        validateInPlace: true,
-        nextPath: {
-            decisions: {
-                discriminator: 'decision',
-                Yes: '/hdc/proposedAddress/curfewAddress/',
-                No: '/hdc/bassReferral/bassRequest/'
-            }
+                Address: '/hdc/proposedAddress/curfewAddress/',
+                Bass: '/hdc/bassReferral/bassRequest/',
+                OptOut: '/hdc/taskList/'
         }
     },
     curfewAddress: {
@@ -44,7 +23,8 @@ module.exports = {
                             occupier: {
                                 contains: [
                                     {name: {}},
-                                    {relationship: {}}
+                                    {relationship: {}},
+                                    {isOffender: {}}
                                 ],
                                 saveEmpty: true
                             }

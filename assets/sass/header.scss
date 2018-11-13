@@ -1,6 +1,11 @@
 #global-header {
     color: white;
 
+    a {
+        color: white;
+        text-decoration: none;
+    }
+
     .header-wrapper {
         max-width: 1170px;
         padding-top: 0px;
@@ -29,18 +34,17 @@
         margin-top: 3px;
         padding-left: 65px;
         height: 50px;
-
-
     }
 
     #header-user {
         float: right;
         color: $white;
         background-color: $govuk-blue;
-        padding: 15px;
-
-        a {
-            color: white
+        div {
+            float: left;
+            &:not(:last-child){
+                border-right: solid white 1px;
+            }
         }
     }
 }

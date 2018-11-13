@@ -1,23 +1,21 @@
 const logger = require('../../log.js');
 const {createAdditionalConditionsObject} = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
-const {formsInSection, reviewForms} = require('./config/formsAndSections');
+
 const {
     getIn,
     isEmpty,
     notAllValuesEmpty,
     allValuesEmpty,
-    getFirstArrayItems,
-    flatten,
-    mergeWithRight,
-    removePath,
-    equals
+    equals,
+    firstKey,
+    removePath
 } = require('../utils/functionalHelpers');
 
 const {licenceStages, transitions} = require('../models/licenceStages');
-const {getConfiscationOrderState} = require('../utils/licenceStatus');
-const validate = require('./utils/licenceValidation');
+const licenceValidator = require('./utils/licenceValidation');
 const addressHelpers = require('./utils/addressHelpers');
+const moment = require('moment');
 
 module.exports = function createLicenceService(licenceClient) {
 
@@ -62,9 +60,8 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.createLicence(bookingId, data);
     }
 
-    async function updateLicenceConditions(bookingId, additional = {}, bespoke = []) {
+    async function updateLicenceConditions(bookingId, existingLicence, additional = {}, bespoke = []) {
         try {
-            const existingLicence = await licenceClient.getLicence(bookingId);
             const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
             const conditionsObject = await getConditionsObject(additional, bespoke);
 
@@ -99,9 +96,8 @@ module.exports = function createLicenceService(licenceClient) {
         return {additional: {...additionalConditionsObject}, bespoke};
     }
 
-    async function deleteLicenceCondition(bookingId, conditionId) {
+    async function deleteLicenceCondition(bookingId, existingLicence, conditionId) {
         try {
-            const existingLicence = await licenceClient.getLicence(bookingId);
             const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
 
             const newConditions = removeCondition(existingLicenceConditions, conditionId, bookingId);
@@ -146,7 +142,7 @@ module.exports = function createLicenceService(licenceClient) {
         return {...oldConditions, bespoke: theRest};
     }
 
-    function markForHandover(bookingId, licence, transitionType) {
+    function markForHandover(bookingId, transitionType) {
 
         const newStage = getIn(transitions, [transitionType]);
 
@@ -175,10 +171,9 @@ module.exports = function createLicenceService(licenceClient) {
 
     const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
 
-    async function update({bookingId, config, userInput, licenceSection, formName}) {
-        const rawLicence = await licenceClient.getLicence(bookingId);
-        const stage = getIn(rawLicence, ['stage']);
-        const licence = getIn(rawLicence, ['licence']);
+    async function update({bookingId, originalLicence, config, userInput, licenceSection, formName}) {
+        const stage = getIn(originalLicence, ['stage']);
+        const licence = getIn(originalLicence, ['licence']);
 
         if (!licence) {
             return null;
@@ -206,6 +201,7 @@ module.exports = function createLicenceService(licenceClient) {
         return updatedLicence;
     }
 
+
     function getUpdatedLicence({licence, fieldMap, userInput, licenceSection, formName}) {
 
         const answers = getFormResponse(fieldMap, userInput);
@@ -216,15 +212,22 @@ module.exports = function createLicenceService(licenceClient) {
     function answersFromMapReducer(userInput) {
 
         return (answersAccumulator, field) => {
-            const {fieldName, answerIsRequired, innerFields, inputIsList, fieldConfig} = getFieldInfo(field, userInput);
+
+            const {
+                fieldName,
+                answerIsRequired,
+                innerFields,
+                inputIsList,
+                fieldConfig,
+                inputIsSplitDate
+            } = getFieldInfo(field, userInput);
 
             if (!answerIsRequired) {
                 return answersAccumulator;
             }
 
             if (inputIsList) {
-                const input = getLimitedInput(fieldConfig, fieldName, userInput);
-                const arrayOfInputs = input
+                const arrayOfInputs = userInput[fieldName]
                     .map(item => getFormResponse(field[fieldName].contains, item))
                     .filter(notAllValuesEmpty);
 
@@ -243,40 +246,63 @@ module.exports = function createLicenceService(licenceClient) {
                 return {...answersAccumulator, [fieldName]: innerAnswers};
             }
 
+            if (inputIsSplitDate) {
+                return {...answersAccumulator, [fieldName]: getCombinedDate(field[fieldName], userInput)};
+            }
+
             return {...answersAccumulator, [fieldName]: userInput[fieldName]};
         };
+    }
+
+    function getCombinedDate(dateConfig, userInput) {
+        const {day, month, year} = dateConfig.splitDate;
+
+        return `${userInput[[day]]}/${userInput[[month]]}/${userInput[[year]]}`;
+    }
+
+    function addSplitDateFields(rawData, formFieldsConfig) {
+        return formFieldsConfig.reduce((data, field) => {
+
+            const fieldKey = firstKey(field);
+            const fieldConfig = field[fieldKey];
+            const splitDateConfig = getIn(fieldConfig, ['splitDate']);
+
+            if (!rawData[fieldKey] || !splitDateConfig) {
+                return data;
+            }
+
+            const date = moment(rawData[fieldKey], 'DD/MM/YYYY');
+            if (!date.isValid()) {
+                return data;
+            }
+
+            return {
+                ...data,
+                [splitDateConfig.day]: date.format('DD'),
+                [splitDateConfig.month]: date.format('MM'),
+                [splitDateConfig.year]: date.format('YYYY')
+            };
+
+        }, rawData);
     }
 
     function getFieldInfo(field, userInput) {
         const fieldName = Object.keys(field)[0];
         const fieldConfig = field[fieldName];
+
         const fieldDependentOn = userInput[fieldConfig.dependentOn];
         const predicateResponse = fieldConfig.predicate;
         const dependentMatchesPredicate = fieldConfig.dependentOn && fieldDependentOn === predicateResponse;
+        const inputIsSplitDate = fieldConfig.splitDate;
 
         return {
             fieldName,
             answerIsRequired: !fieldDependentOn || dependentMatchesPredicate,
             innerFields: field[fieldName].contains,
             inputIsList: fieldConfig.isList,
-            fieldConfig
+            fieldConfig,
+            inputIsSplitDate
         };
-    }
-
-    function getLimitedInput(fieldConfig, fieldName, userInput) {
-        const limitingField = getIn(fieldConfig, ['limitedBy', 'field']);
-        const limitingValue = userInput[limitingField];
-        const limitTo = getIn(fieldConfig, ['limitedBy', limitingValue]);
-
-        if (limitTo) {
-            return getFirstArrayItems(userInput[fieldName], limitTo);
-        }
-
-        return userInput[fieldName];
-    }
-
-    function updateStage(bookingId, status) {
-        return licenceClient.updateStage(bookingId, status);
     }
 
     const updateAddress = updateAddressArray(addressHelpers.update);
@@ -302,98 +328,12 @@ module.exports = function createLicenceService(licenceClient) {
         };
     }
 
-    function getLicenceErrors({licence, forms = reviewForms}) {
+    async function removeDecision(bookingId, rawLicence) {
+        const {licence} = rawLicence;
+        const updatedLicence = removePath(['approval'], licence);
 
-        if (isEmpty(forms)) {
-            return [];
-        }
-
-        const validationErrors = forms.map(validate(licence)).filter(item => item);
-
-        if (isEmpty(validationErrors)) {
-            return [];
-        }
-
-        return flatten(validationErrors).reduce((errorObject, error) => mergeWithRight(errorObject, error.path), {});
-    }
-
-    function getConditionsErrors(licence) {
-        return getLicenceErrors({licence, forms: formsInSection['licenceConditions']});
-    }
-
-    const getValidationErrorsForReview = ({licenceStatus, licence}) => {
-        const {stage, decisions, tasks} = licenceStatus;
-        const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED';
-
-        if (stage === 'ELIGIBILITY' && decisions && decisions.bassReferralNeeded) {
-           return getLicenceErrors({licence, forms: [
-                   ...formsInSection['eligibility'],
-                   ...formsInSection['bassReferral']
-               ]});
-        }
-
-        if (stage === 'ELIGIBILITY' || newAddressAddedForReview) {
-            return getEligibilityErrors({licence});
-        }
-
-        if (stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
-            return getLicenceErrors({licence, forms: formsInSection['proposedAddress']});
-        }
-
-        return getLicenceErrors({licence, forms: reviewForms});
-    };
-
-    function getEligibilityErrors({licence}) {
-        const errorObject = getLicenceErrors({licence, forms: [
-                ...formsInSection['eligibility'],
-                ...formsInSection['proposedAddress']
-            ]});
-
-        const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
-
-        if (typeof getIn(errorObject, ['proposedAddress', 'curfewAddress']) === 'string') {
-            return errorObject;
-        }
-
-        return unwantedAddressFields.reduce(removeFromAddressReducer, errorObject);
-    }
-
-    function removeFromAddressReducer(errorObject, addressKey) {
-        const newObject = removePath(['proposedAddress', 'curfewAddress', addressKey], errorObject);
-
-        if (isEmpty(getIn(newObject, ['proposedAddress', 'curfewAddress']))) {
-            return removePath(['proposedAddress'], newObject);
-        }
-
-        return newObject;
-    }
-
-    function getValidationErrorsForPage(licence, forms) {
-        if (equals(forms, ['release'])) {
-            const {confiscationOrder} = getConfiscationOrderState(licence);
-            return getApprovalErrors({licence, confiscationOrder});
-        }
-
-        return getLicenceErrors({licence, forms});
-    }
-
-    function getApprovalErrors({licence, confiscationOrder}) {
-        const errorObject = getLicenceErrors({licence, forms: ['release']});
-
-        if (confiscationOrder) {
-            return errorObject;
-        }
-
-        const removeNotedCommentsError = removePath(['approval', 'release', 'notedComments']);
-        const errorsWithoutNotedComments = removeNotedCommentsError(errorObject);
-
-        const noErrorsInApproval = isEmpty(getIn(errorsWithoutNotedComments, ['approval', 'release']));
-        if (noErrorsInApproval) {
-            const removeApprovalError = removePath(['approval']);
-            return removeApprovalError(errorsWithoutNotedComments);
-        }
-
-        return errorsWithoutNotedComments;
+        await licenceClient.updateLicence(bookingId, updatedLicence);
+        return updatedLicence;
     }
 
     return {
@@ -404,14 +344,16 @@ module.exports = function createLicenceService(licenceClient) {
         deleteLicenceCondition,
         markForHandover,
         update,
-        updateStage,
+        updateSection: licenceClient.updateSection,
         updateAddress,
         addAddress,
-        getLicenceErrors,
-        getConditionsErrors,
-        getEligibilityErrors,
-        getValidationErrorsForReview,
-        getValidationErrorsForPage,
-        saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion
+        getLicenceErrors: licenceValidator.getLicenceErrors,
+        getConditionsErrors: licenceValidator.getConditionsErrors,
+        getEligibilityErrors: licenceValidator.getEligibilityErrors,
+        getValidationErrorsForReview: licenceValidator.getValidationErrorsForReview,
+        getValidationErrorsForPage: licenceValidator.getValidationErrorsForPage,
+        saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
+        addSplitDateFields,
+        removeDecision
     };
 };
