@@ -36,6 +36,10 @@ describe('getStatusLabel', () => {
                 },
                 {
                     status: {stage: licenceStages.ELIGIBILITY, decisions: {insufficientTime: true}, tasks: {}},
+                    label: 'Not enough time - rejected'
+                },
+                {
+                    status: {stage: licenceStages.ELIGIBILITY, decisions: {insufficientTimeContinue: true}, tasks: {}},
                     label: 'Not enough time'
                 },
                 {
