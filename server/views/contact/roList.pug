@@ -16,18 +16,20 @@ block content
                         tr
                             th Delius user
                             th Name
-                            th Organisation
-                            th Job Role
-                            th Email
+                            th Role
                             th Telephone
+                            th Email
+                            th Organisation
+                            th Org email
                     tbody
                         if roUsers && roUsers.length > 0
                             each contact, index in roUsers
                                 tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
                                     td.username #{contact.deliusId}
                                     td.name #{contact.first} #{contact.last}
-                                    td.organisation #{contact.organisation}
                                     td.jobRole #{contact.jobRole}
-                                    td.email #{contact.email}
                                     td.telephone #{contact.telephone}
+                                    td.email #{contact.email}
+                                    td.organisation #{contact.organisation}
+                                    td.email #{contact.orgEmail}
 
