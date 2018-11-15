@@ -33,6 +33,37 @@ describe('/review/', () => {
         stage: 'ELIGIBILITY'
     };
 
+    describe('/licence/', () => {
+
+        it('does not show errors when stage not owned by role', () => {
+
+            licenceService.getLicence = sinon.stub().resolves(licence);
+            app = createApp('roUser');
+
+            return request(app)
+                .get('/hdc/review/licence/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(licenceService.getValidationErrorsForReview).to.not.be.calledOnce();
+                });
+        });
+
+        it('shows errors when stage owned by role', () => {
+
+            licenceService.getLicence = sinon.stub().resolves(licence);
+            app = createApp('caUser');
+
+            return request(app)
+                .get('/hdc/review/licence/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(licenceService.getValidationErrorsForReview).to.be.calledOnce();
+                });
+        });
+    });
+
     describe('/curfewAddress/', () => {
 
         beforeEach(() => {
