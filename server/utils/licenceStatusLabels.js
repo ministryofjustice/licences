@@ -62,11 +62,11 @@ function statusLabels(licenceStatus, role) {
 }
 
 function caEligibilityLabel(licenceStatus) {
-
     const labels = [
         {decision: 'excluded', label: 'Excluded (Ineligible)'},
         {decision: 'unsuitableResult', label: 'Presumed unsuitable'},
-        {decision: 'insufficientTime', label: 'Not enough time'},
+        {decision: 'insufficientTimeContinue', label: 'Not enough time'},
+        {decision: 'insufficientTime', label: 'Not enough time - rejected'},
         {decision: 'optedOut', label: 'Opted out'},
         {decision: 'bassReferralNeeded', label: 'Getting address'},
         {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address rejected'},
@@ -83,7 +83,6 @@ function caProcessingLabel(licenceStatus) {
         {decision: 'postponed', label: 'Postponed'},
         {decision: 'excluded', label: 'Excluded (Ineligible)'},
         {decision: 'curfewAddressApproved', value: 'withdrawn', label: 'Address withdrawn'},
-        // Is this one ever possible?
         {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address not suitable'}
     ];
 

@@ -95,7 +95,7 @@ function neededForTab(prisoner, tab) {
     const inactiveStatuses = [
         'Excluded (Ineligible)',
         'Presumed unsuitable',
-        'Not enough time',
+        'Not enough time - rejected',
         'Opted out',
         'Address not suitable',
         'Address withdrawn',
