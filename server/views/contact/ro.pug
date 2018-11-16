@@ -20,17 +20,19 @@ block content
                             thead
                                 tr
                                     th Name
-                                    th Organisation
-                                    th Job Role
+                                    th Role
                                     th Email
                                     th Telephone
+                                    th Organisation
+                                    th Org email
                             tbody
                                 tr.contact
                                     td.name #{contact.first} #{contact.last}
-                                    td.organisation #{contact.organisation}
                                     td.jobRole #{contact.jobRole}
                                     td.email #{contact.email}
                                     td.telephone #{contact.telephone}
+                                    td.organisation #{contact.organisation}
+                                    td.email #{contact.orgEmail}
 
                 else
                     p No contact details found
