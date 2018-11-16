@@ -13,7 +13,7 @@ div.largeMarginBottom
                         if (stage === 'PROCESSING_RO' && user.role === 'RO')
                             a#bassEditLink(href="/hdc/bassReferral/bassAreaCheck/change/" + bookingId) Change
 
-            if data.bassReferral && data.bassReferral.bassAreaCheck
+            if !showErrors || data.bassReferral && data.bassReferral.bassAreaCheck
                 include bassArea
             else
                 p.alert.bold(id='bass-address-error') Enter the BASS area details
@@ -85,8 +85,10 @@ div.largeMarginBottom
                     p No additional conditions selected
                 else if data.licenceConditions && data.licenceConditions.length > 0
                     +additionalConditions()
-                else
+                else if showErrors
                     p(id='noConditionsError' class="bold alert") Select one or more additional conditions
+                else
+                    p Not complete
 
         // Reporting instructions
         div.borderBottom

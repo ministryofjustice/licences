@@ -13,10 +13,10 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
         const licenceVersion = getIn(res.locals.licence, ['version']) || {};
 
         const licenceWithAddress = addAddressTo(licence);
-        const errorObject = licenceService.getValidationErrorsForReview({
-            licenceStatus: res.locals.licenceStatus,
-            licence: licenceWithAddress
-        });
+
+        const showErrors = stagesForRole[req.user.role].includes(stage);
+        const errorObject = showErrors ? getErrors(res.locals.licenceStatus, licenceWithAddress) : {};
+
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, req.user.token);
@@ -27,12 +27,24 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
             prisonerInfo,
             stage,
             licenceVersion,
-            errorObject
+            errorObject,
+            showErrors
         });
     }));
 
+    function getErrors(licenceStatus, licence) {
+        return licenceService.getValidationErrorsForReview({licenceStatus, licence});
+    }
+
     return router;
 };
+
+const stagesForRole = {
+    CA: ['ELIGIBILITY', 'PROCESSING_CA', 'FINAL_CHECKS'],
+    RO: ['PROCESSING_RO'],
+    DM: ['APPROVAL']
+};
+
 
 function addAddressTo(licence) {
     const allAddresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
