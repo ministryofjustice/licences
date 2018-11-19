@@ -150,6 +150,7 @@ module.exports = {
         }
     },
     firstNight: {
+        licenceSection: 'firstNight',
         fields: [
             {firstNightFrom: {}},
             {firstNightUntil: {}}
