@@ -14,7 +14,7 @@ div.largeMarginBottom
                         if licenceStatus.tasks.eligibility === 'UNSTARTED'
                             input.taskListAction.requiredButton.button(type='submit', value='Start', id='eligibilityCheckStart')
                 else
-                    +change('/hdc/eligibility/excluded/'+prisonerInfo.bookingId, 'eligibilityCheckUpdate')
+                    a#continueBtn.taskListAction.center.button(href='/hdc/eligibility/excluded/'+prisonerInfo.bookingId) Continue
 
     else
         div.pure-g
