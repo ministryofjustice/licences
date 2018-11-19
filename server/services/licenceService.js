@@ -1,6 +1,11 @@
+const moment = require('moment');
 const logger = require('../../log.js');
 const {createAdditionalConditionsObject} = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
+const {licenceStages, transitions} = require('../models/licenceStages');
+const licenceValidator = require('./utils/licenceValidation');
+const recordList = require('./utils/recordList');
+const addressesPath = ['proposedAddress', 'curfewAddress', 'addresses'];
 
 const {
     getIn,
@@ -11,11 +16,6 @@ const {
     firstKey,
     removePath
 } = require('../utils/functionalHelpers');
-
-const {licenceStages, transitions} = require('../models/licenceStages');
-const licenceValidator = require('./utils/licenceValidation');
-const addressHelpers = require('./utils/addressHelpers');
-const moment = require('moment');
 
 module.exports = function createLicenceService(licenceClient) {
 
@@ -305,8 +305,8 @@ module.exports = function createLicenceService(licenceClient) {
         };
     }
 
-    const updateAddress = updateAddressArray(addressHelpers.update);
-    const addAddress = updateAddressArray(addressHelpers.add);
+    const updateAddress = updateAddressArray(edit);
+    const addAddress = updateAddressArray(add);
 
     function updateAddressArray(addressesUpdateMethod) {
         return async ({bookingId, rawLicence, fieldMap, userInput, index}) => {
@@ -314,7 +314,8 @@ module.exports = function createLicenceService(licenceClient) {
             const formResponse = getFormResponse(fieldMap, userInput);
 
             const newAddress = Array.isArray(formResponse.addresses) ? formResponse.addresses[0] : formResponse;
-            const updatedLicence = addressesUpdateMethod({bookingId, licence, newAddress, index});
+            const addressList = recordList(licence, addressesPath);
+            const updatedLicence = addressesUpdateMethod({addressList, licence, newAddress, index});
 
             if (equals(licence, updatedLicence)) {
                 return licence;
@@ -327,6 +328,19 @@ module.exports = function createLicenceService(licenceClient) {
             return updatedLicence;
         };
     }
+
+    function edit({addressList, licence, index, newAddress}) {
+        if (!newAddress) {
+            return addressList.remove({index});
+        }
+
+        return addressList.edit({index, record: newAddress});
+    }
+
+    function add({addressList, licence, newAddress}) {
+        return addressList.add({record: newAddress});
+    }
+
 
     async function removeDecision(bookingId, rawLicence) {
         const {licence} = rawLicence;

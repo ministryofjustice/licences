@@ -546,6 +546,7 @@ describe('caseListService', () => {
                     {stage: 'ELIGIBILITY', status: 'Checking eligibility'},
                     {stage: 'ELIGIBILITY', status: 'Excluded (Ineligible)'},
                     {stage: 'ELIGIBILITY', status: 'Not enough time'},
+                    {stage: 'ELIGIBILITY', status: 'Not enough time - rejected'},
                     {stage: 'ELIGIBILITY', status: 'Presumed unsuitable'},
                     {stage: 'ELIGIBILITY', status: 'Opted out'},
                     {stage: 'ELIGIBILITY', status: 'Getting address'},
@@ -575,6 +576,7 @@ describe('caseListService', () => {
                         .to.eventually.eql([
                             {stage: 'ELIGIBILITY', status: 'Not started'},
                             {stage: 'ELIGIBILITY', status: 'Checking eligibility'},
+                            {stage: 'ELIGIBILITY', status: 'Not enough time'},
                             {stage: 'ELIGIBILITY', status: 'Getting address'},
                             {stage: 'ELIGIBILITY', status: 'Address rejected'},
                             {stage: 'ELIGIBILITY', status: 'Review case'},
@@ -599,7 +601,7 @@ describe('caseListService', () => {
                     return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'inactive'))
                         .to.eventually.eql([
                             {stage: 'ELIGIBILITY', status: 'Excluded (Ineligible)'},
-                            {stage: 'ELIGIBILITY', status: 'Not enough time'},
+                            {stage: 'ELIGIBILITY', status: 'Not enough time - rejected'},
                             {stage: 'ELIGIBILITY', status: 'Presumed unsuitable'},
                             {stage: 'ELIGIBILITY', status: 'Opted out'},
                             {stage: 'ELIGIBILITY', status: 'Address not suitable'},
