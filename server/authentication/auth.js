@@ -30,7 +30,7 @@ passport.deserializeUser(function(user, done) {
 
 function init(signInService) {
     const strategy = new Strategy({
-            authorizationURL: `${config.nomis.authUrl}/oauth/authorize`,
+            authorizationURL: `${config.nomis.authExternalUrl}/oauth/authorize`,
             tokenURL: `${config.nomis.authUrl}/oauth/token`,
             clientID: config.nomis.apiClientId,
             clientSecret: config.nomis.apiClientSecret,

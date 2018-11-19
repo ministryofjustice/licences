@@ -94,7 +94,7 @@ function getOauthToken(oauthClientToken, requestSpec) {
     const oauthRequest = querystring.stringify(requestSpec);
 
     return superagent
-        .post(`${getOauthUrl()}/oauth/token`)
+        .post(`${config.nomis.authUrl}/oauth/token`)
         .set('Authorization', oauthClientToken)
         .set('content-type', 'application/x-www-form-urlencoded')
         .send(oauthRequest)
@@ -155,10 +155,6 @@ function nomisGet(path, token) {
         .get(`${config.nomis.apiUrl}${path}`)
         .set('Authorization', `Bearer ${token}`)
         .timeout(timeoutSpec);
-}
-
-function getOauthUrl() {
-    return config.nomis.authUrl;
 }
 
 function unauthorised(error) {
