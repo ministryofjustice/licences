@@ -19,11 +19,11 @@ describe('/hdc/curfew', () => {
         const licenceService = createLicenceServiceStub();
         licenceService.getLicence = sinon.stub().resolves({
             licence: {
-               proposedAddress: {
-                   curfewAddress: {
-                       addresses: []
-                   }
-               }
+                proposedAddress: {
+                    curfewAddress: {
+                        addresses: []
+                    }
+                }
             }
         });
         const app = createApp({licenceServiceStub: licenceService}, 'roUser');
@@ -41,18 +41,14 @@ describe('/hdc/curfew', () => {
         const licenceService = createLicenceServiceStub();
         licenceService.getLicence = sinon.stub().resolves({
             licence: {
-                proposedAddress: {
-                    curfewAddress: {
-                        addresses: []
-                    }
-                }
+                curfew: {firstNight: {firstNightFrom: '10:06'}}
             }
         });
 
         const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
         const routes = [
-            {url: '/hdc/curfew/firstNight/1', content: 'First night curfew hours'}
+            {url: '/hdc/curfew/firstNight/1', content: 'id="firstNightFrom" value="10:06"'}
         ];
 
         testFormPageGets(app, routes, licenceService);
@@ -458,7 +454,7 @@ describe('/hdc/curfew', () => {
                 const licenceService = createLicenceServiceStub();
                 const app = createApp({licenceServiceStub: licenceService}, 'roUser');
                 return request(app)
-                    .post('/hdc/curfew/curfewHours/1', )
+                    .post('/hdc/curfew/curfewHours/1')
                     .send(body)
                     .expect(302)
                     .expect(res => {
@@ -484,7 +480,7 @@ describe('/hdc/curfew', () => {
                 const licenceService = createLicenceServiceStub();
                 const app = createApp({licenceServiceStub: licenceService}, 'roUser');
                 return request(app)
-                    .post('/hdc/curfew/curfewHours/1', )
+                    .post('/hdc/curfew/curfewHours/1')
                     .send(daySpecificBody)
                     .expect(302)
                     .expect(res => {
