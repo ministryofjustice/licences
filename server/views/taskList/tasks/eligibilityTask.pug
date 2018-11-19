@@ -6,12 +6,15 @@ div.largeMarginBottom
             div.pure-u-1.pure-u-md-3-4
                 | Not completed
             div.pure-u-1.pure-u-md-1-4.center
-                form(method="post", name="eligibilityStart", action='/hdc/taskList/eligibilityStart/')
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    if prisonerInfo
-                        input(type="hidden" name="bookingId" value=prisonerInfo.bookingId || '')
-                    -var unstarted = licenceStatus.tasks.eligibility === 'UNSTARTED'
-                    +conditionalFormButton(unstarted, 'Start', 'View', 'eligibilityCheckStart')
+                if licenceStatus.tasks.eligibility === 'UNSTARTED'
+                    form(method="post", name="eligibilityStart", action='/hdc/taskList/eligibilityStart/')
+                        input(type="hidden" name="_csrf" value=csrfToken)
+                        if prisonerInfo
+                            input(type="hidden" name="bookingId" value=prisonerInfo.bookingId || '')
+                        if licenceStatus.tasks.eligibility === 'UNSTARTED'
+                            input.taskListAction.requiredButton.button(type='submit', value='Start', id='eligibilityCheckStart')
+                else
+                    a#continueBtn.taskListAction.center.button(href='/hdc/eligibility/excluded/'+prisonerInfo.bookingId) Continue
 
     else
         div.pure-g
