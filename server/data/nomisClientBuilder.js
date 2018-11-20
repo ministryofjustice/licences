@@ -144,7 +144,7 @@ function nomisGetBuilder(token) {
             const result = await superagent
                 .get(path)
                 .query(query)
-                .set('Authorization', token)
+                .set('Authorization', `Bearer ${token}`)
                 .set(headers)
                 .responseType(responseType)
                 .timeout(timeoutSpec);
@@ -192,7 +192,7 @@ async function post(token, path, body, headers, responseType) {
     return superagent
         .post(path)
         .send(body)
-        .set('Authorization', token)
+        .set('Authorization', `Bearer ${token}`)
         .set(headers)
         .responseType(responseType)
         .timeout(timeoutSpec);
@@ -202,7 +202,7 @@ async function put(token, path, body, headers, responseType) {
     return superagent
         .put(path)
         .send(body)
-        .set('Authorization', token)
+        .set('Authorization', `Bearer ${token}`)
         .set(headers)
         .responseType(responseType)
         .timeout(timeoutSpec);

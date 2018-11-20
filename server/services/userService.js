@@ -1,6 +1,28 @@
 const allowedRoles = require('../authentication/roles');
+const logger = require('../../log');
 
 module.exports = function(nomisClientBuilder) {
+
+    async function getUserProfile(token, refreshToken, username) {
+        const nomisClient = nomisClientBuilder(token);
+
+        const [profile, roles] = await Promise.all([
+            nomisClient.getLoggedInUserInfo(),
+            getAllRoles({token})
+        ]);
+
+        logger.info(`User profile success - username: ${username}`);
+
+        const activeCaseLoads = profile.activeCaseLoadId ? await nomisClient.getUserCaseLoads() : [];
+        const activeCaseLoad = activeCaseLoads.find(caseLoad => caseLoad.caseLoadId === profile.activeCaseLoadId);
+
+        return {
+            ...profile,
+            username,
+            role: roles[0],
+            activeCaseLoad
+        };
+    }
 
     async function getAllRoles(user) {
         const nomisClient = nomisClientBuilder(user.token);
@@ -45,6 +67,7 @@ module.exports = function(nomisClientBuilder) {
     }
 
     return {
+        getUserProfile,
         getAllRoles,
         setRole,
         getAllCaseLoads,

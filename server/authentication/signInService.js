@@ -3,42 +3,28 @@ const querystring = require('querystring');
 const config = require('../config');
 const {generateOauthClientToken, generateAdminOauthClientToken} = require('./oauth');
 const logger = require('../../log');
-const allowedRoles = require('./roles');
+const fiveMinutesBefore = require('../utils/fiveMinutesBefore');
 
 const timeoutSpec = {
     response: config.nomis.timeout.response,
     deadline: config.nomis.timeout.deadline
 };
 
-const RO_ROLE_CODE = 'RO';
-
-function signInService(audit) {
+function signInService() {
 
     return {
-
         signIn: async function(username, password) {
 
             logger.info(`Log in for: ${username}`);
 
             try {
-                const {profile, role, token, refreshToken, expiresIn} = await login(username.toUpperCase(), password);
-                logger.info(`Log in success - token: ${token}`);
+                const oauthClientToken = generateOauthClientToken();
+                const oauthRequest = {grant_type: 'password', username, password};
+                const oauthResult = await getOauthToken(oauthClientToken, oauthRequest);
 
-                const userDetail = profile.staffId || profile.username || profile.lastName || 'no user id';
-                audit.record('LOGIN', userDetail);
+                logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`);
 
-                const activeCaseLoad =
-                    profile.activeCaseLoadId ? await getCaseLoad(token, profile.activeCaseLoadId) : null;
-
-                return {
-                    ...profile,
-                    token,
-                    refreshToken,
-                    refreshTime: getRefreshTime(expiresIn),
-                    role,
-                    activeCaseLoad,
-                    username
-                };
+                return parseOauthTokens(oauthResult);
 
             } catch (error) {
                 if (unauthorised(error)) {
@@ -58,50 +44,19 @@ function signInService(audit) {
                 user.username, user.role, user.refreshToken
             );
 
-            const refreshTime = getRefreshTime(expiresIn);
+            const refreshTime = fiveMinutesBefore(expiresIn);
 
             return {token, refreshToken, refreshTime};
 
+        },
+
+        getClientCredentialsTokens: async function(username) {
+            const oauthAdminClientToken = generateAdminOauthClientToken();
+            const oauthRequest = {grant_type: 'client_credentials', username};
+
+            return oauthTokenRequest(oauthAdminClientToken, oauthRequest);
         }
     };
-
-    function getRefreshTime(expiresIn) {
-        // arbitrary five minute before expiry time
-        const now = new Date();
-        const secondsUntilExpiry = now.getSeconds() + (expiresIn - 300);
-        return now.setSeconds(secondsUntilExpiry);
-    }
-
-    async function login(username, password) {
-
-        const {token, refreshToken, expiresIn} = await getPasswordTokens(username, password);
-
-        const [profile, role] = await Promise.all([
-            getUserProfile(token, username),
-            getRoleCode(token)
-        ]);
-
-        if (role === RO_ROLE_CODE) {
-            const roToken = await getClientCredentialsTokens(username);
-            return {profile, role, ...roToken};
-        }
-
-        return {profile, role, token, refreshToken, expiresIn};
-    }
-
-    async function getPasswordTokens(username, password) {
-        const oauthClientToken = generateOauthClientToken();
-        const oauthRequest = {grant_type: 'password', username, password};
-
-        return oauthTokenRequest(oauthClientToken, oauthRequest);
-    }
-
-    async function getClientCredentialsTokens(username) {
-        const oauthAdminClientToken = generateAdminOauthClientToken();
-        const oauthRequest = {grant_type: 'client_credentials', username};
-
-        return oauthTokenRequest(oauthAdminClientToken, oauthRequest);
-    }
 
     async function getRefreshTokens(username, role, refreshToken) {
 
@@ -133,58 +88,11 @@ function getOauthToken(oauthClientToken, requestSpec) {
 
 function parseOauthTokens(oauthResult) {
 
-    const token = `${oauthResult.body.token_type} ${oauthResult.body.access_token}`;
+    const token = oauthResult.body.access_token;
     const refreshToken = oauthResult.body.refresh_token;
     const expiresIn = oauthResult.body.expires_in;
 
     return {token, refreshToken, expiresIn};
-}
-
-async function getUserProfile(token, username) {
-    const profileResult = await nomisGet('/users/me', token);
-    logger.info(`Elite2 profile success for [${username}]`);
-    return profileResult.body;
-}
-
-async function getRoleCode(token) {
-
-    const rolesResult = await nomisGet('/users/me/roles', token);
-    const roles = rolesResult.body;
-    logger.info(`Roles response [${JSON.stringify(roles)}]`);
-
-    if (roles && roles.length > 0) {
-        const role = roles.find(role => {
-            const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
-            return allowedRoles.includes(roleCode);
-        });
-
-        if (role) {
-            const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
-            logger.info(`Selected role: ${role.roleCode}, giving role code: ${roleCode}`);
-            return roleCode;
-        }
-    }
-
-    throw new Error('Login error - no acceptable role');
-}
-
-async function getCaseLoad(token, id) {
-
-    try {
-        const result = await nomisGet('/users/me/caseLoads', token);
-        return result.body.find(caseLoad => caseLoad.caseLoadId === id) || null;
-
-    } catch (error) {
-        logger.error('No active case load', error.stack);
-        return null;
-    }
-}
-
-function nomisGet(path, token) {
-    return superagent
-        .get(`${config.nomis.apiUrl}${path}`)
-        .set('Authorization', token)
-        .timeout(timeoutSpec);
 }
 
 function getOauthUrl() {
@@ -195,6 +103,6 @@ function unauthorised(error) {
     return [400, 401, 403].includes(error.status);
 }
 
-module.exports = function createSignInService(tokenStore, audit) {
-    return signInService(tokenStore, audit);
+module.exports = function createSignInService() {
+    return signInService();
 };
