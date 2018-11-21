@@ -1,7 +1,10 @@
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const {isEmpty} = require('../utils/functionalHelpers');
 const {URLSearchParams} = require('url');
+const strategies = require('./authInit');
+const LocalStrategy = require('passport-local').Strategy;
+const OauthStrategy = require('passport-oauth2').Strategy;
+const config = require('../config');
+const {generateOauthClientToken} = require('./oauth');
 
 function authenticationMiddleware() {
     // eslint-disable-next-line
@@ -27,22 +30,22 @@ passport.deserializeUser(function(user, done) {
     done(null, user);
 });
 
-function init(signInService) {
-    const strategy = new LocalStrategy(async (username, password, done) => {
-        try {
-            const user = await signInService.signIn(username, password);
+function init(signInService, userService, audit, authStrategy) {
+    const authStrategies = strategies(signInService, userService, audit);
+    const passportStrategies = {
+        local: new LocalStrategy(authStrategies.localInit),
+        oauth: new OauthStrategy({
+            authorizationURL: `${config.nomis.authExternalUrl}/oauth/authorize`,
+            tokenURL: `${config.nomis.authUrl}/oauth/token`,
+            clientID: config.nomis.apiClientId,
+            clientSecret: config.nomis.apiClientSecret,
+            callbackURL: `${config.domain}/login/callback`,
+            state: true,
+            customHeaders: {Authorization: generateOauthClientToken()}
+        }, authStrategies.oauthInit)
+    };
 
-            if (isEmpty(user)) {
-                return done(null, false, {message: 'Incorrect username or password'});
-            }
-
-            return done(null, user);
-        } catch (error) {
-            return done(null, false, {message: 'A system error occured; please try again later'});
-        }
-    });
-
-    passport.use(strategy);
+    passport.use(passportStrategies[authStrategy]);
 }
 
 module.exports.init = init;

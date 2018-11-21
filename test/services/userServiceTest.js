@@ -24,6 +24,19 @@ describe('userServiceTest', () => {
         service = createUserService(nomisClientBuilder);
     });
 
+    describe('getUserProfile', () => {
+        it('should return an object with the profile, first role and active case load', () => {
+            return expect(service.getUserProfile('t', 'rt', 'un')).to.eventually.eql({
+                username: 'un',
+                activeCaseLoadId: 'this',
+                role: 'CA',
+                activeCaseLoad: {
+                    caseLoadId: 'this'
+                }
+            });
+        });
+    });
+
     describe('getAllRoles', () => {
         it('should return the roles as an array', () => {
             return expect(service.getAllRoles(user)).to.eventually.eql(['CA']);

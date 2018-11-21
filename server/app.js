@@ -72,7 +72,7 @@ module.exports = function createApp({
                                     }) {
     const app = express();
 
-    auth.init(signInService);
+    auth.init(signInService, userService, audit, config.authStrategy);
 
     app.set('json spaces', 2);
 
@@ -285,15 +285,31 @@ module.exports = function createApp({
         return res.render('notfound');
     });
 
-    app.use('/login', signInRouter(passport));
+    const authLogoutUrl = config.authStrategy === 'oauth' ?
+        `${config.nomis.authExternalUrl}/logout?client_id=${config.nomis.apiClientId}&redirect_uri=${config.domain}` : '/login';
+
+    app.get('/autherror', (req, res) => {
+        res.status(401);
+        return res.render('autherror', {
+            authURL: authLogoutUrl
+        });
+    });
+
+    if (config.authStrategy === 'oauth') {
+        app.get('/login', passport.authenticate('oauth2'));
+    }
+
+    if (config.authStrategy === 'local') {
+        app.use('/login', signInRouter(passport));
+    }
+
+    app.get('/login/callback', passport.authenticate('oauth2', {successReturnToOrRedirect: '/', failureRedirect: '/autherror'}));
 
     app.use('/logout', (req, res) => {
         if (req.user) {
             req.logout();
-            res.redirect('/login');
-        } else {
-            res.redirect('/login');
         }
+        res.redirect(authLogoutUrl);
     });
 
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit});

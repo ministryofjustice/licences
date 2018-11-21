@@ -3,8 +3,8 @@ const passport = require('passport');
 
 const auth = require('../server/authentication/auth');
 
-const setupMockAuthentication = (app, signInService) => {
-    auth.init(signInService);
+const setupMockAuthentication = (app, signInService, userService, audit) => {
+    auth.init(signInService, userService, audit, 'local');
     app.use(session({
         secret: 'test',
         resave: false,
