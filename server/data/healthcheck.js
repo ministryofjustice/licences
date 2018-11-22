@@ -7,7 +7,8 @@ const superagent = require('superagent');
 module.exports = {
     nomisApiCheck,
     dbCheck,
-    pdfApiCheck
+    pdfApiCheck,
+    authCheck
 };
 
 function dbCheck() {
@@ -70,6 +71,35 @@ function pdfApiCheck() {
                     return reject(result.status);
                 } catch (error) {
                     logger.error(error, 'Exception calling PDF API');
+                    return reject(error);
+                }
+            });
+    });
+}
+
+function authCheck() {
+    return new Promise((resolve, reject) => {
+
+        superagent
+            .get(`${config.nomis.authUrl}/health`)
+            .timeout({
+                response: 4000,
+                deadline: 4500
+            })
+            .end((error, result) => {
+                try {
+                    if (error) {
+                        logger.error(error, 'Error calling Auth service');
+                        return reject(`${error.status} | ${error.code} | ${error.errno}`);
+                    }
+
+                    if (result.status === 200) {
+                        return resolve('OK');
+                    }
+
+                    return reject(result.status);
+                } catch (error) {
+                    logger.error(error, 'Exception calling Auth service');
                     return reject(error);
                 }
             });
