@@ -214,6 +214,13 @@ module.exports = function createApp({
 
     app.use(flash());
 
+    app.use('/logout', (req, res) => {
+        if (req.user) {
+            req.logout();
+        }
+        res.redirect(authLogoutUrl);
+    });
+
     // token refresh
     app.use(async (req, res, next) => {
         if (production && req.user) {
@@ -304,13 +311,6 @@ module.exports = function createApp({
     }
 
     app.get('/login/callback', passport.authenticate('oauth2', {successReturnToOrRedirect: '/', failureRedirect: '/autherror'}));
-
-    app.use('/logout', (req, res) => {
-        if (req.user) {
-            req.logout();
-        }
-        res.redirect(authLogoutUrl);
-    });
 
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit});
 
