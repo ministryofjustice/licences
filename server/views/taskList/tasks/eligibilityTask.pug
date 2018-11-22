@@ -12,7 +12,7 @@ div.largeMarginBottom
                         if prisonerInfo
                             input(type="hidden" name="bookingId" value=prisonerInfo.bookingId || '')
                         if licenceStatus.tasks.eligibility === 'UNSTARTED'
-                            input.taskListAction.requiredButton.button(type='submit', value='Start', id='eligibilityCheckStart')
+                            input.taskListAction.requiredButton.button(type='submit', value='Start now', id='eligibilityCheckStart')
                 else
                     a#continueBtn.taskListAction.center.button(href='/hdc/eligibility/excluded/'+prisonerInfo.bookingId) Continue
 
