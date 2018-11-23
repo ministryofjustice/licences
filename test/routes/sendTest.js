@@ -1,14 +1,13 @@
 const request = require('supertest');
 
 const {
-    loggerStub,
     createLicenceServiceStub,
     createPrisonerServiceStub,
-    authenticationMiddleware,
     appSetup,
     auditStub
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/send');
 
 describe('send', () => {
@@ -289,11 +288,14 @@ describe('send', () => {
 });
 
 function createApp({licenceService, prisonerService}, user) {
-    return appSetup(createRoute({
+    prisonerService = prisonerService || createPrisonerServiceStub();
+    licenceService = licenceService || createLicenceServiceStub();
+
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const route = baseRouter(createRoute({
         licenceService,
         prisonerService,
-        logger: loggerStub,
-        authenticationMiddleware,
-        audit: auditStub
-    }), user, '/hdc/send/');
+        audit: auditStub}), 'USER_MANAGEMENT');
+
+    return appSetup(route, user, '/hdc/send/');
 }

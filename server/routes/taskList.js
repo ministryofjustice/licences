@@ -1,5 +1,4 @@
 const logger = require('../../log');
-const express = require('express');
 
 const {asyncMiddleware} = require('../utils/middleware');
 const path = require('path');
@@ -8,16 +7,7 @@ const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
 const {pickKey} = require('../utils/functionalHelpers');
 
-module.exports = function({prisonerService, licenceService, caseListService, authenticationMiddleware, audit}) {
-    const router = express.Router();
-    router.use(authenticationMiddleware());
-
-    router.use(function(req, res, next) {
-        if (typeof req.csrfToken === 'function') {
-            res.locals.csrfToken = req.csrfToken();
-        }
-        next();
-    });
+module.exports = ({prisonerService, licenceService, caseListService, audit}) => router => {
 
     router.get('/:bookingId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /taskList');

@@ -38,7 +38,6 @@ const userService = createUserService(nomisClientBuilder);
 const notificationService = createNotificationService(notifyClient);
 
 const app = createApp({
-    logger,
     signInService,
     licenceService,
     prisonerService,

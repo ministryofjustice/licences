@@ -1,34 +1,29 @@
 const request = require('supertest');
 
 const {
-    licenceServiceStub,
-    loggerStub,
     createPrisonerServiceStub,
-    authenticationMiddleware,
-    appSetup
+    createLicenceServiceStub,
+    appSetup,
+    auditStub
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createRoute = require('../../server/routes/sent');
 
 const prisonerService = createPrisonerServiceStub();
 prisonerService.getOrganisationContactDetails = sinon.stub().resolves({premise: 'HMP Blah', com: {name: 'Something'}});
 
-const app = appSetup(createRoute({
-    licenceService: licenceServiceStub,
-    prisonerService,
-    logger: loggerStub,
-    authenticationMiddleware
-}));
-
 describe('GET sent', () => {
 
+    let app;
     beforeEach(() => {
+        app = createApp({prisonerService}, 'caUser');
         prisonerService.getOrganisationContactDetails.reset();
     });
 
     it('renders the sent page for CAtoRO', () => {
         return request(app)
-            .get('/RO/caToRo/123')
+            .get('/hdc/sent/RO/caToRo/123')
             .expect(200)
             .expect(() => {
                 expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
@@ -41,7 +36,7 @@ describe('GET sent', () => {
 
     it('renders the sent page for CAtoDM', () => {
         return request(app)
-            .get('/DM/caToDm/123')
+            .get('/hdc/sent/DM/caToDm/123')
             .expect(200)
             .expect(() => {
                 expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
@@ -54,7 +49,7 @@ describe('GET sent', () => {
 
     it('renders the sent page for ROtoCA', () => {
         return request(app)
-            .get('/CA/roToCa/123')
+            .get('/hdc/sent/CA/roToCa/123')
             .expect(200)
             .expect(() => {
                 expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
@@ -67,7 +62,7 @@ describe('GET sent', () => {
 
     it('renders the sent page for DMtoCA', () => {
         return request(app)
-            .get('/CA/dmToCa/123')
+            .get('/hdc/sent/CA/dmToCa/123')
             .expect(200)
             .expect(() => {
                 expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
@@ -80,7 +75,7 @@ describe('GET sent', () => {
 
     it('renders the sent page for CAtoDMRefusal', () => {
         return request(app)
-            .get('/DM/caToDmRefusal/123')
+            .get('/hdc/sent/DM/caToDmRefusal/123')
             .expect(200)
             .expect(() => {
                 expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
@@ -93,8 +88,17 @@ describe('GET sent', () => {
 
     it('errors when an invalid transition type is provided', () => {
         return request(app)
-            .get('/CA/foobar/123')
+            .get('/hdc/sent/CA/foobar/123')
             .expect(500);
     });
 });
 
+function createApp({licenceService, prisonerService}, user) {
+    prisonerService = prisonerService || createPrisonerServiceStub();
+    licenceService = licenceService || createLicenceServiceStub();
+
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const route = baseRouter(createRoute({licenceService, prisonerService}), 'USER_MANAGEMENT');
+
+    return appSetup(route, user, '/hdc/sent/');
+}

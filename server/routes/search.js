@@ -1,19 +1,7 @@
-const express = require('express');
-
 const {asyncMiddleware} = require('../utils/middleware');
 const {parseSearchTerms} = require('../utils/searchParser');
 
-module.exports = function({searchService, authenticationMiddleware}) {
-    const router = express.Router();
-    router.use(authenticationMiddleware());
-
-    router.use(function(req, res, next) {
-        if (typeof req.csrfToken === 'function') {
-            res.locals.csrfToken = req.csrfToken();
-        }
-        next();
-    });
-
+module.exports = ({searchService, authenticationMiddleware}) => router => {
     router.get('/offender', (req, res) => {
         res.render('search/offender');
     });

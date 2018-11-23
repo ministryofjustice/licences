@@ -1,14 +1,15 @@
 const request = require('supertest');
 
 const {
-    loggerStub,
+    createPrisonerServiceStub,
+    createLicenceServiceStub,
     searchServiceStub,
-    authenticationMiddleware,
     appSetup,
     auditStub
 } = require('../supertestSetup');
 
-const createRoute = require('../../server/routes/search');
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
+const createSearchRouter = require('../../server/routes/search');
 
 
 describe('Search:', () => {
@@ -19,18 +20,13 @@ describe('Search:', () => {
 
     describe('When role is RO', () => {
 
-        const app = appSetup(createRoute({
-            searchService: searchServiceStub,
-            logger: loggerStub,
-            authenticationMiddleware,
-            audit: auditStub
-        }), 'roUser');
+        const app = createApp({}, 'roUser', '/search/');
 
         describe('GET /search/offender', () => {
 
             it('renders and HTML output', () => {
                 return request(app)
-                    .get('/offender')
+                    .get('/search/offender')
                     .expect(200)
                     .expect('Content-Type', /html/);
             });
@@ -41,7 +37,7 @@ describe('Search:', () => {
 
             it('parses search terms into query string and redirects to /hdc/search/offender/results', () => {
                 return request(app)
-                    .post('/offender')
+                    .post('/search/offender')
                     .send({searchTerm: 'A0001XX'})
                     .expect(302)
                     .expect(res => {
@@ -52,7 +48,7 @@ describe('Search:', () => {
 
             it('renders search page if input error', () => {
                 return request(app)
-                    .post('/offender')
+                    .post('/search/offender')
                     .send({searchTerm: ''})
                     .expect(200)
                     .expect(res => {
@@ -67,7 +63,7 @@ describe('Search:', () => {
 
             it('parses search terms into query string and redirects to /hdc/search/offender/results', () => {
                 return request(app)
-                    .post('/offender/results')
+                    .post('/search/offender/results')
                     .send({searchTerm: 'A0001XX'})
                     .expect(302)
                     .expect(res => {
@@ -78,7 +74,7 @@ describe('Search:', () => {
 
             it('renders search page if input error', () => {
                 return request(app)
-                    .post('/offender/results')
+                    .post('/search/offender/results')
                     .send({searchTerm: ''})
                     .expect(200)
                     .expect(res => {
@@ -93,7 +89,7 @@ describe('Search:', () => {
 
             it('calls search service and renders HTML output', () => {
                 return request(app)
-                    .get('/offender/results?nomisId=A0001XX')
+                    .get('/search/offender/results?nomisId=A0001XX')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(() => {
@@ -107,4 +103,12 @@ describe('Search:', () => {
     });
 });
 
+function createApp({}, user) {
+    const prisonerService = createPrisonerServiceStub();
+    const licenceService = createLicenceServiceStub();
 
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const route = baseRouter(createSearchRouter({searchService: searchServiceStub}));
+
+    return appSetup(route, user, '/search/');
+}

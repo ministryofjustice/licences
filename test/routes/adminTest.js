@@ -1,20 +1,16 @@
 const request = require('supertest');
 
 const {
-    loggerStub,
     userAdminServiceStub,
-    authenticationMiddleware,
     auditStub,
+    createPrisonerServiceStub,
+    createLicenceServiceStub,
     appSetup
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createAdminRoute = require('../../server/routes/admin/admin');
-const adminRoute = createAdminRoute({
-    userAdminService: userAdminServiceStub,
-    logger: loggerStub,
-    authenticationMiddleware,
-    audit: auditStub
-});
+
 
 let app;
 
@@ -35,7 +31,7 @@ const user2 = {
 describe('/admin', () => {
 
     beforeEach(() => {
-        app = appSetup(adminRoute, 'batchUser', '/admin/');
+        app = createApp({}, 'batchUser');
 
         auditStub.record.reset();
 
@@ -88,7 +84,7 @@ describe('/admin', () => {
         });
 
         it('should throw if submitted by non-authorised user', () => {
-            app = appSetup(adminRoute, 'roUser', '/admin/');
+            app = createApp({}, 'roUser');
             return request(app)
                 .get('/admin/roUsers')
                 .expect(403);
@@ -354,7 +350,7 @@ describe('/admin', () => {
         });
 
         it('should throw if submitted by non-authorised user', () => {
-            app = appSetup(adminRoute, 'roUser', '/admin/');
+            app = createApp({}, 'roUser');
             return request(app)
                 .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
                 .expect(403);
@@ -362,3 +358,12 @@ describe('/admin', () => {
     });
 });
 
+function createApp({licenceService}, user) {
+    const prisonerService = createPrisonerServiceStub();
+    licenceService = licenceService || createLicenceServiceStub();
+
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const route = baseRouter(createAdminRoute({userAdminService: userAdminServiceStub}), 'USER_MANAGEMENT');
+
+    return appSetup(route, user, '/admin/');
+}
