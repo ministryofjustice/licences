@@ -5,7 +5,7 @@ module.exports = ({licenceService, prisonerService, notificationService, audit})
     router.get('/:destination/:bookingId', async (req, res) => {
         const {destination, bookingId} = req.params;
         const transition = transitionForDestination[destination];
-        const submissionTarget = await prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, req.user.token);
+        const submissionTarget = await prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, res.locals.token);
 
         res.render('send/' + transition.type, {bookingId, submissionTarget});
     });
@@ -14,7 +14,7 @@ module.exports = ({licenceService, prisonerService, notificationService, audit})
         const {destination, bookingId} = req.params;
         const transition = transitionForDestination[destination];
 
-        const submissionTarget = await prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, req.user.token);
+        const submissionTarget = await prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, res.locals.token);
         await Promise.all([
             licenceService.markForHandover(bookingId, transition.type),
             notifyRecipient(transition.type)

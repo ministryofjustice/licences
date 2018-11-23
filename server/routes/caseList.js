@@ -9,7 +9,7 @@ module.exports = ({caseListService}) => router => {
         logger.debug('GET /caseList');
 
         const hdcEligible = await caseListService.getHdcCaseList(
-            req.user.token,
+            res.locals.token,
             req.user.username,
             req.user.role,
             req.params.tab

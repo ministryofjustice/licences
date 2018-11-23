@@ -1,5 +1,4 @@
 const fiveMinutesBefore = require('../utils/fiveMinutesBefore');
-const {getIn} = require('../utils/functionalHelpers');
 const allowedRoles = require('./roles');
 const logger = require('../../log');
 
@@ -37,13 +36,11 @@ module.exports = function(signInService, userService, audit) {
             throw new Error('Login error - no acceptable role');
         }
 
-        const roToken = userProfile.role === 'RO' ? await signInService.getClientCredentialsTokens(username) : null;
-
         const userDetail = userProfile.staffId || userProfile.username || userProfile.lastName || 'no user id';
         audit.record('LOGIN', userDetail);
 
         return {
-            token: getIn(roToken, ['token']) || token,
+            token,
             refreshToken,
             expiresIn,
             refreshTime: fiveMinutesBefore(expiresIn),

@@ -4,7 +4,8 @@ const {
     createLicenceServiceStub,
     createPrisonerServiceStub,
     appSetup,
-    auditStub
+    auditStub,
+    signInServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -151,6 +152,17 @@ describe('send', () => {
                 });
         });
 
+        it('uses system token form RO', () => {
+            const app = createApp({licenceService, prisonerService}, 'roUser');
+
+            return request(app)
+                .post('/hdc/send/finalChecks/123')
+                .expect(() => {
+                    expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('CA', '123', 'system-token');
+                });
+        });
+
+
         it('calls markForHandover via licenceService for finalChecks', () => {
             const app = createApp({licenceService, prisonerService}, 'roUser');
 
@@ -290,8 +302,9 @@ describe('send', () => {
 function createApp({licenceService, prisonerService}, user) {
     prisonerService = prisonerService || createPrisonerServiceStub();
     licenceService = licenceService || createLicenceServiceStub();
+    const signInService = signInServiceStub;
 
-    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub, signInService});
     const route = baseRouter(createRoute({
         licenceService,
         prisonerService,

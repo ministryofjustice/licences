@@ -4,7 +4,8 @@ const {
     createPrisonerServiceStub,
     createLicenceServiceStub,
     appSetup,
-    auditStub
+    auditStub,
+    signInServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -96,8 +97,9 @@ describe('GET sent', () => {
 function createApp({licenceService, prisonerService}, user) {
     prisonerService = prisonerService || createPrisonerServiceStub();
     licenceService = licenceService || createLicenceServiceStub();
+    const signInService = signInServiceStub;
 
-    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub, signInService});
     const route = baseRouter(createRoute({licenceService, prisonerService}), 'USER_MANAGEMENT');
 
     return appSetup(route, user, '/hdc/sent/');

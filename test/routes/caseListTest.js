@@ -5,7 +5,8 @@ const {
     caseListServiceStub,
     createPrisonerServiceStub,
     createLicenceServiceStub,
-    auditStub
+    auditStub,
+    signInServiceStub
 } = require('../supertestSetup');
 
 const caseListResponse = require('../stubs/caseListResponse');
@@ -42,8 +43,9 @@ describe('GET /caseList', () => {
 function createApp({}, user) {
     const prisonerService = createPrisonerServiceStub();
     const licenceService = createLicenceServiceStub();
+    const signInService = signInServiceStub;
 
-    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub, signInService});
     const route = baseRouter(createCaseListRoute({caseListService: caseListServiceStub}));
 
     return appSetup(route, user, '/caselist/');

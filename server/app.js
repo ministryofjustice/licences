@@ -22,7 +22,6 @@ const healthcheck = require('../server/healthcheck');
 
 const passport = require('passport');
 const auth = require('./authentication/auth');
-const authenticationMiddleware = auth.authenticationMiddleware;
 
 const defaultRouter = require('../server/routes/default');
 const signInRouter = require('./routes/signIn');
@@ -225,11 +224,6 @@ module.exports = function createApp({
         if (production && req.user) {
             const timeToRefresh = new Date() > req.user.refreshTime;
             if (timeToRefresh) {
-
-                if (req.user.role === 'RO') {
-                    return res.redirect('/logout');
-                }
-
                 try {
                     const newToken = await signInService.getRefreshedToken(req.user);
                     req.user.token = newToken.token;
@@ -311,7 +305,7 @@ module.exports = function createApp({
 
     app.get('/login/callback', passport.authenticate('oauth2', {successReturnToOrRedirect: '/', failureRedirect: '/autherror'}));
 
-    const baseRouter = standardRouter({licenceService, prisonerService, audit});
+    const baseRouter = standardRouter({licenceService, prisonerService, audit, signInService});
 
     app.use((req, res, next) => {
         res.locals.tagManagerKey = config.tagManagerKey;
@@ -321,7 +315,7 @@ module.exports = function createApp({
     app.use('/', defaultRouter());
 
     app.use('/caseList/', baseRouter(caseListRouter({caseListService})));
-    app.use('/admin/', baseRouter(adminRouter({userAdminService, authenticationMiddleware, audit}), 'USER_MANAGEMENT'));
+    app.use('/admin/', baseRouter(adminRouter({userAdminService}), 'USER_MANAGEMENT'));
     app.use('/hdc/contact/', baseRouter(contactRouter({userAdminService})));
     app.use('/hdc/pdf/', baseRouter(pdfRouter({pdfService, prisonerService}), 'CREATE_PDF'));
     app.use('/hdc/search/', baseRouter(searchRouter({searchService})));

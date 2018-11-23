@@ -5,7 +5,8 @@ const {
     createLicenceServiceStub,
     searchServiceStub,
     appSetup,
-    auditStub
+    auditStub,
+    signInServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -95,7 +96,7 @@ describe('Search:', () => {
                     .expect(() => {
                         expect(searchServiceStub.searchOffenders).to.be.calledOnce();
                         expect(searchServiceStub.searchOffenders)
-                            .to.be.calledWith('A0001XX', 'token', 'RO');
+                            .to.be.calledWith('A0001XX', 'system-token', 'RO');
                     });
             });
 
@@ -106,8 +107,9 @@ describe('Search:', () => {
 function createApp({}, user) {
     const prisonerService = createPrisonerServiceStub();
     const licenceService = createLicenceServiceStub();
+    const signInService = signInServiceStub;
 
-    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub, signInService});
     const route = baseRouter(createSearchRouter({searchService: searchServiceStub}));
 
     return appSetup(route, user, '/search/');

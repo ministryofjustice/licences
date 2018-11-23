@@ -60,21 +60,6 @@ describe('strategiesTest', () => {
             });
         });
 
-        it('should call done with client credentials token if user is RO', async () => {
-            userService.getUserProfile.resolves({name: 'someone', role: 'RO', staffId: 'sid'});
-            await service.localInit('un', 'pw', done);
-            expect(done).to.be.calledOnce();
-            expect(done).to.be.calledWith(null, {
-                token: 'cdt',
-                refreshToken: 'rt',
-                expiresIn: '1200',
-                refreshTime: in15Mins,
-                staffId: 'sid',
-                name: 'someone',
-                role: 'RO'
-            });
-        });
-
         it('should audit the login', async () => {
             await service.localInit('un', 'pw', done);
             expect(audit.record).to.be.calledOnce();
@@ -108,21 +93,6 @@ describe('strategiesTest', () => {
                 staffId: 'sid',
                 name: 'someone',
                 role: 'CA'
-            });
-        });
-
-        it('should call done with client credentials token if user is RO', async () => {
-            userService.getUserProfile.resolves({name: 'someone', role: 'RO', staffId: 'sid'});
-            await service.oauthInit('t', 'rt', {expires_in: '1200', user_name: 'un'}, {}, done);
-            expect(done).to.be.calledOnce();
-            expect(done).to.be.calledWith(null, {
-                token: 'cdt',
-                refreshToken: 'rt',
-                expiresIn: '1200',
-                refreshTime: in15Mins,
-                staffId: 'sid',
-                name: 'someone',
-                role: 'RO'
             });
         });
 
