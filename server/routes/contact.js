@@ -1,10 +1,6 @@
-const express = require('express');
-
 const {asyncMiddleware} = require('../utils/middleware');
 
-module.exports = function({logger, userAdminService, authenticationMiddleware}) {
-    const router = express.Router();
-    router.use(authenticationMiddleware());
+module.exports = ({userAdminService}) => router => {
 
     router.get('/ro/', asyncMiddleware(async (req, res) => {
         const roUsers = await userAdminService.getRoUsers();

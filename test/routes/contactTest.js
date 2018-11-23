@@ -1,18 +1,15 @@
 const request = require('supertest');
 
 const {
-    loggerStub,
+    createPrisonerServiceStub,
+    createLicenceServiceStub,
     userAdminServiceStub,
-    authenticationMiddleware,
-    appSetup
+    appSetup,
+    auditStub
 } = require('../supertestSetup');
 
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
 const createContactRoute = require('../../server/routes/contact');
-const contactRoute = createContactRoute({
-    userAdminService: userAdminServiceStub,
-    logger: loggerStub,
-    authenticationMiddleware
-});
 
 let app;
 
@@ -28,7 +25,7 @@ const roUser = {
 describe('/contact', () => {
 
     beforeEach(() => {
-        app = appSetup(contactRoute, 'caUser', '/contact/');
+        app = createApp({}, 'caUser');
         userAdminServiceStub.getRoUserByDeliusId.reset();
         userAdminServiceStub.getRoUserByDeliusId.resolves(roUser);
     });
@@ -61,3 +58,12 @@ describe('/contact', () => {
 
 });
 
+function createApp({}, user) {
+    const prisonerService = createPrisonerServiceStub();
+    const licenceService = createLicenceServiceStub();
+
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const route = baseRouter(createContactRoute({userAdminService: userAdminServiceStub}));
+
+    return appSetup(route, user, '/contact/');
+}

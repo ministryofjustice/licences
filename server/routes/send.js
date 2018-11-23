@@ -1,20 +1,7 @@
-const express = require('express');
-const {asyncMiddleware, checkLicenceMiddleWare, authorisationMiddleware} = require('../utils/middleware');
+const {asyncMiddleware} = require('../utils/middleware');
 const {notifyKey} = require('../config');
 
-module.exports = function({licenceService, prisonerService, authenticationMiddleware, notificationService, audit}) {
-    const router = express.Router();
-    router.use(authenticationMiddleware());
-    router.param('bookingId', checkLicenceMiddleWare(licenceService, prisonerService));
-    router.param('bookingId', authorisationMiddleware);
-
-    router.use(function(req, res, next) {
-        if (typeof req.csrfToken === 'function') {
-            res.locals.csrfToken = req.csrfToken();
-        }
-        next();
-    });
-
+module.exports = ({licenceService, prisonerService, notificationService, audit}) => router => {
     router.get('/:destination/:bookingId', async (req, res) => {
         const {destination, bookingId} = req.params;
         const transition = transitionForDestination[destination];

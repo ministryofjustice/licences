@@ -1,22 +1,9 @@
-const express = require('express');
-const {asyncMiddleware, authorisationMiddleware, auditMiddleware} = require('../../utils/middleware');
+const {asyncMiddleware, authorisationMiddleware} = require('../../utils/middleware');
 const {firstItem} = require('../../utils/functionalHelpers');
 
-module.exports = function(
-    {userAdminService, authenticationMiddleware, audit}) {
+module.exports = ({userAdminService}) => (router, audited) => {
 
-    const router = express.Router();
-    router.use(authenticationMiddleware());
     router.use(authorisationMiddleware);
-
-    const audited = auditMiddleware(audit, 'USER_MANAGEMENT');
-
-    router.use(function(req, res, next) {
-        if (typeof req.csrfToken === 'function') {
-            res.locals.csrfToken = req.csrfToken();
-        }
-        next();
-    });
 
     router.get('/', (req, res) => {
         res.redirect('/admin/roUsers');

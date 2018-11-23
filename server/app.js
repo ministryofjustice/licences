@@ -56,7 +56,6 @@ const version = moment.now().toString();
 const production = process.env.NODE_ENV === 'production';
 
 module.exports = function createApp({
-                                        logger,
                                         signInService,
                                         licenceService,
                                         prisonerService,
@@ -122,7 +121,7 @@ module.exports = function createApp({
     app.use(bodyParser.urlencoded({extended: true}));
 
     if (config.enableTestUtils) {
-        app.use('/utils/', utilsRouter({logger, licenceService}));
+        app.use('/utils/', utilsRouter());
     }
 
     app.use(cookieParser());
@@ -312,7 +311,7 @@ module.exports = function createApp({
 
     app.get('/login/callback', passport.authenticate('oauth2', {successReturnToOrRedirect: '/', failureRedirect: '/autherror'}));
 
-    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit});
+    const baseRouter = standardRouter({licenceService, prisonerService, audit});
 
     app.use((req, res, next) => {
         res.locals.tagManagerKey = config.tagManagerKey;
@@ -321,14 +320,14 @@ module.exports = function createApp({
 
     app.use('/', defaultRouter());
 
-    app.use('/caseList/', caseListRouter({caseListService, authenticationMiddleware}));
-    app.use('/admin/', adminRouter({userAdminService, authenticationMiddleware, audit}));
-    app.use('/hdc/contact/', contactRouter({logger, userAdminService, authenticationMiddleware}));
-    app.use('/hdc/pdf/', pdfRouter({pdfService, licenceService, conditionsService, prisonerService, authenticationMiddleware, audit}));
-    app.use('/hdc/search/', searchRouter({searchService, authenticationMiddleware}));
-    app.use('/hdc/send/', sendRouter({licenceService, prisonerService, authenticationMiddleware, notificationService, audit}));
-    app.use('/hdc/sent/', sentRouter({licenceService, prisonerService, authenticationMiddleware}));
-    app.use('/hdc/taskList/', taskListRouter({prisonerService, licenceService, caseListService, authenticationMiddleware, audit}));
+    app.use('/caseList/', baseRouter(caseListRouter({caseListService})));
+    app.use('/admin/', baseRouter(adminRouter({userAdminService, authenticationMiddleware, audit}), 'USER_MANAGEMENT'));
+    app.use('/hdc/contact/', baseRouter(contactRouter({userAdminService})));
+    app.use('/hdc/pdf/', baseRouter(pdfRouter({pdfService, prisonerService}), 'CREATE_PDF'));
+    app.use('/hdc/search/', baseRouter(searchRouter({searchService})));
+    app.use('/hdc/send/', baseRouter(sendRouter({licenceService, prisonerService, notificationService, audit})));
+    app.use('/hdc/sent/', baseRouter(sentRouter({licenceService, prisonerService})));
+    app.use('/hdc/taskList/', baseRouter(taskListRouter({prisonerService, licenceService, caseListService, audit})));
     app.use('/user/', baseRouter(userRouter({userService})));
 
     app.use('/hdc/', baseRouter(addressRouter({licenceService})));

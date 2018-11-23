@@ -1,10 +1,7 @@
 const logger = require('../../log');
-const express = require('express');
 const {asyncMiddleware} = require('../utils/middleware');
 
-module.exports = function({caseListService, authenticationMiddleware}) {
-    const router = express.Router();
-    router.use(authenticationMiddleware());
+module.exports = ({caseListService}) => router => {
 
     router.get('/', (req, res) => res.redirect('/caseList/active'));
 

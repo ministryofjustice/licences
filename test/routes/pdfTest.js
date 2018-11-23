@@ -1,27 +1,18 @@
 const request = require('supertest');
 
 const {
-    loggerStub,
     pdfServiceStub,
-    authenticationMiddleware,
     appSetup,
     auditStub,
     createPrisonerServiceStub,
     createLicenceServiceStub
 } = require('../supertestSetup');
 
-const createPdfRoute = require('../../server/routes/pdf');
+const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
+const createPdfRouter = require('../../server/routes/pdf');
 
-const prisonerService = createPrisonerServiceStub();
-const licenceService = createLicenceServiceStub();
-const pdfRoute = createPdfRoute({
-    logger: loggerStub,
-    pdfService: pdfServiceStub,
-    authenticationMiddleware,
-    audit: auditStub,
-    prisonerService,
-    licenceService
-});
+const licenceServiceStub = createLicenceServiceStub();
+
 let app;
 
 const valuesWithMissing = {
@@ -48,10 +39,10 @@ const valuesWithoutMissing = {
 describe('PDF:', () => {
 
     beforeEach(() => {
-        app = appSetup(pdfRoute, 'caUser', '/hdc/pdf/');
+        app = createApp({licenceServiceStub, pdfServiceStub}, 'caUser');
         auditStub.record.reset();
         pdfServiceStub.getPdfLicenceData.reset();
-        licenceService.getLicence.resolves({licence: {key: 'value'}});
+        licenceServiceStub.getLicence.resolves({licence: {key: 'value'}});
     });
 
     describe('GET /select', () => {
@@ -71,7 +62,7 @@ describe('PDF:', () => {
 
         it('defaults to type used in last approved version', () => {
 
-            licenceService.getLicence.resolves({approvedVersionDetails: {template: 'hdc_ap'}});
+            licenceServiceStub.getLicence.resolves({approvedVersionDetails: {template: 'hdc_ap'}});
 
             return request(app)
                 .get('/hdc/pdf/select/123')
@@ -86,9 +77,9 @@ describe('PDF:', () => {
         });
 
         it('should throw if a non ca tries to access the page', () => {
-            app = appSetup(pdfRoute, 'roUser', '/hdc/pdf');
+            app = createApp({}, 'roUser');
 
-            licenceService.getLicence.resolves({approvedVersionDetails: {template: 'hdc_ap'}});
+            licenceServiceStub.getLicence.resolves({approvedVersionDetails: {template: 'hdc_ap'}});
 
             return request(app)
                 .get('/hdc/pdf/select/123')
@@ -115,7 +106,7 @@ describe('PDF:', () => {
         });
 
         it('should throw if a non ca tries to post to the route', () => {
-            app = appSetup(pdfRoute, 'roUser', '/hdc/pdf');
+            app = createApp({}, 'roUser', '/hdc/pdf');
 
             return request(app)
                 .post('/hdc/pdf/select/123')
@@ -165,7 +156,7 @@ describe('PDF:', () => {
 
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
-            licenceService.getLicence.resolves({
+            licenceServiceStub.getLicence.resolves({
                 version: 1,
                 approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
             });
@@ -186,7 +177,7 @@ describe('PDF:', () => {
 
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
-            licenceService.getLicence.resolves({
+            licenceServiceStub.getLicence.resolves({
                 version: 1,
                 approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
             });
@@ -208,7 +199,7 @@ describe('PDF:', () => {
 
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
-            licenceService.getLicence.resolves({
+            licenceServiceStub.getLicence.resolves({
                 version: 2,
                 approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
             });
@@ -226,11 +217,11 @@ describe('PDF:', () => {
         });
 
         it('should throw if a non ca tries to access the tasklist', () => {
-            app = appSetup(pdfRoute, 'roUser', '/hdc/pdf');
+            app = createApp({}, 'roUser');
 
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
-            licenceService.getLicence.resolves({
+            licenceServiceStub.getLicence.resolves({
                 version: 2,
                 approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
             });
@@ -284,7 +275,7 @@ describe('PDF:', () => {
         });
 
         it('should throw if a non ca tries to create the pdf', () => {
-            app = appSetup(pdfRoute, 'roUser', '/hdc/pdf');
+            app = createApp({}, 'roUser');
 
             const pdf1AsBytes = Buffer.from([80, 68, 70, 45, 49]);
             pdfServiceStub.generatePdf.resolves(pdf1AsBytes);
@@ -294,6 +285,15 @@ describe('PDF:', () => {
                 .expect(403);
         });
     });
-
 });
+
+function createApp({licenceServiceStub, pdfServiceStub}, user) {
+    const prisonerService = createPrisonerServiceStub();
+    const licenceService = licenceServiceStub || createLicenceServiceStub();
+
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const route = baseRouter(createPdfRouter({pdfService: pdfServiceStub, prisonerService}), 'CREATE_PDF');
+
+    return appSetup(route, user, '/hdc/pdf/');
+}
 
