@@ -8,7 +8,7 @@ module.exports = function(nomisClientBuilder) {
 
         const [profile, roles] = await Promise.all([
             nomisClient.getLoggedInUserInfo(),
-            getAllRoles({token})
+            getAllRoles(token)
         ]);
 
         logger.info(`User profile success - username: ${username}`);
@@ -24,8 +24,8 @@ module.exports = function(nomisClientBuilder) {
         };
     }
 
-    async function getAllRoles(user) {
-        const nomisClient = nomisClientBuilder(user.token);
+    async function getAllRoles(token) {
+        const nomisClient = nomisClientBuilder(token);
         const allRoles = await nomisClient.getUserRoles();
 
         return allRoles
@@ -50,10 +50,10 @@ module.exports = function(nomisClientBuilder) {
         return nomisClient.getUserCaseLoads();
     }
 
-    async function setActiveCaseLoad(id, user) {
+    async function setActiveCaseLoad(id, user, token) {
 
         // set active caseload
-        const nomisClient = nomisClientBuilder(user.token);
+        const nomisClient = nomisClientBuilder(token);
         await nomisClient.putActiveCaseLoad(id);
 
         // find active caseload

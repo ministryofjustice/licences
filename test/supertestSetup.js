@@ -21,7 +21,8 @@ const auditStub = {
 
 const signInServiceStub = {
     signIn: sinon.stub().resolves(),
-    refresh: sinon.stub().resolves()
+    refresh: sinon.stub().resolves(),
+    getClientCredentialsTokens: sinon.stub().resolves({token: 'system-token'})
 };
 
 const createLicenceServiceStub = () => ({

@@ -8,7 +8,7 @@ module.exports = ({pdfService, prisonerService}) => (router, audited) => {
     router.get('/select/:bookingId', asyncMiddleware(async (req, res) => {
         const {bookingId} = req.params;
 
-        const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token);
+        const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token);
         const errors = firstItem(req.flash('errors')) || {};
 
         const lastTemplate = getIn(res.locals.licence, ['approvedVersionDetails', 'template']);
@@ -43,8 +43,8 @@ module.exports = ({pdfService, prisonerService}) => (router, audited) => {
         }
 
         const [prisoner, {missing}] = await Promise.all([
-            prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token),
-            pdfService.getPdfLicenceData(templateName, bookingId, licence, req.user.token)
+            prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
+            pdfService.getPdfLicenceData(templateName, bookingId, licence, res.locals.token)
         ]);
 
         const incompleteGroups = Object.keys(missing).filter(group => missing[group].mandatory);
@@ -90,8 +90,8 @@ module.exports = ({pdfService, prisonerService}) => (router, audited) => {
         logger.debug(`GET pdf/missing/${section}/${templateName}/${bookingId}`);
 
         const [prisoner, {missing}] = await Promise.all([
-            prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token),
-            pdfService.getPdfLicenceData(templateName, bookingId, licence, req.user.token)
+            prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
+            pdfService.getPdfLicenceData(templateName, bookingId, licence, res.locals.token)
         ]);
 
         const data = {};
@@ -111,7 +111,7 @@ module.exports = ({pdfService, prisonerService}) => (router, audited) => {
         const {licence} = res.locals;
         logger.debug(`GET pdf/create/${bookingId}/${templateName}`);
 
-        const pdf = await pdfService.generatePdf(templateName, bookingId, licence, req.user.token);
+        const pdf = await pdfService.generatePdf(templateName, bookingId, licence, res.locals.token);
 
         res.type('application/pdf');
         return res.end(pdf, 'binary');

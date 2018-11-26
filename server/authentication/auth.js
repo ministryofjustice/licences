@@ -6,10 +6,18 @@ const OauthStrategy = require('passport-oauth2').Strategy;
 const config = require('../config');
 const {generateOauthClientToken} = require('./oauth');
 
-function authenticationMiddleware() {
+function authenticationMiddleware(signInService) {
     // eslint-disable-next-line
-    return (req, res, next) => {
+    return async (req, res, next) => {
         if (req.isAuthenticated()) {
+            const {role, username, token} = req.user;
+            if (role !== 'RO') {
+                res.locals.token = token;
+                return next();
+            }
+
+            const systemToken = await signInService.getClientCredentialsTokens(username);
+            res.locals.token = systemToken.token;
             return next();
         }
 

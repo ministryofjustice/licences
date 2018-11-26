@@ -16,7 +16,7 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
             logger.debug(`GET /approval/${formName}/`);
 
             const {bookingId} = req.params;
-            const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, req.user.token);
+            const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token);
 
             const {nextPath, pageDataMap} = formConfig[formName];
             const dataPath = pageDataMap || ['licence', 'approval', 'release'];

@@ -7,7 +7,7 @@ const {getLicenceStatus} = require('./licenceStatus');
 
 module.exports = {
     asyncMiddleware,
-    checkLicenceMiddleWare,
+    checkLicenceMiddleware,
     authorisationMiddleware,
     auditMiddleware
 };
@@ -20,13 +20,13 @@ function asyncMiddleware(fn) {
     };
 }
 
-function checkLicenceMiddleWare(licenceService, prisonerService) {
+function checkLicenceMiddleware(licenceService, prisonerService) {
     return async (req, res, next, bookingId) => {
         try {
 
             const [licence, prisoner] = await Promise.all([
                 licenceService.getLicence(bookingId),
-                prisonerService.getPrisonerPersonalDetails(bookingId, req.user.token)
+                prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token)
             ]);
 
             if (!licence || !prisoner) {

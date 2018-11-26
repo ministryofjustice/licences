@@ -47,7 +47,7 @@ module.exports = ({userAdminService}) => (router, audited) => {
         }
 
         try {
-            await userAdminService.updateRoUser(req.user.token, originalNomisId, userInput);
+            await userAdminService.updateRoUser(res.locals.token, originalNomisId, userInput);
 
         } catch (error) {
             req.flash('errors', {nomisId: error.message});
@@ -74,7 +74,7 @@ module.exports = ({userAdminService}) => (router, audited) => {
         const {nomisUserName} = req.query;
 
         try {
-            const userInfo = await userAdminService.verifyUserDetails(req.user.token, nomisUserName);
+            const userInfo = await userAdminService.verifyUserDetails(res.locals.token, nomisUserName);
             return res.json(userInfo);
 
         } catch (error) {
@@ -100,7 +100,7 @@ module.exports = ({userAdminService}) => (router, audited) => {
         }
 
         try {
-            await userAdminService.addRoUser(req.user.token, userInput);
+            await userAdminService.addRoUser(res.locals.token, userInput);
             return res.redirect('/admin/roUsers');
 
         } catch (error) {

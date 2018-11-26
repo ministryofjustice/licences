@@ -5,7 +5,8 @@ const {
     createLicenceServiceStub,
     caseListServiceStub,
     appSetup,
-    auditStub
+    auditStub,
+    signInServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -50,9 +51,8 @@ describe('GET /taskList/:prisonNumber', () => {
                 .expect('Content-Type', /html/)
                 .expect(res => {
                     expect(prisonerService.getPrisonerDetails).to.be.calledOnce();
-                    expect(prisonerService.getPrisonerDetails).to.be.calledWith('123');
+                    expect(prisonerService.getPrisonerDetails).to.be.calledWith('123', 'token');
                 });
-
         });
 
         it('should should show ARD if no CRD', () => {
@@ -649,6 +649,19 @@ describe('GET /taskList/:prisonNumber', () => {
 
     describe('User is RO', () => {
 
+        it('should pass the client credential token not the user one', () => {
+            licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: {}});
+            const app = createApp({licenceService, prisonerService}, 'roUser');
+            return request(app)
+                .get('/tasklist/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(prisonerService.getPrisonerDetails).to.be.calledOnce();
+                    expect(prisonerService.getPrisonerDetails).to.be.calledWith('123', 'system-token');
+                });
+        });
+
         context('curfew address not started', () => {
             it('should display a start button for curfew address', () => {
                 licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
@@ -1025,8 +1038,9 @@ describe('GET /taskList/:prisonNumber', () => {
 function createApp({licenceService, prisonerService}, user) {
     prisonerService = prisonerService || createPrisonerServiceStub();
     licenceService = licenceService || createLicenceServiceStub();
+    const signInService = signInServiceStub;
 
-    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub, signInService});
     const route = baseRouter(createRoute({
         licenceService,
         prisonerService,

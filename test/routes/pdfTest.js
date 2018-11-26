@@ -5,7 +5,8 @@ const {
     appSetup,
     auditStub,
     createPrisonerServiceStub,
-    createLicenceServiceStub
+    createLicenceServiceStub,
+    signInServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -134,7 +135,6 @@ describe('PDF:', () => {
                         'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'token');
                 });
         });
-
 
         it('Does not allow print when missing values', () => {
 
@@ -290,8 +290,9 @@ describe('PDF:', () => {
 function createApp({licenceServiceStub, pdfServiceStub}, user) {
     const prisonerService = createPrisonerServiceStub();
     const licenceService = licenceServiceStub || createLicenceServiceStub();
+    const signInService = signInServiceStub;
 
-    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub});
+    const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub, signInService});
     const route = baseRouter(createPdfRouter({pdfService: pdfServiceStub, prisonerService}), 'CREATE_PDF');
 
     return appSetup(route, user, '/hdc/pdf/');

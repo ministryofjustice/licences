@@ -13,7 +13,7 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
         logger.debug('GET /taskList');
 
         const {bookingId} = req.params;
-        const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, req.user.token);
+        const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token);
         const licence = await licenceService.getLicence(bookingId);
 
         const licenceStatus = getLicenceStatus(licence);
@@ -51,7 +51,7 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
     router.get('/image/:imageId', asyncMiddleware(async (req, res) => {
         logger.debug('GET /image');
 
-        const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, req.user.token);
+        const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, res.locals.token);
 
         if (!prisonerImage) {
             const placeHolder = path.join(__dirname, '../../assets/images/no-photo.png');

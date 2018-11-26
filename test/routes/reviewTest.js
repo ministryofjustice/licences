@@ -6,7 +6,8 @@ const {
     createConditionsServiceStub,
     authenticationMiddleware,
     appSetup,
-    auditStub
+    auditStub,
+    signInServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -19,8 +20,9 @@ const conditionsService = createConditionsServiceStub();
 let app;
 
 describe('/review/', () => {
-    const prisonerService = createPrisonerServiceStub();
-    prisonerService.getPrisonerDetails = sinon.stub().resolves({});
+    beforeEach(() => {
+        prisonerService.getPrisonerDetails = sinon.stub().resolves({});
+    });
 
     const licence = {
         licence: {
@@ -60,6 +62,34 @@ describe('/review/', () => {
                 .expect('Content-Type', /html/)
                 .expect(res => {
                     expect(licenceService.getValidationErrorsForReview).to.be.calledOnce();
+                });
+        });
+
+        it('calls getPrisonerDetails', () => {
+
+            app = createApp('caUser');
+
+            return request(app)
+                .get('/hdc/review/licence/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(prisonerService.getPrisonerDetails).to.be.calledOnce();
+                    expect(prisonerService.getPrisonerDetails).to.be.calledWith('1', 'token');
+                });
+        });
+
+        it('calls uses system token when logged in as RO setPrisonerDetails', () => {
+
+            app = createApp('roUser');
+
+            return request(app)
+                .get('/hdc/review/licence/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(prisonerService.getPrisonerDetails).to.be.calledOnce();
+                    expect(prisonerService.getPrisonerDetails).to.be.calledWith('1', 'system-token');
                 });
         });
     });
@@ -224,9 +254,10 @@ describe('/review/', () => {
 });
 
 function createApp(user) {
-
-    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub});
+    const signInService = signInServiceStub;
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService});
     const route = baseRouter(createRoute({licenceService, conditionsService, prisonerService}));
+
 
     return appSetup(route, user, '/hdc');
 }

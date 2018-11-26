@@ -5,8 +5,8 @@ module.exports = ({userService}) => router => {
     router.get('/', asyncMiddleware(async (req, res) => {
 
         const [allRoles, allCaseLoads] = await Promise.all([
-            userService.getAllRoles(req.user),
-            userService.getAllCaseLoads(req.user.token)
+            userService.getAllRoles(res.locals.token),
+            userService.getAllCaseLoads(res.locals.token)
         ]);
 
         res.render(`user/admin`, {allRoles, allCaseLoads, user: req.user});
@@ -18,7 +18,7 @@ module.exports = ({userService}) => router => {
         }
 
         if (req.body.caseLoad !== req.user.activeCaseLoad.caseLoadId) {
-            await userService.setActiveCaseLoad(req.body.caseLoad, req.user);
+            await userService.setActiveCaseLoad(req.body.caseLoad, req.user, res.locals.token);
         }
 
         res.redirect('/user');

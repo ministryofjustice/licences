@@ -19,7 +19,7 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
 
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
-        const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, req.user.token);
+        const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token);
 
         res.render(`review/${sectionName}`, {
             bookingId,
