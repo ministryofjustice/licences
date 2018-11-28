@@ -293,7 +293,8 @@ function createApp({licenceServiceStub, pdfServiceStub}, user) {
     const signInService = signInServiceStub;
 
     const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub, signInService});
-    const route = baseRouter(createPdfRouter({pdfService: pdfServiceStub, prisonerService}), 'CREATE_PDF');
+    const route = baseRouter(createPdfRouter({pdfService: pdfServiceStub, prisonerService}),
+        {auditKey: 'CREATE_PDF'});
 
     return appSetup(route, user, '/hdc/pdf/');
 }

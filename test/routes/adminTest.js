@@ -365,7 +365,8 @@ function createApp({licenceService}, user) {
     const signInService = signInServiceStub;
 
     const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub, signInService});
-    const route = baseRouter(createAdminRoute({userAdminService: userAdminServiceStub}), 'USER_MANAGEMENT');
+    const route = baseRouter(createAdminRoute({userAdminService: userAdminServiceStub}),
+        {auditKey: 'USER_MANAGEMENT'});
 
     return appSetup(route, user, '/admin/');
 }

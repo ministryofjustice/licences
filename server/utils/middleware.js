@@ -30,6 +30,7 @@ function checkLicenceMiddleware(licenceService, prisonerService) {
             ]);
 
             if (!licence || !prisoner) {
+                logger.info('No licence or details available for prisoner, redirecting to caselist');
                 return res.redirect('/');
             }
 
