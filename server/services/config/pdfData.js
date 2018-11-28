@@ -77,7 +77,7 @@ const OFF_CRO = {
     paths: [['prisonerInfo', 'CRO']],
     displayName: 'CRO number',
     group: 'sentence',
-    required: 'optional',
+    required: 'preferred',
     noPlaceholder: true
 };
 
@@ -85,7 +85,7 @@ const OFF_PNC = {
     paths: [['prisonerInfo', 'PNC']],
     displayName: 'PNC ID',
     group: 'sentence',
-    required: 'optional',
+    required: 'preferred',
     noPlaceholder: true
 };
 
