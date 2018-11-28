@@ -22,7 +22,7 @@ module.exports = {
             decisions: {
                 discriminator: 'enterAlternative',
                 Yes: '/hdc/bassReferral/bassRequest/rejected/',
-                No: '/hdc/taskList/'
+                No: '/hdc/proposedAddress/curfewAddressChoice/'
             }
         }
     },

@@ -28,9 +28,10 @@ module.exports = ({licenceService}) => (router, audited) => {
 
     router.get('/proposedAddress/curfewAddressChoice/:bookingId', asyncMiddleware(async (req, res) => {
 
+        const {bookingId} = req.params;
         const licence = res.locals.licence;
         const data = {decision: getCurfewAddressChoice(getIn(licence, ['licence']))};
-        const viewData = {data, errorObject: {}};
+        const viewData = {data, errorObject: {}, bookingId};
 
         res.render('proposedAddress/curfewAddressChoice', viewData);
     }));

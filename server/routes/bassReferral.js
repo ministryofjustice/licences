@@ -6,40 +6,23 @@ module.exports = ({licenceService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'bassReferral'});
 
-    router.post('/bassReferral/bassRequest/rejected/:bookingId', audited, asyncMiddleware(replaceBassRequest));
-  
+    router.post('/bassReferral/rejected/:bookingId', audited, asyncMiddleware(async (req, res) => {
+
+        const {bookingId} = req.params;
+        const {enterAlternative} = req.body;
+        const licence = res.locals.licence;
+
+        await licenceService.rejectBass(licence.licence, bookingId, enterAlternative);
+
+        const nextPath = formConfig['rejected'].nextPath.decisions[enterAlternative];
+        res.redirect(`${nextPath}${bookingId}`);
+    }));
+
     router.get('/bassReferral/:formName/:action/:bookingId', asyncMiddleware(standard.get));
     router.post('/bassReferral/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
 
     router.get('/bassReferral/:formName/:bookingId', asyncMiddleware(standard.get));
     router.post('/bassReferral/:formName/:bookingId', audited, asyncMiddleware(standard.post));
-
-    async function replaceBassRequest(req, res) {
-
-        const {bookingId} = req.params;
-
-        await Promise.all([
-            licenceService.update({
-                bookingId,
-                originalLicence: res.locals.licence,
-                config: formConfig['bassRequest'],
-                userInput: req.body,
-                licenceSection: 'bassReferral',
-                formName: 'bassRequest'
-            }),
-            licenceService.update({
-                bookingId,
-                originalLicence: res.locals.licence,
-                config: formConfig['bassAreaCheck'],
-                userInput: {bassAreaSuitable: undefined, bassAreaReason: undefined},
-                licenceSection: 'bassReferral',
-                formName: 'bassAreaCheck'
-            })
-        ]);
-
-        const nextPath = formConfig.bassRequest.nextPath['path'];
-        res.redirect(`${nextPath}${bookingId}`);
-    }
 
     return router;
 };

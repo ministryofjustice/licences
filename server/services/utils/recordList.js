@@ -1,14 +1,15 @@
-const {getIn, addToArray, removeFromArray, replaceArrayItem, mergeWithRight, replacePath} = require('../../utils/functionalHelpers');
+const {getIn, addToArray, removeFromArray, replaceArrayItem, mergeWithRight, replacePath, lastIndex, isEmpty}
+    = require('../../utils/functionalHelpers');
 
-module.exports = (licence, path) => {
+module.exports = ({licence, path, allowEmpty = false} = {}) => {
 
     const records = getIn(licence, path);
 
-    if (!records) {
+    if (!allowEmpty && !records) {
         throw new Error(`No records at path: ${path}`);
     }
 
-    if (!Array.isArray(records)) {
+    if (records && !Array.isArray(records)) {
         throw new Error(`No list at path: ${path}`);
     }
 
@@ -26,13 +27,17 @@ module.exports = (licence, path) => {
         return removeFromArray(index, 1, records);
     }
 
-    function editRecord({record, records, index}) {
-        if (!records[index]) {
-            throw new Error(`No record to update: ${index}`);
+    function editRecord({record, records, index = 0} = {}) {
+
+        const selector = !isEmpty(index) ? index : lastIndex(records);
+        const previous = !isEmpty(index) ? records[index] : records[selector];
+
+        if (isEmpty(previous)) {
+            throw new Error(`No record to update: ${selector}`);
         }
 
-        const editedRecord = mergeWithRight(records[index], record);
-        return replaceArrayItem(records, index, editedRecord);
+        const editedRecord = mergeWithRight(previous, record);
+        return replaceArrayItem(records, selector, editedRecord);
     }
 
     function modify(updateMethod) {
