@@ -537,6 +537,20 @@ describe('GET /taskList/:prisonNumber', () => {
                         expect(res.text).to.not.include('Submit to responsible officer');
                     });
             });
+
+            context('when the is no licence in the db for the offender', () => {
+                it('should still load the tasklist', () => {
+                    licenceService.getLicence.resolves(null);
+                    const app = createApp({licenceService, prisonerService});
+                    return request(app)
+                        .get('/tasklist/123')
+                        .expect(200)
+                        .expect('Content-Type', /html/)
+                        .expect(res => {
+                            expect(res.text).to.include('id="prisonerArd"> 01/01/2001');
+                        });
+                });
+            });
         });
 
         describe('POST /eligibilityStart', () => {
@@ -1045,7 +1059,7 @@ function createApp({licenceService, prisonerService}, user) {
         licenceService,
         prisonerService,
         caseListService: caseListServiceStub,
-        audit: auditStub}));
+        audit: auditStub}), {licenceRequired: false});
 
     return appSetup(route, user, '/tasklist/');
 }

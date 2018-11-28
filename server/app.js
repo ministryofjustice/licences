@@ -305,7 +305,7 @@ module.exports = function createApp({
 
     app.get('/login/callback', passport.authenticate('oauth2', {successReturnToOrRedirect: '/', failureRedirect: '/autherror'}));
 
-    const baseRouter = standardRouter({licenceService, prisonerService, audit, signInService});
+    const secureRoute = standardRouter({licenceService, prisonerService, audit, signInService});
 
     app.use((req, res, next) => {
         res.locals.tagManagerKey = config.tagManagerKey;
@@ -314,26 +314,27 @@ module.exports = function createApp({
 
     app.use('/', defaultRouter());
 
-    app.use('/caseList/', baseRouter(caseListRouter({caseListService})));
-    app.use('/admin/', baseRouter(adminRouter({userAdminService}), 'USER_MANAGEMENT'));
-    app.use('/hdc/contact/', baseRouter(contactRouter({userAdminService})));
-    app.use('/hdc/pdf/', baseRouter(pdfRouter({pdfService, prisonerService}), 'CREATE_PDF'));
-    app.use('/hdc/search/', baseRouter(searchRouter({searchService})));
-    app.use('/hdc/send/', baseRouter(sendRouter({licenceService, prisonerService, notificationService, audit})));
-    app.use('/hdc/sent/', baseRouter(sentRouter({licenceService, prisonerService})));
-    app.use('/hdc/taskList/', baseRouter(taskListRouter({prisonerService, licenceService, caseListService, audit})));
-    app.use('/user/', baseRouter(userRouter({userService})));
+    app.use('/hdc/taskList/', secureRoute(taskListRouter({prisonerService, licenceService, caseListService, audit}),
+            {licenceRequired: false}));
+    app.use('/caseList/', secureRoute(caseListRouter({caseListService})));
+    app.use('/admin/', secureRoute(adminRouter({userAdminService}), {auditKey: 'USER_MANAGEMENT'}));
+    app.use('/hdc/contact/', secureRoute(contactRouter({userAdminService})));
+    app.use('/hdc/pdf/', secureRoute(pdfRouter({pdfService, prisonerService}), {auditKey: 'CREATE_PDF'}));
+    app.use('/hdc/search/', secureRoute(searchRouter({searchService})));
+    app.use('/hdc/send/', secureRoute(sendRouter({licenceService, prisonerService, notificationService, audit})));
+    app.use('/hdc/sent/', secureRoute(sentRouter({licenceService, prisonerService})));
+    app.use('/user/', secureRoute(userRouter({userService})));
 
-    app.use('/hdc/', baseRouter(addressRouter({licenceService})));
-    app.use('/hdc/', baseRouter(approvalRouter({licenceService, prisonerService})));
-    app.use('/hdc/', baseRouter(bassReferralRouter({licenceService})));
-    app.use('/hdc/', baseRouter(conditionsRouter({licenceService, conditionsService})));
-    app.use('/hdc/', baseRouter(curfewRouter({licenceService})));
-    app.use('/hdc/', baseRouter(eligibilityRouter({licenceService})));
-    app.use('/hdc/', baseRouter(finalChecksRouter({licenceService})));
-    app.use('/hdc/', baseRouter(reviewRouter({licenceService, conditionsService, prisonerService})));
-    app.use('/hdc/', baseRouter(reportingRouter({licenceService})));
-    app.use('/hdc/', baseRouter(riskRouter({licenceService})));
+    app.use('/hdc/', secureRoute(addressRouter({licenceService})));
+    app.use('/hdc/', secureRoute(approvalRouter({licenceService, prisonerService})));
+    app.use('/hdc/', secureRoute(bassReferralRouter({licenceService})));
+    app.use('/hdc/', secureRoute(conditionsRouter({licenceService, conditionsService})));
+    app.use('/hdc/', secureRoute(curfewRouter({licenceService})));
+    app.use('/hdc/', secureRoute(eligibilityRouter({licenceService})));
+    app.use('/hdc/', secureRoute(finalChecksRouter({licenceService})));
+    app.use('/hdc/', secureRoute(reviewRouter({licenceService, conditionsService, prisonerService})));
+    app.use('/hdc/', secureRoute(reportingRouter({licenceService})));
+    app.use('/hdc/', secureRoute(riskRouter({licenceService})));
 
     // hide functionality until authorisation strategy is established
     if (!production) {
