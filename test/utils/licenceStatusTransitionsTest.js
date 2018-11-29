@@ -351,6 +351,29 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql(null);
     });
 
+    it('should not allow CA to DM refusal if already refused by ca', () => {
+        const status = {
+            stage: 'PROCESSING_CA',
+            tasks: {
+                exclusion: 'DONE',
+                crdTime: 'DONE',
+                suitability: 'DONE',
+                optOut: 'DONE',
+                bassReferral: 'DONE',
+                curfewAddress: 'DONE',
+                finalChecks: 'DONE'
+            },
+            decisions: {
+                curfewAddressApproved: 'withdrawn',
+                eligible: true,
+                finalChecksRefused: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql(null);
+    });
+
     it('should allow CA to DM refusal if curfew address is rejected', () => {
         const status = {
             stage: 'ELIGIBILITY',
