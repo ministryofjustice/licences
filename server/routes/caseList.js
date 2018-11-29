@@ -35,6 +35,8 @@ const labels = {
         'Presumed unsuitable': 'Change',
         'Opted out': 'Change',
         'Address withdrawn': 'Change',
+        'BASS offer withdrawn': 'Change',
+        'BASS request withdrawn': 'Change',
         Postponed: 'Change'
     },
     ro: {

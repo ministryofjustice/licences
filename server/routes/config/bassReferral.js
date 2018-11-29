@@ -84,6 +84,23 @@ module.exports = {
             }}
         ],
         nextPath: {
+            path: '/hdc/taskList/',
+            withdraw: '/hdc/bassReferral/bassWithdrawn/',
+            reinstate: '/hdc/taskList/'
+        }
+    },
+    bassWithdrawn: {
+        fields: [
+            {decision: {}}
+        ],
+        nextPath: {
+            decisions: [
+                {
+                    discriminator: 'decision',
+                    Yes: '/hdc/bassReferral/bassRequest/add/',
+                    No: '/hdc/proposedAddress/curfewAddressChoice/'
+                }
+            ],
             path: '/hdc/taskList/'
         }
     }

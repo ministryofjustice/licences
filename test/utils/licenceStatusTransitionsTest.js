@@ -285,6 +285,24 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql('caToDm');
     });
 
+    it('should allow CA to RO in the PROCESSING_CA for BASS when BASS area check not done', () => {
+        const status = {
+            stage: 'PROCESSING_CA',
+            tasks: {
+                curfewAddress: 'UNSTARTED',
+                bassOffer: 'DONE',
+                bassAreaCheck: 'UNSTARTED'
+            },
+            decisions: {
+                bassReferralNeeded: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+
+        expect(allowed).to.eql('caToRo');
+    });
+
     it('should allow CA to DM refusal when eligible and insufficient time', () => {
         const status = {
             stage: 'ELIGIBILITY',
@@ -420,6 +438,7 @@ describe('getAllowedTransition', () => {
             },
             decisions: {
                 eligible: true,
+                bassReferralNeeded: true,
                 bassAreaNotSuitable: true
             }
         };
@@ -436,6 +455,7 @@ describe('getAllowedTransition', () => {
             },
             decisions: {
                 eligible: true,
+                bassReferralNeeded: true,
                 bassAreaSuitable: true,
                 bassAccepted: 'Unsuitable'
             }
@@ -453,8 +473,24 @@ describe('getAllowedTransition', () => {
             },
             decisions: {
                 eligible: true,
+                bassReferralNeeded: true,
                 bassAreaSuitable: true,
                 bassAccepted: 'Unavailable'
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
+    });
+
+    it('should allow CA to DM refusal if BASS is withdrawn', () => {
+        const status = {
+            stage: 'PROCESSING_CA',
+            tasks: {},
+            decisions: {
+                eligible: true,
+                bassReferralNeeded: true,
+                bassWithdrawn: true
             }
         };
 

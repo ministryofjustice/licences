@@ -99,6 +99,8 @@ function neededForTab(prisoner, tab) {
         'Opted out',
         'Address not suitable',
         'Address withdrawn',
+        'BASS offer withdrawn',
+        'BASS request withdrawn',
         'Refused'
     ];
 

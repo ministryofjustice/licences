@@ -1,6 +1,6 @@
 const {asyncMiddleware} = require('../utils/middleware');
 const createStandardRoutes = require('./routeWorkers/standard');
-const {getIn, lastIndex, lastItem, isEmpty} = require('../utils/functionalHelpers');
+const {getIn, lastIndex, lastItem, isEmpty, mergeWithRight} = require('../utils/functionalHelpers');
 const formConfig = require('./config/proposedAddress');
 
 module.exports = ({licenceService}) => (router, audited) => {
@@ -26,33 +26,45 @@ module.exports = ({licenceService}) => (router, audited) => {
         return res.render('proposedAddress/curfewAddress', {bookingId, data: lastItem(addresses)});
     }
 
-    router.get('/proposedAddress/curfewAddressChoice/:bookingId', asyncMiddleware(async (req, res) => {
+    router.get('/proposedAddress/curfewAddressChoice/:action/:bookingId', asyncMiddleware(getChoice));
+    router.get('/proposedAddress/curfewAddressChoice/:bookingId', asyncMiddleware(getChoice));
+
+    function getChoice(req, res) {
 
         const {bookingId} = req.params;
         const licence = res.locals.licence;
         const data = {decision: getCurfewAddressChoice(getIn(licence, ['licence']))};
         const viewData = {data, errorObject: {}, bookingId};
 
-        res.render('proposedAddress/curfewAddressChoice', viewData);
-    }));
+        return res.render('proposedAddress/curfewAddressChoice', viewData);
+    }
 
-    router.post('/proposedAddress/curfewAddressChoice/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/proposedAddress/curfewAddressChoice/:action/:bookingId', audited, asyncMiddleware(postCurfewAddressChoice));
+    router.post('/proposedAddress/curfewAddressChoice/:bookingId', audited, asyncMiddleware(postCurfewAddressChoice));
 
-        const {bookingId} = req.params;
+    async function postCurfewAddressChoice(req, res) {
+
+        const {bookingId, action} = req.params;
         const {decision} = req.body;
         const licence = res.locals.licence;
 
-        const proposedAddress = proposedAddressContents[decision];
+        const proposedAddress = getIn(licence, ['licence', 'proposedAddress']);
+        const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision]);
+
         const bassReferral = getBassReferralContent(decision, licence);
 
         await Promise.all([
-            licenceService.updateSection('proposedAddress', bookingId, proposedAddress),
+            licenceService.updateSection('proposedAddress', bookingId, newProposedAddress),
             licenceService.updateSection('bassReferral', bookingId, bassReferral)
         ]);
 
         const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/${bookingId}`;
-        res.redirect(`${nextPath}${bookingId}`);
-    }));
+
+        if (action) {
+            return res.redirect(`${nextPath}${action}/${bookingId}`);
+        }
+        return res.redirect(`${nextPath}${bookingId}`);
+    }
 
     router.post('/proposedAddress/curfewAddress/:action/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {bookingId, action} = req.params;

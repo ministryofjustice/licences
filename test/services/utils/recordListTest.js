@@ -41,13 +41,6 @@ describe('recordList', () => {
             expect(() => testList.edit({index: 3, record: {edited: '1a'}})).to.throw(Error);
         });
 
-        it('should error on edit when empty', () => {
-            const licence = {a: {b: {c: []}}};
-            const testList = recordList({licence, path: ['a', 'b', 'c']});
-
-            expect(() => testList.edit({index: 0, record: {edited: '1a'}})).to.throw(Error);
-        });
-
         it('should edit last item when no index specified', () => {
             const licence = {a: {b: {c: [0, 1, 2]}}};
             const testList = recordList({licence, path: ['a', 'b', 'c']});
@@ -62,11 +55,11 @@ describe('recordList', () => {
             expect(testList.edit({record: {edited: '0a'}, index: 0})).to.eql({a: {b: {c: [{edited: '0a'}, 1, 2]}}});
         });
 
-        it('should error on edit when no items and no index specified', () => {
-            const licence = {a: {b: {c: []}}};
-            const testList = recordList({licence, path: ['a', 'b', 'c']});
+        it('should return the last item', () => {
+            const licence = {a: [1, 2, 3]};
+            const testList = recordList({licence, path: ['a']});
 
-            expect(() => testList.edit({record: {edited: '1a'}})).to.throw(Error);
+            expect(testList.last()).to.eql(3);
         });
     });
 
@@ -82,6 +75,11 @@ describe('recordList', () => {
             expect(() => recordList({licence, path: ['a', 'b', 'c'], allowEmpty: true})).to.throw(Error);
         });
 
+        it('should return undefined for the last item when empty', () => {
+            const licence = {a: []};
+            const testList = recordList({licence, path: ['a'], allowEmpty: true});
 
+            expect(testList.last()).to.eql(undefined);
+        });
     });
 });

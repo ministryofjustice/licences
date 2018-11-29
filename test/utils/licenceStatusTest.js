@@ -1069,4 +1069,92 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED);
         });
     });
+
+    context('bass', () => {
+
+        it('should show bassWithdrawn when current request empty and last request withdrawn', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {
+                    proposedAddress: {
+                        addressProposed: {
+                            decision: 'No'
+                        }
+                    },
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes'
+                        }
+                    },
+                    bassRejections: [
+                        {
+                            withdrawal: 'withdrawal reason',
+                            bassRequest: 'withdrawn request'
+                        }
+                    ]
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.decisions.bassWithdrawn).to.eql(true);
+            expect(status.decisions.bassWithdrawalReason).to.eql('withdrawal reason');
+        });
+
+        it('should not show bassWithdrawn when current request not empty and last request withdrawn', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {
+                    proposedAddress: {
+                        addressProposed: {
+                            decision: 'No'
+                        }
+                    },
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes',
+                            proposedTown: 'not withdrawn'
+                        }
+                    },
+                    bassRejections: [
+                        {
+                            withdrawal: 'withdrawal reason',
+                            bassRequest: 'withdrawn request'
+                        }
+                    ]
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.decisions.bassWithdrawn).to.eql(false);
+        });
+
+        it('should not show bassWithdrawn when last request not withdrawn', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {
+                    proposedAddress: {
+                        addressProposed: {
+                            decision: 'No'
+                        }
+                    },
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes'
+                        }
+                    },
+                    bassRejections: [
+                        {
+                            bassRequest: 'withdrawn request'
+                        }
+                    ]
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.decisions.bassWithdrawn).to.eql(false);
+        });
+    });
 });
