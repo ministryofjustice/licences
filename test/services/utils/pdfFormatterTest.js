@@ -393,7 +393,7 @@ const displayNames = {
             SENT_SED: 'Sentence expiry date (SED)',
             SENT_TUSED: 'Top-up supervision end date (TUSED)'
         },
-        optional: {
+        preferred: {
             OFF_CRO: 'CRO number',
             OFF_PNC: 'PNC ID'
         }

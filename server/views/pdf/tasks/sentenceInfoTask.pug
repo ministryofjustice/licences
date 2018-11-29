@@ -1,11 +1,12 @@
 
 - var incomplete = incompleteGroups && incompleteGroups.includes('sentence')
+- var incompletePreferred = incompletePreferredGroups.includes('sentence')
 
 div.paddingBottom
     h2.heading-medium Sentence dates and offender information
 
     div.pure-g
-        if incomplete
+        if incomplete || incompletePreferred
             div.pure-u-1.pure-u-md-3-4#sentenceTaskStatus
                 | Not complete
             div.pure-u-1.pure-u-md-1-4.center

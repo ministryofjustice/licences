@@ -23,12 +23,14 @@ block content
                         each item in missing.sentence.mandatory
                             li.bold #{item}
 
-                if missing.sentence.optional
+                if missing.sentence.optional || missing.sentence.preferred
                     br
                     p The following details should be entered in Prison-NOMIS if possible.
 
                     ul.list-bullet
-                        each item in missing.sentence.optional
+                        each item in missing.sentence.preferred || []
+                            li.bold #{item}
+                        each item in missing.sentence.optional || []
                             li.bold #{item}
 
     div.paddingBottom.smallPaddingTop

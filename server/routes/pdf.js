@@ -48,6 +48,8 @@ module.exports = ({pdfService, prisonerService}) => (router, audited) => {
         ]);
 
         const incompleteGroups = Object.keys(missing).filter(group => missing[group].mandatory);
+        const incompletePreferredGroups = Object.keys(missing).filter(group => missing[group].preferred);
+
         const canPrint = !incompleteGroups || isEmpty(incompleteGroups);
 
         return res.render('pdf/createLicenceTaskList', {
@@ -56,6 +58,7 @@ module.exports = ({pdfService, prisonerService}) => (router, audited) => {
             templateName,
             prisoner,
             incompleteGroups,
+            incompletePreferredGroups,
             canPrint,
             versionInfo: getVersionInfo(licence, templateLabel)
         });
