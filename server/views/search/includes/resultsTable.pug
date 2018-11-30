@@ -4,13 +4,10 @@ else
     table#hdcEligiblePrisoners.largeMarginBottom
         thead
             tr
-                th Name
-                th Prison no.
-                th Location
-                th HDCED
-                th CRD / ARD
-                th Responsible Officer
-                th Current status
+                th.sortable Name
+                th.hideMobile Prison no.
+                th.sortable Request received
+                th.sortable.hideMobile Status
         tbody
             each prisoner, index in hdcEligible
                 tr.hdcEligible
@@ -44,24 +41,10 @@ else
                             | #{prisoner.offenderNo}
 
                     td.location
-                        if prisoner.internalLocationDesc
-                            | #{prisoner.internalLocationDesc}
-                        if prisoner.internalLocationDesc && prisoner.agencyLocationDesc
-                            |  - #{prisoner.agencyLocationDesc}
+                        if prisoner.received
+                            | #{prisoner.received.text}
 
                     td.hdced
-                        if prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate
-                            | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
-
-                    td.crd
-                        if prisoner.sentenceDetail.releaseDate
-                            | #{prisoner.sentenceDetail.releaseDate}
-
-                    td.ro
-                        if prisoner.com
-                            | #{prisoner.com.name}
-
-                    td.status
                         if prisoner.status
                             | #{prisoner.status}
 
