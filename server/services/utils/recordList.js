@@ -30,7 +30,7 @@ module.exports = ({licence, path, allowEmpty = false} = {}) => {
     function editRecord({record, records, index = 0} = {}) {
 
         const selector = !isEmpty(index) ? index : lastIndex(records);
-        const previous = !isEmpty(index) ? records[index] : records[selector];
+        const previous = records[selector];
 
         if (isEmpty(previous)) {
             throw new Error(`No record to update: ${selector}`);
