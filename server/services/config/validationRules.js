@@ -93,8 +93,8 @@ const curfewAddress = joi.object().keys({
     }),
     homeVisitConducted: joi.when('occupier.isOffender', {
         is: joi.not('Yes'),
-        then: requiredIf('consent', 'Yes'),
-        otherwise: requiredYesNo
+        then: requiredIf('consent', 'Yes', requiredIf('electricity', 'Yes')),
+        otherwise: requiredIf('electricity', 'Yes')
     }),
     deemedSafe: joi.when('occupier.isOffender', {
         is: joi.not('Yes'),

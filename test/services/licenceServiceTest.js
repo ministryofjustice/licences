@@ -2093,7 +2093,27 @@ describe('licenceService', () => {
                 });
             });
 
-            it('should not require an answer for homeVisitConducted if consent is no', () => {
+            it('should not require an answer for homeVisitConducted if electricity is not yes', () => {
+
+                const licence = {
+                    ...baseLicence,
+                    proposedAddress: {
+                        ...baseLicence.proposedAddress,
+                        curfewAddress: {
+                            ...baseLicence.proposedAddress.curfewAddress,
+                            consent: 'Yes',
+                            electricity: 'No',
+                            homeVisitConducted: ''
+                        }
+                    }
+                };
+
+                const output = service.getLicenceErrors({licence});
+
+                expect(output).to.eql({});
+            });
+
+            it('should not require an answer for homeVisitConducted if consent is no ', () => {
 
                 const licence = {
                     ...baseLicence,
