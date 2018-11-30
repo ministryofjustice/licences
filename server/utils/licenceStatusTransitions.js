@@ -9,8 +9,6 @@ function getAllowedTransition(licenceStatus, role) {
     }
 
     switch (role) {
-
-
         case 'RO':
             if (canSendRoToCa(licenceStatus)) {
                 return 'roToCa';
@@ -118,11 +116,11 @@ function canSendCaToRo(licenceStatus) {
 function canSendCaToDmRefusal(licenceStatus) {
 
     const {stage, decisions} = licenceStatus;
-    const {curfewAddressApproved} = decisions;
+    const {curfewAddressApproved, finalChecksRefused} = decisions;
     const bassFailure = isBassFailure(decisions);
 
     if (['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
-        return curfewAddressApproved === 'withdrawn' || bassFailure;
+        return (curfewAddressApproved === 'withdrawn' || bassFailure) && !finalChecksRefused;
     }
 
     if (stage === 'ELIGIBILITY') {
