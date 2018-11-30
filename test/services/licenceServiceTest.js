@@ -1419,7 +1419,7 @@ describe('licenceService', () => {
 
         it('should move bassReferral into a rejection list', async () => {
 
-            const output = await service.rejectBass(baseLicence.licence, 123, 'Yes');
+            await service.rejectBass(baseLicence.licence, 123, 'Yes');
 
             const expectedOutput = {
                 bassReferral: {
@@ -1435,12 +1435,12 @@ describe('licenceService', () => {
                 ]
             };
 
-            expect(output).to.eql(expectedOutput);
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
         });
 
         it('should set bassReferral to empty with bassRequested value', async () => {
 
-            const output = await service.rejectBass(baseLicence.licence, 123, 'value to set');
+            await service.rejectBass(baseLicence.licence, 123, 'value to set');
 
             const expectedOutput = {
                 bassReferral: {
@@ -1456,7 +1456,7 @@ describe('licenceService', () => {
                 ]
             };
 
-            expect(output).to.eql(expectedOutput);
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
         });
 
         it('should move bassReferral to the end of existing rejection list', async () => {
@@ -1474,7 +1474,7 @@ describe('licenceService', () => {
                 }
             };
 
-            const output = await service.rejectBass(baseLicence.licence, 123, 'Yes');
+            await service.rejectBass(baseLicence.licence, 123, 'Yes');
 
             const expectedOutput = {
                 bassReferral: {
@@ -1491,7 +1491,7 @@ describe('licenceService', () => {
                 ]
             };
 
-            expect(output).to.eql(expectedOutput);
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
         });
 
         it('should update the saved licence', async () => {
@@ -1519,10 +1519,9 @@ describe('licenceService', () => {
 
             const licence = {};
 
-            const output = await service.rejectBass(licence, 123, 'Yes');
+            await service.rejectBass(licence, 123, 'Yes');
 
             expect(licenceClient.updateLicence).to.not.be.called();
-            expect(output).to.eql(licence);
         });
 
     });

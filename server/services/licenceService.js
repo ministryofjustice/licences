@@ -351,7 +351,8 @@ module.exports = function createLicenceService(licenceClient) {
         return updatedLicence;
     }
 
-    async function rejectBass(licence, bookingId, bassRequested) {
+    function rejectBass(licence, bookingId, bassRequested) {
+
         const lastBassReferral = getIn(licence, ['bassReferral']);
 
         if (!lastBassReferral) {
@@ -363,9 +364,7 @@ module.exports = function createLicenceService(licenceClient) {
 
         const updatedLicence = replacePath(['bassReferral'], {bassRequest: {bassRequested}}, licenceWithBassRejections);
 
-        await licenceClient.updateLicence(bookingId, updatedLicence);
-
-        return updatedLicence;
+        return licenceClient.updateLicence(bookingId, updatedLicence);
     }
 
 

@@ -10,7 +10,7 @@ module.exports = ({licenceService}) => (router, audited) => {
 
         const {bookingId} = req.params;
         const {enterAlternative} = req.body;
-        const licence = res.locals.licence;
+        const {licence} = res.locals.licence;
 
         await licenceService.rejectBass(licence.licence, bookingId, enterAlternative);
 
