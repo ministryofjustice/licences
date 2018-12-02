@@ -1393,6 +1393,139 @@ describe('licenceService', () => {
         });
     });
 
+    describe('rejectBass', () => {
+
+        const bassRequest = {
+            bassRequested: 1,
+            proposedTown: 1,
+            proposedCounty: 1
+        };
+
+        const bassAreaCheck = {
+            bassAreaSuitable: 'No',
+            bassAreaReason: '1'
+        };
+
+        const baseLicence = {
+            stage: 'ELIGIBILITY',
+            licence: {
+                bassReferral: {
+                    bassRequest,
+                    bassAreaCheck
+                }
+            }
+        };
+
+
+        it('should move bassReferral into a rejection list', async () => {
+
+            await service.rejectBass(baseLicence.licence, 123, 'Yes');
+
+            const expectedOutput = {
+                bassReferral: {
+                    bassRequest: {
+                        bassRequested: 'Yes'
+                    }
+                },
+                bassRejections: [
+                    {
+                        bassRequest,
+                        bassAreaCheck
+                    }
+                ]
+            };
+
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
+        });
+
+        it('should set bassReferral to empty with bassRequested value', async () => {
+
+            await service.rejectBass(baseLicence.licence, 123, 'value to set');
+
+            const expectedOutput = {
+                bassReferral: {
+                    bassRequest: {
+                        bassRequested: 'value to set'
+                    }
+                },
+                bassRejections: [
+                    {
+                        bassRequest,
+                        bassAreaCheck
+                    }
+                ]
+            };
+
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
+        });
+
+        it('should move bassReferral to the end of existing rejection list', async () => {
+
+            const baseLicence = {
+                stage: 'ELIGIBILITY',
+                licence: {
+                    bassReferral: {
+                        bassRequest,
+                        bassAreaCheck
+                    },
+                    bassRejections: [
+                        {first: 'rejection'}
+                    ]
+                }
+            };
+
+            await service.rejectBass(baseLicence.licence, 123, 'Yes');
+
+            const expectedOutput = {
+                bassReferral: {
+                    bassRequest: {
+                        bassRequested: 'Yes'
+                    }
+                },
+                bassRejections: [
+                    {first: 'rejection'},
+                    {
+                        bassRequest,
+                        bassAreaCheck
+                    }
+                ]
+            };
+
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
+        });
+
+        it('should update the saved licence', async () => {
+            await service.rejectBass(baseLicence.licence, 123, 'Yes');
+
+            const expectedOutput = {
+                bassReferral: {
+                    bassRequest: {
+                        bassRequested: 'Yes'
+                    }
+                },
+                bassRejections: [
+                    {
+                        bassRequest,
+                        bassAreaCheck
+                    }
+                ]
+            };
+
+            expect(licenceClient.updateLicence).to.be.calledOnce();
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
+        });
+
+        it('should not update the saved licence if there is no bassReferral to reject', async () => {
+
+            const licence = {};
+
+            await service.rejectBass(licence, 123, 'Yes');
+
+            expect(licenceClient.updateLicence).to.not.be.called();
+        });
+
+    });
+
     describe('getLicenceErrors', () => {
 
         const proposedAddress = {

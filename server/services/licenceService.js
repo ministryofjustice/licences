@@ -6,6 +6,7 @@ const {licenceStages, transitions} = require('../models/licenceStages');
 const licenceValidator = require('./utils/licenceValidation');
 const recordList = require('./utils/recordList');
 const addressesPath = ['proposedAddress', 'curfewAddress', 'addresses'];
+const {replacePath} = require('../utils/functionalHelpers');
 
 const {
     getIn,
@@ -314,7 +315,7 @@ module.exports = function createLicenceService(licenceClient) {
             const formResponse = getFormResponse(fieldMap, userInput);
 
             const newAddress = Array.isArray(formResponse.addresses) ? formResponse.addresses[0] : formResponse;
-            const addressList = recordList(licence, addressesPath);
+            const addressList = recordList({licence, path: addressesPath});
             const updatedLicence = addressesUpdateMethod({addressList, licence, newAddress, index});
 
             if (equals(licence, updatedLicence)) {
@@ -350,6 +351,23 @@ module.exports = function createLicenceService(licenceClient) {
         return updatedLicence;
     }
 
+    function rejectBass(licence, bookingId, bassRequested) {
+
+        const lastBassReferral = getIn(licence, ['bassReferral']);
+
+        if (!lastBassReferral) {
+            return licence;
+        }
+
+        const bassRejections = recordList({licence, path: ['bassRejections'], allowEmpty: true});
+        const licenceWithBassRejections = bassRejections.add({record: lastBassReferral});
+
+        const updatedLicence = replacePath(['bassReferral'], {bassRequest: {bassRequested}}, licenceWithBassRejections);
+
+        return licenceClient.updateLicence(bookingId, updatedLicence);
+    }
+
+
     return {
         reset,
         getLicence,
@@ -368,6 +386,7 @@ module.exports = function createLicenceService(licenceClient) {
         getValidationErrorsForPage: licenceValidator.getValidationErrorsForPage,
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
         addSplitDateFields,
-        removeDecision
+        removeDecision,
+        rejectBass
     };
 };
