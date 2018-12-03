@@ -124,4 +124,24 @@ describe('validation', () => {
             });
         });
     });
+
+    describe('curfew', () => {
+        const {firstNight} = require('../../server/routes/config/curfew');
+        describe('firstNight', () => {
+
+            const options = [
+                {response: {firstNightFrom: '13:00', firstNightUntil: '14:00'}, outcome: {}},
+                {response: {firstNightFrom: '25:00', firstNightUntil: '14:00'}, outcome: {firstNightFrom: 'Enter a valid from time'}},
+                {response: {firstNightFrom: '13:00', firstNightUntil: ''}, outcome: {firstNightUntil: 'Enter a valid until time'}},
+                {response: {}, outcome: {firstNightFrom: 'Enter a valid from time', firstNightUntil: 'Enter a valid until time'}}
+            ];
+
+            options.forEach(option => {
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    const {outcome, response} = option;
+                    expect(service.validateForm(response, firstNight)).to.eql(outcome);
+                });
+            });
+        });
+    });
 });

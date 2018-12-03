@@ -22,7 +22,8 @@ const fieldOptions = {
     requiredStringIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
         then: joi.string().required()
-    })
+    }),
+    requiredTime: joi.date().format('HH:mm').required()
 };
 
 module.exports = {
