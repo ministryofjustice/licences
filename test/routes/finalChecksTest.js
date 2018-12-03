@@ -118,13 +118,7 @@ describe('/hdc/finalChecks', () => {
         context('when there are errors', () => {
             it('should redirect back to seriousOffence page if there is an error', () => {
                 const licenceService = createLicenceServiceStub();
-                licenceService.getValidationErrorsForPage = sinon.stub().returns({
-                    finalChecks: {
-                        seriousOffence: {
-                            reason: 'error'
-                        }
-                    }
-                });
+                licenceService.validateForm = sinon.stub().returns({reason: 'error'});
                 const app = createApp({licenceService});
 
                 return request(app)
@@ -137,13 +131,7 @@ describe('/hdc/finalChecks', () => {
 
             it('should redirect back to onRemand page if there is an error', () => {
                 const licenceService = createLicenceServiceStub();
-                licenceService.getValidationErrorsForPage = sinon.stub().returns({
-                    finalChecks: {
-                        onRemand: {
-                            reason: 'error'
-                        }
-                    }
-                });
+                licenceService.validateForm = sinon.stub().returns({reason: 'error'});
                 const app = createApp({licenceService});
 
                 return request(app)
@@ -156,13 +144,7 @@ describe('/hdc/finalChecks', () => {
 
             it('should redirect back to confiscationOrder page if there is an error', () => {
                 const licenceService = createLicenceServiceStub();
-                licenceService.getValidationErrorsForPage = sinon.stub().returns({
-                    finalChecks: {
-                        confiscationOrder: {
-                            reason: 'error'
-                        }
-                    }
-                });
+                licenceService.validateForm = sinon.stub().returns({reason: 'error'});
                 const app = createApp({licenceService});
 
                 return request(app)

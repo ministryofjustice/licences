@@ -9,7 +9,7 @@ module.exports = {
             {reason: {
                 dependentOn: 'decision',
                 predicate: 'Yes',
-                responseType: 'requiredSelectionIfYes',
+                responseType: 'requiredSelectionIf_decision_Yes',
                 validationMessage: 'Select one or more reasons'
             }}
         ],
@@ -37,7 +37,7 @@ module.exports = {
             {reason: {
                 dependentOn: 'decision',
                 predicate: 'Yes',
-                responseType: 'requiredSelectionIfYes',
+                responseType: 'requiredSelectionIf_decision_Yes',
                 validationMessage: 'Select one or more reasons'
             }}
         ],
@@ -87,7 +87,7 @@ module.exports = {
             {dmApproval: {
                 dependentOn: 'decision',
                 predicate: 'Yes',
-                responseType: 'requiredYesNoIfYes',
+                responseType: 'requiredYesNoIf_decision_Yes',
                 validationMessage: 'Select yes or no'
             }}
         ],

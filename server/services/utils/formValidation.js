@@ -11,15 +11,18 @@ const fieldOptions = {
     optionalString: joi.string().allow('').optional(),
     requiredYesNo: joi.valid(['Yes', 'No']).required(),
     selection: joi.array().min(1).required(),
-    requiredSelectionIfYes: joi.when('decision', {
-        is: 'Yes',
+    requiredSelectionIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
+        is: requiredAnswer,
         then: joi.array().min(1).required()
     }),
-    requiredYesNoIfYes: joi.when('decision', {
-        is: 'Yes',
+    requiredYesNoIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
+        is: requiredAnswer,
         then: joi.valid(['Yes', 'No']).required()
+    }),
+    requiredStringIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
+        is: requiredAnswer,
+        then: joi.string().required()
     })
-
 };
 
 module.exports = {
@@ -45,11 +48,15 @@ module.exports = {
 function createSchema(pageConfig) {
     const formSchema = pageConfig.fields.reduce((schema, field) => {
         const fieldName = getFieldName(field);
-        const requiredResponseType = getFieldDetail(['responseType'], field);
+        const fieldConfigResponseType = getFieldDetail(['responseType'], field);
+        const [responseType, ...arguments] = fieldConfigResponseType.split('_');
+
+        const joiFieldItem = fieldOptions[responseType];
+        const joiFieldSchema = typeof joiFieldItem === 'function' ? joiFieldItem(...arguments) : joiFieldItem;
 
         return {
             ...schema,
-            [fieldName]: fieldOptions[requiredResponseType]
+            [fieldName]: joiFieldSchema
         };
     }, {});
 

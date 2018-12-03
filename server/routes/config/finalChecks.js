@@ -1,9 +1,12 @@
 module.exports = {
     seriousOffence: {
         licenceSection: 'seriousOffence',
-        validateInPlace: true,
+        validate: true,
         fields: [
-            {decision: {}}
+            {decision: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }}
         ],
         nextPath: {
             path: '/hdc/finalChecks/onRemand/'
@@ -11,9 +14,12 @@ module.exports = {
     },
     onRemand: {
         licenceSection: 'onRemand',
-        validateInPlace: true,
+        validate: true,
         fields: [
-            {decision: {}}
+            {decision: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }}
         ],
         nextPath: {
             path: '/hdc/finalChecks/confiscationOrder/'
@@ -21,11 +27,24 @@ module.exports = {
     },
     confiscationOrder: {
         licenceSection: 'confiscationOrder',
-        validateInPlace: true,
+        validate: true,
         fields: [
-            {decision: {}},
-            {confiscationUnitConsulted: {dependentOn: 'decision', predicate: 'Yes'}},
-            {comments: {dependentOn: 'decision', predicate: 'Yes'}}
+            {decision: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }},
+            {confiscationUnitConsulted: {
+                dependentOn: 'decision',
+                predicate: 'Yes',
+                responseType: 'requiredYesNoIf_decision_Yes',
+                validationMessage: 'Select yes or no'
+            }},
+            {comments: {
+                dependentOn: 'decision',
+                predicate: 'Yes',
+                responseType: 'requiredStringIf_confiscationUnitConsulted_Yes',
+                validationMessage: 'Provide details'
+            }}
         ],
         nextPath: {
             path: '/hdc/taskList/'
