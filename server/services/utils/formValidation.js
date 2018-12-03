@@ -11,6 +11,7 @@ const fieldOptions = {
     optionalString: joi.string().allow('').optional(),
     requiredYesNo: joi.valid(['Yes', 'No']).required(),
     selection: joi.array().min(1).required(),
+    requiredTime: joi.date().format('HH:mm').required(),
     requiredSelectionIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
         then: joi.array().min(1).required()
@@ -23,7 +24,10 @@ const fieldOptions = {
         is: requiredAnswer,
         then: joi.string().required()
     }),
-    requiredTime: joi.date().format('HH:mm').required()
+    requiredPostcodeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
+        is: requiredAnswer,
+        then: joi.postcode().required()
+    })
 };
 
 module.exports = {

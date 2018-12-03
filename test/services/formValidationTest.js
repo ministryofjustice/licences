@@ -144,4 +144,52 @@ describe('validation', () => {
             });
         });
     });
+
+    describe('bassReferral', () => {
+        const {bassOffer} = require('../../server/routes/config/bassReferral');
+        describe('bassOffer', () => {
+
+            const options = [
+                {response: {bassAccepted: 'No'}, outcome: {}},
+                {
+                    response: {
+                        bassAccepted: 'Yes'
+                    },
+                    outcome: {
+                        addressLine1: 'Enter a building or street',
+                        addressTown: 'Enter a town or city',
+                        bassArea: 'Enter the provided area',
+                        postCode: 'Enter a postcode in the right format'
+                    }
+                },
+                {
+                    response: {
+                        bassAccepted: 'Yes',
+                        addressLine1: 'Road',
+                        addressTown: 'Town',
+                        bassArea: 'Area',
+                        postCode: 'LE17 4XJ'
+                    },
+                    outcome: {}
+                },
+                {
+                    response: {
+                        bassAccepted: 'Yes',
+                        addressLine1: 'Road',
+                        addressTown: 'Town',
+                        bassArea: 'Area',
+                        postCode: 'a'
+                    },
+                    outcome: {postCode: 'Enter a postcode in the right format'}
+                }
+            ];
+
+            options.forEach(option => {
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    const {outcome, response} = option;
+                    expect(service.validateForm(response, bassOffer)).to.eql(outcome);
+                });
+            });
+        });
+    });
 });

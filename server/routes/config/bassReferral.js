@@ -41,15 +41,47 @@ module.exports = {
     bassOffer: {
         licenceSection: 'bassOffer',
         pageDataMap: ['licence', 'bassReferral'],
-        validateInPlace: true,
+        validate: true,
         fields: [
-            {bassAccepted: {}},
-            {bassArea: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
-            {addressLine1: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
-            {addressLine2: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
-            {addressTown: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
-            {postCode: {dependentOn: 'bassAccepted', predicate: 'Yes'}},
-            {telephone: {dependentOn: 'bassAccepted', predicate: 'Yes'}}
+            {bassAccepted: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }},
+            {bassArea: {
+                dependentOn: 'bassAccepted',
+                predicate: 'Yes',
+                responseType: 'requiredStringIf_bassAccepted_Yes',
+                validationMessage: 'Enter the provided area'
+            }},
+            {addressLine1: {
+                dependentOn: 'bassAccepted',
+                predicate: 'Yes',
+                responseType: 'requiredStringIf_bassAccepted_Yes',
+                validationMessage: 'Enter a building or street'
+            }},
+            {addressLine2: {
+                dependentOn: 'bassAccepted',
+                predicate: 'Yes',
+                responseType: 'optionalString'
+            }},
+            {addressTown: {
+                dependentOn: 'bassAccepted',
+                predicate: 'Yes',
+                responseType: 'requiredStringIf_bassAccepted_Yes',
+                validationMessage: 'Enter a town or city'
+            }},
+            {postCode: {
+                dependentOn: 'bassAccepted',
+                predicate: 'Yes',
+                responseType: 'requiredPostcodeIf_bassAccepted_Yes',
+                validationMessage: 'Enter a postcode in the right format'
+            }},
+            {telephone: {
+                dependentOn: 'bassAccepted',
+                predicate: 'Yes',
+                responseType: 'optionalString',
+                validationMessage: 'Enter a telephone number in the right format'
+            }}
         ],
         nextPath: {
             path: '/hdc/taskList/'
