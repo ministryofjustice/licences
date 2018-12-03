@@ -14,12 +14,17 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
 
         const rawData = getIn(res.locals.licence, dataPath) || {};
         const data = licenceService.addSplitDateFields(rawData, formConfig[formName].fields);
-        const errors = validateInPlace && firstItem(req.flash('errors'));
-        const errorObject = getIn(errors, [sectionName, formName]) || {};
+
+        // currently supporting both types of form validation
+        const errors = firstItem(req.flash('errors')) || {};
+        const pathToErrors = validateInPlace ? [sectionName, formName] : [];
+        const errorObject = getIn(errors, pathToErrors) || {};
+
         const viewData = {bookingId, data, nextPath, errorObject, action, sectionName, formName};
 
         res.render(`${sectionName}/${formName}`, viewData);
     }
+
 
     async function post(req, res) {
         const {formName, bookingId, action} = req.params;
@@ -43,6 +48,16 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
                 licenceSection: targetSection,
                 formName: targetForm
             });
+
+            if (formConfig[formName].validate) {
+                const errors = licenceService.validateForm(req.body, formConfig[formName]);
+
+                if (!isEmpty(errors)) {
+                    req.flash('errors', errors);
+                    const actionPath = action ? action + '/' : '';
+                    return res.redirect(`/hdc/${sectionName}/${formName}/${actionPath}${bookingId}`);
+                }
+            }
 
             if (formConfig[formName].validateInPlace) {
                 const errors = licenceService.getValidationErrorsForPage(updatedLicence, [targetForm]);

@@ -2,10 +2,18 @@ module.exports = {
     excluded: {
         licenceSection: 'excluded',
         fields: [
-            {decision: {}},
-            {reason: {dependentOn: 'decision', predicate: 'Yes'}}
+            {decision: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }},
+            {reason: {
+                dependentOn: 'decision',
+                predicate: 'Yes',
+                responseType: 'requiredSelectionIfYes',
+                validationMessage: 'Select one or more reasons'
+            }}
         ],
-        validateInPlace: true,
+        validate: true,
         nextPath: {
             decisions: [
                 {
@@ -22,10 +30,18 @@ module.exports = {
     suitability: {
         licenceSection: 'suitability',
         fields: [
-            {decision: {}},
-            {reason: {dependentOn: 'decision', predicate: 'Yes'}}
+            {decision: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }},
+            {reason: {
+                dependentOn: 'decision',
+                predicate: 'Yes',
+                responseType: 'requiredSelectionIfYes',
+                validationMessage: 'Select one or more reasons'
+            }}
         ],
-        validateInPlace: true,
+        validate: true,
         nextPath: {
             decisions: [
                 {
@@ -42,9 +58,12 @@ module.exports = {
     exceptionalCircumstances: {
         licenceSection: 'exceptionalCircumstances',
         fields: [
-            {decision: {}}
+            {decision: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }}
         ],
-        validateInPlace: true,
+        validate: true,
         nextPath: {
             decisions: [
                 {
@@ -61,8 +80,16 @@ module.exports = {
     crdTime: {
         licenceSection: 'crdTime',
         fields: [
-            {decision: {}},
-            {dmApproval: {dependentOn: 'decision', predicate: 'Yes'}}
+            {decision: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }},
+            {dmApproval: {
+                dependentOn: 'decision',
+                predicate: 'Yes',
+                responseType: 'requiredYesNoIfYes',
+                validationMessage: 'Select yes or no'
+            }}
         ],
         validateInPlace: true,
         nextPath: {

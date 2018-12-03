@@ -24,7 +24,9 @@ module.exports = {
     all,
     getWhereKeyLike,
     pickKey,
-    firstKey
+    firstKey,
+    getFieldDetail,
+    getFieldName
 };
 
 // pass in your object and a path in array format
@@ -144,4 +146,19 @@ function pickKey(predicate, object) {
 
 function firstKey(object) {
     return R.keys(object)[0];
+}
+
+function getFieldDetail(fieldPath, fieldConfig) {
+    return R.pipe(
+        R.values,
+        R.head,
+        R.path(fieldPath)
+    )(fieldConfig);
+}
+
+function getFieldName(fieldConfig) {
+    return R.pipe(
+        R.keys,
+        R.head
+    )(fieldConfig);
 }
