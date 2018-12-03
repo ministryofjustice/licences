@@ -134,13 +134,7 @@ describe('/hdc/approval', () => {
         });
 
         it('should redirect to same page if errors on input', () => {
-            licenceServiceStub.getValidationErrorsForPage.returns({
-                approval: {
-                    release: {
-                        decision: 'Error 1'
-                    }
-                }
-            });
+            licenceServiceStub.validateForm.returns({decision: 'Error 1'});
 
             return request(app)
                 .post('/hdc/approval/release/1')

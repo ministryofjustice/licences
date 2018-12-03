@@ -192,4 +192,24 @@ describe('validation', () => {
             });
         });
     });
+
+    describe('approval', () => {
+        const {release} = require('../../server/routes/config/approval');
+        describe('release', () => {
+
+            const options = [
+                {response: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
+                {response: {decision: 'Yes', notedComments: ''}, outcome: {notedComments: 'Add a comment'}},
+                {response: {decision: 'No', reason: ['reason']}, outcome: {}},
+                {response: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
+            ];
+
+            options.forEach(option => {
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    const {outcome, response} = option;
+                    expect(service.validateForm(response, release)).to.eql(outcome);
+                });
+            });
+        });
+    });
 });
