@@ -7,6 +7,7 @@ const licenceValidator = require('./utils/licenceValidation');
 const recordList = require('./utils/recordList');
 const addressesPath = ['proposedAddress', 'curfewAddress', 'addresses'];
 const {replacePath} = require('../utils/functionalHelpers');
+const formValidation = require('./utils/formValidation');
 
 const {
     getIn,
@@ -384,6 +385,7 @@ module.exports = function createLicenceService(licenceClient) {
         getEligibilityErrors: licenceValidator.getEligibilityErrors,
         getValidationErrorsForReview: licenceValidator.getValidationErrorsForReview,
         getValidationErrorsForPage: licenceValidator.getValidationErrorsForPage,
+        validateForm: formValidation.validate,
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
         addSplitDateFields,
         removeDecision,
