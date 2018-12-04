@@ -37,6 +37,7 @@ describe('/hdc/approval', () => {
     beforeEach(() => {
         licenceServiceStub = createLicenceServiceStub();
         app = createApp({licenceServiceStub}, 'dmUser');
+        licenceServiceStub.update.resolves({approval: {release: {decision: 'Yes'}}});
     });
 
     describe('approval routes', () => {

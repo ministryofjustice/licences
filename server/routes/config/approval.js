@@ -13,7 +13,7 @@ module.exports = {
             {notedComments: {
                 dependentOn: 'decision',
                 predicate: 'Yes',
-                responseType: 'requiredStringIf_decision_Yes',
+                responseType: 'optionalStringIf_decision_Yes',
                 validationMessage: 'Add a comment'
             }},
             {reason: {

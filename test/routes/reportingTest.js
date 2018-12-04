@@ -55,6 +55,7 @@ describe('/hdc/reporting', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({reporting: {[route.section]: {}}});
                 const app = createApp({licenceService}, 'roUser');
 
                 return request(app)
@@ -78,6 +79,7 @@ describe('/hdc/reporting', () => {
 
             it(`renders the correct path '${route.nextPath}' page when ca in post approval`, () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({reporting: {[route.section]: {}}});
                 licenceService.getLicence.resolves({stage: 'DECIDED', licence: {key: 'value'}});
                 const app = createApp({licenceService}, 'caUser');
 

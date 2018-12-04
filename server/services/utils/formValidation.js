@@ -12,6 +12,7 @@ const fieldOptions = {
     requiredYesNo: joi.valid(['Yes', 'No']).required(),
     selection: joi.array().min(1).required(),
     requiredTime: joi.date().format('HH:mm').required(),
+    requiredDate: joi.date().format('DD/MM/YYYY').min('now').required(),
     requiredSelectionIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
         then: joi.array().min(1).required()
@@ -23,6 +24,10 @@ const fieldOptions = {
     requiredStringIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
         then: joi.string().required()
+    }),
+    optionalStringIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
+        is: requiredAnswer,
+        then: joi.string().allow('').optional()
     }),
     requiredPostcodeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,

@@ -199,7 +199,6 @@ describe('validation', () => {
 
             const options = [
                 {response: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
-                {response: {decision: 'Yes', notedComments: ''}, outcome: {notedComments: 'Add a comment'}},
                 {response: {decision: 'No', reason: ['reason']}, outcome: {}},
                 {response: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
             ];
@@ -208,6 +207,39 @@ describe('validation', () => {
                 it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
                     const {outcome, response} = option;
                     expect(service.validateForm(response, release)).to.eql(outcome);
+                });
+            });
+        });
+    });
+
+    describe('reporting', () => {
+        const {reportingDate} = require('../../server/routes/config/reporting');
+        describe('reportingDate', () => {
+
+            const options = [
+                {response: {reportingDate: '12/03/2025', reportingTime: '15:00'}, outcome: {}},
+                {
+                    response: {reportingDate: '12/03/2016', reportingTime: '15:00'},
+                    outcome: {reportingDate: 'Enter a valid date'}
+                },
+                {
+                    response: {reportingDate: '', reportingTime: '15:00'},
+                    outcome: {reportingDate: 'Enter a valid date'}
+                },
+                {
+                    response: {reportingDate: '', reportingTime: ''},
+                    outcome: {reportingDate: 'Enter a valid date', reportingTime: 'Enter a valid time'}
+                },
+                {
+                    response: {reportingDate: '12/03/2025', reportingTime: '24:40'},
+                    outcome: {reportingTime: 'Enter a valid time'}
+                }
+            ];
+
+            options.forEach(option => {
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    const {outcome, response} = option;
+                    expect(service.validateForm(response, reportingDate)).to.eql(outcome);
                 });
             });
         });

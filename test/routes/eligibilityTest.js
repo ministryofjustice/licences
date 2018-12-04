@@ -131,6 +131,7 @@ describe('/hdc/eligibility', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({eligibility: {[route.section]: {}}});
                 const app = createApp({licenceService}, route.user);
 
                 return request(app)
@@ -174,6 +175,7 @@ describe('/hdc/eligibility', () => {
 
         it('should redirect back to excluded page if there is an error in the submission', () => {
             const licenceService = createLicenceServiceStub();
+            licenceService.update.resolves({eligibility: {excluded: {}}});
             licenceService.validateForm = sinon.stub().returns({reason: 'error'});
             const app = createApp({licenceService});
 
@@ -187,6 +189,7 @@ describe('/hdc/eligibility', () => {
 
         it('should redirect back to suitability page if there is an error in the submission', () => {
             const licenceService = createLicenceServiceStub();
+            licenceService.update.resolves({eligibility: {suitability: {}}});
             licenceService.validateForm = sinon.stub().returns({reason: 'error'});
             const app = createApp({licenceService});
 
@@ -200,13 +203,8 @@ describe('/hdc/eligibility', () => {
 
         it('should redirect back to crdtime page if there is an error in the submission', () => {
             const licenceService = createLicenceServiceStub();
-            licenceService.getValidationErrorsForPage = sinon.stub().returns({
-                eligibility: {
-                    crdTime: {
-                        reason: 'error'
-                    }
-                }
-            });
+            licenceService.update.resolves({eligibility: {crdTime: {}}});
+            licenceService.validateForm = sinon.stub().returns({reason: 'error'});
             const app = createApp({licenceService});
 
             return request(app)
@@ -219,6 +217,7 @@ describe('/hdc/eligibility', () => {
 
         it('should redirect back to exceptions circumstances page if there is an error in the submission', () => {
             const licenceService = createLicenceServiceStub();
+            licenceService.update.resolves({eligibility: {exceptionalCircumstances: {}}});
             licenceService.validateForm = sinon.stub().returns({reason: 'error'});
             const app = createApp({licenceService});
 
