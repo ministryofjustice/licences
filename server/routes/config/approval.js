@@ -11,9 +11,10 @@ module.exports = {
                 responseType: 'optionalString'
             }},
             {notedComments: {
+                conditionallyActive: {confiscationOrder: true},
                 dependentOn: 'decision',
                 predicate: 'Yes',
-                responseType: 'optionalStringIf_decision_Yes',
+                responseType: 'requiredStringIf_decision_Yes',
                 validationMessage: 'Add a comment'
             }},
             {reason: {

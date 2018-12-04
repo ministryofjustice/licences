@@ -6,15 +6,12 @@ const {
     merge,
     flatten,
     mergeWithRight,
-    removePath,
-    equals
+    removePath
 } = require('../../utils/functionalHelpers');
 
 const getValidationMessage = require('../config/validationMessages');
 const validator = require('../config/validationRules');
 const {sectionContaining, formsInSection, reviewForms, bassReviewForms} = require('../config/formsAndSections');
-
-const {getConfiscationOrderState} = require('../../utils/licenceStatus');
 
 function getLicenceErrors({licence, forms = reviewForms}) {
 
@@ -84,34 +81,6 @@ function removeFromAddressReducer(errorObject, addressKey) {
     }
 
     return newObject;
-}
-
-function getValidationErrorsForPage(licence, forms) {
-    if (equals(forms, ['release'])) {
-        const {confiscationOrder} = getConfiscationOrderState(licence);
-        return getApprovalErrors({licence, confiscationOrder});
-    }
-
-    return getLicenceErrors({licence, forms});
-}
-
-function getApprovalErrors({licence, confiscationOrder}) {
-    const errorObject = getLicenceErrors({licence, forms: ['release']});
-
-    if (confiscationOrder) {
-        return errorObject;
-    }
-
-    const removeNotedCommentsError = removePath(['approval', 'release', 'notedComments']);
-    const errorsWithoutNotedComments = removeNotedCommentsError(errorObject);
-
-    const noErrorsInApproval = isEmpty(getIn(errorsWithoutNotedComments, ['approval', 'release']));
-    if (noErrorsInApproval) {
-        const removeApprovalError = removePath(['approval']);
-        return removeApprovalError(errorsWithoutNotedComments);
-    }
-
-    return errorsWithoutNotedComments;
 }
 
 function validate(licence) {
@@ -237,6 +206,5 @@ module.exports = {
     getLicenceErrors,
     getConditionsErrors,
     getValidationErrorsForReview,
-    getValidationErrorsForPage,
     getEligibilityErrors
 };
