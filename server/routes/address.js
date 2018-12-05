@@ -1,6 +1,6 @@
 const {asyncMiddleware} = require('../utils/middleware');
 const createStandardRoutes = require('./routeWorkers/standard');
-const {getIn, lastIndex, lastItem, isEmpty} = require('../utils/functionalHelpers');
+const {getIn, lastIndex, lastItem, isEmpty, mergeWithRight} = require('../utils/functionalHelpers');
 const formConfig = require('./config/proposedAddress');
 
 module.exports = ({licenceService}) => (router, audited) => {
@@ -42,11 +42,13 @@ module.exports = ({licenceService}) => (router, audited) => {
         const {decision} = req.body;
         const licence = res.locals.licence;
 
-        const proposedAddress = proposedAddressContents[decision];
         const bassReferral = getBassReferralContent(decision, licence);
 
+        const proposedAddress = getIn(licence, ['licence', 'proposedAddress']);
+        const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision]);
+
         await Promise.all([
-            licenceService.updateSection('proposedAddress', bookingId, proposedAddress),
+            licenceService.updateSection('proposedAddress', bookingId, newProposedAddress),
             licenceService.updateSection('bassReferral', bookingId, bassReferral)
         ]);
 
