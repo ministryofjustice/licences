@@ -83,6 +83,7 @@ describe('/hdc/finalChecks', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({finalChecks: {[route.formName]: {}}});
                 const app = createApp({licenceService});
 
                 return request(app)
@@ -118,6 +119,7 @@ describe('/hdc/finalChecks', () => {
         context('when there are errors', () => {
             it('should redirect back to seriousOffence page if there is an error', () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({finalChecks: {seriousOffence: {}}});
                 licenceService.validateForm = sinon.stub().returns({reason: 'error'});
                 const app = createApp({licenceService});
 
@@ -131,6 +133,7 @@ describe('/hdc/finalChecks', () => {
 
             it('should redirect back to onRemand page if there is an error', () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({finalChecks: {onRemand: {}}});
                 licenceService.validateForm = sinon.stub().returns({reason: 'error'});
                 const app = createApp({licenceService});
 
@@ -144,6 +147,7 @@ describe('/hdc/finalChecks', () => {
 
             it('should redirect back to confiscationOrder page if there is an error', () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({finalChecks: {confiscationOrder: {}}});
                 licenceService.validateForm = sinon.stub().returns({reason: 'error'});
                 const app = createApp({licenceService});
 

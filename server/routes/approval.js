@@ -21,8 +21,7 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
             const {nextPath, pageDataMap} = formConfig[formName];
             const dataPath = pageDataMap || ['licence', 'approval', 'release'];
             const data = getIn(res.locals.licence, dataPath) || {};
-            const errors = firstItem(req.flash('errors'));
-            const errorObject = getIn(errors, ['approval', 'release']) || {};
+            const errorObject = firstItem(req.flash('errors')) || {};
 
             res.render(`approval/${formName}`, {
                 prisonerInfo,

@@ -50,7 +50,7 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
             });
 
             if (formConfig[formName].validate) {
-                const errors = licenceService.validateForm(req.body, formConfig[formName]);
+                const errors = licenceService.validateForm(updatedLicence[sectionName][formName], formConfig[formName]);
 
                 if (!isEmpty(errors)) {
                     req.flash('errors', errors);

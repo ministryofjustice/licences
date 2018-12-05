@@ -1,12 +1,27 @@
 module.exports = {
     release: {
         licenceSection: 'release',
-        validateInPlace: true,
+        validate: true,
         fields: [
-            {decision: {}},
-            {decisionMaker: {}},
-            {notedComments: {dependentOn: 'decision', predicate: 'Yes'}},
-            {reason: {dependentOn: 'decision', predicate: 'No'}}
+            {decision: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }},
+            {decisionMaker: {
+                responseType: 'optionalString'
+            }},
+            {notedComments: {
+                dependentOn: 'decision',
+                predicate: 'Yes',
+                responseType: 'optionalStringIf_decision_Yes',
+                validationMessage: 'Add a comment'
+            }},
+            {reason: {
+                dependentOn: 'decision',
+                predicate: 'No',
+                responseType: 'requiredSelectionIf_decision_No',
+                validationMessage: 'Select a reason'
+            }}
         ],
         nextPath: {
             path: '/hdc/send/decided/'
@@ -14,7 +29,6 @@ module.exports = {
     },
     refuseReason: {
         licenceSection: 'release',
-        validateInPlace: false,
         fields: [
             {decision: {}}
         ],

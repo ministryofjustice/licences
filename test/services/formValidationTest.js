@@ -124,4 +124,124 @@ describe('validation', () => {
             });
         });
     });
+
+    describe('curfew', () => {
+        const {firstNight} = require('../../server/routes/config/curfew');
+        describe('firstNight', () => {
+
+            const options = [
+                {response: {firstNightFrom: '13:00', firstNightUntil: '14:00'}, outcome: {}},
+                {response: {firstNightFrom: '25:00', firstNightUntil: '14:00'}, outcome: {firstNightFrom: 'Enter a valid from time'}},
+                {response: {firstNightFrom: '13:00', firstNightUntil: ''}, outcome: {firstNightUntil: 'Enter a valid until time'}},
+                {response: {}, outcome: {firstNightFrom: 'Enter a valid from time', firstNightUntil: 'Enter a valid until time'}}
+            ];
+
+            options.forEach(option => {
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    const {outcome, response} = option;
+                    expect(service.validateForm(response, firstNight)).to.eql(outcome);
+                });
+            });
+        });
+    });
+
+    describe('bassReferral', () => {
+        const {bassOffer} = require('../../server/routes/config/bassReferral');
+        describe('bassOffer', () => {
+
+            const options = [
+                {response: {bassAccepted: 'No'}, outcome: {}},
+                {
+                    response: {
+                        bassAccepted: 'Yes'
+                    },
+                    outcome: {
+                        addressLine1: 'Enter a building or street',
+                        addressTown: 'Enter a town or city',
+                        bassArea: 'Enter the provided area',
+                        postCode: 'Enter a postcode in the right format'
+                    }
+                },
+                {
+                    response: {
+                        bassAccepted: 'Yes',
+                        addressLine1: 'Road',
+                        addressTown: 'Town',
+                        bassArea: 'Area',
+                        postCode: 'LE17 4XJ'
+                    },
+                    outcome: {}
+                },
+                {
+                    response: {
+                        bassAccepted: 'Yes',
+                        addressLine1: 'Road',
+                        addressTown: 'Town',
+                        bassArea: 'Area',
+                        postCode: 'a'
+                    },
+                    outcome: {postCode: 'Enter a postcode in the right format'}
+                }
+            ];
+
+            options.forEach(option => {
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    const {outcome, response} = option;
+                    expect(service.validateForm(response, bassOffer)).to.eql(outcome);
+                });
+            });
+        });
+    });
+
+    describe('approval', () => {
+        const {release} = require('../../server/routes/config/approval');
+        describe('release', () => {
+
+            const options = [
+                {response: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
+                {response: {decision: 'No', reason: ['reason']}, outcome: {}},
+                {response: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
+            ];
+
+            options.forEach(option => {
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    const {outcome, response} = option;
+                    expect(service.validateForm(response, release)).to.eql(outcome);
+                });
+            });
+        });
+    });
+
+    describe('reporting', () => {
+        const {reportingDate} = require('../../server/routes/config/reporting');
+        describe('reportingDate', () => {
+
+            const options = [
+                {response: {reportingDate: '12/03/2025', reportingTime: '15:00'}, outcome: {}},
+                {
+                    response: {reportingDate: '12/03/2016', reportingTime: '15:00'},
+                    outcome: {reportingDate: 'Enter a valid date'}
+                },
+                {
+                    response: {reportingDate: '', reportingTime: '15:00'},
+                    outcome: {reportingDate: 'Enter a valid date'}
+                },
+                {
+                    response: {reportingDate: '', reportingTime: ''},
+                    outcome: {reportingDate: 'Enter a valid date', reportingTime: 'Enter a valid time'}
+                },
+                {
+                    response: {reportingDate: '12/03/2025', reportingTime: '24:40'},
+                    outcome: {reportingTime: 'Enter a valid time'}
+                }
+            ];
+
+            options.forEach(option => {
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    const {outcome, response} = option;
+                    expect(service.validateForm(response, reportingDate)).to.eql(outcome);
+                });
+            });
+        });
+    });
 });

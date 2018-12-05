@@ -152,10 +152,16 @@ module.exports = {
     firstNight: {
         licenceSection: 'firstNight',
         fields: [
-            {firstNightFrom: {}},
-            {firstNightUntil: {}}
+            {firstNightFrom: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid from time'
+            }},
+            {firstNightUntil: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid until time'
+            }}
         ],
-        validateInPlace: true,
+        validate: true,
         nextPath: {
             path: '/hdc/pdf/taskList/'
         }

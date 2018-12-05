@@ -128,6 +128,8 @@ describe('/hdc/curfew', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({curfew: {firstNight: {}}});
+
                 const app = createApp({licenceServiceStub: licenceService}, route.user || 'roUser');
                 return request(app)
                     .post(route.url)

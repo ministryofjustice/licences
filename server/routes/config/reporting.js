@@ -19,12 +19,17 @@ module.exports = {
         fields: [
             {
                 reportingDate: {
-                    splitDate: {day: 'reportingDay', month: 'reportingMonth', year: 'reportingYear'}
+                    splitDate: {day: 'reportingDay', month: 'reportingMonth', year: 'reportingYear'},
+                    responseType: 'requiredDate',
+                    validationMessage: 'Enter a valid date'
                 }
             },
-            {reportingTime: {}}
+            {reportingTime: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }}
         ],
-        validateInPlace: true,
+        validate: true,
         noModify: true,
         nextPath: {
             path: '/hdc/pdf/taskList/'

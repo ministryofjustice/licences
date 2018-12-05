@@ -91,7 +91,7 @@ module.exports = {
                 validationMessage: 'Select yes or no'
             }}
         ],
-        validateInPlace: true,
+        validate: true,
         nextPath: {
             path: '/hdc/taskList/'
         }
