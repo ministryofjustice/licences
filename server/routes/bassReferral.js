@@ -1,7 +1,6 @@
 const {asyncMiddleware} = require('../utils/middleware');
 const createStandardRoutes = require('./routeWorkers/standard');
 const formConfig = require('./config/bassReferral');
-const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getIn, firstItem} = require('../utils/functionalHelpers');
 const recordList = require('../services/utils/recordList');
 
@@ -15,7 +14,7 @@ module.exports = ({licenceService}) => (router, audited) => {
         const {enterAlternative} = req.body;
         const {licence} = res.locals.licence;
 
-        await licenceService.rejectBass(licence.licence, bookingId, enterAlternative);
+        await licenceService.rejectBass(licence, bookingId, enterAlternative);
 
         const nextPath = formConfig['rejected'].nextPath.decisions[enterAlternative];
         res.redirect(`${nextPath}${bookingId}`);
@@ -27,17 +26,15 @@ module.exports = ({licenceService}) => (router, audited) => {
         const sectionName = 'bassReferral';
 
         const {bookingId, action} = req.params;
-        const licenceStatus = getLicenceStatus(res.locals.licence);
+        const licenceStatus = res.locals.licenceStatus;
 
-        const {licenceSection, pageDataMap, validateInPlace} = formConfig[formName];
+        const {licenceSection, pageDataMap} = formConfig[formName];
         const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
 
         const data = getIn(res.locals.licence, dataPath) || {};
         const withdrawnBass = licenceStatus.decisions.bassWithdrawn ? getBassRejections(res.locals.licence).last() : {};
 
-        const errors = firstItem(req.flash('errors')) || {};
-        const pathToErrors = validateInPlace ? [sectionName, formName] : [];
-        const errorObject = getIn(errors, pathToErrors) || {};
+        const errorObject = firstItem(req.flash('errors')) || {};
 
         const viewData = {bookingId, action, data, withdrawnBass, licenceStatus, errorObject};
 
@@ -48,9 +45,9 @@ module.exports = ({licenceService}) => (router, audited) => {
 
         const {bookingId} = req.params;
         const {withdrawalType} = req.body;
-        const licence = res.locals.licence;
+        const {licence} = res.locals.licence;
 
-        await licenceService.withdrawBass(licence.licence, bookingId, withdrawalType);
+        await licenceService.withdrawBass(licence, bookingId, withdrawalType);
 
         const nextPath = formConfig['bassOffer'].nextPath.withdraw;
         res.redirect(`${nextPath}${bookingId}`);
@@ -59,9 +56,9 @@ module.exports = ({licenceService}) => (router, audited) => {
     router.post('/bassReferral/bassOffer/reinstate/:bookingId', audited, asyncMiddleware(async (req, res) => {
 
         const {bookingId} = req.params;
-        const licence = res.locals.licence;
+        const {licence} = res.locals.licence;
 
-        await licenceService.reinstateBass(licence.licence, bookingId);
+        await licenceService.reinstateBass(licence, bookingId);
 
         const nextPath = formConfig['bassOffer'].nextPath.reinstate;
         res.redirect(`${nextPath}${bookingId}`);
