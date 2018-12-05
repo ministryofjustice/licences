@@ -360,7 +360,9 @@ module.exports = function createLicenceService(licenceClient) {
             return licence;
         }
 
-        return deactivateBassEntry(licence, lastBassReferral, {bassRequest: {bassRequested}}, bookingId);
+        const newRecord = {bassRequest: {bassRequested}};
+
+        return deactivateBassEntry(licence, lastBassReferral, newRecord, bookingId);
     }
 
     function withdrawBass(licence, bookingId, withdrawalType) {
@@ -371,8 +373,9 @@ module.exports = function createLicenceService(licenceClient) {
         }
 
         const oldRecord = mergeWithRight(lastBassReferral, {withdrawal: withdrawalType});
+        const newRecord = {bassRequest: {bassRequested: 'Yes'}};
 
-        return deactivateBassEntry(licence, oldRecord, {bassRequest: {bassRequested: 'Yes'}}, bookingId);
+        return deactivateBassEntry(licence, oldRecord, newRecord, bookingId);
     }
 
     function deactivateBassEntry(licence, oldRecord, newRecord, bookingId) {
