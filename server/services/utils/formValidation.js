@@ -2,7 +2,7 @@ const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
 
-const {getFieldName, getFieldDetail, getIn} = require('../../utils/functionalHelpers');
+const {getFieldName, getFieldDetail, getIn, isEmpty} = require('../../utils/functionalHelpers');
 
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 
@@ -36,8 +36,8 @@ const fieldOptions = {
 };
 
 module.exports = {
-    validate(formResponse, pageConfig) {
-        const formSchema = createSchema(pageConfig);
+    validate(formResponse, pageConfig, bespokeConditions = {}) {
+        const formSchema = createSchema(pageConfig, bespokeConditions);
         const joiErrors = joi.validate(formResponse, formSchema, {stripUnknown: true, abortEarly: false});
 
         if (!(joiErrors.error)) {
@@ -55,9 +55,16 @@ module.exports = {
     }
 };
 
-function createSchema(pageConfig) {
+function createSchema(pageConfig, bespokeData) {
     const formSchema = pageConfig.fields.reduce((schema, field) => {
         const fieldName = getFieldName(field);
+
+        const bespokeRequirements = getFieldDetail(['conditionallyActive'], field);
+        const conditionFulfilled = isEmpty(bespokeRequirements) ? true : isFulfilled(bespokeRequirements, bespokeData);
+        if (!conditionFulfilled) {
+            return schema;
+        }
+
         const fieldConfigResponseType = getFieldDetail(['responseType'], field);
         const [responseType, ...arguments] = fieldConfigResponseType.split('_');
 
@@ -71,4 +78,11 @@ function createSchema(pageConfig) {
     }, {});
 
     return joi.object().keys(formSchema);
+}
+
+function isFulfilled(requirement, data) {
+    const requirementName = getFieldName(requirement);
+    const requiredAnswer = requirement[requirementName];
+
+    return data[requirementName] === requiredAnswer;
 }

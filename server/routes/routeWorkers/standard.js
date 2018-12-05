@@ -9,16 +9,12 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
     }
 
     function formGet(req, res, sectionName, formName, bookingId, action) {
-        const {licenceSection, nextPath, pageDataMap, validateInPlace} = formConfig[formName];
+        const {licenceSection, nextPath, pageDataMap} = formConfig[formName];
         const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
 
         const rawData = getIn(res.locals.licence, dataPath) || {};
         const data = licenceService.addSplitDateFields(rawData, formConfig[formName].fields);
-
-        // currently supporting both types of form validation
-        const errors = firstItem(req.flash('errors')) || {};
-        const pathToErrors = validateInPlace ? [sectionName, formName] : [];
-        const errorObject = getIn(errors, pathToErrors) || {};
+        const errorObject = firstItem(req.flash('errors')) || {};
 
         const viewData = {bookingId, data, nextPath, errorObject, action, sectionName, formName};
 
@@ -50,19 +46,13 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
             });
 
             if (formConfig[formName].validate) {
-                const errors = licenceService.validateForm(updatedLicence[sectionName][formName], formConfig[formName]);
+                const errors = licenceService.validateForm(
+                    updatedLicence[sectionName][formName],
+                    formConfig[formName],
+                    {confiscationOrder: res.locals.licenceStatus.decisions.confiscationOrder}
+                );
 
                 if (!isEmpty(errors)) {
-                    req.flash('errors', errors);
-                    const actionPath = action ? action + '/' : '';
-                    return res.redirect(`/hdc/${sectionName}/${formName}/${actionPath}${bookingId}`);
-                }
-            }
-
-            if (formConfig[formName].validateInPlace) {
-                const errors = licenceService.getValidationErrorsForPage(updatedLicence, [targetForm]);
-
-                if (!isEmpty(getIn(errors, [targetSection, targetForm]))) {
                     req.flash('errors', errors);
                     const actionPath = action ? action + '/' : '';
                     return res.redirect(`/hdc/${sectionName}/${formName}/${actionPath}${bookingId}`);

@@ -196,19 +196,38 @@ describe('validation', () => {
     describe('approval', () => {
         const {release} = require('../../server/routes/config/approval');
         describe('release', () => {
+            context('when confiscationOrder is true', () => {
+                const options = [
+                    {response: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
+                    {response: {decision: 'Yes', notedComments: ''}, outcome: {notedComments: 'Add a comment'}},
+                    {response: {decision: 'No', reason: ['reason']}, outcome: {}},
+                    {response: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
+                ];
 
-            const options = [
-                {response: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
-                {response: {decision: 'No', reason: ['reason']}, outcome: {}},
-                {response: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
-            ];
-
-            options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, release)).to.eql(outcome);
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                        const {outcome, response} = option;
+                        expect(service.validateForm(response, release, {confiscationOrder: true})).to.eql(outcome);
+                    });
                 });
             });
+
+            context('when confiscationOrder is false', () => {
+                const options = [
+                    {response: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
+                    {response: {decision: 'Yes', notedComments: ''}, outcome: {}},
+                    {response: {decision: 'No', reason: ['reason']}, outcome: {}},
+                    {response: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                        const {outcome, response} = option;
+                        expect(service.validateForm(response, release)).to.eql(outcome);
+                    });
+                });
+            });
+
         });
     });
 
