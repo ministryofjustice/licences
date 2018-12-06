@@ -33,6 +33,8 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
         const targetSection = saveSection[0] || sectionName;
         const targetForm = saveSection[1] || formName;
 
+        const postApproval = res.locals.licence ? ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(res.locals.licence.stage) : false;
+
         if (formConfig[formName].fields) {
             const updatedLicence = await licenceService.update({
                 bookingId,
@@ -47,7 +49,10 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
                 const errors = licenceService.validateForm(
                     updatedLicence[sectionName][formName],
                     formConfig[formName],
-                    {confiscationOrder: res.locals.licenceStatus.decisions.confiscationOrder}
+                    {
+                        postApproval,
+                        confiscationOrder: res.locals.licenceStatus.decisions.confiscationOrder
+                    }
                 );
 
                 if (!isEmpty(errors)) {

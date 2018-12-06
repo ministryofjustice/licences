@@ -1,6 +1,6 @@
 extends ../layout
-include ./includes/bassAddressForm
 include ../includes/errorBannerWithDetailObject
+include ./includes/bassAddressForm
 
 block content
 
@@ -10,7 +10,6 @@ block content
     -var bassRequest = bassWithdrawn ? withdrawnBass.bassRequest : data && data.bassRequest || {}
     -var bassAreaCheck = data && data.bassAreaCheck || {}
     -var bassOffer = data && data.bassOffer || {}
-
 
     div.pure-g.pure-u-1
         include ../includes/back
@@ -38,15 +37,15 @@ block content
                     div.bold#proposedCounty #{bassRequest.proposedCounty}
         div.pure-u-1-2
 
-        if data.bassRequest
-            hr
-
-            div.pure-u-1.pure-u-md-1.smallPaddingTop
-                include ./includes/bassRequestActions
+        if !licenceStatus.postApproval
+            if data.bassRequest
+                hr
+                div.pure-u-1.pure-u-md-1.smallPaddingTop
+                    include ./includes/bassRequestActions
 
         hr
 
-        h2.heading-medium Has BASS made an offer to the offender?
+        h2.heading-medium Has BASS made an offer to the offender? #{postApproval}
 
         form(method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
@@ -55,21 +54,24 @@ block content
 
                 div.form-group.smallPaddingTop
                     div.multiple-choice(data-target="bassAddressForm")
-                        input#yes(type="radio" checked=bassOffer.bassAccepted === 'Yes' name="bassAccepted" value="Yes")
-                        label(for="yes") Yes, property is available
-
-                    div#bassAddressForm(class="panel panel-border-narrow js-hidden")
-                        +bassAddressForm
-
-                    div.multiple-choice
-                        input#waiting(type="radio" checked=bassOffer.bassAccepted === 'Waiting' name="bassAccepted" value="Waiting")
-                        label(for="waiting") Yes, on waiting list
+                        input#waiting(type="radio" checked=bassOffer.bassAccepted === 'Yes' name="bassAccepted" value="Yes")
+                        label(for="waiting") Yes, BASS made an offer
                     div.multiple-choice
                         input#unsuitable(type="radio" checked=bassOffer.bassAccepted === 'Unsuitable' name="bassAccepted" value="Unsuitable")
                         label(for="unsuitable") No, offender not suitable
                     div.multiple-choice
                         input#unavailable(type="radio" checked=bassOffer.bassAccepted === 'Unavailable' name="bassAccepted" value="Unavailable")
                         label(for="unavailable") No, address not available
+
+                div#bassAreaDetails.panel.panel-border-narrow
+                    label(for='bassOfferDetails') Provide details of the BASS decision (optional)
+                        textarea(name='bassOfferDetails' id='bassOfferDetails' class='form-control' rows='2' aria-label="Provide details of the BASS decision (optional)")
+                            if bassOffer.bassOfferDetails
+                                | #{bassOffer.bassOfferDetails}
+
+                if licenceStatus.postApproval
+                    div#bassAddressForm(class="panel panel-border-narrow js-hidden")
+                        +bassAddressForm
 
             include ../includes/saveAndReturn
 

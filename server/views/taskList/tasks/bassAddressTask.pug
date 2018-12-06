@@ -1,5 +1,6 @@
 -var tasks = licenceStatus.tasks || {}
 -var decisions = licenceStatus.decisions || {}
+-var offer = decisions.bassAccepted
 
 div.paddingBottom
     h2.heading-medium BASS address
@@ -17,10 +18,12 @@ div.paddingBottom
                     span.alert.bold BASS request withdrawn
 
             else if licenceStatus.tasks.bassOffer === 'DONE'
-                -var offer = decisions.bassAccepted
 
                 if offer === 'Yes'
-                    | Offer made
+                    if tasks.bassAddress === 'DONE'
+                        | Offer made and address provided
+                    else
+                        | Offer made, awaiting address
 
                 else
                     div.pure-g
@@ -34,27 +37,16 @@ div.paddingBottom
                                     else
                                        | Address not available
 
-            else if tasks.bassAreaCheck === 'DONE'
-                if decisions.bassAreaSuitable
-                    | Not completed
-                else
-                    | BASS referral requested
-
             else
-                | BASS referral requested
+                | Not completed
 
 
         div.pure-u-1.pure-u-md-1-4.center
             -var bassOfferPath = "/hdc/bassReferral/bassOffer/" + prisonerInfo.bookingId
-            -var curfewChoicePath = '/hdc/proposedAddress/curfewAddressChoice/' + prisonerInfo.bookingId
-            -var reviewPath = "/hdc/review/bassOffer/" + prisonerInfo.bookingId
+            -var reviewPath = "/hdc/review/bassAddress/" + prisonerInfo.bookingId
 
             if user.role === 'CA'
-                if decisions.bassWithdrawn
-                    +change(bassOfferPath)
-                else if tasks.bassAreaCheck === 'DONE'
-                    +startContinueChange(tasks.bassOffer, bassOfferPath)
-                else
-                    +startContinueChangeMulti([tasks.optOut, tasks.curfewAddress, tasks.bassRequest], curfewChoicePath)
+                +startContinueChange(tasks.bassAddress, bassOfferPath)
+
             else
                 +view(reviewPath)

@@ -149,45 +149,75 @@ describe('validation', () => {
         const {bassOffer} = require('../../server/routes/config/bassReferral');
         describe('bassOffer', () => {
 
-            const options = [
-                {response: {bassAccepted: 'No'}, outcome: {}},
-                {
-                    response: {
-                        bassAccepted: 'Yes'
-                    },
-                    outcome: {
-                        addressLine1: 'Enter a building or street',
-                        addressTown: 'Enter a town or city',
-                        bassArea: 'Enter the provided area',
-                        postCode: 'Enter a postcode in the right format'
-                    }
-                },
-                {
-                    response: {
-                        bassAccepted: 'Yes',
-                        addressLine1: 'Road',
-                        addressTown: 'Town',
-                        bassArea: 'Area',
-                        postCode: 'LE17 4XJ'
-                    },
-                    outcome: {}
-                },
-                {
-                    response: {
-                        bassAccepted: 'Yes',
-                        addressLine1: 'Road',
-                        addressTown: 'Town',
-                        bassArea: 'Area',
-                        postCode: 'a'
-                    },
-                    outcome: {postCode: 'Enter a postcode in the right format'}
-                }
-            ];
+            describe('bassOffer - post approval', () => {
 
-            options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, bassOffer)).to.eql(outcome);
+                const options = [
+                    {response: {bassAccepted: 'No'}, outcome: {}},
+                    {
+                        response: {bassAccepted: 'Yes'},
+                        outcome: {}
+                    },
+                    {
+                        response: {bassAccepted: ''},
+                        outcome: {bassAccepted: 'Select an option'}
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                        const {outcome, response} = option;
+                        expect(service.validateForm(response, bassOffer, {postApproval: false})).to.eql(outcome);
+                    });
+                });
+            });
+
+            describe('bassOffer - pre approval', () => {
+
+                const options = [
+                    {response: {bassAccepted: 'No'}, outcome: {}},
+                    {
+                        response: {bassAccepted: ''},
+                        outcome: {bassAccepted: 'Select an option'}
+                    },
+                    {
+                        response: {bassAccepted: 'Yes'},
+                        outcome: {
+                            addressLine1: 'Enter a building or street',
+                            addressTown: 'Enter a town or city',
+                            bassArea: 'Enter the provided area',
+                            postCode: 'Enter a postcode in the right format',
+                            telephone: 'Enter a telephone number in the right format'
+                        }
+                    },
+                    {
+                        response: {
+                            bassAccepted: 'Yes',
+                            addressLine1: 'Road',
+                            addressTown: 'Town',
+                            bassArea: 'Area',
+                            postCode: 'LE17 4XJ',
+                            telephone: '111'
+                        },
+                        outcome: {}
+                    },
+                    {
+                        response: {
+                            bassAccepted: 'Yes',
+                            addressLine1: 'Road',
+                            addressTown: 'Town',
+                            bassArea: 'Area',
+                            postCode: 'a',
+                            telephone: '111'
+                        },
+                        outcome: {postCode: 'Enter a postcode in the right format'}
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                        const {outcome, response} = option;
+                        expect(service.validateForm(response, bassOffer, {postApproval: true})).to.eql(outcome);
+                    });
                 });
             });
         });

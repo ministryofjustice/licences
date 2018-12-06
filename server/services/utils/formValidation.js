@@ -13,6 +13,7 @@ const fieldOptions = {
     selection: joi.array().min(1).required(),
     requiredTime: joi.date().format('HH:mm').required(),
     requiredDate: joi.date().format('DD/MM/YYYY').min('now').required(),
+    requiredPostcode: joi.postcode().required(),
     requiredSelectionIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
         then: joi.array().min(1).required()
@@ -31,7 +32,13 @@ const fieldOptions = {
     }),
     requiredPostcodeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
-        then: joi.postcode().required()
+        then: joi.postcode().required(),
+        otherwise: joi.any().optional()
+    }),
+    requiredTelephoneIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
+        is: requiredAnswer,
+        then: joi.string().regex(/^[0-9+\s]+$/).required(),
+        otherwise: joi.any().optional()
     })
 };
 

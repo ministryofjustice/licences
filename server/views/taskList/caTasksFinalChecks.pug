@@ -2,10 +2,6 @@ extends taskListTemplate
 
 block tasks
     if licenceStatus.decisions.bassReferralNeeded
-        if licenceStatus.tasks.bassAreaCheck === 'DONE' && licenceStatus.tasks.bassOffer == 'UNSTARTED'
-            div.taskListItem.borderBottomLight
-                include tasks/informBassTask
-
         div.taskListItem.borderBottomLight
             include tasks/bassOfferTask
     else
