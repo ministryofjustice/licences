@@ -48,10 +48,10 @@ module.exports = ({licenceService}) => (router, audited) => {
         const {decision} = req.body;
         const licence = res.locals.licence;
 
+        const bassReferral = getBassReferralContent(decision, licence);
+
         const proposedAddress = getIn(licence, ['licence', 'proposedAddress']);
         const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision]);
-
-        const bassReferral = getBassReferralContent(decision, licence);
 
         await Promise.all([
             licenceService.updateSection('proposedAddress', bookingId, newProposedAddress),
