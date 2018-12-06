@@ -12,7 +12,7 @@ block tasks
     if licenceStatus.decisions.eligible
         div.taskListItem.borderBottomLight
             if licenceStatus.decisions.bassReferralNeeded
-                include tasks/bassOfferTask
+                include tasks/bassAddressTask
             else
                 include tasks/curfewAddressTask
 

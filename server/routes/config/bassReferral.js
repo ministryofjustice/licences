@@ -43,45 +43,67 @@ module.exports = {
         pageDataMap: ['licence', 'bassReferral'],
         validate: true,
         fields: [
-            {bassAccepted: {
-                responseType: 'requiredYesNo',
-                validationMessage: 'Select yes or no'
-            }},
-            {bassArea: {
-                dependentOn: 'bassAccepted',
-                predicate: 'Yes',
-                responseType: 'requiredStringIf_bassAccepted_Yes',
-                validationMessage: 'Enter the provided area'
-            }},
-            {addressLine1: {
-                dependentOn: 'bassAccepted',
-                predicate: 'Yes',
-                responseType: 'requiredStringIf_bassAccepted_Yes',
-                validationMessage: 'Enter a building or street'
-            }},
-            {addressLine2: {
-                dependentOn: 'bassAccepted',
-                predicate: 'Yes',
-                responseType: 'optionalString'
-            }},
-            {addressTown: {
-                dependentOn: 'bassAccepted',
-                predicate: 'Yes',
-                responseType: 'requiredStringIf_bassAccepted_Yes',
-                validationMessage: 'Enter a town or city'
-            }},
-            {postCode: {
-                dependentOn: 'bassAccepted',
-                predicate: 'Yes',
-                responseType: 'requiredPostcodeIf_bassAccepted_Yes',
-                validationMessage: 'Enter a postcode in the right format'
-            }},
-            {telephone: {
-                dependentOn: 'bassAccepted',
-                predicate: 'Yes',
-                responseType: 'optionalString',
-                validationMessage: 'Enter a telephone number in the right format'
-            }}
+            {
+                bassAccepted: {
+                    responseType: 'requiredString',
+                    validationMessage: 'Select an option'
+                }
+            },
+            {
+                bassOfferDetails: {
+                    responseType: 'optionalString'
+                }
+            },
+            {
+                bassArea: {
+                    conditionallyActive: {postApproval: true},
+                    dependentOn: 'bassAccepted',
+                    predicate: 'Yes',
+                    responseType: 'requiredStringIf_bassAccepted_Yes',
+                    validationMessage: 'Enter the provided area'
+                }
+            },
+            {
+                addressLine1: {
+                    conditionallyActive: {postApproval: true},
+                    dependentOn: 'bassAccepted',
+                    predicate: 'Yes',
+                    responseType: 'requiredStringIf_bassAccepted_Yes',
+                    validationMessage: 'Enter a building or street'
+                }
+            },
+            {
+                addressLine2: {
+                    responseType: 'optionalString'
+                }
+            },
+            {
+                addressTown: {
+                    conditionallyActive: {postApproval: true},
+                    dependentOn: 'bassAccepted',
+                    predicate: 'Yes',
+                    responseType: 'requiredStringIf_bassAccepted_Yes',
+                    validationMessage: 'Enter a town or city'
+                }
+            },
+            {
+                postCode: {
+                    conditionallyActive: {postApproval: true},
+                    dependentOn: 'bassAccepted',
+                    predicate: 'Yes',
+                    responseType: 'requiredPostcodeIf_bassAccepted_Yes',
+                    validationMessage: 'Enter a postcode in the right format'
+                }
+            },
+            {
+                telephone: {
+                    conditionallyActive: {postApproval: true},
+                    dependentOn: 'bassAccepted',
+                    predicate: 'Yes',
+                    responseType: 'requiredTelephoneIf_bassAccepted_Yes',
+                    validationMessage: 'Enter a telephone number in the right format'
+                }
+            }
         ],
         nextPath: {
             path: '/hdc/taskList/',

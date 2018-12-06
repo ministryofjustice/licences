@@ -523,22 +523,49 @@ describe('validation', () => {
         });
 
         describe('bassReferral', () => {
-            const {bassOffer} = require('../../server/routes/config/bassReferral');
-            describe('bassOffer', () => {
+        const {bassOffer} = require('../../server/routes/config/bassReferral');
+        describe('bassOffer', () => {
 
-                const pageConfig = bassOffer;
+            const pageConfig = bassOffer;
+
+            describe('bassOffer - post approval', () => {
 
                 const options = [
                     {formResponse: {bassAccepted: 'No'}, outcome: {}},
                     {
-                        formResponse: {
-                            bassAccepted: 'Yes'
-                        },
+                        formResponse: {bassAccepted: 'Yes'},
+                        outcome: {}
+                    },
+                    {
+                        formResponse: {bassAccepted: ''},
+                        outcome: {bassAccepted: 'Select an option'}
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                        const {outcome, formResponse} = option;
+                        expect(service.validateForm({formResponse, pageConfig, bespokeConditions: {postApproval: false}})).to.eql(outcome);
+                    });
+                });
+            });
+
+            describe('bassOffer - pre approval', () => {
+
+                const options = [
+                    {formResponse: {bassAccepted: 'No'}, outcome: {}},
+                    {
+                        formResponse: {bassAccepted: ''},
+                        outcome: {bassAccepted: 'Select an option'}
+                    },
+                    {
+                        formResponse: {bassAccepted: 'Yes'},
                         outcome: {
                             addressLine1: 'Enter a building or street',
                             addressTown: 'Enter a town or city',
                             bassArea: 'Enter the provided area',
-                            postCode: 'Enter a postcode in the right format'
+                            postCode: 'Enter a postcode in the right format',
+                            telephone: 'Enter a telephone number in the right format'
                         }
                     },
                     {
@@ -547,7 +574,8 @@ describe('validation', () => {
                             addressLine1: 'Road',
                             addressTown: 'Town',
                             bassArea: 'Area',
-                            postCode: 'LE17 4XJ'
+                            postCode: 'LE17 4XJ',
+                            telephone: '111'
                         },
                         outcome: {}
                     },
@@ -557,20 +585,22 @@ describe('validation', () => {
                             addressLine1: 'Road',
                             addressTown: 'Town',
                             bassArea: 'Area',
-                            postCode: 'a'
+                            postCode: 'a',
+                            telephone: '111'
                         },
                         outcome: {postCode: 'Enter a postcode in the right format'}
                     }
                 ];
 
                 options.forEach(option => {
-                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
                         const {outcome, formResponse} = option;
-                        expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
+                        expect(service.validateForm({formResponse, pageConfig, bespokeConditions: {postApproval: true}})).to.eql(outcome);
                     });
                 });
             });
         });
+    });
 
         describe('approval', () => {
             const {release} = require('../../server/routes/config/approval');

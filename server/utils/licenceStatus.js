@@ -26,6 +26,7 @@ function getLicenceStatus(licenceRecord) {
                 bassRequest: taskStates.UNSTARTED,
                 bassAreaCheck: taskStates.UNSTARTED,
                 bassOffer: taskStates.UNSTARTED,
+                bassAddress: taskStates.UNSTARTED,
                 riskManagement: taskStates.UNSTARTED,
                 curfewAddressReview: taskStates.UNSTARTED,
                 curfewHours: taskStates.UNSTARTED,
@@ -42,9 +43,10 @@ function getLicenceStatus(licenceRecord) {
     }
     const stage = licenceRecord.stage;
     const results = getRequiredState(stage, licenceRecord.licence);
+    const postApproval = isPostDecision(stage);
     const createLicence = isPostDecision(stage) ? getLicenceCreatedTaskState(licenceRecord) : taskStates.UNSTARTED;
 
-    return results.reduce(combiner, {stage, decisions: {}, tasks: {createLicence}});
+    return results.reduce(combiner, {stage, postApproval, decisions: {}, tasks: {createLicence}});
 }
 
 function getRequiredState(stage, licence) {
@@ -55,10 +57,8 @@ function getRequiredState(stage, licence) {
         [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState, getCaStageState],
         [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
         [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
-        [licenceStages.MODIFIED]:
-            [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
-        [licenceStages.MODIFIED_APPROVAL]:
-            [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
+        [licenceStages.MODIFIED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
+        [licenceStages.MODIFIED_APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
     };
 
     return config[stage].map(getStateMethod => getStateMethod(licence));
@@ -76,7 +76,7 @@ const combiner = (acc, data) => {
 };
 
 function getApprovalStageState(licence) {
-    const {approved, refused, dmRefused, approval, refusalReason, bassOffer, bassAccepted} = getApprovalState(licence);
+    const {approved, refused, dmRefused, approval, refusalReason, bassOffer, bassAccepted, bassAddress} = getApprovalState(licence);
 
     return {
         decisions: {
@@ -88,7 +88,8 @@ function getApprovalStageState(licence) {
         },
         tasks: {
             approval,
-            bassOffer
+            bassOffer,
+            bassAddress
         }
     };
 }
@@ -291,40 +292,6 @@ function getOptOutState(licence) {
     };
 }
 
-function getBassRequestState(licence) {
-
-    const bassRequestAnswer = getIn(licence, ['bassReferral', 'bassRequest', 'bassRequested']);
-    const addressProposedAnswer = getIn(licence, ['proposedAddress', 'addressProposed', 'decision']);
-
-    const bassReferralNeeded = bassRequestAnswer === 'Yes' && addressProposedAnswer === 'No';
-    const bassRequest = getState(bassReferralNeeded, bassRequestAnswer, licence);
-
-    return {
-        bassReferralNeeded,
-        bassRequest
-    };
-
-    function getState(bassReferralNeeded, bassRequestAnswer, licence) {
-
-        if (bassReferralNeeded) {
-            const bassRequestTown = getIn(licence, ['bassReferral', 'bassRequest', 'proposedTown']);
-            const bassRequestCounty = getIn(licence, ['bassReferral', 'bassRequest', 'proposedCounty']);
-
-            if (bassRequestTown && bassRequestCounty) {
-                return taskStates.DONE;
-            }
-
-            if (bassRequestTown || bassRequestCounty) {
-                return taskStates.STARTED;
-            }
-
-            return taskStates.UNSTARTED;
-        }
-
-        return bassRequestAnswer ? taskStates.DONE : taskStates.UNSTARTED;
-    }
-}
-
 function getRiskManagementState(licence) {
 
     const riskManagementAnswer = getIn(licence, ['risk', 'riskManagement', 'planningActions']);
@@ -360,7 +327,7 @@ function getApprovalState(licence) {
 
     const dmApproval = getDmApproval(licence);
     const caRefusal = getCaRefusal(licence);
-    const {bassAccepted, bassOffer} = getBassState(licence);
+    const {bassAccepted, bassOffer, bassAddress} = getBassState(licence);
 
     return {
         approved: dmApproval.approved && !caRefusal.refused,
@@ -369,55 +336,9 @@ function getApprovalState(licence) {
         dmRefused: dmApproval.refused,
         refusalReason: dmApproval.refusalReason || caRefusal.refusalReason,
         bassAccepted,
-        bassOffer
+        bassOffer,
+        bassAddress
     };
-}
-
-function getBassState(licence) {
-
-    const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted']);
-    const bassOffer = getBassOfferState(licence, bassAccepted);
-    const {bassWithdrawn, bassWithdrawalReason} = getBassWithdrawalState(licence);
-
-    return {bassAccepted, bassOffer, bassWithdrawn, bassWithdrawalReason};
-}
-
-function getBassOfferState(licence, bassAccepted) {
-
-    if (!bassAccepted) {
-        return taskStates.UNSTARTED;
-    }
-
-    if (bassAccepted && bassAccepted !== 'Yes') {
-        return taskStates.DONE;
-    }
-
-    const bassOffer = getIn(licence, ['bassReferral', 'bassOffer']);
-
-    const required = ['addressTown', 'addressLine1', 'postCode'];
-    if (required.some(field => !bassOffer[field])) {
-        return taskStates.STARTED;
-    }
-
-    return taskStates.DONE;
-}
-
-function getBassWithdrawalState(licence) {
-
-    const {bassAreaCheck} = getBassAreaState(licence);
-    if (bassAreaCheck === taskStates.DONE) {
-        return {bassWithdrawn: false};
-    }
-
-    const {bassRequest} = getBassRequestState(licence);
-    if (bassRequest === taskStates.DONE || bassRequest === taskStates.STARTED) {
-        return {bassWithdrawn: false};
-    }
-    const bassRejections = getIn(licence, ['bassRejections']);
-    const bassWithdrawalReason = isEmpty(bassRejections)? undefined : lastItem(bassRejections).withdrawal;
-    const bassWithdrawn = bassRejections && !isEmpty(lastItem(bassRejections).withdrawal);
-
-    return {bassWithdrawn, bassWithdrawalReason};
 }
 
 function getDmApproval(licence) {
@@ -576,35 +497,6 @@ function getLicenceConditionsState(licence) {
     };
 }
 
-function getBassAreaState(licence) {
-
-    const bassAreaSuitableAnswer = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaSuitable']);
-    const bassAreaReason = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaReason']);
-
-    const bassAreaSuitable = bassAreaSuitableAnswer && bassAreaSuitableAnswer === 'Yes';
-    const bassAreaNotSuitable = bassAreaSuitableAnswer && bassAreaSuitableAnswer === 'No';
-    const bassAreaCheck = getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason, bassAreaSuitable);
-
-    return {
-        bassAreaSuitable,
-        bassAreaNotSuitable,
-        bassAreaCheck
-    };
-}
-
-function getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason) {
-
-    if (!bassAreaSuitableAnswer) {
-        return taskStates.UNSTARTED;
-    }
-
-    if (bassAreaSuitableAnswer === 'No' && !bassAreaReason) {
-        return taskStates.STARTED;
-    }
-
-    return taskStates.DONE;
-}
-
 function getSeriousOffenceCheckState(licence) {
 
     const seriousOffenceAnswer = getIn(licence, ['finalChecks', 'seriousOffence', 'decision']);
@@ -671,4 +563,124 @@ function getLicenceCreatedTaskState(licenceRecord) {
     const approvedVersion = getIn(licenceRecord, ['approvedVersion']);
 
     return approvedVersion && licenceRecord.version === approvedVersion ? 'DONE' : 'UNSTARTED';
+}
+
+function getBassRequestState(licence) {
+
+    const bassRequestAnswer = getIn(licence, ['bassReferral', 'bassRequest', 'bassRequested']);
+    const addressProposedAnswer = getIn(licence, ['proposedAddress', 'addressProposed', 'decision']);
+
+    const bassReferralNeeded = bassRequestAnswer === 'Yes' && addressProposedAnswer === 'No';
+    const bassRequest = getState(bassReferralNeeded, bassRequestAnswer, licence);
+
+    return {
+        bassReferralNeeded,
+        bassRequest
+    };
+
+    function getState(bassReferralNeeded, bassRequestAnswer, licence) {
+
+        if (bassReferralNeeded) {
+            const bassRequestTown = getIn(licence, ['bassReferral', 'bassRequest', 'proposedTown']);
+            const bassRequestCounty = getIn(licence, ['bassReferral', 'bassRequest', 'proposedCounty']);
+
+            if (bassRequestTown && bassRequestCounty) {
+                return taskStates.DONE;
+            }
+
+            if (bassRequestTown || bassRequestCounty) {
+                return taskStates.STARTED;
+            }
+
+            return taskStates.UNSTARTED;
+        }
+
+        return bassRequestAnswer ? taskStates.DONE : taskStates.UNSTARTED;
+    }
+}
+
+function getBassWithdrawalState(licence) {
+
+    const {bassAreaCheck} = getBassAreaState(licence);
+    if (bassAreaCheck === taskStates.DONE) {
+        return {bassWithdrawn: false};
+    }
+
+    const {bassRequest} = getBassRequestState(licence);
+    if (bassRequest === taskStates.DONE || bassRequest === taskStates.STARTED) {
+        return {bassWithdrawn: false};
+    }
+    const bassRejections = getIn(licence, ['bassRejections']);
+    const bassWithdrawalReason = isEmpty(bassRejections) ? undefined : lastItem(bassRejections).withdrawal;
+    const bassWithdrawn = bassRejections && !isEmpty(lastItem(bassRejections).withdrawal);
+
+    return {bassWithdrawn, bassWithdrawalReason};
+}
+
+function getBassAreaState(licence) {
+
+    const bassAreaSuitableAnswer = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaSuitable']);
+    const bassAreaReason = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaReason']);
+
+    const bassAreaSuitable = bassAreaSuitableAnswer && bassAreaSuitableAnswer === 'Yes';
+    const bassAreaNotSuitable = bassAreaSuitableAnswer && bassAreaSuitableAnswer === 'No';
+    const bassAreaCheck = getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason, bassAreaSuitable);
+
+    return {
+        bassAreaSuitable,
+        bassAreaNotSuitable,
+        bassAreaCheck
+    };
+}
+
+function getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason) {
+
+    if (!bassAreaSuitableAnswer) {
+        return taskStates.UNSTARTED;
+    }
+
+    if (bassAreaSuitableAnswer === 'No' && !bassAreaReason) {
+        return taskStates.STARTED;
+    }
+
+    return taskStates.DONE;
+}
+
+function getBassState(licence) {
+
+    const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted']);
+    const bassOffer = getBassOfferState(licence, bassAccepted);
+    const {bassWithdrawn, bassWithdrawalReason} = getBassWithdrawalState(licence);
+    const bassAddress = getBassAddressState(licence);
+
+    return {bassAccepted, bassOffer, bassWithdrawn, bassWithdrawalReason, bassAddress};
+}
+
+function getBassOfferState(licence, bassAccepted) {
+
+    if (!bassAccepted) {
+        return taskStates.UNSTARTED;
+    }
+
+    if (bassAccepted) {
+        return taskStates.DONE;
+    }
+}
+
+function getBassAddressState(licence) {
+
+    const bassOffer = getIn(licence, ['bassReferral', 'bassOffer']);
+
+    if (!bassOffer) {
+        return taskStates.UNSTARTED;
+    }
+
+    if (bassOffer.bassAccepted === 'Yes') {
+        const required = ['addressTown', 'addressLine1', 'postCode'];
+        if (required.some(field => !bassOffer[field])) {
+            return taskStates.STARTED;
+        }
+    }
+
+    return taskStates.DONE;
 }
