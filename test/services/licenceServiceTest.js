@@ -1494,8 +1494,44 @@ describe('licenceService', () => {
             expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
         });
 
-        it('should update the saved licence', async () => {
-            await service.rejectBass(baseLicence.licence, 123, 'Yes');
+        it('should not update the saved licence if there is no bassReferral to reject', async () => {
+
+            const licence = {};
+
+            await service.rejectBass(licence, 123, 'Yes');
+
+            expect(licenceClient.updateLicence).to.not.be.called();
+        });
+
+    });
+
+    describe('withdrawBass', () => {
+
+        const bassRequest = {
+            bassRequested: 1,
+            proposedTown: 1,
+            proposedCounty: 1
+        };
+
+        const bassAreaCheck = {
+            bassAreaSuitable: 'No',
+            bassAreaReason: '1'
+        };
+
+        const baseLicence = {
+            stage: 'ELIGIBILITY',
+            licence: {
+                bassReferral: {
+                    bassRequest,
+                    bassAreaCheck
+                }
+            }
+        };
+
+
+        it('should mark bassReferral as withdrawn and move into a rejection list', async () => {
+
+            await service.withdrawBass(baseLicence.licence, 123, 'type of withdraw');
 
             const expectedOutput = {
                 bassReferral: {
@@ -1506,22 +1542,149 @@ describe('licenceService', () => {
                 bassRejections: [
                     {
                         bassRequest,
-                        bassAreaCheck
+                        bassAreaCheck,
+                        withdrawal: 'type of withdraw'
                     }
                 ]
             };
 
-            expect(licenceClient.updateLicence).to.be.calledOnce();
             expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
         });
 
-        it('should not update the saved licence if there is no bassReferral to reject', async () => {
+        it('should set bassReferral to requested = yes', async () => {
+
+            service.withdrawBass(baseLicence.licence, 123, 'type of withdraw');
+
+            const expectedOutput = {
+                bassReferral: {
+                    bassRequest: {
+                        bassRequested: 'Yes'
+                    }
+                },
+                bassRejections: [
+                    {
+                        bassRequest,
+                        bassAreaCheck,
+                        withdrawal: 'type of withdraw'
+                    }
+                ]
+            };
+
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
+        });
+
+        it('should move bassWithdrawal to the end of existing rejection list', async () => {
+
+            const baseLicence = {
+                stage: 'ELIGIBILITY',
+                licence: {
+                    bassReferral: {
+                        bassRequest,
+                        bassAreaCheck
+                    },
+                    bassRejections: [
+                        {first: 'rejection'}
+                    ]
+                }
+            };
+
+            service.withdrawBass(baseLicence.licence, 123, 'type of withdraw');
+
+            const expectedOutput = {
+                bassReferral: {
+                    bassRequest: {
+                        bassRequested: 'Yes'
+                    }
+                },
+                bassRejections: [
+                    {first: 'rejection'},
+                    {
+                        bassRequest,
+                        bassAreaCheck,
+                        withdrawal: 'type of withdraw'
+                    }
+                ]
+            };
+
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
+        });
+
+        it('should not update the saved licence if there is no bassReferral to withdraw', async () => {
 
             const licence = {};
 
-            await service.rejectBass(licence, 123, 'Yes');
+            const output = await service.withdrawBass(licence, 123, 'type of withdraw');
 
             expect(licenceClient.updateLicence).to.not.be.called();
+            expect(output).to.eql(licence);
+        });
+
+    });
+
+    describe('reinstateBass', () => {
+
+        const bassRequest = {
+            bassRequested: 1,
+            proposedTown: 1,
+            proposedCounty: 1
+        };
+
+        const bassAreaCheck = {
+            bassAreaSuitable: 'No',
+            bassAreaReason: '1'
+        };
+
+        const baseLicence = {
+            stage: 'ELIGIBILITY',
+            licence: {
+                bassReferral: {
+                    bassRequest: {
+                        something: 'else'
+                    }
+                },
+                bassRejections: [
+                    {
+                        other: 'record'
+                    },
+                    {
+                        withdrawal: 'reason',
+                        bassRequest,
+                        bassAreaCheck
+                    }
+                ]
+            }
+        };
+
+        it('should remove last entry from bassRejectons and restore to bassReferral, without the withdrawal field', async () => {
+
+            await service.reinstateBass(baseLicence.licence, 123);
+
+            const expectedOutput = {
+                bassReferral: {
+                    bassRequest,
+                    bassAreaCheck
+                },
+                bassRejections: [
+                    {
+                        other: 'record'
+                    }
+                ]
+            };
+
+            expect(licenceClient.updateLicence).to.be.calledWith(123, expectedOutput);
+        });
+
+        it('should error when no rejections to reinstate', async () => {
+
+            const noRejections = {
+                stage: 'ELIGIBILITY',
+                licence: {
+                    bassReferral: {},
+                    bassRejections: []
+                }
+            };
+
+            expect(() => service.reinstateBass(noRejections.licence, 123)).to.throw(Error);
         });
 
     });

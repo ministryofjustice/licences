@@ -31,12 +31,12 @@ function getConditionsErrors(licence) {
 function getValidationErrorsForReview({licenceStatus, licence}) {
     const {stage, decisions, tasks} = licenceStatus;
     const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED';
+    const newBassAreaAddedForReview = stage !== 'PROCESSING_RO' && tasks.bassAreaCheck === 'UNSTARTED';
 
-    if (stage === 'ELIGIBILITY' && decisions && decisions.bassReferralNeeded) {
-        return getLicenceErrors({licence, forms: [
-                ...formsInSection['eligibility'],
-                'bassRequest'
-            ]});
+    if (decisions && decisions.bassReferralNeeded) {
+        if (stage === 'ELIGIBILITY' || newBassAreaAddedForReview) {
+            return getLicenceErrors({licence, forms: [...formsInSection['eligibility'], 'bassRequest']});
+        }
     }
 
     if (stage === 'ELIGIBILITY' || newAddressAddedForReview) {
@@ -58,11 +58,14 @@ function getValidationErrorsForReview({licenceStatus, licence}) {
     return getLicenceErrors({licence, forms: reviewForms});
 }
 
+
 function getEligibilityErrors({licence}) {
-    const errorObject = getLicenceErrors({licence, forms: [
+    const errorObject = getLicenceErrors({
+        licence, forms: [
             ...formsInSection['eligibility'],
             ...formsInSection['proposedAddress']
-        ]});
+        ]
+    });
 
     const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
 

@@ -83,11 +83,14 @@ function canSendCaToRo(licenceStatus) {
 
     const {eligible, optedOut, bassReferralNeeded, curfewAddressApproved} = decisions;
 
-    const addressReviewNeeded = !bassReferralNeeded &&
-        ['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage) && tasks.curfewAddressReview === 'UNSTARTED';
-
-    if (addressReviewNeeded) {
-        return true;
+    if (['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
+        if (bassReferralNeeded) {
+            if (licenceStatus.tasks.bassAreaCheck === taskStates.UNSTARTED) {
+                return true;
+            }
+        } else if (tasks.curfewAddressReview === taskStates.UNSTARTED) {
+            return true;
+        }
     }
 
     const notToProgress = !eligible || optedOut || curfewAddressApproved === 'rejected';
@@ -116,11 +119,20 @@ function canSendCaToRo(licenceStatus) {
 function canSendCaToDmRefusal(licenceStatus) {
 
     const {stage, decisions} = licenceStatus;
-    const {curfewAddressApproved, finalChecksRefused} = decisions;
+    const {curfewAddressApproved, finalChecksRefused, bassReferralNeeded} = decisions;
     const bassFailure = isBassFailure(decisions);
 
     if (['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
-        return (curfewAddressApproved === 'withdrawn' || bassFailure) && !finalChecksRefused;
+
+        if (finalChecksRefused) {
+            return false;
+        }
+
+        if (bassReferralNeeded) {
+            return bassFailure;
+        }
+
+        return curfewAddressApproved === 'withdrawn';
     }
 
     if (stage === 'ELIGIBILITY') {
@@ -137,8 +149,8 @@ function canSendCaToDmRefusal(licenceStatus) {
 }
 
 function isBassFailure(decisions) {
-    const {bassAreaNotSuitable, bassAccepted} = decisions;
-    return bassAreaNotSuitable || ['Unsuitable', 'Unavailable'].includes(bassAccepted);
+    const {bassAreaNotSuitable, bassAccepted, bassWithdrawn} = decisions;
+    return bassWithdrawn || bassAreaNotSuitable || ['Unsuitable', 'Unavailable'].includes(bassAccepted);
 }
 
 function canSendCaToDm(licenceStatus) {

@@ -78,13 +78,23 @@ function caEligibilityLabel(licenceStatus) {
 
 function caProcessingLabel(licenceStatus) {
 
-    const labels = [
-        {decision: 'finalChecksRefused', label: 'Refused'},
-        {decision: 'postponed', label: 'Postponed'},
-        {decision: 'excluded', label: 'Excluded (Ineligible)'},
+    const bassRouteLabels = [
+        {decision: 'bassWithdrawalReason', value: 'offer', label: 'BASS offer withdrawn'},
+        {decision: 'bassWithdrawalReason', value: 'request', label: 'BASS request withdrawn'}
+    ];
+
+    const addressRouteLabels = [
         {decision: 'curfewAddressApproved', value: 'withdrawn', label: 'Address withdrawn'},
         {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address not suitable'}
     ];
+
+    const commonLabels = [
+        {decision: 'finalChecksRefused', label: 'Refused'},
+        {decision: 'postponed', label: 'Postponed'},
+        {decision: 'excluded', label: 'Excluded (Ineligible)'}];
+
+    const labels =
+        licenceStatus.decisions.bassReferralNeeded ? commonLabels.concat(bassRouteLabels) : commonLabels.concat(addressRouteLabels);
 
     return getLabel(labels, licenceStatus) || 'Review case';
 }

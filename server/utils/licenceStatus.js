@@ -132,7 +132,7 @@ function getCaStageState(licence) {
     const {confiscationOrder, confiscationOrderCheck} = getConfiscationOrderState(licence);
     const {finalChecksPass, finalChecksRefused, postponed} = getFinalChecksState(licence, seriousOffence, onRemand);
     const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck, confiscationOrderCheck]);
-    const {bassAccepted, bassOffer} = getBassState(licence);
+    const {bassAccepted, bassOffer, bassWithdrawn, bassWithdrawalReason} = getBassState(licence);
 
     return {
         decisions: {
@@ -142,7 +142,9 @@ function getCaStageState(licence) {
             postponed,
             finalChecksPass,
             finalChecksRefused,
-            bassAccepted
+            bassAccepted,
+            bassWithdrawn,
+            bassWithdrawalReason
         },
         tasks: {
             seriousOffenceCheck,
@@ -312,7 +314,11 @@ function getBassRequestState(licence) {
                 return taskStates.DONE;
             }
 
-            return taskStates.STARTED;
+            if (bassRequestTown || bassRequestCounty) {
+                return taskStates.STARTED;
+            }
+
+            return taskStates.UNSTARTED;
         }
 
         return bassRequestAnswer ? taskStates.DONE : taskStates.UNSTARTED;
@@ -371,8 +377,9 @@ function getBassState(licence) {
 
     const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted']);
     const bassOffer = getBassOfferState(licence, bassAccepted);
+    const {bassWithdrawn, bassWithdrawalReason} = getBassWithdrawalState(licence);
 
-    return {bassAccepted, bassOffer};
+    return {bassAccepted, bassOffer, bassWithdrawn, bassWithdrawalReason};
 }
 
 function getBassOfferState(licence, bassAccepted) {
@@ -393,6 +400,24 @@ function getBassOfferState(licence, bassAccepted) {
     }
 
     return taskStates.DONE;
+}
+
+function getBassWithdrawalState(licence) {
+
+    const {bassAreaCheck} = getBassAreaState(licence);
+    if (bassAreaCheck === taskStates.DONE) {
+        return {bassWithdrawn: false};
+    }
+
+    const {bassRequest} = getBassRequestState(licence);
+    if (bassRequest === taskStates.DONE || bassRequest === taskStates.STARTED) {
+        return {bassWithdrawn: false};
+    }
+    const bassRejections = getIn(licence, ['bassRejections']);
+    const bassWithdrawalReason = isEmpty(bassRejections)? undefined : lastItem(bassRejections).withdrawal;
+    const bassWithdrawn = bassRejections && !isEmpty(lastItem(bassRejections).withdrawal);
+
+    return {bassWithdrawn, bassWithdrawalReason};
 }
 
 function getDmApproval(licence) {

@@ -6,7 +6,7 @@ const {licenceStages, transitions} = require('../models/licenceStages');
 const licenceValidator = require('./utils/licenceValidation');
 const recordList = require('./utils/recordList');
 const addressesPath = ['proposedAddress', 'curfewAddress', 'addresses'];
-const {replacePath} = require('../utils/functionalHelpers');
+const {replacePath, mergeWithRight} = require('../utils/functionalHelpers');
 const formValidation = require('./utils/formValidation');
 
 const {
@@ -360,10 +360,43 @@ module.exports = function createLicenceService(licenceClient) {
             return licence;
         }
 
-        const bassRejections = recordList({licence, path: ['bassRejections'], allowEmpty: true});
-        const licenceWithBassRejections = bassRejections.add({record: lastBassReferral});
+        const newRecord = {bassRequest: {bassRequested}};
 
-        const updatedLicence = replacePath(['bassReferral'], {bassRequest: {bassRequested}}, licenceWithBassRejections);
+        return deactivateBassEntry(licence, lastBassReferral, newRecord, bookingId);
+    }
+
+    function withdrawBass(licence, bookingId, withdrawalType) {
+        const lastBassReferral = getIn(licence, ['bassReferral']);
+
+        if (!lastBassReferral) {
+            return licence;
+        }
+
+        const oldRecord = mergeWithRight(lastBassReferral, {withdrawal: withdrawalType});
+        const newRecord = {bassRequest: {bassRequested: 'Yes'}};
+
+        return deactivateBassEntry(licence, oldRecord, newRecord, bookingId);
+    }
+
+    function deactivateBassEntry(licence, oldRecord, newRecord, bookingId) {
+
+        const bassRejections = recordList({licence, path: ['bassRejections'], allowEmpty: true});
+        const licenceWithBassRejections = bassRejections.add({record: oldRecord});
+
+        const updatedLicence = replacePath(['bassReferral'], newRecord, licenceWithBassRejections);
+
+        return licenceClient.updateLicence(bookingId, updatedLicence);
+    }
+
+    function reinstateBass(licence, bookingId) {
+
+        const bassRejections = recordList({licence, path: ['bassRejections']});
+
+        const entryToReinstate = removePath(['withdrawal'], bassRejections.last());
+
+        const licenceAfterWithdrawalRemoved = bassRejections.remove();
+
+        const updatedLicence = replacePath(['bassReferral'], entryToReinstate, licenceAfterWithdrawalRemoved);
 
         return licenceClient.updateLicence(bookingId, updatedLicence);
     }
@@ -388,6 +421,8 @@ module.exports = function createLicenceService(licenceClient) {
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
         addSplitDateFields,
         removeDecision,
-        rejectBass
+        rejectBass,
+        withdrawBass,
+        reinstateBass
     };
 };

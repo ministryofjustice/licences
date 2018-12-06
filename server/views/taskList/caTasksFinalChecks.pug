@@ -2,7 +2,7 @@ extends taskListTemplate
 
 block tasks
     if licenceStatus.decisions.bassReferralNeeded
-        if licenceStatus.tasks.bassOffer == 'UNSTARTED'
+        if licenceStatus.tasks.bassAreaCheck === 'DONE' && licenceStatus.tasks.bassOffer == 'UNSTARTED'
             div.taskListItem.borderBottomLight
                 include tasks/informBassTask
 
@@ -12,7 +12,10 @@ block tasks
         div.taskListItem.borderBottomLight
             include tasks/curfewAddressTask
 
-    if (['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved) || licenceStatus.decisions.bassReferralNeeded)
+    - var curfewAddressReady = ['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved)
+    - var bassReady = licenceStatus.decisions.bassReferralNeeded && licenceStatus.tasks.bassAreaCheck === 'DONE'
+
+    if (curfewAddressReady || bassReady)
         div.taskListItem.borderBottomLight
             include tasks/riskManagementTask
 
@@ -38,6 +41,9 @@ block tasks
         if allowedTransition === 'caToDmRefusal'
             include tasks/caSubmitRefusalTask
         else if allowedTransition === 'caToRo'
-            include tasks/caSubmitAddressReviewTask
+            if licenceStatus.decisions.bassReferralNeeded
+                include tasks/caSubmitBassReviewTask
+            else
+                include tasks/caSubmitAddressReviewTask
         else
             include tasks/caSubmitApprovalTask

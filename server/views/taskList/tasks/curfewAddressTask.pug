@@ -25,6 +25,7 @@ div.paddingBottom
                 -var path = "/hdc/curfew/curfewAddressReview/" + prisonerInfo.bookingId
                 -var withdrawnPath = "/hdc/curfew/consentWithdrawn/" + prisonerInfo.bookingId
                 -var reviewPath = "/hdc/review/address/" + prisonerInfo.bookingId
+                -var curfewAddressChoicePath = "/hdc/proposedAddress/curfewAddressChoice/" + prisonerInfo.bookingId
 
                 if user.role === 'RO'
                     if curfewAddressApproved === 'rejected'
@@ -39,6 +40,9 @@ div.paddingBottom
                         +viewEdit(reviewPath)
 
                 else if user.role === 'CA' && licenceStatus.stage === 'PROCESSING_CA'
-                    +change(reviewPath)
+                    if licenceStatus.tasks.curfewAddress !== 'DONE' && curfewAddressApproved === 'unstarted'
+                        +startContinueChange(licenceStatus.tasks.curfewAddress, curfewAddressChoicePath)
+                    else
+                        +change(reviewPath)
                 else
                     +view(reviewPath)

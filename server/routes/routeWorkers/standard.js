@@ -21,12 +21,10 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
         res.render(`${sectionName}/${formName}`, viewData);
     }
 
-
     async function post(req, res) {
         const {formName, bookingId, action} = req.params;
         return formPost(req, res, sectionName, formName, bookingId, action);
     }
-
 
     async function formPost(req, res, sectionName, formName, bookingId, action) {
         const nextPath = getPathFor({data: req.body, config: formConfig[formName], action});

@@ -131,6 +131,22 @@ describe('getStatusLabel', () => {
                 {
                     status: {stage: licenceStages.PROCESSING_CA, decisions: {finalChecksRefused: true}, tasks: {}},
                     label: 'Refused'
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_CA,
+                        decisions: {bassReferralNeeded: true, bassWithdrawalReason: 'offer'},
+                        tasks: {}
+                    },
+                    label: 'BASS offer withdrawn'
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_CA,
+                        decisions: {bassReferralNeeded: true, bassWithdrawalReason: 'request'},
+                        tasks: {}
+                    },
+                    label: 'BASS request withdrawn'
                 }
             ];
 

@@ -1,14 +1,23 @@
+-var tasks = licenceStatus.tasks || {}
+-var decisions = licenceStatus.decisions || {}
+
 div.paddingBottom
     h2.heading-medium BASS address
 
     div.pure-g
         div.pure-u-1.pure-u-md-3-4
 
-            if licenceStatus.decisions.bassAreaNotSuitable
+            if decisions.bassAreaNotSuitable
                 span.alert.bold  BASS area rejected
 
+            if decisions.bassWithdrawn
+                if decisions.bassWithdrawalReason === 'offer'
+                    span.alert.bold BASS offer withdrawn
+                else
+                    span.alert.bold BASS request withdrawn
+
             else if licenceStatus.tasks.bassOffer === 'DONE'
-                -var offer = licenceStatus.decisions.bassAccepted
+                -var offer = decisions.bassAccepted
 
                 if offer === 'Yes'
                     | Offer made and property available
@@ -27,8 +36,8 @@ div.paddingBottom
                                     else
                                        | Address not available
 
-            else if licenceStatus.tasks.bassAreaCheck === 'DONE'
-                if licenceStatus.decisions.bassAreaSuitable
+            else if tasks.bassAreaCheck === 'DONE'
+                if decisions.bassAreaSuitable
                     | Not completed
                 else
                     | BASS referral requested
@@ -39,9 +48,15 @@ div.paddingBottom
 
         div.pure-u-1.pure-u-md-1-4.center
             -var bassOfferPath = "/hdc/bassReferral/bassOffer/" + prisonerInfo.bookingId
+            -var curfewChoicePath = '/hdc/proposedAddress/curfewAddressChoice/' + prisonerInfo.bookingId
             -var reviewPath = "/hdc/review/bassOffer/" + prisonerInfo.bookingId
 
             if user.role == 'CA'
-                +startContinueChange(licenceStatus.tasks.bassOffer, bassOfferPath)
+                if decisions.bassWithdrawn
+                    +change(bassOfferPath)
+                else if tasks.bassAreaCheck === 'DONE'
+                    +startContinueChange(tasks.bassOffer, bassOfferPath)
+                else
+                    +startContinueChangeMulti([tasks.optOut, tasks.curfewAddress, tasks.bassRequest], curfewChoicePath)
             else
                 +view(reviewPath)

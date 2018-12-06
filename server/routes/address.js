@@ -26,19 +26,25 @@ module.exports = ({licenceService}) => (router, audited) => {
         return res.render('proposedAddress/curfewAddress', {bookingId, data: lastItem(addresses)});
     }
 
-    router.get('/proposedAddress/curfewAddressChoice/:bookingId', asyncMiddleware(async (req, res) => {
+    router.get('/proposedAddress/curfewAddressChoice/:action/:bookingId', asyncMiddleware(getChoice));
+    router.get('/proposedAddress/curfewAddressChoice/:bookingId', asyncMiddleware(getChoice));
+
+    function getChoice(req, res) {
 
         const {bookingId} = req.params;
         const licence = res.locals.licence;
         const data = {decision: getCurfewAddressChoice(getIn(licence, ['licence']))};
         const viewData = {data, errorObject: {}, bookingId};
 
-        res.render('proposedAddress/curfewAddressChoice', viewData);
-    }));
+        return res.render('proposedAddress/curfewAddressChoice', viewData);
+    }
 
-    router.post('/proposedAddress/curfewAddressChoice/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/proposedAddress/curfewAddressChoice/:action/:bookingId', audited, asyncMiddleware(postCurfewAddressChoice));
+    router.post('/proposedAddress/curfewAddressChoice/:bookingId', audited, asyncMiddleware(postCurfewAddressChoice));
 
-        const {bookingId} = req.params;
+    async function postCurfewAddressChoice(req, res) {
+
+        const {bookingId, action} = req.params;
         const {decision} = req.body;
         const licence = res.locals.licence;
 
@@ -53,8 +59,12 @@ module.exports = ({licenceService}) => (router, audited) => {
         ]);
 
         const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/${bookingId}`;
-        res.redirect(`${nextPath}${bookingId}`);
-    }));
+
+        if (action) {
+            return res.redirect(`${nextPath}${action}/${bookingId}`);
+        }
+        return res.redirect(`${nextPath}${bookingId}`);
+    }
 
     router.post('/proposedAddress/curfewAddress/:action/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {bookingId, action} = req.params;

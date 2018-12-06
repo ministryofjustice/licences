@@ -105,7 +105,7 @@ describe('/hdc/proposedAddress', () => {
                 body: {bookingId: 1, decision: 'OptOut'},
                 nextPath: '/hdc/taskList/1',
                 user: 'caUser',
-                addressContent: {optOut: {decision: 'Yes'}, addressProposed: {decision: 'No'}},
+                addressContent: {optOut: {decision: 'Yes'}, addressProposed: {decision: 'No'}, original: 'contents'},
                 bassContent: {bassRequest: {bassRequested: 'No'}}
             },
             {
@@ -113,7 +113,7 @@ describe('/hdc/proposedAddress', () => {
                 body: {bookingId: 1, decision: 'Address'},
                 nextPath: '/hdc/proposedAddress/curfewAddress/1',
                 user: 'caUser',
-                addressContent: {optOut: {decision: 'No'}, addressProposed: {decision: 'Yes'}},
+                addressContent: {optOut: {decision: 'No'}, addressProposed: {decision: 'Yes'}, original: 'contents'},
                 bassContent: {bassRequest: {bassRequested: 'No'}}
             },
             {
@@ -121,7 +121,7 @@ describe('/hdc/proposedAddress', () => {
                 body: {bookingId: 1, decision: 'Bass'},
                 nextPath: '/hdc/bassReferral/bassRequest/1',
                 user: 'caUser',
-                addressContent: {optOut: {decision: 'No'}, addressProposed: {decision: 'No'}},
+                addressContent: {optOut: {decision: 'No'}, addressProposed: {decision: 'No'}, original: 'contents'},
                 bassContent: {bassRequest: {bassRequested: 'Yes'}}
             }
         ];
@@ -129,6 +129,15 @@ describe('/hdc/proposedAddress', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.getLicence = sinon.stub().resolves({
+                    licence: {
+                        proposedAddress: {
+                            original: 'contents',
+                            addressProposed: 'replace'
+                        }
+                    },
+                    stage: 'ELIGIBILITY'
+                });
                 const app = createApp({licenceServiceStub: licenceService}, 'caUser');
                 return request(app)
                     .post(route.url)
