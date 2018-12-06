@@ -9,37 +9,69 @@ module.exports = {
     },
     curfewAddress: {
         licenceSection: 'curfewAddress',
+        validate: true,
         fields: [
             {
                 addresses: {
                     isList: true,
                     contains: [
-                        {addressLine1: {}},
-                        {addressLine2: {}},
-                        {addressTown: {}},
-                        {postCode: {}},
-                        {telephone: {}},
+                        {addressLine1: {
+                            responseType: 'requiredString', validationMessage: 'Enter an address'
+                        }},
+                        {addressLine2: {
+                            responseType: 'optionalString'
+                        }},
+                        {addressTown: {
+                            responseType: 'requiredString', validationMessage: 'Enter an town or city'
+                        }},
+                        {postCode: {
+                            responseType: 'requiredPostcode', validationMessage: 'Enter a postcode'
+                        }},
+                        {telephone: {
+                            responseType: 'optionalString', validationMessage: 'Enter a telephone number in the right format'
+                        }},
                         {
                             occupier: {
                                 contains: [
-                                    {name: {}},
-                                    {relationship: {}},
+                                    {name: {
+                                        conditionallyActive: {relationship: true},
+                                        responseType: 'requiredString',
+                                        validationMessage: 'Enter a name'
+                                    }},
+                                    {relationship: {
+                                        conditionallyActive: {relationship: true},
+                                        responseType: 'requiredString',
+                                        validationMessage: 'Enter a relationship'
+                                    }},
                                     {isOffender: {}}
-                                ],
-                                saveEmpty: true
+                                ]
                             }
                         },
                         {
                             residents: {
+                                responseType: 'optionalList',
                                 isList: true,
                                 contains: [
-                                    {name: {}},
-                                    {relationship: {}},
-                                    {age: {}}
+                                    {name: {
+                                        conditionallyActive: {relationship: true},
+                                        responseType: 'requiredString',
+                                        validationMessage: 'Enter a name'
+                                    }},
+                                    {relationship: {
+                                        conditionallyActive: {relationship: true},
+                                        responseType: 'requiredString',
+                                        validationMessage: 'Enter a relationship'
+                                    }},
+                                    {age: {
+                                        responseType: 'optionalAge',
+                                        validationMessage: 'Enter age'
+                                    }}
                                 ]
                             }
                         },
-                        {cautionedAgainstResident: {}}
+                        {cautionedAgainstResident: {
+                            responseType: 'requiredYesNo', validationMessage: 'Select yes or no'
+                        }}
                     ]
                 }
             }

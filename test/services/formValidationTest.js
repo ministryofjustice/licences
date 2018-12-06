@@ -8,67 +8,67 @@ describe('validation', () => {
 
         const {excluded, suitability, exceptionalCircumstances, crdTime} = require('../../server/routes/config/eligibility');
         describe('excluded', () => {
-
+            const pageConfig = excluded;
             const options = [
-                {response: {decision: 'Yes', reason: ['a', 'b']}, outcome: {}},
-                {response: {decision: '', reason: ['a', 'b']}, outcome: {decision: 'Select yes or no'}},
-                {response: {decision: 'Yes', reason: []}, outcome: {reason: 'Select one or more reasons'}},
-                {response: {decision: 'No', reason: []}, outcome: {}}
+                {formResponse: {decision: 'Yes', reason: ['a', 'b']}, outcome: {}},
+                {formResponse: {decision: '', reason: ['a', 'b']}, outcome: {decision: 'Select yes or no'}},
+                {formResponse: {decision: 'Yes', reason: []}, outcome: {reason: 'Select one or more reasons'}},
+                {formResponse: {decision: 'No', reason: []}, outcome: {}}
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, excluded)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                 });
             });
         });
 
         describe('suitability', () => {
-
+            const pageConfig = suitability;
             const options = [
-                {response: {decision: 'Yes', reason: ['a', 'b']}, outcome: {}},
-                {response: {decision: '', reason: ['a', 'b']}, outcome: {decision: 'Select yes or no'}},
-                {response: {decision: 'Yes', reason: []}, outcome: {reason: 'Select one or more reasons'}},
-                {response: {decision: 'No', reason: []}, outcome: {}}
+                {formResponse: {decision: 'Yes', reason: ['a', 'b']}, outcome: {}},
+                {formResponse: {decision: '', reason: ['a', 'b']}, outcome: {decision: 'Select yes or no'}},
+                {formResponse: {decision: 'Yes', reason: []}, outcome: {reason: 'Select one or more reasons'}},
+                {formResponse: {decision: 'No', reason: []}, outcome: {}}
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, suitability)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                 });
             });
         });
 
         describe('exceptionalCircumstances', () => {
-
+            const pageConfig = exceptionalCircumstances;
             const options = [
-                {response: {decision: 'Yes'}, outcome: {}},
-                {response: {decision: ''}, outcome: {decision: 'Select yes or no'}}
+                {formResponse: {decision: 'Yes'}, outcome: {}},
+                {formResponse: {decision: ''}, outcome: {decision: 'Select yes or no'}}
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, exceptionalCircumstances)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                 });
             });
         });
 
         describe('crdTime', () => {
-
+            const pageConfig = crdTime;
             const options = [
-                {response: {decision: 'Yes', dmApproval: 'Yes'}, outcome: {}},
-                {response: {decision: ''}, outcome: {decision: 'Select yes or no'}},
-                {response: {decision: 'Yes', reason: ''}, outcome: {dmApproval: 'Select yes or no'}},
-                {response: {decision: 'No', reason: []}, outcome: {}}
+                {formResponse: {decision: 'Yes', dmApproval: 'Yes'}, outcome: {}},
+                {formResponse: {decision: ''}, outcome: {decision: 'Select yes or no'}},
+                {formResponse: {decision: 'Yes'}, outcome: {dmApproval: 'Select yes or no'}},
+                {formResponse: {decision: 'No'}, outcome: {}}
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, crdTime)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                 });
             });
         });
@@ -77,49 +77,49 @@ describe('validation', () => {
     describe('finalChecks', () => {
         const {seriousOffence, onRemand, confiscationOrder} = require('../../server/routes/config/finalChecks');
         describe('excluded', () => {
-
+            const pageConfig = seriousOffence;
             const options = [
-                {response: {decision: 'Yes'}, outcome: {}},
-                {response: {decision: ''}, outcome: {decision: 'Select yes or no'}}
+                {formResponse: {decision: 'Yes'}, outcome: {}},
+                {formResponse: {decision: ''}, outcome: {decision: 'Select yes or no'}}
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, seriousOffence)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                 });
             });
         });
 
         describe('onRemand', () => {
-
+            const pageConfig = onRemand;
             const options = [
-                {response: {decision: 'Yes'}, outcome: {}},
-                {response: {decision: ''}, outcome: {decision: 'Select yes or no'}}
+                {formResponse: {decision: 'Yes'}, outcome: {}},
+                {formResponse: {decision: ''}, outcome: {decision: 'Select yes or no'}}
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, onRemand)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                 });
             });
         });
 
         describe('confiscationOrder', () => {
-
+            const pageConfig = confiscationOrder;
             const options = [
-                {response: {decision: 'No'}, outcome: {}},
-                {response: {decision: 'Yes', confiscationUnitConsulted: ''}, outcome: {confiscationUnitConsulted: 'Select yes or no'}},
-                {response: {decision: 'Yes', confiscationUnitConsulted: 'No'}, outcome: {}},
-                {response: {decision: 'Yes', confiscationUnitConsulted: 'Yes', comments: ''}, outcome: {comments: 'Provide details'}},
-                {response: {decision: 'Yes', confiscationUnitConsulted: 'Yes', comments: 'wgew'}, outcome: {}}
+                {formResponse: {decision: 'No'}, outcome: {}},
+                {formResponse: {decision: 'Yes', confiscationUnitConsulted: ''}, outcome: {confiscationUnitConsulted: 'Select yes or no'}},
+                {formResponse: {decision: 'Yes', confiscationUnitConsulted: 'No'}, outcome: {}},
+                {formResponse: {decision: 'Yes', confiscationUnitConsulted: 'Yes', comments: ''}, outcome: {comments: 'Provide details'}},
+                {formResponse: {decision: 'Yes', confiscationUnitConsulted: 'Yes', comments: 'wgew'}, outcome: {}}
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, confiscationOrder)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                 });
             });
         });
@@ -129,17 +129,19 @@ describe('validation', () => {
         const {firstNight} = require('../../server/routes/config/curfew');
         describe('firstNight', () => {
 
+            const pageConfig = firstNight;
+
             const options = [
-                {response: {firstNightFrom: '13:00', firstNightUntil: '14:00'}, outcome: {}},
-                {response: {firstNightFrom: '25:00', firstNightUntil: '14:00'}, outcome: {firstNightFrom: 'Enter a valid from time'}},
-                {response: {firstNightFrom: '13:00', firstNightUntil: ''}, outcome: {firstNightUntil: 'Enter a valid until time'}},
-                {response: {}, outcome: {firstNightFrom: 'Enter a valid from time', firstNightUntil: 'Enter a valid until time'}}
+                {formResponse: {firstNightFrom: '13:00', firstNightUntil: '14:00'}, outcome: {}},
+                {formResponse: {firstNightFrom: '25:00', firstNightUntil: '14:00'}, outcome: {firstNightFrom: 'Enter a valid from time'}},
+                {formResponse: {firstNightFrom: '13:00', firstNightUntil: ''}, outcome: {firstNightUntil: 'Enter a valid until time'}},
+                {formResponse: {}, outcome: {firstNightFrom: 'Enter a valid from time', firstNightUntil: 'Enter a valid until time'}}
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, firstNight)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                 });
             });
         });
@@ -149,10 +151,12 @@ describe('validation', () => {
         const {bassOffer} = require('../../server/routes/config/bassReferral');
         describe('bassOffer', () => {
 
+            const pageConfig = bassOffer;
+
             const options = [
-                {response: {bassAccepted: 'No'}, outcome: {}},
+                {formResponse: {bassAccepted: 'No'}, outcome: {}},
                 {
-                    response: {
+                    formResponse: {
                         bassAccepted: 'Yes'
                     },
                     outcome: {
@@ -163,7 +167,7 @@ describe('validation', () => {
                     }
                 },
                 {
-                    response: {
+                    formResponse: {
                         bassAccepted: 'Yes',
                         addressLine1: 'Road',
                         addressTown: 'Town',
@@ -173,7 +177,7 @@ describe('validation', () => {
                     outcome: {}
                 },
                 {
-                    response: {
+                    formResponse: {
                         bassAccepted: 'Yes',
                         addressLine1: 'Road',
                         addressTown: 'Town',
@@ -185,9 +189,9 @@ describe('validation', () => {
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, bassOffer)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                 });
             });
         });
@@ -196,34 +200,41 @@ describe('validation', () => {
     describe('approval', () => {
         const {release} = require('../../server/routes/config/approval');
         describe('release', () => {
+
+            const pageConfig = release;
+
             context('when confiscationOrder is true', () => {
                 const options = [
-                    {response: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
-                    {response: {decision: 'Yes', notedComments: ''}, outcome: {notedComments: 'Add a comment'}},
-                    {response: {decision: 'No', reason: ['reason']}, outcome: {}},
-                    {response: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
+                    {formResponse: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
+                    {formResponse: {decision: 'Yes'}, outcome: {notedComments: 'Add a comment'}},
+                    {formResponse: {decision: 'Yes', notedComments: ''}, outcome: {notedComments: 'Add a comment'}},
+                    {formResponse: {decision: 'No', reason: ['reason']}, outcome: {}},
+                    {formResponse: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
                 ];
 
                 options.forEach(option => {
-                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                        const {outcome, response} = option;
-                        expect(service.validateForm(response, release, {confiscationOrder: true})).to.eql(outcome);
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                        const {outcome, formResponse} = option;
+                        expect(service.validateForm({
+                            formResponse,
+                            pageConfig,
+                            bespokeConditions: {confiscationOrder: true}})).to.eql(outcome);
                     });
                 });
             });
 
             context('when confiscationOrder is false', () => {
                 const options = [
-                    {response: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
-                    {response: {decision: 'Yes', notedComments: ''}, outcome: {}},
-                    {response: {decision: 'No', reason: ['reason']}, outcome: {}},
-                    {response: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
+                    {formResponse: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
+                    {formResponse: {decision: 'Yes', notedComments: ''}, outcome: {}},
+                    {formResponse: {decision: 'No', reason: ['reason']}, outcome: {}},
+                    {formResponse: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
                 ];
 
                 options.forEach(option => {
-                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                        const {outcome, response} = option;
-                        expect(service.validateForm(response, release)).to.eql(outcome);
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                        const {outcome, formResponse} = option;
+                        expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                     });
                 });
             });
@@ -235,30 +246,104 @@ describe('validation', () => {
         const {reportingDate} = require('../../server/routes/config/reporting');
         describe('reportingDate', () => {
 
+            const pageConfig = reportingDate;
+
             const options = [
-                {response: {reportingDate: '12/03/2025', reportingTime: '15:00'}, outcome: {}},
+                {formResponse: {reportingDate: '12/03/2025', reportingTime: '15:00'}, outcome: {}},
                 {
-                    response: {reportingDate: '12/03/2016', reportingTime: '15:00'},
+                    formResponse: {reportingDate: '12/03/2016', reportingTime: '15:00'},
                     outcome: {reportingDate: 'Enter a valid date'}
                 },
                 {
-                    response: {reportingDate: '', reportingTime: '15:00'},
+                    formResponse: {reportingDate: '', reportingTime: '15:00'},
                     outcome: {reportingDate: 'Enter a valid date'}
                 },
                 {
-                    response: {reportingDate: '', reportingTime: ''},
+                    formResponse: {reportingDate: '', reportingTime: ''},
                     outcome: {reportingDate: 'Enter a valid date', reportingTime: 'Enter a valid time'}
                 },
                 {
-                    response: {reportingDate: '12/03/2025', reportingTime: '24:40'},
+                    formResponse: {reportingDate: '12/03/2025', reportingTime: '24:40'},
                     outcome: {reportingTime: 'Enter a valid time'}
                 }
             ];
 
             options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
-                    const {outcome, response} = option;
-                    expect(service.validateForm(response, reportingDate)).to.eql(outcome);
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
+                });
+            });
+        });
+    });
+
+    describe('curfewAddress', () => {
+        const {curfewAddress} = require('../../server/routes/config/proposedAddress');
+        describe('curfewAddress', () => {
+
+            const pageConfig = curfewAddress;
+
+            const options = [
+                {formResponse: {
+                    addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
+                    telephone: '07700000000'},
+                    outcome: {}
+                },
+                {formResponse: {
+                    addressLine1: '', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
+                    telephone: 'a'},
+                    outcome: {addressLine1: 'Enter an address', telephone: 'Enter a telephone number in the right format'}
+                },
+                {formResponse: {
+                    addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
+                        telephone: '07700000000',
+                        residents: [{name: 'name', relationship: 'rel'}]
+                    },
+                    outcome: {}
+                },
+                {formResponse: {
+                        addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
+                        telephone: '07700000000',
+                        residents: [{name: 'a', relationship: ''}]
+                    },
+                    outcome: {residents: {0: {relationship: 'Enter a relationship'}}}
+                },
+                {formResponse: {
+                        addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
+                        telephone: '07700000000',
+                        residents: []
+                    },
+                    outcome: {}
+                },
+                {formResponse: {
+                        addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
+                        telephone: '07700000000',
+                        residents: [{name: 'n', relationship: 'n'}, {name: '', relationship: 'n'}]
+                    },
+                    outcome: {residents: {1: {name: 'Enter a name'}}}
+                },
+                {formResponse: {
+                        addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
+                        telephone: '07700000000',
+                        residents: [{name: 'n', relationship: 'n'}],
+                        occupier: {name: 'o', relationship: 'r'}
+                    },
+                    outcome: {}
+                },
+                {formResponse: {
+                        addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
+                        telephone: '07700000000',
+                        residents: [{name: 'n', relationship: 'n'}],
+                        occupier: {name: 'o', relationship: 'Enter a relationship'}
+                    },
+                    outcome: {}
+                }
+            ];
+
+            options.forEach(option => {
+                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                    const {outcome, formResponse} = option;
+                    expect(service.validateForm({formResponse, pageConfig, formType: 'curfewAddress'})).to.eql(outcome);
                 });
             });
         });

@@ -750,7 +750,7 @@ describe('licenceService', () => {
             const fieldMap = [
                 {decision: {}},
                 {
-                    listItem: {
+                    innerObject: {
                         isList: true,
                         contains: [
                             {innerQuestion: {}},
@@ -764,7 +764,7 @@ describe('licenceService', () => {
 
             const userInput = {
                 decision: 'Yes',
-                listItem: [
+                innerObject: [
                     {
                         innerQuestion: 'InnerAnswer',
                         innerQuestion2: 'No'
@@ -791,7 +791,7 @@ describe('licenceService', () => {
                 section5: {
                     form3: {
                         decision: 'Yes',
-                        listItem: [
+                        innerObject: [
                             {
                                 innerQuestion: 'InnerAnswer',
                                 innerQuestion2: 'No'
@@ -822,7 +822,7 @@ describe('licenceService', () => {
             const fieldMap = [
                 {decision: {}},
                 {
-                    listItem: {
+                    innerObject: {
                         isList: true,
                         contains: [
                             {innerQuestion: {}},
@@ -835,7 +835,7 @@ describe('licenceService', () => {
 
             const userInput = {
                 decision: 'Yes',
-                listItem: [
+                innerObject: [
                     {
                         innerQuestion: 'InnerAnswer',
                         innerQuestion2: 'No'
@@ -864,7 +864,7 @@ describe('licenceService', () => {
                 section5: {
                     form3: {
                         decision: 'Yes',
-                        listItem: [
+                        innerObject: [
                             {
                                 innerQuestion: 'InnerAnswer',
                                 innerQuestion2: 'No'
@@ -874,62 +874,6 @@ describe('licenceService', () => {
                                 innerQuestion2: 'Yes'
                             }
                         ],
-                        followUp2: 'Town'
-                    }
-                }
-            };
-            expect(output).to.eql(expectedLicence);
-        });
-
-        it('should not filter out empty list items marked saveEmpty', async () => {
-
-            const licence = {
-                ...baseLicence,
-                section4: {
-                    ...baseLicence.section4
-                }
-
-            };
-
-            const fieldMap = [
-                {decision: {}},
-                {
-                    listItem: {
-                        contains: [
-                            {innerQuestion: {}},
-                            {innerQuestion2: {}}
-                        ],
-                        saveEmpty: true
-                    }
-                },
-                {followUp2: {}}
-            ];
-
-            const userInput = {
-                decision: 'Yes',
-                listItem: {
-                    innerQuestion: '',
-                    innerQuestion2: ''
-                },
-                followUp2: 'Town'
-            };
-
-            const licenceSection = 'section5';
-            const formName = 'form3';
-
-            const originalLicence = {booking_id: bookingId, licence};
-            const output = await service.update(
-                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
-
-            const expectedLicence = {
-                ...licence,
-                section5: {
-                    form3: {
-                        decision: 'Yes',
-                        listItem: {
-                            innerQuestion: '',
-                            innerQuestion2: ''
-                        },
                         followUp2: 'Town'
                     }
                 }

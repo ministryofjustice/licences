@@ -1,19 +1,39 @@
 extends ../layout
 include ./includes/addressForm
+
 block content
     -var savedAddress = data || {}
 
     div.pure-g.pure-u-1
         include ../includes/back
         include ../includes/personalDetailsSummary
+        if Object.keys(errorObject).length !== 0
+            div.pure-g
+                div.error-summary.pure-u-1.pure-u-md-1-2(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
+                    h2.heading-medium.error-summary-heading#error-summary-heading
+                        | There is a problem
+                    ul.error-summary-list
+                        each error, index in errorObject
+                            if index === 'occupier'
+                                each occVal, occKey in error
+                                    li
+                                        a(href="#occupier"+occKey+"-0") Occupier: #{occVal}
+                            else if index === 'residents'
+                                each resident, resIndex in error
+                                    each resVal, resKey in resident
+                                        li
+                                            a(href="#resident"+resKey+"-"+resIndex) Resident: #{resVal}
+                            else
+                                li
+                                    a(href="#"+index+"-"+0) #{error}
 
         h2.heading-large Proposed curfew address
 
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId || '')
-        div.paddingBottom.largeMarginBottom
-            +addressForm(0)
+        div.paddingBottom
+            +addressForm(0, errorObject)
 
         include ../includes/formButtons
 

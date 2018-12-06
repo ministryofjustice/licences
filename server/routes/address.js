@@ -1,6 +1,6 @@
 const {asyncMiddleware} = require('../utils/middleware');
 const createStandardRoutes = require('./routeWorkers/standard');
-const {getIn, lastIndex, lastItem, isEmpty, mergeWithRight} = require('../utils/functionalHelpers');
+const {getIn, lastIndex, lastItem, isEmpty, mergeWithRight, firstItem} = require('../utils/functionalHelpers');
 const formConfig = require('./config/proposedAddress');
 
 module.exports = ({licenceService}) => (router, audited) => {
@@ -14,16 +14,17 @@ module.exports = ({licenceService}) => (router, audited) => {
 
         const {bookingId, action} = req.params;
         const addresses = getAddresses(res.locals.licence);
+        const errorObject = firstItem(req.flash('errors')) || {};
 
         if (!addresses) {
-            return res.render('proposedAddress/curfewAddress', {bookingId, data: []});
+            return res.render('proposedAddress/curfewAddress', {bookingId, data: [], errorObject});
         }
 
         if (isAddingAddress(addresses, action)) {
-            return res.render('proposedAddress/curfewAddress', {bookingId, data: {}});
+            return res.render('proposedAddress/curfewAddress', {bookingId, data: {}, errorObject});
         }
 
-        return res.render('proposedAddress/curfewAddress', {bookingId, data: lastItem(addresses)});
+        return res.render('proposedAddress/curfewAddress', {bookingId, data: lastItem(addresses), errorObject});
     }
 
     router.get('/proposedAddress/curfewAddressChoice/:bookingId', asyncMiddleware(async (req, res) => {
