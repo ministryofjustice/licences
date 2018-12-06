@@ -1,0 +1,32 @@
+extends ../layout
+include ./includes/bassAddressForm
+include ../includes/errorBannerWithDetailObject
+
+block content
+    -var bassOffer = data && data.bassOffer || {}
+    -var bassAddress = data && data.bassAddress || {}
+
+    div.pure-g.pure-u-1
+        include ../includes/back
+        include ../includes/personalDetailsSummary
+        +errorBannerWithDetail(errorObject)
+
+        h2.heading-large BASS address
+
+        form(method="post")
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="bookingId" value=bookingId || '')
+            div.paddingBottom.largeMarginBottom
+
+                div#bassAreaDetails.panel.panel-border-narrow
+                    label(for='bassOfferDetails') Provide details of the BASS decision (optional)
+                        textarea(name='bassOfferDetails' id='bassOfferDetails' class='form-control' rows='2' aria-label="Provide details of the BASS decision (optional)")
+                            if bassOffer.bassOfferDetails
+                                | #{bassOffer.bassOfferDetails}
+
+                div#bassAddressForm(class="panel panel-border-narrow")
+                    +bassAddressForm(bassAddress)
+
+            include ../includes/saveAndReturn
+
+
