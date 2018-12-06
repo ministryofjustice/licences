@@ -1363,7 +1363,7 @@ describe('licenceService', () => {
 
         it('should move bassReferral into a rejection list', async () => {
 
-            await service.rejectBass(baseLicence.licence, 123, 'Yes');
+            await service.rejectBass(baseLicence.licence, 123, 'Yes', 'Reason');
 
             const expectedOutput = {
                 bassReferral: {
@@ -1374,7 +1374,8 @@ describe('licenceService', () => {
                 bassRejections: [
                     {
                         bassRequest,
-                        bassAreaCheck
+                        bassAreaCheck,
+                        rejectionReason: 'Reason'
                     }
                 ]
             };
@@ -1384,7 +1385,7 @@ describe('licenceService', () => {
 
         it('should set bassReferral to empty with bassRequested value', async () => {
 
-            await service.rejectBass(baseLicence.licence, 123, 'value to set');
+            await service.rejectBass(baseLicence.licence, 123, 'value to set', 'Reason');
 
             const expectedOutput = {
                 bassReferral: {
@@ -1395,7 +1396,8 @@ describe('licenceService', () => {
                 bassRejections: [
                     {
                         bassRequest,
-                        bassAreaCheck
+                        bassAreaCheck,
+                        rejectionReason: 'Reason'
                     }
                 ]
             };
@@ -1418,7 +1420,7 @@ describe('licenceService', () => {
                 }
             };
 
-            await service.rejectBass(baseLicence.licence, 123, 'Yes');
+            await service.rejectBass(baseLicence.licence, 123, 'Yes', 'Reason');
 
             const expectedOutput = {
                 bassReferral: {
@@ -1430,7 +1432,8 @@ describe('licenceService', () => {
                     {first: 'rejection'},
                     {
                         bassRequest,
-                        bassAreaCheck
+                        bassAreaCheck,
+                        rejectionReason: 'Reason'
                     }
                 ]
             };
@@ -1442,7 +1445,7 @@ describe('licenceService', () => {
 
             const licence = {};
 
-            await service.rejectBass(licence, 123, 'Yes');
+            await service.rejectBass(licence, 123, 'Yes', 'Reason');
 
             expect(licenceClient.updateLicence).to.not.be.called();
         });

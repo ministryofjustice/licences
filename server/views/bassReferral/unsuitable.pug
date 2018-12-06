@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+
+    -var bassRequest = data.bassRequest || {}
+    -var bassAreaCheck = data.bassAreaCheck || {}
+
+    div.pure-g.pure-u-1
+        include ../includes/back
+
+        h2.heading-large Unsuitable for BASS
+        p The offender is unsuitable for BASS at this area:
+
+        div.pure-g.borderBottomLight
+            div.pure-u-1.pure-u-md-1-2
+                p.smallMarginBottom Area
+                div.paddingBottom
+                    if bassRequest.proposedCounty
+                        p#rejectedCounty.bold.noMargin #{bassRequest.proposedCounty}
+                    if bassRequest.proposedTown
+                        p#rejectedTown.bold.noMargin #{bassRequest.proposedTown}
+
+        div.largePaddingBottom
+            include ../includes/alternativeForm

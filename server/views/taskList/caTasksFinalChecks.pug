@@ -10,8 +10,9 @@ block tasks
 
     - var curfewAddressReady = ['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved)
     - var bassReady = licenceStatus.decisions.bassReferralNeeded && licenceStatus.tasks.bassAreaCheck === 'DONE'
+    - var bassExcluded = ['Unavailable', 'Unsuitable'].includes(licenceStatus.decisions.bassAccepted)
 
-    if (curfewAddressReady || bassReady)
+    if (curfewAddressReady || bassReady && !bassExcluded)
         div.taskListItem.borderBottomLight
             include tasks/riskManagementTask
 

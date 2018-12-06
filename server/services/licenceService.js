@@ -351,7 +351,7 @@ module.exports = function createLicenceService(licenceClient) {
         return updatedLicence;
     }
 
-    function rejectBass(licence, bookingId, bassRequested) {
+    function rejectBass(licence, bookingId, bassRequested, reason) {
 
         const lastBassReferral = getIn(licence, ['bassReferral']);
 
@@ -359,19 +359,20 @@ module.exports = function createLicenceService(licenceClient) {
             return licence;
         }
 
+        const oldRecord = mergeWithRight(lastBassReferral, {rejectionReason: reason});
         const newRecord = {bassRequest: {bassRequested}};
 
-        return deactivateBassEntry(licence, lastBassReferral, newRecord, bookingId);
+        return deactivateBassEntry(licence, oldRecord, newRecord, bookingId);
     }
 
-    function withdrawBass(licence, bookingId, withdrawalType) {
+    function withdrawBass(licence, bookingId, withdrawal) {
         const lastBassReferral = getIn(licence, ['bassReferral']);
 
         if (!lastBassReferral) {
             return licence;
         }
 
-        const oldRecord = mergeWithRight(lastBassReferral, {withdrawal: withdrawalType});
+        const oldRecord = mergeWithRight(lastBassReferral, {withdrawal});
         const newRecord = {bassRequest: {bassRequested: 'Yes'}};
 
         return deactivateBassEntry(licence, oldRecord, newRecord, bookingId);

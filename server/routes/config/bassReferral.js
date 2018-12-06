@@ -26,6 +26,20 @@ module.exports = {
             }
         }
     },
+    unsuitable: {
+        licenceSection: 'bassRequest',
+        pageDataMap: ['licence', 'bassReferral'],
+        fields: [
+            {enterAlternative: {}}
+        ],
+        nextPath: {
+            decisions: {
+                discriminator: 'enterAlternative',
+                Yes: '/hdc/bassReferral/bassRequest/unsuitable/',
+                No: '/hdc/proposedAddress/curfewAddressChoice/'
+            }
+        }
+    },
     bassAreaCheck: {
         licenceSection: 'bassAreaCheck',
         pageDataMap: ['licence', 'bassReferral'],
@@ -106,7 +120,14 @@ module.exports = {
             }
         ],
         nextPath: {
-            path: '/hdc/taskList/'
+            decisions: {
+                discriminator: 'bassAccepted',
+                Yes: '/hdc/taskList/',
+                Unsuitable: '/hdc/bassReferral/unsuitable/',
+                Unavailable: '/hdc/taskList/'
+            },
+            withdraw: '/hdc/bassReferral/bassWithdrawn/',
+            reinstate: '/hdc/taskList/'
         }
     },
     bassWithdrawn: {
