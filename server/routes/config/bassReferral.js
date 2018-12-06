@@ -106,9 +106,7 @@ module.exports = {
             }
         ],
         nextPath: {
-            path: '/hdc/taskList/',
-            withdraw: '/hdc/bassReferral/bassWithdrawn/',
-            reinstate: '/hdc/taskList/'
+            path: '/hdc/taskList/'
         }
     },
     bassWithdrawn: {
