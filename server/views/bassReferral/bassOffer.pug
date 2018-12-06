@@ -1,6 +1,6 @@
 extends ../layout
-include ./includes/bassAddressForm
 include ../includes/errorBannerWithDetailObject
+include ./includes/bassAddressForm
 
 block content
 
@@ -45,7 +45,7 @@ block content
 
         hr
 
-        h2.heading-medium Has BASS made an offer to the offender?
+        h2.heading-medium Has BASS made an offer to the offender? #{postApproval}
 
         form(method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
