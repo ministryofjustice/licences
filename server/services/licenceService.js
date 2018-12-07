@@ -220,7 +220,6 @@ module.exports = function createLicenceService(licenceClient) {
                 answerIsRequired,
                 innerFields,
                 inputIsList,
-                fieldConfig,
                 inputIsSplitDate
             } = getFieldInfo(field, userInput);
 
@@ -241,7 +240,7 @@ module.exports = function createLicenceService(licenceClient) {
                 const innerFieldMap = field[fieldName].contains;
                 const innerAnswers = getFormResponse(innerFieldMap, userInput[fieldName]);
 
-                if (!fieldConfig.saveEmpty && allValuesEmpty(innerAnswers)) {
+                if (allValuesEmpty(innerAnswers)) {
                     return answersAccumulator;
                 }
 

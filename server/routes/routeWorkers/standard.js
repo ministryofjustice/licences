@@ -1,4 +1,4 @@
-const {getIn, isEmpty, firstItem} = require('../../utils/functionalHelpers');
+const {getIn, isEmpty, firstItem, lastItem} = require('../../utils/functionalHelpers');
 const {getPathFor} = require('../../utils/routes');
 
 module.exports = ({formConfig, licenceService, sectionName}) => {
@@ -29,32 +29,37 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
     async function formPost(req, res, sectionName, formName, bookingId, action) {
         const nextPath = getPathFor({data: req.body, config: formConfig[formName], action});
         const saveSection = formConfig[formName].saveSection || [];
-
         const targetSection = saveSection[0] || sectionName;
         const targetForm = saveSection[1] || formName;
 
-        if (formConfig[formName].fields) {
-            const updatedLicence = await licenceService.update({
-                bookingId,
-                originalLicence: res.locals.licence,
-                config: formConfig[formName],
-                userInput: req.body,
-                licenceSection: targetSection,
-                formName: targetForm
+        const validationErrors = updatedLicence => {
+            const form = updatedLicence[sectionName][formName];
+            // address is in array
+            const formToValidate = form.addresses ? lastItem(form.addresses) : form;
+            return licenceService.validateForm({
+                formResponse: formToValidate,
+                pageConfig: formConfig[formName],
+                formType: formName,
+                bespokeConditions: {confiscationOrder: res.locals.licenceStatus.decisions.confiscationOrder}
             });
+        };
 
-            if (formConfig[formName].validate) {
-                const errors = licenceService.validateForm(
-                    updatedLicence[sectionName][formName],
-                    formConfig[formName],
-                    {confiscationOrder: res.locals.licenceStatus.decisions.confiscationOrder}
-                );
+        const updatedLicence = await licenceService.update({
+            bookingId,
+            originalLicence: res.locals.licence,
+            config: formConfig[formName],
+            userInput: req.body,
+            licenceSection: targetSection,
+            formName: targetForm
+        });
 
-                if (!isEmpty(errors)) {
-                    req.flash('errors', errors);
-                    const actionPath = action ? action + '/' : '';
-                    return res.redirect(`/hdc/${sectionName}/${formName}/${actionPath}${bookingId}`);
-                }
+        if (formConfig[formName].validate) {
+            const errors = validationErrors(updatedLicence);
+
+            if (!isEmpty(errors)) {
+                req.flash('errors', errors);
+                const actionPath = action ? action + '/' : '';
+                return res.redirect(`/hdc/${sectionName}/${formName}/${actionPath}${bookingId}`);
             }
         }
 

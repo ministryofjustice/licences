@@ -2,7 +2,14 @@ const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
 
-const {getFieldName, getFieldDetail, getIn, isEmpty} = require('../../utils/functionalHelpers');
+const {
+    getFieldName,
+    getFieldDetail,
+    getIn,
+    isEmpty,
+    mergeWithRight,
+    lastItem
+} = require('../../utils/functionalHelpers');
 
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 
@@ -10,59 +17,114 @@ const fieldOptions = {
     requiredString: joi.string().required(),
     optionalString: joi.string().allow('').optional(),
     requiredYesNo: joi.valid(['Yes', 'No']).required(),
+    optionalYesNo: joi.valid(['Yes', 'No']).optional(),
     selection: joi.array().min(1).required(),
     requiredTime: joi.date().format('HH:mm').required(),
     requiredDate: joi.date().format('DD/MM/YYYY').min('now').required(),
+    optionalList: joi.array().optional(),
+    requiredPostcode: joi.postcode().required(),
+    requiredPhone: joi.string().regex(/^[0-9+\s]+$/).required(),
+    optionalAge: joi.number().min(0).max(110).allow('').optional(),
     requiredSelectionIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
-        then: joi.array().min(1).required()
+        then: joi.array().min(1).required(),
+        otherwise: joi.any().optional()
     }),
     requiredYesNoIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
-        then: joi.valid(['Yes', 'No']).required()
+        then: joi.valid(['Yes', 'No']).required(),
+        otherwise: joi.any().optional()
     }),
     requiredStringIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
-        then: joi.string().required()
+        then: joi.string().required(),
+        otherwise: joi.any().optional()
     }),
     optionalStringIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
-        then: joi.string().allow('').optional()
+        then: joi.string().allow('').optional(),
+        otherwise: joi.any().optional()
     }),
     requiredPostcodeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
-        then: joi.postcode().required()
+        then: joi.postcode().required(),
+        otherwise: joi.any().optional()
     })
 };
 
-module.exports = {
-    validate(formResponse, pageConfig, bespokeConditions = {}) {
-        const formSchema = createSchema(pageConfig, bespokeConditions);
-        const joiErrors = joi.validate(formResponse, formSchema, {stripUnknown: true, abortEarly: false});
+// TODO generate from config
+const curfewAddressSchema = joi.object().keys({
+    addressLine1: fieldOptions.requiredString,
+    addressLine2: fieldOptions.optionalString,
+    addressTown: fieldOptions.requiredString,
+    postCode: fieldOptions.requiredPostcode,
+    telephone: fieldOptions.requiredPhone,
+    residents: joi.array().items(joi.object().keys({
+        name: fieldOptions.requiredString,
+        relationship: fieldOptions.requiredString,
+        age: fieldOptions.optionalAge
+    })),
+    occupier: joi.object().keys({
+        name: fieldOptions.requiredString,
+        relationship: fieldOptions.requiredString,
+        isOffender: fieldOptions.optionalYesNo
+    }),
+    cautionedAgainstResident: fieldOptions.requiredYesNo
+}).required();
 
+const validationProcedures = {
+    standard: {
+        getSchema: createSchemaFromConfig,
+        fieldConfigPath: ['fields'],
+        getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
+    },
+    curfewAddress: {
+        getSchema: () => curfewAddressSchema,
+        fieldConfigPath: ['fields', 0, 'addresses', 'contains'],
+        getErrorMessage: (fieldConfig, errorPath) => {
+            const fieldName = getFieldName(fieldConfig);
+            const fieldsWithInnerContents = ['residents', 'occupier'];
+            if (!fieldsWithInnerContents.includes(fieldName)) {
+                return getIn(fieldConfig, [...errorPath, 'validationMessage']);
+            }
+
+            const innerFieldName = lastItem(errorPath);
+            const innerFieldConfig = fieldConfig[fieldName].contains.find(item => getFieldName(item) === innerFieldName);
+            return innerFieldConfig[innerFieldName].validationMessage;
+        }
+    }
+};
+
+module.exports = {
+    validate({formResponse, pageConfig, formType = 'standard', bespokeConditions = {}} = {}) {
+        const procedure = validationProcedures[formType] || validationProcedures.standard;
+        const fieldsConfig = getIn(pageConfig, procedure.fieldConfigPath);
+        const formSchema = procedure.getSchema(pageConfig, bespokeConditions);
+
+        const joiErrors = joi.validate(formResponse, formSchema, {stripUnknown: false, abortEarly: false});
         if (!(joiErrors.error)) {
             return {};
         }
 
-        // TODO handle nested fields
         return joiErrors.error.details.reduce((errors, error) => {
             // joi returns map to error in path field
-            const fieldConfig = pageConfig.fields.find(field => getFieldName(field) === error.path[0]);
-            const errorMessage = getIn(fieldConfig, [...error.path, 'validationMessage']) || error.message;
+            const fieldConfig = fieldsConfig.find(field => getFieldName(field) === error.path[0]);
+            const errorMessage = procedure.getErrorMessage(fieldConfig, error.path) || error.message;
 
-            return {...errors, [error.path[0]]: errorMessage};
+            const errorObject = error.path.reduceRight((errorObj, key) => ({[key]: errorObj}), errorMessage);
+            return mergeWithRight(errors, errorObject);
         }, {});
     }
 };
 
-function createSchema(pageConfig, bespokeData) {
+function createSchemaFromConfig(pageConfig, bespokeData) {
     const formSchema = pageConfig.fields.reduce((schema, field) => {
         const fieldName = getFieldName(field);
 
         const bespokeRequirements = getFieldDetail(['conditionallyActive'], field);
         const conditionFulfilled = isEmpty(bespokeRequirements) ? true : isFulfilled(bespokeRequirements, bespokeData);
         if (!conditionFulfilled) {
-            return schema;
+            return mergeWithRight(schema, {[fieldName]: joi.any().optional()});
         }
 
         const fieldConfigResponseType = getFieldDetail(['responseType'], field);
@@ -71,10 +133,7 @@ function createSchema(pageConfig, bespokeData) {
         const joiFieldItem = fieldOptions[responseType];
         const joiFieldSchema = typeof joiFieldItem === 'function' ? joiFieldItem(...arguments) : joiFieldItem;
 
-        return {
-            ...schema,
-            [fieldName]: joiFieldSchema
-        };
+        return mergeWithRight(schema, {[fieldName]: joiFieldSchema});
     }, {});
 
     return joi.object().keys(formSchema);

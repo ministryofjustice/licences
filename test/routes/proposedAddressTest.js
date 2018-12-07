@@ -46,6 +46,7 @@ describe('/hdc/proposedAddress', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({proposedAddress: {curfewAddress: {addresses: [{}]}}});
                 const app = createApp({licenceServiceStub: licenceService}, 'caUser');
                 return request(app)
                     .post(route.url)
@@ -68,6 +69,7 @@ describe('/hdc/proposedAddress', () => {
 
             it('throws an error if logged in as dm', () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({proposedAddress: {curfewAddress: {addresses: [{}]}}});
                 const app = createApp({licenceServiceStub: licenceService}, 'dmUser');
 
                 return request(app)
@@ -79,6 +81,7 @@ describe('/hdc/proposedAddress', () => {
 
             it('throws an error if logged in as ro except for curfew address', () => {
                 const licenceService = createLicenceServiceStub();
+                licenceService.update.resolves({proposedAddress: {curfewAddress: {addresses: [{}]}}});
                 const app = createApp({licenceServiceStub: licenceService}, 'roUser');
 
                 if (route.url === '/hdc/proposedAddress/curfewAddress/1') {
