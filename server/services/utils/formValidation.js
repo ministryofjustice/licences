@@ -11,6 +11,8 @@ const {
     lastItem
 } = require('../../utils/functionalHelpers');
 
+const proposedAddressConfig = require('../../routes/config/proposedAddress');
+
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 
 const fieldOptions = {
@@ -96,26 +98,58 @@ const validationProcedures = {
 };
 
 module.exports = {
-    validate({formResponse, pageConfig, formType = 'standard', bespokeConditions = {}} = {}) {
-        const procedure = validationProcedures[formType] || validationProcedures.standard;
-        const fieldsConfig = getIn(pageConfig, procedure.fieldConfigPath);
-        const formSchema = procedure.getSchema(pageConfig, bespokeConditions);
+    validate,
+    validateGroup
+};
 
-        const joiErrors = joi.validate(formResponse, formSchema, {stripUnknown: false, abortEarly: false});
-        if (!(joiErrors.error)) {
-            return {};
+function validate({formResponse, pageConfig, formType = 'standard', bespokeConditions = {}} = {}) {
+    const procedure = validationProcedures[formType] || validationProcedures.standard;
+    const fieldsConfig = getIn(pageConfig, procedure.fieldConfigPath);
+    const formSchema = procedure.getSchema(pageConfig, bespokeConditions);
+
+    const joiErrors = joi.validate(formResponse, formSchema, {stripUnknown: false, abortEarly: false});
+    if (!(joiErrors.error)) {
+        return {};
+    }
+
+    return joiErrors.error.details.reduce((errors, error) => {
+        // joi returns map to error in path field
+        const fieldConfig = fieldsConfig.find(field => getFieldName(field) === error.path[0]);
+        const errorMessage = procedure.getErrorMessage(fieldConfig, error.path) || error.message;
+
+        const errorObject = error.path.reduceRight((errorObj, key) => ({[key]: errorObj}), errorMessage);
+        return mergeWithRight(errors, errorObject);
+    }, {});
+}
+
+function validateGroup({licence, stage}) {
+    const groups = {
+        ELIGIBILITY: [
+            {
+                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formType: 'curfewAddress',
+                pageConfig: proposedAddressConfig.curfewAddress,
+                section: 'proposedAddress',
+                missingMessage: 'Please provide a curfew address'
+            }
+        ]
+    };
+
+    return groups[stage].reduce((errorObject, formInfo) => {
+        const {section, formType, formResponse, missingMessage} = formInfo;
+
+        const formErrors = formResponse ? validate(formInfo) : missingMessage;
+        if (isEmpty(formErrors)) {
+            return errorObject;
         }
 
-        return joiErrors.error.details.reduce((errors, error) => {
-            // joi returns map to error in path field
-            const fieldConfig = fieldsConfig.find(field => getFieldName(field) === error.path[0]);
-            const errorMessage = procedure.getErrorMessage(fieldConfig, error.path) || error.message;
-
-            const errorObject = error.path.reduceRight((errorObj, key) => ({[key]: errorObj}), errorMessage);
-            return mergeWithRight(errors, errorObject);
-        }, {});
-    }
-};
+        return mergeWithRight(errorObject, {
+            [section]: {
+                [formType]: formErrors
+            }
+        });
+    }, {});
+}
 
 function createSchemaFromConfig(pageConfig, bespokeData) {
     const formSchema = pageConfig.fields.reduce((schema, field) => {

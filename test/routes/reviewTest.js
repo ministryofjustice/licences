@@ -47,7 +47,7 @@ describe('/review/', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(licenceService.getValidationErrorsForReview).to.not.be.calledOnce();
+                    expect(licenceService.validateFormGroup).to.not.be.calledOnce();
                 });
         });
 
@@ -61,7 +61,7 @@ describe('/review/', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(licenceService.getValidationErrorsForReview).to.be.calledOnce();
+                    expect(licenceService.validateFormGroup).to.be.calledOnce();
                 });
         });
 
@@ -115,7 +115,7 @@ describe('/review/', () => {
         });
 
         it('shows a link to the address page if there are errors', () => {
-            licenceService.getValidationErrorsForReview = sinon.stub().returns({a: 'b'});
+            licenceService.validateFormGroup = sinon.stub().returns({a: 'b'});
 
             return request(app)
                 .get('/hdc/review/curfewAddress/1')

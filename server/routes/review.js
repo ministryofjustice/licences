@@ -15,7 +15,7 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
         const licenceWithAddress = addAddressTo(licence);
 
         const showErrors = stagesForRole[req.user.role].includes(stage);
-        const errorObject = showErrors ? getErrors(res.locals.licenceStatus, licenceWithAddress) : {};
+        const errorObject = showErrors ? getErrors(res.locals.licenceStatus, licenceWithAddress, licence, stage) : {};
 
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
@@ -32,8 +32,12 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
         });
     }));
 
-    function getErrors(licenceStatus, licence) {
-        return licenceService.getValidationErrorsForReview({licenceStatus, licence});
+    function getErrors(licenceStatus, licenceWithAddress, licence, stage) {
+        if (stage === 'ELIGIBILITY') {
+            return licenceService.validateFormGroup({licence, stage});
+        }
+
+        return licenceService.getValidationErrorsForReview({licenceWithAddress, licence});
     }
 
     return router;

@@ -43,7 +43,8 @@ const createLicenceServiceStub = () => ({
     getValidationErrorsForPage: sinon.stub().returns({}),
     addSplitDateFields: sinon.stub().returnsArg(0),
     removeDecision: sinon.stub().resolves({}),
-    validateForm: sinon.stub().returns({})
+    validateForm: sinon.stub().returns({}),
+    validateFormGroup: sinon.stub().returns({})
 });
 
 const createConditionsServiceStub = () => ({
