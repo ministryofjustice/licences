@@ -22,7 +22,7 @@ module.exports = {
                             responseType: 'optionalString'
                         }},
                         {addressTown: {
-                            responseType: 'requiredString', validationMessage: 'Enter an town or city'
+                            responseType: 'requiredString', validationMessage: 'Enter a town or city'
                         }},
                         {postCode: {
                             responseType: 'requiredPostcode', validationMessage: 'Enter a postcode'
