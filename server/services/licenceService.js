@@ -417,6 +417,7 @@ module.exports = function createLicenceService(licenceClient) {
         getEligibilityErrors: licenceValidator.getEligibilityErrors,
         getValidationErrorsForReview: licenceValidator.getValidationErrorsForReview,
         validateForm: formValidation.validate,
+        validateFormGroup: formValidation.validateGroup,
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
         addSplitDateFields,
         removeDecision,
