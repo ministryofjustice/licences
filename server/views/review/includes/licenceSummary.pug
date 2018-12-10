@@ -31,8 +31,8 @@ div.largeMarginBottom
                         if(stage === 'ELIGIBILITY' && user.role === 'CA')
                             a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change
 
-            if typeof errorObject.proposedAddress === 'string'
-                p.alert.bold(id='proposed-address-error') #{errorObject.proposedAddress}
+            if errorObject.curfewAddress && (typeof errorObject.curfewAddress.curfewAddressReview === 'string' || typeof errorObject.curfewAddress.addressSafety === 'string')
+                p.alert.bold(id='proposed-address-error') #{errorObject.curfewAddress.curfewAddressReview || errorObject.curfewAddress.addressSafety}
             else
                 include curfewAddress
 
@@ -48,8 +48,8 @@ div.largeMarginBottom
                         div.pure-u-md-1-2.change-details
                             a#riskEditLink(href="/hdc/risk/riskManagement/change/" + bookingId) Change
 
-            if typeof errorObject.risk === 'string'
-                p.alert.bold(id='risk-error') Enter the risk management and victim liaison details
+            if errorObject.risk && typeof errorObject.risk.riskManagement === 'string'
+                p.alert.bold(id='risk-error') #{errorObject.risk.riskManagement}
             else
                 include riskManagement
 
@@ -63,8 +63,8 @@ div.largeMarginBottom
                         div.pure-u-md-1-2.change-details
                             a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/change/" + bookingId) Change
 
-            if typeof errorObject.curfew === 'string'
-                p.alert.bold(id='curfew-hours-error') Select the proposed curfew hours
+            if errorObject.curfew && typeof errorObject.curfew.curfewHours === 'string'
+                p.alert.bold(id='curfew-hours-error') #{errorObject.curfew.curfewHours}
             else
                 include curfewHours
 
@@ -100,7 +100,7 @@ div.largeMarginBottom
                         div.pure-u-md-1-2.change-details
                             a#reportingEditLink(href="/hdc/reporting/reportingInstructions/change/" + bookingId) Change
 
-            if typeof errorObject.reporting === 'string'
-                p.alert.bold(id='reporting-error') Enter the reporting instructions
+            if errorObject.reporting && typeof errorObject.reporting.reportingInstructions === 'string'
+                p.alert.bold(id='reporting-error') #{errorObject.reporting.reportingInstructions}
             else
                 include reportingInstructions
