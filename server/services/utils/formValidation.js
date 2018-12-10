@@ -163,6 +163,22 @@ function validateGroup({licence, stage}) {
                 section: 'reporting',
                 missingMessage: 'Enter the reporting instructions'
             }
+        ],
+        PROCESSING_RO_ADDRESS_REJECTED: [
+            {
+                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formType: 'curfewAddressReview',
+                pageConfig: curfewConfig.curfewAddressReview,
+                section: 'curfewAddress',
+                missingMessage: 'Enter the curfew address review details'
+            },
+            {
+                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formType: 'addressSafety',
+                pageConfig: curfewConfig.addressSafety,
+                section: 'curfewAddress',
+                missingMessage: 'Enter the curfew address review details'
+            }
         ]
     };
 

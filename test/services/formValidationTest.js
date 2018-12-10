@@ -714,6 +714,7 @@ describe('validation', () => {
         });
 
         describe('processing_ro', () => {
+
             const stage = 'PROCESSING_RO';
             const validRiskManagement = {planningActions: 'No', awaitingInformation: 'No', victimLiaison: 'No'};
             const validCurfewHours = {
@@ -760,14 +761,17 @@ describe('validation', () => {
             };
 
             const options = [
-                {licence: validLicence, outcome: {}},
+                {licence: validLicence, standardOutcome: {}, addressRejectedOutcome: {}},
                 {
-                    licence: invalidLicence, outcome: {
+                    licence: invalidLicence,
+                    standardOutcome: {
                         risk: {riskManagement: {planningActions: 'Say if there are risk management actions'}}
-                    }
+                    },
+                    addressRejectedOutcome: {}
                 },
                 {
-                    licence: {}, outcome: {
+                    licence: {},
+                    standardOutcome: {
                         risk: {riskManagement: 'Enter the risk management and victim liaison details'},
                         curfew: {curfewHours: 'Enter the proposed curfew hours'},
                         curfewAddress: {
@@ -775,16 +779,35 @@ describe('validation', () => {
                             curfewAddressReview: 'Enter the curfew address review details'
                         },
                         reporting: {reportingInstructions: 'Enter the reporting instructions'}
+                    },
+                    addressRejectedOutcome: {
+                        curfewAddress: {
+                            addressSafety: 'Enter the curfew address review details',
+                            curfewAddressReview: 'Enter the curfew address review details'
+                        }
                     }
                 }
             ];
 
-            options.forEach(option => {
-                it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
-                    const {outcome, licence} = option;
-                    expect(service.validateFormGroup({licence, stage})).to.eql(outcome);
+            context('address not rejected', () => {
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.standardOutcome)} for ${JSON.stringify(option.licence)}`, () => {
+                        const {standardOutcome, licence} = option;
+                        expect(service.validateFormGroup({licence, stage})).to.eql(standardOutcome);
+                    });
                 });
             });
+
+            context('address rejected', () => {
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
+                        const {addressRejectedOutcome, licence} = option;
+                        expect(service.validateFormGroup(
+                            {licence, stage, decisions: {curfewAddressApproved: 'rejected'}})).to.eql(addressRejectedOutcome);
+                    });
+                });
+            });
+
         });
     });
 
