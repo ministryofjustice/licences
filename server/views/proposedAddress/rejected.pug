@@ -2,8 +2,7 @@ extends ../layout
 
 block content
 
-    -var addresses = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress.addresses : []
-    -var address = addresses[addresses.length-1] || {}
+    -var address = data.proposedAddress && data.proposedAddress.curfewAddress || {}
     -var savedData = data.proposedAddress && data.proposedAddress.rejected && data.proposedAddress.rejected.enterAlternative || {}
 
     div.pure-g.pure-u-1

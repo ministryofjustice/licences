@@ -69,12 +69,10 @@ const fieldOptions = {
 const validationProcedures = {
     standard: {
         getSchema: createSchemaFromConfig,
-        fieldConfigPath: ['fields'],
         getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
     },
     curfewAddress: {
         getSchema: () => curfewAddressSchema,
-        fieldConfigPath: ['fields', 0, 'addresses', 'contains'],
         getErrorMessage: (fieldConfig, errorPath) => {
             const fieldName = getFieldName(fieldConfig);
             const fieldsWithInnerContents = ['residents', 'occupier'];
@@ -88,18 +86,15 @@ const validationProcedures = {
         }
     },
     curfewAddressReview: {
-        getSchema: () => curfewAddressSchema.concat(addressReviewSchema),
-        fieldConfigPath: ['fields'],
+        getSchema: () => addressReviewSchema,
         getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
     },
     addressSafety: {
-        getSchema: () => curfewAddressSchema.concat(addressReviewSchema).concat(addressSafetySchema),
-        fieldConfigPath: ['fields'],
+        getSchema: () => addressReviewSchema.concat(addressSafetySchema),
         getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
     },
     additional: {
         getSchema: () => additionalConditionsSchema,
-        fieldConfigPath: ['fields'],
         getErrorMessage: (fieldConfig, errorPath) => {
             const fieldName = getFieldName(fieldConfig);
             const innerFieldName = lastItem(errorPath);
@@ -116,7 +111,7 @@ module.exports = {
 
 function validate({formResponse, pageConfig, formType = 'standard', bespokeConditions = {}} = {}) {
     const procedure = validationProcedures[formType] || validationProcedures.standard;
-    const fieldsConfig = getIn(pageConfig, procedure.fieldConfigPath);
+    const fieldsConfig = getIn(pageConfig, ['fields']);
     const formSchema = procedure.getSchema(pageConfig, bespokeConditions);
 
     const joiErrors = joi.validate(formResponse, formSchema, {stripUnknown: false, abortEarly: false});
@@ -138,7 +133,7 @@ function validateGroup({licence, group}) {
     const groups = {
         ELIGIBILITY: [
             {
-                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formResponse: getIn(licence, ['proposedAddress', 'curfewAddress']),
                 formType: 'curfewAddress',
                 pageConfig: proposedAddressConfig.curfewAddress,
                 section: 'proposedAddress',
@@ -147,17 +142,17 @@ function validateGroup({licence, group}) {
         ],
         PROCESSING_RO: [
             {
-                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formResponse: getIn(licence, ['proposedAddress', 'curfewAddress']),
                 formType: 'curfewAddressReview',
                 pageConfig: curfewConfig.curfewAddressReview,
-                section: 'curfewAddress',
+                section: 'curfew',
                 missingMessage: 'Enter the curfew address review details'
             },
             {
-                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formResponse: getIn(licence, ['proposedAddress', 'curfewAddress']),
                 formType: 'addressSafety',
                 pageConfig: curfewConfig.addressSafety,
-                section: 'curfewAddress',
+                section: 'curfew',
                 missingMessage: 'Enter the curfew address review details'
             },
             {
@@ -199,17 +194,17 @@ function validateGroup({licence, group}) {
         ],
         PROCESSING_RO_ADDRESS_REJECTED: [
             {
-                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
                 formType: 'curfewAddressReview',
                 pageConfig: curfewConfig.curfewAddressReview,
-                section: 'curfewAddress',
+                section: 'curfew',
                 missingMessage: 'Enter the curfew address review details'
             },
             {
-                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formResponse: getIn(licence, ['curfew', 'addressSafety']),
                 formType: 'addressSafety',
                 pageConfig: curfewConfig.addressSafety,
-                section: 'curfewAddress',
+                section: 'curfew',
                 missingMessage: 'Enter the curfew address review details'
             }
         ],

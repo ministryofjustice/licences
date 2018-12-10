@@ -1,6 +1,6 @@
 include ./itemAndError
 -var address = data.proposedAddress && data.proposedAddress.curfewAddress || {}
--var errors = errorObject.curfewAddress || {}
+-var errors = errorObject.proposedAddress && errorObject.proposedAddress.curfewAddress || {}
 - var reviewErrors = errors.curfewAddressReview || {}
 - var safetyErrors = errors.addressSafety || {}
 - var offenderIsMainOccupier = licenceStatus.decisions.offenderIsMainOccupier;

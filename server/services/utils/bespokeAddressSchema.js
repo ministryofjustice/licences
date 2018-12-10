@@ -33,42 +33,25 @@ module.exports = {
 
     // complex structure due to cascading requirements
     addressReviewSchema: joi.object().keys({
-        consent: joi.when('occupier.isOffender', {
-            is: joi.not('Yes'),
+        consent: joi.valid(['Yes', 'No']).required(),
+
+        electricity: joi.when('consent', {
+            is: 'Yes',
             then: joi.valid(['Yes', 'No']).required(),
             otherwise: joi.any().optional()
         }),
 
-        electricity: joi.when('occupier.isOffender', {
-            is: joi.not('Yes'),
-            then: joi.when('consent', {
+        homeVisitConducted: joi.when('consent', {
+            is: 'Yes',
+            then: joi.when('electricity', {
                 is: 'Yes',
                 then: joi.valid(['Yes', 'No']).required(),
                 otherwise: joi.any().optional()
             }),
-            otherwise: joi.valid(['Yes', 'No']).required()
+            otherwise: joi.any().optional()
         }),
 
-        homeVisitConducted: joi.when('occupier.isOffender', {
-            is: joi.not('Yes'),
-            then: joi.when('consent', {
-                is: 'Yes',
-                then: joi.when('electricity', {
-                    is: 'Yes',
-                    then: joi.valid(['Yes', 'No']).required(),
-                    otherwise: joi.any().optional()
-                }),
-                otherwise: joi.any().optional()
-            }),
-            otherwise: joi.when('electricity', {
-                is: 'Yes',
-                then: joi.valid(['Yes', 'No']).required(),
-                otherwise: joi.any().optional()
-            })
-        }),
-        addressReviewComments: joi.string().allow('').optional(),
-        deemedSafe: joi.any().optional(),
-        unsafeReason: joi.any().optional()
+        addressReviewComments: joi.string().allow('').optional()
     }),
 
     addressSafetySchema: joi.object().keys({
@@ -76,22 +59,9 @@ module.exports = {
         electricity: joi.any().optional(),
         homeVisitConducted: joi.any().optional(),
         addressReviewComments: joi.any().optional(),
-        deemedSafe: joi.when('occupier.isOffender', {
-            is: joi.not('Yes'),
-            then: joi.when('consent', {
-                is: 'Yes',
-                then: joi.when('electricity', {
-                    is: 'Yes',
-                    then: joi.when('homeVisitConducted', {
-                        is: 'Yes',
-                        then: joi.valid(['Yes', 'No']).required(),
-                        otherwise: joi.any().optional()
-                    }),
-                    otherwise: joi.any().optional()
-                }),
-                otherwise: joi.any().optional()
-            }),
-            otherwise: joi.when('electricity', {
+        deemedSafe: joi.when('consent', {
+            is: 'Yes',
+            then: joi.when('electricity', {
                 is: 'Yes',
                 then: joi.when('homeVisitConducted', {
                     is: 'Yes',
@@ -99,45 +69,26 @@ module.exports = {
                     otherwise: joi.any().optional()
                 }),
                 otherwise: joi.any().optional()
-            })
+            }),
+            otherwise: joi.any().optional()
         }),
 
-        unsafeReason: joi.when('occupier.isOffender', {
-            is: joi.not('Yes'),
-            then: joi.when('consent', {
+        unsafeReason: joi.when('consent', {
+            is: 'Yes',
+            then: joi.when('electricity', {
                 is: 'Yes',
-                then: joi.when('electricity', {
+                then: joi.when('homeVisitConducted', {
                     is: 'Yes',
-                    then: joi.when('homeVisitConducted', {
-                        is: 'Yes',
-                        then: joi.when('deemedSafe', {
-                            is: 'No',
-                            then: joi.string().required(),
-                            otherwise: joi.any().optional()
-                        }),
+                    then: joi.when('deemedSafe', {
+                        is: 'No',
+                        then: joi.string().required(),
                         otherwise: joi.any().optional()
                     }),
                     otherwise: joi.any().optional()
                 }),
                 otherwise: joi.any().optional()
             }),
-            otherwise: joi.when('electricity', {
-                is: 'Yes',
-                then: joi.when('electricity', {
-                    is: 'Yes',
-                    then: joi.when('homeVisitConducted', {
-                        is: 'Yes',
-                        then: joi.when('deemedSafe', {
-                            is: 'Yes',
-                            then: joi.string().required(),
-                            otherwise: joi.any().optional()
-                        }),
-                        otherwise: joi.any().optional()
-                    }),
-                    otherwise: joi.any().optional()
-                }),
-                otherwise: joi.any().optional()
-            })
+            otherwise: joi.any().optional()
         })
     })
 };

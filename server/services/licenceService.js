@@ -4,8 +4,7 @@ const {createAdditionalConditionsObject} = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {licenceStages, transitions} = require('../models/licenceStages');
 const recordList = require('./utils/recordList');
-const addressesPath = ['proposedAddress', 'curfewAddress', 'addresses'];
-const {replacePath, mergeWithRight} = require('../utils/functionalHelpers');
+const {replacePath, mergeWithRight, pick} = require('../utils/functionalHelpers');
 const formValidation = require('./utils/formValidation');
 
 const {
@@ -15,7 +14,8 @@ const {
     allValuesEmpty,
     equals,
     firstKey,
-    removePath
+    removePath,
+    removePaths
 } = require('../utils/functionalHelpers');
 
 module.exports = function createLicenceService(licenceClient) {
@@ -305,43 +305,6 @@ module.exports = function createLicenceService(licenceClient) {
         };
     }
 
-    const updateAddress = updateAddressArray(edit);
-    const addAddress = updateAddressArray(add);
-
-    function updateAddressArray(addressesUpdateMethod) {
-        return async ({bookingId, rawLicence, fieldMap, userInput, index}) => {
-            const {stage, licence} = rawLicence;
-            const formResponse = getFormResponse(fieldMap, userInput);
-
-            const newAddress = Array.isArray(formResponse.addresses) ? formResponse.addresses[0] : formResponse;
-            const addressList = recordList({licence, path: addressesPath});
-            const updatedLicence = addressesUpdateMethod({addressList, licence, newAddress, index});
-
-            if (equals(licence, updatedLicence)) {
-                return licence;
-            }
-
-            await updateModificationStage(bookingId, stage, {requiresApproval: false});
-
-            await licenceClient.updateLicence(bookingId, updatedLicence);
-
-            return updatedLicence;
-        };
-    }
-
-    function edit({addressList, licence, index, newAddress}) {
-        if (!newAddress) {
-            return addressList.remove({index});
-        }
-
-        return addressList.edit({index, record: newAddress});
-    }
-
-    function add({addressList, licence, newAddress}) {
-        return addressList.add({record: newAddress});
-    }
-
-
     async function removeDecision(bookingId, rawLicence) {
         const {licence} = rawLicence;
         const updatedLicence = removePath(['approval'], licence);
@@ -400,6 +363,38 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateLicence(bookingId, updatedLicence);
     }
 
+    async function rejectProposedAddress(licence, bookingId, withdrawalReason) {
+        const address = getIn(licence, ['proposedAddress', 'curfewAddress']);
+        const addressReview = pick(['curfewAddressReview', 'addressSafety'], getIn(licence, ['curfew']));
+        const addressToStore = {address, addressReview, withdrawalReason};
+
+        const addressRejections = recordList({licence, path: ['proposedAddress', 'rejections'], allowEmpty: true});
+        const licenceWithAddressRejection = addressRejections.add({record: addressToStore});
+
+        const updatedLicence = removePaths([
+            ['proposedAddress', 'curfewAddress'],
+            ['curfew', 'addressSafety'],
+            ['curfew', 'curfewAddressReview']
+        ], licenceWithAddressRejection);
+
+        await licenceClient.updateLicence(bookingId, updatedLicence);
+        return updatedLicence;
+    }
+
+    function reinstateProposedAddress(licence, bookingId) {
+        const addressRejections = recordList({licence, path: ['proposedAddress', 'rejections']});
+        const entryToReinstate = addressRejections.last();
+
+        const licenceAfterRemoval = addressRejections.remove();
+
+        const updatedLicence = mergeWithRight(licenceAfterRemoval, {
+            proposedAddress: {curfewAddress: entryToReinstate.address},
+            curfew: entryToReinstate.addressReview
+        });
+
+        return licenceClient.updateLicence(bookingId, updatedLicence);
+    }
+
     function validateFormGroup({licence, stage, decisions = {}, tasks = {}} = {}) {
         const {curfewAddressApproved, bassAreaNotSuitable, bassReferralNeeded} = decisions;
         const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED';
@@ -441,8 +436,8 @@ module.exports = function createLicenceService(licenceClient) {
         markForHandover,
         update,
         updateSection: licenceClient.updateSection,
-        updateAddress,
-        addAddress,
+        rejectProposedAddress,
+        reinstateProposedAddress,
         validateForm: formValidation.validate,
         validateFormGroup,
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,

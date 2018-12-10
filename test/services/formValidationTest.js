@@ -257,67 +257,58 @@ describe('validation', () => {
 
             const {curfewHours, curfewAddressReview, addressSafety} = require('../../server/routes/config/curfew');
             describe('curfewAddressReview', () => {
-                const validAddress = {
-                    addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
-                    telephone: '07700000000'
-                };
                 const pageConfig = curfewAddressReview;
                 const options = [
                     {
                         formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
                             consent: 'No'
                         },
                         outcome: {}
                     },
                     {
                         formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
                             consent: 'Yes'
                         },
                         outcome: {electricity: 'Say if there is an electricity supply'}
                     },
                     {
                         formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
                             consent: 'Yes', electricity: 'Yes'
                         },
                         outcome: {homeVisitConducted: 'Say if you did a home visit'}
                     },
                     {
                         formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
                             consent: 'Yes', electricity: 'No'
                         },
                         outcome: {}
                     },
                     {
                         formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
                             consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes'
                         },
                         outcome: {}
                     },
-                    // offender is occupier
-                    {
-                        formResponse: {...validAddress, occupier: {isOffender: 'Yes'}},
-                        outcome: {electricity: 'Say if there is an electricity supply'}
-                    },
-                    {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'Yes'},
-                            electricity: 'Yes'
-                        },
-                        outcome: {homeVisitConducted: 'Say if you did a home visit'}
-                    },
-
-                    {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'Yes'},
-                            electricity: 'No'
-                        },
-                        outcome: {}
-                    }
+                    // // offender is occupier
+                    // {
+                    //     formResponse: {...validAddress, occupier: {isOffender: 'Yes'}},
+                    //     outcome: {electricity: 'Say if there is an electricity supply'}
+                    // },
+                    // {
+                    //     formResponse: {
+                    //         ...validAddress, occupier: {isOffender: 'Yes'},
+                    //         electricity: 'Yes'
+                    //     },
+                    //     outcome: {homeVisitConducted: 'Say if you did a home visit'}
+                    // },
+                    //
+                    // {
+                    //     formResponse: {
+                    //         ...validAddress, occupier: {isOffender: 'Yes'},
+                    //         electricity: 'No'
+                    //     },
+                    //     outcome: {}
+                    // }
                 ];
 
                 options.forEach(option => {
@@ -333,38 +324,29 @@ describe('validation', () => {
             });
 
             describe('addressSafety', () => {
-                const validAddress = {
-                    addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
-                    telephone: '07700000000', electricity: 'Yes', homeVisitConducted: 'Yes'
-                };
                 const pageConfig = addressSafety;
                 const options = [
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes', deemedSafe: 'Yes'
-                        },
+                        formResponse: {consent: 'No'},
                         outcome: {}
                     },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes', deemedSafe: 'No'
-                        },
-                        outcome: {unsafeReason: 'Explain why you did not approve the address'}
+                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes', deemedSafe: 'Yes'},
+                        outcome: {}
                     },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'Yes'},
-                            consent: '', deemedSafe: 'Yes'
-                        },
+                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes', deemedSafe: 'No'},
                         outcome: {unsafeReason: 'Explain why you did not approve the address'}
                     },
+                    // {
+                    //     formResponse: {
+                    //         occupier: {isOffender: 'Yes'},
+                    //         consent: '', deemedSafe: 'Yes'
+                    //     },
+                    //     outcome: {unsafeReason: 'Explain why you did not approve the address'}
+                    // },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes', deemedSafe: 'Yes', unsafeReason: 'a'
-                        },
+                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes', deemedSafe: 'Yes', unsafeReason: 'a'},
                         outcome: {}
                     }
                 ];

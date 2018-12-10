@@ -1635,4 +1635,53 @@ describe('licenceService', () => {
         });
 
     });
+
+    describe('reject and reinstate address', async () => {
+        const licence = {
+            proposedAddress: {
+                curfewAddress: {key: 'value'},
+                rejections: []
+            },
+            curfew: {
+                curfewAddressReview: {rev: 'iew'},
+                addressSafety: {safe: 'ty'},
+                somethingUninteresting: 'boring'
+            }
+        };
+
+        const rejectedAddressLicence = {
+            proposedAddress: {
+                rejections: [{
+                    address: {
+                        key: 'value'
+                    },
+                    addressReview: {
+                        curfewAddressReview: {rev: 'iew'},
+                        addressSafety: {safe: 'ty'}
+                    },
+                    withdrawalReason: 'consentWithdrawn'
+                }]
+            },
+            curfew: {
+                somethingUninteresting: 'boring'
+            }
+        };
+
+        describe('reject', () => {
+            it('should add proposed address and review to the rejected list', () => {
+                service.rejectProposedAddress(licence, '001', 'consentWithdrawn');
+                expect(licenceClient.updateLicence).to.be.calledOnce();
+                expect(licenceClient.updateLicence).to.be.calledWith('001', rejectedAddressLicence);
+            });
+        });
+
+        describe('reinstate', () => {
+            it('should remove from the rejected list and replace in licence structure', () => {
+                service.reinstateProposedAddress(rejectedAddressLicence, '001');
+                expect(licenceClient.updateLicence).to.be.calledOnce();
+                expect(licenceClient.updateLicence).to.be.calledWith('001', licence);
+            });
+        });
+
+    });
 });

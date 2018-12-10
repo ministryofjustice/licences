@@ -1,28 +1,26 @@
 include otherResidents
-mixin addressForm(index, errorObject)
-    -var thisAddress = savedAddress
-    -var savedOccupier = thisAddress.occupier || {}
-    -var addressPosition = "[addresses]["+index+"]"
+mixin addressForm(errorObject)
+    -var savedOccupier = data.occupier || {}
     div.pure-g.paddingBottom
         div.pure-u-1.pure-u-md-1-2
             div.pure-g
                 div.pure-u-1.pure-u-md-3-5
                     div.form-group.midMarginBottom
-                        label.form-label(for="addressLine1-"+index) Building and street
-                        input(id="addressLine1-"+index name=addressPosition+"[addressLine1]" value=thisAddress.addressLine1 autofocus aria-label="Building and street" class=errorObject.addressLine1 ? "form-control form-control-error" : "form-control")
-                        input.form-control.smallMarginTop(id="addressLine2-"+index name=addressPosition+"[addressLine2]" value=thisAddress.addressLine2)
+                        label.form-label(for="addressLine1") Building and street
+                        input(id="addressLine1" name="addressLine1" value=data.addressLine1 autofocus aria-label="Building and street" class=errorObject.addressLine1 ? "form-control form-control-error" : "form-control")
+                        input.form-control.smallMarginTop(id="addressLine2" name="addressLine2" value=data.addressLine2)
 
                     div.form-group.midMarginBottom
-                        label.form-label(for="addressTown-"+index) Town or city
-                        input(id="addressTown-"+index name=addressPosition+"[addressTown]" value=thisAddress.addressTown aria-label="Town or city" class=errorObject.addressTown ? "form-control form-control-error" : "form-control")
+                        label.form-label(for="addressTown") Town or city
+                        input(id="addressTown" name="addressTown" value=data.addressTown aria-label="Town or city" class=errorObject.addressTown ? "form-control form-control-error" : "form-control")
 
                     div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
-                        label.form-label(for="postCode-"+index) Postcode
-                        input(id="postCode-"+index name=addressPosition+"[postCode]" value=thisAddress.postCode aria-label="Postcode" class=errorObject.postCode ? "form-control form-control-error" : "form-control")
+                        label.form-label(for="postCode") Postcode
+                        input(id="postCode" name="postCode" value=data.postCode aria-label="Postcode" class=errorObject.postCode ? "form-control form-control-error" : "form-control")
 
                     div.form-group.pure-u-sm-1.pure-u-md-3-4
-                        label.form-label(for="telephone-"+index) Telephone
-                        input.form-control(id="telephone-"+index name=addressPosition+"[telephone]" value=thisAddress.telephone aria-label="Telephone" class=errorObject.telephone ? "form-control form-control-error" : "form-control")
+                        label.form-label(for="telephone") Telephone
+                        input.form-control(id="telephone" name="telephone" value=data.telephone aria-label="Telephone" class=errorObject.telephone ? "form-control form-control-error" : "form-control")
 
         div.form-group.pure-u-1.pure-u-md-1-2
             fieldset.paddingBottom
@@ -31,19 +29,19 @@ mixin addressForm(index, errorObject)
                         h4.heading-small Main occupier
                 div.pure-g
                     div.form-group.pure-u-1.pure-u-sm-10-24
-                        label.form-label(for="occupiername-"+index) Name
-                        input(id="occupiername-"+index name=addressPosition+"[occupier][name]" value=savedOccupier.name aria-label="Main occupier's name" class=errorObject.occupier && errorObject.occupier.name ? "form-control form-control-error" : "form-control")
+                        label.form-label(for="occupiername") Name
+                        input(id="occupiername" name="[occupier][name]" value=savedOccupier.name aria-label="Main occupier's name" class=errorObject.occupier && errorObject.occupier.name ? "form-control form-control-error" : "form-control")
 
                     div.form-group.pure-u-1.pure-u-sm-10-24.sm-PadLeftRight15
-                        label.form-label(for="occupierrelationship-"+index) Relation to offender
-                        input(id="occupierrelationship-"+index name=addressPosition+"[occupier][relationship]" value=savedOccupier.relationship aria-label="Main occupier's relationship to offender" class=errorObject.occupier && errorObject.occupier.relationship ? "form-control form-control-error" : "form-control")
+                        label.form-label(for="occupierrelationship") Relation to offender
+                        input(id="occupierrelationship" name="[occupier][relationship]" value=savedOccupier.relationship aria-label="Main occupier's relationship to offender" class=errorObject.occupier && errorObject.occupier.relationship ? "form-control form-control-error" : "form-control")
 
                 div.multiple-choice
-                    input(id="isOffender-"+index, name=addressPosition+"[occupier][isOffender]" type="checkbox" value="Yes" checked = savedOccupier.isOffender === 'Yes')
-                    label(for="isOffender-"+index) The offender is the main occupier
+                    input(id="isOffender", name="[occupier][isOffender]" type="checkbox" value="Yes" checked = savedOccupier.isOffender === 'Yes')
+                    label(for="isOffender") The offender is the main occupier
 
 
-            +otherResidents(addressPosition, thisAddress, errorObject)
+            +otherResidents(data, errorObject)
 
             div.pure-g
                 div.pure-u-4-5
@@ -51,10 +49,8 @@ mixin addressForm(index, errorObject)
                         p According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
 
                         div.multiple-choice
-                            input(id="cautionedYes-"+index type="radio" checked=thisAddress.cautionedAgainstResident === 'Yes' name=addressPosition+"[cautionedAgainstResident]" value="Yes")
-                            label(for="cautionedYes-"+index) Yes
+                            input(id="cautionedYes" type="radio" checked=data.cautionedAgainstResident === 'Yes' name="[cautionedAgainstResident]" value="Yes")
+                            label(for="cautionedYes") Yes
                         div.multiple-choice
-                            input(id="cautionedNo-"+index type="radio" checked=thisAddress.cautionedAgainstResident === 'No' name=addressPosition+"[cautionedAgainstResident]" value="No")
+                            input(id="cautionedNo-"+index type="radio" checked=data.cautionedAgainstResident === 'No' name="[cautionedAgainstResident]" value="No")
                             label(for="cautionedNo-"+index) No
-
-        input(type="hidden" name=addressPosition+"[addressIndex]" value=thisAddress.index)

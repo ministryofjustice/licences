@@ -377,12 +377,11 @@ function getCaRefusal(licence) {
 }
 
 function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved) {
-    const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || [];
-    const lastAddress = lastItem(addresses);
+    const address = getIn(licence, ['proposedAddress', 'curfewAddress']) || {};
 
     return {
-        offenderIsMainOccupier: getIn(lastAddress, ['occupier', 'isOffender']) === 'Yes',
-        curfewAddress: getAddressState(licence)
+        offenderIsMainOccupier: getIn(address, ['occupier', 'isOffender']) === 'Yes',
+        curfewAddress: getAddressState()
     };
 
     function getAddressState() {
@@ -391,7 +390,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
             return taskStates.DONE;
         }
 
-        if (isEmpty(addresses)) {
+        if (isEmpty(address)) {
             return taskStates.UNSTARTED;
         }
 
@@ -400,7 +399,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
         }
 
         const required = ['cautionedAgainstResident', 'addressLine1', 'addressTown', 'postCode', 'telephone'];
-        if (required.some(field => !addresses.find(address => address[field]))) {
+        if (required.some(field => !Object.keys(address).includes(field))) {
             return taskStates.STARTED;
         }
 
@@ -410,27 +409,32 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
 
 function getCurfewAddressReviewState(licence) {
 
-    const addresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);
+    const curfewAddress = getIn(licence, ['proposedAddress', 'curfewAddress']);
+    const addressReview = getIn(licence, ['curfew', 'curfewAddressReview']) || {};
+    const addressSafety = getIn(licence, ['curfew', 'addressSafety']) || {};
+    const rejectedAddresses = getIn(licence, ['proposedAddress', 'rejections']);
 
-    if (!addresses || isEmpty(addresses)) {
-        return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unstarted'};
+
+    if (!curfewAddress) {
+        if (isEmpty(rejectedAddresses)) {
+            return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unstarted'};
+        }
+
+        const {withdrawalReason} = lastItem(rejectedAddresses);
+        if (withdrawalReason === 'withdrawAddress' || withdrawalReason === 'withdrawConsent') {
+            return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'withdrawn'};
+        }
     }
 
-    const lastAddress = lastItem(addresses);
-
-    if (isWithdrawnAddress(lastAddress)) {
-        return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'withdrawn'};
-    }
-
-    if (isAcceptedAddress(lastAddress)) {
+    if (isAcceptedAddress(addressReview, addressSafety, getIn(licence, ['occupier', 'isOffender']) === 'Yes')) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};
     }
 
-    if (isRejectedAddress(lastAddress)) {
+    if (isRejectedAddress(addressReview, addressSafety)) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
     }
 
-    if (addressReviewStarted(lastAddress)) {
+    if (addressReviewStarted(addressReview, addressSafety)) {
         return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
     }
 
