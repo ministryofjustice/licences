@@ -2,12 +2,29 @@ module.exports = {
     reportingInstructions: {
         licenceSection: 'reportingInstructions',
         fields: [
-            {name: {}},
-            {buildingAndStreet1: {}},
-            {buildingAndStreet2: {}},
-            {townOrCity: {}},
-            {postcode: {}},
-            {telephone: {}}
+            {name: {
+                responseType: 'requiredString',
+                validationMessage: 'Enter a name'
+            }},
+            {buildingAndStreet1: {
+                responseType: 'requiredString',
+                validationMessage: 'Enter a building or street'
+            }},
+            {buildingAndStreet2: {
+                responseType: 'optionalString'
+            }},
+            {townOrCity: {
+                responseType: 'requiredString',
+                validationMessage: 'Enter a town or city'
+            }},
+            {postcode: {
+                responseType: 'requiredPostcode',
+                validationMessage: 'Enter a postcode in the right format'
+            }},
+            {telephone: {
+                responseType: 'requiredPhone',
+                validationMessage: 'Enter a telephone number in the right format'
+            }}
         ],
         nextPath: {
             path: '/hdc/taskList/',

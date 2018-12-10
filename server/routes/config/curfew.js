@@ -2,9 +2,19 @@ module.exports = {
     curfewAddressReview: {
         pageDataMap: ['licence'],
         fields: [
-            {consent: {}},
-            {electricity: {dependentOn: 'consent', predicate: 'Yes'}},
-            {homeVisitConducted: {dependentOn: 'consent', predicate: 'Yes'}},
+            {consent: {
+                validationMessage: 'Say if the homeowner consents to HDC'
+            }},
+            {electricity: {
+                dependentOn: 'consent',
+                predicate: 'Yes',
+                validationMessage: 'Say if there is an electricity supply'
+            }},
+            {homeVisitConducted: {
+                dependentOn: 'consent',
+                predicate: 'Yes',
+                validationMessage: 'Say if you did a home visit'
+            }},
             {addressReviewComments: {}}
         ],
         nextPath: {
@@ -34,8 +44,14 @@ module.exports = {
     addressSafety: {
         pageDataMap: ['licence'],
         fields: [
-            {deemedSafe: {}},
-            {unsafeReason: {dependentOn: 'deemedSafe', predicate: 'No'}}
+            {deemedSafe: {
+                validationMessage: 'Say if you approve the address'
+            }},
+            {unsafeReason: {
+                dependentOn: 'deemedSafe',
+                predicate: 'No',
+                validationMessage: 'Explain why you did not approve the address'
+            }}
         ],
         nextPath: {
             decisions: [
@@ -56,23 +72,65 @@ module.exports = {
     curfewHours: {
         licenceSection: 'curfewHours',
         fields: [
-            {daySpecificInputs: {}},
-            {allFrom: {}},
-            {allUntil: {}},
-            {mondayFrom: {}},
-            {mondayUntil: {}},
-            {tuesdayFrom: {}},
-            {tuesdayUntil: {}},
-            {wednesdayFrom: {}},
-            {wednesdayUntil: {}},
-            {thursdayFrom: {}},
-            {thursdayUntil: {}},
-            {fridayFrom: {}},
-            {fridayUntil: {}},
-            {saturdayFrom: {}},
-            {saturdayUntil: {}},
-            {sundayFrom: {}},
-            {sundayUntil: {}}
+            {daySpecificInputs: {responseType: 'optionalString'}},
+            {allFrom: {responseType: 'optionalString'}},
+            {allUntil: {responseType: 'optionalString'}},
+            {mondayFrom: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {mondayUntil: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {tuesdayFrom: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {tuesdayUntil: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {wednesdayFrom: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {wednesdayUntil: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {thursdayFrom: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {thursdayUntil: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {fridayFrom: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {fridayUntil: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {saturdayFrom: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {saturdayUntil: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {sundayFrom: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }},
+            {sundayUntil: {
+                responseType: 'requiredTime',
+                validationMessage: 'Enter a valid time'
+            }}
         ],
         nextPath: {
             path: '/hdc/taskList/',
