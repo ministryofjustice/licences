@@ -117,7 +117,7 @@ describe('pdfFormatter', () => {
         expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
     });
 
-    it('should use BASS address instead of curfew address when BASS accepted', () => {
+    it('should use BASS address instead of curfew address when BASS requested and accepted', () => {
         const licence = {
             proposedAddress: {
                 curfewAddress: {
@@ -130,12 +130,13 @@ describe('pdfFormatter', () => {
                 }
             },
             bassReferral: {
+                bassRequest: {bassRequested: 'Yes'},
                 bassOffer: {
+                    bassAccepted: 'Yes',
                     postCode: 'BASS PC',
                     addressTown: 'BASS Town',
                     addressLine1: 'BASS 1',
-                    addressLine2: 'BASS 2',
-                    bassAccepted: 'Yes'
+                    addressLine2: 'BASS 2'
                 }
             }
         };
@@ -159,12 +160,43 @@ describe('pdfFormatter', () => {
                 }
             },
             bassReferral: {
+                bassRequest: {bassRequested: 'Yes'},
                 bassOffer: {
+                    bassAccepted: 'Not Yes',
                     postCode: 'BASS PC',
                     addressTown: 'BASS Town',
                     addressLine1: 'BASS 1',
-                    addressLine2: 'BASS 2',
-                    bassAccepted: 'Not Yes'
+                    addressLine2: 'BASS 2'
+                }
+            }
+        };
+
+        const data = formatWith({licence: licence});
+
+        expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost');
+        expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
+    });
+
+    it('should use curfew address instead of BASS address when BASS not requested', () => {
+        const licence = {
+            proposedAddress: {
+                curfewAddress: {
+                    addresses: [{
+                        addressLine1: 'first',
+                        addressLine2: 'second',
+                        addressTown: '',
+                        postCode: 'post'
+                    }]
+                }
+            },
+            bassReferral: {
+                bassRequest: {bassRequested: 'Not Yes'},
+                bassOffer: {
+                    bassAccepted: 'Yes',
+                    postCode: 'BASS PC',
+                    addressTown: 'BASS Town',
+                    addressLine1: 'BASS 1',
+                    addressLine2: 'BASS 2'
                 }
             }
         };

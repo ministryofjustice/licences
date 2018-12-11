@@ -55,6 +55,11 @@ const fieldOptions = {
         is: requiredAnswer,
         then: joi.postcode().required(),
         otherwise: joi.any().optional()
+    }),
+    requiredTelephoneIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
+        is: requiredAnswer,
+        then: joi.string().regex(/^[0-9+\s]+$/).required(),
+        otherwise: joi.any().optional()
     })
 };
 

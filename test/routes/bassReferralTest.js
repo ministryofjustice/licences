@@ -29,7 +29,9 @@ describe('/hdc/bassReferral', () => {
 
             const routes = [
                 {url: '/hdc/bassReferral/bassRequest/1', content: 'Requested BASS area'},
-                {url: '/hdc/bassReferral/bassOffer/1', content: 'BASS address'}
+                {url: '/hdc/bassReferral/bassOffer/1', content: 'BASS address'},
+                {url: '/hdc/bassReferral/rejected/1', content: 'BASS area rejected'},
+                {url: '/hdc/bassReferral/bassWithdrawn/1', content: 'BASS withdrawn'}
             ];
 
             testFormPageGets(app, routes, licenceService);
@@ -43,6 +45,13 @@ describe('/hdc/bassReferral', () => {
                     form: 'bassRequest',
                     nextPath: '/hdc/taskList/1',
                     user: 'caUser'
+                },
+                {
+                    url: '/hdc/bassReferral/bassOffer/1',
+                    body: {bookingId: 1, bassAccepted: 'Yes'},
+                    form: 'bassOffer',
+                    nextPath: '/hdc/taskList/1',
+                    user: 'caUser'
                 }
             ];
 
@@ -50,6 +59,9 @@ describe('/hdc/bassReferral', () => {
                 it(`renders the correct path '${route.nextPath}' page`, () => {
                     const licenceService = createLicenceServiceStub();
                     const app = createApp({licenceServiceStub: licenceService}, route.user);
+                    licenceService.update = sinon.stub().resolves({
+                        bassReferral: {bassOffer: {}}
+                    });
                     return request(app)
                         .post(route.url)
                         .send(route.body)
@@ -90,6 +102,72 @@ describe('/hdc/bassReferral', () => {
                 });
             });
         });
+
+        describe('POST /hdc/bassReferral/rejected/:bookingId', () => {
+
+            it('rejects the bass request', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
+                licenceService.rejectBass = sinon.stub().resolves({
+                    bassReferral: {bassOffer: {}}
+                });
+                return request(app)
+                    .post('/hdc/bassReferral/rejected/1')
+                    .send({enterAlternative: 'Yes'})
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceService.rejectBass).to.be.calledOnce();
+                        expect(licenceService.rejectBass).to.be.calledWith({key: 'value'}, '1', 'Yes'
+                        );
+
+                        expect(res.header.location).to.equal('/hdc/bassReferral/bassRequest/rejected/1');
+                    });
+            });
+        });
+
+        describe('POST /hdc/bassReferral/bassOffer/withdraw/:bookingId', () => {
+
+            it('withdraws the bass request', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
+                licenceService.withdrawBass = sinon.stub().resolves({
+                    bassReferral: {bassOffer: {}}
+                });
+                return request(app)
+                    .post('/hdc/bassReferral/bassOffer/withdraw/1')
+                    .send({withdrawalType: 'Offer'})
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceService.withdrawBass).to.be.calledOnce();
+                        expect(licenceService.withdrawBass).to.be.calledWith({key: 'value'}, '1', 'Offer'
+                        );
+
+                        expect(res.header.location).to.equal('/hdc/bassReferral/bassWithdrawn/1');
+                    });
+            });
+        });
+
+        describe('POST /hdc/bassReferral/bassOffer/reinstate/:bookingId', () => {
+
+            it('reinstates the bass request', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
+                licenceService.reinstateBass = sinon.stub().resolves({
+                    bassReferral: {bassOffer: {}}
+                });
+                return request(app)
+                    .post('/hdc/bassReferral/bassOffer/reinstate/1')
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceService.reinstateBass).to.be.calledOnce();
+                        expect(licenceService.reinstateBass).to.be.calledWith({key: 'value'}, '1'
+                        );
+
+                        expect(res.header.location).to.equal('/hdc/taskList/1');
+                    });
+            });
+        });
+
     });
 
     context('RO', () => {

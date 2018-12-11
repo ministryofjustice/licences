@@ -4,6 +4,7 @@ block content
 
     -var bassOffer = data && data.bassReferral && data.bassReferral.bassOffer || {}
     -var bassRequest = data && data.bassReferral && data.bassReferral.bassRequest || {}
+    -var bassAddress = data && data.bassReferral && data.bassReferral.bassAddress || {}
 
     div.pure-g.pure-u-1
         include ../includes/backToCheckList
@@ -38,26 +39,26 @@ block content
                 else if offer === 'Unavailable'
                     div.bold Address not available
 
-            if bassOffer.bassAccepted == 'Yes'
+            if bassOffer.bassAccepted == 'Yes' && bassAddress.bassArea && bassAddress.addressLine1
                 div.pure-u-1.pure-u-md-1-3.paddingTop
                     span Bass offer area
                 div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferArea
-                    if bassOffer.bassArea
-                        div.bold #{bassOffer.bassArea}
+                    if bassAddress.bassArea
+                        div.bold #{bassAddress.bassArea}
 
                 div.pure-u-1.pure-u-md-1-3.paddingTop
                     span Bass offer address
                 div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferAddress
-                    if bassOffer.addressLine1
-                        div.bold #{bassOffer.addressLine1}
-                    if bassOffer.addressLine2
-                        div.bold #{bassOffer.addressLine2}
-                    if bassOffer.addressTown
-                        div.bold #{bassOffer.addressTown}
-                    if bassOffer.postCode
-                        div.bold #{bassOffer.postCode}
-                    if bassOffer.telephone
-                        div.bold #{bassOffer.telephone}
+                    if bassAddress.addressLine1
+                        div.bold #{bassAddress.addressLine1}
+                    if bassAddress.addressLine2
+                        div.bold #{bassAddress.addressLine2}
+                    if bassAddress.addressTown
+                        div.bold #{bassAddress.addressTown}
+                    if bassAddress.postCode
+                        div.bold #{bassAddress.postCode}
+                    if bassAddress.telephone
+                        div.bold #{bassAddress.telephone}
 
 
 
