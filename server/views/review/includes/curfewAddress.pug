@@ -1,6 +1,8 @@
 include ./itemAndError
 -var address = data.proposedAddress && data.proposedAddress.curfewAddress || {}
--var errors = errorObject.proposedAddress && errorObject.proposedAddress.curfewAddress || {}
+-var errors = errorObject.curfewAddress || {}
+- var reviewErrors = errors.curfewAddressReview || {}
+- var safetyErrors = errors.addressSafety || {}
 - var offenderIsMainOccupier = licenceStatus.decisions.offenderIsMainOccupier;
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
@@ -77,29 +79,29 @@ if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
             div.pure-u-1-2
                 div#dischargeHomeAddress
                     #{errors.electricity}
-                    +itemAndError(address.consent, errors.consent, "consent-curfew")
+                    +itemAndError(address.consent, reviewErrors.consent, "consent-curfew")
 
     if(address.consent === 'Yes' || offenderIsMainOccupier)
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
                 | Is there an electricity supply?
             div.pure-u-1-2
-                +itemAndError(address.electricity, errors.electricity, "electricity-curfew")
+                +itemAndError(address.electricity, reviewErrors.electricity, "electricity-curfew")
 
         if(address.electricity === 'Yes')
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     | Was a home visit conducted in this case?
                 div.pure-u-1-2
-                    +itemAndError(address.homeVisitConducted, errors.homeVisitConducted, "homeVisit-curfew")
+                    +itemAndError(address.homeVisitConducted, reviewErrors.homeVisitConducted, "homeVisit-curfew")
 
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     | Could this offender be managed safely at address?
                 div.pure-u-1-2
-                    +itemAndError(address.deemedSafe, errors.deemedSafe, "deemedSafe-curfew")
+                    +itemAndError(address.deemedSafe, safetyErrors.deemedSafe, "deemedSafe-curfew")
                     if address.deemedSafe === 'No'
-                        +itemAndError(address.unsafeReason, errors.unsafeReason, "unsafeReason-curfew")
+                        +itemAndError(address.unsafeReason, safetyErrors.unsafeReason, "unsafeReason-curfew")
 
     if address.addressReviewComments
         div.pure-g.borderBottomLight.midPaddingTopBottom

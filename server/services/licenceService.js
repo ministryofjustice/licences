@@ -400,6 +400,13 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateLicence(bookingId, updatedLicence);
     }
 
+    function validateFormGroup({licence, stage, decisions = {}} = {}) {
+        if (stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
+           return formValidation.validateGroup({licence, stage: 'PROCESSING_RO_ADDRESS_REJECTED'});
+        }
+        return formValidation.validateGroup({licence, stage});
+    }
+
 
     return {
         reset,
@@ -414,10 +421,9 @@ module.exports = function createLicenceService(licenceClient) {
         addAddress,
         getLicenceErrors: licenceValidator.getLicenceErrors,
         getConditionsErrors: licenceValidator.getConditionsErrors,
-        getEligibilityErrors: licenceValidator.getEligibilityErrors,
         getValidationErrorsForReview: licenceValidator.getValidationErrorsForReview,
         validateForm: formValidation.validate,
-        validateFormGroup: formValidation.validateGroup,
+        validateFormGroup,
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
         addSplitDateFields,
         removeDecision,

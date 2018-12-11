@@ -6,6 +6,7 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
 
     router.get('/review/:sectionName/:bookingId', asyncMiddleware(async (req, res) => {
         const {sectionName, bookingId} = req.params;
+        const {licenceStatus} = res.locals;
         logger.debug(`GET /review/${sectionName}/${bookingId}`);
 
         const licence = getIn(res.locals.licence, ['licence']) || {};
@@ -15,7 +16,7 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
         const licenceWithAddress = addAddressTo(licence);
 
         const showErrors = stagesForRole[req.user.role].includes(stage);
-        const errorObject = showErrors ? getErrors(res.locals.licenceStatus, licenceWithAddress, licence, stage) : {};
+        const errorObject = showErrors ? getErrors(licenceStatus, licenceWithAddress, licence, stage, licenceStatus) : {};
 
         const data = await conditionsService.populateLicenceWithConditions(licenceWithAddress, errorObject);
 
@@ -32,9 +33,9 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
         });
     }));
 
-    function getErrors(licenceStatus, licenceWithAddress, licence, stage) {
-        if (stage === 'ELIGIBILITY') {
-            return licenceService.validateFormGroup({licence, stage});
+    function getErrors(licenceStatus, licenceWithAddress, licence, stage, {decisions}) {
+        if (stage === 'ELIGIBILITY' || stage === 'PROCESSING_RO' ) {
+            return licenceService.validateFormGroup({licence, stage, decisions});
         }
 
         return licenceService.getValidationErrorsForReview({licenceStatus, licence: licenceWithAddress});
@@ -48,7 +49,6 @@ const stagesForRole = {
     RO: ['PROCESSING_RO'],
     DM: ['APPROVAL']
 };
-
 
 function addAddressTo(licence) {
     const allAddresses = getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']);

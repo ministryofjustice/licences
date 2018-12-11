@@ -1,6 +1,7 @@
 const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
+const {curfewAddressSchema, addressReviewSchema, addressSafetySchema} = require('./bespokeAddressSchema');
 
 const {
     getFieldName,
@@ -12,6 +13,9 @@ const {
 } = require('../../utils/functionalHelpers');
 
 const proposedAddressConfig = require('../../routes/config/proposedAddress');
+const riskConfig = require('../../routes/config/risk');
+const curfewConfig = require('../../routes/config/curfew');
+const reportingConfig = require('../../routes/config/reporting');
 
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 
@@ -54,26 +58,6 @@ const fieldOptions = {
     })
 };
 
-// TODO generate from config
-const curfewAddressSchema = joi.object().keys({
-    addressLine1: fieldOptions.requiredString,
-    addressLine2: fieldOptions.optionalString,
-    addressTown: fieldOptions.requiredString,
-    postCode: fieldOptions.requiredPostcode,
-    telephone: fieldOptions.requiredPhone,
-    residents: joi.array().items(joi.object().keys({
-        name: fieldOptions.requiredString,
-        relationship: fieldOptions.requiredString,
-        age: fieldOptions.optionalAge
-    })),
-    occupier: joi.object().keys({
-        name: fieldOptions.requiredString,
-        relationship: fieldOptions.requiredString,
-        isOffender: fieldOptions.optionalYesNo
-    }),
-    cautionedAgainstResident: fieldOptions.requiredYesNo
-}).required();
-
 const validationProcedures = {
     standard: {
         getSchema: createSchemaFromConfig,
@@ -94,6 +78,16 @@ const validationProcedures = {
             const innerFieldConfig = fieldConfig[fieldName].contains.find(item => getFieldName(item) === innerFieldName);
             return innerFieldConfig[innerFieldName].validationMessage;
         }
+    },
+    curfewAddressReview: {
+        getSchema: () => curfewAddressSchema.concat(addressReviewSchema),
+        fieldConfigPath: ['fields'],
+        getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
+    },
+    addressSafety: {
+        getSchema: () => curfewAddressSchema.concat(addressReviewSchema).concat(addressSafetySchema),
+        fieldConfigPath: ['fields'],
+        getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
     }
 };
 
@@ -131,6 +125,59 @@ function validateGroup({licence, stage}) {
                 pageConfig: proposedAddressConfig.curfewAddress,
                 section: 'proposedAddress',
                 missingMessage: 'Please provide a curfew address'
+            }
+        ],
+        PROCESSING_RO: [
+            {
+                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formType: 'curfewAddressReview',
+                pageConfig: curfewConfig.curfewAddressReview,
+                section: 'curfewAddress',
+                missingMessage: 'Enter the curfew address review details'
+            },
+            {
+                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formType: 'addressSafety',
+                pageConfig: curfewConfig.addressSafety,
+                section: 'curfewAddress',
+                missingMessage: 'Enter the curfew address review details'
+            },
+            {
+                formResponse: getIn(licence, ['risk', 'riskManagement']),
+                formType: 'riskManagement',
+                pageConfig: riskConfig.riskManagement,
+                section: 'risk',
+                missingMessage: 'Enter the risk management and victim liaison details'
+            },
+            {
+                formResponse: getIn(licence, ['curfew', 'curfewHours']),
+                formType: 'curfewHours',
+                pageConfig: curfewConfig.curfewHours,
+                section: 'curfew',
+                missingMessage: 'Enter the proposed curfew hours'
+            },
+            {
+                formResponse: getIn(licence, ['reporting', 'reportingInstructions']),
+                formType: 'reportingInstructions',
+                pageConfig: reportingConfig.reportingInstructions,
+                section: 'reporting',
+                missingMessage: 'Enter the reporting instructions'
+            }
+        ],
+        PROCESSING_RO_ADDRESS_REJECTED: [
+            {
+                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formType: 'curfewAddressReview',
+                pageConfig: curfewConfig.curfewAddressReview,
+                section: 'curfewAddress',
+                missingMessage: 'Enter the curfew address review details'
+            },
+            {
+                formResponse: lastItem(getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses']) || []),
+                formType: 'addressSafety',
+                pageConfig: curfewConfig.addressSafety,
+                section: 'curfewAddress',
+                missingMessage: 'Enter the curfew address review details'
             }
         ]
     };

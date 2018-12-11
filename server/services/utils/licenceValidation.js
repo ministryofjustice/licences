@@ -208,6 +208,5 @@ function removeErrorsIfAllMatch(pathsToTest) {
 module.exports = {
     getLicenceErrors,
     getConditionsErrors,
-    getValidationErrorsForReview,
-    getEligibilityErrors
+    getValidationErrorsForReview
 };
