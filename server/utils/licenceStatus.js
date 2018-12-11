@@ -44,7 +44,7 @@ function getLicenceStatus(licenceRecord) {
     const stage = licenceRecord.stage;
     const results = getRequiredState(stage, licenceRecord.licence);
     const postApproval = isPostDecision(stage);
-    const createLicence = isPostDecision(stage) ? getLicenceCreatedTaskState(licenceRecord) : taskStates.UNSTARTED;
+    const createLicence = postApproval ? getLicenceCreatedTaskState(licenceRecord) : taskStates.UNSTARTED;
 
     return results.reduce(combiner, {stage, postApproval, decisions: {}, tasks: {createLicence}});
 }
