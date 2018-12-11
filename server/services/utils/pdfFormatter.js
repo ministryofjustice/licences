@@ -73,9 +73,9 @@ function readEntry(data, spec) {
 function pickCurfewAddress(licence) {
 
     const bassRequested = getIn(licence, ['bassReferral', 'bassRequest', 'bassRequested']);
-    const bassOffer = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted']);
+    const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted']);
 
-    if (bassRequested === 'Yes' && bassOffer === 'Yes') {
+    if (bassRequested === 'Yes' && bassAccepted === 'Yes') {
         return getIn(licence, ['bassReferral', 'bassOffer']);
     }
 
