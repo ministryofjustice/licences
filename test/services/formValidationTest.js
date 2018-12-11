@@ -523,84 +523,120 @@ describe('validation', () => {
         });
 
         describe('bassReferral', () => {
-        const {bassOffer} = require('../../server/routes/config/bassReferral');
-        describe('bassOffer', () => {
+            const {bassRequest, bassAreaCheck, bassOffer} = require('../../server/routes/config/bassReferral');
 
-            const pageConfig = bassOffer;
-
-            describe('bassOffer - post approval', () => {
-
+            describe('bassRequest', () => {
+                const pageConfig = bassRequest;
                 const options = [
-                    {formResponse: {bassAccepted: 'No'}, outcome: {}},
-                    {
-                        formResponse: {bassAccepted: 'Yes'},
-                        outcome: {}
-                    },
-                    {
-                        formResponse: {bassAccepted: ''},
-                        outcome: {bassAccepted: 'Select an option'}
-                    }
+                    {formResponse: {bassRequested: 'No'}, outcome: {}},
+                    {formResponse: {bassRequested: 'Yes'},
+                        outcome: {proposedCounty: 'Enter a county', proposedTown: 'Enter a town'}},
+                    {formResponse: {bassRequested: 'Yes', proposedCounty: 'county'},
+                        outcome: {proposedTown: 'Enter a town'}},
+                    {formResponse: {bassRequested: 'Yes', proposedCounty: 'county', proposedTown: 'town'},
+                        outcome: {}}
                 ];
 
                 options.forEach(option => {
-                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
                         const {outcome, formResponse} = option;
-                        expect(service.validateForm({formResponse, pageConfig, bespokeConditions: {postApproval: false}})).to.eql(outcome);
+                        expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
                     });
                 });
             });
 
-            describe('bassOffer - pre approval', () => {
-
+            describe('bassAreaCheck', () => {
+                const pageConfig = bassAreaCheck;
                 const options = [
-                    {formResponse: {bassAccepted: 'No'}, outcome: {}},
-                    {
-                        formResponse: {bassAccepted: ''},
-                        outcome: {bassAccepted: 'Select an option'}
-                    },
-                    {
-                        formResponse: {bassAccepted: 'Yes'},
-                        outcome: {
-                            addressLine1: 'Enter a building or street',
-                            addressTown: 'Enter a town or city',
-                            bassArea: 'Enter the provided area',
-                            postCode: 'Enter a postcode in the right format',
-                            telephone: 'Enter a telephone number in the right format'
-                        }
-                    },
-                    {
-                        formResponse: {
-                            bassAccepted: 'Yes',
-                            addressLine1: 'Road',
-                            addressTown: 'Town',
-                            bassArea: 'Area',
-                            postCode: 'LE17 4XJ',
-                            telephone: '111'
-                        },
-                        outcome: {}
-                    },
-                    {
-                        formResponse: {
-                            bassAccepted: 'Yes',
-                            addressLine1: 'Road',
-                            addressTown: 'Town',
-                            bassArea: 'Area',
-                            postCode: 'a',
-                            telephone: '111'
-                        },
-                        outcome: {postCode: 'Enter a postcode in the right format'}
-                    }
+                    {formResponse: {bassAreaSuitable: 'Yes'}, outcome: {}},
+                    {formResponse: {bassAreaSuitable: 'No'}, outcome: {bassAreaReason: 'Enter a reason'}},
+                    {formResponse: {bassAreaSuitable: 'No', bassAreaReason: 'reason'}, outcome: {}}
                 ];
 
                 options.forEach(option => {
-                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
                         const {outcome, formResponse} = option;
-                        expect(service.validateForm({formResponse, pageConfig, bespokeConditions: {postApproval: true}})).to.eql(outcome);
+                        expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
+                    });
+                });
+            });
+
+            describe('bassOffer', () => {
+
+                const pageConfig = bassOffer;
+
+                describe('bassOffer - post approval', () => {
+
+                    const options = [
+                        {formResponse: {bassAccepted: 'No'}, outcome: {}},
+                        {
+                            formResponse: {bassAccepted: 'Yes'},
+                            outcome: {}
+                        },
+                        {
+                            formResponse: {bassAccepted: ''},
+                            outcome: {bassAccepted: 'Select an option'}
+                        }
+                    ];
+
+                    options.forEach(option => {
+                        it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+                            const {outcome, formResponse} = option;
+                            expect(service.validateForm(
+                                {formResponse, pageConfig, bespokeConditions: {postApproval: false}})).to.eql(outcome);
+                        });
+                    });
+                });
+
+                describe('bassOffer - pre approval', () => {
+                    const options = [
+                        {formResponse: {bassAccepted: 'No'}, outcome: {}},
+                        {
+                            formResponse: {
+                                bassAccepted: 'Yes'
+                            },
+                            outcome: {
+                                addressLine1: 'Enter a building or street',
+                                addressTown: 'Enter a town or city',
+                                bassArea: 'Enter the provided area',
+                                postCode: 'Enter a postcode in the right format',
+                                telephone: 'Enter a telephone number in the right format'
+                            }
+                        },
+                        {
+                            formResponse: {
+                                bassAccepted: 'Yes',
+                                addressLine1: 'Road',
+                                addressTown: 'Town',
+                                bassArea: 'Area',
+                                postCode: 'LE17 4XJ',
+                                telephone: '111'
+                            },
+                            outcome: {}
+                        },
+                        {
+                            formResponse: {
+                                bassAccepted: 'Yes',
+                                addressLine1: 'Road',
+                                addressTown: 'Town',
+                                bassArea: 'Area',
+                                postCode: 'a',
+                                telephone: '111'
+                            },
+                            outcome: {postCode: 'Enter a postcode in the right format'}
+                        }
+                    ];
+
+                    options.forEach(option => {
+                        it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                            const {outcome, formResponse} = option;
+                            expect(service.validateForm(
+                                {formResponse, pageConfig, bespokeConditions: {postApproval: true}})).to.eql(outcome);
+                        });
                     });
                 });
             });
         });
-    });
 
         describe('approval', () => {
             const {release} = require('../../server/routes/config/approval');
@@ -741,6 +777,49 @@ describe('validation', () => {
                 });
             });
 
+            context('bass referral needed', () => {
+
+                const validBassRequest = {bassRequested: 'No'};
+                const validBassLicence = {
+                    proposedAddress: {
+                        curfewAddress: {
+                            addresses: [validAddress]
+                        }
+                    },
+                    bassReferral: {
+                        bassRequest: validBassRequest
+                    }
+                };
+
+                const options = [
+                    {licence: validBassLicence, outcome: {}},
+                    {
+                        licence: {
+                            ...validBassLicence,
+                            bassReferral: {
+                                ...validBassLicence.bassReferral,
+                                bassRequest: {bassRequested: 'Yes'}
+                            }
+                        },
+                        outcome: {
+                            bassReferral: {
+                                bassRequest: {
+                                    proposedCounty: 'Enter a county',
+                                    proposedTown: 'Enter a town'
+                                }
+                            }
+                        }
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
+                        const {outcome, licence} = option;
+                        expect(service.validateFormGroup({licence, stage, decisions: {bassReferralNeeded: true}})).to.eql(outcome);
+                    });
+                });
+            });
+
         });
 
         describe('processing_ro', () => {
@@ -834,6 +913,101 @@ describe('validation', () => {
                         const {addressRejectedOutcome, licence} = option;
                         expect(service.validateFormGroup(
                             {licence, stage, decisions: {curfewAddressApproved: 'rejected'}})).to.eql(addressRejectedOutcome);
+                    });
+                });
+            });
+
+            context('bass requested', () => {
+                const validBassRequest = {bassRequested: 'No'};
+                const validBassAreaCheck = {bassAreaSuitable: 'Yes'};
+                const validBassOffer = {bassAccepted: 'No'};
+                const validBassLicence = {
+                    ...validLicence,
+                    bassReferral: {
+                        bassRequest: validBassRequest,
+                        bassAreaCheck: validBassAreaCheck,
+                        bassOffer: validBassOffer
+                    }
+                };
+
+                const options = [
+                    {licence: validBassLicence, outcome: {}},
+                    {licence: {...validBassLicence, bassReferral: {}},
+                        outcome: {
+                            bassAreaCheck: {
+                                bassReferral: 'Enter the bass area check details'
+                            },
+                            bassReferral: {
+                                bassOffer: 'Enter the bass offer details',
+                                bassRequest: 'Enter the bass referral details'
+                            }
+                        }
+                    },
+                    {licence: {...validBassLicence, proposedAddress: {}}, outcome: {}}
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
+                        const {outcome, licence} = option;
+                        expect(service.validateFormGroup({
+                            licence,
+                            stage,
+                            decisions: {bassReferralNeeded: true}
+                        })).to.eql(outcome);
+                    });
+                });
+            });
+
+            context('bass area not suitable', () => {
+                const validBassRequest = {bassRequested: 'No'};
+                const validBassAreaCheck = {bassAreaSuitable: 'Yes'};
+                const validBassOffer = {bassAccepted: 'No'};
+                const validBassLicence = {
+                    curfew: {curfewHours: validCurfewHours},
+                    bassReferral: {
+                        bassRequest: validBassRequest,
+                        bassAreaCheck: validBassAreaCheck,
+                        bassOffer: validBassOffer
+                    }
+                };
+
+                const options = [
+                    {licence: validBassLicence, bassOutcome: {}},
+                    {
+                        licence: {
+                            ...validBassLicence,
+                            bassReferral: {
+                                ...validBassLicence.bassReferral,
+                                bassRequest: {bassRequested: 'Yes'}
+                            }
+                        },
+                        bassOutcome: {
+                            bassReferral: {
+                                bassRequest: {
+                                    proposedCounty: 'Enter a county',
+                                    proposedTown: 'Enter a town'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        licence: {},
+                        bassOutcome: {
+                            bassOffer: {
+                                bassReferral: 'Enter the bass offer details'
+                            },
+                            bassReferral: {
+                                bassAreaCheck: 'Enter the bass area check details',
+                                bassRequest: 'Enter the bass referral details'
+                            }
+                        }
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.bassOutcome)} for ${JSON.stringify(option.licence)}`, () => {
+                        const {bassOutcome, licence} = option;
+                        expect(service.validateFormGroup({licence, stage, decisions: {bassAreaNotSuitable: true}})).to.eql(bassOutcome);
                     });
                 });
             });

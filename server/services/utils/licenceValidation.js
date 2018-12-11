@@ -5,13 +5,12 @@ const {
     isEmpty,
     merge,
     flatten,
-    mergeWithRight,
-    removePath
+    mergeWithRight
 } = require('../../utils/functionalHelpers');
 
 const getValidationMessage = require('../config/validationMessages');
 const validator = require('../config/validationRules');
-const {sectionContaining, formsInSection, reviewForms, bassReviewForms} = require('../config/formsAndSections');
+const {sectionContaining, formsInSection, reviewForms} = require('../config/formsAndSections');
 
 function getLicenceErrors({licence, forms = reviewForms}) {
 
@@ -28,63 +27,6 @@ function getConditionsErrors(licence) {
     return getLicenceErrors({licence, forms: formsInSection['licenceConditions']});
 }
 
-function getValidationErrorsForReview({licenceStatus, licence}) {
-    const {stage, decisions, tasks} = licenceStatus;
-    const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED';
-    const newBassAreaAddedForReview = stage !== 'PROCESSING_RO' && tasks.bassAreaCheck === 'UNSTARTED';
-
-    if (decisions && decisions.bassReferralNeeded) {
-        if (stage === 'ELIGIBILITY' || newBassAreaAddedForReview) {
-            return getLicenceErrors({licence, forms: [...formsInSection['eligibility'], 'bassRequest']});
-        }
-    }
-
-    if (stage === 'ELIGIBILITY' || newAddressAddedForReview) {
-        return getEligibilityErrors({licence});
-    }
-
-    if (stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
-        return getLicenceErrors({licence, forms: formsInSection['proposedAddress']});
-    }
-
-    if (stage === 'PROCESSING_RO' && decisions.bassAreaNotSuitable) {
-        return getLicenceErrors({licence, forms: formsInSection['bassReferral']});
-    }
-
-    if (decisions.bassReferralNeeded) {
-        return getLicenceErrors({licence, forms: bassReviewForms});
-    }
-
-    return getLicenceErrors({licence, forms: reviewForms});
-}
-
-
-function getEligibilityErrors({licence}) {
-    const errorObject = getLicenceErrors({
-        licence, forms: [
-            ...formsInSection['eligibility'],
-            ...formsInSection['proposedAddress']
-        ]
-    });
-
-    const unwantedAddressFields = ['consent', 'electricity', 'homeVisitConducted', 'deemedSafe', 'unsafeReason'];
-
-    if (typeof getIn(errorObject, ['proposedAddress', 'curfewAddress']) === 'string') {
-        return errorObject;
-    }
-
-    return unwantedAddressFields.reduce(removeFromAddressReducer, errorObject);
-}
-
-function removeFromAddressReducer(errorObject, addressKey) {
-    const newObject = removePath(['proposedAddress', 'curfewAddress', addressKey], errorObject);
-
-    if (isEmpty(getIn(newObject, ['proposedAddress', 'curfewAddress']))) {
-        return removePath(['proposedAddress'], newObject);
-    }
-
-    return newObject;
-}
 
 function validate(licence) {
     return form => {
@@ -207,6 +149,5 @@ function removeErrorsIfAllMatch(pathsToTest) {
 
 module.exports = {
     getLicenceErrors,
-    getConditionsErrors,
-    getValidationErrorsForReview
+    getConditionsErrors
 };
