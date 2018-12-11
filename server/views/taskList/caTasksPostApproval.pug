@@ -2,8 +2,9 @@ extends taskListTemplate
 
 block tasks
 
-    - var curfewAddressReady = licenceStatus.decisions.curfewAddressApproved !== 'withdrawn'
+    - var curfewAddressReady = ['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved)
     - var bassReady = licenceStatus.decisions.bassReferralNeeded && !licenceStatus.decisions.bassWithdrawn
+    - var bassExcluded = ['Unavailable', 'Unsuitable'].includes(licenceStatus.decisions.bassAccepted)
 
     if (curfewAddressReady || bassReady)
         div.taskListItem.borderBottomLight
@@ -16,7 +17,7 @@ block tasks
             else
                 include tasks/curfewAddressTask
 
-        if (curfewAddressReady || bassReady)
+        if (curfewAddressReady || bassReady && !bassExcluded)
             div.taskListItem.borderBottomLight
                 include tasks/riskManagementTask
 
