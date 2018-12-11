@@ -3,15 +3,55 @@ const {taskStates} = require('../../server/models/taskStates');
 
 describe('getLicenceStatus', () => {
 
-    it('should show licence stage', () => {
-        const licence = {
-            stage: 'ELIGIBILITY',
-            licence: 'anything'
-        };
+    context('overall status', () => {
 
-        const status = getLicenceStatus(licence);
+        const examples = [
+            {
+                licence: {
+                    stage: 'ELIGIBILITY',
+                    licence: 'anything'
+                },
+                postApproval: false
+            },
+            {
+                licence: {
+                    stage: 'APPROVAL',
+                    licence: 'anything'
+                },
+                postApproval: false
+            },
+            {
+                licence: {
+                    stage: 'DECIDED',
+                    licence: 'anything'
+                },
+                postApproval: true
+            },
+            {
+                licence: {
+                    stage: 'MODIFIED',
+                    licence: 'anything'
+                },
+                postApproval: true
+            },
+            {
+                licence: {
+                    stage: 'MODIFIED_APPROVAL',
+                    licence: 'anything'
+                },
+                postApproval: true
+            }
+        ];
 
-        expect(status.stage).to.eql('ELIGIBILITY');
+        examples.forEach(example => {
+            it('should show licence stage', () => {
+                expect(getLicenceStatus(example.licence).stage).to.eql(example.licence.stage);
+            });
+
+            it('should show post approval', () => {
+                expect(getLicenceStatus(example.licence).postApproval).to.eql(example.postApproval);
+            });
+        });
     });
 
     context('decisions', () => {
@@ -241,6 +281,7 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.bassRequest).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.bassOffer).to.eql(taskStates.UNSTARTED);
+            expect(status.tasks.bassAddress).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewHours).to.eql(taskStates.UNSTARTED);
@@ -271,6 +312,7 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.bassRequest).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.bassOffer).to.eql(taskStates.UNSTARTED);
+            expect(status.tasks.bassAddress).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
             expect(status.tasks.curfewHours).to.eql(taskStates.UNSTARTED);
@@ -311,7 +353,8 @@ describe('getLicenceStatus', () => {
                             bassAreaSuitable: 'Yes'
                         },
                         bassOffer: {
-                            bassAccepted: 'Yes'
+                            bassAccepted: 'Yes',
+                            addressLine1: '1'
                         }
                     },
                     licenceConditions: {
@@ -338,7 +381,7 @@ describe('getLicenceStatus', () => {
             const status = getLicenceStatus(licence);
 
             expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED);
-            expect(status.tasks.bassOffer).to.eql(taskStates.STARTED);
+            expect(status.tasks.bassAddress).to.eql(taskStates.STARTED);
             expect(status.tasks.curfewAddressReview).to.eql(taskStates.STARTED);
             expect(status.tasks.licenceConditions).to.eql(taskStates.STARTED);
             expect(status.tasks.riskManagement).to.eql(taskStates.STARTED);
@@ -396,7 +439,11 @@ describe('getLicenceStatus', () => {
                             bassAreaSuitable: 'Yes'
                         },
                         bassOffer: {
-                            bassAccepted: 'No'
+                            bassAccepted: 'Yes',
+                            addressLine1: '1',
+                            addressTown: '1',
+                            postCode: '1',
+                            telephone: '1'
                         }
                     },
                     curfew: {
@@ -454,6 +501,7 @@ describe('getLicenceStatus', () => {
             expect(status.tasks.bassRequest).to.eql(taskStates.DONE);
             expect(status.tasks.bassAreaCheck).to.eql(taskStates.DONE);
             expect(status.tasks.bassOffer).to.eql(taskStates.DONE);
+            expect(status.tasks.bassAddress).to.eql(taskStates.DONE);
             expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
             expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE);
             expect(status.tasks.curfewHours).to.eql(taskStates.DONE);

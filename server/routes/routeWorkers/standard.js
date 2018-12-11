@@ -32,6 +32,7 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
         const targetSection = saveSection[0] || sectionName;
         const targetForm = saveSection[1] || formName;
 
+        const postApproval = res.locals.licence ? ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(res.locals.licence.stage) : false;
         const validationErrors = updatedLicence => {
             const form = updatedLicence[sectionName][formName];
             // address is in array
@@ -40,7 +41,7 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
                 formResponse: formToValidate,
                 pageConfig: formConfig[formName],
                 formType: formName,
-                bespokeConditions: {confiscationOrder: res.locals.licenceStatus.decisions.confiscationOrder}
+                bespokeConditions: {postApproval, confiscationOrder: res.locals.licenceStatus.decisions.confiscationOrder}
             });
         };
 
