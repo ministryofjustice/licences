@@ -565,7 +565,7 @@ describe('validation', () => {
 
                 const pageConfig = bassOffer;
 
-                describe('bassOffer - post approval', () => {
+                describe('bassOffer - pre approval', () => {
 
                     const options = [
                         {formResponse: {bassAccepted: 'No'}, outcome: {}},
@@ -588,7 +588,7 @@ describe('validation', () => {
                     });
                 });
 
-                describe('bassOffer - pre approval', () => {
+                describe('bassOffer - post approval', () => {
                     const options = [
                         {formResponse: {bassAccepted: 'No'}, outcome: {}},
                         {
