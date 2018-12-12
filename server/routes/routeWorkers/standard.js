@@ -36,7 +36,7 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
         const validationErrors = updatedLicence => {
             const form = updatedLicence[sectionName][formName];
             // address is in array
-            const formToValidate = form.addresses ? lastItem(form.addresses) : form;
+            const formToValidate = form && form.addresses ? lastItem(form.addresses) : form;
             return licenceService.validateForm({
                 formResponse: formToValidate,
                 pageConfig: formConfig[formName],

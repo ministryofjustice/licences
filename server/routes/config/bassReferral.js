@@ -2,21 +2,26 @@ module.exports = {
     bassRequest: {
         licenceSection: 'bassRequest',
         pageDataMap: ['licence', 'bassReferral'],
+        validate: true,
         fields: [
             {bassRequested: {
                 responseType: 'requiredYesNo',
                 validationMessage: 'Select yes or no'
             }},
+            {specificArea: {
+                responseType: 'requiredYesNoIf_bassRequested_Yes',
+                validationMessage: 'Select yes or no'
+            }},
             {proposedTown: {
-                dependentOn: 'bassRequested',
+                dependentOn: 'specificArea',
                 predicate: 'Yes',
-                responseType: 'requiredStringIf_bassRequested_Yes',
+                responseType: 'requiredStringIf_specificArea_Yes',
                 validationMessage: 'Enter a town'
             }},
             {proposedCounty: {
-                dependentOn: 'bassRequested',
+                dependentOn: 'specificArea',
                 predicate: 'Yes',
-                responseType: 'requiredStringIf_bassRequested_Yes',
+                responseType: 'requiredStringIf_specificArea_Yes',
                 validationMessage: 'Enter a county'
             }}
         ],
@@ -64,6 +69,9 @@ module.exports = {
             {bassAreaReason: {
                 responseType: 'requiredStringIf_bassAreaSuitable_No',
                 validationMessage: 'Enter a reason'
+            }},
+            {bassAreaCheckSeen: {
+                responseType: 'optionalString'
             }}
         ],
         nextPath: {

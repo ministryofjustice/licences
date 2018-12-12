@@ -529,11 +529,11 @@ describe('validation', () => {
                 const pageConfig = bassRequest;
                 const options = [
                     {formResponse: {bassRequested: 'No'}, outcome: {}},
-                    {formResponse: {bassRequested: 'Yes'},
+                    {formResponse: {bassRequested: 'Yes', specificArea: 'Yes'},
                         outcome: {proposedCounty: 'Enter a county', proposedTown: 'Enter a town'}},
-                    {formResponse: {bassRequested: 'Yes', proposedCounty: 'county'},
+                    {formResponse: {bassRequested: 'Yes', specificArea: 'Yes', proposedCounty: 'county'},
                         outcome: {proposedTown: 'Enter a town'}},
-                    {formResponse: {bassRequested: 'Yes', proposedCounty: 'county', proposedTown: 'town'},
+                    {formResponse: {bassRequested: 'Yes', specificArea: 'Yes', proposedCounty: 'county', proposedTown: 'town'},
                         outcome: {}}
                 ];
 
@@ -779,7 +779,7 @@ describe('validation', () => {
 
             context('bass referral needed', () => {
 
-                const validBassRequest = {bassRequested: 'No'};
+                const validBassRequest = {bassRequested: 'No', specificArea: 'No'};
                 const validBassLicence = {
                     proposedAddress: {
                         curfewAddress: {
@@ -798,7 +798,7 @@ describe('validation', () => {
                             ...validBassLicence,
                             bassReferral: {
                                 ...validBassLicence.bassReferral,
-                                bassRequest: {bassRequested: 'Yes'}
+                                bassRequest: {bassRequested: 'Yes', specificArea: 'Yes'}
                             }
                         },
                         outcome: {
@@ -918,7 +918,7 @@ describe('validation', () => {
             });
 
             context('bass requested', () => {
-                const validBassRequest = {bassRequested: 'No'};
+                const validBassRequest = {bassRequested: 'Yes', specificArea: 'No'};
                 const validBassAreaCheck = {bassAreaSuitable: 'Yes'};
                 const validBassOffer = {bassAccepted: 'No'};
                 const validBassLicence = {
@@ -958,8 +958,8 @@ describe('validation', () => {
                 });
             });
 
-            context('bass area not suitable', () => {
-                const validBassRequest = {bassRequested: 'No'};
+            context('bass area suitable', () => {
+                const validBassRequest = {bassRequested: 'No', specificArea: 'No'};
                 const validBassAreaCheck = {bassAreaSuitable: 'Yes'};
                 const validBassOffer = {bassAccepted: 'No'};
                 const validBassLicence = {
@@ -978,7 +978,7 @@ describe('validation', () => {
                             ...validBassLicence,
                             bassReferral: {
                                 ...validBassLicence.bassReferral,
-                                bassRequest: {bassRequested: 'Yes'}
+                                bassRequest: {bassRequested: 'Yes', specificArea: 'Yes'}
                             }
                         },
                         bassOutcome: {

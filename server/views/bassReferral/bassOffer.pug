@@ -25,16 +25,19 @@ block content
         h2.heading-large BASS address
 
         div.pure-u-1-2
-            if bassAreaCheck.bassAreaSuitable === 'Yes'
-                | The responsible officer has approved the following BASS area:
+            if bassRequest.specificArea === 'No'
+                | Offender does not have a preferred BASS area
+            else
+                if bassAreaCheck.bassAreaSuitable === 'Yes'
+                    | The responsible officer has approved the following BASS area:
 
-            div.paddingTop.paddingBottom
-                div.pure-u-1-2
-                    div Town
-                    div.bold#proposedTown #{bassRequest.proposedTown}
-                div.pure-u-1-2
-                    div County
-                    div.bold#proposedCounty #{bassRequest.proposedCounty}
+                div.paddingTop.paddingBottom
+                    div.pure-u-1-2
+                        div Town
+                        div.bold#proposedTown #{bassRequest.proposedTown}
+                    div.pure-u-1-2
+                        div County
+                        div.bold#proposedCounty #{bassRequest.proposedCounty}
         div.pure-u-1-2
 
         if !licenceStatus.postApproval

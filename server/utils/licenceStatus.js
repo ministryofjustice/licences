@@ -168,7 +168,7 @@ function getEligibilityStageState(licence) {
 
     const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
-    const {bassReferralNeeded, bassRequest} = getBassRequestState(licence);
+    const {bassReferralNeeded, bassAreaSpecified, bassRequest} = getBassRequestState(licence);
     const {bassAreaSuitable, bassAreaNotSuitable} = getBassAreaState(licence);
     const {curfewAddress, offenderIsMainOccupier} = getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved);
 
@@ -184,6 +184,7 @@ function getEligibilityStageState(licence) {
             eligible,
             optedOut,
             bassReferralNeeded,
+            bassAreaSpecified,
             bassAreaSuitable,
             bassAreaNotSuitable,
             curfewAddressApproved,
@@ -571,16 +572,18 @@ function getBassRequestState(licence) {
     const addressProposedAnswer = getIn(licence, ['proposedAddress', 'addressProposed', 'decision']);
 
     const bassReferralNeeded = bassRequestAnswer === 'Yes' && addressProposedAnswer === 'No';
-    const bassRequest = getState(bassReferralNeeded, bassRequestAnswer, licence);
+    const bassAreaSpecified = getIn(licence, ['bassReferral', 'bassRequest', 'specificArea']) === 'Yes';
+    const bassRequest = getState(bassReferralNeeded, bassAreaSpecified, bassRequestAnswer, licence);
 
     return {
         bassReferralNeeded,
+        bassAreaSpecified,
         bassRequest
     };
 
-    function getState(bassReferralNeeded, bassRequestAnswer, licence) {
+    function getState(bassReferralNeeded, bassAreaRequested, bassRequestAnswer, licence) {
 
-        if (bassReferralNeeded) {
+        if (bassReferralNeeded && bassAreaRequested) {
             const bassRequestTown = getIn(licence, ['bassReferral', 'bassRequest', 'proposedTown']);
             const bassRequestCounty = getIn(licence, ['bassReferral', 'bassRequest', 'proposedCounty']);
 
@@ -618,6 +621,15 @@ function getBassWithdrawalState(licence) {
 }
 
 function getBassAreaState(licence) {
+
+    const specificArea = getIn(licence, ['bassReferral', 'bassRequest', 'specificArea']);
+
+    if (specificArea === 'No') {
+        const seen = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaCheckSeen']);
+        return {
+            bassAreaCheck: seen ? taskStates.DONE : taskStates.UNSTARTED
+        };
+    }
 
     const bassAreaSuitableAnswer = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaSuitable']);
     const bassAreaReason = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaReason']);
