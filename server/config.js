@@ -64,6 +64,5 @@ module.exports = {
     domain: get('DOMAIN', 'http://localhost:3000'),
 
     notifyKey: get('NOTIFY_API_KEY', 'default_key'),
-    tagManagerKey: get('TAG_MANAGER_KEY', null),
-    appInsightsKey: get('APPINSIGHTS_INSTRUMENTATIONKEY', null)
+    tagManagerKey: get('TAG_MANAGER_KEY', null)
 };
