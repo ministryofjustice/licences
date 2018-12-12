@@ -264,6 +264,10 @@ function validateGroup({licence, group}) {
         ]
     };
 
+    if (!groups[group]) {
+        return {};
+    }
+
     return groups[group].reduce((errorObject, formInfo) => {
         const {section, formType, formResponse, missingMessage} = formInfo;
 
