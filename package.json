@@ -38,6 +38,7 @@
   },
   "homepage": "https://github.com/noms-digital-studio/licences#readme",
   "dependencies": {
+    "applicationinsights": "^1.0.6",
     "body-parser": "^1.18.3",
     "case": "^1.5.5",
     "compression": "^1.7.2",
@@ -81,7 +82,8 @@
     "swagger-ui-express": "^4.0.1",
     "util": "^0.11.0",
     "uuid": "^3.3.2",
-    "winston": "^2.3.1"
+    "winston": "^2.3.1",
+    "winston-azure-application-insights": "^2.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
