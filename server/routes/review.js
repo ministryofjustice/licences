@@ -34,11 +34,7 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
     }));
 
     function getErrors(licenceStatus, licenceWithAddress, licence, stage, {decisions}) {
-        if (stage === 'ELIGIBILITY' || stage === 'PROCESSING_RO' ) {
-            return licenceService.validateFormGroup({licence, stage, decisions});
-        }
-
-        return licenceService.getValidationErrorsForReview({licenceStatus, licence: licenceWithAddress});
+        return licenceService.validateFormGroup({licence, stage, decisions});
     }
 
     return router;
