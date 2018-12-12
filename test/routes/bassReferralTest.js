@@ -31,6 +31,7 @@ describe('/hdc/bassReferral', () => {
                 {url: '/hdc/bassReferral/bassRequest/1', content: 'Requested BASS area'},
                 {url: '/hdc/bassReferral/bassOffer/1', content: 'BASS address'},
                 {url: '/hdc/bassReferral/rejected/1', content: 'BASS area rejected'},
+                {url: '/hdc/bassReferral/unsuitable/1', content: 'Unsuitable for BASS'},
                 {url: '/hdc/bassReferral/bassWithdrawn/1', content: 'BASS withdrawn'}
             ];
 
@@ -117,10 +118,30 @@ describe('/hdc/bassReferral', () => {
                     .expect(302)
                     .expect(res => {
                         expect(licenceService.rejectBass).to.be.calledOnce();
-                        expect(licenceService.rejectBass).to.be.calledWith({key: 'value'}, '1', 'Yes'
-                        );
+                        expect(licenceService.rejectBass).to.be.calledWith({key: 'value'}, '1', 'Yes', 'area');
 
                         expect(res.header.location).to.equal('/hdc/bassReferral/bassRequest/rejected/1');
+                    });
+            });
+        });
+
+        describe('POST /hdc/bassReferral/unsuitable/:bookingId', () => {
+
+            it('rejects the bass request', () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
+                licenceService.rejectBass = sinon.stub().resolves({
+                    bassReferral: {bassOffer: {}}
+                });
+                return request(app)
+                    .post('/hdc/bassReferral/unsuitable/1')
+                    .send({enterAlternative: 'Yes'})
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceService.rejectBass).to.be.calledOnce();
+                        expect(licenceService.rejectBass).to.be.calledWith({key: 'value'}, '1', 'Yes', 'offender');
+
+                        expect(res.header.location).to.equal('/hdc/bassReferral/bassRequest/unsuitable/1');
                     });
             });
         });

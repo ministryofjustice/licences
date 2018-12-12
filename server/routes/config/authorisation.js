@@ -25,6 +25,9 @@ module.exports = {
     'hdc/bassReferral/rejected': {
         authorised: [{role: 'CA'}]
     },
+    'hdc/bassReferral/unsuitable': {
+        authorised: [{role: 'CA'}]
+    },
     'hdc/proposedAddress/curfewAddress': {
         authorised: [{role: 'CA'}, {role: 'RO'}]
     },

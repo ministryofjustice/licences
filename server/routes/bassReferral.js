@@ -8,17 +8,21 @@ module.exports = ({licenceService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'bassReferral'});
 
-    router.post('/bassReferral/rejected/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/bassReferral/rejected/:bookingId', audited, asyncMiddleware(reject('area', 'rejected')));
+    router.post('/bassReferral/unsuitable/:bookingId', audited, asyncMiddleware(reject('offender', 'unsuitable')));
 
-        const {bookingId} = req.params;
-        const {enterAlternative} = req.body;
-        const {licence} = res.locals.licence;
+    function reject(reason, type) {
+        return async (req, res) => {
+            const {bookingId} = req.params;
+            const {enterAlternative} = req.body;
+            const {licence} = res.locals.licence;
 
-        await licenceService.rejectBass(licence, bookingId, enterAlternative);
+            await licenceService.rejectBass(licence, bookingId, enterAlternative, reason);
 
-        const nextPath = formConfig['rejected'].nextPath.decisions[enterAlternative];
-        res.redirect(`${nextPath}${bookingId}`);
-    }));
+            const nextPath = formConfig[type].nextPath.decisions[enterAlternative];
+            return res.redirect(`${nextPath}${bookingId}`);
+        };
+    }
 
     router.get('/bassReferral/bassOffer/:bookingId', asyncMiddleware(async (req, res) => {
 
