@@ -3,9 +3,22 @@ module.exports = {
         licenceSection: 'bassRequest',
         pageDataMap: ['licence', 'bassReferral'],
         fields: [
-            {bassRequested: {}},
-            {proposedTown: {dependentOn: 'bassRequested', predicate: 'Yes'}},
-            {proposedCounty: {dependentOn: 'bassRequested', predicate: 'Yes'}}
+            {bassRequested: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }},
+            {proposedTown: {
+                dependentOn: 'bassRequested',
+                predicate: 'Yes',
+                responseType: 'requiredStringIf_bassRequested_Yes',
+                validationMessage: 'Enter a town'
+            }},
+            {proposedCounty: {
+                dependentOn: 'bassRequested',
+                predicate: 'Yes',
+                responseType: 'requiredStringIf_bassRequested_Yes',
+                validationMessage: 'Enter a county'
+            }}
         ],
         nextPath: {
             path: '/hdc/taskList/',
@@ -44,8 +57,14 @@ module.exports = {
         licenceSection: 'bassAreaCheck',
         pageDataMap: ['licence', 'bassReferral'],
         fields: [
-            {bassAreaSuitable: {}},
-            {bassAreaReason: {}}
+            {bassAreaSuitable: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }},
+            {bassAreaReason: {
+                responseType: 'requiredStringIf_bassAreaSuitable_No',
+                validationMessage: 'Enter a reason'
+            }}
         ],
         nextPath: {
             path: '/hdc/taskList/',

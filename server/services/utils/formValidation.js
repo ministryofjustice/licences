@@ -16,6 +16,7 @@ const proposedAddressConfig = require('../../routes/config/proposedAddress');
 const riskConfig = require('../../routes/config/risk');
 const curfewConfig = require('../../routes/config/curfew');
 const reportingConfig = require('../../routes/config/reporting');
+const bassConfig = require('../../routes/config/bassReferral');
 
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 
@@ -121,7 +122,7 @@ function validate({formResponse, pageConfig, formType = 'standard', bespokeCondi
     }, {});
 }
 
-function validateGroup({licence, stage}) {
+function validateGroup({licence, group}) {
     const groups = {
         ELIGIBILITY: [
             {
@@ -184,10 +185,86 @@ function validateGroup({licence, stage}) {
                 section: 'curfewAddress',
                 missingMessage: 'Enter the curfew address review details'
             }
+        ],
+        BASS_REFERRAL: [
+            {
+                formResponse: getIn(licence, ['bassReferral', 'bassRequest']),
+                formType: 'bassRequest',
+                pageConfig: bassConfig.bassRequest,
+                section: 'bassReferral',
+                missingMessage: 'Enter the bass referral details'
+            },
+            {
+                formResponse: getIn(licence, ['bassReferral', 'bassAreaCheck']),
+                formType: 'bassAreaCheck',
+                pageConfig: bassConfig.bassAreaCheck,
+                section: 'bassReferral',
+                missingMessage: 'Enter the bass area check details'
+            },
+            {
+                formResponse: getIn(licence, ['bassReferral', 'bassOffer']),
+                formType: 'bassReferral',
+                pageConfig: bassConfig.bassOffer,
+                section: 'bassOffer',
+                missingMessage: 'Enter the bass offer details'
+            }
+        ],
+        BASS_REQUEST: [
+            {
+                formResponse: getIn(licence, ['bassReferral', 'bassRequest']),
+                formType: 'bassRequest',
+                pageConfig: bassConfig.bassRequest,
+                section: 'bassReferral',
+                missingMessage: 'Enter the bass referral details'
+            }
+        ],
+        PROCESSING_RO_BASS_REQUESTED: [
+            {
+                formResponse: getIn(licence, ['bassReferral', 'bassRequest']),
+                formType: 'bassRequest',
+                pageConfig: bassConfig.bassRequest,
+                section: 'bassReferral',
+                missingMessage: 'Enter the bass referral details'
+            },
+            {
+                formResponse: getIn(licence, ['bassReferral', 'bassAreaCheck']),
+                formType: 'bassReferral',
+                pageConfig: bassConfig.bassAreaCheck,
+                section: 'bassAreaCheck',
+                missingMessage: 'Enter the bass area check details'
+            },
+            {
+                formResponse: getIn(licence, ['bassReferral', 'bassOffer']),
+                formType: 'bassOffer',
+                pageConfig: bassConfig.bassOffer,
+                section: 'bassReferral',
+                missingMessage: 'Enter the bass offer details'
+            },
+            {
+                formResponse: getIn(licence, ['risk', 'riskManagement']),
+                formType: 'riskManagement',
+                pageConfig: riskConfig.riskManagement,
+                section: 'risk',
+                missingMessage: 'Enter the risk management and victim liaison details'
+            },
+            {
+                formResponse: getIn(licence, ['curfew', 'curfewHours']),
+                formType: 'curfewHours',
+                pageConfig: curfewConfig.curfewHours,
+                section: 'curfew',
+                missingMessage: 'Enter the proposed curfew hours'
+            },
+            {
+                formResponse: getIn(licence, ['reporting', 'reportingInstructions']),
+                formType: 'reportingInstructions',
+                pageConfig: reportingConfig.reportingInstructions,
+                section: 'reporting',
+                missingMessage: 'Enter the reporting instructions'
+            }
         ]
     };
 
-    return groups[stage].reduce((errorObject, formInfo) => {
+    return groups[group].reduce((errorObject, formInfo) => {
         const {section, formType, formResponse, missingMessage} = formInfo;
 
         const formErrors = formResponse ? validate(formInfo) : missingMessage;

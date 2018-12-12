@@ -401,13 +401,37 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.updateLicence(bookingId, updatedLicence);
     }
 
-    function validateFormGroup({licence, stage, decisions = {}} = {}) {
-        if (stage === 'PROCESSING_RO' && decisions.curfewAddressApproved === 'rejected') {
-           return formValidation.validateGroup({licence, stage: 'PROCESSING_RO_ADDRESS_REJECTED'});
-        }
-        return formValidation.validateGroup({licence, stage});
-    }
+    function validateFormGroup({licence, stage, decisions = {}, tasks = {}} = {}) {
+        const {curfewAddressApproved, bassAreaNotSuitable, bassReferralNeeded} = decisions;
+        const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED';
+        const newBassAreaAddedForReview = stage !== 'PROCESSING_RO' && tasks.bassAreaCheck === 'UNSTARTED';
 
+        const groupName = () => {
+            if (stage === 'PROCESSING_RO') {
+                if (curfewAddressApproved === 'rejected') {
+                    return 'PROCESSING_RO_ADDRESS_REJECTED';
+                }
+                if (bassAreaNotSuitable) {
+                    return 'BASS_REFERRAL';
+                }
+                if (bassReferralNeeded) {
+                    return 'PROCESSING_RO_BASS_REQUESTED';
+                }
+            }
+
+            if ((stage === 'ELIGIBILITY' && bassReferralNeeded) || newBassAreaAddedForReview) {
+                return 'BASS_REQUEST';
+            }
+
+            if (newAddressAddedForReview) {
+                return 'ELIGIBILITY';
+            }
+
+            return stage;
+        };
+
+        return formValidation.validateGroup({licence, group: groupName()});
+    }
 
     return {
         reset,
@@ -422,7 +446,6 @@ module.exports = function createLicenceService(licenceClient) {
         addAddress,
         getLicenceErrors: licenceValidator.getLicenceErrors,
         getConditionsErrors: licenceValidator.getConditionsErrors,
-        getValidationErrorsForReview: licenceValidator.getValidationErrorsForReview,
         validateForm: formValidation.validate,
         validateFormGroup,
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
