@@ -2,6 +2,7 @@ const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
 const {curfewAddressSchema, addressReviewSchema, addressSafetySchema} = require('./bespokeAddressSchema');
+const additionalConditionsSchema = require('./bespokeConditionsSchema');
 
 const {
     getFieldName,
@@ -17,6 +18,7 @@ const riskConfig = require('../../routes/config/risk');
 const curfewConfig = require('../../routes/config/curfew');
 const reportingConfig = require('../../routes/config/reporting');
 const bassConfig = require('../../routes/config/bassReferral');
+const conditionsConfig = require('../../routes/config/licenceConditions');
 
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
 
@@ -94,6 +96,16 @@ const validationProcedures = {
         getSchema: () => curfewAddressSchema.concat(addressReviewSchema).concat(addressSafetySchema),
         fieldConfigPath: ['fields'],
         getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
+    },
+    additional: {
+        getSchema: () => additionalConditionsSchema,
+        fieldConfigPath: ['fields'],
+        getErrorMessage: (fieldConfig, errorPath) => {
+            const fieldName = getFieldName(fieldConfig);
+            const innerFieldName = lastItem(errorPath);
+            const innerFieldConfig = fieldConfig[fieldName].contains.find(item => getFieldName(item) === innerFieldName);
+            return innerFieldConfig[innerFieldName].validationMessage;
+        }
     }
 };
 
@@ -147,6 +159,21 @@ function validateGroup({licence, group}) {
                 pageConfig: curfewConfig.addressSafety,
                 section: 'curfewAddress',
                 missingMessage: 'Enter the curfew address review details'
+            },
+            {
+                formResponse: getIn(licence, ['licenceConditions', 'standard']),
+                formType: 'standard',
+                pageConfig: conditionsConfig.standard,
+                section: 'licenceConditions',
+                missingMessage: 'standard conditions error message'
+            },
+            {
+                formResponse: getIn(licence, ['licenceConditions', 'additional']),
+                conditionallyActive: getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'Yes',
+                formType: 'additional',
+                pageConfig: conditionsConfig.additional,
+                section: 'licenceConditions',
+                missingMessage: 'Enter one or more additional conditions'
             },
             {
                 formResponse: getIn(licence, ['risk', 'riskManagement']),
@@ -241,6 +268,21 @@ function validateGroup({licence, group}) {
                 missingMessage: 'Enter the bass offer details'
             },
             {
+                formResponse: getIn(licence, ['licenceConditions', 'standard']),
+                formType: 'standard',
+                pageConfig: conditionsConfig.standard,
+                section: 'licenceConditions',
+                missingMessage: 'standard conditions error message'
+            },
+            {
+                formResponse: getIn(licence, ['licenceConditions', 'additional']),
+                conditionallyActive: getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'Yes',
+                formType: 'additional',
+                pageConfig: conditionsConfig.additional,
+                section: 'licenceConditions',
+                missingMessage: 'Enter one or more additional conditions'
+            },
+            {
                 formResponse: getIn(licence, ['risk', 'riskManagement']),
                 formType: 'riskManagement',
                 pageConfig: riskConfig.riskManagement,
@@ -269,7 +311,10 @@ function validateGroup({licence, group}) {
     }
 
     return groups[group].reduce((errorObject, formInfo) => {
-        const {section, formType, formResponse, missingMessage} = formInfo;
+        const {section, formType, formResponse, missingMessage, conditionallyActive} = formInfo;
+        if (conditionallyActive !== undefined && !conditionallyActive) {
+            return errorObject;
+        }
 
         const formErrors = formResponse ? validate(formInfo) : missingMessage;
         if (isEmpty(formErrors)) {

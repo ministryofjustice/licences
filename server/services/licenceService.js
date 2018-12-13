@@ -3,7 +3,6 @@ const logger = require('../../log.js');
 const {createAdditionalConditionsObject} = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {licenceStages, transitions} = require('../models/licenceStages');
-const licenceValidator = require('./utils/licenceValidation');
 const recordList = require('./utils/recordList');
 const addressesPath = ['proposedAddress', 'curfewAddress', 'addresses'];
 const {replacePath, mergeWithRight} = require('../utils/functionalHelpers');
@@ -444,8 +443,6 @@ module.exports = function createLicenceService(licenceClient) {
         updateSection: licenceClient.updateSection,
         updateAddress,
         addAddress,
-        getLicenceErrors: licenceValidator.getLicenceErrors,
-        getConditionsErrors: licenceValidator.getConditionsErrors,
         validateForm: formValidation.validate,
         validateFormGroup,
         saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
