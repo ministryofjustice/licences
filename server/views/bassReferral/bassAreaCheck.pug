@@ -57,9 +57,9 @@ block content
                     else
                         label(for='bassAreaReason') Enter any information that may affect the choice of BASS accommodation (optional)
 
-                        textarea(name='bassAreaReason' id='bassAreaReason' class='form-control' rows='2' aria-label="Provide reasons why the BASS area is unsuitable")
-                            if bassAreaCheck.bassAreaReason
-                                | #{bassAreaCheck.bassAreaReason}
+                    textarea(name='bassAreaReason' id='bassAreaReason' class='form-control' rows='2' aria-label="Provide reasons why the BASS area is unsuitable")
+                        if bassAreaCheck.bassAreaReason
+                            | #{bassAreaCheck.bassAreaReason}
 
             if (action === 'change')
                 include ../includes/formSubmit
