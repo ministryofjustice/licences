@@ -429,6 +429,150 @@ describe('validation', () => {
                     });
                 });
             });
+
+            const {standard, additional} = require('../../server/routes/config/licenceConditions');
+            describe('standardConditions', () => {
+                const pageConfig = standard;
+                const options = [
+                    {
+                        formResponse: {additionalConditionsRequired: 'Yes'},
+                        outcome: {}
+                    },
+                    {
+                        formResponse: {},
+                        outcome: {additionalConditionsRequired: 'Select yes or no'}
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                        const {outcome, formResponse} = option;
+                        expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
+                    });
+                });
+            });
+
+            describe('additionalConditions', () => {
+                const pageConfig = additional;
+                const options = [
+                    {formResponse: {}, outcome: {}},
+                    {formResponse: {NOCONTACTASSOCIATE: {groupsOrOrganisation: 'ngr'}}, outcome: {}},
+                    {formResponse: {NOCONTACTASSOCIATE: {groupsOrOrganisation: ''}},
+                        outcome: {NOCONTACTASSOCIATE:
+                                {groupsOrOrganisation: 'Enter a name or describe specific groups or organisations'}}},
+                    {formResponse: {INTIMATERELATIONSHIP: {intimateGender: 'g'}}, outcome: {}},
+                    {formResponse: {INTIMATERELATIONSHIP: {}},
+                        outcome: {INTIMATERELATIONSHIP:
+                                {intimateGender: 'Select women / men / women or men'}}},
+                    {formResponse: {NOCONTACTNAMED: {noContactOffenders: 'g'}}, outcome: {}},
+                    {formResponse: {NOCONTACTNAMED: {}},
+                        outcome: {NOCONTACTNAMED:
+                                {noContactOffenders: 'Enter named offender(s) or individual(s)'}}},
+                    {formResponse: {NORESIDE: {notResideWithGender: 'g', notResideWithAge: 'a'}}, outcome: {}},
+                    {formResponse: {NORESIDE: {}},
+                        outcome: {NORESIDE:
+                                {notResideWithGender: 'Select any / any female / any male',
+                                notResideWithAge: 'Enter age'}}},
+                    {formResponse: {NOUNSUPERVISEDCONTACT: {
+                        unsupervisedContactGender: 'g', unsupervisedContactAge: 'a', unsupervisedContactSocial: 'b'}}, outcome: {}},
+                    {formResponse: {NOUNSUPERVISEDCONTACT: {}},
+                        outcome: {NOUNSUPERVISEDCONTACT:
+                                {unsupervisedContactGender: 'Select any / any female / any male',
+                                    unsupervisedContactAge: 'Enter age',
+                                    unsupervisedContactSocial: 'Enter name of appropriate social service department'}}},
+                    {formResponse: {NOCHILDRENSAREA: {notInSightOf: 'g'}}, outcome: {}},
+                    {formResponse: {NOCHILDRENSAREA: {}},
+                        outcome: {NOCHILDRENSAREA:
+                                {notInSightOf: 'Enter location, for example children\'s play area'}}},
+                    {formResponse: {NOWORKWITHAGE: {noWorkWithAge: 'g'}}, outcome: {}},
+                    {formResponse: {NOWORKWITHAGE: {}},
+                        outcome: {NOWORKWITHAGE: {noWorkWithAge: 'Enter age'}}},
+                    {formResponse: {NOCOMMUNICATEVICTIM: {victimFamilyMembers: 'g', socialServicesDept: 'a'}}, outcome: {}},
+                    {formResponse: {NOCOMMUNICATEVICTIM: {}},
+                        outcome: {NOCOMMUNICATEVICTIM:
+                                {victimFamilyMembers: 'Enter name of victim and /or family members',
+                                    socialServicesDept: 'Enter name of appropriate social service department'}}},
+                    {formResponse: {COMPLYREQUIREMENTS: {courseOrCentre: 'g'}}, outcome: {}},
+                    {formResponse: {COMPLYREQUIREMENTS: {}},
+                        outcome: {COMPLYREQUIREMENTS: {courseOrCentre: 'Enter name of course / centre'}}},
+                    {formResponse: {ATTENDALL: {appointmentName: 'g', appointmentProfession: 'a'}}, outcome: {}},
+                    {formResponse: {ATTENDALL: {}},
+                        outcome: {ATTENDALL: {appointmentName: 'Enter name',
+                                    appointmentProfession: 'Select psychiatrist / psychologist / medical practitioner'}}},
+                    {formResponse: {HOMEVISITS: {mentalHealthName: 'g'}}, outcome: {}},
+                    {formResponse: {HOMEVISITS: {}},
+                        outcome: {HOMEVISITS: {mentalHealthName: 'Enter name'}}},
+                    {formResponse: {REMAINADDRESS: {
+                                curfewAddress: 'g', curfewFrom: 'a', curfewTo: 'b'}}, outcome: {}},
+                    {formResponse: {REMAINADDRESS: {}},
+                        outcome: {REMAINADDRESS:
+                            {curfewAddress: 'Enter curfew address',
+                                curfewFrom: 'Enter start of curfew hours',
+                                curfewTo: 'Enter end of curfew hours'}}},
+                    {formResponse: {CONFINEADDRESS: {
+                                confinedTo: 'g', confinedFrom: 'a', confinedReviewFrequency: 'b'}}, outcome: {}},
+                    {formResponse: {CONFINEADDRESS: {}},
+                        outcome: {CONFINEADDRESS:
+                                {confinedTo: 'Enter time',
+                                    confinedFrom: 'Enter time',
+                                    confinedReviewFrequency: 'Enter frequency, for example weekly'}}},
+                    {formResponse: {REPORTTO: {
+                                reportingAddress: 'g', reportingTime: '12:00', reportingDaily: '', reportingFrequency: 'c'}}, outcome: {}},
+                    {formResponse: {REPORTTO: {
+                                reportingAddress: 'g', reportingTime: '', reportingDaily: 'd', reportingFrequency: 'c'}}, outcome: {}},
+                    {formResponse: {REPORTTO: {reportingAddress: '', reportingTime: '', reportingDaily: '', reportingFrequency: ''}},
+                        outcome: {REPORTTO:
+                                {reportingAddress: 'Enter name of approved premises / police station',
+                                    reportingDaily: 'Enter time / daily',
+                                    reportingFrequency: 'Enter frequency, for example weekly'}}},
+                    {formResponse: {VEHICLEDETAILS: {vehicleDetails: 'g'}}, outcome: {}},
+                    {formResponse: {VEHICLEDETAILS: {}},
+                        outcome: {VEHICLEDETAILS: {vehicleDetails: 'Enter details, for example make, model'}}},
+                    {formResponse: {EXCLUSIONADDRESS: {noEnterPlace: 'g'}}, outcome: {}},
+                    {formResponse: {EXCLUSIONADDRESS: {}},
+                        outcome: {EXCLUSIONADDRESS: {noEnterPlace: 'Enter name / type of premises / address / road'}}},
+                    {formResponse: {EXCLUSIONAREA: {exclusionArea: 'g'}}, outcome: {}},
+                    {formResponse: {EXCLUSIONAREA: {}},
+                        outcome: {EXCLUSIONAREA: {exclusionArea: 'Enter clearly specified area'}}},
+                    {formResponse: {ATTENDDEPENDENCY: {
+                                appointmentDate: '12/03/2020', appointmentTime: 'a', appointmentAddress: 'b'}}, outcome: {}},
+                    {formResponse: {ATTENDDEPENDENCY: {}},
+                        outcome: {ATTENDDEPENDENCY:
+                                {appointmentDate: 'Enter appointment date',
+                                    appointmentTime: 'Enter appointment time',
+                                    appointmentAddress: 'Enter appointment name and address'}}},
+                    {formResponse: {ATTENDSAMPLE: {
+                                attendSampleDetailsName: 'a', attendSampleDetailsAddress: 'a'}}, outcome: {}},
+                    {formResponse: {ATTENDSAMPLE: {}},
+                        outcome: {ATTENDSAMPLE:
+                                {attendSampleDetailsName: 'Enter appointment name',
+                                    attendSampleDetailsAddress: 'Enter appointment address'}}},
+                    {formResponse: {
+                            NOTIFYRELATIONSHIP: {},
+                            NOCONTACTPRISONER: {},
+                            NOCONTACTSEXOFFENDER: {},
+                            CAMERAAPPROVAL: {},
+                            NOCAMERA: {},
+                            NOCAMERAPHONE: {},
+                            USAGEHISTORY: {},
+                            NOINTERNET: {},
+                            ONEPHONE: {},
+                            RETURNTOUK: {},
+                            SURRENDERPASSPORT: {},
+                            NOTIFYPASSPORT: {}
+                        }, outcome: {}}
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                        const {outcome, formResponse} = option;
+                        expect(service.validateForm({
+                            formResponse,
+                            pageConfig,
+                            formType: 'additional'})).to.eql(outcome);
+                    });
+                });
+            });
         });
 
         describe('processing_ca', () => {
@@ -718,8 +862,6 @@ describe('validation', () => {
                 });
             });
         });
-
-
     });
 
     describe('validateFormGroup', () => {
@@ -859,18 +1001,29 @@ describe('validation', () => {
                 risk: {riskManagement: validRiskManagement},
                 curfew: {curfewHours: validCurfewHours},
                 reporting: {reportingInstructions: validReportingInstructions},
-                proposedAddress: {curfewAddress: {addresses: [validAddress]}}
+                proposedAddress: {curfewAddress: {addresses: [validAddress]}},
+                licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}, additional: {NOTIFYRELATIONSHIP: {}}}
+            };
+
+            const validLicenceNoConditions = {
+                risk: {riskManagement: validRiskManagement},
+                curfew: {curfewHours: validCurfewHours},
+                reporting: {reportingInstructions: validReportingInstructions},
+                proposedAddress: {curfewAddress: {addresses: [validAddress]}},
+                licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
             };
 
             const invalidLicence = {
                 risk: {riskManagement: {planningActions: '', awaitingInformation: 'No', victimLiaison: 'No'}},
                 curfew: {curfewHours: validCurfewHours},
                 reporting: {reportingInstructions: validReportingInstructions},
-                proposedAddress: {curfewAddress: {addresses: [validAddress]}}
+                proposedAddress: {curfewAddress: {addresses: [validAddress]}},
+                licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}, additional: {NOTIFYRELATIONSHIP: {}}}
             };
 
             const options = [
                 {licence: validLicence, standardOutcome: {}, addressRejectedOutcome: {}},
+                {licence: validLicenceNoConditions, standardOutcome: {}, addressRejectedOutcome: {}},
                 {
                     licence: invalidLicence,
                     standardOutcome: {
@@ -886,6 +1039,9 @@ describe('validation', () => {
                         curfewAddress: {
                             addressSafety: 'Enter the curfew address review details',
                             curfewAddressReview: 'Enter the curfew address review details'
+                        },
+                        licenceConditions: {
+                            standard: 'standard conditions error message'
                         },
                         reporting: {reportingInstructions: 'Enter the reporting instructions'}
                     },

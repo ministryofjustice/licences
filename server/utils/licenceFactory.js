@@ -48,7 +48,7 @@ function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputM
     return condition => {
         const selectedCondition = selectedConditions.find(selected => selected.id == condition);
         const userInput = getIn(rawLicence, ['licenceConditions', 'additional', condition]);
-        const userErrors = getIn(inputErrors, ['licenceConditions', 'additional', condition]);
+        const userErrors = getIn(inputErrors, [condition]);
         const content = getContentForCondition(selectedCondition, userInput, injectUserInputMethod, userErrors);
 
         return {

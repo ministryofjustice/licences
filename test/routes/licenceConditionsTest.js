@@ -180,16 +180,20 @@ describe('/hdc/licenceConditions', () => {
     describe('GET /additionalConditions/conditionsSummary/:bookingId', () => {
         it('should validate the conditions', () => {
             const licenceService = createLicenceServiceStub();
-            licenceService.getConditionsErrors = sinon.stub().returns({error: 'object'});
+            licenceService.getLicence.resolves({licence: {licenceConditions: {additional: {cond: 'that'}}}});
+            licenceService.validateForm = sinon.stub().returns({error: 'object'});
             const app = createApp({licenceService, conditionsService}, 'roUser');
 
             return request(app)
                 .get('/hdc/licenceConditions/conditionsSummary/1')
                 .expect(200)
                 .expect(res => {
-                    expect(licenceService.getConditionsErrors).to.be.calledWith({key: 'value'});
+                    expect(licenceService.validateForm).to.be.calledWith({
+                        formResponse: {cond: 'that'},
+                        pageConfig: formConfig.additional,
+                        formType: 'additional'}, );
                     expect(conditionsService.populateLicenceWithConditions).to.be.calledWith(
-                        {key: 'value'}, {error: 'object'});
+                        {licenceConditions: {additional: {cond: 'that'}}}, {error: 'object'});
                 });
 
         });

@@ -73,7 +73,11 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
 
         const nextPath = formConfig.conditionsSummary.nextPath[action] || formConfig.conditionsSummary.nextPath.path;
         const licence = getIn(res.locals.licence, ['licence']) || {};
-        const errorObject = licenceService.getConditionsErrors(licence);
+        const additionaConditions = getIn(licence, ['licenceConditions', 'additional']) || {};
+        const errorObject = licenceService.validateForm({
+            formResponse: additionaConditions,
+            pageConfig: formConfig.additional,
+            formType: 'additional'});
         const data = await conditionsService.populateLicenceWithConditions(licence, errorObject);
 
         res.render(`licenceConditions/conditionsSummary`, {bookingId, data, nextPath, action});

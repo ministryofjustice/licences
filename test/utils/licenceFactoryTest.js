@@ -488,7 +488,7 @@ describe('licenceFactory', () => {
         context('When there are errors in user input', () => {
             it('should return object for view containing input errors', () => {
                 const rawLicence = {licenceConditions: {additional: {1: {appointmentName: 'injected'}}, bespoke: []}};
-                const errorLicence = {licenceConditions: {additional: {1: {appointmentName: 'ERROR'}}, bespoke: []}};
+                const errorLicence = {1: {appointmentName: 'ERROR'}};
                 const selectedConditions = [
                     {
                         id: 1,
@@ -499,7 +499,6 @@ describe('licenceFactory', () => {
                         subgroup_name: 'sg'
                     }
                 ];
-
 
                 const output = populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errorLicence);
 
@@ -536,11 +535,7 @@ describe('licenceFactory', () => {
                     }
                 };
 
-                const errors = {
-                    licenceConditions: {
-                        additional: {1: {appointmentDate: 'Invalid date'}}
-                    }
-                };
+                const errors = {1: {appointmentDate: 'Invalid date'}};
                 const selectedConditions = [
                     {
                         id: 1,
@@ -584,11 +579,7 @@ describe('licenceFactory', () => {
                     }
                 };
 
-                const errors = {
-                    licenceConditions: {
-                        additional: {1: {attendSampleDetailsName: 'Missing'}}
-                    }
-                };
+                const errors = {1: {attendSampleDetailsName: 'Missing'}};
                 const selectedConditions = [
                     {
                         id: 1,
