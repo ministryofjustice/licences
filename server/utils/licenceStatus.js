@@ -581,9 +581,9 @@ function getBassRequestState(licence) {
         bassRequest
     };
 
-    function getState(bassReferralNeeded, bassAreaRequested, bassRequestAnswer, licence) {
+    function getState(bassReferralNeeded, bassAreaSpecified, bassRequestAnswer, licence) {
 
-        if (bassReferralNeeded && bassAreaRequested) {
+        if (bassReferralNeeded && bassAreaSpecified) {
             const bassRequestTown = getIn(licence, ['bassReferral', 'bassRequest', 'proposedTown']);
             const bassRequestCounty = getIn(licence, ['bassReferral', 'bassRequest', 'proposedCounty']);
 
