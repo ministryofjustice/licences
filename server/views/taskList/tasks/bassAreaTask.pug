@@ -5,12 +5,17 @@ div.paddingBottom
         div.pure-u-1.pure-u-md-3-4
 
             if licenceStatus.tasks.bassAreaCheck === 'DONE'
+
+                -var bassAreaSpecified = licenceStatus.decisions.bassAreaSpecified
                 -var approved = licenceStatus.decisions.bassAreaSuitable
 
-                if approved
-                    | BASS area suitable
+                if bassAreaSpecified
+                    if approved
+                        | BASS area suitable
+                    else
+                        | BASS area is not suitable
                 else
-                    | BASS area is not suitable
+                    | No specific BASS area requested
             else
                 | Not completed
 

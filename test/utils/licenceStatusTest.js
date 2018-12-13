@@ -113,6 +113,7 @@ describe('getLicenceStatus', () => {
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
+                            specificArea: 'Yes',
                             town: 'blah',
                             county: 'blah'
                         },
@@ -159,6 +160,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.unsuitableResult).to.eql(true);
             expect(status.decisions.optedOut).to.eql(true);
             expect(status.decisions.bassReferralNeeded).to.eql(true);
+            expect(status.decisions.bassAreaSpecified).to.eql(true);
             expect(status.decisions.bassAreaSuitable).to.eql(true);
             expect(status.decisions.bassAreaNotSuitable).to.eql(false);
             expect(status.decisions.bassAccepted).to.eql('Yes');
@@ -247,6 +249,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.unsuitableResult).to.eql(false);
             expect(status.decisions.optedOut).to.eql(false);
             expect(status.decisions.bassReferralNeeded).to.eql(false);
+            expect(status.decisions.bassAreaSpecified).to.eql(false);
             expect(status.decisions.bassAreaSuitable).to.eql(false);
             expect(status.decisions.bassAreaNotSuitable).to.eql(true);
             expect(status.decisions.bassAccepted).to.eql('No');
@@ -1131,7 +1134,8 @@ describe('getLicenceStatus', () => {
                     },
                     bassReferral: {
                         bassRequest: {
-                            bassRequested: 'Yes'
+                            bassRequested: 'Yes',
+                            specificArea: 'Yes'
                         }
                     },
                     bassRejections: [
@@ -1203,6 +1207,58 @@ describe('getLicenceStatus', () => {
             const status = getLicenceStatus(licence);
 
             expect(status.decisions.bassWithdrawn).to.eql(false);
+        });
+
+        it('should show bassAreaCheck done for no specific are only when seen by RO', () => {
+            const licence = {
+                stage: 'PROCESSING_RO',
+                licence: {
+                    proposedAddress: {
+                        addressProposed: {
+                            decision: 'No'
+                        }
+                    },
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes',
+                            specificArea: 'No'
+                        },
+                        bassAreaCheck: {
+                            bassAreaCheckSeen: 'true'
+                        }
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.bassAreaCheck).to.eql('DONE');
+        });
+
+        it('should show bassAreaCheck unstarted for no specific are only when not seen by RO', () => {
+            const licence = {
+                stage: 'PROCESSING_RO',
+                licence: {
+                    proposedAddress: {
+                        addressProposed: {
+                            decision: 'No'
+                        }
+                    },
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'Yes',
+                            specificArea: 'No'
+                        },
+                        bassAreaCheck: {
+                            bassAreaCheckSeen: ''
+                        }
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.tasks.bassAreaCheck).to.eql('UNSTARTED');
         });
     });
 });

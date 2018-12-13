@@ -5,24 +5,29 @@ include ./itemAndError
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
 
-    div.pure-u-1.pure-u-md-1-2
-        span Proposed county
-    div.pure-u-1.pure-u-md-1-2
-        +itemAndError(bassRequest.proposedCounty, errors.proposedCounty, "proposedCounty")
-
-    div.pure-u-1.pure-u-md-1-2
-        span Proposed town
-    div.pure-u-1.pure-u-md-1-2
-        +itemAndError(bassRequest.proposedTown, errors.proposedTown, "proposedTown")
-
-    div.pure-u-1.pure-u-md-1-2
-        span Is the BASS area suitable?
-    div.pure-u-1.pure-u-md-1-2
-        +itemAndError(bassAreaCheck.bassAreaSuitable, errors.bassAreaSuitable, "suitableArea")
-
-    if bassAreaCheck.bassAreaSuitable === 'No'
+    if bassRequest.specificArea === 'No'
         div.pure-u-1.pure-u-md-1-2
-            span Reasons
+            span Offender does not have a preferred BASS area
+
+    else
         div.pure-u-1.pure-u-md-1-2
-            +itemAndError(bassAreaCheck.bassAreaReason, errors.bassAreaReason, "areaReason")
+            span Proposed county
+        div.pure-u-1.pure-u-md-1-2
+            +itemAndError(bassRequest.proposedCounty, errors.proposedCounty, "proposedCounty")
+
+        div.pure-u-1.pure-u-md-1-2
+            span Proposed town
+        div.pure-u-1.pure-u-md-1-2
+            +itemAndError(bassRequest.proposedTown, errors.proposedTown, "proposedTown")
+
+        div.pure-u-1.pure-u-md-1-2
+            span Is the BASS area suitable?
+        div.pure-u-1.pure-u-md-1-2
+            +itemAndError(bassAreaCheck.bassAreaSuitable, errors.bassAreaSuitable, "suitableArea")
+
+        if bassAreaCheck.bassAreaSuitable === 'No'
+            div.pure-u-1.pure-u-md-1-2
+                span Reasons
+            div.pure-u-1.pure-u-md-1-2
+                +itemAndError(bassAreaCheck.bassAreaReason, errors.bassAreaReason, "areaReason")
 
