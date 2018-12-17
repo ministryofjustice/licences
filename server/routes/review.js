@@ -27,7 +27,8 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
             stage,
             licenceVersion,
             errorObject,
-            showErrors
+            showErrors,
+            postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
         });
     }));
 
