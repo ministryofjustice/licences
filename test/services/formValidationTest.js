@@ -743,8 +743,7 @@ describe('validation', () => {
                                 addressLine1: 'Enter a building or street',
                                 addressTown: 'Enter a town or city',
                                 bassArea: 'Enter the provided area',
-                                postCode: 'Enter a postcode in the right format',
-                                telephone: 'Enter a telephone number in the right format'
+                                postCode: 'Enter a postcode in the right format'
                             }
                         },
                         {
@@ -764,10 +763,32 @@ describe('validation', () => {
                                 addressLine1: 'Road',
                                 addressTown: 'Town',
                                 bassArea: 'Area',
+                                postCode: 'LE17 4XJ',
+                                telephone: ''
+                            },
+                            outcome: {}
+                        },
+                        {
+                            formResponse: {
+                                bassAccepted: 'Yes',
+                                addressLine1: 'Road',
+                                addressTown: 'Town',
+                                bassArea: 'Area',
                                 postCode: 'a',
                                 telephone: '111'
                             },
                             outcome: {postCode: 'Enter a postcode in the right format'}
+                        },
+                        {
+                            formResponse: {
+                                bassAccepted: 'Yes',
+                                addressLine1: 'Road',
+                                addressTown: 'Town',
+                                bassArea: 'Area',
+                                postCode: 'AB11AB',
+                                telephone: 'a'
+                            },
+                            outcome: {telephone: 'Enter a telephone number in the right format'}
                         }
                     ];
 

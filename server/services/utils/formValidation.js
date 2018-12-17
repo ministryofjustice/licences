@@ -33,6 +33,7 @@ const fieldOptions = {
     optionalList: joi.array().optional(),
     requiredPostcode: joi.postcode().required(),
     requiredPhone: joi.string().regex(/^[0-9+\s]+$/).required(),
+    optionalPhone: joi.string().regex(/^[0-9+\s]+$/).allow('').optional(),
     optionalAge: joi.number().min(0).max(110).allow('').optional(),
     requiredSelectionIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
@@ -57,11 +58,6 @@ const fieldOptions = {
     requiredPostcodeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
         then: joi.postcode().required(),
-        otherwise: joi.any().optional()
-    }),
-    requiredTelephoneIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
-        is: requiredAnswer,
-        then: joi.string().regex(/^[0-9+\s]+$/).required(),
         otherwise: joi.any().optional()
     })
 };

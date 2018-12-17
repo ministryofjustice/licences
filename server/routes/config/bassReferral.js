@@ -141,7 +141,7 @@ module.exports = {
                     conditionallyActive: {postApproval: true},
                     dependentOn: 'bassAccepted',
                     predicate: 'Yes',
-                    responseType: 'requiredTelephoneIf_bassAccepted_Yes',
+                    responseType: 'optionalPhone',
                     validationMessage: 'Enter a telephone number in the right format'
                 }
             }
