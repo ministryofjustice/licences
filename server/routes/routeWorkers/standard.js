@@ -81,6 +81,7 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
 
     return {
         get,
-        post
+        post,
+        formPost
     };
 };

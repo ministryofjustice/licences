@@ -44,8 +44,10 @@ describe('/hdc/approval', () => {
         const service = createLicenceServiceStub();
         service.getLicence.resolves({
             stage: 'APPROVAL',
-            licence: {proposedAddress: {curfewAddress: {addresses: [{consent: 'No'}]}}}
-        });
+            licence: {
+                proposedAddress: {curfewAddress: {addressLine1: 'line1'}},
+                curfew: {curfewAddressReview: {consent: 'No'}}
+            }});
         const app = createApp({licenceServiceStub: service}, 'dmUser');
         const routes = [
             {url: '/hdc/approval/release/1', content: 'Do you approve HDC release for this offender?'},

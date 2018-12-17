@@ -25,6 +25,23 @@ module.exports = ({licenceService}) => (router, audited) => {
         };
     }
 
+    router.post('/curfew/curfewAddressReview/:bookingId', audited,
+        asyncMiddleware(addressReviewPosts('curfewAddressReview')));
+    router.post('/curfew/curfewAddressReview/:action/:bookingId', audited,
+        asyncMiddleware(addressReviewPosts('curfewAddressReview')));
+
+    function addressReviewPosts(formName) {
+        return (req, res) => {
+            const {action, bookingId} = req.params;
+            const {licence} = res.locals;
+
+            const modify = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licence.stage);
+            const modifyAction = (!action && modify) ? 'modify' : action;
+
+            standard.formPost(req, res, 'curfew', formName, bookingId, modifyAction);
+        };
+    }
+
     router.post('/curfew/withdrawAddress/:bookingId', audited, asyncMiddleware(addressWithdrawalPosts('withdrawAddress')));
     router.post('/curfew/withdrawConsent/:bookingId', audited, asyncMiddleware(addressWithdrawalPosts('withdrawConsent')));
 
@@ -111,7 +128,6 @@ module.exports = ({licenceService}) => (router, audited) => {
             return input;
         }, formBody);
     }
-
     return router;
 };
 

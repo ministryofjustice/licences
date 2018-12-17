@@ -29,7 +29,7 @@ module.exports = {
     getFieldDetail,
     getFieldName,
     pick: R.pick,
-    pickBy: R.pickBy,
+    pickBy: R.pickBy
 };
 
 // pass in your object and a path in array format

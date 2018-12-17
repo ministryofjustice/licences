@@ -21,9 +21,7 @@ describe('/hdc/curfew', () => {
         licenceService.getLicence = sinon.stub().resolves({
             licence: {
                 proposedAddress: {
-                    curfewAddress: {
-                        addresses: []
-                    }
+                    curfewAddress: {}
                 }
             }
         });
@@ -60,9 +58,7 @@ describe('/hdc/curfew', () => {
         licenceService.getLicence = sinon.stub().resolves({
             licence: {
                 proposedAddress: {
-                    curfewAddress: {
-                        addresses: []
-                    }
+                    curfewAddress: {}
                 }
             }
         });
@@ -153,15 +149,6 @@ describe('/hdc/curfew', () => {
     });
 
     describe('/hdc/curfew/curfewAddressReview/1', () => {
-        const licence = {
-            licence: {
-                proposedAddress: {
-                    curfewAddress: {
-                        addresses: [{}, {}, {}, {}, {}, {}]
-                    }
-                }
-            }
-        };
 
         const routes = [
             {
@@ -200,20 +187,20 @@ describe('/hdc/curfew', () => {
         routes.forEach(route => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
-                licenceService.getLicence = sinon.stub().resolves(licence);
                 const app = createApp({licenceServiceStub: licenceService}, 'roUser');
                 return request(app)
                     .post(route.url)
                     .send(route.body)
                     .expect(302)
                     .expect(res => {
-                        expect(licenceService.updateAddress).to.be.calledOnce();
-                        expect(licenceService.updateAddress).to.be.calledWith({
-                            rawLicence: licence,
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
                             bookingId: '1',
-                            fieldMap: formConfig[route.section].fields,
+                            originalLicence: {licence: {key: 'value'}},
+                            config: formConfig[route.section],
                             userInput: route.body,
-                            index: 5
+                            licenceSection: 'curfew',
+                            formName: route.section
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);
@@ -223,13 +210,7 @@ describe('/hdc/curfew', () => {
             it(`renders the correct path '${route.nextPath}' page when ca in post approval`, () => {
 
                 const licence = {
-                    licence: {
-                        proposedAddress: {
-                            curfewAddress: {
-                                addresses: [{}, {}, {}, {}, {}, {}]
-                            }
-                        }
-                    },
+                    licence: {key: 'value'},
                     stage: 'MODIFIED'
                 };
 
@@ -241,13 +222,14 @@ describe('/hdc/curfew', () => {
                     .send(route.body)
                     .expect(302)
                     .expect(res => {
-                        expect(licenceService.updateAddress).to.be.calledOnce();
-                        expect(licenceService.updateAddress).to.be.calledWith({
-                            rawLicence: licence,
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
                             bookingId: '1',
-                            fieldMap: formConfig[route.section].fields,
+                            originalLicence: licence,
+                            config: formConfig[route.section],
                             userInput: route.body,
-                            index: 5
+                            licenceSection: 'curfew',
+                            formName: route.section
                         });
 
                         expect(res.header.location).to.equal(route.nextPathCa || route.nextPath);
@@ -259,9 +241,7 @@ describe('/hdc/curfew', () => {
                 const licence = {
                     licence: {
                         proposedAddress: {
-                            curfewAddress: {
-                                addresses: [{}, {}, {}, {}, {}, {}]
-                            }
+                            curfewAddress: {}
                         }
                     },
                     stage: 'ELIGIBILITY'
@@ -283,9 +263,7 @@ describe('/hdc/curfew', () => {
                 const licence = {
                     licence: {
                         proposedAddress: {
-                            curfewAddress: {
-                                addresses: [{}]
-                            }
+                            curfewAddress: {}
                         }
                     },
                     stage: 'PROCESSING_RO'
@@ -311,7 +289,7 @@ describe('/hdc/curfew', () => {
                     licence: {
                         proposedAddress: {
                             curfewAddress: {
-                                addresses: [{occupier: {isOffender: 'Yes'}}]
+                                occupier: {isOffender: 'Yes'}
                             }
                         }
                     },
@@ -338,74 +316,62 @@ describe('/hdc/curfew', () => {
         const licence = {
             licence: {
                 proposedAddress: {
-                    curfewAddress: {
-                        addresses: [{}, {}, {}, {}, {}, {}]
-                    }
+                    curfewAddress: {}
                 }
             }
         };
 
-        const routes = [
-            {
-                url: '/hdc/curfew/withdrawAddress/1',
-                body: {withdrawAddress: 'Yes'},
-                section: 'withdrawAddress',
-                nextPath: '/hdc/taskList/1'
-            },
-            {
-                url: '/hdc/curfew/reinstateAddress/1',
-                body: {withdrawAddress: 'No', withdrawConsent: 'No'},
-                section: 'reinstateAddress',
-                nextPath: '/hdc/taskList/1'
-            }
-        ];
+        it('withdraw address calls rejectPropsedAddress then returns to taslist', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.getLicence = sinon.stub().resolves(licence);
+            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
+            return request(app)
+                .post('/hdc/curfew/withdrawAddress/1')
+                .send({withdrawAddress: 'Yes'})
+                .expect(302)
+                .expect(res => {
+                    expect(licenceService.rejectProposedAddress).to.be.calledOnce();
+                    expect(licenceService.rejectProposedAddress).to.be.calledWith(licence.licence, '1', 'withdrawAddress');
 
-        routes.forEach(route => {
-            it(`renders the correct path '${route.nextPath}' page`, () => {
-                const licenceService = createLicenceServiceStub();
-                licenceService.getLicence = sinon.stub().resolves(licence);
-                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
-                return request(app)
-                    .post(route.url)
-                    .send(route.body)
-                    .expect(302)
-                    .expect(res => {
-                        expect(licenceService.updateAddress).to.be.calledOnce();
-                        expect(licenceService.updateAddress).to.be.calledWith({
-                            rawLicence: licence,
-                            bookingId: '1',
-                            fieldMap: formConfig[route.section].fields,
-                            userInput: route.body,
-                            index: 5
-                        });
+                    expect(res.header.location).to.equal('/hdc/taskList/1');
+                });
+        });
 
-                        expect(res.header.location).to.equal(route.nextPath);
-                    });
-            });
+        it('reinstate address calls reinstateProposedAddress then returns to taslist', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.getLicence = sinon.stub().resolves(licence);
+            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
+            return request(app)
+                .post('/hdc/curfew/reinstateAddress/1')
+                .send({withdrawAddress: 'No', withdrawConsent: 'No'})
+                .expect(302)
+                .expect(res => {
+                    expect(licenceService.reinstateProposedAddress).to.be.calledOnce();
+                    expect(licenceService.reinstateProposedAddress).to.be.calledWith(licence.licence, '1');
 
+                    expect(res.header.location).to.equal('/hdc/taskList/1');
+                });
+        });
 
-            it(`throws when posting to '${route.nextPath}' when not a  ca`, () => {
+        it('throws when posting to withdrawAddress when not a  ca', () => {
 
-                const licence = {
-                    licence: {
-                        proposedAddress: {
-                            curfewAddress: {
-                                addresses: [{}, {}, {}, {}, {}, {}]
-                            }
-                        }
-                    },
-                    stage: 'PROCESSING_CA'
-                };
+            const licence = {
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {}
+                    }
+                },
+                stage: 'PROCESSING_CA'
+            };
 
-                const licenceService = createLicenceServiceStub();
-                licenceService.getLicence = sinon.stub().resolves(licence);
-                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
-                return request(app)
-                    .post(route.url)
-                    .send(route.body)
-                    .expect(403);
+            const licenceService = createLicenceServiceStub();
+            licenceService.getLicence = sinon.stub().resolves(licence);
+            const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+            return request(app)
+                .post('/hdc/curfew/withdrawAddress/1')
+                .send({withdrawAddress: 'No', withdrawConsent: 'No'})
+                .expect(403);
 
-            });
         });
     });
 

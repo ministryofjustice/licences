@@ -4,11 +4,10 @@ const {getIn, isEmpty, lastItem} = require('./functionalHelpers');
 const {
     isAcceptedAddress,
     isRejectedAddress,
-    addressReviewStarted,
-    isWithdrawnAddress
+    addressReviewStarted
 } = require('../utils/addressHelpers');
 
-module.exports = {getLicenceStatus, getConfiscationOrderState};
+module.exports = {getLicenceStatus};
 
 function getLicenceStatus(licenceRecord) {
 
@@ -399,7 +398,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
         }
 
         const required = ['cautionedAgainstResident', 'addressLine1', 'addressTown', 'postCode', 'telephone'];
-        if (required.some(field => !Object.keys(address).includes(field))) {
+        if (required.some(field => !address[field])) {
             return taskStates.STARTED;
         }
 
@@ -415,7 +414,7 @@ function getCurfewAddressReviewState(licence) {
     const rejectedAddresses = getIn(licence, ['proposedAddress', 'rejections']);
 
 
-    if (!curfewAddress) {
+    if (!curfewAddress || isEmpty(curfewAddress)) {
         if (isEmpty(rejectedAddresses)) {
             return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unstarted'};
         }

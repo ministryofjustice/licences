@@ -158,14 +158,14 @@ function validateGroup({licence, group}) {
         ],
         PROCESSING_RO: [
             {
-                formResponse: getIn(licence, ['proposedAddress', 'curfewAddress']),
+                formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
                 formType: 'curfewAddressReview',
                 pageConfig: curfewConfig.curfewAddressReview,
                 section: 'curfew',
                 missingMessage: 'Enter the curfew address review details'
             },
             {
-                formResponse: getIn(licence, ['proposedAddress', 'curfewAddress']),
+                formResponse: getIn(licence, ['curfew', 'addressSafety']),
                 formType: 'addressSafety',
                 pageConfig: curfewConfig.addressSafety,
                 section: 'curfew',
