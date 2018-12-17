@@ -1,5 +1,6 @@
 extends ../layout
 include ../includes/errorBannerWithDetail
+include ../includes/errorBannerWithDetailObject
 
 block content
 
@@ -9,6 +10,7 @@ block content
     div.pure-g.pure-u-1
         include ../includes/back
         include ../includes/personalDetailsSummary
+        +errorBannerWithDetail(errorObject)
 
         h2.heading-large BASS area check
 

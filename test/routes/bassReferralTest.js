@@ -223,6 +223,9 @@ describe('/hdc/bassReferral', () => {
             routes.forEach(route => {
                 it(`renders the correct path '${route.nextPath}' page`, () => {
                     const licenceService = createLicenceServiceStub();
+                    licenceService.update = sinon.stub().resolves({
+                        bassReferral: {bassAreaCheck: {}}
+                    });
                     const app = createApp({licenceServiceStub: licenceService}, route.user);
                     return request(app)
                         .post(route.url)

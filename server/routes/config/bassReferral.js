@@ -61,6 +61,7 @@ module.exports = {
     bassAreaCheck: {
         licenceSection: 'bassAreaCheck',
         pageDataMap: ['licence', 'bassReferral'],
+        validate: true,
         fields: [
             {bassAreaSuitable: {
                 responseType: 'requiredYesNo',

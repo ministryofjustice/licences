@@ -209,7 +209,7 @@ function validateGroup({licence, group}) {
                 missingMessage: 'Enter the curfew address review details'
             }
         ],
-        BASS_REFERRAL: [
+        BASS_AREA: [
             {
                 formResponse: getIn(licence, ['bassReferral', 'bassRequest']),
                 formType: 'bassRequest',
@@ -223,13 +223,6 @@ function validateGroup({licence, group}) {
                 pageConfig: bassConfig.bassAreaCheck,
                 section: 'bassReferral',
                 missingMessage: 'Enter the bass area check details'
-            },
-            {
-                formResponse: getIn(licence, ['bassReferral', 'bassOffer']),
-                formType: 'bassReferral',
-                pageConfig: bassConfig.bassOffer,
-                section: 'bassOffer',
-                missingMessage: 'Enter the bass offer details'
             }
         ],
         BASS_REQUEST: [
@@ -255,13 +248,6 @@ function validateGroup({licence, group}) {
                 pageConfig: bassConfig.bassAreaCheck,
                 section: 'bassAreaCheck',
                 missingMessage: 'Enter the bass area check details'
-            },
-            {
-                formResponse: getIn(licence, ['bassReferral', 'bassOffer']),
-                formType: 'bassOffer',
-                pageConfig: bassConfig.bassOffer,
-                section: 'bassReferral',
-                missingMessage: 'Enter the bass offer details'
             },
             {
                 formResponse: getIn(licence, ['licenceConditions', 'standard']),

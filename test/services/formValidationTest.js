@@ -1099,13 +1099,11 @@ describe('validation', () => {
             context('bass requested', () => {
                 const validBassRequest = {bassRequested: 'Yes', specificArea: 'No'};
                 const validBassAreaCheck = {bassAreaSuitable: 'Yes'};
-                const validBassOffer = {bassAccepted: 'No'};
                 const validBassLicence = {
                     ...validLicence,
                     bassReferral: {
                         bassRequest: validBassRequest,
-                        bassAreaCheck: validBassAreaCheck,
-                        bassOffer: validBassOffer
+                        bassAreaCheck: validBassAreaCheck
                     }
                 };
 
@@ -1117,7 +1115,6 @@ describe('validation', () => {
                                 bassReferral: 'Enter the bass area check details'
                             },
                             bassReferral: {
-                                bassOffer: 'Enter the bass offer details',
                                 bassRequest: 'Enter the bass referral details'
                             }
                         }
@@ -1140,13 +1137,11 @@ describe('validation', () => {
             context('bass area suitable', () => {
                 const validBassRequest = {bassRequested: 'No', specificArea: 'No'};
                 const validBassAreaCheck = {bassAreaSuitable: 'Yes'};
-                const validBassOffer = {bassAccepted: 'No'};
                 const validBassLicence = {
                     curfew: {curfewHours: validCurfewHours},
                     bassReferral: {
                         bassRequest: validBassRequest,
-                        bassAreaCheck: validBassAreaCheck,
-                        bassOffer: validBassOffer
+                        bassAreaCheck: validBassAreaCheck
                     }
                 };
 
@@ -1172,9 +1167,6 @@ describe('validation', () => {
                     {
                         licence: {},
                         bassOutcome: {
-                            bassOffer: {
-                                bassReferral: 'Enter the bass offer details'
-                            },
                             bassReferral: {
                                 bassAreaCheck: 'Enter the bass area check details',
                                 bassRequest: 'Enter the bass referral details'

@@ -411,7 +411,7 @@ module.exports = function createLicenceService(licenceClient) {
                     return 'PROCESSING_RO_ADDRESS_REJECTED';
                 }
                 if (bassAreaNotSuitable) {
-                    return 'BASS_REFERRAL';
+                    return 'BASS_AREA';
                 }
                 if (bassReferralNeeded) {
                     return 'PROCESSING_RO_BASS_REQUESTED';
