@@ -54,6 +54,20 @@ module.exports = {
         addressReviewComments: joi.string().allow('').optional()
     }),
 
+    addressReviewSchemaOffenderIsOccupier: joi.object().keys({
+        consent: joi.valid(['Yes', 'No']).optional(),
+
+        electricity: joi.valid(['Yes', 'No']).required(),
+
+        homeVisitConducted: joi.when('electricity', {
+            is: 'Yes',
+            then: joi.valid(['Yes', 'No']).required(),
+            otherwise: joi.any().optional()
+        }),
+
+        addressReviewComments: joi.string().allow('').optional()
+    }),
+
     addressSafetySchema: joi.object().keys({
         consent: joi.any().optional(),
         electricity: joi.any().optional(),
@@ -84,6 +98,36 @@ module.exports = {
                         then: joi.string().required(),
                         otherwise: joi.any().optional()
                     }),
+                    otherwise: joi.any().optional()
+                }),
+                otherwise: joi.any().optional()
+            }),
+            otherwise: joi.any().optional()
+        })
+    }),
+
+    addressSafetySchemaOffenderIsOccupier: joi.object().keys({
+        consent: joi.any().optional(),
+        electricity: joi.any().optional(),
+        homeVisitConducted: joi.any().optional(),
+        addressReviewComments: joi.any().optional(),
+        deemedSafe: joi.when('electricity', {
+            is: 'Yes',
+            then: joi.when('homeVisitConducted', {
+                is: 'Yes',
+                then: joi.valid(['Yes', 'No']).required(),
+                otherwise: joi.any().optional()
+            }),
+            otherwise: joi.any().optional()
+        }),
+
+        unsafeReason: joi.when('electricity', {
+            is: 'Yes',
+            then: joi.when('homeVisitConducted', {
+                is: 'Yes',
+                then: joi.when('deemedSafe', {
+                    is: 'No',
+                    then: joi.string().required(),
                     otherwise: joi.any().optional()
                 }),
                 otherwise: joi.any().optional()

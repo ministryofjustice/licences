@@ -1,7 +1,13 @@
 const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
-const {curfewAddressSchema, addressReviewSchema, addressSafetySchema} = require('./bespokeAddressSchema');
+const {
+    curfewAddressSchema,
+    addressReviewSchema,
+    addressSafetySchema,
+    addressReviewSchemaOffenderIsOccupier,
+    addressSafetySchemaOffenderIsOccupier
+} = require('./bespokeAddressSchema');
 const additionalConditionsSchema = require('./bespokeConditionsSchema');
 
 const {
@@ -86,11 +92,21 @@ const validationProcedures = {
         }
     },
     curfewAddressReview: {
-        getSchema: () => addressReviewSchema,
+        getSchema: (pageConfig, {offenderIsMainOccupier}) => {
+            if (offenderIsMainOccupier) {
+                return addressReviewSchemaOffenderIsOccupier;
+            }
+            return addressReviewSchema;
+        },
         getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
     },
     addressSafety: {
-        getSchema: () => addressReviewSchema.concat(addressSafetySchema),
+        getSchema: (pageConfig, {offenderIsMainOccupier}) => {
+            if (offenderIsMainOccupier) {
+                return addressReviewSchemaOffenderIsOccupier.concat(addressSafetySchemaOffenderIsOccupier);
+            }
+            return addressReviewSchema.concat(addressSafetySchema);
+        },
         getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
     },
     additional: {

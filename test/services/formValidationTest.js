@@ -288,27 +288,7 @@ describe('validation', () => {
                             consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes'
                         },
                         outcome: {}
-                    },
-                    // // offender is occupier
-                    // {
-                    //     formResponse: {...validAddress, occupier: {isOffender: 'Yes'}},
-                    //     outcome: {electricity: 'Say if there is an electricity supply'}
-                    // },
-                    // {
-                    //     formResponse: {
-                    //         ...validAddress, occupier: {isOffender: 'Yes'},
-                    //         electricity: 'Yes'
-                    //     },
-                    //     outcome: {homeVisitConducted: 'Say if you did a home visit'}
-                    // },
-                    //
-                    // {
-                    //     formResponse: {
-                    //         ...validAddress, occupier: {isOffender: 'Yes'},
-                    //         electricity: 'No'
-                    //     },
-                    //     outcome: {}
-                    // }
+                    }
                 ];
 
                 options.forEach(option => {
@@ -318,6 +298,41 @@ describe('validation', () => {
                             formResponse,
                             pageConfig,
                             formType: 'curfewAddressReview'
+                        })).to.eql(outcome);
+                    });
+                });
+            });
+
+            describe('curfewAddressReview offender is main occupier', () => {
+                const pageConfig = curfewAddressReview;
+                const options = [
+                    {
+                        formResponse: {},
+                        outcome: {electricity: 'Say if there is an electricity supply'}
+                    },
+                    {
+                        formResponse: {
+                            electricity: 'Yes'
+                        },
+                        outcome: {homeVisitConducted: 'Say if you did a home visit'}
+                    },
+
+                    {
+                        formResponse: {
+                            electricity: 'No'
+                        },
+                        outcome: {}
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                        const {outcome, formResponse} = option;
+                        expect(service.validateForm({
+                            formResponse,
+                            pageConfig,
+                            formType: 'curfewAddressReview',
+                            bespokeConditions: {offenderIsMainOccupier: true}
                         })).to.eql(outcome);
                     });
                 });
