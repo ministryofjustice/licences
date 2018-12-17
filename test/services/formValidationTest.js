@@ -793,7 +793,8 @@ describe('validation', () => {
                         {formResponse: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
                         {formResponse: {decision: 'Yes'}, outcome: {notedComments: 'Add a comment'}},
                         {formResponse: {decision: 'Yes', notedComments: ''}, outcome: {notedComments: 'Add a comment'}},
-                        {formResponse: {decision: 'No', reason: ['reason']}, outcome: {}},
+                        {formResponse: {decision: 'No', reason: 'reason'}, outcome: {}},
+                        {formResponse: {decision: 'No', reason: ['reason1', 'reason2']}, outcome: {}},
                         {formResponse: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
                     ];
 
@@ -813,7 +814,8 @@ describe('validation', () => {
                     const options = [
                         {formResponse: {decision: 'Yes', notedComments: 'comments'}, outcome: {}},
                         {formResponse: {decision: 'Yes', notedComments: ''}, outcome: {}},
-                        {formResponse: {decision: 'No', reason: ['reason']}, outcome: {}},
+                        {formResponse: {decision: 'No', reason: 'reason'}, outcome: {}},
+                        {formResponse: {decision: 'No', reason: ['reason', 'reason2']}, outcome: {}},
                         {formResponse: {decision: 'No', reason: []}, outcome: {reason: 'Select a reason'}}
                     ];
 

@@ -27,7 +27,7 @@ const fieldOptions = {
     optionalString: joi.string().allow('').optional(),
     requiredYesNo: joi.valid(['Yes', 'No']).required(),
     optionalYesNo: joi.valid(['Yes', 'No']).optional(),
-    selection: joi.array().min(1).required(),
+    selection: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
     requiredTime: joi.date().format('HH:mm').required(),
     requiredDate: joi.date().format('DD/MM/YYYY').min('now').required(),
     optionalList: joi.array().optional(),
@@ -36,7 +36,7 @@ const fieldOptions = {
     optionalAge: joi.number().min(0).max(110).allow('').optional(),
     requiredSelectionIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
-        then: joi.array().min(1).required(),
+        then: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
         otherwise: joi.any().optional()
     }),
     requiredYesNoIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
