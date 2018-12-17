@@ -3,7 +3,7 @@ extends taskListTemplate
 block tasks
 
     - var curfewAddressReady = ['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved)
-    - var bassReady = licenceStatus.decisions.bassReferralNeeded && !licenceStatus.decisions.bassWithdrawn
+    - var bassReady = licenceStatus.decisions.bassReferralNeeded && licenceStatus.tasks.bassOffer === 'DONE' && !licenceStatus.decisions.bassWithdrawn
     - var bassExcluded = ['Unavailable', 'Unsuitable'].includes(licenceStatus.decisions.bassAccepted)
 
     if (curfewAddressReady || bassReady)
@@ -12,10 +12,13 @@ block tasks
 
     if licenceStatus.decisions.eligible
         div.taskListItem.borderBottomLight
-            if licenceStatus.decisions.bassReferralNeeded
-                include tasks/bassAddressTask
+            if allowedTransition === 'caToRo'
+                include tasks/proposedAddressTask
             else
-                include tasks/curfewAddressTask
+                if licenceStatus.decisions.bassReferralNeeded
+                    include tasks/bassAddressTask
+                else
+                    include tasks/curfewAddressTask
 
         if (curfewAddressReady || bassReady && !bassExcluded)
             div.taskListItem.borderBottomLight

@@ -9,7 +9,7 @@ block tasks
             include tasks/curfewAddressTask
 
     - var curfewAddressReady = ['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved)
-    - var bassReady = licenceStatus.decisions.bassReferralNeeded && licenceStatus.tasks.bassAreaCheck === 'DONE'
+    - var bassReady = licenceStatus.decisions.bassReferralNeeded && licenceStatus.tasks.bassAreaCheck === 'DONE' && !licenceStatus.decisions.bassWithdrawn
     - var bassExcluded = ['Unavailable', 'Unsuitable'].includes(licenceStatus.decisions.bassAccepted)
 
     if (curfewAddressReady || bassReady && !bassExcluded)
