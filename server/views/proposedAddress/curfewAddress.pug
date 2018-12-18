@@ -2,7 +2,6 @@ extends ../layout
 include ./includes/addressForm
 
 block content
-    -var savedAddress = data || {}
 
     div.pure-g.pure-u-1
         include ../includes/back
@@ -33,7 +32,7 @@ block content
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId || '')
         div.paddingBottom
-            +addressForm(0, errorObject)
+            +addressForm(errorObject)
 
         include ../includes/formButtons
 

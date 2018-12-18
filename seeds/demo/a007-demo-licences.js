@@ -52,6 +52,14 @@ exports.seed = function (knex, Promise) {
                             "thursdayUntil": "07:00",
                             "wednesdayFrom": "19:00",
                             "wednesdayUntil": "07:00"
+                        },
+                        "curfewAddressReview": {
+                            "consent": "Yes",
+                            "electricity": "Yes",
+                            "homeVisitConducted": "No"
+                        },
+                        "addressSafety": {
+                            "deemedSafe": "Yes"
                         }
                     },
                     "approval": {"release": {"decision": "Yes", "decisionMaker": "Dianne Matthews"}},
@@ -79,20 +87,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "Richard Hunt", "relationship": "Uncle"},
-                                "postCode": "LS16 6AA",
-                                "residents": [],
-                                "telephone": "07958 809442",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Leeds",
-                                "electricity": "Yes",
-                                "addressLine1": "31, The Road",
-                                "addressLine2": "Horsforth",
-                                "homeVisitConducted": "No",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "Richard Hunt", "relationship": "Uncle"},
+                            "postCode": "LS16 6AA",
+                            "residents": [],
+                            "telephone": "07958 809442",
+                            "addressTown": "Leeds",
+                            "addressLine1": "31, The Road",
+                            "addressLine2": "Horsforth",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     },
@@ -137,6 +139,14 @@ exports.seed = function (knex, Promise) {
                             "thursdayUntil": "07:00",
                             "wednesdayFrom": "19:00",
                             "wednesdayUntil": "07:00"
+                        },
+                        "curfewAddressReview": {
+                            "consent": "Yes",
+                            "electricity": "Yes",
+                            "homeVisitConducted": "No"
+                        },
+                        "addressSafety": {
+                            "deemedSafe": "Yes"
                         }
                     },
                     "reporting": {
@@ -157,20 +167,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "LS12 1YT",
-                                "residents": [],
-                                "telephone": "0113 2627272",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Leeds",
-                                "electricity": "Yes",
-                                "addressLine1": "12 High Street",
-                                "addressLine2": "Horsforth",
-                                "homeVisitConducted": "No",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "LS12 1YT",
+                            "residents": [],
+                            "telephone": "0113 2627272",
+                            "addressTown": "Leeds",
+                            "addressLine1": "12 High Street",
+                            "addressLine2": "Horsforth",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     },
@@ -190,23 +194,27 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "Mr J Thomas", "relationship": "N/A"},
-                                "postCode": "LS1 1LD",
-                                "residents": [],
-                                "telephone": "07986 2765411",
-                                "deemedSafe": "No",
-                                "addressTown": "Leeds",
-                                "electricity": "Yes",
-                                "addressLine1": "18, Albion Street",
-                                "addressLine2": "",
-                                "unsafeReason": "Risk too high.",
-                                "homeVisitConducted": "No",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "Mr J Thomas", "relationship": "N/A"},
+                            "postCode": "LS1 1LD",
+                            "residents": [],
+                            "telephone": "07986 2765411",
+                            "addressTown": "Leeds",
+                            "addressLine1": "18, Albion Street",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
+                    },
+                    "curfew": {
+                        "curfewAddressReview": {
+                            "consent": "Yes",
+                            "electricity": "Yes",
+                            "homeVisitConducted": "No"
+                        },
+                        "addressSafety": {
+                            "deemedSafe": "No",
+                            "unsafeReason": "Risk too high."
+                        }
                     }
                 },
                 "booking_id": 1080794,
@@ -254,6 +262,14 @@ exports.seed = function (knex, Promise) {
                             "thursdayUntil": "07:00",
                             "wednesdayFrom": "19:00",
                             "wednesdayUntil": "07:00"
+                        },
+                        "curfewAddressReview": {
+                            "consent": "Yes",
+                            "electricity": "Yes",
+                            "homeVisitConducted": "No"
+                        },
+                        "addressSafety": {
+                            "deemedSafe": "Yes"
                         }
                     },
                     "reporting": {
@@ -281,20 +297,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "HL1 7TY",
-                                "residents": [{"age": "", "name": "Mrs J Smith", "relationship": "Aunty"}],
-                                "telephone": "07865 2345786",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Hull",
-                                "electricity": "Yes",
-                                "addressLine1": "25 Hilton Place",
-                                "addressLine2": "",
-                                "homeVisitConducted": "No",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "HL1 7TY",
+                            "residents": [{"age": "", "name": "Mrs J Smith", "relationship": "Aunty"}],
+                            "telephone": "07865 2345786",
+                            "addressTown": "Hull",
+                            "addressLine1": "25 Hilton Place",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     },
@@ -314,15 +324,13 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "",
-                                "residents": [],
-                                "telephone": "",
-                                "addressTown": "",
-                                "addressLine1": "18 New Road",
-                                "addressLine2": ""
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "",
+                            "residents": [],
+                            "telephone": "",
+                            "addressTown": "",
+                            "addressLine1": "18 New Road",
+                            "addressLine2": ""
                         },
                         "addressProposed": {"decision": "Yes"}
                     }
@@ -359,16 +367,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "DL13 8JU",
-                                "residents": [],
-                                "telephone": "07896 6377611",
-                                "addressTown": "Darlington",
-                                "addressLine1": "45 The Street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "DL13 8JU",
+                            "residents": [],
+                            "telephone": "07896 6377611",
+                            "addressTown": "Darlington",
+                            "addressLine1": "45 The Street",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     }
@@ -407,6 +413,14 @@ exports.seed = function (knex, Promise) {
                             "thursdayUntil": "07:00",
                             "wednesdayFrom": "19:00",
                             "wednesdayUntil": "07:00"
+                        },
+                        "curfewAddressReview": {
+                            "consent": "Yes",
+                            "electricity": "Yes",
+                            "homeVisitConducted": "Yes"
+                        },
+                        "addressSafety": {
+                            "deemedSafe": "Yes"
                         }
                     },
                     "reporting": {
@@ -435,20 +449,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "S1 9OP",
-                                "residents": [],
-                                "telephone": "07648272611",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Sheffield",
-                                "electricity": "Yes",
-                                "addressLine1": "1 Kelham Island Street",
-                                "addressLine2": "",
-                                "homeVisitConducted": "Yes",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "S1 9OP",
+                            "residents": [],
+                            "telephone": "07648272611",
+                            "addressTown": "Sheffield",
+                            "addressLine1": "1 Kelham Island Street",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     },
@@ -486,6 +494,14 @@ exports.seed = function (knex, Promise) {
                             "thursdayUntil": "07:00",
                             "wednesdayFrom": "19:00",
                             "wednesdayUntil": "07:00"
+                        },
+                        "curfewAddressReview": {
+                            "consent": "Yes",
+                            "electricity": "Yes",
+                            "homeVisitConducted": "No"
+                        },
+                        "addressSafety": {
+                            "deemedSafe": "Yes"
                         }
                     },
                     "approval": {
@@ -518,20 +534,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "BD11 8UY",
-                                "residents": [],
-                                "telephone": "01274 7654782",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Bradford",
-                                "electricity": "Yes",
-                                "addressLine1": "4 Smithfield Terrace",
-                                "addressLine2": "",
-                                "homeVisitConducted": "No",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "BD11 8UY",
+                            "residents": [],
+                            "telephone": "01274 7654782",
+                            "addressTown": "Bradford",
+                            "addressLine1": "4 Smithfield Terrace",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     },
@@ -569,6 +579,14 @@ exports.seed = function (knex, Promise) {
                             "thursdayUntil": "07:00",
                             "wednesdayFrom": "19:00",
                             "wednesdayUntil": "07:00"
+                        },
+                        "curfewAddressReview": {
+                            "consent": "Yes",
+                            "electricity": "Yes",
+                            "homeVisitConducted": "Yes"
+                        },
+                        "addressSafety": {
+                            "deemedSafe": "Yes"
                         }
                     },
                     "approval": {"release": {"decision": "Yes", "decisionMaker": "Dianne Matthews"}},
@@ -595,20 +613,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "LE16 9UH",
-                                "residents": [],
-                                "telephone": "07968 7865426",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Leicester",
-                                "electricity": "Yes",
-                                "addressLine1": "18 Queen Square",
-                                "addressLine2": "",
-                                "homeVisitConducted": "Yes",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "LE16 9UH",
+                            "residents": [],
+                            "telephone": "07968 7865426",
+                            "addressTown": "Leicester",
+                            "addressLine1": "18 Queen Square",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     },
@@ -646,6 +658,14 @@ exports.seed = function (knex, Promise) {
                             "thursdayUntil": "07:00",
                             "wednesdayFrom": "19:00",
                             "wednesdayUntil": "07:00"
+                        },
+                        "curfewAddressReview": {
+                            "consent": "Yes",
+                            "electricity": "Yes",
+                            "homeVisitConducted": "No"
+                        },
+                        "addressSafety": {
+                            "deemedSafe": "Yes"
                         }
                     },
                     "reporting": {
@@ -675,20 +695,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "consent": "Yes",
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "ST5 8UY",
-                                "residents": [],
-                                "telephone": "078652987651",
-                                "deemedSafe": "Yes",
-                                "addressTown": "Stoke-on-Trent",
-                                "electricity": "Yes",
-                                "addressLine1": "18 Swift Crescent",
-                                "addressLine2": "",
-                                "homeVisitConducted": "No",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "ST5 8UY",
+                            "residents": [],
+                            "telephone": "078652987651",
+                            "addressTown": "Stoke-on-Trent",
+                            "addressLine1": "18 Swift Crescent",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     },
@@ -708,16 +722,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "SK10 9TY",
-                                "residents": [],
-                                "telephone": "07896786572",
-                                "addressTown": "Macclesfield",
-                                "addressLine1": "15 New Street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "SK10 9TY",
+                            "residents": [],
+                            "telephone": "07896786572",
+                            "addressTown": "Macclesfield",
+                            "addressLine1": "15 New Street",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     }
@@ -736,16 +748,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "DL11 7UK",
-                                "residents": [],
-                                "telephone": "07896 53637211",
-                                "addressTown": "Richmond",
-                                "addressLine1": "24 The Street",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "DL11 7UK",
+                            "residents": [],
+                            "telephone": "07896 53637211",
+                            "addressTown": "Richmond",
+                            "addressLine1": "24 The Street",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     }
@@ -764,16 +774,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "DL11 8UY",
-                                "residents": [],
-                                "telephone": "07896 5627711",
-                                "addressTown": "Richmond",
-                                "addressLine1": "26 The Square",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "DL11 8UY",
+                            "residents": [],
+                            "telephone": "07896 5627711",
+                            "addressTown": "Richmond",
+                            "addressLine1": "26 The Square",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     }
@@ -792,16 +800,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "DL11 7HX",
-                                "residents": [],
-                                "telephone": "07896 7353531",
-                                "addressTown": "Darlington",
-                                "addressLine1": "31 The Road",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "DL11 7HX",
+                            "residents": [],
+                            "telephone": "07896 7353531",
+                            "addressTown": "Darlington",
+                            "addressLine1": "31 The Road",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     }
@@ -820,16 +826,14 @@ exports.seed = function (knex, Promise) {
                     "proposedAddress": {
                         "optOut": {"decision": "No"},
                         "curfewAddress": {
-                            "addresses": [{
-                                "occupier": {"name": "", "relationship": ""},
-                                "postCode": "DL11 7HX",
-                                "residents": [],
-                                "telephone": "07896 786573",
-                                "addressTown": "Darlington",
-                                "addressLine1": "31 The Road",
-                                "addressLine2": "",
-                                "cautionedAgainstResident": "No"
-                            }]
+                            "occupier": {"name": "", "relationship": ""},
+                            "postCode": "DL11 7HX",
+                            "residents": [],
+                            "telephone": "07896 786573",
+                            "addressTown": "Darlington",
+                            "addressLine1": "31 The Road",
+                            "addressLine2": "",
+                            "cautionedAgainstResident": "No"
                         },
                         "addressProposed": {"decision": "Yes"}
                     }

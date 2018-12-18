@@ -155,16 +155,11 @@ describe('/review/', () => {
                 });
         });
 
-        it('links to addressRejected send page when opted out', () => {
+        it('links to addressRejected send page when address is rejected', () => {
             licenceService.getLicence = sinon.stub().resolves({
                 licence: {
-                    proposedAddress: {
-                        curfewAddress: {
-                            addresses: [
-                                {consent: 'No'}
-                            ]
-                        }
-                    }
+                    proposedAddress: {curfewAddress: {addressLine1: 'address1'}},
+                    curfew: {curfewAddressReview: {consent: 'No'}}
                 },
                 stage: 'PROCESSING_RO'
             });

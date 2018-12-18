@@ -452,13 +452,8 @@ describe('GET /taskList/:prisonNumber', () => {
                 licenceService.getLicence.resolves({
                     licence: {
                         proposedAddress: {
-                            curfewAddress: {
-                                addresses: [
-                                    {
-                                        addressWithdrawn: 'Yes'
-                                    }
-                                ]
-                            }
+                            curfewAddress: {},
+                            rejections: [{withdrawalReason: 'withdrawAddress'}]
                         }
                     },
                     stage: 'PROCESSING_CA'
@@ -478,13 +473,8 @@ describe('GET /taskList/:prisonNumber', () => {
                 licenceService.getLicence.resolves({
                     licence: {
                         proposedAddress: {
-                            curfewAddress: {
-                                addresses: [
-                                    {
-                                        consentWithdrawn: 'Yes'
-                                    }
-                                ]
-                            }
+                            curfewAddress: {},
+                            rejections: [{withdrawalReason: 'withdrawConsent'}]
                         }
                     },
                     stage: 'PROCESSING_CA'
@@ -698,13 +688,8 @@ describe('GET /taskList/:prisonNumber', () => {
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {
-                        proposedAddress: {
-                            curfewAddress: {
-                                addresses: [
-                                    {consent: 'Yes'}
-                                ]
-                            }
-                        }
+                        proposedAddress: {curfewAddress: {addressLine1: 'address1'}},
+                        curfew: {curfewAddressReview: {consent: 'Yes'}}
                     }
                 });
 
@@ -726,15 +711,17 @@ describe('GET /taskList/:prisonNumber', () => {
                 licenceService.getLicence.resolves({
                     stage: 'PROCESSING_RO',
                     licence: {
-                        proposedAddress: {
-                            curfewAddress: {
-                                addresses: [{
-                                    cautionedAgainstResident: 'No',
-                                    consent: 'Yes',
-                                    electricity: 'Yes',
-                                    homeVisitConducted: 'Yes',
-                                    deemedSafe: 'Yes'
-                                }]
+                        proposedAddress: {curfewAddress: {addressLine1: 'address1'}},
+                        curfew: {
+                            curfewAddressReview: {
+                                cautionedAgainstResident: 'No',
+                                consent: 'Yes',
+                                electricity: 'Yes'
+
+                            },
+                            addressSafety: {
+                                homeVisitConducted: 'Yes',
+                                deemedSafe: 'Yes'
                             }
                         }
                     }
@@ -986,14 +973,18 @@ describe('GET /taskList/:prisonNumber', () => {
         context('Curfew address approved', () => {
             it('should display all other tasks', () => {
                 licenceService.getLicence.resolves({
-                    stage: 'APPROVAL', licence: {
-                        proposedAddress: {
-                            curfewAddress: {
-                                addresses: [{
-                                    consent: 'Yes',
-                                    electricity: 'Yes',
-                                    deemedSafe: 'Yes'
-                                }]
+                    stage: 'APPROVAL',
+                    licence: {
+                        proposedAddress: {curfewAddress: {addressLine1: 'address1'}},
+                        curfew: {
+                            curfewAddressReview: {
+                                consent: 'Yes',
+                                electricity: 'Yes'
+
+                            },
+                            addressSafety: {
+                                homeVisitConducted: 'Yes',
+                                deemedSafe: 'Yes'
                             }
                         }
                     }

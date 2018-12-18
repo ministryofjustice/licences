@@ -1,31 +1,11 @@
 const {asyncMiddleware} = require('../utils/middleware');
 const createStandardRoutes = require('./routeWorkers/standard');
-const {getIn, lastIndex, lastItem, isEmpty, mergeWithRight, firstItem} = require('../utils/functionalHelpers');
+const {getIn, mergeWithRight} = require('../utils/functionalHelpers');
 const formConfig = require('./config/proposedAddress');
 
 module.exports = ({licenceService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'proposedAddress'});
-
-    router.get('/proposedAddress/curfewAddress/:bookingId', getAddress);
-    router.get('/proposedAddress/curfewAddress/:action/:bookingId', getAddress);
-
-    function getAddress(req, res) {
-
-        const {bookingId, action} = req.params;
-        const addresses = getAddresses(res.locals.licence);
-        const errorObject = firstItem(req.flash('errors')) || {};
-
-        if (!addresses) {
-            return res.render('proposedAddress/curfewAddress', {bookingId, data: [], errorObject});
-        }
-
-        if (isAddingAddress(addresses, action)) {
-            return res.render('proposedAddress/curfewAddress', {bookingId, data: {}, errorObject});
-        }
-
-        return res.render('proposedAddress/curfewAddress', {bookingId, data: lastItem(addresses), errorObject});
-    }
 
     router.get('/proposedAddress/curfewAddressChoice/:action/:bookingId', asyncMiddleware(getChoice));
     router.get('/proposedAddress/curfewAddressChoice/:bookingId', asyncMiddleware(getChoice));
@@ -67,58 +47,25 @@ module.exports = ({licenceService}) => (router, audited) => {
         return res.redirect(`${nextPath}${bookingId}`);
     }
 
-    router.post('/proposedAddress/curfewAddress/:action/:bookingId', audited, asyncMiddleware(async (req, res) => {
-        const {bookingId, action} = req.params;
-        const addresses = getAddresses(res.locals.licence);
+    router.post('/proposedAddress/rejected/:bookingId', audited, asyncMiddleware(async (req, res) => {
+        const {enterAlternative, bookingId} = req.body;
+        const {licence} = res.locals.licence;
 
-        const rawLicence = res.locals.licence;
-        const userInput = req.body;
-
-        if (isAddingAddress(addresses, action)) {
-
-            if (isEmptySubmission(userInput)) {
-                return res.redirect(`/hdc/proposedAddress/curfewAddress/${action}/${bookingId}`);
-            }
-
-            await licenceService.addAddress({
-                rawLicence,
-                bookingId,
-                fieldMap: formConfig.curfewAddress.fields,
-                userInput
-            });
-
-        } else {
-            await licenceService.updateAddress({
-                rawLicence,
-                bookingId,
-                fieldMap: formConfig.curfewAddress.fields,
-                userInput,
-                index: lastIndex(addresses)
-            });
+        if (enterAlternative === 'Yes') {
+            await licenceService.rejectProposedAddress(licence, bookingId);
         }
 
-        const nextPath = formConfig.curfewAddress.nextPath[action] || formConfig.curfewAddress.nextPath['path'];
-        res.redirect(`${nextPath}${bookingId}`);
+        const nextPath = formConfig.rejected.nextPath.decisions[enterAlternative];
+        return res.redirect(`${nextPath}${bookingId}`);
     }));
 
+    router.get('/proposedAddress/:formName/:action/:bookingId', asyncMiddleware(standard.get));
     router.get('/proposedAddress/:formName/:bookingId', asyncMiddleware(standard.get));
+    router.post('/proposedAddress/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
     router.post('/proposedAddress/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
     return router;
 };
-
-function getAddresses(licence) {
-    return getIn(licence, ['licence', 'proposedAddress', 'curfewAddress', 'addresses']);
-}
-
-function isAddingAddress(addresses, action) {
-    return isEmpty(addresses) || ['rejected', 'add'].includes(action);
-}
-
-function isEmptySubmission(userInput) {
-    const {addressLine1, addressTown, postCode} = userInput.addresses[0];
-    return !addressLine1 && !addressTown && !postCode;
-}
 
 function getCurfewAddressChoice(licence) {
     if (isYes(licence, ['proposedAddress', 'optOut', 'decision'])) {

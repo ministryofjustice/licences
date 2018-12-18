@@ -257,65 +257,26 @@ describe('validation', () => {
 
             const {curfewHours, curfewAddressReview, addressSafety} = require('../../server/routes/config/curfew');
             describe('curfewAddressReview', () => {
-                const validAddress = {
-                    addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
-                    telephone: '07700000000'
-                };
                 const pageConfig = curfewAddressReview;
                 const options = [
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'No'
-                        },
+                        formResponse: {consent: 'No'},
                         outcome: {}
                     },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes'
-                        },
+                        formResponse: {consent: 'Yes'},
                         outcome: {electricity: 'Say if there is an electricity supply'}
                     },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes', electricity: 'Yes'
-                        },
+                        formResponse: {consent: 'Yes', electricity: 'Yes'},
                         outcome: {homeVisitConducted: 'Say if you did a home visit'}
                     },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes', electricity: 'No'
-                        },
+                        formResponse: {consent: 'Yes', electricity: 'No'},
                         outcome: {}
                     },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes'
-                        },
-                        outcome: {}
-                    },
-                    // offender is occupier
-                    {
-                        formResponse: {...validAddress, occupier: {isOffender: 'Yes'}},
-                        outcome: {electricity: 'Say if there is an electricity supply'}
-                    },
-                    {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'Yes'},
-                            electricity: 'Yes'
-                        },
-                        outcome: {homeVisitConducted: 'Say if you did a home visit'}
-                    },
-
-                    {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'Yes'},
-                            electricity: 'No'
-                        },
+                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes'},
                         outcome: {}
                     }
                 ];
@@ -332,39 +293,65 @@ describe('validation', () => {
                 });
             });
 
+            describe('curfewAddressReview offender is main occupier', () => {
+                const pageConfig = curfewAddressReview;
+                const options = [
+                    {
+                        formResponse: {},
+                        outcome: {electricity: 'Say if there is an electricity supply'}
+                    },
+                    {
+                        formResponse: {
+                            electricity: 'Yes'
+                        },
+                        outcome: {homeVisitConducted: 'Say if you did a home visit'}
+                    },
+
+                    {
+                        formResponse: {
+                            electricity: 'No'
+                        },
+                        outcome: {}
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                        const {outcome, formResponse} = option;
+                        expect(service.validateForm({
+                            formResponse,
+                            pageConfig,
+                            formType: 'curfewAddressReview',
+                            bespokeConditions: {offenderIsMainOccupier: true}
+                        })).to.eql(outcome);
+                    });
+                });
+            });
+
             describe('addressSafety', () => {
-                const validAddress = {
-                    addressLine1: 'a1', addressTown: 't1', postCode: 'S105NW', cautionedAgainstResident: 'No',
-                    telephone: '07700000000', electricity: 'Yes', homeVisitConducted: 'Yes'
-                };
                 const pageConfig = addressSafety;
                 const options = [
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes', deemedSafe: 'Yes'
-                        },
+                        formResponse: {consent: 'No'},
                         outcome: {}
                     },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes', deemedSafe: 'No'
-                        },
-                        outcome: {unsafeReason: 'Explain why you did not approve the address'}
+                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes', deemedSafe: 'Yes'},
+                        outcome: {}
                     },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'Yes'},
-                            consent: '', deemedSafe: 'Yes'
-                        },
+                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes', deemedSafe: 'No'},
                         outcome: {unsafeReason: 'Explain why you did not approve the address'}
                     },
+                    // {
+                    //     formResponse: {
+                    //         occupier: {isOffender: 'Yes'},
+                    //         consent: '', deemedSafe: 'Yes'
+                    //     },
+                    //     outcome: {unsafeReason: 'Explain why you did not approve the address'}
+                    // },
                     {
-                        formResponse: {
-                            ...validAddress, occupier: {isOffender: 'No', name: 'n', relationship: 'r'},
-                            consent: 'Yes', deemedSafe: 'Yes', unsafeReason: 'a'
-                        },
+                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes', deemedSafe: 'Yes', unsafeReason: 'a'},
                         outcome: {}
                     }
                 ];
@@ -905,26 +892,8 @@ describe('validation', () => {
                 cautionedAgainstResident: 'No',
                 telephone: '07700000000'
             };
-            const validLicence = {
-                proposedAddress: {
-                    curfewAddress: {
-                        addresses: [
-                            {},
-                            validAddress
-                        ]
-                    }
-                }
-            };
-            const invalidLicence = {
-                proposedAddress: {
-                    curfewAddress: {
-                        addresses: [
-                            {},
-                            invalidAddress
-                        ]
-                    }
-                }
-            };
+            const validLicence = {proposedAddress: {curfewAddress: validAddress}};
+            const invalidLicence = {proposedAddress: {curfewAddress: invalidAddress}};
 
             const options = [
                 {licence: validLicence, outcome: {}},
@@ -1004,43 +973,39 @@ describe('validation', () => {
             const validReportingInstructions =
                 {name: 'n', buildingAndStreet1: 'o', townOrCity: 't', postcode: 'S1 4JQ', telephone: '0770000000'};
 
-            const validAddress = {
-                consent: 'Yes',
-                postCode: 'S10 5NW',
-                residents: [],
-                telephone: '01344 553424',
-                deemedSafe: 'Yes',
-                addressTown: 'Sheffield',
-                electricity: 'Yes',
-                addressLine1: '3 Sandygate Grange Drive',
-                addressLine2: '',
-                unsafeReason: '',
-                homeVisitConducted: 'Yes',
-                addressReviewComments: '',
-                cautionedAgainstResident: 'No'
-            };
+            const validAddressReview = {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes'};
+            const validAddressSafety = {deemedSafe: 'Yes'};
 
             const validLicence = {
                 risk: {riskManagement: validRiskManagement},
-                curfew: {curfewHours: validCurfewHours},
+                curfew: {
+                    curfewHours: validCurfewHours,
+                    curfewAddressReview: validAddressReview,
+                    addressSafety: validAddressSafety
+                },
                 reporting: {reportingInstructions: validReportingInstructions},
-                proposedAddress: {curfewAddress: {addresses: [validAddress]}},
                 licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}, additional: {NOTIFYRELATIONSHIP: {}}}
             };
 
             const validLicenceNoConditions = {
                 risk: {riskManagement: validRiskManagement},
-                curfew: {curfewHours: validCurfewHours},
+                curfew: {
+                    curfewHours: validCurfewHours,
+                    curfewAddressReview: validAddressReview,
+                    addressSafety: validAddressSafety
+                },
                 reporting: {reportingInstructions: validReportingInstructions},
-                proposedAddress: {curfewAddress: {addresses: [validAddress]}},
                 licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
             };
 
             const invalidLicence = {
                 risk: {riskManagement: {planningActions: '', awaitingInformation: 'No', victimLiaison: 'No'}},
-                curfew: {curfewHours: validCurfewHours},
+                curfew: {
+                    curfewHours: validCurfewHours,
+                    curfewAddressReview: validAddressReview,
+                    addressSafety: validAddressSafety
+                },
                 reporting: {reportingInstructions: validReportingInstructions},
-                proposedAddress: {curfewAddress: {addresses: [validAddress]}},
                 licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}, additional: {NOTIFYRELATIONSHIP: {}}}
             };
 
@@ -1058,8 +1023,8 @@ describe('validation', () => {
                     licence: {},
                     standardOutcome: {
                         risk: {riskManagement: 'Enter the risk management and victim liaison details'},
-                        curfew: {curfewHours: 'Enter the proposed curfew hours'},
-                        curfewAddress: {
+                        curfew: {
+                            curfewHours: 'Enter the proposed curfew hours',
                             addressSafety: 'Enter the curfew address review details',
                             curfewAddressReview: 'Enter the curfew address review details'
                         },
@@ -1069,7 +1034,7 @@ describe('validation', () => {
                         reporting: {reportingInstructions: 'Enter the reporting instructions'}
                     },
                     addressRejectedOutcome: {
-                        curfewAddress: {
+                        curfew: {
                             addressSafety: 'Enter the curfew address review details',
                             curfewAddressReview: 'Enter the curfew address review details'
                         }

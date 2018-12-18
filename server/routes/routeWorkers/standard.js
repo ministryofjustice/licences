@@ -41,7 +41,11 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
                 formResponse: formToValidate,
                 pageConfig: formConfig[formName],
                 formType: formName,
-                bespokeConditions: {postApproval, confiscationOrder: res.locals.licenceStatus.decisions.confiscationOrder}
+                bespokeConditions: {
+                    postApproval,
+                    confiscationOrder: res.locals.licenceStatus.decisions.confiscationOrder,
+                    offenderIsMainOccupier: res.locals.licenceStatus.decisions.offenderIsMainOccupier
+                }
             });
         };
 
@@ -77,6 +81,7 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
 
     return {
         get,
-        post
+        post,
+        formPost
     };
 };

@@ -26,7 +26,8 @@ describe('/hdc/proposedAddress', () => {
         const app = createApp({licenceServiceStub: licenceService}, 'caUser');
 
         const routes = [
-            {url: '/hdc/proposedAddress/curfewAddressChoice/1', content: 'Has the offender provided a curfew address?'}
+            {url: '/hdc/proposedAddress/curfewAddressChoice/1', content: 'Has the offender provided a curfew address?'},
+            {url: '/hdc/proposedAddress/curfewAddress/1', content: 'Proposed curfew address'}
         ];
 
         testFormPageGets(app, routes, licenceService);
@@ -240,123 +241,13 @@ describe('/hdc/proposedAddress', () => {
         });
     });
 
-    describe('curfewAddress', () => {
-        context('there is a rejected address and active', () => {
-            it('should display the active and post to update', () => {
-                const licenceService = createLicenceServiceStub();
-                licenceService.getLicence.resolves({
-                    licence: {
-                        proposedAddress: {
-                            curfewAddress: {
-                                addresses: [
-                                    {addressLine1: 'address1', consent: 'No', electricity: 'No', deemedSafe: 'No'},
-                                    {addressLine1: 'address2'}
-                                ]
-                            }
-                        }
-                    }
-                });
-                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
-
-                return request(app)
-                    .get('/hdc/proposedAddress/curfewAddress/1')
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .expect(res => {
-                        expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address2"');
-                    });
-
-            });
-        });
-
-        context('there are no addresses saved', () => {
-            it('should post to standard route', () => {
-                const licenceService = createLicenceServiceStub();
-                licenceService.getLicence = sinon.stub().resolves({
-                    licence: {}
-                });
-
-                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
-
-                return request(app)
-                    .get('/hdc/proposedAddress/curfewAddress/1')
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .expect(res => {
-                        expect(res.text).to.include('<form method="post">');
-                        expect(res.text).to.include('name="[addresses][0][addressLine1]"');
-                    });
-
-            });
-        });
-
-        context('there are only rejected addresses', () => {
-            it('should display no address', () => {
-                const licenceService = createLicenceServiceStub();
-                licenceService.getLicence = sinon.stub().resolves({
-                    licence: {
-                        proposedAddress: {
-                            curfewAddress: {
-                                addresses: [
-                                    {addressLine1: 'address1', consent: 'No', electricity: 'No', deemedSafe: 'No'}
-                                ]
-                            }
-                        }
-                    }
-                });
-                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
-
-                return request(app)
-                    .get('/hdc/proposedAddress/curfewAddress/add/1')
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .expect(res => {
-                        expect(res.text).to.include('name="[addresses][0][addressLine1]"');
-                    });
-
-            });
-        });
-
-        context('there are only active addresses', () => {
-            it('should display the active address', () => {
-                const licenceService = createLicenceServiceStub();
-                licenceService.getLicence = sinon.stub().resolves({
-                    licence: {
-                        proposedAddress: {
-                            curfewAddress: {
-                                addresses: [
-                                    {addressLine1: 'address1'}
-                                ]
-                            }
-                        }
-                    }
-                });
-                const app = createApp({licenceServiceStub: licenceService}, 'caUser');
-
-                return request(app)
-                    .get('/hdc/proposedAddress/curfewAddress/1')
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .expect(res => {
-                        expect(res.text).to.include('name="[addresses][0][addressLine1]" value="address1"');
-                    });
-
-            });
-        });
-    });
-
     describe('rejected', () => {
         it('should display the rejected address', () => {
             const licenceService = createLicenceServiceStub();
             licenceService.getLicence = sinon.stub().resolves({
                 licence: {
-                    proposedAddress: {
-                        curfewAddress: {
-                            addresses: [
-                                {addressLine1: 'address1', consent: 'No'}
-                            ]
-                        }
-                    }
+                    proposedAddress: {curfewAddress: {addressLine1: 'address1', consent: 'No'}},
+                    curfew: {curfewAddressReview: {consent: 'No'}}
                 }
             });
             const app = createApp({licenceServiceStub: licenceService}, 'caUser');
@@ -375,14 +266,8 @@ describe('/hdc/proposedAddress', () => {
             const licenceService = createLicenceServiceStub();
             licenceService.getLicence.resolves({
                 licence: {
-                    proposedAddress: {
-                        curfewAddress: {
-                            addresses: [
-                                {addressLine1: 'address1', consent: 'No'},
-                                {addressLine1: 'alt1'}
-                            ]
-                        }
-                    }
+                    proposedAddress: {curfewAddress: {addressLine1: 'address1'}},
+                    curfew: {curfewAddressReview: {consent: 'No'}}
                 }
             });
             const app = createApp({licenceServiceStub: licenceService}, 'caUser');
@@ -394,56 +279,6 @@ describe('/hdc/proposedAddress', () => {
                 .expect(res => {
                     expect(res.text).to.include('<form id="enterAlternativeForm" method="post">');
                 });
-        });
-
-        it('should redirect to task list if not in ELIGIBILITY stage', () => {
-            const licenceService = createLicenceServiceStub();
-            licenceService.getLicence.resolves({
-                licence: {
-                    proposedAddress: {
-                        curfewAddress: {
-                            addresses: [
-                                {addressLine1: 'address1', consent: 'No'}
-                            ]
-                        }
-                    }
-                },
-                stage: 'PROCESSING_CA'
-            });
-
-            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
-
-            return request(app)
-                .post('/hdc/proposedAddress/curfewAddress/add/1')
-                .send({bookingId: '1', addresses: [{addressLine1: 'something'}]})
-                .expect(302)
-                .expect('Location', '/hdc/taskList/1');
-
-        });
-
-        it('should redirect to form if empty address is passed in', () => {
-            const licenceService = createLicenceServiceStub();
-            licenceService.getLicence.resolves({
-                licence: {
-                    proposedAddress: {
-                        curfewAddress: {
-                            addresses: [
-                                {addressLine1: 'address1', consent: 'No'}
-                            ]
-                        }
-                    }
-                },
-                stage: 'PROCESSING_CA'
-            });
-
-            const app = createApp({licenceServiceStub: licenceService}, 'caUser');
-
-            return request(app)
-                .post('/hdc/proposedAddress/curfewAddress/add/1')
-                .send({bookingId: '1', addresses: [{addressLine1: '', postCode: '', addressLine2: ''}]})
-                .expect(302)
-                .expect('Location', '/hdc/proposedAddress/curfewAddress/add/1');
-
         });
     });
 });

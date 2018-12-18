@@ -11,70 +11,59 @@ module.exports = {
         licenceSection: 'curfewAddress',
         validate: true,
         fields: [
+            {addressLine1: {
+                responseType: 'requiredString', validationMessage: 'Enter an address'
+            }},
+            {addressLine2: {
+                responseType: 'optionalString'
+            }},
+            {addressTown: {
+                responseType: 'requiredString', validationMessage: 'Enter a town or city'
+            }},
+            {postCode: {
+                responseType: 'requiredPostcode', validationMessage: 'Enter a postcode'
+            }},
+            {telephone: {
+                responseType: 'optionalString', validationMessage: 'Enter a telephone number in the right format'
+            }},
             {
-                addresses: {
+                occupier: {
+                    contains: [
+                        {name: {
+                            responseType: 'requiredString',
+                            validationMessage: 'Enter a name'
+                        }},
+                        {relationship: {
+                            responseType: 'requiredString',
+                            validationMessage: 'Enter a relationship'
+                        }},
+                        {isOffender: {}}
+                    ]
+                }
+            },
+            {
+                residents: {
+                    responseType: 'optionalList',
                     isList: true,
                     contains: [
-                        {addressLine1: {
-                            responseType: 'requiredString', validationMessage: 'Enter an address'
+                        {name: {
+                            responseType: 'requiredString',
+                            validationMessage: 'Enter a name'
                         }},
-                        {addressLine2: {
-                            responseType: 'optionalString'
+                        {relationship: {
+                            responseType: 'requiredString',
+                            validationMessage: 'Enter a relationship'
                         }},
-                        {addressTown: {
-                            responseType: 'requiredString', validationMessage: 'Enter a town or city'
-                        }},
-                        {postCode: {
-                            responseType: 'requiredPostcode', validationMessage: 'Enter a postcode'
-                        }},
-                        {telephone: {
-                            responseType: 'optionalString', validationMessage: 'Enter a telephone number in the right format'
-                        }},
-                        {
-                            occupier: {
-                                contains: [
-                                    {name: {
-                                        conditionallyActive: {relationship: true},
-                                        responseType: 'requiredString',
-                                        validationMessage: 'Enter a name'
-                                    }},
-                                    {relationship: {
-                                        conditionallyActive: {relationship: true},
-                                        responseType: 'requiredString',
-                                        validationMessage: 'Enter a relationship'
-                                    }},
-                                    {isOffender: {}}
-                                ]
-                            }
-                        },
-                        {
-                            residents: {
-                                responseType: 'optionalList',
-                                isList: true,
-                                contains: [
-                                    {name: {
-                                        conditionallyActive: {relationship: true},
-                                        responseType: 'requiredString',
-                                        validationMessage: 'Enter a name'
-                                    }},
-                                    {relationship: {
-                                        conditionallyActive: {relationship: true},
-                                        responseType: 'requiredString',
-                                        validationMessage: 'Enter a relationship'
-                                    }},
-                                    {age: {
-                                        responseType: 'optionalAge',
-                                        validationMessage: 'Enter age'
-                                    }}
-                                ]
-                            }
-                        },
-                        {cautionedAgainstResident: {
-                            responseType: 'requiredYesNo', validationMessage: 'Select yes or no'
+                        {age: {
+                            responseType: 'optionalAge',
+                            validationMessage: 'Enter age'
                         }}
                     ]
                 }
-            }
+            },
+            {cautionedAgainstResident: {
+                responseType: 'requiredYesNo', validationMessage: 'Select yes or no'
+            }}
         ],
         nextPath: {
             path: '/hdc/taskList/',

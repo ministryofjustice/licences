@@ -13,6 +13,7 @@ module.exports = {
     firstItem,
     lastIndex,
     removePath,
+    removePaths,
     replacePath,
     interleave,
     equals,
@@ -26,7 +27,9 @@ module.exports = {
     pickKey,
     firstKey,
     getFieldDetail,
-    getFieldName
+    getFieldName,
+    pick: R.pick,
+    pickBy: R.pickBy
 };
 
 // pass in your object and a path in array format
@@ -87,6 +90,11 @@ function lastIndex(array) {
 // pass in path and an object. Using ...args enables currying
 function removePath(...args) {
     return R.dissocPath(...args);
+}
+
+function removePaths(arrayOfPaths, object) {
+    const dissocPath = (object, path) => R.dissocPath(path, object);
+    return R.reduce(dissocPath, object)(arrayOfPaths);
 }
 
 function replacePath(path, val, object) {
