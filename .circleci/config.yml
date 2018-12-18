@@ -157,6 +157,7 @@ workflows:
             branches:
               only:
                 - master
+                - patch
       - deploy_release_to_eb:
           requires:
             - build_docker
