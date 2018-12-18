@@ -161,6 +161,10 @@ workflows:
       - deploy_release_to_eb:
           requires:
             - build_docker
+          filters:
+            branches:
+              only:
+                - master
       - feature_tests:
           requires:
             - deploy_release_to_eb
