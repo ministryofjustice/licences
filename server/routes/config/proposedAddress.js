@@ -90,7 +90,7 @@ module.exports = {
             decisions: {
                 discriminator: 'enterAlternative',
                 Yes: '/hdc/proposedAddress/curfewAddress/rejected/',
-                No: '/hdc/proposedAddress/curfewAddressChoice/add/'
+                No: '/hdc/taskList/'
             }
         }
     }
