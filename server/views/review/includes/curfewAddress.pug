@@ -1,5 +1,7 @@
 include ./itemAndError
 -var address = data.proposedAddress && data.proposedAddress.curfewAddress || {}
+-var addressReview = data.curfew && data.curfew.curfewAddressReview || {}
+-var addressReviewSafety = data.curfew && data.curfew.addressSafety || {}
 -var errors = errorObject.proposedAddress && errorObject.proposedAddress.curfewAddress || {}
 - var reviewErrors = errors.curfewAddressReview || {}
 - var safetyErrors = errors.addressSafety || {}
@@ -79,31 +81,31 @@ if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
             div.pure-u-1-2
                 div#dischargeHomeAddress
                     #{errors.electricity}
-                    +itemAndError(address.consent, reviewErrors.consent, "consent-curfew")
+                    +itemAndError(addressReview.consent, reviewErrors.consent, "consent-curfew")
 
-    if(address.consent === 'Yes' || offenderIsMainOccupier)
+    if(addressReview.consent === 'Yes' || offenderIsMainOccupier)
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
                 | Is there an electricity supply?
             div.pure-u-1-2
-                +itemAndError(address.electricity, reviewErrors.electricity, "electricity-curfew")
+                +itemAndError(addressReview.electricity, reviewErrors.electricity, "electricity-curfew")
 
-        if(address.electricity === 'Yes')
+        if(addressReview.electricity === 'Yes')
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     | Was a home visit conducted in this case?
                 div.pure-u-1-2
-                    +itemAndError(address.homeVisitConducted, reviewErrors.homeVisitConducted, "homeVisit-curfew")
+                    +itemAndError(addressReview.homeVisitConducted, reviewErrors.homeVisitConducted, "homeVisit-curfew")
 
             div.pure-g.borderBottomLight.midPaddingTopBottom
                 div.pure-u-1-2
                     | Could this offender be managed safely at address?
                 div.pure-u-1-2
-                    +itemAndError(address.deemedSafe, safetyErrors.deemedSafe, "deemedSafe-curfew")
-                    if address.deemedSafe === 'No'
-                        +itemAndError(address.unsafeReason, safetyErrors.unsafeReason, "unsafeReason-curfew")
+                    +itemAndError(addressReviewSafety.deemedSafe, safetyErrors.deemedSafe, "deemedSafe-curfew")
+                    if addressReviewSafety.deemedSafe === 'No'
+                        +itemAndError(addressReviewSafety.unsafeReason, safetyErrors.unsafeReason, "unsafeReason-curfew")
 
-    if address.addressReviewComments
+    if addressReview.addressReviewComments
         div.pure-g.borderBottomLight.midPaddingTopBottom
             div.pure-u-1-2
                 | Address review details

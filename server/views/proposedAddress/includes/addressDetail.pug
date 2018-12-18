@@ -1,4 +1,4 @@
-mixin addressDetail(type, address)
+mixin addressDetail(type, address, review, safety)
 
     div.pure-g.smallPaddingBottom(id="addressDetails")
         div.pure-u-1.pure-u-sm-1-2.pure-g
@@ -54,29 +54,29 @@ mixin addressDetail(type, address)
 
                         p.bold(id="cautioned-"+type) #{address.cautionedAgainstResident}
 
-    if address.consent
+    if review.consent
         div.pure-g.largeMarginTop.paddingTop.smallPaddingBottom.borderTopLight
             div.pure-u-1.pure-u-md-1-2
                 div.pure-u-md-4-5
                     | Does the main occupier consent to HDC?
-                    p.bold(id="consent-"+type) #{address.consent}
+                    p.bold(id="consent-"+type) #{review.consent}
 
-                if(address.consent === 'Yes' && address.electricity !== 'No')
-                    if address.deemedSafe
+                if(review.consent === 'Yes' && review.electricity !== 'No')
+                    if safety.deemedSafe
                         div.pure-u-md-4-5
                             div.pure-u-md-4-5
                                 | Could this offender be managed safely at this address?
-                                p.bold(id="deemedSafe-" + type) #{address.deemedSafe}
+                                p.bold(id="deemedSafe-" + type) #{safety.deemedSafe}
 
-            if(address.consent === 'Yes')
+            if(review.consent === 'Yes')
                 div.pure-u-1.pure-u-md-1-2.midPaddingBottom
-                    if address.electricity
+                    if review.electricity
                         div.pure-u-md-4-5
                             | Is there an electricity supply?
-                            p.bold(id="electricity-"+type) #{address.electricity}
+                            p.bold(id="electricity-"+type) #{review.electricity}
 
-                    if(address.electricity === 'Yes')
-                        if address.homeVisitConducted
+                    if(review.electricity === 'Yes')
+                        if review.homeVisitConducted
                             div.pure-u-md-4-5
                                 | Did you do a home visit?
-                                p.bold(id="homeVisit-"+type) #{address.homeVisitConducted}
+                                p.bold(id="homeVisit-"+type) #{review.homeVisitConducted}

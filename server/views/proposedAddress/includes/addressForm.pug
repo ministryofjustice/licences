@@ -49,8 +49,8 @@ mixin addressForm(errorObject)
                         p According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
 
                         div.multiple-choice
-                            input(id="cautionedYes" type="radio" checked=data.cautionedAgainstResident === 'Yes' name="[cautionedAgainstResident]" value="Yes")
+                            input(id="cautionedYes" type="radio" checked=data.cautionedAgainstResident === 'Yes' name="cautionedAgainstResident" value="Yes")
                             label(for="cautionedYes") Yes
                         div.multiple-choice
-                            input(id="cautionedNo-"+index type="radio" checked=data.cautionedAgainstResident === 'No' name="[cautionedAgainstResident]" value="No")
+                            input(id="cautionedNo-"+index type="radio" checked=data.cautionedAgainstResident === 'No' name="cautionedAgainstResident" value="No")
                             label(for="cautionedNo-"+index) No
