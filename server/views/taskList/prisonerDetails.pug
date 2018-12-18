@@ -63,6 +63,11 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
                 | HDC eligibility date
                 span#prisonerHdced.block.bold  #{sentenceDetail.homeDetentionCurfewEligibilityDate}
 
+        if (sentenceDetail.homeDetentionCurfewActualDate)
+            div.midMarginBottom
+                | HDC actual date
+                span#prisonerHdcad.block.bold  #{sentenceDetail.homeDetentionCurfewActualDate}
+
         if (sentenceDetail.sentenceExpiryDate && sentenceDetail.sentenceExpiryDate !== 'Invalid date')
             div.midMarginBottom
                 | Sentence expiry date
