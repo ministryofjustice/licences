@@ -572,7 +572,7 @@ function getBassRequestState(licence) {
     const addressProposedAnswer = getIn(licence, ['proposedAddress', 'addressProposed', 'decision']);
 
     const bassReferralNeeded = bassRequestAnswer === 'Yes' && addressProposedAnswer === 'No';
-    const bassAreaSpecified = getIn(licence, ['bassReferral', 'bassRequest', 'specificArea']) === 'Yes';
+    const bassAreaSpecified = getIn(licence, ['bassReferral', 'bassRequest', 'specificArea']) !== 'No';
     const bassRequest = getState(bassReferralNeeded, bassAreaSpecified, bassRequestAnswer, licence);
 
     return {
@@ -615,7 +615,7 @@ function getBassWithdrawalState(licence) {
     }
     const bassRejections = getIn(licence, ['bassRejections']);
     const bassWithdrawalReason = isEmpty(bassRejections) ? undefined : lastItem(bassRejections).withdrawal;
-    const bassWithdrawn = bassRejections && !isEmpty(lastItem(bassRejections).withdrawal);
+    const bassWithdrawn = !isEmpty(bassRejections) && !isEmpty(lastItem(bassRejections).withdrawal);
 
     return {bassWithdrawn, bassWithdrawalReason};
 }
