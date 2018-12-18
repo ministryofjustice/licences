@@ -39,6 +39,12 @@ block content
                 else if offer === 'Unavailable'
                     div.bold Address not available
 
+            if bassOffer.bassOfferDetails
+                div.pure-u-1.pure-u-md-1-3.paddingTop
+                    span Notes
+                div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferDetails
+                    div.bold #{bassOffer.bassOfferDetails}
+
             if bassOffer.bassAccepted == 'Yes' && bassAddress.bassArea && bassAddress.addressLine1
                 div.pure-u-1.pure-u-md-1-3.paddingTop
                     span Bass offer area

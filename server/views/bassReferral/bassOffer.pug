@@ -31,7 +31,7 @@ block content
                 div.paddingTop.paddingBottom
                     div.pure-u-1-1
                         if bassAreaCheck.bassAreaReason
-                            div Notes:
+                            div Notes
                             | #{bassAreaCheck.bassAreaReason }
 
             else
@@ -42,14 +42,14 @@ block content
                     div.pure-u-1-2
                         div Town
                         div.bold#proposedTown #{bassRequest.proposedTown}
-                    div.pure-u-1-2
+                    div.pure-u-1-2.paddingBottom
                         div County
                         div.bold#proposedCounty #{bassRequest.proposedCounty}
 
                     div.pure-u
                     if bassAreaCheck.bassAreaReason
-                        div Notes:
-                        | #{bassAreaCheck.bassAreaReason }
+                        div Notes
+                        div.bold#bassAreaReason #{bassAreaCheck.bassAreaReason}
 
         div.pure-u-1-2
 
