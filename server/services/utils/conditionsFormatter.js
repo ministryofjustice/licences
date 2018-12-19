@@ -1,4 +1,4 @@
-const moment = require('moment');
+const {merge} = require('../../utils/functionalHelpers');
 const DATE_FIELD = 'appointmentDate';
 const ALWAYS_REQUIRED = ['additionalConditions', 'bookingId'];
 
@@ -7,7 +7,8 @@ module.exports = {formatConditionsInput};
 function formatConditionsInput(inputObject, selectedConditionsConfig) {
 
     const conditionsFieldsRequired = selectedConditionsConfig.reduce(getSelectedFieldNamesReducer, []);
-    return filterInputs(inputObject, conditionsFieldsRequired);
+    const inputObjectWithDates = combineDatesIn(conditionsFieldsRequired, inputObject);
+    return filterInputs(inputObjectWithDates, conditionsFieldsRequired);
 }
 
 function filterInputs(inputObject, conditionsFieldsRequired) {
@@ -19,9 +20,7 @@ function filterInputs(inputObject, conditionsFieldsRequired) {
             }
 
             const fieldInput = inputObject[fieldName];
-            if (fieldName === DATE_FIELD) {
-                return {...filteredInput, [fieldName]: formatDate(fieldInput)};
-            }
+
             return {...filteredInput, [fieldName]: fieldInput};
         }, {});
 }
@@ -35,6 +34,11 @@ function getSelectedFieldNamesReducer(array, condition) {
     return [...array, ...inputItems];
 }
 
-function formatDate(dateString) {
-    return moment(dateString, 'DD-MM-YYYY').format('YYYY-MM-DD');
+function combineDatesIn(conditionsFieldsRequired, inputObject) {
+    if (!conditionsFieldsRequired.includes(DATE_FIELD)) {
+        return inputObject;
+    }
+
+    const [day, month, year] = ['appointmentDay', 'appointmentMonth', 'appointmentYear'];
+    return merge(inputObject, {[DATE_FIELD]: `${inputObject[[day]]}/${inputObject[[month]]}/${inputObject[[year]]}`});
 }
