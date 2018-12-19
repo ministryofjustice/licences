@@ -336,6 +336,40 @@ describe('conditionsService', () => {
 
         });
 
+        it('should split the appointmentDate into day, month, year', () => {
+
+            const licence = {
+                licenceConditions: {
+                    additional: {ATTENDDEPENDENCY: {appointmentDate: '12/03/1985'}}
+                }
+            };
+
+            licenceClient.getAdditionalConditions.resolves([
+                {
+                    id: 'ATTENDDEPENDENCY', text: 'v', group_name: 'group', subgroup_name: 'subgroup',
+                    user_input: 'additionalConditions'
+                }
+            ]);
+
+            const expectedOutput = {
+                group: {
+                    subgroup: [
+                        {
+                            id: 'ATTENDDEPENDENCY', text: 'v', group_name: 'group', subgroup_name: 'subgroup',
+                            user_input: 'additionalConditions',
+                            selected: true,
+                            user_submission: {
+                                appointmentDate: '12/03/1985',
+                                appointmentDay: '12',
+                                appointmentMonth: '03',
+                                appointmentYear: '1985'}
+                        }
+                    ]
+                }
+            };
+
+            return expect(service.getAdditionalConditions(licence)).to.eventually.eql(expectedOutput);
+        });
     });
 
     describe('populateLicenceWithConditions', () => {
