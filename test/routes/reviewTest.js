@@ -1,4 +1,5 @@
 const request = require('supertest');
+const {getLicenceStatus} = require('../../server/utils/licenceStatus');
 
 const {
     createLicenceServiceStub,
@@ -14,13 +15,14 @@ const standardRouter = require('../../server/routes/routeWorkers/standardRouter'
 const createRoute = require('../../server/routes/review');
 
 const prisonerService = createPrisonerServiceStub();
-const licenceService = createLicenceServiceStub();
 const conditionsService = createConditionsServiceStub();
+let licenceService;
 
 let app;
 
 describe('/review/', () => {
     beforeEach(() => {
+        licenceService = createLicenceServiceStub();
         prisonerService.getPrisonerDetails = sinon.stub().resolves({});
     });
 
@@ -65,6 +67,54 @@ describe('/review/', () => {
                 });
         });
 
+        it('shows errors when CA in post approval', () => {
+
+            licenceService.getLicence = sinon.stub().resolves({licence: {}, stage: 'DECIDED'});
+            app = createApp('caUser');
+
+            return request(app)
+                .get('/hdc/review/licence/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(licenceService.validateFormGroup).to.be.calledOnce();
+                });
+        });
+
+        it('Does not show errors in post approval when not CA', () => {
+
+            licenceService.getLicence = sinon.stub().resolves({licence: {}, stage: 'DECIDED'});
+            app = createApp('roUser');
+
+            return request(app)
+                .get('/hdc/review/licence/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(licenceService.validateFormGroup).to.not.be.calledOnce();
+                });
+        });
+
+        it('Decisions and Tasks used for error checking', () => {
+
+            const emptyLicence = {licence: {}, stage: 'DECIDED'};
+            const {decisions, tasks} = getLicenceStatus(emptyLicence);
+
+            licenceService.getLicence = sinon.stub().resolves(emptyLicence);
+            app = createApp('caUser');
+
+            return request(app)
+                .get('/hdc/review/licence/1')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(licenceService.validateFormGroup).to.be.calledOnce();
+                    expect(licenceService.validateFormGroup).to.be.calledWith({
+                        licence: emptyLicence.licence, stage: emptyLicence.stage, decisions, tasks
+                    });
+                });
+        });
+
         it('calls getPrisonerDetails', () => {
 
             app = createApp('caUser');
@@ -102,7 +152,7 @@ describe('/review/', () => {
         });
 
         it('shows a button to send the case if there are no errors', () => {
-            licenceService.getValidationErrorsForReview = sinon.stub().returns({});
+            licenceService.validateFormGroup = sinon.stub().returns({});
 
             return request(app)
                 .get('/hdc/review/curfewAddress/1')

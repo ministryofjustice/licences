@@ -16,7 +16,7 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
         const postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage);
         const showErrors = shouldValidate(req.user.role, stage, postApproval);
 
-        const errorObject = showErrors ? getErrors(licenceStatus, licence, licence, stage, licenceStatus) : {};
+        const errorObject = showErrors ? getErrors(licence, stage, licenceStatus) : {};
 
         const data = await conditionsService.populateLicenceWithConditions(licence, errorObject);
 
@@ -34,7 +34,7 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
         });
     }));
 
-    function getErrors(licenceStatus, licenceWithAddress, licence, stage, {decisions, tasks}) {
+    function getErrors(licence, stage, {decisions, tasks}) {
         return licenceService.validateFormGroup({licence, stage, decisions, tasks});
     }
 
