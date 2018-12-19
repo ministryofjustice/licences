@@ -10,12 +10,12 @@ div.largeMarginBottom
 
         else
             div.pure-u-1.pure-u-md-3-4
-                if ['STARTED', 'DONE'].includes(licenceStatus.tasks.curfewAddress)
+                if ['DONE'].includes(licenceStatus.tasks.curfewAddress)
                     | Ready to submit
                 else
                     | Not completed
 
             div.pure-u-1.pure-u-md-1-4.center
-                if ['STARTED', 'DONE'].includes(licenceStatus.tasks.curfewAddress) && !licenceStatus.decisions.optedOut
+                if ['DONE'].includes(licenceStatus.tasks.curfewAddress) && !licenceStatus.decisions.optedOut
                     -var path = '/hdc/review/curfewAddress/' + prisonerInfo.bookingId
                     +continue(path)
