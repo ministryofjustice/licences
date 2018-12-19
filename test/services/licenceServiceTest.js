@@ -1,3 +1,6 @@
+const proxyquire = require('proxyquire');
+proxyquire.noCallThru();
+
 const createLicenceService = require('../../server/services/licenceService');
 
 describe('licenceService', () => {
@@ -1437,5 +1440,40 @@ describe('licenceService', () => {
             });
         });
 
+    });
+
+    describe('validateFormGroup', () => {
+
+        let validateGroupStub;
+        let service;
+
+        const licenceServiceProxy = (validateGroup = validateGroupStub) => {
+            return proxyquire('../../server/services/licenceService', {
+                './utils/formValidation': {
+                    validateGroup
+                }
+            });
+        };
+
+        beforeEach(() => {
+            validateGroupStub = sinon.stub().resolves({});
+            service = licenceServiceProxy()(licenceClient);
+        });
+
+        it('should use correct group when bassReferralNeeded', () => {
+
+            service.validateFormGroup({licence: {}, stage: 'ELIGIBILITY', decisions: {bassReferralNeeded: true}, tasks: {}});
+
+            expect(validateGroupStub).to.be.calledOnce();
+            expect(validateGroupStub).to.be.calledWith({licence: {}, group: 'BASS_REQUEST'});
+        });
+
+        it('should use correct group when new address for review', () => {
+
+            service.validateFormGroup({licence: {}, stage: 'ELIGIBILITY', decisions: {}, tasks: {curfewAddressReview: 'UNSTARTED'}});
+
+            expect(validateGroupStub).to.be.calledOnce();
+            expect(validateGroupStub).to.be.calledWith({licence: {}, group: 'ELIGIBILITY'});
+        });
     });
 });

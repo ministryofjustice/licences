@@ -413,7 +413,7 @@ module.exports = function createLicenceService(licenceClient) {
                 }
             }
 
-            if ((stage === 'ELIGIBILITY' && bassReferralNeeded) || newBassAreaAddedForReview) {
+            if (bassReferralNeeded && (stage === 'ELIGIBILITY' || newBassAreaAddedForReview)) {
                 return 'BASS_REQUEST';
             }
 
