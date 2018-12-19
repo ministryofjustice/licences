@@ -97,7 +97,7 @@ jobs:
           command: |
              VERSION=$(git describe)
              GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
-             BUILD_VERSION=${VERSION}-patch
+             BUILD_VERSION=${VERSION}
 
              docker build --rm=false . \
                  --build-arg BUILD_NUMBER=$BUILD_VERSION \
