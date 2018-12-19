@@ -243,7 +243,8 @@ describe('getLicenceStatus', () => {
                     },
                     approval: {
                         release: {
-                            decision: 'No'
+                            decision: 'No',
+                            reason: ['noAvailableAddress', 'addressUnsuitable', 'outOfTime', 'insufficientTime']
                         }
                     }
                 }
@@ -274,6 +275,80 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.dmRefused).to.eql(true);
             expect(status.decisions.finalChecksRefused).to.eql(false);
             expect(status.decisions.offenderIsMainOccupier).to.eql(false);
+            expect(status.decisions.refusalReason).to.eql('No available address, address unsuitable, out of time, insufficient time');
+        });
+
+        it('should show refusal reason if not in array', () => {
+            const licence = {
+                stage: 'APPROVAL',
+                licence: {
+                    eligibility: {
+                        excluded: {
+                            decision: 'No'
+                        },
+                        suitability: {
+                            decision: 'No'
+                        },
+                        crdTime: {
+                            decision: 'No'
+                        }
+                    },
+                    proposedAddress: {
+                        optOut: {
+                            decision: 'No'
+                        },
+                        curfewAddress: {
+                            addresses: {
+                                addressLine1: 'something'
+                            }
+                        }
+                    },
+                    curfew: {
+                        curfewAddressReview: {
+                            consent: 'No',
+                            electricity: 'Yes',
+                            homeVisitConducted: 'Yes'
+                        },
+                        addressSafety: {
+                            deemedSafe: 'Yes'
+                        }
+                    },
+                    bassReferral: {
+                        bassRequest: {
+                            bassRequested: 'No'
+                        },
+                        bassAreaCheck: {
+                            bassAreaSuitable: 'No'
+                        },
+                        bassOffer: {
+                            bassAccepted: 'No'
+                        }
+                    },
+                    finalChecks: {
+                        seriousOffence: {
+                            decision: 'No'
+                        },
+                        onRemand: {
+                            decision: 'No'
+                        },
+                        confiscationOrder: {
+                            decision: 'No'
+                        },
+                        postpone: {
+                            decision: 'No'
+                        }
+                    },
+                    approval: {
+                        release: {
+                            decision: 'No',
+                            reason: 'noAvailableAddress'
+                        }
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+            expect(status.decisions.refusalReason).to.eql('No available address');
         });
     });
 

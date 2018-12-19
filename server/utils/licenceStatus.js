@@ -1,6 +1,6 @@
 const {taskStates} = require('../models/taskStates');
 const {licenceStages} = require('../models/licenceStages');
-const {getIn, isEmpty, lastItem} = require('./functionalHelpers');
+const {getIn, isEmpty, lastItem, flatten} = require('./functionalHelpers');
 const {
     isAcceptedAddress,
     isRejectedAddress,
@@ -343,19 +343,21 @@ function getApprovalState(licence) {
 
 function getDmApproval(licence) {
     const refusalReasons = {
-        addressUnsuitable: 'Address unsuitable',
-        insufficientTime: 'Insufficient time',
-        noAvailableAddress: 'No available address',
-        outOfTime: 'Out of time'
+        addressUnsuitable: 'address unsuitable',
+        insufficientTime: 'insufficient time',
+        noAvailableAddress: 'no available address',
+        outOfTime: 'out of time'
     };
 
     const decision = getIn(licence, ['approval', 'release', 'decision']);
-    const reason = getIn(licence, ['approval', 'release', 'reason']);
+    const reasons = flatten([getIn(licence, ['approval', 'release', 'reason'])])
+        .map(reason => refusalReasons[reason])
+        .join(', ');
 
     return {
         approved: decision === 'Yes',
         refused: decision === 'No',
-        refusalReason: refusalReasons[reason],
+        refusalReason: reasons.charAt(0).toUpperCase() + reasons.slice(1),
         approval: isEmpty(decision) ? taskStates.UNSTARTED : taskStates.DONE
     };
 }
