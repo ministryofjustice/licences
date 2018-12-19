@@ -13,7 +13,9 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
         const stage = getIn(res.locals.licence, ['stage']) || {};
         const licenceVersion = getIn(res.locals.licence, ['version']) || {};
 
-        const showErrors = stagesForRole[req.user.role].includes(stage);
+        const postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage);
+        const showErrors = shouldValidate(req.user.role, stage, postApproval);
+
         const errorObject = showErrors ? getErrors(licenceStatus, licence, licence, stage, licenceStatus) : {};
 
         const data = await conditionsService.populateLicenceWithConditions(licence, errorObject);
@@ -28,16 +30,20 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
             licenceVersion,
             errorObject,
             showErrors,
-            postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
+            postApproval
         });
     }));
 
-    function getErrors(licenceStatus, licenceWithAddress, licence, stage, {decisions}) {
-        return licenceService.validateFormGroup({licence, stage, decisions});
+    function getErrors(licenceStatus, licenceWithAddress, licence, stage, {decisions, tasks}) {
+        return licenceService.validateFormGroup({licence, stage, decisions, tasks});
     }
 
     return router;
 };
+
+function shouldValidate(role, stage, postApproval) {
+    return postApproval ? role === 'CA' : stagesForRole[role].includes(stage);
+}
 
 const stagesForRole = {
     CA: ['ELIGIBILITY', 'PROCESSING_CA', 'FINAL_CHECKS'],
