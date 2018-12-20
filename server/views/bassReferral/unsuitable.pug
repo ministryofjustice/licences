@@ -17,9 +17,9 @@ block content
                 p.smallMarginBottom Area
                 div.paddingBottom
                     if bassRequest.proposedCounty
-                        p#rejectedCounty.bold.noMargin #{bassRequest.proposedCounty}
+                        p#proposedCounty.bold.noMargin #{bassRequest.proposedCounty}
                     if bassRequest.proposedTown
-                        p#rejectedTown.bold.noMargin #{bassRequest.proposedTown}
+                        p#proposedTown.bold.noMargin #{bassRequest.proposedTown}
 
         div.largePaddingBottom
             +alternativeForm('area')
