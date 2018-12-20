@@ -32,7 +32,7 @@ block content
                     div.pure-u-1-1
                         if bassAreaCheck.bassAreaReason
                             div Notes
-                            | #{bassAreaCheck.bassAreaReason }
+                            div.bold#bassAreaReason #{bassAreaCheck.bassAreaReason }
 
             else
                 if bassAreaCheck.bassAreaSuitable === 'Yes'
@@ -60,34 +60,38 @@ block content
 
         hr
 
-        h2.heading-medium Has BASS made an offer to the offender?
+        if bassWithdrawn
+            include ../includes/taskListReturn
 
-        form(method="post")
-            input(type="hidden" name="_csrf" value=csrfToken)
-            input(type="hidden" name="bookingId" value=bookingId || '')
-            div.paddingBottom.largeMarginBottom
+        else
+            h2.heading-medium Has BASS made an offer to the offender?
 
-                div.form-group.smallPaddingTop
-                    div.multiple-choice(data-target="bassAddressForm")
-                        input#waiting(type="radio" checked=bassOffer.bassAccepted === 'Yes' name="bassAccepted" value="Yes")
-                        label(for="waiting") Yes, BASS made an offer
-                    div.multiple-choice
-                        input#unsuitable(type="radio" checked=bassOffer.bassAccepted === 'Unsuitable' name="bassAccepted" value="Unsuitable")
-                        label(for="unsuitable") No, offender not suitable
-                    div.multiple-choice
-                        input#unavailable(type="radio" checked=bassOffer.bassAccepted === 'Unavailable' name="bassAccepted" value="Unavailable")
-                        label(for="unavailable") No, address not available
+            form(method="post")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="bookingId" value=bookingId || '')
+                div.paddingBottom.largeMarginBottom
 
-                div#bassAreaDetails.panel.panel-border-narrow
-                    label(for='bassOfferDetails') Provide details of the BASS decision (optional)
-                        textarea(name='bassOfferDetails' id='bassOfferDetails' class='form-control' rows='2' aria-label="Provide details of the BASS decision (optional)")
-                            if bassOffer.bassOfferDetails
-                                | #{bassOffer.bassOfferDetails}
+                    div.form-group.smallPaddingTop
+                        div.multiple-choice(data-target="bassAddressForm")
+                            input#waiting(type="radio" checked=bassOffer.bassAccepted === 'Yes' name="bassAccepted" value="Yes")
+                            label(for="waiting") Yes, BASS made an offer
+                        div.multiple-choice
+                            input#unsuitable(type="radio" checked=bassOffer.bassAccepted === 'Unsuitable' name="bassAccepted" value="Unsuitable")
+                            label(for="unsuitable") No, offender not suitable
+                        div.multiple-choice
+                            input#unavailable(type="radio" checked=bassOffer.bassAccepted === 'Unavailable' name="bassAccepted" value="Unavailable")
+                            label(for="unavailable") No, address not available
 
-                if licenceStatus.postApproval
-                    div#bassAddressForm(class="panel panel-border-narrow js-hidden")
-                        +bassAddressForm
+                    div#bassAreaDetails.panel.panel-border-narrow
+                        label(for='bassOfferDetails') Provide details of the BASS decision (optional)
+                            textarea(name='bassOfferDetails' id='bassOfferDetails' class='form-control' rows='2' aria-label="Provide details of the BASS decision (optional)")
+                                if bassOffer.bassOfferDetails
+                                    | #{bassOffer.bassOfferDetails}
 
-            include ../includes/saveAndReturn
+                    if licenceStatus.postApproval
+                        div#bassAddressForm(class="panel panel-border-narrow js-hidden")
+                            +bassAddressForm
+
+                include ../includes/saveAndReturn
 
 
