@@ -64,7 +64,9 @@ module.exports = {
         validate: true,
         fields: [
             {bassAreaSuitable: {
-                responseType: 'requiredYesNo',
+                dependentOn: 'specificArea',
+                predicate: 'Yes',
+                responseType: 'requiredYesNoIf_specificArea_Yes',
                 validationMessage: 'Select yes or no'
             }},
             {bassAreaReason: {
