@@ -427,7 +427,7 @@ function getCurfewAddressReviewState(licence) {
         }
     }
 
-    if (isAcceptedAddress(addressReview, addressSafety, getIn(licence, ['occupier', 'isOffender']) === 'Yes')) {
+    if (isAcceptedAddress(addressReview, addressSafety, getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes')) {
         return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};
     }
 
