@@ -21,7 +21,7 @@ describe('/hdc/licenceConditions', () => {
     beforeEach(() => {
         conditionsService = createConditionsServiceStub();
         conditionsService.getStandardConditions = sinon.stub().resolves([{text: 'Not commit any offence'}]);
-        conditionsService.getAdditionalConditions = sinon.stub().resolves({
+        conditionsService.getAdditionalConditions = sinon.stub().returns({
             base: {
                 base: [{text: 'hi', id: 'ho', user_input: {}}]
             }

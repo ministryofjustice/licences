@@ -6,6 +6,7 @@ const {licenceStages, transitions} = require('../models/licenceStages');
 const recordList = require('./utils/recordList');
 const {replacePath, mergeWithRight, pick} = require('../utils/functionalHelpers');
 const formValidation = require('./utils/formValidation');
+const {additionalConditions} = require('./config/conditionsConfig');
 
 const {
     getIn,
@@ -88,7 +89,7 @@ module.exports = function createLicenceService(licenceClient) {
         }
 
         const conditionIds = additional.additionalConditions;
-        const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIds);
+        const selectedConditionsConfig = additionalConditions.filter(condition => conditionIds.includes(condition.id));
         const additionalConditionsObject = createAdditionalConditionsObject(
             selectedConditionsConfig,
             additional
