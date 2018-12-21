@@ -13,7 +13,6 @@ block content
             h2.heading-large Proposed address decision
 
             if address
-
                 +addressDetail('preferred', address, {}, {})
 
         h3.heading-medium Decision
@@ -21,24 +20,23 @@ block content
         form(method="post")
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="bookingId" value=bookingId || '')
-            input(type="hidden" name="addressIndex" value=address.index || '')
             div.pure-g.largePaddingBottom
                 div.pure-u-1.pure-u-md-1-2
                     div.form-group
                         p Could this offender be managed safely at this address?
 
                         div.multiple-choice
-                            input#deemedSafeYes(type="radio" checked=address.deemedSafe === 'Yes' name="deemedSafe" value="Yes")
+                            input#deemedSafeYes(type="radio" checked=data.deemedSafe === 'Yes' name="deemedSafe" value="Yes")
                             label(for="deemedSafeYes") Yes
                         div.multiple-choice(data-target="reasonForm")
-                            input#deemedSafeNo(type="radio" checked=address.deemedSafe === 'No' name="deemedSafe" value="No")
+                            input#deemedSafeNo(type="radio" checked=data.deemedSafe === 'No' name="deemedSafe" value="No")
                             label(for="deemedSafeNo") No
 
                         div#reasonForm.panel.panel-border-narrow.js-hidden
                             label(for='unsafeReason') Please explain why you have made this decision
                                 textarea(name='unsafeReason' id='unsafeReason' class='form-control' rows='5' aria-label="Explain why the offender cannot be managed safely at the address")
-                                    if address.unsafeReason
-                                        | #{address.unsafeReason}
+                                    if data.unsafeReason
+                                        | #{data.unsafeReason}
 
             if (action === 'change')
                 include ../includes/formSubmit
