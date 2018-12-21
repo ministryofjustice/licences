@@ -90,11 +90,6 @@ module.exports = {
         return db.query(query);
     },
 
-    getStandardConditions: async function() {
-        const {rows} = await db.query(`select * from conditions Where type = 'STANDARD'`);
-        return rows;
-    },
-
     updateStage: function(bookingId, stage) {
         const query = {
             text: 'update licences set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',

@@ -139,14 +139,6 @@ describe('licenceClient', () => {
         });
     });
 
-    describe('getStandardConditions', () => {
-
-        it('should call getStandardConditions', () => {
-            licencesProxy().getStandardConditions();
-            expect(queryStub).to.have.callCount(1);
-        });
-    });
-
     describe('updateStage', () => {
 
         it('should pass in the correct sql', () => {

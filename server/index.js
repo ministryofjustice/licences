@@ -25,7 +25,7 @@ const createNotificationService = require('./services/notificationService');
 
 const signInService = createSignInService(audit);
 const licenceService = createLicenceService(licenceClient);
-const conditionsService = createConditionsService(licenceClient);
+const conditionsService = createConditionsService();
 const prisonerService = createPrisonerService(nomisClientBuilder);
 const caseListFormatter = createCaseListFormatter(logger, licenceClient);
 const caseListService =
