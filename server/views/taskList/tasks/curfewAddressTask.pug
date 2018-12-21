@@ -1,13 +1,12 @@
 div.paddingBottom
     h2.heading-medium Proposed curfew address
 
-    if licenceStatus.decisions.optedOut
-        div.pure-g
+    div.pure-g
+        if licenceStatus.decisions.optedOut
             div.pure-u-1.pure-u-md-3-4
                 | Opted out
 
-    else
-        div.pure-g
+        else
             div.pure-u-1.pure-u-md-3-4
                 -var curfewAddressApproved = licenceStatus.decisions.curfewAddressApproved;
 
@@ -20,29 +19,33 @@ div.paddingBottom
                 else
                     | Not completed
 
-            div.pure-u-1.pure-u-md-1-4.center
+        div.pure-u-1.pure-u-md-1-4.center
 
-                -var path = "/hdc/curfew/curfewAddressReview/" + prisonerInfo.bookingId
-                -var withdrawnPath = "/hdc/curfew/consentWithdrawn/" + prisonerInfo.bookingId
-                -var reviewPath = "/hdc/review/address/" + prisonerInfo.bookingId
-                -var curfewAddressChoicePath = "/hdc/proposedAddress/curfewAddressChoice/" + prisonerInfo.bookingId
+            -var path = "/hdc/curfew/curfewAddressReview/" + prisonerInfo.bookingId
+            -var withdrawnPath = "/hdc/curfew/consentWithdrawn/" + prisonerInfo.bookingId
+            -var reviewPath = "/hdc/review/address/" + prisonerInfo.bookingId
+            -var curfewAddressChoicePath = "/hdc/proposedAddress/curfewAddressChoice/" + prisonerInfo.bookingId
 
-                if user.role === 'RO'
-                    if curfewAddressApproved === 'rejected'
-                        +change(path)
-                    else
-                        +startContinueChange(licenceStatus.tasks.curfewAddressReview, path)
-
-                else if user.role === 'CA' && postApproval
-                    if curfewAddressApproved === 'withdrawn'
-                        +viewEdit(withdrawnPath)
-                    else
-                        +viewEdit(reviewPath)
-
-                else if user.role === 'CA' && licenceStatus.stage === 'PROCESSING_CA'
-                    if licenceStatus.tasks.curfewAddress !== 'DONE' && curfewAddressApproved === 'unstarted'
-                        +startContinueChange(licenceStatus.tasks.curfewAddress, curfewAddressChoicePath)
-                    else
-                        +change(reviewPath)
+            if user.role === 'RO'
+                if curfewAddressApproved === 'rejected'
+                    +change(path)
                 else
-                    +view(reviewPath)
+                    +startContinueChange(licenceStatus.tasks.curfewAddressReview, path)
+
+            else if user.role === 'CA' && postApproval
+                if curfewAddressApproved === 'withdrawn'
+                    +viewEdit(withdrawnPath)
+                else
+                    +viewEdit(reviewPath)
+
+            else if user.role === 'CA' && licenceStatus.stage === 'PROCESSING_CA'
+                if licenceStatus.decisions.optedOut
+                    +startContinueChange(licenceStatus.tasks.curfewAddress, curfewAddressChoicePath)
+
+                else if licenceStatus.tasks.curfewAddress !== 'DONE' && curfewAddressApproved === 'unstarted'
+                    +startContinueChange(licenceStatus.tasks.curfewAddress, curfewAddressChoicePath)
+
+                else
+                    +change(reviewPath)
+            else
+                +view(reviewPath)
