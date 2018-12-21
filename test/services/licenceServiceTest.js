@@ -17,7 +17,7 @@ describe('licenceService', () => {
             createLicence: sinon.stub().resolves('abc'),
             updateSection: sinon.stub().resolves(),
             updateStage: sinon.stub().resolves(),
-            getAdditionalConditions: sinon.stub().resolves([
+            getAdditionalConditions: sinon.stub().returns([
                 {user_input: 1, id: 1, field_position: null}]),
             updateLicence: sinon.stub().resolves(),
             updateStageAndVersion: sinon.stub().resolves(),
@@ -82,23 +82,14 @@ describe('licenceService', () => {
             existingLicence = {licence: {a: 'b'}};
         });
 
-        it('should get the selected licence conditions', async () => {
-            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
-
-            expect(licenceClient.getAdditionalConditions).to.be.calledOnce();
-            expect(licenceClient.getAdditionalConditions).to.be.calledWith({additional: {key: 'var'}});
-        });
-
         it('should call update section with conditions from the licence client merged with existing', async () => {
             const existingLicence = {
                 licence: {
                     licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}}
                 }
             };
-            licenceClient.getAdditionalConditions.resolves([
-                {user_input: 1, id: 1, field_position: null}]);
 
-            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: '1'}, [{text: 'bespoke'}]);
+            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: 'NOCONTACTPRISONER'}, [{text: 'bespoke'}]);
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
@@ -106,7 +97,7 @@ describe('licenceService', () => {
                 'ab1',
                 {
                     standard: {additionalConditionsRequired: 'Yes'},
-                    additional: {1: {}},
+                    additional: {NOCONTACTPRISONER: {}},
                     bespoke: [{text: 'bespoke'}]
                 }
             );
@@ -118,15 +109,13 @@ describe('licenceService', () => {
                     licenceConditions:
                         {
                             standard: {additionalConditionsRequired: 'Yes'},
-                            additional: {1: {}},
+                            additional: {NOCONTACTPRISONER: {}},
                             bespoke: [{text: 'bespoke'}]
                         }
                 }
             };
-            licenceClient.getAdditionalConditions.resolves([
-                {user_input: 1, id: 1, field_position: null}]);
 
-            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: '1'}, [{text: 'bespoke'}]);
+            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: 'NOCONTACTPRISONER'}, [{text: 'bespoke'}]);
 
             expect(licenceClient.updateSection).to.not.be.called();
         });
@@ -141,7 +130,7 @@ describe('licenceService', () => {
 
             it('should change stage to MODIFIED_APPROVAL when updates occur', async () => {
                 const existingLicence = {stage: 'DECIDED', licence: {a: 'b'}};
-                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: 'NOCONTACTPRISONER'});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
                 expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED_APPROVAL');
@@ -149,7 +138,7 @@ describe('licenceService', () => {
 
             it('should change stage to MODIFIED_APPROVAL when updates occur in MODIFIED stage', async () => {
                 const existingLicence = {stage: 'MODIFIED', licence: {a: 'b'}};
-                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: 'NOCONTACTPRISONER'});
 
                 expect(licenceClient.updateStage).to.be.calledOnce();
                 expect(licenceClient.updateStage).to.be.calledWith('ab1', 'MODIFIED_APPROVAL');
@@ -157,7 +146,7 @@ describe('licenceService', () => {
 
             it('should not change stage if not DECIDED', async () => {
                 const existingLicence = {stage: 'PROCESSING_RO', licence: {a: 'b'}};
-                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: 'NOCONTACTPRISONER'});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });
@@ -167,7 +156,7 @@ describe('licenceService', () => {
                     stage: 'PROCESSING_RO',
                     licence: {licenceConditions: {additionalConditions: {additional: {key: 'var'}}}}
                 };
-                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: {additional: {key: 'var'}}});
+                await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: 'NOCONTACTPRISONER'});
 
                 expect(licenceClient.updateStage).to.not.be.calledOnce();
             });

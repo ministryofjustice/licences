@@ -147,59 +147,6 @@ describe('licenceClient', () => {
         });
     });
 
-    describe('getAdditionalConditions', () => {
-
-        it('should call db.query', () => {
-            licencesProxy().getAdditionalConditions();
-            expect(queryStub).to.have.callCount(1);
-        });
-
-        it('should not pass parameters to query', () => {
-            licencesProxy().getAdditionalConditions();
-
-            const params = queryStub.getCalls()[0].args[0].values;
-            expect(params).to.be.undefined();
-        });
-
-        describe('when no ids are passed in', () => {
-
-            it('should use sql without IN clause', () => {
-                const result = licencesProxy().getAdditionalConditions();
-
-                return result.then(data => {
-                    const sql = queryStub.getCalls()[0].args[0];
-                    const expectedSql = 'where conditions.type = \'ADDITIONAL\' and active = true';
-                    expect(sql).to.contain(expectedSql);
-                });
-            });
-        });
-
-        describe('when ids are passed in', () => {
-
-            it('should use sql with IN clause', () => {
-                const result = licencesProxy().getAdditionalConditions(['1', '2']);
-
-                return result.then(data => {
-                    const sql = queryStub.getCalls()[0].args[0];
-                    const expectedSql = 'where conditions.type = \'ADDITIONAL\' and conditions.id in (\'1\',\'2\') ' +
-                        'and active = true';
-                    expect(sql).to.contain(expectedSql);
-                });
-            });
-
-            it('should use sql with IN clause when there is 1 id', () => {
-                const result = licencesProxy().getAdditionalConditions('1');
-
-                return result.then(data => {
-                    const sql = queryStub.getCalls()[0].args[0];
-                    const expectedSql = 'where conditions.type = \'ADDITIONAL\' and conditions.id in (\'1\') ' +
-                        'and active = true';
-                    expect(sql).to.contain(expectedSql);
-                });
-            });
-        });
-    });
-
     describe('updateStage', () => {
 
         it('should pass in the correct sql', () => {

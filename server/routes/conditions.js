@@ -21,16 +21,16 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         res.render('licenceConditions/standard', {action, bookingId, conditions, data});
     }
 
-    router.get('/licenceConditions/additionalConditions/:bookingId', asyncMiddleware(getAdditional));
-    router.get('/licenceConditions/additionalConditions/:action/:bookingId', asyncMiddleware(getAdditional));
+    router.get('/licenceConditions/additionalConditions/:bookingId', getAdditional);
+    router.get('/licenceConditions/additionalConditions/:action/:bookingId', getAdditional);
 
-    async function getAdditional(req, res) {
+    function getAdditional(req, res) {
         logger.debug('GET /additionalConditions');
 
         const {action, bookingId} = req.params;
         const licence = getIn(res.locals.licence, ['licence']);
         const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
-        const conditions = await conditionsService.getAdditionalConditions(licence);
+        const conditions = conditionsService.getAdditionalConditions(licence);
 
         res.render('licenceConditions/additionalConditions', {action, bookingId, conditions, bespokeConditions});
     }
@@ -45,7 +45,7 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         const destination = action ? action + '/' + bookingId : bookingId;
 
         const bespoke = bespokeDecision === 'Yes' && bespokeConditions.filter(condition => condition.text) || [];
-        const additional = await getAdditionalConditionsFrom(additionalConditions, req.body);
+        const additional = getAdditionalConditionsFrom(additionalConditions, req.body);
 
         if (!additional) {
             await licenceService.updateLicenceConditions(bookingId, res.locals.licence, {}, bespoke);

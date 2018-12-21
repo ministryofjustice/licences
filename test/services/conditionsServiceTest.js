@@ -1,4 +1,9 @@
 const createConditionsService = require('../../server/services/conditionsService');
+const {
+    additionalConditionsObject,
+    additionalConditionsObjectNoResideSelected,
+    additionalConditionsObjectDateSelected
+} = require('../stubs/conditions');
 
 describe('conditionsService', () => {
     let licenceClient;
@@ -31,308 +36,20 @@ describe('conditionsService', () => {
     });
 
     describe('getAdditionalConditions', () => {
-        it('should request additional conditions from client', () => {
-            service.getAdditionalConditions();
-
-            expect(licenceClient.getAdditionalConditions).to.be.calledOnce();
-        });
-
-        it('should throw if error getting conditions', () => {
-            licenceClient.getAdditionalConditions.rejects();
-            return expect(service.getAdditionalConditions()).to.eventually.be.rejected();
-        });
 
         it('should split the conditions by group and subgroup', () => {
-            licenceClient.getAdditionalConditions.resolves([
-                {
-                    id: 'NOTIFYRELATIONSHIP',
-                    text: 'v',
-                    user_input: {},
-                    group_name: 'g1',
-                    subgroup_name: 's1'
-                },
-                {
-                    id: 'NOWORKWITHAGE',
-                    text: 'g',
-                    user_input: {},
-                    group_name: 'g1',
-                    subgroup_name: 's1'
-                },
-                {
-                    id: 'NOCONTACTPRISONER',
-                    text: 'a',
-                    user_input: {},
-                    group_name: 'g2',
-                    subgroup_name: 's2'
-                },
-                {
-                    id: 'CAMERAAPPROVAL',
-                    text: 's',
-                    user_input: {},
-                    group_name: 'g2',
-                    subgroup_name: 's3'
-                }
-            ]);
-
-            const expectedOutput = {
-                g1: {
-                    s1: [
-                        {
-                            id: 'NOWORKWITHAGE',
-                            text: 'g',
-                            user_input: {},
-                            group_name: 'g1',
-                            subgroup_name: 's1'
-                        },
-                        {
-                            id: 'NOTIFYRELATIONSHIP',
-                            text: 'v',
-                            user_input: {},
-                            group_name: 'g1',
-                            subgroup_name: 's1'
-                        }
-                    ]
-                },
-                g2: {
-                    s2: [
-                        {
-                            id: 'NOCONTACTPRISONER',
-                            text: 'a',
-                            user_input: {},
-                            group_name: 'g2',
-                            subgroup_name: 's2'
-                        }
-                    ],
-                    s3: [
-                        {
-                            id: 'CAMERAAPPROVAL',
-                            text: 's',
-                            user_input: {},
-                            group_name: 'g2',
-                            subgroup_name: 's3'
-                        }
-                    ]
-                }
-            };
-
-            return expect(service.getAdditionalConditions()).to.eventually.eql(expectedOutput);
-        });
-
-        it('should handle a null subgroup', () => {
-            licenceClient.getAdditionalConditions.resolves([
-                {
-                    id: 'NOTIFYRELATIONSHIP',
-                    text: 'v',
-                    user_input: {},
-                    group_name: 'g1',
-                    subgroup_name: 's1'
-                },
-                {
-                    id: 'NOWORKWITHAGE',
-                    text: 'g',
-                    user_input: {},
-                    group_name: 'g1',
-                    subgroup_name: 's1'
-                },
-                {
-                    id: 'NOCONTACTPRISONER',
-                    text: 'a',
-                    user_input: {},
-                    group_name: 'g2',
-                    subgroup_name: 's2'
-                },
-                {
-                    id: 'CAMERAAPPROVAL',
-                    text: 's',
-                    user_input: {},
-                    group_name: 'g2',
-                    subgroup_name: null
-                }
-            ]);
-
-            const expectedOutput = {
-                g1: {
-                    s1: [
-                        {
-                            id: 'NOWORKWITHAGE',
-                            text: 'g',
-                            user_input: {},
-                            group_name: 'g1',
-                            subgroup_name: 's1'
-                        },
-                        {
-                            id: 'NOTIFYRELATIONSHIP',
-                            text: 'v',
-                            user_input: {},
-                            group_name: 'g1',
-                            subgroup_name: 's1'
-                        }
-                    ]
-                },
-                g2: {
-                    base: [
-                        {
-                            id: 'CAMERAAPPROVAL',
-                            text: 's',
-                            user_input: {},
-                            group_name: 'g2',
-                            subgroup_name: null
-                        }
-                    ],
-                    s2: [
-                        {
-                            id: 'NOCONTACTPRISONER',
-                            text: 'a',
-                            user_input: {},
-                            group_name: 'g2',
-                            subgroup_name: 's2'
-                        }
-                    ]
-                }
-            };
-
-            return expect(service.getAdditionalConditions()).to.eventually.eql(expectedOutput);
-        });
-
-        it('should handle a null group', () => {
-            licenceClient.getAdditionalConditions.resolves([
-                {
-                    id: 'NOWORKWITHAGE',
-                    text: 'v',
-                    user_input: {},
-                    group_name: null,
-                    subgroup_name: null
-                },
-                {
-                    id: 'NOTIFYRELATIONSHIP',
-                    text: 'g',
-                    user_input: {},
-                    group_name: 'g1',
-                    subgroup_name: 's1'
-                },
-                {
-                    id: 'CAMERAAPPROVAL',
-                    text: 'a',
-                    user_input: {},
-                    group_name: 'g2',
-                    subgroup_name: 's2'
-                },
-                {
-                    id: 'NOCONTACTPRISONER',
-                    text: 's',
-                    user_input: {},
-                    group_name: 'g2',
-                    subgroup_name: null
-                }
-            ]);
-
-            const expectedOutput = {
-                base: {
-                    base: [
-                        {
-                            id: 'NOWORKWITHAGE',
-                            text: 'v',
-                            user_input: {},
-                            group_name: null,
-                            subgroup_name: null
-                        }
-                    ]
-                },
-                g1: {
-                    s1: [
-                        {
-                            id: 'NOTIFYRELATIONSHIP',
-                            text: 'g',
-                            user_input: {},
-                            group_name: 'g1',
-                            subgroup_name: 's1'
-                        }
-                    ]
-                },
-                g2: {
-                    base: [
-                        {
-                            id: 'NOCONTACTPRISONER',
-                            text: 's',
-                            user_input: {},
-                            group_name: 'g2',
-                            subgroup_name: null
-                        }
-                    ],
-                    s2: [
-                        {
-                            id: 'CAMERAAPPROVAL',
-                            text: 'a',
-                            user_input: {},
-                            group_name: 'g2',
-                            subgroup_name: 's2'
-                        }
-                    ]
-                }
-            };
-
-            return expect(service.getAdditionalConditions()).to.eventually.eql(expectedOutput);
+            return expect(service.getAdditionalConditions()).to.eql(additionalConditionsObject);
         });
 
         it('should populate inputs if licence is passed in', () => {
 
             const licence = {
                 licenceConditions: {
-                    additional: {12: {victimFamilyMembers: 'a', socialServicesDept: 'd'}}
+                    additional: {NORESIDE: {notResideWithAge: 12, notResideWithGender: 'Female'}}
                 }
             };
 
-            licenceClient.getAdditionalConditions.resolves([
-                {
-                    id: '12', text: 'v', group_name: null, subgroup_name: null,
-                    user_input: 'additionalConditions'
-                },
-                {
-                    id: '13', text: 'g', group_name: null, subgroup_name: null,
-                    user_input: {}
-                },
-                {
-                    id: '14', text: 'a', group_name: null, subgroup_name: null,
-                    user_input: {}
-                },
-                {
-                    id: '15', text: 's', group_name: null, subgroup_name: null,
-                    user_input: {}
-                }
-            ]);
-
-            const expectedOutput = {
-                base: {
-                    base: [
-                        {
-                            id: '12', text: 'v', group_name: null, subgroup_name: null,
-                            user_input: 'additionalConditions',
-                            selected: true,
-                            user_submission: {victimFamilyMembers: 'a', socialServicesDept: 'd'}
-                        },
-                        {
-                            id: '13', text: 'g', group_name: null, subgroup_name: null,
-                            user_input: {},
-                            selected: false,
-                            user_submission: {}
-                        },
-                        {
-                            id: '14', text: 'a', group_name: null, subgroup_name: null,
-                            user_input: {},
-                            selected: false,
-                            user_submission: {}
-                        },
-                        {
-                            id: '15', text: 's', group_name: null, subgroup_name: null,
-                            user_input: {},
-                            selected: false,
-                            user_submission: {}
-                        }
-                    ]
-                }
-            };
-
-            return expect(service.getAdditionalConditions(licence)).to.eventually.eql(expectedOutput);
+            return expect(service.getAdditionalConditions(licence)).to.eql(additionalConditionsObjectNoResideSelected);
 
         });
 
@@ -344,58 +61,11 @@ describe('conditionsService', () => {
                 }
             };
 
-            licenceClient.getAdditionalConditions.resolves([
-                {
-                    id: 'ATTENDDEPENDENCY', text: 'v', group_name: 'group', subgroup_name: 'subgroup',
-                    user_input: 'additionalConditions'
-                }
-            ]);
-
-            const expectedOutput = {
-                group: {
-                    subgroup: [
-                        {
-                            id: 'ATTENDDEPENDENCY', text: 'v', group_name: 'group', subgroup_name: 'subgroup',
-                            user_input: 'additionalConditions',
-                            selected: true,
-                            user_submission: {
-                                appointmentDate: '12/03/1985',
-                                appointmentDay: '12',
-                                appointmentMonth: '03',
-                                appointmentYear: '1985'}
-                        }
-                    ]
-                }
-            };
-
-            return expect(service.getAdditionalConditions(licence)).to.eventually.eql(expectedOutput);
+            return expect(service.getAdditionalConditions(licence)).to.eql(additionalConditionsObjectDateSelected);
         });
     });
 
     describe('populateLicenceWithConditions', () => {
-
-        it('should addAdditionalConditions if they are present in licence and requested', () => {
-            const licence = {licenceConditions: {additional: {1: {}}, bespoke: []}};
-            licenceClient.getAdditionalConditions.resolves([{
-                id: 1,
-                user_input: null,
-                text: 'The condition',
-                field_position: null,
-                group_name: 'group',
-                subgroup_name: 'subgroup'
-            }]);
-
-            return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql({
-                licenceConditions: [{
-                    content: [{text: 'The condition'}],
-                    group: 'group',
-                    subgroup: 'subgroup',
-                    id: 1,
-                    inputRequired: false
-                }]
-            });
-        });
-
         it('should return the licence if conditions not required', () => {
             const licence = {licenceConditions: {
                 standard: {additionalConditionsRequired: 'No'},

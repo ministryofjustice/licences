@@ -95,11 +95,6 @@ module.exports = {
         return rows;
     },
 
-    getAdditionalConditions: async function(ids = []) {
-        const {rows} = await db.query(additionalConditionsSql(ids));
-        return rows;
-    },
-
     updateStage: function(bookingId, stage) {
         const query = {
             text: 'update licences set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',
@@ -134,35 +129,4 @@ module.exports = {
 
         return db.query(query);
     }
-};
-
-const additionalConditionsSql = ids => {
-    const idArray = Array.isArray(ids) ? ids : [ids];
-
-    if (idArray.length === 0) {
-        return 'select ' +
-            '  conditions.*, ' +
-            '  conditions_ui.field_position, ' +
-            '  groups.name as group_name, ' +
-            '  subgroups.name as subgroup_name ' +
-            'from conditions ' +
-            'left join conditions_ui on conditions.user_input = conditions_ui.ui_id ' +
-            'left join conditions_groups groups on conditions.group = groups.id ' +
-            'left join conditions_groups subgroups on conditions.subgroup = subgroups.id ' +
-            'where conditions.type = \'ADDITIONAL\' and active = true ' +
-            'order by conditions.group, conditions.subgroup';
-    }
-
-    return 'select ' +
-        '  conditions.*, ' +
-        '  conditions_ui.field_position, ' +
-        '  groups.name as group_name, ' +
-        '  subgroups.name as subgroup_name ' +
-        'from conditions ' +
-        'left join conditions_ui on conditions.user_input = conditions_ui.ui_id ' +
-        'left join conditions_groups groups on conditions.group = groups.id ' +
-        'left join conditions_groups subgroups on conditions.subgroup = subgroups.id ' +
-        'where conditions.type = \'ADDITIONAL\' and conditions.id in (\'' + idArray.join('\',\'') + '\') ' +
-        'and active = true ' +
-        'order by conditions.group, conditions.subgroup';
 };

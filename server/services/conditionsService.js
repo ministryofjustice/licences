@@ -4,6 +4,7 @@ const logger = require('../../log.js');
 const {conditionsOrder} = require('../models/conditions');
 const {populateAdditionalConditionsAsObject} = require('../utils/licenceFactory');
 const moment = require('moment');
+const {additionalConditions} = require('./config/conditionsConfig');
 
 module.exports = function createConditionsService(licenceClient) {
 
@@ -11,31 +12,23 @@ module.exports = function createConditionsService(licenceClient) {
         return licenceClient.getStandardConditions();
     }
 
-    async function getAdditionalConditions(licence = null) {
-        try {
-            const conditions = await licenceClient.getAdditionalConditions();
-            const additionalConditions = getIn(licence, ['licenceConditions', 'additional']);
-
-            if (additionalConditions) {
-
-                return conditions
-                    .sort(orderForView)
-                    .map(populateFromSavedLicence(additionalConditions))
-                    .reduce(splitIntoGroupedObject, {});
-            }
-
-            return conditions
+    function getAdditionalConditions(licence = null) {
+        const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional']);
+        if (licenceAdditionalConditions) {
+            return additionalConditions
                 .sort(orderForView)
+                .map(populateFromSavedLicence(licenceAdditionalConditions))
                 .reduce(splitIntoGroupedObject, {});
-
-        } catch (error) {
-            logger.error('Error during getStandardConditions', error.stack);
-            throw error;
         }
+
+        return additionalConditions
+            .sort(orderForView)
+            .reduce(splitIntoGroupedObject, {});
     }
 
-    async function formatConditionInputs(requestBody) {
-        const selectedConditionsConfig = await licenceClient.getAdditionalConditions(requestBody.additionalConditions);
+    function formatConditionInputs(requestBody) {
+        const selectedConditionsConfig = additionalConditions.filter(condition =>
+            requestBody.additionalConditions.includes(condition.id));
 
         return formatConditionsInput(requestBody, selectedConditionsConfig);
     }
@@ -46,16 +39,17 @@ module.exports = function createConditionsService(licenceClient) {
             return licence;
         }
 
-        const additionalConditions = getIn(licence, ['licenceConditions', 'additional']);
+        const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional']);
         const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
-        const conditionsOnLicence = !isEmpty(additionalConditions) || bespokeConditions.length > 0;
+        const conditionsOnLicence = !isEmpty(licenceAdditionalConditions) || bespokeConditions.length > 0;
         if (!conditionsOnLicence) {
             return licence;
         }
 
         try {
-            const conditionIdsSelected = Object.keys(additionalConditions);
-            const selectedConditionsConfig = await licenceClient.getAdditionalConditions(conditionIdsSelected);
+            const conditionIdsSelected = Object.keys(licenceAdditionalConditions);
+            const selectedConditionsConfig = additionalConditions.filter(condition =>
+                conditionIdsSelected.includes(condition.id));
 
             return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors);
 
