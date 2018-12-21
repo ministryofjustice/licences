@@ -8,14 +8,14 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'licenceConditions'});
 
-    router.get('/licenceConditions/standard/:bookingId', asyncMiddleware(getStandard));
-    router.get('/licenceConditions/standard/:action/:bookingId', asyncMiddleware(getStandard));
+    router.get('/licenceConditions/standard/:bookingId', getStandard);
+    router.get('/licenceConditions/standard/:action/:bookingId', getStandard);
 
-    async function getStandard(req, res) {
+    function getStandard(req, res) {
         logger.debug('GET /standard/:bookingId');
 
         const {action, bookingId} = req.params;
-        const conditions = await conditionsService.getStandardConditions();
+        const conditions = conditionsService.getStandardConditions();
         const data = getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {};
 
         res.render('licenceConditions/standard', {action, bookingId, conditions, data});

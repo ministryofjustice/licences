@@ -33,8 +33,8 @@ describe('/hdc/licenceConditions', () => {
     describe('licenceConditions routes', () => {
         const licenceService = createLicenceServiceStub();
         const conditionsServiceStub = createConditionsServiceStub();
-        conditionsServiceStub.getStandardConditions = sinon.stub().resolves([{text: 'Not commit any offence'}]);
-        conditionsServiceStub.getAdditionalConditions = sinon.stub().resolves({
+        conditionsServiceStub.getStandardConditions = sinon.stub().returns([{text: 'Not commit any offence'}]);
+        conditionsServiceStub.getAdditionalConditions = sinon.stub().returns({
             base: {
                 base: [{text: 'hi', id: 'ho', user_input: {}}]
             }

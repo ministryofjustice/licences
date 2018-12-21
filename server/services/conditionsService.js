@@ -4,12 +4,12 @@ const logger = require('../../log.js');
 const {conditionsOrder} = require('../models/conditions');
 const {populateAdditionalConditionsAsObject} = require('../utils/licenceFactory');
 const moment = require('moment');
-const {additionalConditions} = require('./config/conditionsConfig');
+const {additionalConditions, standardConditions} = require('./config/conditionsConfig');
 
-module.exports = function createConditionsService(licenceClient) {
+module.exports = function createConditionsService() {
 
     function getStandardConditions() {
-        return licenceClient.getStandardConditions();
+        return standardConditions;
     }
 
     function getAdditionalConditions(licence = null) {

@@ -1,4 +1,5 @@
 const createConditionsService = require('../../server/services/conditionsService');
+const {standardConditions} = require('../../server/services/config/conditionsConfig');
 const {
     additionalConditionsObject,
     additionalConditionsObjectNoResideSelected,
@@ -10,28 +11,12 @@ describe('conditionsService', () => {
     let service;
 
     beforeEach(() => {
-        licenceClient = {
-            getStandardConditions: sinon.stub().resolves({a: 'b'}),
-            getAdditionalConditions: sinon.stub().resolves([{text: 'v', user_input: {}}])
-        };
-
         service = createConditionsService(licenceClient);
     });
 
     describe('getStandardConditions', () => {
-        it('should request standard conditions from client', () => {
-            service.getStandardConditions();
-
-            expect(licenceClient.getStandardConditions).to.be.calledOnce();
-        });
-
         it('should return the conditions', () => {
-            return expect(service.getStandardConditions()).to.eventually.eql({a: 'b'});
-        });
-
-        it('should throw if error getting conditions', () => {
-            licenceClient.getStandardConditions.rejects();
-            return expect(service.getStandardConditions()).to.eventually.be.rejected();
+            return expect(service.getStandardConditions()).to.eql(standardConditions);
         });
     });
 
@@ -72,28 +57,12 @@ describe('conditionsService', () => {
                 additional: {1: {}},
                 bespoke: []
             }};
-            licenceClient.getAdditionalConditions.resolves([{
-                id: 1,
-                user_input: null,
-                text: 'The condition',
-                field_position: null,
-                group_name: 'group',
-                subgroup_name: 'subgroup'
-            }]);
 
             return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql(licence);
         });
 
         it('should return licence if no additional conditions', () => {
             const licence = {licenceConditions: {}};
-            licenceClient.getAdditionalConditions.resolves([{
-                id: 1,
-                user_input: null,
-                text: 'The condition',
-                field_position: null,
-                group_name: 'group',
-                subgroup_name: 'subgroup'
-            }]);
 
             return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql({
                 licenceConditions: {}
