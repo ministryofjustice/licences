@@ -64,10 +64,10 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         return conditionsService.formatConditionInputs(input);
     }
 
-    router.get('/licenceConditions/conditionsSummary/:bookingId', asyncMiddleware(getConditionsSummary));
-    router.get('/licenceConditions/conditionsSummary/:action/:bookingId', asyncMiddleware(getConditionsSummary));
+    router.get('/licenceConditions/conditionsSummary/:bookingId', getConditionsSummary);
+    router.get('/licenceConditions/conditionsSummary/:action/:bookingId', getConditionsSummary);
 
-    async function getConditionsSummary(req, res) {
+    function getConditionsSummary(req, res) {
         const {bookingId, action} = req.params;
         logger.debug('GET licenceConditions/conditionsSummary/:bookingId');
 
@@ -78,7 +78,7 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
             formResponse: additionaConditions,
             pageConfig: formConfig.additional,
             formType: 'additional'});
-        const data = await conditionsService.populateLicenceWithConditions(licence, errorObject);
+        const data = conditionsService.populateLicenceWithConditions(licence, errorObject);
 
         res.render(`licenceConditions/conditionsSummary`, {bookingId, data, nextPath, action});
     }

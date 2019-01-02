@@ -1,6 +1,5 @@
 const {formatConditionsInput} = require('./utils/conditionsFormatter');
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
-const logger = require('../../log.js');
 const {populateAdditionalConditionsAsObject} = require('../utils/licenceFactory');
 const moment = require('moment');
 const {additionalConditions, standardConditions} = require('./config/conditionsConfig');
@@ -29,8 +28,7 @@ module.exports = function createConditionsService() {
         return formatConditionsInput(requestBody, selectedConditionsConfig);
     }
 
-    async function populateLicenceWithConditions(licence, errors = {}) {
-
+    function populateLicenceWithConditions(licence, errors = {}) {
         if (getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No') {
             return licence;
         }
@@ -42,17 +40,11 @@ module.exports = function createConditionsService() {
             return licence;
         }
 
-        try {
-            const conditionIdsSelected = Object.keys(licenceAdditionalConditions);
-            const selectedConditionsConfig = additionalConditions.filter(condition =>
-                conditionIdsSelected.includes(condition.id));
+        const conditionIdsSelected = Object.keys(licenceAdditionalConditions);
+        const selectedConditionsConfig = additionalConditions.filter(condition =>
+            conditionIdsSelected.includes(condition.id));
 
-            return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors);
-
-        } catch (error) {
-            logger.error('Error during populateLicenceWithConditions');
-            throw error;
-        }
+        return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors);
     }
 
     return {

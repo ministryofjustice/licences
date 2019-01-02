@@ -58,13 +58,13 @@ describe('conditionsService', () => {
                 bespoke: []
             }};
 
-            return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql(licence);
+            return expect(service.populateLicenceWithConditions(licence)).to.eql(licence);
         });
 
         it('should return licence if no additional conditions', () => {
             const licence = {licenceConditions: {}};
 
-            return expect(service.populateLicenceWithConditions(licence)).to.eventually.eql({
+            return expect(service.populateLicenceWithConditions(licence)).to.eql({
                 licenceConditions: {}
             });
         });
