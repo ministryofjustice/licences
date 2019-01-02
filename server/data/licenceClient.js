@@ -1,4 +1,4 @@
-const {licenceStages} = require('../models/licenceStages');
+const {licenceStages} = require('../services/config/licenceStages');
 const db = require('./dataAccess/db');
 
 module.exports = {

@@ -1,5 +1,5 @@
 const {getLicenceStatus} = require('../../server/utils/licenceStatus');
-const {taskStates} = require('../../server/models/taskStates');
+const {taskStates} = require('../../server/services/config/taskStates');
 
 describe('getLicenceStatus', () => {
 

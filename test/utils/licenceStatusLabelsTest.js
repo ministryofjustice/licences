@@ -1,5 +1,5 @@
 const {getStatusLabel} = require('../../server/utils/licenceStatusLabels');
-const {licenceStages} = require('../../server/models/licenceStages');
+const {licenceStages} = require('../../server/services/config/licenceStages');
 
 describe('getStatusLabel', () => {
 

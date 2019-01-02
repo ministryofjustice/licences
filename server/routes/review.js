@@ -18,7 +18,7 @@ module.exports = ({licenceService, conditionsService, prisonerService}) => route
 
         const errorObject = showErrors ? getErrors(licence, stage, licenceStatus) : {};
 
-        const data = await conditionsService.populateLicenceWithConditions(licence, errorObject);
+        const data = conditionsService.populateLicenceWithConditions(licence, errorObject);
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token);
 

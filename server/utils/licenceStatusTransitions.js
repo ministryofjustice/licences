@@ -1,4 +1,4 @@
-const {taskStates} = require('../models/taskStates');
+const {taskStates} = require('../services/config/taskStates');
 
 module.exports = {getAllowedTransition};
 

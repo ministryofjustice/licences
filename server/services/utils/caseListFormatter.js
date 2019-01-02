@@ -2,7 +2,7 @@ const {getIn} = require('../../utils/functionalHelpers');
 const {formatObjectForView} = require('./formatForView');
 const {getLicenceStatus} = require('../../utils/licenceStatus');
 const {getStatusLabel} = require('../../utils/licenceStatusLabels');
-const {licenceStages} = require('../../models/licenceStages');
+const {licenceStages} = require('../config/licenceStages');
 const moment = require('moment');
 
 module.exports = function createCaseListFormatter(logger, licenceClient) {
