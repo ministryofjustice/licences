@@ -1,7 +1,6 @@
 const {formatConditionsInput} = require('./utils/conditionsFormatter');
 const {getIn, isEmpty} = require('../utils/functionalHelpers');
 const logger = require('../../log.js');
-const {conditionsOrder} = require('../models/conditions');
 const {populateAdditionalConditionsAsObject} = require('../utils/licenceFactory');
 const moment = require('moment');
 const {additionalConditions, standardConditions} = require('./config/conditionsConfig');
@@ -16,14 +15,11 @@ module.exports = function createConditionsService() {
         const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional']);
         if (licenceAdditionalConditions) {
             return additionalConditions
-                .sort(orderForView)
                 .map(populateFromSavedLicence(licenceAdditionalConditions))
                 .reduce(splitIntoGroupedObject, {});
         }
 
-        return additionalConditions
-            .sort(orderForView)
-            .reduce(splitIntoGroupedObject, {});
+        return additionalConditions.reduce(splitIntoGroupedObject, {});
     }
 
     function formatConditionInputs(requestBody) {
@@ -89,10 +85,6 @@ function populateFromSavedLicence(inputtedConditions) {
 
         return {...condition, selected: selected, user_submission: submission};
     };
-}
-
-function orderForView(a, b) {
-    return conditionsOrder.indexOf(a.id) - conditionsOrder.indexOf(b.id);
 }
 
 function getSubmissionForCondition(conditionId, inputtedConditions) {

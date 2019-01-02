@@ -1,4 +1,4 @@
-const {conditionsOrder} = require('../models/conditions');
+const {additionalConditions} = require('../services/config/conditionsConfig');
 const {multiFields} = require('../models/conditions');
 const {getIn, interleave} = require('../utils/functionalHelpers');
 
@@ -36,7 +36,7 @@ function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUse
     );
 
     const populatedAdditional = Object.keys(additional)
-        .sort(orderForView)
+        .sort(orderForView(additionalConditions.map(condition => condition.id)))
         .map(getObjectForAdditional);
 
     const populatedBespoke = bespoke ? bespoke.map(getObjectForBespoke) : [];
@@ -197,6 +197,4 @@ const inputsFor = (fieldPositions, formInputs) => {
     }, {});
 };
 
-function orderForView(a, b) {
-    return conditionsOrder.indexOf(a) - conditionsOrder.indexOf(b);
-}
+const orderForView = requiredOrder => (a, b) => requiredOrder.indexOf(a) - requiredOrder.indexOf(b);
