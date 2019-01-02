@@ -420,5 +420,28 @@ module.exports = {
             group_name: 'Post-sentence supervision only',
             subgroup_name: null
         }
-    ]
+    ],
+
+    multiFields: {
+        appointmentDetails: {
+            fields: [
+                'appointmentAddress',
+                'appointmentDate',
+                'appointmentTime'
+            ],
+            joining: [
+                ' on ',
+                ' at '
+            ]
+        },
+        attendSampleDetails: {
+            fields: [
+                'attendSampleDetailsName',
+                'attendSampleDetailsAddress'
+            ],
+            joining: [
+                ', '
+            ]
+        }
+    }
 };

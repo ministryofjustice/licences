@@ -1,5 +1,5 @@
-const {taskStates} = require('../models/taskStates');
-const {licenceStages} = require('../models/licenceStages');
+const {taskStates} = require('../services/config/taskStates');
+const {licenceStages} = require('../services/config/licenceStages');
 const {getIn, isEmpty, lastItem, flatten} = require('./functionalHelpers');
 const {
     isAcceptedAddress,

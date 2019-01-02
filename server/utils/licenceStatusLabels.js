@@ -1,5 +1,5 @@
-const {licenceStages} = require('../models/licenceStages');
-const {taskStates} = require('../models/taskStates');
+const {licenceStages} = require('../services/config/licenceStages');
+const {taskStates} = require('../services/config/taskStates');
 
 module.exports = {getStatusLabel};
 

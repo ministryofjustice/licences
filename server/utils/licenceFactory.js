@@ -1,5 +1,4 @@
-const {additionalConditions} = require('../services/config/conditionsConfig');
-const {multiFields} = require('../models/conditions');
+const {additionalConditions, multiFields} = require('../services/config/conditionsConfig');
 const {getIn, interleave} = require('../utils/functionalHelpers');
 
 module.exports = {
