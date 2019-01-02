@@ -16,9 +16,9 @@ block tasks
         div.taskListItem.borderBottom
             include tasks/caSubmitRefusalTask
 
-    else if licenceStatus.tasks.optOut === 'DONE'
+    else if licenceStatus.tasks.optOut === 'DONE' && !licenceStatus.decisions.optedOut
         div.taskListItem.borderBottom
-            if licenceStatus.decisions.bassReferralNeeded && !licenceStatus.decisions.optedOut
+            if licenceStatus.decisions.bassReferralNeeded
                 include tasks/caSubmitBassReviewTask
             else
                 include tasks/caSubmitAddressReviewTask
