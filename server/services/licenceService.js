@@ -425,7 +425,9 @@ module.exports = function createLicenceService(licenceClient) {
             return stage;
         };
 
-        return formValidation.validateGroup({licence, group: groupName()});
+        return formValidation.validateGroup({licence, group: groupName(), bespokeConditions: {
+            offenderIsMainOccupier: decisions.offenderIsMainOccupier
+        }});
     }
 
     return {

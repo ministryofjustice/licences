@@ -1451,10 +1451,18 @@ describe('licenceService', () => {
 
         it('should use correct group when bassReferralNeeded', () => {
 
-            service.validateFormGroup({licence: {}, stage: 'ELIGIBILITY', decisions: {bassReferralNeeded: true}, tasks: {}});
+            const decisions = {
+                bassReferralNeeded: true,
+                offenderIsMainOccupier: true
+            };
+
+            service.validateFormGroup({licence: {}, stage: 'ELIGIBILITY', decisions, tasks: {}});
 
             expect(validateGroupStub).to.be.calledOnce();
-            expect(validateGroupStub).to.be.calledWith({licence: {}, group: 'BASS_REQUEST'});
+            expect(validateGroupStub).to.be.calledWith({
+                licence: {},
+                group: 'BASS_REQUEST',
+                bespokeConditions: {offenderIsMainOccupier: true}});
         });
 
         it('should use correct group when new address for review', () => {
@@ -1462,7 +1470,10 @@ describe('licenceService', () => {
             service.validateFormGroup({licence: {}, stage: 'ELIGIBILITY', decisions: {}, tasks: {curfewAddressReview: 'UNSTARTED'}});
 
             expect(validateGroupStub).to.be.calledOnce();
-            expect(validateGroupStub).to.be.calledWith({licence: {}, group: 'ELIGIBILITY'});
+            expect(validateGroupStub).to.be.calledWith({
+                licence: {},
+                group: 'ELIGIBILITY',
+                bespokeConditions: {offenderIsMainOccupier: undefined}});
         });
     });
 });
