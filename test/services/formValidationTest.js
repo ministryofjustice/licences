@@ -528,6 +528,8 @@ describe('validation', () => {
                                 {appointmentDate: 'Enter appointment date',
                                     appointmentTime: 'Enter appointment time',
                                     appointmentAddress: 'Enter appointment name and address'}}},
+                    {formResponse: {ATTENDDEPENDENCY: {appointmentDate: '12/03/2016', appointmentTime: 'a', appointmentAddress: 'b'}},
+                        outcome: {ATTENDDEPENDENCY: {appointmentDate: 'Enter a date that is in the future'}}},
                     {formResponse: {ATTENDSAMPLE: {
                                 attendSampleDetailsName: 'a', attendSampleDetailsAddress: 'a'}}, outcome: {}},
                     {formResponse: {ATTENDSAMPLE: {}},
@@ -848,6 +850,10 @@ describe('validation', () => {
                     {formResponse: {reportingDate: '12/03/2025', reportingTime: '15:00'}, outcome: {}},
                     {
                         formResponse: {reportingDate: '12/03/2016', reportingTime: '15:00'},
+                        outcome: {reportingDate: 'Enter a date that is in the future'}
+                    },
+                    {
+                        formResponse: {reportingDate: '24/24/2025', reportingTime: '15:00'},
                         outcome: {reportingDate: 'Enter a valid date'}
                     },
                     {

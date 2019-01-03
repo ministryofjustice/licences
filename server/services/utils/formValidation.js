@@ -134,11 +134,18 @@ function validate({formResponse, pageConfig, formType = 'standard', bespokeCondi
     return joiErrors.error.details.reduce((errors, error) => {
         // joi returns map to error in path field
         const fieldConfig = fieldsConfig.find(field => getFieldName(field) === error.path[0]);
-        const errorMessage = procedure.getErrorMessage(fieldConfig, error.path) || error.message;
+        const errorMessage = getErrorMessage(fieldConfig, error, procedure.getErrorMessage);
 
         const errorObject = error.path.reduceRight((errorObj, key) => ({[key]: errorObj}), errorMessage);
         return mergeWithRight(errors, errorObject);
     }, {});
+}
+
+function getErrorMessage(fieldConfig, error, errorMethod) {
+    if (error.type === 'date.min') {
+        return 'Enter a date that is in the future';
+    }
+    return errorMethod(fieldConfig, error.path) || error.message;
 }
 
 function validateGroup({licence, group, bespokeConditions}) {
