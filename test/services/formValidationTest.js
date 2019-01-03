@@ -987,6 +987,14 @@ describe('validation', () => {
                 licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}, additional: {NOTIFYRELATIONSHIP: {}}}
             };
 
+            const validLicenceOccupierIsOffender = {
+                ...validLicence,
+                curfew: {
+                    ...validLicence.curfew,
+                    curfewAddressReview: {electricity: 'Yes', homeVisitConducted: 'Yes'}
+                }
+            };
+
             const validLicenceNoConditions = {
                 risk: {riskManagement: validRiskManagement},
                 curfew: {
@@ -1039,14 +1047,20 @@ describe('validation', () => {
                             curfewAddressReview: 'Enter the curfew address review details'
                         }
                     }
+                },
+                {
+                    licence: validLicenceOccupierIsOffender,
+                    standardOutcome: {},
+                    addressRejectedOutcome: {},
+                    decisions: {offenderIsMainOccupier: true}
                 }
             ];
 
             context('address not rejected', () => {
                 options.forEach(option => {
                     it(`should return ${JSON.stringify(option.standardOutcome)} for ${JSON.stringify(option.licence)}`, () => {
-                        const {standardOutcome, licence} = option;
-                        expect(service.validateFormGroup({licence, stage})).to.eql(standardOutcome);
+                        const {standardOutcome, licence, decisions} = option;
+                        expect(service.validateFormGroup({licence, stage, decisions: decisions || {}})).to.eql(standardOutcome);
                     });
                 });
             });
@@ -1054,9 +1068,13 @@ describe('validation', () => {
             context('address rejected', () => {
                 options.forEach(option => {
                     it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
-                        const {addressRejectedOutcome, licence} = option;
+                        const {addressRejectedOutcome, licence, decisions} = option;
+                        const decs = {
+                            ...decisions,
+                            curfewAddressApproved: 'rejected'
+                        };
                         expect(service.validateFormGroup(
-                            {licence, stage, decisions: {curfewAddressApproved: 'rejected'}})).to.eql(addressRejectedOutcome);
+                            {licence, stage, decisions: decs})).to.eql(addressRejectedOutcome);
                     });
                 });
             });

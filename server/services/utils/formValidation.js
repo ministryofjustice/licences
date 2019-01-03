@@ -141,7 +141,7 @@ function validate({formResponse, pageConfig, formType = 'standard', bespokeCondi
     }, {});
 }
 
-function validateGroup({licence, group}) {
+function validateGroup({licence, group, bespokeConditions}) {
     const groups = {
         ELIGIBILITY: [
             {
@@ -309,7 +309,7 @@ function validateGroup({licence, group}) {
             return errorObject;
         }
 
-        const formErrors = formResponse ? validate(formInfo) : missingMessage;
+        const formErrors = formResponse ? validate({...formInfo, bespokeConditions}) : missingMessage;
         if (isEmpty(formErrors)) {
             return errorObject;
         }
