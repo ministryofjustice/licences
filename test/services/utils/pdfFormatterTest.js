@@ -101,12 +101,10 @@ describe('pdfFormatter', () => {
         const licence = {
             proposedAddress: {
                 curfewAddress: {
-                    addresses: [{
-                        addressLine1: 'first',
-                        addressLine2: 'second',
-                        addressTown: '',
-                        postCode: 'post'
-                    }]
+                    addressLine1: 'first',
+                    addressLine2: 'second',
+                    addressTown: '',
+                    postCode: 'post'
                 }
             }
         };
@@ -151,12 +149,10 @@ describe('pdfFormatter', () => {
         const licence = {
             proposedAddress: {
                 curfewAddress: {
-                    addresses: [{
-                        addressLine1: 'first',
-                        addressLine2: 'second',
-                        addressTown: '',
-                        postCode: 'post'
-                    }]
+                    addressLine1: 'first',
+                    addressLine2: 'second',
+                    addressTown: '',
+                    postCode: 'post'
                 }
             },
             bassReferral: {
@@ -181,12 +177,10 @@ describe('pdfFormatter', () => {
         const licence = {
             proposedAddress: {
                 curfewAddress: {
-                    addresses: [{
-                        addressLine1: 'first',
-                        addressLine2: 'second',
-                        addressTown: '',
-                        postCode: 'post'
-                    }]
+                    addressLine1: 'first',
+                    addressLine2: 'second',
+                    addressTown: '',
+                    postCode: 'post'
                 }
             },
             bassReferral: {
