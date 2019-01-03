@@ -1,6 +1,8 @@
 const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
+const moment = require('moment');
+const today = moment().startOf('day').format('MM-DD-YYYY');
 const {
     curfewAddressSchema,
     addressReviewSchema,
@@ -35,7 +37,7 @@ const fieldOptions = {
     optionalYesNo: joi.valid(['Yes', 'No']).optional(),
     selection: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
     requiredTime: joi.date().format('HH:mm').required(),
-    requiredDate: joi.date().format('DD/MM/YYYY').min('now').required(),
+    requiredDate: joi.date().format('DD/MM/YYYY').min(today).required(),
     optionalList: joi.array().optional(),
     requiredPostcode: joi.postcode().required(),
     requiredPhone: joi.string().regex(/^[0-9+\s]+$/).required(),
@@ -134,11 +136,18 @@ function validate({formResponse, pageConfig, formType = 'standard', bespokeCondi
     return joiErrors.error.details.reduce((errors, error) => {
         // joi returns map to error in path field
         const fieldConfig = fieldsConfig.find(field => getFieldName(field) === error.path[0]);
-        const errorMessage = procedure.getErrorMessage(fieldConfig, error.path) || error.message;
+        const errorMessage = getErrorMessage(fieldConfig, error, procedure.getErrorMessage);
 
         const errorObject = error.path.reduceRight((errorObj, key) => ({[key]: errorObj}), errorMessage);
         return mergeWithRight(errors, errorObject);
     }, {});
+}
+
+function getErrorMessage(fieldConfig, error, errorMethod) {
+    if (error.type === 'date.min') {
+        return 'Enter a date that is in the future';
+    }
+    return errorMethod(fieldConfig, error.path) || error.message;
 }
 
 function validateGroup({licence, group, bespokeConditions}) {
