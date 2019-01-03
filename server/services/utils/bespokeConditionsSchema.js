@@ -2,6 +2,8 @@ const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend);
+const moment = require('moment');
+const today = moment().startOf('day').format('MM-DD-YYYY');
 
 module.exports = joi.object({
     NOCONTACTASSOCIATE: joi.object({
@@ -84,7 +86,7 @@ module.exports = joi.object({
     SURRENDERPASSPORT: joi.object({}),
     NOTIFYPASSPORT: joi.object({}),
     ATTENDDEPENDENCY: joi.object({
-        appointmentDate: joi.date().format('DD/MM/YYYY').min('now').required(),
+        appointmentDate: joi.date().format('DD/MM/YYYY').min(today).required(),
         appointmentTime: joi.string().required(),
         appointmentAddress: joi.string().required()
     }),

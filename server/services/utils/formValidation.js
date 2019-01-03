@@ -1,6 +1,8 @@
 const baseJoi = require('joi');
 const dateExtend = require('joi-date-extensions');
 const postcodeExtend = require('joi-postcode');
+const moment = require('moment');
+const today = moment().startOf('day').format('MM-DD-YYYY');
 const {
     curfewAddressSchema,
     addressReviewSchema,
@@ -35,7 +37,7 @@ const fieldOptions = {
     optionalYesNo: joi.valid(['Yes', 'No']).optional(),
     selection: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
     requiredTime: joi.date().format('HH:mm').required(),
-    requiredDate: joi.date().format('DD/MM/YYYY').min('now').required(),
+    requiredDate: joi.date().format('DD/MM/YYYY').min(today).required(),
     optionalList: joi.array().optional(),
     requiredPostcode: joi.postcode().required(),
     requiredPhone: joi.string().regex(/^[0-9+\s]+$/).required(),
