@@ -79,7 +79,7 @@ function pickCurfewAddress(licence) {
         return getIn(licence, ['bassReferral', 'bassOffer']);
     }
 
-    return getIn(licence, ['proposedAddress', 'curfewAddress', 'addresses', 0]);
+    return getIn(licence, ['proposedAddress', 'curfewAddress']);
 }
 
 function getConditionsForConfig(licence, templateName, configName) {
