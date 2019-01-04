@@ -213,7 +213,16 @@ function validateGroup({licence, group, bespokeConditions}) {
                 missingMessage: 'Enter the reporting instructions'
             }
         ],
-        PROCESSING_RO_ADDRESS_REJECTED: [
+        PROCESSING_RO_ADDRESS_REVIEW_REJECTED: [
+            {
+                formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
+                formType: 'curfewAddressReview',
+                pageConfig: curfewConfig.curfewAddressReview,
+                section: 'curfew',
+                missingMessage: 'Enter the curfew address review details'
+            }
+        ],
+        PROCESSING_RO_ADDRESS_SAFETY_REJECTED: [
             {
                 formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
                 formType: 'curfewAddressReview',

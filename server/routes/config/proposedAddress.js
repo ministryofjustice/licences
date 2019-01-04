@@ -78,7 +78,7 @@ module.exports = {
         nextPath: {
             decisions: {
                 discriminator: 'enterAlternative',
-                Yes: '/hdc/proposedAddress/curfewAddress/rejected/',
+                Yes: '/hdc/proposedAddress/curfewAddress/',
                 No: '/hdc/proposedAddress/curfewAddressChoice/'
             }
         }
