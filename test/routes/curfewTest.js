@@ -86,28 +86,28 @@ describe('/hdc/curfew', () => {
             },
             {
                 url: '/hdc/curfew/addressWithdrawn/1',
-                body: {decision: 'Yes'},
+                body: {enterNewAddress: 'Yes'},
                 section: 'addressWithdrawn',
                 nextPath: '/hdc/proposedAddress/curfewAddress/add/1',
                 user: 'caUser'
             },
             {
                 url: '/hdc/curfew/addressWithdrawn/1',
-                body: {decision: 'No'},
+                body: {enterNewAddress: 'No'},
                 section: 'addressWithdrawn',
                 nextPath: '/hdc/proposedAddress/curfewAddressChoice/add/1',
                 user: 'caUser'
             },
             {
                 url: '/hdc/curfew/consentWithdrawn/1',
-                body: {decision: 'Yes'},
+                body: {enterNewAddress: 'Yes'},
                 section: 'consentWithdrawn',
                 nextPath: '/hdc/proposedAddress/curfewAddress/add/1',
                 user: 'caUser'
             },
             {
                 url: '/hdc/curfew/consentWithdrawn/1',
-                body: {decision: 'No'},
+                body: {enterNewAddress: 'No'},
                 section: 'consentWithdrawn',
                 nextPath: '/hdc/proposedAddress/curfewAddressChoice/add/1',
                 user: 'caUser'
