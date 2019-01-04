@@ -155,12 +155,12 @@ module.exports = {
     },
     addressWithdrawn: {
         fields: [
-            {decision: {}}
+            {enterNewAddress: {}}
         ],
         nextPath: {
             decisions: [
                 {
-                    discriminator: 'decision',
+                    discriminator: 'enterNewAddress',
                     Yes: '/hdc/proposedAddress/curfewAddress/add/',
                     No: '/hdc/proposedAddress/curfewAddressChoice/add/'
                 }
@@ -185,12 +185,12 @@ module.exports = {
     },
     consentWithdrawn: {
         fields: [
-            {decision: {}}
+            {enterNewAddress: {}}
         ],
         nextPath: {
             decisions: [
                 {
-                    discriminator: 'decision',
+                    discriminator: 'enterNewAddress',
                     Yes: '/hdc/proposedAddress/curfewAddress/add/',
                     No: '/hdc/proposedAddress/curfewAddressChoice/add/'
                 }

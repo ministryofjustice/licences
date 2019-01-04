@@ -6,7 +6,7 @@ block content
     -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
     -var addressSafety = data.curfew && data.curfew.addressSafety ? data.curfew.addressSafety : {}
     -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress : {}
-    -var withdrawnAddressObj = data.proposedAddress && data.proposedAddress.rejections && data.proposedAddress.rejections[data.proposedAddress.rejections.length-1] || {}
+    -var withdrawnAddressObj = address === {} && data.proposedAddress && data.proposedAddress.rejections && data.proposedAddress.rejections[data.proposedAddress.rejections.length-1] || {}
     -var withdrawnAddress = withdrawnAddressObj.address || {}
     -var addressWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawAddress'
     -var consentWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawConsent'
