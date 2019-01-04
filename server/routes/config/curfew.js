@@ -161,8 +161,8 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'enterNewAddress',
-                    Yes: '/hdc/proposedAddress/curfewAddress/add/',
-                    No: '/hdc/proposedAddress/curfewAddressChoice/add/'
+                    Yes: '/hdc/proposedAddress/curfewAddress/',
+                    No: '/hdc/proposedAddress/curfewAddressChoice/'
                 }
             ],
             path: '/hdc/taskList/'
@@ -191,8 +191,8 @@ module.exports = {
             decisions: [
                 {
                     discriminator: 'enterNewAddress',
-                    Yes: '/hdc/proposedAddress/curfewAddress/add/',
-                    No: '/hdc/proposedAddress/curfewAddressChoice/add/'
+                    Yes: '/hdc/proposedAddress/curfewAddress/',
+                    No: '/hdc/proposedAddress/curfewAddressChoice/'
                 }
             ],
             path: '/hdc/taskList/'

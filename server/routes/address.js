@@ -20,14 +20,10 @@ module.exports = ({licenceService}) => (router, audited) => {
         return res.render('proposedAddress/curfewAddressChoice', viewData);
     }
 
-    router.post('/proposedAddress/curfewAddressChoice/:action/:bookingId', audited, asyncMiddleware(postCurfewAddressChoice));
-    router.post('/proposedAddress/curfewAddressChoice/:bookingId', audited, asyncMiddleware(postCurfewAddressChoice));
-
-    async function postCurfewAddressChoice(req, res) {
-
-        const {bookingId, action} = req.params;
+    router.post('/proposedAddress/curfewAddressChoice/:bookingId', audited, asyncMiddleware(async (req, res) => {
+        const {bookingId} = req.params;
         const {decision} = req.body;
-        const licence = res.locals.licence;
+        const {licence} = res.locals;
 
         const bassReferral = getBassReferralContent(decision, licence);
 
@@ -39,13 +35,10 @@ module.exports = ({licenceService}) => (router, audited) => {
             licenceService.updateSection('bassReferral', bookingId, bassReferral)
         ]);
 
-        const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/${bookingId}`;
+        const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/`;
 
-        if (action) {
-            return res.redirect(`${nextPath}${action}/${bookingId}`);
-        }
         return res.redirect(`${nextPath}${bookingId}`);
-    }
+    }));
 
     router.post('/proposedAddress/rejected/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {enterAlternative, bookingId} = req.body;
