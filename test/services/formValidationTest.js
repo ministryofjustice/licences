@@ -1001,6 +1001,24 @@ describe('validation', () => {
                 }
             };
 
+            const validLicenceNoOccupierConsent = {
+                ...validLicence,
+                curfew: {
+                    ...validLicence.curfew,
+                    curfewAddressReview: {consent: 'No'},
+                    addressSafety: undefined
+                }
+            };
+
+            const validLicenceNoElec = {
+                ...validLicence,
+                curfew: {
+                    ...validLicence.curfew,
+                    curfewAddressReview: {consent: 'Yes', electricity: 'No'},
+                    addressSafety: undefined
+                }
+            };
+
             const validLicenceNoConditions = {
                 risk: {riskManagement: validRiskManagement},
                 curfew: {
@@ -1059,6 +1077,20 @@ describe('validation', () => {
                     standardOutcome: {},
                     addressRejectedOutcome: {},
                     decisions: {offenderIsMainOccupier: true}
+                },
+                {
+                    licence: validLicenceNoOccupierConsent,
+                    standardOutcome: {
+                        curfew: {addressSafety: 'Enter the curfew address review details'}
+                    },
+                    addressRejectedOutcome: {}
+                },
+                {
+                    licence: validLicenceNoElec,
+                    standardOutcome: {
+                        curfew: {addressSafety: 'Enter the curfew address review details'}
+                    },
+                    addressRejectedOutcome: {}
                 }
             ];
 

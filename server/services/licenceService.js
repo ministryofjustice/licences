@@ -404,7 +404,10 @@ module.exports = function createLicenceService(licenceClient) {
         const groupName = () => {
             if (stage === 'PROCESSING_RO') {
                 if (curfewAddressApproved === 'rejected') {
-                    return 'PROCESSING_RO_ADDRESS_REJECTED';
+                    const addressReviewRejected = getIn(licence, ['curfew', 'curfewAddressReview', 'consent']) === 'No' ||
+                        getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']) === 'No';
+
+                    return addressReviewRejected ? 'PROCESSING_RO_ADDRESS_REVIEW_REJECTED' : 'PROCESSING_RO_ADDRESS_SAFETY_REJECTED';
                 }
                 if (bassAreaNotSuitable) {
                     return 'BASS_AREA';

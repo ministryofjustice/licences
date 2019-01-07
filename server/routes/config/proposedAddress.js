@@ -1,10 +1,10 @@
 module.exports = {
     curfewAddressChoice: {
         nextPath: {
-                discriminator: 'decision',
-                Address: '/hdc/proposedAddress/curfewAddress/',
-                Bass: '/hdc/bassReferral/bassRequest/',
-                OptOut: '/hdc/taskList/'
+            discriminator: 'decision',
+            Address: '/hdc/proposedAddress/curfewAddress/',
+            Bass: '/hdc/bassReferral/bassRequest/',
+            OptOut: '/hdc/taskList/'
         }
     },
     curfewAddress: {
@@ -78,8 +78,8 @@ module.exports = {
         nextPath: {
             decisions: {
                 discriminator: 'enterAlternative',
-                Yes: '/hdc/proposedAddress/curfewAddress/rejected/',
-                No: '/hdc/proposedAddress/curfewAddressChoice/add/'
+                Yes: '/hdc/proposedAddress/curfewAddress/',
+                No: '/hdc/proposedAddress/curfewAddressChoice/'
             }
         }
     }
