@@ -172,27 +172,27 @@ describe('/hdc/curfew', () => {
         ];
 
         routes.forEach(route => {
-            // it(`renders the correct path '${route.nextPath}' page`, () => {
-            //     const licenceService = createLicenceServiceStub();
-            //     const app = createApp({licenceServiceStub: licenceService}, 'roUser');
-            //     return request(app)
-            //         .post(route.url)
-            //         .send(route.body)
-            //         .expect(302)
-            //         .expect(res => {
-            //             expect(licenceService.update).to.be.calledOnce();
-            //             expect(licenceService.update).to.be.calledWith({
-            //                 bookingId: '1',
-            //                 originalLicence: {licence: {key: 'value'}},
-            //                 config: formConfig[route.section],
-            //                 userInput: route.body,
-            //                 licenceSection: 'curfew',
-            //                 formName: route.section
-            //             });
-            //
-            //             expect(res.header.location).to.equal(route.nextPath);
-            //         });
-            // });
+            it(`renders the correct path '${route.nextPath}' page`, () => {
+                const licenceService = createLicenceServiceStub();
+                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+                return request(app)
+                    .post(route.url)
+                    .send(route.body)
+                    .expect(302)
+                    .expect(res => {
+                        expect(licenceService.update).to.be.calledOnce();
+                        expect(licenceService.update).to.be.calledWith({
+                            bookingId: '1',
+                            originalLicence: {licence: {key: 'value'}},
+                            config: formConfig[route.section],
+                            userInput: route.body,
+                            licenceSection: 'curfew',
+                            formName: route.section
+                        });
+
+                        expect(res.header.location).to.equal(route.nextPath);
+                    });
+            });
 
             it(`renders the correct path '${route.nextPath}' page when ca in post approval`, () => {
 
