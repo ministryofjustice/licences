@@ -1,0 +1,12 @@
+include ./itemAndError
+-var victim = data.victim && data.victim.victimLiaison || {}
+-var errors = errorObject.victim && errorObject.victim.victimLiaison || {}
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+        div.pure-g
+            span.pure-u-3-4 Is this a Victim Contact Service qualifying case where the victim has opted in?
+    div.pure-u-1-2
+        +itemAndError(victim.decision, errors.decision, "victimLiaison")
+        if risk.victimLiaison === 'Yes'
+            +itemAndError(victim.victimLiaisonDetails, errors.victimLiaisonDetails, "victimLiaisonDetails")

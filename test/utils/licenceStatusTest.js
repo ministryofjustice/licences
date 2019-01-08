@@ -129,8 +129,12 @@ describe('getLicenceStatus', () => {
                     risk: {
                         riskManagement: {
                             planningActions: 'Yes',
-                            victimLiaison: 'Yes',
                             awaitingInformation: 'Yes'
+                        }
+                    },
+                    victim: {
+                        victimLiaison: {
+                            decision: 'Yes'
                         }
                     },
                     finalChecks: {
@@ -169,7 +173,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.curfewAddressApproved).to.eql('approved');
             expect(status.decisions.riskManagementNeeded).to.eql(true);
             expect(status.decisions.awaitingRiskInformation).to.eql(true);
-            expect(status.decisions.victimLiasionNeeded).to.eql(true);
+            expect(status.decisions.victimLiaisonNeeded).to.eql(true);
             expect(status.decisions.seriousOffence).to.eql(true);
             expect(status.decisions.onRemand).to.eql(true);
             expect(status.decisions.confiscationOrder).to.eql(true);
@@ -264,7 +268,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.curfewAddressApproved).to.eql('rejected');
             expect(status.decisions.riskManagementNeeded).to.eql(false);
             expect(status.decisions.awaitingRiskInformation).to.eql(false);
-            expect(status.decisions.victimLiasionNeeded).to.eql(false);
+            expect(status.decisions.victimLiaisonNeeded).to.eql(false);
             expect(status.decisions.seriousOffence).to.eql(false);
             expect(status.decisions.onRemand).to.eql(false);
             expect(status.decisions.confiscationOrder).to.eql(false);
@@ -542,7 +546,13 @@ describe('getLicenceStatus', () => {
                     risk: {
                         riskManagement: {
                             planningActions: 'anything',
-                            victimLiaison: 'anything'
+                            awaitingInformation: 'No',
+                            proposedAddressSuitable: 'Yes'
+                        }
+                    },
+                    victim: {
+                        victimLiaison: {
+                            decision: 'No'
                         }
                     },
                     reporting: {

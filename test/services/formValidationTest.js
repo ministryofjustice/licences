@@ -190,23 +190,57 @@ describe('validation', () => {
                 const pageConfig = riskManagement;
                 const options = [
                     {
-                        formResponse: {planningActions: 'No', awaitingInformation: 'No', victimLiaison: 'No'},
+                        formResponse: {
+                            planningActions: 'No',
+                            awaitingInformation: 'No',
+                            proposedAddressSuitable: 'No',
+                            unsuitableReason: ''
+                        },
+                        outcome: {unsuitableReason: 'Provide details of why you made this decision'}
+                    },
+                    {
+                        formResponse: {
+                            planningActions: 'No',
+                            awaitingInformation: 'No',
+                            proposedAddressSuitable: 'No',
+                            unsuitableReason: 'Reason'
+                        },
                         outcome: {}
                     },
                     {
-                        formResponse: {planningActions: 'Yes', awaitingInformation: 'Yes', victimLiaison: 'Yes'},
-                        outcome: {
-                            planningActionsDetails: 'Provide details of the risk management actions',
-                            awaitingInformationDetails: 'Provide details of the risk management actions',
-                            victimLiaisonDetails: 'Provide details of the victim liaison case'
-                        }
-                    },
-                    {
-                        formResponse: {planningActions: '', awaitingInformation: '', victimLiaison: ''},
+                        formResponse: {planningActions: '', awaitingInformation: '', proposedAddressSuitable: ''},
                         outcome: {
                             planningActions: 'Say if there are risk management actions',
                             awaitingInformation: 'Say if you are still awaiting information',
-                            victimLiaison: 'Say if it is a victim liaison case'
+                            proposedAddressSuitable: 'Say if the proposed address is suitable'
+                        }
+                    },
+                    {
+                        formResponse: {planningActions: 'Yes', awaitingInformation: 'Yes', proposedAddressSuitable: 'Yes'},
+                        outcome: {}
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                        const {outcome, formResponse} = option;
+                        expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
+                    });
+                });
+            });
+
+            const {victimLiaison} = require('../../server/routes/config/victim');
+            describe('victim liaison', () => {
+                const pageConfig = victimLiaison;
+                const options = [
+                    {
+                        formResponse: {decision: 'No'},
+                        outcome: {}
+                    },
+                    {
+                        formResponse: {decision: 'Yes'},
+                        outcome: {
+                            victimLiaisonDetails: 'Provide details of the victim liaison case'
                         }
                     }
                 ];
@@ -965,7 +999,8 @@ describe('validation', () => {
         describe('processing_ro', () => {
 
             const stage = 'PROCESSING_RO';
-            const validRiskManagement = {planningActions: 'No', awaitingInformation: 'No', victimLiaison: 'No'};
+            const validRiskManagement = {planningActions: 'No', awaitingInformation: 'No', proposedAddressSuitable: 'Yes'};
+            const validVictim = {decision: 'No'};
             const validCurfewHours = {
                 daySpecificInputs: '', allFrom: '', allUntil: '',
                 mondayFrom: '07:00', mondayUntil: '20:00',
@@ -984,6 +1019,7 @@ describe('validation', () => {
 
             const validLicence = {
                 risk: {riskManagement: validRiskManagement},
+                victim: {victimLiaison: validVictim},
                 curfew: {
                     curfewHours: validCurfewHours,
                     curfewAddressReview: validAddressReview,
@@ -1021,6 +1057,7 @@ describe('validation', () => {
 
             const validLicenceNoConditions = {
                 risk: {riskManagement: validRiskManagement},
+                victim: {victimLiaison: validVictim},
                 curfew: {
                     curfewHours: validCurfewHours,
                     curfewAddressReview: validAddressReview,
@@ -1031,7 +1068,8 @@ describe('validation', () => {
             };
 
             const invalidLicence = {
-                risk: {riskManagement: {planningActions: '', awaitingInformation: 'No', victimLiaison: 'No'}},
+                risk: {riskManagement: {planningActions: '', awaitingInformation: 'No'}},
+                victim: {victimLiaison: validVictim},
                 curfew: {
                     curfewHours: validCurfewHours,
                     curfewAddressReview: validAddressReview,
@@ -1047,7 +1085,10 @@ describe('validation', () => {
                 {
                     licence: invalidLicence,
                     standardOutcome: {
-                        risk: {riskManagement: {planningActions: 'Say if there are risk management actions'}}
+                        risk: {riskManagement: {
+                            planningActions: 'Say if there are risk management actions',
+                            proposedAddressSuitable: 'Say if the proposed address is suitable'
+                        }}
                     },
                     addressRejectedOutcome: {}
                 },

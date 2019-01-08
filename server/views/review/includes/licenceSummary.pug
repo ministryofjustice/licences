@@ -42,7 +42,7 @@ div.largeMarginBottom
         div.borderBottom
             div.pure-g
                 div.pure-u-1.pure-u-md-1-2
-                    h2#riskDetails.heading-medium Risk management and victim liaison
+                    h2#riskDetails.heading-medium Risk
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-1.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
@@ -52,6 +52,21 @@ div.largeMarginBottom
                 p.alert.bold(id='risk-error') #{errorObject.risk.riskManagement}
             else
                 include riskManagement
+
+        // Victim liaison
+        div.borderBottom
+            div.pure-g
+                div.pure-u-1.pure-u-md-1-2
+                    h2#riskDetails.heading-medium Victim liaison
+                if (stage === 'PROCESSING_RO' && user.role === 'RO')
+                    div.pure-u-1.pure-u-md-1-2.alignRight
+                        div.pure-u-md-1-2.change-details
+                            a#riskEditLink(href="/hdc/victim/victimLiaison/change/" + bookingId) Change
+
+            if errorObject.victim && typeof errorObject.victim.victimLiaison === 'string'
+                p.alert.bold(id='risk-error') #{errorObject.victim.victimLiaison}
+            else
+                include victimLiaison
 
         // Curfew hours
         div.borderBottom

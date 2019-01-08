@@ -67,6 +67,7 @@ function canSendRoToCa(licenceStatus) {
         tasks.curfewHours,
         tasks.licenceConditions,
         tasks.riskManagement,
+        tasks.victim,
         tasks.reportingInstructions
     ];
 

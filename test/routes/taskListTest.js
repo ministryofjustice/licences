@@ -854,7 +854,7 @@ describe('GET /taskList/:prisonNumber', () => {
                             riskManagement: {
                                 planningActions: 'No',
                                 awaitingInformation: 'No',
-                                victimLiaison: 'No'
+                                proposedAddressSuitable: 'Yes'
                             }
                         }
                     }

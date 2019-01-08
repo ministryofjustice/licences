@@ -8,28 +8,17 @@ block content
     include ../includes/backToCheckList
     include ../includes/personalDetailsSummary
 
-    h2.heading-large Risk management and victim liaison
+    div.pure-u-1.pure-u-md-1-2.paddingBottom
+        h2.heading-large Risk management
 
-    div.pure-u-md-1-2.paddingBottom
-        div
-            h3.heading-medium.smallMarginTop Risk management
+        div.smallPaddingTop
+            p Are there any risk management planning actions that must take place prior to release?
 
-            div.smallPaddingTop
-                p Are there any risk management planning actions that must take place prior to release?
+            span#planningActions.block.bold #{risk.planningActions}
+            span#planningActionsDetails.block.largePaddingBottom #{risk.planningActionsDetails}
 
-                span#planningActions.block.bold #{risk.planningActions}
-                span#planningActionsDetails.block.largePaddingBottom #{risk.planningActionsDetails}
+        div.smallPaddingTop
+            p Are you still awaiting information?
 
-            div.smallPaddingTop
-                p Are you still awaiting information?
-
-                span#awaitingInformation.block.bold #{risk.awaitingInformation}
-                span#awaitingInformationDetails.block #{risk.awaitingInformationDetails}
-
-        div.paddingBottom
-            h3.heading-medium Victim liaison
-            div.smallPaddingTop
-                p Is this a Victim Contact Service qualifying case where the victim has opted in?
-
-                span#victimLiaison.block.bold #{risk.victimLiaison}
-                span#victimLiaisonDetails.block #{risk.victimLiaisonDetails}
+            span#awaitingInformation.block.bold #{risk.awaitingInformation}
+            span#awaitingInformationDetails.block #{risk.awaitingInformationDetails}
