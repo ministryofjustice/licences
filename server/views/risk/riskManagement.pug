@@ -2,73 +2,66 @@ extends ../layout
 
 block content
 
-    div.pure-g.pure-u-1
-        include ../includes/backToTaskList
-        include ../includes/personalDetailsSummary
+    div.pure-g
+        .pure-u-1
+            include ../includes/backToTaskList
+            include ../includes/personalDetailsSummary
 
-        h2.heading-large Risk management and victim liaison
+            h2.heading-large Risk management
 
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        div.pure-u-md-1-2.paddingBottom.largeMarginBottom
-            div
-                h3.heading-medium Risk management
-                div.form-group.inline.smallPaddingTop
-                    p Are there any risk management planning actions that must take place before the address can be considered suitable?
-                    p The actions must take place before the offender is released.
+        .pure-u-1.pure-u-md-1-2
+            form(method="post")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="bookingId" value=bookingId || '')
+                div.paddingBottom.largeMarginBottom
 
-                    div.multiple-choice(data-target="planningForm")
-                        input#planningYes(type="radio" checked=data.planningActions === 'Yes' name="planningActions" value="Yes")
-                        label(for="planningYes") Yes
-                    div.multiple-choice
-                        input#planningNo(type="radio" checked=data.planningActions === 'No' name="planningActions" value="No")
-                        label(for="planningNo") No
+                    div.form-group.inline.smallPaddingTop
+                        p Are there checks you need to carry out to decide if the address is suitable?
+                            span.form-hint For example, police or social services checks.
 
-                div#planningForm.panel.panel-border-narrow.js-hidden
-                    label(for='planningActionsDetails') Explain what the actions are and why the address is unsuitable until they are in place
-                    textarea(name='planningActionsDetails' id='planningActionsDetails' class='form-control' rows='4' aria-label="Provide details of risk management planning actions")
-                        if data.planningActionsDetails
-                            | #{data.planningActionsDetails}
+                        div.multiple-choice
+                            input#planningYes(type="radio" checked=data.planningActions === 'Yes' name="planningActions" value="Yes")
+                            label(for="planningYes") Yes
+                        div.multiple-choice
+                            input#planningNo(type="radio" checked=data.planningActions === 'No' name="planningActions" value="No")
+                            label(for="planningNo") No
 
-            div
-                div.form-group.inline.smallPaddingTop
-                    p Are you still waiting for information?
+                    div.form-group.inline.smallPaddingTop
+                        p Are you still waiting for information?
 
-                    div.multiple-choice(data-target="awaitingForm")
-                        input#awaitingYes(type="radio" checked=data.awaitingInformation === 'Yes' name="awaitingInformation" value="Yes")
-                        label(for="awaitingYes") Yes
-                    div.multiple-choice
-                        input#awaitingNo(type="radio" checked=data.awaitingInformation === 'No' name="awaitingInformation" value="No")
-                        label(for="awaitingNo") No
+                        div.multiple-choice
+                            input#awaitingYes(type="radio" checked=data.awaitingInformation === 'Yes' name="awaitingInformation" value="Yes")
+                            label(for="awaitingYes") Yes
+                        div.multiple-choice
+                            input#awaitingNo(type="radio" checked=data.awaitingInformation === 'No' name="awaitingInformation" value="No")
+                            label(for="awaitingNo") No
 
-                div#awaitingForm.panel.panel-border-narrow.js-hidden
-                    label(for='awaitingInformationDetails') When do you expect to get the information?
-                    textarea(name='awaitingInformationDetails' id='awaitingInformationDetails' class='form-control' rows='2' aria-label="Provide details of when you expect to get the information")
-                        if data.awaitingInformationDetails
-                            | #{data.awaitingInformationDetails}
+                    div.form-group
+                        label(for='riskManagementDetails') Provide details of your checks. If you're waiting for information explain what it is and when you should get it. (optional)
+                        textarea(name='riskManagementDetails' id='riskManagementDetails' class='form-control' rows='5' aria-label="Provide details of when you expect to get the information")
+                            if data.riskManagementDetails
+                                | #{data.riskManagementDetails}
 
-            div
-                h3.heading-medium Victim liaison
-                div.form-group.inline.smallPaddingTop
-                    p Is this a Victim Contact Service qualifying case where the victim has opted in?
+                    div.form-group.inline.smallPaddingTop
+                        p Is the address proposed by the offender suitable?
 
-                    div.multiple-choice(data-target="victimForm")
-                        input#victimYes(type="radio" checked=data.victimLiaison === 'Yes' name="victimLiaison" value="Yes")
-                        label(for="victimYes") Yes
-                    div.multiple-choice
-                        input#victimNo(type="radio" checked=data.victimLiaison === 'No' name="victimLiaison" value="No")
-                        label(for="victimNo") No
+                        div.multiple-choice
+                            input#suitableYes(type="radio" checked=data.proposedAddressSuitable === 'Yes' name="proposedAddressSuitable" value="Yes")
+                            label(for="suitableYes") Yes
+                        div.multiple-choice(data-target="reasonForm")
+                            input#suitableNo(type="radio" checked=data.proposedAddressSuitable === 'No' name="proposedAddressSuitable" value="No")
+                            label(for="suitableNo") No
 
-                div#victimForm.panel.panel-border-narrow.js-hidden
-                    label(for='victimLiaisonDetails') Please give details of when they were invited to provide comments and any comments that were provided
-                    textarea(name='victimLiaisonDetails' id='victimLiaisonDetails' class='form-control' rows='4' aria-label="Provide details of when the victim was asked to comment and any comments they made")
-                        if data.victimLiaisonDetails
-                            | #{data.victimLiaisonDetails}
+                        div#reasonForm.panel.panel-border-narrow.js-hidden
+                            label(for='unsuitableReason') Please explain why you have made this decision
+                                textarea(name='unsuitableReason' id='unsuitableReason' class='form-control' rows='5' aria-label="Explain why the address is unsuitable")
+                                    if data.unsuitableReason
+                                        | #{data.unsuitableReason}
 
-        include ../includes/roModificationWarning
 
-        if (action === 'change')
-            include ../includes/formSubmit
-        else
-            include ../includes/saveAndReturn
+                include ../includes/roModificationWarning
+
+                if (action === 'change')
+                    include ../includes/formSubmit
+                else
+                    include ../includes/saveAndReturn

@@ -11,10 +11,10 @@ const {
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
-const createRoute = require('../../server/routes/risk');
-const formConfig = require('../../server/routes/config/risk');
+const createRoute = require('../../server/routes/victim');
+const formConfig = require('../../server/routes/config/victim');
 
-describe('/hdc/risk', () => {
+describe('/hdc/victim', () => {
 
     let licenceService;
 
@@ -23,9 +23,9 @@ describe('/hdc/risk', () => {
         auditStub.record.reset();
     });
 
-    describe('risk routes', () => {
+    describe('victim liaison routes', () => {
         const routes = [
-            {url: '/hdc/risk/riskManagement/1', content: 'Risk management'}
+            {url: '/hdc/victim/victimLiaison/1', content: 'Is this a Victim Contact Service '}
         ];
         const licenceService = createLicenceServiceStub();
         const app = createApp({licenceService}, 'roUser');
@@ -34,20 +34,17 @@ describe('/hdc/risk', () => {
     });
 
 
-    describe('POST /risk/:formName/:bookingId', () => {
-
-
+    describe('POST /victim/:formName/:bookingId', () => {
         const formResponse = {
             bookingId: '1',
-            planningActions: 'Yes',
-            planningActionsDetails: 'details'
+            decision: 'Yes'
         };
 
         context('When page contains form fields', () => {
             it('calls updateLicence from licenceService', () => {
                 const app = createApp({licenceService}, 'roUser');
                 return request(app)
-                    .post('/hdc/risk/riskManagement/1')
+                    .post('/hdc/victim/victimLiaison/1')
                     .send(formResponse)
                     .expect(302)
                     .expect(res => {
@@ -55,10 +52,10 @@ describe('/hdc/risk', () => {
                         expect(licenceService.update).to.be.calledWith({
                             bookingId: '1',
                             originalLicence: {licence: {key: 'value'}},
-                            config: formConfig.riskManagement,
+                            config: formConfig.victimLiaison,
                             userInput: formResponse,
-                            licenceSection: 'risk',
-                            formName: 'riskManagement'
+                            licenceSection: 'victim',
+                            formName: 'victimLiaison'
                         });
                     });
             });
@@ -67,7 +64,7 @@ describe('/hdc/risk', () => {
                 licenceService.getLicence.resolves({stage: 'DECIDED', licence: {key: 'value'}});
                 const app = createApp({licenceService}, 'caUser');
                 return request(app)
-                    .post('/hdc/risk/riskManagement/1')
+                    .post('/hdc/victim/victimLiaison/1')
                     .send(formResponse)
                     .expect(302)
                     .expect(res => {
@@ -75,10 +72,10 @@ describe('/hdc/risk', () => {
                         expect(licenceService.update).to.be.calledWith({
                             bookingId: '1',
                             originalLicence: {licence: {key: 'value'}, stage: 'DECIDED'},
-                            config: formConfig.riskManagement,
+                            config: formConfig.victimLiaison,
                             userInput: formResponse,
-                            licenceSection: 'risk',
-                            formName: 'riskManagement'
+                            licenceSection: 'victim',
+                            formName: 'victimLiaison'
                         });
                     });
             });
@@ -87,7 +84,7 @@ describe('/hdc/risk', () => {
                 const app = createApp({licenceService}, 'roUser');
 
                 return request(app)
-                    .post('/hdc/risk/riskManagement/1')
+                    .post('/hdc/victim/victimLiaison/1')
                     .send(formResponse)
                     .expect(() => {
                         expect(auditStub.record).to.be.calledOnce();
@@ -95,11 +92,10 @@ describe('/hdc/risk', () => {
                             {
                                 action: [],
                                 bookingId: '1',
-                                sectionName: 'risk',
-                                formName: 'riskManagement',
+                                sectionName: 'victim',
+                                formName: 'victimLiaison',
                                 userInput: {
-                                    planningActions: 'Yes',
-                                    planningActionsDetails: 'details'
+                                    decision: 'Yes'
                                 }
                             });
                     });
@@ -110,7 +106,7 @@ describe('/hdc/risk', () => {
                 licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: {key: 'value'}});
                 const app = createApp({licenceService}, 'caUser');
                 return request(app)
-                    .post('/hdc/risk/riskManagement/1')
+                    .post('/hdc/victim/victimLiaison/1')
                     .send(formResponse)
                     .expect(403);
 

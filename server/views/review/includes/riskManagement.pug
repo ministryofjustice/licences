@@ -7,48 +7,39 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-g
             span.pure-u-3-4 Are there any risk management planning actions that must take place prior to release?
     div.pure-u-1-2
-
         +itemAndError(risk.planningActions, errors.planningActions, "planningActions")
-        if risk.planningActions === 'Yes'
-            +itemAndError(risk.planningActionsDetails, errors.planningActionsDetails, "planningActionsDetails")
+
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
-    if risk.awaitingInformation === 'Yes'
         div.pure-u-1-2
             div.pure-g
                 span.pure-u-3-4 Are you still waiting for information to inform risk management planning?
 
         div.pure-u-1-2
-            div.pure-g
-                div.pure-u-1.pure-u-sm-3-5.notice-container
-                    div.notice
-                        i.icon.icon-important
-                            span.visually-hidden Warning
+            if risk.awaitingInformation === 'Yes'
+                div.pure-g
+                    div.pure-u-1.pure-u-sm-3-5.notice-container
+                        div.notice
+                            i.icon.icon-important
+                                span.visually-hidden Warning
 
-                        strong.bold-small Still waiting for information
+                            strong.bold-small Still waiting for information
+            else
+                +itemAndError(risk.awaitingInformation, errors.awaitingInformation, "awaitingInformation")
 
-        div.pure-u-1.midMarginTop
-            div.pure-g
-                div.pure-u-1-2
-                    span.pure-u-3-4 When do you expect to get the information?
-
-                div.pure-u-1-2
-                    +itemAndError(risk.awaitingInformationDetails, errors.awaitingInformationDetails, "awaitingInformationDetails")
-
-    else
+if risk.riskManagementDetails
+    div.pure-g.borderBottomLight.midPaddingTopBottom
         div.pure-u-1-2
             div.pure-g
-                span.pure-u-3-4 Are you still waiting for information to inform risk management planning?
-
+                span.pure-u-3-4 Provide details of your checks
         div.pure-u-1-2
-            +itemAndError(risk.awaitingInformation, errors.awaitingInformation, "awaitingInformation")
-
+            +itemAndError(risk.riskManagementDetails, errors.riskManagementDetails, "riskManagementDetails")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-u-1-2
         div.pure-g
-            span.pure-u-3-4 Is this a Victim Contact Service qualifying case where the victim has opted in?
+            span.pure-u-3-4 Is the address proposed by the offender suitable?
     div.pure-u-1-2
-        +itemAndError(risk.victimLiaison, errors.victimLiaison, "victimLiaison")
-        if risk.victimLiaison === 'Yes'
-            +itemAndError(risk.victimLiaisonDetails, errors.victimLiaisonDetails, "victimLiaisonDetails")
+        +itemAndError(risk.proposedAddressSuitable, errors.proposedAddressSuitable, "proposedAddressSuitable")
+        if risk.proposedAddressSuitable === 'No'
+            +itemAndError(risk.unsuitableReason, errors.unsuitableReason, "unsuitableReason")

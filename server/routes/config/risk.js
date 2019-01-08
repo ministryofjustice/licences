@@ -6,31 +6,20 @@ module.exports = {
                 responseType: 'requiredYesNo',
                 validationMessage: 'Say if there are risk management actions'
             }},
-            {planningActionsDetails: {
-                dependentOn: 'planningActions',
-                predicate: 'Yes',
-                responseType: 'requiredStringIf_planningActions_Yes',
-                validationMessage: 'Provide details of the risk management actions'
-            }},
             {awaitingInformation: {
                 responseType: 'requiredYesNo',
                 validationMessage: 'Say if you are still awaiting information'
             }},
-            {awaitingInformationDetails: {
-                dependentOn: 'awaitingInformation',
-                predicate: 'Yes',
-                responseType: 'requiredStringIf_awaitingInformation_Yes',
-                validationMessage: 'Provide details of the risk management actions'
+            {riskManagementDetails: {
+                responseType: 'optionalString'
             }},
-            {victimLiaison: {
+            {proposedAddressSuitable: {
                 responseType: 'requiredYesNo',
-                validationMessage: 'Say if it is a victim liaison case'
+                validationMessage: 'Say if the proposed address is suitable'
             }},
-            {victimLiaisonDetails: {
-                dependentOn: 'victimLiaison',
-                predicate: 'Yes',
-                responseType: 'requiredStringIf_victimLiaison_Yes',
-                validationMessage: 'Provide details of the victim liaison case'
+            {unsuitableReason: {
+                responseType: 'requiredStringIf_proposedAddressSuitable_No',
+                validationMessage: 'Provide details of why you made this decision'
             }}
         ],
         nextPath: {

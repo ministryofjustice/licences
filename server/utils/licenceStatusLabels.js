@@ -145,6 +145,7 @@ function roProcessingLabel(licenceStatus) {
         licenceStatus.tasks.curfewHours,
         licenceStatus.tasks.licenceConditions,
         licenceStatus.tasks.riskManagement,
+        licenceStatus.tasks.victim,
         licenceStatus.tasks.reportingInstructions])) {
         return 'Assessment ongoing';
     }

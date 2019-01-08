@@ -95,7 +95,8 @@ function getApprovalStageState(licence) {
 
 function getRoStageState(licence) {
 
-    const {riskManagementNeeded, victimLiasionNeeded, riskManagement, awaitingRiskInformation} = getRiskManagementState(licence);
+    const {riskManagementNeeded, riskManagement, awaitingRiskInformation} = getRiskManagementState(licence);
+    const {victim, victimLiaisonNeeded} = getVictimLiaisonState(licence);
     const {curfewAddressReview, curfewAddressApproved} = getCurfewAddressReviewState(licence);
     const {curfewHours} = getCurfewHoursState(licence);
     const {reportingInstructions} = getReportingInstructionsState(licence);
@@ -106,7 +107,7 @@ function getRoStageState(licence) {
         decisions: {
             riskManagementNeeded,
             awaitingRiskInformation,
-            victimLiasionNeeded,
+            victimLiaisonNeeded,
             curfewAddressApproved,
             standardOnly,
             additional,
@@ -116,6 +117,7 @@ function getRoStageState(licence) {
         },
         tasks: {
             riskManagement,
+            victim,
             curfewAddressReview,
             curfewHours,
             reportingInstructions,
@@ -295,32 +297,37 @@ function getOptOutState(licence) {
 function getRiskManagementState(licence) {
 
     const riskManagementAnswer = getIn(licence, ['risk', 'riskManagement', 'planningActions']);
-    const victimLiaisonAnswer = getIn(licence, ['risk', 'riskManagement', 'victimLiaison']);
     const awaitingInformationAnswer = getIn(licence, ['risk', 'riskManagement', 'awaitingInformation']);
+    const proposedAddressSuitable = getIn(licence, ['risk', 'riskManagement', 'proposedAddressSuitable']);
 
     return {
         riskManagementNeeded: riskManagementAnswer === 'Yes',
-        victimLiasionNeeded: victimLiaisonAnswer === 'Yes',
+        proposedAddressSuitable: proposedAddressSuitable === 'Yes',
         awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
         riskManagement: getState(licence)
     };
 
     function getState(licence) {
 
-        if (isEmpty(getIn(licence, ['risk', 'riskManagement']))) {
+        if (!getIn(licence, ['risk', 'riskManagement'])) {
             return taskStates.UNSTARTED;
         }
 
-        if (isEmpty(riskManagementAnswer)) {
-            return taskStates.STARTED;
-        }
-
-        if (victimLiaisonAnswer) {
+        if (riskManagementAnswer && awaitingInformationAnswer && proposedAddressSuitable) {
             return taskStates.DONE;
         }
 
         return taskStates.STARTED;
     }
+}
+
+function getVictimLiaisonState(licence) {
+    const victimLiaisonAnswer = getIn(licence, ['victim', 'victimLiaison', 'decision']);
+
+    return {
+        victimLiaisonNeeded: victimLiaisonAnswer === 'Yes',
+        victim: victimLiaisonAnswer ? taskStates.DONE : taskStates.UNSTARTED
+    };
 }
 
 function getApprovalState(licence) {

@@ -33,6 +33,7 @@ describe('getAllowedTransition', () => {
                 curfewHours: 'DONE',
                 licenceConditions: 'DONE',
                 riskManagement: 'DONE',
+                victim: 'DONE',
                 reportingInstructions: 'DONE'
             }
         };

@@ -1,0 +1,30 @@
+div.paddingBottom
+    h2.heading-medium Victim liaison
+
+    - var victimLiaisonText = licenceStatus.decisions.victimLiaisonNeeded ? 'Victim liaison required' : 'No victim liaison required'
+
+    div.pure-g
+        div.pure-u-1.pure-u-md-3-4
+            if licenceStatus.tasks.victim === 'DONE'
+                div #{victimLiaisonText}
+
+            else
+                | Not completed
+
+        div.pure-u-1.pure-u-md-1-4.center
+
+            -var path = "/hdc/victim/victimLiaison/" + prisonerInfo.bookingId
+            -var reviewPath = "/hdc/review/victimLiaison/" + prisonerInfo.bookingId
+
+            -var canModify = postApproval && ['RO', 'CA'].includes(user.role)
+            -var isFinalChecks = licenceStatus.stage === 'PROCESSING_CA' && user.role === 'CA'
+            -var editable = canModify || isFinalChecks
+
+            if editable
+                +viewEdit(path)
+
+            else if user.role === 'RO'
+                +startContinueChange(licenceStatus.tasks.victim, path)
+
+            else
+                +view(reviewPath)
