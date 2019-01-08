@@ -28,11 +28,10 @@ div.paddingBottom
             -var path = "/hdc/risk/riskManagement/" + prisonerInfo.bookingId
             -var reviewPath = "/hdc/review/risk/" + prisonerInfo.bookingId
 
-            -var canModify = postApproval && ['RO', 'CA'].includes(user.role)
-            -var isFinalChecks = licenceStatus.stage === 'PROCESSING_CA' && user.role === 'CA'
-            -var editable = canModify || isFinalChecks
+            -var roOrCaInPostApproval = postApproval && ['RO', 'CA'].includes(user.role)
+            -var caInFinalChecks = licenceStatus.stage === 'PROCESSING_CA' && user.role === 'CA'
 
-            if editable
+            if roOrCaInPostApproval || caInFinalChecks
                 +viewEdit(path)
 
             else if user.role === 'RO'
