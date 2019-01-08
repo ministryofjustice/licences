@@ -10,8 +10,6 @@ module.exports = ({licenceService}) => (router, audited) => {
 
     router.get('/curfew/curfewAddressReview/:bookingId', addressReviewGets('curfewAddressReview'));
     router.get('/curfew/curfewAddressReview/:action/:bookingId', addressReviewGets('curfewAddressReview'));
-    router.get('/curfew/addressSafety/:bookingId', addressReviewGets('addressSafety'));
-    router.get('/curfew/addressSafety/:action/:bookingId', addressReviewGets('addressSafety'));
 
     function addressReviewGets(formName) {
         return (req, res) => {

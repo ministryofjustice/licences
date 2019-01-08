@@ -107,9 +107,6 @@ describe('getLicenceStatus', () => {
                             consent: 'Yes',
                             electricity: 'Yes',
                             homeVisitConducted: 'Yes'
-                        },
-                        addressSafety: {
-                            deemedSafe: 'Yes'
                         }
                     },
                     bassReferral: {
@@ -129,7 +126,8 @@ describe('getLicenceStatus', () => {
                     risk: {
                         riskManagement: {
                             planningActions: 'Yes',
-                            awaitingInformation: 'Yes'
+                            awaitingInformation: 'Yes',
+                            proposedAddressSuitable: 'Yes'
                         }
                     },
                     victim: {
@@ -215,9 +213,13 @@ describe('getLicenceStatus', () => {
                             consent: 'No',
                             electricity: 'Yes',
                             homeVisitConducted: 'Yes'
-                        },
-                        addressSafety: {
-                            deemedSafe: 'Yes'
+                        }
+                    },
+                    risk: {
+                        riskManagement: {
+                            planningActions: 'No',
+                            awaitingInformation: 'No',
+                            proposedAddressSuitable: 'Yes'
                         }
                     },
                     bassReferral: {
@@ -312,9 +314,13 @@ describe('getLicenceStatus', () => {
                             consent: 'No',
                             electricity: 'Yes',
                             homeVisitConducted: 'Yes'
-                        },
-                        addressSafety: {
-                            deemedSafe: 'Yes'
+                        }
+                    },
+                    risk: {
+                        riskManagement: {
+                            planningActions: 'Yes',
+                            awaitingInformation: 'Yes',
+                            proposedAddressSuitable: 'Yes'
                         }
                     },
                     bassReferral: {
@@ -428,7 +434,6 @@ describe('getLicenceStatus', () => {
                     curfew: {
                         curfewAddressReview: {
                             consent: 'Yes',
-                            electricity: 'Yes',
                             homeVisitConducted: 'Yes'
                         }
                     },
@@ -533,9 +538,6 @@ describe('getLicenceStatus', () => {
                             consent: 'Yes',
                             electricity: 'Yes',
                             homeVisitConducted: 'Yes'
-                        },
-                        addressSafety: {
-                            deemedSafe: 'Yes'
                         }
                     },
                     licenceConditions: {
@@ -678,7 +680,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.bespoke).to.eql(4);
         });
 
-        it('should show address review APPROVED when any address is approved', () => {
+        it('should show address review APPROVED when consent, electricity and curfewAddressApproved are Yes', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
                 licence: {
@@ -693,9 +695,11 @@ describe('getLicenceStatus', () => {
                             consent: 'Yes',
                             electricity: 'Yes',
                             homeVisitConducted: 'No'
-                        },
-                        addressSafety: {
-                            deemedSafe: 'Yes'
+                        }
+                    },
+                    risk: {
+                        riskManagement: {
+                            proposedAddressSuitable: 'Yes'
                         }
                     }
                 }
@@ -721,13 +725,15 @@ describe('getLicenceStatus', () => {
                                     consent: 'Yes',
                                     electricity: 'Yes',
                                     homeVisitConducted: 'Yes'
-                                },
-                                addressSafety: {
-                                    deemedSafe: 'Yes'
                                 }
                             },
                             withdrawalReason: 'withdrawAddress'
                         }]
+                    },
+                    risk: {
+                        riskManagement: {
+                            proposedAddressSuitable: 'Yes'
+                        }
                     },
                     curfew: {
                         curfewHours: 'anything'
@@ -740,7 +746,7 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.curfewAddressApproved).to.eql('withdrawn');
         });
 
-        it('should show address review REJECTED when deemed safe is no', () => {
+        it('should show address review REJECTED when address is not suitable', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
                 licence: {
@@ -755,9 +761,11 @@ describe('getLicenceStatus', () => {
                             consent: 'Yes',
                             electricity: 'Yes',
                             homeVisitConducted: 'No'
-                        },
-                        addressSafety: {
-                            deemedSafe: 'No'
+                        }
+                    },
+                    risk: {
+                        riskManagement: {
+                            proposedAddressSuitable: 'No'
                         }
                     }
                 }
@@ -778,14 +786,19 @@ describe('getLicenceStatus', () => {
                                 {
                                     consent: 'Yes',
                                     electricity: 'Yes',
-                                    homeVisitConducted: 'No',
-                                    deemedSafe: 'No'
+                                    homeVisitConducted: 'No'
                                 },
                                 {
                                     addressLine1: 'a'
                                 }
                             ]
+                        },
+                        risk: {
+                            riskManagement: {
+                                proposedAddressSuitable: 'No'
+                            }
                         }
+
                     },
                     curfew: {
                         curfewHours: 'anything'

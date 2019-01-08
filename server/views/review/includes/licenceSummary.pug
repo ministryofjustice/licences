@@ -31,8 +31,8 @@ div.largeMarginBottom
                         if(stage === 'ELIGIBILITY' && user.role === 'CA')
                             a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change
 
-            if errorObject.curfewAddress && (typeof errorObject.curfewAddress.curfewAddressReview === 'string' || typeof errorObject.curfewAddress.addressSafety === 'string')
-                p.alert.bold(id='proposed-address-error') #{errorObject.curfewAddress.curfewAddressReview || errorObject.curfewAddress.addressSafety}
+            if errorObject.curfewAddress && (typeof errorObject.curfewAddress.curfewAddressReview === 'string')
+                p.alert.bold(id='proposed-address-error') #{errorObject.curfewAddress.curfewAddressReview}
             else
                 include curfewAddress
 

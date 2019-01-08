@@ -5,63 +5,44 @@ const {
 } = require('../../server/utils/addressHelpers');
 describe('addressHelpers', () => {
 
-    const addressList = [
-        [{consent: 'Yes', electricity: 'Yes'}, {deemedSafe: 'Yes'}],
-        [{}, {}],
-        [{consent: 'No', electricity: 'Yes'}, {deemedSafe: 'Yes'}],
-        [{}, {}],
-        [{consent: 'Yes', electricity: 'Yes'}]
-    ];
-
     describe('addressReviewStarted', () => {
-        it('should return true if any of consent, electricity or deemedSafe have a value', () => {
-            expect(addressReviewStarted(...addressList[0])).to.eql(true);
+        it('should return true if consent or electricity has a value', () => {
+            expect(addressReviewStarted(
+                {consent: 'Yes'},
+            )).to.eql(true);
         });
 
         it('should return false if none of consent, electricity or deemedSafe have a value', () => {
-            expect(addressReviewStarted(...addressList[3])).to.eql(false);
+            expect(addressReviewStarted({})).to.eql(false);
         });
     });
 
     describe('isAcceptedAddress', () => {
-
-        const address1 = [{consent: 'Yes', electricity: 'Yes'}, {deemedSafe: 'Yes'}];
-        const address2 = [{consent: 'No', electricity: 'Yes'}, {deemedSafe: 'Yes'}];
-        const address3 = [{consent: 'Yes', electricity: 'No'}, {deemedSafe: 'Yes'}];
-        const address4 = [{consent: 'Yes', electricity: 'Yes'}, {deemedSafe: 'No'}];
-        const address5 = [{electricity: 'Yes'}, {deemedSafe: 'Yes'}, true];
-
         it('should return true if all expected answers are Yes', () => {
-            expect(isAcceptedAddress(...address1)).to.eql(true);
+            expect(isAcceptedAddress({consent: 'Yes', electricity: 'Yes'}, 'Yes')).to.eql(true);
         });
 
         it('should return false if any are No', () => {
-            expect(isAcceptedAddress(...address2)).to.eql(false);
-            expect(isAcceptedAddress(...address3)).to.eql(false);
-            expect(isAcceptedAddress(...address4)).to.eql(false);
+            expect(isAcceptedAddress({consent: 'No', electricity: 'Yes'}, 'Yes')).to.eql(false);
+            expect(isAcceptedAddress({consent: 'Yes', electricity: 'No'}, 'Yes')).to.eql(false);
+            expect(isAcceptedAddress({consent: 'Yes', electricity: 'Yes'}, 'No')).to.eql(false);
         });
 
         it('should return true if consent is missed but occupier is the offender', () => {
-            expect(isAcceptedAddress(...address5)).to.eql(true);
+            expect(isAcceptedAddress({electricity: 'Yes'}, 'Yes', true)).to.eql(true);
         });
 
     });
 
     describe('isRejectedAddress', () => {
-
-        const address1 = [{consent: 'Yes', electricity: 'Yes'}, {deemedSafe: 'Yes'}];
-        const address2 = [{consent: 'No', electricity: 'Yes'}, {deemedSafe: 'Yes'}];
-        const address3 = [{consent: 'Yes', electricity: 'No'}, {deemedSafe: 'Yes'}];
-        const address4 = [{consent: 'Yes', electricity: 'Yes'}, {deemedSafe: 'No'}];
-
         it('should return false if all expected answers are Yes', () => {
-            expect(isRejectedAddress(...address1)).to.eql(false);
+            expect(isRejectedAddress({consent: 'Yes', electricity: 'Yes'}, 'Yes')).to.eql(false);
         });
 
         it('should return true if any are No', () => {
-            expect(isRejectedAddress(...address2)).to.eql(true);
-            expect(isRejectedAddress(...address3)).to.eql(true);
-            expect(isRejectedAddress(...address4)).to.eql(true);
+            expect(isRejectedAddress({consent: 'No', electricity: 'Yes'}, 'Yes')).to.eql(true);
+            expect(isRejectedAddress({consent: 'Yes', electricity: 'No'}, 'Yes')).to.eql(true);
+            expect(isRejectedAddress({consent: 'Yes', electricity: 'Yes'}, 'No')).to.eql(true);
         });
 
     });

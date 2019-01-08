@@ -4,13 +4,13 @@ include ../proposedAddress/includes/addressDetail
 block content
 
     -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
-    -var addressSafety = data.curfew && data.curfew.addressSafety ? data.curfew.addressSafety : {}
     -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress : {}
     -var withdrawnAddressObj = Object.keys(address).length === 0 && data.proposedAddress && data.proposedAddress.rejections && data.proposedAddress.rejections[data.proposedAddress.rejections.length-1] || {}
     -var withdrawnAddress = withdrawnAddressObj.address || {}
     -var addressWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawAddress'
     -var consentWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawConsent'
     -var showAddressActions = postApproval || stage === 'PROCESSING_CA'
+
 
     div.pure-g.pure-u-1
         div
@@ -32,10 +32,10 @@ block content
                     | and checked by the responsible officer.
 
             if address.addressLine1
-                +addressDetail('curfew', address, review, addressSafety)
+                +addressDetail('curfew', address, review)
 
             else if showAddressActions
-                +addressDetail('curfew', withdrawnAddress, review, addressSafety)
+                +addressDetail('curfew', withdrawnAddress, review)
 
             if showAddressActions
                 div.borderBottomLightMedium.borderTopLight.marginBottomLarge

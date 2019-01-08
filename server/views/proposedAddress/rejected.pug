@@ -33,8 +33,9 @@ block content
                 p.smallMarginBottom Reason for rejection:
                 if address.consent === 'No'
                     p.bold The homeowner/landlord does not give informed consent
+                // TODO check this
                 if address.deemedSafe === 'No'
-                    p.bold The address has been deemed unsafe
+                    p.bold The address has been deemed unsuitable
                     if address.unsafeReason
                         p #{address.unsafeReason}
                 if address.electricity === 'No'

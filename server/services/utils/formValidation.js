@@ -6,9 +6,7 @@ const today = moment().startOf('day').format('MM-DD-YYYY');
 const {
     curfewAddressSchema,
     addressReviewSchema,
-    addressSafetySchema,
-    addressReviewSchemaOffenderIsOccupier,
-    addressSafetySchemaOffenderIsOccupier
+    addressReviewSchemaOffenderIsOccupier
 } = require('./bespokeAddressSchema');
 const additionalConditionsSchema = require('./bespokeConditionsSchema');
 
@@ -99,15 +97,6 @@ const validationProcedures = {
         },
         getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
     },
-    addressSafety: {
-        getSchema: (pageConfig, {offenderIsMainOccupier}) => {
-            if (offenderIsMainOccupier) {
-                return addressReviewSchemaOffenderIsOccupier.concat(addressSafetySchemaOffenderIsOccupier);
-            }
-            return addressReviewSchema.concat(addressSafetySchema);
-        },
-        getErrorMessage: (fieldConfig, errorPath) => getIn(fieldConfig, [...errorPath, 'validationMessage'])
-    },
     additional: {
         getSchema: () => additionalConditionsSchema,
         getErrorMessage: (fieldConfig, errorPath) => {
@@ -171,13 +160,6 @@ function validateGroup({licence, group, bespokeConditions}) {
                 missingMessage: 'Enter the curfew address review details'
             },
             {
-                formResponse: getIn(licence, ['curfew', 'addressSafety']),
-                formType: 'addressSafety',
-                pageConfig: curfewConfig.addressSafety,
-                section: 'curfew',
-                missingMessage: 'Enter the curfew address review details'
-            },
-            {
                 formResponse: getIn(licence, ['licenceConditions', 'standard']),
                 formType: 'standard',
                 pageConfig: conditionsConfig.standard,
@@ -219,22 +201,6 @@ function validateGroup({licence, group, bespokeConditions}) {
                 formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
                 formType: 'curfewAddressReview',
                 pageConfig: curfewConfig.curfewAddressReview,
-                section: 'curfew',
-                missingMessage: 'Enter the curfew address review details'
-            }
-        ],
-        PROCESSING_RO_ADDRESS_SAFETY_REJECTED: [
-            {
-                formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
-                formType: 'curfewAddressReview',
-                pageConfig: curfewConfig.curfewAddressReview,
-                section: 'curfew',
-                missingMessage: 'Enter the curfew address review details'
-            },
-            {
-                formResponse: getIn(licence, ['curfew', 'addressSafety']),
-                formType: 'addressSafety',
-                pageConfig: curfewConfig.addressSafety,
                 section: 'curfew',
                 missingMessage: 'Enter the curfew address review details'
             }
