@@ -1390,8 +1390,14 @@ describe('licenceService', () => {
             },
             curfew: {
                 curfewAddressReview: {rev: 'iew'},
-                addressSafety: {safe: 'ty'},
                 somethingUninteresting: 'boring'
+            },
+            risk: {
+                riskManagement: {
+                    planningActions: 'Yes',
+                    proposedAddressSuitable: 'No',
+                    unsuitableReason: 'Reasons'
+                }
             }
         };
 
@@ -1402,14 +1408,22 @@ describe('licenceService', () => {
                         key: 'value'
                     },
                     addressReview: {
-                        curfewAddressReview: {rev: 'iew'},
-                        addressSafety: {safe: 'ty'}
+                        curfewAddressReview: {rev: 'iew'}
+                    },
+                    riskManagement: {
+                        proposedAddressSuitable: 'No',
+                        unsuitableReason: 'Reasons'
                     },
                     withdrawalReason: 'consentWithdrawn'
                 }]
             },
             curfew: {
                 somethingUninteresting: 'boring'
+            },
+            risk: {
+                riskManagement: {
+                    planningActions: 'Yes'
+                }
             }
         };
 

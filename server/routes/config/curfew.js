@@ -36,34 +36,6 @@ module.exports = {
                     }
                 }
             ],
-            path: '/hdc/curfew/addressSafety/',
-            change: '/hdc/curfew/addressSafety/change/',
-            modify: '/hdc/taskList/'
-        }
-    },
-    addressSafety: {
-        pageDataMap: ['licence'],
-        fields: [
-            {deemedSafe: {
-                validationMessage: 'Say if you approve the address'
-            }},
-            {unsafeReason: {
-                dependentOn: 'deemedSafe',
-                predicate: 'No',
-                validationMessage: 'Explain why you did not approve the address'
-            }}
-        ],
-        nextPath: {
-            decisions: [
-                {
-                    discriminator: 'deemedSafe',
-                    No: {
-                        path: '/hdc/taskList/',
-                        change: '/hdc/review/licenceDetails/',
-                        modify: '/hdc/taskList/'
-                    }
-                }
-            ],
             path: '/hdc/taskList/',
             change: '/hdc/review/licenceDetails/',
             modify: '/hdc/taskList/'

@@ -366,15 +366,17 @@ module.exports = function createLicenceService(licenceClient) {
 
     async function rejectProposedAddress(licence, bookingId, withdrawalReason) {
         const address = getIn(licence, ['proposedAddress', 'curfewAddress']);
-        const addressReview = pick(['curfewAddressReview', 'addressSafety'], getIn(licence, ['curfew']));
-        const addressToStore = {address, addressReview, withdrawalReason};
+        const addressReview = pick(['curfewAddressReview'], getIn(licence, ['curfew']));
+        const riskManagement = pick(['proposedAddressSuitable', 'unsuitableReason'], getIn(licence, ['risk', 'riskManagement']));
+        const addressToStore = {address, addressReview, riskManagement, withdrawalReason};
 
         const addressRejections = recordList({licence, path: ['proposedAddress', 'rejections'], allowEmpty: true});
         const licenceWithAddressRejection = addressRejections.add({record: addressToStore});
 
         const updatedLicence = removePaths([
             ['proposedAddress', 'curfewAddress'],
-            ['curfew', 'addressSafety'],
+            ['risk', 'riskManagement', 'proposedAddressSuitable'],
+            ['risk', 'riskManagement', 'unsuitableReason'],
             ['curfew', 'curfewAddressReview']
         ], licenceWithAddressRejection);
 
@@ -390,7 +392,8 @@ module.exports = function createLicenceService(licenceClient) {
 
         const updatedLicence = mergeWithRight(licenceAfterRemoval, {
             proposedAddress: {curfewAddress: entryToReinstate.address},
-            curfew: entryToReinstate.addressReview
+            curfew: entryToReinstate.addressReview,
+            risk: {riskManagement: mergeWithRight(licenceAfterRemoval.risk.riskManagement, entryToReinstate.riskManagement)}
         });
 
         return licenceClient.updateLicence(bookingId, updatedLicence);
@@ -404,10 +407,7 @@ module.exports = function createLicenceService(licenceClient) {
         const groupName = () => {
             if (stage === 'PROCESSING_RO') {
                 if (curfewAddressApproved === 'rejected') {
-                    const addressReviewRejected = getIn(licence, ['curfew', 'curfewAddressReview', 'consent']) === 'No' ||
-                        getIn(licence, ['curfew', 'curfewAddressReview', 'electricity']) === 'No';
-
-                    return addressReviewRejected ? 'PROCESSING_RO_ADDRESS_REVIEW_REJECTED' : 'PROCESSING_RO_ADDRESS_SAFETY_REJECTED';
+                    return 'PROCESSING_RO_ADDRESS_REVIEW_REJECTED';
                 }
                 if (bassAreaNotSuitable) {
                     return 'BASS_AREA';

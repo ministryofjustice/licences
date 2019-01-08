@@ -4,27 +4,18 @@ module.exports = {
     isRejectedAddress
 };
 
-function isAcceptedAddress(addressReview, addressSafety, offenderIsOccupier) {
-    const {consent, electricity} = addressReview;
-    const {deemedSafe} = addressSafety;
-
+function isAcceptedAddress({consent, electricity}, addressSuitable, offenderIsOccupier) {
     if (offenderIsOccupier) {
-        return electricity === 'Yes' && deemedSafe === 'Yes';
+        return electricity === 'Yes' && addressSuitable === 'Yes';
     }
 
-    return consent === 'Yes' && electricity === 'Yes' && deemedSafe === 'Yes';
+    return consent === 'Yes' && electricity === 'Yes' && addressSuitable === 'Yes';
 }
 
-function isRejectedAddress(addressReview, addressSafety) {
-    const {consent, electricity} = addressReview;
-    const {deemedSafe} = addressSafety;
-
-    return consent === 'No' || electricity === 'No' || deemedSafe === 'No';
+function isRejectedAddress({consent, electricity}, addressSuitable) {
+    return consent === 'No' || electricity === 'No' || addressSuitable === 'No';
 }
 
-function addressReviewStarted(addressReview, addressSafety) {
-    const {consent, electricity} = addressReview;
-    const {deemedSafe} = addressSafety;
-
-    return !!(consent || electricity || deemedSafe);
+function addressReviewStarted({consent, electricity}) {
+    return !!(consent || electricity);
 }

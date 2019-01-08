@@ -417,21 +417,17 @@ describe('GET /taskList/:prisonNumber', () => {
                     licence: {
                         proposedAddress: {
                             curfewAddress: {
-                                addresses: [
-                                    {
-                                        occupier: {
-                                            name: 'James Green',
-                                            relationship: 'UX guy'
-                                        },
-                                        postCode: 'LE17 4AX',
-                                        residents: [],
-                                        telephone: '00000000000',
-                                        addressTown: 'Lutterworth',
-                                        addressLine1: '18 Almond Way',
-                                        addressLine2: '',
-                                        cautionedAgainstResident: 'No'
-                                    }
-                                ]
+                                occupier: {
+                                    name: 'James Green',
+                                    relationship: 'UX guy'
+                                },
+                                postCode: 'LE17 4AX',
+                                residents: [],
+                                telephone: '00000000000',
+                                addressTown: 'Lutterworth',
+                                addressLine1: '18 Almond Way',
+                                addressLine2: '',
+                                cautionedAgainstResident: 'No'
                             }
                         }
                     },
@@ -714,14 +710,9 @@ describe('GET /taskList/:prisonNumber', () => {
                         proposedAddress: {curfewAddress: {addressLine1: 'address1'}},
                         curfew: {
                             curfewAddressReview: {
-                                cautionedAgainstResident: 'No',
                                 consent: 'Yes',
-                                electricity: 'Yes'
-
-                            },
-                            addressSafety: {
-                                homeVisitConducted: 'Yes',
-                                deemedSafe: 'Yes'
+                                electricity: 'Yes',
+                                homeVisitConducted: 'Yes'
                             }
                         }
                     }
@@ -979,12 +970,13 @@ describe('GET /taskList/:prisonNumber', () => {
                         curfew: {
                             curfewAddressReview: {
                                 consent: 'Yes',
-                                electricity: 'Yes'
-
-                            },
-                            addressSafety: {
-                                homeVisitConducted: 'Yes',
-                                deemedSafe: 'Yes'
+                                electricity: 'Yes',
+                                homeVisitConducted: 'Yes'
+                            }
+                        },
+                        risk: {
+                            riskManagement: {
+                                proposedAddressSuitable: 'Yes'
                             }
                         }
                     }

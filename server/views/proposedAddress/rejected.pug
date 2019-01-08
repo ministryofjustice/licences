@@ -4,6 +4,8 @@ include ../includes/alternativeForm
 block content
 
     -var address = data.proposedAddress && data.proposedAddress.curfewAddress || {}
+    -var addressReview = data.curfew && data.curfew.curfewAddressReview || {}
+    -var risk = data.risk && data.curfew.riskManagement || {}
     -var savedData = data.proposedAddress && data.proposedAddress.rejected && data.proposedAddress.rejected.enterAlternative || {}
 
     div.pure-g.pure-u-1
@@ -31,13 +33,13 @@ block content
 
             div.pure-u-1.pure-u-md-1-2.paddingBottom
                 p.smallMarginBottom Reason for rejection:
-                if address.consent === 'No'
+                if addressReview.consent === 'No'
                     p.bold The homeowner/landlord does not give informed consent
-                if address.deemedSafe === 'No'
-                    p.bold The address has been deemed unsafe
-                    if address.unsafeReason
-                        p #{address.unsafeReason}
-                if address.electricity === 'No'
+                if risk.proposedAddressSuitable === 'No'
+                    p.bold The address has been deemed unsuitable
+                    if risk.unsuitableReason
+                        p #{risk.unsuitableReason}
+                if addressReview.electricity === 'No'
                     p.bold The address does not have an electricity supply
 
 

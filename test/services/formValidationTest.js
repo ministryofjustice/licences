@@ -289,7 +289,7 @@ describe('validation', () => {
                 });
             });
 
-            const {curfewHours, curfewAddressReview, addressSafety} = require('../../server/routes/config/curfew');
+            const {curfewHours, curfewAddressReview} = require('../../server/routes/config/curfew');
             describe('curfewAddressReview', () => {
                 const pageConfig = curfewAddressReview;
                 const options = [
@@ -357,46 +357,6 @@ describe('validation', () => {
                             pageConfig,
                             formType: 'curfewAddressReview',
                             bespokeConditions: {offenderIsMainOccupier: true}
-                        })).to.eql(outcome);
-                    });
-                });
-            });
-
-            describe('addressSafety', () => {
-                const pageConfig = addressSafety;
-                const options = [
-                    {
-                        formResponse: {consent: 'No'},
-                        outcome: {}
-                    },
-                    {
-                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes', deemedSafe: 'Yes'},
-                        outcome: {}
-                    },
-                    {
-                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes', deemedSafe: 'No'},
-                        outcome: {unsafeReason: 'Explain why you did not approve the address'}
-                    },
-                    // {
-                    //     formResponse: {
-                    //         occupier: {isOffender: 'Yes'},
-                    //         consent: '', deemedSafe: 'Yes'
-                    //     },
-                    //     outcome: {unsafeReason: 'Explain why you did not approve the address'}
-                    // },
-                    {
-                        formResponse: {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes', deemedSafe: 'Yes', unsafeReason: 'a'},
-                        outcome: {}
-                    }
-                ];
-
-                options.forEach(option => {
-                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
-                        const {outcome, formResponse} = option;
-                        expect(service.validateForm({
-                            formResponse,
-                            pageConfig,
-                            formType: 'addressSafety'
                         })).to.eql(outcome);
                     });
                 });
@@ -1015,15 +975,13 @@ describe('validation', () => {
                 {name: 'n', buildingAndStreet1: 'o', townOrCity: 't', postcode: 'S1 4JQ', telephone: '0770000000'};
 
             const validAddressReview = {consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes'};
-            const validAddressSafety = {deemedSafe: 'Yes'};
 
             const validLicence = {
                 risk: {riskManagement: validRiskManagement},
                 victim: {victimLiaison: validVictim},
                 curfew: {
                     curfewHours: validCurfewHours,
-                    curfewAddressReview: validAddressReview,
-                    addressSafety: validAddressSafety
+                    curfewAddressReview: validAddressReview
                 },
                 reporting: {reportingInstructions: validReportingInstructions},
                 licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}, additional: {NOTIFYRELATIONSHIP: {}}}
@@ -1041,8 +999,7 @@ describe('validation', () => {
                 ...validLicence,
                 curfew: {
                     ...validLicence.curfew,
-                    curfewAddressReview: {consent: 'No'},
-                    addressSafety: undefined
+                    curfewAddressReview: {consent: 'No'}
                 }
             };
 
@@ -1050,8 +1007,7 @@ describe('validation', () => {
                 ...validLicence,
                 curfew: {
                     ...validLicence.curfew,
-                    curfewAddressReview: {consent: 'Yes', electricity: 'No'},
-                    addressSafety: undefined
+                    curfewAddressReview: {consent: 'Yes', electricity: 'No'}
                 }
             };
 
@@ -1060,8 +1016,7 @@ describe('validation', () => {
                 victim: {victimLiaison: validVictim},
                 curfew: {
                     curfewHours: validCurfewHours,
-                    curfewAddressReview: validAddressReview,
-                    addressSafety: validAddressSafety
+                    curfewAddressReview: validAddressReview
                 },
                 reporting: {reportingInstructions: validReportingInstructions},
                 licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
@@ -1072,8 +1027,7 @@ describe('validation', () => {
                 victim: {victimLiaison: validVictim},
                 curfew: {
                     curfewHours: validCurfewHours,
-                    curfewAddressReview: validAddressReview,
-                    addressSafety: validAddressSafety
+                    curfewAddressReview: validAddressReview
                 },
                 reporting: {reportingInstructions: validReportingInstructions},
                 licenceConditions: {standard: {additionalConditionsRequired: 'Yes'}, additional: {NOTIFYRELATIONSHIP: {}}}
@@ -1098,7 +1052,6 @@ describe('validation', () => {
                         risk: {riskManagement: 'Enter the risk management and victim liaison details'},
                         curfew: {
                             curfewHours: 'Enter the proposed curfew hours',
-                            addressSafety: 'Enter the curfew address review details',
                             curfewAddressReview: 'Enter the curfew address review details'
                         },
                         licenceConditions: {
@@ -1108,7 +1061,6 @@ describe('validation', () => {
                     },
                     addressRejectedOutcome: {
                         curfew: {
-                            addressSafety: 'Enter the curfew address review details',
                             curfewAddressReview: 'Enter the curfew address review details'
                         }
                     }
@@ -1121,16 +1073,12 @@ describe('validation', () => {
                 },
                 {
                     licence: validLicenceNoOccupierConsent,
-                    standardOutcome: {
-                        curfew: {addressSafety: 'Enter the curfew address review details'}
-                    },
+                    standardOutcome: {},
                     addressRejectedOutcome: {}
                 },
                 {
                     licence: validLicenceNoElec,
-                    standardOutcome: {
-                        curfew: {addressSafety: 'Enter the curfew address review details'}
-                    },
+                    standardOutcome: {},
                     addressRejectedOutcome: {}
                 }
             ];

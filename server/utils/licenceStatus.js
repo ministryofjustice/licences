@@ -416,37 +416,43 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
 }
 
 function getCurfewAddressReviewState(licence) {
-
-    const curfewAddress = getIn(licence, ['proposedAddress', 'curfewAddress']);
     const addressReview = getIn(licence, ['curfew', 'curfewAddressReview']) || {};
-    const addressSafety = getIn(licence, ['curfew', 'addressSafety']) || {};
-    const rejectedAddresses = getIn(licence, ['proposedAddress', 'rejections']);
 
-
-    if (!curfewAddress || isEmpty(curfewAddress)) {
-        if (isEmpty(rejectedAddresses)) {
-            return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unstarted'};
+    const taskCompletion = () => {
+        const {consent, electricity} = addressReview;
+        if (consent && electricity) {
+            return taskStates.DONE;
         }
-
-        const {withdrawalReason} = lastItem(rejectedAddresses);
-        if (withdrawalReason === 'withdrawAddress' || withdrawalReason === 'withdrawConsent') {
-            return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'withdrawn'};
+        if (consent || electricity) {
+            return taskStates.STARTED;
         }
-    }
+        return taskStates.UNSTARTED;
+    };
 
-    if (isAcceptedAddress(addressReview, addressSafety, getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes')) {
-        return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'approved'};
-    }
+    const curfewAddressApproved = () => {
+        const curfewAddress = getIn(licence, ['proposedAddress', 'curfewAddress']) || {};
+        const addressSuitable = getIn(licence, ['risk', 'riskManagement', 'proposedAddressSuitable']);
+        const rejectedAddresses = getIn(licence, ['proposedAddress', 'rejections']);
 
-    if (isRejectedAddress(addressReview, addressSafety)) {
-        return {curfewAddressReview: taskStates.DONE, curfewAddressApproved: 'rejected'};
-    }
+        if (isAcceptedAddress(addressReview, addressSuitable, getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes')) {
+            return 'approved';
+        }
+        if (isRejectedAddress(addressReview, addressSuitable)) {
+            return 'rejected';
+        }
+        if (addressReviewStarted(addressReview)) {
+            return 'unfinished';
+        }
+        if (rejectedAddresses && rejectedAddresses.length > 0) {
+            return 'withdrawn';
+        }
+        return 'unstarted';
+    };
 
-    if (addressReviewStarted(addressReview, addressSafety)) {
-        return {curfewAddressReview: taskStates.STARTED, curfewAddressApproved: 'unfinished'};
-    }
-
-    return {curfewAddressReview: taskStates.UNSTARTED, curfewAddressApproved: 'unstarted'};
+    return {
+        curfewAddressReview: taskCompletion(),
+        curfewAddressApproved: curfewAddressApproved()
+    };
 }
 
 function getCurfewHoursState(licence) {

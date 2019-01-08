@@ -1,4 +1,4 @@
-mixin addressDetail(type, address, review, safety)
+mixin addressDetail(type, address, review)
 
     div.pure-g.smallPaddingBottom(id="addressDetails")
         div.pure-u-1.pure-u-sm-1-2.pure-g
@@ -60,13 +60,6 @@ mixin addressDetail(type, address, review, safety)
                 div.pure-u-md-4-5
                     | Does the main occupier consent to HDC?
                     p.bold(id="consent-"+type) #{review.consent}
-
-                if(review.consent === 'Yes' && review.electricity !== 'No')
-                    if safety.deemedSafe
-                        div.pure-u-md-4-5
-                            div.pure-u-md-4-5
-                                | Could this offender be managed safely at this address?
-                                p.bold(id="deemedSafe-" + type) #{safety.deemedSafe}
 
             if(review.consent === 'Yes')
                 div.pure-u-1.pure-u-md-1-2.midPaddingBottom

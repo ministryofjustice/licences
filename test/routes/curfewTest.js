@@ -29,7 +29,6 @@ describe('/hdc/curfew', () => {
 
         const routes = [
             {url: '/hdc/curfew/curfewAddressReview/1', content: 'Proposed curfew address'},
-            {url: '/hdc/curfew/addressSafety/1', content: 'Could this offender be managed safely at this address?'},
             {url: '/hdc/curfew/curfewHours/1', content: 'HDC curfew hours'}
         ];
 
@@ -167,20 +166,8 @@ describe('/hdc/curfew', () => {
                 url: '/hdc/curfew/curfewAddressReview/1',
                 body: {bookingId: 1, consent: 'Yes'},
                 section: 'curfewAddressReview',
-                nextPath: '/hdc/curfew/addressSafety/1',
+                nextPath: '/hdc/taskList/1',
                 nextPathCa: '/hdc/taskList/1'
-            },
-            {
-                url: '/hdc/curfew/addressSafety/1',
-                body: {bookingId: 1, deemedSafe: 'No'},
-                section: 'addressSafety',
-                nextPath: '/hdc/taskList/1'
-            },
-            {
-                url: '/hdc/curfew/addressSafety/1',
-                body: {bookingId: 1, deemedSafe: 'Yes'},
-                section: 'addressSafety',
-                nextPath: '/hdc/taskList/1'
             }
         ];
 
