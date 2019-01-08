@@ -746,6 +746,42 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.curfewAddressApproved).to.eql('withdrawn');
         });
 
+        it('should show address review unstarted when there is a new one', () => {
+            const licence = {
+                stage: 'PROCESSING_CA',
+                licence: {
+                    proposedAddress: {
+                        curfewAddress: {addressLine1: 'line1'},
+                        rejections: [{
+                            address: {
+                                addressLine1: 'line1'
+                            },
+                            addressReview: {
+                                curfewAddressReview: {
+                                    consent: 'Yes',
+                                    electricity: 'Yes',
+                                    homeVisitConducted: 'Yes'
+                                }
+                            },
+                            withdrawalReason: 'withdrawAddress'
+                        }]
+                    },
+                    risk: {
+                        riskManagement: {
+                            proposedAddressSuitable: 'Yes'
+                        }
+                    },
+                    curfew: {
+                        curfewHours: 'anything'
+                    }
+                }
+            };
+
+            const status = getLicenceStatus(licence);
+
+            expect(status.decisions.curfewAddressApproved).to.eql('unstarted');
+        });
+
         it('should show address review REJECTED when address is not suitable', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
