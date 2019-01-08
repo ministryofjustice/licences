@@ -61,7 +61,7 @@ div.largeMarginBottom
                 if (stage === 'PROCESSING_RO' && user.role === 'RO')
                     div.pure-u-1.pure-u-md-1-2.alignRight
                         div.pure-u-md-1-2.change-details
-                            a#riskEditLink(href="/hdc/victim/victimLiaison/change/" + bookingId) Change
+                            a#victimEditLink(href="/hdc/victim/victimLiaison/change/" + bookingId) Change
 
             if errorObject.victim && typeof errorObject.victim.victimLiaison === 'string'
                 p.alert.bold(id='risk-error') #{errorObject.victim.victimLiaison}
