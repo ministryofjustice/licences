@@ -367,7 +367,8 @@ module.exports = function createLicenceService(licenceClient) {
     async function rejectProposedAddress(licence, bookingId, withdrawalReason) {
         const address = getIn(licence, ['proposedAddress', 'curfewAddress']);
         const addressReview = pick(['curfewAddressReview'], getIn(licence, ['curfew']));
-        const riskManagement = pick(['proposedAddressSuitable', 'unsuitableReason'], getIn(licence, ['risk', 'riskManagement']));
+        const riskManagementInputs = getIn(licence, ['risk', 'riskManagement']);
+        const riskManagement = riskManagementInputs ? pick(['proposedAddressSuitable', 'unsuitableReason'], riskManagementInputs) : {};
         const addressToStore = {address, addressReview, riskManagement, withdrawalReason};
 
         const addressRejections = recordList({licence, path: ['proposedAddress', 'rejections'], allowEmpty: true});

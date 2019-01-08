@@ -1433,6 +1433,42 @@ describe('licenceService', () => {
                 expect(licenceClient.updateLicence).to.be.calledOnce();
                 expect(licenceClient.updateLicence).to.be.calledWith('001', rejectedAddressLicence);
             });
+
+            it('should handle risk management not being completed', () => {
+
+                const licence = {
+                    proposedAddress: {
+                        curfewAddress: {key: 'value'},
+                        rejections: []
+                    },
+                    curfew: {
+                        curfewAddressReview: {rev: 'iew'},
+                        somethingUninteresting: 'boring'
+                    }
+                };
+
+                const rejectedAddressLicence = {
+                    proposedAddress: {
+                        rejections: [{
+                            address: {
+                                key: 'value'
+                            },
+                            addressReview: {
+                                curfewAddressReview: {rev: 'iew'}
+                            },
+                            riskManagement: {},
+                            withdrawalReason: 'consentWithdrawn'
+                        }]
+                    },
+                    curfew: {
+                        somethingUninteresting: 'boring'
+                    }
+                };
+
+                service.rejectProposedAddress(licence, '001', 'consentWithdrawn');
+                expect(licenceClient.updateLicence).to.be.calledOnce();
+                expect(licenceClient.updateLicence).to.be.calledWith('001', rejectedAddressLicence);
+            });
         });
 
         describe('reinstate', () => {
