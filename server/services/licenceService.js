@@ -368,8 +368,11 @@ module.exports = function createLicenceService(licenceClient) {
         const address = getIn(licence, ['proposedAddress', 'curfewAddress']);
         const addressReview = pick(['curfewAddressReview'], getIn(licence, ['curfew']));
         const riskManagementInputs = getIn(licence, ['risk', 'riskManagement']);
-        const riskManagement = riskManagementInputs ? pick(['proposedAddressSuitable', 'unsuitableReason'], riskManagementInputs) : {};
-        const addressToStore = {address, addressReview, riskManagement, withdrawalReason};
+        const riskManagement = riskManagementInputs ? pick(['proposedAddressSuitable', 'unsuitableReason'], riskManagementInputs) : null;
+
+        const addressToStore = [{address}, {addressReview}, riskManagement ? {riskManagement} : null, {withdrawalReason}]
+            .filter(item => item)
+            .reduce((obj, item) => mergeWithRight(obj, item), {});
 
         const addressRejections = recordList({licence, path: ['proposedAddress', 'rejections'], allowEmpty: true});
         const licenceWithAddressRejection = addressRejections.add({record: addressToStore});
@@ -385,19 +388,27 @@ module.exports = function createLicenceService(licenceClient) {
         return updatedLicence;
     }
 
-    function reinstateProposedAddress(licence, bookingId) {
+    async function reinstateProposedAddress(licence, bookingId) {
         const addressRejections = recordList({licence, path: ['proposedAddress', 'rejections']});
         const entryToReinstate = addressRejections.last();
 
         const licenceAfterRemoval = addressRejections.remove();
+        const remainingRiskSection = getIn(licenceAfterRemoval, ['risk', 'riskManagement']) || null;
+        const riskManagementToReinstate = remainingRiskSection || entryToReinstate.riskManagement ?
+            {risk: {riskManagement: mergeWithRight(remainingRiskSection, entryToReinstate.riskManagement)}} :
+            null;
 
-        const updatedLicence = mergeWithRight(licenceAfterRemoval, {
-            proposedAddress: {curfewAddress: entryToReinstate.address},
-            curfew: entryToReinstate.addressReview,
-            risk: {riskManagement: mergeWithRight(licenceAfterRemoval.risk.riskManagement, entryToReinstate.riskManagement)}
-        });
+        const updatedLicence = [
+            {proposedAddress: {curfewAddress: entryToReinstate.address}},
+            {curfew: entryToReinstate.addressReview},
+            riskManagementToReinstate
+        ]
+            .filter(item => item)
+            .reduce((obj, item) => mergeWithRight(obj, item), licenceAfterRemoval);
 
-        return licenceClient.updateLicence(bookingId, updatedLicence);
+
+        await licenceClient.updateLicence(bookingId, updatedLicence);
+        return updatedLicence;
     }
 
     function validateFormGroup({licence, stage, decisions = {}, tasks = {}} = {}) {
