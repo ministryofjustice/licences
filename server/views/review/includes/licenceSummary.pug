@@ -36,22 +36,22 @@ div.largeMarginBottom
             else
                 include curfewAddress
 
-    if (licenceStatus.decisions.curfewAddressApproved !== 'rejected' && !licenceStatus.decisions.bassAreaNotSuitable)
+    // Risk
+    div.borderBottom
+        div.pure-g
+            div.pure-u-1.pure-u-md-1-2
+                h2#riskDetails.heading-medium Risk
+            if (stage === 'PROCESSING_RO' && user.role === 'RO')
+                div.pure-u-1.pure-u-md-1-2.alignRight
+                    div.pure-u-md-1-2.change-details
+                        a#riskEditLink(href="/hdc/risk/riskManagement/change/" + bookingId) Change
 
-        // Risk
-        div.borderBottom
-            div.pure-g
-                div.pure-u-1.pure-u-md-1-2
-                    h2#riskDetails.heading-medium Risk
-                if (stage === 'PROCESSING_RO' && user.role === 'RO')
-                    div.pure-u-1.pure-u-md-1-2.alignRight
-                        div.pure-u-md-1-2.change-details
-                            a#riskEditLink(href="/hdc/risk/riskManagement/change/" + bookingId) Change
+        if errorObject.risk && typeof errorObject.risk.riskManagement === 'string'
+            p.alert.bold(id='risk-error') #{errorObject.risk.riskManagement}
+        else
+            include riskManagement
 
-            if errorObject.risk && typeof errorObject.risk.riskManagement === 'string'
-                p.alert.bold(id='risk-error') #{errorObject.risk.riskManagement}
-            else
-                include riskManagement
+    if (!licenceStatus.decisions.curfewAddressRejected && !licenceStatus.decisions.bassAreaNotSuitable)
 
         // Victim liaison
         div.borderBottom

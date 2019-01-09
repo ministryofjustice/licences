@@ -1034,8 +1034,8 @@ describe('validation', () => {
             };
 
             const options = [
-                {licence: validLicence, standardOutcome: {}, addressRejectedOutcome: {}},
-                {licence: validLicenceNoConditions, standardOutcome: {}, addressRejectedOutcome: {}},
+                {licence: validLicence, standardOutcome: {}, addressReviewFailedOutcome: {}, addressRiskFailedOutcome: {}},
+                {licence: validLicenceNoConditions, standardOutcome: {}, addressReviewFailedOutcome: {}, addressRiskFailedOutcome: {}},
                 {
                     licence: invalidLicence,
                     standardOutcome: {
@@ -1044,7 +1044,15 @@ describe('validation', () => {
                             proposedAddressSuitable: 'Say if the proposed address is suitable'
                         }}
                     },
-                    addressRejectedOutcome: {}
+                    addressReviewFailedOutcome: {},
+                    addressRiskFailedOutcome: {
+                        risk: {
+                            riskManagement: {
+                                planningActions: 'Say if there are risk management actions',
+                                proposedAddressSuitable: 'Say if the proposed address is suitable'
+                            }
+                        }
+                    }
                 },
                 {
                     licence: {},
@@ -1059,27 +1067,36 @@ describe('validation', () => {
                         },
                         reporting: {reportingInstructions: 'Enter the reporting instructions'}
                     },
-                    addressRejectedOutcome: {
+                    addressReviewFailedOutcome: {
                         curfew: {
                             curfewAddressReview: 'Enter the curfew address review details'
                         }
+                    },
+                    addressRiskFailedOutcome: {
+                        curfew: {
+                            curfewAddressReview: 'Enter the curfew address review details'
+                        },
+                        risk: {riskManagement: 'Enter the risk management and victim liaison details'}
                     }
                 },
                 {
                     licence: validLicenceOccupierIsOffender,
                     standardOutcome: {},
-                    addressRejectedOutcome: {},
+                    addressReviewFailedOutcome: {},
+                    addressRiskFailedOutcome: {},
                     decisions: {offenderIsMainOccupier: true}
                 },
                 {
                     licence: validLicenceNoOccupierConsent,
                     standardOutcome: {},
-                    addressRejectedOutcome: {}
+                    addressReviewFailedOutcome: {},
+                    addressRiskFailedOutcome: {}
                 },
                 {
                     licence: validLicenceNoElec,
                     standardOutcome: {},
-                    addressRejectedOutcome: {}
+                    addressReviewFailedOutcome: {},
+                    addressRiskFailedOutcome: {}
                 }
             ];
 
@@ -1092,16 +1109,33 @@ describe('validation', () => {
                 });
             });
 
-            context('address rejected', () => {
+            context('address review failed', () => {
                 options.forEach(option => {
                     it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
-                        const {addressRejectedOutcome, licence, decisions} = option;
+                        const {addressReviewFailedOutcome, licence, decisions} = option;
                         const decs = {
                             ...decisions,
-                            curfewAddressApproved: 'rejected'
+                            curfewAddressRejected: true,
+                            addressReviewFailed: true
                         };
                         expect(service.validateFormGroup(
-                            {licence, stage, decisions: decs})).to.eql(addressRejectedOutcome);
+                            {licence, stage, decisions: decs})).to.eql(addressReviewFailedOutcome);
+                    });
+                });
+            });
+
+            context('risk failed', () => {
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
+                        const {addressRiskFailedOutcome, licence, decisions} = option;
+                        const decs = {
+                            ...decisions,
+                            curfewAddressRejected: true,
+                            addressReviewFailed: false,
+                            addressUnsuitable: true
+                        };
+                        expect(service.validateFormGroup(
+                            {licence, stage, decisions: decs})).to.eql(addressRiskFailedOutcome);
                     });
                 });
             });

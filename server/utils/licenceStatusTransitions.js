@@ -54,7 +54,7 @@ function canSendRoToCa(licenceStatus) {
         return true;
     }
 
-    if (decisions.curfewAddressApproved === 'rejected') {
+    if (decisions.curfewAddressRejected) {
         return true;
     }
 
@@ -82,7 +82,7 @@ function canSendDmToCa(licenceStatus) {
 function canSendCaToRo(licenceStatus) {
     const {tasks, decisions, stage} = licenceStatus;
 
-    const {eligible, optedOut, bassReferralNeeded, curfewAddressApproved} = decisions;
+    const {eligible, optedOut, bassReferralNeeded, curfewAddressRejected} = decisions;
 
     if (['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
         if (bassReferralNeeded) {
@@ -94,7 +94,7 @@ function canSendCaToRo(licenceStatus) {
         }
     }
 
-    const notToProgress = !eligible || optedOut || curfewAddressApproved === 'rejected';
+    const notToProgress = !eligible || optedOut || curfewAddressRejected;
 
     if (stage !== 'ELIGIBILITY' || notToProgress) {
         return false;
@@ -120,7 +120,7 @@ function canSendCaToRo(licenceStatus) {
 function canSendCaToDmRefusal(licenceStatus) {
 
     const {stage, decisions} = licenceStatus;
-    const {curfewAddressApproved, finalChecksRefused, bassReferralNeeded} = decisions;
+    const {addressWithdrawn, curfewAddressRejected, finalChecksRefused, bassReferralNeeded} = decisions;
     const bassFailure = isBassFailure(decisions);
 
     if (['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
@@ -133,7 +133,7 @@ function canSendCaToDmRefusal(licenceStatus) {
             return bassFailure;
         }
 
-        return curfewAddressApproved === 'withdrawn';
+        return addressWithdrawn;
     }
 
     if (stage === 'ELIGIBILITY') {
@@ -143,7 +143,7 @@ function canSendCaToDmRefusal(licenceStatus) {
             return false;
         }
 
-        return insufficientTimeStop || curfewAddressApproved === 'rejected' || bassFailure;
+        return insufficientTimeStop || curfewAddressRejected || bassFailure;
     }
 
     return false;
@@ -174,7 +174,7 @@ function canSendCaToDm(licenceStatus) {
     const required = getRequiredTasks(decisions, tasks);
     const tasksComplete = required.every(it => it === taskStates.DONE);
 
-    const addressOk = decisions.bassReferralNeeded || decisions.curfewAddressApproved === 'approved';
+    const addressOk = decisions.bassReferralNeeded || decisions.curfewAddressApproved;
 
     const decisionsOk =
         !decisions.excluded &&

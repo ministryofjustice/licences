@@ -31,7 +31,7 @@ block content
                         div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
                             input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
 
-            else if licenceStatus.decisions.curfewAddressApproved === 'rejected'
+            else if licenceStatus.decisions.curfewAddressRejected
                 form#licenceDetailsForm(method='POST', action='/hdc/send/addressRejected/' + bookingId)
                     input(type="hidden" name="_csrf" value=csrfToken)
                     div.pure-u-1.inlineButtons

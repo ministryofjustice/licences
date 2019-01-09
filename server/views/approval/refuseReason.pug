@@ -20,7 +20,7 @@ block content
                 div.paddingBottom.largeMarginBottom
                     if licenceStatus.decisions.insufficientTimeStop
                         div HDC refused because there is not enough time. (Less than 4 weeks to conditional release date)
-                    if licenceStatus.decisions.curfewAddressApproved === 'rejected'
+                    if licenceStatus.decisions.curfewAddressRejected
                         div HDC refused because there is no suitable curfew address
                     else
                         div HDC refused

@@ -8,10 +8,10 @@ block tasks
         else
             include tasks/curfewAddressTask
 
-    if (licenceStatus.decisions.curfewAddressApproved !== 'rejected' && !licenceStatus.decisions.bassAreaNotSuitable)
-        div.taskListItem.borderBottomLight
-            include tasks/riskManagementTask
+    div.taskListItem.borderBottomLight
+        include tasks/riskManagementTask
 
+    if (!licenceStatus.decisions.curfewAddressRejected && !licenceStatus.decisions.bassAreaNotSuitable)
         div.taskListItem.borderBottomLight
             include tasks/victimLiaisonTask
 
