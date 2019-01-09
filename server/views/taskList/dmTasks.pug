@@ -10,7 +10,7 @@ block tasks
             include tasks/refusalTask
 
 
-    else if !licenceStatus.decisions.bassReferralNeeded && ['rejected', 'withdrawn'].includes(licenceStatus.decisions.curfewAddressApproved)
+    else if !licenceStatus.decisions.bassReferralNeeded && (licenceStatus.decisions.addressWithdrawn || licenceStatus.decisions.curfewAddressRejected)
         div.taskListItem.borderBottom.largeMarginBottom
             include tasks/eligibilitySummaryTask
 
