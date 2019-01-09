@@ -205,6 +205,22 @@ function validateGroup({licence, group, bespokeConditions}) {
                 missingMessage: 'Enter the curfew address review details'
             }
         ],
+        PROCESSING_RO_RISK_REJECTED: [
+            {
+                formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
+                formType: 'curfewAddressReview',
+                pageConfig: curfewConfig.curfewAddressReview,
+                section: 'curfew',
+                missingMessage: 'Enter the curfew address review details'
+            },
+            {
+                formResponse: getIn(licence, ['risk', 'riskManagement']),
+                formType: 'riskManagement',
+                pageConfig: riskConfig.riskManagement,
+                section: 'risk',
+                missingMessage: 'Enter the risk management and victim liaison details'
+            }
+        ],
         BASS_AREA: [
             {
                 formResponse: getIn(licence, ['bassReferral', 'bassRequest']),

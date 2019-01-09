@@ -31,7 +31,7 @@ block tasks
             else
                 include tasks/curfewAddressTask
 
-        if (licenceStatus.decisions.curfewAddressApproved === 'approved' || licenceStatus.decisions.bassReferralNeeded)
+        if (licenceStatus.decisions.curfewAddressApproved || licenceStatus.decisions.bassReferralNeeded)
             div.taskListItem.borderBottomLight
                 include tasks/riskManagementTask
 

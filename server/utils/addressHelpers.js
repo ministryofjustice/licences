@@ -1,7 +1,5 @@
 module.exports = {
-    addressReviewStarted,
-    isAcceptedAddress,
-    isRejectedAddress
+    isAcceptedAddress
 };
 
 function isAcceptedAddress({consent, electricity}, addressSuitable, offenderIsOccupier) {
@@ -10,12 +8,4 @@ function isAcceptedAddress({consent, electricity}, addressSuitable, offenderIsOc
     }
 
     return consent === 'Yes' && electricity === 'Yes' && addressSuitable === 'Yes';
-}
-
-function isRejectedAddress({consent, electricity}, addressSuitable) {
-    return consent === 'No' || electricity === 'No' || addressSuitable === 'No';
-}
-
-function addressReviewStarted({consent, electricity}) {
-    return !!(consent || electricity);
 }

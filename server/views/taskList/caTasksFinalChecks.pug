@@ -8,7 +8,7 @@ block tasks
         div.taskListItem.borderBottomLight
             include tasks/curfewAddressTask
 
-    - var curfewAddressReady = ['unfinished', 'approved'].includes(licenceStatus.decisions.curfewAddressApproved)
+    - var curfewAddressReady = licenceStatus.decisions.curfewAddressApproved
     - var bassReady = licenceStatus.decisions.bassReferralNeeded && licenceStatus.tasks.bassAreaCheck === 'DONE' && !licenceStatus.decisions.bassWithdrawn
     - var bassExcluded = ['Unavailable', 'Unsuitable'].includes(licenceStatus.decisions.bassAccepted)
 

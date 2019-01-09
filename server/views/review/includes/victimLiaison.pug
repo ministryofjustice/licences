@@ -8,5 +8,5 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
             span.pure-u-3-4 Is this a Victim Contact Service qualifying case where the victim has opted in?
     div.pure-u-1-2
         +itemAndError(victim.decision, errors.decision, "victimLiaison")
-        if risk.victimLiaison === 'Yes'
+        if victim.victimLiaison === 'Yes'
             +itemAndError(victim.victimLiaisonDetails, errors.victimLiaisonDetails, "victimLiaisonDetails")

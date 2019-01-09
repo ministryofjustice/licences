@@ -69,7 +69,7 @@ describe('getAllowedTransition', () => {
                 reportingInstructions: 'UNSTARTED'
             },
             decisions: {
-                curfewAddressApproved: 'rejected'
+                curfewAddressRejected: true
             }
         };
 
@@ -407,7 +407,7 @@ describe('getAllowedTransition', () => {
             },
             decisions: {
                 eligible: true,
-                curfewAddressApproved: 'rejected'
+                curfewAddressRejected: true
             }
         };
 
@@ -551,7 +551,7 @@ describe('getAllowedTransition', () => {
             stage: 'PROCESSING_CA',
             tasks: {},
             decisions: {
-                curfewAddressApproved: 'withdrawn'
+                addressWithdrawn: true
             }
         };
 
@@ -564,7 +564,7 @@ describe('getAllowedTransition', () => {
             stage: 'MODIFIED',
             tasks: {},
             decisions: {
-                curfewAddressApproved: 'withdrawn'
+                addressWithdrawn: true
             }
         };
 

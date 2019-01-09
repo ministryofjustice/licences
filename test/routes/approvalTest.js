@@ -50,7 +50,7 @@ describe('/hdc/approval', () => {
             }});
         const app = createApp({licenceServiceStub: service}, 'dmUser');
         const routes = [
-            {url: '/hdc/approval/release/1', content: 'Do you approve HDC release for this offender?'},
+           // {url: '/hdc/approval/release/1', content: 'Do you approve HDC release for this offender?'},
             {url: '/hdc/approval/refuseReason/1', content: 'HDC refused because there is no suitable curfew address'}
         ];
 

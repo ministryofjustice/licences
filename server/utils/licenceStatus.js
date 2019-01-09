@@ -1,11 +1,7 @@
 const {taskStates} = require('../services/config/taskStates');
 const {licenceStages} = require('../services/config/licenceStages');
 const {getIn, isEmpty, lastItem, flatten} = require('./functionalHelpers');
-const {
-    isAcceptedAddress,
-    isRejectedAddress,
-    addressReviewStarted
-} = require('../utils/addressHelpers');
+const {isAcceptedAddress} = require('../utils/addressHelpers');
 
 module.exports = {getLicenceStatus};
 
@@ -95,9 +91,9 @@ function getApprovalStageState(licence) {
 
 function getRoStageState(licence) {
 
-    const {riskManagementNeeded, riskManagement, awaitingRiskInformation} = getRiskManagementState(licence);
+    const {riskManagementNeeded, riskManagement, awaitingRiskInformation, addressUnsuitable} = getRiskManagementState(licence);
     const {victim, victimLiaisonNeeded} = getVictimLiaisonState(licence);
-    const {curfewAddressReview, curfewAddressApproved} = getCurfewAddressReviewState(licence);
+    const {curfewAddressReview, curfewAddressApproved, addressReviewFailed, addressWithdrawn} = getCurfewAddressReviewState(licence);
     const {curfewHours} = getCurfewHoursState(licence);
     const {reportingInstructions} = getReportingInstructionsState(licence);
     const {licenceConditions, standardOnly, additional, bespoke} = getLicenceConditionsState(licence);
@@ -113,7 +109,11 @@ function getRoStageState(licence) {
             additional,
             bespoke,
             bassAreaSuitable,
-            bassAreaNotSuitable
+            bassAreaNotSuitable,
+            addressReviewFailed,
+            addressWithdrawn,
+            addressUnsuitable,
+            curfewAddressRejected: addressUnsuitable || addressReviewFailed
         },
         tasks: {
             riskManagement,
@@ -167,11 +167,11 @@ function getEligibilityStageState(licence) {
     const notEligible = (excluded || insufficientTimeStop || unsuitableResult);
     const {eligibility, eligible} = getEligibilityState(notEligible, [exclusion, crdTime, suitability]);
 
-    const {curfewAddressApproved} = getCurfewAddressReviewState(licence);
+    const {curfewAddressApproved, curfewAddressRejected} = getCurfewAddressReviewState(licence);
     const {optedOut, optOut} = getOptOutState(licence);
     const {bassReferralNeeded, bassAreaSpecified, bassRequest} = getBassRequestState(licence);
     const {bassAreaSuitable, bassAreaNotSuitable} = getBassAreaState(licence);
-    const {curfewAddress, offenderIsMainOccupier} = getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved);
+    const {curfewAddress, offenderIsMainOccupier} = getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressRejected);
 
     return {
         decisions: {
@@ -189,7 +189,8 @@ function getEligibilityStageState(licence) {
             bassAreaSuitable,
             bassAreaNotSuitable,
             curfewAddressApproved,
-            offenderIsMainOccupier
+            offenderIsMainOccupier,
+            curfewAddressRejected
         },
         tasks: {
             exclusion,
@@ -304,7 +305,8 @@ function getRiskManagementState(licence) {
         riskManagementNeeded: riskManagementAnswer === 'Yes',
         proposedAddressSuitable: proposedAddressSuitable === 'Yes',
         awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
-        riskManagement: getState(licence)
+        riskManagement: getState(licence),
+        addressUnsuitable: proposedAddressSuitable === 'No'
     };
 
     function getState(licence) {
@@ -384,7 +386,7 @@ function getCaRefusal(licence) {
     };
 }
 
-function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressApproved) {
+function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressRejected) {
     const address = getIn(licence, ['proposedAddress', 'curfewAddress']) || {};
 
     return {
@@ -402,7 +404,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
             return taskStates.UNSTARTED;
         }
 
-        if (curfewAddressApproved === 'rejected') {
+        if (curfewAddressRejected) {
             return taskStates.STARTED;
         }
 
@@ -417,6 +419,10 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
 
 function getCurfewAddressReviewState(licence) {
     const addressReview = getIn(licence, ['curfew', 'curfewAddressReview']) || {};
+    const rejectedAddresses = getIn(licence, ['proposedAddress', 'rejections']);
+    const curfewAddress = getIn(licence, ['proposedAddress', 'curfewAddress']) || {};
+    const addressSuitable = getIn(licence, ['risk', 'riskManagement', 'proposedAddressSuitable']);
+    const offenderIsOccupier = getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes';
 
     const taskCompletion = () => {
         const {consent, electricity} = addressReview;
@@ -429,29 +435,11 @@ function getCurfewAddressReviewState(licence) {
         return taskStates.UNSTARTED;
     };
 
-    const curfewAddressApproved = () => {
-        const curfewAddress = getIn(licence, ['proposedAddress', 'curfewAddress']) || {};
-        const addressSuitable = getIn(licence, ['risk', 'riskManagement', 'proposedAddressSuitable']);
-        const rejectedAddresses = getIn(licence, ['proposedAddress', 'rejections']);
-
-        if (isAcceptedAddress(addressReview, addressSuitable, getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes')) {
-            return 'approved';
-        }
-        if (isRejectedAddress(addressReview, addressSuitable)) {
-            return 'rejected';
-        }
-        if (addressReviewStarted(addressReview)) {
-            return 'unfinished';
-        }
-        if (isEmpty(curfewAddress) && rejectedAddresses && rejectedAddresses.length > 0) {
-            return 'withdrawn';
-        }
-        return 'unstarted';
-    };
-
     return {
         curfewAddressReview: taskCompletion(),
-        curfewAddressApproved: curfewAddressApproved()
+        curfewAddressApproved: isAcceptedAddress(addressReview, addressSuitable, offenderIsOccupier),
+        addressReviewFailed: addressReview.consent === 'No' || addressReview.electricity === 'No',
+        addressWithdrawn: isEmpty(curfewAddress) && rejectedAddresses && rejectedAddresses.length > 0
     };
 }
 

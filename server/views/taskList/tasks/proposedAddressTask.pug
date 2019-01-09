@@ -23,7 +23,7 @@ div.largeMarginBottom
                 else
                     | Not completed
 
-            else if decisions.curfewAddressApproved === 'rejected'
+            else if decisions.curfewAddressRejected
                 span.alert.bold Address rejected
 
             else if tasks.curfewAddress === 'DONE'
@@ -33,7 +33,7 @@ div.largeMarginBottom
                 | Not completed
 
         div.pure-u-1.pure-u-md-1-4.center
-            if (decisions.curfewAddressApproved === 'rejected')
+            if (decisions.curfewAddressRejected)
                 +startContinueChange(tasks.curfewAddress, addressRejectedPath)
 
             else if (decisions.bassAreaNotSuitable)

@@ -168,7 +168,11 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.bassAreaSuitable).to.eql(true);
             expect(status.decisions.bassAreaNotSuitable).to.eql(false);
             expect(status.decisions.bassAccepted).to.eql('Yes');
-            expect(status.decisions.curfewAddressApproved).to.eql('approved');
+            expect(status.decisions.curfewAddressApproved).to.eql(true);
+            expect(status.decisions.curfewAddressRejected).to.eql(false);
+            expect(status.decisions.addressReviewFailed).to.eql(false);
+            expect(status.decisions.addressWithdrawn).to.eql(false);
+            expect(status.decisions.addressUnsuitable).to.eql(false);
             expect(status.decisions.riskManagementNeeded).to.eql(true);
             expect(status.decisions.awaitingRiskInformation).to.eql(true);
             expect(status.decisions.victimLiaisonNeeded).to.eql(true);
@@ -219,7 +223,7 @@ describe('getLicenceStatus', () => {
                         riskManagement: {
                             planningActions: 'No',
                             awaitingInformation: 'No',
-                            proposedAddressSuitable: 'Yes'
+                            proposedAddressSuitable: 'No'
                         }
                     },
                     bassReferral: {
@@ -267,7 +271,11 @@ describe('getLicenceStatus', () => {
             expect(status.decisions.bassAreaSuitable).to.eql(false);
             expect(status.decisions.bassAreaNotSuitable).to.eql(true);
             expect(status.decisions.bassAccepted).to.eql('No');
-            expect(status.decisions.curfewAddressApproved).to.eql('rejected');
+            expect(status.decisions.curfewAddressApproved).to.eql(false);
+            expect(status.decisions.curfewAddressRejected).to.eql(true);
+            expect(status.decisions.addressReviewFailed).to.eql(true);
+            expect(status.decisions.addressWithdrawn).to.eql(false);
+            expect(status.decisions.addressUnsuitable).to.eql(true);
             expect(status.decisions.riskManagementNeeded).to.eql(false);
             expect(status.decisions.awaitingRiskInformation).to.eql(false);
             expect(status.decisions.victimLiaisonNeeded).to.eql(false);
@@ -707,7 +715,7 @@ describe('getLicenceStatus', () => {
 
             const status = getLicenceStatus(licence);
 
-            expect(status.decisions.curfewAddressApproved).to.eql('approved');
+            expect(status.decisions.curfewAddressApproved).to.eql(true);
         });
 
         it('should show address review WITHDRAWN when in rejections list', () => {
@@ -743,43 +751,7 @@ describe('getLicenceStatus', () => {
 
             const status = getLicenceStatus(licence);
 
-            expect(status.decisions.curfewAddressApproved).to.eql('withdrawn');
-        });
-
-        it('should show address review unstarted when there is a new one', () => {
-            const licence = {
-                stage: 'PROCESSING_CA',
-                licence: {
-                    proposedAddress: {
-                        curfewAddress: {addressLine1: 'line1'},
-                        rejections: [{
-                            address: {
-                                addressLine1: 'line1'
-                            },
-                            addressReview: {
-                                curfewAddressReview: {
-                                    consent: 'Yes',
-                                    electricity: 'Yes',
-                                    homeVisitConducted: 'Yes'
-                                }
-                            },
-                            withdrawalReason: 'withdrawAddress'
-                        }]
-                    },
-                    risk: {
-                        riskManagement: {
-                            proposedAddressSuitable: 'Yes'
-                        }
-                    },
-                    curfew: {
-                        curfewHours: 'anything'
-                    }
-                }
-            };
-
-            const status = getLicenceStatus(licence);
-
-            expect(status.decisions.curfewAddressApproved).to.eql('unstarted');
+            expect(status.decisions.addressWithdrawn).to.eql(true);
         });
 
         it('should show address review REJECTED when address is not suitable', () => {
@@ -809,7 +781,9 @@ describe('getLicenceStatus', () => {
 
             const status = getLicenceStatus(licence);
 
-            expect(status.decisions.curfewAddressApproved).to.eql('rejected');
+            expect(status.decisions.curfewAddressRejected).to.eql(true);
+            expect(status.decisions.addressReviewFailed).to.eql(false);
+            expect(status.decisions.addressUnsuitable).to.eql(true);
         });
 
         it('should show address review UNSTARTED when there are active addresses', () => {
@@ -845,7 +819,6 @@ describe('getLicenceStatus', () => {
             const status = getLicenceStatus(licence);
 
             expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
-            expect(status.decisions.curfewAddressApproved).to.eql('unstarted');
         });
 
         it('should show bassAreaCheck UNSTARTED when empty', () => {
