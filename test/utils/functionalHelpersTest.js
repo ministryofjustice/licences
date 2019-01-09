@@ -2,7 +2,8 @@ const {
     allValuesEmpty,
     interleave,
     equals,
-    getWhereKeyLike
+    getWhereKeyLike,
+    addPaths
 } = require('../../server/utils/functionalHelpers');
 
 describe('functionalHelpers', () => {
@@ -80,6 +81,32 @@ describe('functionalHelpers', () => {
             };
 
             expect(getWhereKeyLike('abcd/arg', object)).to.eql('value1');
+        });
+    });
+
+    describe('addPaths', () => {
+        it('should return object with answers injected', () => {
+            const object = {
+                first: 'value1',
+                second: 'value2',
+                third: {
+                    fourth: {
+                        answer: 'a'
+                    }
+                }
+            };
+
+            expect(addPaths([[['fifth'], 'value3'], [['third', 'fourth', 'answer2'], 'b']], object)).to.eql({
+                first: 'value1',
+                second: 'value2',
+                third: {
+                    fourth: {
+                        answer: 'a',
+                        answer2: 'b'
+                    }
+                },
+                fifth: 'value3'
+            });
         });
     });
 

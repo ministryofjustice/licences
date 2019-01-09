@@ -29,7 +29,8 @@ module.exports = {
     getFieldDetail,
     getFieldName,
     pick: R.pick,
-    pickBy: R.pickBy
+    pickBy: R.pickBy,
+    addPaths
 };
 
 // pass in your object and a path in array format
@@ -95,6 +96,11 @@ function removePath(...args) {
 function removePaths(arrayOfPaths, object) {
     const dissocPath = (object, path) => R.dissocPath(path, object);
     return R.reduce(dissocPath, object)(arrayOfPaths);
+}
+
+function addPaths(arrayOfPathValueTuples, object) {
+    const assocPath = (object, tuple) => R.assocPath(tuple[0], tuple[1], object);
+    return R.reduce(assocPath, object)(arrayOfPathValueTuples);
 }
 
 function replacePath(path, val, object) {

@@ -1483,10 +1483,10 @@ describe('licenceService', () => {
             });
 
             describe('reinstate', () => {
-                it('should remove from the rejected list and replace in licence structure', () => {
-                    service.reinstateProposedAddress(rejectedAddressLicence, '001');
+                it('should remove from the rejected list and replace in licence structure', async () => {
+                    const output = await service.reinstateProposedAddress(rejectedAddressLicence, '001');
                     expect(licenceClient.updateLicence).to.be.calledOnce();
-                    expect(licenceClient.updateLicence).to.be.calledWith('001', licence);
+                    expect(output).to.eql(licence);
                 });
             });
         });

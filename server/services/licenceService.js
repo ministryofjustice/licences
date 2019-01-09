@@ -4,7 +4,6 @@ const {createAdditionalConditionsObject} = require('../utils/licenceFactory');
 const {formatObjectForView} = require('./utils/formatForView');
 const {licenceStages, transitions} = require('./config/licenceStages');
 const recordList = require('./utils/recordList');
-const {replacePath, mergeWithRight, pick} = require('../utils/functionalHelpers');
 const formValidation = require('./utils/formValidation');
 const {additionalConditions} = require('./config/conditionsConfig');
 
@@ -16,7 +15,12 @@ const {
     equals,
     firstKey,
     removePath,
-    removePaths
+    removePaths,
+    addPaths,
+    pickBy,
+    replacePath,
+    mergeWithRight,
+    pick
 } = require('../utils/functionalHelpers');
 
 module.exports = function createLicenceService(licenceClient) {
@@ -370,9 +374,7 @@ module.exports = function createLicenceService(licenceClient) {
         const riskManagementInputs = getIn(licence, ['risk', 'riskManagement']);
         const riskManagement = riskManagementInputs ? pick(['proposedAddressSuitable', 'unsuitableReason'], riskManagementInputs) : null;
 
-        const addressToStore = [{address}, {addressReview}, riskManagement ? {riskManagement} : null, {withdrawalReason}]
-            .filter(item => item)
-            .reduce((obj, item) => mergeWithRight(obj, item), {});
+        const addressToStore = pickBy(val => val, {address, addressReview, riskManagement, withdrawalReason});
 
         const addressRejections = recordList({licence, path: ['proposedAddress', 'rejections'], allowEmpty: true});
         const licenceWithAddressRejection = addressRejections.add({record: addressToStore});
@@ -390,22 +392,19 @@ module.exports = function createLicenceService(licenceClient) {
 
     async function reinstateProposedAddress(licence, bookingId) {
         const addressRejections = recordList({licence, path: ['proposedAddress', 'rejections']});
-        const entryToReinstate = addressRejections.last();
-
         const licenceAfterRemoval = addressRejections.remove();
-        const remainingRiskSection = getIn(licenceAfterRemoval, ['risk', 'riskManagement']) || null;
-        const riskManagementToReinstate = remainingRiskSection || entryToReinstate.riskManagement ?
-            {risk: {riskManagement: mergeWithRight(remainingRiskSection, entryToReinstate.riskManagement)}} :
-            null;
 
-        const updatedLicence = [
-            {proposedAddress: {curfewAddress: entryToReinstate.address}},
-            {curfew: entryToReinstate.addressReview},
-            riskManagementToReinstate
-        ]
-            .filter(item => item)
-            .reduce((obj, item) => mergeWithRight(obj, item), licenceAfterRemoval);
+        const entryToReinstate = addressRejections.last();
+        const curfewAddressReview = getIn(entryToReinstate, ['addressReview', 'curfewAddressReview']);
+        const address = getIn(entryToReinstate, ['address']);
+        const riskManagement = getIn(entryToReinstate, ['riskManagement']);
 
+        const updatedLicence = addPaths([
+            [['proposedAddress', 'curfewAddress'], address],
+            [['risk', 'riskManagement', 'proposedAddressSuitable'], getIn(riskManagement, ['proposedAddressSuitable'])],
+            [['risk', 'riskManagement', 'unsuitableReason'], getIn(riskManagement, ['unsuitableReason'])],
+            [['curfew', 'curfewAddressReview'], curfewAddressReview]
+        ].filter(argument => argument[1]), licenceAfterRemoval);
 
         await licenceClient.updateLicence(bookingId, updatedLicence);
         return updatedLicence;
