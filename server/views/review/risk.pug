@@ -15,10 +15,25 @@ block content
             p Are there any risk management planning actions that must take place prior to release?
 
             span#planningActions.block.bold #{risk.planningActions}
-            span#planningActionsDetails.block.largePaddingBottom #{risk.planningActionsDetails}
 
         div.smallPaddingTop
             p Are you still awaiting information?
 
             span#awaitingInformation.block.bold #{risk.awaitingInformation}
-            span#awaitingInformationDetails.block #{risk.awaitingInformationDetails}
+
+        if risk.riskManagementDetails
+            div.smallPaddingTop
+                p Details of your checks
+
+                span#details.block.bold #{risk.riskManagementDetails}
+
+        div.smallPaddingTop
+            p Is the address proposed by the offender suitable?
+
+            span#proposedAddressSuitable.block.bold #{risk.proposedAddressSuitable}
+
+        if risk.proposedAddressSuitable === 'No'
+            div.smallPaddingTop
+                p Explain why you made your decision
+
+                span#unsuitableReason.block.bold #{risk.unsuitableReason}

@@ -27,9 +27,14 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "No",
-                            "awaitingInformation": "No"
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "Yes",
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision": "No"
                         }
                     },
                     "curfew": {
@@ -57,9 +62,6 @@ exports.seed = function (knex, Promise) {
                             "consent": "Yes",
                             "electricity": "Yes",
                             "homeVisitConducted": "No"
-                        },
-                        "addressSafety": {
-                            "deemedSafe": "Yes"
                         }
                     },
                     "approval": {"release": {"decision": "Yes", "decisionMaker": "Dianne Matthews"}},
@@ -115,9 +117,14 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "No",
-                            "awaitingInformation": "No"
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "Yes",
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision": "No"
                         }
                     },
                     "curfew": {
@@ -144,9 +151,6 @@ exports.seed = function (knex, Promise) {
                             "consent": "Yes",
                             "electricity": "Yes",
                             "homeVisitConducted": "No"
-                        },
-                        "addressSafety": {
-                            "deemedSafe": "Yes"
                         }
                     },
                     "reporting": {
@@ -210,10 +214,14 @@ exports.seed = function (knex, Promise) {
                             "consent": "Yes",
                             "electricity": "Yes",
                             "homeVisitConducted": "No"
-                        },
-                        "addressSafety": {
-                            "deemedSafe": "No",
-                            "unsafeReason": "Risk too high."
+                        }
+                    },
+                    "risk": {
+                        "riskManagement": {
+                            "planningActions": "No",
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "No",
+                            "unsuitableReason": "Risk too high."
                         }
                     }
                 },
@@ -238,9 +246,14 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "No",
-                            "awaitingInformation": "No"
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "Yes"
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision": "No"
                         }
                     },
                     "curfew": {
@@ -267,9 +280,6 @@ exports.seed = function (knex, Promise) {
                             "consent": "Yes",
                             "electricity": "Yes",
                             "homeVisitConducted": "No"
-                        },
-                        "addressSafety": {
-                            "deemedSafe": "Yes"
                         }
                     },
                     "reporting": {
@@ -387,11 +397,15 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "Yes",
                             "awaitingInformation": "Yes",
-                            "planningActionsDetails": "Social services to investigate the neighbourhood",
-                            "awaitingInformationDetails": ""
+                            "riskManagementDetails": "Social services to investigate the neighbourhood",
+                            "proposedAddressSuitable": "Yes"
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision" : "No"
                         }
                     },
                     "curfew": {
@@ -418,9 +432,6 @@ exports.seed = function (knex, Promise) {
                             "consent": "Yes",
                             "electricity": "Yes",
                             "homeVisitConducted": "Yes"
-                        },
-                        "addressSafety": {
-                            "deemedSafe": "Yes"
                         }
                     },
                     "reporting": {
@@ -470,9 +481,14 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "No",
-                            "awaitingInformation": "No"
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "Yes"
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision" : "No"
                         }
                     },
                     "curfew": {
@@ -499,9 +515,6 @@ exports.seed = function (knex, Promise) {
                             "consent": "Yes",
                             "electricity": "Yes",
                             "homeVisitConducted": "No"
-                        },
-                        "addressSafety": {
-                            "deemedSafe": "Yes"
                         }
                     },
                     "approval": {
@@ -555,9 +568,14 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "No",
-                            "awaitingInformation": "No"
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "Yes"
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision" : "No"
                         }
                     },
                     "curfew": {
@@ -584,9 +602,6 @@ exports.seed = function (knex, Promise) {
                             "consent": "Yes",
                             "electricity": "Yes",
                             "homeVisitConducted": "Yes"
-                        },
-                        "addressSafety": {
-                            "deemedSafe": "Yes"
                         }
                     },
                     "approval": {"release": {"decision": "Yes", "decisionMaker": "Dianne Matthews"}},
@@ -634,9 +649,14 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "No",
-                            "awaitingInformation": "No"
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "Yes"
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision" : "No"
                         }
                     },
                     "curfew": {
@@ -663,9 +683,6 @@ exports.seed = function (knex, Promise) {
                             "consent": "Yes",
                             "electricity": "Yes",
                             "homeVisitConducted": "No"
-                        },
-                        "addressSafety": {
-                            "deemedSafe": "Yes"
                         }
                     },
                     "reporting": {
@@ -846,9 +863,14 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "No",
-                            "awaitingInformation": "No"
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "Yes"
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision" : "No"
                         }
                     },
                     "curfew": {
@@ -905,9 +927,14 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "No",
-                            "awaitingInformation": "No"
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "Yes"
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision" : "No"
                         }
                     },
                     "curfew": {
@@ -964,9 +991,14 @@ exports.seed = function (knex, Promise) {
                 "licence": {
                     "risk": {
                         "riskManagement": {
-                            "victimLiaison": "No",
                             "planningActions": "No",
-                            "awaitingInformation": "No"
+                            "awaitingInformation": "No",
+                            "proposedAddressSuitable": "Yes"
+                        }
+                    },
+                    "victim": {
+                        "victimLiaison": {
+                            "decision" : "No"
                         }
                     },
                     "curfew": {

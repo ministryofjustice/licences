@@ -443,7 +443,7 @@ function getCurfewAddressReviewState(licence) {
         if (addressReviewStarted(addressReview)) {
             return 'unfinished';
         }
-        if (rejectedAddresses && rejectedAddresses.length > 0) {
+        if (isEmpty(curfewAddress) && rejectedAddresses && rejectedAddresses.length > 0) {
             return 'withdrawn';
         }
         return 'unstarted';
