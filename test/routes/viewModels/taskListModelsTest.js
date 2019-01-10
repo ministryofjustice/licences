@@ -1,6 +1,6 @@
-const taskListModel = require('../../../server/routes/viewModels/tasklistModels');
+const taskListModel = require('../../../server/routes/viewModels/taskListModels');
 
-describe('Tasklist models', () => {
+describe('TaskList models', () => {
     describe('caEligibility', () => {
         it('should initially show just eligibility task', () => {
             expect(taskListModel(

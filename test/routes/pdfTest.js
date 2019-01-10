@@ -116,7 +116,7 @@ describe('PDF:', () => {
         });
     });
 
-    describe('GET /tasklist', () => {
+    describe('GET /taskList', () => {
 
         it('Shows incomplete status on each task with missing data', () => {
 
@@ -216,7 +216,7 @@ describe('PDF:', () => {
                 });
         });
 
-        it('should throw if a non ca tries to access the tasklist', () => {
+        it('should throw if a non ca tries to access the taskList', () => {
             app = createApp({}, 'roUser');
 
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);

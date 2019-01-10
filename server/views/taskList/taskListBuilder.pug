@@ -1,7 +1,7 @@
 extends taskListTemplate
 
 block tasks
-    each task in tasklistModel
+    each task in taskListModel
         -var taskName = task.task
         div.taskListItem.borderBottomLight
             if taskName === 'eligibilityTask'

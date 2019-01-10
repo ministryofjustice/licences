@@ -27,16 +27,16 @@ const tasks = {
     ]
 };
 
-module.exports = (tasklist, decisions, taskStatus, allowedTransition) => {
+module.exports = (taskList, decisions, taskStatus, allowedTransition) => {
 
-    if (!tasks[tasklist]) {
+    if (!tasks[taskList]) {
         return null;
     }
 
     const {bassReferralNeeded, curfewAddressApproved, bassWithdrawn, optedOut, bassAccepted, eligible} = decisions;
     const {bassAreaCheck, eligibility, optOut} = taskStatus;
 
-    const filtersForTasklist = keys(pickBy(item => item, {
+    const filtersForTaskList = keys(pickBy(item => item, {
         bassReferralNeeded,
         optedOut,
         eligible,
@@ -48,12 +48,12 @@ module.exports = (tasklist, decisions, taskStatus, allowedTransition) => {
             (bassReferralNeeded && bassAreaCheck === 'DONE' && !bassWithdrawn && !['Unavailable', 'Unsuitable'].includes(bassAccepted))
     }));
 
-    return tasks[tasklist]
+    return tasks[taskList]
         .filter(task => task.filters.every(filter => {
             if (filter[0] !== '!') {
-                return filtersForTasklist.includes(filter);
+                return filtersForTaskList.includes(filter);
             }
-            return !filtersForTasklist.includes(filter.slice(1));
+            return !filtersForTaskList.includes(filter.slice(1));
         }))
         .map(task => pick(['task'], task));
 };
