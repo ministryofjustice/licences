@@ -1,49 +1,34 @@
 extends taskListTemplate
 
 block tasks
-    if licenceStatus.decisions.bassReferralNeeded
+    each task in tasklistModel
+        -var taskName = task.task
         div.taskListItem.borderBottomLight
-            include tasks/bassOfferTask
-    else
-        div.taskListItem.borderBottomLight
-            include tasks/curfewAddressTask
-
-    - var curfewAddressReady = licenceStatus.decisions.curfewAddressApproved
-    - var bassReady = licenceStatus.decisions.bassReferralNeeded && licenceStatus.tasks.bassAreaCheck === 'DONE' && !licenceStatus.decisions.bassWithdrawn
-    - var bassExcluded = ['Unavailable', 'Unsuitable'].includes(licenceStatus.decisions.bassAccepted)
-
-    if (curfewAddressReady || bassReady && !bassExcluded)
-        div.taskListItem.borderBottomLight
-            include tasks/riskManagementTask
-
-        div.taskListItem.borderBottomLight
-            include tasks/victimLiaisonTask
-
-        div.taskListItem.borderBottomLight
-            include tasks/curfewHoursTask
-
-        div.taskListItem.borderBottomLight
-            include tasks/additionalConditionsTask
-
-        div.taskListItem.borderBottomLight
-            include tasks/reportingInstructionsTask
-
-        div.taskListItem.borderBottom
-            include tasks/finalChecksTask
-
-        div.taskListItem.borderBottomLight
-            include tasks/postponementTask
-
-    div.taskListItem.borderBottom
-        include tasks/HDCRefusalTask
-
-    div.taskListItem.borderBottom
-        if allowedTransition === 'caToDmRefusal'
-            include tasks/caSubmitRefusalTask
-        else if allowedTransition === 'caToRo'
-            if licenceStatus.decisions.bassReferralNeeded
+            if taskName === 'bassOfferTask'
+                include tasks/bassOfferTask
+            if taskName === 'curfewAddressTask'
+                include tasks/curfewAddressTask
+            if taskName === 'riskManagementTask'
+                include tasks/riskManagementTask
+            if taskName === 'victimLiaisonTask'
+                include tasks/victimLiaisonTask
+            if taskName === 'curfewHoursTask'
+                include tasks/curfewHoursTask
+            if taskName === 'additionalConditionsTask'
+                include tasks/additionalConditionsTask
+            if taskName === 'reportingInstructionsTask'
+                include tasks/reportingInstructionsTask
+            if taskName === 'finalChecksTask'
+                include tasks/finalChecksTask
+            if taskName === 'postponementTask'
+                include tasks/postponementTask
+            if taskName === 'HDCRefusalTask'
+                include tasks/HDCRefusalTask
+            if taskName === 'caSubmitRefusalTask'
+                include tasks/caSubmitRefusalTask
+            if taskName === 'caSubmitBassReviewTask'
                 include tasks/caSubmitBassReviewTask
-            else
+            if taskName === 'caSubmitAddressReviewTask'
                 include tasks/caSubmitAddressReviewTask
-        else
-            include tasks/caSubmitApprovalTask
+            if taskName === 'caSubmitApprovalTask'
+                include tasks/caSubmitApprovalTask

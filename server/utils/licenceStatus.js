@@ -167,7 +167,9 @@ function getEligibilityStageState(licence) {
     const notEligible = (excluded || insufficientTimeStop || unsuitableResult);
     const {eligibility, eligible} = getEligibilityState(notEligible, [exclusion, crdTime, suitability]);
 
-    const {curfewAddressApproved, curfewAddressRejected} = getCurfewAddressReviewState(licence);
+    const {curfewAddressApproved, addressReviewFailed} = getCurfewAddressReviewState(licence);
+    const {addressUnsuitable} = getRiskManagementState(licence);
+    const curfewAddressRejected = addressUnsuitable || addressReviewFailed;
     const {optedOut, optOut} = getOptOutState(licence);
     const {bassReferralNeeded, bassAreaSpecified, bassRequest} = getBassRequestState(licence);
     const {bassAreaSuitable, bassAreaNotSuitable} = getBassAreaState(licence);

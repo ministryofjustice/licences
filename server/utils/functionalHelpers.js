@@ -30,7 +30,8 @@ module.exports = {
     getFieldName,
     pick: R.pick,
     pickBy: R.pickBy,
-    addPaths
+    addPaths,
+    keys: R.keys
 };
 
 // pass in your object and a path in array format
