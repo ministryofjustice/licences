@@ -6,7 +6,7 @@ const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
 const {pickKey, isEmpty} = require('../utils/functionalHelpers');
-const taskListModel = require('./viewModels/tasklistModels');
+const getTasklistModel = require('./viewModels/tasklistModels');
 
 module.exports = ({prisonerService, licenceService, caseListService, audit}) => router => {
 
@@ -21,7 +21,7 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
         const tasklistView = getTasklistView(req.user.role, licence ? licence.stage : 'UNSTARTED');
-        const tasklistModel = taskListModel(tasklistView, licenceStatus.decisions, licenceStatus.tasks, allowedTransition);
+        const tasklistModel = getTasklistModel(tasklistView, licenceStatus.decisions, licenceStatus.tasks, allowedTransition);
 
         res.render(isEmpty(tasklistModel) ? `taskList/${tasklistView}` : 'tasklist/tasklistBuilder', {
             licenceStatus,
