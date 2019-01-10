@@ -12,7 +12,7 @@ div.paddingBottom
                     span.bold.alert Address withdrawn
                 else if licenceStatus.decisions.addressReviewFailed
                     span.bold.alert Address rejected
-                else if licenceStatus.stage.addressReview === 'DONE'
+                else if licenceStatus.tasks.curfewAddressReview === 'DONE' && licenceStatus.tasks.riskManagement === 'DONE'
                     | Address checked
                 else
                     | Not completed
