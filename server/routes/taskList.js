@@ -5,7 +5,7 @@ const path = require('path');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
-const {pickKey} = require('../utils/functionalHelpers');
+const {pickKey, isEmpty} = require('../utils/functionalHelpers');
 const taskListModel = require('./viewModels/tasklistModels');
 
 module.exports = ({prisonerService, licenceService, caseListService, audit}) => router => {
@@ -23,7 +23,7 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
         const tasklistView = getTasklistView(req.user.role, licence ? licence.stage : 'UNSTARTED');
         const tasklistModel = taskListModel(tasklistView, licenceStatus.decisions, licenceStatus.tasks, allowedTransition);
 
-        res.render(`taskList/${tasklistView}`, {
+        res.render(isEmpty(tasklistModel) ? `taskList/${tasklistView}` : 'tasklist/tasklistBuilder', {
             licenceStatus,
             licenceVersion: licence ? licence.version : 0,
             approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,

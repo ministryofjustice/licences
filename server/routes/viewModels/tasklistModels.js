@@ -1,40 +1,54 @@
 const {pick, pickBy, keys} = require('../../utils/functionalHelpers');
-const tasks = [
-    {task: 'curfewAddressTask', filters: ['!bassReferralNeeded']},
-    {task: 'bassOfferTask', filters: ['bassReferralNeeded']},
-    {task: 'riskManagementTask', filters: ['addressOrBassChecksDone']},
-    {task: 'victimLiaisonTask', filters: ['addressOrBassChecksDone']},
-    {task: 'curfewHoursTask', filters: ['addressOrBassChecksDone']},
-    {task: 'additionalConditionsTask', filters: ['addressOrBassChecksDone']},
-    {task: 'reportingInstructionsTask', filters: ['addressOrBassChecksDone']},
-    {task: 'finalChecksTask', filters: ['addressOrBassChecksDone']},
-    {task: 'postponementTask', filters: ['addressOrBassChecksDone']},
-    {task: 'HDCRefusalTask', filters: []},
-    {task: 'caSubmitApprovalTask', filters: ['notOptedOut', '!caToDmRefusal', '!caToRo']},
-    {task: 'caSubmitRefusalTask', filters: ['notOptedOut', 'caToDmRefusal']},
-    {task: 'caSubmitAddressReviewTask', filters: ['notOptedOut', 'caToRo', '!bassReferralNeeded']},
-    {task: 'caSubmitBassReviewTask', filters: ['notOptedOut', 'caToRo', 'bassReferralNeeded']}
-];
 
+const tasks = {
+    caTasksEligibility: [
+        {task: 'eligibilityTask', filters: []},
+        {task: 'informOffenderTask', filters: ['eligibilityDone', 'optOutUnstarted', '!optedOut']},
+        {task: 'proposedAddressTask', filters: ['eligible']},
+        {task: 'caSubmitRefusalTask', filters: ['caToDmRefusal']},
+        {task: 'caSubmitBassReviewTask', filters: ['optOutDone', '!optedOut', 'bassReferralNeeded']},
+        {task: 'caSubmitAddressReviewTask', filters: ['optOutDone', '!optedOut', '!bassReferralNeeded']}
+    ],
+    caTasksFinalChecks: [
+        {task: 'curfewAddressTask', filters: ['!bassReferralNeeded']},
+        {task: 'bassOfferTask', filters: ['bassReferralNeeded']},
+        {task: 'riskManagementTask', filters: ['addressOrBassChecksDone']},
+        {task: 'victimLiaisonTask', filters: ['addressOrBassChecksDone']},
+        {task: 'curfewHoursTask', filters: ['addressOrBassChecksDone']},
+        {task: 'additionalConditionsTask', filters: ['addressOrBassChecksDone']},
+        {task: 'reportingInstructionsTask', filters: ['addressOrBassChecksDone']},
+        {task: 'finalChecksTask', filters: ['addressOrBassChecksDone']},
+        {task: 'postponementTask', filters: ['addressOrBassChecksDone']},
+        {task: 'HDCRefusalTask', filters: []},
+        {task: 'caSubmitApprovalTask', filters: ['!optedOut', '!caToDmRefusal', '!caToRo']},
+        {task: 'caSubmitRefusalTask', filters: ['!optedOut', 'caToDmRefusal']},
+        {task: 'caSubmitAddressReviewTask', filters: ['!optedOut', 'caToRo', '!bassReferralNeeded']},
+        {task: 'caSubmitBassReviewTask', filters: ['!optedOut', 'caToRo', 'bassReferralNeeded']}
+    ]
+};
 
 module.exports = (tasklist, decisions, taskStatus, allowedTransition) => {
 
-    if (tasklist !== 'caTasksFinalChecks') {
+    if (!tasks[tasklist]) {
         return null;
     }
 
-    const {bassReferralNeeded, curfewAddressApproved, bassWithdrawn, optedOut, bassAccepted} = decisions;
-    const {bassAreaCheck} = taskStatus;
+    const {bassReferralNeeded, curfewAddressApproved, bassWithdrawn, optedOut, bassAccepted, eligible} = decisions;
+    const {bassAreaCheck, eligibility, optOut} = taskStatus;
 
     const filtersForTasklist = keys(pickBy(item => item, {
         bassReferralNeeded,
+        optedOut,
+        eligible,
+        [allowedTransition]: allowedTransition,
+        eligibilityDone: eligibility === 'DONE',
+        optOutDone: optOut === 'DONE',
+        optOutUnstarted: optOut === 'UNSTARTED',
         addressOrBassChecksDone: curfewAddressApproved ||
-            (bassReferralNeeded && bassAreaCheck === 'DONE' && !bassWithdrawn && !['Unavailable', 'Unsuitable'].includes(bassAccepted)),
-        notOptedOut: !optedOut,
-        [allowedTransition]: allowedTransition
+            (bassReferralNeeded && bassAreaCheck === 'DONE' && !bassWithdrawn && !['Unavailable', 'Unsuitable'].includes(bassAccepted))
     }));
 
-    return tasks
+    return tasks[tasklist]
         .filter(task => task.filters.every(filter => {
             if (filter[0] !== '!') {
                 return filtersForTasklist.includes(filter);

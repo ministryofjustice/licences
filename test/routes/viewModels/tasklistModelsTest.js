@@ -1,13 +1,135 @@
 const taskListModel = require('../../../server/routes/viewModels/tasklistModels');
 
 describe('Tasklist models', () => {
+    describe('caEligibility', () => {
+        it('should initially show just eligibility task', () => {
+            expect(taskListModel(
+                'caTasksEligibility',
+                {
+                    bassReferralNeeded: false,
+                    optedOut: false,
+                    eligible: false
+                },
+                {
+                    eligibility: 'UNSTARTED',
+                    optOut: 'UNSTARTED'
+                },
+                null
+                )
+            ).to.eql([{task: 'eligibilityTask'}]);
+        });
+
+        it('should show info and address task after eligibility successfully completed', () => {
+            expect(taskListModel(
+                'caTasksEligibility',
+                {
+                    bassReferralNeeded: false,
+                    optedOut: false,
+                    eligible: true
+                },
+                {
+                    eligibility: 'DONE',
+                    optOut: 'UNSTARTED'
+                },
+                null
+                )
+            ).to.eql([
+                {task: 'eligibilityTask'},
+                {task: 'informOffenderTask'},
+                {task: 'proposedAddressTask'}
+            ]);
+        });
+
+        it('should allow submission to RO when optout completed and not opted out', () => {
+            expect(taskListModel(
+                'caTasksEligibility',
+                {
+                    bassReferralNeeded: false,
+                    optedOut: false,
+                    eligible: true
+                },
+                {
+                    eligibility: 'DONE',
+                    optOut: 'DONE'
+                },
+                null
+                )
+            ).to.eql([
+                {task: 'eligibilityTask'},
+                {task: 'proposedAddressTask'},
+                {task: 'caSubmitAddressReviewTask'}
+            ]);
+        });
+
+        it('should allow submission for bass review if bass review selected', () => {
+            expect(taskListModel(
+                'caTasksEligibility',
+                {
+                    bassReferralNeeded: true,
+                    optedOut: false,
+                    eligible: true
+                },
+                {
+                    eligibility: 'DONE',
+                    optOut: 'DONE'
+                },
+                null
+                )
+            ).to.eql([
+                {task: 'eligibilityTask'},
+                {task: 'proposedAddressTask'},
+                {task: 'caSubmitBassReviewTask'}
+            ]);
+        });
+
+        it('should not allow submission for if opted out', () => {
+            expect(taskListModel(
+                'caTasksEligibility',
+                {
+                    bassReferralNeeded: true,
+                    optedOut: true,
+                    eligible: true
+                },
+                {
+                    eligibility: 'DONE',
+                    optOut: 'DONE'
+                },
+                null
+                )
+            ).to.eql([
+                {task: 'eligibilityTask'},
+                {task: 'proposedAddressTask'}
+            ]);
+        });
+
+        it('should allow submission for refusal if ineligible', () => {
+            expect(taskListModel(
+                'caTasksEligibility',
+                {
+                    bassReferralNeeded: true,
+                    optedOut: true,
+                    eligible: false
+                },
+                {
+                    eligibility: 'DONE',
+                    optOut: 'DONE'
+                },
+                'caToDmRefusal'
+                )
+            ).to.eql([
+                {task: 'eligibilityTask'},
+                {task: 'caSubmitRefusalTask'}
+            ]);
+        });
+    });
+
     describe('caFinalChecks', () => {
         it('should return list of tasks for standard route', () => {
             expect(taskListModel(
                 'caTasksFinalChecks',
                 {
-                    curfewAddressApproved: true,
                     bassReferralNeeded: false,
+                    curfewAddressApproved: true,
                     bassWithdrawn: false,
                     bassAccepted: null,
                     optedOut: false
