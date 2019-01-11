@@ -276,4 +276,153 @@ describe('TaskList models', () => {
             ]);
         });
     });
+
+    describe('caTasksPostApproval', () => {
+        it('should return list of tasks for standard route', () => {
+            expect(taskListModel(
+                'caTasksPostApproval',
+                {
+                    eligible: true,
+                    curfewAddressApproved: true,
+                    bassReferralNeeded: false,
+                    bassWithdrawn: false,
+                    bassExcluded: false,
+                    bassAccepted: null,
+                    optedOut: false,
+                    dmRefused: false,
+                    excluded: false
+                },
+                {
+                    bassAreaCheck: 'UNSTARTED',
+                    bassOffer: 'UNSTARTED'
+                },
+                null
+                )
+            ).to.eql([
+                {task: 'eligibilitySummaryTask'},
+                {task: 'curfewAddressTask'},
+                {task: 'riskManagementTask'},
+                {task: 'victimLiaisonTask'},
+                {task: 'curfewHoursTask'},
+                {task: 'additionalConditionsTask'},
+                {task: 'reportingInstructionsTask'},
+                {task: 'finalChecksTask'},
+                {task: 'postponementTask'},
+                {task: 'HDCRefusalTask'},
+                {task: 'createLicenceTask'}
+            ]);
+        });
+
+        it('should return bass tasks if required', () => {
+            expect(taskListModel(
+                'caTasksPostApproval',
+                {
+                    eligible: true,
+                    curfewAddressApproved: true,
+                    bassReferralNeeded: true,
+                    bassWithdrawn: false,
+                    bassExcluded: false,
+                    bassAccepted: null,
+                    optedOut: false,
+                    dmRefused: false,
+                    excluded: false
+                },
+                {
+                    bassAreaCheck: 'UNSTARTED',
+                    bassOffer: 'DONE'
+                },
+                null
+                )
+            ).to.eql([
+                {task: 'eligibilitySummaryTask'},
+                {task: 'bassAddressTask'},
+                {task: 'riskManagementTask'},
+                {task: 'victimLiaisonTask'},
+                {task: 'curfewHoursTask'},
+                {task: 'additionalConditionsTask'},
+                {task: 'reportingInstructionsTask'},
+                {task: 'finalChecksTask'},
+                {task: 'postponementTask'},
+                {task: 'HDCRefusalTask'},
+                {task: 'createLicenceTask'}
+            ]);
+        });
+
+        it('should return just eligibility and notice if ineligible ', () => {
+            expect(taskListModel(
+                'caTasksPostApproval',
+                {
+                    eligible: false,
+                    curfewAddressApproved: true,
+                    bassReferralNeeded: true,
+                    bassWithdrawn: false,
+                    bassExcluded: false,
+                    bassAccepted: null,
+                    optedOut: false,
+                    dmRefused: false
+                },
+                {
+                    bassAreaCheck: 'UNSTARTED',
+                    bassOffer: 'DONE'
+                },
+                null
+                )
+            ).to.eql([
+                {task: 'eligibilitySummaryTask'},
+                {task: 'informOffenderTask'}
+            ]);
+        });
+
+        it('should send for refusal if no approved address and no new one added', () => {
+            expect(taskListModel(
+                'caTasksPostApproval',
+                {
+                    eligible: true,
+                    curfewAddressApproved: false,
+                    bassReferralNeeded: false,
+                    bassWithdrawn: false,
+                    bassExcluded: false,
+                    bassAccepted: null,
+                    optedOut: false,
+                    dmRefused: false
+                },
+                {
+                    bassAreaCheck: 'UNSTARTED',
+                    bassOffer: 'DONE'
+                },
+                'caToDmRefusal'
+                )
+            ).to.eql([
+                {task: 'curfewAddressTask'},
+                {task: 'HDCRefusalTask'},
+                {task: 'caSubmitRefusalTask'}
+            ]);
+        });
+
+        it('should show proposed address task if caToRo transition (new address added)', () => {
+            expect(taskListModel(
+                'caTasksPostApproval',
+                {
+                    eligible: true,
+                    curfewAddressApproved: false,
+                    bassReferralNeeded: false,
+                    bassWithdrawn: false,
+                    bassExcluded: false,
+                    bassAccepted: null,
+                    optedOut: false,
+                    dmRefused: false
+                },
+                {
+                    bassAreaCheck: 'UNSTARTED',
+                    bassOffer: 'DONE'
+                },
+                'caToRo'
+                )
+            ).to.eql([
+                {task: 'proposedAddressTask'},
+                {task: 'HDCRefusalTask'},
+                {task: 'caSubmitAddressReviewTask'}
+            ]);
+        });
+    });
 });

@@ -32,6 +32,12 @@ block tasks
             if taskName === 'HDCRefusalTask'
                 include tasks/HDCRefusalTask
 
+            if taskName === 'eligibilitySummaryTask'
+                include tasks/eligibilitySummaryTask
+            if taskName === 'bassAddressTask'
+                include tasks/bassAddressTask
+
+
             if taskName === 'caSubmitRefusalTask'
                 include tasks/caSubmitRefusalTask
             if taskName === 'caSubmitBassReviewTask'
@@ -40,3 +46,6 @@ block tasks
                 include tasks/caSubmitAddressReviewTask
             if taskName === 'caSubmitApprovalTask'
                 include tasks/caSubmitApprovalTask
+
+            if taskName === 'createLicenceTask'
+                include tasks/createLicenceTask
