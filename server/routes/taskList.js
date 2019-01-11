@@ -5,8 +5,8 @@ const path = require('path');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
-const {pickKey} = require('../utils/functionalHelpers');
-const taskListModel = require('./viewModels/tasklistModels');
+const {pickKey, isEmpty} = require('../utils/functionalHelpers');
+const getTaskListModel = require('./viewModels/taskListModels');
 
 module.exports = ({prisonerService, licenceService, caseListService, audit}) => router => {
 
@@ -20,10 +20,10 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
         const licenceStatus = getLicenceStatus(licence);
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
-        const tasklistView = getTasklistView(req.user.role, licence ? licence.stage : 'UNSTARTED');
-        const tasklistModel = taskListModel(tasklistView, licenceStatus.decisions, licenceStatus.tasks, allowedTransition);
+        const taskListView = getTaskListView(req.user.role, licence ? licence.stage : 'UNSTARTED');
+        const taskListModel = getTaskListModel(taskListView, licenceStatus.decisions, licenceStatus.tasks, allowedTransition);
 
-        res.render(`taskList/${tasklistView}`, {
+        res.render(isEmpty(taskListModel) ? `taskList/${taskListView}` : 'taskList/taskListBuilder', {
             licenceStatus,
             licenceVersion: licence ? licence.version : 0,
             approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
@@ -31,7 +31,7 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
             statusLabel,
             prisonerInfo,
             bookingId,
-            tasklistModel,
+            taskListModel,
             postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
         });
     }));
@@ -68,7 +68,7 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
     return router;
 };
 
-const tasklistConfig = {
+const taskListConfig = {
     caTasksEligibility: {
         stages: ['ELIGIBILITY', 'UNSTARTED'],
         role: 'CA'
@@ -94,7 +94,7 @@ const tasklistConfig = {
     }
 };
 
-function getTasklistView(role, stage) {
+function getTaskListView(role, stage) {
     function roleAndStageMatch(view) {
         if (view.role !== role) {
             return false;
@@ -105,5 +105,5 @@ function getTasklistView(role, stage) {
         return view.stages.includes(stage);
     }
 
-    return pickKey(roleAndStageMatch, tasklistConfig);
+    return pickKey(roleAndStageMatch, taskListConfig);
 }

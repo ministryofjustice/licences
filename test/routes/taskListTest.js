@@ -46,7 +46,7 @@ describe('GET /taskList/:prisonNumber', () => {
             licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: {}});
             const app = createApp({licenceService, prisonerService});
             return request(app)
-                .get('/tasklist/123')
+                .get('/taskList/123')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -59,7 +59,7 @@ describe('GET /taskList/:prisonNumber', () => {
             licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: {}});
             const app = createApp({licenceService, prisonerService});
             return request(app)
-                .get('/tasklist/123')
+                .get('/taskList/123')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -90,7 +90,7 @@ describe('GET /taskList/:prisonNumber', () => {
             const app = createApp({licenceService, prisonerService});
 
             return request(app)
-                .get('/tasklist/1233456')
+                .get('/taskList/1233456')
                 .expect(200)
                 .expect(res => {
                     expect(res.text).to.not.include('id="eligibilityCheckStart"');
@@ -104,7 +104,7 @@ describe('GET /taskList/:prisonNumber', () => {
             const app = createApp({licenceService, prisonerService});
 
             return request(app)
-                .get('/tasklist/1233456')
+                .get('/taskList/1233456')
                 .expect(200)
                 .expect(res => {
                     expect(res.text).to.include('id="eligibilityCheckStart"');
@@ -130,7 +130,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('/hdc/proposedAddress/curfewAddressChoice/');
@@ -158,7 +158,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.include('/hdc/proposedAddress/curfewAddressChoice/');
@@ -191,7 +191,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.include('/hdc/proposedAddress/curfewAddressChoice/');
@@ -222,7 +222,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.include('/hdc/proposedAddress/curfewAddressChoice/');
@@ -253,7 +253,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1')
+                    .get('/taskList/1')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
@@ -281,7 +281,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
@@ -309,7 +309,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
@@ -332,7 +332,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
@@ -358,7 +358,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('/hdc/proposedAddress/optOut/');
@@ -381,7 +381,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('Proposed address information sent to RO');
@@ -403,7 +403,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('Prisoner has opted in and requested BASS referral');
@@ -437,7 +437,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.include('Submit curfew address');
@@ -458,7 +458,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.include('Ready to submit for refusal');
@@ -479,7 +479,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.include('Ready to submit for refusal');
@@ -517,7 +517,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/1233456')
+                    .get('/taskList/1233456')
                     .expect(200)
                     .expect(res => {
                         expect(res.text).to.not.include('Submit to responsible officer');
@@ -525,11 +525,11 @@ describe('GET /taskList/:prisonNumber', () => {
             });
 
             context('when the is no licence in the db for the offender', () => {
-                it('should still load the tasklist', () => {
+                it('should still load the taskList', () => {
                     licenceService.getLicence.resolves(null);
                     const app = createApp({licenceService, prisonerService});
                     return request(app)
-                        .get('/tasklist/123')
+                        .get('/taskList/123')
                         .expect(200)
                         .expect('Content-Type', /html/)
                         .expect(res => {
@@ -549,7 +549,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .post('/tasklist/eligibilityStart')
+                    .post('/taskList/eligibilityStart')
                     .send({bookingId: '123'})
                     .expect(302)
                     .expect(res => {
@@ -562,7 +562,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     const app = createApp({licenceService, prisonerService});
 
                     return request(app)
-                        .post('/tasklist/eligibilityStart')
+                        .post('/taskList/eligibilityStart')
                         .send({bookingId: '123'})
                         .expect(302)
                         .expect(res => {
@@ -579,7 +579,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     const app = createApp({licenceService, prisonerService});
 
                     return request(app)
-                        .post('/tasklist/eligibilityStart')
+                        .post('/taskList/eligibilityStart')
                         .send({bookingId: '123'})
                         .expect(302)
                         .expect(res => {
@@ -595,7 +595,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     const app = createApp({licenceService, prisonerService});
 
                     return request(app)
-                        .post('/tasklist/eligibilityStart')
+                        .post('/taskList/eligibilityStart')
                         .send({bookingId: '123', firstName: 'fn', lastName: 'ln', dateOfBirth: '13/01/1980'})
                         .expect(302)
                         .expect(res => {
@@ -611,7 +611,7 @@ describe('GET /taskList/:prisonNumber', () => {
                     const app = createApp({licenceService, prisonerService});
 
                     return request(app)
-                        .post('/tasklist/eligibilityStart')
+                        .post('/taskList/eligibilityStart')
                         .send({bookingId: '123'})
                         .expect(302)
                         .expect(res => {
@@ -628,7 +628,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/image/123')
+                    .get('/taskList/image/123')
                     .expect(200)
                     .expect('Content-Type', /image/);
             });
@@ -639,7 +639,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService});
 
                 return request(app)
-                    .get('/tasklist/image/123')
+                    .get('/taskList/image/123')
                     .expect(302)
                     .expect('Content-Type', /image/);
             });
@@ -653,7 +653,7 @@ describe('GET /taskList/:prisonNumber', () => {
             licenceService.getLicence.resolves({stage: 'ELIGIBILITY', licence: {}});
             const app = createApp({licenceService, prisonerService}, 'roUser');
             return request(app)
-                .get('/tasklist/123')
+                .get('/taskList/123')
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
@@ -669,7 +669,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -692,7 +692,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -721,7 +721,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -738,7 +738,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -759,7 +759,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -780,7 +780,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -800,7 +800,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -826,7 +826,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -854,7 +854,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -898,7 +898,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -928,7 +928,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'dmUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -952,7 +952,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'dmUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -985,7 +985,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'dmUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -1016,7 +1016,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 const app = createApp({licenceService, prisonerService}, 'dmUser');
 
                 return request(app)
-                    .get('/tasklist/123')
+                    .get('/taskList/123')
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .expect(res => {
@@ -1044,5 +1044,5 @@ function createApp({licenceService, prisonerService}, user) {
         caseListService: caseListServiceStub,
         audit: auditStub}), {licenceRequired: false});
 
-    return appSetup(route, user, '/tasklist/');
+    return appSetup(route, user, '/taskList/');
 }

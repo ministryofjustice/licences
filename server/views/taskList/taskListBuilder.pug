@@ -1,9 +1,16 @@
 extends taskListTemplate
 
 block tasks
-    each task in tasklistModel
+    each task in taskListModel
         -var taskName = task.task
         div.taskListItem.borderBottomLight
+            if taskName === 'eligibilityTask'
+                include tasks/eligibilityTask
+            if taskName === 'informOffenderTask'
+                include tasks/informOffenderTask
+            if taskName === 'proposedAddressTask'
+                include tasks/proposedAddressTask
+
             if taskName === 'bassOfferTask'
                 include tasks/bassOfferTask
             if taskName === 'curfewAddressTask'
@@ -24,6 +31,13 @@ block tasks
                 include tasks/postponementTask
             if taskName === 'HDCRefusalTask'
                 include tasks/HDCRefusalTask
+
+            if taskName === 'eligibilitySummaryTask'
+                include tasks/eligibilitySummaryTask
+            if taskName === 'bassAddressTask'
+                include tasks/bassAddressTask
+
+
             if taskName === 'caSubmitRefusalTask'
                 include tasks/caSubmitRefusalTask
             if taskName === 'caSubmitBassReviewTask'
@@ -32,3 +46,6 @@ block tasks
                 include tasks/caSubmitAddressReviewTask
             if taskName === 'caSubmitApprovalTask'
                 include tasks/caSubmitApprovalTask
+
+            if taskName === 'createLicenceTask'
+                include tasks/createLicenceTask
