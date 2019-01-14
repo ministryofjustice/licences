@@ -62,8 +62,8 @@ module.exports = function createLicenceService(licenceClient) {
         }
     }
 
-    function createLicence(bookingId, data = {}) {
-        return licenceClient.createLicence(bookingId, data);
+    function createLicence({bookingId, data = {}, stage = null} = {}) {
+        return licenceClient.createLicence(bookingId, data, licenceStages[stage]);
     }
 
     async function updateLicenceConditions(bookingId, existingLicence, additional = {}, bespoke = []) {

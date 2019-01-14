@@ -7,7 +7,8 @@ const keys = [
     'UPDATE_SECTION',
     'SEND',
     'CREATE_PDF',
-    'USER_MANAGEMENT'
+    'USER_MANAGEMENT',
+    'VARY_NOMIS_LICENCE_CREATED'
 ];
 
 module.exports = {

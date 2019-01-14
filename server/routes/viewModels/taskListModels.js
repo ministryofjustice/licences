@@ -1,6 +1,6 @@
 const {pick, pickBy, keys} = require('../../utils/functionalHelpers');
 
-const tasks = {
+const tasksData = {
     caTasksEligibility: [
         {task: 'eligibilityTask', filters: []},
         {task: 'informOffenderTask', filters: ['eligibilityDone', 'optOutUnstarted', '!optedOut']},
@@ -44,12 +44,14 @@ const tasks = {
         {task: 'caSubmitAddressReviewTask', filters: ['eligible', 'caToRo', '!bassReferralNeeded']},
         {task: 'createLicenceTask', filters: ['eligible', '!caToDm', '!caToDmRefusal', '!caToRo']},
         {task: 'informOffenderTask', filters: ['!eligible']}
+    ],
+    vary: [
+        {task: 'varyLicenceTask', filters: []}
     ]
 };
 
-module.exports = (taskList, decisions, taskStatus, allowedTransition) => {
-
-    if (!tasks[taskList]) {
+module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
+    if (!tasksData[taskList]) {
         return null;
     }
 
@@ -64,9 +66,9 @@ module.exports = (taskList, decisions, taskStatus, allowedTransition) => {
     const {
         eligibility,
         optOut
-    } = taskStatus;
+    } = tasks;
 
-    const {bassChecksDone, bassOfferMade} = getBassDetails(decisions, taskStatus);
+    const {bassChecksDone, bassOfferMade} = getBassDetails(decisions, tasks);
 
     const filtersForTaskList = keys(pickBy(item => item, {
         bassReferralNeeded,
@@ -78,10 +80,10 @@ module.exports = (taskList, decisions, taskStatus, allowedTransition) => {
         optOutDone: optOut === 'DONE',
         optOutUnstarted: optOut === 'UNSTARTED',
         addressOrBassChecksDone: curfewAddressApproved || bassChecksDone,
-        addressOrBassOffered: curfewAddressApproved || bassOfferMade
+        addressOrBassOffered: curfewAddressApproved || bassOfferMade,
+        noLicence: stage === 'UNSTARTED'
     }));
-
-    return tasks[taskList]
+    return tasksData[taskList]
         .filter(task => task.filters.every(filter => {
             if (filter[0] !== '!') {
                 return filtersForTaskList.includes(filter);

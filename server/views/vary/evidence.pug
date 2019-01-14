@@ -1,0 +1,12 @@
+extends ../formTemplates/formTemplate
+
+block question
+    | Provide evidence you have approval to vary this licence
+
+block formItems
+    div.pure-g
+        div.pure-u-1.pure-u-md-3-5.form-group
+            label(for='evidence') Copy and paste the confirmation emails into the box
+                textarea(name='evidence' id='evidence' class='form-control' rows='15' aria-label="Paste your evidence")
+                    if data.evidence
+                        | #{data.evidence}

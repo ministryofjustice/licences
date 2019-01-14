@@ -6,13 +6,16 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksEligibility',
                 {
-                    bassReferralNeeded: false,
-                    optedOut: false,
-                    eligible: false
-                },
-                {
-                    eligibility: 'UNSTARTED',
-                    optOut: 'UNSTARTED'
+                    decisions: {
+                        bassReferralNeeded: false,
+                        optedOut: false,
+                        eligible: false
+                    },
+                    tasks: {
+                        eligibility: 'UNSTARTED',
+                        optOut: 'UNSTARTED'
+                    }
+
                 },
                 null
                 )
@@ -23,13 +26,15 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksEligibility',
                 {
-                    bassReferralNeeded: false,
-                    optedOut: false,
-                    eligible: true
-                },
-                {
-                    eligibility: 'DONE',
-                    optOut: 'UNSTARTED'
+                    decisions: {
+                        bassReferralNeeded: false,
+                        optedOut: false,
+                        eligible: true
+                    },
+                    tasks: {
+                        eligibility: 'DONE',
+                        optOut: 'UNSTARTED'
+                    }
                 },
                 null
                 )
@@ -44,13 +49,15 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksEligibility',
                 {
-                    bassReferralNeeded: false,
-                    optedOut: false,
-                    eligible: true
-                },
-                {
-                    eligibility: 'DONE',
-                    optOut: 'DONE'
+                    decisions: {
+                        bassReferralNeeded: false,
+                        optedOut: false,
+                        eligible: true
+                    },
+                    tasks: {
+                        eligibility: 'DONE',
+                        optOut: 'DONE'
+                    }
                 },
                 null
                 )
@@ -65,13 +72,15 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksEligibility',
                 {
-                    bassReferralNeeded: true,
-                    optedOut: false,
-                    eligible: true
-                },
-                {
-                    eligibility: 'DONE',
-                    optOut: 'DONE'
+                    decisions: {
+                        bassReferralNeeded: true,
+                        optedOut: false,
+                        eligible: true
+                    },
+                    tasks: {
+                        eligibility: 'DONE',
+                        optOut: 'DONE'
+                    }
                 },
                 null
                 )
@@ -86,13 +95,15 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksEligibility',
                 {
-                    bassReferralNeeded: true,
-                    optedOut: true,
-                    eligible: true
-                },
-                {
-                    eligibility: 'DONE',
-                    optOut: 'DONE'
+                    decisions: {
+                        bassReferralNeeded: true,
+                        optedOut: true,
+                        eligible: true
+                    },
+                    tasks: {
+                        eligibility: 'DONE',
+                        optOut: 'DONE'
+                    }
                 },
                 null
                 )
@@ -106,13 +117,15 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksEligibility',
                 {
-                    bassReferralNeeded: true,
-                    optedOut: true,
-                    eligible: false
-                },
-                {
-                    eligibility: 'DONE',
-                    optOut: 'DONE'
+                    decisions: {
+                        bassReferralNeeded: true,
+                        optedOut: true,
+                        eligible: false
+                    },
+                    tasks: {
+                        eligibility: 'DONE',
+                        optOut: 'DONE'
+                    }
                 },
                 'caToDmRefusal'
                 )
@@ -128,14 +141,17 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksFinalChecks',
                 {
-                    bassReferralNeeded: false,
-                    curfewAddressApproved: true,
-                    bassWithdrawn: false,
-                    bassAccepted: null,
-                    optedOut: false
-                },
-                {
-                    bassAreaCheck: 'UNSTARTED'
+                    decisions: {
+                        bassReferralNeeded: false,
+                        curfewAddressApproved: true,
+                        bassWithdrawn: false,
+                        bassAccepted: null,
+                        optedOut: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'UNSTARTED'
+                    }
+
                 },
                 null
                 )
@@ -157,14 +173,17 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksFinalChecks',
                 {
-                    curfewAddressApproved: false,
-                    bassReferralNeeded: false,
-                    bassWithdrawn: false,
-                    bassAccepted: null,
-                    optedOut: false
-                },
-                {
-                    bassAreaCheck: 'UNSTARTED'
+                    decisions: {
+                        curfewAddressApproved: false,
+                        bassReferralNeeded: false,
+                        bassWithdrawn: false,
+                        bassAccepted: null,
+                        optedOut: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'UNSTARTED'
+                    }
+
                 },
                 'caToDmRefusal'
                 )
@@ -179,14 +198,16 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksFinalChecks',
                 {
-                    curfewAddressApproved: false,
-                    bassReferralNeeded: true,
-                    bassWithdrawn: false,
-                    bassAccepted: null,
-                    optedOut: false
-                },
-                {
-                    bassAreaCheck: 'DONE'
+                    decisions: {
+                        curfewAddressApproved: false,
+                        bassReferralNeeded: true,
+                        bassWithdrawn: false,
+                        bassAccepted: null,
+                        optedOut: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'DONE'
+                    }
                 },
                 'caToDm'
                 )
@@ -208,14 +229,16 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksFinalChecks',
                 {
-                    curfewAddressApproved: false,
-                    bassReferralNeeded: true,
-                    bassWithdrawn: false,
-                    bassAccepted: null,
-                    optedOut: true
-                },
-                {
-                    bassAreaCheck: 'DONE'
+                    decisions: {
+                        curfewAddressApproved: false,
+                        bassReferralNeeded: true,
+                        bassWithdrawn: false,
+                        bassAccepted: null,
+                        optedOut: true
+                    },
+                    tasks: {
+                        bassAreaCheck: 'DONE'
+                    }
                 },
                 'caToDm'
                 )
@@ -236,14 +259,17 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksFinalChecks',
                 {
-                    curfewAddressApproved: false,
-                    bassReferralNeeded: true,
-                    bassWithdrawn: false,
-                    bassAccepted: null,
-                    optedOut: false
-                },
-                {
-                    bassAreaCheck: 'UNFINISHED'
+                    decisions: {
+                        curfewAddressApproved: false,
+                        bassReferralNeeded: true,
+                        bassWithdrawn: false,
+                        bassAccepted: null,
+                        optedOut: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'UNFINISHED'
+                    }
+
                 },
                 'caToDmRefusal'
                 )
@@ -258,14 +284,17 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksFinalChecks',
                 {
-                    curfewAddressApproved: false,
-                    bassReferralNeeded: true,
-                    bassWithdrawn: false,
-                    bassAccepted: 'Unsuitable',
-                    optedOut: false
-                },
-                {
-                    bassAreaCheck: 'DONE'
+                    decisions: {
+                        curfewAddressApproved: false,
+                        bassReferralNeeded: true,
+                        bassWithdrawn: false,
+                        bassAccepted: 'Unsuitable',
+                        optedOut: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'DONE'
+                    }
+
                 },
                 'caToDmRefusal'
                 )
@@ -282,19 +311,21 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksPostApproval',
                 {
-                    eligible: true,
-                    curfewAddressApproved: true,
-                    bassReferralNeeded: false,
-                    bassWithdrawn: false,
-                    bassExcluded: false,
-                    bassAccepted: null,
-                    optedOut: false,
-                    dmRefused: false,
-                    excluded: false
-                },
-                {
-                    bassAreaCheck: 'UNSTARTED',
-                    bassOffer: 'UNSTARTED'
+                    decisions: {
+                        eligible: true,
+                        curfewAddressApproved: true,
+                        bassReferralNeeded: false,
+                        bassWithdrawn: false,
+                        bassExcluded: false,
+                        bassAccepted: null,
+                        optedOut: false,
+                        dmRefused: false,
+                        excluded: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'UNSTARTED',
+                        bassOffer: 'UNSTARTED'
+                    }
                 },
                 null
                 )
@@ -317,19 +348,21 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksPostApproval',
                 {
-                    eligible: true,
-                    curfewAddressApproved: true,
-                    bassReferralNeeded: true,
-                    bassWithdrawn: false,
-                    bassExcluded: false,
-                    bassAccepted: null,
-                    optedOut: false,
-                    dmRefused: false,
-                    excluded: false
-                },
-                {
-                    bassAreaCheck: 'UNSTARTED',
-                    bassOffer: 'DONE'
+                    decisions: {
+                        eligible: true,
+                        curfewAddressApproved: true,
+                        bassReferralNeeded: true,
+                        bassWithdrawn: false,
+                        bassExcluded: false,
+                        bassAccepted: null,
+                        optedOut: false,
+                        dmRefused: false,
+                        excluded: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'UNSTARTED',
+                        bassOffer: 'DONE'
+                    }
                 },
                 null
                 )
@@ -352,19 +385,22 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksPostApproval',
                 {
-                    eligible: false,
-                    curfewAddressApproved: true,
-                    bassReferralNeeded: true,
-                    bassWithdrawn: false,
-                    bassExcluded: false,
-                    bassAccepted: null,
-                    optedOut: false,
-                    dmRefused: false
+                    decisions: {
+                        eligible: false,
+                        curfewAddressApproved: true,
+                        bassReferralNeeded: true,
+                        bassWithdrawn: false,
+                        bassExcluded: false,
+                        bassAccepted: null,
+                        optedOut: false,
+                        dmRefused: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'UNSTARTED',
+                        bassOffer: 'DONE'
+                    }
                 },
-                {
-                    bassAreaCheck: 'UNSTARTED',
-                    bassOffer: 'DONE'
-                },
+
                 null
                 )
             ).to.eql([
@@ -377,18 +413,20 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksPostApproval',
                 {
-                    eligible: true,
-                    curfewAddressApproved: false,
-                    bassReferralNeeded: false,
-                    bassWithdrawn: false,
-                    bassExcluded: false,
-                    bassAccepted: null,
-                    optedOut: false,
-                    dmRefused: false
-                },
-                {
-                    bassAreaCheck: 'UNSTARTED',
-                    bassOffer: 'DONE'
+                    decisions: {
+                        eligible: true,
+                        curfewAddressApproved: false,
+                        bassReferralNeeded: false,
+                        bassWithdrawn: false,
+                        bassExcluded: false,
+                        bassAccepted: null,
+                        optedOut: false,
+                        dmRefused: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'UNSTARTED',
+                        bassOffer: 'DONE'
+                    }
                 },
                 'caToDmRefusal'
                 )
@@ -403,18 +441,20 @@ describe('TaskList models', () => {
             expect(taskListModel(
                 'caTasksPostApproval',
                 {
-                    eligible: true,
-                    curfewAddressApproved: false,
-                    bassReferralNeeded: false,
-                    bassWithdrawn: false,
-                    bassExcluded: false,
-                    bassAccepted: null,
-                    optedOut: false,
-                    dmRefused: false
-                },
-                {
-                    bassAreaCheck: 'UNSTARTED',
-                    bassOffer: 'DONE'
+                    decisions: {
+                        eligible: true,
+                        curfewAddressApproved: false,
+                        bassReferralNeeded: false,
+                        bassWithdrawn: false,
+                        bassExcluded: false,
+                        bassAccepted: null,
+                        optedOut: false,
+                        dmRefused: false
+                    },
+                    tasks: {
+                        bassAreaCheck: 'UNSTARTED',
+                        bassOffer: 'DONE'
+                    }
                 },
                 'caToRo'
                 )
@@ -422,6 +462,22 @@ describe('TaskList models', () => {
                 {task: 'proposedAddressTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitAddressReviewTask'}
+            ]);
+        });
+    });
+
+    describe('vary', () => {
+        it('should return list of tasks for standard route', () => {
+            expect(taskListModel(
+                'vary',
+                {
+                    decisions: {},
+                    tasks: {}
+                },
+                null
+                )
+            ).to.eql([
+                {task: 'varyLicenceTask'}
             ]);
         });
     });

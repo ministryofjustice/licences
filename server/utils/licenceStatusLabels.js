@@ -55,6 +55,11 @@ function statusLabels(licenceStatus, role) {
             CA: postApprovalLabel,
             RO: postApprovalLabel,
             DM: postApprovalLabel
+        },
+        [licenceStages.VARY]: {
+            CA: () => 'Varying licence',
+            RO: () => 'Varying licence',
+            DM: () => 'Varying licence'
         }
     };
 
