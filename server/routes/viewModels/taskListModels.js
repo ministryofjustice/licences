@@ -1,6 +1,6 @@
 const {pick, pickBy, keys} = require('../../utils/functionalHelpers');
 
-const tasks = {
+const tasksData = {
     caTasksEligibility: [
         {task: 'eligibilityTask', filters: []},
         {task: 'informOffenderTask', filters: ['eligibilityDone', 'optOutUnstarted', '!optedOut']},
@@ -44,12 +44,24 @@ const tasks = {
         {task: 'caSubmitAddressReviewTask', filters: ['eligible', 'caToRo', '!bassReferralNeeded']},
         {task: 'createLicenceTask', filters: ['eligible', '!caToDm', '!caToDmRefusal', '!caToRo']},
         {task: 'informOffenderTask', filters: ['!eligible']}
+    ],
+    roTasks: [
+        {task: 'bassAreaTask', filters: ['bassReferralNeeded']},
+        {task: 'curfewAddressTask', filters: ['!addressRejectedInRiskTask', '!bassReferralNeeded']},
+        {task: 'riskManagementTask', filters: ['!addressRejectedInReviewTask']},
+        {task: 'victimLiaisonTask', filters: ['!curfewAddressRejected']},
+        {task: 'curfewHoursTask', filters: ['!curfewAddressRejected']},
+        {task: 'additionalConditionsTask', filters: ['!curfewAddressRejected']},
+        {task: 'reportingInstructionsTask', filters: ['!curfewAddressRejected']},
+        {task: 'roSubmitTask', filters: []}
+    ],
+    vary: [
+        {task: 'varyLicenceTask', filters: []}
     ]
 };
 
-module.exports = (taskList, decisions, taskStatus, allowedTransition) => {
-
-    if (!tasks[taskList]) {
+module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
+    if (!tasksData[taskList]) {
         return null;
     }
 
@@ -58,15 +70,18 @@ module.exports = (taskList, decisions, taskStatus, allowedTransition) => {
         curfewAddressApproved,
         optedOut,
         eligible,
-        dmRefused
+        dmRefused,
+        curfewAddressRejected,
+        addressUnsuitable,
+        addressReviewFailed
     } = decisions;
 
     const {
         eligibility,
         optOut
-    } = taskStatus;
+    } = tasks;
 
-    const {bassChecksDone, bassOfferMade} = getBassDetails(decisions, taskStatus);
+    const {bassChecksDone, bassOfferMade} = getBassDetails(decisions, tasks);
 
     const filtersForTaskList = keys(pickBy(item => item, {
         bassReferralNeeded,
@@ -74,14 +89,17 @@ module.exports = (taskList, decisions, taskStatus, allowedTransition) => {
         eligible,
         [allowedTransition]: allowedTransition,
         dmRefused,
+        curfewAddressRejected,
         eligibilityDone: eligibility === 'DONE',
         optOutDone: optOut === 'DONE',
         optOutUnstarted: optOut === 'UNSTARTED',
         addressOrBassChecksDone: curfewAddressApproved || bassChecksDone,
-        addressOrBassOffered: curfewAddressApproved || bassOfferMade
+        addressOrBassOffered: curfewAddressApproved || bassOfferMade,
+        addressRejectedInReviewTask: addressReviewFailed,
+        addressRejectedInRiskTask: addressUnsuitable
     }));
 
-    return tasks[taskList]
+    return tasksData[taskList]
         .filter(task => task.filters.every(filter => {
             if (filter[0] !== '!') {
                 return filtersForTaskList.includes(filter);

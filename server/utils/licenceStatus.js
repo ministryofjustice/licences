@@ -53,7 +53,8 @@ function getRequiredState(stage, licence) {
         [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
         [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
         [licenceStages.MODIFIED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
-        [licenceStages.MODIFIED_APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
+        [licenceStages.MODIFIED_APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
+        [licenceStages.VARY]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
     };
 
     return config[stage].map(getStateMethod => getStateMethod(licence));
