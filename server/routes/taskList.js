@@ -1,5 +1,3 @@
-const logger = require('../../log');
-
 const {asyncMiddleware} = require('../utils/middleware');
 const path = require('path');
 const {getLicenceStatus} = require('../utils/licenceStatus');
@@ -11,8 +9,6 @@ const getTaskListModel = require('./viewModels/taskListModels');
 module.exports = ({prisonerService, licenceService, caseListService, audit}) => router => {
 
     router.get('/:bookingId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /taskList');
-
         const {bookingId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token);
         const licence = await licenceService.getLicence(bookingId);
@@ -20,8 +16,9 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
         const licenceStatus = getLicenceStatus(licence);
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
-        const taskListView = getTaskListView(req.user.role, licence ? licence.stage : 'UNSTARTED');
-        const taskListModel = getTaskListModel(taskListView, licenceStatus.decisions, licenceStatus.tasks, allowedTransition);
+
+        const taskListView = getTaskListView(req.user.role, licence ? licence.stage : 'UNSTARTED', prisonerInfo);
+        const taskListModel = getTaskListModel(taskListView, licenceStatus, allowedTransition);
 
         res.render(isEmpty(taskListModel) ? `taskList/${taskListView}` : 'taskList/taskListBuilder', {
             licenceStatus,
@@ -37,23 +34,30 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
     }));
 
     router.post('/eligibilityStart', asyncMiddleware(async (req, res) => {
-        logger.debug('POST /eligibilityStart');
-
         const {bookingId} = req.body;
 
         const existingLicence = await licenceService.getLicence(bookingId);
 
         if (!existingLicence) {
-            await licenceService.createLicence(bookingId);
+            await licenceService.createLicence({bookingId});
             audit.record('LICENCE_RECORD_STARTED', req.user.staffId, {bookingId});
         }
 
         res.redirect(`/hdc/eligibility/excluded/${bookingId}`);
     }));
 
-    router.get('/image/:imageId', asyncMiddleware(async (req, res) => {
-        logger.debug('GET /image');
+    router.post('/varyStart', asyncMiddleware(async (req, res) => {
+        const {bookingId} = req.body;
+        await licenceService.createLicence({
+            bookingId,
+            data: {variedFromLicenceNotInSystem: true},
+            stage: 'VARY'});
+        audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.staffId, {bookingId});
 
+        res.redirect(`/hdc/vary/evidence/${bookingId}`);
+    }));
+
+    router.get('/image/:imageId', asyncMiddleware(async (req, res) => {
         const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, res.locals.token);
 
         if (!prisonerImage) {
@@ -94,7 +98,12 @@ const taskListConfig = {
     }
 };
 
-function getTaskListView(role, stage) {
+function getTaskListView(role, stage, {released}) {
+    // TODO: Update when the shape of the nomis prisoner object is known
+    if (released) {
+       return 'vary';
+    }
+
     function roleAndStageMatch(view) {
         if (view.role !== role) {
             return false;

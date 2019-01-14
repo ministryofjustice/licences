@@ -584,23 +584,7 @@ describe('GET /taskList/:prisonNumber', () => {
                         .expect(302)
                         .expect(res => {
                             expect(licenceService.createLicence).to.be.called();
-                            expect(licenceService.createLicence).to.be.calledWith('123');
-                        });
-                });
-
-                it('should include personal details', () => {
-                    licenceService.getLicence.resolves(undefined);
-                    licenceService.createLicence.resolves();
-
-                    const app = createApp({licenceService, prisonerService});
-
-                    return request(app)
-                        .post('/taskList/eligibilityStart')
-                        .send({bookingId: '123', firstName: 'fn', lastName: 'ln', dateOfBirth: '13/01/1980'})
-                        .expect(302)
-                        .expect(res => {
-                            expect(licenceService.createLicence).to.be.called();
-                            expect(licenceService.createLicence).to.be.calledWith('123');
+                            expect(licenceService.createLicence).to.be.calledWith({bookingId: '123'});
                         });
                 });
 
@@ -618,6 +602,58 @@ describe('GET /taskList/:prisonNumber', () => {
                             expect(auditStub.record).to.be.called();
                             expect(auditStub.record).to.be.calledWith(
                                 'LICENCE_RECORD_STARTED', 'id', {bookingId: '123'});
+                        });
+                });
+            });
+        });
+
+        describe('POST /varyStart', () => {
+            beforeEach(() => {
+                licenceService.getLicence.resolves(undefined);
+                licenceService.createLicence.resolves();
+            });
+
+            it('should redirect to vary/evidence page', () => {
+                const app = createApp({licenceService, prisonerService});
+
+                return request(app)
+                    .post('/taskList/varyStart')
+                    .send({bookingId: '123'})
+                    .expect(302)
+                    .expect('Location', '/hdc/vary/evidence/123');
+            });
+
+            context('licence does not exist in db', () => {
+                it('should create a new licence', () => {
+                    const app = createApp({licenceService, prisonerService});
+
+                    return request(app)
+                        .post('/taskList/varyStart')
+                        .send({bookingId: '123'})
+                        .expect(302)
+                        .expect(res => {
+                            expect(licenceService.createLicence).to.be.called();
+                            expect(licenceService.createLicence).to.be.calledWith({
+                                bookingId: '123',
+                                data: {variedFromLicenceNotInSystem: true},
+                                stage: 'VARY'});
+                        });
+                });
+
+                it('should audit the new licence creation event', () => {
+                    licenceService.getLicence.resolves(undefined);
+                    licenceService.createLicence.resolves();
+
+                    const app = createApp({licenceService, prisonerService});
+
+                    return request(app)
+                        .post('/taskList/varyStart')
+                        .send({bookingId: '123'})
+                        .expect(302)
+                        .expect(res => {
+                            expect(auditStub.record).to.be.called();
+                            expect(auditStub.record).to.be.calledWith(
+                                'VARY_NOMIS_LICENCE_CREATED', 'id', {bookingId: '123'});
                         });
                 });
             });
@@ -903,6 +939,39 @@ describe('GET /taskList/:prisonNumber', () => {
                     .expect('Content-Type', /html/)
                     .expect(res => {
                         expect(res.text).to.include('/hdc/review/licenceDetails/1">Continue');
+                    });
+
+            });
+        });
+        context('Prisoner has been released', () => {
+            it('should allow a new variation to be started if no licence exists', () => {
+                licenceService.getLicence.resolves(undefined);
+                prisonerService.getPrisonerDetails.resolves({released: true});
+
+                const app = createApp({licenceService, prisonerService}, 'roUser');
+
+                return request(app)
+                    .get('/taskList/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('action="/hdc/taskList/varyStart/"');
+                    });
+
+            });
+
+            it('should link to evidence page if there is a licence', () => {
+                licenceService.getLicence.resolves({stage: 'VARY', licence: {variedFromLicenceNotInSystem: true}});
+                prisonerService.getPrisonerDetails.resolves({released: true});
+
+                const app = createApp({licenceService, prisonerService}, 'roUser');
+
+                return request(app)
+                    .get('/taskList/123')
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .expect(res => {
+                        expect(res.text).to.include('/hdc/vary/evidence/');
                     });
 
             });

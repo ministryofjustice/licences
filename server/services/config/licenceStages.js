@@ -8,7 +8,8 @@ const licenceStages = {
     APPROVAL: 'APPROVAL',
     DECIDED: 'DECIDED',
     MODIFIED: 'MODIFIED',
-    MODIFIED_APPROVAL: 'MODIFIED_APPROVAL'
+    MODIFIED_APPROVAL: 'MODIFIED_APPROVAL',
+    VARY: 'VARY'
 };
 
 const transitions = {

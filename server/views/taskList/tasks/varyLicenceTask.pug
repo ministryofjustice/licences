@@ -1,0 +1,12 @@
+div.taskListSingleLineItem.u-paddingBottom.sm-midPaddingBottom.pure-g
+    div.pure-u-1.pure-u-md-3-4
+        h2.heading-medium Vary licence
+
+    div.pure-u-1.pure-u-md-1-4.center.buttonContainer
+        if licenceStatus.stage === 'VARY'
+            a#continueBtn.taskListAction.center.button(href='/hdc/vary/evidence/'+prisonerInfo.bookingId) Continue
+        else
+            form(method="post", name="varyStart", action="/hdc/taskList/varyStart/")
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="bookingId" value=prisonerInfo.bookingId || '')
+                input.taskListAction.requiredButton.button(type='submit', value='Start now', id='varyStart')

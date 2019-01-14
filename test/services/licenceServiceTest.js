@@ -52,17 +52,24 @@ describe('licenceService', () => {
 
     describe('createLicence', () => {
         it('should create a licence', () => {
-            service.createLicence('123');
+            service.createLicence({bookingId: '123'});
 
             expect(licenceClient.createLicence).to.be.calledOnce();
-            expect(licenceClient.createLicence).to.be.calledWith('123', {});
+            expect(licenceClient.createLicence).to.be.calledWith('123', {}, undefined);
         });
 
         it('should pass in the licence', () => {
-            service.createLicence('123', {firstName: 'M'});
+            service.createLicence({bookingId: '123', data: {firstName: 'M'}});
 
             expect(licenceClient.createLicence).to.be.calledOnce();
             expect(licenceClient.createLicence).to.be.calledWith('123', {firstName: 'M'});
+        });
+
+        it('should pass in the stage', () => {
+            service.createLicence({bookingId: '123', data: {firstName: 'M'}, stage: 'VARY'});
+
+            expect(licenceClient.createLicence).to.be.calledOnce();
+            expect(licenceClient.createLicence).to.be.calledWith('123', {firstName: 'M'}, 'VARY');
         });
 
         it('should return returned id', () => {
