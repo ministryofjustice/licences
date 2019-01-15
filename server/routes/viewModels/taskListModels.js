@@ -12,7 +12,7 @@ const tasksData = {
     caTasksFinalChecks: [
         {task: 'curfewAddressTask', filters: ['!bassReferralNeeded']},
         {task: 'bassOfferTask', filters: ['bassReferralNeeded']},
-        {task: 'riskManagementTask', filters: ['addressOrBassChecksDone']},
+        {task: 'riskManagementTask', filters: ['addressOrBassChecksDoneOrUnsuitable']},
         {task: 'victimLiaisonTask', filters: ['addressOrBassChecksDone']},
         {task: 'curfewHoursTask', filters: ['addressOrBassChecksDone']},
         {task: 'additionalConditionsTask', filters: ['addressOrBassChecksDone']},
@@ -94,6 +94,7 @@ module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
         optOutDone: optOut === 'DONE',
         optOutUnstarted: optOut === 'UNSTARTED',
         addressOrBassChecksDone: curfewAddressApproved || bassChecksDone,
+        addressOrBassChecksDoneOrUnsuitable: curfewAddressApproved || bassChecksDone || addressUnsuitable,
         addressOrBassOffered: curfewAddressApproved || bassOfferMade,
         addressRejectedInReviewTask: addressReviewFailed,
         addressRejectedInRiskTask: addressUnsuitable,

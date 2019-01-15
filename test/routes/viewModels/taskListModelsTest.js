@@ -176,7 +176,8 @@ describe('TaskList models', () => {
                         bassReferralNeeded: false,
                         bassWithdrawn: false,
                         bassAccepted: null,
-                        optedOut: false
+                        optedOut: false,
+                        addressUnsuitable: false
                     },
                     tasks: {
                         bassAreaCheck: 'UNSTARTED'
@@ -186,6 +187,30 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                 {task: 'curfewAddressTask'},
+                {task: 'HDCRefusalTask'},
+                {task: 'caSubmitRefusalTask'}
+            ]);
+        });
+
+        it('should show risk if adderss unsuitable', () => {
+            expect(taskListModel(
+                'caTasksFinalChecks',
+                {
+                    decisions: {
+                        curfewAddressApproved: false,
+                        bassReferralNeeded: false,
+                        bassWithdrawn: false,
+                        bassAccepted: null,
+                        optedOut: false,
+                        addressUnsuitable: true
+                    },
+                    tasks: {}
+                },
+                'caToDmRefusal'
+                )
+            ).to.eql([
+                {task: 'curfewAddressTask'},
+                {task: 'riskManagementTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitRefusalTask'}
             ]);
