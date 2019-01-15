@@ -484,6 +484,21 @@ describe('getAllowedTransition', () => {
         expect(allowed).to.eql('caToDmRefusal');
     });
 
+    it('should allow CA to DM refusal if address is not rejected - POST_APPROVAL', () => {
+        const status = {
+            stage: 'MODIFIED',
+            tasks: {
+                bassReferral: 'DONE'
+            },
+            decisions: {
+                curfewAddressRejected: true
+            }
+        };
+
+        const allowed = getAllowedTransition(status, 'CA');
+        expect(allowed).to.eql('caToDmRefusal');
+    });
+
     it('should allow CA to DM refusal if BASS is withdrawn', () => {
         const status = {
             stage: 'PROCESSING_CA',

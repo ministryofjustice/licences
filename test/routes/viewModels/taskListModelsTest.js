@@ -417,10 +417,7 @@ describe('TaskList models', () => {
                         optedOut: false,
                         dmRefused: false
                     },
-                    tasks: {
-                        bassAreaCheck: 'UNSTARTED',
-                        bassOffer: 'DONE'
-                    }
+                    tasks: {}
                 },
                 'caToDmRefusal'
                 )

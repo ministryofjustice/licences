@@ -30,7 +30,7 @@ const tasksData = {
         {task: 'proposedAddressTask', filters: ['eligible', 'caToRo']},
         {task: 'bassAddressTask', filters: ['eligible', '!caToRo', 'bassReferralNeeded']},
         {task: 'curfewAddressTask', filters: ['eligible', '!caToRo', '!bassReferralNeeded']},
-        {task: 'riskManagementTask', filters: ['eligible', 'addressOrBassOffered']},
+        {task: 'riskManagementTask', filters: ['eligible', 'addressOrBassOfferedOrUnsuitable']},
         {task: 'victimLiaisonTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'curfewHoursTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'additionalConditionsTask', filters: ['eligible', 'addressOrBassOffered']},
@@ -42,7 +42,7 @@ const tasksData = {
         {task: 'caSubmitRefusalTask', filters: ['eligible', 'caToDmRefusal']},
         {task: 'caSubmitBassReviewTask', filters: ['eligible', 'caToRo', 'bassReferralNeeded']},
         {task: 'caSubmitAddressReviewTask', filters: ['eligible', 'caToRo', '!bassReferralNeeded']},
-        {task: 'createLicenceTask', filters: ['eligible', '!caToDm', '!caToDmRefusal', '!caToRo']},
+        {task: 'createLicenceTask', filters: ['eligible', 'addressOrBassOffered', '!caToDm', '!caToDmRefusal', '!caToRo']},
         {task: 'informOffenderTask', filters: ['!eligible']}
     ],
     roTasks: [
@@ -96,7 +96,8 @@ module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
         addressOrBassChecksDone: curfewAddressApproved || bassChecksDone,
         addressOrBassOffered: curfewAddressApproved || bassOfferMade,
         addressRejectedInReviewTask: addressReviewFailed,
-        addressRejectedInRiskTask: addressUnsuitable
+        addressRejectedInRiskTask: addressUnsuitable,
+        addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable
     }));
 
     return tasksData[taskList]
