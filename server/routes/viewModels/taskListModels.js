@@ -45,6 +45,16 @@ const tasksData = {
         {task: 'createLicenceTask', filters: ['eligible', '!caToDm', '!caToDmRefusal', '!caToRo']},
         {task: 'informOffenderTask', filters: ['!eligible']}
     ],
+    roTasks: [
+        {task: 'bassAreaTask', filters: ['bassReferralNeeded']},
+        {task: 'curfewAddressTask', filters: ['!addressRejectedInRiskTask', '!bassReferralNeeded']},
+        {task: 'riskManagementTask', filters: ['!addressRejectedInReviewTask']},
+        {task: 'victimLiaisonTask', filters: ['!curfewAddressRejected']},
+        {task: 'curfewHoursTask', filters: ['!curfewAddressRejected']},
+        {task: 'additionalConditionsTask', filters: ['!curfewAddressRejected']},
+        {task: 'reportingInstructionsTask', filters: ['!curfewAddressRejected']},
+        {task: 'roSubmitTask', filters: []}
+    ],
     vary: [
         {task: 'varyLicenceTask', filters: []}
     ]
@@ -60,7 +70,10 @@ module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
         curfewAddressApproved,
         optedOut,
         eligible,
-        dmRefused
+        dmRefused,
+        curfewAddressRejected,
+        addressUnsuitable,
+        addressReviewFailed
     } = decisions;
 
     const {
@@ -76,13 +89,16 @@ module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
         eligible,
         [allowedTransition]: allowedTransition,
         dmRefused,
+        curfewAddressRejected,
         eligibilityDone: eligibility === 'DONE',
         optOutDone: optOut === 'DONE',
         optOutUnstarted: optOut === 'UNSTARTED',
         addressOrBassChecksDone: curfewAddressApproved || bassChecksDone,
         addressOrBassOffered: curfewAddressApproved || bassOfferMade,
-        noLicence: stage === 'UNSTARTED'
+        addressRejectedInReviewTask: addressReviewFailed,
+        addressRejectedInRiskTask: addressUnsuitable
     }));
+
     return tasksData[taskList]
         .filter(task => task.filters.every(filter => {
             if (filter[0] !== '!') {

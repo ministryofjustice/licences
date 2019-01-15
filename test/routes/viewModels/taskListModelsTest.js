@@ -15,7 +15,6 @@ describe('TaskList models', () => {
                         eligibility: 'UNSTARTED',
                         optOut: 'UNSTARTED'
                     }
-
                 },
                 null
                 )
@@ -151,7 +150,6 @@ describe('TaskList models', () => {
                     tasks: {
                         bassAreaCheck: 'UNSTARTED'
                     }
-
                 },
                 null
                 )
@@ -183,7 +181,6 @@ describe('TaskList models', () => {
                     tasks: {
                         bassAreaCheck: 'UNSTARTED'
                     }
-
                 },
                 'caToDmRefusal'
                 )
@@ -269,7 +266,6 @@ describe('TaskList models', () => {
                     tasks: {
                         bassAreaCheck: 'UNFINISHED'
                     }
-
                 },
                 'caToDmRefusal'
                 )
@@ -294,7 +290,6 @@ describe('TaskList models', () => {
                     tasks: {
                         bassAreaCheck: 'DONE'
                     }
-
                 },
                 'caToDmRefusal'
                 )
@@ -400,7 +395,6 @@ describe('TaskList models', () => {
                         bassOffer: 'DONE'
                     }
                 },
-
                 null
                 )
             ).to.eql([
@@ -466,6 +460,7 @@ describe('TaskList models', () => {
         });
     });
 
+
     describe('vary', () => {
         it('should return list of tasks for standard route', () => {
             expect(taskListModel(
@@ -476,8 +471,95 @@ describe('TaskList models', () => {
                 },
                 null
                 )
+            ).to.eql([{task: 'varyLicenceTask'}]);
+        });
+    });
+
+    describe('caTasksPostApproval', () => {
+        it('should show all tasks if address not rejected', () => {
+            expect(taskListModel(
+                'roTasks',
+                {
+                    decisions: {
+                        addressReviewFailed: false,
+                        addressUnsuitable: false
+                    },
+                    tasks: {}
+                },
+                'roToCa'
+                )
             ).to.eql([
-                {task: 'varyLicenceTask'}
+                {task: 'curfewAddressTask'},
+                {task: 'riskManagementTask'},
+                {task: 'victimLiaisonTask'},
+                {task: 'curfewHoursTask'},
+                {task: 'additionalConditionsTask'},
+                {task: 'reportingInstructionsTask'},
+                {task: 'roSubmitTask'}
+            ]);
+        });
+
+        it('should show bass task if bass referral needed', () => {
+            expect(taskListModel(
+                'roTasks',
+                {
+                    decisions: {
+                        addressReviewFailed: false,
+                        addressUnsuitable: false,
+                        bassReferralNeeded: true
+                    },
+                    tasks: {}
+                },
+                'roToCa'
+                )
+            ).to.eql([
+                {task: 'bassAreaTask'},
+                {task: 'riskManagementTask'},
+                {task: 'victimLiaisonTask'},
+                {task: 'curfewHoursTask'},
+                {task: 'additionalConditionsTask'},
+                {task: 'reportingInstructionsTask'},
+                {task: 'roSubmitTask'}
+            ]);
+        });
+
+        it('should show only curfew address review task and send if review failed', () => {
+            expect(taskListModel(
+                'roTasks',
+                {
+                    decisions: {
+                        addressReviewFailed: true,
+                        curfewAddressRejected: true,
+                        addressUnsuitable: false,
+                        bassReferralNeeded: false
+                    },
+                    tasks: {}
+                },
+                'roToCa'
+                )
+            ).to.eql([
+                {task: 'curfewAddressTask'},
+                {task: 'roSubmitTask'}
+            ]);
+        });
+
+        it('should show only risk task and send if unsuitable failed', () => {
+            expect(taskListModel(
+                'roTasks',
+                {
+                    decisions: {
+                        curfewAddressRejected: true,
+                        bassReferralNeeded: false,
+                        addressReviewFailed: false,
+                        addressUnsuitable: true
+                    },
+                    tasks: {}
+                },
+                'roToCa'
+                )
+            ).to.eql([
+                {task: 'riskManagementTask'},
+                {task: 'roSubmitTask'}
             ]);
         });
     });
