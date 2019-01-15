@@ -74,7 +74,7 @@ function caEligibilityLabel(licenceStatus) {
         {decision: 'insufficientTime', label: 'Not enough time - rejected'},
         {decision: 'optedOut', label: 'Opted out'},
         {decision: 'bassReferralNeeded', label: 'Getting address'},
-        {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address rejected'},
+        {decision: 'curfewAddressRejected', label: 'Address rejected'},
         {decision: 'eligible', label: 'Eligible'}
     ];
 
@@ -89,8 +89,8 @@ function caProcessingLabel(licenceStatus) {
     ];
 
     const addressRouteLabels = [
-        {decision: 'curfewAddressApproved', value: 'withdrawn', label: 'Address withdrawn'},
-        {decision: 'curfewAddressApproved', value: 'rejected', label: 'Address not suitable'}
+        {decision: 'curfewAddressWithdrawn', label: 'Address withdrawn'},
+        {decision: 'curfewAddressRejected', label: 'Address not suitable'}
     ];
 
     const commonLabels = [
@@ -215,7 +215,7 @@ function postApprovalLabel(licenceStatus) {
 
 function getLabel(labels, licenceStatus) {
     const found = labels.find(label => {
-        const value = 'value' in label ? label.value : true;
+        const value = label.value || true;
         return licenceStatus.decisions[label.decision] === value;
     });
 

@@ -57,7 +57,7 @@ describe('getStatusLabel', () => {
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {curfewAddressApproved: 'rejected'},
+                        decisions: {curfewAddressRejected: true},
                         tasks: {}
                     },
                     label: 'Address rejected'
@@ -65,7 +65,7 @@ describe('getStatusLabel', () => {
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {curfewAddressApproved: 'rejected', unsuitableResult: false},
+                        decisions: {curfewAddressRejected: true, unsuitableResult: false},
                         tasks: {}
                     },
                     label: 'Address rejected'
@@ -73,7 +73,7 @@ describe('getStatusLabel', () => {
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {curfewAddressApproved: 'rejected', unsuitableResult: true},
+                        decisions: {curfewAddressRejected: true, unsuitableResult: true},
                         tasks: {}
                     },
                     label: 'Presumed unsuitable'
@@ -119,7 +119,7 @@ describe('getStatusLabel', () => {
                 {
                     status: {
                         stage: licenceStages.PROCESSING_CA,
-                        decisions: {curfewAddressApproved: 'rejected'},
+                        decisions: {curfewAddressRejected: true},
                         tasks: {}
                     },
                     label: 'Address not suitable'
