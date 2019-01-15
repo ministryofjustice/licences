@@ -133,7 +133,7 @@ function canSendCaToDmRefusal(licenceStatus) {
             return bassFailure;
         }
 
-        return addressWithdrawn;
+        return addressWithdrawn || curfewAddressRejected;
     }
 
     if (stage === 'ELIGIBILITY') {
