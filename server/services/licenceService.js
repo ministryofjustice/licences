@@ -20,7 +20,8 @@ const {
     pickBy,
     replacePath,
     mergeWithRight,
-    pick
+    pick,
+    keys
 } = require('../utils/functionalHelpers');
 
 module.exports = function createLicenceService(licenceClient) {
@@ -447,6 +448,70 @@ module.exports = function createLicenceService(licenceClient) {
         }});
     }
 
+    async function createLicenceFromFlatInput(input, bookingId, existingLicence) {
+        const inputPositions = {
+            addressLine1: ['proposedAddress', 'curfewAddress', 'addressLine1'],
+            addressLine2: ['proposedAddress', 'curfewAddress', 'addressLine2'],
+            addressTown: ['proposedAddress', 'curfewAddress', 'addressTown'],
+            postCode: ['proposedAddress', 'curfewAddress', 'postCode'],
+            telephone: ['proposedAddress', 'curfewAddress', 'telephone'],
+            reportingAddressLine1: ['reporting', 'reportingInstructions', 'buildingAndStreet1'],
+            reportingAddressLine2: ['reporting', 'reportingInstructions', 'buildingAndStreet2'],
+            reportingAddressTown: ['reporting', 'reportingInstructions', 'townOrCity'],
+            reportingPostCode: ['reporting', 'reportingInstructions', 'postcode'],
+            reportingTelephone: ['reporting', 'reportingInstructions', 'telephone'],
+            reportingContact: ['reporting', 'reportingInstructions', 'name'],
+            allFrom: ['curfew', 'curfewHours', 'allFrom'],
+            allUntil: ['curfew', 'curfewHours', 'allUntil'],
+            mondayFrom: ['curfew', 'curfewHours', 'mondayFrom'],
+            mondayUntil: ['curfew', 'curfewHours', 'mondayUntil'],
+            tuesdayFrom: ['curfew', 'curfewHours', 'tuesdayFrom'],
+            tuesdayUntil: ['curfew', 'curfewHours', 'tuesdayUntil'],
+            wednesdayFrom: ['curfew', 'curfewHours', 'wednesdayFrom'],
+            wednesdayUntil: ['curfew', 'curfewHours', 'wednesdayUntil'],
+            thursdayFrom: ['curfew', 'curfewHours', 'thursdayFrom'],
+            thursdayUntil: ['curfew', 'curfewHours', 'thursdayUntil'],
+            fridayFrom: ['curfew', 'curfewHours', 'fridayFrom'],
+            fridayUntil: ['curfew', 'curfewHours', 'fridayUntil'],
+            saturdayFrom: ['curfew', 'curfewHours', 'saturdayFrom'],
+            saturdayUntil: ['curfew', 'curfewHours', 'saturdayUntil'],
+            sundayFrom: ['curfew', 'curfewHours', 'sundayFrom'],
+            sundayUntil: ['curfew', 'curfewHours', 'sundayUntil'],
+            daySpecificInputs: ['curfew', 'curfewHours', 'daySpecificInputs'],
+            additionalConditions: ['licenceConditions', 'standard', 'additionalConditionsRequired']
+        };
+
+        const inputWithCurfewHours = addCurfewHoursInput(input);
+
+        const newLicence = keys(inputPositions).reduce((licence, inputName) => {
+            if (!inputWithCurfewHours[inputName]) {
+                return licence;
+            }
+            return replacePath(inputPositions[inputName], inputWithCurfewHours[inputName], licence);
+        }, existingLicence);
+
+        await licenceClient.updateLicence(bookingId, newLicence);
+        return newLicence;
+    }
+
+    function addCurfewHoursInput(input) {
+        if (input.daySpecificInputs === 'Yes') {
+            return input;
+        }
+
+        return Object.keys(input).reduce((input, fieldItem) => {
+            if (fieldItem.includes('From')) {
+                return {...input, [fieldItem]: input.allFrom};
+            }
+
+            if (fieldItem.includes('Until')) {
+                return {...input, [fieldItem]: input.allUntil};
+            }
+
+            return input;
+        }, input);
+    }
+
     return {
         reset,
         getLicence,
@@ -465,6 +530,8 @@ module.exports = function createLicenceService(licenceClient) {
         removeDecision,
         rejectBass,
         withdrawBass,
-        reinstateBass
+        reinstateBass,
+        addCurfewHoursInput,
+        createLicenceFromFlatInput
     };
 };

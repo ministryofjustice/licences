@@ -7,9 +7,8 @@ module.exports = {
                 validationMessage: 'Provide your evidence'
             }}
         ],
-        validate: true,
         nextPath: {
-            path: '/hdc/taskList/'
+            path: '/hdc/vary/licenceDetails/'
         }
     }
 };

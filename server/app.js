@@ -337,7 +337,7 @@ module.exports = function createApp({
     app.use('/hdc/', secureRoute(reportingRouter({licenceService})));
     app.use('/hdc/', secureRoute(riskRouter({licenceService})));
     app.use('/hdc/', secureRoute(victimRouter({licenceService})));
-    app.use('/hdc/', secureRoute(varyRouter({licenceService})));
+    app.use('/hdc/', secureRoute(varyRouter({licenceService, prisonerService})));
 
     // hide functionality until authorisation strategy is established
     if (!production) {

@@ -42,7 +42,9 @@ const createLicenceServiceStub = () => ({
     validateForm: sinon.stub().returns({}),
     validateFormGroup: sinon.stub().returns({}),
     rejectProposedAddress: sinon.stub().returns({}),
-    reinstateProposedAddress: sinon.stub().returns({})
+    reinstateProposedAddress: sinon.stub().returns({}),
+    createLicenceFromFlatInput: sinon.stub().resolves({}),
+    addCurfewHoursInput: sinon.stub().returns({})
 });
 
 const createConditionsServiceStub = () => ({
