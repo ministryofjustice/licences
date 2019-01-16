@@ -1,13 +1,15 @@
 extends ../layout
+include ../includes/errorBannerWithDetailObject
 
 block content
+    +errorBannerWithDetail(errorObject)
     include ../taskList/prisonerDetails
     -var data = {}
 
     form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId || '')
-        div.pure-g.borderBottom
+        div.pure-g.borderBottom#error-anchor
             div.pure-u-1
                 h2.heading-large Enter licence details
 
@@ -17,20 +19,20 @@ block content
                         h3.heading-medium Curfew address
                         div.form-group.midMarginBottom
                             label.form-label(for="addressLine1") Building and street
-                            input(id="addressLine1" name="addressLine1" value=data.addressLine1 autofocus aria-label="Building and street" class="form-control")
-                            input.form-control.smallMarginTop(id="addressLine2" name="addressLine2" value=data.addressLine2)
+                            input(id="addressLine1" name="addressLine1" value=userInput.addressLine1 autofocus aria-label="Building and street" class=errorObject.addressLine1 ? "form-control form-control-error" : "form-control")
+                            input.form-control.smallMarginTop(id="addressLine2" name="addressLine2" value=userInput.addressLine2)
 
                         div.form-group.midMarginBottom
                             label.form-label(for="addressTown") Town or city
-                            input(id="addressTown" name="addressTown" value=data.addressTown aria-label="Town or city" class="form-control")
+                            input(id="addressTown" name="addressTown" value=userInput.addressTown aria-label="Town or city" class=errorObject.addressTown ? "form-control form-control-error" : "form-control")
 
                         div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
                             label.form-label(for="postCode") Postcode
-                            input(id="postCode" name="postCode" value=data.postCode aria-label="Postcode" class="form-control")
+                            input(id="postCode" name="postCode" value=userInput.postCode aria-label="Postcode" class=errorObject.postCode ? "form-control form-control-error" : "form-control")
 
                         div.form-group.pure-u-sm-1.pure-u-md-3-4
                             label.form-label(for="telephone") Telephone
-                            input.form-control(id="telephone" name="telephone" value=data.telephone aria-label="Telephone" class="form-control")
+                            input.form-control(id="telephone" name="telephone" value=userInput.telephone aria-label="Telephone" class=errorObject.telephone ? "form-control form-control-error" : "form-control")
 
             div.pure-u-1.pure-u-md-1-2
                 div.pure-g
@@ -38,24 +40,24 @@ block content
                         h3.heading-medium Reporting address (optional)
                         div.form-group.midMarginBottom
                             label.form-label(for="reportingAddressLine1") Building and street
-                            input(id="reportingAddressLine1" name="reportingAddressLine1" value=data.addressLine1 autofocus aria-label="Building and street" class="form-control")
-                            input.form-control.smallMarginTop(id="reportingAddressLine2" name="reportingAddressLine2" value=data.addressLine2)
+                            input(id="reportingAddressLine1" name="reportingAddressLine1" value=userInput.reportingAddressLine1 autofocus aria-label="Building and street" class="form-control")
+                            input.form-control.smallMarginTop(id="reportingAddressLine2" name="reportingAddressLine2" value=userInput.reportingAddressLine2)
 
                         div.form-group.midMarginBottom
                             label.form-label(for="addressTown") Town or city
-                            input(id="reportingAddressTown" name="reportingAddressTown" value=data.addressTown aria-label="Town or city" class="form-control")
+                            input(id="reportingAddressTown" name="reportingAddressTown" value=userInput.reportingAddressTown aria-label="Town or city" class="form-control")
 
                         div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
                             label.form-label(for="reportingPostCode") Postcode
-                            input(id="reportingPostCode" name="reportingPostCode" value=data.postCode aria-label="Postcode" class="form-control")
+                            input(id="reportingPostCode" name="reportingPostCode" value=userInput.reportingPostCode aria-label="Postcode" class="form-control")
 
                         div.form-group.pure-u-sm-1.pure-u-md-3-4
                             label.form-label(for="reportingTelephone") Telephone
-                            input.form-control(id="reportingTelephone" name="reportingTelephone" value=data.telephone aria-label="Telephone" class="form-control")
+                            input.form-control(id="reportingTelephone" name="reportingTelephone" value=userInput.reportingTelephone aria-label="Telephone" class="form-control")
 
                         div.form-group.pure-u-sm-1.pure-u-md-3-4
                             label.form-label(for="reportingContact") Contact name
-                            input.form-control(id="reportingContact" name="reportingContact" value=data.contact aria-label="Contact name" class="form-control")
+                            input.form-control(id="reportingContact" name="reportingContact" value=userInput.reportingContact aria-label="Contact name" class="form-control")
 
         div.pure-g.borderBottom
             div.pure-u-1
@@ -78,7 +80,7 @@ block content
                                         div.pure-g.content-pull
                                             div.pure-u-1-3
                                                 div.l-box
-                                                    input(name="allFrom", id="allFrom" class="form-control", value=data.allFrom || "19:00", type="time")
+                                                    input(name="allFrom", id="allFrom" class="form-control", value=userInput.allFrom || "19:00", type="time")
                                             div.pure-u-2-3
 
                             div.pure-u-1-2
@@ -87,7 +89,7 @@ block content
                                         div.pure-g.content-pull
                                             div.pure-u-1-3
                                                 div.l-box
-                                                    input(name="allUntil", id="allUntil" class="form-control", value=data.allUntil || "07:00", type="time")
+                                                    input(name="allUntil", id="allUntil" class="form-control", value=userInput.allUntil || "07:00", type="time")
                                             div.pure-u-2-3
 
 
@@ -97,10 +99,10 @@ block content
 
                     div.form-group.inline.smallPaddingTop
                         div.multiple-choice(data-target="daySpecificInputs")
-                            input#yes(type="radio" checked=data.daySpecificInputs === "Yes" name="daySpecificInputs" value="Yes")
+                            input#yes(type="radio" checked=userInput.daySpecificInputs === "Yes" name="daySpecificInputs" value="Yes")
                             label(for="yes") Yes
                         div.multiple-choice
-                            input#no(type="radio" checked=data.daySpecificInputs !== "Yes" name="daySpecificInputs" value="No")
+                            input#no(type="radio" checked=userInput.daySpecificInputs !== "Yes" name="daySpecificInputs" value="No")
                             label(for="no") No
 
                     div#daySpecificInputs.pure-u-1.pure-u-md-4-5.js-hidden
@@ -122,7 +124,7 @@ block content
                                             div.pure-g.content-pull
                                                 div.pure-u-1-3
                                                     div.l-box
-                                                        input(name=day + "From", id=day + "From" class="form-control", value=data[day + 'From'] || "19:00", type="time")
+                                                        input(name=day + "From", id=day + "From" class="form-control", value=userInput[day + 'From'] || "19:00", type="time")
                                                 div.pure-u-2-3
 
                                 div.pure-u-1-2
@@ -131,7 +133,7 @@ block content
                                             div.pure-g.content-pull
                                                 div.pure-u-1-3
                                                     div.l-box
-                                                        input(name=day + "Until", id=day + "Until" class="form-control", value=data[day + 'Until'] || "07:00", type="time")
+                                                        input(name=day + "Until", id=day + "Until" class="form-control", value=userInput[day + 'Until'] || "07:00", type="time")
                                                 div.pure-u-2-3
 
         div.pure-g.borderBottom
@@ -140,10 +142,10 @@ block content
                 p.bold Do you want to add any additional conditions?
                     div.form-group.inline.smallPaddingTop
                         div.multiple-choice
-                            input#conditionsYes(type="radio" name="additionalConditions" value="Yes")
+                            input#conditionsYes(type="radio" name="additionalConditions" value="Yes" checked=userInput.additionalConditions === "Yes")
                             label(for="conditionsYes") Yes
                         div.multiple-choice
-                            input#conditionsNo(type="radio" name="additionalConditions" value="No")
+                            input#conditionsNo(type="radio" name="additionalConditions" value="No" checked=userInput.additionalConditions !== "Yes")
                             label(for="conditionsNo") No
 
         div.midPaddingTopBottom

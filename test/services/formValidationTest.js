@@ -872,6 +872,113 @@ describe('validation', () => {
                 });
             });
         });
+
+        describe('vary', () => {
+            const {licenceDetails} = require('../../server/routes/config/vary');
+            describe('reportingDate', () => {
+
+                const pageConfig = licenceDetails;
+
+                const options = [
+                    {
+                        formResponse: {
+                            addressLine1: 'l',
+                            addressTown: 'l',
+                            postCode: 's10 5nw',
+                            telephone: '01111111',
+                            daySpecificInputs: 'No',
+                            allFrom: '07:00',
+                            allUntil: '19:00',
+                            additionalConditions: 'No'
+                        }, outcome: {}
+                    },
+                    {
+                        formResponse: {
+                            addressLine1: '',
+                            addressTown: '',
+                            postCode: '',
+                            telephone: 'ads',
+                            daySpecificInputs: 'No',
+                            allFrom: '07:00',
+                            allUntil: '19:00',
+                            additionalConditions: 'No'
+                        },
+                        outcome: {
+                            addressLine1: 'Enter an address',
+                            addressTown: 'Enter a town or city',
+                            postCode: 'Enter a postcode',
+                            telephone: 'Enter a telephone number in the right format'
+                        }
+                    },
+                    {
+                        formResponse: {
+                            addressLine1: 'l',
+                            addressTown: 'l',
+                            postCode: 's10 5nw',
+                            telephone: '01111111',
+                            daySpecificInputs: '',
+                            allFrom: '07:00',
+                            allUntil: '19:00',
+                            additionalConditions: ''
+                        },
+                        outcome: {
+                            daySpecificInputs: 'Say if you require day specific curfew hours',
+                            additionalConditions: 'Say if you require additional conditions'
+                        }
+                    },
+                    {
+                        formResponse: {
+                            addressLine1: 'l',
+                            addressTown: 'l',
+                            postCode: 's10 5nw',
+                            telephone: '01111111',
+                            daySpecificInputs: 'Yes',
+                            allFrom: '07:00',
+                            allUntil: '19:00',
+                            additionalConditions: 'Yes'
+                        },
+                        outcome: {
+                            fridayFrom: 'Enter a valid time for Friday time from',
+                            fridayUntil: 'Enter a valid time for Friday time to',
+                            mondayFrom: 'Enter a valid time for Monday time from',
+                            mondayUntil: 'Enter a valid time for Monday time to',
+                            saturdayFrom: 'Enter a valid time for Saturday time from',
+                            saturdayUntil: 'Enter a valid time for Saturday time to',
+                            sundayFrom: 'Enter a valid time for Sunday time from',
+                            sundayUntil: 'Enter a valid time for Sunday time to',
+                            thursdayFrom: 'Enter a valid time for Thursday time from',
+                            thursdayUntil: 'Enter a valid time for Thursday time to',
+                            tuesdayFrom: 'Enter a valid time for Tuesday time from',
+                            tuesdayUntil: 'Enter a valid time for Tuesday time to',
+                            wednesdayFrom: 'Enter a valid time for Wednesday time from',
+                            wednesdayUntil: 'Enter a valid time for Wednesday time to'
+                        }
+                    },
+                    {
+                        formResponse: {
+                            addressLine1: 'l',
+                            addressTown: 'l',
+                            postCode: 's10 5nw',
+                            telephone: '01111111',
+                            daySpecificInputs: 'No',
+                            allFrom: '07:00',
+                            allUntil: '19:00',
+                            additionalConditions: 'No',
+                            reportingPostCode: 1
+                        }, outcome: {
+                            reportingPostCode: 'Enter a postcode in the right format for the reporting address'
+                        }
+                    }
+                ];
+
+                options.forEach(option => {
+                    it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+                        const {outcome, formResponse} = option;
+                        expect(service.validateForm({formResponse, pageConfig})).to.eql(outcome);
+                    });
+                });
+            });
+        });
     });
 
     describe('validateFormGroup', () => {

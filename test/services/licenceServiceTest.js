@@ -1547,6 +1547,8 @@ describe('licenceService', () => {
 
     describe('createLicenceFromFlatInput', () => {
 
+        const varyConfig = require('../../server/routes/config/vary');
+
         it('should save the curfew address, reporting address and conditions answer as a licence structure', async () => {
             const details = {
                 addressLine1: 'ad1',
@@ -1590,7 +1592,7 @@ describe('licenceService', () => {
                 }
             };
 
-            await service.createLicenceFromFlatInput(details, 'a', {a: 'b'});
+            await service.createLicenceFromFlatInput(details, 'a', {a: 'b'}, varyConfig.licenceDetails);
             expect(licenceClient.updateLicence).to.be.calledOnce();
             expect(licenceClient.updateLicence).to.be.calledWith('a', {...expectedOutput, a: 'b'});
         });
@@ -1641,7 +1643,7 @@ describe('licenceService', () => {
                 }
             };
 
-            return expect(service.createLicenceFromFlatInput(input, '1', {})).to.eventually.eql(output);
+            return expect(service.createLicenceFromFlatInput(input, '1', {}, varyConfig.licenceDetails)).to.eventually.eql(output);
         });
 
         it('should transform the curfew hours into a licence structure if daySpecificInputs === Yes', () => {
@@ -1689,7 +1691,7 @@ describe('licenceService', () => {
                 }
             };
 
-            return expect(service.createLicenceFromFlatInput(input, '1', {})).to.eventually.eql(output);
+            return expect(service.createLicenceFromFlatInput(input, '1', {}, varyConfig.licenceDetails)).to.eventually.eql(output);
         });
     });
 });
