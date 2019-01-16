@@ -45,13 +45,13 @@ module.exports = {
             },
             {
                 reportingContact: {
-                    responseType: 'optionalString',
+                    responseType: 'requiredString', validationMessage: 'Enter a reporting contact',
                     licencePosition: ['reporting', 'reportingInstructions', 'name']
                 }
             },
             {
                 reportingAddressLine1: {
-                    responseType: 'optionalString',
+                    responseType: 'requiredString', validationMessage: 'Enter a reporting address',
                     licencePosition: ['reporting', 'reportingInstructions', 'buildingAndStreet1']
                 }
             },
@@ -63,21 +63,21 @@ module.exports = {
             },
             {
                 reportingAddressTown: {
-                    responseType: 'optionalString',
+                    responseType: 'requiredString', validationMessage: 'Enter a reporting town or city',
                     licencePosition: ['reporting', 'reportingInstructions', 'townOrCity']
                 }
             },
             {
                 reportingPostCode: {
-                    responseType: 'optionalPostcode',
-                    validationMessage: 'Enter a postcode in the right format for the reporting address',
+                    responseType: 'requiredPostcode',
+                    validationMessage: 'Enter a reporting postcode in the right format',
                     licencePosition: ['reporting', 'reportingInstructions', 'postcode']
                 }
             },
             {
                 reportingTelephone: {
-                    responseType: 'optionalPhone',
-                    validationMessage: 'Enter a telephone number in the right format for the reporting address',
+                    responseType: 'requiredPhone',
+                    validationMessage: 'Enter a reporting telephone number in the right format',
                     licencePosition: ['reporting', 'reportingInstructions', 'telephone']
                 }
             },

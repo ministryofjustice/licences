@@ -884,8 +884,14 @@ describe('validation', () => {
                         formResponse: {
                             addressLine1: 'l',
                             addressTown: 'l',
-                            postCode: 's10 5nw',
+                            postCode: 's1 4JQ',
                             telephone: '01111111',
+                            reportingAddressLine1: 'g',
+                            reportingAddressLine2: 'g',
+                            reportingAddressTown: 'g',
+                            reportingContact: 'h',
+                            reportingPostCode: 'S1 4JQ',
+                            reportingTelephone: '36536535',
                             daySpecificInputs: 'No',
                             allFrom: '07:00',
                             allUntil: '19:00',
@@ -898,6 +904,12 @@ describe('validation', () => {
                             addressTown: '',
                             postCode: '',
                             telephone: 'ads',
+                            reportingAddressLine1: 'g',
+                            reportingAddressLine2: 'g',
+                            reportingAddressTown: 'g',
+                            reportingContact: 'h',
+                            reportingPostCode: 'S1 4JQ',
+                            reportingTelephone: '36536535',
                             daySpecificInputs: 'No',
                             allFrom: '07:00',
                             allUntil: '19:00',
@@ -914,8 +926,34 @@ describe('validation', () => {
                         formResponse: {
                             addressLine1: 'l',
                             addressTown: 'l',
+                            postCode: 's1 4JQ',
+                            telephone: '01111111',
+                            daySpecificInputs: 'No',
+                            allFrom: '07:00',
+                            allUntil: '19:00',
+                            additionalConditions: 'No'
+                        },
+                        outcome: {
+                            reportingAddressLine1: 'Enter a reporting address',
+                            reportingAddressTown: 'Enter a reporting town or city',
+                            reportingContact: 'Enter a reporting contact',
+                            reportingPostCode: 'Enter a reporting postcode in the right format',
+                            reportingTelephone: 'Enter a reporting telephone number in the right format'
+                        }
+                    },
+
+                    {
+                        formResponse: {
+                            addressLine1: 'l',
+                            addressTown: 'l',
                             postCode: 's10 5nw',
                             telephone: '01111111',
+                            reportingAddressLine1: 'g',
+                            reportingAddressLine2: 'g',
+                            reportingAddressTown: 'g',
+                            reportingContact: 'h',
+                            reportingPostCode: 'S1 4JQ',
+                            reportingTelephone: '36536535',
                             daySpecificInputs: '',
                             allFrom: '07:00',
                             allUntil: '19:00',
@@ -935,7 +973,13 @@ describe('validation', () => {
                             daySpecificInputs: 'Yes',
                             allFrom: '07:00',
                             allUntil: '19:00',
-                            additionalConditions: 'Yes'
+                            additionalConditions: 'Yes',
+                            reportingAddressLine1: 'g',
+                            reportingAddressLine2: 'g',
+                            reportingAddressTown: 'g',
+                            reportingContact: 'h',
+                            reportingPostCode: 'S1 4JQ',
+                            reportingTelephone: '36536535'
                         },
                         outcome: {
                             fridayFrom: 'Enter a valid time for Friday time from',
@@ -952,21 +996,6 @@ describe('validation', () => {
                             tuesdayUntil: 'Enter a valid time for Tuesday time to',
                             wednesdayFrom: 'Enter a valid time for Wednesday time from',
                             wednesdayUntil: 'Enter a valid time for Wednesday time to'
-                        }
-                    },
-                    {
-                        formResponse: {
-                            addressLine1: 'l',
-                            addressTown: 'l',
-                            postCode: 's10 5nw',
-                            telephone: '01111111',
-                            daySpecificInputs: 'No',
-                            allFrom: '07:00',
-                            allUntil: '19:00',
-                            additionalConditions: 'No',
-                            reportingPostCode: 1
-                        }, outcome: {
-                            reportingPostCode: 'Enter a postcode in the right format for the reporting address'
                         }
                     }
                 ];
