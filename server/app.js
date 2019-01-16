@@ -326,18 +326,18 @@ module.exports = function createApp({
     app.use('/hdc/sent/', secureRoute(sentRouter({licenceService, prisonerService})));
     app.use('/user/', secureRoute(userRouter({userService})));
 
-    app.use('/hdc/', secureRoute(addressRouter({licenceService})));
-    app.use('/hdc/', secureRoute(approvalRouter({licenceService, prisonerService})));
-    app.use('/hdc/', secureRoute(bassReferralRouter({licenceService})));
-    app.use('/hdc/', secureRoute(conditionsRouter({licenceService, conditionsService})));
-    app.use('/hdc/', secureRoute(curfewRouter({licenceService})));
-    app.use('/hdc/', secureRoute(eligibilityRouter({licenceService})));
-    app.use('/hdc/', secureRoute(finalChecksRouter({licenceService})));
-    app.use('/hdc/', secureRoute(reviewRouter({licenceService, conditionsService, prisonerService})));
-    app.use('/hdc/', secureRoute(reportingRouter({licenceService})));
-    app.use('/hdc/', secureRoute(riskRouter({licenceService})));
-    app.use('/hdc/', secureRoute(victimRouter({licenceService})));
-    app.use('/hdc/', secureRoute(varyRouter({licenceService, prisonerService})));
+    app.use('/hdc/proposedAddress/', secureRoute(addressRouter({licenceService})));
+    app.use('/hdc/approval/', secureRoute(approvalRouter({licenceService, prisonerService})));
+    app.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({licenceService})));
+    app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({licenceService, conditionsService})));
+    app.use('/hdc/curfew/', secureRoute(curfewRouter({licenceService})));
+    app.use('/hdc/eligibility/', secureRoute(eligibilityRouter({licenceService})));
+    app.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({licenceService})));
+    app.use('/hdc/review/', secureRoute(reviewRouter({licenceService, conditionsService, prisonerService})));
+    app.use('/hdc/reporting/', secureRoute(reportingRouter({licenceService})));
+    app.use('/hdc/risk/', secureRoute(riskRouter({licenceService})));
+    app.use('/hdc/victim/', secureRoute(victimRouter({licenceService})));
+    app.use('/hdc/vary/', secureRoute(varyRouter({licenceService, prisonerService})));
 
     // hide functionality until authorisation strategy is established
     if (!production) {

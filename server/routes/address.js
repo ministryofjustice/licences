@@ -7,8 +7,8 @@ module.exports = ({licenceService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'proposedAddress'});
 
-    router.get('/proposedAddress/curfewAddressChoice/:action/:bookingId', asyncMiddleware(getChoice));
-    router.get('/proposedAddress/curfewAddressChoice/:bookingId', asyncMiddleware(getChoice));
+    router.get('/curfewAddressChoice/:action/:bookingId', asyncMiddleware(getChoice));
+    router.get('/curfewAddressChoice/:bookingId', asyncMiddleware(getChoice));
 
     function getChoice(req, res) {
 
@@ -20,7 +20,7 @@ module.exports = ({licenceService}) => (router, audited) => {
         return res.render('proposedAddress/curfewAddressChoice', viewData);
     }
 
-    router.post('/proposedAddress/curfewAddressChoice/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/curfewAddressChoice/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {bookingId} = req.params;
         const {decision} = req.body;
         const {licence} = res.locals;
@@ -40,7 +40,7 @@ module.exports = ({licenceService}) => (router, audited) => {
         return res.redirect(`${nextPath}${bookingId}`);
     }));
 
-    router.post('/proposedAddress/rejected/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/rejected/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {enterAlternative, bookingId} = req.body;
         const {licence} = res.locals.licence;
 
@@ -52,10 +52,10 @@ module.exports = ({licenceService}) => (router, audited) => {
         return res.redirect(`${nextPath}${bookingId}`);
     }));
 
-    router.get('/proposedAddress/:formName/:action/:bookingId', asyncMiddleware(standard.get));
-    router.get('/proposedAddress/:formName/:bookingId', asyncMiddleware(standard.get));
-    router.post('/proposedAddress/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
-    router.post('/proposedAddress/:formName/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:action/:bookingId', asyncMiddleware(standard.get));
+    router.get('/:formName/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
     return router;
 };

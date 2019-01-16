@@ -15,7 +15,6 @@ function authenticationMiddleware(signInService) {
                 res.locals.token = token;
                 return next();
             }
-
             const systemToken = await signInService.getClientCredentialsTokens(username);
             res.locals.token = systemToken.token;
             return next();

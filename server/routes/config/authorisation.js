@@ -8,7 +8,7 @@ module.exports = {
         authorised: [{role: 'CA'}]
     },
     '/hdc/proposedAddress/curfewAddressChoice/': {
-        authorised: [{role: 'CA'}]
+        authorised: [{role: 'CA'}, {role: 'RO', stage: ['VARY']}]
     },
     'hdc/bassReferral/bassRequest': {
         authorised: [{role: 'CA'}]
@@ -51,7 +51,7 @@ module.exports = {
         authorised: [{role: 'CA'}]
     },
     '/hdc/curfew/firstNight/': {
-        authorised: [{role: 'CA'}]
+        authorised: [{role: 'CA'}, {role: 'RO', stage: ['VARY']}]
     },
     '/hdc/curfew/': {
         authorised: [{role: 'RO'}, {role: 'CA', stage: ['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL']}]
@@ -78,7 +78,7 @@ module.exports = {
     },
 
     '/hdc/pdf/': {
-        authorised: [{role: 'CA'}]
+        authorised: [{role: 'CA'}, {role: 'RO', stage: ['VARY']}]
     },
 
     '/hdc/send/addressReview/': {

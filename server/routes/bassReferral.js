@@ -8,8 +8,8 @@ module.exports = ({licenceService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'bassReferral'});
 
-    router.post('/bassReferral/rejected/:bookingId', audited, asyncMiddleware(reject('area', 'rejected')));
-    router.post('/bassReferral/unsuitable/:bookingId', audited, asyncMiddleware(reject('offender', 'unsuitable')));
+    router.post('/rejected/:bookingId', audited, asyncMiddleware(reject('area', 'rejected')));
+    router.post('/unsuitable/:bookingId', audited, asyncMiddleware(reject('offender', 'unsuitable')));
 
     function reject(reason, type) {
         return async (req, res) => {
@@ -24,7 +24,7 @@ module.exports = ({licenceService}) => (router, audited) => {
         };
     }
 
-    router.get('/bassReferral/bassOffer/:bookingId', asyncMiddleware(async (req, res) => {
+    router.get('/bassOffer/:bookingId', asyncMiddleware(async (req, res) => {
 
         const formName = 'bassOffer';
         const sectionName = 'bassReferral';
@@ -45,7 +45,7 @@ module.exports = ({licenceService}) => (router, audited) => {
         res.render('bassReferral/bassOffer', viewData);
     }));
 
-    router.post('/bassReferral/bassOffer/withdraw/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/bassOffer/withdraw/:bookingId', audited, asyncMiddleware(async (req, res) => {
 
         const {bookingId} = req.params;
         const {withdrawalType} = req.body;
@@ -57,7 +57,7 @@ module.exports = ({licenceService}) => (router, audited) => {
         res.redirect(`${nextPath}${bookingId}`);
     }));
 
-    router.post('/bassReferral/bassOffer/reinstate/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/bassOffer/reinstate/:bookingId', audited, asyncMiddleware(async (req, res) => {
 
         const {bookingId} = req.params;
         const {licence} = res.locals.licence;
@@ -68,11 +68,11 @@ module.exports = ({licenceService}) => (router, audited) => {
         res.redirect(`${nextPath}${bookingId}`);
     }));
 
-    router.get('/bassReferral/:formName/:action/:bookingId', asyncMiddleware(standard.get));
-    router.post('/bassReferral/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:action/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
 
-    router.get('/bassReferral/:formName/:bookingId', asyncMiddleware(standard.get));
-    router.post('/bassReferral/:formName/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
     function getBassRejections(licence) {
         return recordList({licence, path: ['licence', 'bassRejections'], allowEmpty: true});

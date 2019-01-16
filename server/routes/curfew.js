@@ -8,8 +8,8 @@ module.exports = ({licenceService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'curfew'});
 
-    router.get('/curfew/curfewAddressReview/:bookingId', addressReviewGets('curfewAddressReview'));
-    router.get('/curfew/curfewAddressReview/:action/:bookingId', addressReviewGets('curfewAddressReview'));
+    router.get('/curfewAddressReview/:bookingId', addressReviewGets('curfewAddressReview'));
+    router.get('/curfewAddressReview/:action/:bookingId', addressReviewGets('curfewAddressReview'));
 
     function addressReviewGets(formName) {
         return (req, res) => {
@@ -23,9 +23,9 @@ module.exports = ({licenceService}) => (router, audited) => {
         };
     }
 
-    router.post('/curfew/curfewAddressReview/:bookingId', audited,
+    router.post('/curfewAddressReview/:bookingId', audited,
         asyncMiddleware(addressReviewPosts('curfewAddressReview')));
-    router.post('/curfew/curfewAddressReview/:action/:bookingId', audited,
+    router.post('/curfewAddressReview/:action/:bookingId', audited,
         asyncMiddleware(addressReviewPosts('curfewAddressReview')));
 
     function addressReviewPosts(formName) {
@@ -40,8 +40,8 @@ module.exports = ({licenceService}) => (router, audited) => {
         };
     }
 
-    router.post('/curfew/withdrawAddress/:bookingId', audited, asyncMiddleware(addressWithdrawalPosts('withdrawAddress')));
-    router.post('/curfew/withdrawConsent/:bookingId', audited, asyncMiddleware(addressWithdrawalPosts('withdrawConsent')));
+    router.post('/withdrawAddress/:bookingId', audited, asyncMiddleware(addressWithdrawalPosts('withdrawAddress')));
+    router.post('/withdrawConsent/:bookingId', audited, asyncMiddleware(addressWithdrawalPosts('withdrawConsent')));
 
     function addressWithdrawalPosts(formName) {
         return async (req, res) => {
@@ -63,7 +63,7 @@ module.exports = ({licenceService}) => (router, audited) => {
         };
     }
 
-    router.post('/curfew/reinstateAddress/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/reinstateAddress/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {action, bookingId} = req.params;
         const {licence, stage} = res.locals.licence;
 
@@ -81,7 +81,7 @@ module.exports = ({licenceService}) => (router, audited) => {
         res.redirect(`${nextPath}${bookingId}`);
     }));
 
-    router.post('/curfew/curfewHours/:bookingId', audited, asyncMiddleware(async (req, res) => {
+    router.post('/curfewHours/:bookingId', audited, asyncMiddleware(async (req, res) => {
         const {bookingId} = req.params;
         const nextPath = getPathFor({data: req.body, config: formConfig.curfewHours});
 
@@ -98,11 +98,11 @@ module.exports = ({licenceService}) => (router, audited) => {
         res.redirect(`${nextPath}${bookingId}`);
     }));
 
-    router.get('/curfew/:formName/:bookingId', asyncMiddleware(standard.get));
-    router.post('/curfew/:formName/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
-    router.get('/curfew/:formName/:action/:bookingId', asyncMiddleware(standard.get));
-    router.post('/curfew/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:action/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
 
     return router;
 };

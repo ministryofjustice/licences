@@ -165,10 +165,8 @@ describe('/hdc/licenceConditions', () => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'id',
                         {
-                            action: ['delete', 'ABC'],
+                            path: '/hdc/licenceConditions/additionalConditions/123/delete/ABC',
                             bookingId: '123',
-                            sectionName: 'licenceConditions',
-                            formName: 'additionalConditions',
                             userInput: {
                                 conditionId: 'ABC'
                             }
@@ -208,5 +206,5 @@ function createApp({licenceService, conditionsService}, user) {
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService});
     const route = baseRouter(createRoute({licenceService, conditionsService}));
 
-    return appSetup(route, user, '/hdc');
+    return appSetup(route, user, '/hdc/licenceConditions/');
 }

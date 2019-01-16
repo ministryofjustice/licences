@@ -56,7 +56,13 @@ const tasksData = {
         {task: 'roSubmitTask', filters: []}
     ],
     vary: [
-        {task: 'varyLicenceTask', filters: []}
+        {task: 'varyLicenceTask', filters: ['licenceUnstarted']},
+        {task: 'variationPermissionTask', filters: ['!licenceUnstarted']},
+        {task: 'proposedAddressTask', filters: ['!licenceUnstarted']},
+        {task: 'additionalConditionsTask', filters: ['!licenceUnstarted']},
+        {task: 'curfewHoursTask', filters: ['!licenceUnstarted']},
+        {task: 'reportingInstructionsTask', filters: ['!licenceUnstarted']},
+        {task: 'createLicenceTask', filters: ['!licenceUnstarted']}
     ]
 };
 
@@ -98,7 +104,8 @@ module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
         addressOrBassOffered: curfewAddressApproved || bassOfferMade,
         addressRejectedInReviewTask: addressReviewFailed,
         addressRejectedInRiskTask: addressUnsuitable,
-        addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable
+        addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
+        licenceUnstarted: stage === 'UNSTARTED'
     }));
 
     return tasksData[taskList]
