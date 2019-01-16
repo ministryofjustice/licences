@@ -18,7 +18,7 @@ describe('/hdc/curfew', () => {
 
     describe('curfew routes', () => {
         const licenceService = createLicenceServiceStub();
-        licenceService.getLicence = sinon.stub().resolves({
+        licenceService.getLicence.resolves({
             licence: {
                 proposedAddress: {
                     curfewAddress: {}
@@ -79,7 +79,7 @@ describe('/hdc/curfew', () => {
         const routes = [
             {
                 url: '/hdc/curfew/curfewHours/1',
-                body: {bookingId: 1},
+                body: {curfewHours: 'done'},
                 section: 'curfewHours',
                 nextPath: '/hdc/taskList/1'
             },
@@ -124,6 +124,7 @@ describe('/hdc/curfew', () => {
             it(`renders the correct path '${route.nextPath}' page`, () => {
                 const licenceService = createLicenceServiceStub();
                 licenceService.update.resolves({curfew: {firstNight: {}}});
+                licenceService.addCurfewHoursInput.returns({curfewHours: 'done'});
 
                 const app = createApp({licenceServiceStub: licenceService}, route.user || 'roUser');
                 return request(app)
@@ -359,98 +360,6 @@ describe('/hdc/curfew', () => {
                 .send({withdrawAddress: 'No', withdrawConsent: 'No'})
                 .expect(403);
 
-        });
-    });
-
-    describe('curfew hours posts', () => {
-
-        const body = {
-            daySpecificInputs: 'No',
-            allFrom: '15:00',
-            allUntil: '06:00',
-            mondayFrom: '17:00',
-            mondayUntil: '09:00',
-            tuesdayFrom: '17:00',
-            tuesdayUntil: '09:00',
-            wednesdayFrom: '17:00',
-            wednesdayUntil: '09:00',
-            thursdayFrom: '17:00',
-            thursdayUntil: '09:00',
-            fridayFrom: '17:00',
-            fridayUntil: '09:00',
-            saturdayFrom: '17:00',
-            saturdayUntil: '09:00',
-            sundayFrom: '17:00',
-            sundayUntil: '09:00'
-        };
-
-        context('when daySpecificInputs input is No', () => {
-            it('should use the times from allFrom and allUntil for each day', () => {
-
-                const expectedUserInput = {
-                    daySpecificInputs: 'No',
-                    allFrom: '15:00',
-                    allUntil: '06:00',
-                    mondayFrom: '15:00',
-                    mondayUntil: '06:00',
-                    tuesdayFrom: '15:00',
-                    tuesdayUntil: '06:00',
-                    wednesdayFrom: '15:00',
-                    wednesdayUntil: '06:00',
-                    thursdayFrom: '15:00',
-                    thursdayUntil: '06:00',
-                    fridayFrom: '15:00',
-                    fridayUntil: '06:00',
-                    saturdayFrom: '15:00',
-                    saturdayUntil: '06:00',
-                    sundayFrom: '15:00',
-                    sundayUntil: '06:00'
-                };
-
-                const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
-                return request(app)
-                    .post('/hdc/curfew/curfewHours/1')
-                    .send(body)
-                    .expect(302)
-                    .expect(res => {
-                        expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
-                            originalLicence: {licence: {key: 'value'}},
-                            config: formConfig.curfewHours,
-                            userInput: expectedUserInput,
-                            licenceSection: 'curfew',
-                            formName: 'curfewHours'
-                        });
-                    });
-
-            });
-        });
-
-        context('when daySpecificInputs input is Yes', () => {
-
-            const daySpecificBody = {...body, daySpecificInputs: 'Yes'};
-
-            it('should use the specific times provided for each day', () => {
-
-                const licenceService = createLicenceServiceStub();
-                const app = createApp({licenceServiceStub: licenceService}, 'roUser');
-                return request(app)
-                    .post('/hdc/curfew/curfewHours/1')
-                    .send(daySpecificBody)
-                    .expect(302)
-                    .expect(res => {
-                        expect(licenceService.update).to.be.calledWith({
-                            bookingId: '1',
-                            originalLicence: {licence: {key: 'value'}},
-                            config: formConfig.curfewHours,
-                            userInput: daySpecificBody,
-                            licenceSection: 'curfew',
-                            formName: 'curfewHours'
-                        });
-                    });
-
-            });
         });
     });
 });

@@ -36,9 +36,11 @@ const fieldOptions = {
     optionalYesNo: joi.valid(['Yes', 'No']).optional(),
     selection: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
     requiredTime: joi.date().format('HH:mm').required(),
+    optionalTime: joi.date().format('HH:mm').optional(),
     requiredDate: joi.date().format('DD/MM/YYYY').min(today).required(),
     optionalList: joi.array().optional(),
     requiredPostcode: joi.postcode().required(),
+    optionalPostcode: joi.postcode().allow('').optional(),
     requiredPhone: joi.string().regex(/^[0-9+\s]+$/).required(),
     optionalPhone: joi.string().regex(/^[0-9+\s]+$/).allow('').optional(),
     optionalAge: joi.number().min(0).max(110).allow('').optional(),
@@ -65,6 +67,11 @@ const fieldOptions = {
     requiredPostcodeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
         is: requiredAnswer,
         then: joi.postcode().required(),
+        otherwise: joi.any().optional()
+    }),
+    requiredTimeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') => joi.when(requiredItem, {
+        is: requiredAnswer,
+        then: joi.date().format('HH:mm').required(),
         otherwise: joi.any().optional()
     })
 };

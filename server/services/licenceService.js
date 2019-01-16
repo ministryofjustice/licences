@@ -20,7 +20,8 @@ const {
     pickBy,
     replacePath,
     mergeWithRight,
-    pick
+    pick,
+    getFieldName
 } = require('../utils/functionalHelpers');
 
 module.exports = function createLicenceService(licenceClient) {
@@ -447,6 +448,41 @@ module.exports = function createLicenceService(licenceClient) {
         }});
     }
 
+    async function createLicenceFromFlatInput(input, bookingId, existingLicence, pageConfig) {
+        const inputWithCurfewHours = addCurfewHoursInput(input);
+
+        const newLicence = pageConfig.fields.reduce((licence, field) => {
+            const fieldName = getFieldName(field);
+            const inputPosition = field[fieldName].licencePosition;
+
+            if (!inputWithCurfewHours[fieldName]) {
+                return licence;
+            }
+            return replacePath(inputPosition, inputWithCurfewHours[fieldName], licence);
+        }, existingLicence);
+
+        await licenceClient.updateLicence(bookingId, newLicence);
+        return newLicence;
+    }
+
+    function addCurfewHoursInput(input) {
+        if (input.daySpecificInputs === 'Yes') {
+            return input;
+        }
+
+        return Object.keys(input).reduce((input, fieldItem) => {
+            if (fieldItem.includes('From')) {
+                return {...input, [fieldItem]: input.allFrom};
+            }
+
+            if (fieldItem.includes('Until')) {
+                return {...input, [fieldItem]: input.allUntil};
+            }
+
+            return input;
+        }, input);
+    }
+
     return {
         reset,
         getLicence,
@@ -465,6 +501,8 @@ module.exports = function createLicenceService(licenceClient) {
         removeDecision,
         rejectBass,
         withdrawBass,
-        reinstateBass
+        reinstateBass,
+        addCurfewHoursInput,
+        createLicenceFromFlatInput
     };
 };

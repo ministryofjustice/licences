@@ -1544,4 +1544,154 @@ describe('licenceService', () => {
                 bespokeConditions: {offenderIsMainOccupier: undefined}});
         });
     });
+
+    describe('createLicenceFromFlatInput', () => {
+
+        const varyConfig = require('../../server/routes/config/vary');
+
+        it('should save the curfew address, reporting address and conditions answer as a licence structure', async () => {
+            const details = {
+                addressLine1: 'ad1',
+                addressLine2: 'ad2',
+                addressTown: 'town',
+                postCode: 'pc',
+                telephone: 'phone',
+                reportingAddressLine1: 'rad1',
+                reportingAddressLine2: 'rad2',
+                reportingAddressTown: 'rtown',
+                reportingPostCode: 'rpc',
+                reportingTelephone: 'rphone',
+                reportingContact: 'rcont',
+                additionalConditions: 'y'
+            };
+
+            const expectedOutput = {
+                proposedAddress: {
+                    curfewAddress: {
+                        addressLine1: 'ad1',
+                        addressLine2: 'ad2',
+                        addressTown: 'town',
+                        postCode: 'pc',
+                        telephone: 'phone'
+                    }
+                },
+                reporting: {
+                    reportingInstructions: {
+                        name: 'rcont',
+                        postcode: 'rpc',
+                        telephone: 'rphone',
+                        townOrCity: 'rtown',
+                        buildingAndStreet1: 'rad1',
+                        buildingAndStreet2: 'rad2'
+                    }
+                },
+                licenceConditions: {
+                    standard: {
+                        additionalConditionsRequired: 'y'
+                    }
+                }
+            };
+
+            await service.createLicenceFromFlatInput(details, 'a', {a: 'b'}, varyConfig.licenceDetails);
+            expect(licenceClient.updateLicence).to.be.calledOnce();
+            expect(licenceClient.updateLicence).to.be.calledWith('a', {...expectedOutput, a: 'b'});
+        });
+
+        it('should transform the curfew hours into a licence structure if daySpecificInputs === No', () => {
+
+            const input = {
+                allFrom: '19:00',
+                allUntil: '07:00',
+                mondayFrom: 'gg',
+                mondayUntil: 'h',
+                tuesdayFrom: 'w',
+                tuesdayUntil: 'jyr',
+                wednesdayFrom: 'jy',
+                wednesdayUntil: 'jsjy',
+                thursdayFrom: 's',
+                thursdayUntil: 'jryj',
+                fridayFrom: 'h',
+                fridayUntil: 'jrs',
+                saturdayFrom: 'r',
+                saturdayUntil: 'jk',
+                sundayFrom: 'kt',
+                sundayUntil: 'jy',
+                daySpecificInputs: 'No'
+            };
+
+            const output = {
+                curfew: {
+                    curfewHours: {
+                        allFrom: '19:00',
+                        allUntil: '07:00',
+                        fridayFrom: '19:00',
+                        mondayFrom: '19:00',
+                        sundayFrom: '19:00',
+                        fridayUntil: '07:00',
+                        mondayUntil: '07:00',
+                        sundayUntil: '07:00',
+                        tuesdayFrom: '19:00',
+                        saturdayFrom: '19:00',
+                        thursdayFrom: '19:00',
+                        tuesdayUntil: '07:00',
+                        saturdayUntil: '07:00',
+                        thursdayUntil: '07:00',
+                        wednesdayFrom: '19:00',
+                        wednesdayUntil: '07:00',
+                        daySpecificInputs: 'No'
+                    }
+                }
+            };
+
+            return expect(service.createLicenceFromFlatInput(input, '1', {}, varyConfig.licenceDetails)).to.eventually.eql(output);
+        });
+
+        it('should transform the curfew hours into a licence structure if daySpecificInputs === Yes', () => {
+            const input = {
+                allFrom: '19:00',
+                allUntil: '07:00',
+                mondayFrom: 'gg',
+                mondayUntil: 'h',
+                tuesdayFrom: 'w',
+                tuesdayUntil: 'jyr',
+                wednesdayFrom: 'jy',
+                wednesdayUntil: 'jsjy',
+                thursdayFrom: 's',
+                thursdayUntil: 'jryj',
+                fridayFrom: 'h',
+                fridayUntil: 'jrs',
+                saturdayFrom: 'r',
+                saturdayUntil: 'jk',
+                sundayFrom: 'kt',
+                sundayUntil: 'jy',
+                daySpecificInputs: 'Yes'
+            };
+
+            const output = {
+                curfew: {
+                    curfewHours: {
+                        allFrom: '19:00',
+                        allUntil: '07:00',
+                        mondayFrom: 'gg',
+                        mondayUntil: 'h',
+                        tuesdayFrom: 'w',
+                        tuesdayUntil: 'jyr',
+                        wednesdayFrom: 'jy',
+                        wednesdayUntil: 'jsjy',
+                        thursdayFrom: 's',
+                        thursdayUntil: 'jryj',
+                        fridayFrom: 'h',
+                        fridayUntil: 'jrs',
+                        saturdayFrom: 'r',
+                        saturdayUntil: 'jk',
+                        sundayFrom: 'kt',
+                        sundayUntil: 'jy',
+                        daySpecificInputs: 'Yes'
+                    }
+                }
+            };
+
+            return expect(service.createLicenceFromFlatInput(input, '1', {}, varyConfig.licenceDetails)).to.eventually.eql(output);
+        });
+    });
 });

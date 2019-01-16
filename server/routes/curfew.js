@@ -85,8 +85,7 @@ module.exports = ({licenceService}) => (router, audited) => {
         const {bookingId} = req.params;
         const nextPath = getPathFor({data: req.body, config: formConfig.curfewHours});
 
-        const input = getCurfewHoursInput(req.body);
-
+        const input = licenceService.addCurfewHoursInput(req.body);
         await licenceService.update({
             bookingId,
             originalLicence: res.locals.licence,
@@ -105,27 +104,6 @@ module.exports = ({licenceService}) => (router, audited) => {
     router.get('/curfew/:formName/:action/:bookingId', asyncMiddleware(standard.get));
     router.post('/curfew/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
 
-    function getCurfewHoursInput(formBody) {
-        if (formBody.daySpecificInputs === 'Yes') {
-            return formBody;
-        }
-
-        return copyAllInputsToDays(formBody);
-    }
-
-    function copyAllInputsToDays(formBody) {
-        return Object.keys(formBody).reduce((input, fieldItem) => {
-            if (fieldItem.includes('From')) {
-                return {...input, [fieldItem]: formBody.allFrom};
-            }
-
-            if (fieldItem.includes('Until')) {
-                return {...input, [fieldItem]: formBody.allUntil};
-            }
-
-            return input;
-        }, formBody);
-    }
     return router;
 };
 
