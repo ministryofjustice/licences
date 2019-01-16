@@ -304,7 +304,29 @@ module.exports = function createApp({
         app.use('/login', signInRouter(passport));
     }
 
-    app.get('/login/callback', passport.authenticate('oauth2', {successReturnToOrRedirect: '/', failureRedirect: '/autherror'}));
+    app.get('/login/callback', (req, res, next) => {
+        passport.authenticate('oauth2', (err, user, info) => {
+            if (err) {
+                return res.redirect('/autherror');
+            }
+            if (!user) {
+                if (info && info.message === 'Unable to verify authorization request state.') {
+                    // failure to due authorisation state not being there on return, so retry
+                    logger.info('Retrying auth callback as no state found');
+                    return res.redirect('/');
+                }
+                logger.info(`Auth failure due to ${JSON.stringify(info)}`);
+                return res.redirect('/autherror');
+            }
+            req.logIn(user, err2 => {
+                if (err2) {
+                    return next(err2);
+                }
+                return res.redirect('/');
+            });
+            return null;
+        })(req, res, next);
+    });
 
     const secureRoute = standardRouter({licenceService, prisonerService, audit, signInService});
 
