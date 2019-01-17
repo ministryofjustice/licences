@@ -18,12 +18,16 @@ describe('/hdc/vary', () => {
 
     describe('vary routes', () => {
         const licenceService = createLicenceServiceStub();
-        licenceService.getLicence = sinon.stub().resolves({});
+        licenceService.getLicence = sinon.stub().resolves({licence:
+                {reporting: {reportingInstructions: {buildingAndStreet1: 'this'}}}
+        });
         const app = createApp({licenceServiceStub: licenceService}, 'roUser');
 
         const routes = [
             {url: '/hdc/vary/evidence/1', content: 'Provide evidence'},
-            {url: '/hdc/vary/licenceDetails/1', content: 'Enter licence details'}
+            {url: '/hdc/vary/licenceDetails/1', content: 'Enter licence details'},
+            {url: '/hdc/vary/address/1', content: 'Curfew address'},
+            {url: '/hdc/vary/reportingAddress/1', content: 'name="reportingAddressLine1" value="this"'}
         ];
 
         testFormPageGets(app, routes, licenceService);
@@ -67,7 +71,7 @@ describe('/hdc/vary', () => {
                 .expect(res => {
                     expect(licenceService.createLicenceFromFlatInput).to.be.calledOnce();
                     expect(licenceService.createLicenceFromFlatInput).to.be.calledWith(
-                        {bookingId: 1, additionalConditions: 'Yes'}, 1, {key: 'value'});
+                        {bookingId: 1, additionalConditions: 'Yes'}, 1, {key: 'value'}, formConfig.licenceDetails);
 
                     expect(res.header.location).to.equal('/hdc/licenceConditions/additionalConditions/1');
                 });
@@ -83,10 +87,96 @@ describe('/hdc/vary', () => {
                 .expect(res => {
                     expect(licenceService.createLicenceFromFlatInput).to.be.calledOnce();
                     expect(licenceService.createLicenceFromFlatInput).to.be.calledWith(
-                        {bookingId: 1, additionalConditions: 'No'}, 1, {key: 'value'});
+                        {bookingId: 1, additionalConditions: 'No'}, 1, {key: 'value'}, formConfig.licenceDetails);
 
                     expect(res.header.location).to.equal('/hdc/taskList/1');
                 });
+        });
+
+        it('calls validate and passes in appropriate form items', () => {
+            const licenceService = createLicenceServiceStub();
+            const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+            return request(app)
+                .post('/hdc/vary/licenceDetails/1')
+                .send({bookingId: 1, additionalConditions: 'No'})
+                .expect(302)
+                .expect(res => {
+                    expect(licenceService.validateForm).to.be.calledOnce();
+                    expect(licenceService.validateForm).to.be.calledWith({
+                        formResponse: {additionalConditions: 'No'},
+                        pageConfig: formConfig.licenceDetails
+                    });
+                });
+        });
+
+
+        it('redirects to get if errors found', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.validateForm.returns({error: 'this'});
+            const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+            return request(app)
+                .post('/hdc/vary/licenceDetails/1')
+                .send({bookingId: 1, addressLine1: 'this'})
+                .expect(302)
+                .expect('Location', '/hdc/vary/licenceDetails/1');
+        });
+    });
+
+    describe('POST /hdc/vary/address/', () => {
+        it('submits and redirects to tasklist', () => {
+            const licenceService = createLicenceServiceStub();
+            const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+            return request(app)
+                .post('/hdc/vary/address/1')
+                .send({bookingId: 1, addressLine1: 'this'})
+                .expect(302)
+                .expect(res => {
+                    expect(licenceService.createLicenceFromFlatInput).to.be.calledOnce();
+                    expect(licenceService.createLicenceFromFlatInput).to.be.calledWith(
+                        {bookingId: 1, addressLine1: 'this'}, 1, {key: 'value'}, formConfig.licenceDetails);
+
+                    expect(res.header.location).to.equal('/hdc/taskList/1');
+                });
+        });
+
+        it('redirects to get if errors found', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.validateForm.returns({error: 'this'});
+            const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+            return request(app)
+                .post('/hdc/vary/address/1')
+                .send({bookingId: 1, addressLine1: 'this'})
+                .expect(302)
+                .expect('Location', '/hdc/vary/address/1');
+        });
+    });
+
+    describe('POST /hdc/vary/reportingAddress/', () => {
+        it('submits and redirects to tasklist', () => {
+            const licenceService = createLicenceServiceStub();
+            const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+            return request(app)
+                .post('/hdc/vary/reportingAddress/1')
+                .send({bookingId: 1, addressLine1: 'this'})
+                .expect(302)
+                .expect(res => {
+                    expect(licenceService.createLicenceFromFlatInput).to.be.calledOnce();
+                    expect(licenceService.createLicenceFromFlatInput).to.be.calledWith(
+                        {bookingId: 1, addressLine1: 'this'}, 1, {key: 'value'}, formConfig.licenceDetails);
+
+                    expect(res.header.location).to.equal('/hdc/taskList/1');
+                });
+        });
+
+        it('redirects to get if errors found', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.validateForm.returns({error: 'this'});
+            const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+            return request(app)
+                .post('/hdc/vary/reportingAddress/1')
+                .send({bookingId: 1, addressLine1: 'this'})
+                .expect(302)
+                .expect('Location', '/hdc/vary/reportingAddress/1');
         });
     });
 });

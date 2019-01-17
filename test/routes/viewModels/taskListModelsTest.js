@@ -508,12 +508,12 @@ describe('TaskList models', () => {
                 null
                 )
             ).to.eql([
-                {task: 'variationPermissionTask'},
-                {task: 'proposedAddressTask'},
-                {task: 'additionalConditionsTask'},
-                {task: 'curfewHoursTask'},
-                {task: 'reportingInstructionsTask'},
-                {task: 'createLicenceTask'}
+                {title: 'Permission for variation', link: '/hdc/vary/evidence/'},
+                {title: 'Curfew address', link: '/hdc/vary/address/'},
+                {title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
+                {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
+                {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
+                {title: 'Create licence', continueBtn: '/hdc/pdf/select/'}
             ]);
         });
     });
