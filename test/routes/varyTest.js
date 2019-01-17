@@ -18,7 +18,7 @@ describe('/hdc/vary', () => {
 
     describe('vary routes', () => {
         const licenceService = createLicenceServiceStub();
-        licenceService.getLicence = sinon.stub().resolves({licence:
+        licenceService.getLicence.resolves({licence:
                 {reporting: {reportingInstructions: {buildingAndStreet1: 'this'}}}
         });
         const app = createApp({licenceServiceStub: licenceService}, 'roUser');
@@ -33,6 +33,41 @@ describe('/hdc/vary', () => {
         testFormPageGets(app, routes, licenceService);
     });
 
+    describe('GET /hdc/vary/licenceDetails', () => {
+        it('renders page if licence doesnt exist', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.getLicence.resolves({
+                licence: {
+                    vary: {evidence: {evidence: 'qfe'}},
+                    variedFromLicenceNotInSystem: true
+                },
+                stage: 'VARY'
+            });
+
+            const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+            return request(app)
+                .get('/hdc/vary/licenceDetails/1')
+                .expect(200);
+        });
+
+        it('redirects to tasklist if licence exists', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.getLicence.resolves({
+                licence: {
+                    vary: {evidence: {evidence: 'qfe'}},
+                    variedFromLicenceNotInSystem: true,
+                    proposedAddress: {curfewAddress: {addressLine1: 'this'}}
+                },
+                stage: 'VARY'
+            });
+
+            const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+            return request(app)
+                .get('/hdc/vary/licenceDetails/1')
+                .expect(302)
+                .expect('Location', '/hdc/taskList/1');
+        });
+    });
 
     describe('POST /hdc/vary/evidence/', () => {
         it('submits and redirects to /hdc/vary/licenceDetails/1', () => {
