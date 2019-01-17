@@ -6,8 +6,8 @@ module.exports = ({licenceService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'finalChecks'});
 
-    router.get('/finalChecks/:formName/:bookingId', asyncMiddleware(standard.get));
-    router.post('/finalChecks/:formName/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
     return router;
 };

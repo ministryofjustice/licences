@@ -484,16 +484,37 @@ describe('TaskList models', () => {
 
 
     describe('vary', () => {
-        it('should return list of tasks for standard route', () => {
+        it('should return vary licence task if licence is unstarted', () => {
             expect(taskListModel(
                 'vary',
                 {
                     decisions: {},
-                    tasks: {}
+                    tasks: {},
+                    stage: 'UNSTARTED'
                 },
                 null
                 )
             ).to.eql([{task: 'varyLicenceTask'}]);
+        });
+
+        it('should return the rest if licence not unstarted', () => {
+            expect(taskListModel(
+                'vary',
+                {
+                    decisions: {},
+                    tasks: {},
+                    stage: 'SOMETHINGELSE'
+                },
+                null
+                )
+            ).to.eql([
+                {task: 'variationPermissionTask'},
+                {task: 'proposedAddressTask'},
+                {task: 'additionalConditionsTask'},
+                {task: 'curfewHoursTask'},
+                {task: 'reportingInstructionsTask'},
+                {task: 'createLicenceTask'}
+            ]);
         });
     });
 

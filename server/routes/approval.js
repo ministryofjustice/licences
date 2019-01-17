@@ -8,8 +8,8 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'approval'});
 
-    router.get('/approval/release/:bookingId', asyncMiddleware(approvalGets('release')));
-    router.get('/approval/refuseReason/:bookingId', asyncMiddleware(approvalGets('refuseReason')));
+    router.get('/release/:bookingId', asyncMiddleware(approvalGets('release')));
+    router.get('/refuseReason/:bookingId', asyncMiddleware(approvalGets('refuseReason')));
 
     function approvalGets(formName) {
         return async (req, res) => {
@@ -33,7 +33,7 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
         };
     }
 
-    router.post('/approval/:formName/:bookingId', audited, asyncMiddleware(standard.post));
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
     return router;
 };

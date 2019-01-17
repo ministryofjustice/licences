@@ -74,11 +74,7 @@ function auditMiddleware(audit, key) {
         const bookingId = req.body.bookingId || req.params.bookingId;
         const inputs = userInputFrom(req.body);
 
-        const pathSegments = req.path.split('/').filter(s => s && s !== bookingId);
-        const [sectionName, formName, ...rest] = pathSegments;
-        const action = req.body.anchor || rest;
-
-        auditEvent(req.user.staffId, bookingId, sectionName, formName, action, inputs);
+        auditEvent(req.user.staffId, bookingId, req.originalUrl, inputs);
 
         next();
     };
@@ -92,12 +88,10 @@ function auditMiddleware(audit, key) {
         }, {});
     }
 
-    function auditEvent(user, bookingId, sectionName, formName, action, userInput) {
+    function auditEvent(user, bookingId, path, userInput) {
         audit.record(key, user, {
             bookingId,
-            sectionName,
-            formName,
-            action,
+            path,
             userInput
         });
     }

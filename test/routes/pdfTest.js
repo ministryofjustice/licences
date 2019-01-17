@@ -265,10 +265,8 @@ describe('PDF:', () => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
                         'CREATE_PDF', 'id', {
-                            action: [],
+                            path: '/hdc/pdf/create/hdc_ap_pss/123',
                             bookingId: '123',
-                            formName: 'hdc_ap_pss',
-                            sectionName: 'create',
                             userInput: {}
                         });
                 });

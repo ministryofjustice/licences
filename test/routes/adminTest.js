@@ -179,10 +179,8 @@ describe('/admin', () => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
                         'USER_MANAGEMENT', 'id', {
-                            action: ['1'],
                             bookingId: undefined,
-                            formName: 'edit',
-                            sectionName: 'roUsers',
+                            path: '/admin/roUsers/edit/1',
                             userInput: {nomisId: 'nid', deliusId: 'did'}
                         });
                 });
@@ -231,10 +229,8 @@ describe('/admin', () => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
                         'USER_MANAGEMENT', 'id', {
-                            action: ['1'],
                             bookingId: undefined,
-                            formName: 'delete',
-                            sectionName: 'roUsers',
+                            path: '/admin/roUsers/delete/1',
                             userInput: {}
                         });
                 });
@@ -306,10 +302,8 @@ describe('/admin', () => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
                         'USER_MANAGEMENT', 'id', {
-                            action: [],
+                            path: '/admin/roUsers/add/',
                             bookingId: undefined,
-                            formName: 'add',
-                            sectionName: 'roUsers',
                             userInput: {nomisId: 'nid', deliusId: 'did'}
                         });
                 });

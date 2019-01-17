@@ -304,6 +304,6 @@ function createApp(user) {
     const route = baseRouter(createRoute({licenceService, conditionsService, prisonerService}));
 
 
-    return appSetup(route, user, '/hdc');
+    return appSetup(route, user, '/hdc/review');
 }
 

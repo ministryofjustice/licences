@@ -93,10 +93,8 @@ describe('/hdc/risk', () => {
                         expect(auditStub.record).to.be.calledOnce();
                         expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'id',
                             {
-                                action: [],
                                 bookingId: '1',
-                                sectionName: 'risk',
-                                formName: 'riskManagement',
+                                path: '/hdc/risk/riskManagement/1',
                                 userInput: {
                                     planningActions: 'Yes',
                                     planningActionsDetails: 'details'
@@ -127,5 +125,5 @@ function createApp({licenceService}, user) {
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService});
     const route = baseRouter(createRoute({licenceService}));
 
-    return appSetup(route, user, '/hdc');
+    return appSetup(route, user, '/hdc/risk');
 }

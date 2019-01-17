@@ -8,8 +8,8 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'licenceConditions'});
 
-    router.get('/licenceConditions/standard/:bookingId', getStandard);
-    router.get('/licenceConditions/standard/:action/:bookingId', getStandard);
+    router.get('/standard/:bookingId', getStandard);
+    router.get('/standard/:action/:bookingId', getStandard);
 
     function getStandard(req, res) {
         logger.debug('GET /standard/:bookingId');
@@ -21,8 +21,8 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         res.render('licenceConditions/standard', {action, bookingId, conditions, data});
     }
 
-    router.get('/licenceConditions/additionalConditions/:bookingId', getAdditional);
-    router.get('/licenceConditions/additionalConditions/:action/:bookingId', getAdditional);
+    router.get('/additionalConditions/:bookingId', getAdditional);
+    router.get('/additionalConditions/:action/:bookingId', getAdditional);
 
     function getAdditional(req, res) {
         logger.debug('GET /additionalConditions');
@@ -35,8 +35,8 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         res.render('licenceConditions/additionalConditions', {action, bookingId, conditions, bespokeConditions});
     }
 
-    router.post('/licenceConditions/additionalConditions/:bookingId', audited, asyncMiddleware(postAdditional));
-    router.post('/licenceConditions/additionalConditions/:action/:bookingId', audited, asyncMiddleware(postAdditional));
+    router.post('/additionalConditions/:bookingId', audited, asyncMiddleware(postAdditional));
+    router.post('/additionalConditions/:action/:bookingId', audited, asyncMiddleware(postAdditional));
 
     async function postAdditional(req, res) {
         logger.debug('POST /additionalConditions');
@@ -64,8 +64,8 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         return conditionsService.formatConditionInputs(input);
     }
 
-    router.get('/licenceConditions/conditionsSummary/:bookingId', getConditionsSummary);
-    router.get('/licenceConditions/conditionsSummary/:action/:bookingId', getConditionsSummary);
+    router.get('/conditionsSummary/:bookingId', getConditionsSummary);
+    router.get('/conditionsSummary/:action/:bookingId', getConditionsSummary);
 
     function getConditionsSummary(req, res) {
         const {bookingId, action} = req.params;
@@ -83,9 +83,9 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         res.render(`licenceConditions/conditionsSummary`, {bookingId, data, nextPath, action});
     }
 
-    router.post('/licenceConditions/additionalConditions/:bookingId/delete/:conditionId',
+    router.post('/additionalConditions/:bookingId/delete/:conditionId',
         audited, asyncMiddleware(postDelete));
-    router.post('/licenceConditions/additionalConditions/:action/:bookingId/delete/:conditionId',
+    router.post('/additionalConditions/:action/:bookingId/delete/:conditionId',
         audited, asyncMiddleware(postDelete));
 
     async function postDelete(req, res) {
@@ -102,9 +102,9 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
         res.redirect('/hdc/licenceConditions/conditionsSummary/' + destination + bookingId);
     }
 
-    router.get('/licenceConditions/:formName/:bookingId', asyncMiddleware(standard.get));
-    router.post('/licenceConditions/:formName/:bookingId', audited, asyncMiddleware(standard.post));
-    router.post('/licenceConditions/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post));
+    router.post('/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
 
     return router;
 };

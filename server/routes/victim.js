@@ -6,11 +6,11 @@ module.exports = ({licenceService}) => (router, audited) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'victim'});
 
-    router.get('/victim/:formName/:bookingId', asyncMiddleware(standard.get));
-    router.post('/victim/:formName/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
-    router.get('/victim/:formName/:action/:bookingId', asyncMiddleware(standard.get));
-    router.post('/victim/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:action/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
 
     return router;
 };

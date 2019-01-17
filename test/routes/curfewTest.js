@@ -372,5 +372,5 @@ function createApp({licenceServiceStub}, user) {
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService});
     const route = baseRouter(createRoute({licenceService}));
 
-    return appSetup(route, user, '/hdc');
+    return appSetup(route, user, '/hdc/curfew');
 }

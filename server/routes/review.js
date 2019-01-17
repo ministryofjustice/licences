@@ -4,7 +4,7 @@ const {getIn} = require('../utils/functionalHelpers');
 
 module.exports = ({licenceService, conditionsService, prisonerService}) => router => {
 
-    router.get('/review/:sectionName/:bookingId', asyncMiddleware(async (req, res) => {
+    router.get('/:sectionName/:bookingId', asyncMiddleware(async (req, res) => {
         const {sectionName, bookingId} = req.params;
         const {licenceStatus} = res.locals;
         logger.debug(`GET /review/${sectionName}/${bookingId}`);

@@ -6,8 +6,13 @@ const formConfig = require('./config/vary');
 module.exports = ({licenceService, prisonerService}) => (router, audited) => {
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'vary'});
 
-    router.get('/vary/licenceDetails/:bookingId', asyncMiddleware(async (req, res) => {
+    router.get('/licenceDetails/:bookingId', asyncMiddleware(async (req, res) => {
         const {bookingId} = req.params;
+        // page should only be viewed if no licence
+        if (res.locals.licenceStatus.stage !== 'UNSTARTED') {
+           return res.redirect(`/hdc/taskList/${bookingId}`);
+        }
+
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token);
         const errorObject = firstItem(req.flash('errors')) || {};
         const userInput = firstItem(req.flash('userInput')) || {};
@@ -20,7 +25,7 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
         });
     }));
 
-    router.post('/vary/licenceDetails/:bookingId', asyncMiddleware(async (req, res) => {
+    router.post('/licenceDetails/:bookingId', asyncMiddleware(async (req, res) => {
         const {bookingId} = req.body;
 
         const expectedFields = formConfig.licenceDetails.fields.map(getFieldName);
@@ -41,8 +46,8 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
         res.redirect(`/hdc/${nextPath}/${bookingId}`);
     }));
 
-    router.get('/vary/:formName/:bookingId', asyncMiddleware(standard.get));
-    router.post('/vary/:formName/:bookingId', audited, asyncMiddleware(standard.post));
+    router.get('/:formName/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
     return router;
 };
