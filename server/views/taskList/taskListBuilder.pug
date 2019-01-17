@@ -1,9 +1,14 @@
 extends taskListTemplate
+include vary/standardTask
 
 block tasks
     each task in taskListModel
         -var taskName = task.task
         div.taskListItem.borderBottomLight
+
+            if !taskName
+                + standardTask(task)
+
             if taskName === 'eligibilityTask'
                 include tasks/eligibilityTask
             if taskName === 'informOffenderTask'

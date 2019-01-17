@@ -57,12 +57,12 @@ const tasksData = {
     ],
     vary: [
         {task: 'varyLicenceTask', filters: ['licenceUnstarted']},
-        {task: 'variationPermissionTask', filters: ['!licenceUnstarted']},
-        {task: 'proposedAddressTask', filters: ['!licenceUnstarted']},
-        {task: 'additionalConditionsTask', filters: ['!licenceUnstarted']},
-        {task: 'curfewHoursTask', filters: ['!licenceUnstarted']},
-        {task: 'reportingInstructionsTask', filters: ['!licenceUnstarted']},
-        {task: 'createLicenceTask', filters: ['!licenceUnstarted']}
+        {filters: ['!licenceUnstarted'], title: 'Permission for variation', link: '/hdc/vary/evidence/'},
+        {filters: ['!licenceUnstarted'], title: 'Curfew address', link: '/hdc/vary/address/'},
+        {filters: ['!licenceUnstarted'], title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
+        {filters: ['!licenceUnstarted'], title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
+        {filters: ['!licenceUnstarted'], title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
+        {filters: ['!licenceUnstarted'], title: 'Create licence', continueBtn: '/hdc/pdf/select/'}
     ]
 };
 
@@ -115,7 +115,7 @@ module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
             }
             return !filtersForTaskList.includes(filter.slice(1));
         }))
-        .map(task => pick(['task'], task));
+        .map(task => pick(['task', 'title', 'link', 'continueBtn'], task));
 };
 
 function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bassAreaCheck, bassOffer}) {

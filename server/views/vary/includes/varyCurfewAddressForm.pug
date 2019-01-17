@@ -1,0 +1,16 @@
+div.form-group.midMarginBottom
+    label.form-label(for="addressLine1") Building and street
+    input(id="addressLine1" name="addressLine1" value=userInput.addressLine1 autofocus aria-label="Building and street" class=errorObject.addressLine1 ? "form-control form-control-error" : "form-control")
+    input.form-control.smallMarginTop(id="addressLine2" name="addressLine2" value=userInput.addressLine2)
+
+div.form-group.midMarginBottom
+    label.form-label(for="addressTown") Town or city
+    input(id="addressTown" name="addressTown" value=userInput.addressTown aria-label="Town or city" class=errorObject.addressTown ? "form-control form-control-error" : "form-control")
+
+div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
+    label.form-label(for="postCode") Postcode
+    input(id="postCode" name="postCode" value=userInput.postCode aria-label="Postcode" class=errorObject.postCode ? "form-control form-control-error" : "form-control")
+
+div.form-group.pure-u-sm-1.pure-u-md-3-4
+    label.form-label(for="telephone") Telephone
+    input.form-control(id="telephone" name="telephone" value=userInput.telephone aria-label="Telephone" class=errorObject.telephone ? "form-control form-control-error" : "form-control")
