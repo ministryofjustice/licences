@@ -20,7 +20,7 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
     router.get('/licenceDetails/:bookingId', asyncMiddleware(async (req, res) => {
         const {bookingId} = req.params;
         // page should only be viewed if no licence
-        if (res.locals.licenceStatus.stage !== 'UNSTARTED') {
+        if (res.locals.licenceStatus.tasks.curfewAddress !== 'UNSTARTED') {
            return res.redirect(`/hdc/taskList/${bookingId}`);
         }
 
