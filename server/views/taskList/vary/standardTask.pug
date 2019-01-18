@@ -2,11 +2,12 @@ mixin standardTask(taskObject)
     div.taskListSingleLineItem.midPaddingBottom
         div.pure-u-1.pure-u-md-3-4
             h2.heading-medium #{taskObject.title}
+            if taskObject.label
+                | #{taskObject.label}
+
 
         div.pure-u-1.pure-u-md-1-4.center.buttonContainer
             if taskObject.link
                 +change(taskObject.link + prisonerInfo.bookingId)
-            if taskObject.continueBtn
-                +continue(taskObject.continueBtn + prisonerInfo.bookingId)
-
-
+            if taskObject.btn
+                a.taskListAction.center.button(href=taskObject.btn.link + prisonerInfo.bookingId) #{taskObject.btn.text}

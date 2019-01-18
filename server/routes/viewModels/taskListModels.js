@@ -1,4 +1,8 @@
-const {pick, pickBy, keys} = require('../../utils/functionalHelpers');
+const {pick, pickBy, keys, mapObject} = require('../../utils/functionalHelpers');
+
+const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
+const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
+const getPdfLink = ({approvedVersionDetails}) => `/hdc/pdf/create/${approvedVersionDetails.template}/`;
 
 const tasksData = {
     caTasksEligibility: [
@@ -56,17 +60,31 @@ const tasksData = {
         {task: 'roSubmitTask', filters: []}
     ],
     vary: [
+        {
+            filters: ['licenceVersionExists'],
+            title: 'View current licence',
+            btn: {text: 'View', link: getPdfLink},
+            label: getVersionLabel
+        },
         {task: 'varyLicenceTask', filters: ['licenceUnstarted']},
         {filters: ['!licenceUnstarted'], title: 'Permission for variation', link: '/hdc/vary/evidence/'},
         {filters: ['!licenceUnstarted'], title: 'Curfew address', link: '/hdc/vary/address/'},
         {filters: ['!licenceUnstarted'], title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
         {filters: ['!licenceUnstarted'], title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
         {filters: ['!licenceUnstarted'], title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
-        {filters: ['!licenceUnstarted'], title: 'Create licence', continueBtn: '/hdc/pdf/select/'}
+        {
+            filters: ['!licenceUnstarted', 'licenceVaried'],
+            title: 'Create licence',
+            btn: {text: 'Continue', link: '/hdc/pdf/select/'},
+            label: getNextVersionLabel
+        }
     ]
 };
 
-module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
+module.exports = (
+    taskList, {decisions, tasks, stage}, {version, approvedVersion, approvedVersionDetails}, allowedTransition
+) => {
+
     if (!tasksData[taskList]) {
         return null;
     }
@@ -105,7 +123,9 @@ module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
         addressRejectedInReviewTask: addressReviewFailed,
         addressRejectedInRiskTask: addressUnsuitable,
         addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
-        licenceUnstarted: stage === 'UNSTARTED'
+        licenceUnstarted: stage === 'UNSTARTED',
+        licenceVersionExists: approvedVersion,
+        licenceVaried: !approvedVersion || version > approvedVersion
     }));
 
     return tasksData[taskList]
@@ -115,7 +135,19 @@ module.exports = (taskList, {decisions, tasks, stage}, allowedTransition) => {
             }
             return !filtersForTaskList.includes(filter.slice(1));
         }))
-        .map(task => pick(['task', 'title', 'link', 'continueBtn'], task));
+        .map(task => {
+            const rawConfig = pick(['task', 'title', 'link', 'btn', 'label'], task);
+            const callAnyFunctions = value => {
+                if (typeof value === 'string') {
+                    return value;
+                }
+                if (typeof value === 'function') {
+                    return value({approvedVersion, version, approvedVersionDetails});
+                }
+                return mapObject(callAnyFunctions, value);
+            };
+            return mapObject(callAnyFunctions, rawConfig);
+        });
 };
 
 function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bassAreaCheck, bassOffer}) {
@@ -127,4 +159,3 @@ function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bass
         bassOfferMade: bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
     };
 }
-

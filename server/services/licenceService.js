@@ -37,10 +37,10 @@ module.exports = function createLicenceService(licenceClient) {
 
     async function getLicence(bookingId) {
         try {
-            const getLicence = licenceClient.getLicence(bookingId);
-            const getApprovedVersion = await licenceClient.getApprovedLicenceVersion(bookingId);
-
-            const details = await Promise.all([getLicence, getApprovedVersion]);
+            const details = await Promise.all([
+                licenceClient.getLicence(bookingId),
+                licenceClient.getApprovedLicenceVersion(bookingId)
+            ]);
 
             const rawLicence = details[0];
             const versionDetails = details[1];
