@@ -78,7 +78,7 @@ module.exports = {
     },
 
     '/hdc/pdf/': {
-        authorised: [{role: 'CA'}, {role: 'RO', stage: ['VARY']}]
+        authorised: [{role: 'CA'}, {role: 'RO'}]
     },
 
     '/hdc/send/addressReview/': {
