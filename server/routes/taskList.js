@@ -18,7 +18,7 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
 
         const taskListView = getTaskListView(req.user.role, licence ? licence.stage : 'UNSTARTED', prisonerInfo);
-        const taskListModel = getTaskListModel(taskListView, licenceStatus, allowedTransition);
+        const taskListModel = getTaskListModel(taskListView, licenceStatus, licence || {}, allowedTransition);
 
         res.render(isEmpty(taskListModel) ? `taskList/${taskListView}` : 'taskList/taskListBuilder', {
             licenceStatus,

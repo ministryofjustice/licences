@@ -31,7 +31,8 @@ module.exports = {
     pick: R.pick,
     pickBy: R.pickBy,
     addPaths,
-    keys: R.keys
+    keys: R.keys,
+    mapObject: R.mapObjIndexed
 };
 
 // pass in your object and a path in array format

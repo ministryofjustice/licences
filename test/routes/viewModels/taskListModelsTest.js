@@ -16,6 +16,8 @@ describe('TaskList models', () => {
                         optOut: 'UNSTARTED'
                     }
                 },
+                {},
+                {},
                 null
                 )
             ).to.eql([{task: 'eligibilityTask'}]);
@@ -35,6 +37,7 @@ describe('TaskList models', () => {
                         optOut: 'UNSTARTED'
                     }
                 },
+                {},
                 null
                 )
             ).to.eql([
@@ -58,6 +61,7 @@ describe('TaskList models', () => {
                         optOut: 'DONE'
                     }
                 },
+                {},
                 null
                 )
             ).to.eql([
@@ -81,6 +85,7 @@ describe('TaskList models', () => {
                         optOut: 'DONE'
                     }
                 },
+                {},
                 null
                 )
             ).to.eql([
@@ -104,6 +109,7 @@ describe('TaskList models', () => {
                         optOut: 'DONE'
                     }
                 },
+                {},
                 null
                 )
             ).to.eql([
@@ -126,6 +132,7 @@ describe('TaskList models', () => {
                         optOut: 'DONE'
                     }
                 },
+                {},
                 'caToDmRefusal'
                 )
             ).to.eql([
@@ -151,6 +158,7 @@ describe('TaskList models', () => {
                         bassAreaCheck: 'UNSTARTED'
                     }
                 },
+                {},
                 null
                 )
             ).to.eql([
@@ -183,6 +191,7 @@ describe('TaskList models', () => {
                         bassAreaCheck: 'UNSTARTED'
                     }
                 },
+                {},
                 'caToDmRefusal'
                 )
             ).to.eql([
@@ -206,6 +215,7 @@ describe('TaskList models', () => {
                     },
                     tasks: {}
                 },
+                {},
                 'caToDmRefusal'
                 )
             ).to.eql([
@@ -262,6 +272,7 @@ describe('TaskList models', () => {
                         bassAreaCheck: 'DONE'
                     }
                 },
+                {},
                 'caToDm'
                 )
             ).to.eql([
@@ -292,6 +303,7 @@ describe('TaskList models', () => {
                         bassAreaCheck: 'UNFINISHED'
                     }
                 },
+                {},
                 'caToDmRefusal'
                 )
             ).to.eql([
@@ -316,6 +328,7 @@ describe('TaskList models', () => {
                         bassAreaCheck: 'DONE'
                     }
                 },
+                {},
                 'caToDmRefusal'
                 )
             ).to.eql([
@@ -347,6 +360,7 @@ describe('TaskList models', () => {
                         bassOffer: 'UNSTARTED'
                     }
                 },
+                {},
                 null
                 )
             ).to.eql([
@@ -384,6 +398,7 @@ describe('TaskList models', () => {
                         bassOffer: 'DONE'
                     }
                 },
+                {},
                 null
                 )
             ).to.eql([
@@ -420,6 +435,7 @@ describe('TaskList models', () => {
                         bassOffer: 'DONE'
                     }
                 },
+                {},
                 null
                 )
             ).to.eql([
@@ -444,6 +460,7 @@ describe('TaskList models', () => {
                     },
                     tasks: {}
                 },
+                {},
                 'caToDmRefusal'
                 )
             ).to.eql([
@@ -472,6 +489,7 @@ describe('TaskList models', () => {
                         bassOffer: 'DONE'
                     }
                 },
+                {},
                 'caToRo'
                 )
             ).to.eql([
@@ -492,6 +510,7 @@ describe('TaskList models', () => {
                     tasks: {},
                     stage: 'UNSTARTED'
                 },
+                {},
                 null
                 )
             ).to.eql([{task: 'varyLicenceTask'}]);
@@ -505,6 +524,7 @@ describe('TaskList models', () => {
                     tasks: {},
                     stage: 'SOMETHINGELSE'
                 },
+                {version: 1},
                 null
                 )
             ).to.eql([
@@ -513,7 +533,28 @@ describe('TaskList models', () => {
                 {title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
                 {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
                 {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
-                {title: 'Create licence', continueBtn: '/hdc/pdf/select/'}
+                {title: 'Create licence', label: 'Ready to create version 1', btn: {link: '/hdc/pdf/select/', text: 'Continue'}}
+            ]);
+        });
+
+        it('should show current version if one exists and not show create task if version not different', () => {
+            expect(taskListModel(
+                'vary',
+                {
+                    decisions: {},
+                    tasks: {},
+                    stage: 'SOMETHINGELSE'
+                },
+                {version: 2, approvedVersion: 2, approvedVersionDetails: {template: 'templateName'}},
+                null
+                )
+            ).to.eql([
+                {title: 'View current licence', label: 'Licence version 2', btn: {link: '/hdc/pdf/create/templateName/', text: 'View'}},
+                {title: 'Permission for variation', link: '/hdc/vary/evidence/'},
+                {title: 'Curfew address', link: '/hdc/vary/address/'},
+                {title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
+                {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
+                {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'}
             ]);
         });
     });
@@ -529,6 +570,7 @@ describe('TaskList models', () => {
                     },
                     tasks: {}
                 },
+                {},
                 'roToCa'
                 )
             ).to.eql([
@@ -553,6 +595,7 @@ describe('TaskList models', () => {
                     },
                     tasks: {}
                 },
+                {},
                 'roToCa'
                 )
             ).to.eql([
@@ -578,6 +621,7 @@ describe('TaskList models', () => {
                     },
                     tasks: {}
                 },
+                {},
                 'roToCa'
                 )
             ).to.eql([
@@ -598,6 +642,7 @@ describe('TaskList models', () => {
                     },
                     tasks: {}
                 },
+                {},
                 'roToCa'
                 )
             ).to.eql([
