@@ -77,8 +77,8 @@ describe('PDF:', () => {
                 });
         });
 
-        it('should throw if a non ca tries to access the page', () => {
-            app = createApp({}, 'roUser');
+        it('should throw if a non ca or ro tries to access the page', () => {
+            app = createApp({}, 'dmUser');
 
             licenceServiceStub.getLicence.resolves({approvedVersionDetails: {template: 'hdc_ap'}});
 
@@ -106,8 +106,8 @@ describe('PDF:', () => {
                 .expect('Location', '/hdc/pdf/select/123');
         });
 
-        it('should throw if a non ca tries to post to the route', () => {
-            app = createApp({}, 'roUser', '/hdc/pdf');
+        it('should throw if a non ca or ro tries to post to the route', () => {
+            app = createApp({}, 'dmUser', '/hdc/pdf');
 
             return request(app)
                 .post('/hdc/pdf/select/123')
@@ -216,8 +216,8 @@ describe('PDF:', () => {
                 });
         });
 
-        it('should throw if a non ca tries to access the taskList', () => {
-            app = createApp({}, 'roUser');
+        it('should throw if a non ca or ro tries to access the taskList', () => {
+            app = createApp({}, 'dmUser');
 
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
@@ -272,8 +272,8 @@ describe('PDF:', () => {
                 });
         });
 
-        it('should throw if a non ca tries to create the pdf', () => {
-            app = createApp({}, 'roUser');
+        it('should throw if a non ca or ro tries to create the pdf', () => {
+            app = createApp({}, 'dmUser');
 
             const pdf1AsBytes = Buffer.from([80, 68, 70, 45, 49]);
             pdfServiceStub.generatePdf.resolves(pdf1AsBytes);
