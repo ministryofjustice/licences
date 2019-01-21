@@ -55,7 +55,8 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
             config: formConfig[formName],
             userInput: req.body,
             licenceSection: targetSection,
-            formName: targetForm
+            formName: targetForm,
+            postRelease: res.locals.postRelease
         });
 
         if (formConfig[formName].validate) {

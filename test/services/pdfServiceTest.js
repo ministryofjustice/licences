@@ -61,7 +61,7 @@ describe('pdfService', () => {
                 .post('/generate', {templateName, values})
                 .reply(200, pdf1AsBytes);
 
-            const result = await service.generatePdf(templateName, '123', {licence: {key: 'value'}}, 'username');
+            const result = await service.generatePdf(templateName, '123', {licence: {key: 'value'}}, 'token', false);
 
             expect(conditionsService.populateLicenceWithConditions).to.be.calledOnce();
             expect(prisonerService.getPrisonerDetails).to.be.calledOnce();
@@ -109,12 +109,28 @@ describe('pdfService', () => {
                 approvedVersionDetails: {version: 4, template: 'other_template'}
             };
 
-            await service.generatePdf(templateName, '123', rawLicence, 'username');
+            await service.generatePdf(templateName, '123', rawLicence, 'token', true);
 
             expect(licenceService.update).to.be.calledOnce();
             expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce();
             expect(licenceService.saveApprovedLicenceVersion).to.be.calledWith('123');
             expect(licenceService.getLicence).to.be.calledOnce();
+        });
+
+        it('should pass postApproval to update', async () => {
+            fakePdfGenerator
+                .post('/generate', {templateName, values})
+                .reply(200, pdf1AsBytes);
+
+            const rawLicence = {
+                licence: {key: 'value'},
+                version: 4,
+                approvedVersionDetails: {version: 4, template: 'other_template'}
+            };
+
+            await service.generatePdf(templateName, '123', rawLicence, 'token', true);
+
+            expect(licenceService.update.getCalls()[0].args[0].postRelease).to.eql(true);
         });
 
         it('should not update licence when incrementing version if template is same', async () => {

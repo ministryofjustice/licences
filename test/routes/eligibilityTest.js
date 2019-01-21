@@ -147,7 +147,8 @@ describe('/hdc/eligibility', () => {
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'eligibility',
-                            formName: route.section
+                            formName: route.section,
+                            postRelease: false
                         });
                     });
             });

@@ -32,7 +32,7 @@ module.exports = {
 
     getLicence: async function(bookingId) {
         const query = {
-            text: `select licence, booking_id, stage, version from licences where booking_id = $1`,
+            text: `select licence, booking_id, stage, version, vary_version from licences where booking_id = $1`,
             values: [bookingId]
         };
 
@@ -47,7 +47,7 @@ module.exports = {
 
     getApprovedLicenceVersion: async function(bookingId) {
         const query = {
-            text: `select version, template, timestamp from licence_versions 
+            text: `select version, vary_version, template, timestamp from licence_versions 
                     where booking_id = $1 order by version desc limit 1`,
             values: [bookingId]
         };
@@ -70,16 +70,17 @@ module.exports = {
         return db.query(query);
     },
 
-    updateLicence: function(bookingId, licence = {}) {
+    updateLicence: async function(bookingId, licence = {}, postRelease) {
         const query = {
-            text: 'update licences set licence = $1 where booking_id=$2',
+            text: 'UPDATE licences SET licence = $1 where booking_id=$2;',
             values: [licence, bookingId]
         };
 
-        return db.query(query);
+        await db.query(query);
+        return updateVersion(bookingId, postRelease);
     },
 
-    updateSection: function(section, bookingId, object) {
+    updateSection: async function(section, bookingId, object, postRelease) {
         const path = `{${section}}`;
 
         const query = {
@@ -87,7 +88,8 @@ module.exports = {
             values: [path, object, bookingId]
         };
 
-        return db.query(query);
+        await db.query(query);
+        return updateVersion(bookingId, postRelease);
     },
 
     updateStage: function(bookingId, stage) {
@@ -116,8 +118,8 @@ module.exports = {
 
     saveApprovedLicenceVersion: function(bookingId, template) {
         const query = {
-            text: `insert into licence_versions (booking_id, licence, version, template)
-                    select booking_id, licence, version, $1
+            text: `insert into licence_versions (booking_id, licence, version, vary_version, template)
+                    select booking_id, licence, version, vary_version, $1
                     from licences where booking_id = $2`,
             values: [template, bookingId]
         };
@@ -125,3 +127,16 @@ module.exports = {
         return db.query(query);
     }
 };
+
+async function updateVersion(bookingId, postRelease) {
+    const version = postRelease ? 'vary_version' : 'version';
+    const query = {
+        text: `UPDATE licences SET ${version} = ${version} + 1
+               WHERE booking_id = $1 and ${version} in (
+                SELECT max(${version})
+                FROM licence_versions
+                WHERE booking_id = $1);`,
+        values: [bookingId]
+    };
+    return db.query(query);
+}

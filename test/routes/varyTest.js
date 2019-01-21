@@ -72,7 +72,7 @@ describe('/hdc/vary', () => {
     describe('POST /hdc/vary/evidence/', () => {
         it('submits and redirects to /hdc/vary/licenceDetails/1', () => {
             const licenceService = createLicenceServiceStub();
-            licenceService.update.resolves({curfew: {firstNight: {}}});
+            licenceService.update.resolves({vary: {evidence: {}}});
 
             const app = createApp({licenceServiceStub: licenceService}, 'roUser');
             return request(app)
@@ -87,7 +87,8 @@ describe('/hdc/vary', () => {
                         config: formConfig.evidence,
                         userInput: {bookingId: 1, evidence: 'a'},
                         licenceSection: 'vary',
-                        formName: 'evidence'
+                        formName: 'evidence',
+                        postRelease: false
                     });
 
                     expect(res.header.location).to.equal('/hdc/vary/licenceDetails/1');

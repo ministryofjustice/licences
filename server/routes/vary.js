@@ -52,7 +52,9 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
             return res.redirect(`/hdc/vary/licenceDetails/${bookingId}`);
         }
 
-        await licenceService.createLicenceFromFlatInput(req.body, bookingId, res.locals.licence.licence, formConfig.licenceDetails);
+        await licenceService.createLicenceFromFlatInput(
+            req.body, bookingId, res.locals.licence.licence, formConfig.licenceDetails, true
+        );
         const nextPath = req.body.additionalConditions === 'Yes' ? 'licenceConditions/additionalConditions' : 'taskList';
         res.redirect(`/hdc/${nextPath}/${bookingId}`);
     }));
@@ -93,7 +95,9 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
             return res.redirect(`/hdc/vary/${formName}/${bookingId}`);
         }
 
-        await licenceService.createLicenceFromFlatInput(req.body, bookingId, res.locals.licence.licence, formConfig.licenceDetails);
+        await licenceService.createLicenceFromFlatInput(
+            req.body, bookingId, res.locals.licence.licence, formConfig.licenceDetails, true
+        );
         res.redirect(`/hdc/taskList/${bookingId}`);
     };
 

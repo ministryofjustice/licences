@@ -128,7 +128,8 @@ describe('/hdc/approval', () => {
                             config: formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: 'approval',
-                            formName: route.section
+                            formName: route.section,
+                            postRelease: false
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);

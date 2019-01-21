@@ -61,7 +61,8 @@ describe('/hdc/proposedAddress', () => {
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'proposedAddress',
-                            formName: route.section
+                            formName: route.section,
+                            postRelease: false
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);

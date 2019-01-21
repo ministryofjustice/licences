@@ -4,9 +4,10 @@ module.exports = {
         fields: [
             {evidence: {
                 responseType: 'requiredString',
-                validationMessage: 'Provide your evidence'
+                validationMessage: 'Provide evidence you have approval'
             }}
         ],
+        validate: true,
         nextPath: {
             path: '/hdc/vary/licenceDetails/'
         }

@@ -50,10 +50,10 @@ module.exports = function createLicenceService(licenceClient) {
                 return null;
             }
             const formattedLicence = formatObjectForView(licence);
-            const approvedVersionDetails = versionDetails ? formatObjectForView(versionDetails) : undefined;
+            const approvedVersionDetails = versionDetails ? formatObjectForView(versionDetails) : {};
             const stage = getIn(rawLicence, ['stage']);
-            const version = getIn(rawLicence, ['version']);
-            const approvedVersion = getIn(approvedVersionDetails, ['version']);
+            const version = `${rawLicence.version}.${rawLicence.vary_version}`;
+            const approvedVersion = `${approvedVersionDetails.version}.${approvedVersionDetails.vary_version}`;
 
             return {licence: formattedLicence, stage, version, approvedVersion, approvedVersionDetails};
 
@@ -67,7 +67,7 @@ module.exports = function createLicenceService(licenceClient) {
         return licenceClient.createLicence(bookingId, data, licenceStages[stage]);
     }
 
-    async function updateLicenceConditions(bookingId, existingLicence, additional = {}, bespoke = []) {
+    async function updateLicenceConditions(bookingId, existingLicence, additional = {}, bespoke = [], postRelease) {
         try {
             const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions']);
             const conditionsObject = await getConditionsObject(additional, bespoke);
@@ -80,7 +80,7 @@ module.exports = function createLicenceService(licenceClient) {
 
             await updateModificationStage(bookingId, existingLicence.stage, {requiresApproval: true});
 
-            return licenceClient.updateSection('licenceConditions', bookingId, licenceConditions);
+            return licenceClient.updateSection('licenceConditions', bookingId, licenceConditions, postRelease);
         } catch (error) {
             logger.error('Error during updateAdditionalConditions', error.stack);
             throw error;
@@ -178,7 +178,7 @@ module.exports = function createLicenceService(licenceClient) {
 
     const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {});
 
-    async function update({bookingId, originalLicence, config, userInput, licenceSection, formName}) {
+    async function update({bookingId, originalLicence, config, userInput, licenceSection, formName, postRelease}) {
         const stage = getIn(originalLicence, ['stage']);
         const licence = getIn(originalLicence, ['licence']);
 
@@ -198,7 +198,7 @@ module.exports = function createLicenceService(licenceClient) {
             return licence;
         }
 
-        await licenceClient.updateLicence(bookingId, updatedLicence);
+        await licenceClient.updateLicence(bookingId, updatedLicence, postRelease);
 
         await updateModificationStage(bookingId, stage, {
             requiresApproval: config.modificationRequiresApproval,
@@ -448,7 +448,7 @@ module.exports = function createLicenceService(licenceClient) {
         }});
     }
 
-    async function createLicenceFromFlatInput(input, bookingId, existingLicence, pageConfig) {
+    async function createLicenceFromFlatInput(input, bookingId, existingLicence, pageConfig, postRelease) {
         const inputWithCurfewHours = addCurfewHoursInput(input);
 
         const newLicence = pageConfig.fields.reduce((licence, field) => {
@@ -461,7 +461,7 @@ module.exports = function createLicenceService(licenceClient) {
             return replacePath(inputPosition, inputWithCurfewHours[fieldName], licence);
         }, existingLicence);
 
-        await licenceClient.updateLicence(bookingId, newLicence);
+        await licenceClient.updateLicence(bookingId, newLicence, postRelease);
         return newLicence;
     }
 

@@ -946,7 +946,7 @@ describe('GET /taskList/:prisonNumber', () => {
         context('Prisoner has been released', () => {
             it('should allow a new variation to be started if no licence exists', () => {
                 licenceService.getLicence.resolves(undefined);
-                prisonerService.getPrisonerDetails.resolves({released: true});
+                prisonerService.getPrisonerDetails.resolves({agencyLocationId: 'Out'});
 
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
@@ -962,7 +962,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
             it('should link to evidence page if there is a licence', () => {
                 licenceService.getLicence.resolves({stage: 'VARY', licence: {variedFromLicenceNotInSystem: true}});
-                prisonerService.getPrisonerDetails.resolves({released: true});
+                prisonerService.getPrisonerDetails.resolves({agencyLocationId: 'Out'});
 
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 

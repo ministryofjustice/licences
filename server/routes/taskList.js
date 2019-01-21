@@ -11,13 +11,14 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
     router.get('/:bookingId', asyncMiddleware(async (req, res) => {
         const {bookingId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token);
+        const postRelease = prisonerInfo.agencyLocationId ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT' : false;
         const licence = await licenceService.getLicence(bookingId);
 
         const licenceStatus = getLicenceStatus(licence);
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
 
-        const taskListView = getTaskListView(req.user.role, licence ? licence.stage : 'UNSTARTED', prisonerInfo);
+        const taskListView = getTaskListView(req.user.role, licence ? licence.stage : 'UNSTARTED', postRelease);
         const taskListModel = getTaskListModel(taskListView, licenceStatus, licence || {}, allowedTransition);
 
         res.render(isEmpty(taskListModel) ? `taskList/${taskListView}` : 'taskList/taskListBuilder', {
@@ -98,9 +99,8 @@ const taskListConfig = {
     }
 };
 
-function getTaskListView(role, stage, {released}) {
-    // TODO: Update when the shape of the nomis prisoner object is known
-    if (released) {
+function getTaskListView(role, stage, postRelease) {
+    if (postRelease) {
        return 'vary';
     }
 

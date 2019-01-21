@@ -55,7 +55,8 @@ describe('/hdc/victim', () => {
                             config: formConfig.victimLiaison,
                             userInput: formResponse,
                             licenceSection: 'victim',
-                            formName: 'victimLiaison'
+                            formName: 'victimLiaison',
+                            postRelease: false
                         });
                     });
             });
@@ -75,7 +76,8 @@ describe('/hdc/victim', () => {
                             config: formConfig.victimLiaison,
                             userInput: formResponse,
                             licenceSection: 'victim',
-                            formName: 'victimLiaison'
+                            formName: 'victimLiaison',
+                            postRelease: false
                         });
                     });
             });

@@ -70,7 +70,8 @@ describe('/hdc/reporting', () => {
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'reporting',
-                            formName: route.section
+                            formName: route.section,
+                            postRelease: false
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);
@@ -95,7 +96,8 @@ describe('/hdc/reporting', () => {
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'reporting',
-                            formName: route.section
+                            formName: route.section,
+                            postRelease: false
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);

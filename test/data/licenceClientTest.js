@@ -137,6 +137,36 @@ describe('licenceClient', () => {
                 expect(values).to.eql(expectedParameters);
             });
         });
+
+        it('should then update the version', async () => {
+
+            const expectedContents = 'SET version = version + 1';
+            const expectedContents2 = 'WHERE booking_id = $1 and version';
+            const expectedContents3 = 'SELECT max(version';
+
+            await licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'});
+
+            const sql = queryStub.getCalls()[1].args[0].text;
+            expect(sql).to.include(expectedContents);
+            expect(sql).to.include(expectedContents2);
+            expect(sql).to.include(expectedContents3);
+
+        });
+
+        it('should then update the vary_version it postApproval', async () => {
+
+            const expectedContents = 'SET vary_version = vary_version + 1';
+            const expectedContents2 = 'WHERE booking_id = $1 and vary_version';
+            const expectedContents3 = 'SELECT max(vary_version';
+
+            await licencesProxy().updateSection('section', 'ABC123', {hi: 'ho'}, true);
+
+            const sql = queryStub.getCalls()[1].args[0].text;
+            expect(sql).to.include(expectedContents);
+            expect(sql).to.include(expectedContents2);
+            expect(sql).to.include(expectedContents3);
+
+        });
     });
 
     describe('updateStage', () => {
@@ -191,7 +221,7 @@ describe('licenceClient', () => {
         it('should pass in the correct sql', () => {
 
             const expectedVersionUpdate = 'insert into licence_versions';
-            const expectedSelect = 'select booking_id, licence, version, $1';
+            const expectedSelect = 'select booking_id, licence, version, vary_version, $1';
             const expectedWhere = 'where booking_id = $2';
 
             const result = licencesProxy().saveApprovedLicenceVersion('ABC123', 'templateName');
@@ -224,7 +254,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedSelect = 'select version, template, timestamp from licence_versions';
+            const expectedSelect = 'select version, vary_version, template, timestamp from licence_versions';
             const expectedWhere = 'where booking_id = $1';
             const expectedOrder = 'order by version desc limit 1';
 
@@ -251,6 +281,54 @@ describe('licenceClient', () => {
         });
 
 
+    });
+
+    describe('updateLicence', () => {
+        it('should call db.query twice', async () => {
+            await licencesProxy().updateLicence('ABC123', {});
+            expect(queryStub).to.have.callCount(2);
+        });
+
+        it('should first update the licence', async () => {
+
+            const expectedQuery = 'UPDATE licences SET licence = $1 where booking_id=$2';
+
+            await licencesProxy().updateLicence('ABC123', {});
+
+            const sql = queryStub.getCalls()[0].args[0].text;
+            expect(sql).to.include(expectedQuery);
+
+        });
+
+        it('should then update the version', async () => {
+
+            const expectedContents = 'SET version = version + 1';
+            const expectedContents2 = 'WHERE booking_id = $1 and version';
+            const expectedContents3 = 'SELECT max(version';
+
+            await licencesProxy().updateLicence('ABC123', {});
+
+            const sql = queryStub.getCalls()[1].args[0].text;
+            expect(sql).to.include(expectedContents);
+            expect(sql).to.include(expectedContents2);
+            expect(sql).to.include(expectedContents3);
+
+        });
+
+        it('should then update the vary_version it postApproval', async () => {
+
+            const expectedContents = 'SET vary_version = vary_version + 1';
+            const expectedContents2 = 'WHERE booking_id = $1 and vary_version';
+            const expectedContents3 = 'SELECT max(vary_version';
+
+            await licencesProxy().updateLicence('ABC123', {}, true);
+
+            const sql = queryStub.getCalls()[1].args[0].text;
+            expect(sql).to.include(expectedContents);
+            expect(sql).to.include(expectedContents2);
+            expect(sql).to.include(expectedContents3);
+
+        });
     });
 });
 
