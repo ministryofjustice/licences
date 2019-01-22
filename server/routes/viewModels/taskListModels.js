@@ -14,7 +14,8 @@ const tasksData = {
         {task: 'caSubmitAddressReviewTask', filters: ['optOutDone', '!optedOut', '!bassReferralNeeded']}
     ],
     caTasksFinalChecks: [
-        {task: 'curfewAddressTask', filters: ['!bassReferralNeeded']},
+        {task: 'curfewAddressTask', filters: ['!bassReferralNeeded', '!caToRo']},
+        {task: 'proposedAddressTask', filters: ['caToRo']},
         {task: 'bassOfferTask', filters: ['bassReferralNeeded']},
         {task: 'riskManagementTask', filters: ['addressOrBassChecksDoneOrUnsuitable']},
         {task: 'victimLiaisonTask', filters: ['addressOrBassChecksDone']},
