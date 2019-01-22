@@ -43,6 +43,10 @@ describe('licenceService', () => {
                 approvedVersionDetails: {
                     vary_version: 4,
                     version: 2
+                },
+                versionDetails: {
+                    vary_version: 5,
+                    version: 2
                 }
             });
         });

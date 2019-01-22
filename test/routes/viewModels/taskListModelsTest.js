@@ -545,7 +545,11 @@ describe('TaskList models', () => {
                     tasks: {},
                     stage: 'SOMETHINGELSE'
                 },
-                {version: 2, approvedVersion: 2, approvedVersionDetails: {template: 'templateName'}},
+                {
+                    version: 2, approvedVersion: 2,
+                    versionDetails: {version: 1, vary_version: 0},
+                    approvedVersionDetails: {version: 1, vary_version: 0, template: 'templateName'}
+                },
                 null
                 )
             ).to.eql([
@@ -566,7 +570,11 @@ describe('TaskList models', () => {
                     tasks: {},
                     stage: 'SOMETHINGELSE'
                 },
-                {version: 2.2, approvedVersion: 2, approvedVersionDetails: {}},
+                {
+                    version: 2.2, approvedVersion: null,
+                    versionDetails: {version: 1, vary_version: 0},
+                    approvedVersionDetails: {}
+                },
                 null
                 )
             ).to.eql([
@@ -576,6 +584,31 @@ describe('TaskList models', () => {
                 {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
                 {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
                 {title: 'Create licence', label: 'Ready to create version 2.2', btn: {link: '/hdc/pdf/select/', text: 'Continue'}}
+            ]);
+        });
+
+        it('should show create licence if version ahead of approved version', () => {
+            expect(taskListModel(
+                'vary',
+                {
+                    decisions: {},
+                    tasks: {},
+                    stage: 'SOMETHINGELSE'
+                },
+                {
+                    version: 1.2, approvedVersion: 1.1,
+                    versionDetails: {version: 1, vary_version: 2},
+                    approvedVersionDetails: {version: 1, vary_version: 1}
+                },
+                null
+                )
+            ).to.eql([
+                {title: 'Permission for variation', link: '/hdc/vary/evidence/'},
+                {title: 'Curfew address', link: '/hdc/vary/address/'},
+                {title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
+                {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
+                {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
+                {title: 'Create licence', label: 'Ready to create version 1.2', btn: {link: '/hdc/pdf/select/', text: 'Continue'}}
             ]);
         });
     });

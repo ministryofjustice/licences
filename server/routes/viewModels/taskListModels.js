@@ -82,7 +82,7 @@ const tasksData = {
 };
 
 module.exports = (
-    taskList, {decisions, tasks, stage}, {version, approvedVersion, approvedVersionDetails}, allowedTransition
+    taskList, {decisions, tasks, stage}, {version, versionDetails, approvedVersion, approvedVersionDetails}, allowedTransition
 ) => {
 
     if (!tasksData[taskList]) {
@@ -125,7 +125,7 @@ module.exports = (
         addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
         licenceUnstarted: stage === 'UNSTARTED',
         licenceVersionExists: !isEmpty(approvedVersionDetails),
-        licenceVaried: isEmpty(approvedVersionDetails) || version > approvedVersion
+        licenceVaried: isEmpty(approvedVersionDetails) || versionAheadOfApproved(versionDetails, approvedVersionDetails)
     }));
 
     return tasksData[taskList]
@@ -158,4 +158,9 @@ function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bass
         bassChecksDone: bassReferralNeeded && bassAreaChecked && !bassWithdrawn && !bassExcluded,
         bassOfferMade: bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
     };
+}
+
+function versionAheadOfApproved(versionDetails, approvedVersionDetails) {
+    return versionDetails.version > approvedVersionDetails.version ||
+        versionDetails.vary_version > approvedVersionDetails.vary_version;
 }
