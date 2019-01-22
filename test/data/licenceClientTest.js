@@ -64,7 +64,8 @@ describe('licenceClient', () => {
 
         it('should pass in the correct sql', () => {
 
-            const expectedClause = 'insert into licences (booking_id, licence, stage, version) values ($1, $2, $3, $4)';
+            const expectedClause =
+                'insert into licences (booking_id, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5)';
 
             const result = licencesProxy().createLicence('ABC123');
 
@@ -75,7 +76,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct parameters', () => {
 
-            const expectedParameters = ['ABC123', {}, 'ELIGIBILITY', 1];
+            const expectedParameters = ['ABC123', {}, 'ELIGIBILITY', 1, 0];
 
             const result = licencesProxy().createLicence('ABC123');
 
@@ -87,7 +88,7 @@ describe('licenceClient', () => {
 
         it('should pass in the correct parameters if licence passed in', () => {
 
-            const expectedParameters = ['ABC123', {a: 'b'}, 'ELIGIBILITY', 1];
+            const expectedParameters = ['ABC123', {a: 'b'}, 'ELIGIBILITY', 1, 0];
 
             const result = licencesProxy().createLicence('ABC123', {a: 'b'});
 
@@ -99,9 +100,21 @@ describe('licenceClient', () => {
 
         it('should pass in the correct parameters if stage passed in', () => {
 
-            const expectedParameters = ['ABC123', {a: 'b'}, 'SENT', 1];
+            const expectedParameters = ['ABC123', {a: 'b'}, 'SENT', 1, 0];
 
             const result = licencesProxy().createLicence('ABC123', {a: 'b'}, 'SENT');
+
+            return result.then(data => {
+                const values = queryStub.getCalls()[0].args[0].values;
+                expect(values).to.eql(expectedParameters);
+            });
+        });
+
+        it('should pass in the correct parameters if varyVersion passed in', () => {
+
+            const expectedParameters = ['ABC123', {a: 'b'}, 'SENT', 1, 1];
+
+            const result = licencesProxy().createLicence('ABC123', {a: 'b'}, 'SENT', 1, 1);
 
             return result.then(data => {
                 const values = queryStub.getCalls()[0].args[0].values;

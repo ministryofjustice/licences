@@ -557,6 +557,27 @@ describe('TaskList models', () => {
                 {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'}
             ]);
         });
+
+        it('should not show current version if approved version is empty', () => {
+            expect(taskListModel(
+                'vary',
+                {
+                    decisions: {},
+                    tasks: {},
+                    stage: 'SOMETHINGELSE'
+                },
+                {version: 2.2, approvedVersion: 2, approvedVersionDetails: {}},
+                null
+                )
+            ).to.eql([
+                {title: 'Permission for variation', link: '/hdc/vary/evidence/'},
+                {title: 'Curfew address', link: '/hdc/vary/address/'},
+                {title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
+                {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
+                {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
+                {title: 'Create licence', label: 'Ready to create version 2.2', btn: {link: '/hdc/pdf/select/', text: 'Continue'}}
+            ]);
+        });
     });
 
     describe('caTasksPostApproval', () => {

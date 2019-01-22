@@ -61,10 +61,10 @@ module.exports = {
         return null;
     },
 
-    createLicence: function(bookingId, licence = {}, stage = licenceStages.DEFAULT, version = 1) {
+    createLicence: function(bookingId, licence = {}, stage = licenceStages.DEFAULT, version = 1, varyVersion = 0) {
         const query = {
-            text: 'insert into licences (booking_id, licence, stage, version) values ($1, $2, $3, $4)',
-            values: [bookingId, licence, stage, version]
+            text: 'insert into licences (booking_id, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5)',
+            values: [bookingId, licence, stage, version, varyVersion]
         };
 
         return db.query(query);

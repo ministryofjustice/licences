@@ -1,4 +1,4 @@
-const {pick, pickBy, keys, mapObject} = require('../../utils/functionalHelpers');
+const {pick, pickBy, keys, mapObject, isEmpty} = require('../../utils/functionalHelpers');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -61,7 +61,7 @@ const tasksData = {
     ],
     vary: [
         {
-            filters: ['licenceVersionExists'],
+            filters: ['licenceVersionExists', '!licenceVaried'],
             title: 'View current licence',
             btn: {text: 'View', link: getPdfLink},
             label: getVersionLabel
@@ -124,8 +124,8 @@ module.exports = (
         addressRejectedInRiskTask: addressUnsuitable,
         addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
         licenceUnstarted: stage === 'UNSTARTED',
-        licenceVersionExists: approvedVersion,
-        licenceVaried: !approvedVersion || version > approvedVersion
+        licenceVersionExists: !isEmpty(approvedVersionDetails),
+        licenceVaried: isEmpty(approvedVersionDetails) || version > approvedVersion
     }));
 
     return tasksData[taskList]

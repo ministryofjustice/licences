@@ -64,7 +64,8 @@ module.exports = function createLicenceService(licenceClient) {
     }
 
     function createLicence({bookingId, data = {}, stage = null} = {}) {
-        return licenceClient.createLicence(bookingId, data, licenceStages[stage]);
+        const varyVersion = stage === 'VARY' ? 1 : 0;
+        return licenceClient.createLicence(bookingId, data, licenceStages[stage], 1, varyVersion);
     }
 
     async function updateLicenceConditions(bookingId, existingLicence, additional = {}, bespoke = [], postRelease) {
