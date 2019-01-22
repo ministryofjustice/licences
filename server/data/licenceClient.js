@@ -48,7 +48,7 @@ module.exports = {
     getApprovedLicenceVersion: async function(bookingId) {
         const query = {
             text: `select version, vary_version, template, timestamp from licence_versions 
-                    where booking_id = $1 order by version desc limit 1`,
+                    where booking_id = $1 order by version desc, vary_version desc limit 1`,
             values: [bookingId]
         };
 

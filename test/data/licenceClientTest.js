@@ -256,7 +256,7 @@ describe('licenceClient', () => {
 
             const expectedSelect = 'select version, vary_version, template, timestamp from licence_versions';
             const expectedWhere = 'where booking_id = $1';
-            const expectedOrder = 'order by version desc limit 1';
+            const expectedOrder = 'order by version desc, vary_version desc limit 1';
 
             const result = licencesProxy().getApprovedLicenceVersion('ABC123');
 
