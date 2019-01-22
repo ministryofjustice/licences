@@ -337,6 +337,25 @@ describe('TaskList models', () => {
                 {task: 'caSubmitRefusalTask'}
             ]);
         });
+
+        it('should show proposed address task if caToRo transition (new address added)', () => {
+            expect(taskListModel(
+                'caTasksFinalChecks',
+                {
+                    decisions: {
+                        bassReferralNeeded: false
+                    },
+                    tasks: {}
+                },
+                {},
+                'caToRo'
+                )
+            ).to.eql([
+                {task: 'proposedAddressTask'},
+                {task: 'HDCRefusalTask'},
+                {task: 'caSubmitAddressReviewTask'}
+            ]);
+        });
     });
 
     describe('caTasksPostApproval', () => {
