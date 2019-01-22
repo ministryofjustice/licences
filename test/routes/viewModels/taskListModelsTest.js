@@ -140,6 +140,31 @@ describe('TaskList models', () => {
                 {task: 'caSubmitRefusalTask'}
             ]);
         });
+
+        it('should allow submission for refusal if address rejected', () => {
+            expect(taskListModel(
+                'caTasksEligibility',
+                {
+                    decisions: {
+                        bassReferralNeeded: true,
+                        optedOut: false,
+                        eligible: true,
+                        curfewAddressRejected: true
+                    },
+                    tasks: {
+                        eligibility: 'DONE',
+                        optOut: 'DONE'
+                    }
+                },
+                {},
+                'caToDmRefusal'
+                )
+            ).to.eql([
+                {task: 'eligibilityTask'},
+                {task: 'proposedAddressTask'},
+                {task: 'caSubmitRefusalTask'}
+            ]);
+        });
     });
 
     describe('caFinalChecks', () => {
