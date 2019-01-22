@@ -40,16 +40,16 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
         }
     }
 
-    async function generatePdf(templateName, bookingId, rawLicence, token) {
+    async function generatePdf(templateName, bookingId, rawLicence, token, postRelease) {
 
-        const versionedLicence = await checkAndUpdateVersion(rawLicence, bookingId, templateName);
+        const versionedLicence = await checkAndUpdateVersion(rawLicence, bookingId, templateName, postRelease);
 
         const {values} = await getPdfLicenceData(templateName, bookingId, versionedLicence, token);
 
         return getPdf(templateName, values);
     }
 
-    async function checkAndUpdateVersion(rawLicence, bookingId, template) {
+    async function checkAndUpdateVersion(rawLicence, bookingId, template, postRelease) {
 
         const {version, approvedVersionDetails} = rawLicence;
 
@@ -62,7 +62,8 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
                 config: {fields: [{decision: {}}], noModify: true},
                 userInput: {decision: template},
                 licenceSection: 'document',
-                formName: 'template'
+                formName: 'template',
+                postRelease
             });
         }
 

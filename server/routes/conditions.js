@@ -52,7 +52,9 @@ module.exports = ({licenceService, conditionsService}) => (router, audited) => {
             return res.redirect('/hdc/licenceConditions/conditionsSummary/' + destination);
         }
 
-        await licenceService.updateLicenceConditions(bookingId, res.locals.licence, additional, bespoke);
+        await licenceService.updateLicenceConditions(
+            bookingId, res.locals.licence, additional, bespoke, res.locals.postRelease
+        );
 
         res.redirect('/hdc/licenceConditions/conditionsSummary/' + destination);
     }

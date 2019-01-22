@@ -38,6 +38,7 @@ function checkLicenceMiddleware(licenceService, prisonerService) {
 
             res.locals.licence = licence;
             res.locals.prisoner = prisoner;
+            res.locals.postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false;
             res.locals.licenceStatus = licenceStatus;
             next();
 

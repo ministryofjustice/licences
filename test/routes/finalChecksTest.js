@@ -98,7 +98,8 @@ describe('/hdc/finalChecks', () => {
                             config: route.fieldMap || formConfig[route.formName],
                             userInput: route.body,
                             licenceSection: route.sectionName || 'finalChecks',
-                            formName: route.formName
+                            formName: route.formName,
+                            postRelease: false
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);

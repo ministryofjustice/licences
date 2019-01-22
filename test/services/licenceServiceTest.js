@@ -13,7 +13,7 @@ describe('licenceService', () => {
 
     beforeEach(() => {
         licenceClient = {
-            getLicence: sinon.stub().resolves({licence: {a: 'b'}}),
+            getLicence: sinon.stub().resolves({licence: {a: 'b'}, version: 2, vary_version: 5}),
             createLicence: sinon.stub().resolves('abc'),
             updateSection: sinon.stub().resolves(),
             updateStage: sinon.stub().resolves(),
@@ -21,7 +21,7 @@ describe('licenceService', () => {
                 {user_input: 1, id: 1, field_position: null}]),
             updateLicence: sinon.stub().resolves(),
             updateStageAndVersion: sinon.stub().resolves(),
-            getApprovedLicenceVersion: sinon.stub().resolves()
+            getApprovedLicenceVersion: sinon.stub().resolves({version: 2, vary_version: 4})
         };
         service = createLicenceService(licenceClient, establishmentsClient);
     });
@@ -38,9 +38,12 @@ describe('licenceService', () => {
             return expect(service.getLicence('123')).to.eventually.eql({
                 licence: {a: 'b'},
                 stage: undefined,
-                version: undefined,
-                approvedVersion: undefined,
-                approvedVersionDetails: undefined
+                version: '2.5',
+                approvedVersion: '2.4',
+                approvedVersionDetails: {
+                    vary_version: 4,
+                    version: 2
+                }
             });
         });
 
@@ -96,7 +99,9 @@ describe('licenceService', () => {
                 }
             };
 
-            await service.updateLicenceConditions('ab1', existingLicence, {additionalConditions: 'NOCONTACTPRISONER'}, [{text: 'bespoke'}]);
+            await service.updateLicenceConditions(
+                'ab1', existingLicence, {additionalConditions: 'NOCONTACTPRISONER'}, [{text: 'bespoke'}], false
+            );
 
             expect(licenceClient.updateSection).to.be.calledOnce();
             expect(licenceClient.updateSection).to.be.calledWith(
@@ -106,7 +111,8 @@ describe('licenceService', () => {
                     standard: {additionalConditionsRequired: 'Yes'},
                     additional: {NOCONTACTPRISONER: {}},
                     bespoke: [{text: 'bespoke'}]
-                }
+                },
+                false
             );
         });
 
@@ -546,7 +552,7 @@ describe('licenceService', () => {
 
             const originalLicence = {booking_id: bookingId, licence};
             await service.update(
-                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName});
+                {bookingId, originalLicence, config: {fields: fieldMap}, userInput, licenceSection, formName, postRelease: true});
 
             const expectedLicence = {
                 ...licence,
@@ -560,7 +566,7 @@ describe('licenceService', () => {
                 }
             };
             expect(licenceClient.updateLicence).to.be.calledOnce();
-            expect(licenceClient.updateLicence).to.be.calledWith('ab1', expectedLicence);
+            expect(licenceClient.updateLicence).to.be.calledWith('ab1', expectedLicence, true);
         });
 
         it('should not call updateLicence if there are no changes', async () => {
@@ -1592,9 +1598,9 @@ describe('licenceService', () => {
                 }
             };
 
-            await service.createLicenceFromFlatInput(details, 'a', {a: 'b'}, varyConfig.licenceDetails);
+            await service.createLicenceFromFlatInput(details, 'a', {a: 'b'}, varyConfig.licenceDetails, false);
             expect(licenceClient.updateLicence).to.be.calledOnce();
-            expect(licenceClient.updateLicence).to.be.calledWith('a', {...expectedOutput, a: 'b'});
+            expect(licenceClient.updateLicence).to.be.calledWith('a', {...expectedOutput, a: 'b'}, false);
         });
 
         it('should transform the curfew hours into a licence structure if daySpecificInputs === No', () => {

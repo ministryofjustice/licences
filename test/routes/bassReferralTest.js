@@ -75,7 +75,8 @@ describe('/hdc/bassReferral', () => {
                                 config: formConfig[route.form],
                                 userInput: route.body,
                                 licenceSection: 'bassReferral',
-                                formName: route.form
+                                formName: route.form,
+                                postRelease: false
                             });
 
                             expect(res.header.location).to.equal(route.nextPath);
@@ -239,7 +240,8 @@ describe('/hdc/bassReferral', () => {
                                 config: formConfig[route.form],
                                 userInput: route.body,
                                 licenceSection: 'bassReferral',
-                                formName: route.form
+                                formName: route.form,
+                                postRelease: false
                             });
 
                             expect(res.header.location).to.equal(route.nextPath);

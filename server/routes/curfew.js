@@ -92,7 +92,8 @@ module.exports = ({licenceService}) => (router, audited) => {
             config: formConfig.curfewHours,
             userInput: input,
             licenceSection: 'curfew',
-            formName: 'curfewHours'
+            formName: 'curfewHours',
+            postRelease: res.locals.postRelease
         });
 
         res.redirect(`${nextPath}${bookingId}`);

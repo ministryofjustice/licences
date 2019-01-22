@@ -139,12 +139,38 @@ describe('/hdc/curfew', () => {
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'curfew',
-                            formName: route.section
+                            formName: route.section,
+                            postRelease: false
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);
                     });
             });
+        });
+
+        it(`passes postRelease true if agencyLocationId is out`, () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.addCurfewHoursInput.returns({curfewHours: 'done'});
+            const prisonerServiceStub = createPrisonerServiceStub();
+            prisonerServiceStub.getPrisonerPersonalDetails.resolves({agencyLocationId: 'out'});
+            const app = createApp({licenceServiceStub: licenceService, prisonerServiceStub}, 'roUser');
+
+            return request(app)
+                .post(routes[0].url)
+                .send(routes[0].body)
+                .expect(302)
+                .expect(res => {
+                    expect(licenceService.update).to.be.calledOnce();
+                    expect(licenceService.update).to.be.calledWith({
+                        bookingId: '1',
+                        originalLicence: {licence: {key: 'value'}},
+                        config: formConfig[routes[0].section],
+                        userInput: routes[0].body,
+                        licenceSection: 'curfew',
+                        formName: routes[0].section,
+                        postRelease: true
+                    });
+                });
         });
     });
 
@@ -188,7 +214,8 @@ describe('/hdc/curfew', () => {
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'curfew',
-                            formName: route.section
+                            formName: route.section,
+                            postRelease: false
                         });
 
                         expect(res.header.location).to.equal(route.nextPath);
@@ -217,7 +244,9 @@ describe('/hdc/curfew', () => {
                             config: formConfig[route.section],
                             userInput: route.body,
                             licenceSection: 'curfew',
-                            formName: route.section
+                            formName: route.section,
+                            postRelease: false
+
                         });
 
                         expect(res.header.location).to.equal(route.nextPathCa || route.nextPath);
@@ -364,8 +393,8 @@ describe('/hdc/curfew', () => {
     });
 });
 
-function createApp({licenceServiceStub}, user) {
-    const prisonerService = createPrisonerServiceStub();
+function createApp({licenceServiceStub, prisonerServiceStub}, user) {
+    const prisonerService = prisonerServiceStub || createPrisonerServiceStub();
     const licenceService = licenceServiceStub || createLicenceServiceStub();
     const signInService = signInServiceStub;
 

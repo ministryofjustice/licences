@@ -58,7 +58,8 @@ describe('/hdc/risk', () => {
                             config: formConfig.riskManagement,
                             userInput: formResponse,
                             licenceSection: 'risk',
-                            formName: 'riskManagement'
+                            formName: 'riskManagement',
+                            postRelease: false
                         });
                     });
             });
@@ -78,7 +79,8 @@ describe('/hdc/risk', () => {
                             config: formConfig.riskManagement,
                             userInput: formResponse,
                             licenceSection: 'risk',
-                            formName: 'riskManagement'
+                            formName: 'riskManagement',
+                            postRelease: false
                         });
                     });
             });

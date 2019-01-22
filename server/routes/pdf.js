@@ -111,10 +111,12 @@ module.exports = ({pdfService, prisonerService}) => (router, audited) => {
     router.get('/create/:templateName/:bookingId', audited, asyncMiddleware(async (req, res) => {
 
         const {bookingId, templateName} = req.params;
-        const {licence} = res.locals;
+        const {licence, postRelease} = res.locals;
         logger.debug(`GET pdf/create/${bookingId}/${templateName}`);
 
-        const pdf = await pdfService.generatePdf(templateName, bookingId, licence, res.locals.token);
+        const pdf = await pdfService.generatePdf(
+            templateName, bookingId, licence, res.locals.token, postRelease
+        );
 
         res.type('application/pdf');
         return res.end(pdf, 'binary');

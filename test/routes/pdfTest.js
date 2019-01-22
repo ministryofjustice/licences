@@ -39,8 +39,11 @@ const valuesWithoutMissing = {
 
 describe('PDF:', () => {
 
+    const prisonerServiceStub = createPrisonerServiceStub();
+    prisonerServiceStub.getPrisonerPersonalDetails.resolves({agencyLocationId: 'out'});
+
     beforeEach(() => {
-        app = createApp({licenceServiceStub, pdfServiceStub}, 'caUser');
+        app = createApp({licenceServiceStub, pdfServiceStub, prisonerServiceStub}, 'caUser');
         auditStub.record.reset();
         pdfServiceStub.getPdfLicenceData.reset();
         licenceServiceStub.getLicence.resolves({licence: {key: 'value'}});
@@ -247,7 +250,7 @@ describe('PDF:', () => {
                 .expect(res => {
                     expect(pdfServiceStub.generatePdf).to.be.calledOnce();
                     expect(pdfServiceStub.generatePdf).to.be.calledWith(
-                        'hdc_ap_pss', '123', {licence: {key: 'value'}});
+                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'token', true);
                     expect(res.body.toString()).to.include('PDF-1');
                 });
         });
@@ -285,8 +288,8 @@ describe('PDF:', () => {
     });
 });
 
-function createApp({licenceServiceStub, pdfServiceStub}, user) {
-    const prisonerService = createPrisonerServiceStub();
+function createApp({licenceServiceStub, pdfServiceStub, prisonerServiceStub}, user) {
+    const prisonerService = prisonerServiceStub || createPrisonerServiceStub();
     const licenceService = licenceServiceStub || createLicenceServiceStub();
     const signInService = signInServiceStub;
 
