@@ -43,6 +43,10 @@ describe('licenceService', () => {
                 approvedVersionDetails: {
                     vary_version: 4,
                     version: 2
+                },
+                versionDetails: {
+                    vary_version: 5,
+                    version: 2
                 }
             });
         });
@@ -73,6 +77,20 @@ describe('licenceService', () => {
 
             expect(licenceClient.createLicence).to.be.calledOnce();
             expect(licenceClient.createLicence).to.be.calledWith('123', {firstName: 'M'}, 'VARY');
+        });
+
+        it('should pass in vary version as 1 if stage is VARY', () => {
+            service.createLicence({bookingId: '123', data: {firstName: 'M'}, stage: 'VARY'});
+
+            expect(licenceClient.createLicence).to.be.calledOnce();
+            expect(licenceClient.createLicence).to.be.calledWith('123', {firstName: 'M'}, 'VARY', 1, 1);
+        });
+
+        it('should pass in vary version as 0 if stage is not VARY', () => {
+            service.createLicence({bookingId: '123', data: {firstName: 'M'}});
+
+            expect(licenceClient.createLicence).to.be.calledOnce();
+            expect(licenceClient.createLicence).to.be.calledWith('123', {firstName: 'M'}, undefined, 1, 0);
         });
 
         it('should return returned id', () => {

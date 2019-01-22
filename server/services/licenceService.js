@@ -43,19 +43,20 @@ module.exports = function createLicenceService(licenceClient) {
             ]);
 
             const rawLicence = details[0];
-            const versionDetails = details[1];
+            const rawVersionDetails = details[1];
 
             const licence = getIn(rawLicence, ['licence']);
             if (!licence) {
                 return null;
             }
             const formattedLicence = formatObjectForView(licence);
-            const approvedVersionDetails = versionDetails ? formatObjectForView(versionDetails) : {};
+            const approvedVersionDetails = rawVersionDetails ? formatObjectForView(rawVersionDetails) : {};
             const stage = getIn(rawLicence, ['stage']);
             const version = `${rawLicence.version}.${rawLicence.vary_version}`;
+            const versionDetails = {version: rawLicence.version, vary_version: rawLicence.vary_version};
             const approvedVersion = `${approvedVersionDetails.version}.${approvedVersionDetails.vary_version}`;
 
-            return {licence: formattedLicence, stage, version, approvedVersion, approvedVersionDetails};
+            return {licence: formattedLicence, stage, version, versionDetails, approvedVersion, approvedVersionDetails};
 
         } catch (error) {
             logger.error('Error during getLicence', error.stack);
@@ -64,7 +65,8 @@ module.exports = function createLicenceService(licenceClient) {
     }
 
     function createLicence({bookingId, data = {}, stage = null} = {}) {
-        return licenceClient.createLicence(bookingId, data, licenceStages[stage]);
+        const varyVersion = stage === 'VARY' ? 1 : 0;
+        return licenceClient.createLicence(bookingId, data, licenceStages[stage], 1, varyVersion);
     }
 
     async function updateLicenceConditions(bookingId, existingLicence, additional = {}, bespoke = [], postRelease) {

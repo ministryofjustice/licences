@@ -1,4 +1,4 @@
-const {pick, pickBy, keys, mapObject} = require('../../utils/functionalHelpers');
+const {pick, pickBy, keys, mapObject, isEmpty} = require('../../utils/functionalHelpers');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -61,7 +61,7 @@ const tasksData = {
     ],
     vary: [
         {
-            filters: ['licenceVersionExists'],
+            filters: ['licenceVersionExists', '!licenceVaried'],
             title: 'View current licence',
             btn: {text: 'View', link: getPdfLink},
             label: getVersionLabel
@@ -82,7 +82,7 @@ const tasksData = {
 };
 
 module.exports = (
-    taskList, {decisions, tasks, stage}, {version, approvedVersion, approvedVersionDetails}, allowedTransition
+    taskList, {decisions, tasks, stage}, {version, versionDetails, approvedVersion, approvedVersionDetails}, allowedTransition
 ) => {
 
     if (!tasksData[taskList]) {
@@ -124,8 +124,8 @@ module.exports = (
         addressRejectedInRiskTask: addressUnsuitable,
         addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
         licenceUnstarted: stage === 'UNSTARTED',
-        licenceVersionExists: approvedVersion,
-        licenceVaried: !approvedVersion || version > approvedVersion
+        licenceVersionExists: !isEmpty(approvedVersionDetails),
+        licenceVaried: isEmpty(approvedVersionDetails) || versionAheadOfApproved(versionDetails, approvedVersionDetails)
     }));
 
     return tasksData[taskList]
@@ -158,4 +158,9 @@ function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bass
         bassChecksDone: bassReferralNeeded && bassAreaChecked && !bassWithdrawn && !bassExcluded,
         bassOfferMade: bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
     };
+}
+
+function versionAheadOfApproved(versionDetails, approvedVersionDetails) {
+    return versionDetails.version > approvedVersionDetails.version ||
+        versionDetails.vary_version > approvedVersionDetails.vary_version;
 }
