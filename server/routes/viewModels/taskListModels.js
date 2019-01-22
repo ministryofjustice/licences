@@ -10,8 +10,8 @@ const tasksData = {
         {task: 'informOffenderTask', filters: ['eligibilityDone', 'optOutUnstarted', '!optedOut']},
         {task: 'proposedAddressTask', filters: ['eligible']},
         {task: 'caSubmitRefusalTask', filters: ['caToDmRefusal']},
-        {task: 'caSubmitBassReviewTask', filters: ['optOutDone', '!optedOut', 'bassReferralNeeded']},
-        {task: 'caSubmitAddressReviewTask', filters: ['optOutDone', '!optedOut', '!bassReferralNeeded']}
+        {task: 'caSubmitBassReviewTask', filters: ['optOutDone', '!optedOut', 'bassReferralNeeded', '!caToDmRefusal']},
+        {task: 'caSubmitAddressReviewTask', filters: ['optOutDone', '!optedOut', '!bassReferralNeeded', '!caToDmRefusal']}
     ],
     caTasksFinalChecks: [
         {task: 'curfewAddressTask', filters: ['!bassReferralNeeded']},
@@ -61,7 +61,7 @@ const tasksData = {
     ],
     vary: [
         {
-            filters: ['licenceVersionExists', '!licenceVaried'],
+            filters: ['licenceVersionExists', '!licenceUnversionedOrVaried'],
             title: 'View current licence',
             btn: {text: 'View', link: getPdfLink},
             label: getVersionLabel
@@ -73,7 +73,7 @@ const tasksData = {
         {filters: ['!licenceUnstarted'], title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
         {filters: ['!licenceUnstarted'], title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
         {
-            filters: ['!licenceUnstarted', 'licenceVaried'],
+            filters: ['!licenceUnstarted', 'licenceUnversionedOrVaried'],
             title: 'Create licence',
             btn: {text: 'Continue', link: '/hdc/pdf/select/'},
             label: getNextVersionLabel
@@ -125,7 +125,7 @@ module.exports = (
         addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
         licenceUnstarted: stage === 'UNSTARTED',
         licenceVersionExists: !isEmpty(approvedVersionDetails),
-        licenceVaried: isEmpty(approvedVersionDetails) || versionAheadOfApproved(versionDetails, approvedVersionDetails)
+        licenceUnversionedOrVaried: isEmpty(approvedVersionDetails) || versionAheadOfApproved(versionDetails, approvedVersionDetails)
     }));
 
     return tasksData[taskList]
