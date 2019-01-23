@@ -44,7 +44,8 @@ describe('pdfService', () => {
         };
 
         pdfFormatter = {
-            formatPdfData: sinon.stub().resolves({values})
+            formatPdfData: sinon.stub().resolves({values}),
+            DEFAULT_PLACEHOLDER: 'placeholder'
         };
 
         service = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter);
@@ -90,7 +91,9 @@ describe('pdfService', () => {
                 .post('/generate', {templateName, values})
                 .reply(200, pdf1AsBytes);
 
-            const rawLicence = {licence: {key: 'value'}, version: 4, approvedVersionDetails: {version: 3}};
+            const rawLicence = {licence: {key: 'value'},
+                versionDetails: {version: 4, vary_version: 0},
+                approvedVersionDetails: {version: 3, vary_version: 0}};
             await service.generatePdf(templateName, '123', rawLicence, 'username');
 
             expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce();
@@ -105,7 +108,7 @@ describe('pdfService', () => {
 
             const rawLicence = {
                 licence: {key: 'value'},
-                version: 4,
+                versionDetails: {version: 4, vary_version: 0},
                 approvedVersionDetails: {version: 4, template: 'other_template'}
             };
 
@@ -124,7 +127,7 @@ describe('pdfService', () => {
 
             const rawLicence = {
                 licence: {key: 'value'},
-                version: 4,
+                versionDetails: {version: 4, vary_version: 0},
                 approvedVersionDetails: {version: 4, template: 'other_template'}
             };
 
@@ -140,7 +143,7 @@ describe('pdfService', () => {
 
             const rawLicence = {
                 licence: {key: 'value'},
-                version: 4,
+                versionDetails: {version: 4, vary_version: 0},
                 approvedVersionDetails: {version: 3, template: 'hdc_ap_pss'}
             };
 
@@ -159,7 +162,7 @@ describe('pdfService', () => {
 
             const rawLicence = {
                 licence: {key: 'value'},
-                version: 1
+                versionDetails: {version: 1, vary_version: 0}
             };
 
             await service.generatePdf(templateName, '123', rawLicence, 'username');
@@ -170,18 +173,57 @@ describe('pdfService', () => {
             expect(licenceService.getLicence).to.be.calledOnce();
         });
 
-        it('should not increment the version if approved version is lower than current version', async () => {
+        it('should replace the approver value if postDecision and vary_approver added', async () => {
+            pdfFormatter.formatPdfData.resolves({values: {APPROVER: '1', VARY_APPROVER: '2'}});
+            const prValues = {APPROVER: '2', VARY_APPROVER: '2'};
+
             fakePdfGenerator
-                .post('/generate', {templateName, values})
+                .post('/generate', {templateName, values: prValues})
                 .reply(200, pdf1AsBytes);
 
             const rawLicence = {
                 licence: {key: 'value'},
-                version: 4,
+                versionDetails: {version: 4},
                 approvedVersionDetails: {version: 4, template: 'hdc_ap_pss'}
             };
 
-            await service.generatePdf(templateName, '123', rawLicence, 'username');
+            await service.generatePdf(templateName, '123', rawLicence, 'username', true);
+
+            expect(licenceService.saveApprovedLicenceVersion).to.not.be.called();
+        });
+
+        it('should not replace the approver value if postDecision and no vary_approver added', async () => {
+            pdfFormatter.formatPdfData.resolves({values: {APPROVER: '1', VARY_APPROVER: 'placeholder'}});
+
+            fakePdfGenerator
+                .post('/generate', {templateName, values: {APPROVER: '1', VARY_APPROVER: 'placeholder'}})
+                .reply(200, pdf1AsBytes);
+
+            const rawLicence = {
+                licence: {key: 'value'},
+                versionDetails: {version: 4},
+                approvedVersionDetails: {version: 4, template: 'hdc_ap_pss'}
+            };
+
+            await service.generatePdf(templateName, '123', rawLicence, 'username', true);
+
+            expect(licenceService.saveApprovedLicenceVersion).to.not.be.called();
+        });
+
+        it('should not replace the approver value if not postDecision', async () => {
+            pdfFormatter.formatPdfData.resolves({values: {APPROVER: '1', VARY_APPROVER: '2'}});
+
+            fakePdfGenerator
+                .post('/generate', {templateName, values: {APPROVER: '1', VARY_APPROVER: '2'}})
+                .reply(200, pdf1AsBytes);
+
+            const rawLicence = {
+                licence: {key: 'value'},
+                versionDetails: {version: 4},
+                approvedVersionDetails: {version: 4, template: 'hdc_ap_pss'}
+            };
+
+            await service.generatePdf(templateName, '123', rawLicence, 'username', false);
 
             expect(licenceService.saveApprovedLicenceVersion).to.not.be.called();
         });
@@ -207,8 +249,15 @@ describe('pdfService', () => {
     });
 
     describe('getPdfLicenceData', () => {
+
+        const rawLicence = {
+            licence: {key: 'value'},
+            approvedVersion: 1.3,
+            approvedVersionDetails: {a: 'a'}
+        };
+
         it('should request details from services and pass to formatter', async () => {
-            await service.getPdfLicenceData(templateName, '123', {licence: {key: 'value'}}, 'token');
+            await service.getPdfLicenceData(templateName, '123', rawLicence, 'token');
 
             expect(conditionsService.populateLicenceWithConditions).to.be.calledOnce();
             expect(conditionsService.populateLicenceWithConditions).to.be.calledWith(licence);
@@ -228,13 +277,13 @@ describe('pdfService', () => {
                     licence,
                     prisonerInfo: prisonerResponse,
                     establishment: establishmentResponse
-                }, imageResponse);
+                }, imageResponse, {a: 'a', approvedVersion: 1.3});
         });
 
         it('should throw if error in other service', () => {
             prisonerService.getPrisonerDetails.rejects(new Error('dead'));
             return expect(service.getPdfLicenceData(
-                templateName, '123', {licence: {key: 'value'}}, 'token')).to.be.rejected();
+                templateName, '123', rawLicence, 'token')).to.be.rejected();
         });
     });
 });

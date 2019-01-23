@@ -4,14 +4,13 @@ const {romanise} = require('../../utils/romanise');
 const moment = require('moment');
 const config = require('../../config');
 
-module.exports = {formatPdfData};
-
 const DEFAULT_PLACEHOLDER = '(DATA MISSING)';
 
-function formatPdfData(templateName,
-                       {licence, prisonerInfo, establishment}, image, approvedVersionDetails,
-                       placeholder = DEFAULT_PLACEHOLDER) {
+module.exports = {formatPdfData, DEFAULT_PLACEHOLDER};
 
+function formatPdfData(
+    templateName, {licence, prisonerInfo, establishment}, image, approvedVersionDetails, placeholder = DEFAULT_PLACEHOLDER
+) {
     const conditions = getConditionsForConfig(licence, templateName, 'CONDITIONS');
     const pss = getConditionsForConfig(licence, templateName, 'PSS');
     const photo = image ? image.toString('base64') : null;

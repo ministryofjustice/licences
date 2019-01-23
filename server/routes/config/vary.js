@@ -207,5 +207,22 @@ module.exports = {
                 }
             }
         ]
+    },
+    approval: {
+        licenceSection: 'approval',
+        fields: [
+            {name: {
+                responseType: 'requiredString',
+                validationMessage: 'Provide the name of the approver'
+            }},
+            {jobTitle: {
+                responseType: 'requiredString',
+                validationMessage: 'Provide the job title of the approver'
+            }}
+        ],
+        validate: true,
+        nextPath: {
+            path: '/hdc/pdf/taskList/'
+        }
     }
 };

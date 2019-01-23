@@ -107,6 +107,9 @@ module.exports = ({licenceService, prisonerService}) => (router, audited) => {
     router.get('/:formName/:bookingId', asyncMiddleware(standard.get));
     router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post));
 
+    router.get('/:formName/:action/:bookingId', asyncMiddleware(standard.get));
+    router.post('/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post));
+
     return router;
 };
 

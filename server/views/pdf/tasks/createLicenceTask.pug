@@ -1,5 +1,5 @@
 
--var creationMessage = versionInfo.isNewVersion ? "version " + versionInfo.currentVersion : versionInfo.isNewTemplate ? "version " + (versionInfo.currentVersion + 1) : ""
+-var creationMessage = versionInfo.isNewVersion || versionInfo.isNewTemplate ? "new version" : ""
 
 div.paddingBottom
 
@@ -30,7 +30,7 @@ div.paddingBottom
                             span.bold #{versionInfo.lastTemplateLabel}
                         else
                             | #{versionInfo.lastTemplateLabel}
-                    li Version #{versionInfo.lastVersion.version}
+                    li Version #{versionInfo.lastVersion.version}.#{versionInfo.lastVersion.vary_version}
 
         if canPrint
             div.pure-u-1.pure-u-md-1-4.center

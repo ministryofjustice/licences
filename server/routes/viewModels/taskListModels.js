@@ -1,4 +1,5 @@
 const {pick, pickBy, keys, mapObject, isEmpty} = require('../../utils/functionalHelpers');
+const versionInfo = require('../../utils/versionInfo');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -62,7 +63,7 @@ const tasksData = {
     ],
     vary: [
         {
-            filters: ['licenceVersionExists', '!licenceUnversionedOrVaried'],
+            filters: ['licenceVersionExists', '!isNewVersion'],
             title: 'View current licence',
             btn: {text: 'View', link: getPdfLink},
             label: getVersionLabel
@@ -74,7 +75,7 @@ const tasksData = {
         {filters: ['!licenceUnstarted'], title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
         {filters: ['!licenceUnstarted'], title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
         {
-            filters: ['!licenceUnstarted', 'licenceUnversionedOrVaried'],
+            filters: ['!licenceUnstarted', 'isNewVersion'],
             title: 'Create licence',
             btn: {text: 'Continue', link: '/hdc/pdf/select/'},
             label: getNextVersionLabel
@@ -126,7 +127,7 @@ module.exports = (
         addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
         licenceUnstarted: stage === 'UNSTARTED',
         licenceVersionExists: !isEmpty(approvedVersionDetails),
-        licenceUnversionedOrVaried: isEmpty(approvedVersionDetails) || versionAheadOfApproved(versionDetails, approvedVersionDetails)
+        isNewVersion: versionInfo({version, versionDetails, approvedVersionDetails}).isNewVersion
     }));
 
     return tasksData[taskList]
@@ -159,9 +160,4 @@ function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bass
         bassChecksDone: bassReferralNeeded && bassAreaChecked && !bassWithdrawn && !bassExcluded,
         bassOfferMade: bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
     };
-}
-
-function versionAheadOfApproved(versionDetails, approvedVersionDetails) {
-    return versionDetails.version > approvedVersionDetails.version ||
-        versionDetails.vary_version > approvedVersionDetails.vary_version;
 }

@@ -96,6 +96,23 @@ describe('/hdc/vary', () => {
         });
     });
 
+    describe('approval route', () => {
+        const licenceService = createLicenceServiceStub();
+        licenceService.getLicence = sinon.stub().resolves({
+            licence: {
+                vary: {approval: {name: 'name', jobTitle: 'title'}}
+            }
+        });
+
+        const app = createApp({licenceServiceStub: licenceService}, 'roUser');
+
+        const routes = [
+            {url: '/hdc/vary/approval/1', content: 'name="name" value="name"'}
+        ];
+
+        testFormPageGets(app, routes, licenceService);
+    });
+
     describe('POST /hdc/vary/licenceDetails/', () => {
         it('submits and redirects to additional conditions page if radio selected', () => {
             const licenceService = createLicenceServiceStub();
