@@ -1,5 +1,5 @@
 const VERSION_NUMBER = {
-    paths: [['approvedVersionDetails', 'version']],
+    paths: [['approvedVersionDetails', 'approvedVersion']],
     displayName: 'Version number',
     group: 'document',
     required: 'optional'
@@ -17,6 +17,17 @@ const APPROVER = {
     displayName: 'Name of decision maker',
     group: 'document',
     required: 'optional'
+};
+
+const VARY_APPROVER = {
+    paths: [
+        ['licence', 'vary', 'approval', 'name'],
+        ['licence', 'vary', 'approval', 'jobTitle']
+    ],
+    separator: ', ',
+    displayName: 'Name of approver',
+    group: 'varyApproval',
+    required: 'mandatoryPostRelease'
 };
 
 const EST_PREMISE = {
@@ -278,7 +289,8 @@ const MONITOR = {
 const VERSION = {
     VERSION_NUMBER,
     VERSION_DATE,
-    APPROVER
+    APPROVER,
+    VARY_APPROVER
 };
 
 const OFFENDER = {

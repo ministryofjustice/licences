@@ -1,5 +1,7 @@
 const superagent = require('superagent');
 const config = require('../config');
+const versionInfo = require('../utils/versionInfo');
+const {replacePath, getIn} = require('../utils/functionalHelpers');
 
 const pdfGenPath = `${config.pdf.pdfServiceHost}/generate`;
 
@@ -18,7 +20,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
             licence,
             prisonerInfo,
             establishment
-        }, image, rawLicence.approvedVersionDetails);
+        }, image, {...rawLicence.approvedVersionDetails, approvedVersion: rawLicence.approvedVersion});
     }
 
     async function getPdf(templateName, values) {
@@ -46,16 +48,18 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
 
         const {values} = await getPdfLicenceData(templateName, bookingId, versionedLicence, token);
 
-        return getPdf(templateName, values);
+        const varyApprover = getIn(values, ['VARY_APPROVER']);
+        const valuesWithApprover = postRelease && varyApprover !== pdfFormatter.DEFAULT_PLACEHOLDER ?
+            replacePath(['APPROVER'], varyApprover, values) :
+            values;
+
+        return getPdf(templateName, valuesWithApprover);
     }
 
     async function checkAndUpdateVersion(rawLicence, bookingId, template, postRelease) {
+        const {isNewTemplate, isNewVersion} = versionInfo(rawLicence, template);
 
-        const {version, approvedVersionDetails} = rawLicence;
-
-        const templateChange = approvedVersionDetails && template !== approvedVersionDetails.template;
-
-        if (templateChange) {
+        if (isNewTemplate) {
             await licenceService.update({
                 bookingId,
                 originalLicence: rawLicence,
@@ -67,7 +71,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
             });
         }
 
-        if (!approvedVersionDetails || version > approvedVersionDetails.version || templateChange) {
+        if (isNewVersion || isNewTemplate) {
             await licenceService.saveApprovedLicenceVersion(bookingId, template);
             return licenceService.getLicence(bookingId);
         }

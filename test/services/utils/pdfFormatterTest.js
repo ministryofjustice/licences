@@ -282,7 +282,7 @@ describe('pdfFormatter', () => {
 
     it('should take version number and date from approvedVersionDetails', () => {
         const approvedVersionDetails = {
-            version: 111,
+            approvedVersion: 111,
             timestamp: '123'
         };
 
@@ -352,6 +352,7 @@ const allValuesEmpty = {
     VERSION_DATE: 'PLACEHOLDER',
     VERSION_NUMBER: 'PLACEHOLDER',
     APPROVER: 'PLACEHOLDER',
+    VARY_APPROVER: 'PLACEHOLDER',
     CREATION_DATE: '01/01/2001'
 };
 
@@ -422,6 +423,11 @@ const displayNames = {
         preferred: {
             OFF_CRO: 'CRO number',
             OFF_PNC: 'PNC ID'
+        }
+    },
+    varyApproval: {
+        mandatoryPostRelease: {
+            VARY_APPROVER: 'Name of approver'
         }
     }
 };

@@ -26,7 +26,9 @@ const valuesWithMissing = {
         reporting:
             {mandatory: {REPORTING_AT: 'reporting date'}},
         sentence:
-            {mandatory: {OFF_NOMS: 'noms id'}}
+            {mandatory: {OFF_NOMS: 'noms id'}},
+        varyApproval:
+            {mandatoryPostRelease: {VARY_APPROVER: 'Name of approver'}}
     }
 };
 
@@ -40,13 +42,13 @@ const valuesWithoutMissing = {
 describe('PDF:', () => {
 
     const prisonerServiceStub = createPrisonerServiceStub();
-    prisonerServiceStub.getPrisonerPersonalDetails.resolves({agencyLocationId: 'out'});
 
     beforeEach(() => {
         app = createApp({licenceServiceStub, pdfServiceStub, prisonerServiceStub}, 'caUser');
         auditStub.record.reset();
         pdfServiceStub.getPdfLicenceData.reset();
         licenceServiceStub.getLicence.resolves({licence: {key: 'value'}});
+        prisonerServiceStub.getPrisonerPersonalDetails.resolves({agencyLocationId: 'somewhere'});
     });
 
     describe('GET /select', () => {
@@ -133,6 +135,26 @@ describe('PDF:', () => {
                     expect(res.text).to.include('id="firstNightTaskStatus">Not complete');
                     expect(res.text).to.include('id="reportingTaskStatus">Not complete');
                     expect(res.text).to.include('id="sentenceTaskStatus">Not complete');
+                    expect(res.text).to.not.include('id="varApprovalTaskStatus">');
+                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
+                    expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
+                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'token');
+                });
+        });
+
+        it('Shows incomplete status on var approver task when post approval', () => {
+            prisonerServiceStub.getPrisonerPersonalDetails.resolves({agencyLocationId: 'out'});
+            pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing);
+
+            return request(app)
+                .get('/hdc/pdf/taskList/hdc_ap_pss/123')
+                .expect(200)
+                .expect('Content-Type', /html/)
+                .expect(res => {
+                    expect(res.text).to.not.include('id="firstNightTaskStatus">Not complete');
+                    expect(res.text).to.not.include('id="reportingTaskStatus">Not complete');
+                    expect(res.text).to.not.include('id="sentenceTaskStatus">Not complete');
+                    expect(res.text).to.include('id="varApprovalTaskStatus">Not complete');
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce();
                     expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
                         'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'token');
@@ -160,7 +182,7 @@ describe('PDF:', () => {
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
             licenceServiceStub.getLicence.resolves({
-                version: 1,
+                versionDetails: {version: 1},
                 approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
             });
 
@@ -181,8 +203,9 @@ describe('PDF:', () => {
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
             licenceServiceStub.getLicence.resolves({
-                version: 1,
-                approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
+                version: 2,
+                versionDetails: {version: 1, vary_version: 0},
+                approvedVersionDetails: {template: 'hdc_ap', version: 1, vary_version: 0, timestamp: '11/12/13'}
             });
 
             return request(app)
@@ -190,11 +213,11 @@ describe('PDF:', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.include('Ready to print version 2');
+                    expect(res.text).to.include('Ready to print new version');
                     expect(res.text).to.include('AP PSS HDC Licence');
                     expect(res.text).to.include('11/12/13');
                     expect(res.text).to.include('AP HDC Licence');
-                    expect(res.text).to.include('Version 1');
+                    expect(res.text).to.include('Version 1.0');
                 });
         });
 
@@ -203,8 +226,9 @@ describe('PDF:', () => {
             pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing);
 
             licenceServiceStub.getLicence.resolves({
-                version: 2,
-                approvedVersionDetails: {template: 'hdc_ap', version: 1, timestamp: '11/12/13'}
+                version: 3.2,
+                versionDetails: {version: 2, vary_version: 0},
+                approvedVersionDetails: {template: 'hdc_ap', version: 1, vary_version: 1, timestamp: '11/12/13'}
             });
 
             return request(app)
@@ -212,10 +236,10 @@ describe('PDF:', () => {
                 .expect(200)
                 .expect('Content-Type', /html/)
                 .expect(res => {
-                    expect(res.text).to.include('Ready to print version 2');
+                    expect(res.text).to.include('Ready to print new version');
                     expect(res.text).to.include('11/12/13');
                     expect(res.text).to.include('AP HDC Licence');
-                    expect(res.text).to.include('Version 1');
+                    expect(res.text).to.include('Version 1.1');
                 });
         });
 
@@ -250,7 +274,7 @@ describe('PDF:', () => {
                 .expect(res => {
                     expect(pdfServiceStub.generatePdf).to.be.calledOnce();
                     expect(pdfServiceStub.generatePdf).to.be.calledWith(
-                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'token', true);
+                        'hdc_ap_pss', '123', {licence: {key: 'value'}}, 'token', false);
                     expect(res.body.toString()).to.include('PDF-1');
                 });
         });

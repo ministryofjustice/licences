@@ -16,11 +16,16 @@ block content
         div.taskListItem.borderBottomLight
             include tasks/sentenceInfoTask
 
-        div.taskListItem.borderBottom
-            include tasks/firstNightTask
+        if !postRelease
+            div.taskListItem.borderBottom
+                include tasks/firstNightTask
 
-        div.taskListItem.borderBottom
-            include tasks/reportingTask
+            div.taskListItem.borderBottom
+                include tasks/reportingTask
+
+        if postRelease
+            div.taskListItem.borderBottom
+                include tasks/varyApprovalTask
 
         div.taskListItem.borderBottom
             include tasks/createLicenceTask

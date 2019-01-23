@@ -1,6 +1,7 @@
 const logger = require('../../log');
 const {asyncMiddleware} = require('../utils/middleware');
 const {templates} = require('./config/pdf');
+const versionInfo = require('../utils/versionInfo');
 const {firstItem, getIn, isEmpty} = require('../utils/functionalHelpers');
 
 module.exports = ({pdfService, prisonerService}) => (router, audited) => {
@@ -46,8 +47,10 @@ module.exports = ({pdfService, prisonerService}) => (router, audited) => {
             prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
             pdfService.getPdfLicenceData(templateName, bookingId, licence, res.locals.token)
         ]);
+        const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false;
+        const groupsRequired = postRelease ? 'mandatoryPostRelease' : 'mandatory';
 
-        const incompleteGroups = Object.keys(missing).filter(group => missing[group].mandatory);
+        const incompleteGroups = Object.keys(missing).filter(group => missing[group][groupsRequired]);
         const incompletePreferredGroups = Object.keys(missing).filter(group => missing[group].preferred);
 
         const canPrint = !incompleteGroups || isEmpty(incompleteGroups);
@@ -60,30 +63,14 @@ module.exports = ({pdfService, prisonerService}) => (router, audited) => {
             incompleteGroups,
             incompletePreferredGroups,
             canPrint,
-            versionInfo: getVersionInfo(licence, templateLabel)
+            postRelease,
+            versionInfo: versionInfo(licence, templateName)
         });
     }));
 
     function getTemplateLabel(templateName) {
         const templateConfig = templates.find(template => template.id === templateName);
         return getIn(templateConfig, ['label']);
-    }
-
-    function getVersionInfo(licence, templateLabel) {
-
-        const lastTemplateLabel = licence.approvedVersionDetails ?
-            getTemplateLabel(licence.approvedVersionDetails.template) : undefined;
-        const isNewTemplate = licence.approvedVersionDetails && templateLabel !== lastTemplateLabel;
-        const isNewVersion = !licence.approvedVersionDetails || licence.version > licence.approvedVersionDetails.version;
-
-        return {
-            currentVersion: licence.version,
-            lastVersion: licence.approvedVersionDetails,
-            isNewVersion,
-            templateLabel,
-            lastTemplateLabel,
-            isNewTemplate
-        };
     }
 
     router.get('/missing/:section/:templateName/:bookingId', asyncMiddleware(async (req, res) => {
