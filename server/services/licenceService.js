@@ -373,7 +373,8 @@ module.exports = function createLicenceService(licenceClient) {
 
     async function rejectProposedAddress(licence, bookingId, withdrawalReason) {
         const address = getIn(licence, ['proposedAddress', 'curfewAddress']);
-        const addressReview = pick(['curfewAddressReview'], getIn(licence, ['curfew']));
+        const curfew = getIn(licence, ['curfew']);
+        const addressReview = curfew ? pick(['curfewAddressReview'], curfew) : null;
         const riskManagementInputs = getIn(licence, ['risk', 'riskManagement']);
         const riskManagement = riskManagementInputs ? pick(['proposedAddressSuitable', 'unsuitableReason'], riskManagementInputs) : null;
 

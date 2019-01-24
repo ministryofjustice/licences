@@ -1474,6 +1474,55 @@ describe('licenceService', () => {
                     expect(output).to.eql(licence);
                 });
             });
+
+            describe('no curfew', () => {
+
+                const licenceNoCurfew = {
+                    proposedAddress: {
+                        curfewAddress: {key: 'value'},
+                        rejections: []
+                    },
+                    risk: {
+                        riskManagement: {
+                            planningActions: 'Yes',
+                            proposedAddressSuitable: 'No',
+                            unsuitableReason: 'Reasons'
+                        }
+                    }
+                };
+
+                const rejectedAddressLicenceNoCurfew = {
+                    proposedAddress: {
+                        rejections: [{
+                            address: {
+                                key: 'value'
+                            },
+                            riskManagement: {
+                                proposedAddressSuitable: 'No',
+                                unsuitableReason: 'Reasons'
+                            },
+                            withdrawalReason: 'consentWithdrawn'
+                        }]
+                    },
+                    risk: {
+                        riskManagement: {
+                            planningActions: 'Yes'
+                        }
+                    }
+                };
+
+                it('should add proposed address and review to the rejected list', () => {
+                    service.rejectProposedAddress(licenceNoCurfew, '001', 'consentWithdrawn');
+                    expect(licenceClient.updateLicence).to.be.calledOnce();
+                    expect(licenceClient.updateLicence).to.be.calledWith('001', rejectedAddressLicenceNoCurfew);
+                });
+
+                it('should remove from the rejected list and replace in licence structure', async () => {
+                    const output = await service.reinstateProposedAddress(rejectedAddressLicenceNoCurfew, '001');
+                    expect(licenceClient.updateLicence).to.be.calledOnce();
+                    expect(output).to.eql(licenceNoCurfew);
+                });
+            });
         });
 
         describe('when risk does not exist on licence', () => {
