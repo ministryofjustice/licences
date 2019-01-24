@@ -25,7 +25,6 @@ module.exports = token => {
     );
 
     return {
-
         getBooking: function(bookingId) {
             const path = `${apiUrl}/bookings/${bookingId}`;
             return nomisGet({path});
@@ -152,10 +151,7 @@ function nomisGetBuilder(token) {
             return result.body;
 
         } catch (error) {
-
-            logger.warn('Error calling nomis');
-            logger.warn(error);
-
+            logger.warn('Error calling nomis', error.stack);
             throw error;
         }
     };
@@ -179,10 +175,7 @@ function nomisPushBuilder(verb, token) {
             return result.body;
 
         } catch (error) {
-
-            logger.warn('Error calling nomis');
-            logger.warn(error);
-
+            logger.warn('Error calling nomis', error.stack);
             throw error;
         }
     };
