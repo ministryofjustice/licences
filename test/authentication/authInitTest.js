@@ -30,7 +30,7 @@ describe('strategiesTest', () => {
         it('should call signIn from signInService', () => {
             service.localInit('un', 'pw', done);
             expect(signInService.signIn).to.be.calledOnce();
-            expect(signInService.signIn).to.be.calledWith('un', 'pw');
+            expect(signInService.signIn).to.be.calledWith('UN', 'pw');
         });
 
         it('should call done if no token returned', async () => {
@@ -43,7 +43,7 @@ describe('strategiesTest', () => {
         it('should get the user profile from user service', async () => {
             await service.localInit('un', 'pw', done);
             expect(userService.getUserProfile).to.be.calledOnce();
-            expect(userService.getUserProfile).to.be.calledWith('t', 'rt', 'un');
+            expect(userService.getUserProfile).to.be.calledWith('t', 'rt', 'UN');
         });
 
         it('should call done with the user object if the user is not an RO', async () => {

@@ -5,12 +5,13 @@ const logger = require('../../log');
 module.exports = function(signInService, userService, audit) {
 
     async function localInit(username, password, done) {
+        const capUsername = username.toUpperCase();
         try {
-            const {token, refreshToken, expiresIn} = await signInService.signIn(username, password);
+            const {token, refreshToken, expiresIn} = await signInService.signIn(capUsername, password);
             if (!token) {
                 return done(null, false, {message: 'Incorrect username or password'});
             }
-            const user = await getUser(token, refreshToken, expiresIn, username);
+            const user = await getUser(token, refreshToken, expiresIn, capUsername);
             return done(null, user);
 
         } catch (error) {

@@ -5,6 +5,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const OauthStrategy = require('passport-oauth2').Strategy;
 const config = require('../config');
 const {generateOauthClientToken} = require('./oauth');
+const logger = require('../../log');
 
 function authenticationMiddleware(signInService) {
     // eslint-disable-next-line
@@ -15,9 +16,14 @@ function authenticationMiddleware(signInService) {
                 res.locals.token = token;
                 return next();
             }
-            const systemToken = await signInService.getClientCredentialsTokens(username);
-            res.locals.token = systemToken.token;
-            return next();
+            try {
+                const systemToken = await signInService.getClientCredentialsTokens(username);
+                res.locals.token = systemToken.token;
+                return next();
+            } catch (error) {
+                logger.error('Unable to get client credentials token for RO', error.stack);
+                return res.redirect('/logout');
+            }
         }
 
         const redirectPath = '/login';
