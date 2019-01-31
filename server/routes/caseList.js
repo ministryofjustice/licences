@@ -1,5 +1,6 @@
 const logger = require('../../log');
 const {asyncMiddleware} = require('../utils/middleware');
+const {globalSearchUrl} = require('../config').nomis;
 
 module.exports = ({caseListService}) => router => {
 
@@ -15,7 +16,7 @@ module.exports = ({caseListService}) => router => {
             req.params.tab
         );
 
-        return res.render('caseList/index', {hdcEligible, labels, tab: req.params.tab});
+        return res.render('caseList/index', {hdcEligible, labels, tab: req.params.tab, globalSearchUrl});
     }));
 
     return router;

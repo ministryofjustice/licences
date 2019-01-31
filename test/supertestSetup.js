@@ -69,10 +69,6 @@ const pdfServiceStub = {
     generatePdf: sinon.stub().resolves()
 };
 
-const searchServiceStub = {
-    searchOffenders: sinon.stub().resolves()
-};
-
 const userAdminServiceStub = {
     getRoUsers: sinon.stub().resolves(),
     getRoUser: sinon.stub().resolves(),
@@ -164,7 +160,6 @@ const setup = {
     createPrisonerServiceStub,
     caseListServiceStub,
     pdfServiceStub,
-    searchServiceStub,
     userAdminServiceStub,
     authenticationMiddleware,
     testFormPageGets,
