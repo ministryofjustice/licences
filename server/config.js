@@ -37,7 +37,8 @@ module.exports = {
         apiClientId: get('API_CLIENT_ID', 'licences'),
         apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret'),
         licencesAdminApiClientId: get('ADMIN_API_CLIENT_ID', 'licencesadmin'),
-        licencesAdminApiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'clientsecret')
+        licencesAdminApiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'clientsecret'),
+        globalSearchUrl: get('GLOBAL_SEARCH_URL', 'http://localhost:3002/global-search')
     },
 
     https: production,
