@@ -16,7 +16,11 @@ module.exports = ({caseListService}) => router => {
             req.params.tab
         );
 
-        return res.render('caseList/index', {hdcEligible, labels, tab: req.params.tab, globalSearchUrl});
+        return res.render('caseList/index', {
+            hdcEligible,
+            labels,
+            tab: req.params.tab,
+            globalSearchUrl: `${globalSearchUrl}?referrer=licences`});
     }));
 
     return router;
