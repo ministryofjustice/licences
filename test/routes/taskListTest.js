@@ -700,7 +700,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('curfew address not started', () => {
             it('should display a start button for curfew address', () => {
-                licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
+                licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {some: 'thing'}});
 
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 
@@ -769,7 +769,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
         context('additional condition task not started', () => {
             it('should display a start button for additional conditions task', () => {
-                licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {}});
+                licenceService.getLicence.resolves({stage: 'PROCESSING_RO', licence: {some: 'thing'}});
 
                 const app = createApp({licenceService, prisonerService}, 'roUser');
 

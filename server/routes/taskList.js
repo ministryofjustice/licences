@@ -3,14 +3,20 @@ const path = require('path');
 const {getLicenceStatus} = require('../utils/licenceStatus');
 const {getStatusLabel} = require('../utils/licenceStatusLabels');
 const {getAllowedTransition} = require('../utils/licenceStatusTransitions');
-const {pickKey, isEmpty} = require('../utils/functionalHelpers');
+const {isEmpty} = require('../utils/functionalHelpers');
 const getTaskListModel = require('./viewModels/taskListModels');
+const logger = require('../../log');
 
 module.exports = ({prisonerService, licenceService, caseListService, audit}) => router => {
 
     router.get('/:bookingId', asyncMiddleware(async (req, res) => {
         const {bookingId} = req.params;
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token);
+        if (isEmpty(prisonerInfo)) {
+            logger.info('Prisoner not found for task list', bookingId);
+            return res.redirect('/caseList');
+        }
+
         const postRelease = prisonerInfo.agencyLocationId ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT' : false;
         const licence = await licenceService.getLicence(bookingId);
 
@@ -18,10 +24,11 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
 
-        const taskListView = getTaskListView(req.user.role, licence ? licence.stage : 'UNSTARTED', postRelease);
-        const taskListModel = getTaskListModel(taskListView, licenceStatus, licence || {}, allowedTransition);
+        const {taskListModel, taskListView} = getTaskListModel(
+            req.user.role, postRelease, licenceStatus, licence || {}, allowedTransition
+        );
 
-        res.render(isEmpty(taskListModel) ? `taskList/${taskListView}` : 'taskList/taskListBuilder', {
+        res.render(taskListView ? `taskList/${taskListView}` : 'taskList/taskListBuilder', {
             licenceStatus,
             licenceVersion: licence ? licence.version : 0,
             approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
@@ -73,46 +80,4 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
     return router;
 };
 
-const taskListConfig = {
-    caTasksEligibility: {
-        stages: ['ELIGIBILITY', 'UNSTARTED'],
-        role: 'CA'
-    },
-    caTasksPostApproval: {
-        stages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
-        role: 'CA'
-    },
-    caTasksFinalChecks: {
-        stages: ['PROCESSING_CA', 'PROCESSING_RO', 'APPROVAL'],
-        role: 'CA'
-    },
-    roTasks: {
-        stages: ['PROCESSING_RO', 'PROCESSING_CA', 'APPROVAL', 'ELIGIBILITY'],
-        role: 'RO'
-    },
-    roTasksPostApproval: {
-        stages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
-        role: 'RO'
-    },
-    dmTasks: {
-        role: 'DM'
-    }
-};
 
-function getTaskListView(role, stage, postRelease) {
-    if (postRelease) {
-       return 'vary';
-    }
-
-    function roleAndStageMatch(view) {
-        if (view.role !== role) {
-            return false;
-        }
-        if (!view.stages) {
-            return true;
-        }
-        return view.stages.includes(stage);
-    }
-
-    return pickKey(roleAndStageMatch, taskListConfig);
-}

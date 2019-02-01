@@ -4,7 +4,8 @@ describe('TaskList models', () => {
     describe('caEligibility', () => {
         it('should initially show just eligibility task', () => {
             expect(taskListModel(
-                'caTasksEligibility',
+                'CA',
+                false,
                 {
                     decisions: {
                         bassReferralNeeded: false,
@@ -14,18 +15,20 @@ describe('TaskList models', () => {
                     tasks: {
                         eligibility: 'UNSTARTED',
                         optOut: 'UNSTARTED'
-                    }
+                    },
+                    stage: 'ELIGIBILITY'
                 },
                 {},
                 {},
                 null
                 )
-            ).to.eql([{task: 'eligibilityTask'}]);
+            ).to.eql({taskListModel: [{task: 'eligibilityTask'}]});
         });
 
         it('should show info and address task after eligibility successfully completed', () => {
             expect(taskListModel(
-                'caTasksEligibility',
+                'CA',
+                false,
                 {
                     decisions: {
                         bassReferralNeeded: false,
@@ -35,21 +38,23 @@ describe('TaskList models', () => {
                     tasks: {
                         eligibility: 'DONE',
                         optOut: 'UNSTARTED'
-                    }
+                    },
+                    stage: 'ELIGIBILITY'
                 },
                 {},
                 null
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'eligibilityTask'},
                 {task: 'informOffenderTask'},
                 {task: 'proposedAddressTask'}
-            ]);
+            ]});
         });
 
         it('should allow submission to RO when optout completed and not opted out', () => {
             expect(taskListModel(
-                'caTasksEligibility',
+                'CA',
+                false,
                 {
                     decisions: {
                         bassReferralNeeded: false,
@@ -59,21 +64,23 @@ describe('TaskList models', () => {
                     tasks: {
                         eligibility: 'DONE',
                         optOut: 'DONE'
-                    }
+                    },
+                    stage: 'ELIGIBILITY'
                 },
                 {},
                 null
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'eligibilityTask'},
                 {task: 'proposedAddressTask'},
                 {task: 'caSubmitAddressReviewTask'}
-            ]);
+            ]});
         });
 
         it('should allow submission for bass review if bass review selected', () => {
             expect(taskListModel(
-                'caTasksEligibility',
+                'CA',
+                false,
                 {
                     decisions: {
                         bassReferralNeeded: true,
@@ -83,21 +90,23 @@ describe('TaskList models', () => {
                     tasks: {
                         eligibility: 'DONE',
                         optOut: 'DONE'
-                    }
+                    },
+                    stage: 'ELIGIBILITY'
                 },
                 {},
                 null
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'eligibilityTask'},
                 {task: 'proposedAddressTask'},
                 {task: 'caSubmitBassReviewTask'}
-            ]);
+            ]});
         });
 
         it('should not allow submission for if opted out', () => {
             expect(taskListModel(
-                'caTasksEligibility',
+                'CA',
+                false,
                 {
                     decisions: {
                         bassReferralNeeded: true,
@@ -107,20 +116,22 @@ describe('TaskList models', () => {
                     tasks: {
                         eligibility: 'DONE',
                         optOut: 'DONE'
-                    }
+                    },
+                    stage: 'ELIGIBILITY'
                 },
                 {},
                 null
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'eligibilityTask'},
                 {task: 'proposedAddressTask'}
-            ]);
+            ]});
         });
 
         it('should allow submission for refusal if ineligible', () => {
             expect(taskListModel(
-                'caTasksEligibility',
+                'CA',
+                false,
                 {
                     decisions: {
                         bassReferralNeeded: true,
@@ -130,20 +141,22 @@ describe('TaskList models', () => {
                     tasks: {
                         eligibility: 'DONE',
                         optOut: 'DONE'
-                    }
+                    },
+                    stage: 'ELIGIBILITY'
                 },
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'eligibilityTask'},
                 {task: 'caSubmitRefusalTask'}
-            ]);
+            ]});
         });
 
         it('should allow submission for refusal if address rejected', () => {
             expect(taskListModel(
-                'caTasksEligibility',
+                'CA',
+                false,
                 {
                     decisions: {
                         bassReferralNeeded: true,
@@ -154,23 +167,25 @@ describe('TaskList models', () => {
                     tasks: {
                         eligibility: 'DONE',
                         optOut: 'DONE'
-                    }
+                    },
+                    stage: 'ELIGIBILITY'
                 },
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'eligibilityTask'},
                 {task: 'proposedAddressTask'},
                 {task: 'caSubmitRefusalTask'}
-            ]);
+            ]});
         });
     });
 
     describe('caFinalChecks', () => {
         it('should return list of tasks for standard route', () => {
             expect(taskListModel(
-                'caTasksFinalChecks',
+                'CA',
+                false,
                 {
                     decisions: {
                         bassReferralNeeded: false,
@@ -181,12 +196,13 @@ describe('TaskList models', () => {
                     },
                     tasks: {
                         bassAreaCheck: 'UNSTARTED'
-                    }
+                    },
+                    stage: 'PROCESSING_CA'
                 },
                 {},
                 null
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'curfewAddressTask'},
                 {task: 'riskManagementTask'},
                 {task: 'victimLiaisonTask'},
@@ -197,12 +213,13 @@ describe('TaskList models', () => {
                 {task: 'postponementTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitApprovalTask'}
-            ]);
+            ]});
         });
 
         it('should return a limited set of tasks of curfew address not approved', () => {
             expect(taskListModel(
-                'caTasksFinalChecks',
+                'CA',
+                false,
                 {
                     decisions: {
                         curfewAddressApproved: false,
@@ -214,21 +231,23 @@ describe('TaskList models', () => {
                     },
                     tasks: {
                         bassAreaCheck: 'UNSTARTED'
-                    }
+                    },
+                    stage: 'PROCESSING_CA'
                 },
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'curfewAddressTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitRefusalTask'}
-            ]);
+            ]});
         });
 
         it('should show risk if adderss unsuitable', () => {
             expect(taskListModel(
-                'caTasksFinalChecks',
+                'CA',
+                false,
                 {
                     decisions: {
                         curfewAddressApproved: false,
@@ -238,22 +257,24 @@ describe('TaskList models', () => {
                         optedOut: false,
                         addressUnsuitable: true
                     },
-                    tasks: {}
+                    tasks: {},
+                    stage: 'PROCESSING_CA'
                 },
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'curfewAddressTask'},
                 {task: 'riskManagementTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitRefusalTask'}
-            ]);
+            ]});
         });
 
         it('should return bass specific list of tasks', () => {
             expect(taskListModel(
-                'caTasksFinalChecks',
+                'CA',
+                false,
                 {
                     decisions: {
                         curfewAddressApproved: false,
@@ -264,11 +285,12 @@ describe('TaskList models', () => {
                     },
                     tasks: {
                         bassAreaCheck: 'DONE'
-                    }
+                    },
+                    stage: 'PROCESSING_CA'
                 },
                 'caToDm'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'bassOfferTask'},
                 {task: 'riskManagementTask'},
                 {task: 'victimLiaisonTask'},
@@ -279,12 +301,13 @@ describe('TaskList models', () => {
                 {task: 'postponementTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitApprovalTask'}
-            ]);
+            ]});
         });
 
         it('should not show submit tasks if opted out', () => {
             expect(taskListModel(
-                'caTasksFinalChecks',
+                'CA',
+                false,
                 {
                     decisions: {
                         curfewAddressApproved: false,
@@ -295,12 +318,13 @@ describe('TaskList models', () => {
                     },
                     tasks: {
                         bassAreaCheck: 'DONE'
-                    }
+                    },
+                    stage: 'PROCESSING_CA'
                 },
                 {},
                 'caToDm'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'bassOfferTask'},
                 {task: 'riskManagementTask'},
                 {task: 'victimLiaisonTask'},
@@ -310,12 +334,13 @@ describe('TaskList models', () => {
                 {task: 'finalChecksTask'},
                 {task: 'postponementTask'},
                 {task: 'HDCRefusalTask'}
-            ]);
+            ]});
         });
 
         it('should return limited bass specific list of tasks when bass area check not done', () => {
             expect(taskListModel(
-                'caTasksFinalChecks',
+                'CA',
+                false,
                 {
                     decisions: {
                         curfewAddressApproved: false,
@@ -326,21 +351,23 @@ describe('TaskList models', () => {
                     },
                     tasks: {
                         bassAreaCheck: 'UNFINISHED'
-                    }
+                    },
+                    stage: 'PROCESSING_CA'
                 },
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'bassOfferTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitRefusalTask'}
-            ]);
+            ]});
         });
 
         it('should return limited bass specific list of tasks when bass excluded', () => {
             expect(taskListModel(
-                'caTasksFinalChecks',
+                'CA',
+                false,
                 {
                     decisions: {
                         curfewAddressApproved: false,
@@ -351,42 +378,46 @@ describe('TaskList models', () => {
                     },
                     tasks: {
                         bassAreaCheck: 'DONE'
-                    }
+                    },
+                    stage: 'PROCESSING_CA'
                 },
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'bassOfferTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitRefusalTask'}
-            ]);
+            ]});
         });
 
         it('should show proposed address task if caToRo transition (new address added)', () => {
             expect(taskListModel(
-                'caTasksFinalChecks',
+                'CA',
+                false,
                 {
                     decisions: {
                         bassReferralNeeded: false
                     },
-                    tasks: {}
+                    tasks: {},
+                    stage: 'PROCESSING_CA'
                 },
                 {},
                 'caToRo'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'proposedAddressTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitAddressReviewTask'}
-            ]);
+            ]});
         });
     });
 
     describe('caTasksPostApproval', () => {
         it('should return list of tasks for standard route', () => {
             expect(taskListModel(
-                'caTasksPostApproval',
+                'CA',
+                false,
                 {
                     decisions: {
                         eligible: true,
@@ -402,12 +433,13 @@ describe('TaskList models', () => {
                     tasks: {
                         bassAreaCheck: 'UNSTARTED',
                         bassOffer: 'UNSTARTED'
-                    }
+                    },
+                    stage: 'DECIDED'
                 },
                 {},
                 null
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'eligibilitySummaryTask'},
                 {task: 'curfewAddressTask'},
                 {task: 'riskManagementTask'},
@@ -419,12 +451,13 @@ describe('TaskList models', () => {
                 {task: 'postponementTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'createLicenceTask'}
-            ]);
+            ]});
         });
 
         it('should return bass tasks if required', () => {
             expect(taskListModel(
-                'caTasksPostApproval',
+                'CA',
+                false,
                 {
                     decisions: {
                         eligible: true,
@@ -440,12 +473,13 @@ describe('TaskList models', () => {
                     tasks: {
                         bassAreaCheck: 'UNSTARTED',
                         bassOffer: 'DONE'
-                    }
+                    },
+                    stage: 'MODIFIED'
                 },
                 {},
                 null
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'eligibilitySummaryTask'},
                 {task: 'bassAddressTask'},
                 {task: 'riskManagementTask'},
@@ -457,12 +491,13 @@ describe('TaskList models', () => {
                 {task: 'postponementTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'createLicenceTask'}
-            ]);
+            ]});
         });
 
         it('should return just eligibility and notice if ineligible ', () => {
             expect(taskListModel(
-                'caTasksPostApproval',
+                'CA',
+                false,
                 {
                     decisions: {
                         eligible: false,
@@ -477,20 +512,22 @@ describe('TaskList models', () => {
                     tasks: {
                         bassAreaCheck: 'UNSTARTED',
                         bassOffer: 'DONE'
-                    }
+                    },
+                    stage: 'MODIFIED_APPROVAL'
                 },
                 {},
                 null
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'eligibilitySummaryTask'},
                 {task: 'informOffenderTask'}
-            ]);
+            ]});
         });
 
         it('should send for refusal if no approved address and no new one added', () => {
             expect(taskListModel(
-                'caTasksPostApproval',
+                'CA',
+                false,
                 {
                     decisions: {
                         eligible: true,
@@ -502,21 +539,23 @@ describe('TaskList models', () => {
                         optedOut: false,
                         dmRefused: false
                     },
-                    tasks: {}
+                    tasks: {},
+                    stage: 'DECIDED'
                 },
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'curfewAddressTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitRefusalTask'}
-            ]);
+            ]});
         });
 
         it('should show proposed address task if caToRo transition (new address added)', () => {
             expect(taskListModel(
-                'caTasksPostApproval',
+                'CA',
+                false,
                 {
                     decisions: {
                         eligible: true,
@@ -531,16 +570,17 @@ describe('TaskList models', () => {
                     tasks: {
                         bassAreaCheck: 'UNSTARTED',
                         bassOffer: 'DONE'
-                    }
+                    },
+                    stage: 'DECIDED'
                 },
                 {},
                 'caToRo'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'proposedAddressTask'},
                 {task: 'HDCRefusalTask'},
                 {task: 'caSubmitAddressReviewTask'}
-            ]);
+            ]});
         });
     });
 
@@ -548,7 +588,8 @@ describe('TaskList models', () => {
     describe('vary', () => {
         it('should return vary licence task if licence is unstarted', () => {
             expect(taskListModel(
-                'vary',
+                'RO',
+                true,
                 {
                     decisions: {},
                     tasks: {},
@@ -557,12 +598,13 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql([{task: 'varyLicenceTask'}]);
+            ).to.eql({taskListModel: [{task: 'varyLicenceTask'}]});
         });
 
         it('should return the rest if licence not unstarted', () => {
             expect(taskListModel(
-                'vary',
+                'RO',
+                true,
                 {
                     decisions: {},
                     tasks: {},
@@ -571,19 +613,20 @@ describe('TaskList models', () => {
                 {version: 1},
                 null
                 )
-            ).to.eql([
-                {title: 'Permission for variation', link: '/hdc/vary/evidence/'},
-                {title: 'Curfew address', link: '/hdc/vary/address/'},
-                {title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
-                {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
-                {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
+            ).to.eql({taskListModel: [
+                {title: 'Permission for variation', link: {text: 'Change', href: '/hdc/vary/evidence/'}},
+                {title: 'Curfew address', link: {text: 'Change', href: '/hdc/vary/address/'}},
+                {title: 'Additional conditions', link: {text: 'Change', href: '/hdc/licenceConditions/standard/'}},
+                {title: 'Curfew hours', link: {text: 'Change', href: '/hdc/curfew/curfewHours/'}},
+                {title: 'Reporting instructions', link: {text: 'Change', href: '/hdc/vary/reportingAddress/'}},
                 {title: 'Create licence', label: 'Ready to create version 1', btn: {link: '/hdc/pdf/select/', text: 'Continue'}}
-            ]);
+            ]});
         });
 
         it('should show current version if one exists and not show create task if version not different', () => {
             expect(taskListModel(
-                'vary',
+                'RO',
+                true,
                 {
                     decisions: {},
                     tasks: {},
@@ -596,19 +639,20 @@ describe('TaskList models', () => {
                 },
                 null
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {title: 'View current licence', label: 'Licence version 2', btn: {link: '/hdc/pdf/create/templateName/', text: 'View'}},
-                {title: 'Permission for variation', link: '/hdc/vary/evidence/'},
-                {title: 'Curfew address', link: '/hdc/vary/address/'},
-                {title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
-                {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
-                {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'}
-            ]);
+                {title: 'Permission for variation', link: {text: 'Change', href: '/hdc/vary/evidence/'}},
+                {title: 'Curfew address', link: {text: 'Change', href: '/hdc/vary/address/'}},
+                {title: 'Additional conditions', link: {text: 'Change', href: '/hdc/licenceConditions/standard/'}},
+                {title: 'Curfew hours', link: {text: 'Change', href: '/hdc/curfew/curfewHours/'}},
+                {title: 'Reporting instructions', link: {text: 'Change', href: '/hdc/vary/reportingAddress/'}}
+            ]});
         });
 
         it('should not show current version if approved version is empty', () => {
             expect(taskListModel(
-                'vary',
+                'RO',
+                true,
                 {
                     decisions: {},
                     tasks: {},
@@ -621,19 +665,20 @@ describe('TaskList models', () => {
                 },
                 null
                 )
-            ).to.eql([
-                {title: 'Permission for variation', link: '/hdc/vary/evidence/'},
-                {title: 'Curfew address', link: '/hdc/vary/address/'},
-                {title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
-                {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
-                {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
+            ).to.eql({taskListModel: [
+                {title: 'Permission for variation', link: {text: 'Change', href: '/hdc/vary/evidence/'}},
+                {title: 'Curfew address', link: {text: 'Change', href: '/hdc/vary/address/'}},
+                {title: 'Additional conditions', link: {text: 'Change', href: '/hdc/licenceConditions/standard/'}},
+                {title: 'Curfew hours', link: {text: 'Change', href: '/hdc/curfew/curfewHours/'}},
+                {title: 'Reporting instructions', link: {text: 'Change', href: '/hdc/vary/reportingAddress/'}},
                 {title: 'Create licence', label: 'Ready to create version 2.2', btn: {link: '/hdc/pdf/select/', text: 'Continue'}}
-            ]);
+            ]});
         });
 
         it('should show create licence if version ahead of approved version', () => {
             expect(taskListModel(
-                'vary',
+                'RO',
+                true,
                 {
                     decisions: {},
                     tasks: {},
@@ -646,32 +691,34 @@ describe('TaskList models', () => {
                 },
                 null
                 )
-            ).to.eql([
-                {title: 'Permission for variation', link: '/hdc/vary/evidence/'},
-                {title: 'Curfew address', link: '/hdc/vary/address/'},
-                {title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
-                {title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
-                {title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
+            ).to.eql({taskListModel: [
+                {title: 'Permission for variation', link: {text: 'Change', href: '/hdc/vary/evidence/'}},
+                {title: 'Curfew address', link: {text: 'Change', href: '/hdc/vary/address/'}},
+                {title: 'Additional conditions', link: {text: 'Change', href: '/hdc/licenceConditions/standard/'}},
+                {title: 'Curfew hours', link: {text: 'Change', href: '/hdc/curfew/curfewHours/'}},
+                {title: 'Reporting instructions', link: {text: 'Change', href: '/hdc/vary/reportingAddress/'}},
                 {title: 'Create licence', label: 'Ready to create version 1.2', btn: {link: '/hdc/pdf/select/', text: 'Continue'}}
-            ]);
+            ]});
         });
     });
 
     describe('caTasksPostApproval', () => {
         it('should show all tasks if address not rejected', () => {
             expect(taskListModel(
-                'roTasks',
+                'RO',
+                false,
                 {
                     decisions: {
                         addressReviewFailed: false,
                         addressUnsuitable: false
                     },
-                    tasks: {}
+                    tasks: {},
+                    stage: 'PROCESSING_RO'
                 },
                 {},
                 'roToCa'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'curfewAddressTask'},
                 {task: 'riskManagementTask'},
                 {task: 'victimLiaisonTask'},
@@ -679,24 +726,26 @@ describe('TaskList models', () => {
                 {task: 'additionalConditionsTask'},
                 {task: 'reportingInstructionsTask'},
                 {task: 'roSubmitTask'}
-            ]);
+            ]});
         });
 
         it('should show bass task if bass referral needed', () => {
             expect(taskListModel(
-                'roTasks',
+                'RO',
+                false,
                 {
                     decisions: {
                         addressReviewFailed: false,
                         addressUnsuitable: false,
                         bassReferralNeeded: true
                     },
-                    tasks: {}
+                    tasks: {},
+                    stage: 'PROCESSING_CA'
                 },
                 {},
                 'roToCa'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'bassAreaTask'},
                 {task: 'riskManagementTask'},
                 {task: 'victimLiaisonTask'},
@@ -704,12 +753,13 @@ describe('TaskList models', () => {
                 {task: 'additionalConditionsTask'},
                 {task: 'reportingInstructionsTask'},
                 {task: 'roSubmitTask'}
-            ]);
+            ]});
         });
 
         it('should show only curfew address review task and send if review failed', () => {
             expect(taskListModel(
-                'roTasks',
+                'RO',
+                false,
                 {
                     decisions: {
                         addressReviewFailed: true,
@@ -717,20 +767,22 @@ describe('TaskList models', () => {
                         addressUnsuitable: false,
                         bassReferralNeeded: false
                     },
-                    tasks: {}
+                    tasks: {},
+                    stage: 'APPROVAL'
                 },
                 {},
                 'roToCa'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'curfewAddressTask'},
                 {task: 'roSubmitTask'}
-            ]);
+            ]});
         });
 
         it('should show only risk task and send if unsuitable failed', () => {
             expect(taskListModel(
-                'roTasks',
+                'RO',
+                false,
                 {
                     decisions: {
                         curfewAddressRejected: true,
@@ -738,15 +790,38 @@ describe('TaskList models', () => {
                         addressReviewFailed: false,
                         addressUnsuitable: true
                     },
-                    tasks: {}
+                    tasks: {},
+                    stage: 'ELIGIBILITY'
                 },
                 {},
                 'roToCa'
                 )
-            ).to.eql([
+            ).to.eql({taskListModel: [
                 {task: 'riskManagementTask'},
                 {task: 'roSubmitTask'}
-            ]);
+            ]});
+        });
+    });
+
+    describe('no task list', () => {
+        it('should return no licence task', () => {
+            expect(taskListModel(
+                'RO',
+                false,
+                {
+                    decisions: {},
+                    tasks: {},
+                    stage: 'UNSTARTED'
+                },
+                {},
+                'roToCa'
+                )
+            ).to.eql({taskListModel: [
+                {
+                    title: 'No active licence',
+                    link: {text: 'Return to case list', href: '/caseList/'}
+                }
+            ]});
         });
     });
 });
