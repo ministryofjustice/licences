@@ -8,6 +8,6 @@ mixin standardTask(taskObject)
 
         div.pure-u-1.pure-u-md-1-4.center.buttonContainer
             if taskObject.link
-                +change(taskObject.link + prisonerInfo.bookingId)
+                a.taskListAction(href=taskObject.link.href + prisonerInfo.bookingId, id=id) #{taskObject.link.text}
             if taskObject.btn
                 a.taskListAction.center.button(href=taskObject.btn.link + prisonerInfo.bookingId) #{taskObject.btn.text}

@@ -1,18 +1,47 @@
-const {pick, pickBy, keys, mapObject, isEmpty} = require('../../utils/functionalHelpers');
+const {pick, pickBy, pickKey, keys, mapObject, isEmpty} = require('../../utils/functionalHelpers');
 const versionInfo = require('../../utils/versionInfo');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
 const getPdfLink = ({approvedVersionDetails}) => `/hdc/pdf/create/${approvedVersionDetails.template}/`;
 
-const tasksData = {
+const taskListsConfig = {
+    caTasksEligibility: {
+        stages: ['ELIGIBILITY', 'UNSTARTED'],
+        role: 'CA'
+    },
+    caTasksPostApproval: {
+        stages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
+        role: 'CA'
+    },
+    caTasksFinalChecks: {
+        stages: ['PROCESSING_CA', 'PROCESSING_RO', 'APPROVAL'],
+        role: 'CA'
+    },
+    roTasks: {
+        stages: ['PROCESSING_RO', 'PROCESSING_CA', 'APPROVAL', 'ELIGIBILITY'],
+        role: 'RO'
+    },
+    roTasksPostApproval: {
+        stages: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'],
+        role: 'RO'
+    },
+    dmTasks: {
+        role: 'DM'
+    }
+};
+
+const tasksConfig = {
     caTasksEligibility: [
         {task: 'eligibilityTask', filters: []},
         {task: 'informOffenderTask', filters: ['eligibilityDone', 'optOutUnstarted', '!optedOut']},
         {task: 'proposedAddressTask', filters: ['eligible']},
         {task: 'caSubmitRefusalTask', filters: ['caToDmRefusal']},
         {task: 'caSubmitBassReviewTask', filters: ['optOutDone', '!optedOut', 'bassReferralNeeded', '!caToDmRefusal']},
-        {task: 'caSubmitAddressReviewTask', filters: ['optOutDone', '!optedOut', '!bassReferralNeeded', '!caToDmRefusal']}
+        {
+            task: 'caSubmitAddressReviewTask',
+            filters: ['optOutDone', '!optedOut', '!bassReferralNeeded', '!caToDmRefusal']
+        }
     ],
     caTasksFinalChecks: [
         {task: 'curfewAddressTask', filters: ['!bassReferralNeeded', '!caToRo']},
@@ -48,7 +77,10 @@ const tasksData = {
         {task: 'caSubmitRefusalTask', filters: ['eligible', 'caToDmRefusal']},
         {task: 'caSubmitBassReviewTask', filters: ['eligible', 'caToRo', 'bassReferralNeeded']},
         {task: 'caSubmitAddressReviewTask', filters: ['eligible', 'caToRo', '!bassReferralNeeded']},
-        {task: 'createLicenceTask', filters: ['eligible', 'addressOrBassOffered', '!caToDm', '!caToDmRefusal', '!caToRo']},
+        {
+            task: 'createLicenceTask',
+            filters: ['eligible', 'addressOrBassOffered', '!caToDm', '!caToDmRefusal', '!caToRo']
+        },
         {task: 'informOffenderTask', filters: ['!eligible']}
     ],
     roTasks: [
@@ -68,27 +100,58 @@ const tasksData = {
             btn: {text: 'View', link: getPdfLink},
             label: getVersionLabel
         },
-        {task: 'varyLicenceTask', filters: ['licenceUnstarted']},
-        {filters: ['!licenceUnstarted'], title: 'Permission for variation', link: '/hdc/vary/evidence/'},
-        {filters: ['!licenceUnstarted'], title: 'Curfew address', link: '/hdc/vary/address/'},
-        {filters: ['!licenceUnstarted'], title: 'Additional conditions', link: '/hdc/licenceConditions/standard/'},
-        {filters: ['!licenceUnstarted'], title: 'Curfew hours', link: '/hdc/curfew/curfewHours/'},
-        {filters: ['!licenceUnstarted'], title: 'Reporting instructions', link: '/hdc/vary/reportingAddress/'},
+        {
+            task: 'varyLicenceTask',
+            filters: ['licenceUnstarted']},
+        {
+            filters: ['!licenceUnstarted'],
+            title: 'Permission for variation',
+            link: {text: 'Change', href: '/hdc/vary/evidence/'}
+        },
+        {
+            filters: ['!licenceUnstarted'], title: 'Curfew address',
+            link: {text: 'Change', href: '/hdc/vary/address/'}},
+        {
+            filters: ['!licenceUnstarted'],
+            title: 'Additional conditions',
+            link: {text: 'Change', href: '/hdc/licenceConditions/standard/'}
+        },
+        {
+            filters: ['!licenceUnstarted'],
+            title: 'Curfew hours',
+            link: {text: 'Change', href: '/hdc/curfew/curfewHours/'}
+        },
+        {
+            filters: ['!licenceUnstarted'],
+            title: 'Reporting instructions',
+            link: {text: 'Change', href: '/hdc/vary/reportingAddress/'}
+        },
         {
             filters: ['!licenceUnstarted', 'isNewVersion'],
             title: 'Create licence',
             btn: {text: 'Continue', link: '/hdc/pdf/select/'},
             label: getNextVersionLabel
         }
+    ],
+    noTaskList: [
+        {
+            title: 'No active licence',
+            link: {text: 'Return to case list', href: '/caseList/'},
+            filters: []
+        }
     ]
 };
 
 module.exports = (
-    taskList, {decisions, tasks, stage}, {version, versionDetails, approvedVersion, approvedVersionDetails}, allowedTransition
+    role,
+    postRelease,
+    {decisions, tasks, stage},
+    {version, versionDetails, approvedVersion, approvedVersionDetails},
+    allowedTransition
 ) => {
-
-    if (!tasksData[taskList]) {
-        return null;
+    const taskList = getTaskList(role, stage, postRelease);
+    if (!tasksConfig[taskList]) {
+        return {taskListView: taskList};
     }
 
     const {
@@ -130,27 +193,52 @@ module.exports = (
         isNewVersion: versionInfo({version, versionDetails, approvedVersionDetails}).isNewVersion
     }));
 
-    return tasksData[taskList]
-        .filter(task => task.filters.every(filter => {
-            if (filter[0] !== '!') {
-                return filtersForTaskList.includes(filter);
-            }
-            return !filtersForTaskList.includes(filter.slice(1));
-        }))
-        .map(task => {
-            const rawConfig = pick(['task', 'title', 'link', 'btn', 'label'], task);
-            const callAnyFunctions = value => {
-                if (typeof value === 'string') {
-                    return value;
-                }
-                if (typeof value === 'function') {
-                    return value({approvedVersion, version, approvedVersionDetails});
-                }
-                return mapObject(callAnyFunctions, value);
-            };
-            return mapObject(callAnyFunctions, rawConfig);
-        });
+    const taskListModel = tasksConfig[taskList]
+        .filter(filtersMatch(filtersForTaskList))
+        .map(decorateTaskModel(approvedVersion, version, approvedVersionDetails));
+
+    return {taskListModel};
+
 };
+
+const filtersMatch = filterList => task => task.filters.every(filter => {
+    if (filter[0] !== '!') {
+        return filterList.includes(filter);
+    }
+    return !filterList.includes(filter.slice(1));
+});
+
+const decorateTaskModel = (approvedVersion, version, approvedVersionDetails) => task => {
+    const rawConfig = pick(['task', 'title', 'link', 'btn', 'label'], task);
+    const callAnyFunctions = value => {
+        if (typeof value === 'string') {
+            return value;
+        }
+        if (typeof value === 'function') {
+            return value({approvedVersion, version, approvedVersionDetails});
+        }
+        return mapObject(callAnyFunctions, value);
+    };
+    return mapObject(callAnyFunctions, rawConfig);
+};
+
+function getTaskList(role, stage, postRelease) {
+    if (postRelease) {
+        return 'vary';
+    }
+
+    function roleAndStageMatch(view) {
+        if (view.role !== role) {
+            return false;
+        }
+        if (!view.stages) {
+            return true;
+        }
+        return view.stages.includes(stage);
+    }
+
+    return pickKey(roleAndStageMatch, taskListsConfig) || 'noTaskList';
+}
 
 function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bassAreaCheck, bassOffer}) {
     const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted);
