@@ -78,8 +78,8 @@ block content
                     div.form-group
                         label(for='addressReviewComments') Provide details (optional)
                             textarea(name='addressReviewComments' id='addressReviewComments' class='form-control' rows='5' aria-label="Provide details")
-                                if address.addressReviewComments
-                                    | #{address.addressReviewComments}
+                                if data.addressReviewComments
+                                    | #{data.addressReviewComments}
 
 
             include ../includes/formSubmit
