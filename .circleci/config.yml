@@ -1,5 +1,5 @@
 defaults: &defaults
-  working_directory: ~/noms-digital-studio/licences
+  working_directory: ~/ministryofjustice/licences
   docker:
     - image: circleci/node:8
 
@@ -60,7 +60,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/noms-digital-studio/licences
+          at: ~/ministryofjustice/licences
       - setup_remote_docker:
           exclusive: true
       - run:
@@ -89,7 +89,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/noms-digital-studio/licences
+          at: ~/ministryofjustice/licences
       - setup_remote_docker:
           exclusive: true
       - run:
@@ -115,13 +115,13 @@ jobs:
           path: Dockerrun.aws.json
 
   deploy_release_to_eb:
-      working_directory: ~/noms-digital-studio/licences
+      working_directory: ~/ministryofjustice/licences
       docker:
         - image: mojdigitalstudio/circleci-node-awsebcli
       steps:
         - checkout
         - attach_workspace:
-            at: ~/noms-digital-studio/licences
+            at: ~/ministryofjustice/licences
         - deploy:
             name: Deploy to Elastic Beanstalk Dev
             command: |
@@ -139,16 +139,16 @@ jobs:
       - run:
           name: execute feature tests - mock
           command: |
-            curl -v -X POST https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
+            curl -v -X POST https://circleci.com/api/v1.1/project/github/ministryofjustice/licences-feature-specs?circle-token=$CIRCLE_TOKEN
 
   deploy_stage:
-      working_directory: ~/noms-digital-studio/licences
+      working_directory: ~/ministryofjustice/licences
       docker:
         - image: mojdigitalstudio/circleci-node-awsebcli
       steps:
         - checkout
         - attach_workspace:
-            at: ~/noms-digital-studio/licences
+            at: ~/ministryofjustice/licences
         - deploy:
             name: Deploy to Elastic Beanstalk Stage
             command: |
@@ -165,13 +165,13 @@ jobs:
   accept_stage:
     docker:
       - image: circleci/node:8
-    working_directory: ~/noms-digital-studio/licences
+    working_directory: ~/ministryofjustice/licences
     steps:
       - run:
           name: execute feature tests - stage
           command: |
             curl -v -X POST --data build_parameters[CIRCLE_JOB]=accept_stage \
-              https://circleci.com/api/v1.1/project/github/noms-digital-studio/licences-feature-specs?circle-token=$CIRCLE_TOKEN
+              https://circleci.com/api/v1.1/project/github/ministryofjustice/licences-feature-specs?circle-token=$CIRCLE_TOKEN
 workflows:
   version: 2
   build_test_deploy:

@@ -29,14 +29,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/noms-digital-studio/licences.git"
+    "url": "git+https://github.com/ministryofjustice/licences.git"
   },
   "author": "HMPPS Digital Studio",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/noms-digital-studio/licences/issues"
+    "url": "https://github.com/ministryofjustice/licences/issues"
   },
-  "homepage": "https://github.com/noms-digital-studio/licences#readme",
+  "homepage": "https://github.com/ministryofjustice/licences#readme",
   "dependencies": {
     "applicationinsights": "^1.0.6",
     "body-parser": "^1.18.3",
