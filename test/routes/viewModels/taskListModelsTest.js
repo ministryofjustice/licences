@@ -1110,8 +1110,23 @@ describe('TaskList models', () => {
             ).to.eql({
                 taskListModel: [
                     {task: 'eligibilitySummaryTask'},
-                    {task: 'curfewAddressTask'},
-                    {task: 'returnToCaTask'},
+                    {
+                        title: 'Proposed curfew address',
+                        label: 'Address withdrawn',
+                        action: {
+                            type: 'btn-secondary',
+                            href: '/hdc/review/address/',
+                            text: 'View'
+                        }
+                    },
+                    {
+                        title: 'Return to prison case admin',
+                        action: {
+                            type: 'btn-secondary',
+                            href: '/hdc/send/return/',
+                            text: 'Return to prison case admin'
+                        }
+                    },
                     {task: 'refusalTask'}
                 ]
             });
@@ -1137,8 +1152,23 @@ describe('TaskList models', () => {
             ).to.eql({
                 taskListModel: [
                     {task: 'eligibilitySummaryTask'},
-                    {task: 'curfewAddressTask'},
-                    {task: 'returnToCaTask'},
+                    {
+                        title: 'Proposed curfew address',
+                        label: 'Not completed',
+                        action: {
+                            type: 'btn-secondary',
+                            href: '/hdc/review/address/',
+                            text: 'View'
+                        }
+                    },
+                    {
+                        title: 'Return to prison case admin',
+                        action: {
+                            type: 'btn-secondary',
+                            href: '/hdc/send/return/',
+                            text: 'Return to prison case admin'
+                        }
+                    },
                     {task: 'refusalTask'}
                 ]
             });

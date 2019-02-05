@@ -23,8 +23,23 @@ module.exports = ({decisions, tasks, stage}) => {
     if (addressWithdrawn || curfewAddressRejected) {
         return [
             {task: 'eligibilitySummaryTask'},
-            {task: 'curfewAddressTask'},
-            {task: 'returnToCaTask'},
+            {
+                title: 'Proposed curfew address',
+                label: curfewAddress.getLabel({decisions, tasks}),
+                action: {
+                    type: 'btn-secondary',
+                    href: '/hdc/review/address/',
+                    text: 'View'
+                }
+            },
+            {
+                title: 'Return to prison case admin',
+                action: {
+                    type: 'btn-secondary',
+                    href: '/hdc/send/return/',
+                    text: 'Return to prison case admin'
+                }
+            },
             {task: 'refusalTask'}
         ];
     }
