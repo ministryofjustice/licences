@@ -216,7 +216,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'curfewAddressTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/address/',
+                            text: 'Change',
+                            type: 'link'
+                        },
+                        label: 'Not completed',
+                        title: 'Proposed curfew address'
+                    },
                     {task: 'riskManagementTask'},
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
@@ -257,7 +265,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'curfewAddressTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/address/',
+                            text: 'Change',
+                            type: 'link'
+                        },
+                        label: 'Not completed',
+                        title: 'Proposed curfew address'
+                    },
                     {task: 'HDCRefusalTask'},
                     {task: 'caSubmitRefusalTask'}
                 ]
@@ -285,7 +301,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'curfewAddressTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/address/',
+                            text: 'Change',
+                            type: 'link'
+                        },
+                        label: 'Not completed',
+                        title: 'Proposed curfew address'
+                    },
                     {task: 'riskManagementTask'},
                     {task: 'HDCRefusalTask'},
                     {task: 'caSubmitRefusalTask'}
@@ -522,7 +546,15 @@ describe('TaskList models', () => {
             ).to.eql({
                 taskListModel: [
                     {task: 'eligibilitySummaryTask'},
-                    {task: 'curfewAddressTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/address/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Proposed curfew address'
+                    },
                     {task: 'riskManagementTask'},
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
@@ -649,7 +681,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'curfewAddressTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/address/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Proposed curfew address'
+                    },
                     {task: 'HDCRefusalTask'},
                     {task: 'caSubmitRefusalTask'}
                 ]
@@ -850,7 +890,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'curfewAddressTask'},
+                    {
+                        action: {
+                            href: '/hdc/curfew/curfewAddressReview/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Proposed curfew address'
+                    },
                     {task: 'riskManagementTask'},
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
@@ -909,7 +957,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'curfewAddressTask'},
+                    {
+                        action: {
+                            href: '/hdc/curfew/curfewAddressReview/',
+                            text: 'Change',
+                            type: 'link'
+                        },
+                        label: 'Address rejected',
+                        title: 'Proposed curfew address'
+                    },
                     {task: 'roSubmitTask'}
                 ]
             });
@@ -1036,7 +1092,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'curfewAddressTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/address/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Proposed curfew address'
+                    },
                     {task: 'riskManagementTask'},
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
