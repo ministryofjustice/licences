@@ -52,8 +52,18 @@ module.exports = {
     },
     postpone: {
         licenceSection: 'postpone',
+        validate: true,
         fields: [
-            {decision: {}}
+            {decision: {
+                responseType: 'requiredYesNo',
+                validationMessage: 'Select yes or no'
+            }},
+            {postponeReason: {
+                dependentOn: 'decision',
+                predicate: 'Yes',
+                responseType: 'requiredStringIf_decision_Yes',
+                validationMessage: 'Enter a reason'
+            }}
         ],
         nextPath: {
             path: '/hdc/taskList/'
