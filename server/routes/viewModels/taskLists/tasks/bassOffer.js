@@ -22,9 +22,9 @@ module.exports = {
             }
             // TODO warning box
             if (bassAccepted === 'Unsuitable') {
-                return 'Not suitable for BASS';
+                return 'WARNING||Not suitable for BASS';
             }
-            return 'Address not available';
+            return 'WARNING||Address not available';
         }
 
         if (bassAreaCheck === 'DONE' && bassAreaSuitable) {
