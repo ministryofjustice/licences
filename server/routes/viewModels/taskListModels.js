@@ -2,6 +2,7 @@ const {pick, pickBy, pickKey, keys, mapObject, isEmpty} = require('../../utils/f
 const versionInfo = require('../../utils/versionInfo');
 const getDmTasks = require('./taskLists/dmTasks');
 const postponement = require('./taskLists/tasks/postponement');
+const bassOffer = require('./taskLists/tasks/bassOffer');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -48,7 +49,12 @@ const tasksConfig = {
     caTasksFinalChecks: [
         {task: 'curfewAddressTask', filters: ['!bassReferralNeeded', '!caToRo']},
         {task: 'proposedAddressTask', filters: ['caToRo']},
-        {task: 'bassOfferTask', filters: ['bassReferralNeeded']},
+        {
+            title: 'BASS address',
+            label: bassOffer.getLabel,
+            action: bassOffer.getAction,
+            filters: ['bassReferralNeeded']
+        },
         {task: 'riskManagementTask', filters: ['addressOrBassChecksDoneOrUnsuitable']},
         {task: 'victimLiaisonTask', filters: ['addressOrBassChecksDone']},
         {task: 'curfewHoursTask', filters: ['addressOrBassChecksDone']},
@@ -215,7 +221,7 @@ module.exports = (
         tasksConfig[taskList].filter(filtersMatch(filtersForTaskList));
 
     return {
-        taskListModel: filteredTasks.map(decorateTaskModel(approvedVersion, version, approvedVersionDetails, decisions))
+        taskListModel: filteredTasks.map(decorateTaskModel(approvedVersion, version, approvedVersionDetails, decisions, tasks))
     };
 };
 
@@ -226,14 +232,14 @@ const filtersMatch = filterList => task => task.filters.every(filter => {
     return !filterList.includes(filter.slice(1));
 });
 
-const decorateTaskModel = (approvedVersion, version, approvedVersionDetails, decisions) => task => {
+const decorateTaskModel = (approvedVersion, version, approvedVersionDetails, decisions, tasks) => task => {
     const rawConfig = pick(['task', 'title', 'label', 'action'], task);
     const callAnyFunctions = value => {
         if (typeof value === 'string') {
             return value;
         }
         if (typeof value === 'function') {
-            return value({approvedVersion, version, approvedVersionDetails, decisions});
+            return value({approvedVersion, version, approvedVersionDetails, decisions, tasks});
         }
         return mapObject(callAnyFunctions, value);
     };
