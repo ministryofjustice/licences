@@ -1,3 +1,5 @@
+const {standardAction, change} = require('./utils/actions');
+
 module.exports = {
     getLabel: ({decisions, tasks}) => {
         const {bassAreaNotSuitable, bassWithdrawn, bassWithdrawalReason, bassAccepted, bassAreaSuitable} = decisions;
@@ -38,21 +40,11 @@ module.exports = {
         const {bassAreaCheck, bassOffer, optOut, curfewAddress, bassRequest} = tasks;
 
         if (bassWithdrawn) {
-            return {
-                text: 'Change',
-                href: '/hdc/bassReferral/bassOffer/',
-                type: 'link'
-            };
+            return change('/hdc/bassReferral/bassOffer/');
         }
 
         if (bassAreaCheck === 'DONE') {
-            if (bassOffer === 'UNSTARTED') {
-                return {text: 'Start now', href: '/hdc/bassReferral/bassOffer/', type: 'btn'};
-            }
-            if (bassOffer === 'DONE') {
-                return {text: 'Change', href: '/hdc/bassReferral/bassOffer/', type: 'link'};
-            }
-            return {text: 'Continue', href: '/hdc/bassReferral/bassOffer/', type: 'btn'};
+            return standardAction(bassOffer, '/hdc/bassReferral/bassOffer/');
         }
 
         if ([optOut, curfewAddress, bassRequest].every(task => task === 'UNSTARTED')) {
@@ -60,7 +52,7 @@ module.exports = {
         }
 
         if ([optOut, curfewAddress, bassRequest].every(task => task === 'DONE')) {
-            return {text: 'Change', href: '/hdc/proposedAddress/curfewAddressChoice/', type: 'link'};
+            return change('/hdc/proposedAddress/curfewAddressChoice/');
         }
 
         return {text: 'Continue', href: '/hdc/proposedAddress/curfewAddressChoice/', type: 'btn'};

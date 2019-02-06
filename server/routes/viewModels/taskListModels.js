@@ -3,6 +3,7 @@ const versionInfo = require('../../utils/versionInfo');
 const getDmTasks = require('./taskLists/dmTasks');
 const postponement = require('./taskLists/tasks/postponement');
 const bassOffer = require('./taskLists/tasks/bassOffer');
+const curfewAddress = require('./taskLists/tasks/curfewAddress');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -47,7 +48,12 @@ const tasksConfig = {
         }
     ],
     caTasksFinalChecks: [
-        {task: 'curfewAddressTask', filters: ['!bassReferralNeeded', '!caToRo']},
+        {
+            title: 'Proposed curfew address',
+            label: curfewAddress.getLabel,
+            action: curfewAddress.getCaProcessingAction,
+            filters: ['!bassReferralNeeded', '!caToRo']
+        },
         {task: 'proposedAddressTask', filters: ['caToRo']},
         {
             title: 'BASS address',
@@ -77,7 +83,12 @@ const tasksConfig = {
         {task: 'eligibilitySummaryTask', filters: ['addressOrBassOffered']},
         {task: 'proposedAddressTask', filters: ['eligible', 'caToRo']},
         {task: 'bassAddressTask', filters: ['eligible', '!caToRo', 'bassReferralNeeded']},
-        {task: 'curfewAddressTask', filters: ['eligible', '!caToRo', '!bassReferralNeeded']},
+        {
+            title: 'Proposed curfew address',
+            label: curfewAddress.getLabel,
+            action: curfewAddress.getCaPostApprovalAction,
+            filters: ['eligible', '!caToRo', '!bassReferralNeeded']
+        },
         {task: 'riskManagementTask', filters: ['eligible', 'addressOrBassOfferedOrUnsuitable']},
         {task: 'victimLiaisonTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'curfewHoursTask', filters: ['eligible', 'addressOrBassOffered']},
@@ -103,7 +114,12 @@ const tasksConfig = {
     ],
     roTasks: [
         {task: 'bassAreaTask', filters: ['bassReferralNeeded']},
-        {task: 'curfewAddressTask', filters: ['!addressRejectedInRiskTask', '!bassReferralNeeded']},
+        {
+            title: 'Proposed curfew address',
+            label: curfewAddress.getLabel,
+            action: curfewAddress.getRoAction,
+            filters: ['!addressRejectedInRiskTask', '!bassReferralNeeded']
+        },
         {task: 'riskManagementTask', filters: ['!addressRejectedInReviewTask']},
         {task: 'victimLiaisonTask', filters: ['!curfewAddressRejected']},
         {task: 'curfewHoursTask', filters: ['!curfewAddressRejected']},
