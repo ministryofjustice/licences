@@ -243,7 +243,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/curfew/curfewHours/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
@@ -389,7 +397,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/curfew/curfewHours/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
@@ -457,7 +473,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/curfew/curfewHours/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
@@ -629,7 +653,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/curfew/curfewHours/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
@@ -695,7 +727,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/curfew/curfewHours/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
@@ -1005,7 +1045,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/curfew/curfewHours/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'roSubmitTask'}
@@ -1050,7 +1098,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/curfew/curfewHours/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'roSubmitTask'}
@@ -1277,7 +1333,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/curfewHours/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
@@ -1349,7 +1413,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/curfewHours/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
@@ -1422,7 +1494,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Victim liaison'
                     },
-                    {task: 'curfewHoursTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/curfewHours/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew hours'
+                    },
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
