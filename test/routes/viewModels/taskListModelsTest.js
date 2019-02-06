@@ -234,7 +234,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/victim/victimLiaison/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
@@ -372,7 +380,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/victim/victimLiaison/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
@@ -432,7 +448,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/victim/victimLiaison/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
@@ -596,7 +620,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/victim/victimLiaison/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
@@ -654,7 +686,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/victim/victimLiaison/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
@@ -956,7 +996,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/victim/victimLiaison/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
@@ -993,7 +1041,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/victim/victimLiaison/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
@@ -1212,7 +1268,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/victimLiaison/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
@@ -1276,7 +1340,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/victimLiaison/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
@@ -1341,7 +1413,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Risk management'
                     },
-                    {task: 'victimLiaisonTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/victimLiaison/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Victim liaison'
+                    },
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
                     {task: 'reportingInstructionsTask'},
