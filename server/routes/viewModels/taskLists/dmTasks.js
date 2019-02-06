@@ -1,4 +1,5 @@
 const postponement = require('./tasks/postponement');
+const bassOffer = require('./tasks/bassOffer');
 const {getStatusLabel} = require('../../../utils/licenceStatusLabels');
 
 module.exports = ({decisions, tasks, stage}) => {
@@ -27,7 +28,15 @@ module.exports = ({decisions, tasks, stage}) => {
     }
 
     return [
-        {task: 'bassOfferTask'},
+        {
+            title: 'BASS address',
+            label: bassOffer.getLabel({decisions, tasks}),
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/review/bassOffer/',
+                text: 'View'
+            }
+        },
         {task: 'curfewAddressTask'},
         {task: 'riskManagementTask'},
         {task: 'victimLiaisonTask'},
@@ -58,7 +67,7 @@ module.exports = ({decisions, tasks, stage}) => {
             }
         }
     ].filter(task => {
-        if (task.task === 'bassOfferTask') {
+        if (task.title === 'BASS address') {
             return bassReferralNeeded;
         }
 

@@ -314,7 +314,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'bassOfferTask'},
+                    {
+                        title: 'BASS address',
+                        label: 'BASS referral requested',
+                        action: {
+                            href: '/hdc/bassReferral/bassOffer/',
+                            text: 'Continue',
+                            type: 'btn'
+                        }
+                    },
                     {task: 'riskManagementTask'},
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
@@ -358,7 +366,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'bassOfferTask'},
+                    {
+                        title: 'BASS address',
+                        label: 'BASS referral requested',
+                        action: {
+                            href: '/hdc/bassReferral/bassOffer/',
+                            text: 'Continue',
+                            type: 'btn'
+                        }
+                    },
                     {task: 'riskManagementTask'},
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
@@ -401,7 +417,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'bassOfferTask'},
+                    {
+                        title: 'BASS address',
+                        label: 'BASS referral requested',
+                        action: {
+                            href: '/hdc/proposedAddress/curfewAddressChoice/',
+                            text: 'Continue',
+                            type: 'btn'
+                        }
+                    },
                     {task: 'HDCRefusalTask'},
                     {task: 'caSubmitRefusalTask'}
                 ]
@@ -430,7 +454,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'bassOfferTask'},
+                    {
+                        title: 'BASS address',
+                        label: 'BASS referral requested',
+                        action: {
+                            href: '/hdc/bassReferral/bassOffer/',
+                            text: 'Continue',
+                            type: 'btn'
+                        }
+                    },
                     {task: 'HDCRefusalTask'},
                     {task: 'caSubmitRefusalTask'}
                 ]
@@ -1052,7 +1084,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'bassOfferTask'},
+                    {
+                        title: 'BASS address',
+                        label: 'BASS referral requested',
+                        action: {
+                            href: '/hdc/review/bassOffer/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        }
+                    },
                     {task: 'riskManagementTask'},
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
@@ -1101,7 +1141,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'bassOfferTask'},
+                    {
+                        title: 'BASS address',
+                        label: 'BASS referral requested',
+                        action: {
+                            href: '/hdc/review/bassOffer/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        }
+                    },
                     {task: 'riskManagementTask'},
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
