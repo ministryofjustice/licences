@@ -65,6 +65,7 @@ module.exports = function createApp({
                                         reportingService,
                                         notificationService,
                                         userService,
+                                        nomisPushService,
                                         audit
                                     }) {
     const app = express();
@@ -346,7 +347,7 @@ module.exports = function createApp({
     app.use('/user/', secureRoute(userRouter({userService})));
 
     app.use('/hdc/proposedAddress/', secureRoute(addressRouter({licenceService})));
-    app.use('/hdc/approval/', secureRoute(approvalRouter({licenceService, prisonerService})));
+    app.use('/hdc/approval/', secureRoute(approvalRouter({licenceService, prisonerService, nomisPushService, signInService})));
     app.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({licenceService})));
     app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({licenceService, conditionsService})));
     app.use('/hdc/curfew/', secureRoute(curfewRouter({licenceService})));

@@ -21,6 +21,7 @@ const createCaseListFormatter = require('./services/utils/caseListFormatter');
 const createUserAdminService = require('./services/userAdminService');
 const createUserService = require('./services/userService');
 const createNotificationService = require('./services/notificationService');
+const createNomisPushService = require('./services/nomisPushService');
 
 const signInService = createSignInService(audit);
 const licenceService = createLicenceService(licenceClient);
@@ -34,6 +35,7 @@ const reportingService = createReportingService(audit);
 const userAdminService = createUserAdminService(nomisClientBuilder, userClient);
 const userService = createUserService(nomisClientBuilder);
 const notificationService = createNotificationService(notifyClient);
+const nomisPushService = createNomisPushService(nomisClientBuilder, signInService);
 
 const app = createApp({
     signInService,
@@ -46,6 +48,7 @@ const app = createApp({
     userAdminService,
     notificationService,
     userService,
+    nomisPushService,
     audit
 });
 

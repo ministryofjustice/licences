@@ -19,11 +19,11 @@ const auditStub = {
     record: sinon.stub()
 };
 
-const signInServiceStub = {
+const createSignInServiceStub = () => ({
     signIn: sinon.stub().resolves(),
     refresh: sinon.stub().resolves(),
     getClientCredentialsTokens: sinon.stub().resolves({token: 'system-token'})
-};
+});
 
 const createLicenceServiceStub = () => ({
     getLicence: sinon.stub().resolves({licence: {key: 'value'}}),
@@ -83,6 +83,10 @@ const userAdminServiceStub = {
 const caseListServiceStub = {
     getHdcCaseList: sinon.stub().resolves([])
 };
+
+const createNomisPushServiceStub = () => ({
+    pushStatus: sinon.stub().resolves()
+});
 
 function testFormPageGets(app, routes, licenceServiceStub) {
     context('licence exists for bookingId', () => {
@@ -154,11 +158,12 @@ const users = {
 const setup = {
     loggerStub,
     auditStub,
-    signInServiceStub,
+    createSignInServiceStub,
     createLicenceServiceStub,
     createConditionsServiceStub,
     createPrisonerServiceStub,
     caseListServiceStub,
+    createNomisPushServiceStub,
     pdfServiceStub,
     userAdminServiceStub,
     authenticationMiddleware,

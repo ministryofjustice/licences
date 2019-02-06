@@ -7,7 +7,8 @@ const {
     auditStub,
     appSetup,
     testFormPageGets,
-    signInServiceStub
+    createSignInServiceStub,
+    createNomisPushServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -33,10 +34,14 @@ const prisonerInfoResponse = {
 describe('/hdc/approval', () => {
     let app;
     let licenceServiceStub;
+    let nomisPushServiceStub;
+    let signInServiceStub;
 
     beforeEach(() => {
         licenceServiceStub = createLicenceServiceStub();
-        app = createApp({licenceServiceStub}, 'dmUser');
+        nomisPushServiceStub = createNomisPushServiceStub();
+        signInServiceStub = createSignInServiceStub();
+        app = createApp({licenceServiceStub, nomisPushServiceStub, signInServiceStub}, 'dmUser');
         licenceServiceStub.update.resolves({approval: {release: {decision: 'Yes'}}});
     });
 
@@ -137,6 +142,21 @@ describe('/hdc/approval', () => {
             });
         });
 
+        it('should push the decision to nomis', () => {
+            signInServiceStub.getClientCredentialsTokens.resolves('new token');
+            licenceServiceStub.update.resolves({approval: {release: {decision: 'UPDATED'}}});
+
+            return request(app)
+                .post('/hdc/approval/release/1')
+                .send({decision: 'Yes'})
+                .expect(302)
+                .expect(res => {
+                    expect(signInServiceStub.getClientCredentialsTokens).to.be.calledOnce();
+                    expect(nomisPushServiceStub.pushStatus).to.be.calledOnce();
+                    expect(nomisPushServiceStub.pushStatus).to.be.calledWith('1', 'UPDATED', 'new token');
+                });
+        });
+
         it('should redirect to same page if errors on input', () => {
             licenceServiceStub.validateForm.returns({decision: 'Error 1'});
 
@@ -144,7 +164,10 @@ describe('/hdc/approval', () => {
                 .post('/hdc/approval/release/1')
                 .send({})
                 .expect(302)
-                .expect('Location', '/hdc/approval/release/1');
+                .expect('Location', '/hdc/approval/release/1')
+                .expect(res => {
+                    expect(licenceServiceStub.update).to.not.be.called();
+                });
         });
 
         it('should throw if submitted by non-DM user', () => {
@@ -169,14 +192,15 @@ describe('/hdc/approval', () => {
     });
 });
 
-function createApp({licenceServiceStub}, user) {
+function createApp({licenceServiceStub, nomisPushServiceStub, signInServiceStub}, user) {
     const prisonerService = createPrisonerServiceStub();
     prisonerService.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse);
     const licenceService = licenceServiceStub || createLicenceServiceStub();
-    const signInService = signInServiceStub;
+    const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub();
+    const signInService = signInServiceStub || createLicenceServiceStub();
 
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService});
-    const route = baseRouter(createRoute({licenceService, prisonerService}));
+    const route = baseRouter(createRoute({licenceService, prisonerService, nomisPushService, signInService}));
 
     return appSetup(route, user, '/hdc/approval');
 }

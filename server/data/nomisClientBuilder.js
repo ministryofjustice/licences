@@ -3,6 +3,7 @@ const config = require('../config');
 const {merge, pipe} = require('../utils/functionalHelpers');
 const superagent = require('superagent');
 const {NoTokenError} = require('../utils/errors');
+const moment = require('moment');
 
 const timeoutSpec = {
     response: config.nomis.timeout.response,
@@ -127,6 +128,13 @@ module.exports = token => {
             const body = {caseLoadId};
 
             return nomisPut({path, body});
+        },
+
+        putApprovalStatus: async function(bookingId, approvalStatus) {
+            const path = `${apiUrl}/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/approval-status`;
+            const body = {approvalStatus, date: moment().format('YYYY-MM-DD')};
+
+            return nomisPut({path, body});
         }
     };
 };
@@ -151,7 +159,7 @@ function nomisGetBuilder(token) {
             return result.body;
 
         } catch (error) {
-            logger.warn('Error calling nomis', error.stack);
+            logger.warn('Error calling nomis', path, error.stack);
             throw error;
         }
     };
@@ -175,7 +183,7 @@ function nomisPushBuilder(verb, token) {
             return result.body;
 
         } catch (error) {
-            logger.warn('Error calling nomis', error.stack);
+            logger.warn('Error calling nomis', path, error.stack);
             throw error;
         }
     };

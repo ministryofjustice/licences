@@ -521,5 +521,36 @@ describe('nomisClient', function() {
             return expect(nomisClient.putActiveCaseLoad('id')).to.be.rejected();
         });
     });
+
+    describe('putApprovalStatus', () => {
+        let clock;
+
+        beforeEach(() => {
+            clock = sinon.useFakeTimers(new Date('May 31, 2018 12:00:00').getTime());
+        });
+
+        afterEach(() => {
+            clock.restore();
+        });
+
+        it('should inject bookingId into api endpoint', () => {
+            fakeNomis
+                .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status')
+                .reply(200, {});
+
+            return expect(nomisClient.putApprovalStatus('aaa', 'Approved')).to.eventually.eql({});
+        });
+
+        it('should pass in the status and date', () => {
+            fakeNomis
+                .put(
+                    '/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status',
+                    {approvalStatus: 'Approved', date: '2018-05-31'}
+                )
+                .reply(200, {});
+
+            return expect(nomisClient.putApprovalStatus('aaa', 'Approved')).to.eventually.eql({});
+        });
+    });
 });
 
