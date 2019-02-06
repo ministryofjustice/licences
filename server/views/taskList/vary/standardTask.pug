@@ -5,9 +5,20 @@ mixin standardTask(taskObject)
             if taskObject.label
                 | #{taskObject.label}
 
+        if taskObject.action
+            div.pure-u-1.pure-u-md-1-4.center.buttonContainer
+                +action(taskObject.action)
 
-        div.pure-u-1.pure-u-md-1-4.center.buttonContainer
-            if taskObject.link
-                a.taskListAction(href=taskObject.link.href + prisonerInfo.bookingId, id=id) #{taskObject.link.text}
-            if taskObject.btn
-                a.taskListAction.center.button(href=taskObject.btn.link + prisonerInfo.bookingId) #{taskObject.btn.text}
+mixin action(actionConfig)
+    - var isLink = actionConfig.type === 'link'
+    - var isButton = actionConfig.type === 'btn'
+    - var isSecondaryButton = actionConfig.type === 'btn-secondary'
+
+    if isLink
+        a.taskListAction(href=actionConfig.href + prisonerInfo.bookingId) #{actionConfig.text}
+
+    else if isButton
+        a.taskListAction.center.button(href=actionConfig.href + prisonerInfo.bookingId) #{actionConfig.text}
+
+    else if isSecondaryButton
+        a.taskListAction.center.button.button-secondary(href=actionConfig.href + prisonerInfo.bookingId) #{actionConfig.text}

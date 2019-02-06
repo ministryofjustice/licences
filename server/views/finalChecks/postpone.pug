@@ -1,0 +1,23 @@
+extends ../formTemplates/formTemplate
+
+block question
+    | Postpone
+
+block formItems
+    - var postponed = data.decision || null;
+
+    div.form-group.inline
+        div.multiple-choice(data-target="postponeReasonForm")
+            input#postponeYes(type="radio" checked=postponed === 'Yes' name="decision" value="Yes")
+            label(for="postponeYes") Yes
+        div.multiple-choice
+            input#postponeNo(type="radio" checked=postponed !== 'Yes' name="decision" value="No")
+            label(for="postponeNo") No
+
+    div#postponeReasonForm(class=errorObject.postponeReason ? 'form-group-error': 'panel panel-border-narrow js-hidden')
+        div.pure-g
+            div.pure-u-1.pure-u-sm-1-2
+                p Enter a reason for your decision
+                textarea(name='postponeReason' id='postponeReason' class='form-control' rows='4' aria-label="Enter a reason for postponing the licence procedure")
+                    if data.postponeReason
+                        | #{data.postponeReason}

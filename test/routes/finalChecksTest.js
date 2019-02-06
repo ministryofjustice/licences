@@ -18,7 +18,8 @@ describe('/hdc/finalChecks', () => {
         const routes = [
             {url: '/hdc/finalChecks/seriousOffence/1', content: 'Has the offender committed an offence'},
             {url: '/hdc/finalChecks/onRemand/1', content: 'Is the offender currently on remand '},
-            {url: '/hdc/finalChecks/confiscationOrder/1', content: 'Is the offender subject to a confiscation order?'}
+            {url: '/hdc/finalChecks/confiscationOrder/1', content: 'Is the offender subject to a confiscation order?'},
+            {url: '/hdc/finalChecks/postpone/1', content: 'Postpone'}
         ];
 
         routes.forEach(route => {
@@ -76,6 +77,13 @@ describe('/hdc/finalChecks', () => {
                 body: {bookingId: 1, reason: 'something', outOfTimeReasons: []},
                 fieldMap: formConfig.refusal,
                 formName: 'refusal',
+                nextPath: '/hdc/taskList/1'
+            },
+            {
+                url: '/hdc/finalChecks/postpone/1',
+                body: {bookingId: 1, decision: 'Yes', postponeReason: 'something'},
+                fieldMap: formConfig.postpone,
+                formName: 'postpone',
                 nextPath: '/hdc/taskList/1'
             }
         ];

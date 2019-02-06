@@ -1,5 +1,7 @@
 const {pick, pickBy, pickKey, keys, mapObject, isEmpty} = require('../../utils/functionalHelpers');
 const versionInfo = require('../../utils/versionInfo');
+const getDmTasks = require('./taskLists/dmTasks');
+const postponement = require('./taskLists/tasks/postponement');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -53,7 +55,12 @@ const tasksConfig = {
         {task: 'additionalConditionsTask', filters: ['addressOrBassChecksDone']},
         {task: 'reportingInstructionsTask', filters: ['addressOrBassChecksDone']},
         {task: 'finalChecksTask', filters: ['addressOrBassChecksDone']},
-        {task: 'postponementTask', filters: ['addressOrBassChecksDone']},
+        {
+            filters: ['addressOrBassChecksDone'],
+            title: 'Postpone or refuse',
+            label: postponement.getLabel,
+            action: postponement.getAction
+        },
         {task: 'HDCRefusalTask', filters: []},
         {task: 'caSubmitApprovalTask', filters: ['!optedOut', '!caToDmRefusal', '!caToRo']},
         {task: 'caSubmitRefusalTask', filters: ['!optedOut', 'caToDmRefusal']},
@@ -71,7 +78,12 @@ const tasksConfig = {
         {task: 'additionalConditionsTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'reportingInstructionsTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'finalChecksTask', filters: ['eligible', 'addressOrBassOffered']},
-        {task: 'postponementTask', filters: ['eligible', 'addressOrBassOffered']},
+        {
+            title: 'Postpone or refuse',
+            filters: ['eligible', 'addressOrBassOffered'],
+            label: postponement.getLabel,
+            action: postponement.getAction
+        },
         {task: 'HDCRefusalTask', filters: ['eligible', '!dmRefused']},
         {task: 'caSubmitApprovalTask', filters: ['eligible', 'caToDm']},
         {task: 'caSubmitRefusalTask', filters: ['eligible', 'caToDmRefusal']},
@@ -97,46 +109,48 @@ const tasksConfig = {
         {
             filters: ['licenceVersionExists', '!isNewVersion'],
             title: 'View current licence',
-            btn: {text: 'View', link: getPdfLink},
+            action: {type: 'btn', text: 'View', href: getPdfLink},
             label: getVersionLabel
         },
         {
             task: 'varyLicenceTask',
-            filters: ['licenceUnstarted']},
+            filters: ['licenceUnstarted']
+        },
         {
             filters: ['!licenceUnstarted'],
             title: 'Permission for variation',
-            link: {text: 'Change', href: '/hdc/vary/evidence/'}
+            action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'}
         },
         {
             filters: ['!licenceUnstarted'], title: 'Curfew address',
-            link: {text: 'Change', href: '/hdc/vary/address/'}},
+            action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'}
+        },
         {
             filters: ['!licenceUnstarted'],
             title: 'Additional conditions',
-            link: {text: 'Change', href: '/hdc/licenceConditions/standard/'}
+            action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'}
         },
         {
             filters: ['!licenceUnstarted'],
             title: 'Curfew hours',
-            link: {text: 'Change', href: '/hdc/curfew/curfewHours/'}
+            action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'}
         },
         {
             filters: ['!licenceUnstarted'],
             title: 'Reporting instructions',
-            link: {text: 'Change', href: '/hdc/vary/reportingAddress/'}
+            action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'}
         },
         {
             filters: ['!licenceUnstarted', 'isNewVersion'],
             title: 'Create licence',
-            btn: {text: 'Continue', link: '/hdc/pdf/select/'},
+            action: {type: 'btn', text: 'Continue', href: '/hdc/pdf/select/'},
             label: getNextVersionLabel
         }
     ],
     noTaskList: [
         {
             title: 'No active licence',
-            link: {text: 'Return to case list', href: '/caseList/'},
+            action: {type: 'link', text: 'Return to case list', href: '/caseList/'},
             filters: []
         }
     ]
@@ -150,7 +164,10 @@ module.exports = (
     allowedTransition
 ) => {
     const taskList = getTaskList(role, stage, postRelease);
-    if (!tasksConfig[taskList]) {
+    const getTaskListMethod = {
+        dmTasks: getDmTasks
+    };
+    if (!tasksConfig[taskList] && !getTaskListMethod[taskList]) {
         return {taskListView: taskList};
     }
 
@@ -193,12 +210,13 @@ module.exports = (
         isNewVersion: versionInfo({version, versionDetails, approvedVersionDetails}).isNewVersion
     }));
 
-    const taskListModel = tasksConfig[taskList]
-        .filter(filtersMatch(filtersForTaskList))
-        .map(decorateTaskModel(approvedVersion, version, approvedVersionDetails));
+    const filteredTasks = getTaskListMethod[taskList] ?
+        getTaskListMethod[taskList]({decisions, tasks, stage}) :
+        tasksConfig[taskList].filter(filtersMatch(filtersForTaskList));
 
-    return {taskListModel};
-
+    return {
+        taskListModel: filteredTasks.map(decorateTaskModel(approvedVersion, version, approvedVersionDetails, decisions))
+    };
 };
 
 const filtersMatch = filterList => task => task.filters.every(filter => {
@@ -208,14 +226,14 @@ const filtersMatch = filterList => task => task.filters.every(filter => {
     return !filterList.includes(filter.slice(1));
 });
 
-const decorateTaskModel = (approvedVersion, version, approvedVersionDetails) => task => {
-    const rawConfig = pick(['task', 'title', 'link', 'btn', 'label'], task);
+const decorateTaskModel = (approvedVersion, version, approvedVersionDetails, decisions) => task => {
+    const rawConfig = pick(['task', 'title', 'label', 'action'], task);
     const callAnyFunctions = value => {
         if (typeof value === 'string') {
             return value;
         }
         if (typeof value === 'function') {
-            return value({approvedVersion, version, approvedVersionDetails});
+            return value({approvedVersion, version, approvedVersionDetails, decisions});
         }
         return mapObject(callAnyFunctions, value);
     };
