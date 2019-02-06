@@ -225,7 +225,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Proposed curfew address'
                     },
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/risk/riskManagement/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
@@ -310,7 +318,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Proposed curfew address'
                     },
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/risk/riskManagement/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Address unsuitable',
+                        title: 'Risk management'
+                    },
                     {task: 'HDCRefusalTask'},
                     {task: 'caSubmitRefusalTask'}
                 ]
@@ -347,7 +363,15 @@ describe('TaskList models', () => {
                             type: 'btn'
                         }
                     },
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/risk/riskManagement/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
@@ -399,7 +423,15 @@ describe('TaskList models', () => {
                             type: 'btn'
                         }
                     },
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/risk/riskManagement/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
@@ -555,7 +587,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Proposed curfew address'
                     },
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/risk/riskManagement/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
@@ -605,7 +645,15 @@ describe('TaskList models', () => {
                 taskListModel: [
                     {task: 'eligibilitySummaryTask'},
                     {task: 'bassAddressTask'},
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/risk/riskManagement/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
@@ -899,7 +947,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Proposed curfew address'
                     },
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/risk/riskManagement/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
@@ -928,7 +984,15 @@ describe('TaskList models', () => {
             ).to.eql({
                 taskListModel: [
                     {task: 'bassAreaTask'},
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/risk/riskManagement/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
@@ -990,7 +1054,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql({
                 taskListModel: [
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/risk/riskManagement/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Address unsuitable',
+                        title: 'Risk management'
+                    },
                     {task: 'roSubmitTask'}
                 ]
             });
@@ -1038,8 +1110,23 @@ describe('TaskList models', () => {
             ).to.eql({
                 taskListModel: [
                     {task: 'eligibilitySummaryTask'},
-                    {task: 'curfewAddressTask'},
-                    {task: 'returnToCaTask'},
+                    {
+                        title: 'Proposed curfew address',
+                        label: 'Address withdrawn',
+                        action: {
+                            type: 'btn-secondary',
+                            href: '/hdc/review/address/',
+                            text: 'View'
+                        }
+                    },
+                    {
+                        title: 'Return to prison case admin',
+                        action: {
+                            type: 'btn-secondary',
+                            href: '/hdc/send/return/',
+                            text: 'Return to prison case admin'
+                        }
+                    },
                     {task: 'refusalTask'}
                 ]
             });
@@ -1065,8 +1152,23 @@ describe('TaskList models', () => {
             ).to.eql({
                 taskListModel: [
                     {task: 'eligibilitySummaryTask'},
-                    {task: 'curfewAddressTask'},
-                    {task: 'returnToCaTask'},
+                    {
+                        title: 'Proposed curfew address',
+                        label: 'Not completed',
+                        action: {
+                            type: 'btn-secondary',
+                            href: '/hdc/review/address/',
+                            text: 'View'
+                        }
+                    },
+                    {
+                        title: 'Return to prison case admin',
+                        action: {
+                            type: 'btn-secondary',
+                            href: '/hdc/send/return/',
+                            text: 'Return to prison case admin'
+                        }
+                    },
                     {task: 'refusalTask'}
                 ]
             });
@@ -1101,7 +1203,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Proposed curfew address'
                     },
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/risk/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
@@ -1157,7 +1267,15 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         }
                     },
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/risk/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},
@@ -1214,7 +1332,15 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         }
                     },
-                    {task: 'riskManagementTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/risk/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Risk management'
+                    },
                     {task: 'victimLiaisonTask'},
                     {task: 'curfewHoursTask'},
                     {task: 'additionalConditionsTask'},

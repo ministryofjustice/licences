@@ -4,6 +4,7 @@ const getDmTasks = require('./taskLists/dmTasks');
 const postponement = require('./taskLists/tasks/postponement');
 const bassOffer = require('./taskLists/tasks/bassOffer');
 const curfewAddress = require('./taskLists/tasks/curfewAddress');
+const riskManagement = require('./taskLists/tasks/riskManagement');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -61,7 +62,16 @@ const tasksConfig = {
             action: bassOffer.getAction,
             filters: ['bassReferralNeeded']
         },
-        {task: 'riskManagementTask', filters: ['addressOrBassChecksDoneOrUnsuitable']},
+        {
+            title: 'Risk management',
+            label: riskManagement.getLabel,
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/risk/riskManagement/',
+                text: 'View/Edit'
+            },
+            filters: ['addressOrBassChecksDoneOrUnsuitable']
+        },
         {task: 'victimLiaisonTask', filters: ['addressOrBassChecksDone']},
         {task: 'curfewHoursTask', filters: ['addressOrBassChecksDone']},
         {task: 'additionalConditionsTask', filters: ['addressOrBassChecksDone']},
@@ -89,7 +99,16 @@ const tasksConfig = {
             action: curfewAddress.getCaPostApprovalAction,
             filters: ['eligible', '!caToRo', '!bassReferralNeeded']
         },
-        {task: 'riskManagementTask', filters: ['eligible', 'addressOrBassOfferedOrUnsuitable']},
+        {
+            title: 'Risk management',
+            label: riskManagement.getLabel,
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/risk/riskManagement/',
+                text: 'View/Edit'
+            },
+            filters: ['eligible', 'addressOrBassOfferedOrUnsuitable']
+        },
         {task: 'victimLiaisonTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'curfewHoursTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'additionalConditionsTask', filters: ['eligible', 'addressOrBassOffered']},
@@ -120,7 +139,12 @@ const tasksConfig = {
             action: curfewAddress.getRoAction,
             filters: ['!addressRejectedInRiskTask', '!bassReferralNeeded']
         },
-        {task: 'riskManagementTask', filters: ['!addressRejectedInReviewTask']},
+        {
+            title: 'Risk management',
+            label: riskManagement.getLabel,
+            action: riskManagement.getRoAction,
+            filters: ['!addressRejectedInReviewTask']
+        },
         {task: 'victimLiaisonTask', filters: ['!curfewAddressRejected']},
         {task: 'curfewHoursTask', filters: ['!curfewAddressRejected']},
         {task: 'additionalConditionsTask', filters: ['!curfewAddressRejected']},

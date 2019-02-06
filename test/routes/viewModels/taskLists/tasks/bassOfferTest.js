@@ -34,14 +34,14 @@ describe('bass offer task', () => {
             expect(getLabel({
                 decisions: {bassAccepted: 'Unsuitable'},
                 tasks: {bassOffer: 'DONE'}
-            })).to.equal('Not suitable for BASS');
+            })).to.equal('WARNING||Not suitable for BASS');
         });
 
         it('should return Address not available if bassOffer = DONE && bassAccepted !== Unsuitable or Yes', () => {
             expect(getLabel({
                 decisions: {bassAccepted: 'Something else'},
                 tasks: {bassOffer: 'DONE'}
-            })).to.equal('Address not available');
+            })).to.equal('WARNING||Address not available');
         });
 
         it('should return Not completed if bassAreaCheck == DONE && bassAreaSuitable', () => {

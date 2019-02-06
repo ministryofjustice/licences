@@ -1,6 +1,7 @@
 const postponement = require('./tasks/postponement');
 const bassOffer = require('./tasks/bassOffer');
 const curfewAddress = require('./tasks/curfewAddress');
+const riskManagement = require('./tasks/riskManagement');
 const {getStatusLabel} = require('../../../utils/licenceStatusLabels');
 
 module.exports = ({decisions, tasks, stage}) => {
@@ -22,8 +23,23 @@ module.exports = ({decisions, tasks, stage}) => {
     if (addressWithdrawn || curfewAddressRejected) {
         return [
             {task: 'eligibilitySummaryTask'},
-            {task: 'curfewAddressTask'},
-            {task: 'returnToCaTask'},
+            {
+                title: 'Proposed curfew address',
+                label: curfewAddress.getLabel({decisions, tasks}),
+                action: {
+                    type: 'btn-secondary',
+                    href: '/hdc/review/address/',
+                    text: 'View'
+                }
+            },
+            {
+                title: 'Return to prison case admin',
+                action: {
+                    type: 'btn-secondary',
+                    href: '/hdc/send/return/',
+                    text: 'Return to prison case admin'
+                }
+            },
             {task: 'refusalTask'}
         ];
     }
@@ -47,7 +63,15 @@ module.exports = ({decisions, tasks, stage}) => {
                 text: 'View'
             }
         },
-        {task: 'riskManagementTask'},
+        {
+            title: 'Risk management',
+            label: riskManagement.getLabel({decisions, tasks}),
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/review/risk/',
+                text: 'View'
+            }
+        },
         {task: 'victimLiaisonTask'},
         {task: 'curfewHoursTask'},
         {task: 'additionalConditionsTask'},

@@ -3,7 +3,7 @@ mixin standardTask(taskObject)
         div.pure-u-1.pure-u-md-3-4
             h2.heading-medium #{taskObject.title}
             if taskObject.label
-                | #{taskObject.label}
+                +label(taskObject.label)
 
         if taskObject.action
             div.pure-u-1.pure-u-md-1-4.center.buttonContainer
@@ -22,3 +22,17 @@ mixin action(actionConfig)
 
     else if isSecondaryButton
         a.taskListAction.center.button.button-secondary(href=actionConfig.href + prisonerInfo.bookingId) #{actionConfig.text}
+
+mixin label(text)
+    - var sections = text.split('||')
+    if sections.length === 1
+        | #{text}
+
+    else if sections[0] === 'WARNING'
+        div.pure-g
+            div.pure-u-1.pure-u-sm-3-5.notice-container
+                div.notice
+                    i.icon.icon-important
+                        span.visually-hidden Warning
+
+                    strong.bold-small #{sections[1]}
