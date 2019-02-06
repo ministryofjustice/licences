@@ -43,7 +43,7 @@ describe('risk management task', () => {
 
     describe('getRoAction', () => {
 
-        it('sould show btn to curfewAddressReview if curfewAddressReview: UNSTARTED', () => {
+        it('should show btn to curfewAddressReview if curfewAddressReview: UNSTARTED', () => {
             expect(getRoAction({
                 decisions: {},
                 tasks: {riskManagement: 'UNSTARTED'}
