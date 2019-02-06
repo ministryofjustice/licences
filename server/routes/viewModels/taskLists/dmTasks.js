@@ -3,6 +3,7 @@ const bassOffer = require('./tasks/bassOffer');
 const curfewAddress = require('./tasks/curfewAddress');
 const riskManagement = require('./tasks/riskManagement');
 const victimLiaison = require('./tasks/victimLiaison');
+const curfewHours = require('./tasks/curfewHours');
 const {getStatusLabel} = require('../../../utils/licenceStatusLabels');
 
 module.exports = ({decisions, tasks, stage}) => {
@@ -82,7 +83,15 @@ module.exports = ({decisions, tasks, stage}) => {
                 text: 'View'
             }
         },
-        {task: 'curfewHoursTask'},
+        {
+            title: 'Curfew hours',
+            label: curfewHours.getLabel({decisions, tasks}),
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/review/curfewHours/',
+                text: 'View'
+            }
+        },
         {task: 'additionalConditionsTask'},
         {task: 'reportingInstructionsTask'},
         {task: 'finalChecksTask'},

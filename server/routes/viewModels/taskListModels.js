@@ -6,6 +6,7 @@ const bassOffer = require('./taskLists/tasks/bassOffer');
 const curfewAddress = require('./taskLists/tasks/curfewAddress');
 const riskManagement = require('./taskLists/tasks/riskManagement');
 const victimLiaison = require('./taskLists/tasks/victimLiaison');
+const curfewHours = require('./taskLists/tasks/curfewHours');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -83,7 +84,16 @@ const tasksConfig = {
             },
             filters: ['addressOrBassChecksDone']
         },
-        {task: 'curfewHoursTask', filters: ['addressOrBassChecksDone']},
+        {
+            title: 'Curfew hours',
+            label: curfewHours.getLabel,
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/curfew/curfewHours/',
+                text: 'View/Edit'
+            },
+            filters: ['addressOrBassChecksDone']
+        },
         {task: 'additionalConditionsTask', filters: ['addressOrBassChecksDone']},
         {task: 'reportingInstructionsTask', filters: ['addressOrBassChecksDone']},
         {task: 'finalChecksTask', filters: ['addressOrBassChecksDone']},
@@ -129,7 +139,16 @@ const tasksConfig = {
             },
             filters: ['eligible', 'addressOrBassOffered']
         },
-        {task: 'curfewHoursTask', filters: ['eligible', 'addressOrBassOffered']},
+        {
+            title: 'Curfew hours',
+            label: curfewHours.getLabel,
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/curfew/curfewHours/',
+                text: 'View/Edit'
+            },
+            filters: ['eligible', 'addressOrBassOffered']
+        },
         {task: 'additionalConditionsTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'reportingInstructionsTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'finalChecksTask', filters: ['eligible', 'addressOrBassOffered']},
@@ -170,7 +189,12 @@ const tasksConfig = {
             action: victimLiaison.getRoAction,
             filters: ['!curfewAddressRejected']
         },
-        {task: 'curfewHoursTask', filters: ['!curfewAddressRejected']},
+        {
+            title: 'Curfew hours',
+            label: curfewHours.getLabel,
+            action: curfewHours.getRoAction,
+            filters: ['!curfewAddressRejected']
+        },
         {task: 'additionalConditionsTask', filters: ['!curfewAddressRejected']},
         {task: 'reportingInstructionsTask', filters: ['!curfewAddressRejected']},
         {task: 'roSubmitTask', filters: []}
