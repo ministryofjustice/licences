@@ -7,6 +7,7 @@ const curfewAddress = require('./taskLists/tasks/curfewAddress');
 const riskManagement = require('./taskLists/tasks/riskManagement');
 const victimLiaison = require('./taskLists/tasks/victimLiaison');
 const curfewHours = require('./taskLists/tasks/curfewHours');
+const additionalConditions = require('./taskLists/tasks/additionalConditions');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -94,14 +95,23 @@ const tasksConfig = {
             },
             filters: ['addressOrBassChecksDone']
         },
-        {task: 'additionalConditionsTask', filters: ['addressOrBassChecksDone']},
+        {
+            title: 'Additional conditions',
+            label: additionalConditions.getLabel,
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/licenceConditions/standard/',
+                text: 'View/Edit'
+            },
+            filters: ['addressOrBassChecksDone']
+        },
         {task: 'reportingInstructionsTask', filters: ['addressOrBassChecksDone']},
         {task: 'finalChecksTask', filters: ['addressOrBassChecksDone']},
         {
-            filters: ['addressOrBassChecksDone'],
             title: 'Postpone or refuse',
             label: postponement.getLabel,
-            action: postponement.getAction
+            action: postponement.getAction,
+            filters: ['addressOrBassChecksDone']
         },
         {task: 'HDCRefusalTask', filters: []},
         {task: 'caSubmitApprovalTask', filters: ['!optedOut', '!caToDmRefusal', '!caToRo']},
@@ -149,14 +159,23 @@ const tasksConfig = {
             },
             filters: ['eligible', 'addressOrBassOffered']
         },
-        {task: 'additionalConditionsTask', filters: ['eligible', 'addressOrBassOffered']},
+        {
+            title: 'Additional conditions',
+            label: additionalConditions.getLabel,
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/licenceConditions/standard/',
+                text: 'View/Edit'
+            },
+            filters: ['eligible', 'addressOrBassOffered']
+        },
         {task: 'reportingInstructionsTask', filters: ['eligible', 'addressOrBassOffered']},
         {task: 'finalChecksTask', filters: ['eligible', 'addressOrBassOffered']},
         {
             title: 'Postpone or refuse',
-            filters: ['eligible', 'addressOrBassOffered'],
             label: postponement.getLabel,
-            action: postponement.getAction
+            action: postponement.getAction,
+            filters: ['eligible', 'addressOrBassOffered']
         },
         {task: 'HDCRefusalTask', filters: ['eligible', '!dmRefused']},
         {task: 'caSubmitApprovalTask', filters: ['eligible', 'caToDm']},
@@ -195,50 +214,56 @@ const tasksConfig = {
             action: curfewHours.getRoAction,
             filters: ['!curfewAddressRejected']
         },
-        {task: 'additionalConditionsTask', filters: ['!curfewAddressRejected']},
+        {
+            title: 'Additional conditions',
+            label: additionalConditions.getLabel,
+            action: additionalConditions.getRoAction,
+            filters: ['!curfewAddressRejected']
+        },
         {task: 'reportingInstructionsTask', filters: ['!curfewAddressRejected']},
         {task: 'roSubmitTask', filters: []}
     ],
     vary: [
         {
-            filters: ['licenceVersionExists', '!isNewVersion'],
             title: 'View current licence',
+            label: getVersionLabel,
             action: {type: 'btn', text: 'View', href: getPdfLink},
-            label: getVersionLabel
+            filters: ['licenceVersionExists', '!isNewVersion']
         },
         {
             task: 'varyLicenceTask',
             filters: ['licenceUnstarted']
         },
         {
-            filters: ['!licenceUnstarted'],
             title: 'Permission for variation',
-            action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'}
+            action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'},
+            filters: ['!licenceUnstarted']
         },
         {
-            filters: ['!licenceUnstarted'], title: 'Curfew address',
-            action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'}
+            title: 'Curfew address',
+            action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'},
+            filters: ['!licenceUnstarted']
         },
         {
-            filters: ['!licenceUnstarted'],
             title: 'Additional conditions',
-            action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'}
+            action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'},
+            filters: ['!licenceUnstarted']
         },
         {
-            filters: ['!licenceUnstarted'],
             title: 'Curfew hours',
-            action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'}
+            action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'},
+            filters: ['!licenceUnstarted']
         },
         {
-            filters: ['!licenceUnstarted'],
             title: 'Reporting instructions',
-            action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'}
+            action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'},
+            filters: ['!licenceUnstarted']
         },
         {
-            filters: ['!licenceUnstarted', 'isNewVersion'],
             title: 'Create licence',
+            label: getNextVersionLabel,
             action: {type: 'btn', text: 'Continue', href: '/hdc/pdf/select/'},
-            label: getNextVersionLabel
+            filters: ['!licenceUnstarted', 'isNewVersion']
         }
     ],
     noTaskList: [

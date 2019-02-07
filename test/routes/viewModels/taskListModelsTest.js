@@ -252,7 +252,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/licenceConditions/standard/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
                     {
@@ -406,7 +414,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/licenceConditions/standard/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
                     {
@@ -482,7 +498,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/licenceConditions/standard/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
                     {
@@ -662,7 +686,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/licenceConditions/standard/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
                     {
@@ -736,7 +768,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/licenceConditions/standard/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
                     {
@@ -1054,7 +1094,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/licenceConditions/standard/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'roSubmitTask'}
                 ]
@@ -1107,7 +1155,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/licenceConditions/standard/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'roSubmitTask'}
                 ]
@@ -1342,7 +1398,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/conditions/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
                     {
@@ -1422,7 +1486,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/conditions/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
                     {
@@ -1503,7 +1575,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Curfew hours'
                     },
-                    {task: 'additionalConditionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/conditions/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Additional conditions'
+                    },
                     {task: 'reportingInstructionsTask'},
                     {task: 'finalChecksTask'},
                     {

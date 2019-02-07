@@ -4,6 +4,7 @@ const curfewAddress = require('./tasks/curfewAddress');
 const riskManagement = require('./tasks/riskManagement');
 const victimLiaison = require('./tasks/victimLiaison');
 const curfewHours = require('./tasks/curfewHours');
+const additionalConditions = require('./tasks/additionalConditions');
 const {getStatusLabel} = require('../../../utils/licenceStatusLabels');
 
 module.exports = ({decisions, tasks, stage}) => {
@@ -92,7 +93,15 @@ module.exports = ({decisions, tasks, stage}) => {
                 text: 'View'
             }
         },
-        {task: 'additionalConditionsTask'},
+        {
+            title: 'Additional conditions',
+            label: additionalConditions.getLabel({decisions, tasks}),
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/review/conditions/',
+                text: 'View'
+            }
+        },
         {task: 'reportingInstructionsTask'},
         {task: 'finalChecksTask'},
         {
