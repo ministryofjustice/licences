@@ -8,7 +8,7 @@ const {
     authenticationMiddleware,
     appSetup,
     auditStub,
-    signInServiceStub
+    createSignInServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -299,7 +299,7 @@ describe('/review/', () => {
 });
 
 function createApp(user) {
-    const signInService = signInServiceStub;
+    const signInService = createSignInServiceStub();
     const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService});
     const route = baseRouter(createRoute({licenceService, conditionsService, prisonerService}));
 

@@ -6,7 +6,7 @@ const {
     auditStub,
     createPrisonerServiceStub,
     createLicenceServiceStub,
-    signInServiceStub
+    createSignInServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -315,7 +315,7 @@ describe('PDF:', () => {
 function createApp({licenceServiceStub, pdfServiceStub, prisonerServiceStub}, user) {
     const prisonerService = prisonerServiceStub || createPrisonerServiceStub();
     const licenceService = licenceServiceStub || createLicenceServiceStub();
-    const signInService = signInServiceStub;
+    const signInService = createSignInServiceStub();
 
     const baseRouter = standardRouter({licenceService, prisonerService, audit: auditStub, signInService});
     const route = baseRouter(createPdfRouter({pdfService: pdfServiceStub, prisonerService}),

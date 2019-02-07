@@ -8,7 +8,7 @@ const {
     appSetup,
     testFormPageGets,
     createConditionsServiceStub,
-    signInServiceStub
+    createSignInServiceStub
 } = require('../supertestSetup');
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter');
@@ -227,7 +227,7 @@ describe('/hdc/licenceConditions', () => {
 function createApp({licenceService, conditionsService, prisonerService}, user) {
 
     const prisonerServiceMock = prisonerService || createPrisonerServiceStub();
-    const signInService = signInServiceStub;
+    const signInService = createSignInServiceStub();
 
     const baseRouter = standardRouter({
         licenceService, prisonerService: prisonerServiceMock, authenticationMiddleware, audit: auditStub, signInService
