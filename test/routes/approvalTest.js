@@ -153,7 +153,7 @@ describe('/hdc/approval', () => {
                 .expect(res => {
                     expect(signInServiceStub.getClientCredentialsTokens).to.be.calledOnce();
                     expect(nomisPushServiceStub.pushStatus).to.be.calledOnce();
-                    expect(nomisPushServiceStub.pushStatus).to.be.calledWith('1', 'UPDATED', 'new token');
+                    expect(nomisPushServiceStub.pushStatus).to.be.calledWith('1', {approval: 'UPDATED'}, 'new token');
                 });
         });
 

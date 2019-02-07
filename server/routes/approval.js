@@ -64,7 +64,7 @@ module.exports = ({licenceService, prisonerService, nomisPushService, signInServ
         const systemToken = await signInService.getClientCredentialsTokens(req.user.username);
         await nomisPushService.pushStatus(
             bookingId,
-            getIn(updatedLicence, ['approval', 'release', 'decision']),
+            {approval: getIn(updatedLicence, ['approval', 'release', 'decision'])},
             systemToken
         );
 
