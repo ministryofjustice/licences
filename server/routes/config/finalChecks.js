@@ -62,7 +62,7 @@ module.exports = {
                 dependentOn: 'decision',
                 predicate: 'Yes',
                 responseType: 'requiredStringIf_decision_Yes',
-                validationMessage: 'Enter a reason'
+                validationMessage: 'Select a reason'
             }}
         ],
         nextPath: {
