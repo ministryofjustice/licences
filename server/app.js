@@ -352,7 +352,7 @@ module.exports = function createApp({
     app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({licenceService, conditionsService})));
     app.use('/hdc/curfew/', secureRoute(curfewRouter({licenceService})));
     app.use('/hdc/eligibility/', secureRoute(eligibilityRouter({licenceService})));
-    app.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({licenceService})));
+    app.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({licenceService, signInService, nomisPushService})));
     app.use('/hdc/review/', secureRoute(reviewRouter({licenceService, conditionsService, prisonerService})));
     app.use('/hdc/reporting/', secureRoute(reportingRouter({licenceService})));
     app.use('/hdc/risk/', secureRoute(riskRouter({licenceService})));

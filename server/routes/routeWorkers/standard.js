@@ -13,7 +13,7 @@ module.exports = ({formConfig, licenceService, sectionName}) => {
         const dataPath = pageDataMap || ['licence', sectionName, licenceSection];
 
         const rawData = getIn(res.locals.licence, dataPath) || {};
-        const data = licenceService.addSplitDateFields(rawData, formConfig[formName].fields);
+        const data = firstItem(req.flash('userInput')) || licenceService.addSplitDateFields(rawData, formConfig[formName].fields);
         const errorObject = firstItem(req.flash('errors')) || {};
 
         const viewData = {bookingId, data, nextPath, errorObject, action, sectionName, formName};
