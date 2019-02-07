@@ -254,8 +254,8 @@ describe('TaskList models', () => {
                     },
                     {
                         action: {
-                            href: '/hdc/licenceConditions/standard/',
-                            text: 'View/Edit',
+                            href: '/hdc/review/conditions/',
+                            text: 'View',
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
@@ -416,8 +416,8 @@ describe('TaskList models', () => {
                     },
                     {
                         action: {
-                            href: '/hdc/licenceConditions/standard/',
-                            text: 'View/Edit',
+                            href: '/hdc/review/conditions/',
+                            text: 'View',
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
@@ -500,8 +500,8 @@ describe('TaskList models', () => {
                     },
                     {
                         action: {
-                            href: '/hdc/licenceConditions/standard/',
-                            text: 'View/Edit',
+                            href: '/hdc/review/conditions/',
+                            text: 'View',
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',

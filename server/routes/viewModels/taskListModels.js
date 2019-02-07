@@ -100,8 +100,8 @@ const tasksConfig = {
             label: additionalConditions.getLabel,
             action: {
                 type: 'btn-secondary',
-                href: '/hdc/licenceConditions/standard/',
-                text: 'View/Edit'
+                href: '/hdc/review/conditions/',
+                text: 'View'
             },
             filters: ['addressOrBassChecksDone']
         },
