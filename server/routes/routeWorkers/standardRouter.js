@@ -2,7 +2,7 @@ const express = require('express');
 const {checkLicenceMiddleware, authorisationMiddleware, auditMiddleware} = require('../../utils/middleware');
 const {authenticationMiddleware} = require('../../authentication/auth');
 
-module.exports = ({licenceService, prisonerService, audit, signInService}) => {
+module.exports = ({licenceService, prisonerService, audit, signInService, config}) => {
     return (routes, {auditKey = 'UPDATE_SECTION', licenceRequired = true} = {}) => {
 
         const router = express.Router();
@@ -21,6 +21,6 @@ module.exports = ({licenceService, prisonerService, audit, signInService}) => {
             next();
         });
 
-        return routes(router, auditMethod);
+        return routes(router, auditMethod, config);
     };
 };

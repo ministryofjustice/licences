@@ -327,7 +327,7 @@ module.exports = function createApp({
         })(req, res, next);
     });
 
-    const secureRoute = standardRouter({licenceService, prisonerService, audit, signInService});
+    const secureRoute = standardRouter({licenceService, prisonerService, audit, signInService, config});
 
     app.use((req, res, next) => {
         res.locals.tagManagerKey = config.tagManagerKey;

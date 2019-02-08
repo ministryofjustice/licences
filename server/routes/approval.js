@@ -4,7 +4,7 @@ const logger = require('../../log');
 const formConfig = require('./config/approval');
 const {getPathFor} = require('../utils/routes');
 
-module.exports = ({licenceService, prisonerService, nomisPushService, signInService}) => (router, audited) => {
+module.exports = ({licenceService, prisonerService, nomisPushService, signInService}) => (router, audited, {pushToNomis}) => {
 
     router.get('/release/:bookingId', asyncMiddleware(approvalGets('release')));
     router.get('/refuseReason/:bookingId', asyncMiddleware(approvalGets('refuseReason')));
@@ -61,12 +61,14 @@ module.exports = ({licenceService, prisonerService, nomisPushService, signInServ
             postRelease: res.locals.postRelease
         });
 
-        const systemToken = await signInService.getClientCredentialsTokens(req.user.username);
-        await nomisPushService.pushStatus(
-            bookingId,
-            {approval: getIn(updatedLicence, ['approval', 'release', 'decision'])},
-            systemToken
-        );
+        if (pushToNomis) {
+            const systemToken = await signInService.getClientCredentialsTokens(req.user.username);
+            await nomisPushService.pushStatus(
+                bookingId,
+                {approval: getIn(updatedLicence, ['approval', 'release', 'decision'])},
+                systemToken
+            );
+        }
 
         const nextPath = getPathFor({data: req.body, config: formConfig[formName]});
         res.redirect(`${nextPath}${bookingId}`);
