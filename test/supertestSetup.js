@@ -129,7 +129,8 @@ const users = {
         role: 'CA',
         username: 'CA_USER_TEST',
         activeCaseLoad: {
-            caseLoadId: 'caseLoadId'
+            caseLoadId: 'caseLoadId',
+            description: '---'
         }
     },
     roUser: {
