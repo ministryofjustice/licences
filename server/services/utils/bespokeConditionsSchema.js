@@ -47,7 +47,8 @@ module.exports = joi.object({
     REMAINADDRESS: joi.object({
         curfewAddress: joi.string().required(),
         curfewFrom: joi.string().required(),
-        curfewTo: joi.string().required()
+        curfewTo: joi.string().required(),
+        curfewTagRequired: joi.string().optional()
     }),
     CONFINEADDRESS: joi.object({
         confinedTo: joi.string().required(),

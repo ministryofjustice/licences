@@ -485,6 +485,8 @@ describe('validation', () => {
                         outcome: {HOMEVISITS: {mentalHealthName: 'Enter name'}}},
                     {formResponse: {REMAINADDRESS: {
                                 curfewAddress: 'g', curfewFrom: 'a', curfewTo: 'b'}}, outcome: {}},
+                    {formResponse: {REMAINADDRESS: {
+                                curfewAddress: 'g', curfewFrom: 'a', curfewTo: 'b', curfewTagRequired: 'Yes'}}, outcome: {}},
                     {formResponse: {REMAINADDRESS: {}},
                         outcome: {REMAINADDRESS:
                             {curfewAddress: 'Enter curfew address',
