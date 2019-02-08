@@ -31,12 +31,11 @@ block content
 
                                     - var conditionId = condition.id
                                     div.pure-g.smallPaddingBottom
-                                        div.pure-u-1.pure-u-md-2-3.pure-g
-                                            div.pure-u-1.multiple-choice.conditionSelector.noLeftPaddingColumn(data-target=condition.user_input+'_form')
+                                        div.pure-u-1.pure-u-md-2-3.conditionSelector
+                                            div.multiple-choice(data-target=condition.user_input+'_form')
                                                 p.namedAnchor
                                                     a.namedAnchor(name=conditionId)
                                                 input(type="checkbox" id="check-"+conditionId value=condition.id name="additionalConditions" checked=condition.selected)
-                                                label(for="check-"+conditionId)
                                                 label(for="check-"+conditionId) #{condition.text}
 
                                         if condition.user_input

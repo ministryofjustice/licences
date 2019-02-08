@@ -1,26 +1,6 @@
 .conditionSelector {
     border: solid $grey-1 2px;
-    display: flex;
-    label {
-        display: flex;
-        padding: 10px 40px 10px 0;
-    }
-    div {
-        padding: 10px 0;
-    }
-
-    [type=checkbox]+label::before {
-        min-width: 34px;
-        margin: 0 20px;
-        position: relative;
-        align-self: center;
-    }
-    [type=checkbox]+label::after {
-        position: relative;
-        align-self: center;
-        margin-top: -27px;
-        margin-left: -58px;
-    }
+    padding: 10px;
 }
 
 .conditionForm {
