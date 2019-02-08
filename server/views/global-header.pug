@@ -14,7 +14,7 @@ header(role="banner", id="global-header", class="with-proposition")
                     div#header-user.u-pad10.sm-pad15
                         div.u-padRight10.sm-padRight30.padLeft15.bold.borderRight
                             a(href="/user" title="User page" aria-label="Visit user admin page") #{user.firstName} #{user.lastName}
-                        if user.activeCaseLoad
+                        if user.activeCaseLoad && !user.activeCaseLoad.description.includes('---')
                             div.u-padRightLeft10.sm-padLeftRight30.bold.borderRight
                                 a(href="/user" title="User page" aria-label="Visit user admin page") #{user.activeCaseLoad.description}
                         div.u-padLeft10.sm-padLeft30.padRight15
