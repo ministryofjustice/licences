@@ -4,7 +4,7 @@ const {getIn, isEmpty, pickBy, getFieldName} = require('../utils/functionalHelpe
 const {getPathFor} = require('../utils/routes');
 const formConfig = require('./config/finalChecks');
 
-module.exports = ({licenceService, signInService, nomisPushService}) => (router, audited) => {
+module.exports = ({licenceService, signInService, nomisPushService}) => (router, audited, {pushToNomis}) => {
 
     const standard = createStandardRoutes({formConfig, licenceService, sectionName: 'finalChecks'});
 
@@ -36,15 +36,17 @@ module.exports = ({licenceService, signInService, nomisPushService}) => (router,
             postRelease: res.locals.postRelease
         });
 
-        const systemToken = await signInService.getClientCredentialsTokens(req.user.username);
-        await nomisPushService.pushStatus(
-            bookingId,
-            {
-                postpone: getIn(updatedLicence, ['finalChecks', 'postpone', 'decision']),
-                postponeReason: getIn(updatedLicence, ['finalChecks', 'postpone', 'postponeReason'])
-            },
-            systemToken
-        );
+        if (pushToNomis) {
+            const systemToken = await signInService.getClientCredentialsTokens(req.user.username);
+            await nomisPushService.pushStatus(
+                bookingId,
+                {
+                    postpone: getIn(updatedLicence, ['finalChecks', 'postpone', 'decision']),
+                    postponeReason: getIn(updatedLicence, ['finalChecks', 'postpone', 'postponeReason'])
+                },
+                systemToken
+            );
+        }
 
         const nextPath = getPathFor({data: req.body, config: formConfig.postpone});
         res.redirect(`${nextPath}${bookingId}`);

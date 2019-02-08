@@ -16,13 +16,13 @@ describe('nomisPushService', () => {
         it('should call nomisClient.putApprovalStatus with bookingId, status and systemToken', async () => {
             await service.pushStatus('1', {approval: 'Yes'}, 'token');
             expect(nomisClientMock.putApprovalStatus).to.be.calledOnce();
-            expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'Approved', 'token');
+            expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'APPROVED', 'token');
         });
 
         it('should call nomisClient.putApprovalStatus with Rejected if approvalDecision is No', async () => {
             await service.pushStatus('1', {approval: 'No'}, 'token');
             expect(nomisClientMock.putApprovalStatus).to.be.calledOnce();
-            expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'Rejected', 'token');
+            expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'REJECTED', 'token');
         });
 
         it('should not nomisClient.putApprovalStatus if no decision', async () => {
@@ -33,13 +33,13 @@ describe('nomisPushService', () => {
         it('should call nomisClient.putApprovalStatus if postpone investigation', async () => {
             await service.pushStatus('1', {postpone: 'Yes', postponeReason: 'investigation'}, 'token');
             expect(nomisClientMock.putApprovalStatus).to.be.calledOnce();
-            expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'Postponed Investigation', 'token');
+            expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'PP INVEST', 'token');
         });
 
         it('should call nomisClient.putApprovalStatus if postpone outstanding risk', async () => {
             await service.pushStatus('1', {postpone: 'Yes', postponeReason: 'outstandingRisk'}, 'token');
             expect(nomisClientMock.putApprovalStatus).to.be.calledOnce();
-            expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'Postponed Outstanding Risk', 'token');
+            expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'PP OUT RISK', 'token');
         });
 
         it('should not call nomisClient.putApprovalStatus if postpone No', async () => {

@@ -28,8 +28,8 @@ module.exports = nomisClientBuilder => {
 
 function getApprovalStatus({approval}) {
     const statusValues = {
-        Yes: 'Approved',
-        No: 'Rejected'
+        Yes: 'APPROVED',
+        No: 'REJECTED'
     };
     return statusValues[approval];
 }
@@ -37,8 +37,8 @@ function getApprovalStatus({approval}) {
 function getPostponeStatus({postpone, postponeReason}) {
     if (postpone === 'Yes') {
         const statusValues = {
-            investigation: 'Postponed Investigation',
-            outstandingRisk: 'Postponed Outstanding Risk'
+            investigation: 'PP INVEST',
+            outstandingRisk: 'PP OUT RISK'
         };
         return statusValues[postponeReason];
     }
