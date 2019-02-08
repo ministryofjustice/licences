@@ -261,7 +261,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/reporting/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'finalChecksTask'},
                     {
                         label: 'Postpone the case if you\'re waiting for information on risk management',
@@ -423,7 +431,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/reporting/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'finalChecksTask'},
                     {
                         title: 'Postpone or refuse',
@@ -507,7 +523,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/reporting/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'finalChecksTask'},
                     {
                         title: 'Postpone or refuse',
@@ -695,7 +719,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/reporting/reportingInstructions/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'finalChecksTask'},
                     {
                         title: 'Postpone or refuse',
@@ -777,7 +809,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/reporting/reportingInstructions/',
+                            text: 'View/Edit',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'finalChecksTask'},
                     {
                         title: 'Postpone or refuse',
@@ -1040,7 +1080,7 @@ describe('TaskList models', () => {
         });
     });
 
-    describe('caTasksPostApproval', () => {
+    describe('roTasks', () => {
         it('should show all tasks if address not rejected', () => {
             expect(taskListModel(
                 'RO',
@@ -1103,7 +1143,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/reporting/reportingInstructions/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'roSubmitTask'}
                 ]
             });
@@ -1164,7 +1212,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/reporting/reportingInstructions/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'roSubmitTask'}
                 ]
             });
@@ -1407,7 +1463,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/reporting/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'finalChecksTask'},
                     {
                         action: {
@@ -1495,7 +1559,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/reporting/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'finalChecksTask'},
                     {
                         action: {
@@ -1584,7 +1656,15 @@ describe('TaskList models', () => {
                         label: 'Not completed',
                         title: 'Additional conditions'
                     },
-                    {task: 'reportingInstructionsTask'},
+                    {
+                        action: {
+                            href: '/hdc/review/reporting/',
+                            text: 'View',
+                            type: 'btn-secondary'
+                        },
+                        label: 'Not completed',
+                        title: 'Reporting instructions'
+                    },
                     {task: 'finalChecksTask'},
                     {
                         action: {

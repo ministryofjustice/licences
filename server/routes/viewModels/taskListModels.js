@@ -8,6 +8,7 @@ const riskManagement = require('./taskLists/tasks/riskManagement');
 const victimLiaison = require('./taskLists/tasks/victimLiaison');
 const curfewHours = require('./taskLists/tasks/curfewHours');
 const additionalConditions = require('./taskLists/tasks/additionalConditions');
+const reportingInstructions = require('./taskLists/tasks/reportingInstructions');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -105,7 +106,16 @@ const tasksConfig = {
             },
             filters: ['addressOrBassChecksDone']
         },
-        {task: 'reportingInstructionsTask', filters: ['addressOrBassChecksDone']},
+        {
+            title: 'Reporting instructions',
+            label: reportingInstructions.getLabel,
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/review/reporting/',
+                text: 'View'
+            },
+            filters: ['addressOrBassChecksDone']
+        },
         {task: 'finalChecksTask', filters: ['addressOrBassChecksDone']},
         {
             title: 'Postpone or refuse',
@@ -169,7 +179,16 @@ const tasksConfig = {
             },
             filters: ['eligible', 'addressOrBassOffered']
         },
-        {task: 'reportingInstructionsTask', filters: ['eligible', 'addressOrBassOffered']},
+        {
+            title: 'Reporting instructions',
+            label: reportingInstructions.getLabel,
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/reporting/reportingInstructions/',
+                text: 'View/Edit'
+            },
+            filters: ['eligible', 'addressOrBassOffered']
+        },
         {task: 'finalChecksTask', filters: ['eligible', 'addressOrBassOffered']},
         {
             title: 'Postpone or refuse',
@@ -220,7 +239,12 @@ const tasksConfig = {
             action: additionalConditions.getRoAction,
             filters: ['!curfewAddressRejected']
         },
-        {task: 'reportingInstructionsTask', filters: ['!curfewAddressRejected']},
+        {
+            title: 'Reporting instructions',
+            label: reportingInstructions.getLabel,
+            action: reportingInstructions.getRoAction,
+            filters: ['!curfewAddressRejected']
+        },
         {task: 'roSubmitTask', filters: []}
     ],
     vary: [

@@ -5,6 +5,7 @@ const riskManagement = require('./tasks/riskManagement');
 const victimLiaison = require('./tasks/victimLiaison');
 const curfewHours = require('./tasks/curfewHours');
 const additionalConditions = require('./tasks/additionalConditions');
+const reportingInstructions = require('./tasks/reportingInstructions');
 const {getStatusLabel} = require('../../../utils/licenceStatusLabels');
 
 module.exports = ({decisions, tasks, stage}) => {
@@ -102,7 +103,15 @@ module.exports = ({decisions, tasks, stage}) => {
                 text: 'View'
             }
         },
-        {task: 'reportingInstructionsTask'},
+        {
+            title: 'Reporting instructions',
+            label: reportingInstructions.getLabel({decisions, tasks}),
+            action: {
+                type: 'btn-secondary',
+                href: '/hdc/review/reporting/',
+                text: 'View'
+            }
+        },
         {task: 'finalChecksTask'},
         {
             title: 'Postpone',
