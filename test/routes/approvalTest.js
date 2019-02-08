@@ -142,10 +142,10 @@ describe('/hdc/approval', () => {
             });
         });
 
-        it('should push the decision to nomis', () => {
+        it('should push the decision to nomis if config variable is true', () => {
             signInServiceStub.getClientCredentialsTokens.resolves('new token');
             licenceServiceStub.update.resolves({approval: {release: {decision: 'UPDATED'}}});
-
+            app = createApp({licenceServiceStub, nomisPushServiceStub, signInServiceStub}, 'dmUser', {pushToNomis: true});
             return request(app)
                 .post('/hdc/approval/release/1')
                 .send({decision: 'Yes'})
@@ -154,6 +154,20 @@ describe('/hdc/approval', () => {
                     expect(signInServiceStub.getClientCredentialsTokens).to.be.calledOnce();
                     expect(nomisPushServiceStub.pushStatus).to.be.calledOnce();
                     expect(nomisPushServiceStub.pushStatus).to.be.calledWith('1', {approval: 'UPDATED'}, 'new token');
+                });
+        });
+
+        it('should not push the decision to nomis if config variable is false', () => {
+            signInServiceStub.getClientCredentialsTokens.resolves('new token');
+            licenceServiceStub.update.resolves({approval: {release: {decision: 'UPDATED'}}});
+            app = createApp({licenceServiceStub, nomisPushServiceStub, signInServiceStub}, 'dmUser', {pushToNomis: false});
+            return request(app)
+                .post('/hdc/approval/release/1')
+                .send({decision: 'Yes'})
+                .expect(302)
+                .expect(res => {
+                    expect(signInServiceStub.getClientCredentialsTokens).to.not.be.called();
+                    expect(nomisPushServiceStub.pushStatus).to.not.be.called();
                 });
         });
 
@@ -192,14 +206,14 @@ describe('/hdc/approval', () => {
     });
 });
 
-function createApp({licenceServiceStub, nomisPushServiceStub, signInServiceStub}, user) {
+function createApp({licenceServiceStub, nomisPushServiceStub, signInServiceStub}, user, config = {}) {
     const prisonerService = createPrisonerServiceStub();
     prisonerService.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse);
     const licenceService = licenceServiceStub || createLicenceServiceStub();
     const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub();
     const signInService = signInServiceStub || createLicenceServiceStub();
 
-    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService});
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService, config});
     const route = baseRouter(createRoute({licenceService, prisonerService, nomisPushService, signInService}));
 
     return appSetup(route, user, '/hdc/approval');

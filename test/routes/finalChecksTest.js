@@ -176,7 +176,7 @@ describe('/hdc/finalChecks', () => {
             const signInService = createSignInServiceStub();
             signInService.getClientCredentialsTokens.resolves('new token');
             const nomisPushService = createNomisPushServiceStub();
-            const app = createApp({licenceService, signInService, nomisPushService});
+            const app = createApp({licenceService, signInService, nomisPushService}, 'caUser', {pushToNomis: true});
 
             return request(app)
                 .post('/hdc/finalChecks/postpone/1')
@@ -190,17 +190,35 @@ describe('/hdc/finalChecks', () => {
                             '1', {postpone: 'Yes', postponeReason: 'Something'}, 'new token');
                 });
         });
+
+        it('should not push the postponement to nomis if config variable is false', () => {
+            const licenceService = createLicenceServiceStub();
+            licenceService.update.resolves({finalChecks: {postpone: {decision: 'Yes', postponeReason: 'Something'}}});
+            const signInService = createSignInServiceStub();
+            signInService.getClientCredentialsTokens.resolves('new token');
+            const nomisPushService = createNomisPushServiceStub();
+            const app = createApp({licenceService, signInService, nomisPushService}, 'caUser', {pushToNomis: false});
+
+            return request(app)
+                .post('/hdc/finalChecks/postpone/1')
+                .send({decision: 'Yes'})
+                .expect(302)
+                .expect(res => {
+                    expect(signInService.getClientCredentialsTokens).to.not.be.called();
+                    expect(nomisPushService.pushStatus).to.not.be.called();
+                });
+        });
     });
 });
 
-function createApp({licenceService, signInService, nomisPushService}, user) {
+function createApp({licenceService, signInService, nomisPushService}, user, config = {}) {
     const prisonerService = createPrisonerServiceStub();
     licenceService = licenceService || createLicenceServiceStub();
     signInService = signInService || createSignInServiceStub();
     signInService.getClientCredentialsTokens.resolves('new token');
     nomisPushService = nomisPushService || createNomisPushServiceStub();
 
-    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService});
+    const baseRouter = standardRouter({licenceService, prisonerService, authenticationMiddleware, audit: auditStub, signInService, config});
     const route = baseRouter(createRoute({licenceService, signInService, nomisPushService}));
 
     return appSetup(route, user, '/hdc/finalChecks');
