@@ -251,7 +251,7 @@ const tasksConfig = {
         {
             title: 'View current licence',
             label: getVersionLabel,
-            action: {type: 'btn', text: 'View', href: getPdfLink},
+            action: {type: 'btn', text: 'View', href: getPdfLink, newTab: true},
             filters: ['licenceVersionExists', '!isNewVersion']
         },
         {
@@ -372,7 +372,7 @@ const filtersMatch = filterList => task => task.filters.every(filter => {
 const decorateTaskModel = (approvedVersion, version, approvedVersionDetails, decisions, tasks) => task => {
     const rawConfig = pick(['task', 'title', 'label', 'action'], task);
     const callAnyFunctions = value => {
-        if (typeof value === 'string') {
+        if (typeof value === 'string' || typeof value === 'boolean') {
             return value;
         }
         if (typeof value === 'function') {

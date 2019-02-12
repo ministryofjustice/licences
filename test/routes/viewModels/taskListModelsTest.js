@@ -1004,7 +1004,7 @@ describe('TaskList models', () => {
                     {
                         title: 'View current licence',
                         label: 'Licence version 2',
-                        action: {type: 'btn', href: '/hdc/pdf/create/templateName/', text: 'View'}
+                        action: {type: 'btn', href: '/hdc/pdf/create/templateName/', text: 'View', newTab: true}
                     },
                     {title: 'Permission for variation', action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'}},
                     {title: 'Curfew address', action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'}},
