@@ -1,6 +1,7 @@
 const {pick, pickBy, pickKey, keys, mapObject, isEmpty} = require('../../utils/functionalHelpers');
 const versionInfo = require('../../utils/versionInfo');
 const getDmTasks = require('./taskLists/dmTasks');
+const {getRoTasksPostApproval} = require('./taskLists/roTasks');
 const postponement = require('./taskLists/tasks/postponement');
 const bassOffer = require('./taskLists/tasks/bassOffer');
 const curfewAddress = require('./taskLists/tasks/curfewAddress');
@@ -308,7 +309,8 @@ module.exports = (
 ) => {
     const taskList = getTaskList(role, stage, postRelease);
     const getTaskListMethod = {
-        dmTasks: getDmTasks
+        dmTasks: getDmTasks,
+        roTasksPostApproval: getRoTasksPostApproval
     };
     if (!tasksConfig[taskList] && !getTaskListMethod[taskList]) {
         return {taskListView: taskList};

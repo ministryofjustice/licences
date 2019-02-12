@@ -938,6 +938,45 @@ describe('TaskList models', () => {
         });
     });
 
+    describe('roTasksPostApproval', () => {
+        it('should return four taskes', () => {
+            expect(taskListModel(
+                'RO',
+                false,
+                {
+                    decisions: {},
+                    tasks: {},
+                    stage: 'DECIDED'
+                },
+                {version: 1},
+                null
+                )
+            ).to.eql({
+                taskListModel: [
+                    {
+                        title: 'Risk management',
+                        label: 'Not completed',
+                        action: {type: 'btn', text: 'Continue', href: '/hdc/risk/riskManagement/'}
+                    },
+                    {
+                        title: 'Curfew hours',
+                        label: 'Not completed',
+                        action: {type: 'btn', text: 'Continue', href: '/hdc/curfew/curfewHours/'}
+                    },
+                    {
+                        title: 'Additional conditions',
+                        label: 'Not completed',
+                        action: {type: 'btn', text: 'Continue', href: '/hdc/licenceConditions/standard/'}
+                    },
+                    {
+                        title: 'Reporting instructions',
+                        label: 'Not completed',
+                        action: {type: 'btn', text: 'Continue', href: '/hdc/reporting/reportingInstructions/'}
+                    }
+                ]
+            });
+        });
+    });
 
     describe('vary', () => {
         it('should return vary licence task if licence is unstarted', () => {
