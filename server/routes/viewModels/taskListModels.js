@@ -1,7 +1,7 @@
 const {pick, pickBy, pickKey, keys, mapObject, isEmpty} = require('../../utils/functionalHelpers');
 const versionInfo = require('../../utils/versionInfo');
 const getDmTasks = require('./taskLists/dmTasks');
-const {getRoTasksPostApproval} = require('./taskLists/roTasks');
+const {getRoTasksPostApproval, getRoTasks} = require('./taskLists/roTasks');
 const postponement = require('./taskLists/tasks/postponement');
 const bassOffer = require('./taskLists/tasks/bassOffer');
 const curfewAddress = require('./taskLists/tasks/curfewAddress');
@@ -208,46 +208,6 @@ const tasksConfig = {
         },
         {task: 'informOffenderTask', filters: ['!eligible']}
     ],
-    roTasks: [
-        {task: 'bassAreaTask', filters: ['bassReferralNeeded']},
-        {
-            title: 'Proposed curfew address',
-            label: curfewAddress.getLabel,
-            action: curfewAddress.getRoAction,
-            filters: ['!addressRejectedInRiskTask', '!bassReferralNeeded']
-        },
-        {
-            title: 'Risk management',
-            label: riskManagement.getLabel,
-            action: riskManagement.getRoAction,
-            filters: ['!addressRejectedInReviewTask']
-        },
-        {
-            title: 'Victim liaison',
-            label: victimLiaison.getLabel,
-            action: victimLiaison.getRoAction,
-            filters: ['!curfewAddressRejected']
-        },
-        {
-            title: 'Curfew hours',
-            label: curfewHours.getLabel,
-            action: curfewHours.getRoAction,
-            filters: ['!curfewAddressRejected']
-        },
-        {
-            title: 'Additional conditions',
-            label: additionalConditions.getLabel,
-            action: additionalConditions.getRoAction,
-            filters: ['!curfewAddressRejected']
-        },
-        {
-            title: 'Reporting instructions',
-            label: reportingInstructions.getLabel,
-            action: reportingInstructions.getRoAction,
-            filters: ['!curfewAddressRejected']
-        },
-        {task: 'roSubmitTask', filters: []}
-    ],
     vary: [
         {
             title: 'View current licence',
@@ -310,6 +270,7 @@ module.exports = (
     const taskList = getTaskList(role, stage, postRelease);
     const getTaskListMethod = {
         dmTasks: getDmTasks,
+        roTasks: getRoTasks,
         roTasksPostApproval: getRoTasksPostApproval
     };
     if (!tasksConfig[taskList] && !getTaskListMethod[taskList]) {
@@ -322,9 +283,7 @@ module.exports = (
         optedOut,
         eligible,
         dmRefused,
-        curfewAddressRejected,
-        addressUnsuitable,
-        addressReviewFailed
+        addressUnsuitable
     } = decisions;
 
     const {
@@ -340,15 +299,12 @@ module.exports = (
         eligible,
         [allowedTransition]: allowedTransition,
         dmRefused,
-        curfewAddressRejected,
         eligibilityDone: eligibility === 'DONE',
         optOutDone: optOut === 'DONE',
         optOutUnstarted: optOut === 'UNSTARTED',
         addressOrBassChecksDone: curfewAddressApproved || bassChecksDone,
         addressOrBassChecksDoneOrUnsuitable: curfewAddressApproved || bassChecksDone || addressUnsuitable,
         addressOrBassOffered: curfewAddressApproved || bassOfferMade,
-        addressRejectedInReviewTask: addressReviewFailed,
-        addressRejectedInRiskTask: addressUnsuitable,
         addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
         licenceUnstarted: stage === 'UNSTARTED',
         licenceVersionExists: !isEmpty(approvedVersionDetails),
