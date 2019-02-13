@@ -22,7 +22,7 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({taskListModel: [{task: 'eligibilityTask'}]});
+            ).to.eql([{task: 'eligibilityTask', visible: true}]);
         });
 
         it('should show info and address task after eligibility successfully completed', () => {
@@ -44,13 +44,12 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'eligibilityTask'},
-                    {task: 'informOffenderTask'},
-                    {task: 'proposedAddressTask'}
+            ).to.eql([
+                    {task: 'eligibilityTask', visible: true},
+                    {task: 'informOffenderTask', visible: true},
+                    {task: 'proposedAddressTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should allow submission to RO when optout completed and not opted out', () => {
@@ -72,13 +71,12 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'eligibilityTask'},
-                    {task: 'proposedAddressTask'},
-                    {task: 'caSubmitAddressReviewTask'}
+            ).to.eql([
+                    {task: 'eligibilityTask', visible: true},
+                    {task: 'proposedAddressTask', visible: true},
+                    {task: 'caSubmitAddressReviewTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should allow submission for bass review if bass review selected', () => {
@@ -100,13 +98,12 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'eligibilityTask'},
-                    {task: 'proposedAddressTask'},
-                    {task: 'caSubmitBassReviewTask'}
+            ).to.eql([
+                    {task: 'eligibilityTask', visible: true},
+                    {task: 'proposedAddressTask', visible: true},
+                    {task: 'caSubmitBassReviewTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should not allow submission for if opted out', () => {
@@ -128,12 +125,11 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'eligibilityTask'},
-                    {task: 'proposedAddressTask'}
+            ).to.eql([
+                    {task: 'eligibilityTask', visible: true},
+                    {task: 'proposedAddressTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should allow submission for refusal if ineligible', () => {
@@ -155,12 +151,11 @@ describe('TaskList models', () => {
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'eligibilityTask'},
-                    {task: 'caSubmitRefusalTask'}
+            ).to.eql([
+                    {task: 'eligibilityTask', visible: true},
+                    {task: 'caSubmitRefusalTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should allow submission for refusal if address rejected', () => {
@@ -183,13 +178,12 @@ describe('TaskList models', () => {
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'eligibilityTask'},
-                    {task: 'proposedAddressTask'},
-                    {task: 'caSubmitRefusalTask'}
+            ).to.eql([
+                    {task: 'eligibilityTask', visible: true},
+                    {task: 'proposedAddressTask', visible: true},
+                    {task: 'caSubmitRefusalTask', visible: true}
                 ]
-            });
+            );
         });
     });
 
@@ -214,8 +208,7 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         action: {
                             href: '/hdc/review/address/',
@@ -223,7 +216,8 @@ describe('TaskList models', () => {
                             type: 'link'
                         },
                         label: 'Not completed',
-                        title: 'Proposed curfew address'
+                        title: 'Proposed curfew address',
+                        visible: true
                     },
                     {
                         action: {
@@ -232,7 +226,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Risk management'
+                        title: 'Risk management',
+                        visible: true
                     },
                     {
                         action: {
@@ -241,7 +236,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Victim liaison'
+                        title: 'Victim liaison',
+                        visible: true
                     },
                     {
                         action: {
@@ -250,7 +246,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Curfew hours'
+                        title: 'Curfew hours',
+                        visible: true
                     },
                     {
                         action: {
@@ -259,7 +256,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Additional conditions'
+                        title: 'Additional conditions',
+                        visible: true
                     },
                     {
                         action: {
@@ -268,18 +266,20 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Reporting instructions'
+                        title: 'Reporting instructions',
+                        visible: true
                     },
-                    {task: 'finalChecksTask'},
+                    {task: 'finalChecksTask', visible: true},
                     {
                         label: 'Postpone the case if you\'re waiting for information on risk management',
                         title: 'Postpone or refuse',
-                        action: {type: 'btn', text: 'Postpone', href: '/hdc/finalChecks/postpone/'}
+                        action: {type: 'btn', text: 'Postpone', href: '/hdc/finalChecks/postpone/'},
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'},
-                    {task: 'caSubmitApprovalTask'}
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'caSubmitApprovalTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should return a limited set of tasks of curfew address not approved', () => {
@@ -303,8 +303,7 @@ describe('TaskList models', () => {
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         action: {
                             href: '/hdc/review/address/',
@@ -312,12 +311,13 @@ describe('TaskList models', () => {
                             type: 'link'
                         },
                         label: 'Not completed',
-                        title: 'Proposed curfew address'
+                        title: 'Proposed curfew address',
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'},
-                    {task: 'caSubmitRefusalTask'}
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'caSubmitRefusalTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should show risk if adderss unsuitable', () => {
@@ -339,8 +339,7 @@ describe('TaskList models', () => {
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         action: {
                             href: '/hdc/review/address/',
@@ -348,7 +347,8 @@ describe('TaskList models', () => {
                             type: 'link'
                         },
                         label: 'Not completed',
-                        title: 'Proposed curfew address'
+                        title: 'Proposed curfew address',
+                        visible: true
                     },
                     {
                         action: {
@@ -357,12 +357,13 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Address unsuitable',
-                        title: 'Risk management'
+                        title: 'Risk management',
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'},
-                    {task: 'caSubmitRefusalTask'}
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'caSubmitRefusalTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should return bass specific list of tasks', () => {
@@ -384,8 +385,7 @@ describe('TaskList models', () => {
                 },
                 'caToDm'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         title: 'BASS address',
                         label: 'BASS referral requested',
@@ -393,7 +393,8 @@ describe('TaskList models', () => {
                             href: '/hdc/bassReferral/bassOffer/',
                             text: 'Continue',
                             type: 'btn'
-                        }
+                        },
+                        visible: true
                     },
                     {
                         action: {
@@ -402,7 +403,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Risk management'
+                        title: 'Risk management',
+                        visible: true
                     },
                     {
                         action: {
@@ -411,7 +413,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Victim liaison'
+                        title: 'Victim liaison',
+                        visible: true
                     },
                     {
                         action: {
@@ -420,7 +423,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Curfew hours'
+                        title: 'Curfew hours',
+                        visible: true
                     },
                     {
                         action: {
@@ -429,7 +433,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Additional conditions'
+                        title: 'Additional conditions',
+                        visible: true
                     },
                     {
                         action: {
@@ -438,9 +443,10 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Reporting instructions'
+                        title: 'Reporting instructions',
+                        visible: true
                     },
-                    {task: 'finalChecksTask'},
+                    {task: 'finalChecksTask', visible: true},
                     {
                         title: 'Postpone or refuse',
                         label: 'Postpone the case if you\'re waiting for information on risk management',
@@ -448,12 +454,13 @@ describe('TaskList models', () => {
                             href: '/hdc/finalChecks/postpone/',
                             text: 'Postpone',
                             type: 'btn'
-                        }
+                        },
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'},
-                    {task: 'caSubmitApprovalTask'}
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'caSubmitApprovalTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should not show submit tasks if opted out', () => {
@@ -476,8 +483,7 @@ describe('TaskList models', () => {
                 {},
                 'caToDm'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         title: 'BASS address',
                         label: 'BASS referral requested',
@@ -485,7 +491,8 @@ describe('TaskList models', () => {
                             href: '/hdc/bassReferral/bassOffer/',
                             text: 'Continue',
                             type: 'btn'
-                        }
+                        },
+                        visible: true
                     },
                     {
                         action: {
@@ -494,7 +501,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Risk management'
+                        title: 'Risk management',
+                        visible: true
                     },
                     {
                         action: {
@@ -503,7 +511,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Victim liaison'
+                        title: 'Victim liaison',
+                        visible: true
                     },
                     {
                         action: {
@@ -512,7 +521,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Curfew hours'
+                        title: 'Curfew hours',
+                        visible: true
                     },
                     {
                         action: {
@@ -521,7 +531,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Additional conditions'
+                        title: 'Additional conditions',
+                        visible: true
                     },
                     {
                         action: {
@@ -530,9 +541,10 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Reporting instructions'
+                        title: 'Reporting instructions',
+                        visible: true
                     },
-                    {task: 'finalChecksTask'},
+                    {task: 'finalChecksTask', visible: true},
                     {
                         title: 'Postpone or refuse',
                         label: 'Postpone the case if you\'re waiting for information on risk management',
@@ -540,11 +552,12 @@ describe('TaskList models', () => {
                             href: '/hdc/finalChecks/postpone/',
                             text: 'Postpone',
                             type: 'btn'
-                        }
+                        },
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'}
+                    {task: 'HDCRefusalTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should return limited bass specific list of tasks when bass area check not done', () => {
@@ -567,8 +580,7 @@ describe('TaskList models', () => {
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         title: 'BASS address',
                         label: 'BASS referral requested',
@@ -576,12 +588,13 @@ describe('TaskList models', () => {
                             href: '/hdc/proposedAddress/curfewAddressChoice/',
                             text: 'Continue',
                             type: 'btn'
-                        }
+                        },
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'},
-                    {task: 'caSubmitRefusalTask'}
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'caSubmitRefusalTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should return limited bass specific list of tasks when bass excluded', () => {
@@ -604,8 +617,7 @@ describe('TaskList models', () => {
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         title: 'BASS address',
                         label: 'BASS referral requested',
@@ -613,12 +625,13 @@ describe('TaskList models', () => {
                             href: '/hdc/bassReferral/bassOffer/',
                             text: 'Continue',
                             type: 'btn'
-                        }
+                        },
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'},
-                    {task: 'caSubmitRefusalTask'}
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'caSubmitRefusalTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should show proposed address task if caToRo transition (new address added)', () => {
@@ -635,13 +648,12 @@ describe('TaskList models', () => {
                 {},
                 'caToRo'
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'proposedAddressTask'},
-                    {task: 'HDCRefusalTask'},
-                    {task: 'caSubmitAddressReviewTask'}
+            ).to.eql([
+                    {task: 'proposedAddressTask', visible: true},
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'caSubmitAddressReviewTask', visible: true}
                 ]
-            });
+            );
         });
     });
 
@@ -671,9 +683,8 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'eligibilitySummaryTask'},
+            ).to.eql([
+                    {task: 'eligibilitySummaryTask', visible: true},
                     {
                         action: {
                             href: '/hdc/review/address/',
@@ -681,7 +692,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Proposed curfew address'
+                        title: 'Proposed curfew address',
+                        visible: true
                     },
                     {
                         action: {
@@ -690,7 +702,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Risk management'
+                        title: 'Risk management',
+                        visible: true
                     },
                     {
                         action: {
@@ -699,7 +712,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Victim liaison'
+                        title: 'Victim liaison',
+                        visible: true
                     },
                     {
                         action: {
@@ -708,7 +722,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Curfew hours'
+                        title: 'Curfew hours',
+                        visible: true
                     },
                     {
                         action: {
@@ -717,7 +732,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Additional conditions'
+                        title: 'Additional conditions',
+                        visible: true
                     },
                     {
                         action: {
@@ -726,9 +742,10 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Reporting instructions'
+                        title: 'Reporting instructions',
+                        visible: true
                     },
-                    {task: 'finalChecksTask'},
+                    {task: 'finalChecksTask', visible: true},
                     {
                         title: 'Postpone or refuse',
                         label: 'Postpone the case if you\'re waiting for information on risk management',
@@ -736,12 +753,13 @@ describe('TaskList models', () => {
                             href: '/hdc/finalChecks/postpone/',
                             text: 'Postpone',
                             type: 'btn'
-                        }
+                        },
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'},
-                    {task: 'createLicenceTask'}
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'createLicenceTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should return bass tasks if required', () => {
@@ -769,10 +787,9 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'eligibilitySummaryTask'},
-                    {task: 'bassAddressTask'},
+            ).to.eql([
+                    {task: 'eligibilitySummaryTask', visible: true},
+                    {task: 'bassAddressTask', visible: true},
                     {
                         action: {
                             href: '/hdc/risk/riskManagement/',
@@ -780,7 +797,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Risk management'
+                        title: 'Risk management',
+                        visible: true
                     },
                     {
                         action: {
@@ -789,7 +807,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Victim liaison'
+                        title: 'Victim liaison',
+                        visible: true
                     },
                     {
                         action: {
@@ -798,7 +817,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Curfew hours'
+                        title: 'Curfew hours',
+                        visible: true
                     },
                     {
                         action: {
@@ -807,7 +827,8 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Additional conditions'
+                        title: 'Additional conditions',
+                        visible: true
                     },
                     {
                         action: {
@@ -816,9 +837,10 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Reporting instructions'
+                        title: 'Reporting instructions',
+                        visible: true
                     },
-                    {task: 'finalChecksTask'},
+                    {task: 'finalChecksTask', visible: true},
                     {
                         title: 'Postpone or refuse',
                         label: 'Postpone the case if you\'re waiting for information on risk management',
@@ -826,12 +848,13 @@ describe('TaskList models', () => {
                             href: '/hdc/finalChecks/postpone/',
                             text: 'Postpone',
                             type: 'btn'
-                        }
+                        },
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'},
-                    {task: 'createLicenceTask'}
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'createLicenceTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should return just eligibility and notice if ineligible ', () => {
@@ -858,12 +881,11 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'eligibilitySummaryTask'},
-                    {task: 'informOffenderTask'}
+            ).to.eql([
+                    {task: 'eligibilitySummaryTask', visible: true},
+                    {task: 'informOffenderTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should send for refusal if no approved address and no new one added', () => {
@@ -887,8 +909,7 @@ describe('TaskList models', () => {
                 {},
                 'caToDmRefusal'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         action: {
                             href: '/hdc/review/address/',
@@ -896,12 +917,13 @@ describe('TaskList models', () => {
                             type: 'btn-secondary'
                         },
                         label: 'Not completed',
-                        title: 'Proposed curfew address'
+                        title: 'Proposed curfew address',
+                        visible: true
                     },
-                    {task: 'HDCRefusalTask'},
-                    {task: 'caSubmitRefusalTask'}
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'caSubmitRefusalTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should show proposed address task if caToRo transition (new address added)', () => {
@@ -928,13 +950,12 @@ describe('TaskList models', () => {
                 {},
                 'caToRo'
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'proposedAddressTask'},
-                    {task: 'HDCRefusalTask'},
-                    {task: 'caSubmitAddressReviewTask'}
+            ).to.eql([
+                    {task: 'proposedAddressTask', visible: true},
+                    {task: 'HDCRefusalTask', visible: true},
+                    {task: 'caSubmitAddressReviewTask', visible: true}
                 ]
-            });
+            );
         });
     });
 
@@ -951,8 +972,7 @@ describe('TaskList models', () => {
                 {version: 1},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         title: 'Risk management',
                         label: 'Not completed',
@@ -974,7 +994,7 @@ describe('TaskList models', () => {
                         action: {type: 'btn', text: 'Continue', href: '/hdc/reporting/reportingInstructions/'}
                     }
                 ]
-            });
+            );
         });
     });
 
@@ -988,10 +1008,10 @@ describe('TaskList models', () => {
                     tasks: {},
                     stage: 'UNSTARTED'
                 },
-                {},
+                {version: 1, versionDetails: {}, approvedVersion: {}, approvedVersionDetails: {}},
                 null
                 )
-            ).to.eql({taskListModel: [{task: 'varyLicenceTask'}]});
+            ).to.eql([{task: 'varyLicenceTask', visible: true}]);
         });
 
         it('should return the rest if licence not unstarted', () => {
@@ -1003,23 +1023,43 @@ describe('TaskList models', () => {
                     tasks: {},
                     stage: 'SOMETHINGELSE'
                 },
-                {version: 1},
+                {version: 1, approvedVersion: 1, versionDetails: {}, approvedVersionDetails: {}},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {title: 'Permission for variation', action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'}},
-                    {title: 'Curfew address', action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'}},
-                    {title: 'Additional conditions', action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'}},
-                    {title: 'Curfew hours', action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'}},
-                    {title: 'Reporting instructions', action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'}},
+            ).to.eql([
+                    {
+                        title: 'Permission for variation',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Curfew address',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Additional conditions',
+                        action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Curfew hours',
+                        action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Reporting instructions',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'},
+                        visible: true
+                    },
                     {
                         title: 'Create licence',
                         label: 'Ready to create version 1',
-                        action: {type: 'btn', href: '/hdc/pdf/select/', text: 'Continue'}
+                        action: {type: 'btn', href: '/hdc/pdf/select/', text: 'Continue'},
+                        visible: true
                     }
                 ]
-            });
+            );
         });
 
         it('should show current version if one exists and not show create task if version not different', () => {
@@ -1038,20 +1078,39 @@ describe('TaskList models', () => {
                 },
                 null
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         title: 'View current licence',
                         label: 'Licence version 2',
-                        action: {type: 'btn', href: '/hdc/pdf/create/templateName/', text: 'View', newTab: true}
+                        action: {type: 'btn', href: '/hdc/pdf/create/templateName/', text: 'View', newTab: true}, visible: true
                     },
-                    {title: 'Permission for variation', action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'}},
-                    {title: 'Curfew address', action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'}},
-                    {title: 'Additional conditions', action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'}},
-                    {title: 'Curfew hours', action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'}},
-                    {title: 'Reporting instructions', action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'}}
+                    {
+                        title: 'Permission for variation',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Curfew address',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Additional conditions',
+                        action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Curfew hours',
+                        action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Reporting instructions',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'},
+                        visible: true
+                    }
                 ]
-            });
+            );
         });
 
         it('should not show current version if approved version is empty', () => {
@@ -1070,20 +1129,40 @@ describe('TaskList models', () => {
                 },
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {title: 'Permission for variation', action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'}},
-                    {title: 'Curfew address', action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'}},
-                    {title: 'Additional conditions', action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'}},
-                    {title: 'Curfew hours', action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'}},
-                    {title: 'Reporting instructions', action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'}},
+            ).to.eql([
+                    {
+                        title: 'Permission for variation',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Curfew address',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Additional conditions',
+                        action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Curfew hours',
+                        action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Reporting instructions',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'},
+                        visible: true
+                    },
                     {
                         title: 'Create licence',
                         label: 'Ready to create version 2.2',
-                        action: {type: 'btn', href: '/hdc/pdf/select/', text: 'Continue'}
+                        action: {type: 'btn', href: '/hdc/pdf/select/', text: 'Continue'},
+                        visible: true
                     }
                 ]
-            });
+            );
         });
 
         it('should show create licence if version ahead of approved version', () => {
@@ -1102,20 +1181,40 @@ describe('TaskList models', () => {
                 },
                 null
                 )
-            ).to.eql({
-                taskListModel: [
-                    {title: 'Permission for variation', action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'}},
-                    {title: 'Curfew address', action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'}},
-                    {title: 'Additional conditions', action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'}},
-                    {title: 'Curfew hours', action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'}},
-                    {title: 'Reporting instructions', action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'}},
+            ).to.eql([
+                    {
+                        title: 'Permission for variation',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Curfew address',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Additional conditions',
+                        action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Curfew hours',
+                        action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'},
+                        visible: true
+                    },
+                    {
+                        title: 'Reporting instructions',
+                        action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'},
+                        visible: true
+                    },
                     {
                         title: 'Create licence',
                         label: 'Ready to create version 1.2',
-                        action: {type: 'btn', href: '/hdc/pdf/select/', text: 'Continue'}
+                        action: {type: 'btn', href: '/hdc/pdf/select/', text: 'Continue'},
+                        visible: true
                     }
                 ]
-            });
+            );
         });
     });
 
@@ -1135,8 +1234,7 @@ describe('TaskList models', () => {
                 {},
                 'roToCa'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         action: {
                             href: '/hdc/curfew/curfewAddressReview/',
@@ -1144,7 +1242,8 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Proposed curfew address'
+                        title: 'Proposed curfew address',
+                        visible: true
                     },
                     {
                         action: {
@@ -1153,7 +1252,8 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Risk management'
+                        title: 'Risk management',
+                        visible: true
                     },
                     {
                         action: {
@@ -1162,7 +1262,8 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Victim liaison'
+                        title: 'Victim liaison',
+                        visible: true
                     },
                     {
                         action: {
@@ -1171,7 +1272,8 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Curfew hours'
+                        title: 'Curfew hours',
+                        visible: true
                     },
                     {
                         action: {
@@ -1180,7 +1282,8 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Additional conditions'
+                        title: 'Additional conditions',
+                        visible: true
                     },
                     {
                         action: {
@@ -1189,11 +1292,12 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Reporting instructions'
+                        title: 'Reporting instructions',
+                        visible: true
                     },
-                    {task: 'roSubmitTask'}
+                    {task: 'roSubmitTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should show bass task if bass referral needed', () => {
@@ -1212,9 +1316,8 @@ describe('TaskList models', () => {
                 {},
                 'roToCa'
                 )
-            ).to.eql({
-                taskListModel: [
-                    {task: 'bassAreaTask'},
+            ).to.eql([
+                    {task: 'bassAreaTask', visible: true},
                     {
                         action: {
                             href: '/hdc/risk/riskManagement/',
@@ -1222,7 +1325,8 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Risk management'
+                        title: 'Risk management',
+                        visible: true
                     },
                     {
                         action: {
@@ -1231,7 +1335,8 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Victim liaison'
+                        title: 'Victim liaison',
+                        visible: true
                     },
                     {
                         action: {
@@ -1240,7 +1345,8 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Curfew hours'
+                        title: 'Curfew hours',
+                        visible: true
                     },
                     {
                         action: {
@@ -1249,7 +1355,8 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Additional conditions'
+                        title: 'Additional conditions',
+                        visible: true
                     },
                     {
                         action: {
@@ -1258,11 +1365,12 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Not completed',
-                        title: 'Reporting instructions'
+                        title: 'Reporting instructions',
+                        visible: true
                     },
-                    {task: 'roSubmitTask'}
+                    {task: 'roSubmitTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should show only curfew address review task and send if review failed', () => {
@@ -1282,8 +1390,7 @@ describe('TaskList models', () => {
                 {},
                 'roToCa'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         action: {
                             href: '/hdc/curfew/curfewAddressReview/',
@@ -1291,11 +1398,12 @@ describe('TaskList models', () => {
                             type: 'link'
                         },
                         label: 'Address rejected',
-                        title: 'Proposed curfew address'
+                        title: 'Proposed curfew address',
+                        visible: true
                     },
-                    {task: 'roSubmitTask'}
+                    {task: 'roSubmitTask', visible: true}
                 ]
-            });
+            );
         });
 
         it('should show only risk task and send if unsuitable failed', () => {
@@ -1315,8 +1423,7 @@ describe('TaskList models', () => {
                 {},
                 'roToCa'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         action: {
                             href: '/hdc/risk/riskManagement/',
@@ -1324,11 +1431,12 @@ describe('TaskList models', () => {
                             type: 'btn'
                         },
                         label: 'Address unsuitable',
-                        title: 'Risk management'
+                        title: 'Risk management',
+                        visible: true
                     },
-                    {task: 'roSubmitTask'}
+                    {task: 'roSubmitTask', visible: true}
                 ]
-            });
+            );
         });
     });
 
@@ -1345,12 +1453,11 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {task: 'eligibilitySummaryTask'},
                     {task: 'refusalTask'}
                 ]
-            });
+            );
         });
 
         it('should display refusal tasks if address withdrawn but not bassReferralNeeded', () => {
@@ -1370,8 +1477,7 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {task: 'eligibilitySummaryTask'},
                     {
                         title: 'Proposed curfew address',
@@ -1392,7 +1498,7 @@ describe('TaskList models', () => {
                     },
                     {task: 'refusalTask'}
                 ]
-            });
+            );
         });
 
         it('should display refusal tasks if address rejected but not bassReferralNeeded', () => {
@@ -1412,8 +1518,7 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {task: 'eligibilitySummaryTask'},
                     {
                         title: 'Proposed curfew address',
@@ -1434,7 +1539,7 @@ describe('TaskList models', () => {
                     },
                     {task: 'refusalTask'}
                 ]
-            });
+            );
         });
 
         it('should display standard tasks if address approved', () => {
@@ -1455,8 +1560,7 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         action: {
                             href: '/hdc/review/address/',
@@ -1530,7 +1634,7 @@ describe('TaskList models', () => {
                         title: 'Final decision'
                     }
                 ]
-            });
+            );
         });
 
         it('should display standard tasks if bassReferralNeeded', () => {
@@ -1551,8 +1655,7 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         title: 'BASS address',
                         label: 'BASS referral requested',
@@ -1626,7 +1729,7 @@ describe('TaskList models', () => {
                         title: 'Final decision'
                     }
                 ]
-            });
+            );
         });
 
         it('should display postponement if confiscationOrder is true', () => {
@@ -1648,8 +1751,7 @@ describe('TaskList models', () => {
                 {},
                 null
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         title: 'BASS address',
                         label: 'BASS referral requested',
@@ -1732,7 +1834,7 @@ describe('TaskList models', () => {
                         title: 'Final decision'
                     }
                 ]
-            });
+            );
         });
     });
 
@@ -1749,14 +1851,13 @@ describe('TaskList models', () => {
                 {},
                 'roToCa'
                 )
-            ).to.eql({
-                taskListModel: [
+            ).to.eql([
                     {
                         title: 'No active licence',
                         action: {type: 'link', text: 'Return to case list', href: '/caseList/'}
                     }
                 ]
-            });
+            );
         });
     });
 });

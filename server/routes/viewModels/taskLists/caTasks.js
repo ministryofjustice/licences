@@ -62,8 +62,8 @@ module.exports = {
         return [
             {
                 title: 'Proposed curfew address',
-                label: curfewAddress.getLabel,
-                action: curfewAddress.getCaProcessingAction,
+                label: curfewAddress.getLabel({decisions, tasks}),
+                action: curfewAddress.getCaProcessingAction({decisions, tasks}),
                 visible: !bassReferralNeeded && allowedTransition !== 'caToRo'
             },
             {
@@ -72,13 +72,13 @@ module.exports = {
             },
             {
                 title: 'BASS address',
-                label: bassOffer.getLabel,
-                action: bassOffer.getAction,
+                label: bassOffer.getLabel({decisions, tasks}),
+                action: bassOffer.getAction({decisions, tasks}),
                 visible: bassReferralNeeded
             },
             {
                 title: 'Risk management',
-                label: riskManagement.getLabel,
+                label: riskManagement.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/risk/riskManagement/',
@@ -88,7 +88,7 @@ module.exports = {
             },
             {
                 title: 'Victim liaison',
-                label: victimLiaison.getLabel,
+                label: victimLiaison.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/victim/victimLiaison/',
@@ -98,7 +98,7 @@ module.exports = {
             },
             {
                 title: 'Curfew hours',
-                label: curfewHours.getLabel,
+                label: curfewHours.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/curfew/curfewHours/',
@@ -108,7 +108,7 @@ module.exports = {
             },
             {
                 title: 'Additional conditions',
-                label: additionalConditions.getLabel,
+                label: additionalConditions.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/review/conditions/',
@@ -118,7 +118,7 @@ module.exports = {
             },
             {
                 title: 'Reporting instructions',
-                label: reportingInstructions.getLabel,
+                label: reportingInstructions.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/review/reporting/',
@@ -132,8 +132,8 @@ module.exports = {
             },
             {
                 title: 'Postpone or refuse',
-                label: postponement.getLabel,
-                action: postponement.getAction,
+                label: postponement.getLabel({decisions, tasks}),
+                action: postponement.getAction({decisions, tasks}),
                 visible: curfewAddressApproved || bassChecksDone
             },
             {
@@ -192,13 +192,13 @@ module.exports = {
             },
             {
                 title: 'Proposed curfew address',
-                label: curfewAddress.getLabel,
-                action: curfewAddress.getCaPostApprovalAction,
+                label: curfewAddress.getLabel({decisions, tasks}),
+                action: curfewAddress.getCaPostApprovalAction({decisions, tasks}),
                 visible: !bassReferralNeeded && eligible && allowedTransition !== 'caToRo'
             },
             {
                 title: 'Risk management',
-                label: riskManagement.getLabel,
+                label: riskManagement.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/risk/riskManagement/',
@@ -208,7 +208,7 @@ module.exports = {
             },
             {
                 title: 'Victim liaison',
-                label: victimLiaison.getLabel,
+                label: victimLiaison.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/victim/victimLiaison/',
@@ -218,7 +218,7 @@ module.exports = {
             },
             {
                 title: 'Curfew hours',
-                label: curfewHours.getLabel,
+                label: curfewHours.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/curfew/curfewHours/',
@@ -228,7 +228,7 @@ module.exports = {
             },
             {
                 title: 'Additional conditions',
-                label: additionalConditions.getLabel,
+                label: additionalConditions.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/licenceConditions/standard/',
@@ -238,7 +238,7 @@ module.exports = {
             },
             {
                 title: 'Reporting instructions',
-                label: reportingInstructions.getLabel,
+                label: reportingInstructions.getLabel({decisions, tasks}),
                 action: {
                     type: 'btn-secondary',
                     href: '/hdc/reporting/reportingInstructions/',
@@ -252,8 +252,8 @@ module.exports = {
             },
             {
                 title: 'Postpone or refuse',
-                label: postponement.getLabel,
-                action: postponement.getAction,
+                label: postponement.getLabel({decisions, tasks}),
+                action: postponement.getAction({decisions, tasks}),
                 visible: eligible && (curfewAddressApproved || bassOfferMade)
             },
             {

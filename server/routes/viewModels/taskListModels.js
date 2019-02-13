@@ -1,12 +1,8 @@
-const {pick, pickBy, pickKey, keys, mapObject, isEmpty} = require('../../utils/functionalHelpers');
-const versionInfo = require('../../utils/versionInfo');
+const {pickKey} = require('../../utils/functionalHelpers');
 const getDmTasks = require('./taskLists/dmTasks');
 const {getRoTasksPostApproval, getRoTasks} = require('./taskLists/roTasks');
 const {getCaTasksEligibility, getCaTasksFinalChecks, getCaTasksPostApproval} = require('./taskLists/caTasks');
-
-const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
-const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
-const getPdfLink = ({approvedVersionDetails}) => `/hdc/pdf/create/${approvedVersionDetails.template}/`;
+const getVaryTasks = require('./taskLists/varyTasks');
 
 const taskListsConfig = {
     caTasksEligibility: {
@@ -34,113 +30,35 @@ const taskListsConfig = {
     }
 };
 
-const tasksConfig = {
-    vary: [
-        {
-            title: 'View current licence',
-            label: getVersionLabel,
-            action: {type: 'btn', text: 'View', href: getPdfLink, newTab: true},
-            filters: ['licenceVersionExists', '!isNewVersion']
-        },
-        {
-            task: 'varyLicenceTask',
-            filters: ['licenceUnstarted']
-        },
-        {
-            title: 'Permission for variation',
-            action: {type: 'link', text: 'Change', href: '/hdc/vary/evidence/'},
-            filters: ['!licenceUnstarted']
-        },
-        {
-            title: 'Curfew address',
-            action: {type: 'link', text: 'Change', href: '/hdc/vary/address/'},
-            filters: ['!licenceUnstarted']
-        },
-        {
-            title: 'Additional conditions',
-            action: {type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/'},
-            filters: ['!licenceUnstarted']
-        },
-        {
-            title: 'Curfew hours',
-            action: {type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/'},
-            filters: ['!licenceUnstarted']
-        },
-        {
-            title: 'Reporting instructions',
-            action: {type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/'},
-            filters: ['!licenceUnstarted']
-        },
-        {
-            title: 'Create licence',
-            label: getNextVersionLabel,
-            action: {type: 'btn', text: 'Continue', href: '/hdc/pdf/select/'},
-            filters: ['!licenceUnstarted', 'isNewVersion']
-        }
-    ],
-    noTaskList: [
-        {
-            title: 'No active licence',
-            action: {type: 'link', text: 'Return to case list', href: '/caseList/'},
-            filters: []
-        }
-    ]
-};
-
 module.exports = (
     role,
     postRelease,
     {decisions, tasks, stage},
-    {version, versionDetails, approvedVersion, approvedVersionDetails},
+    {version, versionDetails, approvedVersion = {}, approvedVersionDetails = {}} = {},
     allowedTransition
 ) => {
     const taskList = getTaskList(role, stage, postRelease);
-    const getTaskListMethod = {
+
+    const getTaskListTasksMethod = {
         dmTasks: getDmTasks,
         roTasks: getRoTasks,
         roTasksPostApproval: getRoTasksPostApproval,
         caTasksEligibility: getCaTasksEligibility,
         caTasksFinalChecks: getCaTasksFinalChecks,
-        caTasksPostApproval: getCaTasksPostApproval
+        caTasksPostApproval: getCaTasksPostApproval,
+        vary: getVaryTasks({version, versionDetails, approvedVersion, approvedVersionDetails})
     };
-    if (!tasksConfig[taskList] && !getTaskListMethod[taskList]) {
-        return {taskListView: taskList};
+
+    if (!getTaskListTasksMethod[taskList]) {
+        return [
+            {
+                title: 'No active licence',
+                action: {type: 'link', text: 'Return to case list', href: '/caseList/'}
+            }
+        ];
     }
 
-    const filtersForTaskList = keys(pickBy(item => item, {
-        licenceUnstarted: stage === 'UNSTARTED',
-        licenceVersionExists: !isEmpty(approvedVersionDetails),
-        isNewVersion: versionInfo({version, versionDetails, approvedVersionDetails}).isNewVersion
-    }));
-
-    const filteredTasks = getTaskListMethod[taskList] ?
-        getTaskListMethod[taskList]({decisions, tasks, stage, allowedTransition}) :
-        tasksConfig[taskList].filter(filtersMatch(filtersForTaskList));
-
-    return {
-        taskListModel: filteredTasks.map(decorateTaskModel(approvedVersion, version, approvedVersionDetails, decisions, tasks))
-    };
-};
-
-const filtersMatch = filterList => task => task.filters.every(filter => {
-    if (filter[0] !== '!') {
-        return filterList.includes(filter);
-    }
-    return !filterList.includes(filter.slice(1));
-});
-
-const decorateTaskModel = (approvedVersion, version, approvedVersionDetails, decisions, tasks) => task => {
-    const rawConfig = pick(['task', 'title', 'label', 'action'], task);
-    const callAnyFunctions = value => {
-        if (typeof value === 'string' || typeof value === 'boolean') {
-            return value;
-        }
-        if (typeof value === 'function') {
-            return value({approvedVersion, version, approvedVersionDetails, decisions, tasks});
-        }
-        return mapObject(callAnyFunctions, value);
-    };
-    return mapObject(callAnyFunctions, rawConfig);
+    return getTaskListTasksMethod[taskList]({decisions, tasks, stage, allowedTransition});
 };
 
 function getTaskList(role, stage, postRelease) {

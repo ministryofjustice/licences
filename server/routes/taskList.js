@@ -24,11 +24,11 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
         const allowedTransition = getAllowedTransition(licenceStatus, req.user.role);
         const statusLabel = getStatusLabel(licenceStatus, req.user.role);
 
-        const {taskListModel, taskListView} = getTaskListModel(
+        const taskListModel = getTaskListModel(
             req.user.role, postRelease, licenceStatus, licence || {}, allowedTransition
         );
 
-        res.render(taskListView ? `taskList/${taskListView}` : 'taskList/taskListBuilder', {
+        res.render('taskList/taskListBuilder', {
             licenceStatus,
             licenceVersion: licence ? licence.version : 0,
             approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
