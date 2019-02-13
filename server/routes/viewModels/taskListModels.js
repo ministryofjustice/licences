@@ -2,6 +2,7 @@ const {pick, pickBy, pickKey, keys, mapObject, isEmpty} = require('../../utils/f
 const versionInfo = require('../../utils/versionInfo');
 const getDmTasks = require('./taskLists/dmTasks');
 const {getRoTasksPostApproval, getRoTasks} = require('./taskLists/roTasks');
+const {getCaTasksEligibility} = require('./taskLists/caTasks');
 const postponement = require('./taskLists/tasks/postponement');
 const bassOffer = require('./taskLists/tasks/bassOffer');
 const curfewAddress = require('./taskLists/tasks/curfewAddress');
@@ -42,17 +43,6 @@ const taskListsConfig = {
 };
 
 const tasksConfig = {
-    caTasksEligibility: [
-        {task: 'eligibilityTask', filters: []},
-        {task: 'informOffenderTask', filters: ['eligibilityDone', 'optOutUnstarted', '!optedOut']},
-        {task: 'proposedAddressTask', filters: ['eligible']},
-        {task: 'caSubmitRefusalTask', filters: ['caToDmRefusal']},
-        {task: 'caSubmitBassReviewTask', filters: ['optOutDone', '!optedOut', 'bassReferralNeeded', '!caToDmRefusal']},
-        {
-            task: 'caSubmitAddressReviewTask',
-            filters: ['optOutDone', '!optedOut', '!bassReferralNeeded', '!caToDmRefusal']
-        }
-    ],
     caTasksFinalChecks: [
         {
             title: 'Proposed curfew address',
@@ -271,7 +261,8 @@ module.exports = (
     const getTaskListMethod = {
         dmTasks: getDmTasks,
         roTasks: getRoTasks,
-        roTasksPostApproval: getRoTasksPostApproval
+        roTasksPostApproval: getRoTasksPostApproval,
+        caTasksEligibility: getCaTasksEligibility
     };
     if (!tasksConfig[taskList] && !getTaskListMethod[taskList]) {
         return {taskListView: taskList};
@@ -286,11 +277,6 @@ module.exports = (
         addressUnsuitable
     } = decisions;
 
-    const {
-        eligibility,
-        optOut
-    } = tasks;
-
     const {bassChecksDone, bassOfferMade} = getBassDetails(decisions, tasks);
 
     const filtersForTaskList = keys(pickBy(item => item, {
@@ -299,9 +285,6 @@ module.exports = (
         eligible,
         [allowedTransition]: allowedTransition,
         dmRefused,
-        eligibilityDone: eligibility === 'DONE',
-        optOutDone: optOut === 'DONE',
-        optOutUnstarted: optOut === 'UNSTARTED',
         addressOrBassChecksDone: curfewAddressApproved || bassChecksDone,
         addressOrBassChecksDoneOrUnsuitable: curfewAddressApproved || bassChecksDone || addressUnsuitable,
         addressOrBassOffered: curfewAddressApproved || bassOfferMade,
@@ -312,7 +295,7 @@ module.exports = (
     }));
 
     const filteredTasks = getTaskListMethod[taskList] ?
-        getTaskListMethod[taskList]({decisions, tasks, stage}) :
+        getTaskListMethod[taskList]({decisions, tasks, stage, allowedTransition}) :
         tasksConfig[taskList].filter(filtersMatch(filtersForTaskList));
 
     return {
