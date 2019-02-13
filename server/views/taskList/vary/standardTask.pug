@@ -13,15 +13,16 @@ mixin action(actionConfig)
     - var isLink = actionConfig.type === 'link'
     - var isButton = actionConfig.type === 'btn'
     - var isSecondaryButton = actionConfig.type === 'btn-secondary'
+    - var target = actionConfig.newTab ? '_blank' : null
 
     if isLink
-        a.taskListAction(href=actionConfig.href + prisonerInfo.bookingId) #{actionConfig.text}
+        a.taskListAction(href=actionConfig.href + prisonerInfo.bookingId, target=target) #{actionConfig.text}
 
     else if isButton
-        a.taskListAction.center.button(href=actionConfig.href + prisonerInfo.bookingId) #{actionConfig.text}
+        a.taskListAction.center.button(href=actionConfig.href + prisonerInfo.bookingId, target=target) #{actionConfig.text}
 
     else if isSecondaryButton
-        a.taskListAction.center.button.button-secondary(href=actionConfig.href + prisonerInfo.bookingId) #{actionConfig.text}
+        a.taskListAction.center.button.button-secondary(href=actionConfig.href + prisonerInfo.bookingId, target=target) #{actionConfig.text}
 
 mixin label(text)
     - var sections = text.split('||')
