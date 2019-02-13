@@ -2,9 +2,8 @@ const {pick, pickBy, pickKey, keys, mapObject, isEmpty} = require('../../utils/f
 const versionInfo = require('../../utils/versionInfo');
 const getDmTasks = require('./taskLists/dmTasks');
 const {getRoTasksPostApproval, getRoTasks} = require('./taskLists/roTasks');
-const {getCaTasksEligibility} = require('./taskLists/caTasks');
+const {getCaTasksEligibility, getCaTasksFinalChecks} = require('./taskLists/caTasks');
 const postponement = require('./taskLists/tasks/postponement');
-const bassOffer = require('./taskLists/tasks/bassOffer');
 const curfewAddress = require('./taskLists/tasks/curfewAddress');
 const riskManagement = require('./taskLists/tasks/riskManagement');
 const victimLiaison = require('./taskLists/tasks/victimLiaison');
@@ -43,83 +42,6 @@ const taskListsConfig = {
 };
 
 const tasksConfig = {
-    caTasksFinalChecks: [
-        {
-            title: 'Proposed curfew address',
-            label: curfewAddress.getLabel,
-            action: curfewAddress.getCaProcessingAction,
-            filters: ['!bassReferralNeeded', '!caToRo']
-        },
-        {task: 'proposedAddressTask', filters: ['caToRo']},
-        {
-            title: 'BASS address',
-            label: bassOffer.getLabel,
-            action: bassOffer.getAction,
-            filters: ['bassReferralNeeded']
-        },
-        {
-            title: 'Risk management',
-            label: riskManagement.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/risk/riskManagement/',
-                text: 'View/Edit'
-            },
-            filters: ['addressOrBassChecksDoneOrUnsuitable']
-        },
-        {
-            title: 'Victim liaison',
-            label: victimLiaison.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/victim/victimLiaison/',
-                text: 'View/Edit'
-            },
-            filters: ['addressOrBassChecksDone']
-        },
-        {
-            title: 'Curfew hours',
-            label: curfewHours.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/curfew/curfewHours/',
-                text: 'View/Edit'
-            },
-            filters: ['addressOrBassChecksDone']
-        },
-        {
-            title: 'Additional conditions',
-            label: additionalConditions.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/review/conditions/',
-                text: 'View'
-            },
-            filters: ['addressOrBassChecksDone']
-        },
-        {
-            title: 'Reporting instructions',
-            label: reportingInstructions.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/review/reporting/',
-                text: 'View'
-            },
-            filters: ['addressOrBassChecksDone']
-        },
-        {task: 'finalChecksTask', filters: ['addressOrBassChecksDone']},
-        {
-            title: 'Postpone or refuse',
-            label: postponement.getLabel,
-            action: postponement.getAction,
-            filters: ['addressOrBassChecksDone']
-        },
-        {task: 'HDCRefusalTask', filters: []},
-        {task: 'caSubmitApprovalTask', filters: ['!optedOut', '!caToDmRefusal', '!caToRo']},
-        {task: 'caSubmitRefusalTask', filters: ['!optedOut', 'caToDmRefusal']},
-        {task: 'caSubmitAddressReviewTask', filters: ['!optedOut', 'caToRo', '!bassReferralNeeded']},
-        {task: 'caSubmitBassReviewTask', filters: ['!optedOut', 'caToRo', 'bassReferralNeeded']}
-    ],
     caTasksPostApproval: [
         {task: 'eligibilitySummaryTask', filters: ['addressOrBassOffered']},
         {task: 'proposedAddressTask', filters: ['eligible', 'caToRo']},
@@ -262,7 +184,8 @@ module.exports = (
         dmTasks: getDmTasks,
         roTasks: getRoTasks,
         roTasksPostApproval: getRoTasksPostApproval,
-        caTasksEligibility: getCaTasksEligibility
+        caTasksEligibility: getCaTasksEligibility,
+        caTasksFinalChecks: getCaTasksFinalChecks
     };
     if (!tasksConfig[taskList] && !getTaskListMethod[taskList]) {
         return {taskListView: taskList};
@@ -277,7 +200,7 @@ module.exports = (
         addressUnsuitable
     } = decisions;
 
-    const {bassChecksDone, bassOfferMade} = getBassDetails(decisions, tasks);
+    const {bassOfferMade} = getBassDetails(decisions, tasks);
 
     const filtersForTaskList = keys(pickBy(item => item, {
         bassReferralNeeded,
@@ -285,8 +208,6 @@ module.exports = (
         eligible,
         [allowedTransition]: allowedTransition,
         dmRefused,
-        addressOrBassChecksDone: curfewAddressApproved || bassChecksDone,
-        addressOrBassChecksDoneOrUnsuitable: curfewAddressApproved || bassChecksDone || addressUnsuitable,
         addressOrBassOffered: curfewAddressApproved || bassOfferMade,
         addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
         licenceUnstarted: stage === 'UNSTARTED',
@@ -342,12 +263,10 @@ function getTaskList(role, stage, postRelease) {
     return pickKey(roleAndStageMatch, taskListsConfig) || 'noTaskList';
 }
 
-function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bassAreaCheck, bassOffer}) {
+function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bassOffer}) {
     const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted);
-    const bassAreaChecked = bassAreaCheck === 'DONE';
 
     return {
-        bassChecksDone: bassReferralNeeded && bassAreaChecked && !bassWithdrawn && !bassExcluded,
         bassOfferMade: bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
     };
 }
