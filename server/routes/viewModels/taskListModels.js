@@ -2,14 +2,7 @@ const {pick, pickBy, pickKey, keys, mapObject, isEmpty} = require('../../utils/f
 const versionInfo = require('../../utils/versionInfo');
 const getDmTasks = require('./taskLists/dmTasks');
 const {getRoTasksPostApproval, getRoTasks} = require('./taskLists/roTasks');
-const {getCaTasksEligibility, getCaTasksFinalChecks} = require('./taskLists/caTasks');
-const postponement = require('./taskLists/tasks/postponement');
-const curfewAddress = require('./taskLists/tasks/curfewAddress');
-const riskManagement = require('./taskLists/tasks/riskManagement');
-const victimLiaison = require('./taskLists/tasks/victimLiaison');
-const curfewHours = require('./taskLists/tasks/curfewHours');
-const additionalConditions = require('./taskLists/tasks/additionalConditions');
-const reportingInstructions = require('./taskLists/tasks/reportingInstructions');
+const {getCaTasksEligibility, getCaTasksFinalChecks, getCaTasksPostApproval} = require('./taskLists/caTasks');
 
 const getVersionLabel = ({approvedVersion}) => `Licence version ${approvedVersion}`;
 const getNextVersionLabel = ({version}) => `Ready to create version ${version}`;
@@ -42,84 +35,6 @@ const taskListsConfig = {
 };
 
 const tasksConfig = {
-    caTasksPostApproval: [
-        {task: 'eligibilitySummaryTask', filters: ['addressOrBassOffered']},
-        {task: 'proposedAddressTask', filters: ['eligible', 'caToRo']},
-        {task: 'bassAddressTask', filters: ['eligible', '!caToRo', 'bassReferralNeeded']},
-        {
-            title: 'Proposed curfew address',
-            label: curfewAddress.getLabel,
-            action: curfewAddress.getCaPostApprovalAction,
-            filters: ['eligible', '!caToRo', '!bassReferralNeeded']
-        },
-        {
-            title: 'Risk management',
-            label: riskManagement.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/risk/riskManagement/',
-                text: 'View/Edit'
-            },
-            filters: ['eligible', 'addressOrBassOfferedOrUnsuitable']
-        },
-        {
-            title: 'Victim liaison',
-            label: victimLiaison.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/victim/victimLiaison/',
-                text: 'View/Edit'
-            },
-            filters: ['eligible', 'addressOrBassOffered']
-        },
-        {
-            title: 'Curfew hours',
-            label: curfewHours.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/curfew/curfewHours/',
-                text: 'View/Edit'
-            },
-            filters: ['eligible', 'addressOrBassOffered']
-        },
-        {
-            title: 'Additional conditions',
-            label: additionalConditions.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/licenceConditions/standard/',
-                text: 'View/Edit'
-            },
-            filters: ['eligible', 'addressOrBassOffered']
-        },
-        {
-            title: 'Reporting instructions',
-            label: reportingInstructions.getLabel,
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/reporting/reportingInstructions/',
-                text: 'View/Edit'
-            },
-            filters: ['eligible', 'addressOrBassOffered']
-        },
-        {task: 'finalChecksTask', filters: ['eligible', 'addressOrBassOffered']},
-        {
-            title: 'Postpone or refuse',
-            label: postponement.getLabel,
-            action: postponement.getAction,
-            filters: ['eligible', 'addressOrBassOffered']
-        },
-        {task: 'HDCRefusalTask', filters: ['eligible', '!dmRefused']},
-        {task: 'caSubmitApprovalTask', filters: ['eligible', 'caToDm']},
-        {task: 'caSubmitRefusalTask', filters: ['eligible', 'caToDmRefusal']},
-        {task: 'caSubmitBassReviewTask', filters: ['eligible', 'caToRo', 'bassReferralNeeded']},
-        {task: 'caSubmitAddressReviewTask', filters: ['eligible', 'caToRo', '!bassReferralNeeded']},
-        {
-            task: 'createLicenceTask',
-            filters: ['eligible', 'addressOrBassOffered', '!caToDm', '!caToDmRefusal', '!caToRo']
-        },
-        {task: 'informOffenderTask', filters: ['!eligible']}
-    ],
     vary: [
         {
             title: 'View current licence',
@@ -185,31 +100,14 @@ module.exports = (
         roTasks: getRoTasks,
         roTasksPostApproval: getRoTasksPostApproval,
         caTasksEligibility: getCaTasksEligibility,
-        caTasksFinalChecks: getCaTasksFinalChecks
+        caTasksFinalChecks: getCaTasksFinalChecks,
+        caTasksPostApproval: getCaTasksPostApproval
     };
     if (!tasksConfig[taskList] && !getTaskListMethod[taskList]) {
         return {taskListView: taskList};
     }
 
-    const {
-        bassReferralNeeded,
-        curfewAddressApproved,
-        optedOut,
-        eligible,
-        dmRefused,
-        addressUnsuitable
-    } = decisions;
-
-    const {bassOfferMade} = getBassDetails(decisions, tasks);
-
     const filtersForTaskList = keys(pickBy(item => item, {
-        bassReferralNeeded,
-        optedOut,
-        eligible,
-        [allowedTransition]: allowedTransition,
-        dmRefused,
-        addressOrBassOffered: curfewAddressApproved || bassOfferMade,
-        addressOrBassOfferedOrUnsuitable: curfewAddressApproved || bassOfferMade || addressUnsuitable,
         licenceUnstarted: stage === 'UNSTARTED',
         licenceVersionExists: !isEmpty(approvedVersionDetails),
         isNewVersion: versionInfo({version, versionDetails, approvedVersionDetails}).isNewVersion
@@ -261,12 +159,4 @@ function getTaskList(role, stage, postRelease) {
     }
 
     return pickKey(roleAndStageMatch, taskListsConfig) || 'noTaskList';
-}
-
-function getBassDetails({bassReferralNeeded, bassAccepted, bassWithdrawn}, {bassOffer}) {
-    const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted);
-
-    return {
-        bassOfferMade: bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
-    };
 }

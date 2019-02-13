@@ -17,35 +17,31 @@ module.exports = {
         const optOutRefused = optOut === 'DONE' && !optedOut;
 
         return [
-            {task: 'eligibilityTask'},
-            {task: 'informOffenderTask'},
-            {task: 'proposedAddressTask'},
-            {task: 'caSubmitRefusalTask'},
-            {task: 'caSubmitBassReviewTask'},
-            {task: 'caSubmitAddressReviewTask'}
-        ].filter(task => {
-            if (task.task === 'informOffenderTask') {
-                return eligibilityDone && optOutUnstarted && !optedOut;
+            {
+                task: 'eligibilityTask',
+                visible: true
+            },
+            {
+                task: 'informOffenderTask',
+                visible: eligibilityDone && optOutUnstarted && !optedOut
+            },
+            {
+                task: 'proposedAddressTask',
+                visible: eligible
+            },
+            {
+                task: 'caSubmitRefusalTask',
+                visible: allowedTransition === 'caToDmRefusal'
+            },
+            {
+                task: 'caSubmitBassReviewTask',
+                visible: optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
+            },
+            {
+                task: 'caSubmitAddressReviewTask',
+                visible: optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
             }
-
-            if (task.task === 'proposedAddressTask') {
-                return eligible;
-            }
-
-            if (task.task === 'caSubmitRefusalTask') {
-                return allowedTransition === 'caToDmRefusal';
-            }
-
-            if (task.task === 'caSubmitBassReviewTask') {
-                return optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal';
-            }
-
-            if (task.task === 'caSubmitAddressReviewTask') {
-                return optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal';
-            }
-
-            return true;
-        });
+        ].filter(task => task.visible);
     },
 
     getCaTasksFinalChecks: ({decisions, tasks, allowedTransition}) => {
@@ -67,14 +63,18 @@ module.exports = {
             {
                 title: 'Proposed curfew address',
                 label: curfewAddress.getLabel,
-                action: curfewAddress.getCaProcessingAction
+                action: curfewAddress.getCaProcessingAction,
+                visible: !bassReferralNeeded && allowedTransition !== 'caToRo'
             },
-            {task: 'proposedAddressTask'},
+            {
+                task: 'proposedAddressTask',
+                visible: allowedTransition === 'caToRo'
+            },
             {
                 title: 'BASS address',
                 label: bassOffer.getLabel,
                 action: bassOffer.getAction,
-                filters: ['bassReferralNeeded']
+                visible: bassReferralNeeded
             },
             {
                 title: 'Risk management',
@@ -84,7 +84,7 @@ module.exports = {
                     href: '/hdc/risk/riskManagement/',
                     text: 'View/Edit'
                 },
-                filters: ['addressOrBassChecksDoneOrUnsuitable']
+                visible: curfewAddressApproved || bassChecksDone || addressUnsuitable
             },
             {
                 title: 'Victim liaison',
@@ -94,7 +94,7 @@ module.exports = {
                     href: '/hdc/victim/victimLiaison/',
                     text: 'View/Edit'
                 },
-                filters: ['addressOrBassChecksDone']
+                visible: curfewAddressApproved || bassChecksDone
             },
             {
                 title: 'Curfew hours',
@@ -104,7 +104,7 @@ module.exports = {
                     href: '/hdc/curfew/curfewHours/',
                     text: 'View/Edit'
                 },
-                filters: ['addressOrBassChecksDone']
+                visible: curfewAddressApproved || bassChecksDone
             },
             {
                 title: 'Additional conditions',
@@ -114,7 +114,7 @@ module.exports = {
                     href: '/hdc/review/conditions/',
                     text: 'View'
                 },
-                filters: ['addressOrBassChecksDone']
+                visible: curfewAddressApproved || bassChecksDone
             },
             {
                 title: 'Reporting instructions',
@@ -124,65 +124,168 @@ module.exports = {
                     href: '/hdc/review/reporting/',
                     text: 'View'
                 },
-                filters: ['addressOrBassChecksDone']
+                visible: curfewAddressApproved || bassChecksDone
             },
-            {task: 'finalChecksTask', filters: ['addressOrBassChecksDone']},
+            {
+                task: 'finalChecksTask',
+                visible: curfewAddressApproved || bassChecksDone
+            },
             {
                 title: 'Postpone or refuse',
                 label: postponement.getLabel,
                 action: postponement.getAction,
-                filters: ['addressOrBassChecksDone']
+                visible: curfewAddressApproved || bassChecksDone
             },
-            {task: 'HDCRefusalTask', filters: []},
-            {task: 'caSubmitApprovalTask', filters: ['!optedOut', '!caToDmRefusal', '!caToRo']},
-            {task: 'caSubmitRefusalTask', filters: ['!optedOut', 'caToDmRefusal']},
-            {task: 'caSubmitAddressReviewTask', filters: ['!optedOut', 'caToRo', '!bassReferralNeeded']},
-            {task: 'caSubmitBassReviewTask', filters: ['!optedOut', 'caToRo', 'bassReferralNeeded']}
-        ].filter(task => {
-            if (task.title === 'Proposed curfew address') {
-                return !bassReferralNeeded && allowedTransition !== 'caToRo';
+            {
+                task: 'HDCRefusalTask',
+                visible: true
+            },
+            {
+                task: 'caSubmitApprovalTask',
+                visible: !optedOut && allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo'
+            },
+            {
+                task: 'caSubmitRefusalTask',
+                visible: !optedOut && allowedTransition === 'caToDmRefusal'
+            },
+            {
+                task: 'caSubmitAddressReviewTask',
+                visible: !bassReferralNeeded && !optedOut && allowedTransition === 'caToRo'
+            },
+            {
+                task: 'caSubmitBassReviewTask',
+                visible: bassReferralNeeded && !optedOut && allowedTransition === 'caToRo'
             }
+        ].filter(task => task.visible);
+    },
 
-            if (task.task === 'proposedAddressTask') {
-                return allowedTransition === 'caToRo';
+    getCaTasksPostApproval: ({decisions, tasks, allowedTransition}) => {
+        const {
+            curfewAddressApproved,
+            addressUnsuitable,
+            eligible,
+            bassReferralNeeded,
+            bassAccepted,
+            bassWithdrawn,
+            dmRefused
+        } = decisions;
+
+        const {
+            bassOffer
+        } = tasks;
+
+        const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted);
+        const bassOfferMade = bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded;
+
+        return [
+            {
+                task: 'eligibilitySummaryTask',
+                visible: curfewAddressApproved || bassOfferMade
+            },
+            {
+                task: 'proposedAddressTask',
+                visible: eligible && allowedTransition === 'caToRo'
+            },
+            {
+                task: 'bassAddressTask',
+                visible: bassReferralNeeded && eligible && allowedTransition !== 'caToRo'
+            },
+            {
+                title: 'Proposed curfew address',
+                label: curfewAddress.getLabel,
+                action: curfewAddress.getCaPostApprovalAction,
+                visible: !bassReferralNeeded && eligible && allowedTransition !== 'caToRo'
+            },
+            {
+                title: 'Risk management',
+                label: riskManagement.getLabel,
+                action: {
+                    type: 'btn-secondary',
+                    href: '/hdc/risk/riskManagement/',
+                    text: 'View/Edit'
+                },
+                visible: eligible && (curfewAddressApproved || bassOfferMade || addressUnsuitable)
+            },
+            {
+                title: 'Victim liaison',
+                label: victimLiaison.getLabel,
+                action: {
+                    type: 'btn-secondary',
+                    href: '/hdc/victim/victimLiaison/',
+                    text: 'View/Edit'
+                },
+                visible: eligible && (curfewAddressApproved || bassOfferMade)
+            },
+            {
+                title: 'Curfew hours',
+                label: curfewHours.getLabel,
+                action: {
+                    type: 'btn-secondary',
+                    href: '/hdc/curfew/curfewHours/',
+                    text: 'View/Edit'
+                },
+                visible: eligible && (curfewAddressApproved || bassOfferMade)
+            },
+            {
+                title: 'Additional conditions',
+                label: additionalConditions.getLabel,
+                action: {
+                    type: 'btn-secondary',
+                    href: '/hdc/licenceConditions/standard/',
+                    text: 'View/Edit'
+                },
+                visible: eligible && (curfewAddressApproved || bassOfferMade)
+            },
+            {
+                title: 'Reporting instructions',
+                label: reportingInstructions.getLabel,
+                action: {
+                    type: 'btn-secondary',
+                    href: '/hdc/reporting/reportingInstructions/',
+                    text: 'View/Edit'
+                },
+                visible: eligible && (curfewAddressApproved || bassOfferMade)
+            },
+            {
+                task: 'finalChecksTask',
+                visible: eligible && (curfewAddressApproved || bassOfferMade)
+            },
+            {
+                title: 'Postpone or refuse',
+                label: postponement.getLabel,
+                action: postponement.getAction,
+                visible: eligible && (curfewAddressApproved || bassOfferMade)
+            },
+            {
+                task: 'HDCRefusalTask',
+                visible: eligible && !dmRefused
+            },
+            {
+                task: 'caSubmitApprovalTask',
+                visible: eligible && allowedTransition === 'caToDm'
+            },
+            {
+                task: 'caSubmitRefusalTask',
+                visible: eligible && allowedTransition === 'caToDmRefusal'
+            },
+            {
+                task: 'caSubmitBassReviewTask',
+                visible: eligible && bassReferralNeeded && allowedTransition === 'caToRo'
+            },
+            {
+                task: 'caSubmitAddressReviewTask',
+                visible: eligible && !bassReferralNeeded && allowedTransition === 'caToRo'
+            },
+            {
+                task: 'createLicenceTask',
+                visible: eligible &&
+                    (curfewAddressApproved || bassOfferMade) &&
+                    !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition)
+            },
+            {
+                task: 'informOffenderTask',
+                visible: !eligible
             }
-
-            if (task.title === 'BASS address') {
-                return bassReferralNeeded;
-            }
-
-            if (task.title === 'Risk management') {
-                return curfewAddressApproved || bassChecksDone || addressUnsuitable;
-            }
-
-            if ([
-                'Victim liaison',
-                'Curfew hours',
-                'Additional conditions',
-                'Reporting instructions',
-                'Postpone or refuse'
-            ].includes(task.title) || task.task === 'finalChecksTask') {
-                return curfewAddressApproved || bassChecksDone;
-            }
-
-            if (task.task === 'caSubmitApprovalTask') {
-                return !optedOut && allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo';
-            }
-
-            if (task.task === 'caSubmitRefusalTask') {
-                return !optedOut && allowedTransition === 'caToDmRefusal';
-            }
-
-            if (task.task === 'caSubmitAddressReviewTask') {
-                return !bassReferralNeeded && !optedOut && allowedTransition === 'caToRo';
-            }
-
-            if (task.task === 'caSubmitBassReviewTask') {
-                return bassReferralNeeded && !optedOut && allowedTransition === 'caToRo';
-            }
-
-            return true;
-        });
-
+        ].filter(task => task.visible);
     }
 };
