@@ -1455,7 +1455,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                     {task: 'eligibilitySummaryTask'},
-                    {task: 'refusalTask'}
+                    {
+                        action: {
+                            href: '/hdc/approval/refuseReason/',
+                            text: 'Refuse HDC',
+                            type: 'btn'
+                        },
+                        label: 'Awaiting refusal',
+                        title: 'Final decision'
+                    }
                 ]
             );
         });
@@ -1496,7 +1504,15 @@ describe('TaskList models', () => {
                             text: 'Return to prison case admin'
                         }
                     },
-                    {task: 'refusalTask'}
+                    {
+                        action: {
+                            href: '/hdc/approval/refuseReason/',
+                            text: 'Refuse HDC',
+                            type: 'btn'
+                        },
+                        label: 'Make decision',
+                        title: 'Final decision'
+                    }
                 ]
             );
         });
@@ -1537,7 +1553,15 @@ describe('TaskList models', () => {
                             text: 'Return to prison case admin'
                         }
                     },
-                    {task: 'refusalTask'}
+                    {
+                        action: {
+                            href: '/hdc/approval/refuseReason/',
+                            text: 'Refuse HDC',
+                            type: 'btn'
+                        },
+                        label: 'Make decision',
+                        title: 'Final decision'
+                    }
                 ]
             );
         });
