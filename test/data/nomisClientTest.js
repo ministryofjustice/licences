@@ -5,10 +5,12 @@ const nomisClientBuilder = require('../../server/data/nomisClientBuilder');
 
 describe('nomisClient', function() {
     let fakeNomis;
+    let fakeAuth;
     let nomisClient;
 
     beforeEach(() => {
         fakeNomis = nock(`${config.nomis.apiUrl}`);
+        fakeAuth = nock(`${config.nomis.authUrl}`);
         nomisClient = nomisClientBuilder('token');
     });
 
@@ -449,16 +451,16 @@ describe('nomisClient', function() {
     describe('getUserInfo', () => {
 
         it('should return data from api', () => {
-            fakeNomis
-                .get('/users/userName')
+            fakeAuth
+                .get('/api/user/userName')
                 .reply(200, {username: 'result'});
 
             return expect(nomisClient.getUserInfo('userName')).to.eventually.eql({username: 'result'});
         });
 
         it('should reject if api fails', () => {
-            fakeNomis
-                .get('/users/userName')
+            fakeAuth
+                .get('/api/user/userName')
                 .reply(500);
 
             return expect(nomisClient.getUserInfo('userName')).to.be.rejected();
@@ -468,19 +470,38 @@ describe('nomisClient', function() {
     describe('getLoggedInUserInfo', () => {
 
         it('should return data from api', () => {
-            fakeNomis
-                .get('/users/me')
+            fakeAuth
+                .get('/api/user/me')
                 .reply(200, {username: 'result'});
 
             return expect(nomisClient.getLoggedInUserInfo()).to.eventually.eql({username: 'result'});
         });
 
         it('should reject if api fails', () => {
-            fakeNomis
-                .get('/users/me')
+            fakeAuth
+                .get('/api/user/me')
                 .reply(500);
 
             return expect(nomisClient.getLoggedInUserInfo()).to.be.rejected();
+        });
+    });
+
+    describe('getUserRoles', () => {
+
+        it('should return data from api', () => {
+            fakeAuth
+                .get('/api/user/me/roles')
+                .reply(200, {username: 'result'});
+
+            return expect(nomisClient.getUserRoles()).to.eventually.eql({username: 'result'});
+        });
+
+        it('should reject if api fails', () => {
+            fakeAuth
+                .get('/api/user/me/roles')
+                .reply(500);
+
+            return expect(nomisClient.getUserRoles()).to.be.rejected();
         });
     });
 
