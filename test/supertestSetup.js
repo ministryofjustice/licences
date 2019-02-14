@@ -122,8 +122,7 @@ function testFormPageGets(app, routes, licenceServiceStub) {
 
 const users = {
     caUser: {
-        firstName: 'first',
-        lastName: 'last',
+        name: 'ca last',
         token: 'token',
         role: 'CA',
         username: 'CA_USER_TEST',
@@ -133,22 +132,19 @@ const users = {
         }
     },
     roUser: {
-        firstName: 'first',
-        lastName: 'last',
+        name: 'ro last',
         username: 'RO_USER',
         token: 'token',
         role: 'RO'
     },
     dmUser: {
-        firstName: 'first',
-        lastName: 'last',
+        name: 'dm last',
         username: 'DM_USER',
         token: 'token',
         role: 'DM'
     },
     batchUser: {
-        firstName: 'first',
-        lastName: 'last',
+        name: 'nb last',
         username: 'NOMIS_BATCHLOAD',
         token: 'token',
         role: 'BATCHLOAD'

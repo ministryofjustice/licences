@@ -11,6 +11,7 @@ const timeoutSpec = {
 };
 
 const apiUrl = config.nomis.apiUrl;
+const authUrl = config.nomis.authUrl;
 const invalidDate = 'Invalid date';
 
 module.exports = token => {
@@ -104,17 +105,17 @@ module.exports = token => {
         },
 
         getUserInfo: function(userName) {
-            const path = `${apiUrl}/users/${userName}`;
+            const path = `${authUrl}/api/user/${userName}`;
             return nomisGet({path});
         },
 
         getLoggedInUserInfo: function() {
-            const path = `${apiUrl}/users/me`;
+            const path = `${authUrl}/api/user/me`;
             return nomisGet({path});
         },
 
         getUserRoles: function() {
-            const path = `${apiUrl}/users/me/roles`;
+            const path = `${authUrl}/api/user/me/roles`;
             return nomisGet({path});
         },
 
