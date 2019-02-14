@@ -6,7 +6,7 @@ const curfewAddress = require('./tasks/curfewAddress');
 const victimLiaison = require('./tasks/victimLiaison');
 
 module.exports = {
-    getRoTasks: ({decisions}) => {
+    getRoTasks: ({decisions, tasks}) => {
         const {
             bassReferralNeeded,
             addressUnsuitable,
@@ -18,89 +18,74 @@ module.exports = {
         const addressRejectedInReviewPhase = curfewAddressRejected && addressReviewFailed;
 
         return [
-            {task: 'bassAreaTask'},
+            {
+                task: 'bassAreaTask',
+                visible: bassReferralNeeded
+            },
             {
                 title: 'Proposed curfew address',
-                label: curfewAddress.getLabel,
-                action: curfewAddress.getRoAction
+                label: curfewAddress.getLabel({decisions, tasks}),
+                action: curfewAddress.getRoAction({decisions, tasks}),
+                visible: !bassReferralNeeded && !curfewAddressRejected || addressRejectedInReviewPhase
             },
             {
                 title: 'Risk management',
-                label: riskManagement.getLabel,
-                action: riskManagement.getRoAction
+                label: riskManagement.getLabel({decisions, tasks}),
+                action: riskManagement.getRoAction({decisions, tasks}),
+                visible: !curfewAddressRejected || addressRejectedInRiskPhase
             },
             {
                 title: 'Victim liaison',
-                label: victimLiaison.getLabel,
-                action: victimLiaison.getRoAction
+                label: victimLiaison.getLabel({decisions, tasks}),
+                action: victimLiaison.getRoAction({decisions, tasks}),
+                visible: !curfewAddressRejected
             },
             {
                 title: 'Curfew hours',
-                label: curfewHours.getLabel,
-                action: curfewHours.getRoAction
+                label: curfewHours.getLabel({decisions, tasks}),
+                action: curfewHours.getRoAction({decisions, tasks}),
+                visible: !curfewAddressRejected
             },
             {
                 title: 'Additional conditions',
-                label: additionalConditions.getLabel,
-                action: additionalConditions.getRoAction
+                label: additionalConditions.getLabel({decisions, tasks}),
+                action: additionalConditions.getRoAction({decisions, tasks}),
+                visible: !curfewAddressRejected
             },
             {
                 title: 'Reporting instructions',
-                label: reportingInstructions.getLabel,
-                action: reportingInstructions.getRoAction
+                label: reportingInstructions.getLabel({decisions, tasks}),
+                action: reportingInstructions.getRoAction({decisions, tasks}),
+                visible: !curfewAddressRejected
             },
-            {task: 'roSubmitTask', filters: []}
-        ].filter(task => {
-            if (task.task === 'bassAreaTask') {
-                return bassReferralNeeded;
+            {
+                task: 'roSubmitTask',
+                visible: true
             }
-
-            if (task.title === 'Proposed curfew address') {
-                return !bassReferralNeeded && !curfewAddressRejected || addressRejectedInReviewPhase;
-            }
-
-            if (task.title === 'Risk management') {
-                return !curfewAddressRejected || addressRejectedInRiskPhase;
-            }
-
-            if ([
-                'Victim liaison',
-                'Curfew hours',
-                'Additional conditions',
-                'Reporting instructions'
-            ].includes(task.title)) {
-                return !curfewAddressRejected;
-            }
-
-            return true;
-        });
+        ].filter(task => task.visible);
     },
 
-    getRoTasksPostApproval: () => {
+    getRoTasksPostApproval: ({decisions, tasks}) => {
         return [
             {
                 title: 'Risk management',
-                label: riskManagement.getLabel,
-                action: riskManagement.getRoAction,
-                filters: ['!addressRejectedInReviewTask']
+                label: riskManagement.getLabel({decisions, tasks}),
+                action: riskManagement.getRoAction({decisions, tasks})
             },
             {
                 title: 'Curfew hours',
-                label: curfewHours.getLabel,
-                action: curfewHours.getRoAction,
-                filters: ['!curfewAddressRejected']
+                label: curfewHours.getLabel({decisions, tasks}),
+                action: curfewHours.getRoAction({decisions, tasks})
             },
             {
                 title: 'Additional conditions',
-                label: additionalConditions.getLabel,
-                action: additionalConditions.getRoAction,
-                filters: ['!curfewAddressRejected']
+                label: additionalConditions.getLabel({decisions, tasks}),
+                action: additionalConditions.getRoAction({decisions, tasks})
             },
             {
                 title: 'Reporting instructions',
-                label: reportingInstructions.getLabel,
-                action: reportingInstructions.getRoAction,
-                filters: ['!curfewAddressRejected']
+                label: reportingInstructions.getLabel({decisions, tasks}),
+                action: reportingInstructions.getRoAction({decisions, tasks})
             }
         ];
     }
