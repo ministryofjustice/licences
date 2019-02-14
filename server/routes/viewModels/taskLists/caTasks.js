@@ -1,5 +1,6 @@
 const postponement = require('../taskLists/tasks/postponement');
 const bassOffer = require('../taskLists/tasks/bassOffer');
+const bassAddress = require('../taskLists/tasks/bassAddress');
 const curfewAddress = require('../taskLists/tasks/curfewAddress');
 const riskManagement = require('../taskLists/tasks/riskManagement');
 const victimLiaison = require('../taskLists/tasks/victimLiaison');
@@ -187,7 +188,9 @@ module.exports = {
                 visible: eligible && allowedTransition === 'caToRo'
             },
             {
-                task: 'bassAddressTask',
+                title: 'BASS address',
+                label: bassAddress.getLabel({decisions, tasks}),
+                action: bassAddress.getCaAction({tasks}),
                 visible: bassReferralNeeded && eligible && allowedTransition !== 'caToRo'
             },
             {
