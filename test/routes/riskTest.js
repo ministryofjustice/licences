@@ -93,7 +93,7 @@ describe('/hdc/risk', () => {
                     .send(formResponse)
                     .expect(() => {
                         expect(auditStub.record).to.be.calledOnce();
-                        expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'id',
+                        expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'RO_USER',
                             {
                                 bookingId: '1',
                                 path: '/hdc/risk/riskManagement/1',

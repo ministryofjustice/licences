@@ -291,7 +291,7 @@ describe('PDF:', () => {
                 .expect(res => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
-                        'CREATE_PDF', 'id', {
+                        'CREATE_PDF', 'CA_USER_TEST', {
                             path: '/hdc/pdf/create/hdc_ap_pss/123',
                             bookingId: '123',
                             userInput: {}

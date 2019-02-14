@@ -601,7 +601,7 @@ describe('GET /taskList/:prisonNumber', () => {
                         .expect(res => {
                             expect(auditStub.record).to.be.called();
                             expect(auditStub.record).to.be.calledWith(
-                                'LICENCE_RECORD_STARTED', 'id', {bookingId: '123'});
+                                'LICENCE_RECORD_STARTED', 'CA_USER_TEST', {bookingId: '123'});
                         });
                 });
             });
@@ -653,7 +653,7 @@ describe('GET /taskList/:prisonNumber', () => {
                         .expect(res => {
                             expect(auditStub.record).to.be.called();
                             expect(auditStub.record).to.be.calledWith(
-                                'VARY_NOMIS_LICENCE_CREATED', 'id', {bookingId: '123'});
+                                'VARY_NOMIS_LICENCE_CREATED', 'CA_USER_TEST', {bookingId: '123'});
                         });
                 });
             });

@@ -178,7 +178,7 @@ describe('/admin', () => {
                 .expect(res => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
-                        'USER_MANAGEMENT', 'id', {
+                        'USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
                             bookingId: undefined,
                             path: '/admin/roUsers/edit/1',
                             userInput: {nomisId: 'nid', deliusId: 'did'}
@@ -228,7 +228,7 @@ describe('/admin', () => {
                 .expect(res => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
-                        'USER_MANAGEMENT', 'id', {
+                        'USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
                             bookingId: undefined,
                             path: '/admin/roUsers/delete/1',
                             userInput: {}
@@ -301,7 +301,7 @@ describe('/admin', () => {
                 .expect(res => {
                     expect(auditStub.record).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledWith(
-                        'USER_MANAGEMENT', 'id', {
+                        'USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
                             path: '/admin/roUsers/add/',
                             bookingId: undefined,
                             userInput: {nomisId: 'nid', deliusId: 'did'}

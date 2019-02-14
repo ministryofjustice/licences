@@ -24,7 +24,7 @@ module.exports = ({licenceService, prisonerService, notificationService, audit})
             await licenceService.removeDecision(bookingId, res.locals.licence);
         }
 
-        auditEvent(req.user.staffId, bookingId, transition.type, submissionTarget);
+        auditEvent(req.user.username, bookingId, transition.type, submissionTarget);
 
         res.redirect(`/hdc/sent/${transition.receiver}/${transition.type}/${bookingId}`);
     }));

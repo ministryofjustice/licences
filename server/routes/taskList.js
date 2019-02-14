@@ -48,7 +48,7 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
 
         if (!existingLicence) {
             await licenceService.createLicence({bookingId});
-            audit.record('LICENCE_RECORD_STARTED', req.user.staffId, {bookingId});
+            audit.record('LICENCE_RECORD_STARTED', req.user.username, {bookingId});
         }
 
         res.redirect(`/hdc/eligibility/excluded/${bookingId}`);
@@ -60,7 +60,7 @@ module.exports = ({prisonerService, licenceService, caseListService, audit}) => 
             bookingId,
             data: {variedFromLicenceNotInSystem: true},
             stage: 'VARY'});
-        audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.staffId, {bookingId});
+        audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.username, {bookingId});
 
         res.redirect(`/hdc/vary/evidence/${bookingId}`);
     }));

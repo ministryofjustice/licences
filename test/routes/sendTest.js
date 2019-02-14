@@ -265,7 +265,7 @@ describe('send', () => {
                 .expect(() => {
                     expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce();
                     expect(auditStub.record).to.be.calledOnce();
-                    expect(auditStub.record).to.be.calledWith('SEND', 'id',
+                    expect(auditStub.record).to.be.calledWith('SEND', 'DM_USER',
                         {
                             bookingId: '123',
                             transitionType: 'dmToCaReturn',

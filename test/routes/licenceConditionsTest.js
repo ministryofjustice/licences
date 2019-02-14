@@ -189,7 +189,7 @@ describe('/hdc/licenceConditions', () => {
                 .send(formResponse)
                 .expect(() => {
                     expect(auditStub.record).to.be.calledOnce();
-                    expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'id',
+                    expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'RO_USER',
                         {
                             path: '/hdc/licenceConditions/additionalConditions/123/delete/ABC',
                             bookingId: '123',
