@@ -789,7 +789,16 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                     {task: 'eligibilitySummaryTask', visible: true},
-                    {task: 'bassAddressTask', visible: true},
+                    {
+                        action: {
+                            href: '/hdc/bassReferral/bassOffer/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'WARNING||Address not available',
+                        title: 'BASS address',
+                        visible: true
+                    },
                     {
                         action: {
                             href: '/hdc/risk/riskManagement/',
