@@ -1295,7 +1295,16 @@ describe('TaskList models', () => {
                         title: 'Reporting instructions',
                         visible: true
                     },
-                    {task: 'roSubmitTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/review/licenceDetails/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        title: 'Submit to prison case admin',
+                        label: 'Ready to submit',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1377,7 +1386,16 @@ describe('TaskList models', () => {
                         title: 'Reporting instructions',
                         visible: true
                     },
-                    {task: 'roSubmitTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/review/licenceDetails/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        title: 'Submit to prison case admin',
+                        label: 'Ready to submit',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1410,7 +1428,16 @@ describe('TaskList models', () => {
                         title: 'Proposed curfew address',
                         visible: true
                     },
-                    {task: 'roSubmitTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/review/licenceDetails/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        title: 'Submit to prison case admin',
+                        label: 'Ready to submit',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1443,7 +1470,16 @@ describe('TaskList models', () => {
                         title: 'Risk management',
                         visible: true
                     },
-                    {task: 'roSubmitTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/review/licenceDetails/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        title: 'Submit to prison case admin',
+                        label: 'Ready to submit',
+                        visible: true
+                    }
                 ]
             );
         });

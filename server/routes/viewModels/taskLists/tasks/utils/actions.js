@@ -37,5 +37,13 @@ module.exports = {
             type: 'link',
             href
         };
+    },
+
+    continueBtn: href => {
+        return {
+            text: 'Continue',
+            type: 'btn',
+            href
+        };
     }
 };
