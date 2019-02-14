@@ -46,7 +46,16 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                     {task: 'eligibilityTask', visible: true},
-                    {task: 'informOffenderTask', visible: true},
+                    {
+                        action: {
+                            href: '/caseList/active',
+                            text: 'Back to case list',
+                            type: 'btn-secondary'
+                        },
+                        label: 'You should now tell the offender using the relevant HDC form from NOMIS',
+                        title: 'Inform the offender',
+                        visible: true
+                    },
                     {task: 'proposedAddressTask', visible: true}
                 ]
             );
