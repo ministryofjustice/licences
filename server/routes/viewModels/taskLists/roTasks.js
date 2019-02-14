@@ -4,6 +4,7 @@ const additionalConditions = require('./tasks/additionalConditions');
 const reportingInstructions = require('./tasks/reportingInstructions');
 const curfewAddress = require('./tasks/curfewAddress');
 const victimLiaison = require('./tasks/victimLiaison');
+const bassArea = require('./tasks/bassArea');
 
 module.exports = {
     getRoTasks: ({decisions, tasks}) => {
@@ -19,7 +20,9 @@ module.exports = {
 
         return [
             {
-                task: 'bassAreaTask',
+                title: 'BASS area check',
+                label: bassArea.getLabel({decisions, tasks}),
+                action: bassArea.getRoAction({decisions, tasks}),
                 visible: bassReferralNeeded
             },
             {

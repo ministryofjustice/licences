@@ -1317,7 +1317,16 @@ describe('TaskList models', () => {
                 'roToCa'
                 )
             ).to.eql([
-                    {task: 'bassAreaTask', visible: true},
+                    {
+                        action: {
+                            href: '/hdc/bassReferral/bassAreaCheck/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'BASS area check',
+                        visible: true
+                    },
                     {
                         action: {
                             href: '/hdc/risk/riskManagement/',
