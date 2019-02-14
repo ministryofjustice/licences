@@ -20,7 +20,15 @@ module.exports = ({decisions, tasks, stage}) => {
     if (insufficientTimeStop) {
         return [
             {task: 'eligibilitySummaryTask'},
-            {task: 'refusalTask'}
+            {
+                title: 'Final decision',
+                label: getDecisionLabel({decisions, tasks, stage}),
+                action: {
+                    type: 'btn',
+                    href: '/hdc/approval/refuseReason/',
+                    text: 'Refuse HDC'
+                }
+            }
         ];
     }
 
@@ -44,7 +52,15 @@ module.exports = ({decisions, tasks, stage}) => {
                     text: 'Return to prison case admin'
                 }
             },
-            {task: 'refusalTask'}
+            {
+                title: 'Final decision',
+                label: getDecisionLabel({decisions, tasks, stage}),
+                action: {
+                    type: 'btn',
+                    href: '/hdc/approval/refuseReason/',
+                    text: 'Refuse HDC'
+                }
+            }
         ];
     }
 

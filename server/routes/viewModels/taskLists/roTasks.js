@@ -4,9 +4,11 @@ const additionalConditions = require('./tasks/additionalConditions');
 const reportingInstructions = require('./tasks/reportingInstructions');
 const curfewAddress = require('./tasks/curfewAddress');
 const victimLiaison = require('./tasks/victimLiaison');
+const bassArea = require('./tasks/bassArea');
+const roSubmit = require('./tasks/roSubmit');
 
 module.exports = {
-    getRoTasks: ({decisions, tasks}) => {
+    getRoTasks: ({decisions, tasks, allowedTransition}) => {
         const {
             bassReferralNeeded,
             addressUnsuitable,
@@ -19,7 +21,9 @@ module.exports = {
 
         return [
             {
-                task: 'bassAreaTask',
+                title: 'BASS area check',
+                label: bassArea.getLabel({decisions, tasks}),
+                action: bassArea.getRoAction({decisions, tasks}),
                 visible: bassReferralNeeded
             },
             {
@@ -59,7 +63,9 @@ module.exports = {
                 visible: !curfewAddressRejected
             },
             {
-                task: 'roSubmitTask',
+                title: 'Submit to prison case admin',
+                label: roSubmit.getLabel({allowedTransition}),
+                action: roSubmit.getRoAction({decisions}),
                 visible: true
             }
         ].filter(task => task.visible);

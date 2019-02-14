@@ -1295,7 +1295,16 @@ describe('TaskList models', () => {
                         title: 'Reporting instructions',
                         visible: true
                     },
-                    {task: 'roSubmitTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/review/licenceDetails/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        title: 'Submit to prison case admin',
+                        label: 'Ready to submit',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1317,7 +1326,16 @@ describe('TaskList models', () => {
                 'roToCa'
                 )
             ).to.eql([
-                    {task: 'bassAreaTask', visible: true},
+                    {
+                        action: {
+                            href: '/hdc/bassReferral/bassAreaCheck/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'BASS area check',
+                        visible: true
+                    },
                     {
                         action: {
                             href: '/hdc/risk/riskManagement/',
@@ -1368,7 +1386,16 @@ describe('TaskList models', () => {
                         title: 'Reporting instructions',
                         visible: true
                     },
-                    {task: 'roSubmitTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/review/licenceDetails/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        title: 'Submit to prison case admin',
+                        label: 'Ready to submit',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1401,7 +1428,16 @@ describe('TaskList models', () => {
                         title: 'Proposed curfew address',
                         visible: true
                     },
-                    {task: 'roSubmitTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/review/licenceDetails/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        title: 'Submit to prison case admin',
+                        label: 'Ready to submit',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1434,7 +1470,16 @@ describe('TaskList models', () => {
                         title: 'Risk management',
                         visible: true
                     },
-                    {task: 'roSubmitTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/review/licenceDetails/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        title: 'Submit to prison case admin',
+                        label: 'Ready to submit',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1455,7 +1500,15 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                     {task: 'eligibilitySummaryTask'},
-                    {task: 'refusalTask'}
+                    {
+                        action: {
+                            href: '/hdc/approval/refuseReason/',
+                            text: 'Refuse HDC',
+                            type: 'btn'
+                        },
+                        label: 'Awaiting refusal',
+                        title: 'Final decision'
+                    }
                 ]
             );
         });
@@ -1496,7 +1549,15 @@ describe('TaskList models', () => {
                             text: 'Return to prison case admin'
                         }
                     },
-                    {task: 'refusalTask'}
+                    {
+                        action: {
+                            href: '/hdc/approval/refuseReason/',
+                            text: 'Refuse HDC',
+                            type: 'btn'
+                        },
+                        label: 'Make decision',
+                        title: 'Final decision'
+                    }
                 ]
             );
         });
@@ -1537,7 +1598,15 @@ describe('TaskList models', () => {
                             text: 'Return to prison case admin'
                         }
                     },
-                    {task: 'refusalTask'}
+                    {
+                        action: {
+                            href: '/hdc/approval/refuseReason/',
+                            text: 'Refuse HDC',
+                            type: 'btn'
+                        },
+                        label: 'Make decision',
+                        title: 'Final decision'
+                    }
                 ]
             );
         });
