@@ -122,7 +122,8 @@ function testFormPageGets(app, routes, licenceServiceStub) {
 
 const users = {
     caUser: {
-        name: 'ca last',
+        firstName: 'first',
+        lastName: 'last',
         token: 'token',
         role: 'CA',
         username: 'CA_USER_TEST',
