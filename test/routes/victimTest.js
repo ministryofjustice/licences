@@ -90,7 +90,7 @@ describe('/hdc/victim', () => {
                     .send(formResponse)
                     .expect(() => {
                         expect(auditStub.record).to.be.calledOnce();
-                        expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'id',
+                        expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'RO_USER',
                             {
                                 path: '/hdc/victim/victimLiaison/1',
                                 bookingId: '1',

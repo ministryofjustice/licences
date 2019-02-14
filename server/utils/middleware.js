@@ -75,7 +75,7 @@ function auditMiddleware(audit, key) {
         const bookingId = req.body.bookingId || req.params.bookingId;
         const inputs = userInputFrom(req.body);
 
-        auditEvent(req.user.staffId, bookingId, req.originalUrl, inputs);
+        auditEvent(req.user.username, bookingId, req.originalUrl, inputs);
 
         next();
     };
