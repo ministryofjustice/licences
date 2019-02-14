@@ -23,6 +23,30 @@ module.exports = {
         };
     },
 
+    standardActionMulti: (tasksArray, href) => {
+        if (tasksArray.every(task => task === 'UNSTARTED')) {
+            return {
+                text: 'Start now',
+                type: 'btn',
+                href
+            };
+        }
+
+        if (tasksArray.every(task => task === 'DONE')) {
+            return {
+                text: 'Change',
+                type: 'link',
+                href
+            };
+        }
+
+        return {
+            text: 'Continue',
+            type: 'btn',
+            href: href
+        };
+    },
+
     viewEdit: href => {
         return {
             text: 'View/Edit',

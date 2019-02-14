@@ -38,3 +38,6 @@ mixin label(text)
                         span.visually-hidden Warning
 
                     strong.bold-small #{sections[1]}
+
+    else if sections[0] === 'ALERT'
+        span.alert.bold #{sections[1]}

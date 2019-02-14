@@ -56,7 +56,16 @@ describe('TaskList models', () => {
                         title: 'Inform the offender',
                         visible: true
                     },
-                    {task: 'proposedAddressTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/proposedAddress/curfewAddressChoice/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew address',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -82,7 +91,16 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                     {task: 'eligibilityTask', visible: true},
-                    {task: 'proposedAddressTask', visible: true},
+                    {
+                        action: {
+                            href: '/hdc/proposedAddress/curfewAddressChoice/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew address',
+                        visible: true
+                    },
                     {task: 'caSubmitAddressReviewTask', visible: true}
                 ]
             );
@@ -109,7 +127,16 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                     {task: 'eligibilityTask', visible: true},
-                    {task: 'proposedAddressTask', visible: true},
+                    {
+                        action: {
+                            href: '/hdc/proposedAddress/curfewAddressChoice/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew address',
+                        visible: true
+                    },
                     {task: 'caSubmitBassReviewTask', visible: true}
                 ]
             );
@@ -136,7 +163,16 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                     {task: 'eligibilityTask', visible: true},
-                    {task: 'proposedAddressTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/proposedAddress/curfewAddressChoice/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Offender has opted out of HDC',
+                        title: 'Curfew address',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -189,7 +225,16 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                     {task: 'eligibilityTask', visible: true},
-                    {task: 'proposedAddressTask', visible: true},
+                    {
+                        action: {
+                            href: '/hdc/proposedAddress/rejected/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew address',
+                        visible: true
+                    },
                     {task: 'caSubmitRefusalTask', visible: true}
                 ]
             );
@@ -658,7 +703,16 @@ describe('TaskList models', () => {
                 'caToRo'
                 )
             ).to.eql([
-                    {task: 'proposedAddressTask', visible: true},
+                    {
+                        action: {
+                            href: '/hdc/proposedAddress/curfewAddressChoice/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew address',
+                        visible: true
+                    },
                     {task: 'HDCRefusalTask', visible: true},
                     {task: 'caSubmitAddressReviewTask', visible: true}
                 ]
@@ -969,7 +1023,16 @@ describe('TaskList models', () => {
                 'caToRo'
                 )
             ).to.eql([
-                    {task: 'proposedAddressTask', visible: true},
+                    {
+                        action: {
+                            href: '/hdc/proposedAddress/curfewAddressChoice/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Not completed',
+                        title: 'Curfew address',
+                        visible: true
+                    },
                     {task: 'HDCRefusalTask', visible: true},
                     {task: 'caSubmitAddressReviewTask', visible: true}
                 ]
