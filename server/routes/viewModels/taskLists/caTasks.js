@@ -7,6 +7,7 @@ const victimLiaison = require('../taskLists/tasks/victimLiaison');
 const curfewHours = require('../taskLists/tasks/curfewHours');
 const additionalConditions = require('../taskLists/tasks/additionalConditions');
 const reportingInstructions = require('../taskLists/tasks/reportingInstructions');
+const proposedAddress = require('../taskLists/tasks/proposedAddress');
 
 module.exports = {
     getCaTasksEligibility: ({decisions, tasks, allowedTransition}) => {
@@ -23,11 +24,19 @@ module.exports = {
                 visible: true
             },
             {
-                task: 'informOffenderTask',
+                title: 'Inform the offender',
+                label: 'You should now tell the offender using the relevant HDC form from NOMIS',
+                action: {
+                    type: 'btn-secondary',
+                    href: '/caseList/active',
+                    text: 'Back to case list'
+                },
                 visible: eligibilityDone && optOutUnstarted && !optedOut
             },
             {
-                task: 'proposedAddressTask',
+                title: 'Curfew address',
+                label: proposedAddress.getLabel({decisions, tasks}),
+                action: proposedAddress.getCaAction({decisions, tasks}),
                 visible: eligible
             },
             {
@@ -68,7 +77,9 @@ module.exports = {
                 visible: !bassReferralNeeded && allowedTransition !== 'caToRo'
             },
             {
-                task: 'proposedAddressTask',
+                title: 'Curfew address',
+                label: proposedAddress.getLabel({decisions, tasks}),
+                action: proposedAddress.getCaAction({decisions, tasks}),
                 visible: allowedTransition === 'caToRo'
             },
             {
@@ -184,7 +195,9 @@ module.exports = {
                 visible: curfewAddressApproved || bassOfferMade
             },
             {
-                task: 'proposedAddressTask',
+                title: 'Curfew address',
+                label: proposedAddress.getLabel({decisions, tasks}),
+                action: proposedAddress.getCaAction({decisions, tasks}),
                 visible: eligible && allowedTransition === 'caToRo'
             },
             {
