@@ -1,7 +1,8 @@
 mixin standardTask(taskObject)
     div.taskListSingleLineItem.midPaddingBottom
         div.pure-u-1.pure-u-md-3-4
-            h2.heading-medium #{taskObject.title}
+            if taskObject.title
+                h2.heading-medium #{taskObject.title}
             if taskObject.label
                 +label(taskObject.label)
 
