@@ -45,7 +45,7 @@ module.exports = (
         roTasksPostApproval: getRoTasksPostApproval,
         caTasksEligibility: getCaTasksEligibility,
         caTasksFinalChecks: getCaTasksFinalChecks,
-        caTasksPostApproval: getCaTasksPostApproval,
+        caTasksPostApproval: getCaTasksPostApproval(stage),
         vary: getVaryTasks({version, versionDetails, approvedVersion, approvedVersionDetails})
     };
 
