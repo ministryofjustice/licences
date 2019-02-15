@@ -13,7 +13,6 @@ describe('/api/', () => {
 
     describe('address submission', () => {
 
-
         it('returns json', () => {
 
             const app = createApp(reportingService);
@@ -81,7 +80,7 @@ describe('/api/', () => {
                 .then(response => {
                     expect(reportingService.getApprovalComplete).to.be.calledOnce();
                     expect(reportingService.getApprovalComplete).to.be.calledWith(
-                        moment('22-11-2017', 'DD-MM-YYYY'), moment('04-09-2018', 'DD-MM-YYYY'));
+                        moment('22-11-2017', 'DD-MM-YYYY'), moment('04-09-2018', 'DD-MM-YYYY').set({hour: 23, minute: 59}));
                 });
         });
 

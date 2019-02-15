@@ -63,7 +63,7 @@ describe('nomisClient', function() {
                 .get(`/images/1/data`)
                 .reply(200, 'image');
 
-            return expect(nomisClient.getImageData('1')).to.eventually.eql(new Buffer('image'));
+            return expect(nomisClient.getImageData('1')).to.eventually.eql(Buffer.from('image'));
         });
 
         it('should throw if not found', () => {
