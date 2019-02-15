@@ -10,6 +10,7 @@ const reportingInstructions = require('../taskLists/tasks/reportingInstructions'
 const proposedAddress = require('../taskLists/tasks/proposedAddress');
 const caSubmitAddressReview = require('../taskLists/tasks/caSubmitAddressReview');
 const caSubmitRefusal = require('../taskLists/tasks/caSubmitRefusal');
+const caSubmitBassReview = require('../taskLists/tasks/caSubmitBassReview');
 
 module.exports = {
     getCaTasksEligibility: ({decisions, tasks, allowedTransition}) => {
@@ -48,7 +49,9 @@ module.exports = {
                 visible: allowedTransition === 'caToDmRefusal'
             },
             {
-                task: 'caSubmitBassReviewTask',
+                title: 'Send for BASS area checks',
+                label: caSubmitBassReview.getLabel({decisions, tasks}),
+                action: caSubmitBassReview.getCaAction({decisions, tasks}),
                 visible: optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
             },
             {
@@ -175,7 +178,9 @@ module.exports = {
                 visible: !bassReferralNeeded && !optedOut && allowedTransition === 'caToRo'
             },
             {
-                task: 'caSubmitBassReviewTask',
+                title: 'Send for BASS area checks',
+                label: caSubmitBassReview.getLabel({decisions, tasks}),
+                action: caSubmitBassReview.getCaAction({decisions, tasks}),
                 visible: bassReferralNeeded && !optedOut && allowedTransition === 'caToRo'
             }
         ].filter(task => task.visible);
@@ -297,7 +302,9 @@ module.exports = {
                 visible: eligible && allowedTransition === 'caToDmRefusal'
             },
             {
-                task: 'caSubmitBassReviewTask',
+                title: 'Send for BASS area checks',
+                label: caSubmitBassReview.getLabel({decisions, tasks}),
+                action: caSubmitBassReview.getCaAction({decisions, tasks}),
                 visible: eligible && bassReferralNeeded && allowedTransition === 'caToRo'
             },
             {

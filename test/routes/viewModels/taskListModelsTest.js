@@ -142,7 +142,12 @@ describe('TaskList models', () => {
                         title: 'Curfew address',
                         visible: true
                     },
-                    {task: 'caSubmitBassReviewTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Send for BASS area checks',
+                        visible: true
+                    }
                 ]
             );
         });
