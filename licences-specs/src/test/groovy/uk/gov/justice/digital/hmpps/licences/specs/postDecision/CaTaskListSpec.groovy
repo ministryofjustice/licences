@@ -117,7 +117,7 @@ class CaTaskListSpec extends GebReportingSpec {
         to TaskListPage, testData.markAndrewsBookingId
 
         then: 'I can only submit for refusal'
-        $('h2', text: contains('Submit to decision maker')).closest('div').next().text().contains('Ready to submit for refusal')
+        $('h2', text: contains('Submit to decision maker')).closest('div').text().contains('Ready to submit for refusal')
     }
 
     def 'When address is reinstated, can resume creating licence'() {
@@ -145,7 +145,7 @@ class CaTaskListSpec extends GebReportingSpec {
         to TaskListPage, testData.markAndrewsBookingId
 
         then: 'I can only submit to RO'
-        $('h2', text: contains('Submit curfew address')).closest('div').next().text().contains('Ready to submit')
+        $('h2', text: contains('Submit curfew address')).closest('div').text().contains('Ready to submit')
     }
 
     def 'BASS task shown when BASS referral' () {

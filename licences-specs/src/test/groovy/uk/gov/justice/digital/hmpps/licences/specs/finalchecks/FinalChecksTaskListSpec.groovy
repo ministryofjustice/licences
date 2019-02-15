@@ -216,6 +216,6 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
         taskListActions.size() == 3
 
         and: 'I can only submit for refusal'
-        $('h2', text: contains('Submit to decision maker')).closest('div').next().text().contains('Ready to submit for refusal')
+        $('h2', text: contains('Submit to decision maker')).closest('div').text().contains('Ready to submit for refusal')
     }
 }

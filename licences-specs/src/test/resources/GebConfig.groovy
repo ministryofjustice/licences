@@ -17,7 +17,9 @@ environments {
 
 // Default if geb.env is not set to one of 'chrome', or 'chromeHeadless'
 driver = {
-    new ChromeDriver()
+    ChromeOptions options = new ChromeOptions()
+    options.addArguments('headless')
+    new ChromeDriver(options)
 }
 
 baseUrl = System.getenv('LICENCES_URI') ?: "http://localhost:3000/"

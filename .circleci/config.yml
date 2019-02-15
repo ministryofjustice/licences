@@ -140,14 +140,14 @@ jobs:
         steps:
             - checkout
             - attach_workspace:
-              at: ~/noms-digital-studio/licences
+                  at: ~/noms-digital-studio/licences
             - restore_cache:
                   key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
             - restore_cache:
                   key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
             - run:
                   name: Run Integration Tests
-                  command: ./gradlew mockTest
+                  command: ./gradlew mockTest --tests Bass*
             - save_cache:
                   key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
                   paths:

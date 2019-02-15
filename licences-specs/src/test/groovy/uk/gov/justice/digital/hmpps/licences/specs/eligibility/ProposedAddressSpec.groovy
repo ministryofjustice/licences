@@ -144,7 +144,7 @@ class ProposedAddressSpec extends GebReportingSpec {
         to TaskListPage, testData.markAndrewsBookingId
 
         when: 'I click to continue to submission'
-        find('#continueBtn').click()
+        taskListAction('Submit curfew address').click()
 
         then: 'I see the review page'
         at ReviewCurfewAddressPage
