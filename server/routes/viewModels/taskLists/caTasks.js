@@ -11,6 +11,7 @@ const proposedAddress = require('../taskLists/tasks/proposedAddress');
 const caSubmitAddressReview = require('../taskLists/tasks/caSubmitAddressReview');
 const caSubmitRefusal = require('../taskLists/tasks/caSubmitRefusal');
 const caSubmitBassReview = require('../taskLists/tasks/caSubmitBassReview');
+const caSubmitApproval = require('../taskLists/tasks/caSubmitApproval');
 
 module.exports = {
     getCaTasksEligibility: ({decisions, tasks, allowedTransition}) => {
@@ -162,7 +163,9 @@ module.exports = {
                 visible: true
             },
             {
-                task: 'caSubmitApprovalTask',
+                title: 'Submit to decision maker',
+                label: caSubmitApproval.getLabel({decisions, allowedTransition}),
+                action: caSubmitApproval.getCaAction({allowedTransition}),
                 visible: !optedOut && allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo'
             },
             {
@@ -292,7 +295,9 @@ module.exports = {
                 visible: eligible && !dmRefused
             },
             {
-                task: 'caSubmitApprovalTask',
+                title: 'Submit to decision maker',
+                label: caSubmitApproval.getLabel({decisions, allowedTransition}),
+                action: caSubmitApproval.getCaAction({allowedTransition}),
                 visible: eligible && allowedTransition === 'caToDm'
             },
             {

@@ -355,7 +355,12 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitApprovalTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -554,7 +559,12 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitApprovalTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
