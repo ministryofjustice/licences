@@ -20,7 +20,7 @@ describe('ca submit for address review task', () => {
         });
     });
 
-    describe('getRoAction', () => {
+    describe('getCaAction', () => {
 
         it('should show btn to curfewAddress if curfewAddress: DONE and not opted out', () => {
             expect(getCaAction({
