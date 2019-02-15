@@ -101,7 +101,12 @@ describe('TaskList models', () => {
                         title: 'Curfew address',
                         visible: true
                     },
-                    {task: 'caSubmitAddressReviewTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit curfew address',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -714,7 +719,12 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitAddressReviewTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit curfew address',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1034,7 +1044,12 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitAddressReviewTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit curfew address',
+                        visible: true
+                    }
                 ]
             );
         });

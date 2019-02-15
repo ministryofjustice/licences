@@ -8,6 +8,7 @@ const curfewHours = require('../taskLists/tasks/curfewHours');
 const additionalConditions = require('../taskLists/tasks/additionalConditions');
 const reportingInstructions = require('../taskLists/tasks/reportingInstructions');
 const proposedAddress = require('../taskLists/tasks/proposedAddress');
+const caSubmitAddressReview = require('../taskLists/tasks/caSubmitAddressReview');
 
 module.exports = {
     getCaTasksEligibility: ({decisions, tasks, allowedTransition}) => {
@@ -48,7 +49,9 @@ module.exports = {
                 visible: optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
             },
             {
-                task: 'caSubmitAddressReviewTask',
+                title: 'Submit curfew address',
+                label: caSubmitAddressReview.getLabel({tasks}),
+                action: caSubmitAddressReview.getCaAction({decisions, tasks}),
                 visible: optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
             }
         ].filter(task => task.visible);
@@ -161,7 +164,9 @@ module.exports = {
                 visible: !optedOut && allowedTransition === 'caToDmRefusal'
             },
             {
-                task: 'caSubmitAddressReviewTask',
+                title: 'Submit curfew address',
+                label: caSubmitAddressReview.getLabel({tasks}),
+                action: caSubmitAddressReview.getCaAction({decisions, tasks}),
                 visible: !bassReferralNeeded && !optedOut && allowedTransition === 'caToRo'
             },
             {
@@ -289,7 +294,9 @@ module.exports = {
                 visible: eligible && bassReferralNeeded && allowedTransition === 'caToRo'
             },
             {
-                task: 'caSubmitAddressReviewTask',
+                title: 'Submit curfew address',
+                label: caSubmitAddressReview.getLabel({tasks}),
+                action: caSubmitAddressReview.getCaAction({decisions, tasks}),
                 visible: eligible && !bassReferralNeeded && allowedTransition === 'caToRo'
             },
             {
