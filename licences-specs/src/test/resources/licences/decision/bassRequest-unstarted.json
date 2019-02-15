@@ -1,0 +1,49 @@
+{
+  "stage": "APPROVAL",
+  "licence": {
+    "eligibility": {
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      },
+      "crdTime": {
+        "decision": "No"
+      }
+    },
+    "proposedAddress": {
+      "optOut": {
+        "decision": "No"
+      },
+      "addressProposed": {
+        "decision": "No"
+      }
+    },
+    "bassReferral": {
+      "bassRequest": {
+        "proposedTown": "BASS Town",
+        "specificArea": "Yes",
+        "bassRequested": "Yes",
+        "proposedCounty": "BASS County"
+      },
+      "bassOffer": {
+        "bassAccepted": "Yes",
+        "bassOfferDetails": "Offer details"
+      },
+      "bassAreaCheck": {
+        "bassAreaReason": "Reason",
+        "bassAreaSuitable": "Yes",
+        "bassAreaCheckSeen": "true"
+      }
+    },
+    "finalChecks": {
+      "seriousOffence": {
+        "decision": "No"
+      },
+      "onRemand": {
+        "decision": "No"
+      }
+    }
+  }
+}

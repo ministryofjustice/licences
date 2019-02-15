@@ -1,0 +1,2 @@
+rootProject.name = 'licences'
+include 'licences-specs'

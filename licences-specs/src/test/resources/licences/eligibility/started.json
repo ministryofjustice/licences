@@ -1,0 +1,10 @@
+{
+  "stage": "ELIGIBILITY",
+  "licence": {
+    "eligibility": {
+      "excluded": {
+        "decision": "No"
+      }
+    }
+  }
+}

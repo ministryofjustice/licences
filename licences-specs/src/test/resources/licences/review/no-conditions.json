@@ -1,0 +1,69 @@
+{
+  "stage": "PROCESSING_CA",
+  "licence": {
+    "eligibility": {
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      },
+      "crdTime": {
+        "decision": "No"
+      }
+    },
+    "proposedAddress": {
+      "optOut": {
+        "decision": "No"
+      },
+      "addressProposed": {
+        "decision": "Yes"
+      },
+      "curfewAddress": {
+        "addressLine1": "Street",
+        "addressLine2": "",
+        "addressTown": "Town",
+        "postCode": "AB1 1AB",
+        "telephone": "0123 456789",
+        "occupier": {
+          "name": "Main Occupier",
+          "relationship": "Father",
+          "age": "22"
+        },
+        "residents": [
+          {
+            "name": "Other Resident",
+            "relationship": "Son",
+            "age": "11"
+          }
+        ],
+        "cautionedAgainstResident": "No"
+      }
+    },
+    "curfew": {
+      "curfewAddressReview": {
+        "consent": "No"
+      }
+    },
+    "risk": {
+      "riskManagement": {
+        "planningActions": "Yes",
+        "planningActionsDetails": "Risk details",
+        "awaitingInformation": "Yes",
+        "awaitingInformationDetails": "Information details",
+        "victimLiaison": "Yes",
+        "victimLiaisonDetails": "Victim details"
+      }
+    },
+    "reporting": {
+      "reportingInstructions": {
+        "name": "Name",
+        "buildingAndStreet1": "Street",
+        "buildingAndStreet2": "",
+        "townOrCity": "Town",
+        "postcode": "AB1 1AB",
+        "telephone": "0123 456789"
+      }
+    }
+  }
+}

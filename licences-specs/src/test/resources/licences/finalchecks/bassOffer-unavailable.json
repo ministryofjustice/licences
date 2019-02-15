@@ -1,0 +1,39 @@
+{
+  "stage": "PROCESSING_CA",
+  "licence": {
+    "eligibility": {
+      "crdTime": {
+        "decision": "No"
+      },
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      }
+    },
+    "bassReferral": {
+      "bassRequest": {
+        "proposedTown": "BASS Town",
+        "bassRequested": "Yes",
+        "specificArea": "Yes",
+        "proposedCounty": "BASS County"
+      },
+      "bassAreaCheck": {
+        "bassAreaReason": "",
+        "bassAreaSuitable": "Yes"
+      },
+      "bassOffer": {
+        "bassAccepted": "Unavailable"
+      }
+    },
+    "proposedAddress": {
+      "optOut": {
+        "decision": "No"
+      },
+      "addressProposed": {
+        "decision": "No"
+      }
+    }
+  }
+}

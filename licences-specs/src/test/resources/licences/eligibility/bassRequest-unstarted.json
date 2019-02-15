@@ -1,0 +1,29 @@
+{
+  "stage": "ELIGIBILITY",
+  "licence": {
+    "eligibility": {
+      "crdTime": {
+        "decision": "No"
+      },
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      }
+    },
+    "bassReferral": {
+      "bassRequest": {
+        "bassRequested": "Yes"
+      }
+    },
+    "proposedAddress": {
+      "optOut": {
+        "decision": "No"
+      },
+      "addressProposed": {
+        "decision": "No"
+      }
+    }
+  }
+}
