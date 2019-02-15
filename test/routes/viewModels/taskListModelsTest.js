@@ -940,7 +940,11 @@ describe('TaskList models', () => {
                         action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
                         visible: true
                     },
-                    {task: 'createLicenceTask', visible: true}
+                    {
+                        action: null,
+                        title: 'Create licence',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1049,7 +1053,11 @@ describe('TaskList models', () => {
                         action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
                         visible: true
                     },
-                    {task: 'createLicenceTask', visible: true}
+                    {
+                        action: null,
+                        title: 'Create licence',
+                        visible: true
+                    }
                 ]
             );
         });
