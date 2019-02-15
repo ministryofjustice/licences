@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/noms-digital-studio/licences
   docker:
-    - image: circleci/node:8
+    - image: circleci/node:10
 
 version: 2
 jobs:
