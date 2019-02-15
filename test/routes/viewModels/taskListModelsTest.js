@@ -354,7 +354,12 @@ describe('TaskList models', () => {
                         action: {type: 'btn', text: 'Postpone', href: '/hdc/finalChecks/postpone/'},
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {
                         action: null,
                         label: 'Not completed',
@@ -397,7 +402,12 @@ describe('TaskList models', () => {
                         title: 'Proposed curfew address',
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {
                         action: {
                             href: '/hdc/send/refusal/',
@@ -452,7 +462,12 @@ describe('TaskList models', () => {
                         title: 'Risk management',
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {
                         action: {
                             href: '/hdc/send/refusal/',
@@ -558,7 +573,12 @@ describe('TaskList models', () => {
                         },
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {
                         action: null,
                         label: 'Not completed',
@@ -661,7 +681,12 @@ describe('TaskList models', () => {
                         },
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true}
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    }
                 ]
             );
         });
@@ -697,7 +722,12 @@ describe('TaskList models', () => {
                         },
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {
                         action: {
                             href: '/hdc/send/refusal/',
@@ -743,7 +773,12 @@ describe('TaskList models', () => {
                         },
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {
                         action: {
                             href: '/hdc/send/refusal/',
@@ -783,7 +818,12 @@ describe('TaskList models', () => {
                         title: 'Curfew address',
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {
                         action: null,
                         label: 'Not completed',
@@ -894,7 +934,12 @@ describe('TaskList models', () => {
                         },
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {task: 'createLicenceTask', visible: true}
                 ]
             );
@@ -998,7 +1043,12 @@ describe('TaskList models', () => {
                         },
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {task: 'createLicenceTask', visible: true}
                 ]
             );
@@ -1067,7 +1117,12 @@ describe('TaskList models', () => {
                         title: 'Proposed curfew address',
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {
                         action: {
                             href: '/hdc/send/refusal/',
@@ -1117,7 +1172,12 @@ describe('TaskList models', () => {
                         title: 'Curfew address',
                         visible: true
                     },
-                    {task: 'HDCRefusalTask', visible: true},
+                    {
+                        label: 'Refuse the case if there is no available address or not enough time',
+                        title: null,
+                        action: {type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/'},
+                        visible: true
+                    },
                     {
                         action: null,
                         label: 'Not completed',
