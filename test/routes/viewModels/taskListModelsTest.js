@@ -101,7 +101,12 @@ describe('TaskList models', () => {
                         title: 'Curfew address',
                         visible: true
                     },
-                    {task: 'caSubmitAddressReviewTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit curfew address',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -137,7 +142,12 @@ describe('TaskList models', () => {
                         title: 'Curfew address',
                         visible: true
                     },
-                    {task: 'caSubmitBassReviewTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Send for BASS area checks',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -198,7 +208,12 @@ describe('TaskList models', () => {
                 )
             ).to.eql([
                     {task: 'eligibilityTask', visible: true},
-                    {task: 'caSubmitRefusalTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Submission unavailable - Offender has opted out of HDC',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -235,7 +250,16 @@ describe('TaskList models', () => {
                         title: 'Curfew address',
                         visible: true
                     },
-                    {task: 'caSubmitRefusalTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/send/refusal/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Ready to submit for refusal',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -331,7 +355,12 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitApprovalTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -369,7 +398,16 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitRefusalTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/send/refusal/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Ready to submit for refusal',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -415,7 +453,16 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitRefusalTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/send/refusal/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Ready to submit for refusal',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -512,7 +559,12 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitApprovalTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -646,7 +698,16 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitRefusalTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/send/refusal/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Ready to submit for refusal',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -683,7 +744,16 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitRefusalTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/send/refusal/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Ready to submit for refusal',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -714,7 +784,12 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitAddressReviewTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit curfew address',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -993,7 +1068,16 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitRefusalTask', visible: true}
+                    {
+                        action: {
+                            href: '/hdc/send/refusal/',
+                            text: 'Continue',
+                            type: 'btn'
+                        },
+                        label: 'Ready to submit for refusal',
+                        title: 'Submit to decision maker',
+                        visible: true
+                    }
                 ]
             );
         });
@@ -1034,7 +1118,12 @@ describe('TaskList models', () => {
                         visible: true
                     },
                     {task: 'HDCRefusalTask', visible: true},
-                    {task: 'caSubmitAddressReviewTask', visible: true}
+                    {
+                        action: null,
+                        label: 'Not completed',
+                        title: 'Submit curfew address',
+                        visible: true
+                    }
                 ]
             );
         });
