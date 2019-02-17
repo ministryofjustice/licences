@@ -70,7 +70,7 @@ describe('pdfService', () => {
             expect(prisonerService.getPrisonerImage).to.be.calledOnce();
             expect(pdfFormatter.formatPdfData).to.be.calledOnce();
 
-            expect(result).to.eql(new Buffer(pdf1AsBytes));
+            expect(result).to.eql(Buffer.from(pdf1AsBytes));
         });
 
         it('should increment the version if first version', async () => {
@@ -236,7 +236,7 @@ describe('pdfService', () => {
                 .reply(200, pdf1AsBytes);
 
             const result = await service.getPdf(templateName, values);
-            expect(result).to.eql(new Buffer(pdf1AsBytes));
+            expect(result).to.eql(Buffer.from(pdf1AsBytes));
         });
 
         it('should throw if error in PDF generator service', () => {

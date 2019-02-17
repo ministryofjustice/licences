@@ -15,7 +15,7 @@ function generateAdminOauthClientToken() {
 }
 
 function generate(clientId, clientSecret) {
-    const token = new Buffer(
+    const token = Buffer.from(
         `${querystring.escape(clientId)}:${querystring.escape(clientSecret)}`)
         .toString('base64');
 

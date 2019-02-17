@@ -69,5 +69,13 @@ module.exports = {
             type: 'btn',
             href
         };
+    },
+
+    taskBtn: (href, text, secondary) => {
+        return {
+            text,
+            type: secondary ? 'btn-secondary' : 'btn',
+            href
+        };
     }
 };

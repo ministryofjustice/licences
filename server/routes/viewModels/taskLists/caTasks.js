@@ -12,6 +12,8 @@ const caSubmitAddressReview = require('../taskLists/tasks/caSubmitAddressReview'
 const caSubmitRefusal = require('../taskLists/tasks/caSubmitRefusal');
 const caSubmitBassReview = require('../taskLists/tasks/caSubmitBassReview');
 const caSubmitApproval = require('../taskLists/tasks/caSubmitApproval');
+const hdcRefusal = require('../taskLists/tasks/hdcRefusal');
+const createLicence = require('../taskLists/tasks/createLicence');
 
 module.exports = {
     getCaTasksEligibility: ({decisions, tasks, allowedTransition}) => {
@@ -159,7 +161,9 @@ module.exports = {
                 visible: curfewAddressApproved || bassChecksDone
             },
             {
-                task: 'HDCRefusalTask',
+                title: null,
+                label: hdcRefusal.getLabel({decisions}),
+                action: hdcRefusal.getCaAction({decisions}),
                 visible: true
             },
             {
@@ -189,7 +193,7 @@ module.exports = {
         ].filter(task => task.visible);
     },
 
-    getCaTasksPostApproval: ({decisions, tasks, allowedTransition}) => {
+    getCaTasksPostApproval: stage => ({decisions, tasks, allowedTransition}) => {
         const {
             curfewAddressApproved,
             addressUnsuitable,
@@ -291,7 +295,9 @@ module.exports = {
                 visible: eligible && (curfewAddressApproved || bassOfferMade)
             },
             {
-                task: 'HDCRefusalTask',
+                title: null,
+                label: hdcRefusal.getLabel({decisions}),
+                action: hdcRefusal.getCaAction({decisions}),
                 visible: eligible && !dmRefused
             },
             {
@@ -319,7 +325,8 @@ module.exports = {
                 visible: eligible && !bassReferralNeeded && allowedTransition === 'caToRo'
             },
             {
-                task: 'createLicenceTask',
+                title: 'Create licence',
+                action: createLicence.getCaAction({decisions, tasks, stage}),
                 visible: eligible &&
                     (curfewAddressApproved || bassOfferMade) &&
                     !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition)
