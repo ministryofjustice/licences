@@ -147,7 +147,7 @@ jobs:
                   key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
             - run:
                   name: Run Integration Tests
-                  command: ./gradlew mockTest --tests Bass*
+                  command: ./gradlew mockTest
             - save_cache:
                   key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
                   paths:
