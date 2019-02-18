@@ -78,7 +78,7 @@ services:
             - SPRING_PROFILES_ACTIVE=dev
 
     prisonstaffhub:
-        image: mojdigitalstudio/whereabouts:latest
+        image: mojdigitalstudio/prisonstaffhub:latest
         networks:
             - hmpps
         depends_on:
