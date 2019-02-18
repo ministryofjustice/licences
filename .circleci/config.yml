@@ -66,6 +66,9 @@ jobs:
     environment:
       DB_SSL_ENABLED: false
       ENABLE_TEST_UTILS: true
+      NOMIS_API_URL: https://licences-demo-mocks.herokuapp.com/elite2api/api
+      NOMIS_AUTH_URL: https://licences-demo-mocks.herokuapp.com/elite2api/api
+      PDF_SERVICE_HOST: https://licences-nomis-mocks.herokuapp.com
     steps:
       - checkout
       - attach_workspace:
