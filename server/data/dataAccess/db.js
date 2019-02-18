@@ -1,8 +1,8 @@
-const logger = require('../../../log');
-const config = require('../../config');
+const { Pool } = require('pg')
+const fs = require('fs')
 
-const {Pool} = require('pg');
-const fs = require('fs');
+const logger = require('../../../log')
+const config = require('../../config')
 
 const pool = new Pool({
     user: config.db.username,
@@ -10,17 +10,19 @@ const pool = new Pool({
     database: config.db.database,
     password: config.db.password,
     port: 5432,
-    ssl: config.db.sslEnabled === 'true' ? {
-        ca: fs.readFileSync('root.cert'),
-        rejectUnauthorized: true
-    } : false
-});
+    ssl:
+        config.db.sslEnabled === 'true'
+            ? {
+                  ca: fs.readFileSync('root.cert'),
+                  rejectUnauthorized: true,
+              }
+            : false,
+})
 
-pool.on('error', (error, client) => {
-    logger.error('Unexpected error on idle client', error);
-});
+pool.on('error', error => {
+    logger.error('Unexpected error on idle client', error.stack)
+})
 
 module.exports = {
-    query: (text, params) => pool.query(text, params)
-};
-
+    query: (text, params) => pool.query(text, params),
+}

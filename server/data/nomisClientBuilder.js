@@ -1,151 +1,147 @@
-const logger = require('../../log');
-const config = require('../config');
-const {merge, pipe} = require('../utils/functionalHelpers');
-const superagent = require('superagent');
-const {NoTokenError} = require('../utils/errors');
-const moment = require('moment');
+const moment = require('moment')
+const superagent = require('superagent')
+const logger = require('../../log')
+const config = require('../config')
+const { merge, pipe } = require('../utils/functionalHelpers')
+const { NoTokenError } = require('../utils/errors')
 
 const timeoutSpec = {
     response: config.nomis.timeout.response,
-    deadline: config.nomis.timeout.deadline
-};
+    deadline: config.nomis.timeout.deadline,
+}
 
-const apiUrl = config.nomis.apiUrl;
-const authUrl = config.nomis.authUrl;
-const invalidDate = 'Invalid date';
+const { apiUrl, authUrl } = config.nomis
+const invalidDate = 'Invalid date'
 
 module.exports = token => {
-
-    const nomisGet = nomisGetBuilder(token);
-    const nomisPost = nomisPushBuilder('post', token);
-    const nomisPut = nomisPushBuilder('put', token);
+    const nomisGet = nomisGetBuilder(token)
+    const nomisPost = nomisPushBuilder('post', token)
+    const nomisPut = nomisPushBuilder('put', token)
 
     const addReleaseDatesToPrisoner = pipe(
         addReleaseDate,
         addEffectiveConditionalReleaseDate,
         addEffectiveAutomaticReleaseDate
-    );
+    )
 
     return {
-        getBooking: function(bookingId) {
-            const path = `${apiUrl}/bookings/${bookingId}`;
-            return nomisGet({path});
+        getBooking(bookingId) {
+            const path = `${apiUrl}/bookings/${bookingId}`
+            return nomisGet({ path })
         },
 
-        getAliases: function(bookingId) {
-            const path = `${apiUrl}/bookings/${bookingId}/aliases`;
-            return nomisGet({path});
+        getAliases(bookingId) {
+            const path = `${apiUrl}/bookings/${bookingId}/aliases`
+            return nomisGet({ path })
         },
 
-        getIdentifiers: function(bookingId) {
-            const path = `${apiUrl}/bookings/${bookingId}/identifiers`;
-            return nomisGet({path});
+        getIdentifiers(bookingId) {
+            const path = `${apiUrl}/bookings/${bookingId}/identifiers`
+            return nomisGet({ path })
         },
 
-        getPersonIdentifiers: function(personId) {
-            const path = `${apiUrl}/persons/${personId}/identifiers`;
-            return nomisGet({path});
+        getPersonIdentifiers(personId) {
+            const path = `${apiUrl}/persons/${personId}/identifiers`
+            return nomisGet({ path })
         },
 
-        getMainOffence: function(bookingId) {
-            const path = `${apiUrl}/bookings/${bookingId}/mainOffence`;
-            return nomisGet({path});
+        getMainOffence(bookingId) {
+            const path = `${apiUrl}/bookings/${bookingId}/mainOffence`
+            return nomisGet({ path })
         },
 
-        getComRelation: function(bookingId) {
-            const path = `${apiUrl}/bookings/${bookingId}/relationships`;
-            const query = {relationshipType: 'RO'};
-            return nomisGet({path, query});
+        getComRelation(bookingId) {
+            const path = `${apiUrl}/bookings/${bookingId}/relationships`
+            const query = { relationshipType: 'RO' }
+            return nomisGet({ path, query })
         },
 
-        getImageInfo: function(imageId) {
-            const path = `${apiUrl}/images/${imageId}`;
-            return nomisGet({path});
+        getImageInfo(imageId) {
+            const path = `${apiUrl}/images/${imageId}`
+            return nomisGet({ path })
         },
 
-        getHdcEligiblePrisoners: async function() {
-            const path = `${apiUrl}/offender-sentences/home-detention-curfew-candidates`;
-            const headers = {'Page-Limit': 10000};
+        async getHdcEligiblePrisoners() {
+            const path = `${apiUrl}/offender-sentences/home-detention-curfew-candidates`
+            const headers = { 'Page-Limit': 10000 }
 
-            const prisoners = await nomisGet({path, headers});
-            return prisoners.map(addReleaseDatesToPrisoner);
+            const prisoners = await nomisGet({ path, headers })
+            return prisoners.map(addReleaseDatesToPrisoner)
         },
 
-        getOffenderSentencesByNomisId: async function(nomisIds) {
-            const path = `${apiUrl}/offender-sentences`;
-            const query = {offenderNo: nomisIds};
-            const headers = {'Page-Limit': 10000};
+        async getOffenderSentencesByNomisId(nomisIds) {
+            const path = `${apiUrl}/offender-sentences`
+            const query = { offenderNo: nomisIds }
+            const headers = { 'Page-Limit': 10000 }
 
-            const prisoners = await nomisGet({path, query, headers});
-            return prisoners.map(addReleaseDatesToPrisoner);
+            const prisoners = await nomisGet({ path, query, headers })
+            return prisoners.map(addReleaseDatesToPrisoner)
         },
 
-        getOffenderSentencesByBookingId: async function(bookingIds) {
-            const path = `${apiUrl}/offender-sentences/bookings`;
-            const headers = {'Page-Limit': 10000};
-            const body = [].concat(bookingIds);
+        async getOffenderSentencesByBookingId(bookingIds) {
+            const path = `${apiUrl}/offender-sentences/bookings`
+            const headers = { 'Page-Limit': 10000 }
+            const body = [].concat(bookingIds)
 
-            const prisoners = await nomisPost({path, body, headers});
-            return prisoners.map(addReleaseDatesToPrisoner);
+            const prisoners = await nomisPost({ path, body, headers })
+            return prisoners.map(addReleaseDatesToPrisoner)
         },
 
-        getImageData: function(id) {
-            const path = `${apiUrl}/images/${id}/data`;
-            return nomisGet({path, responseType: 'blob'});
+        getImageData(id) {
+            const path = `${apiUrl}/images/${id}/data`
+            return nomisGet({ path, responseType: 'blob' })
         },
 
-        getROPrisoners: function(deliusUserName) {
-            const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/RO`;
-            return nomisGet({path});
+        getROPrisoners(deliusUserName) {
+            const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/RO`
+            return nomisGet({ path })
         },
 
-        getEstablishment: function(agencyLocationId) {
-            const path = `${apiUrl}/agencies/prison/${agencyLocationId}`;
-            return nomisGet({path});
+        getEstablishment(agencyLocationId) {
+            const path = `${apiUrl}/agencies/prison/${agencyLocationId}`
+            return nomisGet({ path })
         },
 
-        getUserInfo: function(userName) {
-            const path = `${authUrl}/api/user/${userName}`;
-            return nomisGet({path});
+        getUserInfo(userName) {
+            const path = `${authUrl}/api/user/${userName}`
+            return nomisGet({ path })
         },
 
-        getLoggedInUserInfo: function() {
-            const path = `${authUrl}/api/user/me`;
-            return nomisGet({path});
+        getLoggedInUserInfo() {
+            const path = `${authUrl}/api/user/me`
+            return nomisGet({ path })
         },
 
-        getUserRoles: function() {
-            const path = `${authUrl}/api/user/me/roles`;
-            return nomisGet({path});
+        getUserRoles() {
+            const path = `${authUrl}/api/user/me/roles`
+            return nomisGet({ path })
         },
 
-        getUserCaseLoads: function() {
-            const path = `${apiUrl}/users/me/caseLoads`;
-            return nomisGet({path});
+        getUserCaseLoads() {
+            const path = `${apiUrl}/users/me/caseLoads`
+            return nomisGet({ path })
         },
 
-        putActiveCaseLoad: async function(caseLoadId) {
-            const path = `${apiUrl}/users/me/activeCaseLoad`;
-            const body = {caseLoadId};
+        async putActiveCaseLoad(caseLoadId) {
+            const path = `${apiUrl}/users/me/activeCaseLoad`
+            const body = { caseLoadId }
 
-            return nomisPut({path, body});
+            return nomisPut({ path, body })
         },
 
-        putApprovalStatus: async function(bookingId, approvalStatus) {
-            const path = `${apiUrl}/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/approval-status`;
-            const body = {approvalStatus, date: moment().format('YYYY-MM-DD')};
+        async putApprovalStatus(bookingId, approvalStatus) {
+            const path = `${apiUrl}/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/approval-status`
+            const body = { approvalStatus, date: moment().format('YYYY-MM-DD') }
 
-            return nomisPut({path, body});
-        }
-    };
-};
+            return nomisPut({ path, body })
+        },
+    }
+}
 
 function nomisGetBuilder(token) {
-
-    return async ({path, query = '', headers = {}, responseType = ''} = {}) => {
-
+    return async ({ path, query = '', headers = {}, responseType = '' } = {}) => {
         if (!token) {
-            throw new NoTokenError();
+            throw new NoTokenError()
         }
 
         try {
@@ -155,39 +151,35 @@ function nomisGetBuilder(token) {
                 .set('Authorization', `Bearer ${token}`)
                 .set(headers)
                 .responseType(responseType)
-                .timeout(timeoutSpec);
+                .timeout(timeoutSpec)
 
-            return result.body;
-
+            return result.body
         } catch (error) {
-            logger.warn('Error calling nomis', path, error.stack);
-            throw error;
+            logger.warn('Error calling nomis', path, error.stack)
+            throw error
         }
-    };
+    }
 }
 
 function nomisPushBuilder(verb, token) {
-
     const updateMethod = {
-        put: put,
-        post: post
-    };
+        put,
+        post,
+    }
 
-    return async ({path, body = '', headers = {}, responseType = ''} = {}) => {
-
+    return async ({ path, body = '', headers = {}, responseType = '' } = {}) => {
         if (!token) {
-            throw new NoTokenError();
+            throw new NoTokenError()
         }
 
         try {
-            const result = await updateMethod[verb](token, path, body, headers, responseType);
-            return result.body;
-
+            const result = await updateMethod[verb](token, path, body, headers, responseType)
+            return result.body
         } catch (error) {
-            logger.warn('Error calling nomis', path, error.stack);
-            throw error;
+            logger.warn('Error calling nomis', path, error.stack)
+            throw error
         }
-    };
+    }
 }
 
 async function post(token, path, body, headers, responseType) {
@@ -197,7 +189,7 @@ async function post(token, path, body, headers, responseType) {
         .set('Authorization', `Bearer ${token}`)
         .set(headers)
         .responseType(responseType)
-        .timeout(timeoutSpec);
+        .timeout(timeoutSpec)
 }
 
 async function put(token, path, body, headers, responseType) {
@@ -207,39 +199,33 @@ async function put(token, path, body, headers, responseType) {
         .set('Authorization', `Bearer ${token}`)
         .set(headers)
         .responseType(responseType)
-        .timeout(timeoutSpec);
+        .timeout(timeoutSpec)
 }
 
 function findFirstValid(datesList) {
-    return datesList.find(date => date && date !== invalidDate) || null;
+    return datesList.find(date => date && date !== invalidDate) || null
 }
 
 function addEffectiveConditionalReleaseDate(prisoner) {
-    const {
-        conditionalReleaseDate,
-        conditionalReleaseOverrideDate
-    } = prisoner.sentenceDetail;
+    const { conditionalReleaseDate, conditionalReleaseOverrideDate } = prisoner.sentenceDetail
 
-    const crd = findFirstValid([conditionalReleaseOverrideDate, conditionalReleaseDate]);
+    const crd = findFirstValid([conditionalReleaseOverrideDate, conditionalReleaseDate])
 
     return {
         ...prisoner,
-        sentenceDetail: merge(prisoner.sentenceDetail, {effectiveConditionalReleaseDate: crd})
-    };
+        sentenceDetail: merge(prisoner.sentenceDetail, { effectiveConditionalReleaseDate: crd }),
+    }
 }
 
 function addEffectiveAutomaticReleaseDate(prisoner) {
-    const {
-        automaticReleaseDate,
-        automaticReleaseOverrideDate
-    } = prisoner.sentenceDetail;
+    const { automaticReleaseDate, automaticReleaseOverrideDate } = prisoner.sentenceDetail
 
-    const ard = findFirstValid([automaticReleaseOverrideDate, automaticReleaseDate]);
+    const ard = findFirstValid([automaticReleaseOverrideDate, automaticReleaseDate])
 
     return {
         ...prisoner,
-        sentenceDetail: merge(prisoner.sentenceDetail, {effectiveAutomaticReleaseDate: ard})
-    };
+        sentenceDetail: merge(prisoner.sentenceDetail, { effectiveAutomaticReleaseDate: ard }),
+    }
 }
 
 function addReleaseDate(prisoner) {
@@ -247,18 +233,18 @@ function addReleaseDate(prisoner) {
         automaticReleaseDate,
         automaticReleaseOverrideDate,
         conditionalReleaseDate,
-        conditionalReleaseOverrideDate
-    } = prisoner.sentenceDetail;
+        conditionalReleaseOverrideDate,
+    } = prisoner.sentenceDetail
 
     const releaseDate = findFirstValid([
         conditionalReleaseOverrideDate,
         conditionalReleaseDate,
         automaticReleaseOverrideDate,
-        automaticReleaseDate
-    ]);
+        automaticReleaseDate,
+    ])
 
     return {
         ...prisoner,
-        sentenceDetail: merge(prisoner.sentenceDetail, {releaseDate})
-    };
+        sentenceDetail: merge(prisoner.sentenceDetail, { releaseDate }),
+    }
 }

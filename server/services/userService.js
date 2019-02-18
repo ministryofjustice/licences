@@ -1,69 +1,65 @@
-const allowedRoles = require('../authentication/roles');
-const logger = require('../../log');
+/* eslint-disable no-param-reassign */
+const allowedRoles = require('../authentication/roles')
+const logger = require('../../log')
 
-module.exports = function(nomisClientBuilder) {
-
+module.exports = nomisClientBuilder => {
     async function getUserProfile(token, refreshToken, username) {
-        const nomisClient = nomisClientBuilder(token);
+        const nomisClient = nomisClientBuilder(token)
 
-        const [profile, roles] = await Promise.all([
-            nomisClient.getLoggedInUserInfo(),
-            getAllRoles(token)
-        ]);
+        const [profile, roles] = await Promise.all([nomisClient.getLoggedInUserInfo(), getAllRoles(token)])
 
-        logger.info(`User profile success - username: ${username}`);
+        logger.info(`User profile success - username: ${username}`)
 
-        const activeCaseLoads = profile.activeCaseLoadId ? await nomisClient.getUserCaseLoads() : [];
-        const activeCaseLoad = activeCaseLoads.find(caseLoad => caseLoad.caseLoadId === profile.activeCaseLoadId);
+        const activeCaseLoads = profile.activeCaseLoadId ? await nomisClient.getUserCaseLoads() : []
+        const activeCaseLoad = activeCaseLoads.find(caseLoad => caseLoad.caseLoadId === profile.activeCaseLoadId)
 
         return {
             ...profile,
             username,
             role: roles[0],
-            activeCaseLoad
-        };
+            activeCaseLoad,
+        }
     }
 
     async function getAllRoles(token) {
-        const nomisClient = nomisClientBuilder(token);
-        const allRoles = await nomisClient.getUserRoles();
+        const nomisClient = nomisClientBuilder(token)
+        const allRoles = await nomisClient.getUserRoles()
 
         return allRoles
             .filter(role => {
-                const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1);
-                return allowedRoles.includes(roleCode);
+                const roleCode = role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1)
+                return allowedRoles.includes(roleCode)
             })
-            .map(role => role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1));
+            .map(role => role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1))
     }
 
     async function setRole(newRole, user) {
         if (!allowedRoles.includes(newRole)) {
-            return user;
+            return user
         }
 
-        user.role = newRole;
-        return user;
+        user.role = newRole
+        return user
     }
 
     function getAllCaseLoads(token) {
-        const nomisClient = nomisClientBuilder(token);
-        return nomisClient.getUserCaseLoads();
+        const nomisClient = nomisClientBuilder(token)
+        return nomisClient.getUserCaseLoads()
     }
 
     async function setActiveCaseLoad(id, user, token) {
-
         // set active caseload
-        const nomisClient = nomisClientBuilder(token);
-        await nomisClient.putActiveCaseLoad(id);
+        const nomisClient = nomisClientBuilder(token)
+        await nomisClient.putActiveCaseLoad(id)
 
         // find active caseload
         const [userDetails, caseLoads] = await Promise.all([
             nomisClient.getLoggedInUserInfo(),
-            nomisClient.getUserCaseLoads()
-        ]);
+            nomisClient.getUserCaseLoads(),
+        ])
 
-        user.activeCaseLoad = caseLoads.find(caseLoad => caseLoad.caseLoadId === userDetails.activeCaseLoadId);
-        return user;
+        user.activeCaseLoad = caseLoads.find(caseLoad => caseLoad.caseLoadId === userDetails.activeCaseLoadId)
+        return user
     }
 
     return {
@@ -71,8 +67,6 @@ module.exports = function(nomisClientBuilder) {
         getAllRoles,
         setRole,
         getAllCaseLoads,
-        setActiveCaseLoad
-    };
-};
-
-
+        setActiveCaseLoad,
+    }
+}

@@ -1,29 +1,29 @@
-const {getAllowedTransition} = require('../../server/utils/licenceStatusTransitions');
+const { getAllowedTransition } = require('../../server/utils/licenceStatusTransitions')
 
 describe('getAllowedTransition', () => {
     it('should allow DM to CA for DM when approval task done', () => {
         const status = {
             stage: 'APPROVAL',
             tasks: {
-                approval: 'DONE'
-            }
-        };
+                approval: 'DONE',
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'DM');
-        expect(allowed).to.eql('dmToCa');
-    });
+        const allowed = getAllowedTransition(status, 'DM')
+        expect(allowed).to.eql('dmToCa')
+    })
 
     it('should not allow DM to CA for DM when approval task not done', () => {
         const status = {
             stage: 'APPROVAL',
             tasks: {
-                approval: 'UNSTARTED'
-            }
-        };
+                approval: 'UNSTARTED',
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'DM');
-        expect(allowed).to.eql(null);
-    });
+        const allowed = getAllowedTransition(status, 'DM')
+        expect(allowed).to.eql(null)
+    })
 
     it('should allow RO to CA for RO when all RO tasks done', () => {
         const status = {
@@ -34,13 +34,14 @@ describe('getAllowedTransition', () => {
                 licenceConditions: 'DONE',
                 riskManagement: 'DONE',
                 victim: 'DONE',
-                reportingInstructions: 'DONE'
-            }
-        };
+                reportingInstructions: 'DONE',
+            },
+            decisions: {},
+        }
 
-        const allowed = getAllowedTransition(status, 'RO');
-        expect(allowed).to.eql('roToCa');
-    });
+        const allowed = getAllowedTransition(status, 'RO')
+        expect(allowed).to.eql('roToCa')
+    })
 
     it('should not allow RO to CA for RO when any RO tasks not done', () => {
         const status = {
@@ -50,13 +51,14 @@ describe('getAllowedTransition', () => {
                 curfewHours: 'DONE',
                 licenceConditions: 'DONE',
                 riskManagement: 'UNSTARTED',
-                reportingInstructions: 'DONE'
-            }
-        };
+                reportingInstructions: 'DONE',
+            },
+            decisions: {},
+        }
 
-        const allowed = getAllowedTransition(status, 'RO');
-        expect(allowed).to.eql(null);
-    });
+        const allowed = getAllowedTransition(status, 'RO')
+        expect(allowed).to.eql(null)
+    })
 
     it('should allow RO to CA for RO when address rejected even when other tasks not done', () => {
         const status = {
@@ -66,16 +68,16 @@ describe('getAllowedTransition', () => {
                 curfewHours: 'UNSTARTED',
                 licenceConditions: 'UNSTARTED',
                 riskManagement: 'UNSTARTED',
-                reportingInstructions: 'UNSTARTED'
+                reportingInstructions: 'UNSTARTED',
             },
             decisions: {
-                curfewAddressRejected: true
-            }
-        };
+                curfewAddressRejected: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'RO');
-        expect(allowed).to.eql('roToCa');
-    });
+        const allowed = getAllowedTransition(status, 'RO')
+        expect(allowed).to.eql('roToCa')
+    })
 
     it('should allow RO to CA for RO when opted out even when other tasks not done', () => {
         const status = {
@@ -85,16 +87,16 @@ describe('getAllowedTransition', () => {
                 curfewHours: 'UNSTARTED',
                 licenceConditions: 'UNSTARTED',
                 riskManagement: 'UNSTARTED',
-                reportingInstructions: 'UNSTARTED'
+                reportingInstructions: 'UNSTARTED',
             },
             decisions: {
-                optedOut: true
-            }
-        };
+                optedOut: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'RO');
-        expect(allowed).to.eql('roToCa');
-    });
+        const allowed = getAllowedTransition(status, 'RO')
+        expect(allowed).to.eql('roToCa')
+    })
 
     it('should allow RO to CA for RO when bass area rejected even when other tasks not done', () => {
         const status = {
@@ -105,16 +107,16 @@ describe('getAllowedTransition', () => {
                 curfewHours: 'UNSTARTED',
                 licenceConditions: 'UNSTARTED',
                 riskManagement: 'UNSTARTED',
-                reportingInstructions: 'UNSTARTED'
+                reportingInstructions: 'UNSTARTED',
             },
             decisions: {
-                bassReferralNeeded: true
-            }
-        };
+                bassReferralNeeded: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'RO');
-        expect(allowed).to.eql('roToCa');
-    });
+        const allowed = getAllowedTransition(status, 'RO')
+        expect(allowed).to.eql('roToCa')
+    })
 
     it('should not allow RO to CA for RO when address undecided', () => {
         const status = {
@@ -124,13 +126,14 @@ describe('getAllowedTransition', () => {
                 curfewHours: 'UNSTARTED',
                 licenceConditions: 'UNSTARTED',
                 riskManagement: 'UNSTARTED',
-                reportingInstructions: 'UNSTARTED'
-            }
-        };
+                reportingInstructions: 'UNSTARTED',
+            },
+            decisions: {},
+        }
 
-        const allowed = getAllowedTransition(status, 'RO');
-        expect(allowed).to.eql(null);
-    });
+        const allowed = getAllowedTransition(status, 'RO')
+        expect(allowed).to.eql(null)
+    })
 
     it('should allow CA to RO in the ELIGIBILITY stage when all CA tasks done and decisions OK', () => {
         const status = {
@@ -142,19 +145,19 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
                 postponed: null,
                 curfewAddressApproved: 'approved',
                 excluded: null,
-                eligible: true
-            }
-        };
+                eligible: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToRo');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToRo')
+    })
 
     it('should not allow CA to RO in the ELIGIBILITY stage when HDC has been opted out', () => {
         const status = {
@@ -166,16 +169,16 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
-                optedOut: true
-            }
-        };
+                optedOut: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql(null);
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql(null)
+    })
 
     it('should not allow CA to RO in the ELIGIBILITY stage when address has been rejected', () => {
         const status = {
@@ -187,16 +190,16 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
-                curfewAddressApproved: 'null'
-            }
-        };
+                curfewAddressApproved: 'null',
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql(null);
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql(null)
+    })
 
     it('should not allow CA to RO in the ELIGIBILITY stage when ineligible', () => {
         const status = {
@@ -208,19 +211,19 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
                 postponed: null,
                 curfewAddressApproved: 'approved',
                 excluded: null,
-                eligible: null
-            }
-        };
+                eligible: null,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql(null);
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql(null)
+    })
 
     it('should allow CA to DM in the PROCESSING_CA stage when all CA tasks done and decisions OK', () => {
         const status = {
@@ -232,19 +235,19 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
                 postponed: null,
                 curfewAddressApproved: 'approved',
-                excluded: null
-            }
-        };
+                excluded: null,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
+        const allowed = getAllowedTransition(status, 'CA')
 
-        expect(allowed).to.eql('caToDm');
-    });
+        expect(allowed).to.eql('caToDm')
+    })
 
     it('should not allow CA to DM in the PROCESSING_CA when any CA tasks not done and decisions not OK', () => {
         const status = {
@@ -254,19 +257,19 @@ describe('getAllowedTransition', () => {
                 crdTime: 'DONE',
                 suitability: 'UNSTARTED',
                 optOut: 'DONE',
-                bassReferral: 'DONE'
+                bassReferral: 'DONE',
             },
             decisions: {
                 postponed: null,
                 curfewAddressApproved: 'approved',
-                excluded: true
-            }
-        };
+                excluded: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
+        const allowed = getAllowedTransition(status, 'CA')
 
-        expect(allowed).to.eql(null);
-    });
+        expect(allowed).to.eql(null)
+    })
 
     it('should allow CA to DM in the PROCESSING_CA for BASS when only BASS offer and final checks tasks done', () => {
         const status = {
@@ -274,17 +277,17 @@ describe('getAllowedTransition', () => {
             tasks: {
                 curfewAddress: 'UNSTARTED',
                 bassOffer: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
-                bassReferralNeeded: true
-            }
-        };
+                bassReferralNeeded: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
+        const allowed = getAllowedTransition(status, 'CA')
 
-        expect(allowed).to.eql('caToDm');
-    });
+        expect(allowed).to.eql('caToDm')
+    })
 
     it('should allow CA to RO in the PROCESSING_CA for BASS when BASS area check not done', () => {
         const status = {
@@ -292,17 +295,17 @@ describe('getAllowedTransition', () => {
             tasks: {
                 curfewAddress: 'UNSTARTED',
                 bassOffer: 'DONE',
-                bassAreaCheck: 'UNSTARTED'
+                bassAreaCheck: 'UNSTARTED',
             },
             decisions: {
-                bassReferralNeeded: true
-            }
-        };
+                bassReferralNeeded: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
+        const allowed = getAllowedTransition(status, 'CA')
 
-        expect(allowed).to.eql('caToRo');
-    });
+        expect(allowed).to.eql('caToRo')
+    })
 
     it('should allow CA to DM refusal when eligible and insufficient time', () => {
         const status = {
@@ -314,17 +317,17 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
                 insufficientTimeStop: true,
-                eligible: true
-            }
-        };
+                eligible: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should allow CA to DM refusal when ineligble but insufficientTimeStop', () => {
         const status = {
@@ -336,17 +339,17 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
                 insufficientTimeStop: true,
-                eligible: null
-            }
-        };
+                eligible: null,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should not allow CA to DM refusal if ineligible without', () => {
         const status = {
@@ -358,17 +361,17 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
                 eligible: null,
-                curfewAddressApproved: 'rejected'
-            }
-        };
+                curfewAddressApproved: 'rejected',
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql(null);
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql(null)
+    })
 
     it('should not allow CA to DM refusal if already refused by ca', () => {
         const status = {
@@ -380,18 +383,18 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
                 curfewAddressApproved: 'withdrawn',
                 eligible: true,
-                finalChecksRefused: true
-            }
-        };
+                finalChecksRefused: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql(null);
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql(null)
+    })
 
     it('should allow CA to DM refusal if curfew address is rejected', () => {
         const status = {
@@ -403,101 +406,101 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
                 eligible: true,
-                curfewAddressRejected: true
-            }
-        };
+                curfewAddressRejected: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should allow CA to DM refusal if BASS area is rejected - ELIGIBILITY', () => {
         const status = {
             stage: 'ELIGIBILITY',
             tasks: {
-                bassReferral: 'DONE'
+                bassReferral: 'DONE',
             },
             decisions: {
                 eligible: true,
-                bassAreaNotSuitable: true
-            }
-        };
+                bassAreaNotSuitable: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should allow CA to DM refusal if BASS area is rejected - POST_APPROVAL', () => {
         const status = {
             stage: 'MODIFIED',
             tasks: {
-                bassReferral: 'DONE'
+                bassReferral: 'DONE',
             },
             decisions: {
                 eligible: true,
                 bassReferralNeeded: true,
-                bassAreaNotSuitable: true
-            }
-        };
+                bassAreaNotSuitable: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should allow CA to DM refusal if BASS outcome is Unsuitable - POST_APPROVAL', () => {
         const status = {
             stage: 'MODIFIED',
             tasks: {
-                bassReferral: 'DONE'
+                bassReferral: 'DONE',
             },
             decisions: {
                 eligible: true,
                 bassReferralNeeded: true,
                 bassAreaSuitable: true,
-                bassAccepted: 'Unsuitable'
-            }
-        };
+                bassAccepted: 'Unsuitable',
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should allow CA to DM refusal if BASS outcome is Unavailable - POST_APPROVAL', () => {
         const status = {
             stage: 'MODIFIED',
             tasks: {
-                bassReferral: 'DONE'
+                bassReferral: 'DONE',
             },
             decisions: {
                 eligible: true,
                 bassReferralNeeded: true,
                 bassAreaSuitable: true,
-                bassAccepted: 'Unavailable'
-            }
-        };
+                bassAccepted: 'Unavailable',
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should allow CA to DM refusal if address is not rejected - POST_APPROVAL', () => {
         const status = {
             stage: 'MODIFIED',
             tasks: {
-                bassReferral: 'DONE'
+                bassReferral: 'DONE',
             },
             decisions: {
-                curfewAddressRejected: true
-            }
-        };
+                curfewAddressRejected: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should allow CA to DM refusal if BASS is withdrawn', () => {
         const status = {
@@ -506,13 +509,13 @@ describe('getAllowedTransition', () => {
             decisions: {
                 eligible: true,
                 bassReferralNeeded: true,
-                bassWithdrawn: true
-            }
-        };
+                bassWithdrawn: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should not allow CA to DM when HDC refused', () => {
         const status = {
@@ -524,19 +527,19 @@ describe('getAllowedTransition', () => {
                 optOut: 'DONE',
                 bassReferral: 'DONE',
                 curfewAddress: 'DONE',
-                finalChecks: 'DONE'
+                finalChecks: 'DONE',
             },
             decisions: {
                 postponed: null,
                 curfewAddressApproved: 'approved',
                 excluded: null,
-                finalChecksRefused: true
-            }
-        };
+                finalChecksRefused: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql(null);
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql(null)
+    })
 
     it('should allow CA to RO when address review has not been started', () => {
         const status = {
@@ -547,57 +550,56 @@ describe('getAllowedTransition', () => {
                 suitability: 'DONE',
                 optOut: 'DONE',
                 curfewAddress: 'DONE',
-                curfewAddressReview: 'UNSTARTED'
+                curfewAddressReview: 'UNSTARTED',
             },
             decisions: {
                 postponed: null,
                 curfewAddressApproved: 'approved',
                 excluded: null,
-                finalChecksRefused: true
-            }
-        };
+                finalChecksRefused: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToRo');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToRo')
+    })
 
     it('should allow CA to DM when address has been withdrawn', () => {
         const status = {
             stage: 'PROCESSING_CA',
             tasks: {},
             decisions: {
-                addressWithdrawn: true
-            }
-        };
+                addressWithdrawn: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should allow CA to DM when address has been withdrawn (but no new address added) in Post-decision', () => {
         const status = {
             stage: 'MODIFIED',
             tasks: {},
             decisions: {
-                addressWithdrawn: true
-            }
-        };
+                addressWithdrawn: true,
+            },
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToDmRefusal');
-    });
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToDmRefusal')
+    })
 
     it('should allow CA to RO when address has been withdrawn and a new address added in Post-decision', () => {
         const status = {
             stage: 'MODIFIED',
             tasks: {
-                curfewAddressReview: 'UNSTARTED'
+                curfewAddressReview: 'UNSTARTED',
             },
-            decisions: {}
-        };
+            decisions: {},
+        }
 
-        const allowed = getAllowedTransition(status, 'CA');
-        expect(allowed).to.eql('caToRo');
-    });
-
-});
+        const allowed = getAllowedTransition(status, 'CA')
+        expect(allowed).to.eql('caToRo')
+    })
+})

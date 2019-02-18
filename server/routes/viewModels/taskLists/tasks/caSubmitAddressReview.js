@@ -1,17 +1,17 @@
-const {continueBtn} = require('./utils/actions');
+const { continueBtn } = require('./utils/actions')
 
 module.exports = {
-    getLabel: ({tasks}) => {
-        const {curfewAddress} = tasks;
-        return curfewAddress === 'DONE' ? 'Ready to submit' : 'Not completed';
+    getLabel: ({ tasks }) => {
+        const { curfewAddress } = tasks
+        return curfewAddress === 'DONE' ? 'Ready to submit' : 'Not completed'
     },
 
-    getCaAction: ({decisions, tasks}) => {
-        const {optedOut} = decisions;
-        const {curfewAddress} = tasks;
+    getCaAction: ({ decisions, tasks }) => {
+        const { optedOut } = decisions
+        const { curfewAddress } = tasks
         if (curfewAddress === 'DONE' && !optedOut) {
-            return continueBtn('/hdc/review/curfewAddress/');
+            return continueBtn('/hdc/review/curfewAddress/')
         }
-        return null;
-    }
-};
+        return null
+    },
+}

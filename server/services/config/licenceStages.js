@@ -1,4 +1,3 @@
-
 const licenceStages = {
     UNSTARTED: 'UNSTARTED',
     DEFAULT: 'ELIGIBILITY',
@@ -9,8 +8,8 @@ const licenceStages = {
     DECIDED: 'DECIDED',
     MODIFIED: 'MODIFIED',
     MODIFIED_APPROVAL: 'MODIFIED_APPROVAL',
-    VARY: 'VARY'
-};
+    VARY: 'VARY',
+}
 
 const transitions = {
     caToRo: licenceStages.PROCESSING_RO,
@@ -20,7 +19,7 @@ const transitions = {
     dmToCaReturn: licenceStages.PROCESSING_CA,
     caToDmRefusal: licenceStages.APPROVAL,
     roToCaAddressRejected: licenceStages.ELIGIBILITY,
-    roToCaOptedOut: licenceStages.ELIGIBILITY
-};
+    roToCaOptedOut: licenceStages.ELIGIBILITY,
+}
 
-module.exports = {licenceStages, transitions};
+module.exports = { licenceStages, transitions }

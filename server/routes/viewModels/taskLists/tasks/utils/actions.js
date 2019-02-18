@@ -4,23 +4,23 @@ module.exports = {
             return {
                 text: 'Change',
                 type: 'link',
-                href
-            };
+                href,
+            }
         }
 
         if (task === 'UNSTARTED') {
             return {
                 text: 'Start now',
                 type: 'btn',
-                href
-            };
+                href,
+            }
         }
 
         return {
             text: 'Continue',
             type: 'btn',
-            href
-        };
+            href,
+        }
     },
 
     standardActionMulti: (tasksArray, href) => {
@@ -28,54 +28,54 @@ module.exports = {
             return {
                 text: 'Start now',
                 type: 'btn',
-                href
-            };
+                href,
+            }
         }
 
         if (tasksArray.every(task => task === 'DONE')) {
             return {
                 text: 'Change',
                 type: 'link',
-                href
-            };
+                href,
+            }
         }
 
         return {
             text: 'Continue',
             type: 'btn',
-            href: href
-        };
+            href,
+        }
     },
 
     viewEdit: href => {
         return {
             text: 'View/Edit',
             type: 'btn-secondary',
-            href
-        };
+            href,
+        }
     },
 
     change: href => {
         return {
             text: 'Change',
             type: 'link',
-            href
-        };
+            href,
+        }
     },
 
     continueBtn: href => {
         return {
             text: 'Continue',
             type: 'btn',
-            href
-        };
+            href,
+        }
     },
 
     taskBtn: (href, text, secondary) => {
         return {
             text,
             type: secondary ? 'btn-secondary' : 'btn',
-            href
-        };
-    }
-};
+            href,
+        }
+    },
+}

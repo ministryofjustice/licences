@@ -1,94 +1,90 @@
-const logger = require('../../log.js');
-const {isEmpty, getIn} = require('../utils/functionalHelpers');
+const logger = require('../../log.js')
+const { isEmpty, getIn } = require('../utils/functionalHelpers')
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter) {
     async function getHdcCaseList(token, username, role, tab) {
         try {
-            const nomisClient = nomisClientBuilder(token);
-            const hdcEligibleReleases = await getCaseList(nomisClient, licenceClient, username, role);
+            const nomisClient = nomisClientBuilder(token)
+            const hdcEligibleReleases = await getCaseList(nomisClient, licenceClient, username, role)
 
             if (isEmpty(hdcEligibleReleases)) {
-                logger.info('No hdc eligible prisoners');
-                return [];
+                logger.info('No hdc eligible prisoners')
+                return []
             }
 
-            const formattedCaseList = await caseListFormatter.formatCaseList(hdcEligibleReleases, role);
-            return formattedCaseList.filter(prisoner => neededForRole(prisoner, role) && neededForTab(prisoner, tab));
-
+            const formattedCaseList = await caseListFormatter.formatCaseList(hdcEligibleReleases, role)
+            return formattedCaseList.filter(prisoner => neededForRole(prisoner, role) && neededForTab(prisoner, tab))
         } catch (error) {
-            logger.error('Error during getHdcCaseList: ', error.stack);
-            throw error;
+            logger.error('Error during getHdcCaseList: ', error.stack)
+            throw error
         }
     }
 
-    return {getHdcCaseList};
-};
+    return { getHdcCaseList }
+}
 
 async function getCaseList(nomisClient, licenceClient, username, role) {
     const asyncCaseRetrievalMethod = {
         CA: nomisClient.getHdcEligiblePrisoners,
         RO: getROCaseList(nomisClient, licenceClient, username),
-        DM: nomisClient.getHdcEligiblePrisoners
-    };
+        DM: nomisClient.getHdcEligiblePrisoners,
+    }
 
-    return asyncCaseRetrievalMethod[role]();
+    return asyncCaseRetrievalMethod[role]()
 }
 
 function getROCaseList(nomisClient, licenceClient, username) {
     return async () => {
-        const upperCaseUserName = username.toUpperCase();
-        const deliusUserName = await licenceClient.getDeliusUserName(upperCaseUserName);
+        const upperCaseUserName = username.toUpperCase()
+        const deliusUserName = await licenceClient.getDeliusUserName(upperCaseUserName)
 
         if (!deliusUserName) {
-            logger.warn(`No delius user ID for nomis ID '${upperCaseUserName}'`);
-            return [];
+            logger.warn(`No delius user ID for nomis ID '${upperCaseUserName}'`)
+            return []
         }
 
-        const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName);
+        const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName)
 
         if (!isEmpty(requiredPrisoners)) {
-            const requiredIDs = requiredPrisoners.map(prisoner => prisoner.bookingId);
-            const offenders = await nomisClient.getOffenderSentencesByBookingId(requiredIDs);
-            return offenders
-                .filter(prisoner => getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']));
+            const requiredIDs = requiredPrisoners.map(prisoner => prisoner.bookingId)
+            const offenders = await nomisClient.getOffenderSentencesByBookingId(requiredIDs)
+            return offenders.filter(prisoner =>
+                getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate'])
+            )
         }
 
-        return [];
-    };
+        return []
+    }
 }
 
 function neededForRole(prisoner, role) {
     const interestedStatuses = {
         RO: [
-            {stage: 'PROCESSING_RO'},
-            {stage: 'PROCESSING_CA'},
-            {stage: 'APPROVAL'},
-            {stage: 'DECIDED'},
-            {stage: 'MODIFIED'},
-            {stage: 'MODIFIED_APPROVAL'}
+            { stage: 'PROCESSING_RO' },
+            { stage: 'PROCESSING_CA' },
+            { stage: 'APPROVAL' },
+            { stage: 'DECIDED' },
+            { stage: 'MODIFIED' },
+            { stage: 'MODIFIED_APPROVAL' },
         ],
-        DM: [
-            {stage: 'APPROVAL'},
-            {stage: 'DECIDED'},
-            {stage: 'PROCESSING_CA', status: 'Postponed'}
-        ]
-    };
-
-    if (!interestedStatuses[role]) {
-        return true;
+        DM: [{ stage: 'APPROVAL' }, { stage: 'DECIDED' }, { stage: 'PROCESSING_CA', status: 'Postponed' }],
     }
 
-    const includedStage = interestedStatuses[role].find(config => prisoner.stage === config.stage);
+    if (!interestedStatuses[role]) {
+        return true
+    }
+
+    const includedStage = interestedStatuses[role].find(config => prisoner.stage === config.stage)
 
     if (!includedStage) {
-        return false;
+        return false
     }
 
     if (includedStage.status) {
-        return includedStage.status === prisoner.status;
+        return includedStage.status === prisoner.status
     }
 
-    return true;
+    return true
 }
 
 function neededForTab(prisoner, tab) {
@@ -101,9 +97,9 @@ function neededForTab(prisoner, tab) {
         'Address withdrawn',
         'BASS offer withdrawn',
         'BASS request withdrawn',
-        'Refused'
-    ];
+        'Refused',
+    ]
 
-    const isInactive = inactiveStatuses.includes(prisoner.status);
-    return isInactive === (tab === 'inactive');
+    const isInactive = inactiveStatuses.includes(prisoner.status)
+    return isInactive === (tab === 'inactive')
 }

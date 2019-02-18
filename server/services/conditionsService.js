@@ -1,98 +1,99 @@
-const {formatConditionsInput} = require('./utils/conditionsFormatter');
-const {getIn, isEmpty} = require('../utils/functionalHelpers');
-const {populateAdditionalConditionsAsObject} = require('../utils/licenceFactory');
-const moment = require('moment');
-const {additionalConditions, standardConditions} = require('./config/conditionsConfig');
+const moment = require('moment')
+const { formatConditionsInput } = require('./utils/conditionsFormatter')
+const { getIn, isEmpty } = require('../utils/functionalHelpers')
+const { populateAdditionalConditionsAsObject } = require('../utils/licenceFactory')
+const { additionalConditions, standardConditions } = require('./config/conditionsConfig')
 
 module.exports = function createConditionsService() {
-
     function getStandardConditions() {
-        return standardConditions;
+        return standardConditions
     }
 
     function getAdditionalConditions(licence = null) {
-        const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional']);
+        const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional'])
         if (licenceAdditionalConditions) {
             return additionalConditions
                 .map(populateFromSavedLicence(licenceAdditionalConditions))
-                .reduce(splitIntoGroupedObject, {});
+                .reduce(splitIntoGroupedObject, {})
         }
 
-        return additionalConditions.reduce(splitIntoGroupedObject, {});
+        return additionalConditions.reduce(splitIntoGroupedObject, {})
     }
 
     function formatConditionInputs(requestBody) {
         const selectedConditionsConfig = additionalConditions.filter(condition =>
-            requestBody.additionalConditions.includes(condition.id));
+            requestBody.additionalConditions.includes(condition.id)
+        )
 
-        return formatConditionsInput(requestBody, selectedConditionsConfig);
+        return formatConditionsInput(requestBody, selectedConditionsConfig)
     }
 
     function populateLicenceWithConditions(licence, errors = {}) {
         if (getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No') {
-            return licence;
+            return licence
         }
 
-        const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional']);
-        const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || [];
-        const conditionsOnLicence = !isEmpty(licenceAdditionalConditions) || bespokeConditions.length > 0;
+        const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional'])
+        const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || []
+        const conditionsOnLicence = !isEmpty(licenceAdditionalConditions) || bespokeConditions.length > 0
         if (!conditionsOnLicence) {
-            return licence;
+            return licence
         }
 
-        const conditionIdsSelected = Object.keys(licenceAdditionalConditions);
+        const conditionIdsSelected = Object.keys(licenceAdditionalConditions)
         const selectedConditionsConfig = additionalConditions.filter(condition =>
-            conditionIdsSelected.includes(condition.id));
+            conditionIdsSelected.includes(condition.id)
+        )
 
-        return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors);
+        return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors)
     }
 
     return {
         getStandardConditions,
         getAdditionalConditions,
         formatConditionInputs,
-        populateLicenceWithConditions
-    };
-};
+        populateLicenceWithConditions,
+    }
+}
 
 function splitIntoGroupedObject(conditionObject, condition) {
-    const groupName = condition.group_name || 'base';
-    const subgroupName = condition.subgroup_name || 'base';
+    const groupName = condition.group_name || 'base'
+    const subgroupName = condition.subgroup_name || 'base'
 
-    const group = conditionObject[groupName] || {};
-    const subgroup = group[subgroupName] || [];
+    const group = conditionObject[groupName] || {}
+    const subgroup = group[subgroupName] || []
 
-    const newSubgroup = [...subgroup, condition];
-    const newGroup = {...group, [subgroupName]: newSubgroup};
+    const newSubgroup = [...subgroup, condition]
+    const newGroup = { ...group, [subgroupName]: newSubgroup }
 
-    return {...conditionObject, [groupName]: newGroup};
+    return { ...conditionObject, [groupName]: newGroup }
 }
 
 function populateFromSavedLicence(inputtedConditions) {
-    const populatedConditionIds = Object.keys(inputtedConditions);
+    const populatedConditionIds = Object.keys(inputtedConditions)
 
     return condition => {
-        const submission = getSubmissionForCondition(condition.id, inputtedConditions);
-        const selected = populatedConditionIds.includes(String(condition.id));
+        const submission = getSubmissionForCondition(condition.id, inputtedConditions)
+        const selected = populatedConditionIds.includes(String(condition.id))
 
-        return {...condition, selected: selected, user_submission: submission};
-    };
+        return { ...condition, selected, user_submission: submission }
+    }
 }
 
 function getSubmissionForCondition(conditionId, inputtedConditions) {
     if (isEmpty(inputtedConditions[conditionId])) {
-        return {};
+        return {}
     }
 
     if (conditionId === 'ATTENDDEPENDENCY') {
-        const appointmentDate = moment(inputtedConditions[conditionId].appointmentDate, 'DD/MM/YYYY');
+        const appointmentDate = moment(inputtedConditions[conditionId].appointmentDate, 'DD/MM/YYYY')
         return {
             ...inputtedConditions[conditionId],
             appointmentDay: appointmentDate.format('DD'),
             appointmentMonth: appointmentDate.format('MM'),
-            appointmentYear: appointmentDate.format('YYYY')
-        };
+            appointmentYear: appointmentDate.format('YYYY'),
+        }
     }
 
-    return inputtedConditions[conditionId];
+    return inputtedConditions[conditionId]
 }

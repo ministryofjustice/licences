@@ -1,9 +1,7 @@
 module.exports = function(audit) {
-
     function getSend(transitionType) {
         return (startMoment, endMoment) => {
-
-            return audit.getEvents('SEND', {transitionType}, startMoment, endMoment);
+            return audit.getEvents('SEND', { transitionType }, startMoment, endMoment)
         }
     }
 
@@ -11,6 +9,6 @@ module.exports = function(audit) {
         getAddressSubmission: getSend('caToRo'),
         getAssessmentComplete: getSend('roToCa'),
         getFinalChecksComplete: getSend('caToDm'),
-        getApprovalComplete: getSend('dmToCa')
+        getApprovalComplete: getSend('dmToCa'),
     }
-};
+}

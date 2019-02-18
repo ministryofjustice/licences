@@ -1,7 +1,6 @@
-const {romanise} = require('../../server/utils/romanise');
+const { romanise } = require('../../server/utils/romanise')
 
 describe('romanise', () => {
-
     const conversions = {
         1: 'i',
         2: 'ii',
@@ -19,19 +18,18 @@ describe('romanise', () => {
         16: 'xvi',
         19: 'xix',
         20: 'xx',
-        21: 'xxi'
-    };
+        21: 'xxi',
+    }
 
-    Object.entries(conversions)
-        .forEach(([arabic, roman]) => {
-            it(`should convert ${arabic} to ${roman}`, () => {
-                expect(romanise(Number(arabic)).toLowerCase()).to.eql(roman);
-            });
-        });
+    Object.entries(conversions).forEach(([arabic, roman]) => {
+        it(`should convert ${arabic} to ${roman}`, () => {
+            expect(romanise(Number(arabic)).toLowerCase()).to.eql(roman)
+        })
+    })
 
     it('should error when outside 1 to 50', () => {
-        expect(() => romanise(-1)).to.throw(Error);
-        expect(() => romanise(0)).to.throw(Error);
-        expect(() => romanise(51)).to.throw(Error);
-    });
-});
+        expect(() => romanise(-1)).to.throw(Error)
+        expect(() => romanise(0)).to.throw(Error)
+        expect(() => romanise(51)).to.throw(Error)
+    })
+})

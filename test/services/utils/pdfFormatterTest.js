@@ -1,83 +1,88 @@
-const {formatPdfData} = require('../../../server/services/utils/pdfFormatter');
+const { formatPdfData } = require('../../../server/services/utils/pdfFormatter')
 
 describe('pdfFormatter', () => {
-
-    let clock;
+    let clock
 
     beforeEach(() => {
-        clock = sinon.useFakeTimers(new Date('January 1, 2001 12:00:00').getTime());
-    });
+        clock = sinon.useFakeTimers(new Date('January 1, 2001 12:00:00').getTime())
+    })
 
     afterEach(() => {
-        clock.restore();
-    });
+        clock.restore()
+    })
 
     function formatWith({
-                            templateName = 'hdc_ap_pss',
-                            licence = {},
-                            prisonerInfo = {},
-                            establishment = {},
-                            image = '',
-                            approvedVersionDetails = {},
-                            placeholder = 'PLACEHOLDER'
-                        }) {
-        return formatPdfData(templateName, {
-            licence,
-            prisonerInfo,
-            establishment
-        }, image, approvedVersionDetails, placeholder);
+        templateName = 'hdc_ap_pss',
+        licence = {},
+        prisonerInfo = {},
+        establishment = {},
+        image = '',
+        approvedVersionDetails = {},
+        placeholder = 'PLACEHOLDER',
+    }) {
+        return formatPdfData(
+            templateName,
+            {
+                licence,
+                prisonerInfo,
+                establishment,
+            },
+            image,
+            approvedVersionDetails,
+            placeholder
+        )
     }
 
     it('should give placeholders and display names for everything when all inputs missing', () => {
-        const data = formatWith({});
+        const data = formatWith({})
 
-        expect(data.values).to.eql(allValuesEmpty);
-        expect(data.missing).to.eql(displayNames);
-    });
+        expect(data.values).to.eql(allValuesEmpty)
+        expect(data.missing).to.eql(displayNames)
+    })
 
     it('should join offender names using spaces', () => {
         const prisonerInfo = {
             firstName: 'first',
             middleName: 'second',
-            lastName: 'third'
-        };
+            lastName: 'third',
+        }
 
-        const data = formatWith({prisonerInfo: prisonerInfo});
+        const data = formatWith({ prisonerInfo })
 
-        expect(data.values.OFF_NAME).to.eql('first second third');
-        expect(data.missing).to.not.have.property('OFF_NAME');
-    });
+        expect(data.values.OFF_NAME).to.eql('first second third')
+        expect(data.missing).to.not.have.property('OFF_NAME')
+    })
 
     it('should join offender names using spaces, omitting blanks', () => {
         const prisonerInfo = {
             firstName: 'first',
             middleName: '',
-            lastName: 'third'
-        };
+            lastName: 'third',
+        }
 
-        const data = formatWith({prisonerInfo: prisonerInfo});
+        const data = formatWith({ prisonerInfo })
 
-        expect(data.values.OFF_NAME).to.eql('first third');
-        expect(data.missing).to.not.have.property('OFF_NAME');
-    });
+        expect(data.values.OFF_NAME).to.eql('first third')
+        expect(data.missing).to.not.have.property('OFF_NAME')
+    })
 
     it('should take number from establishment phone number', () => {
         const establishment = {
-            phones: {type: 'BUS', number: 111}
-        };
+            phones: { type: 'BUS', number: 111 },
+        }
 
-        const data = formatWith({establishment: establishment});
+        const data = formatWith({ establishment })
 
-        expect(data.values.EST_PHONE).to.eql('111');
-        expect(data.missing).to.not.have.property('EST_PHONE');
-    });
+        expect(data.values.EST_PHONE).to.eql('111')
+        expect(data.missing).to.not.have.property('EST_PHONE')
+    })
 
     it('should convert image to base64 string', () => {
-        const data = formatWith({image: 'IMAGE INPUT'});
+        const data = formatWith({ image: 'IMAGE INPUT' })
 
-        expect(data.values.OFF_PHOTO).to.eql('IMAGE INPUT'.toString('base64'));
-        expect(data.missing).to.not.have.property('OFF_PHOTO');
-    });
+        expect(data.values.OFF_PHOTO).to.eql('IMAGE INPUT'.toString('base64'))
+        expect(data.missing).to.not.have.property('OFF_PHOTO')
+    })
 
     it('should join reporting address elements using new lines, omitting blanks', () => {
         const licence = {
@@ -86,16 +91,16 @@ describe('pdfFormatter', () => {
                     buildingAndStreet1: 'first',
                     buildingAndStreet2: '',
                     townOrCity: 'town',
-                    postcode: 'post'
-                }
-            }
-        };
+                    postcode: 'post',
+                },
+            },
+        }
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.REPORTING_ADDRESS).to.eql('first\ntown\npost');
-        expect(data.missing).to.not.have.property('REPORTING_ADDRESS');
-    });
+        expect(data.values.REPORTING_ADDRESS).to.eql('first\ntown\npost')
+        expect(data.missing).to.not.have.property('REPORTING_ADDRESS')
+    })
 
     it('should join curfew address elements using new lines, omitting blanks', () => {
         const licence = {
@@ -104,46 +109,48 @@ describe('pdfFormatter', () => {
                     addressLine1: 'first',
                     addressLine2: 'second',
                     addressTown: '',
-                    postCode: 'post'
-                }
-            }
-        };
+                    postCode: 'post',
+                },
+            },
+        }
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost');
-        expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
-    });
+        expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost')
+        expect(data.missing).to.not.have.property('CURFEW_ADDRESS')
+    })
 
     it('should use BASS address instead of curfew address when BASS requested and accepted', () => {
         const licence = {
             proposedAddress: {
                 curfewAddress: {
-                    addresses: [{
-                        addressLine1: 'first',
-                        addressLine2: 'second',
-                        addressTown: '',
-                        postCode: 'post'
-                    }]
-                }
+                    addresses: [
+                        {
+                            addressLine1: 'first',
+                            addressLine2: 'second',
+                            addressTown: '',
+                            postCode: 'post',
+                        },
+                    ],
+                },
             },
             bassReferral: {
-                bassRequest: {bassRequested: 'Yes'},
+                bassRequest: { bassRequested: 'Yes' },
                 bassOffer: {
                     bassAccepted: 'Yes',
                     postCode: 'BASS PC',
                     addressTown: 'BASS Town',
                     addressLine1: 'BASS 1',
-                    addressLine2: 'BASS 2'
-                }
-            }
-        };
+                    addressLine2: 'BASS 2',
+                },
+            },
+        }
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.CURFEW_ADDRESS).to.eql('BASS 1\nBASS 2\nBASS Town\nBASS PC');
-        expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
-    });
+        expect(data.values.CURFEW_ADDRESS).to.eql('BASS 1\nBASS 2\nBASS Town\nBASS PC')
+        expect(data.missing).to.not.have.property('CURFEW_ADDRESS')
+    })
 
     it('should use curfew address instead of BASS address when BASS not accepted', () => {
         const licence = {
@@ -152,26 +159,26 @@ describe('pdfFormatter', () => {
                     addressLine1: 'first',
                     addressLine2: 'second',
                     addressTown: '',
-                    postCode: 'post'
-                }
+                    postCode: 'post',
+                },
             },
             bassReferral: {
-                bassRequest: {bassRequested: 'Yes'},
+                bassRequest: { bassRequested: 'Yes' },
                 bassOffer: {
                     bassAccepted: 'Not Yes',
                     postCode: 'BASS PC',
                     addressTown: 'BASS Town',
                     addressLine1: 'BASS 1',
-                    addressLine2: 'BASS 2'
-                }
-            }
-        };
+                    addressLine2: 'BASS 2',
+                },
+            },
+        }
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost');
-        expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
-    });
+        expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost')
+        expect(data.missing).to.not.have.property('CURFEW_ADDRESS')
+    })
 
     it('should use curfew address instead of BASS address when BASS not requested', () => {
         const licence = {
@@ -180,135 +187,130 @@ describe('pdfFormatter', () => {
                     addressLine1: 'first',
                     addressLine2: 'second',
                     addressTown: '',
-                    postCode: 'post'
-                }
+                    postCode: 'post',
+                },
             },
             bassReferral: {
-                bassRequest: {bassRequested: 'Not Yes'},
+                bassRequest: { bassRequested: 'Not Yes' },
                 bassOffer: {
                     bassAccepted: 'Yes',
                     postCode: 'BASS PC',
                     addressTown: 'BASS Town',
                     addressLine1: 'BASS 1',
-                    addressLine2: 'BASS 2'
-                }
-            }
-        };
+                    addressLine2: 'BASS 2',
+                },
+            },
+        }
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost');
-        expect(data.missing).to.not.have.property('CURFEW_ADDRESS');
-    });
+        expect(data.values.CURFEW_ADDRESS).to.eql('first\nsecond\npost')
+        expect(data.missing).to.not.have.property('CURFEW_ADDRESS')
+    })
 
     it('should join conditions with newlines, terminated by semi-colons, with roman numeral index', () => {
-
         const licence = {
             licenceConditions: [
-                {content: [{text: 'first condition'}]},
-                {content: [{text: 'second condition'}]},
-                {content: [{variable: 'third condition'}]}
-            ]
-        };
-        const expected = 'viii. first condition;\n\nix. second condition;\n\nx. third condition;';
+                { content: [{ text: 'first condition' }] },
+                { content: [{ text: 'second condition' }] },
+                { content: [{ variable: 'third condition' }] },
+            ],
+        }
+        const expected = 'viii. first condition;\n\nix. second condition;\n\nx. third condition;'
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.CONDITIONS).to.eql(expected);
-        expect(data.missing).to.not.have.property('CONDITIONS');
-    });
+        expect(data.values.CONDITIONS).to.eql(expected)
+        expect(data.missing).to.not.have.property('CONDITIONS')
+    })
 
     it('should join conditions except exclusions', () => {
-
         const licence = {
             licenceConditions: [
-                {id: 'INCLUDED_1', content: [{text: 'first included condition'}]},
-                {id: 'ATTENDSAMPLE', content: [{text: 'excluded condition'}]},
-                {id: 'INCLUDED_2', content: [{variable: 'second included condition'}]}
-            ]
-        };
-        const expected = 'viii. first included condition;\n\nix. second included condition;';
+                { id: 'INCLUDED_1', content: [{ text: 'first included condition' }] },
+                { id: 'ATTENDSAMPLE', content: [{ text: 'excluded condition' }] },
+                { id: 'INCLUDED_2', content: [{ variable: 'second included condition' }] },
+            ],
+        }
+        const expected = 'viii. first included condition;\n\nix. second included condition;'
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.CONDITIONS).to.eql(expected);
-        expect(data.missing).to.not.have.property('CONDITIONS');
-    });
+        expect(data.values.CONDITIONS).to.eql(expected)
+        expect(data.missing).to.not.have.property('CONDITIONS')
+    })
 
     it('should join PSS conditions only for inclusions', () => {
-
         const licence = {
             licenceConditions: [
-                {id: 'ATTENDSAMPLE', content: [{text: 'first PSS condition'}]},
-                {id: 'NOT_A_PSS_CONDITION', content: [{text: 'excluded condition'}]},
-                {id: 'ATTENDDEPENDENCY', content: [{variable: 'second PSS condition'}]}
-            ]
-        };
-        const expected = 'ix. first PSS condition;\n\nx. second PSS condition;';
+                { id: 'ATTENDSAMPLE', content: [{ text: 'first PSS condition' }] },
+                { id: 'NOT_A_PSS_CONDITION', content: [{ text: 'excluded condition' }] },
+                { id: 'ATTENDDEPENDENCY', content: [{ variable: 'second PSS condition' }] },
+            ],
+        }
+        const expected = 'ix. first PSS condition;\n\nx. second PSS condition;'
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.PSS).to.eql(expected);
-        expect(data.missing).to.not.have.property('PSS');
-    });
+        expect(data.values.PSS).to.eql(expected)
+        expect(data.missing).to.not.have.property('PSS')
+    })
 
     it('should skip placeholder when standard conditions only', () => {
-
         const licence = {
-            licenceConditions: {standard: {additionalConditionsRequired: 'No'}}
-        };
+            licenceConditions: { standard: { additionalConditionsRequired: 'No' } },
+        }
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.CONDITIONS).to.eql('');
-        expect(data.values.PSS).to.eql('');
-        expect(data.missing['CONDITIONS']).to.eql(displayNames['CONDITIONS']);
-        expect(data.missing['PSS']).to.eql(displayNames['PSS']);
-    });
+        expect(data.values.CONDITIONS).to.eql('')
+        expect(data.values.PSS).to.eql('')
+        expect(data.missing.CONDITIONS).to.eql(displayNames.CONDITIONS)
+        expect(data.missing.PSS).to.eql(displayNames.PSS)
+    })
 
     it('should skip placeholder when additional conditions empty', () => {
-
         const licence = {
-            licenceConditions: []
-        };
+            licenceConditions: [],
+        }
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.CONDITIONS).to.eql('');
-        expect(data.values.PSS).to.eql('');
-        expect(data.missing['CONDITIONS']).to.eql(displayNames['CONDITIONS']);
-        expect(data.missing['PSS']).to.eql(displayNames['PSS']);
-    });
+        expect(data.values.CONDITIONS).to.eql('')
+        expect(data.values.PSS).to.eql('')
+        expect(data.missing.CONDITIONS).to.eql(displayNames.CONDITIONS)
+        expect(data.missing.PSS).to.eql(displayNames.PSS)
+    })
 
     it('should take version number and date from approvedVersionDetails', () => {
         const approvedVersionDetails = {
             approvedVersion: 111,
-            timestamp: '123'
-        };
+            timestamp: '123',
+        }
 
-        const data = formatWith({approvedVersionDetails});
+        const data = formatWith({ approvedVersionDetails })
 
-        expect(data.values.VERSION_DATE).to.eql('123');
-        expect(data.values.VERSION_NUMBER).to.eql('111');
-        expect(data.missing).to.not.have.property('VERSION_DATE');
-        expect(data.missing).to.not.have.property('VERSION_NUMBER');
-    });
+        expect(data.values.VERSION_DATE).to.eql('123')
+        expect(data.values.VERSION_NUMBER).to.eql('111')
+        expect(data.missing).to.not.have.property('VERSION_DATE')
+        expect(data.missing).to.not.have.property('VERSION_NUMBER')
+    })
 
     it('should add name of decision maker', () => {
         const licence = {
             approval: {
                 release: {
-                    decisionMaker: 'first last'
-                }
-            }
-        };
+                    decisionMaker: 'first last',
+                },
+            },
+        }
 
-        const data = formatWith({licence: licence});
+        const data = formatWith({ licence })
 
-        expect(data.values.APPROVER).to.eql('first last');
-        expect(data.missing).to.not.have.property('APPROVER');
-    });
-});
+        expect(data.values.APPROVER).to.eql('first last')
+        expect(data.missing).to.not.have.property('APPROVER')
+    })
+})
 
 const allValuesEmpty = {
     CONDITIONS: '',
@@ -353,22 +355,22 @@ const allValuesEmpty = {
     VERSION_NUMBER: 'PLACEHOLDER',
     APPROVER: 'PLACEHOLDER',
     VARY_APPROVER: 'PLACEHOLDER',
-    CREATION_DATE: '01/01/2001'
-};
+    CREATION_DATE: '01/01/2001',
+}
 
 const displayNames = {
     document: {
         optional: {
             VERSION_DATE: 'Version date',
             VERSION_NUMBER: 'Version number',
-            APPROVER: 'Name of decision maker'
-        }
+            APPROVER: 'Name of decision maker',
+        },
     },
     conditions: {
         optional: {
             CONDITIONS: 'Additional conditions',
-            PSS: 'Post-sentence supervision conditions'
-        }
+            PSS: 'Post-sentence supervision conditions',
+        },
     },
     curfew: {
         optional: {
@@ -386,24 +388,24 @@ const displayNames = {
             CURFEW_TUE_FROM: 'Curfew Tuesday from',
             CURFEW_TUE_UNTIL: 'Curfew Tuesday until',
             CURFEW_WED_FROM: 'Curfew Wednesday from',
-            CURFEW_WED_UNTIL: 'Curfew Wednesday until'
-        }
+            CURFEW_WED_UNTIL: 'Curfew Wednesday until',
+        },
     },
     firstNight: {
         mandatory: {
             CURFEW_FIRST_FROM: 'Curfew first night from',
-            CURFEW_FIRST_UNTIL: 'Curfew first night until'
-        }
+            CURFEW_FIRST_UNTIL: 'Curfew first night until',
+        },
     },
     reporting: {
         mandatory: {
             REPORTING_AT: 'Reporting at',
-            REPORTING_ON: 'Reporting on'
+            REPORTING_ON: 'Reporting on',
         },
         optional: {
             REPORTING_ADDRESS: 'Reporting address',
-            REPORTING_NAME: 'Reporting name'
-        }
+            REPORTING_NAME: 'Reporting name',
+        },
     },
     sentence: {
         mandatory: {
@@ -418,16 +420,16 @@ const displayNames = {
             SENT_HDCAD: 'HDC approved date (HDCAD)',
             SENT_LED: 'Licence expiry date (LED)',
             SENT_SED: 'Sentence expiry date (SED)',
-            SENT_TUSED: 'Top-up supervision end date (TUSED)'
+            SENT_TUSED: 'Top-up supervision end date (TUSED)',
         },
         preferred: {
             OFF_CRO: 'CRO number',
-            OFF_PNC: 'PNC ID'
-        }
+            OFF_PNC: 'PNC ID',
+        },
     },
     varyApproval: {
         mandatoryPostRelease: {
-            VARY_APPROVER: 'Name of approver'
-        }
-    }
-};
+            VARY_APPROVER: 'Name of approver',
+        },
+    },
+}

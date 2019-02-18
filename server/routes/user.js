@@ -1,28 +1,32 @@
-const {asyncMiddleware} = require('../utils/middleware');
+const { asyncMiddleware } = require('../utils/middleware')
 
-module.exports = ({userService}) => router => {
+module.exports = ({ userService }) => router => {
+    router.get(
+        '/',
+        asyncMiddleware(async (req, res) => {
+            const [allRoles, allCaseLoads] = await Promise.all([
+                userService.getAllRoles(res.locals.token),
+                userService.getAllCaseLoads(res.locals.token),
+            ])
 
-    router.get('/', asyncMiddleware(async (req, res) => {
+            res.render(`user/admin`, { allRoles, allCaseLoads, user: req.user })
+        })
+    )
 
-        const [allRoles, allCaseLoads] = await Promise.all([
-            userService.getAllRoles(res.locals.token),
-            userService.getAllCaseLoads(res.locals.token)
-        ]);
+    router.post(
+        '/',
+        asyncMiddleware(async (req, res) => {
+            if (req.body.role !== req.user.role) {
+                await userService.setRole(req.body.role, req.user)
+            }
 
-        res.render(`user/admin`, {allRoles, allCaseLoads, user: req.user});
-    }));
+            if (req.body.caseLoad !== req.user.activeCaseLoad.caseLoadId) {
+                await userService.setActiveCaseLoad(req.body.caseLoad, req.user, res.locals.token)
+            }
 
-    router.post('/', asyncMiddleware(async (req, res) => {
-        if (req.body.role !== req.user.role) {
-            await userService.setRole(req.body.role, req.user);
-        }
+            res.redirect('/user')
+        })
+    )
 
-        if (req.body.caseLoad !== req.user.activeCaseLoad.caseLoadId) {
-            await userService.setActiveCaseLoad(req.body.caseLoad, req.user, res.locals.token);
-        }
-
-        res.redirect('/user');
-    }));
-
-    return router;
-};
+    return router
+}
