@@ -10,7 +10,7 @@ if (!version) {
 const dockerrun = {
     AWSEBDockerrunVersion: '1',
     Image: {
-        Name: `mojdigitalstudio/licences: ${version}`,
+        Name: `mojdigitalstudio/licences:${version}`,
         Update: 'true',
     },
     Ports: [{ ContainerPort: '3000' }],
