@@ -1,75 +1,73 @@
-const {getLicenceStatus} = require('../../server/utils/licenceStatus');
-const {taskStates} = require('../../server/services/config/taskStates');
+const { getLicenceStatus } = require('../../server/utils/licenceStatus')
+const { taskStates } = require('../../server/services/config/taskStates')
 
 describe('getLicenceStatus', () => {
-
     context('overall status', () => {
-
         const examples = [
             {
                 licence: {
                     stage: 'ELIGIBILITY',
-                    licence: 'anything'
+                    licence: 'anything',
                 },
-                postApproval: false
+                postApproval: false,
             },
             {
                 licence: {
                     stage: 'APPROVAL',
-                    licence: 'anything'
+                    licence: 'anything',
                 },
-                postApproval: false
+                postApproval: false,
             },
             {
                 licence: {
                     stage: 'DECIDED',
-                    licence: 'anything'
+                    licence: 'anything',
                 },
-                postApproval: true
+                postApproval: true,
             },
             {
                 licence: {
                     stage: 'MODIFIED',
-                    licence: 'anything'
+                    licence: 'anything',
                 },
-                postApproval: true
+                postApproval: true,
             },
             {
                 licence: {
                     stage: 'MODIFIED_APPROVAL',
-                    licence: 'anything'
+                    licence: 'anything',
                 },
-                postApproval: true
-            }
-        ];
+                postApproval: true,
+            },
+        ]
 
         examples.forEach(example => {
             it('should show licence stage', () => {
-                expect(getLicenceStatus(example.licence).stage).to.eql(example.licence.stage);
-            });
+                expect(getLicenceStatus(example.licence).stage).to.eql(example.licence.stage)
+            })
 
             it('should show post approval', () => {
-                expect(getLicenceStatus(example.licence).postApproval).to.eql(example.postApproval);
-            });
-        });
-    });
+                expect(getLicenceStatus(example.licence).postApproval).to.eql(example.postApproval)
+            })
+        })
+    })
 
     context('decisions', () => {
         it('should show no decisions when empty licence', () => {
-            const licence = {};
+            const licence = {}
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions).to.eql({});
-        });
+            expect(status.decisions).to.eql({})
+        })
 
         it('should show no decisions when empty licence.licence', () => {
-            const licence = {licence: {}};
+            const licence = { licence: {} }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions).to.eql({});
-        });
+            expect(status.decisions).to.eql({})
+        })
 
         it('should show true decisions when decision data is present for truth', () => {
             const licence = {
@@ -77,115 +75,115 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         suitability: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         exceptionalCircumstances: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         crdTime: {
-                            decision: 'Yes'
-                        }
+                            decision: 'Yes',
+                        },
                     },
                     proposedAddress: {
                         optOut: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         addressProposed: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         curfewAddress: {
                             occupier: {
-                                isOffender: 'Yes'
-                            }
-                        }
+                                isOffender: 'Yes',
+                            },
+                        },
                     },
                     curfew: {
                         curfewAddressReview: {
                             consent: 'Yes',
                             electricity: 'Yes',
-                            homeVisitConducted: 'Yes'
-                        }
+                            homeVisitConducted: 'Yes',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
                             specificArea: 'Yes',
                             town: 'blah',
-                            county: 'blah'
+                            county: 'blah',
                         },
                         bassAreaCheck: {
-                            bassAreaSuitable: 'Yes'
+                            bassAreaSuitable: 'Yes',
                         },
                         bassOffer: {
-                            bassAccepted: 'Yes'
-                        }
+                            bassAccepted: 'Yes',
+                        },
                     },
                     risk: {
                         riskManagement: {
                             planningActions: 'Yes',
                             awaitingInformation: 'Yes',
-                            proposedAddressSuitable: 'Yes'
-                        }
+                            proposedAddressSuitable: 'Yes',
+                        },
                     },
                     victim: {
                         victimLiaison: {
-                            decision: 'Yes'
-                        }
+                            decision: 'Yes',
+                        },
                     },
                     finalChecks: {
                         seriousOffence: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         onRemand: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         confiscationOrder: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         postpone: {
-                            decision: 'Yes'
-                        }
+                            decision: 'Yes',
+                        },
                     },
                     approval: {
                         release: {
-                            decision: 'Yes'
-                        }
-                    }
-                }
-            };
+                            decision: 'Yes',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.excluded).to.eql(true);
-            expect(status.decisions.insufficientTime).to.eql(true);
-            expect(status.decisions.unsuitableResult).to.eql(true);
-            expect(status.decisions.optedOut).to.eql(true);
-            expect(status.decisions.bassReferralNeeded).to.eql(true);
-            expect(status.decisions.bassAreaSpecified).to.eql(true);
-            expect(status.decisions.bassAreaSuitable).to.eql(true);
-            expect(status.decisions.bassAreaNotSuitable).to.eql(false);
-            expect(status.decisions.bassAccepted).to.eql('Yes');
-            expect(status.decisions.curfewAddressApproved).to.eql(true);
-            expect(status.decisions.curfewAddressRejected).to.eql(false);
-            expect(status.decisions.addressReviewFailed).to.eql(false);
-            expect(status.decisions.addressWithdrawn).to.eql(false);
-            expect(status.decisions.addressUnsuitable).to.eql(false);
-            expect(status.decisions.riskManagementNeeded).to.eql(true);
-            expect(status.decisions.awaitingRiskInformation).to.eql(true);
-            expect(status.decisions.victimLiaisonNeeded).to.eql(true);
-            expect(status.decisions.seriousOffence).to.eql(true);
-            expect(status.decisions.onRemand).to.eql(true);
-            expect(status.decisions.confiscationOrder).to.eql(true);
-            expect(status.decisions.finalChecksPass).to.eql(false);
-            expect(status.decisions.postponed).to.eql(true);
-            expect(status.decisions.approved).to.eql(true);
-            expect(status.decisions.refused).to.eql(false);
-            expect(status.decisions.dmRefused).to.eql(false);
-            expect(status.decisions.offenderIsMainOccupier).to.eql(true);
-        });
+            expect(status.decisions.excluded).to.eql(true)
+            expect(status.decisions.insufficientTime).to.eql(true)
+            expect(status.decisions.unsuitableResult).to.eql(true)
+            expect(status.decisions.optedOut).to.eql(true)
+            expect(status.decisions.bassReferralNeeded).to.eql(true)
+            expect(status.decisions.bassAreaSpecified).to.eql(true)
+            expect(status.decisions.bassAreaSuitable).to.eql(true)
+            expect(status.decisions.bassAreaNotSuitable).to.eql(false)
+            expect(status.decisions.bassAccepted).to.eql('Yes')
+            expect(status.decisions.curfewAddressApproved).to.eql(true)
+            expect(status.decisions.curfewAddressRejected).to.eql(false)
+            expect(status.decisions.addressReviewFailed).to.eql(false)
+            expect(status.decisions.addressWithdrawn).to.eql(false)
+            expect(status.decisions.addressUnsuitable).to.eql(false)
+            expect(status.decisions.riskManagementNeeded).to.eql(true)
+            expect(status.decisions.awaitingRiskInformation).to.eql(true)
+            expect(status.decisions.victimLiaisonNeeded).to.eql(true)
+            expect(status.decisions.seriousOffence).to.eql(true)
+            expect(status.decisions.onRemand).to.eql(true)
+            expect(status.decisions.confiscationOrder).to.eql(true)
+            expect(status.decisions.finalChecksPass).to.eql(false)
+            expect(status.decisions.postponed).to.eql(true)
+            expect(status.decisions.approved).to.eql(true)
+            expect(status.decisions.refused).to.eql(false)
+            expect(status.decisions.dmRefused).to.eql(false)
+            expect(status.decisions.offenderIsMainOccupier).to.eql(true)
+        })
 
         it('should show false decisions when decision data is present for false', () => {
             const licence = {
@@ -193,104 +191,106 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         suitability: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         crdTime: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     proposedAddress: {
                         optOut: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         curfewAddress: {
                             addresses: {
-                                addressLine1: 'something'
-                            }
-                        }
+                                addressLine1: 'something',
+                            },
+                        },
                     },
                     curfew: {
                         curfewAddressReview: {
                             consent: 'No',
                             electricity: 'Yes',
-                            homeVisitConducted: 'Yes'
-                        }
+                            homeVisitConducted: 'Yes',
+                        },
                     },
                     risk: {
                         riskManagement: {
                             planningActions: 'No',
                             awaitingInformation: 'No',
-                            proposedAddressSuitable: 'No'
-                        }
+                            proposedAddressSuitable: 'No',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
-                            bassRequested: 'No'
+                            bassRequested: 'No',
                         },
                         bassAreaCheck: {
-                            bassAreaSuitable: 'No'
+                            bassAreaSuitable: 'No',
                         },
                         bassOffer: {
-                            bassAccepted: 'No'
-                        }
+                            bassAccepted: 'No',
+                        },
                     },
                     finalChecks: {
                         seriousOffence: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         onRemand: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         confiscationOrder: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         postpone: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     approval: {
                         release: {
                             decision: 'No',
-                            reason: ['noAvailableAddress', 'addressUnsuitable', 'outOfTime', 'insufficientTime']
-                        }
-                    }
-                }
-            };
+                            reason: ['noAvailableAddress', 'addressUnsuitable', 'outOfTime', 'insufficientTime'],
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.excluded).to.eql(false);
-            expect(status.decisions.insufficientTime).to.eql(false);
-            expect(status.decisions.unsuitableResult).to.eql(false);
-            expect(status.decisions.optedOut).to.eql(false);
-            expect(status.decisions.bassReferralNeeded).to.eql(false);
-            expect(status.decisions.bassAreaSpecified).to.eql(true);
-            expect(status.decisions.bassAreaSuitable).to.eql(false);
-            expect(status.decisions.bassAreaNotSuitable).to.eql(true);
-            expect(status.decisions.bassAccepted).to.eql('No');
-            expect(status.decisions.curfewAddressApproved).to.eql(false);
-            expect(status.decisions.curfewAddressRejected).to.eql(true);
-            expect(status.decisions.addressReviewFailed).to.eql(true);
-            expect(status.decisions.addressWithdrawn).to.eql(false);
-            expect(status.decisions.addressUnsuitable).to.eql(true);
-            expect(status.decisions.riskManagementNeeded).to.eql(false);
-            expect(status.decisions.awaitingRiskInformation).to.eql(false);
-            expect(status.decisions.victimLiaisonNeeded).to.eql(false);
-            expect(status.decisions.seriousOffence).to.eql(false);
-            expect(status.decisions.onRemand).to.eql(false);
-            expect(status.decisions.confiscationOrder).to.eql(false);
-            expect(status.decisions.finalChecksPass).to.eql(true);
-            expect(status.decisions.postponed).to.eql(false);
-            expect(status.decisions.approved).to.eql(false);
-            expect(status.decisions.refused).to.eql(true);
-            expect(status.decisions.dmRefused).to.eql(true);
-            expect(status.decisions.finalChecksRefused).to.eql(false);
-            expect(status.decisions.offenderIsMainOccupier).to.eql(false);
-            expect(status.decisions.refusalReason).to.eql('No available address, address unsuitable, out of time, insufficient time');
-        });
+            expect(status.decisions.excluded).to.eql(false)
+            expect(status.decisions.insufficientTime).to.eql(false)
+            expect(status.decisions.unsuitableResult).to.eql(false)
+            expect(status.decisions.optedOut).to.eql(false)
+            expect(status.decisions.bassReferralNeeded).to.eql(false)
+            expect(status.decisions.bassAreaSpecified).to.eql(true)
+            expect(status.decisions.bassAreaSuitable).to.eql(false)
+            expect(status.decisions.bassAreaNotSuitable).to.eql(true)
+            expect(status.decisions.bassAccepted).to.eql('No')
+            expect(status.decisions.curfewAddressApproved).to.eql(false)
+            expect(status.decisions.curfewAddressRejected).to.eql(true)
+            expect(status.decisions.addressReviewFailed).to.eql(true)
+            expect(status.decisions.addressWithdrawn).to.eql(false)
+            expect(status.decisions.addressUnsuitable).to.eql(true)
+            expect(status.decisions.riskManagementNeeded).to.eql(false)
+            expect(status.decisions.awaitingRiskInformation).to.eql(false)
+            expect(status.decisions.victimLiaisonNeeded).to.eql(false)
+            expect(status.decisions.seriousOffence).to.eql(false)
+            expect(status.decisions.onRemand).to.eql(false)
+            expect(status.decisions.confiscationOrder).to.eql(false)
+            expect(status.decisions.finalChecksPass).to.eql(true)
+            expect(status.decisions.postponed).to.eql(false)
+            expect(status.decisions.approved).to.eql(false)
+            expect(status.decisions.refused).to.eql(true)
+            expect(status.decisions.dmRefused).to.eql(true)
+            expect(status.decisions.finalChecksRefused).to.eql(false)
+            expect(status.decisions.offenderIsMainOccupier).to.eql(false)
+            expect(status.decisions.refusalReason).to.eql(
+                'No available address, address unsuitable, out of time, insufficient time'
+            )
+        })
 
         it('should show refusal reason if not in array', () => {
             const licence = {
@@ -298,137 +298,137 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         suitability: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         crdTime: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     proposedAddress: {
                         optOut: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         curfewAddress: {
                             addresses: {
-                                addressLine1: 'something'
-                            }
-                        }
+                                addressLine1: 'something',
+                            },
+                        },
                     },
                     curfew: {
                         curfewAddressReview: {
                             consent: 'No',
                             electricity: 'Yes',
-                            homeVisitConducted: 'Yes'
-                        }
+                            homeVisitConducted: 'Yes',
+                        },
                     },
                     risk: {
                         riskManagement: {
                             planningActions: 'Yes',
                             awaitingInformation: 'Yes',
-                            proposedAddressSuitable: 'Yes'
-                        }
+                            proposedAddressSuitable: 'Yes',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
-                            bassRequested: 'No'
+                            bassRequested: 'No',
                         },
                         bassAreaCheck: {
-                            bassAreaSuitable: 'No'
+                            bassAreaSuitable: 'No',
                         },
                         bassOffer: {
-                            bassAccepted: 'No'
-                        }
+                            bassAccepted: 'No',
+                        },
                     },
                     finalChecks: {
                         seriousOffence: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         onRemand: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         confiscationOrder: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         postpone: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     approval: {
                         release: {
                             decision: 'No',
-                            reason: 'noAvailableAddress'
-                        }
-                    }
-                }
-            };
+                            reason: 'noAvailableAddress',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
-            expect(status.decisions.refusalReason).to.eql('No available address');
-        });
-    });
+            const status = getLicenceStatus(licence)
+            expect(status.decisions.refusalReason).to.eql('No available address')
+        })
+    })
 
     context('tasks', () => {
         it('should show all tasks UNSTARTED when empty licence', () => {
-            const licence = {};
+            const licence = {}
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.exclusion).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.crdTime).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.suitability).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.eligibility).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.optOut).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.bassRequest).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.bassOffer).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.bassAddress).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.curfewHours).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.licenceConditions).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.riskManagement).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.reportingInstructions).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.seriousOffenceCheck).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.onRemandCheck).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.confiscationOrderCheck).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.finalChecks).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.approval).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED);
-        });
+            expect(status.tasks.exclusion).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.crdTime).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.suitability).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.eligibility).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.optOut).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.bassRequest).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.bassOffer).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.bassAddress).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.curfewHours).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.licenceConditions).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.riskManagement).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.reportingInstructions).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.seriousOffenceCheck).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.onRemandCheck).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.confiscationOrderCheck).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.finalChecks).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.approval).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED)
+        })
 
         it('should show tasks UNSTARTED when task data missing', () => {
             const licence = {
                 stage: 'APPROVAL',
-                licence: {}
-            };
+                licence: {},
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.exclusion).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.crdTime).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.suitability).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.eligibility).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.optOut).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.bassRequest).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.bassOffer).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.bassAddress).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.curfewHours).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.licenceConditions).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.riskManagement).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.reportingInstructions).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.seriousOffenceCheck).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.onRemandCheck).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.confiscationOrderCheck).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.finalChecks).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.approval).to.eql(taskStates.UNSTARTED);
-            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED);
-        });
+            expect(status.tasks.exclusion).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.crdTime).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.suitability).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.eligibility).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.optOut).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.bassRequest).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.bassOffer).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.bassAddress).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.curfewHours).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.licenceConditions).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.riskManagement).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.reportingInstructions).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.seriousOffenceCheck).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.onRemandCheck).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.confiscationOrderCheck).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.finalChecks).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.approval).to.eql(taskStates.UNSTARTED)
+            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED)
+        })
 
         it('should show tasks STARTED when task data incomplete for tasks that can be STARTED', () => {
             const licence = {
@@ -436,59 +436,59 @@ describe('getLicenceStatus', () => {
                 licence: {
                     proposedAddress: {
                         curfewAddress: {
-                            addressLine1: 'line'
-                        }
+                            addressLine1: 'line',
+                        },
                     },
                     curfew: {
                         curfewAddressReview: {
                             consent: 'Yes',
-                            homeVisitConducted: 'Yes'
-                        }
+                            homeVisitConducted: 'Yes',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
                             town: 'blah',
-                            county: 'blah'
+                            county: 'blah',
                         },
                         bassAreaCheck: {
-                            bassAreaSuitable: 'Yes'
+                            bassAreaSuitable: 'Yes',
                         },
                         bassOffer: {
                             bassAccepted: 'Yes',
-                            addressLine1: '1'
-                        }
+                            addressLine1: '1',
+                        },
                     },
                     licenceConditions: {
                         standard: {
-                            additionalConditionsRequired: 'Yes'
-                        }
+                            additionalConditionsRequired: 'Yes',
+                        },
                     },
                     risk: {
                         riskManagement: {
-                            planningActions: {}
-                        }
+                            planningActions: {},
+                        },
                     },
                     reporting: {
-                        reportingInstructions: {}
+                        reportingInstructions: {},
                     },
                     finalChecks: {
                         seriousOffence: {
-                            decision: 'No'
-                        }
-                    }
-                }
-            };
+                            decision: 'No',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED);
-            expect(status.tasks.bassAddress).to.eql(taskStates.STARTED);
-            expect(status.tasks.curfewAddressReview).to.eql(taskStates.STARTED);
-            expect(status.tasks.licenceConditions).to.eql(taskStates.STARTED);
-            expect(status.tasks.riskManagement).to.eql(taskStates.STARTED);
-            expect(status.tasks.finalChecks).to.eql(taskStates.STARTED);
-        });
+            expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED)
+            expect(status.tasks.bassAddress).to.eql(taskStates.STARTED)
+            expect(status.tasks.curfewAddressReview).to.eql(taskStates.STARTED)
+            expect(status.tasks.licenceConditions).to.eql(taskStates.STARTED)
+            expect(status.tasks.riskManagement).to.eql(taskStates.STARTED)
+            expect(status.tasks.finalChecks).to.eql(taskStates.STARTED)
+        })
 
         it('should show tasks DONE when task data complete', () => {
             const licence = {
@@ -499,45 +499,45 @@ describe('getLicenceStatus', () => {
                     eligibility: {
                         excluded: {
                             decision: 'Yes',
-                            reason: 'blah'
+                            reason: 'blah',
                         },
                         suitability: {
                             decision: 'Yes',
-                            reason: 'blah'
+                            reason: 'blah',
                         },
                         exceptionalCircumstances: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         crdTime: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     proposedAddress: {
                         optOut: {
                             decision: 'Yes',
-                            reason: 'blah'
+                            reason: 'blah',
                         },
                         curfewAddress: {
                             addressLine1: 'line',
-                            occupier: 'occupier'
-                        }
+                            occupier: 'occupier',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
                             town: 'blah',
-                            county: 'blah'
+                            county: 'blah',
                         },
                         bassAreaCheck: {
-                            bassAreaSuitable: 'Yes'
+                            bassAreaSuitable: 'Yes',
                         },
                         bassOffer: {
                             bassAccepted: 'Yes',
                             addressLine1: '1',
                             addressTown: '1',
                             postCode: '1',
-                            telephone: '1'
-                        }
+                            telephone: '1',
+                        },
                     },
                     curfew: {
                         curfewHours: 'anything',
@@ -545,25 +545,25 @@ describe('getLicenceStatus', () => {
                             cautionedAgainstResident: 'Yes',
                             consent: 'Yes',
                             electricity: 'Yes',
-                            homeVisitConducted: 'Yes'
-                        }
+                            homeVisitConducted: 'Yes',
+                        },
                     },
                     licenceConditions: {
                         standard: {
-                            additionalConditionsRequired: 'No'
-                        }
+                            additionalConditionsRequired: 'No',
+                        },
                     },
                     risk: {
                         riskManagement: {
                             planningActions: 'anything',
                             awaitingInformation: 'No',
-                            proposedAddressSuitable: 'Yes'
-                        }
+                            proposedAddressSuitable: 'Yes',
+                        },
                     },
                     victim: {
                         victimLiaison: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     reporting: {
                         reportingInstructions: {
@@ -571,56 +571,56 @@ describe('getLicenceStatus', () => {
                             buildingAndStreet1: 1,
                             townOrCity: 2,
                             postcode: 3,
-                            telephone: 4
-                        }
+                            telephone: 4,
+                        },
                     },
                     finalChecks: {
                         seriousOffence: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         onRemand: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         confiscationOrder: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         postpone: {
-                            decision: 'Yes'
-                        }
+                            decision: 'Yes',
+                        },
                     },
                     approval: {
                         release: {
-                            decision: 'Yes'
-                        }
-                    }
-                }
-            };
+                            decision: 'Yes',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.exclusion).to.eql(taskStates.DONE);
-            expect(status.tasks.crdTime).to.eql(taskStates.DONE);
-            expect(status.tasks.suitability).to.eql(taskStates.DONE);
-            expect(status.tasks.eligibility).to.eql(taskStates.DONE);
-            expect(status.tasks.optOut).to.eql(taskStates.DONE);
-            expect(status.tasks.bassRequest).to.eql(taskStates.DONE);
-            expect(status.tasks.bassAreaCheck).to.eql(taskStates.DONE);
-            expect(status.tasks.bassOffer).to.eql(taskStates.DONE);
-            expect(status.tasks.bassAddress).to.eql(taskStates.DONE);
-            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
-            expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE);
-            expect(status.tasks.curfewHours).to.eql(taskStates.DONE);
-            expect(status.tasks.licenceConditions).to.eql(taskStates.DONE);
-            expect(status.tasks.riskManagement).to.eql(taskStates.DONE);
-            expect(status.tasks.reportingInstructions).to.eql(taskStates.DONE);
-            expect(status.tasks.seriousOffenceCheck).to.eql(taskStates.DONE);
-            expect(status.tasks.onRemandCheck).to.eql(taskStates.DONE);
-            expect(status.tasks.confiscationOrderCheck).to.eql(taskStates.DONE);
-            expect(status.tasks.finalChecks).to.eql(taskStates.DONE);
-            expect(status.tasks.approval).to.eql(taskStates.DONE);
-            expect(status.tasks.createLicence).to.eql(taskStates.DONE);
-        });
-    });
+            expect(status.tasks.exclusion).to.eql(taskStates.DONE)
+            expect(status.tasks.crdTime).to.eql(taskStates.DONE)
+            expect(status.tasks.suitability).to.eql(taskStates.DONE)
+            expect(status.tasks.eligibility).to.eql(taskStates.DONE)
+            expect(status.tasks.optOut).to.eql(taskStates.DONE)
+            expect(status.tasks.bassRequest).to.eql(taskStates.DONE)
+            expect(status.tasks.bassAreaCheck).to.eql(taskStates.DONE)
+            expect(status.tasks.bassOffer).to.eql(taskStates.DONE)
+            expect(status.tasks.bassAddress).to.eql(taskStates.DONE)
+            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE)
+            expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE)
+            expect(status.tasks.curfewHours).to.eql(taskStates.DONE)
+            expect(status.tasks.licenceConditions).to.eql(taskStates.DONE)
+            expect(status.tasks.riskManagement).to.eql(taskStates.DONE)
+            expect(status.tasks.reportingInstructions).to.eql(taskStates.DONE)
+            expect(status.tasks.seriousOffenceCheck).to.eql(taskStates.DONE)
+            expect(status.tasks.onRemandCheck).to.eql(taskStates.DONE)
+            expect(status.tasks.confiscationOrderCheck).to.eql(taskStates.DONE)
+            expect(status.tasks.finalChecks).to.eql(taskStates.DONE)
+            expect(status.tasks.approval).to.eql(taskStates.DONE)
+            expect(status.tasks.createLicence).to.eql(taskStates.DONE)
+        })
+    })
 
     context('APPROVAL', () => {
         it('should account for refusal from ca as well as dm', () => {
@@ -629,64 +629,61 @@ describe('getLicenceStatus', () => {
                 licence: {
                     finalChecks: {
                         seriousOffence: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         onRemand: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         confiscationOrder: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         postpone: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         refusal: {
-                            decision: 'Yes'
-                        }
+                            decision: 'Yes',
+                        },
                     },
                     approval: {
                         release: {
-                            decision: 'Yes'
-                        }
-                    }
-                }
-            };
+                            decision: 'Yes',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.refused).to.eql(true);
-            expect(status.decisions.finalChecksRefused).to.eql(true);
-            expect(status.decisions.dmRefused).to.eql(false);
-        });
-    });
+            expect(status.decisions.refused).to.eql(true)
+            expect(status.decisions.finalChecksRefused).to.eql(true)
+            expect(status.decisions.dmRefused).to.eql(false)
+        })
+    })
 
     context('PROCESSING_RO', () => {
         it('should show licence conditions data', () => {
-
             const licence = {
                 stage: 'PROCESSING_RO',
                 licence: {
                     licenceConditions: {
                         standard: {
-                            additionalConditionsRequired: 'Yes'
+                            additionalConditionsRequired: 'Yes',
                         },
                         additional: {
                             1: {},
-                            2: {}
+                            2: {},
                         },
-                        bespoke: [
-                            1, 2, 3, 4
-                        ]
-                    }
-                }
-            };
+                        bespoke: [1, 2, 3, 4],
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.standardOnly).to.eql(false);
-            expect(status.decisions.additional).to.eql(2);
-            expect(status.decisions.bespoke).to.eql(4);
-        });
+            expect(status.decisions.standardOnly).to.eql(false)
+            expect(status.decisions.additional).to.eql(2)
+            expect(status.decisions.bespoke).to.eql(4)
+        })
 
         it('should show address review APPROVED when consent, electricity and curfewAddressApproved are Yes', () => {
             const licence = {
@@ -694,29 +691,29 @@ describe('getLicenceStatus', () => {
                 licence: {
                     proposedAddress: {
                         curfewAddress: {
-                            addressLine1: 'address'
-                        }
+                            addressLine1: 'address',
+                        },
                     },
                     curfew: {
                         curfewHours: 'anything',
                         curfewAddressReview: {
                             consent: 'Yes',
                             electricity: 'Yes',
-                            homeVisitConducted: 'No'
-                        }
+                            homeVisitConducted: 'No',
+                        },
                     },
                     risk: {
                         riskManagement: {
-                            proposedAddressSuitable: 'Yes'
-                        }
-                    }
-                }
-            };
+                            proposedAddressSuitable: 'Yes',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.curfewAddressApproved).to.eql(true);
-        });
+            expect(status.decisions.curfewAddressApproved).to.eql(true)
+        })
 
         it('should show address review WITHDRAWN when in rejections list', () => {
             const licence = {
@@ -724,35 +721,37 @@ describe('getLicenceStatus', () => {
                 licence: {
                     proposedAddress: {
                         curfewAddress: {},
-                        rejections: [{
-                            address: {
-                                addressLine1: 'line1'
+                        rejections: [
+                            {
+                                address: {
+                                    addressLine1: 'line1',
+                                },
+                                addressReview: {
+                                    curfewAddressReview: {
+                                        consent: 'Yes',
+                                        electricity: 'Yes',
+                                        homeVisitConducted: 'Yes',
+                                    },
+                                },
+                                withdrawalReason: 'withdrawAddress',
                             },
-                            addressReview: {
-                                curfewAddressReview: {
-                                    consent: 'Yes',
-                                    electricity: 'Yes',
-                                    homeVisitConducted: 'Yes'
-                                }
-                            },
-                            withdrawalReason: 'withdrawAddress'
-                        }]
+                        ],
                     },
                     risk: {
                         riskManagement: {
-                            proposedAddressSuitable: 'Yes'
-                        }
+                            proposedAddressSuitable: 'Yes',
+                        },
                     },
                     curfew: {
-                        curfewHours: 'anything'
-                    }
-                }
-            };
+                        curfewHours: 'anything',
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.addressWithdrawn).to.eql(true);
-        });
+            expect(status.decisions.addressWithdrawn).to.eql(true)
+        })
 
         it('should show address review REJECTED when address is not suitable', () => {
             const licence = {
@@ -760,31 +759,31 @@ describe('getLicenceStatus', () => {
                 licence: {
                     proposedAddress: {
                         curfewAddress: {
-                            addressLine1: 'address'
-                        }
+                            addressLine1: 'address',
+                        },
                     },
                     curfew: {
                         curfewHours: 'anything',
                         curfewAddressReview: {
                             consent: 'Yes',
                             electricity: 'Yes',
-                            homeVisitConducted: 'No'
-                        }
+                            homeVisitConducted: 'No',
+                        },
                     },
                     risk: {
                         riskManagement: {
-                            proposedAddressSuitable: 'No'
-                        }
-                    }
-                }
-            };
+                            proposedAddressSuitable: 'No',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.curfewAddressRejected).to.eql(true);
-            expect(status.decisions.addressReviewFailed).to.eql(false);
-            expect(status.decisions.addressUnsuitable).to.eql(true);
-        });
+            expect(status.decisions.curfewAddressRejected).to.eql(true)
+            expect(status.decisions.addressReviewFailed).to.eql(false)
+            expect(status.decisions.addressUnsuitable).to.eql(true)
+        })
 
         it('should show address review UNSTARTED when there are active addresses', () => {
             const licence = {
@@ -796,46 +795,45 @@ describe('getLicenceStatus', () => {
                                 {
                                     consent: 'Yes',
                                     electricity: 'Yes',
-                                    homeVisitConducted: 'No'
+                                    homeVisitConducted: 'No',
                                 },
                                 {
-                                    addressLine1: 'a'
-                                }
-                            ]
+                                    addressLine1: 'a',
+                                },
+                            ],
                         },
                         risk: {
                             riskManagement: {
-                                proposedAddressSuitable: 'No'
-                            }
-                        }
-
+                                proposedAddressSuitable: 'No',
+                            },
+                        },
                     },
                     curfew: {
-                        curfewHours: 'anything'
-                    }
-                }
-            };
+                        curfewHours: 'anything',
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED);
-        });
+            expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED)
+        })
 
         it('should show bassAreaCheck UNSTARTED when empty', () => {
             const licence = {
                 stage: 'PROCESSING_RO',
                 licence: {
                     bassReferral: {
-                        bassAreaCheck: {}
-                    }
-                }
-            };
+                        bassAreaCheck: {},
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED);
-            expect(status.decisions.bassAreaSuitable).to.eql(undefined);
-        });
+            expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED)
+            expect(status.decisions.bassAreaSuitable).to.eql(undefined)
+        })
 
         it('should show bassAreaCheck STARTED when unsuitable and no reason', () => {
             const licence = {
@@ -843,17 +841,17 @@ describe('getLicenceStatus', () => {
                 licence: {
                     bassReferral: {
                         bassAreaCheck: {
-                            bassAreaSuitable: 'No'
-                        }
-                    }
-                }
-            };
+                            bassAreaSuitable: 'No',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.bassAreaCheck).to.eql(taskStates.STARTED);
-            expect(status.decisions.bassAreaSuitable).to.eql(false);
-        });
+            expect(status.tasks.bassAreaCheck).to.eql(taskStates.STARTED)
+            expect(status.decisions.bassAreaSuitable).to.eql(false)
+        })
 
         it('should show bassAreaCheck DONE when unsuitable with reason', () => {
             const licence = {
@@ -862,18 +860,18 @@ describe('getLicenceStatus', () => {
                     bassReferral: {
                         bassAreaCheck: {
                             bassAreaSuitable: 'No',
-                            bassAreaReason: 'reason'
-                        }
-                    }
-                }
-            };
+                            bassAreaReason: 'reason',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.bassAreaCheck).to.eql(taskStates.DONE);
-            expect(status.decisions.bassAreaNotSuitable).to.eql(true);
-        });
-    });
+            expect(status.tasks.bassAreaCheck).to.eql(taskStates.DONE)
+            expect(status.decisions.bassAreaNotSuitable).to.eql(true)
+        })
+    })
 
     context('ELIGIBILITY', () => {
         it('should show unsuitableResult true when unsuitable and no exceptional circumstances', () => {
@@ -882,25 +880,25 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         suitability: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         exceptionalCircumstances: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         crdTime: {
-                            decision: 'Yes'
-                        }
-                    }
-                }
-            };
+                            decision: 'Yes',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.unsuitableResult).to.eql(true);
-        });
+            expect(status.decisions.unsuitableResult).to.eql(true)
+        })
 
         it('should show NOT unsuitableResult true when unsuitable and there are exceptional circumstances', () => {
             const licence = {
@@ -908,25 +906,25 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         suitability: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         exceptionalCircumstances: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         crdTime: {
-                            decision: 'Yes'
-                        }
-                    }
-                }
-            };
+                            decision: 'Yes',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.unsuitableResult).to.eql(false);
-        });
+            expect(status.decisions.unsuitableResult).to.eql(false)
+        })
 
         it('should show eligible when eligibility decisions false', () => {
             const licence = {
@@ -934,22 +932,22 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         suitability: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         crdTime: {
-                            decision: 'No'
-                        }
-                    }
-                }
-            };
+                            decision: 'No',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.eligible).to.eql(true);
-        });
+            expect(status.decisions.eligible).to.eql(true)
+        })
 
         it('should show NOT eligible when eligibility decision true', () => {
             const licence = {
@@ -957,25 +955,25 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         suitability: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         exceptionalCircumstances: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         crdTime: {
-                            decision: 'No'
-                        }
-                    }
-                }
-            };
+                            decision: 'No',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.eligible).to.eql(false);
-        });
+            expect(status.decisions.eligible).to.eql(false)
+        })
 
         it('should show eligible when unsuitable but exceptional circumstances', () => {
             const licence = {
@@ -983,42 +981,41 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         suitability: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         exceptionalCircumstances: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         crdTime: {
-                            decision: 'No'
-                        }
-                    }
-                }
-            };
+                            decision: 'No',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.eligible).to.eql(true);
-        });
-    });
+            expect(status.decisions.eligible).to.eql(true)
+        })
+    })
 
     context('Post-decision', () => {
-
         it('should show createLicence task UNSTARTED when no approved version', () => {
             const licence = {
                 stage: 'DECIDED',
                 version: 1,
                 licence: {
-                    notEmpty: true
-                }
-            };
+                    notEmpty: true,
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED);
-        });
+            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED)
+        })
 
         it('should show createLicence task UNSTARTED when working version higher than approved version', () => {
             const licence = {
@@ -1026,14 +1023,14 @@ describe('getLicenceStatus', () => {
                 version: 2,
                 approvedVersion: 1,
                 licence: {
-                    notEmpty: true
-                }
-            };
+                    notEmpty: true,
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED);
-        });
+            expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED)
+        })
 
         it('should show createLicence task DONE when working version is the same as approved version', () => {
             const licence = {
@@ -1041,15 +1038,15 @@ describe('getLicenceStatus', () => {
                 version: 2,
                 approvedVersion: 2,
                 licence: {
-                    notEmpty: true
-                }
-            };
+                    notEmpty: true,
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.createLicence).to.eql(taskStates.DONE);
-        });
-    });
+            expect(status.tasks.createLicence).to.eql(taskStates.DONE)
+        })
+    })
 
     context('Eligibility', () => {
         it('should show eligibility DONE when excluded is YES', () => {
@@ -1058,17 +1055,16 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'Yes'
-                        }
+                            decision: 'Yes',
+                        },
+                    },
+                },
+            }
 
-                    }
-                }
-            };
+            const status = getLicenceStatus(licence)
 
-            const status = getLicenceStatus(licence);
-
-            expect(status.tasks.eligibility).to.eql(taskStates.DONE);
-        });
+            expect(status.tasks.eligibility).to.eql(taskStates.DONE)
+        })
 
         it('should show eligibility DONE when (un)suitabililty is YES and exceptionalCircumstances is answered', () => {
             const licence = {
@@ -1076,22 +1072,22 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         suitability: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
                         exceptionalCircumstances: {
-                            decision: 'No'
-                        }
-                    }
-                }
-            };
+                            decision: 'No',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.eligibility).to.eql(taskStates.DONE);
-        });
+            expect(status.tasks.eligibility).to.eql(taskStates.DONE)
+        })
 
         it('should show eligibility STARTED when (un)suitabililty is YES and exceptionalCircumstances missing', () => {
             const licence = {
@@ -1099,20 +1095,20 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         suitability: {
-                            decision: 'Yes'
+                            decision: 'Yes',
                         },
-                        exceptionalCircumstances: {}
-                    }
-                }
-            };
+                        exceptionalCircumstances: {},
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.eligibility).to.eql(taskStates.STARTED);
-        });
+            expect(status.tasks.eligibility).to.eql(taskStates.STARTED)
+        })
 
         it('should show eligibility STARTED when (un)suitabililty is No and excluded is No but no crdTime', () => {
             const licence = {
@@ -1120,19 +1116,19 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         suitability: {
-                            decision: 'No'
-                        }
-                    }
-                }
-            };
+                            decision: 'No',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.eligibility).to.eql(taskStates.STARTED);
-        });
+            expect(status.tasks.eligibility).to.eql(taskStates.STARTED)
+        })
 
         it('should show eligibility DONE when suitability is No and excluded is No but and complete crdTime', () => {
             const licence = {
@@ -1140,56 +1136,58 @@ describe('getLicenceStatus', () => {
                 licence: {
                     eligibility: {
                         excluded: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         suitability: {
-                            decision: 'No'
+                            decision: 'No',
                         },
                         crdTime: {
                             decision: 'Yes',
-                            dmApproval: 'No'
-                        }
-                    }
-                }
-            };
+                            dmApproval: 'No',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.eligibility).to.eql(taskStates.DONE);
-        });
-    });
+            expect(status.tasks.eligibility).to.eql(taskStates.DONE)
+        })
+    })
 
     context('Eligibility - Proposed Address', () => {
-
         it('should show curfew address DONE when opted out', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
-                licence: {proposedAddress: {optOut: {decision: 'Yes'}}}
-            };
+                licence: { proposedAddress: { optOut: { decision: 'Yes' } } },
+            }
 
-            const status = getLicenceStatus(licence);
-            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
-        });
+            const status = getLicenceStatus(licence)
+            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE)
+        })
 
         it('should show curfew address DONE when bass referral needed', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
-                licence: {proposedAddress: {addressProposed: {decision: 'No'}}, bassReferral: {bassRequest: {bassRequested: 'Yes'}}}
-            };
+                licence: {
+                    proposedAddress: { addressProposed: { decision: 'No' } },
+                    bassReferral: { bassRequest: { bassRequested: 'Yes' } },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
-            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
-        });
+            const status = getLicenceStatus(licence)
+            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE)
+        })
 
         it('should show curfew address UNSTARTED when no addresses', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
-                licence: {proposedAddress: {}}
-            };
+                licence: { proposedAddress: {} },
+            }
 
-            const status = getLicenceStatus(licence);
-            expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED);
-        });
+            const status = getLicenceStatus(licence)
+            expect(status.tasks.curfewAddress).to.eql(taskStates.UNSTARTED)
+        })
 
         it('should show curfew address DONE when minimum fields not empty', () => {
             const licence = {
@@ -1201,15 +1199,15 @@ describe('getLicenceStatus', () => {
                             addressTown: 'b',
                             postCode: 'c',
                             telephone: 'd',
-                            cautionedAgainstResident: 'e'
-                        }
-                    }
-                }
-            };
+                            cautionedAgainstResident: 'e',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
-            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE);
-        });
+            const status = getLicenceStatus(licence)
+            expect(status.tasks.curfewAddress).to.eql(taskStates.DONE)
+        })
 
         it('should show curfew address STARTED if any of minimum fields empty', () => {
             const licence = {
@@ -1221,48 +1219,47 @@ describe('getLicenceStatus', () => {
                             addressTown: 'b',
                             postCode: 'c',
                             telephone: 'd',
-                            cautionedAgainstResident: 'e'
-                        }
-                    }
-                }
-            };
+                            cautionedAgainstResident: 'e',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
-            expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED);
-        });
-    });
+            const status = getLicenceStatus(licence)
+            expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED)
+        })
+    })
 
     context('bass', () => {
-
         it('should show bassWithdrawn when current request empty and last request withdrawn', () => {
             const licence = {
                 stage: 'PROCESSING_CA',
                 licence: {
                     proposedAddress: {
                         addressProposed: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
-                            specificArea: 'Yes'
-                        }
+                            specificArea: 'Yes',
+                        },
                     },
                     bassRejections: [
                         {
                             withdrawal: 'withdrawal reason',
-                            bassRequest: 'withdrawn request'
-                        }
-                    ]
-                }
-            };
+                            bassRequest: 'withdrawn request',
+                        },
+                    ],
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.bassWithdrawn).to.eql(true);
-            expect(status.decisions.bassWithdrawalReason).to.eql('withdrawal reason');
-        });
+            expect(status.decisions.bassWithdrawn).to.eql(true)
+            expect(status.decisions.bassWithdrawalReason).to.eql('withdrawal reason')
+        })
 
         it('should not show bassWithdrawn when current request not empty and last request withdrawn', () => {
             const licence = {
@@ -1270,28 +1267,28 @@ describe('getLicenceStatus', () => {
                 licence: {
                     proposedAddress: {
                         addressProposed: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
-                            proposedTown: 'not withdrawn'
-                        }
+                            proposedTown: 'not withdrawn',
+                        },
                     },
                     bassRejections: [
                         {
                             withdrawal: 'withdrawal reason',
-                            bassRequest: 'withdrawn request'
-                        }
-                    ]
-                }
-            };
+                            bassRequest: 'withdrawn request',
+                        },
+                    ],
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.bassWithdrawn).to.eql(false);
-        });
+            expect(status.decisions.bassWithdrawn).to.eql(false)
+        })
 
         it('should not show bassWithdrawn when last request not withdrawn', () => {
             const licence = {
@@ -1299,26 +1296,26 @@ describe('getLicenceStatus', () => {
                 licence: {
                     proposedAddress: {
                         addressProposed: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
-                            bassRequested: 'Yes'
-                        }
+                            bassRequested: 'Yes',
+                        },
                     },
                     bassRejections: [
                         {
-                            bassRequest: 'withdrawn request'
-                        }
-                    ]
-                }
-            };
+                            bassRequest: 'withdrawn request',
+                        },
+                    ],
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.decisions.bassWithdrawn).to.eql(false);
-        });
+            expect(status.decisions.bassWithdrawn).to.eql(false)
+        })
 
         it('should show bassAreaCheck done for no specific are only when seen by RO', () => {
             const licence = {
@@ -1326,25 +1323,25 @@ describe('getLicenceStatus', () => {
                 licence: {
                     proposedAddress: {
                         addressProposed: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
-                            specificArea: 'No'
+                            specificArea: 'No',
                         },
                         bassAreaCheck: {
-                            bassAreaCheckSeen: 'true'
-                        }
-                    }
-                }
-            };
+                            bassAreaCheckSeen: 'true',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.bassAreaCheck).to.eql('DONE');
-        });
+            expect(status.tasks.bassAreaCheck).to.eql('DONE')
+        })
 
         it('should show bassAreaCheck unstarted for no specific are only when not seen by RO', () => {
             const licence = {
@@ -1352,162 +1349,158 @@ describe('getLicenceStatus', () => {
                 licence: {
                     proposedAddress: {
                         addressProposed: {
-                            decision: 'No'
-                        }
+                            decision: 'No',
+                        },
                     },
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
-                            specificArea: 'No'
+                            specificArea: 'No',
                         },
                         bassAreaCheck: {
-                            bassAreaCheckSeen: ''
-                        }
-                    }
-                }
-            };
+                            bassAreaCheckSeen: '',
+                        },
+                    },
+                },
+            }
 
-            const status = getLicenceStatus(licence);
+            const status = getLicenceStatus(licence)
 
-            expect(status.tasks.bassAreaCheck).to.eql('UNSTARTED');
-        });
+            expect(status.tasks.bassAreaCheck).to.eql('UNSTARTED')
+        })
 
         context('bassRequest task', () => {
-
             const examples = [
                 {
                     description: 'Specific area No',
                     bassRequest: {
                         bassRequested: 'Yes',
-                        specificArea: 'No'
+                        specificArea: 'No',
                     },
-                    outcome: 'DONE'
+                    outcome: 'DONE',
                 },
                 {
                     description: 'Specific area Yes',
                     bassRequest: {
                         bassRequested: 'Yes',
-                        specificArea: 'Yes'
+                        specificArea: 'Yes',
                     },
-                    outcome: 'UNSTARTED'
+                    outcome: 'UNSTARTED',
                 },
                 {
                     description: 'Specific area unanswered',
                     bassRequest: {
-                        bassRequested: 'Yes'
+                        bassRequested: 'Yes',
                     },
-                    outcome: 'UNSTARTED'
+                    outcome: 'UNSTARTED',
                 },
                 {
                     description: 'Specific area Yes with partial answers',
                     bassRequest: {
                         bassRequested: 'Yes',
                         specificArea: 'Yes',
-                        proposedCounty: 'something'
+                        proposedCounty: 'something',
                     },
-                    outcome: 'STARTED'
-                }
-            ];
+                    outcome: 'STARTED',
+                },
+            ]
 
             examples.forEach(example => {
-
                 it(`should show bassRequest ${example.outcome} when ${example.description}`, () => {
                     const licence = {
                         stage: 'PROCESSING_CA',
                         licence: {
                             proposedAddress: {
                                 addressProposed: {
-                                    decision: 'No'
-                                }
+                                    decision: 'No',
+                                },
                             },
                             bassReferral: {
                                 bassRequest: {
-                                    ...example.bassRequest
-                                }
-                            }
-                        }
-                    };
+                                    ...example.bassRequest,
+                                },
+                            },
+                        },
+                    }
 
-                    const status = getLicenceStatus(licence);
+                    const status = getLicenceStatus(licence)
 
-                    expect(status.tasks.bassRequest).to.eql(example.outcome);
-                });
-            });
-        });
+                    expect(status.tasks.bassRequest).to.eql(example.outcome)
+                })
+            })
+        })
 
         context('bassWithdrawn decision', () => {
-
             const examples = [
                 {
                     description: 'Nothing in the rejections list',
                     bassReferral: {
                         bassRequest: {
-                            bassRequested: 'Yes'
-                        }
+                            bassRequested: 'Yes',
+                        },
                     },
                     bassRejections: [],
-                    outcome: false
+                    outcome: false,
                 },
                 {
                     description: 'Previous withdrawal, current bassRequest unstarted',
                     bassReferral: {
                         bassRequest: {
-                            bassRequested: 'Yes'
-                        }
+                            bassRequested: 'Yes',
+                        },
                     },
-                    bassRejections: [{withdrawal: 'offer'}],
-                    outcome: true
+                    bassRejections: [{ withdrawal: 'offer' }],
+                    outcome: true,
                 },
                 {
                     description: 'Previous withdrawal, current bassRequest with no specific area',
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
-                            specificArea: 'No'
-                        }
+                            specificArea: 'No',
+                        },
                     },
-                    bassRejections: [{withdrawal: 'offer'}],
-                    outcome: false
+                    bassRejections: [{ withdrawal: 'offer' }],
+                    outcome: false,
                 },
                 {
                     description: 'Previous withdrawal, current bassAreaCheck done',
                     bassReferral: {
                         bassRequest: {
                             bassRequested: 'Yes',
-                            specificArea: 'No'
+                            specificArea: 'No',
                         },
                         bassAreaCheck: {
-                            bassAreaCheckSeen: true
-                        }
+                            bassAreaCheckSeen: true,
+                        },
                     },
-                    bassRejections: [{withdrawal: 'offer'}],
-                    outcome: false
-                }
-            ];
+                    bassRejections: [{ withdrawal: 'offer' }],
+                    outcome: false,
+                },
+            ]
 
             examples.forEach(example => {
-
                 it(`should show bassWithdrawn ${example.outcome} when ${example.description}`, () => {
                     const licence = {
                         stage: 'PROCESSING_CA',
                         licence: {
                             proposedAddress: {
                                 addressProposed: {
-                                    decision: 'No'
-                                }
+                                    decision: 'No',
+                                },
                             },
                             bassReferral: {
-                                ...example.bassReferral
+                                ...example.bassReferral,
                             },
-                            bassRejections: example.bassRejections
-                        }
-                    };
+                            bassRejections: example.bassRejections,
+                        },
+                    }
 
-                    const status = getLicenceStatus(licence);
+                    const status = getLicenceStatus(licence)
 
-                    expect(status.decisions.bassWithdrawn).to.eql(example.outcome);
-                });
-            });
-        });
-    });
-});
+                    expect(status.decisions.bassWithdrawn).to.eql(example.outcome)
+                })
+            })
+        })
+    })
+})

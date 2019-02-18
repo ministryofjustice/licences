@@ -1,392 +1,393 @@
-const {getStatusLabel} = require('../../server/utils/licenceStatusLabels');
-const {licenceStages} = require('../../server/services/config/licenceStages');
+const { getStatusLabel } = require('../../server/utils/licenceStatusLabels')
+const { licenceStages } = require('../../server/services/config/licenceStages')
 
 describe('getStatusLabel', () => {
-
     describe('default label for unstarted licences', () => {
-
-        const defaultLabel = 'Not started';
+        const defaultLabel = 'Not started'
 
         const examples = [
-            {status: undefined, reason: 'missing'},
-            {status: {}, reason: 'empty'},
-            {status: {stage: licenceStages.ELIGIBILITY, tasks: {}}, reason: 'missing decisions'},
-            {status: {stage: licenceStages.ELIGIBILITY, decisions: {}}, reason: 'missing tasks'}
-        ];
+            { status: undefined, reason: 'missing' },
+            { status: {}, reason: 'empty' },
+            { status: { stage: licenceStages.ELIGIBILITY, tasks: {} }, reason: 'missing decisions' },
+            { status: { stage: licenceStages.ELIGIBILITY, decisions: {} }, reason: 'missing tasks' },
+        ]
 
         examples.forEach(example => {
             it(`should give default label when licence is ${example.reason}`, () => {
-                expect(getStatusLabel(example.status, 'CA')).to.eql(defaultLabel);
-            });
-        });
-    });
-
+                expect(getStatusLabel(example.status, 'CA')).to.eql(defaultLabel)
+            })
+        })
+    })
 
     describe('CA user labels', () => {
-
         describe('ELIGIBILITY stage', () => {
             const examples = [
                 {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {}},
-                    label: 'Checking eligibility'
+                    status: { stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {} },
+                    label: 'Checking eligibility',
                 },
                 {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {excluded: true}, tasks: {}},
-                    label: 'Excluded (Ineligible)'
+                    status: { stage: licenceStages.ELIGIBILITY, decisions: { excluded: true }, tasks: {} },
+                    label: 'Excluded (Ineligible)',
                 },
                 {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {insufficientTime: true}, tasks: {}},
-                    label: 'Not enough time - rejected'
-                },
-                {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {insufficientTimeContinue: true}, tasks: {}},
-                    label: 'Not enough time'
-                },
-                {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {unsuitableResult: true}, tasks: {}},
-                    label: 'Presumed unsuitable'
-                },
-                {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {optedOut: true}, tasks: {}},
-                    label: 'Opted out'
-                },
-                {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {bassReferralNeeded: true}, tasks: {}},
-                    label: 'Getting address'
+                    status: { stage: licenceStages.ELIGIBILITY, decisions: { insufficientTime: true }, tasks: {} },
+                    label: 'Not enough time - rejected',
                 },
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {curfewAddressRejected: true},
-                        tasks: {}
+                        decisions: { insufficientTimeContinue: true },
+                        tasks: {},
                     },
-                    label: 'Address rejected'
+                    label: 'Not enough time',
+                },
+                {
+                    status: { stage: licenceStages.ELIGIBILITY, decisions: { unsuitableResult: true }, tasks: {} },
+                    label: 'Presumed unsuitable',
+                },
+                {
+                    status: { stage: licenceStages.ELIGIBILITY, decisions: { optedOut: true }, tasks: {} },
+                    label: 'Opted out',
+                },
+                {
+                    status: { stage: licenceStages.ELIGIBILITY, decisions: { bassReferralNeeded: true }, tasks: {} },
+                    label: 'Getting address',
                 },
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {curfewAddressRejected: true, unsuitableResult: false},
-                        tasks: {}
+                        decisions: { curfewAddressRejected: true },
+                        tasks: {},
                     },
-                    label: 'Address rejected'
+                    label: 'Address rejected',
                 },
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {curfewAddressRejected: true, unsuitableResult: true},
-                        tasks: {}
+                        decisions: { curfewAddressRejected: true, unsuitableResult: false },
+                        tasks: {},
                     },
-                    label: 'Presumed unsuitable'
-                }
-            ];
+                    label: 'Address rejected',
+                },
+                {
+                    status: {
+                        stage: licenceStages.ELIGIBILITY,
+                        decisions: { curfewAddressRejected: true, unsuitableResult: true },
+                        tasks: {},
+                    },
+                    label: 'Presumed unsuitable',
+                },
+            ]
 
-            assertLabels(examples, 'CA');
-        });
+            assertLabels(examples, 'CA')
+        })
 
         describe('ELIGIBILITY stage - message priority when multiple reasons', () => {
-
             const examples = [
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {excluded: true, insufficientTime: true, unsuitableResult: true}, tasks: {}
+                        decisions: { excluded: true, insufficientTime: true, unsuitableResult: true },
+                        tasks: {},
                     },
-                    label: 'Excluded (Ineligible)'
+                    label: 'Excluded (Ineligible)',
                 },
                 {
                     status: {
                         stage: licenceStages.ELIGIBILITY,
-                        decisions: {insufficientTime: true, unsuitableResult: true}, tasks: {}
+                        decisions: { insufficientTime: true, unsuitableResult: true },
+                        tasks: {},
                     },
-                    label: 'Presumed unsuitable'
-                }
-            ];
+                    label: 'Presumed unsuitable',
+                },
+            ]
 
-            assertLabels(examples, 'CA');
-        });
-
+            assertLabels(examples, 'CA')
+        })
 
         describe('PROCESSING_CA stage', () => {
             const examples = [
                 {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
-                    label: 'Review case'
+                    status: { stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {} },
+                    label: 'Review case',
                 },
                 {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {excluded: true}, tasks: {}},
-                    label: 'Excluded (Ineligible)'
-                },
-                {
-                    status: {
-                        stage: licenceStages.PROCESSING_CA,
-                        decisions: {curfewAddressRejected: true},
-                        tasks: {}
-                    },
-                    label: 'Address not suitable'
-                },
-                {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {postponed: true}, tasks: {}},
-                    label: 'Postponed'
-                },
-                {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {finalChecksRefused: true}, tasks: {}},
-                    label: 'Refused'
+                    status: { stage: licenceStages.PROCESSING_CA, decisions: { excluded: true }, tasks: {} },
+                    label: 'Excluded (Ineligible)',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_CA,
-                        decisions: {bassReferralNeeded: true, bassWithdrawalReason: 'offer'},
-                        tasks: {}
+                        decisions: { curfewAddressRejected: true },
+                        tasks: {},
                     },
-                    label: 'BASS offer withdrawn'
+                    label: 'Address not suitable',
+                },
+                {
+                    status: { stage: licenceStages.PROCESSING_CA, decisions: { postponed: true }, tasks: {} },
+                    label: 'Postponed',
+                },
+                {
+                    status: { stage: licenceStages.PROCESSING_CA, decisions: { finalChecksRefused: true }, tasks: {} },
+                    label: 'Refused',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_CA,
-                        decisions: {bassReferralNeeded: true, bassWithdrawalReason: 'request'},
-                        tasks: {}
+                        decisions: { bassReferralNeeded: true, bassWithdrawalReason: 'offer' },
+                        tasks: {},
                     },
-                    label: 'BASS request withdrawn'
-                }
-            ];
+                    label: 'BASS offer withdrawn',
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_CA,
+                        decisions: { bassReferralNeeded: true, bassWithdrawalReason: 'request' },
+                        tasks: {},
+                    },
+                    label: 'BASS request withdrawn',
+                },
+            ]
 
-            assertLabels(examples, 'CA');
-        });
+            assertLabels(examples, 'CA')
+        })
 
         describe('PROCESSING_CA stage - message priority when multiple reasons', () => {
-
             const examples = [
                 {
                     status: {
                         stage: licenceStages.PROCESSING_CA,
-                        decisions: {excluded: true, curfewAddressApproved: 'approved', postponed: true}, tasks: {}
+                        decisions: { excluded: true, curfewAddressApproved: 'approved', postponed: true },
+                        tasks: {},
                     },
-                    label: 'Postponed'
+                    label: 'Postponed',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_CA,
-                        decisions: {excluded: true, curfewAddressApproved: 'rejected'}, tasks: {}
+                        decisions: { excluded: true, curfewAddressApproved: 'rejected' },
+                        tasks: {},
                     },
-                    label: 'Excluded (Ineligible)'
+                    label: 'Excluded (Ineligible)',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_CA,
-                        decisions: {excluded: true, curfewAddressApproved: 'rejected', finalChecksRefused: true},
-                        tasks: {}
+                        decisions: { excluded: true, curfewAddressApproved: 'rejected', finalChecksRefused: true },
+                        tasks: {},
                     },
-                    label: 'Refused'
-                }
-            ];
+                    label: 'Refused',
+                },
+            ]
 
-            assertLabels(examples, 'CA');
-        });
+            assertLabels(examples, 'CA')
+        })
 
         describe('Other stages', () => {
-
             const examples = [
                 {
-                    status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {}},
-                    label: 'With responsible officer'
+                    status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {} },
+                    label: 'With responsible officer',
                 },
                 {
-                    status: {stage: licenceStages.APPROVAL, decisions: {}, tasks: {}},
-                    label: 'With decision maker'
+                    status: { stage: licenceStages.APPROVAL, decisions: {}, tasks: {} },
+                    label: 'With decision maker',
                 },
                 {
-                    status: {stage: licenceStages.DECIDED, decisions: {approved: true}, tasks: {}},
-                    label: 'Create licence'
+                    status: { stage: licenceStages.DECIDED, decisions: { approved: true }, tasks: {} },
+                    label: 'Create licence',
                 },
                 {
-                    status: {stage: licenceStages.DECIDED, decisions: {refused: true}, tasks: {}},
-                    label: 'Refused'
-                }
-            ];
+                    status: { stage: licenceStages.DECIDED, decisions: { refused: true }, tasks: {} },
+                    label: 'Refused',
+                },
+            ]
 
-            assertLabels(examples, 'CA');
-        });
-
-    });
+            assertLabels(examples, 'CA')
+        })
+    })
 
     describe('RO user labels', () => {
-
         describe('PROCESSING_RO stage', () => {
             const examples = [
                 {
-                    status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {}},
-                    label: 'Address provided'
+                    status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {} },
+                    label: 'Address provided',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_RO,
                         decisions: {},
-                        tasks: {curfewAddressReview: 'UNSTARTED', reportingInstructions: 'DONE'}
+                        tasks: { curfewAddressReview: 'UNSTARTED', reportingInstructions: 'DONE' },
                     },
-                    label: 'Address provided'
-                },
-                {
-                    status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {curfewAddressReview: 'DONE'}},
-                    label: 'Assessment ongoing'
-                },
-                {
-                    status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {curfewHours: 'STARTED'}},
-                    label: 'Assessment ongoing'
-                },
-                {
-                    status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {licenceConditions: 'DONE'}},
-                    label: 'Assessment ongoing'
-                },
-                {
-                    status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {riskManagement: 'STARTED'}},
-                    label: 'Assessment ongoing'
-                },
-                {
-                    status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {reportingInstructions: 'DONE'}},
-                    label: 'Assessment ongoing'
+                    label: 'Address provided',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_RO,
-                        decisions: {bassReferralNeeded: true},
-                        tasks: {bassAreaCheck: 'UNSTARTED'}
+                        decisions: {},
+                        tasks: { curfewAddressReview: 'DONE' },
                     },
-                    label: 'BASS request'
+                    label: 'Assessment ongoing',
+                },
+                {
+                    status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: { curfewHours: 'STARTED' } },
+                    label: 'Assessment ongoing',
+                },
+                {
+                    status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: { licenceConditions: 'DONE' } },
+                    label: 'Assessment ongoing',
+                },
+                {
+                    status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: { riskManagement: 'STARTED' } },
+                    label: 'Assessment ongoing',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_RO,
-                        decisions: {bassReferralNeeded: true},
-                        tasks: {bassAreaCheck: 'DONE'}
+                        decisions: {},
+                        tasks: { reportingInstructions: 'DONE' },
                     },
-                    label: 'Assessment ongoing'
+                    label: 'Assessment ongoing',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_RO,
-                        decisions: {bassReferralNeeded: true},
-                        tasks: {bassAreaCheck: 'STARTED'}
+                        decisions: { bassReferralNeeded: true },
+                        tasks: { bassAreaCheck: 'UNSTARTED' },
                     },
-                    label: 'Assessment ongoing'
+                    label: 'BASS request',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_RO,
-                        decisions: {bassReferralNeeded: true, bassAreaNotSuitable: true},
-                        tasks: {}
+                        decisions: { bassReferralNeeded: true },
+                        tasks: { bassAreaCheck: 'DONE' },
                     },
-                    label: 'BASS area rejected'
-                }
-            ];
+                    label: 'Assessment ongoing',
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_RO,
+                        decisions: { bassReferralNeeded: true },
+                        tasks: { bassAreaCheck: 'STARTED' },
+                    },
+                    label: 'Assessment ongoing',
+                },
+                {
+                    status: {
+                        stage: licenceStages.PROCESSING_RO,
+                        decisions: { bassReferralNeeded: true, bassAreaNotSuitable: true },
+                        tasks: {},
+                    },
+                    label: 'BASS area rejected',
+                },
+            ]
 
-            assertLabels(examples, 'RO');
-        });
+            assertLabels(examples, 'RO')
+        })
 
         describe('PROCESSING_CA stage', () => {
             const examples = [
                 {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
-                    label: 'Submitted to prison case admin'
+                    status: { stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {} },
+                    label: 'Submitted to prison case admin',
                 },
                 {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {excluded: true}, tasks: {}},
-                    label: 'Submitted to prison case admin'
+                    status: { stage: licenceStages.PROCESSING_CA, decisions: { excluded: true }, tasks: {} },
+                    label: 'Submitted to prison case admin',
                 },
                 {
                     status: {
                         stage: licenceStages.PROCESSING_CA,
-                        decisions: {curfewAddressApproved: 'rejected'},
-                        tasks: {}
+                        decisions: { curfewAddressApproved: 'rejected' },
+                        tasks: {},
                     },
-                    label: 'Submitted to prison case admin'
+                    label: 'Submitted to prison case admin',
                 },
                 {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {postponed: true}, tasks: {}},
-                    label: 'Postponed'
-                }
-            ];
+                    status: { stage: licenceStages.PROCESSING_CA, decisions: { postponed: true }, tasks: {} },
+                    label: 'Postponed',
+                },
+            ]
 
-            assertLabels(examples, 'RO');
-        });
+            assertLabels(examples, 'RO')
+        })
 
         describe('Other stages', () => {
-
             const examples = [
                 {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {}},
-                    label: 'Checking eligibility'
+                    status: { stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {} },
+                    label: 'Checking eligibility',
                 },
                 {
-                    status: {stage: licenceStages.APPROVAL, decisions: {approved: true}, tasks: {}},
-                    label: 'With decision maker'
+                    status: { stage: licenceStages.APPROVAL, decisions: { approved: true }, tasks: {} },
+                    label: 'With decision maker',
                 },
                 {
-                    status: {stage: licenceStages.DECIDED, decisions: {approved: true}, tasks: {}},
-                    label: 'Approved'
+                    status: { stage: licenceStages.DECIDED, decisions: { approved: true }, tasks: {} },
+                    label: 'Approved',
                 },
                 {
-                    status: {stage: licenceStages.DECIDED, decisions: {refused: true}, tasks: {}},
-                    label: 'Refused'
-                }
-            ];
+                    status: { stage: licenceStages.DECIDED, decisions: { refused: true }, tasks: {} },
+                    label: 'Refused',
+                },
+            ]
 
-            assertLabels(examples, 'RO');
-        });
-    });
+            assertLabels(examples, 'RO')
+        })
+    })
 
     describe('DM user labels', () => {
-
         describe('Approval stage', () => {
-
             const examples = [
                 {
-                    status: {stage: licenceStages.APPROVAL, decisions: {}, tasks: {}},
-                    label: 'Make decision'
+                    status: { stage: licenceStages.APPROVAL, decisions: {}, tasks: {} },
+                    label: 'Make decision',
                 },
                 {
-                    status: {stage: licenceStages.APPROVAL, decisions: {insufficientTimeStop: true}, tasks: {}},
-                    label: 'Awaiting refusal'
-                }
-            ];
+                    status: { stage: licenceStages.APPROVAL, decisions: { insufficientTimeStop: true }, tasks: {} },
+                    label: 'Awaiting refusal',
+                },
+            ]
 
-            assertLabels(examples, 'DM');
-        });
+            assertLabels(examples, 'DM')
+        })
 
         describe('Other stages', () => {
-
             const examples = [
                 {
-                    status: {stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {}},
-                    label: 'Checking eligibility'
+                    status: { stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {} },
+                    label: 'Checking eligibility',
                 },
                 {
-                    status: {stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {}},
-                    label: 'With responsible officer'
+                    status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {} },
+                    label: 'With responsible officer',
                 },
                 {
-                    status: {stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {}},
-                    label: 'Submitted to prison case admin'
+                    status: { stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {} },
+                    label: 'Submitted to prison case admin',
                 },
                 {
-                    status: {stage: licenceStages.DECIDED, decisions: {approved: true}, tasks: {}},
-                    label: 'Approved'
+                    status: { stage: licenceStages.DECIDED, decisions: { approved: true }, tasks: {} },
+                    label: 'Approved',
                 },
                 {
-                    status: {stage: licenceStages.DECIDED, decisions: {refused: true}, tasks: {}},
-                    label: 'Refused'
-                }
-            ];
+                    status: { stage: licenceStages.DECIDED, decisions: { refused: true }, tasks: {} },
+                    label: 'Refused',
+                },
+            ]
 
-            assertLabels(examples, 'DM');
-        });
-    });
+            assertLabels(examples, 'DM')
+        })
+    })
 
     function assertLabels(examples, role) {
         examples.forEach(example => {
             it(`should give ${example.label}`, () => {
-                expect(getStatusLabel(example.status, role)).to.eql(example.label);
-            });
-        });
+                expect(getStatusLabel(example.status, role)).to.eql(example.label)
+            })
+        })
     }
 })
-;

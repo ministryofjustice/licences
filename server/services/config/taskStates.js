@@ -1,9 +1,7 @@
-
 const taskStates = {
     UNSTARTED: 'UNSTARTED',
     STARTED: 'STARTED',
-    DONE: 'DONE'
-};
+    DONE: 'DONE',
+}
 
-module.exports = {taskStates};
-
+module.exports = { taskStates }

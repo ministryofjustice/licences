@@ -1,7 +1,6 @@
-const config = require('./server/config');
+const config = require('./server/config')
 
 module.exports = {
-
     // knex-migrate doesn't work unless this is here
     client: 'pg',
     connection: {
@@ -9,7 +8,7 @@ module.exports = {
         user: config.db.username,
         password: config.db.password,
         database: config.db.database,
-        ssl: config.db.sslEnabled === 'true'
+        ssl: config.db.sslEnabled === 'true',
     },
     acquireConnectionTimeout: 5000,
 
@@ -21,9 +20,9 @@ module.exports = {
             user: config.db.username,
             password: config.db.password,
             database: config.db.database,
-            ssl: config.db.sslEnabled === 'true'
+            ssl: config.db.sslEnabled === 'true',
         },
-        acquireConnectionTimeout: 5000
+        acquireConnectionTimeout: 5000,
     },
     demo: {
         client: 'pg',
@@ -32,11 +31,11 @@ module.exports = {
             user: config.db.username,
             password: config.db.password,
             database: config.db.database,
-            ssl: config.db.sslEnabled === 'true'
+            ssl: config.db.sslEnabled === 'true',
         },
         acquireConnectionTimeout: 5000,
         seeds: {
-            directory: './seeds/demo'
-        }
-    }
-};
+            directory: './seeds/demo',
+        },
+    },
+}

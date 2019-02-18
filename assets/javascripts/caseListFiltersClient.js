@@ -1,10 +1,9 @@
 /* eslint-disable */
 
-$(document).ready(init);
+$(document).ready(init)
 
 function init() {
-    $("#licenceFilters").change(function(){
-        window.location = $(this).val();
-    });
+    $('#licenceFilters').change(function() {
+        window.location = $(this).val()
+    })
 }
-

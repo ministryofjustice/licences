@@ -1,24 +1,26 @@
-const winston = require('winston');
-const {flattenMeta} = require('./server/misc');
+const winston = require('winston')
+const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
+const appInsights = require('./azure-appinsights')
+const { flattenMeta } = require('./server/misc')
 
-const logger = new (winston.Logger);
+const logger = new winston.Logger()
 
 logger.setLevels({
     audit: 0,
     error: 1,
     warn: 2,
     info: 3,
-    debug: 4
-});
+    debug: 4,
+})
 winston.addColors({
     audit: 'cyan',
     error: 'red',
     warn: 'yellow',
     info: 'green',
-    debug: 'grey'
-});
+    debug: 'grey',
+})
 
-logger.clear();
+logger.clear()
 if (process.env.NODE_ENV === 'test') {
     logger.add(winston.transports.File, {
         name: 'log',
@@ -26,8 +28,8 @@ if (process.env.NODE_ENV === 'test') {
         filename: 'tests.log',
         json: false,
         colorize: true,
-        prettyPrint: true
-    });
+        prettyPrint: true,
+    })
 } else if (process.env.NODE_ENV === 'production') {
     logger.add(winston.transports.Console, {
         name: 'log',
@@ -38,8 +40,8 @@ if (process.env.NODE_ENV === 'test') {
         silent: false,
         timestamp: true,
         stringify: true,
-        handleExceptions: true
-    });
+        handleExceptions: true,
+    })
 } else {
     logger.add(winston.transports.Console, {
         name: 'log',
@@ -50,24 +52,25 @@ if (process.env.NODE_ENV === 'test') {
         silent: false,
         timestamp: true,
         handleExceptions: true,
-        humanReadableUnhandledException: true
-    });
+        humanReadableUnhandledException: true,
+    })
 }
 
-const appInsights = require('./azure-appinsights');
 if (appInsights) {
-    const {AzureApplicationInsightsLogger} = require('winston-azure-application-insights');
-    logger.info('Activating application insights logger');
+    logger.info('Activating application insights logger')
 
-    logger.add(winston.transports.Console, new AzureApplicationInsightsLogger({
-        insights: appInsights,
-        level: 'info',
-        sendErrorsAsExceptions: true
-    }));
+    logger.add(
+        winston.transports.Console,
+        new AzureApplicationInsightsLogger({
+            insights: appInsights,
+            level: 'info',
+            sendErrorsAsExceptions: true,
+        })
+    )
 
-    logger.rewriters.push(function(level, msg, meta) {
-        return flattenMeta(meta);
-    });
+    logger.rewriters.push((level, msg, meta) => {
+        return flattenMeta(meta)
+    })
 }
 
-module.exports = logger;
+module.exports = logger
