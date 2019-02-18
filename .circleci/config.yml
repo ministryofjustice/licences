@@ -55,6 +55,57 @@ jobs:
           path: coverage
           destination: coverage
 
+  feature_tests:
+    working_directory: ~/noms-digital-studio/licences
+    docker:
+      - image: circleci/openjdk:11-jdk-node-browsers
+      - image: circleci/postgres:alpine-ram
+        environment:
+          POSTGRES_USER: licences
+          POSTGRES_DB: licences
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/noms-digital-studio/licences
+      - run:
+          name: Run the node app.
+          command: npm start
+          background: true
+      - run:
+          name: Wait for node app to start
+          command: sleep 5
+      - run:
+          name: Initialise db
+          command: npm run migrate
+      - run:
+          name: Seed db
+          command: npm run seed
+      - restore_cache:
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
+      - run:
+          name: Run Integration Tests
+          command: ./gradlew mockTest
+          environment:
+            LICENCES_URI: http://localhost:3000
+      - save_cache:
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - /home/circleci/.gradle/wrapper
+      - save_cache:
+          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
+          paths:
+            - /home/circleci/.gradle/caches
+      - store_artifacts:
+          path: licences-specs/build/reports
+          destination: integration/spock
+      - store_artifacts:
+          path: licences-specs/build/geb-reports
+          destination: integration/geb
+      - store_test_results:
+          path: licences-specs/build/test-results
+
   build_docker:
     <<: *defaults
     steps:
@@ -71,13 +122,13 @@ jobs:
             BUILD_VERSION=${VERSION}
 
             docker build --rm=false . \
-              --build-arg BUILD_NUMBER=$VERSION \
-              --build-arg GIT_REF=$GIT_REF \
-              --tag "mojdigitalstudio/licences:$BUILD_VERSION" \
-              --label "maintainer=licences-team@digital.justice.gov.uk" \
-              --label "build.number=$CIRCLE_BUILD_NUM" \
-              --label "build.url=$CIRCLE_BUILD_URL" \
-              --label "build.gitref=$GIT_REF"
+            --build-arg BUILD_NUMBER=$VERSION \
+            --build-arg GIT_REF=$GIT_REF \
+            --tag "mojdigitalstudio/licences:$BUILD_VERSION" \
+            --label "maintainer=licences-team@digital.justice.gov.uk" \
+            --label "build.number=$CIRCLE_BUILD_NUM" \
+            --label "build.url=$CIRCLE_BUILD_URL" \
+            --label "build.gitref=$GIT_REF"
 
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker tag mojdigitalstudio/licences:$BUILD_VERSION mojdigitalstudio/licences:latest
@@ -100,13 +151,13 @@ jobs:
             BUILD_VERSION=${VERSION}
 
             docker build --rm=false . \
-              --build-arg BUILD_NUMBER=$BUILD_VERSION \
-              --build-arg GIT_REF=$GIT_REF \
-              --tag "mojdigitalstudio/licences:$BUILD_VERSION" \
-              --label "maintainer=licences-team@digital.justice.gov.uk" \
-              --label "build.number=$CIRCLE_BUILD_NUM" \
-              --label "build.url=$CIRCLE_BUILD_URL" \
-              --label "build.gitref=$GIT_REF"
+            --build-arg BUILD_NUMBER=$BUILD_VERSION \
+            --build-arg GIT_REF=$GIT_REF \
+            --tag "mojdigitalstudio/licences:$BUILD_VERSION" \
+            --label "maintainer=licences-team@digital.justice.gov.uk" \
+            --label "build.number=$CIRCLE_BUILD_NUM" \
+            --label "build.url=$CIRCLE_BUILD_URL" \
+            --label "build.gitref=$GIT_REF"
 
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker push mojdigitalstudio/licences:$BUILD_VERSION
@@ -133,37 +184,6 @@ jobs:
           paths:
             - Dockerrun.aws.json
 
-  feature_tests:
-    working_directory: ~/noms-digital-studio/licences
-    docker:
-      - image: circleci/openjdk:11-jdk-node-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/noms-digital-studio/licences
-      - restore_cache:
-          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - restore_cache:
-          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
-      - run:
-          name: Run Integration Tests
-          command: ./gradlew mockTest
-      - save_cache:
-          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-          paths:
-            - /home/circleci/.gradle/wrapper
-      - save_cache:
-          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
-          paths:
-            - /home/circleci/.gradle/caches
-      - store_artifacts:
-          path: licences-specs/build/reports
-          destination: integration/spock
-      - store_artifacts:
-          path: licences-specs/build/geb-reports
-          destination: integration/geb
-      - store_test_results:
-          path: licences-specs/build/test-results
   deploy_stage:
     working_directory: ~/noms-digital-studio/licences
     docker:
@@ -203,16 +223,19 @@ workflows:
       - test:
           requires:
             - build
-      - build_docker:
+      - feature_tests:
           requires:
             - test
+      - build_docker:
+          requires:
+            - feature_tests
           filters:
             branches:
               only:
                 - master
       - build_patch_docker:
           requires:
-            - test
+            - feature_tests
           filters:
             branches:
               only:
@@ -224,9 +247,6 @@ workflows:
             branches:
               only:
                 - master
-      - feature_tests:
-          requires:
-            - deploy_release_to_eb
       - hold:
           type: approval
           requires:

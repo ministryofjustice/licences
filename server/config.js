@@ -19,9 +19,9 @@ module.exports = {
     enableTestUtils: get('ENABLE_TEST_UTILS', false),
 
     db: {
-        username: get('DB_USER', 'user'),
-        password: get('DB_PASS', 'password'),
-        server: get('DB_SERVER', 'server'),
+        username: get('DB_USER', 'licences'),
+        password: get('DB_PASS', 'licences'),
+        server: get('DB_SERVER', 'localhost'),
         database: get('DB_NAME', 'licences'),
         sslEnabled: get('DB_SSL_ENABLED', 'true')
     },
