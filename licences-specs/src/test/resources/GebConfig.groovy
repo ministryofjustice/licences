@@ -1,6 +1,12 @@
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 
+atCheckWaiting = true
+
+waiting {
+    timeout = 2
+}
+
 environments {
     chrome {
         driver = { new ChromeDriver() }
