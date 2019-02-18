@@ -1,0 +1,32 @@
+{
+  "stage": "PROCESSING_RO",
+  "licence": {
+    "eligibility": {
+      "crdTime": {
+        "decision": "No"
+      },
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      }
+    },
+    "bassReferral": {
+      "bassRequest": {
+        "proposedTown": "BASS Town",
+        "bassRequested": "Yes",
+        "specificArea": "Yes",
+        "proposedCounty": "BASS County"
+      }
+    },
+    "proposedAddress": {
+      "optOut": {
+        "decision": "No"
+      },
+      "addressProposed": {
+        "decision": "No"
+      }
+    }
+  }
+}

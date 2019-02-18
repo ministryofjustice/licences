@@ -10,7 +10,7 @@ node_modules/*
 .tmuxp.*
 .idea
 npm-debug.log
-build/*
+build
 uploads/*
 test-results.xml
 tests.log
@@ -22,3 +22,5 @@ root.cert
 yarn-error.log
 .vscode/
 licence-json/*
+out
+.gradle

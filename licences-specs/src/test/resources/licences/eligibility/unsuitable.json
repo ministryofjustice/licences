@@ -1,0 +1,19 @@
+{
+  "stage": "ELIGIBILITY",
+  "licence": {
+    "eligibility": {
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "Yes",
+        "reason": [
+          "sexOffender",
+          "recalled"
+        ]
+      }
+    }
+  }
+}
+
+

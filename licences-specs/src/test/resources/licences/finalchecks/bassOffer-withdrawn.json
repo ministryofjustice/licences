@@ -1,0 +1,49 @@
+{
+  "stage": "PROCESSING_CA",
+  "licence": {
+    "eligibility": {
+      "crdTime": {
+        "decision": "No"
+      },
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      }
+    },
+    "bassReferral": {
+      "bassRequest": {
+        "bassRequested": "Yes"
+      }
+    },
+    "bassRejections": [
+      {
+        "bassOffer": {
+          "bassAccepted": "Yes",
+          "bassOfferDetails": ""
+        },
+        "withdrawal": "offer",
+        "bassRequest": {
+          "proposedTown": "1",
+          "specificArea": "Yes",
+          "bassRequested": "Yes",
+          "proposedCounty": "1"
+        },
+        "bassAreaCheck": {
+          "bassAreaReason": "asd",
+          "bassAreaSuitable": "Yes",
+          "bassAreaCheckSeen": "true"
+        }
+      }
+    ],
+    "proposedAddress": {
+      "optOut": {
+        "decision": "No"
+      },
+      "addressProposed": {
+        "decision": "No"
+      }
+    }
+  }
+}

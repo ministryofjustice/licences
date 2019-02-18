@@ -1,0 +1,17 @@
+{
+  "stage": "APPROVAL",
+  "licence": {
+    "eligibility": {
+      "crdTime": {
+        "decision": "Yes",
+        "dmApproval": "No"
+      },
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      }
+    }
+  }
+}

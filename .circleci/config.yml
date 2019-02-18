@@ -66,23 +66,23 @@ jobs:
       - run:
           name: Build container and publish to docker hub (master only)
           command: |
-             VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
-             GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
-             BUILD_VERSION=${VERSION}
+            VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
+            GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
+            BUILD_VERSION=${VERSION}
 
-             docker build --rm=false . \
-                 --build-arg BUILD_NUMBER=$VERSION \
-                 --build-arg GIT_REF=$GIT_REF \
-                 --tag "mojdigitalstudio/licences:$BUILD_VERSION" \
-                 --label "maintainer=licences-team@digital.justice.gov.uk" \
-                 --label "build.number=$CIRCLE_BUILD_NUM" \
-                 --label "build.url=$CIRCLE_BUILD_URL" \
-                 --label "build.gitref=$GIT_REF"
+            docker build --rm=false . \
+              --build-arg BUILD_NUMBER=$VERSION \
+              --build-arg GIT_REF=$GIT_REF \
+              --tag "mojdigitalstudio/licences:$BUILD_VERSION" \
+              --label "maintainer=licences-team@digital.justice.gov.uk" \
+              --label "build.number=$CIRCLE_BUILD_NUM" \
+              --label "build.url=$CIRCLE_BUILD_URL" \
+              --label "build.gitref=$GIT_REF"
 
-             docker login -u $DOCKER_USER -p $DOCKER_PASS
-             docker tag mojdigitalstudio/licences:$BUILD_VERSION mojdigitalstudio/licences:latest
-             docker push mojdigitalstudio/licences:$BUILD_VERSION
-             docker push mojdigitalstudio/licences:latest
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker tag mojdigitalstudio/licences:$BUILD_VERSION mojdigitalstudio/licences:latest
+            docker push mojdigitalstudio/licences:$BUILD_VERSION
+            docker push mojdigitalstudio/licences:latest
 
   build_patch_docker:
     <<: *defaults
@@ -95,72 +95,95 @@ jobs:
       - run:
           name: Build container and publish to docker hub (master only)
           command: |
-             VERSION=$(git describe)
-             GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
-             BUILD_VERSION=${VERSION}
+            VERSION=$(git describe)
+            GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
+            BUILD_VERSION=${VERSION}
 
-             docker build --rm=false . \
-                 --build-arg BUILD_NUMBER=$BUILD_VERSION \
-                 --build-arg GIT_REF=$GIT_REF \
-                 --tag "mojdigitalstudio/licences:$BUILD_VERSION" \
-                 --label "maintainer=licences-team@digital.justice.gov.uk" \
-                 --label "build.number=$CIRCLE_BUILD_NUM" \
-                 --label "build.url=$CIRCLE_BUILD_URL" \
-                 --label "build.gitref=$GIT_REF"
+            docker build --rm=false . \
+              --build-arg BUILD_NUMBER=$BUILD_VERSION \
+              --build-arg GIT_REF=$GIT_REF \
+              --tag "mojdigitalstudio/licences:$BUILD_VERSION" \
+              --label "maintainer=licences-team@digital.justice.gov.uk" \
+              --label "build.number=$CIRCLE_BUILD_NUM" \
+              --label "build.url=$CIRCLE_BUILD_URL" \
+              --label "build.gitref=$GIT_REF"
 
-             docker login -u $DOCKER_USER -p $DOCKER_PASS
-             docker push mojdigitalstudio/licences:$BUILD_VERSION
-             npm run plant-beanstalk ${BUILD_VERSION}
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push mojdigitalstudio/licences:$BUILD_VERSION
+            npm run plant-beanstalk ${BUILD_VERSION}
       - store_artifacts:
           path: Dockerrun.aws.json
 
   deploy_release_to_eb:
-      working_directory: ~/noms-digital-studio/licences
-      docker:
-        - image: mojdigitalstudio/circleci-node-awsebcli
-      steps:
-        - checkout
-        - attach_workspace:
-            at: ~/noms-digital-studio/licences
-        - deploy:
-            name: Deploy to Elastic Beanstalk Dev
-            command: |
-              VERSION=$(egrep buildNumber build-info.json | awk -F"\"" '{print $4}')
-              npm run plant-beanstalk ${VERSION}
-              ~/.local/bin/eb deploy --process --verbose --label ${VERSION}
-        - persist_to_workspace:
-            root: .
-            paths:
-              - Dockerrun.aws.json
+    working_directory: ~/noms-digital-studio/licences
+    docker:
+      - image: mojdigitalstudio/circleci-node-awsebcli
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/noms-digital-studio/licences
+      - deploy:
+          name: Deploy to Elastic Beanstalk Dev
+          command: |
+            VERSION=$(egrep buildNumber build-info.json | awk -F"\"" '{print $4}')
+            npm run plant-beanstalk ${VERSION}
+            ~/.local/bin/eb deploy --process --verbose --label ${VERSION}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - Dockerrun.aws.json
 
   feature_tests:
-    <<: *defaults
+    working_directory: ~/noms-digital-studio/licences
+    docker:
+      - image: circleci/openjdk:11-jdk-node-browsers
     steps:
+      - checkout
+      - attach_workspace:
+          at: ~/noms-digital-studio/licences
+      - restore_cache:
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
       - run:
-          name: execute feature tests - mock
-          command: |
-            curl -v -X POST https://circleci.com/api/v1.1/project/github/ministryofjustice/licences-feature-specs?circle-token=$CIRCLE_TOKEN
-
+          name: Run Integration Tests
+          command: ./gradlew mockTest
+      - save_cache:
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - /home/circleci/.gradle/wrapper
+      - save_cache:
+          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
+          paths:
+            - /home/circleci/.gradle/caches
+      - store_artifacts:
+          path: licences-specs/build/reports
+          destination: integration/spock
+      - store_artifacts:
+          path: licences-specs/build/geb-reports
+          destination: integration/geb
+      - store_test_results:
+          path: licences-specs/build/test-results
   deploy_stage:
-      working_directory: ~/noms-digital-studio/licences
-      docker:
-        - image: mojdigitalstudio/circleci-node-awsebcli
-      steps:
-        - checkout
-        - attach_workspace:
-            at: ~/noms-digital-studio/licences
-        - deploy:
-            name: Deploy to Elastic Beanstalk Stage
-            command: |
-              VERSION=$(egrep licences Dockerrun.aws.json | awk -F"\"" '{print $4}' |  awk -F":" '{print $2}')
-              GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
-              git config user.name "Circle CI"
-              git config user.email "circle@circleci.com"
-              git tag -a ${VERSION} ${GIT_REF} -m "${VERSION}"
-              git push origin ${VERSION}
-              ~/.local/bin/eb deploy licences-stage --label ${VERSION}
-        - store_artifacts:
-              path: Dockerrun.aws.json
+    working_directory: ~/noms-digital-studio/licences
+    docker:
+      - image: mojdigitalstudio/circleci-node-awsebcli
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/noms-digital-studio/licences
+      - deploy:
+          name: Deploy to Elastic Beanstalk Stage
+          command: |
+            VERSION=$(egrep licences Dockerrun.aws.json | awk -F"\"" '{print $4}' |  awk -F":" '{print $2}')
+            GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
+            git config user.name "Circle CI"
+            git config user.email "circle@circleci.com"
+            git tag -a ${VERSION} ${GIT_REF} -m "${VERSION}"
+            git push origin ${VERSION}
+            ~/.local/bin/eb deploy licences-stage --label ${VERSION}
+      - store_artifacts:
+          path: Dockerrun.aws.json
 
   accept_stage:
     docker:
@@ -171,7 +194,7 @@ jobs:
           name: execute feature tests - stage
           command: |
             curl -v -X POST --data build_parameters[CIRCLE_JOB]=accept_stage \
-              https://circleci.com/api/v1.1/project/github/ministryofjustice/licences-feature-specs?circle-token=$CIRCLE_TOKEN
+            https://circleci.com/api/v1.1/project/github/ministryofjustice/licences-feature-specs?circle-token=$CIRCLE_TOKEN
 workflows:
   version: 2
   build_test_deploy:

@@ -1,0 +1,30 @@
+{
+  "stage": "PROCESSING_RO",
+  "licence": {
+    "eligibility": {
+      "crdTime": {
+        "decision": "No"
+      },
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      }
+    },
+    "bassReferral": {
+      "bassRequest": {
+        "bassRequested": "Yes",
+        "specificArea": "No"
+      }
+    },
+    "proposedAddress": {
+      "optOut": {
+        "decision": "No"
+      },
+      "addressProposed": {
+        "decision": "No"
+      }
+    }
+  }
+}
