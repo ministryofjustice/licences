@@ -65,6 +65,7 @@ jobs:
           POSTGRES_DB: licences
     environment:
       DB_SSL_ENABLED: false
+      ENABLE_TEST_UTILS: true
     steps:
       - checkout
       - attach_workspace:
@@ -89,8 +90,6 @@ jobs:
       - run:
           name: Run Integration Tests
           command: ./gradlew mockTest
-          environment:
-            LICENCES_URI: http://localhost:3000
       - save_cache:
           key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
           paths:
