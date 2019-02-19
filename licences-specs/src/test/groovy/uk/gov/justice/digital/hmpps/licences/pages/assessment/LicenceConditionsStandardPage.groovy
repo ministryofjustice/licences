@@ -6,15 +6,15 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class LicenceConditionsStandardPage extends Page {
 
-    static url = '/hdc/licenceConditions/standard'
+  static url = '/hdc/licenceConditions/standard'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
+  static content = {
+    header { module(HeaderModule) }
 
-        additionalConditionsRadios { $(name: "additionalConditionsRequired").module(RadioButtons) }
-    }
+    additionalConditionsRadios { $(name: "additionalConditionsRequired").module(RadioButtons) }
+  }
 }

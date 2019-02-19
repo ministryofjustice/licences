@@ -7,18 +7,18 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class ReviewCurfewAddressPage extends Page {
 
-    static url = '/hdc/review/curfewAddress'
+  static url = '/hdc/review/curfewAddress'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
-        errors { module(ErrorModule) }
+  static content = {
+    header { module(HeaderModule) }
+    errors { module(ErrorModule) }
 
-        curfew { module(CurfewDetailsModule) }
+    curfew { module(CurfewDetailsModule) }
 
-        correctAddressLink(required: false) { $("#correctAddressLink") }
-    }
+    correctAddressLink(required: false) { $("#correctAddressLink") }
+  }
 }

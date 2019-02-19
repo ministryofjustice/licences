@@ -6,16 +6,16 @@ import uk.gov.justice.digital.hmpps.licences.modules.RiskDetailsModule
 
 class ReviewRiskPage extends Page {
 
-    static url = '/hdc/review/risk'
+  static url = '/hdc/review/risk'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
+  static content = {
 
-        header { module(HeaderModule) }
+    header { module(HeaderModule) }
 
-        risk { module(RiskDetailsModule) }
-    }
+    risk { module(RiskDetailsModule) }
+  }
 }

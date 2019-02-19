@@ -8,18 +8,18 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class ReviewBassRequestPage extends Page {
 
-    static url = '/hdc/review/bassRequest'
+  static url = '/hdc/review/bassRequest'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
-        errors { module(ErrorModule) }
+  static content = {
+    header { module(HeaderModule) }
+    errors { module(ErrorModule) }
 
-        bass { module(BassRequestModule) }
+    bass { module(BassRequestModule) }
 
-        changeBassLink(required: false) { $("#bassEditLink") }
-    }
+    changeBassLink(required: false) { $("#bassEditLink") }
+  }
 }

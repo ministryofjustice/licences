@@ -1,15 +1,15 @@
 extends ../formTemplates/formTemplate
 
 block question
-    | Has the offender committed an offence in prison which was referred to the police or independent adjudicator and is not resolved?
+  | Has the offender committed an offence in prison which was referred to the police or independent adjudicator and is not resolved?
 
 block formItems
-    - var seriousOffenceValue = data.decision || null;
+  - var seriousOffenceValue = data.decision || null;
 
-    div.form-group.inline
-        div.multiple-choice
-            input#seriousOffenceYes(type="radio" checked=seriousOffenceValue === 'Yes'  name="decision" value="Yes")
-            label(for="seriousOffenceYes") Yes
-        div.multiple-choice
-            input#seriousOffenceNo(type="radio" checked=seriousOffenceValue === 'No' name="decision" value="No")
-            label(for="seriousOffenceNo") No
+  div.form-group.inline
+    div.multiple-choice
+      input#seriousOffenceYes(type="radio" checked=seriousOffenceValue === 'Yes'  name="decision" value="Yes")
+      label(for="seriousOffenceYes") Yes
+    div.multiple-choice
+      input#seriousOffenceNo(type="radio" checked=seriousOffenceValue === 'No' name="decision" value="No")
+      label(for="seriousOffenceNo") No

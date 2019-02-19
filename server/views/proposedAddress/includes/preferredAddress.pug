@@ -1,56 +1,56 @@
 h3.heading-medium Preferred address
 div#addressDetails.pure-g.largePaddingBottom
-    div.pure-u-1.pure-u-sm-5-12.pure-g
-        div.pure-u-md-2-3
-            | Address
-            div.paddingBottom.smallMarginTop
-                if address.addressLine1
-                    p#address1.bold.noMargin #{address.addressLine1}
-                if address.addressLine2
-                    p#address2.bold.noMargin #{address.addressLine2}
-                if address.addressTown
-                    p#town.bold.noMargin #{address.addressTown}
-                if address.postCode
-                    p#postCode.bold.noMargin #{address.postCode}
+  div.pure-u-1.pure-u-sm-5-12.pure-g
+    div.pure-u-md-2-3
+      | Address
+      div.paddingBottom.smallMarginTop
+        if address.addressLine1
+          p#address1.bold.noMargin #{address.addressLine1}
+        if address.addressLine2
+          p#address2.bold.noMargin #{address.addressLine2}
+        if address.addressTown
+          p#town.bold.noMargin #{address.addressTown}
+        if address.postCode
+          p#postCode.bold.noMargin #{address.postCode}
 
-        div.pure-u-md-2-3.largePaddingBottom
-            | Telephone
-            if address.telephone
-                p#telephone.bold #{address.telephone}
+    div.pure-u-md-2-3.largePaddingBottom
+      | Telephone
+      if address.telephone
+        p#telephone.bold #{address.telephone}
 
-        div.pure-u-md-2-3.paddingBottom
-            p Is there an electricity supply?
-            if address.electricity
-                p#electricity.bold #{address.electricity}
+    div.pure-u-md-2-3.paddingBottom
+      p Is there an electricity supply?
+      if address.electricity
+        p#electricity.bold #{address.electricity}
 
-    if address.occupier
-        div.pure-u-1.pure-u-md-7-12
-            div.pure-g
-                p.pure-u-1-2.noMargin Name of main occupier
-                p.pure-u-1-4.noMargin Age
-                p.pure-u-1-4.noMargin Relation to offender
+  if address.occupier
+    div.pure-u-1.pure-u-md-7-12
+      div.pure-g
+        p.pure-u-1-2.noMargin Name of main occupier
+        p.pure-u-1-4.noMargin Age
+        p.pure-u-1-4.noMargin Relation to offender
 
-            div.pure-g.smallMarginTop.borderBottomLight.smallPaddingBottom
-                p#occupierName.bold.pure-u-1-2.noMargin #{address.occupier.name}
-                p#occupierRelation.bold.pure-u-1-4.noMargin #{address.occupier.relationship}
+      div.pure-g.smallMarginTop.borderBottomLight.smallPaddingBottom
+        p#occupierName.bold.pure-u-1-2.noMargin #{address.occupier.name}
+        p#occupierRelation.bold.pure-u-1-4.noMargin #{address.occupier.relationship}
 
-            if address.residents
+      if address.residents
 
-                div.pure-g.largePaddingBottom.smallPaddingTop
-                    p.pure-u-1.bold Other residents
-                    p.pure-u-1-2.noMargin Name
-                    p.pure-u-1-4.noMargin Age
-                    p.pure-u-1-4.noMargin Relation to offender
+        div.pure-g.largePaddingBottom.smallPaddingTop
+          p.pure-u-1.bold Other residents
+          p.pure-u-1-2.noMargin Name
+          p.pure-u-1-4.noMargin Age
+          p.pure-u-1-4.noMargin Relation to offender
 
-                    for resident in address.residents
-                        div.pure-u-1
-                            div.pure-g.smallMarginTop.resident
-                                p#residentName.bold.noMargin.pure-u-1-2 #{resident.name}
-                                p#residentAge.bold.noMargin.pure-u-1-4 #{resident.age}
-                                p#residentRelation.bold.noMargin.pure-u-1-4 #{resident.relation}
+          for resident in address.residents
+            div.pure-u-1
+              div.pure-g.smallMarginTop.resident
+                p#residentName.bold.noMargin.pure-u-1-2 #{resident.name}
+                p#residentAge.bold.noMargin.pure-u-1-4 #{resident.age}
+                p#residentRelation.bold.noMargin.pure-u-1-4 #{resident.relation}
 
 
-            div.pure-u-md-2-3
-                p Has the offender been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
-                if address.cautionedAgainstResident
-                    p#cautioned.bold #{address.cautionedAgainstResident}
+      div.pure-u-md-2-3
+        p Has the offender been convicted or cautioned for an offence against any of the above, or any neighbours to the above address?
+        if address.cautionedAgainstResident
+          p#cautioned.bold #{address.cautionedAgainstResident}

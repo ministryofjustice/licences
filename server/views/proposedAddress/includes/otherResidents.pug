@@ -1,27 +1,27 @@
 mixin otherResidents(savedAddress)
-    - var savedResidents = savedAddress.residents || []
-    - var residentsToShow = savedResidents.length > 3 ? savedResidents.length : 3
-    - var n = 0
-    div.otherResidentsInput.largePaddingBottom
-        div.pure-g
-            div.pure-u-1
-                h4.heading-small Other residents
-                p.font-xsmall Only enter an age if the person is under 18
-        div.pure-g.hideMobile
-            div.pure-u-1.pure-u-sm-5-12 Name
-            div.pure-u-1.pure-u-sm-5-12.padLeftRight15 Relation to offender
-            div.pure-u-1.pure-u-sm-1-6 Age
+  - var savedResidents = savedAddress.residents || []
+  - var residentsToShow = savedResidents.length > 3 ? savedResidents.length : 3
+  - var n = 0
+  div.otherResidentsInput.largePaddingBottom
+    div.pure-g
+      div.pure-u-1
+        h4.heading-small Other residents
+        p.font-xsmall Only enter an age if the person is under 18
+    div.pure-g.hideMobile
+      div.pure-u-1.pure-u-sm-5-12 Name
+      div.pure-u-1.pure-u-sm-5-12.padLeftRight15 Relation to offender
+      div.pure-u-1.pure-u-sm-1-6 Age
 
-        while n < residentsToShow
-            -var error = errorObject.residents && errorObject.residents[n] || {}
-            div.pure-g.u-paddingBottom.sm-smallPaddingBottom.resident
-                div.pure-u-1.pure-u-sm-5-12
-                    label.form-label.hideNonMobile(for="residentname-"+n) Name
-                    input(id="residentname-"+n name="[residents]["+n+"][name]" value=savedResidents[n] && savedResidents[n].name autocomplete="off" aria-label="Other resident's name" class=error.name ? "form-control residentName form-control-error" : "form-control residentName")
-                div.pure-u-1.pure-u-sm-5-12.sm-PadLeftRight15
-                    label.form-label.hideNonMobile(for="residentrelationship-"+n) Relation to offender
-                    input(id="residentrelationship-"+n name="[residents]["+n+"][relationship]" value=savedResidents[n] && savedResidents[n].relationship autocomplete = "off" aria-label="Other resident's relationship to offender" class=error.relationship ? "form-control residentRelation form-control-error" : "form-control residentRelation")
-                div.pure-u-1.pure-u-sm-1-6
-                    label.form-label.hideNonMobile(for="residentage-"+n) Age
-                    input(id="residentage-"+n name="[residents]["+n+"][age]" value=savedResidents[n] && savedResidents[n].age autocomplete="off" aria-label="Other resident's age" class=error.age ? "form-control residentAge form-control-error" : "form-control residentAge")
-            - n++
+    while n < residentsToShow
+      -var error = errorObject.residents && errorObject.residents[n] || {}
+      div.pure-g.u-paddingBottom.sm-smallPaddingBottom.resident
+        div.pure-u-1.pure-u-sm-5-12
+          label.form-label.hideNonMobile(for="residentname-" + n) Name
+          input(id="residentname-" + n name="[residents][" + n + "][name]" value=savedResidents[n] && savedResidents[n].name autocomplete="off" aria-label="Other resident's name" class=error.name ? "form-control residentName form-control-error" : "form-control residentName")
+        div.pure-u-1.pure-u-sm-5-12.sm-PadLeftRight15
+          label.form-label.hideNonMobile(for="residentrelationship-" + n) Relation to offender
+          input(id="residentrelationship-" + n name="[residents][" + n + "][relationship]" value=savedResidents[n] && savedResidents[n].relationship autocomplete = "off" aria-label="Other resident's relationship to offender" class=error.relationship ? "form-control residentRelation form-control-error" : "form-control residentRelation")
+        div.pure-u-1.pure-u-sm-1-6
+          label.form-label.hideNonMobile(for="residentage-" + n) Age
+          input(id="residentage-" + n name="[residents][" + n + "][age]" value=savedResidents[n] && savedResidents[n].age autocomplete="off" aria-label="Other resident's age" class=error.age ? "form-control residentAge form-control-error" : "form-control residentAge")
+      - n++

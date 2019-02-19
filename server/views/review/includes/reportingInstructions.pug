@@ -3,30 +3,30 @@ include ./itemAndError
 -var errors = errorObject.reporting && errorObject.reporting.reportingInstructions || {}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
-        div.pure-g
-            div.pure-u-3-4
-                span Name
-    div.pure-u-1-2
-        div.pure-g
-            div.pure-u-2-3
-                +itemAndError(reportingInstructions.name, errors.name, "reportingName")
+  div.pure-u-1-2
+    div.pure-g
+      div.pure-u-3-4
+        span Name
+  div.pure-u-1-2
+    div.pure-g
+      div.pure-u-2-3
+        +itemAndError(reportingInstructions.name, errors.name, "reportingName")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
-        div.pure-g
-            div.pure-u-3-4
-                span Address
-    div.pure-u-1-2
-        +itemAndError(reportingInstructions.buildingAndStreet1, errors.buildingAndStreet1, "reportingAddress1")
-        +itemAndError(reportingInstructions.buildingAndStreet2, errors.buildingAndStreet2, "reportingAddress2")
-        +itemAndError(reportingInstructions.townOrCity, errors.townOrCity, "reportingTown")
-        +itemAndError(reportingInstructions.postcode, errors.postcode, "reportingPostCode")
+  div.pure-u-1-2
+    div.pure-g
+      div.pure-u-3-4
+        span Address
+  div.pure-u-1-2
+    +itemAndError(reportingInstructions.buildingAndStreet1, errors.buildingAndStreet1, "reportingAddress1")
+    +itemAndError(reportingInstructions.buildingAndStreet2, errors.buildingAndStreet2, "reportingAddress2")
+    +itemAndError(reportingInstructions.townOrCity, errors.townOrCity, "reportingTown")
+    +itemAndError(reportingInstructions.postcode, errors.postcode, "reportingPostCode")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
-    div.pure-u-1-2
-        div.pure-g
-            div.pure-u-3-4
-                span Contact number
-    div.pure-u-1-2
-        +itemAndError(reportingInstructions.telephone, errors.telephone, "reportingTelephone")
+  div.pure-u-1-2
+    div.pure-g
+      div.pure-u-3-4
+        span Contact number
+  div.pure-u-1-2
+    +itemAndError(reportingInstructions.telephone, errors.telephone, "reportingTelephone")

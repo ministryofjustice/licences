@@ -5,173 +5,171 @@ const { merge } = require('../utils/functionalHelpers')
 module.exports = { createPrisonerService }
 
 function createPrisonerService(nomisClientBuilder) {
-    async function getPrisonerPersonalDetails(bookingId, token) {
-        try {
-            logger.info(`getPrisonerPersonalDetails: ${bookingId}`)
+  async function getPrisonerPersonalDetails(bookingId, token) {
+    try {
+      logger.info(`getPrisonerPersonalDetails: ${bookingId}`)
 
-            const nomisClient = nomisClientBuilder(token)
+      const nomisClient = nomisClientBuilder(token)
 
-            const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
+      const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
 
-            return formatObjectForView(prisoners[0])
-        } catch (error) {
-            logger.error('Error getting prisoner personal details')
-            return null
-        }
+      return formatObjectForView(prisoners[0])
+    } catch (error) {
+      logger.error('Error getting prisoner personal details')
+      return null
+    }
+  }
+
+  async function getPrisonerDetails(bookingId, token) {
+    try {
+      logger.info(`getPrisonerDetail: ${bookingId}`)
+
+      const nomisClient = nomisClientBuilder(token)
+
+      const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
+      const prisoner = prisoners[0]
+      if (!prisoner) {
+        return
+      }
+
+      const [aliases, offences, coms] = await Promise.all([
+        nomisClient.getAliases(bookingId),
+        nomisClient.getMainOffence(bookingId),
+        nomisClient.getComRelation(bookingId),
+      ])
+
+      const com = await getComDetails(nomisClient, coms)
+
+      const { CRO, PNC } = selectEntriesWithTypes(await nomisClient.getIdentifiers(bookingId), ['PNC', 'CRO'])
+
+      const image = prisoner.facialImageId ? await nomisClient.getImageInfo(prisoner.facialImageId) : { imageId: false }
+
+      return formatObjectForView({
+        ...prisoner,
+        CRO,
+        PNC,
+        offences,
+        ...image,
+        com,
+        aliases,
+      })
+    } catch (error) {
+      logger.error('Error getting prisoner info', error.stack)
+      throw error
+    }
+  }
+
+  async function getComDetails(nomisClient, coms) {
+    if (!coms[0]) {
+      return null
     }
 
-    async function getPrisonerDetails(bookingId, token) {
-        try {
-            logger.info(`getPrisonerDetail: ${bookingId}`)
+    const personIdentifiers = await nomisClient.getPersonIdentifiers(coms[0].personId)
 
-            const nomisClient = nomisClientBuilder(token)
+    const id = personIdentifiers.find(record => record.identifierType === 'EXTERNAL_REL')
+    return [merge(coms[0], { deliusId: id.identifierValue })]
+  }
 
-            const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
-            const prisoner = prisoners[0]
-            if (!prisoner) {
-                return
-            }
+  async function getPrisonerImage(imageId, token) {
+    try {
+      logger.info(`getPrisonerImage: ${imageId}`)
 
-            const [aliases, offences, coms] = await Promise.all([
-                nomisClient.getAliases(bookingId),
-                nomisClient.getMainOffence(bookingId),
-                nomisClient.getComRelation(bookingId),
-            ])
-
-            const com = await getComDetails(nomisClient, coms)
-
-            const { CRO, PNC } = selectEntriesWithTypes(await nomisClient.getIdentifiers(bookingId), ['PNC', 'CRO'])
-
-            const image = prisoner.facialImageId
-                ? await nomisClient.getImageInfo(prisoner.facialImageId)
-                : { imageId: false }
-
-            return formatObjectForView({
-                ...prisoner,
-                CRO,
-                PNC,
-                offences,
-                ...image,
-                com,
-                aliases,
-            })
-        } catch (error) {
-            logger.error('Error getting prisoner info', error.stack)
-            throw error
-        }
+      const nomisClient = nomisClientBuilder(token)
+      const image = await nomisClient.getImageData(imageId)
+      return image
+    } catch (error) {
+      logger.error('Error getting prisoner image')
+      return null
     }
+  }
 
-    async function getComDetails(nomisClient, coms) {
-        if (!coms[0]) {
-            return null
-        }
+  async function getEstablishmentForPrisoner(bookingId, token) {
+    try {
+      logger.info(`getEstablishmentForPrisoner: ${bookingId}`)
 
-        const personIdentifiers = await nomisClient.getPersonIdentifiers(coms[0].personId)
+      const nomisClient = nomisClientBuilder(token)
 
-        const id = personIdentifiers.find(record => record.identifierType === 'EXTERNAL_REL')
-        return [merge(coms[0], { deliusId: id.identifierValue })]
+      const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
+      const prisoner = prisoners[0]
+      if (!prisoner) {
+        return
+      }
+
+      return getEstablishment(prisoner.agencyLocationId, token)
+    } catch (error) {
+      logger.error('Error getting prisoner establishment', error.stack)
+      throw error
     }
+  }
 
-    async function getPrisonerImage(imageId, token) {
-        try {
-            logger.info(`getPrisonerImage: ${imageId}`)
+  async function getEstablishment(agencyLocationId, token) {
+    try {
+      logger.info(`getEstablishment: ${agencyLocationId}`)
 
-            const nomisClient = nomisClientBuilder(token)
-            const image = await nomisClient.getImageData(imageId)
-            return image
-        } catch (error) {
-            logger.error('Error getting prisoner image')
-            return null
-        }
-    }
+      const nomisClient = nomisClientBuilder(token)
+      const establishment = await nomisClient.getEstablishment(agencyLocationId)
 
-    async function getEstablishmentForPrisoner(bookingId, token) {
-        try {
-            logger.info(`getEstablishmentForPrisoner: ${bookingId}`)
-
-            const nomisClient = nomisClientBuilder(token)
-
-            const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
-            const prisoner = prisoners[0]
-            if (!prisoner) {
-                return
-            }
-
-            return getEstablishment(prisoner.agencyLocationId, token)
-        } catch (error) {
-            logger.error('Error getting prisoner establishment', error.stack)
-            throw error
-        }
-    }
-
-    async function getEstablishment(agencyLocationId, token) {
-        try {
-            logger.info(`getEstablishment: ${agencyLocationId}`)
-
-            const nomisClient = nomisClientBuilder(token)
-            const establishment = await nomisClient.getEstablishment(agencyLocationId)
-
-            return formatObjectForView(establishment)
-        } catch (error) {
-            if (error.status === 404) {
-                logger.warn(`Establishment not found for agencyLocationId: ${agencyLocationId}`)
-                return null
-            }
-
-            logger.error('Error getting establishment', error.stack)
-            throw error
-        }
-    }
-
-    async function getCom(bookingId, token) {
-        try {
-            logger.info(`getCom: ${bookingId}`)
-
-            const nomisClient = nomisClientBuilder(token)
-            const coms = await nomisClient.getComRelation(bookingId)
-
-            const com = await getComDetails(nomisClient, coms)
-
-            return formatObjectForView({ com })
-        } catch (error) {
-            if (error.status === 404) {
-                logger.warn(`COM not found for booking id: ${bookingId}`)
-                return null
-            }
-
-            logger.error('Error getting COM', error.stack)
-            throw error
-        }
-    }
-
-    async function getOrganisationContactDetails(role, bookingId, token) {
-        if (role.toUpperCase() === 'RO') {
-            return getCom(bookingId, token)
-        }
-
-        if (role.toUpperCase() === 'CA') {
-            return getEstablishmentForPrisoner(bookingId, token)
-        }
-
+      return formatObjectForView(establishment)
+    } catch (error) {
+      if (error.status === 404) {
+        logger.warn(`Establishment not found for agencyLocationId: ${agencyLocationId}`)
         return null
+      }
+
+      logger.error('Error getting establishment', error.stack)
+      throw error
+    }
+  }
+
+  async function getCom(bookingId, token) {
+    try {
+      logger.info(`getCom: ${bookingId}`)
+
+      const nomisClient = nomisClientBuilder(token)
+      const coms = await nomisClient.getComRelation(bookingId)
+
+      const com = await getComDetails(nomisClient, coms)
+
+      return formatObjectForView({ com })
+    } catch (error) {
+      if (error.status === 404) {
+        logger.warn(`COM not found for booking id: ${bookingId}`)
+        return null
+      }
+
+      logger.error('Error getting COM', error.stack)
+      throw error
+    }
+  }
+
+  async function getOrganisationContactDetails(role, bookingId, token) {
+    if (role.toUpperCase() === 'RO') {
+      return getCom(bookingId, token)
     }
 
-    function selectEntriesWithTypes(identifiers, types) {
-        return identifiers.reduce((selected, element) => {
-            if (types.includes(element.type)) {
-                return { ...selected, [element.type]: element.value }
-            }
-            return selected
-        }, {})
+    if (role.toUpperCase() === 'CA') {
+      return getEstablishmentForPrisoner(bookingId, token)
     }
 
-    return {
-        getPrisonerDetails,
-        getPrisonerImage,
-        getEstablishmentForPrisoner,
-        getEstablishment,
-        getCom,
-        getPrisonerPersonalDetails,
-        getOrganisationContactDetails,
-    }
+    return null
+  }
+
+  function selectEntriesWithTypes(identifiers, types) {
+    return identifiers.reduce((selected, element) => {
+      if (types.includes(element.type)) {
+        return { ...selected, [element.type]: element.value }
+      }
+      return selected
+    }, {})
+  }
+
+  return {
+    getPrisonerDetails,
+    getPrisonerImage,
+    getEstablishmentForPrisoner,
+    getEstablishment,
+    getCom,
+    getPrisonerPersonalDetails,
+    getOrganisationContactDetails,
+  }
 }

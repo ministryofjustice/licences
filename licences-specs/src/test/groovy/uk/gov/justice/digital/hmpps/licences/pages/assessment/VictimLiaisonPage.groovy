@@ -6,17 +6,17 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class VictimLiaisonPage extends Page {
 
-    static url = '/hdc/victim/victimLiaison'
+  static url = '/hdc/victim/victimLiaison'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
+  static content = {
+    header { module(HeaderModule) }
 
-        victimLiaisonRadios { $(name: "decision").module(RadioButtons) }
+    victimLiaisonRadios { $(name: "decision").module(RadioButtons) }
 
-        victimLiaisonForm(required: false) { $("#victimLiaisonDetails") }
-    }
+    victimLiaisonForm(required: false) { $("#victimLiaisonDetails") }
+  }
 }

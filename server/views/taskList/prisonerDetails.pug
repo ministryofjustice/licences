@@ -3,84 +3,84 @@
 h2.heading-medium Offender details
 
 div#personalDetails.pure-g.borderBottom.paddingBottom
-    div.pure-u-1.pure-u-md-4-24
-        div.maxWidth.padd
-            if prisonerInfo.imageId
-                img#prisonerImage.pure-img(src= "/hdc/taskList/image/" + prisonerInfo.imageId)
+  div.pure-u-1.pure-u-md-4-24
+    div.maxWidth.padd
+      if prisonerInfo.imageId
+        img#prisonerImage.pure-img(src= "/hdc/taskList/image/" + prisonerInfo.imageId)
+      else
+        img#prisonerImage.pure-img(src= "/public/images/no-photo.png")
+
+  div.pure-u-1.pure-u-md-5-24.padRight15
+    div.midMarginBottom
+      | Name
+      if(prisonerInfo.firstName || prisonerInfo.lastName)
+        span#prisonerName.block.bold #{prisonerInfo.firstName} #{prisonerInfo.lastName}
+
+    div.midMarginBottom
+      | Prison Number
+      if(prisonerInfo.offenderNo)
+        span#prisonerPrisonNumber.block.bold #{prisonerInfo.offenderNo}
+
+    div.midMarginBottom
+      | Date of birth
+      if(prisonerInfo.dateOfBirth)
+        span#prisonerDob.block.bold #{prisonerInfo.dateOfBirth}
+
+  div.pure-u-1.pure-u-md-10-24.padRight30
+    div.midMarginBottom
+      | Responsible officer
+      if (prisonerInfo.com)
+        span#prisonerComName.block.bold
+          if (prisonerInfo.com)
+            if(prisonerInfo.com.deliusId)
+              a(href="/hdc/contact/ro/" + prisonerInfo.com.deliusId) #{prisonerInfo.com.name}
             else
-                img#prisonerImage.pure-img(src= "/public/images/no-photo.png")
+              | #{prisonerInfo.com.name}
 
-    div.pure-u-1.pure-u-md-5-24.padRight15
-        div.midMarginBottom
-            | Name
-            if(prisonerInfo.firstName || prisonerInfo.lastName)
-                span#prisonerName.block.bold #{prisonerInfo.firstName} #{prisonerInfo.lastName}
+    div.midMarginBottom
+      | Location
+      if(prisonerInfo.agencyLocationDesc)
+        span#prisonerLocationInternal.block.bold #{prisonerInfo.internalLocationDesc}
+        span#prisonerLocationExternal.block.bold #{prisonerInfo.agencyLocationDesc}
 
-        div.midMarginBottom
-            | Prison Number
-            if(prisonerInfo.offenderNo)
-                span#prisonerPrisonNumber.block.bold #{prisonerInfo.offenderNo}
+    div.midMarginBottom
+      | Offence(s)
+      if(prisonerInfo.offences)
+        span#prisonerOffences.block.bold #{prisonerInfo.offences}
 
-        div.midMarginBottom
-            | Date of birth
-            if(prisonerInfo.dateOfBirth)
-                span#prisonerDob.block.bold #{prisonerInfo.dateOfBirth}
+  div.pure-u-1.pure-u-md-5-24
+    if (sentenceDetail.effectiveConditionalReleaseDate && sentenceDetail.effectiveConditionalReleaseDate !== 'Invalid date')
+      div.midMarginBottom
+        | Conditional release date
+        span#prisonerCrd.block.bold  #{sentenceDetail.effectiveConditionalReleaseDate}
+    else if (sentenceDetail.effectiveAutomaticReleaseDate && sentenceDetail.effectiveAutomaticReleaseDate !== 'Invalid date')
+      div.midMarginBottom
+        | Automatic release date
+        span#prisonerArd.block.bold  #{sentenceDetail.effectiveAutomaticReleaseDate}
 
-    div.pure-u-1.pure-u-md-10-24.padRight30
-        div.midMarginBottom
-            | Responsible officer
-            if (prisonerInfo.com)
-                span#prisonerComName.block.bold
-                    if (prisonerInfo.com)
-                        if(prisonerInfo.com.deliusId)
-                            a(href="/hdc/contact/ro/" + prisonerInfo.com.deliusId) #{prisonerInfo.com.name}
-                        else
-                            | #{prisonerInfo.com.name}
+    if (sentenceDetail.homeDetentionCurfewEligibilityDate)
+      div.midMarginBottom
+        | HDC eligibility date
+        span#prisonerHdced.block.bold  #{sentenceDetail.homeDetentionCurfewEligibilityDate}
 
-        div.midMarginBottom
-            | Location
-            if(prisonerInfo.agencyLocationDesc)
-                span#prisonerLocationInternal.block.bold #{prisonerInfo.internalLocationDesc}
-                span#prisonerLocationExternal.block.bold #{prisonerInfo.agencyLocationDesc}
+    if (sentenceDetail.homeDetentionCurfewActualDate)
+      div.midMarginBottom
+        | HDC approved date
+        span#prisonerHdcad.block.bold  #{sentenceDetail.homeDetentionCurfewActualDate}
 
-        div.midMarginBottom
-            | Offence(s)
-            if(prisonerInfo.offences)
-                span#prisonerOffences.block.bold #{prisonerInfo.offences}
+    if (sentenceDetail.sentenceExpiryDate && sentenceDetail.sentenceExpiryDate !== 'Invalid date')
+      div.midMarginBottom
+        | Sentence expiry date
+        span#prisonerSed.block.bold  #{sentenceDetail.sentenceExpiryDate}
 
-    div.pure-u-1.pure-u-md-5-24
-        if (sentenceDetail.effectiveConditionalReleaseDate && sentenceDetail.effectiveConditionalReleaseDate !== 'Invalid date')
-            div.midMarginBottom
-                | Conditional release date
-                span#prisonerCrd.block.bold  #{sentenceDetail.effectiveConditionalReleaseDate}
-        else if (sentenceDetail.effectiveAutomaticReleaseDate && sentenceDetail.effectiveAutomaticReleaseDate !== 'Invalid date')
-            div.midMarginBottom
-                | Automatic release date
-                span#prisonerArd.block.bold  #{sentenceDetail.effectiveAutomaticReleaseDate}
+    if (sentenceDetail.licenceExpiryDate && sentenceDetail.licenceExpiryDate !== 'Invalid date')
+      div.midMarginBottom
+        | Licence expiry date
+        span#prisonerLed.block.bold  #{sentenceDetail.licenceExpiryDate}
 
-        if (sentenceDetail.homeDetentionCurfewEligibilityDate)
-            div.midMarginBottom
-                | HDC eligibility date
-                span#prisonerHdced.block.bold  #{sentenceDetail.homeDetentionCurfewEligibilityDate}
-
-        if (sentenceDetail.homeDetentionCurfewActualDate)
-            div.midMarginBottom
-                | HDC approved date
-                span#prisonerHdcad.block.bold  #{sentenceDetail.homeDetentionCurfewActualDate}
-
-        if (sentenceDetail.sentenceExpiryDate && sentenceDetail.sentenceExpiryDate !== 'Invalid date')
-            div.midMarginBottom
-                | Sentence expiry date
-                span#prisonerSed.block.bold  #{sentenceDetail.sentenceExpiryDate}
-
-        if (sentenceDetail.licenceExpiryDate && sentenceDetail.licenceExpiryDate !== 'Invalid date')
-            div.midMarginBottom
-                | Licence expiry date
-                span#prisonerLed.block.bold  #{sentenceDetail.licenceExpiryDate}
-
-        if (sentenceDetail.topupSupervisionExpiryDate && sentenceDetail.topupSupervisionExpiryDate !== 'Invalid date')
-            div.midMarginBottom
-                | Post sentence supervision expiry date
-                span#prisonerPssed.block.bold  #{sentenceDetail.topupSupervisionExpiryDate}
+    if (sentenceDetail.topupSupervisionExpiryDate && sentenceDetail.topupSupervisionExpiryDate !== 'Invalid date')
+      div.midMarginBottom
+        | Post sentence supervision expiry date
+        span#prisonerPssed.block.bold  #{sentenceDetail.topupSupervisionExpiryDate}
 
 

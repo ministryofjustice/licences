@@ -1,46 +1,46 @@
 extends ../layout
 
 block content
-    - var decisionValue = data.decision || '';
-    - var reasonValue = data.reason || null;
-    - var outOfTimeReasons = data.outOfTimeReasons || [];
+  - var decisionValue = data.decision || '';
+  - var reasonValue = data.reason || null;
+  - var outOfTimeReasons = data.outOfTimeReasons || [];
 
-    div.pure-g.pure-u-1
-        include ../includes/back
-        include ../includes/personalDetailsSummary
+  div.pure-g.pure-u-1
+    include ../includes/back
+    include ../includes/personalDetailsSummary
 
-    h2.heading-large HDC refusal
+  h2.heading-large HDC refusal
 
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        input(type="hidden" name="decision" value=decisionValue)
+  form(method="post")
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="bookingId" value=bookingId || '')
+    input(type="hidden" name="decision" value=decisionValue)
 
-        div.largePaddingBottom.smallPaddingTop
+    div.largePaddingBottom.smallPaddingTop
 
-            div#reasonForm.form-group
-                p Select a reason why you are refusing HDC for this offender
+      div#reasonForm.form-group
+        p Select a reason why you are refusing HDC for this offender
 
-                div.multiple-choice
-                    input#noAddress(type="radio" checked=reasonValue === 'addressUnsuitable' name="reason" value="addressUnsuitable")
-                    label(for="noAddress") No available address
-                div.multiple-choice(data-target="outOfTimeForm")
-                    input#outOfTime(type="radio" checked=reasonValue === 'insufficientTime' name="reason" value="insufficientTime")
-                    label(for="outOfTime") Out of time
+        div.multiple-choice
+          input#noAddress(type="radio" checked=reasonValue === 'addressUnsuitable' name="reason" value="addressUnsuitable")
+          label(for="noAddress") No available address
+        div.multiple-choice(data-target="outOfTimeForm")
+          input#outOfTime(type="radio" checked=reasonValue === 'insufficientTime' name="reason" value="insufficientTime")
+          label(for="outOfTime") Out of time
 
-            div#outOfTimeForm.pure-g.js-hidden.panel
-                div.pure-u-3-5
-                    div.multiple-choice
-                        input(type='checkbox' name='outOfTimeReasons' id='underInvestigation' value='underInvestigation' checked=outOfTimeReasons.indexOf('underInvestigation') !== -1)
-                        label(for='underInvestigation') The offender is currently under investigation for an offence committed during the current sentence and has been referred to the police/Independent Adjudicator
-                    div.multiple-choice
-                        input(type='checkbox' name='outOfTimeReasons' id='confiscationOrder' value='confiscationOrder' checked=outOfTimeReasons.indexOf('confiscationOrder') !== -1)
-                        label(for='confiscationOrder') The offender is subject to a confiscation order and the relevant authority has advised that HDC should not progress
-                    div.multiple-choice
-                        input(type='checkbox' name='outOfTimeReasons' id='onRemand' value='onRemand' checked=outOfTimeReasons.indexOf('onRemand') !== -1)
-                        label(for='onRemand') The offender is currently on remand
-                    div.multiple-choice
-                        input(type='checkbox' name='outOfTimeReasons' id='riskManagement' value='riskManagement' checked=outOfTimeReasons.indexOf('riskManagement') !== -1)
-                        label(for='riskManagement') There are unresolved risk management issues
+      div#outOfTimeForm.pure-g.js-hidden.panel
+        div.pure-u-3-5
+          div.multiple-choice
+            input(type='checkbox' name='outOfTimeReasons' id='underInvestigation' value='underInvestigation' checked=outOfTimeReasons.indexOf('underInvestigation') !== -1)
+            label(for='underInvestigation') The offender is currently under investigation for an offence committed during the current sentence and has been referred to the police/Independent Adjudicator
+          div.multiple-choice
+            input(type='checkbox' name='outOfTimeReasons' id='confiscationOrder' value='confiscationOrder' checked=outOfTimeReasons.indexOf('confiscationOrder') !== -1)
+            label(for='confiscationOrder') The offender is subject to a confiscation order and the relevant authority has advised that HDC should not progress
+          div.multiple-choice
+            input(type='checkbox' name='outOfTimeReasons' id='onRemand' value='onRemand' checked=outOfTimeReasons.indexOf('onRemand') !== -1)
+            label(for='onRemand') The offender is currently on remand
+          div.multiple-choice
+            input(type='checkbox' name='outOfTimeReasons' id='riskManagement' value='riskManagement' checked=outOfTimeReasons.indexOf('riskManagement') !== -1)
+            label(for='riskManagement') There are unresolved risk management issues
 
-        include ../includes/formSubmit
+    include ../includes/formSubmit

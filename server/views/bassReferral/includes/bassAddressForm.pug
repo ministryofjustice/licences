@@ -1,31 +1,31 @@
 mixin bassAddressForm
-    -var bassOffer = data && data.bassOffer || {}
+  -var bassOffer = data && data.bassOffer || {}
 
-    div.pure-g.paddingBottom
-        div.pure-u-1.pure-u-md-1-2
-            div.pure-g
-                div.pure-u-1.pure-u-md-3-5
+  div.pure-g.paddingBottom
+    div.pure-u-1.pure-u-md-1-2
+      div.pure-g
+        div.pure-u-1.pure-u-md-3-5
 
-                    div.form-group.midMarginBottom
-                        div.bold Area provided
-                        input.form-control(id="bassArea" name="bassArea" value=bassOffer.bassArea autofocus aria-label="Area provided")
+          div.form-group.midMarginBottom
+            div.bold Area provided
+            input.form-control(id="bassArea" name="bassArea" value=bassOffer.bassArea autofocus aria-label="Area provided")
 
-                    div.form-group.midMarginBottom.paddingTop
-                        div.bold.smallPaddingBottom BASS address
-                        label.form-label(for="address1") Building and street
-                        input.form-control(id="address1" name="addressLine1" value=bassOffer.addressLine1 autofocus aria-label="Building and street")
-                        input.form-control.smallMarginTop(id="address2" name="addressLine2" value=bassOffer.addressLine2)
+          div.form-group.midMarginBottom.paddingTop
+            div.bold.smallPaddingBottom BASS address
+            label.form-label(for="address1") Building and street
+            input.form-control(id="address1" name="addressLine1" value=bassOffer.addressLine1 autofocus aria-label="Building and street")
+            input.form-control.smallMarginTop(id="address2" name="addressLine2" value=bassOffer.addressLine2)
 
-                    div.form-group.midMarginBottom
-                        label.form-label(for="town") Town or city
-                        input.form-control(id="town" name="addressTown" value=bassOffer.addressTown aria-label="Town or city")
+          div.form-group.midMarginBottom
+            label.form-label(for="town") Town or city
+            input.form-control(id="town" name="addressTown" value=bassOffer.addressTown aria-label="Town or city")
 
-                    div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
-                        label.form-label(for="postCode") Postcode
-                        input.form-control(id="postCode" name="postCode" value=bassOffer.postCode aria-label="Postcode")
+          div.form-group.midMarginBottom.pure-u-sm-1.pure-u-md-1-2
+            label.form-label(for="postCode") Postcode
+            input.form-control(id="postCode" name="postCode" value=bassOffer.postCode aria-label="Postcode")
 
-                    div.form-group.pure-u-sm-1.pure-u-md-3-4
-                        label.form-label(for="telephone") Telephone (optional)
-                        input.form-control(id="telephone" name="telephone" value=bassOffer.telephone aria-label="Telephone")
+          div.form-group.pure-u-sm-1.pure-u-md-3-4
+            label.form-label(for="telephone") Telephone (optional)
+            input.form-control(id="telephone" name="telephone" value=bassOffer.telephone aria-label="Telephone")
 
 

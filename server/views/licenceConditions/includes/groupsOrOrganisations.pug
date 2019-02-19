@@ -1,5 +1,5 @@
 label(for='groupsOrOrganisation') Names of groups and/or organisations
 textarea(name='groupsOrOrganisation' id='groupsOrOrganisation' class='form-control' rows='4' aria-label="Name, group or organisation")
-    if condition.user_submission && condition.user_submission.groupsOrOrganisation
-        | #{condition.user_submission.groupsOrOrganisation}
+  if condition.user_submission && condition.user_submission.groupsOrOrganisation
+    | #{condition.user_submission.groupsOrOrganisation}
 

@@ -3,40 +3,40 @@ include ../proposedAddress/includes/addressDetail
 
 block content
 
-    -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
-    -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress : {}
-    -var withdrawnAddressObj = Object.keys(address).length === 0 && data.proposedAddress && data.proposedAddress.rejections && data.proposedAddress.rejections[data.proposedAddress.rejections.length-1] || {}
-    -var withdrawnAddress = withdrawnAddressObj.address || {}
-    -var addressWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawAddress'
-    -var consentWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawConsent'
-    -var showAddressActions = postApproval || stage === 'PROCESSING_CA'
+  -var review = data.curfew && data.curfew.curfewAddressReview ? data.curfew.curfewAddressReview : {}
+  -var address = data.proposedAddress && data.proposedAddress.curfewAddress ? data.proposedAddress.curfewAddress : {}
+  -var withdrawnAddressObj = Object.keys(address).length === 0 && data.proposedAddress && data.proposedAddress.rejections && data.proposedAddress.rejections[data.proposedAddress.rejections.length-1] || {}
+  -var withdrawnAddress = withdrawnAddressObj.address || {}
+  -var addressWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawAddress'
+  -var consentWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawConsent'
+  -var showAddressActions = postApproval || stage === 'PROCESSING_CA'
 
 
-    div.pure-g.pure-u-1
-        div
-            include ../includes/backToCheckList
-            include ../includes/personalDetailsSummary
+  div.pure-g.pure-u-1
+    div
+      include ../includes/backToCheckList
+      include ../includes/personalDetailsSummary
 
-            if addressWithdrawn || consentWithdrawn
-                -var message = addressWithdrawn ? 'The offender has withdrawn this address' : 'The Homeowner/landlord has withdrawn consent for this address'
-                div.pure-g
-                    div.error-summary.pure-u-1.center(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
-                        h2.heading-medium.error-summary-heading.noMargin#error-summary-heading #{message}
+      if addressWithdrawn || consentWithdrawn
+        -var message = addressWithdrawn ? 'The offender has withdrawn this address' : 'The Homeowner/landlord has withdrawn consent for this address'
+        div.pure-g
+          div.error-summary.pure-u-1.center(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
+            h2.heading-medium.error-summary-heading.noMargin#error-summary-heading #{message}
 
-            h2.heading-large Proposed address
+      h2.heading-large Proposed address
 
 
-            div.pure-u-1.pure-u-1-2.midPaddingBottom
-                p The following address has been requested by the offender
-                if licenceStatus.tasks.curfewAddressReview === 'DONE'
-                    | and checked by the responsible officer.
+      div.pure-u-1.pure-u-1-2.midPaddingBottom
+        p The following address has been requested by the offender
+        if licenceStatus.tasks.curfewAddressReview === 'DONE'
+          | and checked by the responsible officer.
 
-            if address.addressLine1
-                +addressDetail('curfew', address, review)
+      if address.addressLine1
+        +addressDetail('curfew', address, review)
 
-            else if showAddressActions
-                +addressDetail('curfew', withdrawnAddress, review)
+      else if showAddressActions
+        +addressDetail('curfew', withdrawnAddress, review)
 
-            if showAddressActions
-                div.borderBottomLightMedium.borderTopLight.marginBottomLarge
-                    include ./includes/addressActions
+      if showAddressActions
+        div.borderBottomLightMedium.borderTopLight.marginBottomLarge
+          include ./includes/addressActions

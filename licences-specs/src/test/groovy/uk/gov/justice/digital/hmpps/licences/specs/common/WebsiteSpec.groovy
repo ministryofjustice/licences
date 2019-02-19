@@ -14,69 +14,69 @@ import uk.gov.justice.digital.hmpps.licences.util.TestData
 @Stepwise
 class WebsiteSpec extends GebReportingSpec {
 
-    @Shared
-    TestData testData = new TestData()
+  @Shared
+  TestData testData = new TestData()
 
-    @Shared
-    Actions actions = new Actions()
+  @Shared
+  Actions actions = new Actions()
 
-    def cleanupSpec() {
-        actions.logOut()
-    }
+  def cleanupSpec() {
+    actions.logOut()
+  }
 
-    @Unroll
-    def 'Correct user name is shown when I log in as #user'() {
+  @Unroll
+  def 'Correct user name is shown when I log in as #user'() {
 
-        when: 'I log in'
-        actions.logIn(user)
-        to CaselistPage
+    when: 'I log in'
+    actions.logIn(user)
+    to CaselistPage
 
-        then: 'my user name is shown'
-        header.user.contains(userName)
-        actions.logOut()
+    then: 'my user name is shown'
+    header.user.contains(userName)
+    actions.logOut()
 
-        where:
-        user | userName
-        'CA' | 'Catherine Amos'
-        'RO' | 'Ryan Orton'
-        'DM' | 'Diane Matthews'
-    }
+    where:
+    user | userName
+    'CA' | 'Catherine Amos'
+    'RO' | 'Ryan Orton'
+    'DM' | 'Diane Matthews'
+  }
 
-    def 'Login prevented for user without licences role'() {
+  def 'Login prevented for user without licences role'() {
 
-        when: 'I log in as a Nomis user without Licences roles'
-        to SigninPage
-        signInAs('NONE')
+    when: 'I log in as a Nomis user without Licences roles'
+    to SigninPage
+    signInAs('NONE')
 
-        then: 'Log in fails and I see the log in screen'
-        at SigninPage
-    }
+    then: 'Log in fails and I see the log in screen'
+    at SigninPage
+  }
 
-    def 'User can log out'() {
+  def 'User can log out'() {
 
-        given: 'I am viewing the website'
-        actions.logIn()
-        to CaselistPage
+    given: 'I am viewing the website'
+    actions.logIn()
+    to CaselistPage
 
-        when: 'I click the logout link'
-        header.logoutLink.click()
+    when: 'I click the logout link'
+    header.logoutLink.click()
 
-        then: 'I return to login page'
-        at SigninPage
-    }
+    then: 'I return to login page'
+    at SigninPage
+  }
 
-    def 'Health page shows application status'() {
+  def 'Health page shows application status'() {
 
-        when: 'Viewing the health page'
-        to HealthPage
+    when: 'Viewing the health page'
+    to HealthPage
 
-        then: 'I see health status OK'
+    then: 'I see health status OK'
 
-        def json = driver.pageSource - ' xmlns="http://www.w3.org/1999/xhtml"' - '<html><head></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">'
-        def response = new JsonSlurper().parseText(json)
+    def json = driver.pageSource - ' xmlns="http://www.w3.org/1999/xhtml"' - '<html><head></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">'
+    def response = new JsonSlurper().parseText(json)
 
-        response.healthy == true
-        response.checks.db == 'OK'
-        response.checks.nomis == 'OK'
-    }
+    response.healthy == true
+    response.checks.db == 'OK'
+    response.checks.nomis == 'OK'
+  }
 }

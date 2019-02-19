@@ -93,7 +93,7 @@
       "riskManagement": {
         "planningActions": "No",
         "awaitingInformation": "No",
-        "proposedAddressSuitable": "Yes",
+        "proposedAddressSuitable": "Yes"
       }
     },
     "victim": {

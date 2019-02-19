@@ -1,17 +1,17 @@
 div.pure-g
-    div.pure-u-1.inline
-        div.multiple-choice
-            input(id='notToResideAny' type='radio' name='notResideWithGender' value='any' checked=condition.user_submission && condition.user_submission.notResideWithGender === 'any')
-            label(for='notToResideAny') Any
+  div.pure-u-1.inline
+    div.multiple-choice
+      input(id='notToResideAny' type='radio' name='notResideWithGender' value='any' checked=condition.user_submission && condition.user_submission.notResideWithGender === 'any')
+      label(for='notToResideAny') Any
 
-        div.multiple-choice
-            input(id='notToResideFemale' type='radio' name='notResideWithGender' value='any female' checked=condition.user_submission && condition.user_submission.notResideWithGender === 'any female')
-            label(for='notToResideFemale') Any female
+    div.multiple-choice
+      input(id='notToResideFemale' type='radio' name='notResideWithGender' value='any female' checked=condition.user_submission && condition.user_submission.notResideWithGender === 'any female')
+      label(for='notToResideFemale') Any female
 
-        div.multiple-choice
-            input(id='notToResideMale' type='radio' name='notResideWithGender' value='any male' checked=condition.user_submission && condition.user_submission.notResideWithGender === 'any male')
-            label(for='notToResideMale') Any male
+    div.multiple-choice
+      input(id='notToResideMale' type='radio' name='notResideWithGender' value='any male' checked=condition.user_submission && condition.user_submission.notResideWithGender === 'any male')
+      label(for='notToResideMale') Any male
 
 div.inlineFormItem
-    label(for='notResideWithAge') Age
-    input(type='number' name='notResideWithAge' id='notResideWithAge' class='form-control' value=condition.user_submission && condition.user_submission.notResideWithAge aria-label="Age")
+  label(for='notResideWithAge') Age
+  input(type='number' name='notResideWithAge' id='notResideWithAge' class='form-control' value=condition.user_submission && condition.user_submission.notResideWithAge aria-label="Age")

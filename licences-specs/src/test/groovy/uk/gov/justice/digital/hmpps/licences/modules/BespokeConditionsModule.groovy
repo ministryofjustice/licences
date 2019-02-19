@@ -5,16 +5,16 @@ import geb.Module
 
 class BespokeConditionsModule extends Module {
 
-    static content = {
+  static content = {
 
-        conditions {
-            $("div.bespokeConditionsForm").collect { condition ->
-                [
-                        input        : condition.find('textarea'),
-                        value        : condition.find('textarea').value(),
-                        removeControl: condition.find('a.removeBespoke')
-                ]
-            }
-        }
+    conditions {
+      $("div.bespokeConditionsForm").collect { condition ->
+        [
+          input        : condition.find('textarea'),
+          value        : condition.find('textarea').value(),
+          removeControl: condition.find('a.removeBespoke')
+        ]
+      }
     }
+  }
 }

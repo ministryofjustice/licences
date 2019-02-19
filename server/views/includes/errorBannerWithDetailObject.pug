@@ -1,10 +1,10 @@
 mixin errorBannerWithDetail(errorObject)
-    if Object.keys(errorObject).length !== 0
-        div.pure-g
-            div.error-summary.pure-u-1.pure-u-md-1-2(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
-                h2.heading-medium.error-summary-heading#error-summary-heading
-                    | There is a problem
-                ul.error-summary-list
-                    each val in errorObject
-                        li
-                            a(href="#error-anchor") #{val}
+  if Object.keys(errorObject).length !== 0
+    div.pure-g
+      div.error-summary.pure-u-1.pure-u-md-1-2(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
+        h2.heading-medium.error-summary-heading#error-summary-heading
+          | There is a problem
+        ul.error-summary-list
+          each val in errorObject
+            li
+              a(href="#error-anchor") #{val}

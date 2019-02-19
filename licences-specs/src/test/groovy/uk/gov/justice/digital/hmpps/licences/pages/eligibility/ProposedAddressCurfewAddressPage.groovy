@@ -9,27 +9,27 @@ import uk.gov.justice.digital.hmpps.licences.modules.ResidentDetailsModule
 
 class ProposedAddressCurfewAddressPage extends Page {
 
-    static url = '/hdc/proposedAddress/curfewAddress'
+  static url = '/hdc/proposedAddress/curfewAddress'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
+  static content = {
 
-        header { module(HeaderModule) }
+    header { module(HeaderModule) }
 
-        address { module(AddressDetailsModule) }
-        occupier { module(OccupierDetailsModule) }
-        residents { module(ResidentDetailsModule) }
+    address { module(AddressDetailsModule) }
+    occupier { module(OccupierDetailsModule) }
+    residents { module(ResidentDetailsModule) }
 
-        cautionedRadios { $(name: "cautionedAgainstResident").module(RadioButtons) }
+    cautionedRadios { $(name: "cautionedAgainstResident").module(RadioButtons) }
 
-        alternativeAddressRadios { $(name: "alternativeAddress").module(RadioButtons) }
+    alternativeAddressRadios { $(name: "alternativeAddress").module(RadioButtons) }
 
-        alternativeAddressForm(required: false) { $('#alternativeAddress')}
+    alternativeAddressForm(required: false) { $('#alternativeAddress') }
 
-        addResidentLink { $(".otherResidentsInput", 0).find('a') }
-        addResidentLinkAlternative { $(".otherResidentsInput", 1).find('a') }
-    }
+    addResidentLink { $(".otherResidentsInput", 0).find('a') }
+    addResidentLinkAlternative { $(".otherResidentsInput", 1).find('a') }
+  }
 }

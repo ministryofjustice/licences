@@ -9,171 +9,171 @@ const reportingInstructions = require('./tasks/reportingInstructions')
 const { getStatusLabel } = require('../../../utils/licenceStatusLabels')
 
 module.exports = ({ decisions, tasks, stage }) => {
-    const {
-        insufficientTimeStop,
-        addressWithdrawn,
-        curfewAddressRejected,
-        bassReferralNeeded,
-        confiscationOrder,
-    } = decisions
+  const {
+    insufficientTimeStop,
+    addressWithdrawn,
+    curfewAddressRejected,
+    bassReferralNeeded,
+    confiscationOrder,
+  } = decisions
 
-    if (insufficientTimeStop) {
-        return [
-            { task: 'eligibilitySummaryTask' },
-            {
-                title: 'Final decision',
-                label: getDecisionLabel({ decisions, tasks, stage }),
-                action: {
-                    type: 'btn',
-                    href: '/hdc/approval/refuseReason/',
-                    text: 'Refuse HDC',
-                },
-            },
-        ]
-    }
-
-    if (addressWithdrawn || curfewAddressRejected) {
-        return [
-            { task: 'eligibilitySummaryTask' },
-            {
-                title: 'Proposed curfew address',
-                label: curfewAddress.getLabel({ decisions, tasks }),
-                action: {
-                    type: 'btn-secondary',
-                    href: '/hdc/review/address/',
-                    text: 'View',
-                },
-            },
-            {
-                title: 'Return to prison case admin',
-                action: {
-                    type: 'btn-secondary',
-                    href: '/hdc/send/return/',
-                    text: 'Return to prison case admin',
-                },
-            },
-            {
-                title: 'Final decision',
-                label: getDecisionLabel({ decisions, tasks, stage }),
-                action: {
-                    type: 'btn',
-                    href: '/hdc/approval/refuseReason/',
-                    text: 'Refuse HDC',
-                },
-            },
-        ]
-    }
-
+  if (insufficientTimeStop) {
     return [
-        {
-            title: 'BASS address',
-            label: bassOffer.getLabel({ decisions, tasks }),
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/review/bassOffer/',
-                text: 'View',
-            },
+      { task: 'eligibilitySummaryTask' },
+      {
+        title: 'Final decision',
+        label: getDecisionLabel({ decisions, tasks, stage }),
+        action: {
+          type: 'btn',
+          href: '/hdc/approval/refuseReason/',
+          text: 'Refuse HDC',
         },
-        {
-            title: 'Proposed curfew address',
-            label: curfewAddress.getLabel({ decisions, tasks }),
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/review/address/',
-                text: 'View',
-            },
-        },
-        {
-            title: 'Risk management',
-            label: riskManagement.getLabel({ decisions, tasks }),
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/review/risk/',
-                text: 'View',
-            },
-        },
-        {
-            title: 'Victim liaison',
-            label: victimLiaison.getLabel({ decisions, tasks }),
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/review/victimLiaison/',
-                text: 'View',
-            },
-        },
-        {
-            title: 'Curfew hours',
-            label: curfewHours.getLabel({ decisions, tasks }),
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/review/curfewHours/',
-                text: 'View',
-            },
-        },
-        {
-            title: 'Additional conditions',
-            label: additionalConditions.getLabel({ decisions, tasks }),
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/review/conditions/',
-                text: 'View',
-            },
-        },
-        {
-            title: 'Reporting instructions',
-            label: reportingInstructions.getLabel({ decisions, tasks }),
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/review/reporting/',
-                text: 'View',
-            },
-        },
-        { task: 'finalChecksTask' },
-        {
-            title: 'Postpone',
-            label: postponement.getLabel({ decisions }),
-            action: postponement.getAction({ decisions }),
-        },
-        {
-            title: 'Return to prison case admin',
-            action: {
-                type: 'btn-secondary',
-                href: '/hdc/send/return/',
-                text: 'Return to prison case admin',
-            },
-        },
-        {
-            title: 'Final decision',
-            label: getDecisionLabel({ decisions, tasks, stage }),
-            action: {
-                type: 'btn',
-                href: '/hdc/approval/release/',
-                text: 'Continue',
-            },
-        },
-    ].filter(task => {
-        if (task.title === 'BASS address') {
-            return bassReferralNeeded
-        }
+      },
+    ]
+  }
 
-        if (task.title === 'Proposed curfew address') {
-            return !bassReferralNeeded
-        }
+  if (addressWithdrawn || curfewAddressRejected) {
+    return [
+      { task: 'eligibilitySummaryTask' },
+      {
+        title: 'Proposed curfew address',
+        label: curfewAddress.getLabel({ decisions, tasks }),
+        action: {
+          type: 'btn-secondary',
+          href: '/hdc/review/address/',
+          text: 'View',
+        },
+      },
+      {
+        title: 'Return to prison case admin',
+        action: {
+          type: 'btn-secondary',
+          href: '/hdc/send/return/',
+          text: 'Return to prison case admin',
+        },
+      },
+      {
+        title: 'Final decision',
+        label: getDecisionLabel({ decisions, tasks, stage }),
+        action: {
+          type: 'btn',
+          href: '/hdc/approval/refuseReason/',
+          text: 'Refuse HDC',
+        },
+      },
+    ]
+  }
 
-        if (task.title === 'Postpone') {
-            return confiscationOrder
-        }
+  return [
+    {
+      title: 'BASS address',
+      label: bassOffer.getLabel({ decisions, tasks }),
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/review/bassOffer/',
+        text: 'View',
+      },
+    },
+    {
+      title: 'Proposed curfew address',
+      label: curfewAddress.getLabel({ decisions, tasks }),
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/review/address/',
+        text: 'View',
+      },
+    },
+    {
+      title: 'Risk management',
+      label: riskManagement.getLabel({ decisions, tasks }),
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/review/risk/',
+        text: 'View',
+      },
+    },
+    {
+      title: 'Victim liaison',
+      label: victimLiaison.getLabel({ decisions, tasks }),
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/review/victimLiaison/',
+        text: 'View',
+      },
+    },
+    {
+      title: 'Curfew hours',
+      label: curfewHours.getLabel({ decisions, tasks }),
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/review/curfewHours/',
+        text: 'View',
+      },
+    },
+    {
+      title: 'Additional conditions',
+      label: additionalConditions.getLabel({ decisions, tasks }),
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/review/conditions/',
+        text: 'View',
+      },
+    },
+    {
+      title: 'Reporting instructions',
+      label: reportingInstructions.getLabel({ decisions, tasks }),
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/review/reporting/',
+        text: 'View',
+      },
+    },
+    { task: 'finalChecksTask' },
+    {
+      title: 'Postpone',
+      label: postponement.getLabel({ decisions }),
+      action: postponement.getAction({ decisions }),
+    },
+    {
+      title: 'Return to prison case admin',
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/send/return/',
+        text: 'Return to prison case admin',
+      },
+    },
+    {
+      title: 'Final decision',
+      label: getDecisionLabel({ decisions, tasks, stage }),
+      action: {
+        type: 'btn',
+        href: '/hdc/approval/release/',
+        text: 'Continue',
+      },
+    },
+  ].filter(task => {
+    if (task.title === 'BASS address') {
+      return bassReferralNeeded
+    }
 
-        return true
-    })
+    if (task.title === 'Proposed curfew address') {
+      return !bassReferralNeeded
+    }
+
+    if (task.title === 'Postpone') {
+      return confiscationOrder
+    }
+
+    return true
+  })
 }
 
 function getDecisionLabel({ decisions, tasks, stage }) {
-    const { refused, refusalReason } = decisions
-    const statusLabel = getStatusLabel({ decisions, tasks, stage }, 'DM')
+  const { refused, refusalReason } = decisions
+  const statusLabel = getStatusLabel({ decisions, tasks, stage }, 'DM')
 
-    if (refused && refusalReason) {
-        return `${statusLabel} : ${refusalReason}`
-    }
-    return statusLabel
+  if (refused && refusalReason) {
+    return `${statusLabel} : ${refusalReason}`
+  }
+  return statusLabel
 }

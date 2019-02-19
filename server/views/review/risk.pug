@@ -3,37 +3,37 @@ include includes/additionalConditions
 
 block content
 
-    - var risk = data.risk && data.risk.riskManagement ? data.risk.riskManagement : {}
+  - var risk = data.risk && data.risk.riskManagement ? data.risk.riskManagement : {}
 
-    include ../includes/backToCheckList
-    include ../includes/personalDetailsSummary
+  include ../includes/backToCheckList
+  include ../includes/personalDetailsSummary
 
-    div.pure-u-1.pure-u-md-1-2.paddingBottom
-        h2.heading-large Risk management
+  div.pure-u-1.pure-u-md-1-2.paddingBottom
+    h2.heading-large Risk management
 
-        div.smallPaddingTop
-            p Are there any risk management planning actions that must take place prior to release?
+    div.smallPaddingTop
+      p Are there any risk management planning actions that must take place prior to release?
 
-            span#planningActions.block.bold #{risk.planningActions}
+      span#planningActions.block.bold #{risk.planningActions}
 
-        div.smallPaddingTop
-            p Are you still awaiting information?
+    div.smallPaddingTop
+      p Are you still awaiting information?
 
-            span#awaitingInformation.block.bold #{risk.awaitingInformation}
+      span#awaitingInformation.block.bold #{risk.awaitingInformation}
 
-        if risk.riskManagementDetails
-            div.smallPaddingTop
-                p Details of your checks
+    if risk.riskManagementDetails
+      div.smallPaddingTop
+        p Details of your checks
 
-                span#details.block.bold #{risk.riskManagementDetails}
+        span#details.block.bold #{risk.riskManagementDetails}
 
-        div.smallPaddingTop
-            p Is the address proposed by the offender suitable?
+    div.smallPaddingTop
+      p Is the address proposed by the offender suitable?
 
-            span#proposedAddressSuitable.block.bold #{risk.proposedAddressSuitable}
+      span#proposedAddressSuitable.block.bold #{risk.proposedAddressSuitable}
 
-        if risk.proposedAddressSuitable === 'No'
-            div.smallPaddingTop
-                p Explain why you made your decision
+    if risk.proposedAddressSuitable === 'No'
+      div.smallPaddingTop
+        p Explain why you made your decision
 
-                span#unsuitableReason.block.bold #{risk.unsuitableReason}
+        span#unsuitableReason.block.bold #{risk.unsuitableReason}

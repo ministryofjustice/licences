@@ -7,21 +7,21 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class BassOfferPage extends Page {
 
-    static url = '/hdc/bassReferral/bassOffer'
+  static url = '/hdc/bassReferral/bassOffer'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
+  static content = {
+    header { module(HeaderModule) }
 
-        bass { module(BassRequestModule) }
+    bass { module(BassRequestModule) }
 
-        bassAcceptedRadios { $(name: "bassAccepted").module(RadioButtons) }
+    bassAcceptedRadios { $(name: "bassAccepted").module(RadioButtons) }
 
-        bassOfferDetails { $('#bassOfferDetails') }
+    bassOfferDetails { $('#bassOfferDetails') }
 
-        bassAddressForm(required: false) { $('#bassAddressForm') }
-    }
+    bassAddressForm(required: false) { $('#bassAddressForm') }
+  }
 }

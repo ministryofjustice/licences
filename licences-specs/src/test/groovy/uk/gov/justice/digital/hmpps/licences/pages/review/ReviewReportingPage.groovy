@@ -6,16 +6,16 @@ import uk.gov.justice.digital.hmpps.licences.modules.ReportingDetailsModule
 
 class ReviewReportingPage extends Page {
 
-    static url = '/hdc/review/reporting'
+  static url = '/hdc/review/reporting'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
+  static content = {
 
-        header { module(HeaderModule) }
+    header { module(HeaderModule) }
 
-        reporting { module(ReportingDetailsModule) }
-    }
+    reporting { module(ReportingDetailsModule) }
+  }
 }

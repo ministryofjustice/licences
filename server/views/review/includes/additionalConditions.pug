@@ -1,47 +1,47 @@
 mixin additionalConditions(editable)
-    - var allowEdit = (editable === 'editable')
-    - var conditions = data.licenceConditions
+  - var allowEdit = (editable === 'editable')
+  - var conditions = data.licenceConditions
 
-    for condition, index in conditions
-        div.additional.pure-g.borderBottomLight.midPaddingTopBottom
-            div.pure-u-1.pure-u-md-18-24.sm-padRight30.u-paddingBottom
-                if condition.group
-                    div.heading-small.noMargin.smallPaddingBottom
-                        span.number #{index + 1}.
-                        span.title  #{condition.group}
-                            if condition.subgroup
-                                | : #{condition.subgroup}
-                        if condition.group === 'Bespoke'
-                            |  -
-                            span.approved
-                                if condition.approved === 'Yes'
-                                    |  Approved
-                                else if condition.approved === 'No'
-                                    span.alert  Not approved
-                                else
-                                    span.alert  Say if the PPCS approved the bespoke conditions
+  for condition, index in conditions
+    div.additional.pure-g.borderBottomLight.midPaddingTopBottom
+      div.pure-u-1.pure-u-md-18-24.sm-padRight30.u-paddingBottom
+        if condition.group
+          div.heading-small.noMargin.smallPaddingBottom
+            span.number #{index + 1}.
+            span.title  #{condition.group}
+              if condition.subgroup
+                | : #{condition.subgroup}
+            if condition.group === 'Bespoke'
+              |  -
+              span.approved
+                if condition.approved === 'Yes'
+                  |  Approved
+                else if condition.approved === 'No'
+                  span.alert  Not approved
+                else
+                  span.alert  Say if the PPCS approved the bespoke conditions
 
-                div.content
-                    for item in condition.content
-                        if item.text
-                            | #{item.text}
-                        if item.variable
-                            span.bold #{item.variable}
-                        if item.error
-                            span.bold.alert #{item.error}
+        div.content
+          for item in condition.content
+            if item.text
+              | #{item.text}
+            if item.variable
+              span.bold #{item.variable}
+            if item.error
+              span.bold.alert #{item.error}
 
-            if allowEdit
-                div.pure-u-2-24
-                div.pure-u-1.pure-u-md-4-24
-                    div.pure-g
-                        - var destination = action ? action + '/' : ''
-                        if condition.inputRequired || condition.group === 'Bespoke'
-                            div.pure-u-1-2.center
-                                a.link(href="/hdc/licenceConditions/additionalConditions/" + destination + bookingId + "#" + condition.id) Change
-                        div.pure-u-1-2.center
-                            form(method="post" action="/hdc/licenceConditions/additionalConditions/" + destination + bookingId + "/delete/" + condition.id)
-                                input(type="hidden" name="_csrf" value=csrfToken)
-                                input(type="hidden" name="bookingId" value=bookingId || '')
-                                input(type="hidden" name="conditionId" value=condition.id || '')
+      if allowEdit
+        div.pure-u-2-24
+        div.pure-u-1.pure-u-md-4-24
+          div.pure-g
+            - var destination = action ? action + '/' : ''
+            if condition.inputRequired || condition.group === 'Bespoke'
+              div.pure-u-1-2.center
+                a.link(href="/hdc/licenceConditions/additionalConditions/" + destination + bookingId + "#" + condition.id) Change
+            div.pure-u-1-2.center
+              form(method="post" action="/hdc/licenceConditions/additionalConditions/" + destination + bookingId + "/delete/" + condition.id)
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="bookingId" value=bookingId || '')
+                input(type="hidden" name="conditionId" value=condition.id || '')
 
-                                input.link(type="submit" value="Delete")
+                input.link(type="submit" value="Delete")

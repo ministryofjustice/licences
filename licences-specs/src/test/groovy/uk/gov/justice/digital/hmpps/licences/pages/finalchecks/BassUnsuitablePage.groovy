@@ -7,17 +7,17 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class BassUnsuitablePage extends Page {
 
-    static url = '/hdc/bassReferral/unsuitable'
+  static url = '/hdc/bassReferral/unsuitable'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
+  static content = {
+    header { module(HeaderModule) }
 
-        bass { module(BassRequestModule) }
+    bass { module(BassRequestModule) }
 
-        alternativeAreaRadios { $(name: "enterAlternative").module(RadioButtons) }
-    }
+    alternativeAreaRadios { $(name: "enterAlternative").module(RadioButtons) }
+  }
 }

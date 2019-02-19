@@ -1,31 +1,31 @@
 table#hdcEligiblePrisoners.largeMarginBottom
-    thead
-        tr
-            th Nomis Username
-            th Delius Staff ID
-            th First Name
-            th Last Name
-            th
-            th
-    tbody
-        if roUsers && roUsers.length > 0
-            each roUser, index in roUsers
-                tr.hdcEligible
-                    td.nomisId
-                        if roUser.nomisId
-                            | #{roUser.nomisId}
-                    td.deliusId
-                        if roUser.deliusId
-                            | #{roUser.deliusId}
-                    td.firstName
-                        if roUser.first
-                            | #{roUser.first}
-                    td.lastName
-                        if roUser.last
-                            |  #{roUser.last}
-                    td.edit
-                        a.button.button-primary.fullWidth.center(href="/admin/roUsers/edit/" + roUser.nomisId role="button")
-                            | Edit
-                    td.delete
-                        a.button.button-secondary.fullWidth.center(href="/admin/roUsers/delete/" + roUser.nomisId role="button")
-                            | Delete
+  thead
+    tr
+      th Nomis Username
+      th Delius Staff ID
+      th First Name
+      th Last Name
+      th
+      th
+  tbody
+    if roUsers && roUsers.length > 0
+      each roUser, index in roUsers
+        tr.hdcEligible
+          td.nomisId
+            if roUser.nomisId
+              | #{roUser.nomisId}
+          td.deliusId
+            if roUser.deliusId
+              | #{roUser.deliusId}
+          td.firstName
+            if roUser.first
+              | #{roUser.first}
+          td.lastName
+            if roUser.last
+              |  #{roUser.last}
+          td.edit
+            a.button.button-primary.fullWidth.center(href="/admin/roUsers/edit/" + roUser.nomisId role="button")
+              | Edit
+          td.delete
+            a.button.button-secondary.fullWidth.center(href="/admin/roUsers/delete/" + roUser.nomisId role="button")
+              | Delete

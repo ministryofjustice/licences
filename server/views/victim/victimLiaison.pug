@@ -2,34 +2,34 @@ extends ../layout
 
 block content
 
-    div.pure-g
-        .pure-u-1
-            include ../includes/backToTaskList
-            include ../includes/personalDetailsSummary
+  div.pure-g
+    .pure-u-1
+      include ../includes/backToTaskList
+      include ../includes/personalDetailsSummary
 
-        .pure-u-1.pure-u-md-1-2
-            h2.heading-large Is this a Victim Contact Service qualifying case where the victim has opted in?
-            form(method="post")
-                input(type="hidden" name="_csrf" value=csrfToken)
-                input(type="hidden" name="bookingId" value=bookingId || '')
-                div.paddingBottom.largeMarginBottom
-                    div.form-group.inline.smallPaddingTop
-                        div.multiple-choice(data-target="victimForm")
-                            input#victimYes(type="radio" checked=data.decision === 'Yes' name="decision" value="Yes")
-                            label(for="victimYes") Yes
-                        div.multiple-choice
-                            input#victimNo(type="radio" checked=data.decision === 'No' name="decision" value="No")
-                            label(for="victimNo") No
+    .pure-u-1.pure-u-md-1-2
+      h2.heading-large Is this a Victim Contact Service qualifying case where the victim has opted in?
+      form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="bookingId" value=bookingId || '')
+        div.paddingBottom.largeMarginBottom
+          div.form-group.inline.smallPaddingTop
+            div.multiple-choice(data-target="victimForm")
+              input#victimYes(type="radio" checked=data.decision === 'Yes' name="decision" value="Yes")
+              label(for="victimYes") Yes
+            div.multiple-choice
+              input#victimNo(type="radio" checked=data.decision === 'No' name="decision" value="No")
+              label(for="victimNo") No
 
-                    div#victimForm.panel.panel-border-narrow.js-hidden
-                        label(for='victimLiaisonDetails') Please give details of when they were invited to provide comments and any comments that were provided
-                        textarea(name='victimLiaisonDetails' id='victimLiaisonDetails' class='form-control' rows='4' aria-label="Provide details of when the victim was asked to comment and any comments they made")
-                            if data.victimLiaisonDetails
-                                | #{data.victimLiaisonDetails}
+          div#victimForm.panel.panel-border-narrow.js-hidden
+            label(for='victimLiaisonDetails') Please give details of when they were invited to provide comments and any comments that were provided
+            textarea(name='victimLiaisonDetails' id='victimLiaisonDetails' class='form-control' rows='4' aria-label="Provide details of when the victim was asked to comment and any comments they made")
+              if data.victimLiaisonDetails
+                | #{data.victimLiaisonDetails}
 
-                include ../includes/roModificationWarning
+        include ../includes/roModificationWarning
 
-                if (action === 'change')
-                    include ../includes/formSubmit
-                else
-                    include ../includes/saveAndReturn
+        if (action === 'change')
+          include ../includes/formSubmit
+        else
+          include ../includes/saveAndReturn

@@ -3,46 +3,46 @@ include ../includes/errorBannerWithDetailObject
 
 block content
 
-    include ../includes/back
-    include ../includes/personalDetailsSummary
-    +errorBannerWithDetail(errorObject)
+  include ../includes/back
+  include ../includes/personalDetailsSummary
+  +errorBannerWithDetail(errorObject)
 
-    h2.heading-large First night curfew hours
+  h2.heading-large First night curfew hours
 
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        input(type="hidden" name="path" value=action)
+  form(method="post")
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="bookingId" value=bookingId || '')
+    input(type="hidden" name="path" value=action)
 
-        div.pure-g.largePaddingBottom.largeMarginBottom
-            div.pure-u-1.pure-u-md-14-24
-                div.pure-g.smallPaddingBottom
-                    div.pure-u-1-4
-                        span.bold From
-                    div.pure-u-3-4
-                        span.bold Until
-                div.pure-g
-                    div.pure-u-1-4
-                        div.tinyPaddingBottom
-                            label(for="firstNightFrom", class="form-label")
-                                div.pure-g.content-pull
-                                    div.pure-u-1-
-                                        div.l-box
-                                            input(name="firstNightFrom", id="firstNightFrom" class="form-control", value=data['firstNightFrom'] || "15:00", type="time")
-                                    div.pure-u-1-2
+    div.pure-g.largePaddingBottom.largeMarginBottom
+      div.pure-u-1.pure-u-md-14-24
+        div.pure-g.smallPaddingBottom
+          div.pure-u-1-4
+            span.bold From
+          div.pure-u-3-4
+            span.bold Until
+        div.pure-g
+          div.pure-u-1-4
+            div.tinyPaddingBottom
+              label(for="firstNightFrom", class="form-label")
+                div.pure-g.content-pull
+                  div.pure-u-1-
+                    div.l-box
+                      input(name="firstNightFrom", id="firstNightFrom" class="form-control", value=data['firstNightFrom'] || "15:00", type="time")
+                  div.pure-u-1-2
 
-                    div.pure-u-3-4
-                        div.tinyPaddingBottom
-                            label(for="firstNightUntil", class="form-label")
-                                div.pure-g.content-pull
-                                    div.pure-u-7-24
-                                        div.l-box
-                                            input(name="firstNightUntil", id="firstNightUntil" class="form-control", value=data['firstNightUntil'] || "07:00", type="time")
-                                    div.pure-u-17-24
-            div.pure-u-1.pure-u-md-10-24
+          div.pure-u-3-4
+            div.tinyPaddingBottom
+              label(for="firstNightUntil", class="form-label")
+                div.pure-g.content-pull
+                  div.pure-u-7-24
+                    div.l-box
+                      input(name="firstNightUntil", id="firstNightUntil" class="form-control", value=data['firstNightUntil'] || "07:00", type="time")
+                  div.pure-u-17-24
+      div.pure-u-1.pure-u-md-10-24
 
-        if (action === 'change')
-            include ../includes/formSubmit
-        else
-            include ../includes/saveAndReturn
+    if (action === 'change')
+      include ../includes/formSubmit
+    else
+      include ../includes/saveAndReturn
 

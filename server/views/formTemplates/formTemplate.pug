@@ -3,26 +3,26 @@ include ../includes/errorBannerWithDetailObject
 
 block content
 
-    div.pure-g.pure-u-1
-        include ../includes/back
-        include ../includes/personalDetailsSummary
-        +errorBannerWithDetail(errorObject)
+  div.pure-g.pure-u-1
+    include ../includes/back
+    include ../includes/personalDetailsSummary
+    +errorBannerWithDetail(errorObject)
 
-        div.pure-u-1.pure-u-md-1-2
-            h2.heading-large
-                block question
+    div.pure-u-1.pure-u-md-1-2
+      h2.heading-large
+        block question
 
-    if errorObject.decision
-        p.error-message #{errorObject.decision}
+  if errorObject.decision
+    p.error-message #{errorObject.decision}
 
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
-            div.largePaddingBottom
+  form(method="post")
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="bookingId" value=bookingId || '')
+    div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
+      div.largePaddingBottom
 
-                block formItems
+        block formItems
 
-            div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
-                input#continueBtn.requiredButton.button.midMarginBottom(type="submit" value="Save and continue")
-                a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + bookingId role="button") Return to task list
+      div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+        input#continueBtn.requiredButton.button.midMarginBottom(type="submit" value="Save and continue")
+        a#backBtn.requiredButton.button.button-secondary(href="/hdc/taskList/" + bookingId role="button") Return to task list

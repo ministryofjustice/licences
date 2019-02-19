@@ -3,63 +3,63 @@ include ../includes/errorBannerWithDetail
 
 block content
 
-    - var releaseValue = data.decision || null;
-    - var notedCommentsValue = data.notedComments || null;
+  - var releaseValue = data.decision || null;
+  - var notedCommentsValue = data.notedComments || null;
 
-    div.pure-g.pure-u-1.largeMarginBottom
+  div.pure-g.pure-u-1.largeMarginBottom
 
-        include ../includes/backToCheckList
-        +errorBannerWithDetail(errorObject, [
-            {field: 'decision'},
-            {field: 'notedComments'},
-            {field: 'reason'}
-        ])
-        include ../taskList/prisonerDetails
+    include ../includes/backToCheckList
+    +errorBannerWithDetail(errorObject, [
+      { field: 'decision' },
+      { field: 'notedComments' },
+      { field: 'reason' }
+    ])
+    include ../taskList/prisonerDetails
 
-        div.pure-u-md-1-2
-            h2.heading-large Do you approve HDC release for this offender?
+    div.pure-u-md-1-2
+      h2.heading-large Do you approve HDC release for this offender?
 
-            if errorObject.decision
-                p.error-message #{errorObject.decision}
-            form(method="post").largeMarginTop
-                input(type="hidden" name="_csrf" value=csrfToken)
-                input(type="hidden" name="bookingId" value=bookingId || '')
-                input(type="hidden" name="decisionMaker" value=user.firstName + ' ' + user.lastName)
-                div.paddingBottom.largeMarginBottom
+      if errorObject.decision
+        p.error-message #{errorObject.decision}
+      form(method="post").largeMarginTop
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="bookingId" value=bookingId || '')
+        input(type="hidden" name="decisionMaker" value=user.firstName + ' ' + user.lastName)
+        div.paddingBottom.largeMarginBottom
 
-                    div#error-anchor.form-group
-                        if licenceStatus.decisions.confiscationOrder
-                            div.multiple-choice(data-target="confiscationOrder")
-                                input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
-                                label(for="releaseYes") Yes, I approve
-                            div#confiscationOrder(class=errorObject.notedComments ? 'panel panel-border-narrow form-group-error inline': 'panel panel-border-narrow js-hidden inline')
-                                p
-                                    span.bold Confiscation order
-                                    span.block Have you noted the comments of the enforcement area regarding release on HDC?
-                                    if errorObject.notedComments
-                                        span.block.error-message #{errorObject.notedComments}
-                                div.multiple-choice
-                                    input#notedCommentsYes(type="radio" checked=notedCommentsValue === 'Yes'  name="notedComments" value="Yes")
-                                    label(for="notedCommentsYes") Yes
-                                div.multiple-choice.paddingBottom
-                                    input#notedCommentsNo(type="radio" checked=notedCommentsValue === 'No' name="notedComments" value="No")
-                                    label(for="notedCommentsNo") No
+          div#error-anchor.form-group
+            if licenceStatus.decisions.confiscationOrder
+              div.multiple-choice(data-target="confiscationOrder")
+                input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
+                label(for="releaseYes") Yes, I approve
+              div#confiscationOrder(class=errorObject.notedComments ? 'panel panel-border-narrow form-group-error inline' : 'panel panel-border-narrow js-hidden inline')
+                p
+                  span.bold Confiscation order
+                  span.block Have you noted the comments of the enforcement area regarding release on HDC?
+                  if errorObject.notedComments
+                    span.block.error-message #{errorObject.notedComments}
+                div.multiple-choice
+                  input#notedCommentsYes(type="radio" checked=notedCommentsValue === 'Yes'  name="notedComments" value="Yes")
+                  label(for="notedCommentsYes") Yes
+                div.multiple-choice.paddingBottom
+                  input#notedCommentsNo(type="radio" checked=notedCommentsValue === 'No' name="notedComments" value="No")
+                  label(for="notedCommentsNo") No
 
-                            div.multiple-choice(data-target="releaseForm")
-                                input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
-                                label(for="releaseNo") No, I refuse
+              div.multiple-choice(data-target="releaseForm")
+                input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
+                label(for="releaseNo") No, I refuse
 
-                        else
-                            div.multiple-choice
-                                input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
-                                label(for="releaseYes") Yes, I approve
+            else
+              div.multiple-choice
+                input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
+                label(for="releaseYes") Yes, I approve
 
-                            div.multiple-choice(data-target="releaseForm")
-                                input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
-                                label(for="releaseNo") No, I refuse
+              div.multiple-choice(data-target="releaseForm")
+                input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
+                label(for="releaseNo") No, I refuse
 
-                        div#releaseForm.panel.panel-border-narrow.js-hidden
-                            include includes/release
+            div#releaseForm.panel.panel-border-narrow.js-hidden
+              include includes/release
 
-                    div.paddingBottom.smallPaddingTop
-                        input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+          div.paddingBottom.smallPaddingTop
+            input#continueBtn.requiredButton.button(type="submit" value="Save and continue")

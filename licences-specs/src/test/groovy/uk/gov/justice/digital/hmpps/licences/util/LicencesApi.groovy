@@ -8,37 +8,37 @@ import spock.lang.Shared
 
 class LicencesApi {
 
-    @Shared
-    def apiRoot = System.getenv('LICENCES_URI') ?: "http://localhost:3000/"
-    @Shared
-    def client = new RESTClient("$apiRoot/utils/")
+  @Shared
+  def apiRoot = System.getenv('LICENCES_URI') ?: "http://localhost:3000/"
+  @Shared
+  def client = new RESTClient("$apiRoot/utils/")
 
-    def deleteAll() {
+  def deleteAll() {
 
-        println 'deleteAll'
+    println 'deleteAll'
 
-        def response = client.get(path: 'reset-test')
+    def response = client.get(path: 'reset-test')
 
-        println("Status: " + response.status)
+    println("Status: " + response.status)
+  }
+
+  def create(bookingId, sample) {
+
+    println "create $sample"
+    println "create/$bookingId"
+
+    def response = client.post(
+      path: "create/$bookingId",
+      contentType: JSON,
+      body: sample,
+      headers: [Accept: 'application/json']
+    )
+
+    println("Status: " + response.status)
+    if (response.data) {
+      println("Content Type: " + response.contentType)
+      println("Headers: " + response.getAllHeaders())
+      println("Body:\n" + JsonOutput.prettyPrint(JsonOutput.toJson(response.data)))
     }
-
-    def create(bookingId, sample) {
-
-        println "create $sample"
-        println "create/$bookingId"
-
-        def response = client.post(
-                path: "create/$bookingId",
-                contentType: JSON,
-                body: sample,
-                headers: [Accept: 'application/json']
-        )
-
-        println("Status: " + response.status)
-        if (response.data) {
-            println("Content Type: " + response.contentType)
-            println("Headers: " + response.getAllHeaders())
-            println("Body:\n" + JsonOutput.prettyPrint(JsonOutput.toJson(response.data)))
-        }
-    }
+  }
 }

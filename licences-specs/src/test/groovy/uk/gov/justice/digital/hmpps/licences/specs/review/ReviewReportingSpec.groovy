@@ -11,37 +11,37 @@ import uk.gov.justice.digital.hmpps.licences.util.TestData
 @Stepwise
 class ReviewReportingSpec extends GebReportingSpec {
 
-    @Shared
-    TestData testData = new TestData()
+  @Shared
+  TestData testData = new TestData()
 
-    @Shared
-    Actions actions = new Actions()
+  @Shared
+  Actions actions = new Actions()
 
-    def setupSpec() {
-        actions.logIn('CA')
-    }
+  def setupSpec() {
+    actions.logIn('CA')
+  }
 
-    def cleanupSpec() {
-        actions.logOut()
-    }
+  def cleanupSpec() {
+    actions.logOut()
+  }
 
-    def 'Shows reporting details entered by RO'() {
+  def 'Shows reporting details entered by RO'() {
 
-        given: 'A licence ready for final checks'
-        testData.loadLicence('review/normal')
+    given: 'A licence ready for final checks'
+    testData.loadLicence('review/normal')
 
-        when: 'I view the page'
-        to ReviewReportingPage, testData.markAndrewsBookingId
+    when: 'I view the page'
+    to ReviewReportingPage, testData.markAndrewsBookingId
 
-        then: 'I see the reporting details'
+    then: 'I see the reporting details'
 
-        reporting.name == 'Reporting Name'
+    reporting.name == 'Reporting Name'
 
-        reporting.address.line1 == 'Street'
-        reporting.address.town == 'Town'
-        reporting.address.postCode == 'AB1 1AB'
+    reporting.address.line1 == 'Street'
+    reporting.address.town == 'Town'
+    reporting.address.postCode == 'AB1 1AB'
 
-        reporting.address.telephone == '0123 456789'
-    }
+    reporting.address.telephone == '0123 456789'
+  }
 
 }

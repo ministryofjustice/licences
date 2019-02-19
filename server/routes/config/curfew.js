@@ -1,226 +1,226 @@
 module.exports = {
-    curfewAddressReview: {
-        pageDataMap: ['licence'],
-        fields: [
-            {
-                consent: {
-                    validationMessage: 'Say if the homeowner consents to HDC',
-                },
-            },
-            {
-                electricity: {
-                    dependentOn: 'consent',
-                    predicate: 'Yes',
-                    validationMessage: 'Say if there is an electricity supply',
-                },
-            },
-            {
-                homeVisitConducted: {
-                    dependentOn: 'consent',
-                    predicate: 'Yes',
-                    validationMessage: 'Say if you did a home visit',
-                },
-            },
-            { addressReviewComments: {} },
-        ],
-        nextPath: {
-            decisions: [
-                {
-                    discriminator: 'consent',
-                    No: {
-                        path: '/hdc/taskList/',
-                        change: '/hdc/review/licenceDetails/',
-                        modify: '/hdc/taskList/',
-                    },
-                },
-                {
-                    discriminator: 'electricity',
-                    No: {
-                        path: '/hdc/taskList/',
-                        change: '/hdc/review/licenceDetails/',
-                        modify: '/hdc/taskList/',
-                    },
-                },
-            ],
+  curfewAddressReview: {
+    pageDataMap: ['licence'],
+    fields: [
+      {
+        consent: {
+          validationMessage: 'Say if the homeowner consents to HDC',
+        },
+      },
+      {
+        electricity: {
+          dependentOn: 'consent',
+          predicate: 'Yes',
+          validationMessage: 'Say if there is an electricity supply',
+        },
+      },
+      {
+        homeVisitConducted: {
+          dependentOn: 'consent',
+          predicate: 'Yes',
+          validationMessage: 'Say if you did a home visit',
+        },
+      },
+      { addressReviewComments: {} },
+    ],
+    nextPath: {
+      decisions: [
+        {
+          discriminator: 'consent',
+          No: {
             path: '/hdc/taskList/',
             change: '/hdc/review/licenceDetails/',
             modify: '/hdc/taskList/',
+          },
         },
-    },
-    curfewHours: {
-        licenceSection: 'curfewHours',
-        fields: [
-            { daySpecificInputs: { responseType: 'optionalString' } },
-            { allFrom: { responseType: 'optionalString' } },
-            { allUntil: { responseType: 'optionalString' } },
-            {
-                mondayFrom: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                mondayUntil: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                tuesdayFrom: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                tuesdayUntil: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                wednesdayFrom: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                wednesdayUntil: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                thursdayFrom: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                thursdayUntil: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                fridayFrom: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                fridayUntil: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                saturdayFrom: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                saturdayUntil: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                sundayFrom: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-            {
-                sundayUntil: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid time',
-                },
-            },
-        ],
-        nextPath: {
+        {
+          discriminator: 'electricity',
+          No: {
             path: '/hdc/taskList/',
             change: '/hdc/review/licenceDetails/',
+            modify: '/hdc/taskList/',
+          },
         },
-        modificationRequiresApproval: true,
+      ],
+      path: '/hdc/taskList/',
+      change: '/hdc/review/licenceDetails/',
+      modify: '/hdc/taskList/',
     },
-    withdrawAddress: {
-        pageDataMap: ['licence'],
-        fields: [{ addressWithdrawn: {} }],
-        nextPath: {
-            decisions: [
-                {
-                    discriminator: 'addressWithdrawn',
-                    Yes: '/hdc/curfew/addressWithdrawn/',
-                },
-            ],
-            path: '/hdc/taskList/',
+  },
+  curfewHours: {
+    licenceSection: 'curfewHours',
+    fields: [
+      { daySpecificInputs: { responseType: 'optionalString' } },
+      { allFrom: { responseType: 'optionalString' } },
+      { allUntil: { responseType: 'optionalString' } },
+      {
+        mondayFrom: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
         },
-    },
-    addressWithdrawn: {
-        fields: [{ enterNewAddress: {} }],
-        nextPath: {
-            decisions: [
-                {
-                    discriminator: 'enterNewAddress',
-                    Yes: '/hdc/proposedAddress/curfewAddress/',
-                    No: '/hdc/proposedAddress/curfewAddressChoice/',
-                },
-            ],
-            path: '/hdc/taskList/',
+      },
+      {
+        mondayUntil: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
         },
-    },
-    withdrawConsent: {
-        pageDataMap: ['licence'],
-        fields: [{ consentWithdrawn: {} }],
-        nextPath: {
-            decisions: [
-                {
-                    discriminator: 'consentWithdrawn',
-                    Yes: '/hdc/curfew/consentWithdrawn/',
-                },
-            ],
-            path: '/hdc/taskList/',
+      },
+      {
+        tuesdayFrom: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
         },
-    },
-    consentWithdrawn: {
-        fields: [{ enterNewAddress: {} }],
-        nextPath: {
-            decisions: [
-                {
-                    discriminator: 'enterNewAddress',
-                    Yes: '/hdc/proposedAddress/curfewAddress/',
-                    No: '/hdc/proposedAddress/curfewAddressChoice/',
-                },
-            ],
-            path: '/hdc/taskList/',
+      },
+      {
+        tuesdayUntil: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
         },
-    },
-    reinstateAddress: {
-        fields: [{ consentWithdrawn: {} }, { addressWithdrawn: {} }],
-        nextPath: {
-            path: '/hdc/taskList/',
+      },
+      {
+        wednesdayFrom: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
         },
-    },
-    firstNight: {
-        licenceSection: 'firstNight',
-        fields: [
-            {
-                firstNightFrom: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid from time',
-                },
-            },
-            {
-                firstNightUntil: {
-                    responseType: 'requiredTime',
-                    validationMessage: 'Enter a valid until time',
-                },
-            },
-        ],
-        validate: true,
-        nextPath: {
-            path: '/hdc/pdf/taskList/',
+      },
+      {
+        wednesdayUntil: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
         },
+      },
+      {
+        thursdayFrom: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+        },
+      },
+      {
+        thursdayUntil: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+        },
+      },
+      {
+        fridayFrom: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+        },
+      },
+      {
+        fridayUntil: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+        },
+      },
+      {
+        saturdayFrom: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+        },
+      },
+      {
+        saturdayUntil: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+        },
+      },
+      {
+        sundayFrom: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+        },
+      },
+      {
+        sundayUntil: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+        },
+      },
+    ],
+    nextPath: {
+      path: '/hdc/taskList/',
+      change: '/hdc/review/licenceDetails/',
     },
+    modificationRequiresApproval: true,
+  },
+  withdrawAddress: {
+    pageDataMap: ['licence'],
+    fields: [{ addressWithdrawn: {} }],
+    nextPath: {
+      decisions: [
+        {
+          discriminator: 'addressWithdrawn',
+          Yes: '/hdc/curfew/addressWithdrawn/',
+        },
+      ],
+      path: '/hdc/taskList/',
+    },
+  },
+  addressWithdrawn: {
+    fields: [{ enterNewAddress: {} }],
+    nextPath: {
+      decisions: [
+        {
+          discriminator: 'enterNewAddress',
+          Yes: '/hdc/proposedAddress/curfewAddress/',
+          No: '/hdc/proposedAddress/curfewAddressChoice/',
+        },
+      ],
+      path: '/hdc/taskList/',
+    },
+  },
+  withdrawConsent: {
+    pageDataMap: ['licence'],
+    fields: [{ consentWithdrawn: {} }],
+    nextPath: {
+      decisions: [
+        {
+          discriminator: 'consentWithdrawn',
+          Yes: '/hdc/curfew/consentWithdrawn/',
+        },
+      ],
+      path: '/hdc/taskList/',
+    },
+  },
+  consentWithdrawn: {
+    fields: [{ enterNewAddress: {} }],
+    nextPath: {
+      decisions: [
+        {
+          discriminator: 'enterNewAddress',
+          Yes: '/hdc/proposedAddress/curfewAddress/',
+          No: '/hdc/proposedAddress/curfewAddressChoice/',
+        },
+      ],
+      path: '/hdc/taskList/',
+    },
+  },
+  reinstateAddress: {
+    fields: [{ consentWithdrawn: {} }, { addressWithdrawn: {} }],
+    nextPath: {
+      path: '/hdc/taskList/',
+    },
+  },
+  firstNight: {
+    licenceSection: 'firstNight',
+    fields: [
+      {
+        firstNightFrom: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid from time',
+        },
+      },
+      {
+        firstNightUntil: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid until time',
+        },
+      },
+    ],
+    validate: true,
+    nextPath: {
+      path: '/hdc/pdf/taskList/',
+    },
+  },
 }

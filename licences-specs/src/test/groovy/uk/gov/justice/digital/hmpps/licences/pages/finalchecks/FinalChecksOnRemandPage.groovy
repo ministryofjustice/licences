@@ -6,16 +6,16 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class FinalChecksOnRemandPage extends Page {
 
-    static url = '/hdc/finalChecks/onRemand'
+  static url = '/hdc/finalChecks/onRemand'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
+  static content = {
 
-        header { module(HeaderModule) }
+    header { module(HeaderModule) }
 
-        onRemandRadios  { $(name: "decision").module(RadioButtons) }
-    }
+    onRemandRadios { $(name: "decision").module(RadioButtons) }
+  }
 }

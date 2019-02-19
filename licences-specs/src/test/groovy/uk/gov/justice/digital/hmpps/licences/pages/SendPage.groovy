@@ -6,15 +6,15 @@ import uk.gov.justice.digital.hmpps.licences.modules.SubmissionTargetModule
 
 class SendPage extends Page {
 
-    static url = '/hdc/send'
+  static url = '/hdc/send'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
-        submissionTarget { module(SubmissionTargetModule) }
-    }
+  static content = {
+    header { module(HeaderModule) }
+    submissionTarget { module(SubmissionTargetModule) }
+  }
 
 }

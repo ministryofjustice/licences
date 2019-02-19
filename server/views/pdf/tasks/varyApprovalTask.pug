@@ -2,13 +2,13 @@
 - var buttonState = incomplete ? 'UNSTARTED' : 'DONE'
 
 div.paddingBottom
-    h2.heading-medium Approval
+  h2.heading-medium Approval
 
-    div.pure-g
-        div.pure-u-1.pure-u-md-3-4#varApprovalTaskStatus
-            if incomplete
-                | Not complete
-            else
-                | Complete
-        div.pure-u-1.pure-u-md-1-4.center
-            +startContinueChange(buttonState, "/hdc/vary/approval/" + templateName + "/" + prisoner.bookingId)
+  div.pure-g
+    div.pure-u-1.pure-u-md-3-4#varApprovalTaskStatus
+      if incomplete
+        | Not complete
+      else
+        | Complete
+    div.pure-u-1.pure-u-md-1-4.center
+      +startContinueChange(buttonState, "/hdc/vary/approval/" + templateName + "/" + prisoner.bookingId)

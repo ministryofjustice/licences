@@ -3,52 +3,52 @@ const { asyncMiddleware } = require('../utils/middleware')
 const { getIn } = require('../utils/functionalHelpers')
 
 module.exports = ({ licenceService, conditionsService, prisonerService }) => router => {
-    router.get(
-        '/:sectionName/:bookingId',
-        asyncMiddleware(async (req, res) => {
-            const { sectionName, bookingId } = req.params
-            const { licenceStatus } = res.locals
-            logger.debug(`GET /review/${sectionName}/${bookingId}`)
+  router.get(
+    '/:sectionName/:bookingId',
+    asyncMiddleware(async (req, res) => {
+      const { sectionName, bookingId } = req.params
+      const { licenceStatus } = res.locals
+      logger.debug(`GET /review/${sectionName}/${bookingId}`)
 
-            const licence = getIn(res.locals.licence, ['licence']) || {}
-            const stage = getIn(res.locals.licence, ['stage']) || {}
-            const licenceVersion = getIn(res.locals.licence, ['version']) || {}
+      const licence = getIn(res.locals.licence, ['licence']) || {}
+      const stage = getIn(res.locals.licence, ['stage']) || {}
+      const licenceVersion = getIn(res.locals.licence, ['version']) || {}
 
-            const postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
-            const showErrors = shouldValidate(req.user.role, stage, postApproval)
+      const postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
+      const showErrors = shouldValidate(req.user.role, stage, postApproval)
 
-            const errorObject = showErrors ? getErrors(licence, stage, licenceStatus) : {}
+      const errorObject = showErrors ? getErrors(licence, stage, licenceStatus) : {}
 
-            const data = conditionsService.populateLicenceWithConditions(licence, errorObject)
+      const data = conditionsService.populateLicenceWithConditions(licence, errorObject)
 
-            const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
+      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
 
-            res.render(`review/${sectionName}`, {
-                bookingId,
-                data,
-                prisonerInfo,
-                stage,
-                licenceVersion,
-                errorObject,
-                showErrors,
-                postApproval,
-            })
-        })
-    )
+      res.render(`review/${sectionName}`, {
+        bookingId,
+        data,
+        prisonerInfo,
+        stage,
+        licenceVersion,
+        errorObject,
+        showErrors,
+        postApproval,
+      })
+    })
+  )
 
-    function getErrors(licence, stage, { decisions, tasks }) {
-        return licenceService.validateFormGroup({ licence, stage, decisions, tasks })
-    }
+  function getErrors(licence, stage, { decisions, tasks }) {
+    return licenceService.validateFormGroup({ licence, stage, decisions, tasks })
+  }
 
-    return router
+  return router
 }
 
 function shouldValidate(role, stage, postApproval) {
-    return postApproval ? role === 'CA' : stagesForRole[role].includes(stage)
+  return postApproval ? role === 'CA' : stagesForRole[role].includes(stage)
 }
 
 const stagesForRole = {
-    CA: ['ELIGIBILITY', 'PROCESSING_CA', 'FINAL_CHECKS'],
-    RO: ['PROCESSING_RO'],
-    DM: ['APPROVAL'],
+  CA: ['ELIGIBILITY', 'PROCESSING_CA', 'FINAL_CHECKS'],
+  RO: ['PROCESSING_RO'],
+  DM: ['APPROVAL'],
 }

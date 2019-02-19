@@ -1,5 +1,5 @@
 label(for='courseOrCentre') Name of course/centre
 textarea(name='courseOrCentre' id='courseOrCentre' class='form-control' rows='2' aria-label="Name of course and centre")
-    if condition.user_submission && condition.user_submission.courseOrCentre
-        | #{condition.user_submission.courseOrCentre}
+  if condition.user_submission && condition.user_submission.courseOrCentre
+    | #{condition.user_submission.courseOrCentre}
 

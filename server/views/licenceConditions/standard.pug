@@ -2,36 +2,36 @@ extends ../layout
 
 block content
 
-    - var additionalConditionsValue = data.additionalConditionsRequired || null;
+  - var additionalConditionsValue = data.additionalConditionsRequired || null;
 
-    include ../includes/backToTaskList
-    include ../includes/personalDetailsSummary
+  include ../includes/backToTaskList
+  include ../includes/personalDetailsSummary
 
-    h1.heading-large Standard licence conditions
+  h1.heading-large Standard licence conditions
 
-    div.pure-g.paddingBottom
-        div.pure-u-1.pure-u-md-2-3
-            P The following conditions are always included on the licence:
+  div.pure-g.paddingBottom
+    div.pure-u-1.pure-u-md-2-3
+      P The following conditions are always included on the licence:
 
-            p An offender must:
+      p An offender must:
 
-            ol.numberedList
-                for condition in conditions
-                    li.midPaddingBottom #{condition.text}
+      ol.numberedList
+        for condition in conditions
+          li.midPaddingBottom #{condition.text}
 
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        div.form-group.inline.smallPaddingTop
-            h2.heading-large Do you want to add any additional conditions?
+  form(method="post")
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="bookingId" value=bookingId || '')
+    div.form-group.inline.smallPaddingTop
+      h2.heading-large Do you want to add any additional conditions?
 
-            div.multiple-choice
-                input#additionalConditionsYes(type="radio" name="additionalConditionsRequired" value="Yes" checked=additionalConditionsValue === 'Yes')
-                label(for="additionalConditionsYes") Yes
-            div.multiple-choice
-                input#additionalConditionsNo(type="radio" name="additionalConditionsRequired" value="No" checked=additionalConditionsValue === 'No')
-                label(for="additionalConditionsNo") No
+      div.multiple-choice
+        input#additionalConditionsYes(type="radio" name="additionalConditionsRequired" value="Yes" checked=additionalConditionsValue === 'Yes')
+        label(for="additionalConditionsYes") Yes
+      div.multiple-choice
+        input#additionalConditionsNo(type="radio" name="additionalConditionsRequired" value="No" checked=additionalConditionsValue === 'No')
+        label(for="additionalConditionsNo") No
 
-        div.paddingTop
-            include ../includes/roModificationWarning
-        include ../includes/formSubmit
+    div.paddingTop
+      include ../includes/roModificationWarning
+    include ../includes/formSubmit

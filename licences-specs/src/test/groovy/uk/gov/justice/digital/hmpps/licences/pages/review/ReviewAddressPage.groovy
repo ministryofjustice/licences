@@ -6,20 +6,20 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class ReviewAddressPage extends Page {
 
-    static url = '/hdc/review/address'
+  static url = '/hdc/review/address'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
+  static content = {
+    header { module(HeaderModule) }
 
-        curfew { module(CurfewDetailsModule) }
+    curfew { module(CurfewDetailsModule) }
 
-        withdrawConsent(required: false) {$('#withdrawConsent')}
-        withdrawAddress(required: false) {$('#withdrawAddress')}
+    withdrawConsent(required: false) { $('#withdrawConsent') }
+    withdrawAddress(required: false) { $('#withdrawAddress') }
 
-        errorSummary(required: false) {$('#error-summary-heading')}
-    }
+    errorSummary(required: false) { $('#error-summary-heading') }
+  }
 }

@@ -1,19 +1,19 @@
 plugins {
-    id "groovy"
+  id "groovy"
 }
 
 ext {
-    ext {
-        groovyVersion = '2.5.5'
-        gebVersion = '2.2'
-        seleniumVersion = '3.12.0'
-    }
+  ext {
+    groovyVersion = '2.5.5'
+    gebVersion = '2.2'
+    seleniumVersion = '3.12.0'
+  }
 }
 
 description = 'licences feature specs'
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 project.sourceCompatibility = 11
@@ -21,32 +21,32 @@ project.targetCompatibility = 11
 
 dependencies {
 
-    testCompile 'net.sourceforge.jtds:jtds:1.3.1'
-    testCompile 'cglib:cglib-nodep:3.1'
-    testCompile 'com.jayway.jsonpath:json-path:2.1.0'
-    testCompile 'com.mashape.unirest:unirest-java:1.4.9'
-    testCompile 'org.awaitility:awaitility-groovy:2.0.0'
-    testCompile "org.codehaus.groovy:groovy-all:$groovyVersion"
-    testCompile 'org.gebish:geb-core:2.0'
-    testCompile "org.gebish:geb-core:$gebVersion"
-    testCompile "org.gebish:geb-spock:$gebVersion"
-    testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
-    testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
-    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+  testCompile 'net.sourceforge.jtds:jtds:1.3.1'
+  testCompile 'cglib:cglib-nodep:3.1'
+  testCompile 'com.jayway.jsonpath:json-path:2.1.0'
+  testCompile 'com.mashape.unirest:unirest-java:1.4.9'
+  testCompile 'org.awaitility:awaitility-groovy:2.0.0'
+  testCompile "org.codehaus.groovy:groovy-all:$groovyVersion"
+  testCompile 'org.gebish:geb-core:2.0'
+  testCompile "org.gebish:geb-core:$gebVersion"
+  testCompile "org.gebish:geb-spock:$gebVersion"
+  testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
+  testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+  testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
 
-    testCompile('org.spockframework:spock-core:1.2-groovy-2.5') {
-        exclude group: "org.codehaus.groovy"
-    }
-    testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+  testCompile('org.spockframework:spock-core:1.2-groovy-2.5') {
+    exclude group: "org.codehaus.groovy"
+  }
+  testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
 }
 
 task mockTest(type: Test) {
-    systemProperty 'geb.env', 'chromeHeadless'
-    group = 'verification'
+  systemProperty 'geb.env', 'chromeHeadless'
+  group = 'verification'
 }
 
 task stageTest(type: Test) {
-    group = 'verification'
-    systemProperty 'geb.env', 'chromeHeadless'
-    systemProperty 'spock.configuration', 'StageSpockConfig.groovy'
+  group = 'verification'
+  systemProperty 'geb.env', 'chromeHeadless'
+  systemProperty 'spock.configuration', 'StageSpockConfig.groovy'
 }

@@ -8,92 +8,90 @@ const getTaskListModel = require('./viewModels/taskListModels')
 const logger = require('../../log')
 
 module.exports = ({ prisonerService, licenceService, audit }) => router => {
-    router.get(
-        '/:bookingId',
-        asyncMiddleware(async (req, res) => {
-            const { bookingId } = req.params
-            const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
-            if (isEmpty(prisonerInfo)) {
-                logger.info('Prisoner not found for task list', bookingId)
-                return res.redirect('/caseList')
-            }
+  router.get(
+    '/:bookingId',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.params
+      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
+      if (isEmpty(prisonerInfo)) {
+        logger.info('Prisoner not found for task list', bookingId)
+        return res.redirect('/caseList')
+      }
 
-            const postRelease = prisonerInfo.agencyLocationId
-                ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT'
-                : false
-            const licence = await licenceService.getLicence(bookingId)
+      const postRelease = prisonerInfo.agencyLocationId ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT' : false
+      const licence = await licenceService.getLicence(bookingId)
 
-            const licenceStatus = getLicenceStatus(licence)
-            const allowedTransition = getAllowedTransition(licenceStatus, req.user.role)
-            const statusLabel = getStatusLabel(licenceStatus, req.user.role)
+      const licenceStatus = getLicenceStatus(licence)
+      const allowedTransition = getAllowedTransition(licenceStatus, req.user.role)
+      const statusLabel = getStatusLabel(licenceStatus, req.user.role)
 
-            const taskListModel = getTaskListModel(
-                req.user.role,
-                postRelease,
-                licenceStatus,
-                licence || {},
-                allowedTransition
-            )
+      const taskListModel = getTaskListModel(
+        req.user.role,
+        postRelease,
+        licenceStatus,
+        licence || {},
+        allowedTransition
+      )
 
-            res.render('taskList/taskListBuilder', {
-                licenceStatus,
-                licenceVersion: licence ? licence.version : 0,
-                approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
-                allowedTransition,
-                statusLabel,
-                prisonerInfo,
-                bookingId,
-                taskListModel,
-                postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage),
-            })
-        })
-    )
+      res.render('taskList/taskListBuilder', {
+        licenceStatus,
+        licenceVersion: licence ? licence.version : 0,
+        approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
+        allowedTransition,
+        statusLabel,
+        prisonerInfo,
+        bookingId,
+        taskListModel,
+        postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage),
+      })
+    })
+  )
 
-    router.post(
-        '/eligibilityStart',
-        asyncMiddleware(async (req, res) => {
-            const { bookingId } = req.body
+  router.post(
+    '/eligibilityStart',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.body
 
-            const existingLicence = await licenceService.getLicence(bookingId)
+      const existingLicence = await licenceService.getLicence(bookingId)
 
-            if (!existingLicence) {
-                await licenceService.createLicence({ bookingId })
-                audit.record('LICENCE_RECORD_STARTED', req.user.username, { bookingId })
-            }
+      if (!existingLicence) {
+        await licenceService.createLicence({ bookingId })
+        audit.record('LICENCE_RECORD_STARTED', req.user.username, { bookingId })
+      }
 
-            res.redirect(`/hdc/eligibility/excluded/${bookingId}`)
-        })
-    )
+      res.redirect(`/hdc/eligibility/excluded/${bookingId}`)
+    })
+  )
 
-    router.post(
-        '/varyStart',
-        asyncMiddleware(async (req, res) => {
-            const { bookingId } = req.body
-            await licenceService.createLicence({
-                bookingId,
-                data: { variedFromLicenceNotInSystem: true },
-                stage: 'VARY',
-            })
-            audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.username, { bookingId })
+  router.post(
+    '/varyStart',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.body
+      await licenceService.createLicence({
+        bookingId,
+        data: { variedFromLicenceNotInSystem: true },
+        stage: 'VARY',
+      })
+      audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.username, { bookingId })
 
-            res.redirect(`/hdc/vary/evidence/${bookingId}`)
-        })
-    )
+      res.redirect(`/hdc/vary/evidence/${bookingId}`)
+    })
+  )
 
-    router.get(
-        '/image/:imageId',
-        asyncMiddleware(async (req, res) => {
-            const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, res.locals.token)
+  router.get(
+    '/image/:imageId',
+    asyncMiddleware(async (req, res) => {
+      const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, res.locals.token)
 
-            if (!prisonerImage) {
-                const placeHolder = path.join(__dirname, '../../assets/images/no-photo.png')
-                res.status(302)
-                return res.sendFile(placeHolder)
-            }
-            res.contentType('image/jpeg')
-            res.send(prisonerImage)
-        })
-    )
+      if (!prisonerImage) {
+        const placeHolder = path.join(__dirname, '../../assets/images/no-photo.png')
+        res.status(302)
+        return res.sendFile(placeHolder)
+      }
+      res.contentType('image/jpeg')
+      res.send(prisonerImage)
+    })
+  )
 
-    return router
+  return router
 }
