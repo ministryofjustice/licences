@@ -2,7 +2,7 @@
 
 /* eslint-disable no-console, comma-dangle */
 
-const pollEndpointFor = require('poll-endpoint-for');
+const pollEndpointFor = require('poll-endpoint-for')
 
 pollEndpointFor(
   {
@@ -17,12 +17,12 @@ pollEndpointFor(
     requestInterval: 5000,
     retryCount: 60,
     onSuccess: () => {
-      console.log('Success');
-      process.exit(0);
+      console.log('Success')
+      process.exit(0)
     },
     onError: () => {
-      console.log(`Failed all checks on ${process.env.APP_BASE_URL}`);
-      process.exit(1);
+      console.log(`Failed all checks on ${process.env.APP_BASE_URL}`)
+      process.exit(1)
     },
-  }
-);
+  },
+)

@@ -2,21 +2,21 @@ extends taskListTemplate
 include vary/standardTask
 
 block tasks
-    each task in taskListModel
-        -var taskName = task.task
-        div.taskListItem.borderBottomLight
+  each task in taskListModel
+    -var taskName = task.task
+    div.taskListItem.borderBottomLight
 
-            if !taskName
-                + standardTask(task)
+      if !taskName
+        + standardTask(task)
 
-            if taskName === 'eligibilityTask'
-                include tasks/eligibilityTask
+      if taskName === 'eligibilityTask'
+        include tasks/eligibilityTask
 
-            if taskName === 'finalChecksTask'
-                include tasks/finalChecksTask
+      if taskName === 'finalChecksTask'
+        include tasks/finalChecksTask
 
-            if taskName === 'eligibilitySummaryTask'
-                include tasks/eligibilitySummaryTask
+      if taskName === 'eligibilitySummaryTask'
+        include tasks/eligibilitySummaryTask
 
-            if taskName === 'varyLicenceTask'
-                include tasks/varyLicenceTask
+      if taskName === 'varyLicenceTask'
+        include tasks/varyLicenceTask

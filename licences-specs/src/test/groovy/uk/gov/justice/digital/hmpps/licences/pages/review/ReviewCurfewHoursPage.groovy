@@ -6,13 +6,13 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class ReviewCurfewHoursPage extends Page {
 
-    static url = '/hdc/review/curfewHours'
+  static url = '/hdc/review/curfewHours'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
-    }
+  static content = {
+    header { module(HeaderModule) }
+  }
 }

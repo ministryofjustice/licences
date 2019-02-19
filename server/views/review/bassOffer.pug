@@ -2,69 +2,69 @@ extends ../layout
 
 block content
 
-    -var bassOffer = data && data.bassReferral && data.bassReferral.bassOffer || {}
-    -var bassRequest = data && data.bassReferral && data.bassReferral.bassRequest || {}
-    -var bassAddress = data && data.bassReferral && data.bassReferral.bassAddress || {}
+  -var bassOffer = data && data.bassReferral && data.bassReferral.bassOffer || {}
+  -var bassRequest = data && data.bassReferral && data.bassReferral.bassRequest || {}
+  -var bassAddress = data && data.bassReferral && data.bassReferral.bassAddress || {}
 
-    div.pure-g.pure-u-1
-        include ../includes/backToCheckList
-        include ../includes/personalDetailsSummary
+  div.pure-g.pure-u-1
+    include ../includes/backToCheckList
+    include ../includes/personalDetailsSummary
 
-        h2.heading-medium BASS request outcome
+    h2.heading-medium BASS request outcome
 
-        div.pure-g.midPaddingTopBottom
+    div.pure-g.midPaddingTopBottom
 
-            div.pure-u-1.pure-u-md-1-3.paddingTop
-                span Requested area
-            div.pure-u-1.pure-u-md-2-3.paddingTop#bassRequest
-                if bassRequest.proposedTown
-                    div#proposedTown.bold #{bassRequest.proposedTown}
-                if bassRequest.proposedCounty
-                    div#proposedCounty.bold #{bassRequest.proposedCounty}
+      div.pure-u-1.pure-u-md-1-3.paddingTop
+        span Requested area
+      div.pure-u-1.pure-u-md-2-3.paddingTop#bassRequest
+        if bassRequest.proposedTown
+          div#proposedTown.bold #{bassRequest.proposedTown}
+        if bassRequest.proposedCounty
+          div#proposedCounty.bold #{bassRequest.proposedCounty}
 
-            div.pure-u-1.pure-u-md-1-3.paddingTop
-                span BASS outcome
-            div.pure-u-1.pure-u-md-2-3.paddingTop
+      div.pure-u-1.pure-u-md-1-3.paddingTop
+        span BASS outcome
+      div.pure-u-1.pure-u-md-2-3.paddingTop
 
-                if licenceStatus.decisions.bassAreaNotSuitable
-                    div#bassOfferOutcome.bold BASS area rejected
+        if licenceStatus.decisions.bassAreaNotSuitable
+          div#bassOfferOutcome.bold BASS area rejected
 
-                -var offer = licenceStatus.decisions.bassAccepted
-                if offer === 'Yes'
-                    div#bassOfferOutcome.bold Offer made and property available
-                else if offer === 'Waiting'
-                    div#bassOfferOutcome.bold Offer made and on waiting list
-                else if offer === 'Unsuitable'
-                    div#bassOfferOutcome.bold Not suitable for BASS
-                else if offer === 'Unavailable'
-                    div#bassOfferOutcome.bold Address not available
+        -var offer = licenceStatus.decisions.bassAccepted
+        if offer === 'Yes'
+          div#bassOfferOutcome.bold Offer made and property available
+        else if offer === 'Waiting'
+          div#bassOfferOutcome.bold Offer made and on waiting list
+        else if offer === 'Unsuitable'
+          div#bassOfferOutcome.bold Not suitable for BASS
+        else if offer === 'Unavailable'
+          div#bassOfferOutcome.bold Address not available
 
-            if bassOffer.bassOfferDetails
-                div.pure-u-1.pure-u-md-1-3.paddingTop
-                    span Notes
-                div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferDetails
-                    div.bold #{bassOffer.bassOfferDetails}
+      if bassOffer.bassOfferDetails
+        div.pure-u-1.pure-u-md-1-3.paddingTop
+          span Notes
+        div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferDetails
+          div.bold #{bassOffer.bassOfferDetails}
 
-            if bassOffer.bassAccepted === 'Yes' && bassAddress.bassArea && bassAddress.addressLine1
-                div.pure-u-1.pure-u-md-1-3.paddingTop
-                    span Bass offer area
-                div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferArea
-                    if bassAddress.bassArea
-                        div.bold #{bassAddress.bassArea}
+      if bassOffer.bassAccepted === 'Yes' && bassAddress.bassArea && bassAddress.addressLine1
+        div.pure-u-1.pure-u-md-1-3.paddingTop
+          span Bass offer area
+        div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferArea
+          if bassAddress.bassArea
+            div.bold #{bassAddress.bassArea}
 
-                div.pure-u-1.pure-u-md-1-3.paddingTop
-                    span Bass offer address
-                div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferAddress
-                    if bassAddress.addressLine1
-                        div.bold #{bassAddress.addressLine1}
-                    if bassAddress.addressLine2
-                        div.bold #{bassAddress.addressLine2}
-                    if bassAddress.addressTown
-                        div.bold #{bassAddress.addressTown}
-                    if bassAddress.postCode
-                        div.bold #{bassAddress.postCode}
-                    if bassAddress.telephone
-                        div.bold #{bassAddress.telephone}
+        div.pure-u-1.pure-u-md-1-3.paddingTop
+          span Bass offer address
+        div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferAddress
+          if bassAddress.addressLine1
+            div.bold #{bassAddress.addressLine1}
+          if bassAddress.addressLine2
+            div.bold #{bassAddress.addressLine2}
+          if bassAddress.addressTown
+            div.bold #{bassAddress.addressTown}
+          if bassAddress.postCode
+            div.bold #{bassAddress.postCode}
+          if bassAddress.telephone
+            div.bold #{bassAddress.telephone}
 
 
 

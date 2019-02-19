@@ -3,23 +3,23 @@ include ../includes/alternativeForm
 
 block content
 
-    -var bassRequest = data.bassRequest || {}
-    -var bassAreaCheck = data.bassAreaCheck || {}
+  -var bassRequest = data.bassRequest || {}
+  -var bassAreaCheck = data.bassAreaCheck || {}
 
-    div.pure-g.pure-u-1
-        include ../includes/back
+  div.pure-g.pure-u-1
+    include ../includes/back
 
-        h2.heading-large Unsuitable for BASS
-        p The offender is unsuitable for BASS at this area:
+    h2.heading-large Unsuitable for BASS
+    p The offender is unsuitable for BASS at this area:
 
-        div.pure-g.borderBottomLight
-            div.pure-u-1.pure-u-md-1-2
-                p.smallMarginBottom Area
-                div.paddingBottom
-                    if bassRequest.proposedCounty
-                        p#proposedCounty.bold.noMargin #{bassRequest.proposedCounty}
-                    if bassRequest.proposedTown
-                        p#proposedTown.bold.noMargin #{bassRequest.proposedTown}
+    div.pure-g.borderBottomLight
+      div.pure-u-1.pure-u-md-1-2
+        p.smallMarginBottom Area
+        div.paddingBottom
+          if bassRequest.proposedCounty
+            p#proposedCounty.bold.noMargin #{bassRequest.proposedCounty}
+          if bassRequest.proposedTown
+            p#proposedTown.bold.noMargin #{bassRequest.proposedTown}
 
-        div.largePaddingBottom
-            +alternativeForm('area')
+    div.largePaddingBottom
+      +alternativeForm('area')

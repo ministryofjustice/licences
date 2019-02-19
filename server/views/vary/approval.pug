@@ -3,29 +3,29 @@ include ../includes/errorBannerWithDetailObject
 
 block content
 
-    include ../includes/back
-    include ../includes/personalDetailsSummary
-    +errorBannerWithDetail(errorObject)
+  include ../includes/back
+  include ../includes/personalDetailsSummary
+  +errorBannerWithDetail(errorObject)
 
-    h2.heading-large Details of the approver
+  h2.heading-large Details of the approver
 
-    form.largePaddingBottom(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        input(type="hidden" name="path" value=action)
+  form.largePaddingBottom(method="post")
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="bookingId" value=bookingId || '')
+    input(type="hidden" name="path" value=action)
 
-        div.pure-g
-            div.pure-u-1.pure-u-md-2-5
-                div.form-group
-                    label.form-label(for="name") Name
-                    input(id="name" name="name" value=data.name aria-label="Name" class=errorObject.name ? "form-control form-control-error" : "form-control")
+    div.pure-g
+      div.pure-u-1.pure-u-md-2-5
+        div.form-group
+          label.form-label(for="name") Name
+          input(id="name" name="name" value=data.name aria-label="Name" class=errorObject.name ? "form-control form-control-error" : "form-control")
 
-                div.form-group
-                    label.form-label(for="jobTitle") Job title
-                    input.form-control(id="jobTitle" name="jobTitle" value=data.jobTitle aria-label="Job title" class=errorObject.jobTitle ? "form-control form-control-error" : "form-control")
+        div.form-group
+          label.form-label(for="jobTitle") Job title
+          input.form-control(id="jobTitle" name="jobTitle" value=data.jobTitle aria-label="Job title" class=errorObject.jobTitle ? "form-control form-control-error" : "form-control")
 
 
-        if (action === 'change')
-            include ../includes/formSubmit
-        else
-            include ../includes/saveAndReturn
+    if (action === 'change')
+      include ../includes/formSubmit
+    else
+      include ../includes/saveAndReturn

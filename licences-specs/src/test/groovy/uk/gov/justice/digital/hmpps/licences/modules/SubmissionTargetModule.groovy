@@ -5,13 +5,13 @@ import geb.Module
 
 class SubmissionTargetModule extends Module {
 
-    static content = {
+  static content = {
 
-        prison(required: false) { $("#premise") }
-        city(required: false) { $("#city") }
-        locality(required: false) { $("#locality") }
-        postCode(required: false) { $("#postCode") }
+    prison(required: false) { $("#premise") }
+    city(required: false) { $("#city") }
+    locality(required: false) { $("#locality") }
+    postCode(required: false) { $("#postCode") }
 
-        phones(required: false) { $("div", id: startsWith("phone")) }
-    }
+    phones(required: false) { $("div", id: startsWith("phone")) }
+  }
 }

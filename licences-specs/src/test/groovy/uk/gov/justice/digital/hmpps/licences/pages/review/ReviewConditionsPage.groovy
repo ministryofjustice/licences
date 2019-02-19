@@ -6,18 +6,18 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class ReviewConditionsPage extends Page {
 
-    static url = '/hdc/review/conditions'
+  static url = '/hdc/review/conditions'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
+  static content = {
 
-        header { module(HeaderModule) }
+    header { module(HeaderModule) }
 
-        conditions { module(ConditionsSummaryModule) }
-    }
+    conditions { module(ConditionsSummaryModule) }
+  }
 
 
 }

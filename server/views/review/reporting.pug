@@ -3,26 +3,26 @@ include includes/additionalConditions
 
 block content
 
-    - var reporting = data.reporting && data.reporting.reportingInstructions ? data.reporting.reportingInstructions : {}
+  - var reporting = data.reporting && data.reporting.reportingInstructions ? data.reporting.reportingInstructions : {}
 
-    include ../includes/backToCheckList
-    include ../includes/personalDetailsSummary
+  include ../includes/backToCheckList
+  include ../includes/personalDetailsSummary
 
-    h2.heading-large Reporting instructions
+  h2.heading-large Reporting instructions
 
-    div.pure-u-md-1-2.paddingBottom
-        div
-            div.smallPaddingTop.paddingBottom
-                span.block Name
-                span#reportingName.block.bold #{reporting.name}
+  div.pure-u-md-1-2.paddingBottom
+    div
+      div.smallPaddingTop.paddingBottom
+        span.block Name
+        span#reportingName.block.bold #{reporting.name}
 
-            div.smallPaddingTop.paddingBottom
-                span.block Address
-                span#reportingAddress1.block.bold #{reporting.buildingAndStreet1}
-                span#reportingAddress2.block.bold #{reporting.buildingAndStreet2}
-                span#reportingTown.block.bold #{reporting.townOrCity}
-                span#reportingPostCode.block.bold #{reporting.postcode}
+      div.smallPaddingTop.paddingBottom
+        span.block Address
+        span#reportingAddress1.block.bold #{reporting.buildingAndStreet1}
+        span#reportingAddress2.block.bold #{reporting.buildingAndStreet2}
+        span#reportingTown.block.bold #{reporting.townOrCity}
+        span#reportingPostCode.block.bold #{reporting.postcode}
 
-            div.smallPaddingTop
-                span.block Telephone
-                span#reportingTelephone.block.bold #{reporting.telephone}
+      div.smallPaddingTop
+        span.block Telephone
+        span#reportingTelephone.block.bold #{reporting.telephone}

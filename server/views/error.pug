@@ -2,16 +2,16 @@ extends layout
 
 block content
 
-    div.pure-g
-        div.pure-u-1-2
-            h1.heading-xlarge Error
-            h1.heading-large There was an error
+  div.pure-g
+    div.pure-u-1-2
+      h1.heading-xlarge Error
+      h1.heading-large There was an error
 
-    h3 Message
-    p.code=error.status =message
+  h3 Message
+  p.code=error.status = message
 
-    if stack
-        h3 Developer mode detail
-        p.code= stack
-    else
-        a(href="/") Start again
+  if stack
+    h3 Developer mode detail
+    p.code= stack
+  else
+    a(href="/") Start again

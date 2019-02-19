@@ -6,15 +6,15 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class FinalChecksAddressWithdrawnPage extends Page {
 
-    static url = '/hdc/curfew/addressWithdrawn'
+  static url = '/hdc/curfew/addressWithdrawn'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
+  static content = {
+    header { module(HeaderModule) }
 
-        addAddressRadios { $(name: "enterNewAddress").module(RadioButtons) }
-    }
+    addAddressRadios { $(name: "enterNewAddress").module(RadioButtons) }
+  }
 }

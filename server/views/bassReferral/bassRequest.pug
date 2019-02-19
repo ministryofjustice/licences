@@ -1,29 +1,29 @@
 extends ../formTemplates/formTemplate
 
 block question
-    | Does the offender have a preferred BASS area?
+  | Does the offender have a preferred BASS area?
 
 block formItems
 
-    -var bassRequest = data && data.bassRequest || {}
-    input(type='hidden' name='bassRequested' value=bassRequest.bassRequested)
+  -var bassRequest = data && data.bassRequest || {}
+  input(type='hidden' name='bassRequested' value=bassRequest.bassRequested)
 
-    div.form-group.smallPaddingTop
-        div.multiple-choice(data-target="bassRequestForm")
-            input#yes(type="radio" checked=bassRequest.specificArea === 'Yes' name="specificArea" value="Yes")
-            label(for="yes") Yes
-        div.multiple-choice
-            input#no(type="radio" checked=bassRequest.specificArea === 'No' name="specificArea" value="No")
-            label(for="no") No
+  div.form-group.smallPaddingTop
+    div.multiple-choice(data-target="bassRequestForm")
+      input#yes(type="radio" checked=bassRequest.specificArea === 'Yes' name="specificArea" value="Yes")
+      label(for="yes") Yes
+    div.multiple-choice
+      input#no(type="radio" checked=bassRequest.specificArea === 'No' name="specificArea" value="No")
+      label(for="no") No
 
-    div#bassRequestForm.pure-u-1.pure-u-md-1-2(class="panel panel-border-narrow js-hidden")
-        if errorObject.proposedTown
-            span.error-message #{errorObject.proposedTown}
-        div.form-group
-            label(for='proposedTown') Proposed town:
-            input(type='text' name='proposedTown' id='proposedTown' class='form-control' value=bassRequest.proposedTown aria-label="Proposed town")
-        if errorObject.proposedCounty
-            span.error-message #{errorObject.proposedCounty}
-        div.form-group
-            label(for='proposedCounty') Proposed county or borough:
-            input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=bassRequest.proposedCounty aria-label="Proposed county or borough")
+  div#bassRequestForm.pure-u-1.pure-u-md-1-2(class="panel panel-border-narrow js-hidden")
+    if errorObject.proposedTown
+      span.error-message #{errorObject.proposedTown}
+    div.form-group
+      label(for='proposedTown') Proposed town:
+      input(type='text' name='proposedTown' id='proposedTown' class='form-control' value=bassRequest.proposedTown aria-label="Proposed town")
+    if errorObject.proposedCounty
+      span.error-message #{errorObject.proposedCounty}
+    div.form-group
+      label(for='proposedCounty') Proposed county or borough:
+      input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=bassRequest.proposedCounty aria-label="Proposed county or borough")

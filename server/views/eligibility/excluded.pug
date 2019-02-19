@@ -1,18 +1,18 @@
 extends ../formTemplates/formTemplate
 
 block question
-    | Is the offender statutorily excluded from HDC?
+  | Is the offender statutorily excluded from HDC?
 
 block formItems
-    - var exclusionValue = data.decision || null;
+  - var exclusionValue = data.decision || null;
 
-    div.form-group.inline
-        div.multiple-choice(data-target="excludedForm")
-            input#excludedYes(type="radio" checked=exclusionValue === 'Yes'  name="decision" value="Yes")
-            label(for="excludedYes") Yes
-        div.multiple-choice
-            input#excludedNo(type="radio" checked=exclusionValue === 'No' name="decision" value="No")
-            label(for="excludedNo") No
+  div.form-group.inline
+    div.multiple-choice(data-target="excludedForm")
+      input#excludedYes(type="radio" checked=exclusionValue === 'Yes'  name="decision" value="Yes")
+      label(for="excludedYes") Yes
+    div.multiple-choice
+      input#excludedNo(type="radio" checked=exclusionValue === 'No' name="decision" value="No")
+      label(for="excludedNo") No
 
-    div#excludedForm(class=errorObject.reason ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
-        include includes/excluded
+  div#excludedForm(class=errorObject.reason ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
+    include includes/excluded

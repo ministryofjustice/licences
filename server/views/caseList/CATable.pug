@@ -1,54 +1,54 @@
 table#hdcEligiblePrisoners.caSortcolumns.largeMarginBottom
-    thead
-        tr
-            th.sortable Name
-            th.hideMobile Prison no.
-            th.sortable HDCED
-            th.sortable.hideMobile Time to HDCED
-            th.sortable.hideMobile Status
-            th
-    tbody
-        if hdcEligible && hdcEligible.length > 0
-            each prisoner, index in hdcEligible
-                tr.hdcEligible
-                    td.name.searchable
-                        if prisoner.firstName
-                            | #{prisoner.firstName}
-                        if prisoner.lastName
-                            |  #{prisoner.lastName}
+  thead
+    tr
+      th.sortable Name
+      th.hideMobile Prison no.
+      th.sortable HDCED
+      th.sortable.hideMobile Time to HDCED
+      th.sortable.hideMobile Status
+      th
+  tbody
+    if hdcEligible && hdcEligible.length > 0
+      each prisoner, index in hdcEligible
+        tr.hdcEligible
+          td.name.searchable
+            if prisoner.firstName
+              | #{prisoner.firstName}
+            if prisoner.lastName
+              |  #{prisoner.lastName}
 
-                    td.offenderNo.hideMobile.searchable
-                        if prisoner.offenderNo
-                            | #{prisoner.offenderNo}
+          td.offenderNo.hideMobile.searchable
+            if prisoner.offenderNo
+              | #{prisoner.offenderNo}
 
-                    td.hdced
-                        div.searchable
-                            | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
+          td.hdced
+            div.searchable
+              | #{prisoner.sentenceDetail.homeDetentionCurfewEligibilityDate}
 
-                    td.timeToHdced.hideMobile
-                        div(class=prisoner.due.overdue ? "alert bold-small searchable" : "searchable")
-                            | #{prisoner.due.text}
+          td.timeToHdced.hideMobile
+            div(class=prisoner.due.overdue ? "alert bold-small searchable" : "searchable")
+              | #{prisoner.due.text}
 
-                    if ['Address not suitable', 'Address rejected'].includes(prisoner.status)
-                        td.status.terminalStateAlert.hideMobile.searchable
-                            | #{prisoner.status}
-                    else if (prisoner.status === 'Postponed')
-                        td.status.terminalStateWarn.hideMobile.searchable
-                            | #{prisoner.status}
-                    else
-                        td.status.hideMobile.searchable
-                            | #{prisoner.status}
+          if ['Address not suitable', 'Address rejected'].includes(prisoner.status)
+            td.status.terminalStateAlert.hideMobile.searchable
+              | #{prisoner.status}
+          else if (prisoner.status === 'Postponed')
+            td.status.terminalStateWarn.hideMobile.searchable
+              | #{prisoner.status}
+          else
+            td.status.hideMobile.searchable
+              | #{prisoner.status}
 
-                    td
-                        -var label = labels.ca[prisoner.status] || 'View'
+          td
+            -var label = labels.ca[prisoner.status] || 'View'
 
-                        if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
-                            -var path = "/hdc/taskList/" + prisoner.bookingId
-                            if (['Start now', 'Continue'].includes(label))
-                                a.button.button-primary.fullWidth.center(href=path role="button") #{label}
-                            else
-                                a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
+            if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
+              -var path = "/hdc/taskList/" + prisoner.bookingId
+              if (['Start now', 'Continue'].includes(label))
+                a.button.button-primary.fullWidth.center(href=path role="button") #{label}
+              else
+                a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
 
-                        else if ['PROCESSING_RO', 'APPROVAL'].includes(prisoner.stage)
-                            -var path = "/hdc/review/licence/" + prisoner.bookingId
-                            a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
+            else if ['PROCESSING_RO', 'APPROVAL'].includes(prisoner.stage)
+              -var path = "/hdc/review/licence/" + prisoner.bookingId
+              a.button.button-secondary.fullWidth.center(href=path role="button") #{label}

@@ -3,46 +3,46 @@ include ./itemAndError
 -var errors = errorObject.curfew && errorObject.curfew.curfewHours || {}
 
 div.borderBottomLight
-    div.pure-u-1.pure-u-md-4-5
-        div.pure-g.smallPaddingBottom.smallMarginTop
-            div.pure-u-1-2.pure-u-md-1-6 Monday
-            div.pure-u-1-2.pure-u-md-5-6
-                +itemAndError(hours.mondayFrom, errors.mondayFrom, "mondayFrom", 'oneline')
-                | &nbsp;-&nbsp;
-                +itemAndError(hours.mondayUntil, errors.mondayUntil, "mondayUntil", 'oneline')
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Tuesday
-            div.pure-u-1-2.pure-u-md-5-6
-                +itemAndError(hours.tuesdayFrom, errors.tuesdayFrom, "tuesdayFrom", 'oneline')
-                | &nbsp;-&nbsp;
-                +itemAndError(hours.tuesdayUntil, errors.tuesdayUntil, "tuesdayUntil", 'oneline')
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Wednesday
-            div.pure-u-1-2.pure-u-md-5-6
-                +itemAndError(hours.wednesdayFrom, errors.wednesdayFrom, "wednesdayFrom", 'oneline')
-                | &nbsp;-&nbsp;
-                +itemAndError(hours.wednesdayUntil, errors.wednesdayUntil, "wednesdayUntil", 'oneline')
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Thursday
-            div.pure-u-1-2.pure-u-md-5-6
-                +itemAndError(hours.thursdayFrom, errors.thursdayFrom, "thursdayFrom", 'oneline')
-                | &nbsp;-&nbsp;
-                +itemAndError(hours.thursdayUntil, errors.thursdayUntil, "thursdayUntil", 'oneline')
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Friday
-            div.pure-u-1-2.pure-u-md-5-6
-                +itemAndError(hours.fridayFrom, errors.fridayFrom, "fridayFrom", 'oneline')
-                | &nbsp;-&nbsp;
-                +itemAndError(hours.fridayUntil, errors.fridayUntil, "fridayUntil", 'oneline')
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Saturday
-            div.pure-u-1-2.pure-u-md-5-6
-                +itemAndError(hours.saturdayFrom, errors.saturdayFrom, "saturdayFrom", 'oneline')
-                | &nbsp;-&nbsp;
-                +itemAndError(hours.saturdayUntil, errors.saturdayUntil, "saturdayUntil", 'oneline')
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Sunday
-            div.pure-u-1-2.pure-u-md-5-6
-                +itemAndError(hours.sundayFrom, errors.sundayFrom, "sundayFrom", 'oneline')
-                | &nbsp;-&nbsp;
-                +itemAndError(hours.sundayUntil, errors.sundayUntil, "sundayUntil", 'oneline')
+  div.pure-u-1.pure-u-md-4-5
+    div.pure-g.smallPaddingBottom.smallMarginTop
+      div.pure-u-1-2.pure-u-md-1-6 Monday
+      div.pure-u-1-2.pure-u-md-5-6
+        +itemAndError(hours.mondayFrom, errors.mondayFrom, "mondayFrom", 'oneline')
+        | &nbsp;-&nbsp;
+        +itemAndError(hours.mondayUntil, errors.mondayUntil, "mondayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Tuesday
+      div.pure-u-1-2.pure-u-md-5-6
+        +itemAndError(hours.tuesdayFrom, errors.tuesdayFrom, "tuesdayFrom", 'oneline')
+        | &nbsp;-&nbsp;
+        +itemAndError(hours.tuesdayUntil, errors.tuesdayUntil, "tuesdayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Wednesday
+      div.pure-u-1-2.pure-u-md-5-6
+        +itemAndError(hours.wednesdayFrom, errors.wednesdayFrom, "wednesdayFrom", 'oneline')
+        | &nbsp;-&nbsp;
+        +itemAndError(hours.wednesdayUntil, errors.wednesdayUntil, "wednesdayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Thursday
+      div.pure-u-1-2.pure-u-md-5-6
+        +itemAndError(hours.thursdayFrom, errors.thursdayFrom, "thursdayFrom", 'oneline')
+        | &nbsp;-&nbsp;
+        +itemAndError(hours.thursdayUntil, errors.thursdayUntil, "thursdayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Friday
+      div.pure-u-1-2.pure-u-md-5-6
+        +itemAndError(hours.fridayFrom, errors.fridayFrom, "fridayFrom", 'oneline')
+        | &nbsp;-&nbsp;
+        +itemAndError(hours.fridayUntil, errors.fridayUntil, "fridayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Saturday
+      div.pure-u-1-2.pure-u-md-5-6
+        +itemAndError(hours.saturdayFrom, errors.saturdayFrom, "saturdayFrom", 'oneline')
+        | &nbsp;-&nbsp;
+        +itemAndError(hours.saturdayUntil, errors.saturdayUntil, "saturdayUntil", 'oneline')
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Sunday
+      div.pure-u-1-2.pure-u-md-5-6
+        +itemAndError(hours.sundayFrom, errors.sundayFrom, "sundayFrom", 'oneline')
+        | &nbsp;-&nbsp;
+        +itemAndError(hours.sundayUntil, errors.sundayUntil, "sundayUntil", 'oneline')

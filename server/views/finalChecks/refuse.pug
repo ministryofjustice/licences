@@ -1,28 +1,28 @@
 extends ../layout
 
 block content
-    - var decision = data.decision || '';
-    - var reason = data.reason || '';
-    - var outOfTimeReasons = data.outOfTimeReasons || [];
+  - var decision = data.decision || '';
+  - var reason = data.reason || '';
+  - var outOfTimeReasons = data.outOfTimeReasons || [];
 
-    div.pure-g.pure-u-1
-        include ../includes/backToTaskList
-        include ../includes/personalDetailsSummary
+  div.pure-g.pure-u-1
+    include ../includes/backToTaskList
+    include ../includes/personalDetailsSummary
 
-    h2.heading-large HDC refusal
+  h2.heading-large HDC refusal
 
-    form(method="post")
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId || '')
-        input(type="hidden" name="reason" value=reason)
-        input(type="hidden" name="outOfTimeReasons" value=outOfTimeReasons)
+  form(method="post")
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="bookingId" value=bookingId || '')
+    input(type="hidden" name="reason" value=reason)
+    input(type="hidden" name="outOfTimeReasons" value=outOfTimeReasons)
 
-        div.largePaddingBottom.smallPaddingTop.form-group.paddingBottom
-            div.multiple-choice
-                input#yes(type="radio" checked=decision==='Yes' name="decision" value="Yes")
-                label(for="yes") Yes
-            div.multiple-choice
-                input#no(type="radio" checked=decision==='No' name="decision" value="No")
-                label(for="no") No
+    div.largePaddingBottom.smallPaddingTop.form-group.paddingBottom
+      div.multiple-choice
+        input#yes(type="radio" checked=decision === 'Yes' name="decision" value="Yes")
+        label(for="yes") Yes
+      div.multiple-choice
+        input#no(type="radio" checked=decision === 'No' name="decision" value="No")
+        label(for="no") No
 
-        include ../includes/formSubmit
+    include ../includes/formSubmit

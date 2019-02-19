@@ -5,13 +5,13 @@ import geb.module.Select
 
 class LicenceTaskListPage extends Page {
 
-    static url = '/hdc/pdf/taskList'
+  static url = '/hdc/pdf/taskList'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
+  static content = {
 
-    }
+  }
 }

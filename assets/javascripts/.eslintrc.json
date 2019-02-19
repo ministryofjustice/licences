@@ -1,13 +1,13 @@
 {
-    "parserOptions": {
-        "ecmaVersion": 3
-    },
-    "env": {
-        "browser": true
-    },
-    "rules": {
-        "no-var": "off",
-        "no-unused-vars": "off",
-        "import/order": "off"
-    }
+  "parserOptions": {
+    "ecmaVersion": 3
+  },
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "no-var": "off",
+    "no-unused-vars": "off",
+    "import/order": "off"
+  }
 }

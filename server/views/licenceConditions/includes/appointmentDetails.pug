@@ -1,24 +1,24 @@
 div.pure-g
-    div.pure-u-1
-        //label(for='appointmentDate') Date
-        //input(type='text' name='appointmentDate' id='appointmentDate' class='form-control' value=condition.user_submission && condition.user_submission.appointmentDate aria-label="Appointment date")
-        div.form-date
-            div.form-group.form-group-day
-                label.form-label(for="appointmentDay") Day
-                input.form-control#appointmentDay(name="appointmentDay" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.appointmentDay)
+  div.pure-u-1
+    //label(for='appointmentDate') Date
+    //input(type='text' name='appointmentDate' id='appointmentDate' class='form-control' value=condition.user_submission && condition.user_submission.appointmentDate aria-label="Appointment date")
+    div.form-date
+      div.form-group.form-group-day
+        label.form-label(for="appointmentDay") Day
+        input.form-control#appointmentDay(name="appointmentDay" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.appointmentDay)
 
-            div.form-group.form-group-month
-                label.form-label(for="appointmentMonth") Month
-                input.form-control#appointmentMonth(name="appointmentMonth" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.appointmentMonth)
+      div.form-group.form-group-month
+        label.form-label(for="appointmentMonth") Month
+        input.form-control#appointmentMonth(name="appointmentMonth" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.appointmentMonth)
 
-            div.form-group.form-group-year
-                label.form-label(for="appointmentYear") Year
-                input.form-control#appointmentYear(name="appointmentYear" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.appointmentYear)
-    div.pure-u-1-2
-        label(for='appointmentTime') Time
-        input.pure-u-1-2(type='text' name='appointmentTime' id='appointmentTime' class='form-control' value=condition.user_submission && condition.user_submission.appointmentTime aria-label="Appointment time")
-    div.pure-u-1
-        label(for='appointmentAddress') Address
-            textarea(name='appointmentAddress' id='appointmentAddress' class='form-control' rows='2' aria-label="Appointment address")
-                if condition.user_submission && condition.user_submission.appointmentAddress
-                    | #{condition.user_submission.appointmentAddress}
+      div.form-group.form-group-year
+        label.form-label(for="appointmentYear") Year
+        input.form-control#appointmentYear(name="appointmentYear" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.appointmentYear)
+  div.pure-u-1-2
+    label(for='appointmentTime') Time
+    input.pure-u-1-2(type='text' name='appointmentTime' id='appointmentTime' class='form-control' value=condition.user_submission && condition.user_submission.appointmentTime aria-label="Appointment time")
+  div.pure-u-1
+    label(for='appointmentAddress') Address
+      textarea(name='appointmentAddress' id='appointmentAddress' class='form-control' rows='2' aria-label="Appointment address")
+        if condition.user_submission && condition.user_submission.appointmentAddress
+          | #{condition.user_submission.appointmentAddress}

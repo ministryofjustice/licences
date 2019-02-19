@@ -1,6 +1,6 @@
 mixin itemAndError(field, errorField, id, oneLine)
-    if errorField
-        span(id=`${id}-error` class=oneLine ? "bold alert" : "alert block bold") #{errorField}
-    else if field
-        span(id=`${id}` class=oneLine ? "bold" : "block bold") #{field}
+  if errorField
+    span(id=`${id}-error` class=oneLine ? "bold alert" : "alert block bold") #{errorField}
+  else if field
+    span(id=`${id}` class=oneLine ? "bold" : "block bold") #{field}
 

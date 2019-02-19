@@ -5,10 +5,10 @@ import geb.Module
 
 class HeaderModule extends Module {
 
-    static content = {
+  static content = {
 
-        user { $('#header-user').text() }
+    user { $('#header-user').text() }
 
-        logoutLink {$('a', text: 'Sign out')}
-    }
+    logoutLink { $('a', text: 'Sign out') }
+  }
 }

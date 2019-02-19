@@ -1,18 +1,18 @@
 extends ../formTemplates/formTemplate
 
 block question
-    | Is the offender presumed unsuitable?
+  | Is the offender presumed unsuitable?
 
 block formItems
-    - var suitabilityValue = data.decision || null;
+  - var suitabilityValue = data.decision || null;
 
-    div.form-group.inline
-        div.multiple-choice(data-target="unsuitableForm")
-            input#unsuitableYes(type="radio" checked=suitabilityValue === 'Yes' name="decision" value="Yes")
-            label(for="unsuitableYes") Yes
-        div.multiple-choice
-            input#unsuitableNo(type="radio" checked=suitabilityValue === 'No' name="decision" value="No")
-            label(for="unsuitableNo") No
+  div.form-group.inline
+    div.multiple-choice(data-target="unsuitableForm")
+      input#unsuitableYes(type="radio" checked=suitabilityValue === 'Yes' name="decision" value="Yes")
+      label(for="unsuitableYes") Yes
+    div.multiple-choice
+      input#unsuitableNo(type="radio" checked=suitabilityValue === 'No' name="decision" value="No")
+      label(for="unsuitableNo") No
 
-    div#unsuitableForm(class=errorObject.reason ? 'form-group-error': 'panel panel-border-narrow js-hidden')
-        include includes/suitability
+  div#unsuitableForm(class=errorObject.reason ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
+    include includes/suitability

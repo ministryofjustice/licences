@@ -7,15 +7,15 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class ReviewBassOfferPage extends Page {
 
-    static url = '/hdc/review/bassOffer'
+  static url = '/hdc/review/bassOffer'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
+  static content = {
+    header { module(HeaderModule) }
 
-        bass { module(BassRequestModule) }
-    }
+    bass { module(BassRequestModule) }
+  }
 }

@@ -3,15 +3,15 @@ include includes/additionalConditions
 
 block content
 
-    - var victimLiaison = data.victim && data.victim.victimLiaison ? data.victim.victimLiaison : {}
+  - var victimLiaison = data.victim && data.victim.victimLiaison ? data.victim.victimLiaison : {}
 
-    include ../includes/backToCheckList
-    include ../includes/personalDetailsSummary
+  include ../includes/backToCheckList
+  include ../includes/personalDetailsSummary
 
-    div.pure-u-1.pure-u-md-1-2.paddingBottom
-        h2.heading-large Victim liaison
-        div.paddingBottom.smallPaddingTop
-            p Is this a Victim Contact Service qualifying case where the victim has opted in?
+  div.pure-u-1.pure-u-md-1-2.paddingBottom
+    h2.heading-large Victim liaison
+    div.paddingBottom.smallPaddingTop
+      p Is this a Victim Contact Service qualifying case where the victim has opted in?
 
-            span#victimLiaison.block.bold #{victimLiaison.decision}
-            span#victimLiaisonDetails.block #{victimLiaison.victimLiaisonDetails}
+      span#victimLiaison.block.bold #{victimLiaison.decision}
+      span#victimLiaisonDetails.block #{victimLiaison.victimLiaisonDetails}

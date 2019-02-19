@@ -2,63 +2,63 @@ extends ../../layout
 
 block content
 
-    div.back-link-container.smallPaddingTop
-        a#back.link-back(href="/admin/") Back
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/") Back
 
-    h2.heading-large Delete RO user?
+  h2.heading-large Delete RO user?
 
-    form#deleteUserForm(method='POST')
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="nomisId" value=roUser.nomis_id)
+  form#deleteUserForm(method='POST')
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="nomisId" value=roUser.nomis_id)
 
-        div#user.pure-g
-            div.pure-u-1
-                table#users.largeMarginBottom
-                    thead
-                        tr
-                            th Nomis Username
-                            th Delius Staff ID
-                            th First
-                            th Last
-                            th Organisation
-                            th Job Role
-                            th Email
-                            th Organisation Email
-                            th Telephone
-                            th
-                    tbody
-                        tr.user
-                            td.nomisId
-                                if roUser.nomisId
-                                    | #{roUser.nomisId}
-                            td.deliusId
-                                if roUser.deliusId
-                                    | #{roUser.deliusId}
-                            td.firstName
-                                if roUser.first
-                                    | #{roUser.first}
-                            td.lastName
-                                if roUser.last
-                                    | #{roUser.last}
-                            td.organisation
-                                if roUser.organisation
-                                    | #{roUser.organisation}
-                            td.jobRole
-                                if roUser.jobRole
-                                    | #{roUser.jobRole}
-                            td.email
-                                if roUser.email
-                                    | #{roUser.email}
-                            td.orgEmail
-                                if roUser.orgEmail
-                                    | #{roUser.orgEmail}
-                            td.telephone
-                                if roUser.telephone
-                                    | #{roUser.telephone}
+    div#user.pure-g
+      div.pure-u-1
+        table#users.largeMarginBottom
+          thead
+            tr
+              th Nomis Username
+              th Delius Staff ID
+              th First
+              th Last
+              th Organisation
+              th Job Role
+              th Email
+              th Organisation Email
+              th Telephone
+              th
+          tbody
+            tr.user
+              td.nomisId
+                if roUser.nomisId
+                  | #{roUser.nomisId}
+              td.deliusId
+                if roUser.deliusId
+                  | #{roUser.deliusId}
+              td.firstName
+                if roUser.first
+                  | #{roUser.first}
+              td.lastName
+                if roUser.last
+                  | #{roUser.last}
+              td.organisation
+                if roUser.organisation
+                  | #{roUser.organisation}
+              td.jobRole
+                if roUser.jobRole
+                  | #{roUser.jobRole}
+              td.email
+                if roUser.email
+                  | #{roUser.email}
+              td.orgEmail
+                if roUser.orgEmail
+                  | #{roUser.orgEmail}
+              td.telephone
+                if roUser.telephone
+                  | #{roUser.telephone}
 
 
-        div.paddingBottom.smallPaddingTop
-            div.pure-u-1.inlineButtons
-                input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Delete user")
-                a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/roUsers" role="button") Cancel
+    div.paddingBottom.smallPaddingTop
+      div.pure-u-1.inlineButtons
+        input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Delete user")
+        a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/roUsers" role="button") Cancel
 

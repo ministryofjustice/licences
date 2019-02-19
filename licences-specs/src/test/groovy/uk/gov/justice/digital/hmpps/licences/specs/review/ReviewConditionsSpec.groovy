@@ -12,53 +12,53 @@ import uk.gov.justice.digital.hmpps.licences.util.TestData
 @Stepwise
 class ReviewConditionsSpec extends GebReportingSpec {
 
-    @Shared
-    TestData testData = new TestData()
+  @Shared
+  TestData testData = new TestData()
 
-    @Shared
-    Actions actions = new Actions()
+  @Shared
+  Actions actions = new Actions()
 
-    def setupSpec() {
-        actions.logIn('CA')
-    }
+  def setupSpec() {
+    actions.logIn('CA')
+  }
 
-    def cleanupSpec() {
-        actions.logOut()
-    }
+  def cleanupSpec() {
+    actions.logOut()
+  }
 
-    def 'Shows conditions details entered by RO'() {
+  def 'Shows conditions details entered by RO'() {
 
-        given: 'A licence ready for final checks'
-        testData.loadLicence('review/normal')
+    given: 'A licence ready for final checks'
+    testData.loadLicence('review/normal')
 
-        when: 'I view the page'
-        to ReviewConditionsPage, testData.markAndrewsBookingId
+    when: 'I view the page'
+    to ReviewConditionsPage, testData.markAndrewsBookingId
 
-        then: 'I see the licence conditions details'
-        conditions.additional.size() == 3
+    then: 'I see the licence conditions details'
+    conditions.additional.size() == 3
 
-        conditions.additional[0].number == '1.'
-        conditions.additional[0].title == 'Technology: Cameras and photos'
+    conditions.additional[0].number == '1.'
+    conditions.additional[0].title == 'Technology: Cameras and photos'
 
-        conditions.additional[1].number == '2.'
-        conditions.additional[1].content == 'First bespoke condition'
-        conditions.additional[1].approved == 'Approved'
+    conditions.additional[1].number == '2.'
+    conditions.additional[1].content == 'First bespoke condition'
+    conditions.additional[1].approved == 'Approved'
 
-        conditions.additional[2].number == '3.'
-        conditions.additional[2].content == 'Second bespoke condition'
-        conditions.additional[2].approved == 'Not approved'
+    conditions.additional[2].number == '3.'
+    conditions.additional[2].content == 'Second bespoke condition'
+    conditions.additional[2].approved == 'Not approved'
 
-    }
+  }
 
-    def 'Shows message when no additional conditions entered by RO'() {
+  def 'Shows message when no additional conditions entered by RO'() {
 
-        given: 'A licence ready for final checks'
-        testData.loadLicence('review/no-conditions')
+    given: 'A licence ready for final checks'
+    testData.loadLicence('review/no-conditions')
 
-        when: 'I view the page'
-        to ReviewConditionsPage, testData.markAndrewsBookingId
+    when: 'I view the page'
+    to ReviewConditionsPage, testData.markAndrewsBookingId
 
-        then: 'I see the licence conditions details'
-        conditions.message == 'No additional conditions have been selected.'
-    }
+    then: 'I see the licence conditions details'
+    conditions.message == 'No additional conditions have been selected.'
+  }
 }

@@ -1,32 +1,32 @@
 extends ../layout
 
 block content
-    - var hours = data.curfew.curfewHours
+  - var hours = data.curfew.curfewHours
 
-    div.largePaddingBottom
-        include ../includes/backToCheckList
-        include ../includes/personalDetailsSummary
+  div.largePaddingBottom
+    include ../includes/backToCheckList
+    include ../includes/personalDetailsSummary
 
-        h2.heading-large Proposed HDC curfew hours
+    h2.heading-large Proposed HDC curfew hours
 
-        div.pure-g.smallPaddingBottom.smallMarginTop
-            div.pure-u-1-2.pure-u-md-1-6 Monday
-            div.pure-u-1-2.pure-u-md-1-6 #{hours.mondayFrom} - #{hours.mondayUntil}
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Tuesday
-            div.pure-u-1-2.pure-u-md-1-6 #{hours.tuesdayFrom} - #{hours.tuesdayUntil}
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Wednesday
-            div.pure-u-1-2.pure-u-md-1-6 #{hours.wednesdayFrom} - #{hours.wednesdayUntil}
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Thursday
-            div.pure-u-1-2.pure-u-md-1-6 #{hours.thursdayFrom} - #{hours.thursdayUntil}
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Friday
-            div.pure-u-1-2.pure-u-md-1-6 #{hours.fridayFrom} - #{hours.fridayUntil}
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Saturday
-            div.pure-u-1-2.pure-u-md-1-6 #{hours.saturdayFrom} - #{hours.saturdayUntil}
-        div.pure-g.smallPaddingBottom
-            div.pure-u-1-2.pure-u-md-1-6 Sunday
-            div.pure-u-1-2.pure-u-md-1-6 #{hours.sundayFrom} - #{hours.sundayUntil}
+    div.pure-g.smallPaddingBottom.smallMarginTop
+      div.pure-u-1-2.pure-u-md-1-6 Monday
+      div.pure-u-1-2.pure-u-md-1-6 #{hours.mondayFrom} - #{hours.mondayUntil}
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Tuesday
+      div.pure-u-1-2.pure-u-md-1-6 #{hours.tuesdayFrom} - #{hours.tuesdayUntil}
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Wednesday
+      div.pure-u-1-2.pure-u-md-1-6 #{hours.wednesdayFrom} - #{hours.wednesdayUntil}
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Thursday
+      div.pure-u-1-2.pure-u-md-1-6 #{hours.thursdayFrom} - #{hours.thursdayUntil}
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Friday
+      div.pure-u-1-2.pure-u-md-1-6 #{hours.fridayFrom} - #{hours.fridayUntil}
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Saturday
+      div.pure-u-1-2.pure-u-md-1-6 #{hours.saturdayFrom} - #{hours.saturdayUntil}
+    div.pure-g.smallPaddingBottom
+      div.pure-u-1-2.pure-u-md-1-6 Sunday
+      div.pure-u-1-2.pure-u-md-1-6 #{hours.sundayFrom} - #{hours.sundayUntil}

@@ -3,15 +3,15 @@ include includes/additionalConditions
 
 block content
 
-    include ../includes/backToCheckList
-    include ../includes/personalDetailsSummary
+  include ../includes/backToCheckList
+  include ../includes/personalDetailsSummary
 
-    div.largePaddingBottom
-        if data.licenceConditions && data.licenceConditions.length > 0
-            h2.heading-medium Additional conditions
-            p The additional conditions that have been added by the RO are displayed below..
-            div.borderBottomLight
-            +additionalConditions()
+  div.largePaddingBottom
+    if data.licenceConditions && data.licenceConditions.length > 0
+      h2.heading-medium Additional conditions
+      p The additional conditions that have been added by the RO are displayed below..
+      div.borderBottomLight
+      +additionalConditions()
 
-        else
-            h2#message.heading-medium No additional conditions have been selected.
+    else
+      h2#message.heading-medium No additional conditions have been selected.

@@ -1,15 +1,15 @@
 extends ../formTemplates/formTemplate
 
 block question
-    | Is the offender currently on remand for another offence?
+  | Is the offender currently on remand for another offence?
 
 block formItems
-    - var onRemandValue = data.decision || null;
+  - var onRemandValue = data.decision || null;
 
-    div.form-group.inline
-        div.multiple-choice
-            input#onRemandYes(type="radio" checked=onRemandValue === 'Yes'  name="decision" value="Yes")
-            label(for="onRemandYes") Yes
-        div.multiple-choice
-            input#onRemandNo(type="radio" checked=onRemandValue === 'No' name="decision" value="No")
-            label(for="onRemandNo") No
+  div.form-group.inline
+    div.multiple-choice
+      input#onRemandYes(type="radio" checked=onRemandValue === 'Yes'  name="decision" value="Yes")
+      label(for="onRemandYes") Yes
+    div.multiple-choice
+      input#onRemandNo(type="radio" checked=onRemandValue === 'No' name="decision" value="No")
+      label(for="onRemandNo") No

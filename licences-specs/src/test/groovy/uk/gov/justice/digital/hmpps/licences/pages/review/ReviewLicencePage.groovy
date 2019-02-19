@@ -11,28 +11,28 @@ import uk.gov.justice.digital.hmpps.licences.modules.RiskDetailsModule
 
 class ReviewLicencePage extends Page {
 
-    static url = '/hdc/review/licence'
+  static url = '/hdc/review/licence'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
+  static content = {
 
-        header { module(HeaderModule) }
+    header { module(HeaderModule) }
 
-        offender { module(OffenderDetailsModule) }
+    offender { module(OffenderDetailsModule) }
 
-        curfew { module(CurfewDetailsModule) }
+    curfew { module(CurfewDetailsModule) }
 
-        conditions { module(ConditionsSummaryModule) }
+    conditions { module(ConditionsSummaryModule) }
 
-        risk { module(RiskDetailsModule) }
+    risk { module(RiskDetailsModule) }
 
-        reporting { module(ReportingDetailsModule) }
+    reporting { module(ReportingDetailsModule) }
 
-        bass { module(BassRequestModule) }
+    bass { module(BassRequestModule) }
 
-        createLicenceControl(required: false) {$('#createPdf')}
-    }
+    createLicenceControl(required: false) { $('#createPdf') }
+  }
 }

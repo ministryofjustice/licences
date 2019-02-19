@@ -3,38 +3,38 @@ extends ../layout
 include ../review/includes/additionalConditions
 block content
 
-    include ../includes/back
-    include ../includes/personalDetailsSummary
+  include ../includes/back
+  include ../includes/personalDetailsSummary
 
-    div.largePaddingBottom
-        if data.licenceConditions && data.licenceConditions.length > 0
-            h1.heading-large Check additional conditions
-            div.borderBottomLight
-            +additionalConditions('editable')
-
-        else
-            h2.heading-medium You have not selected any conditions.
-
-    - var destination = action ? action + '/' : ''
-    a#addAnother.button.button-secondary.largeMarginBottom(href="/hdc/licenceConditions/additionalConditions/" + destination + bookingId role="button")
-        if data.licenceConditions && data.licenceConditions.length > 0
-            |Add another condition
-        else
-            |Add additional condition
-
+  div.largePaddingBottom
     if data.licenceConditions && data.licenceConditions.length > 0
-        div.pure-g
-            div.pure-u-1.pure-u-md-15-24
-                div.paddingBottom.smallPaddingTop
-                    div.notice-container
-                        div.notice
-                            i.icon.icon-important
-                                span.visually-hidden Warning
-                            strong.bold-small
-                                | Any additional conditions selected must be reasonable and proportionate to manage the offender's risk
+      h1.heading-large Check additional conditions
+      div.borderBottomLight
+      +additionalConditions('editable')
 
-    -var actionText = action === 'change' ? 'Save and continue' : 'Save and return to task list'
+    else
+      h2.heading-medium You have not selected any conditions.
 
-    div.paddingBottom.smallPaddingTop
-        div.pure-u-1.inlineButtons
-            a#continueBtn.requiredButton.button.smallMarginTop(href=nextPath + bookingId role="button") #{actionText}
+  - var destination = action ? action + '/' : ''
+  a#addAnother.button.button-secondary.largeMarginBottom(href="/hdc/licenceConditions/additionalConditions/" + destination + bookingId role="button")
+    if data.licenceConditions && data.licenceConditions.length > 0
+      | Add another condition
+    else
+      | Add additional condition
+
+  if data.licenceConditions && data.licenceConditions.length > 0
+    div.pure-g
+      div.pure-u-1.pure-u-md-15-24
+        div.paddingBottom.smallPaddingTop
+          div.notice-container
+            div.notice
+              i.icon.icon-important
+                span.visually-hidden Warning
+              strong.bold-small
+                | Any additional conditions selected must be reasonable and proportionate to manage the offender's risk
+
+  -var actionText = action === 'change' ? 'Save and continue' : 'Save and return to task list'
+
+  div.paddingBottom.smallPaddingTop
+    div.pure-u-1.inlineButtons
+      a#continueBtn.requiredButton.button.smallMarginTop(href=nextPath + bookingId role="button") #{actionText}

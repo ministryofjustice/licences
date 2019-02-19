@@ -6,20 +6,20 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class RiskManagementPage extends Page {
 
-    static url = '/hdc/risk/riskManagement'
+  static url = '/hdc/risk/riskManagement'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
+  static content = {
+    header { module(HeaderModule) }
 
-        riskManagementRadios { $(name: "planningActions").module(RadioButtons) }
-        awaitingInformationRadios { $(name: "awaitingInformation").module(RadioButtons) }
-        addressSuitableRadios { $(name: "proposedAddressSuitable").module(RadioButtons) }
+    riskManagementRadios { $(name: "planningActions").module(RadioButtons) }
+    awaitingInformationRadios { $(name: "awaitingInformation").module(RadioButtons) }
+    addressSuitableRadios { $(name: "proposedAddressSuitable").module(RadioButtons) }
 
-        riskManagementForm { $("#riskManagementDetails") }
-        addressSuitableForm(required: false) { $("#unsuitableReason") }
-    }
+    riskManagementForm { $("#riskManagementDetails") }
+    addressSuitableForm(required: false) { $("#unsuitableReason") }
+  }
 }

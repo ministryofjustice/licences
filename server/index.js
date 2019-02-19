@@ -37,18 +37,18 @@ const notificationService = createNotificationService(notifyClient)
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 
 const app = createApp({
-    signInService,
-    licenceService,
-    prisonerService,
-    conditionsService,
-    caseListService,
-    pdfService,
-    reportingService,
-    userAdminService,
-    notificationService,
-    userService,
-    nomisPushService,
-    audit,
+  signInService,
+  licenceService,
+  prisonerService,
+  conditionsService,
+  caseListService,
+  pdfService,
+  reportingService,
+  userAdminService,
+  notificationService,
+  userService,
+  nomisPushService,
+  audit,
 })
 
 module.exports = app

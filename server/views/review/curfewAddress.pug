@@ -2,49 +2,49 @@ extends ../layout
 
 block content
 
-    - var errorsOnPage = Object.keys(errorObject).length !== 0;
-    - var addressChanged = licenceStatus.stage === 'PROCESSING_CA' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
+  - var errorsOnPage = Object.keys(errorObject).length !== 0;
+  - var addressChanged = licenceStatus.stage === 'PROCESSING_CA' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
 
-    include ../includes/back
+  include ../includes/back
 
-    if errorsOnPage
-        div.error-summary(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
-            h2.heading-medium.error-summary-heading.center.noMargin#error-summary-heading
-                | There are unanswered questions - see below
+  if errorsOnPage
+    div.error-summary(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
+      h2.heading-medium.error-summary-heading.center.noMargin#error-summary-heading
+        | There are unanswered questions - see below
 
-    h1.heading-large Check the information before submitting the case
-    div.largeMarginBottom
+  h1.heading-large Check the information before submitting the case
+  div.largeMarginBottom
 
-        include ../includes/personalDetailsSummary
+    include ../includes/personalDetailsSummary
 
-        div.pure-g.borderBottomLight
-            div.pure-u-1.pure-u-md-1-2
-                h2#curfewAddressDetails.heading-medium Proposed curfew address
-            div.pure-u-1.pure-u-md-1-2.alignRight
-                div.change-details
-                    if(user.role === 'CA' && (stage === 'ELIGIBILITY' || addressChanged))
-                        a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change
+    div.pure-g.borderBottomLight
+      div.pure-u-1.pure-u-md-1-2
+        h2#curfewAddressDetails.heading-medium Proposed curfew address
+      div.pure-u-1.pure-u-md-1-2.alignRight
+        div.change-details
+          if(user.role === 'CA' && (stage === 'ELIGIBILITY' || addressChanged))
+            a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change
 
-            div.pure-u-1
-                if typeof errorObject.proposedAddress === 'string'
-                    p.alert.bold(id='proposed-address-error') Enter a curfew address
-                else if errorObject.proposedAddress && typeof errorObject.proposedAddress.curfewAddress === 'string'
-                    p.alert.bold(id='proposed-address-error') Enter a curfew address
-                else
-                    include ./includes/curfewAddress
+      div.pure-u-1
+        if typeof errorObject.proposedAddress === 'string'
+          p.alert.bold(id='proposed-address-error') Enter a curfew address
+        else if errorObject.proposedAddress && typeof errorObject.proposedAddress.curfewAddress === 'string'
+          p.alert.bold(id='proposed-address-error') Enter a curfew address
+        else
+          include ./includes/curfewAddress
 
-    if !errorsOnPage
-        h2.heading-medium Now send the case
+  if !errorsOnPage
+    h2.heading-medium Now send the case
 
-        div.pure-u-1.pure-u-md-3-4
-            | The case is ready to send to the responsible officer for address checks.
+    div.pure-u-1.pure-u-md-3-4
+      | The case is ready to send to the responsible officer for address checks.
 
-        div.paddingBottom.smallPaddingTop
-            form#addressReviewForm(method='POST', action='/hdc/send/addressReview/' + bookingId)
-                input(type="hidden" name="_csrf" value=csrfToken)
-                div.pure-u-1.inlineButtons
-                    div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
-                        input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
-    else
-        div.paddingBottom.smallPaddingTop
-            a#correctAddressLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Correct the errors before continuing
+    div.paddingBottom.smallPaddingTop
+      form#addressReviewForm(method='POST', action='/hdc/send/addressReview/' + bookingId)
+        input(type="hidden" name="_csrf" value=csrfToken)
+        div.pure-u-1.inlineButtons
+          div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+            input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
+  else
+    div.paddingBottom.smallPaddingTop
+      a#correctAddressLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Correct the errors before continuing

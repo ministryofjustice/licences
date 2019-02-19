@@ -8,23 +8,23 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class LicenceConditionsAdditionalPage extends Page {
 
-    static url = '/hdc/licenceConditions/additionalConditions'
+  static url = '/hdc/licenceConditions/additionalConditions'
 
-    static at = {
-        browser.currentUrl.contains(url)
+  static at = {
+    browser.currentUrl.contains(url)
+  }
+
+  static content = {
+
+    header { module(HeaderModule) }
+
+    conditions(required: false) { $(name: "additionalConditions") }
+
+    conditionsItem { conditionValue ->
+      $("input", value: conditionValue, name: "additionalConditions").module(Checkbox)
     }
 
-    static content = {
-
-        header { module(HeaderModule) }
-
-        conditions(required: false) { $(name: "additionalConditions") }
-
-        conditionsItem { conditionValue ->
-            $("input", value: conditionValue, name: "additionalConditions").module(Checkbox)
-        }
-
-        addBespokeRadios { $(name: "bespokeDecision").module(RadioButtons) }
-        bespoke { module(BespokeConditionsModule) }
-    }
+    addBespokeRadios { $(name: "bespokeDecision").module(RadioButtons) }
+    bespoke { module(BespokeConditionsModule) }
+  }
 }

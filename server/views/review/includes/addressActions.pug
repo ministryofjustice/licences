@@ -1,37 +1,37 @@
 div
-    h3.heading-small Actions
-    if !addressWithdrawn && !consentWithdrawn
-        div.pure-g
-            if !licenceStatus.decisions.offenderIsMainOccupier
-                div.pure-u-1.pure-u-md-1-2
-                    p Homeowner/landlord consent withdrawn
-                    div
-                        form(method="post", name="withdrawConsent", action="/hdc/curfew/withdrawConsent/" + bookingId)
-                            input(type="hidden" name="_csrf" value=csrfToken)
-                            input(type="hidden" name="consentWithdrawn" value="Yes")
-                            button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw consent
+  h3.heading-small Actions
+  if !addressWithdrawn && !consentWithdrawn
+    div.pure-g
+      if !licenceStatus.decisions.offenderIsMainOccupier
+        div.pure-u-1.pure-u-md-1-2
+          p Homeowner/landlord consent withdrawn
+          div
+            form(method="post", name="withdrawConsent", action="/hdc/curfew/withdrawConsent/" + bookingId)
+              input(type="hidden" name="_csrf" value=csrfToken)
+              input(type="hidden" name="consentWithdrawn" value="Yes")
+              button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw consent
 
-            div.pure-u-1.pure-u-md-1-2
-                p Offender has requested to withdraw address
-                div
-                    form(method="post", name="withdrawAddress", action="/hdc/curfew/withdrawAddress/"+bookingId)
-                        input(type="hidden" name="_csrf" value=csrfToken)
-                        input(type="hidden" name="addressWithdrawn" value="Yes")
-                        button#withdrawAddress.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw address
+      div.pure-u-1.pure-u-md-1-2
+        p Offender has requested to withdraw address
+        div
+          form(method="post", name="withdrawAddress", action="/hdc/curfew/withdrawAddress/" + bookingId)
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="addressWithdrawn" value="Yes")
+            button#withdrawAddress.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw address
 
 
-    else
-        div.pure-g
-            if !['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
-                di.pure-u-1.pure-u-md-1-2
-                    p Enter a new curfew address for review
-                    a.largeMarginBottom.button(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Add a new address
+  else
+    div.pure-g
+      if !['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage)
+        di.pure-u-1.pure-u-md-1-2
+          p Enter a new curfew address for review
+          a.largeMarginBottom.button(href="/hdc/proposedAddress/curfewAddress/" + bookingId) Add a new address
 
-            div.pure-u-1.pure-u-md-1-2
-                p Reinstate this address
-                div
-                    form(method="post", name="reinstateAddress", action="/hdc/curfew/reinstateAddress/" + bookingId)
-                        input(type="hidden" name="_csrf" value=csrfToken)
-                        input(type="hidden" name="consentWithdrawn" value="No")
-                        input(type="hidden" name="addressWithdrawn" value="No")
-                        button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Reinstate address
+      div.pure-u-1.pure-u-md-1-2
+        p Reinstate this address
+        div
+          form(method="post", name="reinstateAddress", action="/hdc/curfew/reinstateAddress/" + bookingId)
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="consentWithdrawn" value="No")
+            input(type="hidden" name="addressWithdrawn" value="No")
+            button#withdrawConsent.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Reinstate address

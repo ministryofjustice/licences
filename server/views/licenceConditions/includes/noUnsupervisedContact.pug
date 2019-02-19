@@ -1,21 +1,21 @@
 div.pure-g
-    div.pure-u-1.inline
-        div.multiple-choice
-            input(id='unsupervisedContactAny' type='radio' name='unsupervisedContactGender' value='any' checked=condition.user_submission && condition.user_submission.unsupervisedContactGender === 'any')
-            label(for='unsupervisedContactAny') Any
+  div.pure-u-1.inline
+    div.multiple-choice
+      input(id='unsupervisedContactAny' type='radio' name='unsupervisedContactGender' value='any' checked=condition.user_submission && condition.user_submission.unsupervisedContactGender === 'any')
+      label(for='unsupervisedContactAny') Any
 
-        div.multiple-choice
-            input(id='unsupervisedContactFemale' type='radio' name='unsupervisedContactGender' value='any female' checked=condition.user_submission && condition.user_submission.unsupervisedContactGender === 'any female')
-            label(for='unsupervisedContactFemale') Any female
+    div.multiple-choice
+      input(id='unsupervisedContactFemale' type='radio' name='unsupervisedContactGender' value='any female' checked=condition.user_submission && condition.user_submission.unsupervisedContactGender === 'any female')
+      label(for='unsupervisedContactFemale') Any female
 
-        div.multiple-choice
-            input(id='unsupervisedContactMale' type='radio' name='unsupervisedContactGender' value='any male' checked=condition.user_submission && condition.user_submission.unsupervisedContactGender === 'any male')
-            label(for='unsupervisedContactMale') Any male
+    div.multiple-choice
+      input(id='unsupervisedContactMale' type='radio' name='unsupervisedContactGender' value='any male' checked=condition.user_submission && condition.user_submission.unsupervisedContactGender === 'any male')
+      label(for='unsupervisedContactMale') Any male
 
 div.inlineFormItem
-    label(for='unsupervisedContactAge') Age
-    input(type='number' name='unsupervisedContactAge' id='unsupervisedContactAge' class='form-control' value=condition.user_submission && condition.user_submission.unsupervisedContactAge aria-label="Age")
+  label(for='unsupervisedContactAge') Age
+  input(type='number' name='unsupervisedContactAge' id='unsupervisedContactAge' class='form-control' value=condition.user_submission && condition.user_submission.unsupervisedContactAge aria-label="Age")
 
 div
-    label(for='unsupervisedContactSocial') Name of social services dept.
-    input(type='text' name='unsupervisedContactSocial' id='unsupervisedContactSocial' class='form-control' value=condition.user_submission && condition.user_submission.unsupervisedContactSocial aria-label="Name of social services department")
+  label(for='unsupervisedContactSocial') Name of social services dept.
+  input(type='text' name='unsupervisedContactSocial' id='unsupervisedContactSocial' class='form-control' value=condition.user_submission && condition.user_submission.unsupervisedContactSocial aria-label="Name of social services department")

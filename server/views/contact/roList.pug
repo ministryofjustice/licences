@@ -2,34 +2,34 @@ extends ../layout
 
 block content
 
-    div.pure-g
-        div.pure-u-1
-            include ../includes/back
+  div.pure-g
+    div.pure-u-1
+      include ../includes/back
 
-    div.pure-g.largePaddingBottom
-        div.pure-u-1
-            h2.heading-large.midPaddingBottom Responsible officers
+  div.pure-g.largePaddingBottom
+    div.pure-u-1
+      h2.heading-large.midPaddingBottom Responsible officers
 
-            div.pure-u-1
-                table#contact.largeMarginBottom
-                    thead
-                        tr
-                            th Delius user
-                            th Name
-                            th Role
-                            th Telephone
-                            th Email
-                            th Organisation
-                            th Org email
-                    tbody
-                        if roUsers && roUsers.length > 0
-                            each contact, index in roUsers
-                                tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
-                                    td.username #{contact.deliusId}
-                                    td.name #{contact.first} #{contact.last}
-                                    td.jobRole #{contact.jobRole}
-                                    td.telephone #{contact.telephone}
-                                    td.email #{contact.email}
-                                    td.organisation #{contact.organisation}
-                                    td.email #{contact.orgEmail}
+      div.pure-u-1
+        table#contact.largeMarginBottom
+          thead
+            tr
+              th Delius user
+              th Name
+              th Role
+              th Telephone
+              th Email
+              th Organisation
+              th Org email
+          tbody
+            if roUsers && roUsers.length > 0
+              each contact, index in roUsers
+                tr.hdcEligible(class=index % 2 === 1 ? 'greyRow' : undefined)
+                  td.username #{contact.deliusId}
+                  td.name #{contact.first} #{contact.last}
+                  td.jobRole #{contact.jobRole}
+                  td.telephone #{contact.telephone}
+                  td.email #{contact.email}
+                  td.organisation #{contact.organisation}
+                  td.email #{contact.orgEmail}
 

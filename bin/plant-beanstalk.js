@@ -4,16 +4,16 @@ const path = require('path')
 const version = process.argv[2]
 
 if (!version) {
-    throw new Error('Missing <version> argument')
+  throw new Error('Missing <version> argument')
 }
 
 const dockerrun = {
-    AWSEBDockerrunVersion: '1',
-    Image: {
-        Name: `mojdigitalstudio/licences:${version}`,
-        Update: 'true',
-    },
-    Ports: [{ ContainerPort: '3000' }],
+  AWSEBDockerrunVersion: '1',
+  Image: {
+    Name: `mojdigitalstudio/licences:${version}`,
+    Update: 'true',
+  },
+  Ports: [{ ContainerPort: '3000' }],
 }
 
 const output = JSON.stringify(dockerrun, null, 2)

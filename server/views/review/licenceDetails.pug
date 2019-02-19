@@ -4,50 +4,50 @@ include ../includes/errorBannerWithDetail
 
 block content
 
-    include ../includes/backToTaskList
+  include ../includes/backToTaskList
 
-    if Object.keys(errorObject).length !== 0
-        div.error-summary(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
-            h2.heading-medium.error-summary-heading.center.noMargin#error-summary-heading
-                | There is a problem
+  if Object.keys(errorObject).length !== 0
+    div.error-summary(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
+      h2.heading-medium.error-summary-heading.center.noMargin#error-summary-heading
+        | There is a problem
 
-    h1.heading-large Check the information before submitting the case
-    include ../includes/personalDetailsSummary
-    include includes/licenceSummary
+  h1.heading-large Check the information before submitting the case
+  include ../includes/personalDetailsSummary
+  include includes/licenceSummary
 
-    div.paddingBottom
+  div.paddingBottom
 
-        h2.heading-medium Now send the case
+    h2.heading-medium Now send the case
 
-        div.pure-u-1.pure-u-md-3-4
-            | The case is ready to send to the prison case admin
+    div.pure-u-1.pure-u-md-3-4
+      | The case is ready to send to the prison case admin
 
-        div.pure-u-1.inlineButtons.midMarginTop
+    div.pure-u-1.inlineButtons.midMarginTop
 
-            if licenceStatus.decisions.optedOut
-                form#licenceDetailsForm(method='POST', action='/hdc/send/optedOut/' + bookingId)
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    div.pure-u-1.inlineButtons
-                        div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
-                            input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
+      if licenceStatus.decisions.optedOut
+        form#licenceDetailsForm(method='POST', action='/hdc/send/optedOut/' + bookingId)
+          input(type="hidden" name="_csrf" value=csrfToken)
+          div.pure-u-1.inlineButtons
+            div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+              input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
 
-            else if licenceStatus.decisions.curfewAddressRejected
-                form#licenceDetailsForm(method='POST', action='/hdc/send/addressRejected/' + bookingId)
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    div.pure-u-1.inlineButtons
-                        div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
-                            input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
+      else if licenceStatus.decisions.curfewAddressRejected
+        form#licenceDetailsForm(method='POST', action='/hdc/send/addressRejected/' + bookingId)
+          input(type="hidden" name="_csrf" value=csrfToken)
+          div.pure-u-1.inlineButtons
+            div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+              input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
 
-            else if licenceStatus.decisions.bassAreaNotSuitable
-                form#licenceDetailsForm(method='POST', action='/hdc/send/bassAreaRejected/' + bookingId)
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    div.pure-u-1.inlineButtons
-                        div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
-                            input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
+      else if licenceStatus.decisions.bassAreaNotSuitable
+        form#licenceDetailsForm(method='POST', action='/hdc/send/bassAreaRejected/' + bookingId)
+          input(type="hidden" name="_csrf" value=csrfToken)
+          div.pure-u-1.inlineButtons
+            div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+              input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
 
-            else
-                form#licenceDetailsForm(method='POST', action='/hdc/send/finalChecks/' + bookingId)
-                    input(type="hidden" name="_csrf" value=csrfToken)
-                    div.pure-u-1.inlineButtons
-                        div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
-                            input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")
+      else
+        form#licenceDetailsForm(method='POST', action='/hdc/send/finalChecks/' + bookingId)
+          input(type="hidden" name="_csrf" value=csrfToken)
+          div.pure-u-1.inlineButtons
+            div.pure-u-1.inlineButtons.paddingBottom.smallPaddingTop
+              input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Send case")

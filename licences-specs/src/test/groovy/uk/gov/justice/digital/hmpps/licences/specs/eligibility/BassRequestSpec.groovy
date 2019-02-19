@@ -17,140 +17,140 @@ import uk.gov.justice.digital.hmpps.licences.util.TestData
 @Stepwise
 class BassRequestSpec extends GebReportingSpec {
 
-    @Shared
-    TestData testData = new TestData()
-    @Shared
-    Actions actions = new Actions()
+  @Shared
+  TestData testData = new TestData()
+  @Shared
+  Actions actions = new Actions()
 
-    def setupSpec() {
-        testData.loadLicence('eligibility/bassRequest-unstarted')
-        actions.logIn('CA')
-    }
+  def setupSpec() {
+    testData.loadLicence('eligibility/bassRequest-unstarted')
+    actions.logIn('CA')
+  }
 
-    def cleanupSpec() {
-        actions.logOut()
-    }
+  def cleanupSpec() {
+    actions.logOut()
+  }
 
-    def 'Choosing no preferred area returns to tasklist'() {
+  def 'Choosing no preferred area returns to tasklist'() {
 
-        when: 'Starting BASS request'
-        to BassRequestPage, testData.markAndrewsBookingId
+    when: 'Starting BASS request'
+    to BassRequestPage, testData.markAndrewsBookingId
 
-        then: 'nothing is selected'
-        specificAreaRadios.checked == null
+    then: 'nothing is selected'
+    specificAreaRadios.checked == null
 
-        when: 'I choose no specific area'
-        specificAreaRadios.checked = 'No'
-        find('#continueBtn').click()
+    when: 'I choose no specific area'
+    specificAreaRadios.checked = 'No'
+    find('#continueBtn').click()
 
-        then: 'I see the tasklist'
-        at TaskListPage
-    }
+    then: 'I see the tasklist'
+    at TaskListPage
+  }
 
-    def 'Choosing a preferred area shows area form'() {
+  def 'Choosing a preferred area shows area form'() {
 
-        when: 'Starting BASS request'
-        to BassRequestPage, testData.markAndrewsBookingId
+    when: 'Starting BASS request'
+    to BassRequestPage, testData.markAndrewsBookingId
 
-        and: 'I select Yes'
-        specificAreaRadios.checked = 'Yes'
+    and: 'I select Yes'
+    specificAreaRadios.checked = 'Yes'
 
-        then: 'The area details form is shown'
-        proposedTownInput.isDisplayed()
-        proposedCountyInput.isDisplayed()
+    then: 'The area details form is shown'
+    proposedTownInput.isDisplayed()
+    proposedCountyInput.isDisplayed()
 
-        when: 'I select No'
-        specificAreaRadios.checked = 'No'
+    when: 'I select No'
+    specificAreaRadios.checked = 'No'
 
-        then: 'The details form is not shown'
-        !proposedTownInput.isDisplayed()
-        !proposedCountyInput.isDisplayed()
+    then: 'The details form is not shown'
+    !proposedTownInput.isDisplayed()
+    !proposedCountyInput.isDisplayed()
 
-        when: 'I choose yes and save'
-        specificAreaRadios.checked = 'Yes'
-        find('#continueBtn').click()
+    when: 'I choose yes and save'
+    specificAreaRadios.checked = 'Yes'
+    find('#continueBtn').click()
 
-        then: 'I see validation errors'
-        at BassRequestPage
+    then: 'I see validation errors'
+    at BassRequestPage
 
-        when: 'I enter values and save'
-        proposedTownInput << 'town'
-        proposedCountyInput << 'county'
-        find('#continueBtn').click()
+    when: 'I enter values and save'
+    proposedTownInput << 'town'
+    proposedCountyInput << 'county'
+    find('#continueBtn').click()
 
-        then: 'I see the tasklist'
-        at TaskListPage
-    }
+    then: 'I see the tasklist'
+    at TaskListPage
+  }
 
-    def 'I can submit a BASS request to the RO'() {
+  def 'I can submit a BASS request to the RO'() {
 
-        given: 'A BASS request'
-        testData.loadLicence('eligibility/bassRequest-specificArea')
+    given: 'A BASS request'
+    testData.loadLicence('eligibility/bassRequest-specificArea')
 
-        when: 'I view the task list page'
-        to TaskListPage, testData.markAndrewsBookingId
+    when: 'I view the task list page'
+    to TaskListPage, testData.markAndrewsBookingId
 
-        and: 'I click to continue to submission'
-        taskListAction('Send for BASS area checks').click()
+    and: 'I click to continue to submission'
+    taskListAction('Send for BASS area checks').click()
 
-        then: 'I see the review BASS request page'
-        at ReviewBassRequestPage
+    then: 'I see the review BASS request page'
+    at ReviewBassRequestPage
 
-        and: 'The proposed BASS details are shown'
-        bass.proposed.town == 'BASS Town'
-        bass.proposed.county == 'BASS County'
+    and: 'The proposed BASS details are shown'
+    bass.proposed.town == 'BASS Town'
+    bass.proposed.county == 'BASS County'
 
-        and: 'The change link is shown'
-        changeBassLink.isDisplayed()
+    and: 'The change link is shown'
+    changeBassLink.isDisplayed()
 
-        when: 'I click to continue'
-        find('#continueBtn').click()
+    when: 'I click to continue'
+    find('#continueBtn').click()
 
-        then: 'I see the sent confirmation page'
-        at SentPage
+    then: 'I see the sent confirmation page'
+    at SentPage
 
-        when: 'I click return to case list'
-        find('#backBtn').click()
+    when: 'I click return to case list'
+    find('#backBtn').click()
 
-        then: 'I return to the case list'
-        at CaselistPage
-    }
+    then: 'I return to the case list'
+    at CaselistPage
+  }
 
-    def 'When area is rejected, reason is shown'() {
+  def 'When area is rejected, reason is shown'() {
 
-        given: 'Rejected bass area'
-        testData.loadLicence('eligibility/bassArea-rejected')
+    given: 'Rejected bass area'
+    testData.loadLicence('eligibility/bassArea-rejected')
 
-        when: 'on tasklist'
-        to TaskListPage, testData.markAndrewsBookingId
+    when: 'on tasklist'
+    to TaskListPage, testData.markAndrewsBookingId
 
-        and: 'I do the bass task'
-        taskListAction('Curfew address').click()
+    and: 'I do the bass task'
+    taskListAction('Curfew address').click()
 
-        then: 'BASS task links to rejected page'
-        at BassRejectedPage
+    then: 'BASS task links to rejected page'
+    at BassRejectedPage
 
-        and: 'I see the rejection reason'
-        bass.area.bassAreaReason == 'Reason'
-    }
+    and: 'I see the rejection reason'
+    bass.area.bassAreaReason == 'Reason'
+  }
 
-    @Unroll
-    def 'On rejected BASS, #choice leads to #page'() {
+  @Unroll
+  def 'On rejected BASS, #choice leads to #page'() {
 
-        given: 'Rejected bass area'
-        testData.loadLicence('eligibility/bassArea-rejected')
-        to BassRejectedPage, testData.markAndrewsBookingId
+    given: 'Rejected bass area'
+    testData.loadLicence('eligibility/bassArea-rejected')
+    to BassRejectedPage, testData.markAndrewsBookingId
 
-        when: 'I choose the option and proceed'
-        alternativeAreaRadios.checked = choice
-        find('#continueBtn').click()
+    when: 'I choose the option and proceed'
+    alternativeAreaRadios.checked = choice
+    find('#continueBtn').click()
 
-        then: 'I see the page'
-        at page
+    then: 'I see the page'
+    at page
 
-        where:
-        choice | page
-        'No'   | CurfewAddressChoicePage
-        'Yes'  | BassRequestPage
-    }
+    where:
+    choice | page
+    'No'   | CurfewAddressChoicePage
+    'Yes'  | BassRequestPage
+  }
 }

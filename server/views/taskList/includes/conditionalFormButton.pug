@@ -1,7 +1,7 @@
 mixin conditionalFormButton(condition, trueValue, falseValue, id)
-    if (condition)
-        input.taskListAction.requiredButton.button(type='submit', value=trueValue, id=id)
-    else
-        input.taskListAction.requiredButton.button.button-secondary(type='submit', value=falseValue, id=id)
+  if (condition)
+    input.taskListAction.requiredButton.button(type='submit', value=trueValue, id=id)
+  else
+    input.taskListAction.requiredButton.button.button-secondary(type='submit', value=falseValue, id=id)
 
 

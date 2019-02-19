@@ -2,40 +2,40 @@ extends ../layout
 
 block content
 
-    div.pure-g
-        div.pure-u-1
-            include ../includes/back
+  div.pure-g
+    div.pure-u-1
+      include ../includes/back
 
-    div.pure-g.largePaddingBottom
-        div.pure-u-1
-            div.pure-u-2-3
-                h2.heading-large.midPaddingBottom Responsible officer
-            div.pure-u-1-3.largeMarginTop.alignRight.change-details
-                a(href="../ro") View all
+  div.pure-g.largePaddingBottom
+    div.pure-u-1
+      div.pure-u-2-3
+        h2.heading-large.midPaddingBottom Responsible officer
+      div.pure-u-1-3.largeMarginTop.alignRight.change-details
+        a(href="../ro") View all
 
-            div.pure-u-1
-                if (contact)
-                    div.pure-u-1
-                        table#contact.largeMarginBottom
-                            thead
-                                tr
-                                    th Name
-                                    th Role
-                                    th Email
-                                    th Telephone
-                                    th Organisation
-                                    th Org email
-                            tbody
-                                tr.contact
-                                    td.name #{contact.first} #{contact.last}
-                                    td.jobRole #{contact.jobRole}
-                                    td.email #{contact.email}
-                                    td.telephone #{contact.telephone}
-                                    td.organisation #{contact.organisation}
-                                    td.email #{contact.orgEmail}
+      div.pure-u-1
+        if (contact)
+          div.pure-u-1
+            table#contact.largeMarginBottom
+              thead
+                tr
+                  th Name
+                  th Role
+                  th Email
+                  th Telephone
+                  th Organisation
+                  th Org email
+              tbody
+                tr.contact
+                  td.name #{contact.first} #{contact.last}
+                  td.jobRole #{contact.jobRole}
+                  td.email #{contact.email}
+                  td.telephone #{contact.telephone}
+                  td.organisation #{contact.organisation}
+                  td.email #{contact.orgEmail}
 
-                else
-                    p No contact details found
+        else
+          p No contact details found
 
 
 

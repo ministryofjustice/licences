@@ -3,31 +3,31 @@
 
 
 div.paddingBottom
-    div
-        h2.heading-medium Eligibility and presumed suitability
+  div
+    h2.heading-medium Eligibility and presumed suitability
 
-    div.pure-g
-        div.pure-u-1.pure-u-md-3-4
-            if licenceStatus.decisions.excluded
-                | Not eligible
-            else if licenceStatus.decisions.unsuitable
-                | Unsuitable
-                if licenceStatus.decisions.exceptionalCircumstances
-                    |  with exceptional circumstances
-                    br
-                    | #{crdTimeText}#{crdTimeContinueText}
-            else if licenceStatus.decisions.insufficientTime
-                | #{crdTimeText}#{crdTimeContinueText}
-            else
-                | Eligible
-        div.pure-u-1.pure-u-md-1-4.center
-            -var path = '/hdc/eligibility/excluded/' + prisonerInfo.bookingId
-            -var reviewPath = '/hdc/review/eligibility/' + prisonerInfo.bookingId
+  div.pure-g
+    div.pure-u-1.pure-u-md-3-4
+      if licenceStatus.decisions.excluded
+        | Not eligible
+      else if licenceStatus.decisions.unsuitable
+        | Unsuitable
+        if licenceStatus.decisions.exceptionalCircumstances
+          |  with exceptional circumstances
+          br
+          | #{crdTimeText}#{crdTimeContinueText}
+      else if licenceStatus.decisions.insufficientTime
+        | #{crdTimeText}#{crdTimeContinueText}
+      else
+        | Eligible
+    div.pure-u-1.pure-u-md-1-4.center
+      -var path = '/hdc/eligibility/excluded/' + prisonerInfo.bookingId
+      -var reviewPath = '/hdc/review/eligibility/' + prisonerInfo.bookingId
 
-            if user.role === 'CA'
-                +viewEdit(path)
-            else
-                +view(reviewPath)
+      if user.role === 'CA'
+        +viewEdit(path)
+      else
+        +view(reviewPath)
 
 
 

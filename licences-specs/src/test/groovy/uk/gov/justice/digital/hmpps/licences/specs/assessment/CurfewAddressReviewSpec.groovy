@@ -10,84 +10,84 @@ import uk.gov.justice.digital.hmpps.licences.util.TestData
 @Stepwise
 class CurfewAddressReviewSpec extends GebReportingSpec {
 
-    @Shared
-    TestData testData = new TestData()
+  @Shared
+  TestData testData = new TestData()
 
-    @Shared
-    Actions actions = new Actions()
+  @Shared
+  Actions actions = new Actions()
 
-    def setupSpec() {
-        actions.logIn('RO')
-    }
+  def setupSpec() {
+    actions.logIn('RO')
+  }
 
-    def cleanupSpec() {
-        actions.logOut()
-    }
+  def cleanupSpec() {
+    actions.logOut()
+  }
 
-    def 'Shows address details' () {
+  def 'Shows address details'() {
 
-        given: 'A licence record with a proposed curfew address'
-        testData.loadLicence('assessment/unstarted')
+    given: 'A licence record with a proposed curfew address'
+    testData.loadLicence('assessment/unstarted')
 
-        when: 'I go to the address review page'
-        to CurfewAddressReviewPage, testData.markAndrewsBookingId
+    when: 'I go to the address review page'
+    to CurfewAddressReviewPage, testData.markAndrewsBookingId
 
-        then: 'I see the address details'
-        curfew.address.line1 == 'Street'
-        curfew.address.town == 'Town'
-        curfew.address.postCode == 'AB1 1AB'
-        curfew.address.telephone == '0123 456789'
-    }
+    then: 'I see the address details'
+    curfew.address.line1 == 'Street'
+    curfew.address.town == 'Town'
+    curfew.address.postCode == 'AB1 1AB'
+    curfew.address.telephone == '0123 456789'
+  }
 
-    def 'Confirmation options initially unselected' () {
+  def 'Confirmation options initially unselected'() {
 
-        when: 'At address review page'
-        at CurfewAddressReviewPage
+    when: 'At address review page'
+    at CurfewAddressReviewPage
 
-        then: 'Options not set'
-        landlordConsentRadios.checked == null
-    }
+    then: 'Options not set'
+    landlordConsentRadios.checked == null
+  }
 
-    def 'Further questions not shown when landlord consent is no' () {
+  def 'Further questions not shown when landlord consent is no'() {
 
-        when: 'At address review page'
-        at CurfewAddressReviewPage
+    when: 'At address review page'
+    at CurfewAddressReviewPage
 
-        then: 'I do not see the further questions'
-        !landlordConsentForm.isDisplayed()
-    }
+    then: 'I do not see the further questions'
+    !landlordConsentForm.isDisplayed()
+  }
 
-    def 'Further questions shown when landlord consent is yes' () {
+  def 'Further questions shown when landlord consent is yes'() {
 
-        when: 'At address review page'
-        at CurfewAddressReviewPage
+    when: 'At address review page'
+    at CurfewAddressReviewPage
 
-        and: 'I select yes for consent'
-        landlordConsentRadios.checked = 'Yes'
+    and: 'I select yes for consent'
+    landlordConsentRadios.checked = 'Yes'
 
-        then: 'I see the further questions'
-        landlordConsentForm.isDisplayed()
-    }
+    then: 'I see the further questions'
+    landlordConsentForm.isDisplayed()
+  }
 
-    def 'Modified choices are saved after save and continue' () {
+  def 'Modified choices are saved after save and continue'() {
 
-        given:  'At address review page'
-        to CurfewAddressReviewPage, testData.markAndrewsBookingId
+    given: 'At address review page'
+    to CurfewAddressReviewPage, testData.markAndrewsBookingId
 
-        when: 'I select new options'
-        landlordConsentRadios.checked = 'Yes'
-        electricitySupplyRadios.checked = 'Yes'
-        homeVisitRadios.checked = 'No'
+    when: 'I select new options'
+    landlordConsentRadios.checked = 'Yes'
+    electricitySupplyRadios.checked = 'Yes'
+    homeVisitRadios.checked = 'No'
 
-        and: 'I save and continue'
-        find('#continueBtn').click()
+    and: 'I save and continue'
+    find('#continueBtn').click()
 
-        and: 'I move to the address review page'
-        to CurfewAddressReviewPage, testData.markAndrewsBookingId
+    and: 'I move to the address review page'
+    to CurfewAddressReviewPage, testData.markAndrewsBookingId
 
-        then: 'I see the previously entered values'
-        landlordConsentRadios.checked == 'Yes'
-        electricitySupplyRadios.checked == 'Yes'
-        homeVisitRadios.checked == 'No'
-    }
+    then: 'I see the previously entered values'
+    landlordConsentRadios.checked == 'Yes'
+    electricitySupplyRadios.checked == 'Yes'
+    homeVisitRadios.checked == 'No'
+  }
 }

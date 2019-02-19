@@ -4,18 +4,18 @@ include ./itemAndError
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
 
-    if request.specificArea === 'Yes'
-        div.pure-u-1.pure-u-md-1-2
-            span Proposed town
-        div.pure-u-1.pure-u-md-1-2#bassTownDetails
-            +itemAndError(request.proposedTown, errors.proposedTown, "proposedTown")
+  if request.specificArea === 'Yes'
+    div.pure-u-1.pure-u-md-1-2
+      span Proposed town
+    div.pure-u-1.pure-u-md-1-2#bassTownDetails
+      +itemAndError(request.proposedTown, errors.proposedTown, "proposedTown")
 
-        div.pure-u-1-2
-            span Proposed county
-        div.pure-u-1.pure-u-md-1-2#bassCountyDetails
-            +itemAndError(request.proposedCounty, errors.proposedCounty, "proposedCounty")
+    div.pure-u-1-2
+      span Proposed county
+    div.pure-u-1.pure-u-md-1-2#bassCountyDetails
+      +itemAndError(request.proposedCounty, errors.proposedCounty, "proposedCounty")
 
-    else
-        div.pure-u-1.pure-u-md-1-2
-            span Offender does not have a preferred BASS area
+  else
+    div.pure-u-1.pure-u-md-1-2
+      span Offender does not have a preferred BASS area
 

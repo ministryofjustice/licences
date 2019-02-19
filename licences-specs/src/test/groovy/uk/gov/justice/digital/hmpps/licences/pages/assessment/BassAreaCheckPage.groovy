@@ -7,19 +7,19 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
 class BassAreaCheckPage extends Page {
 
-    static url = '/hdc/bassReferral/bassAreaCheck'
+  static url = '/hdc/bassReferral/bassAreaCheck'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
-        header { module(HeaderModule) }
+  static content = {
+    header { module(HeaderModule) }
 
-        bass { module(BassRequestModule) }
+    bass { module(BassRequestModule) }
 
-        areaReasons { $('#bassAreaReason') }
+    areaReasons { $('#bassAreaReason') }
 
-        areaRadios(required: false) { $(name: "bassAreaSuitable").module(RadioButtons) }
-    }
+    areaRadios(required: false) { $(name: "bassAreaSuitable").module(RadioButtons) }
+  }
 }

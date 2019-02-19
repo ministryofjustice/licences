@@ -9,22 +9,22 @@ import uk.gov.justice.digital.hmpps.licences.modules.OccupierDetailsModule
 
 class CurfewAddressReviewPage extends Page {
 
-    static url = '/hdc/curfew/curfewAddressReview'
+  static url = '/hdc/curfew/curfewAddressReview'
 
-    static at = {
-        browser.currentUrl.contains(url)
-    }
+  static at = {
+    browser.currentUrl.contains(url)
+  }
 
-    static content = {
+  static content = {
 
-        header { module(HeaderModule) }
+    header { module(HeaderModule) }
 
-        curfew { module(CurfewDetailsModule) }
+    curfew { module(CurfewDetailsModule) }
 
-        landlordConsentRadios { $(name: "consent").module(RadioButtons) }
-        electricitySupplyRadios(required: false) { $(name: "electricity").module(RadioButtons) }
-        homeVisitRadios(required: false) { $(name: "homeVisitConducted").module(RadioButtons) }
+    landlordConsentRadios { $(name: "consent").module(RadioButtons) }
+    electricitySupplyRadios(required: false) { $(name: "electricity").module(RadioButtons) }
+    homeVisitRadios(required: false) { $(name: "homeVisitConducted").module(RadioButtons) }
 
-        landlordConsentForm(required: false) { $("#consentForm") }
-    }
+    landlordConsentForm(required: false) { $("#consentForm") }
+  }
 }

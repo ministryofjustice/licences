@@ -1,16 +1,16 @@
 form(method="post")
-    input(type="hidden" name="_csrf" value=csrfToken)
-    input(type="hidden" name="bookingId" value=bookingId || '')
-    div.smallPaddingTop.paddingBottom.largeMarginBottom
-        div.largePaddingBottom
-            div.form-group.inline.smallPaddingTop
+  input(type="hidden" name="_csrf" value=csrfToken)
+  input(type="hidden" name="bookingId" value=bookingId || '')
+  div.smallPaddingTop.paddingBottom.largeMarginBottom
+    div.largePaddingBottom
+      div.form-group.inline.smallPaddingTop
 
-                div.multiple-choice
-                    input#yes(type="radio" name="decision" value="Yes")
-                    label(for="yes") Yes
-                div.multiple-choice
-                    input#no(type="radio" name="decision" value="No")
-                    label(for="no") No
+        div.multiple-choice
+          input#yes(type="radio" name="decision" value="Yes")
+          label(for="yes") Yes
+        div.multiple-choice
+          input#no(type="radio" name="decision" value="No")
+          label(for="no") No
 
-        include ../../includes/formSubmit
-            a#reinstate.requiredButton.button.button-secondary.smallMarginTop(href="/hdc/bassReferral/bassOffer/" + bookingId role="button") Reinstate BASS request
+    include ../../includes/formSubmit
+      a#reinstate.requiredButton.button.button-secondary.smallMarginTop(href="/hdc/bassReferral/bassOffer/" + bookingId role="button") Reinstate BASS request

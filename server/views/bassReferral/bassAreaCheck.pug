@@ -4,68 +4,68 @@ include ../includes/errorBannerWithDetailObject
 
 block content
 
-    -var bassRequest = data && data.bassRequest || {}
-    -var bassAreaCheck = data && data.bassAreaCheck || {}
+  -var bassRequest = data && data.bassRequest || {}
+  -var bassAreaCheck = data && data.bassAreaCheck || {}
 
-    div.pure-g.pure-u-1
-        include ../includes/back
-        include ../includes/personalDetailsSummary
-        +errorBannerWithDetail(errorObject)
+  div.pure-g.pure-u-1
+    include ../includes/back
+    include ../includes/personalDetailsSummary
+    +errorBannerWithDetail(errorObject)
 
-        h2.heading-large BASS area check
+    h2.heading-large BASS area check
 
-        div.pure-u-1.pure-u-md-1-2
-            if bassRequest.specificArea === 'Yes'
-                | The offender has asked for a BASS property in the following area:
+    div.pure-u-1.pure-u-md-1-2
+      if bassRequest.specificArea === 'Yes'
+        | The offender has asked for a BASS property in the following area:
 
-                div.paddingTop.paddingBottom
-                    div.pure-u-1-2
-                        div Proposed town
-                        div.bold#proposedTown #{bassRequest.proposedTown}
-                    div.pure-u-1-2
-                        div Proposed county or borough
-                        div.bold#proposedCounty #{bassRequest.proposedCounty}
-            else
-                div.pure-u-1-2
-                div#noSpecificAreaMessage Offender does not have a preferred BASS area
+        div.paddingTop.paddingBottom
+          div.pure-u-1-2
+            div Proposed town
+            div.bold#proposedTown #{bassRequest.proposedTown}
+          div.pure-u-1-2
+            div Proposed county or borough
+            div.bold#proposedCounty #{bassRequest.proposedCounty}
+      else
+        div.pure-u-1-2
+        div#noSpecificAreaMessage Offender does not have a preferred BASS area
 
-        div.pure-u-1.pure-u-md-1-2
+    div.pure-u-1.pure-u-md-1-2
 
-        hr
+    hr
+
+    if bassRequest.specificArea === 'Yes'
+      h2.heading-medium Is the area suitable for the offender to live in?
+
+    form(method="post")
+      input(type="hidden" name="_csrf" value=csrfToken)
+      input(type="hidden" name="bookingId" value=bookingId || '')
+      input(type="hidden" name="bassAreaCheckSeen" value='true')
+      div.paddingBottom.largeMarginBottom
 
         if bassRequest.specificArea === 'Yes'
-            h2.heading-medium Is the area suitable for the offender to live in?
+          div.form-group.inline.smallPaddingTop
+            div.multiple-choice
+              input#yes(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'Yes' name="bassAreaSuitable" value="Yes")
+              label(for="yes") Yes
 
-        form(method="post")
-            input(type="hidden" name="_csrf" value=csrfToken)
-            input(type="hidden" name="bookingId" value=bookingId || '')
-            input(type="hidden" name="bassAreaCheckSeen" value='true')
-            div.paddingBottom.largeMarginBottom
+            div.multiple-choice
+              input#no(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'No' name="bassAreaSuitable" value="No")
+              label(for="no") No
 
-                if bassRequest.specificArea === 'Yes'
-                    div.form-group.inline.smallPaddingTop
-                        div.multiple-choice
-                            input#yes(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'Yes' name="bassAreaSuitable" value="Yes")
-                            label(for="yes") Yes
+        div#bassAreaDetails.panel.panel-border-narrow
 
-                        div.multiple-choice
-                            input#no(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'No' name="bassAreaSuitable" value="No")
-                            label(for="no") No
+          if bassRequest.specificArea === 'Yes'
+            label(for='bassAreaReason') Explain your decision
+          else
+            label(for='bassAreaReason') Enter any information that may affect the choice of BASS accommodation (optional)
 
-                div#bassAreaDetails.panel.panel-border-narrow
+          textarea(name='bassAreaReason' id='bassAreaReason' class='form-control' rows='2' aria-label="Provide reasons why the BASS area is unsuitable")
+            if bassAreaCheck.bassAreaReason
+              | #{bassAreaCheck.bassAreaReason}
 
-                    if bassRequest.specificArea === 'Yes'
-                        label(for='bassAreaReason') Explain your decision
-                    else
-                        label(for='bassAreaReason') Enter any information that may affect the choice of BASS accommodation (optional)
-
-                    textarea(name='bassAreaReason' id='bassAreaReason' class='form-control' rows='2' aria-label="Provide reasons why the BASS area is unsuitable")
-                        if bassAreaCheck.bassAreaReason
-                            | #{bassAreaCheck.bassAreaReason}
-
-            if (action === 'change')
-                include ../includes/formSubmit
-            else
-                include ../includes/saveAndReturn
+      if (action === 'change')
+        include ../includes/formSubmit
+      else
+        include ../includes/saveAndReturn
 
 

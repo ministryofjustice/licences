@@ -2,49 +2,49 @@ extends ../layout
 
 block content
 
-    include ../includes/backToTaskList
-    include ../includes/personalDetailsSummary
+  include ../includes/backToTaskList
+  include ../includes/personalDetailsSummary
 
-    h2.heading-large Reporting instructions
-    p Enter the details of where the offender should report
+  h2.heading-large Reporting instructions
+  p Enter the details of where the offender should report
 
 
-    form#reportingForm(method='post')
-        input(type="hidden" name="_csrf" value=csrfToken)
-        input(type="hidden" name="bookingId" value=bookingId)
+  form#reportingForm(method='post')
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="bookingId" value=bookingId)
 
-        div#address.pure-g
-            div.pure-u-1.pure-u-md-2-5
-                div.pure-g.largeMarginBottom.midPaddingBottom
-                    div.pure-u-1.pure-u-md-4-5
-                        div.form-group
-                            label.form-label(for="name") Name (or Duty Officer if unknown)
-                            input#name.form-control(name="name" type="text" value=data.name aria-label="Name (or Duty Officer's name)")
+    div#address.pure-g
+      div.pure-u-1.pure-u-md-2-5
+        div.pure-g.largeMarginBottom.midPaddingBottom
+          div.pure-u-1.pure-u-md-4-5
+            div.form-group
+              label.form-label(for="name") Name (or Duty Officer if unknown)
+              input#name.form-control(name="name" type="text" value=data.name aria-label="Name (or Duty Officer's name)")
 
-                        div.form-group
-                            label.form-label(for="building") Building and street
-                            input#building.midMarginBottom.form-control(name="buildingAndStreet1" type="text" value=data.buildingAndStreet1 aria-label="Building and street")
-                            input#street.form-control.block(name="buildingAndStreet2" type="text" value=data.buildingAndStreet2)
+            div.form-group
+              label.form-label(for="building") Building and street
+              input#building.midMarginBottom.form-control(name="buildingAndStreet1" type="text" value=data.buildingAndStreet1 aria-label="Building and street")
+              input#street.form-control.block(name="buildingAndStreet2" type="text" value=data.buildingAndStreet2)
 
-                        div.form-group
-                            label.form-label(for="town") Town or city
-                            input#town.form-control(name="townOrCity" type="text" value=data.townOrCity aria-label="Town or city")
+            div.form-group
+              label.form-label(for="town") Town or city
+              input#town.form-control(name="townOrCity" type="text" value=data.townOrCity aria-label="Town or city")
 
-                        div.pure-g
-                            div.pure-u-1.pure-u-md-3-5
-                                div.form-group
-                                    label.form-label(for="postcode") Postcode
-                                    input#postcode.form-control.small(name="postcode" type="text" value=data.postcode aria-label="Postcode")
-                        div.pure-g
-                            div.pure-u-1.pure-u-md-3-5
-                                div.form-group
-                                    label.form-label(for="telephone") Telephone
-                                    input#telephone.form-control.small(name="telephone" type="text" value=data.telephone aria-label="Telephone")
+            div.pure-g
+              div.pure-u-1.pure-u-md-3-5
+                div.form-group
+                  label.form-label(for="postcode") Postcode
+                  input#postcode.form-control.small(name="postcode" type="text" value=data.postcode aria-label="Postcode")
+            div.pure-g
+              div.pure-u-1.pure-u-md-3-5
+                div.form-group
+                  label.form-label(for="telephone") Telephone
+                  input#telephone.form-control.small(name="telephone" type="text" value=data.telephone aria-label="Telephone")
 
-        include ../includes/roModificationWarning
+    include ../includes/roModificationWarning
 
-        if (action === 'change')
-            include ../includes/formSubmit
-        else
-            include ../includes/saveAndReturn
+    if (action === 'change')
+      include ../includes/formSubmit
+    else
+      include ../includes/saveAndReturn
 

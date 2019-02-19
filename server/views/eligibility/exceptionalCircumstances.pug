@@ -1,16 +1,15 @@
-
 extends ../formTemplates/formTemplate
 
 block question
-    | Have exceptional circumstances been accepted?
+  | Have exceptional circumstances been accepted?
 
 block formItems
-    - var exceptionalCircumstancesValue = data.decision || null;
+  - var exceptionalCircumstancesValue = data.decision || null;
 
-    div.form-group.inline
-        div.multiple-choice
-            input#exceptionalCircumstancesYes(type='radio', checked=exceptionalCircumstancesValue === 'Yes' name='decision', value='Yes')
-            label(for='exceptionalCircumstancesYes') Yes
-        div.multiple-choice
-            input#exceptionalCircumstancesNo(type='radio', checked=exceptionalCircumstancesValue === 'No' name='decision', value='No')
-            label(for='exceptionalCircumstancesNo') No
+  div.form-group.inline
+    div.multiple-choice
+      input#exceptionalCircumstancesYes(type='radio', checked=exceptionalCircumstancesValue === 'Yes' name='decision', value='Yes')
+      label(for='exceptionalCircumstancesYes') Yes
+    div.multiple-choice
+      input#exceptionalCircumstancesNo(type='radio', checked=exceptionalCircumstancesValue === 'No' name='decision', value='No')
+      label(for='exceptionalCircumstancesNo') No

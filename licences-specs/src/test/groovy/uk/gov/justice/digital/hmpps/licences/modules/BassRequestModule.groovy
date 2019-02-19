@@ -5,27 +5,27 @@ import geb.Module
 
 class BassRequestModule extends Module {
 
-    static content = {
+  static content = {
 
-        proposed {
-            [
-                    town  : $("#proposedTown").text(),
-                    county: $("#proposedCounty").text()
-            ]
-        }
-
-        area {
-            [
-                    bassAreaSuitable: $("#bassAreaSuitable").text(),
-                    bassAreaReason: $("#bassAreaReason").text(),
-            ]
-        }
-
-        offer {
-            [
-                    outcome: $("#bassOfferOutcome").text(),
-                    details: $("#bassOfferDetails").text()
-            ]
-        }
+    proposed {
+      [
+        town  : $("#proposedTown").text(),
+        county: $("#proposedCounty").text()
+      ]
     }
+
+    area {
+      [
+        bassAreaSuitable: $("#bassAreaSuitable").text(),
+        bassAreaReason  : $("#bassAreaReason").text(),
+      ]
+    }
+
+    offer {
+      [
+        outcome: $("#bassOfferOutcome").text(),
+        details: $("#bassOfferDetails").text()
+      ]
+    }
+  }
 }
