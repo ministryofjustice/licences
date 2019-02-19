@@ -37,6 +37,7 @@ class PdfSpec extends GebReportingSpec {
 
     then: 'There is no option to create PDF'
     !taskListAction('Create licence').isDisplayed()
+    actions.logOut()
 
     where:
     user << ['RO', 'DM']
