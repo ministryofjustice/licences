@@ -5,14 +5,8 @@ describe('userServiceTest', () => {
   let nomisClient
 
   let user = { token: 'token' }
-  const activeCaseLoads = [
-    {
-      caseLoadId: 'this',
-    },
-    {
-      caseLoadId: 'that',
-    },
-  ]
+  const nomisUser = { token: 'token', authSource: 'nomis' }
+  const activeCaseLoads = [{ caseLoadId: 'this' }, { caseLoadId: 'that' }]
 
   beforeEach(() => {
     nomisClient = {
@@ -125,14 +119,24 @@ describe('userServiceTest', () => {
   })
 
   describe('getAllCaseLoads', () => {
-    it('should call getUserCaseLoads from nomis client', async () => {
-      await service.getAllCaseLoads('token')
+    it('should call getUserCaseLoads from nomis client for nomis user', async () => {
+      await service.getAllCaseLoads(nomisUser, 'token')
       expect(nomisClient.getUserCaseLoads).to.be.calledOnce()
     })
 
-    it('should return results', async () => {
-      const answer = await service.getAllCaseLoads('token')
+    it('should call getUserCaseLoads from nomis client for other user', async () => {
+      await service.getAllCaseLoads(user, 'token')
+      expect(nomisClient.getUserCaseLoads).not.to.be.called()
+    })
+
+    it('should return results for nomis user', async () => {
+      const answer = await service.getAllCaseLoads(nomisUser, 'token')
       expect(answer).to.eql(activeCaseLoads)
+    })
+
+    it('should return empty for other user', async () => {
+      const answer = await service.getAllCaseLoads(user, 'token')
+      expect(answer).to.eql([])
     })
   })
 

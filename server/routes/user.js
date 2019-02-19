@@ -6,7 +6,7 @@ module.exports = ({ userService }) => router => {
     asyncMiddleware(async (req, res) => {
       const [allRoles, allCaseLoads] = await Promise.all([
         userService.getAllRoles(res.locals.token),
-        userService.getAllCaseLoads(res.locals.token),
+        userService.getAllCaseLoads(req.user, res.locals.token),
       ])
 
       res.render(`user/admin`, { allRoles, allCaseLoads, user: req.user })

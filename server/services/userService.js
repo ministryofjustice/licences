@@ -42,7 +42,10 @@ module.exports = nomisClientBuilder => {
     return user
   }
 
-  function getAllCaseLoads(token) {
+  function getAllCaseLoads(user, token) {
+    // only call elite2 if we have a nomis user
+    if (user.authSource !== 'nomis') return []
+
     const nomisClient = nomisClientBuilder(token)
     return nomisClient.getUserCaseLoads()
   }
