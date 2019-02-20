@@ -10,7 +10,14 @@ const timeoutSpec = {
   deadline: config.nomis.timeout.deadline,
 }
 
-function signInService() {
+const signInService = () => {
+  const getRefreshTokens = async (username, role, refreshToken) => {
+    const oauthClientToken = generateOauthClientToken()
+    const oauthRequest = { grant_type: 'refresh_token', refresh_token: refreshToken }
+
+    return oauthTokenRequest(oauthClientToken, oauthRequest)
+  }
+
   return {
     async getRefreshedToken(user) {
       logger.info(`Refreshing token for : ${user.username}`)
@@ -29,13 +36,6 @@ function signInService() {
       return oauthTokenRequest(oauthAdminClientToken, oauthRequest)
     },
   }
-
-  async function getRefreshTokens(username, role, refreshToken) {
-    const oauthClientToken = generateOauthClientToken()
-    const oauthRequest = { grant_type: 'refresh_token', refresh_token: refreshToken }
-
-    return oauthTokenRequest(oauthClientToken, oauthRequest)
-  }
 }
 
 const parseOauthTokens = oauthResult => {
@@ -46,26 +46,22 @@ const parseOauthTokens = oauthResult => {
   return { token, refreshToken, expiresIn }
 }
 
-const getOauthUrl = () => config.nomis.authUrl
-
 const getOauthToken = (oauthClientToken, requestSpec) => {
   const oauthRequest = querystring.stringify(requestSpec)
 
   return superagent
-    .post(`${getOauthUrl()}/oauth/token`)
+    .post(`${config.nomis.authUrl}/oauth/token`)
     .set('Authorization', oauthClientToken)
     .set('content-type', 'application/x-www-form-urlencoded')
     .send(oauthRequest)
     .timeout(timeoutSpec)
 }
 
-async function oauthTokenRequest(clientToken, oauthRequest) {
+const oauthTokenRequest = async (clientToken, oauthRequest) => {
   const oauthResult = await getOauthToken(clientToken, oauthRequest)
   logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
 
   return parseOauthTokens(oauthResult)
 }
 
-module.exports = function createSignInService() {
-  return signInService()
-}
+module.exports = () => signInService()
