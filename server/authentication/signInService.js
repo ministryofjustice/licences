@@ -12,28 +12,6 @@ const timeoutSpec = {
 
 function signInService() {
   return {
-    async signIn(username, password) {
-      logger.info(`Log in for: ${username}`)
-
-      try {
-        const oauthClientToken = generateOauthClientToken()
-        const oauthRequest = { grant_type: 'password', username, password }
-        const oauthResult = await getOauthToken(oauthClientToken, oauthRequest)
-
-        logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
-
-        return parseOauthTokens(oauthResult)
-      } catch (error) {
-        if (unauthorised(error)) {
-          logger.error(`Forbidden auth login for [${username}]:`, error.stack)
-          return {}
-        }
-
-        logger.error(`Auth login error [${username}]:`, error.stack)
-        throw error
-      }
-    },
-
     async getRefreshedToken(user) {
       logger.info(`Refreshing token for : ${user.username}`)
 

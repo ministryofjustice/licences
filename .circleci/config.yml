@@ -69,7 +69,6 @@ jobs:
       NOMIS_API_URL: https://licences-demo-mocks.herokuapp.com/elite2api/api
       NOMIS_AUTH_URL: https://nomis-oauth2-server.herokuapp.com/auth
       PDF_SERVICE_HOST: https://licences-nomis-mocks.herokuapp.com
-      AUTH_STRATEGY: oauth
     steps:
       - checkout
       - attach_workspace:
@@ -212,7 +211,7 @@ jobs:
 
   accept_stage:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:10
     working_directory: ~/noms-digital-studio/licences
     steps:
       - run:

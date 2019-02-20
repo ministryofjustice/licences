@@ -11,9 +11,8 @@ describe('strategiesTest', () => {
   const audit = {}
 
   beforeEach(() => {
-    service = authInit(signInService, userService, audit)
+    service = authInit(userService, audit)
     done = sinon.stub()
-    signInService.signIn = sinon.stub().resolves({ token: 't', refreshToken: 'rt', expiresIn: '1200', username: 'un' })
     signInService.getClientCredentialsTokens = sinon.stub().resolves({ token: 'cdt' })
     userService.getUserProfile = sinon.stub().resolves({ name: 'someone', role: 'CA', staffId: 'sid' })
     audit.record = sinon.stub()
@@ -25,28 +24,15 @@ describe('strategiesTest', () => {
     clock.restore()
   })
 
-  describe('localInit', () => {
-    it('should call signIn from signInService', () => {
-      service.localInit('un', 'pw', done)
-      expect(signInService.signIn).to.be.calledOnce()
-      expect(signInService.signIn).to.be.calledWith('un', 'pw')
-    })
-
-    it('should call done if no token returned', async () => {
-      signInService.signIn.resolves({})
-      await service.localInit('un', 'pw', done)
-      expect(done).to.be.calledOnce()
-      expect(done).to.be.calledWith(null, false, { message: 'Incorrect username or password' })
-    })
-
+  describe('init', () => {
     it('should get the user profile from user service', async () => {
-      await service.localInit('un', 'pw', done)
+      await service.init('t', 'rt', { expires_in: '1200', user_name: 'un' }, {}, done)
       expect(userService.getUserProfile).to.be.calledOnce()
       expect(userService.getUserProfile).to.be.calledWith('t', 'rt', 'un')
     })
 
     it('should call done with the user object if the user is not an RO', async () => {
-      await service.localInit('un', 'pw', done)
+      await service.init('t', 'rt', { expires_in: '1200', user_name: 'un' }, {}, done)
       expect(done).to.be.calledOnce()
       expect(done).to.be.calledWith(null, {
         token: 't',
@@ -60,49 +46,14 @@ describe('strategiesTest', () => {
     })
 
     it('should audit the login', async () => {
-      await service.localInit('un', 'pw', done)
-      expect(audit.record).to.be.calledOnce()
-      expect(audit.record).to.be.calledWith('LOGIN', 'sid')
-    })
-
-    it('should call done if there is an error obtaining user', async () => {
-      signInService.signIn.rejects()
-      await service.localInit('un', 'pw', done)
-      expect(done).to.be.calledOnce()
-      expect(done).to.be.calledWith(null, false, { message: 'A system error occurred; please try again later' })
-    })
-  })
-
-  describe('oauthInit', () => {
-    it('should get the user profile from user service', async () => {
-      await service.oauthInit('t', 'rt', { expires_in: '1200', user_name: 'un' }, {}, done)
-      expect(userService.getUserProfile).to.be.calledOnce()
-      expect(userService.getUserProfile).to.be.calledWith('t', 'rt', 'un')
-    })
-
-    it('should call done with the user object if the user is not an RO', async () => {
-      await service.oauthInit('t', 'rt', { expires_in: '1200', user_name: 'un' }, {}, done)
-      expect(done).to.be.calledOnce()
-      expect(done).to.be.calledWith(null, {
-        token: 't',
-        refreshToken: 'rt',
-        expiresIn: '1200',
-        refreshTime: in15Mins,
-        staffId: 'sid',
-        name: 'someone',
-        role: 'CA',
-      })
-    })
-
-    it('should audit the login', async () => {
-      await service.oauthInit('t', 'rt', { expires_in: '1200', user_name: 'un' }, {}, done)
+      await service.init('t', 'rt', { expires_in: '1200', user_name: 'un' }, {}, done)
       expect(audit.record).to.be.calledOnce()
       expect(audit.record).to.be.calledWith('LOGIN', 'sid')
     })
 
     it('should call done if there is an error obtaining user', async () => {
       userService.getUserProfile.rejects()
-      await service.oauthInit('t', 'rt', { expires_in: '1200', user_name: 'un' }, {}, done)
+      await service.init('t', 'rt', { expires_in: '1200', user_name: 'un' }, {}, done)
       expect(done).to.be.calledOnce()
       expect(done).to.be.calledWith(null, false, { message: 'A system error occurred; please try again later' })
     })
