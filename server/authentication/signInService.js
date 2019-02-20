@@ -38,14 +38,17 @@ function signInService() {
   }
 }
 
-async function oauthTokenRequest(clientToken, oauthRequest) {
-  const oauthResult = await getOauthToken(clientToken, oauthRequest)
-  logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
+const parseOauthTokens = oauthResult => {
+  const token = oauthResult.body.access_token
+  const refreshToken = oauthResult.body.refresh_token
+  const expiresIn = oauthResult.body.expires_in
 
-  return parseOauthTokens(oauthResult)
+  return { token, refreshToken, expiresIn }
 }
 
-function getOauthToken(oauthClientToken, requestSpec) {
+const getOauthUrl = () => config.nomis.authUrl
+
+const getOauthToken = (oauthClientToken, requestSpec) => {
   const oauthRequest = querystring.stringify(requestSpec)
 
   return superagent
@@ -56,20 +59,11 @@ function getOauthToken(oauthClientToken, requestSpec) {
     .timeout(timeoutSpec)
 }
 
-function parseOauthTokens(oauthResult) {
-  const token = oauthResult.body.access_token
-  const refreshToken = oauthResult.body.refresh_token
-  const expiresIn = oauthResult.body.expires_in
+async function oauthTokenRequest(clientToken, oauthRequest) {
+  const oauthResult = await getOauthToken(clientToken, oauthRequest)
+  logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
 
-  return { token, refreshToken, expiresIn }
-}
-
-function getOauthUrl() {
-  return config.nomis.authUrl
-}
-
-function unauthorised(error) {
-  return [400, 401, 403].includes(error.status)
+  return parseOauthTokens(oauthResult)
 }
 
 module.exports = function createSignInService() {
