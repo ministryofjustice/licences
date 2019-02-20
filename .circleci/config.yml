@@ -67,7 +67,7 @@ jobs:
       DB_SSL_ENABLED: false
       ENABLE_TEST_UTILS: true
       NOMIS_API_URL: https://licences-demo-mocks.herokuapp.com/elite2api/api
-      NOMIS_AUTH_URL: https://licences-demo-mocks.herokuapp.com/elite2api/api
+      NOMIS_AUTH_URL: https://nomis-oauth2-server.herokuapp.com/auth
       PDF_SERVICE_HOST: https://licences-nomis-mocks.herokuapp.com
     steps:
       - checkout
@@ -211,7 +211,7 @@ jobs:
 
   accept_stage:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:10
     working_directory: ~/noms-digital-studio/licences
     steps:
       - run:

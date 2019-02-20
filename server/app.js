@@ -24,7 +24,6 @@ const logger = require('../log.js')
 const auth = require('./authentication/auth')
 
 const defaultRouter = require('../server/routes/default')
-const signInRouter = require('./routes/signIn')
 
 const adminRouter = require('../server/routes/admin/admin')
 const apiRouter = require('../server/routes/api')
@@ -70,7 +69,7 @@ module.exports = function createApp({
 }) {
   const app = express()
 
-  auth.init(signInService, userService, audit, config.authStrategy)
+  auth.init(userService, audit)
 
   app.set('json spaces', 2)
 
@@ -289,10 +288,9 @@ module.exports = function createApp({
     return res.render('notfound')
   })
 
-  const authLogoutUrl =
-    config.authStrategy === 'oauth'
-      ? `${config.nomis.authExternalUrl}/logout?client_id=${config.nomis.apiClientId}&redirect_uri=${config.domain}`
-      : '/login'
+  const authLogoutUrl = `${config.nomis.authExternalUrl}/logout?client_id=${config.nomis.apiClientId}&redirect_uri=${
+    config.domain
+  }`
 
   app.get('/autherror', (req, res) => {
     res.status(401)
@@ -301,13 +299,7 @@ module.exports = function createApp({
     })
   })
 
-  if (config.authStrategy === 'oauth') {
-    app.get('/login', passport.authenticate('oauth2'))
-  }
-
-  if (config.authStrategy === 'local') {
-    app.use('/login', signInRouter(passport))
-  }
+  app.get('/login', passport.authenticate('oauth2'))
 
   app.get('/login/callback', (req, res, next) => {
     passport.authenticate('oauth2', (err, user, info) => {

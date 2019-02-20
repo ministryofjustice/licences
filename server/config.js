@@ -62,6 +62,5 @@ module.exports = {
   notifyKey: get('NOTIFY_API_KEY', 'default_key'),
   tagManagerKey: get('TAG_MANAGER_KEY', null),
 
-  authStrategy: get('AUTH_STRATEGY', 'local'),
   pushToNomis: get('PUSH_TO_NOMIS', false),
 }

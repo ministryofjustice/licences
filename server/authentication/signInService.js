@@ -12,28 +12,6 @@ const timeoutSpec = {
 
 function signInService() {
   return {
-    async signIn(username, password) {
-      logger.info(`Log in for: ${username}`)
-
-      try {
-        const oauthClientToken = generateOauthClientToken()
-        const oauthRequest = { grant_type: 'password', username, password }
-        const oauthResult = await getOauthToken(oauthClientToken, oauthRequest)
-
-        logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
-
-        return parseOauthTokens(oauthResult)
-      } catch (error) {
-        if (unauthorised(error)) {
-          logger.error(`Forbidden auth login for [${username}]:`, error.stack)
-          return {}
-        }
-
-        logger.error(`Auth login error [${username}]:`, error.stack)
-        throw error
-      }
-    },
-
     async getRefreshedToken(user) {
       logger.info(`Refreshing token for : ${user.username}`)
 
@@ -60,14 +38,17 @@ function signInService() {
   }
 }
 
-async function oauthTokenRequest(clientToken, oauthRequest) {
-  const oauthResult = await getOauthToken(clientToken, oauthRequest)
-  logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
+const parseOauthTokens = oauthResult => {
+  const token = oauthResult.body.access_token
+  const refreshToken = oauthResult.body.refresh_token
+  const expiresIn = oauthResult.body.expires_in
 
-  return parseOauthTokens(oauthResult)
+  return { token, refreshToken, expiresIn }
 }
 
-function getOauthToken(oauthClientToken, requestSpec) {
+const getOauthUrl = () => config.nomis.authUrl
+
+const getOauthToken = (oauthClientToken, requestSpec) => {
   const oauthRequest = querystring.stringify(requestSpec)
 
   return superagent
@@ -78,20 +59,11 @@ function getOauthToken(oauthClientToken, requestSpec) {
     .timeout(timeoutSpec)
 }
 
-function parseOauthTokens(oauthResult) {
-  const token = oauthResult.body.access_token
-  const refreshToken = oauthResult.body.refresh_token
-  const expiresIn = oauthResult.body.expires_in
+async function oauthTokenRequest(clientToken, oauthRequest) {
+  const oauthResult = await getOauthToken(clientToken, oauthRequest)
+  logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
 
-  return { token, refreshToken, expiresIn }
-}
-
-function getOauthUrl() {
-  return config.nomis.authUrl
-}
-
-function unauthorised(error) {
-  return [400, 401, 403].includes(error.status)
+  return parseOauthTokens(oauthResult)
 }
 
 module.exports = function createSignInService() {

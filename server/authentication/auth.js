@@ -1,6 +1,5 @@
 const passport = require('passport')
 const { URLSearchParams } = require('url')
-const LocalStrategy = require('passport-local').Strategy
 const OauthStrategy = require('passport-oauth2').Strategy
 const strategies = require('./authInit')
 const config = require('../config')
@@ -37,11 +36,9 @@ passport.deserializeUser((user, done) => {
   done(null, user)
 })
 
-function init(signInService, userService, audit, authStrategy) {
-  const authStrategies = strategies(signInService, userService, audit)
-  const passportStrategies = {
-    local: new LocalStrategy(authStrategies.localInit),
-    oauth: new OauthStrategy(
+function init(userService, audit) {
+  passport.use(
+    new OauthStrategy(
       {
         authorizationURL: `${config.nomis.authExternalUrl}/oauth/authorize`,
         tokenURL: `${config.nomis.authUrl}/oauth/token`,
@@ -51,11 +48,9 @@ function init(signInService, userService, audit, authStrategy) {
         state: true,
         customHeaders: { Authorization: generateOauthClientToken() },
       },
-      authStrategies.oauthInit
-    ),
-  }
-
-  passport.use(passportStrategies[authStrategy])
+      strategies(userService, audit).init
+    )
+  )
 }
 
 module.exports.init = init

@@ -26,7 +26,6 @@ services:
       - NOMIS_AUTH_EXTERNAL_URL=http://localhost:8080/auth
       - HOST=licences.hmpps.dsd.test
       - PDF_SERVICE_HOST=http://hdc-pdfgenerator:8080
-      - AUTH_STRATEGY=oauth
       - GLOBAL_SEARCH_URL=http://localhost:3002/global-search
 
   licences-nomis-mocks:
