@@ -223,6 +223,7 @@ jobs:
           name: feature tests for stage
           command: |
             export LICENCES_URI="$STAGE_LICENCES_URI"
+            export USER_PASS="$STAGE_USER_PASS"
             ./gradlew clean stageTest
       - save_cache:
           key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
