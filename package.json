@@ -33,9 +33,15 @@
     }
   },
   "lint-staged": {
-    "*.{js,json,css,md}": [
-      "prettier --write",
-      "git add"
+    "linters": {
+      "*.{js,json,css,md}": [
+        "prettier --write",
+        "eslint --fix",
+        "git add"
+      ]
+    },
+    "ignore": [
+      "package.json"
     ]
   },
   "repository": {

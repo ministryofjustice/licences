@@ -5,8 +5,7 @@ const strategies = require('./authInit')
 const config = require('../config')
 const { generateOauthClientToken } = require('./oauth')
 
-function authenticationMiddleware(signInService) {
-  // eslint-disable-next-line
+const authenticationMiddleware = signInService => {
   return async (req, res, next) => {
     if (req.isAuthenticated()) {
       const { role, username, token } = req.user
@@ -36,7 +35,7 @@ passport.deserializeUser((user, done) => {
   done(null, user)
 })
 
-function init(userService, audit) {
+const init = (userService, audit) => {
   passport.use(
     new OauthStrategy(
       {

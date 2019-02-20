@@ -3,17 +3,7 @@ const allowedRoles = require('./roles')
 const logger = require('../../log')
 
 module.exports = (userService, audit) => {
-  async function init(accessToken, refreshToken, params, profile, done) {
-    try {
-      const user = await getUser(accessToken, refreshToken, params.expires_in, params.user_name)
-      return done(null, user)
-    } catch (error) {
-      logger.error('Sign in error ', error.stack)
-      return done(null, false, { message: 'A system error occurred; please try again later' })
-    }
-  }
-
-  async function getUser(token, refreshToken, expiresIn, username) {
+  const getUser = async (token, refreshToken, expiresIn, username) => {
     const userProfile = await userService.getUserProfile(token, refreshToken, username)
 
     if (!allowedRoles.includes(userProfile.role)) {
@@ -29,6 +19,16 @@ module.exports = (userService, audit) => {
       expiresIn,
       refreshTime: fiveMinutesBefore(expiresIn),
       ...userProfile,
+    }
+  }
+
+  const init = async (accessToken, refreshToken, params, profile, done) => {
+    try {
+      const user = await getUser(accessToken, refreshToken, params.expires_in, params.user_name)
+      return done(null, user)
+    } catch (error) {
+      logger.error('Sign in error ', error.stack)
+      return done(null, false, { message: 'A system error occurred; please try again later' })
     }
   }
 
