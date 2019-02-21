@@ -24,5 +24,5 @@ pollEndpointFor(
       console.log(`Failed all checks on ${process.env.APP_BASE_URL}`)
       process.exit(1)
     },
-  },
+  }
 )
