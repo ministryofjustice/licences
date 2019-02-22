@@ -63,4 +63,5 @@ module.exports = {
   tagManagerKey: get('TAG_MANAGER_KEY', null),
 
   pushToNomis: get('PUSH_TO_NOMIS', false),
+  use2019Conditions: get('2019_CONDITIONS', false),
 }

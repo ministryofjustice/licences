@@ -121,8 +121,10 @@ describe('licenceService', () => {
       await service.updateLicenceConditions(
         'ab1',
         existingLicence,
-        { additionalConditions: 'NOCONTACTPRISONER' },
-        [{ text: 'bespoke' }],
+        {
+          additional: { NOCONTACTPRISONER: {} },
+          bespoke: [{ text: 'bespoke' }],
+        },
         false
       )
 
@@ -150,9 +152,10 @@ describe('licenceService', () => {
         },
       }
 
-      await service.updateLicenceConditions('ab1', existingLicence, { additionalConditions: 'NOCONTACTPRISONER' }, [
-        { text: 'bespoke' },
-      ])
+      await service.updateLicenceConditions('ab1', existingLicence, {
+        additional: { NOCONTACTPRISONER: {} },
+        bespoke: [{ text: 'bespoke' }],
+      })
 
       expect(licenceClient.updateSection).to.not.be.called()
     })

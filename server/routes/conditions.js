@@ -44,29 +44,17 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
     const destination = action ? `${action}/${bookingId}` : bookingId
 
     const bespoke = (bespokeDecision === 'Yes' && bespokeConditions.filter(condition => condition.text)) || []
-    const additional = getAdditionalConditionsFrom(additionalConditions, req.body)
-
-    if (!additional) {
-      await licenceService.updateLicenceConditions(bookingId, res.locals.licence, {}, bespoke)
-      return res.redirect(`/hdc/licenceConditions/conditionsSummary/${destination}`)
-    }
+    const additional = additionalConditions ? conditionsService.formatConditionInputs(req.body) : {}
+    const newConditionsObject = conditionsService.createConditionsObjectForLicence(additional, bespoke)
 
     await licenceService.updateLicenceConditions(
       bookingId,
       res.locals.licence,
-      additional,
-      bespoke,
+      newConditionsObject,
       res.locals.postRelease
     )
 
     res.redirect(`/hdc/licenceConditions/conditionsSummary/${destination}`)
-  }
-
-  function getAdditionalConditionsFrom(additionalConditions, input) {
-    if (!additionalConditions) {
-      return null
-    }
-    return conditionsService.formatConditionInputs(input)
   }
 
   router.get('/conditionsSummary/:bookingId', getConditionsSummary)
@@ -78,9 +66,9 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
 
     const nextPath = formConfig.conditionsSummary.nextPath[action] || formConfig.conditionsSummary.nextPath.path
     const licence = getIn(res.locals.licence, ['licence']) || {}
-    const additionaConditions = getIn(licence, ['licenceConditions', 'additional']) || {}
+    const additionalConditions = getIn(licence, ['licenceConditions', 'additional']) || {}
     const errorObject = licenceService.validateForm({
-      formResponse: additionaConditions,
+      formResponse: additionalConditions,
       pageConfig: formConfig.additional,
       formType: 'additional',
     })
