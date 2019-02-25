@@ -21,10 +21,10 @@ mixin additionalConditions(editable)
                 else
                   span.alert  Say if the PPCS approved the bespoke conditions
 
-        div.content
+        div.conditionSummary.content
           for item in condition.content
             if item.text
-              | #{item.text}
+              | !{item.text}
             if item.variable
               span.bold #{item.variable}
             if item.error

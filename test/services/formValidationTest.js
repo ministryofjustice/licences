@@ -742,6 +742,39 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              DO_NOT_MEET: {
+                do_not_meet_associated: 'a',
+                do_not_meet_name: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_MEET: {} },
+            outcome: {
+              DO_NOT_MEET: {
+                do_not_meet_name: 'Enter name',
+              },
+            },
+          },
+          {
+            formResponse: {
+              TELL_PROBATION_ABOUT_RELATIONSHIP: {
+                tell_probation_about_relationship_gender: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { TELL_PROBATION_ABOUT_RELATIONSHIP: {} },
+            outcome: {
+              TELL_PROBATION_ABOUT_RELATIONSHIP: {
+                tell_probation_about_relationship_gender: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
@@ -754,6 +787,8 @@ describe('validation', () => {
               RETURNTOUK: {},
               SURRENDERPASSPORT: {},
               NOTIFYPASSPORT: {},
+              DO_NOT_CONTACT_PRISONERS: {},
+              DO_NOT_CONTACT_SEX_OFFENDER: {},
             },
             outcome: {},
           },
