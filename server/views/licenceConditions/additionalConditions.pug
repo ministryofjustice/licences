@@ -36,7 +36,7 @@ block content
                         p.namedAnchor
                           a.namedAnchor(name=conditionId)
                         input(type="checkbox" id="check-" + conditionId value=condition.id name="additionalConditions" checked=condition.selected)
-                        label(for="check-" + conditionId) #{condition.text}
+                        label(for="check-" + conditionId) !{condition.text}
 
                     if condition.user_input
                       div.pure-u-1.pure-u-md-1-3.conditionForm.js-hidden(id=condition.user_input + '_form')
