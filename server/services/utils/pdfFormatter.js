@@ -1,7 +1,7 @@
 const moment = require('moment')
+const romanise = require('romannumerals')
 const { getIn, isEmpty, mergeWithRight } = require('../../utils/functionalHelpers')
 const pdfData = require('../config/pdfData')
-const { romanise } = require('../../utils/romanise')
 const config = require('../../config')
 
 const DEFAULT_PLACEHOLDER = '(DATA MISSING)'
@@ -111,7 +111,8 @@ function getAdditionalConditionsText(licence, conditionsConfig) {
 }
 
 function listCounter(start, index) {
-  return romanise(start + index)
+  return romanise
+    .toRoman(start + index)
     .concat('. ')
     .toLowerCase()
 }
