@@ -25,7 +25,7 @@ const createNomisPushService = require('./services/nomisPushService')
 
 const signInService = createSignInService(audit)
 const licenceService = createLicenceService(licenceClient)
-const conditionsService = createConditionsService()
+const conditionsService = createConditionsService(config)
 const prisonerService = createPrisonerService(nomisClientBuilder)
 const caseListFormatter = createCaseListFormatter(logger, licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter)

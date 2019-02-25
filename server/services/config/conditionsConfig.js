@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+
 module.exports = {
   standardConditions: [
     {
@@ -29,370 +30,917 @@ module.exports = {
     },
   ],
 
-  additionalConditions: [
-    {
-      id: 'NOCONTACTPRISONER',
-      text:
-        'Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Person or group',
-    },
-    {
-      id: 'NOCONTACTASSOCIATE',
-      text:
-        'Not to associate with any person currently or formerly associated with [NAME OR DESCRIBE SPECIFIC GROUPS OR ORGANISATIONS] without the prior approval of your supervising officer.',
-      user_input: 'groupsOrOrganisations',
-      active: true,
-      field_position: {
-        groupsOrOrganisation: 0,
+  getAdditionalConditionsConfig: use2019Conditions =>
+    [
+      {
+        id: 'NOCONTACTPRISONER',
+        text:
+          'Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Person or group',
       },
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Person or group',
-    },
-    {
-      id: 'NOCONTACTSEXOFFENDER',
-      text:
-        'Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Person or group',
-    },
-    {
-      id: 'INTIMATERELATIONSHIP',
-      text:
-        'Notify your supervising officer of any developing intimate relationships with [WOMEN / MEN / WOMEN OR MEN].',
-      user_input: 'intimateGender',
-      active: true,
-      field_position: {
-        intimateGender: 0,
+      {
+        id: 'NOCONTACTASSOCIATE',
+        text:
+          'Not to associate with any person currently or formerly associated with [NAME OR DESCRIBE SPECIFIC GROUPS OR ORGANISATIONS] without the prior approval of your supervising officer.',
+        user_input: 'groupsOrOrganisations',
+        active: !use2019Conditions,
+        field_position: {
+          groupsOrOrganisation: 0,
+        },
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Person or group',
       },
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Person or group',
-    },
-    {
-      id: 'NOCONTACTNAMED',
-      text:
-        'Not to contact or associate with [NAMED OFFENDER(S) / NAMED INDIVIDUAL(S)] without the prior approval of your supervising officer.',
-      user_input: 'noContactOffenders',
-      active: true,
-      field_position: {
-        noContactOffenders: 0,
+      {
+        id: 'NOCONTACTSEXOFFENDER',
+        text:
+          'Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Person or group',
       },
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Person or group',
-    },
-    {
-      id: 'NORESIDE',
-      text:
-        'Not to reside (not even to stay for one night) in the same household as [ANY / ANY FEMALE / ANY MALE] child under the age of [INSERT AGE] without the prior approval of your supervising officer.',
-      user_input: 'notToReside',
-      active: true,
-      field_position: {
-        notResideWithAge: 1,
-        notResideWithGender: 0,
+      {
+        id: 'INTIMATERELATIONSHIP',
+        text:
+          'Notify your supervising officer of any developing intimate relationships with [WOMEN / MEN / WOMEN OR MEN].',
+        user_input: 'intimateGender',
+        active: !use2019Conditions,
+        field_position: {
+          intimateGender: 0,
+        },
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Person or group',
       },
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Children',
-    },
-    {
-      id: 'NOUNSUPERVISEDCONTACT',
-      text:
-        'Not to have unsupervised contact with  [ANY / ANY FEMALE / ANY MALE] children under the age of [INSERT AGE] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT] except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.',
-      user_input: 'noUnsupervisedContact',
-      active: true,
-      field_position: {
-        unsupervisedContactAge: 1,
-        unsupervisedContactGender: 0,
-        unsupervisedContactSocial: 2,
+      {
+        id: 'NOCONTACTNAMED',
+        text:
+          'Not to contact or associate with [NAMED OFFENDER(S) / NAMED INDIVIDUAL(S)] without the prior approval of your supervising officer.',
+        user_input: 'noContactOffenders',
+        active: !use2019Conditions,
+        field_position: {
+          noContactOffenders: 0,
+        },
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Person or group',
       },
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Children',
-    },
-    {
-      id: 'NOCHILDRENSAREA',
-      text:
-        'Not to enter or remain in sight of any [CHILDREN’S PLAY AREA, SWIMMING BATHS, SCHOOL ETC] without the prior approval of your supervising officer.',
-      user_input: 'notInSightOf',
-      active: true,
-      field_position: {
-        notInSightOf: 0,
+      {
+        id: 'NORESIDE',
+        text:
+          'Not to reside (not even to stay for one night) in the same household as [ANY / ANY FEMALE / ANY MALE] child under the age of [INSERT AGE] without the prior approval of your supervising officer.',
+        user_input: 'notToReside',
+        active: !use2019Conditions,
+        field_position: {
+          notResideWithAge: 1,
+          notResideWithGender: 0,
+        },
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Children',
       },
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Children',
-    },
-    {
-      id: 'NOWORKWITHAGE',
-      text:
-        'Not to undertake work or other organised activity which will involve a person under the age of [INSERT AGE], either on a paid or unpaid basis without the prior approval of your supervising officer.',
-      user_input: 'noWorkWithAge',
-      active: true,
-      field_position: {
-        noWorkWithAge: '0',
+      {
+        id: 'NOUNSUPERVISEDCONTACT',
+        text:
+          'Not to have unsupervised contact with  [ANY / ANY FEMALE / ANY MALE] children under the age of [INSERT AGE] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT] except where that contact is inadvertent and not reasonably avoidable in the course of lawful daily life.',
+        user_input: 'noUnsupervisedContact',
+        active: !use2019Conditions,
+        field_position: {
+          unsupervisedContactAge: 1,
+          unsupervisedContactGender: 0,
+          unsupervisedContactSocial: 2,
+        },
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Children',
       },
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Children',
-    },
-    {
-      id: 'NOTIFYRELATIONSHIP',
-      text:
-        'Notify your supervising officer of any developing personal relationships, whether intimate or not, with any person you know or believe to be resident in a household containing children under the age of 18. This includes persons known to you prior to your time in custody with whom you are renewing or developing a personal relationship with.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Children',
-    },
-    {
-      id: 'NOCOMMUNICATEVICTIM',
-      text:
-        'Not to seek to approach or communicate with [INSERT NAME OF VICTIM AND / OR FAMILY MEMBERS] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT].',
-      user_input: 'victimDetails',
-      active: true,
-      field_position: {
-        socialServicesDept: 1,
-        victimFamilyMembers: 0,
+      {
+        id: 'NOCHILDRENSAREA',
+        text:
+          'Not to enter or remain in sight of any [CHILDREN’S PLAY AREA, SWIMMING BATHS, SCHOOL ETC] without the prior approval of your supervising officer.',
+        user_input: 'notInSightOf',
+        active: !use2019Conditions,
+        field_position: {
+          notInSightOf: 0,
+        },
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Children',
       },
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Victims',
-    },
-    {
-      id: 'COMPLYREQUIREMENTS',
-      text:
-        'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your alcohol / drug / sexual / violent / gambling / solvent abuse / anger / debt / prolific / offending behaviour problems at the [NAME OF COURSE / CENTRE].',
-      user_input: 'courseOrCentre',
-      active: true,
-      field_position: {
-        courseOrCentre: '0',
+      {
+        id: 'NOWORKWITHAGE',
+        text:
+          'Not to undertake work or other organised activity which will involve a person under the age of [INSERT AGE], either on a paid or unpaid basis without the prior approval of your supervising officer.',
+        user_input: 'noWorkWithAge',
+        active: !use2019Conditions,
+        field_position: {
+          noWorkWithAge: '0',
+        },
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Children',
       },
-      group_name: 'Drugs, health and behaviour',
-      subgroup_name: null,
-    },
-    {
-      id: 'ATTENDALL',
-      text:
-        'Attend all appointments arranged for you with [INSERT NAME], a [PSYCHIATRIST / PSYCHOLOGIST / MEDICAL PRACTITIONER] and co-operate fully with any care or treatment they recommend.',
-      user_input: 'appointmentName',
-      active: true,
-      field_position: {
-        appointmentName: '0',
-        appointmentProfession: '1',
+      {
+        id: 'NOTIFYRELATIONSHIP',
+        text:
+          'Notify your supervising officer of any developing personal relationships, whether intimate or not, with any person you know or believe to be resident in a household containing children under the age of 18. This includes persons known to you prior to your time in custody with whom you are renewing or developing a personal relationship with.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Children',
       },
-      group_name: 'Drugs, health and behaviour',
-      subgroup_name: null,
-    },
-    {
-      id: 'HOMEVISITS',
-      text: 'Receive home visits from [INSERT NAME] Mental Health Worker.',
-      user_input: 'mentalHealthName',
-      active: true,
-      field_position: {
-        mentalHealthName: '0',
+      {
+        id: 'NOCOMMUNICATEVICTIM',
+        text:
+          'Not to seek to approach or communicate with [INSERT NAME OF VICTIM AND / OR FAMILY MEMBERS] without the prior approval of your supervising officer and / or [INSERT NAME OF APPROPRIATE SOCIAL SERVICES DEPARTMENT].',
+        user_input: 'victimDetails',
+        active: !use2019Conditions,
+        field_position: {
+          socialServicesDept: 1,
+          victimFamilyMembers: 0,
+        },
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Victims',
       },
-      group_name: 'Drugs, health and behaviour',
-      subgroup_name: null,
-    },
-    {
-      id: 'REMAINADDRESS',
-      text:
-        'Confine yourself to remain at [CURFEW ADDRESS] initially from [START OF CURFEW HOURS] until [END OF CURFEW HOURS] each day, and, thereafter, for such a period as may be reasonably notified to you by your supervising officer; and comply with such arrangements as may be reasonably put in place and notified to you by your supervising officer so as to allow for your whereabouts and your compliance with your curfew requirement be monitored [WHETHER BY ELECTRONIC MEANS INVOLVING YOUR WEARING AN ELECTRONIC TAG OR OTHERWISE].',
-      user_input: 'curfewDetails',
-      active: true,
-      field_position: {
-        curfewTo: '2',
-        curfewFrom: '1',
-        curfewAddress: '0',
-        curfewTagRequired: '3',
+      {
+        id: 'COMPLYREQUIREMENTS',
+        text:
+          'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your alcohol / drug / sexual / violent / gambling / solvent abuse / anger / debt / prolific / offending behaviour problems at the [NAME OF COURSE / CENTRE].',
+        user_input: 'courseOrCentre',
+        active: !use2019Conditions,
+        field_position: {
+          courseOrCentre: '0',
+        },
+        group_name: 'Drugs, health and behaviour',
+        subgroup_name: null,
       },
-      group_name: 'Curfew and reporting',
-      subgroup_name: null,
-    },
-    {
-      id: 'CONFINEADDRESS',
-      text:
-        'Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.',
-      user_input: 'confinedDetails',
-      active: true,
-      field_position: {
-        confinedTo: '0',
-        confinedFrom: '1',
-        confinedReviewFrequency: '2',
+      {
+        id: 'ATTENDALL',
+        text:
+          'Attend all appointments arranged for you with [INSERT NAME], a [PSYCHIATRIST / PSYCHOLOGIST / MEDICAL PRACTITIONER] and co-operate fully with any care or treatment they recommend.',
+        user_input: 'appointmentName',
+        active: !use2019Conditions,
+        field_position: {
+          appointmentName: '0',
+          appointmentProfession: '1',
+        },
+        group_name: 'Drugs, health and behaviour',
+        subgroup_name: null,
       },
-      group_name: 'Curfew and reporting',
-      subgroup_name: null,
-    },
-    {
-      id: 'REPORTTO',
-      text:
-        'Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] at [TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.',
-      user_input: 'reportingDetails',
-      active: true,
-      field_position: {
-        reportingTime: '1',
-        reportingDaily: '2',
-        reportingAddress: '0',
-        reportingFrequency: '3',
+      {
+        id: 'HOMEVISITS',
+        text: 'Receive home visits from [INSERT NAME] Mental Health Worker.',
+        user_input: 'mentalHealthName',
+        active: !use2019Conditions,
+        field_position: {
+          mentalHealthName: '0',
+        },
+        group_name: 'Drugs, health and behaviour',
+        subgroup_name: null,
       },
-      group_name: 'Curfew and reporting',
-      subgroup_name: null,
-    },
-    {
-      id: 'RETURNTOUK',
-      text:
-        'Should you return to the UK and Islands before the expiry date of your licence then your licence conditions will be in force and you must report within two working days to  our supervising officer.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'Travel',
-      subgroup_name: null,
-    },
-    {
-      id: 'NOTIFYPASSPORT',
-      text:
-        'To notify your supervising officer of the details of any passport that you possess (including passport number), and of any intention to apply for a new passport.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'Travel',
-      subgroup_name: 'Passports',
-    },
-    {
-      id: 'SURRENDERPASSPORT',
-      text:
-        'To surrender your passport(s) to your supervising officer and to notify your supervising officer of any intention to apply for a new passport.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'Travel',
-      subgroup_name: 'Passports',
-    },
-    {
-      id: 'VEHICLEDETAILS',
-      text:
-        'Provide your supervising officer with details [SUCH AS MAKE, MODEL, COLOUR, REGISTRATION] of any vehicle you own, hire for more than a short journey or have regular use of, prior to any journey taking place.',
-      user_input: 'vehicleDetails',
-      active: true,
-      field_position: {
-        vehicleDetails: 0,
+      {
+        id: 'REMAINADDRESS',
+        text:
+          'Confine yourself to remain at [CURFEW ADDRESS] initially from [START OF CURFEW HOURS] until [END OF CURFEW HOURS] each day, and, thereafter, for such a period as may be reasonably notified to you by your supervising officer; and comply with such arrangements as may be reasonably put in place and notified to you by your supervising officer so as to allow for your whereabouts and your compliance with your curfew requirement be monitored [WHETHER BY ELECTRONIC MEANS INVOLVING YOUR WEARING AN ELECTRONIC TAG OR OTHERWISE].',
+        user_input: 'curfewDetails',
+        active: !use2019Conditions,
+        field_position: {
+          curfewTo: '2',
+          curfewFrom: '1',
+          curfewAddress: '0',
+          curfewTagRequired: '3',
+        },
+        group_name: 'Curfew and reporting',
+        subgroup_name: null,
       },
-      group_name: 'Travel',
-      subgroup_name: 'Vehicles',
-    },
-    {
-      id: 'EXCLUSIONADDRESS',
-      text:
-        'Not to enter [NAME/TYPE OF PREMISES / ADDRESS / ROAD] without the prior approval of your supervising officer.',
-      user_input: 'noEnterPlace',
-      active: true,
-      field_position: {
-        noEnterPlace: '0',
+      {
+        id: 'CONFINEADDRESS',
+        text:
+          'Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.',
+        user_input: 'confinedDetails',
+        active: !use2019Conditions,
+        field_position: {
+          confinedTo: '0',
+          confinedFrom: '1',
+          confinedReviewFrequency: '2',
+        },
+        group_name: 'Curfew and reporting',
+        subgroup_name: null,
       },
-      group_name: 'Exclusion',
-      subgroup_name: null,
-    },
-    {
-      id: 'EXCLUSIONAREA',
-      text:
-        'Not to enter the area of [CLEARLY SPECIFIED AREA], as defined by the attached map without the prior approval of your supervising officer.',
-      user_input: 'exclusionArea',
-      active: true,
-      field_position: {
-        exclusionArea: '0',
+      {
+        id: 'REPORTTO',
+        text:
+          'Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] at [TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.',
+        user_input: 'reportingDetails',
+        active: !use2019Conditions,
+        field_position: {
+          reportingTime: '1',
+          reportingDaily: '2',
+          reportingAddress: '0',
+          reportingFrequency: '3',
+        },
+        group_name: 'Curfew and reporting',
+        subgroup_name: null,
       },
-      group_name: 'Exclusion',
-      subgroup_name: null,
-    },
-    {
-      id: 'ONEPHONE',
-      text:
-        'Not to own or possess more than one mobile phone or SIM card without the prior approval of your supervising officer and to provide your supervising officer with details of that mobile telephone, including the IMEI number and the SIM card that you possess.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'Technology',
-      subgroup_name: 'Mobile phones',
-    },
-    {
-      id: 'NOINTERNET',
-      text:
-        'Not to use or access any computer or device which is internet enabled without the prior approval of your supervising officer; and only for the purpose, and only at a public location, as specified by that officer.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'Technology',
-      subgroup_name: 'Computers and internet',
-    },
-    {
-      id: 'USAGEHISTORY',
-      text:
-        'Not to delete the usage history on any internet enabled device or computer used and to allow such items to be inspected as required by the police or your supervising officer. Such inspection may include removal of the device for inspection and the installation of monitoring software.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'Technology',
-      subgroup_name: 'Computers and internet',
-    },
-    {
-      id: 'NOCAMERA',
-      text:
-        'To make any device capable of making or storing digital images (including a camera and a mobile phone with a camera function) available for inspection on request by your supervising officer and/or a police officer.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'Technology',
-      subgroup_name: 'Cameras and photos',
-    },
-    {
-      id: 'CAMERAAPPROVAL',
-      text: 'Not to own or use a camera without the prior approval of your supervising officer.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'Technology',
-      subgroup_name: 'Cameras and photos',
-    },
-    {
-      id: 'NOCAMERAPHONE',
-      text:
-        'Not to own or possess a mobile phone with a photographic function without the prior approval of your supervising officer.',
-      user_input: null,
-      active: true,
-      field_position: null,
-      group_name: 'Technology',
-      subgroup_name: 'Cameras and photos',
-    },
-    {
-      id: 'ATTENDSAMPLE',
-      text:
-        'Attend [INSERT APPOINTMENT NAME AND ADDRESS], as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour.',
-      user_input: 'attendSampleDetails',
-      active: true,
-      field_position: {
-        attendSampleDetailsName: 0,
-        attendSampleDetailsAddress: 1,
+      {
+        id: 'RETURNTOUK',
+        text:
+          'Should you return to the UK and Islands before the expiry date of your licence then your licence conditions will be in force and you must report within two working days to  our supervising officer.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'Travel',
+        subgroup_name: null,
       },
-      group_name: 'Post-sentence supervision only',
-      subgroup_name: null,
-    },
-    {
-      id: 'ATTENDDEPENDENCY',
-      text:
-        'Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.',
-      user_input: 'appointmentDetails',
-      active: true,
-      field_position: {
-        appointmentDate: 0,
-        appointmentTime: 1,
-        appointmentAddress: 2,
+      {
+        id: 'NOTIFYPASSPORT',
+        text:
+          'To notify your supervising officer of the details of any passport that you possess (including passport number), and of any intention to apply for a new passport.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'Travel',
+        subgroup_name: 'Passports',
       },
-      group_name: 'Post-sentence supervision only',
-      subgroup_name: null,
-    },
-  ],
+      {
+        id: 'SURRENDERPASSPORT',
+        text:
+          'To surrender your passport(s) to your supervising officer and to notify your supervising officer of any intention to apply for a new passport.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'Travel',
+        subgroup_name: 'Passports',
+      },
+      {
+        id: 'VEHICLEDETAILS',
+        text:
+          'Provide your supervising officer with details [SUCH AS MAKE, MODEL, COLOUR, REGISTRATION] of any vehicle you own, hire for more than a short journey or have regular use of, prior to any journey taking place.',
+        user_input: 'vehicleDetails',
+        active: !use2019Conditions,
+        field_position: {
+          vehicleDetails: 0,
+        },
+        group_name: 'Travel',
+        subgroup_name: 'Vehicles',
+      },
+      {
+        id: 'EXCLUSIONADDRESS',
+        text:
+          'Not to enter [NAME/TYPE OF PREMISES / ADDRESS / ROAD] without the prior approval of your supervising officer.',
+        user_input: 'noEnterPlace',
+        active: !use2019Conditions,
+        field_position: {
+          noEnterPlace: '0',
+        },
+        group_name: 'Exclusion',
+        subgroup_name: null,
+      },
+      {
+        id: 'EXCLUSIONAREA',
+        text:
+          'Not to enter the area of [CLEARLY SPECIFIED AREA], as defined by the attached map without the prior approval of your supervising officer.',
+        user_input: 'exclusionArea',
+        active: !use2019Conditions,
+        field_position: {
+          exclusionArea: '0',
+        },
+        group_name: 'Exclusion',
+        subgroup_name: null,
+      },
+      {
+        id: 'ONEPHONE',
+        text:
+          'Not to own or possess more than one mobile phone or SIM card without the prior approval of your supervising officer and to provide your supervising officer with details of that mobile telephone, including the IMEI number and the SIM card that you possess.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Mobile phones',
+      },
+      {
+        id: 'NOINTERNET',
+        text:
+          'Not to use or access any computer or device which is internet enabled without the prior approval of your supervising officer; and only for the purpose, and only at a public location, as specified by that officer.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Computers and internet',
+      },
+      {
+        id: 'USAGEHISTORY',
+        text:
+          'Not to delete the usage history on any internet enabled device or computer used and to allow such items to be inspected as required by the police or your supervising officer. Such inspection may include removal of the device for inspection and the installation of monitoring software.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Computers and internet',
+      },
+      {
+        id: 'NOCAMERA',
+        text:
+          'To make any device capable of making or storing digital images (including a camera and a mobile phone with a camera function) available for inspection on request by your supervising officer and/or a police officer.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Cameras and photos',
+      },
+      {
+        id: 'CAMERAAPPROVAL',
+        text: 'Not to own or use a camera without the prior approval of your supervising officer.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Cameras and photos',
+      },
+      {
+        id: 'NOCAMERAPHONE',
+        text:
+          'Not to own or possess a mobile phone with a photographic function without the prior approval of your supervising officer.',
+        user_input: null,
+        active: !use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Cameras and photos',
+      },
+      {
+        id: 'ATTENDSAMPLE',
+        text:
+          'Attend [INSERT APPOINTMENT NAME AND ADDRESS], as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour.',
+        user_input: 'attendSampleDetails',
+        active: !use2019Conditions,
+        field_position: {
+          attendSampleDetailsName: 0,
+          attendSampleDetailsAddress: 1,
+        },
+        group_name: 'Post-sentence supervision only',
+        subgroup_name: null,
+      },
+      {
+        id: 'ATTENDDEPENDENCY',
+        text:
+          'Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.',
+        user_input: 'appointmentDetails',
+        active: !use2019Conditions,
+        field_position: {
+          appointmentDate: 0,
+          appointmentTime: 1,
+          appointmentAddress: 2,
+        },
+        group_name: 'Post-sentence supervision only',
+        subgroup_name: null,
+      },
+      {
+        id: 'DO_NOT_CONTACT_PRISONERS',
+        text:
+          'Do not contact anyone in prison or custody unless it’s approved by your probation officer first. This includes:\ncontact through social media\nasking someone else to contact them for you\nleaving a message for them to find',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Person or group',
+      },
+      {
+        id: 'DO_NOT_MEET',
+        text:
+          'Do not have contact or meet with [anyone associated (now or in the past) with] [name / specific group or organisation] unless it’s approved by your probation officer.\n',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Person or group',
+      },
+      {
+        id: 'DO_NOT_CONTACT_SEX_OFFENDER',
+        text:
+          'Do not have any contact with a known sex offender unless it’s approved by your probation officer.\nThis does not apply when you attend a treatment programme or in your approved address to people living there.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Person or group',
+      },
+      {
+        id: 'TELL_PROBATION_ABOUT_RELAT',
+        text:
+          'Tell your probation officer about any:\n' +
+          '\n' +
+          'personal relationships with [women / men / anyone]\n' +
+          'personal relationships or friendships when the person lives with children under 18\n' +
+          'changes to those relationships - for example pregnancy or the end of the relationship\n' +
+          '\n' +
+          'This includes people you knew before you were in prison.\n' +
+          '\n' +
+          'Your probation officer will explain what types of relationships you need to tell them about.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Person or group',
+      },
+      {
+        id: 'DO_NOT_LIVE_OR_STAY',
+        text:
+          'Do not live or stay (even for one night) in the same place as [any child under  / any female child under  / any male child under  / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Children and vulnerable adults',
+      },
+      {
+        id: 'NO_UNSUPERVISED_CONTACT',
+        text:
+          'Do not have unsupervised contact with [any child under  / any female child under  / any male child under  / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer [and/or social services department name].\n' +
+          '\n' +
+          '(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Children and vulnerable adults',
+      },
+      {
+        id: 'DO_NOT_STAY_IN_SIGHT_OF',
+        text: 'Do not enter or stay in sight of any [type of location] unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Children and vulnerable adults',
+      },
+      {
+        id: 'DO_NOT_TAKE_PART_IN_ACTIVITY',
+        text:
+          'Do not take part in any work or activity (paid or unpaid) which involves [any child under  / any female child under  / any male child under  / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Children and vulnerable adults',
+      },
+      {
+        id: 'DO_NOT_CONTACT_VICTIM',
+        text:
+          'Do not approach or communicate with [name of victim and/or family members] unless it’s approved by your probation officer [and/or social services department].',
+        user_input: 'victimDetails',
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'People, contact and relationships',
+        subgroup_name: 'Victims',
+      },
+      {
+        id: 'FOLLOW_REHABILITATION_INSTRUCTIONS',
+        text:
+          'Follow all instructions your probation officer gives you as part of your rehabilitation for [alcohol abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour / offending behaviour].',
+        user_input: 'courseOrCentre',
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Behaviour, health and drugs',
+        subgroup_name: null,
+      },
+      {
+        id: 'GIVE_URINE_SAMPLE',
+        text:
+          'Give a [ORAL FLUID/URINE] sample to test you for specific drugs at the place your probation officer tells you to.\n' +
+          '\n' +
+          'Do not do anything to affect the drug testing process.',
+        user_input: 'courseOrCentre',
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Behaviour, health and drugs',
+        subgroup_name: null,
+      },
+      {
+        id: 'GO_WHERE_PROBATION_OFFICER',
+        text: 'Go where your probation officer tells you for help with your drug dependency or misuse.',
+        user_input: 'courseOrCentre',
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Behaviour, health and drugs',
+        subgroup_name: null,
+      },
+      {
+        id: 'GO_TO_APPOINTMENTS',
+        text:
+          'Go to all appointments arranged with  [a mental health worker / a medical practitioner / a leaving care social worker / children’s services].',
+        user_input: 'courseOrCentre',
+        active: use2019Conditions,
+        field_position: {
+          courseOrCentre: '0',
+        },
+        group_name: 'Behaviour, health and drugs',
+        subgroup_name: null,
+      },
+      {
+        id: 'ALLOW_MENTAL_HEALTH_WORKER',
+        text:
+          'Allow [a mental health worker / a medical practitioner / a leaving care social worker / children’s services] to visit you at your home.',
+        user_input: 'courseOrCentre',
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Behaviour, health and drugs',
+        subgroup_name: null,
+      },
+      {
+        id: 'STAY_AT_ADDRESS',
+        text:
+          'Stay at [address] between [time] and [time] every day unless your probation officer tells you not to. \n' +
+          'Follow instructions your probation officer gives you so they know where you are.\n' +
+          '\n' +
+          'Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Curfew, reporting and escorts',
+        subgroup_name: null,
+      },
+      {
+        id: 'REPORT_TO_STAFF_AT',
+        text:
+          'Report to staff at [location] at [time and [day] unless your probation officer tells you not to. \n' +
+          '\n' +
+          'Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.\n',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Curfew, reporting and escorts',
+        subgroup_name: null,
+      },
+      {
+        id: 'REPORT_WITHIN_2_DAYS',
+        text:
+          'Report to your probation officer within 2 working days if you return to the UK and islands before the end of your licence period. Your licence conditions will still apply.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Curfew, reporting and escorts',
+        subgroup_name: null,
+      },
+      {
+        id: 'POLICE_TAKE_TO',
+        text: 'The police will take you to [approved address] on the day you’re released.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Curfew, reporting and escorts',
+        subgroup_name: null,
+      },
+      {
+        id: 'TELL_PROBATION_PASSPORT',
+        text:
+          'Tell your probation officer:\n' +
+          '\n' +
+          'full details of any [passport / driving licence / birth certificate] you own\n' +
+          'if you apply for a new [passport / driving licence / birth certificate] ',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Travel and transportation',
+        subgroup_name: 'Passports and identification',
+      },
+      {
+        id: 'GIVE_PASSPORT_TO_PROBATION',
+        text:
+          'Give your passport(s) to your probation officer and tell them if you are planning to apply for a new passport.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Travel and transportation',
+        subgroup_name: 'Passports and identification',
+      },
+      {
+        id: 'TELL_PROBATION_VEHICLE_DETAILS',
+        text:
+          'Tell your probation officer details of any vehicle you own, use regularly, or hire before you travel in them. This does not apply to public transport or private hire taxis.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Travel and transportation',
+        subgroup_name: 'Vehicles and transportation',
+      },
+      {
+        id: 'DO_NOT_TRAVEL_IN',
+        text:
+          'Do not travel in or on any privately-owned vehicle that you own or owned by someone else unless it’s approved by your probation officer. This does not apply to public transport or private hire taxis.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Travel and transportation',
+        subgroup_name: 'Vehicles and transportation',
+      },
+      {
+        id: 'TELL_PROBATION_REUSABLE_CARD',
+        text:
+          'Tell your probation officer full details of any reusable card you own or use on public transport, for example an Oyster card.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Travel and transportation',
+        subgroup_name: 'Vehicles and transportation',
+      },
+      {
+        id: 'DO_NOT_GO_PREMISES',
+        text: 'Do not go in [name / type of premises / address / road] unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Exclusion',
+        subgroup_name: null,
+      },
+      {
+        id: 'DO_NOT_GO_AREA',
+        text:
+          'Do not go in the specified area shown on the attached map unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Exclusion',
+        subgroup_name: null,
+      },
+      {
+        id: 'ONLY_WORSHIP_APPROVED',
+        text: 'Only go to places of worship approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Exclusion',
+        subgroup_name: null,
+      },
+      {
+        id: 'HAVE_ELECTRONIC_TAG',
+        text:
+          'You must:\n' +
+          '\n' +
+          'allow an electronic tag to be installed on you \n' +
+          '\n' +
+          'allow access to your property to install and check any tagging equipment \n' +
+          '\n' +
+          'not damage or interfere with your electronic tag\n' +
+          '\n' +
+          'make sure the tag is charged as instructed by your probation officer  \n' +
+          '\n' +
+          'report it immediately if the tag or equipment are not working - your probation officer will tell you who to contact\n' +
+          '\n' +
+          'allow access to your property to remove the electronic tag and any tagging equipment\n',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Electronic monitoring',
+      },
+      {
+        id: 'STAY_AT_NIGHT',
+        text: 'Stay at [approved address] between 5pm and midnight every day until your electronic tag is installed.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Electronic monitoring',
+      },
+      {
+        id: 'YOU_WILL_BE_SUBJECT_TO',
+        text:
+          'You will be subject to trail monitoring. Your electronic tag will monitor you everywhere you go. You must follow all instructions from your probation officer.\n',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Electronic monitoring',
+      },
+      {
+        id: 'GO_FOR_POLYGRAPH',
+        text:
+          'Go for polygraph testing when your probation officer tells you to. \n' +
+          '\n' +
+          'Follow all instructions given by the person carrying out the polygraph testing.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Polygraph',
+      },
+      {
+        id: 'DO_NOT_HAVE_MORE_THAN_ONE_PHONE',
+        text:
+          'Do not have more than one mobile phone or SIM card unless it’s approved by your probation officer. \n' +
+          '\n' +
+          'Provide your probation officer with details of your mobile phone and SIM card.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Mobile phones',
+      },
+      {
+        id: 'ONLY_USE_INTERNET_AT',
+        text: 'Only use a computer or device with internet at [location] or where your probation officer tells you.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Computers and internet',
+      },
+      {
+        id: 'DO_NOT_DELETE_HISTORY',
+        text:
+          'Do not:\n' +
+          '\n' +
+          'delete the user history on your mobile phone or device with internet \n' +
+          'use any software or settings that stop your internet use being recorded\n' +
+          '\n' +
+          'Do allow the police or your probation officer to inspect your mobile phone or device with internet. They may:\n' +
+          '\n' +
+          'take your device to inspect it\n' +
+          'install monitoring software\n' +
+          'search where you live or your vehicle(s) for devices you have not told them about',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Computers and internet',
+      },
+      {
+        id: 'GET_PERMISSION_FOR_SOFTWARE',
+        text:
+          'Get permission from your probation officer to buy, download, or use any software that:\n' +
+          '\n' +
+          'encrypts information\n' +
+          'deletes information\n' +
+          'cleans your files or drives',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Computers and internet',
+      },
+      {
+        id: 'DO_NOT_DOWNLOAD_SPECIFIED_WEBSITES',
+        text:
+          'Do not [access / download / access or download] [specified websites or apps / types of websites or apps] unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Computers and internet',
+      },
+      {
+        id: 'PROVIDE_DETAILS_OF_CLOUD_STORAGE',
+        text: 'Provide details of any cloud storage accounts you have access to, including usernames and passwords.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Technology',
+        subgroup_name: 'Computers and internet',
+      },
+      {
+        id: 'DO_NOT_OWN_ITEM',
+        text: 'Do not own or use any [specific items] unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Possession, ownership and finances',
+        subgroup_name: 'Possession and ownership',
+      },
+      {
+        id: 'TELL_YOUR_PROBATION_OFFICER',
+        text: 'Tell your probation officer about any [type of animal] in your care.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Possession, ownership and finances',
+        subgroup_name: 'Possession and ownership',
+      },
+      {
+        id: 'PROVIDE_ADDRESS_OF_PREMISES',
+        text:
+          'Provide your probation officer with the full addresses of all premises and storage facilities you have access to. This includes business premises.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Possession, ownership and finances',
+        subgroup_name: 'Possession and ownership',
+      },
+      {
+        id: 'DO_NOT_HAVE_MORE_MONEY',
+        text:
+          'Do not have more than [amount] of cash (in any currency) unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Possession, ownership and finances',
+        subgroup_name: 'Finances',
+      },
+      {
+        id: 'PROVIDE_BANK_DETAILS',
+        text:
+          'Provide your probation officer with details of any bank accounts and credit cards you have access to.\n' +
+          '\n' +
+          'Tell your probation officer details about any new bank accounts or credit cards you get access to. \n' +
+          '\n' +
+          'Your probation officer will review this condition every month and decide if it’s safe to change or remove it.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Possession, ownership and finances',
+        subgroup_name: 'Finances',
+      },
+      {
+        id: 'PROVIDE_THIRD_PARTY_ACCOUNTS',
+        text:
+          'Provide your probation officer with details of any third party bank account (or similar) you have access to or control of.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Possession, ownership and finances',
+        subgroup_name: 'Finances',
+      },
+      {
+        id: 'PROVIDE_MONEY_TRANSFER_DETAILS',
+        text:
+          'Provide details to your probation officer of any money transfers to or from the UK which you send or receive.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Possession, ownership and finances',
+        subgroup_name: 'Finances',
+      },
+      {
+        id: 'DO_NOT_CONTACT_EXTREMISTS',
+        text:
+          'Do not contact anyone who you know has been arrested, charged, or convicted of any extremist-related offence unless it’s approved by your probation officer. This includes:\n' +
+          '\n' +
+          'contact through social media\n' +
+          'asking someone else to contact them for you\n' +
+          'leaving a message for them to find',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Extremism',
+        subgroup_name: null,
+      },
+      {
+        id: 'DO_NOT_GO_TO_WORSHIP_MEETINGS',
+        text:
+          'Do not go to or organise any meetings or gatherings except for worship unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Extremism',
+        subgroup_name: null,
+      },
+      {
+        id: 'DO_NOT_GIVE_SERMON',
+        text:
+          'Do not give any lecture, talk, or sermon (including acts of worship) unless it’s approved by your probation officer.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Extremism',
+        subgroup_name: null,
+      },
+      {
+        id: 'DO_NOT_PROMOTE_EXTREMISM',
+        text:
+          'Do not discuss or promote the grooming or influencing of an individual or group for extremism or radicalisation.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Extremism',
+        subgroup_name: null,
+      },
+      {
+        id: 'DO_NOT_DEMONSTRATE',
+        text:
+          'Do not organise or contribute to any demonstration, meeting, gathering or website unless it’s approved by your probation officer.\n' +
+          '\n' +
+          'Your probation officer will review this condition every month and decide if it’s safe to change or remove it.',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Extremism',
+        subgroup_name: null,
+      },
+      {
+        id: 'DO_NOT_HAVE_ENCODED_INFORMATION',
+        text:
+          'Do not have any handwritten, printed or electronically-recorded material (unless it’s approved by your probation officer) which:\n' +
+          '\n' +
+          'contains encoded information\n' +
+          'promotes the destruction of hatred for any religious or ethnic group\n' +
+          'celebrates, justifies or promotes acts of violence\n' +
+          'contains information about military or paramilitary technology, weapons, techniques or tactics',
+        user_input: null,
+        active: use2019Conditions,
+        field_position: null,
+        group_name: 'Extremism',
+        subgroup_name: null,
+      },
+    ].filter(condition => condition.active),
 
   multiFields: {
     appointmentDetails: {

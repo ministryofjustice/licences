@@ -1,11 +1,9 @@
 const moment = require('moment')
 const logger = require('../../log.js')
-const { createAdditionalConditionsObject } = require('../utils/licenceFactory')
 const { formatObjectForView } = require('./utils/formatForView')
 const { licenceStages, transitions } = require('./config/licenceStages')
 const recordList = require('./utils/recordList')
 const formValidation = require('./utils/formValidation')
-const { additionalConditions } = require('./config/conditionsConfig')
 
 const {
   getIn,
@@ -74,12 +72,10 @@ module.exports = function createLicenceService(licenceClient) {
     return licenceClient.createLicence(bookingId, data, licenceStages[stage], 1, varyVersion)
   }
 
-  async function updateLicenceConditions(bookingId, existingLicence, additional = {}, bespoke = [], postRelease) {
+  async function updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease) {
     try {
       const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])
-      const conditionsObject = await getConditionsObject(additional, bespoke)
-
-      const licenceConditions = { ...existingLicenceConditions, ...conditionsObject }
+      const licenceConditions = { ...existingLicenceConditions, ...newConditionsObject }
 
       if (equals(existingLicenceConditions, licenceConditions)) {
         return
@@ -92,18 +88,6 @@ module.exports = function createLicenceService(licenceClient) {
       logger.error('Error during updateAdditionalConditions', error.stack)
       throw error
     }
-  }
-
-  async function getConditionsObject(additional, bespoke) {
-    if (isEmpty(additional)) {
-      return { additional: {}, bespoke }
-    }
-
-    const conditionIds = additional.additionalConditions
-    const selectedConditionsConfig = additionalConditions.filter(condition => conditionIds.includes(condition.id))
-    const additionalConditionsObject = createAdditionalConditionsObject(selectedConditionsConfig, additional)
-
-    return { additional: { ...additionalConditionsObject }, bespoke }
   }
 
   async function deleteLicenceCondition(bookingId, existingLicence, conditionId) {
