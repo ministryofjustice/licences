@@ -397,7 +397,7 @@ module.exports = {
       {
         id: 'DO_NOT_CONTACT_PRISONERS',
         text:
-          'Do not contact anyone in prison or custody unless it’s approved by your probation officer first. This includes:\ncontact through social media\nasking someone else to contact them for you\nleaving a message for them to find',
+          'Do not contact anyone in prison or custody unless it’s approved by your probation officer first. This includes:<ul><li>contact through social media</li><li>asking someone else to contact them for you</li><li>leaving a message for them to find</li>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -407,7 +407,7 @@ module.exports = {
       {
         id: 'DO_NOT_MEET',
         text:
-          'Do not have contact or meet with [anyone associated (now or in the past) with] [name / specific group or organisation] unless it’s approved by your probation officer.\n',
+          'Do not have contact or meet with [anyone associated (now or in the past) with] [name / specific group or organisation] unless it’s approved by your probation officer.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -417,7 +417,7 @@ module.exports = {
       {
         id: 'DO_NOT_CONTACT_SEX_OFFENDER',
         text:
-          'Do not have any contact with a known sex offender unless it’s approved by your probation officer.\nThis does not apply when you attend a treatment programme or in your approved address to people living there.',
+          'Do not have any contact with a known sex offender unless it’s approved by your probation officer.<br /><br />This does not apply when you attend a treatment programme or in your approved address to people living there.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -427,15 +427,7 @@ module.exports = {
       {
         id: 'TELL_PROBATION_ABOUT_RELAT',
         text:
-          'Tell your probation officer about any:\n' +
-          '\n' +
-          'personal relationships with [women / men / anyone]\n' +
-          'personal relationships or friendships when the person lives with children under 18\n' +
-          'changes to those relationships - for example pregnancy or the end of the relationship\n' +
-          '\n' +
-          'This includes people you knew before you were in prison.\n' +
-          '\n' +
-          'Your probation officer will explain what types of relationships you need to tell them about.',
+          'Tell your probation officer about any:<ul><li>personal relationships with [women / men / anyone]</li><li>personal relationships or friendships when the person lives with children under 18</li><li>changes to those relationships - for example pregnancy or the end of the relationship</li></ul>This includes people you knew before you were in prison.<br /><br />Your probation officer will explain what types of relationships you need to tell them about.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -455,9 +447,7 @@ module.exports = {
       {
         id: 'NO_UNSUPERVISED_CONTACT',
         text:
-          'Do not have unsupervised contact with [any child under  / any female child under  / any male child under  / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer [and/or social services department name].\n' +
-          '\n' +
-          '(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
+          'Do not have unsupervised contact with [any child under  / any female child under  / any male child under  / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer [and/or social services department name].<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -506,9 +496,7 @@ module.exports = {
       {
         id: 'GIVE_URINE_SAMPLE',
         text:
-          'Give a [ORAL FLUID/URINE] sample to test you for specific drugs at the place your probation officer tells you to.\n' +
-          '\n' +
-          'Do not do anything to affect the drug testing process.',
+          'Give a [ORAL FLUID/URINE] sample to test you for specific drugs at the place your probation officer tells you to.<br /><br />Do not do anything to affect the drug testing process.',
         user_input: 'courseOrCentre',
         active: use2019Conditions,
         field_position: null,
@@ -549,10 +537,7 @@ module.exports = {
       {
         id: 'STAY_AT_ADDRESS',
         text:
-          'Stay at [address] between [time] and [time] every day unless your probation officer tells you not to. \n' +
-          'Follow instructions your probation officer gives you so they know where you are.\n' +
-          '\n' +
-          'Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.',
+          'Stay at [address] between [time] and [time] every day unless your probation officer tells you not to.<br /><br />Follow instructions your probation officer gives you so they know where you are.<br /><br />Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -562,9 +547,7 @@ module.exports = {
       {
         id: 'REPORT_TO_STAFF_AT',
         text:
-          'Report to staff at [location] at [time and [day] unless your probation officer tells you not to. \n' +
-          '\n' +
-          'Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.\n',
+          'Report to staff at [location] at [time and [day] unless your probation officer tells you not to.<br /><br />Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.\n',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -593,10 +576,7 @@ module.exports = {
       {
         id: 'TELL_PROBATION_PASSPORT',
         text:
-          'Tell your probation officer:\n' +
-          '\n' +
-          'full details of any [passport / driving licence / birth certificate] you own\n' +
-          'if you apply for a new [passport / driving licence / birth certificate] ',
+          'Tell your probation officer:<ul><li>full details of any [passport / driving licence / birth certificate] you own</li><li>if you apply for a new [passport / driving licence / birth certificate]</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -674,19 +654,7 @@ module.exports = {
       {
         id: 'HAVE_ELECTRONIC_TAG',
         text:
-          'You must:\n' +
-          '\n' +
-          'allow an electronic tag to be installed on you \n' +
-          '\n' +
-          'allow access to your property to install and check any tagging equipment \n' +
-          '\n' +
-          'not damage or interfere with your electronic tag\n' +
-          '\n' +
-          'make sure the tag is charged as instructed by your probation officer  \n' +
-          '\n' +
-          'report it immediately if the tag or equipment are not working - your probation officer will tell you who to contact\n' +
-          '\n' +
-          'allow access to your property to remove the electronic tag and any tagging equipment\n',
+          'You must:<ul><li>allow an electronic tag to be installed on you</li><li>allow access to your property to install and check any tagging equipment</li><li>not damage or interfere with your electronic tag</li><li>make sure the tag is charged as instructed by your probation officer</li><li>report it immediately if the tag or equipment are not working - your probation officer will tell you who to contact</li><li>allow access to your property to remove the electronic tag and any tagging equipment',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -705,7 +673,7 @@ module.exports = {
       {
         id: 'YOU_WILL_BE_SUBJECT_TO',
         text:
-          'You will be subject to trail monitoring. Your electronic tag will monitor you everywhere you go. You must follow all instructions from your probation officer.\n',
+          'You will be subject to trail monitoring. Your electronic tag will monitor you everywhere you go. You must follow all instructions from your probation officer.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -715,9 +683,7 @@ module.exports = {
       {
         id: 'GO_FOR_POLYGRAPH',
         text:
-          'Go for polygraph testing when your probation officer tells you to. \n' +
-          '\n' +
-          'Follow all instructions given by the person carrying out the polygraph testing.',
+          'Go for polygraph testing when your probation officer tells you to.<br /><br />Follow all instructions given by the person carrying out the polygraph testing.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -727,9 +693,7 @@ module.exports = {
       {
         id: 'DO_NOT_HAVE_MORE_THAN_ONE_PHONE',
         text:
-          'Do not have more than one mobile phone or SIM card unless it’s approved by your probation officer. \n' +
-          '\n' +
-          'Provide your probation officer with details of your mobile phone and SIM card.',
+          'Do not have more than one mobile phone or SIM card unless it’s approved by your probation officer.<br /><br />Provide your probation officer with details of your mobile phone and SIM card.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -748,16 +712,7 @@ module.exports = {
       {
         id: 'DO_NOT_DELETE_HISTORY',
         text:
-          'Do not:\n' +
-          '\n' +
-          'delete the user history on your mobile phone or device with internet \n' +
-          'use any software or settings that stop your internet use being recorded\n' +
-          '\n' +
-          'Do allow the police or your probation officer to inspect your mobile phone or device with internet. They may:\n' +
-          '\n' +
-          'take your device to inspect it\n' +
-          'install monitoring software\n' +
-          'search where you live or your vehicle(s) for devices you have not told them about',
+          'Do not:<ul><li>delete the user history on your mobile phone or device with internet</li><li>use any software or settings that stop your internet use being recorded</li></ul>Do allow the police or your probation officer to inspect your mobile phone or device with internet. They may:<ul><li>take your device to inspect it</li><li>install monitoring software</li><li>search where you live or your vehicle(s) for devices you have not told them about</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -767,11 +722,7 @@ module.exports = {
       {
         id: 'GET_PERMISSION_FOR_SOFTWARE',
         text:
-          'Get permission from your probation officer to buy, download, or use any software that:\n' +
-          '\n' +
-          'encrypts information\n' +
-          'deletes information\n' +
-          'cleans your files or drives',
+          'Get permission from your probation officer to buy, download, or use any software that:<ul><li>encrypts information</li><li>deletes information</li><li>cleans your files or drives</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -838,11 +789,7 @@ module.exports = {
       {
         id: 'PROVIDE_BANK_DETAILS',
         text:
-          'Provide your probation officer with details of any bank accounts and credit cards you have access to.\n' +
-          '\n' +
-          'Tell your probation officer details about any new bank accounts or credit cards you get access to. \n' +
-          '\n' +
-          'Your probation officer will review this condition every month and decide if it’s safe to change or remove it.',
+          'Provide your probation officer with details of any bank accounts and credit cards you have access to.<br /><br />Tell your probation officer details about any new bank accounts or credit cards you get access to.<br /><br />Your probation officer will review this condition every month and decide if it’s safe to change or remove it.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -872,11 +819,7 @@ module.exports = {
       {
         id: 'DO_NOT_CONTACT_EXTREMISTS',
         text:
-          'Do not contact anyone who you know has been arrested, charged, or convicted of any extremist-related offence unless it’s approved by your probation officer. This includes:\n' +
-          '\n' +
-          'contact through social media\n' +
-          'asking someone else to contact them for you\n' +
-          'leaving a message for them to find',
+          'Do not contact anyone who you know has been arrested, charged, or convicted of any extremist-related offence unless it’s approved by your probation officer. This includes:<ul><li>contact through social media</li><li>asking someone else to contact them for you</li><li>leaving a message for them to find</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -916,9 +859,7 @@ module.exports = {
       {
         id: 'DO_NOT_DEMONSTRATE',
         text:
-          'Do not organise or contribute to any demonstration, meeting, gathering or website unless it’s approved by your probation officer.\n' +
-          '\n' +
-          'Your probation officer will review this condition every month and decide if it’s safe to change or remove it.',
+          'Do not organise or contribute to any demonstration, meeting, gathering or website unless it’s approved by your probation officer.<br /><br />Your probation officer will review this condition every month and decide if it’s safe to change or remove it.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -928,12 +869,7 @@ module.exports = {
       {
         id: 'DO_NOT_HAVE_ENCODED_INFORMATION',
         text:
-          'Do not have any handwritten, printed or electronically-recorded material (unless it’s approved by your probation officer) which:\n' +
-          '\n' +
-          'contains encoded information\n' +
-          'promotes the destruction of hatred for any religious or ethnic group\n' +
-          'celebrates, justifies or promotes acts of violence\n' +
-          'contains information about military or paramilitary technology, weapons, techniques or tactics',
+          'Do not have any handwritten, printed or electronically-recorded material (unless it’s approved by your probation officer) which:<ul><li>contains encoded information</li><li>promotes the destruction of hatred for any religious or ethnic group</li><li>celebrates, justifies or promotes acts of violence</li><li>contains information about military or paramilitary technology, weapons, techniques or tactics</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,

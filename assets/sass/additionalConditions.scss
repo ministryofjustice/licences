@@ -1,66 +1,76 @@
 .conditionSelector {
-    border: solid $grey-1 2px;
-    padding: 10px;
+  border: solid $grey-1 2px;
+  padding: 10px;
+  label {
+    ul {
+      list-style-type: disc;
+      padding-left: 40px;
+      padding-top: 5px;
+    }
+    ul:not(:last-of-type) {
+      padding-bottom: 20px;
+    }
+  }
 }
 
 .conditionForm {
 
-    .multiple-choice [type=radio] + label::before, .multiple-choice [type=checkbox] + label::before {
-        background-color: white;
+  .multiple-choice [type=radio] + label::before, .multiple-choice [type=checkbox] + label::before {
+    background-color: white;
+  }
+
+  label {
+    font-size: medium;
+  }
+
+  .multiple-choice label {
+    padding: 10px 10px 9px 5px;
+  }
+
+  .multiple-choice {
+    margin-right: 0px;
+    margin-bottom: 10px;
+  }
+
+  .inlineFormItem input {
+    width: 80px;
+    margin-left: 10px;
+
+  }
+
+  .lineMarginTop {
+    margin-top: 25px;
+  }
+
+  .form-group {
+    padding: 10px;
+    margin: 0;
+  }
+
+  .conditionForm {
+    background-color: $light-blue-25;
+    min-height: 100%;
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+
+    div {
+      flex-grow: 1;
     }
+  }
 
-    label {
-        font-size: medium;
-    }
+  .inlineText {
+    float: left;
+    padding: 30px 7px 0 7px;
+  }
 
-    .multiple-choice label {
-        padding: 10px 10px 9px 5px;
-    }
-
-    .multiple-choice {
-        margin-right: 0px;
-        margin-bottom: 10px;
-    }
-
-    .inlineFormItem input {
-        width: 80px;
-        margin-left: 10px;
-
-    }
-
-    .lineMarginTop {
-        margin-top: 25px;
-    }
-
+  .form-date {
     .form-group {
-        padding: 10px;
-        margin: 0;
+      padding: 0;
+      margin-right: 20px;
+      margin-bottom: 0;
     }
-
-    .conditionForm {
-        background-color: $light-blue-25;
-        min-height: 100%;
-        margin-left: 15px;
-        display: flex;
-        align-items: center;
-
-        div {
-            flex-grow: 1;
-        }
-    }
-
-    .inlineText {
-        float: left;
-        padding: 30px 7px 0 7px;
-    }
-
-    .form-date {
-        .form-group {
-            padding: 0;
-            margin-right: 20px;
-            margin-bottom: 0;
-        }
-    }
+  }
 }
 
 .notice-container {
