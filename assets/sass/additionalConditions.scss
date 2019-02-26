@@ -7,9 +7,20 @@
       padding-left: 40px;
       padding-top: 5px;
     }
-    ul:not(:last-of-type) {
+    ul:not(:last-child) {
       padding-bottom: 20px;
     }
+  }
+}
+
+.conditionSummary {
+  ul {
+    list-style-type: disc;
+    padding-left: 40px;
+    padding-top: 5px;
+  }
+  ul:not(:last-child) {
+    padding-bottom: 20px;
   }
 }
 

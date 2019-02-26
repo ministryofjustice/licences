@@ -311,6 +311,29 @@ module.exports = {
           ],
         },
       },
+      // 2019
+      {
+        DO_NOT_MEET: {
+          contains: [
+            {
+              do_not_meet_name: {
+                validationMessage: 'Enter name',
+              },
+            },
+          ],
+        },
+      },
+      {
+        TELL_PROBATION_ABOUT_RELATIONSHIP: {
+          contains: [
+            {
+              tell_probation_about_relationship_gender: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

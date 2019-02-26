@@ -106,4 +106,15 @@ module.exports = joi.object({
     attendSampleDetailsName: joi.string().required(),
     attendSampleDetailsAddress: joi.string().required(),
   }),
+
+  // 2019
+  DO_NOT_CONTACT_PRISONERS: joi.object({}),
+  DO_NOT_MEET: joi.object({
+    do_not_meet_associated: joi.string().optional(),
+    do_not_meet_name: joi.string().required(),
+  }),
+  DO_NOT_CONTACT_SEX_OFFENDER: joi.object({}),
+  TELL_PROBATION_ABOUT_RELATIONSHIP: joi.object({
+    tell_probation_about_relationship_gender: joi.string().required(),
+  }),
 })

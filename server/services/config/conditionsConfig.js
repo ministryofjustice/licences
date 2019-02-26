@@ -408,9 +408,12 @@ module.exports = {
         id: 'DO_NOT_MEET',
         text:
           'Do not have contact or meet with [anyone associated (now or in the past) with] [name / specific group or organisation] unless it’s approved by your probation officer.',
-        user_input: null,
+        user_input: 'do_not_meet',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_meet_associated: 0,
+          do_not_meet_name: 1,
+        },
         group_name: 'People, contact and relationships',
         subgroup_name: 'Person or group',
       },
@@ -425,12 +428,14 @@ module.exports = {
         subgroup_name: 'Person or group',
       },
       {
-        id: 'TELL_PROBATION_ABOUT_RELAT',
+        id: 'TELL_PROBATION_ABOUT_RELATIONSHIP',
         text:
           'Tell your probation officer about any:<ul><li>personal relationships with [women / men / anyone]</li><li>personal relationships or friendships when the person lives with children under 18</li><li>changes to those relationships - for example pregnancy or the end of the relationship</li></ul>This includes people you knew before you were in prison.<br /><br />Your probation officer will explain what types of relationships you need to tell them about.',
-        user_input: null,
+        user_input: 'tell_probation_about_relationship',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          tell_probation_about_relationship_gender: 0,
+        },
         group_name: 'People, contact and relationships',
         subgroup_name: 'Person or group',
       },
