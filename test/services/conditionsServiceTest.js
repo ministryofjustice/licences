@@ -1,5 +1,6 @@
 const createConditionsService = require('../../server/services/conditionsService')
 const { standardConditions } = require('../../server/services/config/conditionsConfig')
+const { getAdditionalConditionsConfig } = require('../../server/services/config/conditionsConfig')
 const {
   additionalConditionsObject,
   additionalConditionsObjectNoResideSelected,
@@ -594,6 +595,142 @@ describe('conditionsService', () => {
         }
 
         expect(output).to.eql(expectedOutput)
+      })
+    })
+
+    describe('NO_UNSUPERVISED_CONTACT', () => {
+      const service2019 = createConditionsService({ use2019Conditions: true })
+
+      it('should do nothing with last two inputs if social service dept !== yes', () => {
+        const rawLicence = {
+          licenceConditions: {
+            additional: {
+              NO_UNSUPERVISED_CONTACT: {
+                do_not_unsupervised_contact: 'women',
+                do_not_unsupervised_social_services_dept: 'No',
+                do_not_unsupervised_social_services_dept_name: '',
+              },
+            },
+            bespoke: [],
+          },
+        }
+        const selectedConditions = [
+          getAdditionalConditionsConfig(true).find(cond => cond.id === 'NO_UNSUPERVISED_CONTACT'),
+        ]
+        const errors = {}
+
+        expect(
+          service2019.populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errors).licenceConditions[0]
+            .content
+        ).to.eql([
+          {
+            text: 'Do not have unsupervised contact with ',
+          },
+          {
+            variable: 'women',
+          },
+          {
+            text: ' unless it’s approved by your probation officer ',
+          },
+          {
+            variable: null,
+          },
+          {
+            text:
+              '.<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
+          },
+          {
+            variable: undefined,
+          },
+        ])
+      })
+
+      it('should combine last two variables if dept === yes', () => {
+        const rawLicence = {
+          licenceConditions: {
+            additional: {
+              NO_UNSUPERVISED_CONTACT: {
+                do_not_unsupervised_contact: 'women',
+                do_not_unsupervised_social_services_dept: 'yes',
+                do_not_unsupervised_social_services_dept_name: 'some department name',
+              },
+            },
+            bespoke: [],
+          },
+        }
+        const selectedConditions = [
+          getAdditionalConditionsConfig(true).find(cond => cond.id === 'NO_UNSUPERVISED_CONTACT'),
+        ]
+        const errors = {}
+
+        expect(
+          service2019.populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errors).licenceConditions[0]
+            .content
+        ).to.eql([
+          {
+            text: 'Do not have unsupervised contact with ',
+          },
+          {
+            variable: 'women',
+          },
+          {
+            text: ' unless it’s approved by your probation officer ',
+          },
+          {
+            variable: 'and/or some department name',
+          },
+          {
+            text:
+              '.<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
+          },
+          {
+            variable: undefined,
+          },
+        ])
+      })
+
+      it('should incorporate errors', () => {
+        const rawLicence = {
+          licenceConditions: {
+            additional: {
+              NO_UNSUPERVISED_CONTACT: {
+                do_not_unsupervised_contact: 'women',
+                do_not_unsupervised_social_services_dept: 'yes',
+                do_not_unsupervised_social_services_dept_name: '',
+              },
+            },
+            bespoke: [],
+          },
+        }
+        const selectedConditions = [
+          getAdditionalConditionsConfig(true).find(cond => cond.id === 'NO_UNSUPERVISED_CONTACT'),
+        ]
+        const errors = { NO_UNSUPERVISED_CONTACT: { do_not_unsupervised_social_services_dept_name: 'MASSIVE ERROR' } }
+
+        expect(
+          service2019.populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errors).licenceConditions[0]
+            .content
+        ).to.eql([
+          {
+            text: 'Do not have unsupervised contact with ',
+          },
+          {
+            variable: 'women',
+          },
+          {
+            text: ' unless it’s approved by your probation officer ',
+          },
+          {
+            error: '[MASSIVE ERROR]',
+          },
+          {
+            text:
+              '.<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
+          },
+          {
+            variable: undefined,
+          },
+        ])
       })
     })
   })

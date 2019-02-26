@@ -1,0 +1,24 @@
+div
+  div.multiple-choice
+    input(id='do_not_live_child' type='radio' name='do_not_live' value='any child under' checked=condition.user_submission && condition.user_submission.do_not_live === 'any child under')
+    label(for='do_not_live_child') any child under
+
+  div.multiple-choice
+    input(id='do_not_live_female_child' type='radio' name='do_not_live' value='any female child under' checked=condition.user_submission && condition.user_submission.do_not_live === 'any female child under')
+    label(for='do_not_live_female_child') any female child under
+
+  div.multiple-choice
+    input(id='do_not_live_male_child' type='radio' name='do_not_live' value='any male child under' checked=condition.user_submission && condition.user_submission.do_not_live === 'any male child under')
+    label(for='do_not_live_male_child') any male child under
+
+  div.multiple-choice
+    input(id='do_not_live_vulnerable_adult' type='radio' name='do_not_live' value='any vulnerable adult' checked=condition.user_submission && condition.user_submission.do_not_live === 'any vulnerable adult')
+    label(for='do_not_live_vulnerable_adult') any vulnerable adult
+
+  div.multiple-choice
+    input(id='do_not_live_male_vulnerable_adult' type='radio' name='do_not_live' value='any male vulnerable adult' checked=condition.user_submission && condition.user_submission.do_not_live === 'any male vulnerable adult')
+    label(for='do_not_live_male_vulnerable_adult') any male vulnerable adult
+
+  div.multiple-choice
+    input(id='do_not_live_female_vulnerable_adult' type='radio' name='do_not_live' value='any female vulnerable adult' checked=condition.user_submission && condition.user_submission.do_not_live === 'any female vulnerable adult')
+    label(for='do_not_live_female_vulnerable_adult') any female vulnerable adult

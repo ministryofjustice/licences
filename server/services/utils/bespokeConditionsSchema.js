@@ -117,4 +117,22 @@ module.exports = joi.object({
   TELL_PROBATION_ABOUT_RELATIONSHIP: joi.object({
     tell_probation_about_relationship_gender: joi.string().required(),
   }),
+  DO_NOT_LIVE_OR_STAY: joi.object({
+    do_not_live: joi.string().required(),
+  }),
+  NO_UNSUPERVISED_CONTACT: joi.object({
+    do_not_unsupervised_contact: joi.string().required(),
+    do_not_unsupervised_social_services_dept: joi.string().optional(),
+    do_not_unsupervised_social_services_dept_name: joi.when('do_not_unsupervised_social_services_dept', {
+      is: 'yes',
+      then: joi.string().required(),
+      otherwise: joi.any().optional(),
+    }),
+  }),
+  DO_NOT_STAY_IN_SIGHT_OF: joi.object({
+    do_not_in_sight_of_type: joi.string().required(),
+  }),
+  DO_NOT_TAKE_PART_IN_ACTIVITY: joi.object({
+    do_not_work_involve: joi.string().required(),
+  }),
 })
