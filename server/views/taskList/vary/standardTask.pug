@@ -4,7 +4,8 @@ mixin standardTask(taskObject)
       if taskObject.title
         h2.heading-medium #{taskObject.title}
       if taskObject.label
-        +label(taskObject.label)
+        div(class=taskObject.title ? undefined : 'headerMargin')
+          +label(taskObject.label)
 
     if taskObject.action
       div.pure-u-1.pure-u-md-1-4.center.buttonContainer
