@@ -521,9 +521,11 @@ module.exports = {
         id: 'GIVE_URINE_SAMPLE',
         text:
           'Give a [ORAL FLUID/URINE] sample to test you for specific drugs at the place your probation officer tells you to.<br /><br />Do not do anything to affect the drug testing process.',
-        user_input: null,
+        user_input: 'give_sample',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          give_sample: 0,
+        },
         group_name: 'Behaviour, health and drugs',
         subgroup_name: null,
       },

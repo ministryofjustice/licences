@@ -903,6 +903,22 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              GIVE_URINE_SAMPLE: {
+                give_sample: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { GIVE_URINE_SAMPLE: {} },
+            outcome: {
+              GIVE_URINE_SAMPLE: {
+                give_sample: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
@@ -917,6 +933,7 @@ describe('validation', () => {
               NOTIFYPASSPORT: {},
               DO_NOT_CONTACT_PRISONERS: {},
               DO_NOT_CONTACT_SEX_OFFENDER: {},
+              GO_WHERE_PROBATION_OFFICER: {},
             },
             outcome: {},
           },

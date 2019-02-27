@@ -147,4 +147,8 @@ module.exports = joi.object({
   FOLLOW_REHABILITATION_INSTRUCTIONS: joi.object({
     follow_rehabilitation_instructions: joi.string().required(),
   }),
+  GIVE_URINE_SAMPLE: joi.object({
+    give_sample: joi.string().required(),
+  }),
+  GO_WHERE_PROBATION_OFFICER: joi.object({}),
 })

@@ -410,6 +410,17 @@ module.exports = {
           ],
         },
       },
+      {
+        GIVE_URINE_SAMPLE: {
+          contains: [
+            {
+              give_sample: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

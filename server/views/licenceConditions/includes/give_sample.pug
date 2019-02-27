@@ -1,0 +1,8 @@
+div.pure-g
+  div.pure-u-1.multiple-choice
+    input(id='give_sample_oral' type='radio' name='give_sample' value='oral fluid' checked=condition.user_submission && condition.user_submission.give_sample === 'oral fluid')
+    label(for='give_sample_oral') oral fluid
+
+  div.pure-u-1.multiple-choice
+    input(id='give_sample_urine' type='radio' name='give_sample' value='urine' checked=condition.user_submission && condition.user_submission.give_sample === 'urine')
+    label(for='give_sample_urine') urine
