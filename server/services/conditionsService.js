@@ -138,12 +138,15 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     const conditionName = condition.user_input
     const conditionText = condition.text
     const fieldPositionObject = condition.field_position
+    const { userContent, errors } = condition.manipulateInput
+      ? condition.manipulateInput(userInput, userErrors)
+      : { userContent: userInput, errors: userErrors }
 
     if (multiFields[conditionName]) {
-      return injectMultiFieldsAsObject(userInput, conditionText, userErrors, multiFields[conditionName])
+      return injectMultiFieldsAsObject(userContent, conditionText, errors, multiFields[conditionName])
     }
 
-    return injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject, userErrors)
+    return injectUserInputStandardAsObject(userContent, conditionText, fieldPositionObject, errors)
   }
 
   function injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject, userErrors) {
@@ -197,12 +200,15 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     const conditionText = condition.text
     const fieldPositionObject = condition.field_position
     const placeHolders = getPlaceholdersFrom(conditionText)
+    const { userContent } = condition.manipulateInput
+      ? condition.manipulateInput(userInput)
+      : { userContent: userInput }
 
     if (multiFields[conditionName]) {
-      return injectMultiFieldsAsString(userInput, conditionText, placeHolders, multiFields[conditionName])
+      return injectMultiFieldsAsString(userContent, conditionText, placeHolders, multiFields[conditionName])
     }
 
-    return injectUserInputStandardAsString(userInput, conditionText, placeHolders, fieldPositionObject)
+    return injectUserInputStandardAsString(userContent, conditionText, placeHolders, fieldPositionObject)
   }
 
   function injectUserInputStandardAsString(userInput, conditionText, placeHolders, fieldPositionObject) {

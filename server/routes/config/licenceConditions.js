@@ -334,6 +334,55 @@ module.exports = {
           ],
         },
       },
+      {
+        DO_NOT_LIVE_OR_STAY: {
+          contains: [
+            {
+              do_not_live: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
+      {
+        NO_UNSUPERVISED_CONTACT: {
+          contains: [
+            {
+              do_not_unsupervised_contact: {
+                validationMessage: 'Select an option',
+              },
+            },
+            {
+              do_not_unsupervised_social_services_dept_name: {
+                validationMessage: 'Enter social services name',
+              },
+            },
+          ],
+        },
+      },
+      {
+        DO_NOT_STAY_IN_SIGHT_OF: {
+          contains: [
+            {
+              do_not_in_sight_of_type: {
+                validationMessage: 'Enter a type of location',
+              },
+            },
+          ],
+        },
+      },
+      {
+        DO_NOT_TAKE_PART_IN_ACTIVITY: {
+          contains: [
+            {
+              do_not_work_involve: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

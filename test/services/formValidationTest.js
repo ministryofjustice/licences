@@ -775,6 +775,86 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              DO_NOT_LIVE_OR_STAY: {
+                do_not_live: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_LIVE_OR_STAY: {} },
+            outcome: {
+              DO_NOT_LIVE_OR_STAY: {
+                do_not_live: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
+              NO_UNSUPERVISED_CONTACT: {
+                do_not_unsupervised_contact: 'a',
+                do_not_unsupervised_social_services_dept: 'a',
+                do_not_unsupervised_social_services_dept_name: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { NO_UNSUPERVISED_CONTACT: {} },
+            outcome: {
+              NO_UNSUPERVISED_CONTACT: {
+                do_not_unsupervised_contact: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
+              NO_UNSUPERVISED_CONTACT: {
+                do_not_unsupervised_contact: 'a',
+                do_not_unsupervised_social_services_dept: 'yes',
+                do_not_unsupervised_social_services_dept_name: '',
+              },
+            },
+            outcome: {
+              NO_UNSUPERVISED_CONTACT: {
+                do_not_unsupervised_social_services_dept_name: 'Enter social services name',
+              },
+            },
+          },
+          {
+            formResponse: {
+              DO_NOT_STAY_IN_SIGHT_OF: {
+                do_not_in_sight_of_type: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_STAY_IN_SIGHT_OF: {} },
+            outcome: {
+              DO_NOT_STAY_IN_SIGHT_OF: {
+                do_not_in_sight_of_type: 'Enter a type of location',
+              },
+            },
+          },
+          {
+            formResponse: {
+              DO_NOT_TAKE_PART_IN_ACTIVITY: {
+                do_not_work_involve: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_TAKE_PART_IN_ACTIVITY: {} },
+            outcome: {
+              DO_NOT_TAKE_PART_IN_ACTIVITY: {
+                do_not_work_involve: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},

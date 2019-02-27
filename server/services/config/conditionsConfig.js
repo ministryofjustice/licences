@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+const { unsupervisedContactInput } = require('../utils/bespokeAdditionalConditionMethods')
 
 module.exports = {
   standardConditions: [
@@ -442,29 +443,38 @@ module.exports = {
       {
         id: 'DO_NOT_LIVE_OR_STAY',
         text:
-          'Do not live or stay (even for one night) in the same place as [any child under  / any female child under  / any male child under  / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer.',
-        user_input: null,
+          'Do not live or stay (even for one night) in the same place as [any child under / any female child under / any male child under / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer.',
+        user_input: 'do_not_live_or_stay',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_live: 0,
+        },
         group_name: 'People, contact and relationships',
         subgroup_name: 'Children and vulnerable adults',
       },
       {
         id: 'NO_UNSUPERVISED_CONTACT',
         text:
-          'Do not have unsupervised contact with [any child under  / any female child under  / any male child under  / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer [and/or social services department name].<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
-        user_input: null,
+          'Do not have unsupervised contact with [any child under / any female child under / any male child under / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer [and/or social services department name].<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
+        user_input: 'do_not_have_unsupervised_contact',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_unsupervised_contact: 0,
+          do_not_unsupervised_social_services_dept: 1,
+          do_not_unsupervised_social_services_dept_name: 2,
+        },
         group_name: 'People, contact and relationships',
         subgroup_name: 'Children and vulnerable adults',
+        manipulateInput: unsupervisedContactInput,
       },
       {
         id: 'DO_NOT_STAY_IN_SIGHT_OF',
         text: 'Do not enter or stay in sight of any [type of location] unless it’s approved by your probation officer.',
-        user_input: null,
+        user_input: 'do_not_in_sight_of',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_in_sight_of_type: 0,
+        },
         group_name: 'People, contact and relationships',
         subgroup_name: 'Children and vulnerable adults',
       },
@@ -472,9 +482,11 @@ module.exports = {
         id: 'DO_NOT_TAKE_PART_IN_ACTIVITY',
         text:
           'Do not take part in any work or activity (paid or unpaid) which involves [any child under  / any female child under  / any male child under  / any vulnerable adult / any male vulnerable adult / any female vulnerable adult] unless it’s approved by your probation officer.',
-        user_input: null,
+        user_input: 'do_not_work_or_activity',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_work_involve: 0,
+        },
         group_name: 'People, contact and relationships',
         subgroup_name: 'Children and vulnerable adults',
       },
