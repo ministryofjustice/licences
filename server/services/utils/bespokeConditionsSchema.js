@@ -154,4 +154,7 @@ module.exports = joi.object({
   GO_TO_APPOINTMENTS: joi.object({
     go_to_appointments_with: joi.string().required(),
   }),
+  ALLOW_VISIT: joi.object({
+    allow_visit_with: joi.string().required(),
+  }),
 })

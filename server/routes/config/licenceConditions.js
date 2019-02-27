@@ -432,6 +432,17 @@ module.exports = {
           ],
         },
       },
+      {
+        ALLOW_VISIT: {
+          contains: [
+            {
+              allow_visit_with: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

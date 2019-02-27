@@ -551,12 +551,14 @@ module.exports = {
         subgroup_name: null,
       },
       {
-        id: 'ALLOW_MENTAL_HEALTH_WORKER',
+        id: 'ALLOW_VISIT',
         text:
           'Allow [a mental health worker / a medical practitioner / a leaving care social worker / children’s services] to visit you at your home.',
-        user_input: 'courseOrCentre',
+        user_input: 'allow_visit',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          allow_visit_with: 0,
+        },
         group_name: 'Behaviour, health and drugs',
         subgroup_name: null,
       },

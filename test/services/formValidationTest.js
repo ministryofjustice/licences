@@ -935,6 +935,22 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              ALLOW_VISIT: {
+                allow_visit_with: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { ALLOW_VISIT: {} },
+            outcome: {
+              ALLOW_VISIT: {
+                allow_visit_with: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
