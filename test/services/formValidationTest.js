@@ -887,6 +887,22 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              FOLLOW_REHABILITATION_INSTRUCTIONS: {
+                follow_rehabilitation_instructions: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { FOLLOW_REHABILITATION_INSTRUCTIONS: {} },
+            outcome: {
+              FOLLOW_REHABILITATION_INSTRUCTIONS: {
+                follow_rehabilitation_instructions: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},

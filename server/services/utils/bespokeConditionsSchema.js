@@ -144,4 +144,7 @@ module.exports = joi.object({
       otherwise: joi.any().optional(),
     }),
   }),
+  FOLLOW_REHABILITATION_INSTRUCTIONS: joi.object({
+    follow_rehabilitation_instructions: joi.string().required(),
+  }),
 })

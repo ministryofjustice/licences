@@ -399,6 +399,17 @@ module.exports = {
           ],
         },
       },
+      {
+        FOLLOW_REHABILITATION_INSTRUCTIONS: {
+          contains: [
+            {
+              follow_rehabilitation_instructions: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

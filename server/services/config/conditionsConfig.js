@@ -509,9 +509,11 @@ module.exports = {
         id: 'FOLLOW_REHABILITATION_INSTRUCTIONS',
         text:
           'Follow all instructions your probation officer gives you as part of your rehabilitation for [alcohol abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour / offending behaviour].',
-        user_input: null,
+        user_input: 'follow_rehabilitation_instructions',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          follow_rehabilitation_instructions: 0,
+        },
         group_name: 'Behaviour, health and drugs',
         subgroup_name: null,
       },
@@ -519,7 +521,7 @@ module.exports = {
         id: 'GIVE_URINE_SAMPLE',
         text:
           'Give a [ORAL FLUID/URINE] sample to test you for specific drugs at the place your probation officer tells you to.<br /><br />Do not do anything to affect the drug testing process.',
-        user_input: 'courseOrCentre',
+        user_input: null,
         active: use2019Conditions,
         field_position: null,
         group_name: 'Behaviour, health and drugs',
@@ -528,7 +530,7 @@ module.exports = {
       {
         id: 'GO_WHERE_PROBATION_OFFICER',
         text: 'Go where your probation officer tells you for help with your drug dependency or misuse.',
-        user_input: 'courseOrCentre',
+        user_input: null,
         active: use2019Conditions,
         field_position: null,
         group_name: 'Behaviour, health and drugs',
