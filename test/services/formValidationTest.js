@@ -855,6 +855,38 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_name: 'a',
+                do_not_contact_victim_social_services_dept: 'a',
+                do_not_contact_victim_social_services_dept_name: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_CONTACT_VICTIM: {} },
+            outcome: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_name: 'Enter a victim name',
+              },
+            },
+          },
+          {
+            formResponse: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_name: 'a',
+                do_not_contact_victim_social_services_dept: 'yes',
+                do_not_contact_victim_social_services_dept_name: '',
+              },
+            },
+            outcome: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_social_services_dept_name: 'Enter social services name',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},

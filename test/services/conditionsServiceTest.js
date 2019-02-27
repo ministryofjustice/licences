@@ -733,6 +733,134 @@ describe('conditionsService', () => {
         ])
       })
     })
+
+    describe('DO_NOT_CONTACT_VICTIM', () => {
+      const service2019 = createConditionsService({ use2019Conditions: true })
+      const selectedConditions = [getAdditionalConditionsConfig(true).find(cond => cond.id === 'DO_NOT_CONTACT_VICTIM')]
+
+      it('should do nothing with last two inputs if social service dept !== yes', () => {
+        const rawLicence = {
+          licenceConditions: {
+            additional: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_name: 'a',
+                do_not_contact_victim_social_services_dept: 'No',
+                do_not_contact_victim_social_services_dept_name: '',
+              },
+            },
+            bespoke: [],
+          },
+        }
+
+        const errors = {}
+
+        expect(
+          service2019.populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errors).licenceConditions[0]
+            .content
+        ).to.eql([
+          {
+            text: 'Do not approach or communicate with ',
+          },
+          {
+            variable: 'a',
+          },
+          {
+            text: ' unless it’s approved by your probation officer ',
+          },
+          {
+            variable: null,
+          },
+          {
+            text: '.',
+          },
+          {
+            variable: undefined,
+          },
+        ])
+      })
+
+      it('should combine last two variables if dept === yes', () => {
+        const rawLicence = {
+          licenceConditions: {
+            additional: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_name: 'a',
+                do_not_contact_victim_social_services_dept: 'yes',
+                do_not_contact_victim_social_services_dept_name: 'some department name',
+              },
+            },
+            bespoke: [],
+          },
+        }
+
+        const errors = {}
+
+        expect(
+          service2019.populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errors).licenceConditions[0]
+            .content
+        ).to.eql([
+          {
+            text: 'Do not approach or communicate with ',
+          },
+          {
+            variable: 'a',
+          },
+          {
+            text: ' unless it’s approved by your probation officer ',
+          },
+          {
+            variable: 'and/or some department name',
+          },
+          {
+            text: '.',
+          },
+          {
+            variable: undefined,
+          },
+        ])
+      })
+
+      it('should incorporate errors', () => {
+        const rawLicence = {
+          licenceConditions: {
+            additional: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_name: 'a',
+                do_not_contact_victim_social_services_dept: 'yes',
+                do_not_contact_victim_social_services_dept_name: '',
+              },
+            },
+            bespoke: [],
+          },
+        }
+
+        const errors = { DO_NOT_CONTACT_VICTIM: { do_not_contact_victim_social_services_dept_name: 'MASSIVE ERROR' } }
+
+        expect(
+          service2019.populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errors).licenceConditions[0]
+            .content
+        ).to.eql([
+          {
+            text: 'Do not approach or communicate with ',
+          },
+          {
+            variable: 'a',
+          },
+          {
+            text: ' unless it’s approved by your probation officer ',
+          },
+          {
+            error: '[MASSIVE ERROR]',
+          },
+          {
+            text: '.',
+          },
+          {
+            variable: undefined,
+          },
+        ])
+      })
+    })
   })
 
   describe('populateAdditionalConditionsAsString', () => {

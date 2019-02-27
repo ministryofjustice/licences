@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-const { unsupervisedContactInput } = require('../utils/bespokeAdditionalConditionMethods')
+const { unsupervisedContactInput, victimContactInput } = require('../utils/bespokeAdditionalConditionMethods')
 
 module.exports = {
   standardConditions: [
@@ -494,17 +494,22 @@ module.exports = {
         id: 'DO_NOT_CONTACT_VICTIM',
         text:
           'Do not approach or communicate with [name of victim and/or family members] unless it’s approved by your probation officer [and/or social services department].',
-        user_input: 'victimDetails',
+        user_input: 'do_not_contact_victim',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_contact_victim_name: 0,
+          do_not_contact_victim_social_services_dept: 1,
+          do_not_contact_victim_social_services_dept_name: 2,
+        },
         group_name: 'People, contact and relationships',
         subgroup_name: 'Victims',
+        manipulateInput: victimContactInput,
       },
       {
         id: 'FOLLOW_REHABILITATION_INSTRUCTIONS',
         text:
           'Follow all instructions your probation officer gives you as part of your rehabilitation for [alcohol abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour / offending behaviour].',
-        user_input: 'courseOrCentre',
+        user_input: null,
         active: use2019Conditions,
         field_position: null,
         group_name: 'Behaviour, health and drugs',

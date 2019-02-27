@@ -135,4 +135,13 @@ module.exports = joi.object({
   DO_NOT_TAKE_PART_IN_ACTIVITY: joi.object({
     do_not_work_involve: joi.string().required(),
   }),
+  DO_NOT_CONTACT_VICTIM: joi.object({
+    do_not_contact_victim_name: joi.string().required(),
+    do_not_contact_victim_social_services_dept: joi.string().optional(),
+    do_not_contact_victim_social_services_dept_name: joi.when('do_not_contact_victim_social_services_dept', {
+      is: 'yes',
+      then: joi.string().required(),
+      otherwise: joi.any().optional(),
+    }),
+  }),
 })

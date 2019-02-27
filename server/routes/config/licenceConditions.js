@@ -383,6 +383,22 @@ module.exports = {
           ],
         },
       },
+      {
+        DO_NOT_CONTACT_VICTIM: {
+          contains: [
+            {
+              do_not_contact_victim_name: {
+                validationMessage: 'Enter a victim name',
+              },
+            },
+            {
+              do_not_contact_victim_social_services_dept_name: {
+                validationMessage: 'Enter social services name',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

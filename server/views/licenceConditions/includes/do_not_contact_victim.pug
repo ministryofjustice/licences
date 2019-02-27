@@ -1,0 +1,14 @@
+div
+  label(for='do_not_contact_victim_name') Names(s) of victim(s) and/or family members
+  textarea(name='do_not_contact_victim_name' id='do_not_contact_victim_name' class='form-control' rows='2' aria-label="Victim's names or family members")
+    if condition.user_submission && condition.user_submission.do_not_contact_victim_name
+      | #{condition.user_submission.do_not_contact_victim_name}
+
+div.pure-g.paddingTop
+  div.pure-u-1.multiple-choice(data-target='do_not_contact_victim_social_services_field')
+    input(id='do_not_contact_victim_social_services_dept' name='do_not_contact_victim_social_services_dept' type='checkbox' value='yes' checked=condition.user_submission && condition.user_submission.do_not_contact_victim_social_services_dept === 'yes' )
+    label(for='do_not_contact_victim_social_services_dept') and/or social services department
+
+  div#do_not_contact_victim_social_services_field.pure-u-1.js-hidden
+    label(for='do_not_contact_victim_social_services_dept_name') Name of social services department
+    input(type='text' name='do_not_contact_victim_social_services_dept_name' id='do_not_contact_victim_social_services_dept_name' class='form-control' value=condition.user_submission && condition.user_submission.do_not_contact_victim_social_services_dept_name aria-label="Name of social services department")
