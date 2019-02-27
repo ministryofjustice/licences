@@ -542,10 +542,10 @@ module.exports = {
         id: 'GO_TO_APPOINTMENTS',
         text:
           'Go to all appointments arranged with  [a mental health worker / a medical practitioner / a leaving care social worker / children’s services].',
-        user_input: 'courseOrCentre',
+        user_input: 'go_to_appointments',
         active: use2019Conditions,
         field_position: {
-          courseOrCentre: '0',
+          go_to_appointments_with: 0,
         },
         group_name: 'Behaviour, health and drugs',
         subgroup_name: null,

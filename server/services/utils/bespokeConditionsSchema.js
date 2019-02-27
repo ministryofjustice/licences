@@ -151,4 +151,7 @@ module.exports = joi.object({
     give_sample: joi.string().required(),
   }),
   GO_WHERE_PROBATION_OFFICER: joi.object({}),
+  GO_TO_APPOINTMENTS: joi.object({
+    go_to_appointments_with: joi.string().required(),
+  }),
 })

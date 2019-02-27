@@ -919,6 +919,22 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              GO_TO_APPOINTMENTS: {
+                go_to_appointments_with: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { GO_TO_APPOINTMENTS: {} },
+            outcome: {
+              GO_TO_APPOINTMENTS: {
+                go_to_appointments_with: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},

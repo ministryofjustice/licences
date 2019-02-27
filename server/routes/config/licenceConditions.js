@@ -421,6 +421,17 @@ module.exports = {
           ],
         },
       },
+      {
+        GO_TO_APPOINTMENTS: {
+          contains: [
+            {
+              go_to_appointments_with: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {
