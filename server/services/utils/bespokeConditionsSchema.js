@@ -167,4 +167,12 @@ module.exports = joi.object({
   POLICE_TAKE_TO: joi.object({
     police_take_to_address: joi.string().required(),
   }),
+  TELL_PROBATION_DOCUMENT: joi.object({
+    tell_probation_document_own: joi.string().required(),
+    tell_probation_document_apply: joi.string().required(),
+  }),
+  GIVE_PASSPORT_TO_PROBATION: joi.any().optional(),
+  TELL_PROBATION_VEHICLE_DETAILS: joi.any().optional(),
+  DO_NOT_TRAVEL_IN: joi.any().optional(),
+  TELL_PROBATION_REUSABLE_CARD: joi.any().optional(),
 })

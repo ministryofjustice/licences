@@ -989,6 +989,24 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              TELL_PROBATION_DOCUMENT: {
+                tell_probation_document_own: 'a',
+                tell_probation_document_apply: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { TELL_PROBATION_DOCUMENT: {} },
+            outcome: {
+              TELL_PROBATION_DOCUMENT: {
+                tell_probation_document_own: 'Select an option',
+                tell_probation_document_apply: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
@@ -1005,6 +1023,10 @@ describe('validation', () => {
               DO_NOT_CONTACT_SEX_OFFENDER: {},
               GO_WHERE_PROBATION_OFFICER: {},
               REPORT_WITHIN_2_DAYS: {},
+              GIVE_PASSPORT_TO_PROBATION: {},
+              TELL_PROBATION_VEHICLE_DETAILS: {},
+              DO_NOT_TRAVEL_IN: {},
+              TELL_PROBATION_REUSABLE_CARD: {},
             },
             outcome: {},
           },

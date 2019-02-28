@@ -610,12 +610,15 @@ module.exports = {
         subgroup_name: null,
       },
       {
-        id: 'TELL_PROBATION_PASSPORT',
+        id: 'TELL_PROBATION_DOCUMENT',
         text:
           'Tell your probation officer:<ul><li>full details of any [passport / driving licence / birth certificate] you own</li><li>if you apply for a new [passport / driving licence / birth certificate]</li></ul>',
-        user_input: null,
+        user_input: 'tell_probation_document',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          tell_probation_document_own: 0,
+          tell_probation_document_apply: 1,
+        },
         group_name: 'Travel and transportation',
         subgroup_name: 'Passports and identification',
       },

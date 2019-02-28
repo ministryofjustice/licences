@@ -480,6 +480,22 @@ module.exports = {
           ],
         },
       },
+      {
+        TELL_PROBATION_DOCUMENT: {
+          contains: [
+            {
+              tell_probation_document_own: {
+                validationMessage: 'Select an option',
+              },
+            },
+            {
+              tell_probation_document_apply: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {
