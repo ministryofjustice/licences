@@ -469,6 +469,17 @@ module.exports = {
           ],
         },
       },
+      {
+        POLICE_TAKE_TO: {
+          contains: [
+            {
+              police_take_to_address: {
+                validationMessage: 'Enter an address',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

@@ -973,6 +973,22 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              POLICE_TAKE_TO: {
+                police_take_to_address: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { POLICE_TAKE_TO: {} },
+            outcome: {
+              POLICE_TAKE_TO: {
+                police_take_to_address: 'Enter an address',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
@@ -988,6 +1004,7 @@ describe('validation', () => {
               DO_NOT_CONTACT_PRISONERS: {},
               DO_NOT_CONTACT_SEX_OFFENDER: {},
               GO_WHERE_PROBATION_OFFICER: {},
+              REPORT_WITHIN_2_DAYS: {},
             },
             outcome: {},
           },

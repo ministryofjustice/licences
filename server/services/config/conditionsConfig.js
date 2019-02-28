@@ -577,6 +577,7 @@ module.exports = {
         group_name: 'Curfew, reporting and escorts',
         subgroup_name: null,
       },
+      // TODO clare to look at this one
       {
         id: 'REPORT_TO_STAFF_AT',
         text:
@@ -600,9 +601,11 @@ module.exports = {
       {
         id: 'POLICE_TAKE_TO',
         text: 'The police will take you to [approved address] on the day you’re released.',
-        user_input: null,
+        user_input: 'police_take_to',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          police_take_to_address: 0,
+        },
         group_name: 'Curfew, reporting and escorts',
         subgroup_name: null,
       },
