@@ -566,12 +566,18 @@ module.exports = {
         id: 'STAY_AT_ADDRESS',
         text:
           'Stay at [address] between [time] and [time] every day unless your probation officer tells you not to.<br /><br />Follow instructions your probation officer gives you so they know where you are.<br /><br />Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.',
-        user_input: null,
+        user_input: 'stay_at_address',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          stay_at_address_name: 0,
+          stay_at_address_from: 1,
+          stay_at_address_to: 2,
+          stay_at_address_frequency: 3,
+        },
         group_name: 'Curfew, reporting and escorts',
         subgroup_name: null,
       },
+      // TODO clare to look at this one
       {
         id: 'REPORT_TO_STAFF_AT',
         text:
@@ -595,9 +601,11 @@ module.exports = {
       {
         id: 'POLICE_TAKE_TO',
         text: 'The police will take you to [approved address] on the day you’re released.',
-        user_input: null,
+        user_input: 'police_take_to',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          police_take_to_address: 0,
+        },
         group_name: 'Curfew, reporting and escorts',
         subgroup_name: null,
       },

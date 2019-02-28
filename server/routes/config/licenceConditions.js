@@ -443,6 +443,43 @@ module.exports = {
           ],
         },
       },
+      {
+        STAY_AT_ADDRESS: {
+          contains: [
+            {
+              stay_at_address_name: {
+                validationMessage: 'Enter an address',
+              },
+            },
+            {
+              stay_at_address_from: {
+                validationMessage: 'Enter a curfew from time',
+              },
+            },
+            {
+              stay_at_address_to: {
+                validationMessage: 'Enter a curfew to time',
+              },
+            },
+            {
+              stay_at_address_frequency: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
+      {
+        POLICE_TAKE_TO: {
+          contains: [
+            {
+              police_take_to_address: {
+                validationMessage: 'Enter an address',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

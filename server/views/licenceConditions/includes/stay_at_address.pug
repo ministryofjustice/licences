@@ -1,0 +1,23 @@
+div.pure-g.paddingBottom
+  div.pure-u-1
+    label(for='stay_at_address_name') Curfew address
+    textarea(name='stay_at_address_name' id='stay_at_address_name' class='form-control' rows='4')
+      if condition.user_submission && condition.user_submission.stay_at_address_name
+        | #{condition.user_submission.stay_at_address_name}
+
+div.pure-g.paddingBottom
+  div.pure-u-1-2.padRight7
+    label(for='stay_at_address_from') Time from
+    input(type='text' name='stay_at_address_from' id='stay_at_address_from' class='form-control' value=condition.user_submission && condition.user_submission.stay_at_address_from aria-label="Time from")
+  div.pure-u-1-2.padLeft7
+    label(for='stay_at_address_to') Time to
+    input(type='text' name='stay_at_address_to' id='stay_at_address_to' class='form-control' value=condition.user_submission && condition.user_submission.stay_at_address_to aria-label="Time to")
+
+div.inline
+  div.multiple-choice
+    input(id='stay_at_address_frequency_weekly' type='radio' name='stay_at_address_frequency' value='week' checked=condition.user_submission && condition.user_submission.stay_at_address_frequency === 'week')
+    label(for='stay_at_address_frequency_weekly') Every week
+
+  div.multiple-choice
+    input(id='stay_at_address_frequency_monthly' type='radio' name='stay_at_address_frequency' value='month' checked=condition.user_submission && condition.user_submission.stay_at_address_frequency === 'month')
+    label(for='stay_at_address_frequency_monthly') Every month

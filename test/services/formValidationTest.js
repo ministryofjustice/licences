@@ -951,6 +951,44 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              STAY_AT_ADDRESS: {
+                stay_at_address_name: 'a',
+                stay_at_address_from: 'a',
+                stay_at_address_to: 'a',
+                stay_at_address_frequency: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { STAY_AT_ADDRESS: {} },
+            outcome: {
+              STAY_AT_ADDRESS: {
+                stay_at_address_name: 'Enter an address',
+                stay_at_address_from: 'Enter a curfew from time',
+                stay_at_address_to: 'Enter a curfew to time',
+                stay_at_address_frequency: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
+              POLICE_TAKE_TO: {
+                police_take_to_address: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { POLICE_TAKE_TO: {} },
+            outcome: {
+              POLICE_TAKE_TO: {
+                police_take_to_address: 'Enter an address',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
@@ -966,6 +1004,7 @@ describe('validation', () => {
               DO_NOT_CONTACT_PRISONERS: {},
               DO_NOT_CONTACT_SEX_OFFENDER: {},
               GO_WHERE_PROBATION_OFFICER: {},
+              REPORT_WITHIN_2_DAYS: {},
             },
             outcome: {},
           },
