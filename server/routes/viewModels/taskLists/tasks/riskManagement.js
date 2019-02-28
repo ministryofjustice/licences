@@ -9,10 +9,11 @@ module.exports = {
       return 'Address unsuitable'
     }
 
+    if (awaitingRiskInformation) {
+      return 'WARNING||Still waiting for information'
+    }
+
     if (riskManagement === 'DONE') {
-      if (awaitingRiskInformation) {
-        return 'WARNING||Still waiting for information'
-      }
       return riskManagementNeeded ? 'Risk management required' : 'No risks'
     }
 
