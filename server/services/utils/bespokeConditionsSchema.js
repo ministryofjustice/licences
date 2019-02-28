@@ -210,4 +210,10 @@ module.exports = joi.object({
   PROVIDE_BANK_DETAILS: joi.any().optional(),
   PROVIDE_THIRD_PARTY_ACCOUNTS: joi.any().optional(),
   PROVIDE_MONEY_TRANSFER_DETAILS: joi.any().optional(),
+  DO_NOT_CONTACT_EXTREMISTS: joi.any().optional(),
+  DO_NOT_GO_TO_WORSHIP_MEETINGS: joi.any().optional(),
+  DO_NOT_GIVE_SERMON: joi.any().optional(),
+  DO_NOT_PROMOTE_EXTREMISM: joi.any().optional(),
+  DO_NOT_DEMONSTRATE: joi.any().optional(),
+  DO_NOT_HAVE_ENCODED_INFORMATION: joi.any().optional(),
 })
