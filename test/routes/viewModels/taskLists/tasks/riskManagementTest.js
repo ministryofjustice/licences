@@ -42,7 +42,7 @@ describe('risk management task', () => {
       expect(
         getLabel({
           decisions: { awaitingRiskInformation: true },
-          tasks: { riskManagement: 'DONE' },
+          tasks: {},
         })
       ).to.equal('WARNING||Still waiting for information')
     })
