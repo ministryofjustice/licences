@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const allowedRoles = require('../authentication/roles')
 const logger = require('../../log')
+const { getIn } = require('../utils/functionalHelpers')
 
 module.exports = nomisClientBuilder => {
   async function getUserProfile(token, refreshToken, username) {
@@ -12,7 +13,7 @@ module.exports = nomisClientBuilder => {
 
     const activeCaseLoads = await nomisClient.getUserCaseLoads()
     const activeCaseLoad = activeCaseLoads.find(cl => cl.currentlyActive)
-    const activeCaseLoadId = activeCaseLoad ? activeCaseLoad.caseLoadId : undefined
+    const activeCaseLoadId = getIn(activeCaseLoad, ['caseLoadId'])
 
     return {
       ...profile,
@@ -61,7 +62,7 @@ module.exports = nomisClientBuilder => {
     const caseLoads = await nomisClient.getUserCaseLoads()
 
     user.activeCaseLoad = caseLoads.find(cl => cl.currentlyActive)
-    user.activeCaseLoadId = user.activeCaseLoad ? user.activeCaseLoad.caseLoadId : undefined
+    user.activeCaseLoadId = getIn(user.activeCaseLoad, ['caseLoadId'])
     return user
   }
 
