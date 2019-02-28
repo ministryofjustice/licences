@@ -135,4 +135,26 @@ module.exports = joi.object({
   DO_NOT_TAKE_PART_IN_ACTIVITY: joi.object({
     do_not_work_involve: joi.string().required(),
   }),
+  DO_NOT_CONTACT_VICTIM: joi.object({
+    do_not_contact_victim_name: joi.string().required(),
+    do_not_contact_victim_social_services_dept: joi.string().optional(),
+    do_not_contact_victim_social_services_dept_name: joi.when('do_not_contact_victim_social_services_dept', {
+      is: 'yes',
+      then: joi.string().required(),
+      otherwise: joi.any().optional(),
+    }),
+  }),
+  FOLLOW_REHABILITATION_INSTRUCTIONS: joi.object({
+    follow_rehabilitation_instructions: joi.string().required(),
+  }),
+  GIVE_URINE_SAMPLE: joi.object({
+    give_sample: joi.string().required(),
+  }),
+  GO_WHERE_PROBATION_OFFICER: joi.object({}),
+  GO_TO_APPOINTMENTS: joi.object({
+    go_to_appointments_with: joi.string().required(),
+  }),
+  ALLOW_VISIT: joi.object({
+    allow_visit_with: joi.string().required(),
+  }),
 })

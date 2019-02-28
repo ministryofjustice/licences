@@ -383,6 +383,66 @@ module.exports = {
           ],
         },
       },
+      {
+        DO_NOT_CONTACT_VICTIM: {
+          contains: [
+            {
+              do_not_contact_victim_name: {
+                validationMessage: 'Enter a victim name',
+              },
+            },
+            {
+              do_not_contact_victim_social_services_dept_name: {
+                validationMessage: 'Enter social services name',
+              },
+            },
+          ],
+        },
+      },
+      {
+        FOLLOW_REHABILITATION_INSTRUCTIONS: {
+          contains: [
+            {
+              follow_rehabilitation_instructions: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
+      {
+        GIVE_URINE_SAMPLE: {
+          contains: [
+            {
+              give_sample: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
+      {
+        GO_TO_APPOINTMENTS: {
+          contains: [
+            {
+              go_to_appointments_with: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
+      {
+        ALLOW_VISIT: {
+          contains: [
+            {
+              allow_visit_with: {
+                validationMessage: 'Select an option',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

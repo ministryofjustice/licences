@@ -855,6 +855,102 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_name: 'a',
+                do_not_contact_victim_social_services_dept: 'a',
+                do_not_contact_victim_social_services_dept_name: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_CONTACT_VICTIM: {} },
+            outcome: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_name: 'Enter a victim name',
+              },
+            },
+          },
+          {
+            formResponse: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_name: 'a',
+                do_not_contact_victim_social_services_dept: 'yes',
+                do_not_contact_victim_social_services_dept_name: '',
+              },
+            },
+            outcome: {
+              DO_NOT_CONTACT_VICTIM: {
+                do_not_contact_victim_social_services_dept_name: 'Enter social services name',
+              },
+            },
+          },
+          {
+            formResponse: {
+              FOLLOW_REHABILITATION_INSTRUCTIONS: {
+                follow_rehabilitation_instructions: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { FOLLOW_REHABILITATION_INSTRUCTIONS: {} },
+            outcome: {
+              FOLLOW_REHABILITATION_INSTRUCTIONS: {
+                follow_rehabilitation_instructions: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
+              GIVE_URINE_SAMPLE: {
+                give_sample: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { GIVE_URINE_SAMPLE: {} },
+            outcome: {
+              GIVE_URINE_SAMPLE: {
+                give_sample: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
+              GO_TO_APPOINTMENTS: {
+                go_to_appointments_with: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { GO_TO_APPOINTMENTS: {} },
+            outcome: {
+              GO_TO_APPOINTMENTS: {
+                go_to_appointments_with: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
+              ALLOW_VISIT: {
+                allow_visit_with: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { ALLOW_VISIT: {} },
+            outcome: {
+              ALLOW_VISIT: {
+                allow_visit_with: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
@@ -869,6 +965,7 @@ describe('validation', () => {
               NOTIFYPASSPORT: {},
               DO_NOT_CONTACT_PRISONERS: {},
               DO_NOT_CONTACT_SEX_OFFENDER: {},
+              GO_WHERE_PROBATION_OFFICER: {},
             },
             outcome: {},
           },
