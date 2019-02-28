@@ -4,7 +4,7 @@ const { getIn, isEmpty, mergeWithRight } = require('../../utils/functionalHelper
 const pdfData = require('../config/pdfData')
 const config = require('../../config')
 
-const DEFAULT_PLACEHOLDER = '(DATA MISSING)'
+const DEFAULT_PLACEHOLDER = 'N/A'
 
 module.exports = { formatPdfData, DEFAULT_PLACEHOLDER }
 
