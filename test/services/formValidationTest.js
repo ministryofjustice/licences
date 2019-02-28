@@ -951,6 +951,28 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              STAY_AT_ADDRESS: {
+                stay_at_address_name: 'a',
+                stay_at_address_from: 'a',
+                stay_at_address_to: 'a',
+                stay_at_address_frequency: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { STAY_AT_ADDRESS: {} },
+            outcome: {
+              STAY_AT_ADDRESS: {
+                stay_at_address_name: 'Enter an address',
+                stay_at_address_from: 'Enter a curfew from time',
+                stay_at_address_to: 'Enter a curfew to time',
+                stay_at_address_frequency: 'Select an option',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},

@@ -566,9 +566,14 @@ module.exports = {
         id: 'STAY_AT_ADDRESS',
         text:
           'Stay at [address] between [time] and [time] every day unless your probation officer tells you not to.<br /><br />Follow instructions your probation officer gives you so they know where you are.<br /><br />Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.',
-        user_input: null,
+        user_input: 'stay_at_address',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          stay_at_address_name: 0,
+          stay_at_address_from: 1,
+          stay_at_address_to: 2,
+          stay_at_address_frequency: 3,
+        },
         group_name: 'Curfew, reporting and escorts',
         subgroup_name: null,
       },

@@ -157,4 +157,10 @@ module.exports = joi.object({
   ALLOW_VISIT: joi.object({
     allow_visit_with: joi.string().required(),
   }),
+  STAY_AT_ADDRESS: joi.object({
+    stay_at_address_name: joi.string().required(),
+    stay_at_address_from: joi.string().required(),
+    stay_at_address_to: joi.string().required(),
+    stay_at_address_frequency: joi.string().required(),
+  }),
 })
