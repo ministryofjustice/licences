@@ -267,17 +267,10 @@ workflows:
             branches:
               only:
                 - /patch-.*/
-      - deploy_release_to_eb:
-          requires:
-            - build_docker
-          filters:
-            branches:
-              only:
-                - master
       - hold:
           type: approval
           requires:
-            - deploy_release_to_eb
+            - build_docker
       - deploy_stage:
           requires:
             - hold
