@@ -1105,6 +1105,22 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              DO_NOT_HAVE_MORE_MONEY: {
+                do_not_have_more_money_amount: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_HAVE_MORE_MONEY: {} },
+            outcome: {
+              DO_NOT_HAVE_MORE_MONEY: {
+                do_not_have_more_money_amount: 'Give amount',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
@@ -1134,6 +1150,9 @@ describe('validation', () => {
               GET_PERMISSION_FOR_SOFTWARE: {},
               PROVIDE_DETAILS_OF_CLOUD_STORAGE: {},
               PROVIDE_ADDRESS_OF_PREMISES: {},
+              PROVIDE_BANK_DETAILS: {},
+              PROVIDE_THIRD_PARTY_ACCOUNTS: {},
+              PROVIDE_MONEY_TRANSFER_DETAILS: {},
             },
             outcome: {},
           },

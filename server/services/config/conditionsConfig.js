@@ -832,9 +832,11 @@ module.exports = {
         id: 'DO_NOT_HAVE_MORE_MONEY',
         text:
           'Do not have more than [amount] of cash (in any currency) unless it’s approved by your probation officer.',
-        user_input: null,
+        user_input: 'do_not_have_more_money',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_have_more_money_amount: 0,
+        },
         group_name: 'Possession, ownership and finances',
         subgroup_name: 'Finances',
       },

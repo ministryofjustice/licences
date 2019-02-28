@@ -567,6 +567,17 @@ module.exports = {
           ],
         },
       },
+      {
+        DO_NOT_HAVE_MORE_MONEY: {
+          contains: [
+            {
+              do_not_have_more_money_amount: {
+                validationMessage: 'Give amount',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {

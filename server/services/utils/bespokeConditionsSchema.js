@@ -204,4 +204,10 @@ module.exports = joi.object({
     tell_about_animal: joi.string().required(),
   }),
   PROVIDE_ADDRESS_OF_PREMISES: joi.any().optional(),
+  DO_NOT_HAVE_MORE_MONEY: joi.object({
+    do_not_have_more_money_amount: joi.string().required(),
+  }),
+  PROVIDE_BANK_DETAILS: joi.any().optional(),
+  PROVIDE_THIRD_PARTY_ACCOUNTS: joi.any().optional(),
+  PROVIDE_MONEY_TRANSFER_DETAILS: joi.any().optional(),
 })
