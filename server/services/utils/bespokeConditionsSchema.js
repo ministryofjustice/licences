@@ -175,4 +175,26 @@ module.exports = joi.object({
   TELL_PROBATION_VEHICLE_DETAILS: joi.any().optional(),
   DO_NOT_TRAVEL_IN: joi.any().optional(),
   TELL_PROBATION_REUSABLE_CARD: joi.any().optional(),
+  DO_NOT_GO_PREMISES: joi.object({
+    do_not_go_premises_address: joi.string().required(),
+  }),
+  DO_NOT_GO_AREA: joi.any().optional(),
+  ONLY_WORSHIP_APPROVED: joi.any().optional(),
+  HAVE_ELECTRONIC_TAG: joi.any().optional(),
+  STAY_AT_NIGHT: joi.object({
+    stay_at_night_address: joi.string().required(),
+  }),
+  YOU_WILL_BE_SUBJECT_TO: joi.any().optional(),
+  GO_FOR_POLYGRAPH: joi.any().optional(),
+  DO_NOT_HAVE_MORE_THAN_ONE_PHONE: joi.any().optional(),
+  ONLY_USE_INTERNET_AT: joi.object({
+    only_use_internet_at_location: joi.string().required(),
+  }),
+  DO_NOT_DELETE_HISTORY: joi.any().optional(),
+  GET_PERMISSION_FOR_SOFTWARE: joi.any().optional(),
+  DO_NOT_ACCESS_DOWNLOAD: joi.object({
+    do_not_access_download_type: joi.string().required(),
+    do_not_access_download_target: joi.string().required(),
+  }),
+  PROVIDE_DETAILS_OF_CLOUD_STORAGE: joi.any().optional(),
 })

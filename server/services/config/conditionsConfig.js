@@ -665,9 +665,11 @@ module.exports = {
       {
         id: 'DO_NOT_GO_PREMISES',
         text: 'Do not go in [name / type of premises / address / road] unless it’s approved by your probation officer.',
-        user_input: null,
+        user_input: 'do_not_go_premises',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_go_premises_address: 0,
+        },
         group_name: 'Exclusion',
         subgroup_name: null,
       },
@@ -703,9 +705,11 @@ module.exports = {
       {
         id: 'STAY_AT_NIGHT',
         text: 'Stay at [approved address] between 5pm and midnight every day until your electronic tag is installed.',
-        user_input: null,
+        user_input: 'stay_at_night',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          stay_at_night_address: 0,
+        },
         group_name: 'Technology',
         subgroup_name: 'Electronic monitoring',
       },
@@ -742,9 +746,11 @@ module.exports = {
       {
         id: 'ONLY_USE_INTERNET_AT',
         text: 'Only use a computer or device with internet at [location] or where your probation officer tells you.',
-        user_input: null,
+        user_input: 'only_use_internet_at',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          only_use_internet_at_location: 0,
+        },
         group_name: 'Technology',
         subgroup_name: 'Computers and internet',
       },
@@ -769,12 +775,15 @@ module.exports = {
         subgroup_name: 'Computers and internet',
       },
       {
-        id: 'DO_NOT_DOWNLOAD_SPECIFIED_WEBSITES',
+        id: 'DO_NOT_ACCESS_DOWNLOAD',
         text:
           'Do not [access / download / access or download] [specified websites or apps / types of websites or apps] unless it’s approved by your probation officer.',
-        user_input: null,
+        user_input: 'do_not_access_download',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_access_download_type: 0,
+          do_not_access_download_target: 1,
+        },
         group_name: 'Technology',
         subgroup_name: 'Computers and internet',
       },

@@ -1007,6 +1007,72 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              DO_NOT_GO_PREMISES: {
+                do_not_go_premises_address: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_GO_PREMISES: {} },
+            outcome: {
+              DO_NOT_GO_PREMISES: {
+                do_not_go_premises_address: 'Give premises details',
+              },
+            },
+          },
+          {
+            formResponse: {
+              STAY_AT_NIGHT: {
+                stay_at_night_address: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { STAY_AT_NIGHT: {} },
+            outcome: {
+              STAY_AT_NIGHT: {
+                stay_at_night_address: 'Give an address',
+              },
+            },
+          },
+          {
+            formResponse: {
+              ONLY_USE_INTERNET_AT: {
+                only_use_internet_at_location: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { ONLY_USE_INTERNET_AT: {} },
+            outcome: {
+              ONLY_USE_INTERNET_AT: {
+                only_use_internet_at_location: 'Give a location',
+              },
+            },
+          },
+          {
+            formResponse: {
+              DO_NOT_ACCESS_DOWNLOAD: {
+                do_not_access_download_type: 'a',
+                do_not_access_download_target: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_ACCESS_DOWNLOAD: {} },
+            outcome: {
+              DO_NOT_ACCESS_DOWNLOAD: {
+                do_not_access_download_type: 'Select an option',
+                do_not_access_download_target: 'Give details',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
@@ -1027,6 +1093,14 @@ describe('validation', () => {
               TELL_PROBATION_VEHICLE_DETAILS: {},
               DO_NOT_TRAVEL_IN: {},
               TELL_PROBATION_REUSABLE_CARD: {},
+              DO_NOT_GO_AREA: {},
+              ONLY_WORSHIP_APPROVED: {},
+              YOU_WILL_BE_SUBJECT_TO: {},
+              GO_FOR_POLYGRAPH: {},
+              DO_NOT_HAVE_MORE_THAN_ONE_PHONE: {},
+              DO_NOT_DELETE_HISTORY: {},
+              GET_PERMISSION_FOR_SOFTWARE: {},
+              PROVIDE_DETAILS_OF_CLOUD_STORAGE: {},
             },
             outcome: {},
           },
