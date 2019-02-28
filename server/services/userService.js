@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const allowedRoles = require('../authentication/roles')
 const logger = require('../../log')
+const { getIn } = require('../utils/functionalHelpers')
 
 module.exports = nomisClientBuilder => {
   async function getUserProfile(token, refreshToken, username) {
@@ -10,14 +11,16 @@ module.exports = nomisClientBuilder => {
 
     logger.info(`User profile success - username: ${username}`)
 
-    const activeCaseLoads = profile.activeCaseLoadId ? await nomisClient.getUserCaseLoads() : []
-    const activeCaseLoad = activeCaseLoads.find(caseLoad => caseLoad.caseLoadId === profile.activeCaseLoadId)
+    const activeCaseLoads = await nomisClient.getUserCaseLoads()
+    const activeCaseLoad = activeCaseLoads.find(cl => cl.currentlyActive)
+    const activeCaseLoadId = getIn(activeCaseLoad, ['caseLoadId'])
 
     return {
       ...profile,
       username,
       role: roles[0],
       activeCaseLoad,
+      activeCaseLoadId,
     }
   }
 
@@ -56,12 +59,10 @@ module.exports = nomisClientBuilder => {
     await nomisClient.putActiveCaseLoad(id)
 
     // find active caseload
-    const [userDetails, caseLoads] = await Promise.all([
-      nomisClient.getLoggedInUserInfo(),
-      nomisClient.getUserCaseLoads(),
-    ])
+    const caseLoads = await nomisClient.getUserCaseLoads()
 
-    user.activeCaseLoad = caseLoads.find(caseLoad => caseLoad.caseLoadId === userDetails.activeCaseLoadId)
+    user.activeCaseLoad = caseLoads.find(cl => cl.currentlyActive)
+    user.activeCaseLoadId = getIn(user.activeCaseLoad, ['caseLoadId'])
     return user
   }
 

@@ -6,7 +6,7 @@ describe('userServiceTest', () => {
 
   let user = { token: 'token' }
   const nomisUser = { token: 'token', authSource: 'nomis' }
-  const activeCaseLoads = [{ caseLoadId: 'this' }, { caseLoadId: 'that' }]
+  const activeCaseLoads = [{ caseLoadId: 'this', currentlyActive: true }, { caseLoadId: 'that' }]
 
   beforeEach(() => {
     nomisClient = {
@@ -17,7 +17,7 @@ describe('userServiceTest', () => {
       ]),
       getUserCaseLoads: sinon.stub().resolves(activeCaseLoads),
       putActiveCaseLoad: sinon.stub().resolves({}),
-      getLoggedInUserInfo: sinon.stub().resolves({ activeCaseLoadId: 'this' }),
+      getLoggedInUserInfo: sinon.stub().resolves({}),
     }
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
     service = createUserService(nomisClientBuilder)
@@ -31,6 +31,7 @@ describe('userServiceTest', () => {
         role: 'CA',
         activeCaseLoad: {
           caseLoadId: 'this',
+          currentlyActive: true,
         },
       })
     })
@@ -147,11 +148,6 @@ describe('userServiceTest', () => {
       expect(nomisClient.putActiveCaseLoad).to.be.calledWith('id')
     })
 
-    it('should call getLoggedInUserInfo from nomis client', async () => {
-      await service.setActiveCaseLoad('id', user)
-      expect(nomisClient.getLoggedInUserInfo).to.be.calledOnce()
-    })
-
     it('should call getUserCaseLoads from nomis client', async () => {
       await service.setActiveCaseLoad('id', user)
       expect(nomisClient.getUserCaseLoads).to.be.calledOnce()
@@ -161,7 +157,7 @@ describe('userServiceTest', () => {
       const result = await service.setActiveCaseLoad('id', user)
       expect(result).to.eql({
         ...user,
-        activeCaseLoad: { caseLoadId: 'this' },
+        activeCaseLoad: { caseLoadId: 'this', currentlyActive: true },
       })
     })
   })
