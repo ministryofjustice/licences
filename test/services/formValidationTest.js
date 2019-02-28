@@ -1073,6 +1073,38 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              DO_NOT_OWN_ITEM: {
+                do_not_own_item: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { DO_NOT_OWN_ITEM: {} },
+            outcome: {
+              DO_NOT_OWN_ITEM: {
+                do_not_own_item: 'Give details',
+              },
+            },
+          },
+          {
+            formResponse: {
+              TELL_ABOUT_ANIMAL: {
+                tell_about_animal: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { TELL_ABOUT_ANIMAL: {} },
+            outcome: {
+              TELL_ABOUT_ANIMAL: {
+                tell_about_animal: 'Give details',
+              },
+            },
+          },
+          {
+            formResponse: {
               NOTIFYRELATIONSHIP: {},
               NOCONTACTPRISONER: {},
               NOCONTACTSEXOFFENDER: {},
@@ -1101,6 +1133,7 @@ describe('validation', () => {
               DO_NOT_DELETE_HISTORY: {},
               GET_PERMISSION_FOR_SOFTWARE: {},
               PROVIDE_DETAILS_OF_CLOUD_STORAGE: {},
+              PROVIDE_ADDRESS_OF_PREMISES: {},
             },
             outcome: {},
           },

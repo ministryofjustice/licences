@@ -799,18 +799,22 @@ module.exports = {
       {
         id: 'DO_NOT_OWN_ITEM',
         text: 'Do not own or use any [specific items] unless it’s approved by your probation officer.',
-        user_input: null,
+        user_input: 'do_not_own_item',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          do_not_own_item: 0,
+        },
         group_name: 'Possession, ownership and finances',
         subgroup_name: 'Possession and ownership',
       },
       {
-        id: 'TELL_YOUR_PROBATION_OFFICER',
+        id: 'TELL_ABOUT_ANIMAL',
         text: 'Tell your probation officer about any [type of animal] in your care.',
-        user_input: null,
+        user_input: 'tell_about_animal',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          tell_about_animal: 0,
+        },
         group_name: 'Possession, ownership and finances',
         subgroup_name: 'Possession and ownership',
       },

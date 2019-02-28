@@ -197,4 +197,11 @@ module.exports = joi.object({
     do_not_access_download_target: joi.string().required(),
   }),
   PROVIDE_DETAILS_OF_CLOUD_STORAGE: joi.any().optional(),
+  DO_NOT_OWN_ITEM: joi.object({
+    do_not_own_item: joi.string().required(),
+  }),
+  TELL_ABOUT_ANIMAL: joi.object({
+    tell_about_animal: joi.string().required(),
+  }),
+  PROVIDE_ADDRESS_OF_PREMISES: joi.any().optional(),
 })

@@ -545,6 +545,28 @@ module.exports = {
           ],
         },
       },
+      {
+        DO_NOT_OWN_ITEM: {
+          contains: [
+            {
+              do_not_own_item: {
+                validationMessage: 'Give details',
+              },
+            },
+          ],
+        },
+      },
+      {
+        TELL_ABOUT_ANIMAL: {
+          contains: [
+            {
+              tell_about_animal: {
+                validationMessage: 'Give details',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {
