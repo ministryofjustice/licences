@@ -132,6 +132,11 @@ $path: "/public/images/";
     width: 66%;
 }
 
+.headerMargin {
+  margin-top: 2.3em;
+  margin-bottom: .83333em;
+}
+
 @media only screen and (max-width:640px) {
     .taskListAction {margin: 0; width: 100%; margin-top: 20px};
     .change {padding-top: 2em};
@@ -154,7 +159,7 @@ $path: "/public/images/";
     .sm-padLeftRight30 {padding-right: 30px; padding-left: 30px};
     .hideNonMobile {display:none};
     .change-details {margin-top: 2.5em;}
-    .taskListSingleLineItem .buttonContainer{margin-top: 2.5em;}
+    .taskListSingleLineItem .buttonContainer{margin-top: 2.3em;}
     .sm-padTop55 {padding-top: 55px};
     #sm-contactUs {
         position: relative;
