@@ -1,6 +1,6 @@
 const logger = require('../../log.js')
 const { formatObjectForView } = require('./utils/formatForView')
-const { merge } = require('../utils/functionalHelpers')
+const { merge, getIn } = require('../utils/functionalHelpers')
 
 module.exports = { createPrisonerService }
 
@@ -70,17 +70,11 @@ function createPrisonerService(nomisClientBuilder) {
     return [merge(coms[0], { deliusId: id.identifierValue })]
   }
 
-  async function getPrisonerImage(imageId, token) {
-    try {
-      logger.info(`getPrisonerImage: ${imageId}`)
+  function getPrisonerImage(imageId, token) {
+    logger.info(`getPrisonerImage: ${imageId}`)
 
-      const nomisClient = nomisClientBuilder(token)
-      const image = await nomisClient.getImageData(imageId)
-      return image
-    } catch (error) {
-      logger.error('Error getting prisoner image')
-      return null
-    }
+    const nomisClient = nomisClientBuilder(token)
+    return nomisClient.getImageData(imageId)
   }
 
   async function getEstablishmentForPrisoner(bookingId, token) {
@@ -95,7 +89,18 @@ function createPrisonerService(nomisClientBuilder) {
         return
       }
 
-      return getEstablishment(prisoner.agencyLocationId, token)
+      const { offenderNo } = prisoner
+
+      const getReleaseEstablishment = async () => {
+        const movements = await nomisClient.getRecentMovements(offenderNo)
+        const release = movements.find(movement => movement.movementType === 'REL')
+        return getIn(release, ['fromAgency'])
+      }
+
+      const locationId =
+        prisoner.agencyLocationId === 'OUT' ? await getReleaseEstablishment() : prisoner.agencyLocationId
+
+      return getEstablishment(locationId, token)
     } catch (error) {
       logger.error('Error getting prisoner establishment', error.stack)
       throw error

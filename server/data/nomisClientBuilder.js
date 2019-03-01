@@ -135,6 +135,12 @@ module.exports = token => {
 
       return nomisPut({ path, body })
     },
+
+    getRecentMovements(offenderNo) {
+      const path = `${apiUrl}/movements/offenders`
+      const headers = { 'Page-Limit': 10000 }
+      return nomisPost({ path, body: [offenderNo], headers })
+    },
   }
 }
 

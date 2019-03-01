@@ -35,6 +35,7 @@ describe('prisonerDetailsService', () => {
     PNC: 'PNC001',
     middleName: 'Middle',
   }
+  const recentMovementsResponse = [{ movementType: 'REL', fromAgency: 'RELEASING AGENCY' }]
 
   beforeEach(() => {
     nomisClientMock = {
@@ -47,6 +48,7 @@ describe('prisonerDetailsService', () => {
       getEstablishment: sinon.stub().resolves(establishmentResponse),
       getComRelation: sinon.stub().resolves(comRelationResponse),
       getPersonIdentifiers: sinon.stub().resolves(comIdentifiersResponse),
+      getRecentMovements: sinon.stub().resolves(recentMovementsResponse),
     }
     const nomisClientBuilder = sinon.stub().returns(nomisClientMock)
     service = createPrisonerService(nomisClientBuilder)
@@ -116,16 +118,6 @@ describe('prisonerDetailsService', () => {
     it('should return the image', async () => {
       return expect(service.getPrisonerImage('123', 'username')).to.eventually.eql(imageDataResponse)
     })
-
-    it('should return null if no image', async () => {
-      nomisClientMock.getImageData.resolves(null)
-      return expect(service.getPrisonerImage('123', 'username')).to.eventually.eql(null)
-    })
-
-    it('should return null if no image', async () => {
-      nomisClientMock.getImageData.rejects({ message: 'not found' })
-      return expect(service.getPrisonerImage('123', 'username')).to.eventually.eql(null)
-    })
   })
 
   describe('getEstablishmentForPrisoner', () => {
@@ -165,6 +157,16 @@ describe('prisonerDetailsService', () => {
       nomisClientMock.getOffenderSentencesByBookingId.resolves(hdcPrisonersResponse)
       nomisClientMock.getEstablishment.rejects({ status: 401 })
       return expect(service.getEstablishmentForPrisoner('123', 'username')).to.be.rejected()
+    })
+
+    it('should get latest movement if prisoner is out', async () => {
+      nomisClientMock.getOffenderSentencesByBookingId.resolves([
+        { bookingId: 1, facialImageId: 2, agencyLocationId: 'OUT', middleName: 'Middle' },
+      ])
+
+      await service.getEstablishmentForPrisoner('123', 'token')
+      expect(nomisClientMock.getRecentMovements).to.be.calledOnce()
+      expect(nomisClientMock.getEstablishment).to.be.calledWith('RELEASING AGENCY')
     })
   })
 
