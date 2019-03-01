@@ -186,7 +186,7 @@ jobs:
           command: |
             VERSION=$(egrep buildNumber build-info.json | awk -F"\"" '{print $4}')
             npm run plant-beanstalk ${VERSION}
-            ~/.local/bin/eb deploy licences-stage --label ${VERSION}
+            ~/.local/bin/eb deploy --label ${VERSION}
       - store_artifacts:
           path: Dockerrun.aws.json
 
