@@ -1,6 +1,6 @@
 branch-defaults:
   master:
-    environment: licences-mock
+    environment: licences-stage
 deploy:
   artifact: Dockerrun.aws.json
 global:
