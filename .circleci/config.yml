@@ -186,11 +186,6 @@ jobs:
           command: |
             VERSION=$(egrep buildNumber build-info.json | awk -F"\"" '{print $4}')
             npm run plant-beanstalk ${VERSION}
-            GIT_REF=$(egrep gitRef build-info.json  | awk -F"\"" '{print $8}')
-            git config user.name "Circle CI"
-            git config user.email "circle@circleci.com"
-            git tag -a ${VERSION} ${GIT_REF} -m "${VERSION}"
-            git push origin ${VERSION}
             ~/.local/bin/eb deploy licences-stage --label ${VERSION}
       - store_artifacts:
           path: Dockerrun.aws.json
