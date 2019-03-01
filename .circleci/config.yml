@@ -168,21 +168,6 @@ jobs:
             npm run plant-beanstalk ${BUILD_VERSION}
       - store_artifacts:
           path: Dockerrun.aws.json
-
-  deploy_release_to_eb:
-    working_directory: ~/noms-digital-studio/licences
-    docker:
-      - image: mojdigitalstudio/circleci-node-awsebcli
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/noms-digital-studio/licences
-      - deploy:
-          name: Deploy to Elastic Beanstalk Dev
-          command: |
-            VERSION=$(egrep buildNumber build-info.json | awk -F"\"" '{print $4}')
-            npm run plant-beanstalk ${VERSION}
-            ~/.local/bin/eb deploy --process --verbose --label ${VERSION}
       - persist_to_workspace:
           root: .
           paths:
