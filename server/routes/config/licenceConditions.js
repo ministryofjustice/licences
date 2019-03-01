@@ -496,6 +496,88 @@ module.exports = {
           ],
         },
       },
+      {
+        DO_NOT_GO_PREMISES: {
+          contains: [
+            {
+              do_not_go_premises_address: {
+                validationMessage: 'Give premises details',
+              },
+            },
+          ],
+        },
+      },
+      {
+        STAY_AT_NIGHT: {
+          contains: [
+            {
+              stay_at_night_address: {
+                validationMessage: 'Give an address',
+              },
+            },
+          ],
+        },
+      },
+      {
+        ONLY_USE_INTERNET_AT: {
+          contains: [
+            {
+              only_use_internet_at_location: {
+                validationMessage: 'Give a location',
+              },
+            },
+          ],
+        },
+      },
+      {
+        DO_NOT_ACCESS_DOWNLOAD: {
+          contains: [
+            {
+              do_not_access_download_type: {
+                validationMessage: 'Select an option',
+              },
+            },
+            {
+              do_not_access_download_target: {
+                validationMessage: 'Give details',
+              },
+            },
+          ],
+        },
+      },
+      {
+        DO_NOT_OWN_ITEM: {
+          contains: [
+            {
+              do_not_own_item: {
+                validationMessage: 'Give details',
+              },
+            },
+          ],
+        },
+      },
+      {
+        TELL_ABOUT_ANIMAL: {
+          contains: [
+            {
+              tell_about_animal: {
+                validationMessage: 'Give details',
+              },
+            },
+          ],
+        },
+      },
+      {
+        DO_NOT_HAVE_MORE_MONEY: {
+          contains: [
+            {
+              do_not_have_more_money_amount: {
+                validationMessage: 'Give amount',
+              },
+            },
+          ],
+        },
+      },
     ],
   },
   conditionsSummary: {
