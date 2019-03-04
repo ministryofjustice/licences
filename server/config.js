@@ -62,6 +62,6 @@ module.exports = {
   notifyKey: get('NOTIFY_API_KEY', 'default_key'),
   tagManagerKey: get('TAG_MANAGER_KEY', null),
 
-  pushToNomis: get('PUSH_TO_NOMIS', false),
-  use2019Conditions: get('2019_CONDITIONS', false),
+  pushToNomis: get('PUSH_TO_NOMIS', 'no') === 'yes',
+  use2019Conditions: get('2019_CONDITIONS', 'no') === 'yes',
 }
