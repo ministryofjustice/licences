@@ -123,4 +123,5 @@ function getConditionText(content, terminator) {
     .join('')
     .replace(/\.+$/, '') // remove trailing period
     .concat(terminator)
+    .replace(/<\/li><\/ul>;/g, ';</li></ul>')
 }

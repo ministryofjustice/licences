@@ -398,7 +398,7 @@ module.exports = {
       {
         id: 'DO_NOT_CONTACT_PRISONERS',
         text:
-          'Do not contact anyone in prison or custody unless it’s approved by your probation officer first. This includes:<ul><li>contact through social media</li><li>asking someone else to contact them for you</li><li>leaving a message for them to find</li>',
+          'Do not contact anyone in prison or custody unless it’s approved by your probation officer first. This includes:<ul class="disc"><li>contact through social media</li><li>asking someone else to contact them for you</li><li>leaving a message for them to find</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -431,7 +431,7 @@ module.exports = {
       {
         id: 'TELL_PROBATION_ABOUT_RELATIONSHIP',
         text:
-          'Tell your probation officer about any:<ul><li>personal relationships with [women / men / anyone]</li><li>personal relationships or friendships when the person lives with children under 18</li><li>changes to those relationships - for example pregnancy or the end of the relationship</li></ul>This includes people you knew before you were in prison.<br /><br />Your probation officer will explain what types of relationships you need to tell them about.',
+          'Tell your probation officer about any:<ul class="disc midCondition"><li>personal relationships with [women / men / anyone]</li><li>personal relationships or friendships when the person lives with children under 18</li><li>changes to those relationships - for example pregnancy or the end of the relationship</li></ul>This includes people you knew before you were in prison.<br /><br />Your probation officer will explain what types of relationships you need to tell them about.',
         user_input: 'tell_probation_about_relationship',
         active: use2019Conditions,
         field_position: {
@@ -581,7 +581,7 @@ module.exports = {
       {
         id: 'REPORT_TO_STAFF_AT',
         text:
-          'Report to staff at [location] at [time and [day] unless your probation officer tells you not to.<br /><br />Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.\n',
+          'Report to staff at [location] at [time and [day] unless your probation officer tells you not to.<br /><br />Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -612,7 +612,7 @@ module.exports = {
       {
         id: 'TELL_PROBATION_DOCUMENT',
         text:
-          'Tell your probation officer:<ul><li>full details of any [passport / driving licence / birth certificate] you own</li><li>if you apply for a new [passport / driving licence / birth certificate]</li></ul>',
+          'Tell your probation officer:<ul class="disc"><li>full details of any [passport / driving licence / birth certificate] you own</li><li>if you apply for a new [passport / driving licence / birth certificate]</li></ul>',
         user_input: 'tell_probation_document',
         active: use2019Conditions,
         field_position: {
@@ -695,7 +695,7 @@ module.exports = {
       {
         id: 'HAVE_ELECTRONIC_TAG',
         text:
-          'You must:<ul><li>allow an electronic tag to be installed on you</li><li>allow access to your property to install and check any tagging equipment</li><li>not damage or interfere with your electronic tag</li><li>make sure the tag is charged as instructed by your probation officer</li><li>report it immediately if the tag or equipment are not working - your probation officer will tell you who to contact</li><li>allow access to your property to remove the electronic tag and any tagging equipment',
+          'You must:<ul class="disc"><li>allow an electronic tag to be installed on you</li><li>allow access to your property to install and check any tagging equipment</li><li>not damage or interfere with your electronic tag</li><li>make sure the tag is charged as instructed by your probation officer</li><li>report it immediately if the tag or equipment are not working - your probation officer will tell you who to contact</li><li>allow access to your property to remove the electronic tag and any tagging equipment</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -757,7 +757,7 @@ module.exports = {
       {
         id: 'DO_NOT_DELETE_HISTORY',
         text:
-          'Do not:<ul><li>delete the user history on your mobile phone or device with internet</li><li>use any software or settings that stop your internet use being recorded</li></ul>Do allow the police or your probation officer to inspect your mobile phone or device with internet. They may:<ul><li>take your device to inspect it</li><li>install monitoring software</li><li>search where you live or your vehicle(s) for devices you have not told them about</li></ul>',
+          'Do not:<ul class="disc midCondition"><li>delete the user history on your mobile phone or device with internet</li><li>use any software or settings that stop your internet use being recorded</li></ul>Do allow the police or your probation officer to inspect your mobile phone or device with internet. They may:<ul class="disc"><li>take your device to inspect it</li><li>install monitoring software</li><li>search where you live or your vehicle(s) for devices you have not told them about</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -767,7 +767,7 @@ module.exports = {
       {
         id: 'GET_PERMISSION_FOR_SOFTWARE',
         text:
-          'Get permission from your probation officer to buy, download, or use any software that:<ul><li>encrypts information</li><li>deletes information</li><li>cleans your files or drives</li></ul>',
+          'Get permission from your probation officer to buy, download, or use any software that:<ul class="disc"><li>encrypts information</li><li>deletes information</li><li>cleans your files or drives</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -873,7 +873,7 @@ module.exports = {
       {
         id: 'DO_NOT_CONTACT_EXTREMISTS',
         text:
-          'Do not contact anyone who you know has been arrested, charged, or convicted of any extremist-related offence unless it’s approved by your probation officer. This includes:<ul><li>contact through social media</li><li>asking someone else to contact them for you</li><li>leaving a message for them to find</li></ul>',
+          'Do not contact anyone who you know has been arrested, charged, or convicted of any extremist-related offence unless it’s approved by your probation officer. This includes:<ul class="disc"><li>contact through social media</li><li>asking someone else to contact them for you</li><li>leaving a message for them to find</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,
@@ -923,7 +923,7 @@ module.exports = {
       {
         id: 'DO_NOT_HAVE_ENCODED_INFORMATION',
         text:
-          'Do not have any handwritten, printed or electronically-recorded material (unless it’s approved by your probation officer) which:<ul><li>contains encoded information</li><li>promotes the destruction of hatred for any religious or ethnic group</li><li>celebrates, justifies or promotes acts of violence</li><li>contains information about military or paramilitary technology, weapons, techniques or tactics</li></ul>',
+          'Do not have any handwritten, printed or electronically-recorded material (unless it’s approved by your probation officer) which:<ul class="disc"><li>contains encoded information</li><li>promotes the destruction of hatred for any religious or ethnic group</li><li>celebrates, justifies or promotes acts of violence</li><li>contains information about military or paramilitary technology, weapons, techniques or tactics</li></ul>',
         user_input: null,
         active: use2019Conditions,
         field_position: null,

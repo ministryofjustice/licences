@@ -240,6 +240,34 @@ describe('pdfFormatter', () => {
     expect(data.missing).to.not.have.property('CONDITIONS')
   })
 
+  it('should add terminator before end of list if list is last text in condition', () => {
+    const licence = {
+      licenceConditions: [
+        { id: 'INCLUDED_1', content: [{ text: 'first included condition' }] },
+        { id: 'INCLUDED_2', content: [{ variable: '<ul><li>second</li><li>included</li></ul>' }] },
+      ],
+    }
+    const expected = 'viii. first included condition;\n\nix. <ul><li>second</li><li>included;</li></ul>'
+
+    const data = formatWith({ licence })
+
+    expect(data.values.CONDITIONS).to.eql(expected)
+  })
+
+  it('should ignore list if list is not last text in condition', () => {
+    const licence = {
+      licenceConditions: [
+        { id: 'INCLUDED_1', content: [{ text: 'first included condition' }] },
+        { id: 'INCLUDED_2', content: [{ variable: '<ul><li>second</li><li>included</li></ul>condition' }] },
+      ],
+    }
+    const expected = 'viii. first included condition;\n\nix. <ul><li>second</li><li>included</li></ul>condition;'
+
+    const data = formatWith({ licence })
+
+    expect(data.values.CONDITIONS).to.eql(expected)
+  })
+
   it('should join PSS conditions only for inclusions', () => {
     const licence = {
       licenceConditions: [
