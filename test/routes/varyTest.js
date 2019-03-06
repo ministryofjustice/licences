@@ -252,6 +252,7 @@ describe('POST /hdc/vary/', () => {
     '/hdc/vary/licenceDetails/1',
     '/hdc/vary/address/1',
     '/hdc/vary/reportingAddress/1',
+    '/hdc/vary/approval/hdc_ap_pss/1',
   ]
 
   routes.forEach(route => {
