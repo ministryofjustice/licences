@@ -75,20 +75,10 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     }, {})
   }
 
-  // For html page
   function populateAdditionalConditionsAsObject(rawLicence, selectedConditionsConfig, inputErrors = {}) {
-    return addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputAsObject, inputErrors)
-  }
-
-  function addAdditionalConditions(rawLicence, selectedConditionsConfig, injectUserInputMethod, inputErrors) {
     const { additional, bespoke } = rawLicence.licenceConditions
 
-    const getObjectForAdditional = createAdditionalMethod(
-      rawLicence,
-      selectedConditionsConfig,
-      injectUserInputMethod,
-      inputErrors
-    )
+    const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, inputErrors)
 
     const populatedAdditional = Object.keys(additional)
       .sort(orderForView(additionalConditions.map(condition => condition.id)))
@@ -99,12 +89,12 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     return { ...rawLicence, licenceConditions: [...populatedAdditional, ...populatedBespoke] }
   }
 
-  function createAdditionalMethod(rawLicence, selectedConditions, injectUserInputMethod, inputErrors) {
+  function createAdditionalMethod(rawLicence, selectedConditions, inputErrors) {
     return condition => {
       const selectedCondition = selectedConditions.find(selected => String(selected.id) === String(condition))
       const userInput = getIn(rawLicence, ['licenceConditions', 'additional', condition])
       const userErrors = getIn(inputErrors, [condition])
-      const content = getContentForCondition(selectedCondition, userInput, injectUserInputMethod, userErrors)
+      const content = getContentForCondition(selectedCondition, userInput, userErrors)
 
       return {
         content,
@@ -116,11 +106,11 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     }
   }
 
-  function getContentForCondition(selectedCondition, userInput, injectUserInputMethod, userErrors) {
+  function getContentForCondition(selectedCondition, userInput, userErrors) {
     const userInputName = selectedCondition.user_input
 
     return userInputName
-      ? injectUserInputMethod(selectedCondition, userInput, userErrors)
+      ? injectUserInputAsObject(selectedCondition, userInput, userErrors)
       : [{ text: selectedCondition.text }]
   }
 
@@ -190,52 +180,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     return [{ text: splitConditionText[0] }, { [variableKey]: string }, { text: splitConditionText[1] }]
   }
 
-  // For pdf
-  function populateAdditionalConditionsAsString(rawLicence, selectedConditions) {
-    return addAdditionalConditions(rawLicence, selectedConditions, injectUserInputAsString)
-  }
-
-  function injectUserInputAsString(condition, userInput) {
-    const conditionName = condition.user_input
-    const conditionText = condition.text
-    const fieldPositionObject = condition.field_position
-    const placeHolders = getPlaceholdersFrom(conditionText)
-    const { userContent } = condition.manipulateInput
-      ? condition.manipulateInput(userInput)
-      : { userContent: userInput }
-
-    if (multiFields[conditionName]) {
-      return injectMultiFieldsAsString(userContent, conditionText, placeHolders, multiFields[conditionName])
-    }
-
-    return injectUserInputStandardAsString(userContent, conditionText, placeHolders, fieldPositionObject)
-  }
-
-  function injectUserInputStandardAsString(userInput, conditionText, placeHolders, fieldPositionObject) {
-    const fieldNames = Object.keys(fieldPositionObject)
-    const reducer = injectVariablesIntoString(fieldNames, fieldPositionObject, userInput)
-    return placeHolders.reduce(reducer, conditionText)
-  }
-
-  function injectVariablesIntoString(fieldNames, fieldPositionObject, userInput) {
-    return (text, placeHolder, index) => {
-      const fieldNameForPlaceholder = fieldNames.find(field => String(fieldPositionObject[field]) === String(index))
-      const inputtedData = userInput[fieldNameForPlaceholder]
-      return text.replace(placeHolder, inputtedData)
-    }
-  }
-
-  function injectMultiFieldsAsString(userInput, conditionText, placeHolder, config) {
-    const strings = config.fields.map(fieldName => getIn(userInput, [fieldName]))
-
-    return conditionText.replace(placeHolder, interleave(strings, config.joining))
-  }
-
   const betweenBrackets = /\[[^\]]*]/g
-
-  function getPlaceholdersFrom(condition) {
-    return condition.match(betweenBrackets) || null
-  }
 
   const inputsFor = (fieldPositions, formInputs) => {
     const conditionAttributes = Object.keys(fieldPositions)
@@ -257,7 +202,6 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     populateLicenceWithConditions,
     createConditionsObjectForLicence,
     populateAdditionalConditionsAsObject,
-    populateAdditionalConditionsAsString,
   }
 }
 
