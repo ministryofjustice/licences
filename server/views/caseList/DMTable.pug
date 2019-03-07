@@ -43,3 +43,5 @@ table#hdcEligiblePrisoners.largeMarginBottom
               else
                 a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
 
+if !hdcEligible || hdcEligible.length === 0
+  p No HDC cases
