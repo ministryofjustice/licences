@@ -1,5 +1,4 @@
 const passport = require('passport')
-const { URLSearchParams } = require('url')
 const OauthStrategy = require('passport-oauth2').Strategy
 const strategies = require('./authInit')
 const config = require('../config')
@@ -18,10 +17,10 @@ const authenticationMiddleware = signInService => {
       return next()
     }
 
+    // stash target url in session to return to
+    req.session.returnTo = req.originalUrl
     const redirectPath = '/login'
-    const query = req.get('referrer') ? new URLSearchParams({ target: req.originalUrl }) : null
-    const redirectUrl = query ? `${redirectPath}?${query}` : redirectPath
-    return res.redirect(redirectUrl)
+    return res.redirect(redirectPath)
   }
 }
 
