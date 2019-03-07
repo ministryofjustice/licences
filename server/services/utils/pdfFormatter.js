@@ -90,10 +90,12 @@ function getConditionsForConfig(licence, templateName, configName) {
 }
 
 function getAdditionalConditionsText(licence, conditionsConfig) {
-  const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired'])
+  const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No'
   const conditions = getIn(licence, ['licenceConditions'])
 
-  if (standardOnly === 'No' || isEmpty(conditions)) {
+  // if additionalConditionsRequired === Yes but no conditions selected then licenceConditions not replaced with array
+  // TODO fix conditionsService to not overwrite licenceConditions section of licence
+  if (standardOnly || isEmpty(conditions) || !Array.isArray(conditions)) {
     return
   }
 

@@ -297,6 +297,19 @@ describe('pdfFormatter', () => {
     expect(data.missing.PSS).to.eql(displayNames.PSS)
   })
 
+  it('should skip placeholder when additional conditions needed but not supplied', () => {
+    const licence = {
+      licenceConditions: { standard: { additionalConditionsRequired: 'Yes' } },
+    }
+
+    const data = formatWith({ licence })
+
+    expect(data.values.CONDITIONS).to.eql('')
+    expect(data.values.PSS).to.eql('')
+    expect(data.missing.CONDITIONS).to.eql(displayNames.CONDITIONS)
+    expect(data.missing.PSS).to.eql(displayNames.PSS)
+  })
+
   it('should skip placeholder when additional conditions empty', () => {
     const licence = {
       licenceConditions: [],
