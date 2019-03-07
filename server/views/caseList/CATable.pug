@@ -52,3 +52,7 @@ table#hdcEligiblePrisoners.caSortcolumns.largeMarginBottom
             else if ['PROCESSING_RO', 'APPROVAL'].includes(prisoner.stage)
               -var path = "/hdc/review/licence/" + prisoner.bookingId
               a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
+
+    else
+      tr
+        td No HDC cases
