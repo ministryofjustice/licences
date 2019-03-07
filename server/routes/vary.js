@@ -42,6 +42,7 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
 
   router.post(
     '/licenceDetails/:bookingId',
+    audited,
     asyncMiddleware(async (req, res) => {
       const { bookingId } = req.body
 
@@ -120,8 +121,8 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
     res.redirect(`/hdc/taskList/${bookingId}`)
   }
 
-  router.post('/address/:bookingId', asyncMiddleware(postVaryForm('address')))
-  router.post('/reportingAddress/:bookingId', asyncMiddleware(postVaryForm('reportingAddress')))
+  router.post('/address/:bookingId', audited, asyncMiddleware(postVaryForm('address')))
+  router.post('/reportingAddress/:bookingId', audited, asyncMiddleware(postVaryForm('reportingAddress')))
 
   router.get('/:formName/:bookingId', asyncMiddleware(standard.get))
   router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post))

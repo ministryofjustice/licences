@@ -246,6 +246,36 @@ describe('/hdc/vary', () => {
   })
 })
 
+describe('POST /hdc/vary/', () => {
+  const routes = [
+    '/hdc/vary/evidence/1',
+    '/hdc/vary/licenceDetails/1',
+    '/hdc/vary/address/1',
+    '/hdc/vary/reportingAddress/1',
+    '/hdc/vary/approval/hdc_ap_pss/1',
+  ]
+
+  routes.forEach(route => {
+    it(`calls audit for ${route}`, () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.update.resolves({ vary: { evidence: {} } })
+      const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+      auditStub.record.reset()
+      return request(app)
+        .post(route)
+        .send({ bookingId: 1, a: 'a', b: 'b', c: 'c' })
+        .expect(() => {
+          expect(auditStub.record).to.be.calledOnce()
+          expect(auditStub.record).to.be.calledWith('UPDATE_SECTION', 'RO_USER', {
+            path: route,
+            bookingId: 1,
+            userInput: { a: 'a', b: 'b', c: 'c' },
+          })
+        })
+    })
+  })
+})
+
 function createApp({ licenceServiceStub }, user) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()

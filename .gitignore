@@ -24,3 +24,5 @@ yarn-error.log
 licence-json/*
 out
 .gradle
+
+licences\.iml
