@@ -24,7 +24,7 @@ block content
       form(method="post").largeMarginTop
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId || '')
-        input(type="hidden" name="decisionMaker" value=user.firstName + ' ' + user.lastName)
+        input(type="hidden" name="decisionMaker" value=user.name)
         div.paddingBottom.largeMarginBottom
 
           div#error-anchor.form-group
