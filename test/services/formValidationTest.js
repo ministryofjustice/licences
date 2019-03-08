@@ -110,7 +110,19 @@ describe('validation', () => {
               },
               outcome: {
                 addressLine1: 'Enter an address',
-                telephone: 'Enter a telephone number in the right format',
+                telephone: 'Enter a telephone number, like 01632 960 001 or 07700 900 982',
+              },
+            },
+            {
+              formResponse: {
+                addressLine1: 'a1',
+                addressTown: 't1',
+                postCode: 'S105NW',
+                cautionedAgainstResident: 'No',
+                telephone: '',
+              },
+              outcome: {
+                telephone: 'Enter a telephone number',
               },
             },
             {
@@ -292,14 +304,14 @@ describe('validation', () => {
               buildingAndStreet1: '',
               townOrCity: '',
               postcode: 'a',
-              telephone: 'd',
+              telephone: '',
             },
             outcome: {
               name: 'Enter a name',
               buildingAndStreet1: 'Enter a building or street',
               townOrCity: 'Enter a town or city',
               postcode: 'Enter a postcode in the right format',
-              telephone: 'Enter a telephone number in the right format',
+              telephone: 'Enter a telephone number',
             },
           },
         ]
@@ -1551,7 +1563,7 @@ describe('validation', () => {
               addressLine1: 'Enter an address',
               addressTown: 'Enter a town or city',
               postCode: 'Enter a postcode',
-              telephone: 'Enter a telephone number in the right format',
+              telephone: 'Enter a telephone number, like 01632 960 001 or 07700 900 982',
             },
           },
           {

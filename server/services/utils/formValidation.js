@@ -125,6 +125,13 @@ const fieldOptions = {
     }),
 }
 
+const defaultErrorMessages = {
+  requiredPhone: errorType =>
+    errorType === 'string.regex.base'
+      ? 'Enter a telephone number, like 01632 960 001 or 07700 900 982'
+      : 'Enter a telephone number',
+}
+
 const validationProcedures = {
   standard: {
     getSchema: createSchemaFromConfig,
@@ -184,6 +191,11 @@ function validate({ formResponse, pageConfig, formType = 'standard', bespokeCond
     const fieldConfig = fieldsConfig.find(field => getFieldName(field) === error.path[0])
     const errorMessage = getErrorMessage(fieldConfig, error, procedure.getErrorMessage)
 
+    // empty telephone regex test will fail for multiple reasons, don't want to overwrite the first
+    if (getIn(errors, error.path)) {
+      return errors
+    }
+
     const errorObject = error.path.reduceRight((errorObj, key) => ({ [key]: errorObj }), errorMessage)
     return mergeWithRight(errors, errorObject)
   }, {})
@@ -193,7 +205,13 @@ function getErrorMessage(fieldConfig, error, errorMethod) {
   if (error.type === 'date.min') {
     return 'Enter a date that is in the future'
   }
-  return errorMethod(fieldConfig, error.path) || error.message
+
+  const defaultForType = (config, joiError) => {
+    const fieldConfigResponseType = getFieldDetail(['responseType'], config)
+    return defaultErrorMessages[fieldConfigResponseType] && defaultErrorMessages[fieldConfigResponseType](joiError.type)
+  }
+
+  return errorMethod(fieldConfig, error.path) || defaultForType(fieldConfig, error) || error.message
 }
 
 function validateGroup({ licence, group, bespokeConditions }) {
