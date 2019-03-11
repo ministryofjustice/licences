@@ -52,7 +52,9 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
         ? replacePath(['APPROVER'], varyApprover, values)
         : values
 
-    return getPdf(templateName, valuesWithApprover)
+    const template = `${postRelease ? 'vary_' : ''}${templateName}`
+
+    return getPdf(template, valuesWithApprover)
   }
 
   async function checkAndUpdateVersion(rawLicence, bookingId, template, postRelease) {
