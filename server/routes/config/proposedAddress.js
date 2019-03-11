@@ -36,8 +36,7 @@ module.exports = {
       },
       {
         telephone: {
-          responseType: 'optionalString',
-          validationMessage: 'Enter a telephone number in the right format',
+          responseType: 'requiredPhone',
         },
       },
       {
