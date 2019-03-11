@@ -163,7 +163,10 @@ module.exports = joi.object({
     stay_at_address_to: joi.string().required(),
     stay_at_address_frequency: joi.string().required(),
   }),
-  REPORT_TO_STAFF_AT: joi.any().optional(),
+  REPORT_TO_STAFF_AT: joi.object({
+    report_to_staff_at_location: joi.string().required(),
+    report_to_staff_at_time_and_day: joi.string().required(),
+  }),
   REPORT_WITHIN_2_DAYS: joi.any().optional(),
   POLICE_TAKE_TO: joi.object({
     police_take_to_address: joi.string().required(),

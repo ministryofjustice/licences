@@ -470,6 +470,22 @@ module.exports = {
         },
       },
       {
+        REPORT_TO_STAFF_AT: {
+          contains: [
+            {
+              report_to_staff_at_location: {
+                validationMessage: 'Enter a location',
+              },
+            },
+            {
+              report_to_staff_at_time_and_day: {
+                validationMessage: 'Enter a time and day',
+              },
+            },
+          ],
+        },
+      },
+      {
         POLICE_TAKE_TO: {
           contains: [
             {

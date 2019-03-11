@@ -973,6 +973,24 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              REPORT_TO_STAFF_AT: {
+                report_to_staff_at_location: 'a',
+                report_to_staff_at_time_and_day: 'a',
+              },
+            },
+            outcome: {},
+          },
+          {
+            formResponse: { REPORT_TO_STAFF_AT: {} },
+            outcome: {
+              REPORT_TO_STAFF_AT: {
+                report_to_staff_at_location: 'Enter a location',
+                report_to_staff_at_time_and_day: 'Enter a time and day',
+              },
+            },
+          },
+          {
+            formResponse: {
               POLICE_TAKE_TO: {
                 police_take_to_address: 'a',
               },

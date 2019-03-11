@@ -581,10 +581,13 @@ module.exports = {
       {
         id: 'REPORT_TO_STAFF_AT',
         text:
-          'Report to staff at [location] at [time and [day] unless your probation officer tells you not to.<br /><br />Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.',
-        user_input: null,
+          'Report to staff at [location] at [time and day] unless your probation officer tells you not to.<br /><br />Your probation officer will review this condition every [week / month] and decide if it’s safe to change or remove it.',
+        user_input: 'report_to_staff_at',
         active: use2019Conditions,
-        field_position: null,
+        field_position: {
+          report_to_staff_at_location: 0,
+          report_to_staff_at_time_and_day: 1,
+        },
         group_name: 'Curfew, reporting and escorts',
         subgroup_name: null,
       },
