@@ -98,7 +98,7 @@ describe('pdfService', () => {
     })
 
     it('should update licence & increment version if template is different', async () => {
-      fakePdfGenerator.post('/generate', { templateName, values }).reply(200, pdf1AsBytes)
+      fakePdfGenerator.post('/generate', { templateName: 'vary_hdc_ap_pss', values }).reply(200, pdf1AsBytes)
 
       const rawLicence = {
         licence: { key: 'value' },
@@ -115,7 +115,7 @@ describe('pdfService', () => {
     })
 
     it('should pass postApproval to update', async () => {
-      fakePdfGenerator.post('/generate', { templateName, values }).reply(200, pdf1AsBytes)
+      fakePdfGenerator.post('/generate', { templateName: 'vary_hdc_ap_pss', values }).reply(200, pdf1AsBytes)
 
       const rawLicence = {
         licence: { key: 'value' },
@@ -165,7 +165,7 @@ describe('pdfService', () => {
       pdfFormatter.formatPdfData.resolves({ values: { APPROVER: '1', VARY_APPROVER: '2' } })
       const prValues = { APPROVER: '2', VARY_APPROVER: '2' }
 
-      fakePdfGenerator.post('/generate', { templateName, values: prValues }).reply(200, pdf1AsBytes)
+      fakePdfGenerator.post('/generate', { templateName: 'vary_hdc_ap_pss', values: prValues }).reply(200, pdf1AsBytes)
 
       const rawLicence = {
         licence: { key: 'value' },
@@ -182,7 +182,7 @@ describe('pdfService', () => {
       pdfFormatter.formatPdfData.resolves({ values: { APPROVER: '1', VARY_APPROVER: 'placeholder' } })
 
       fakePdfGenerator
-        .post('/generate', { templateName, values: { APPROVER: '1', VARY_APPROVER: 'placeholder' } })
+        .post('/generate', { templateName: 'vary_hdc_ap_pss', values: { APPROVER: '1', VARY_APPROVER: 'placeholder' } })
         .reply(200, pdf1AsBytes)
 
       const rawLicence = {
