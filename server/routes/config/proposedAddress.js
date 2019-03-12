@@ -78,7 +78,7 @@ module.exports = {
             {
               age: {
                 responseType: 'optionalAge',
-                validationMessage: 'Enter age',
+                validationMessage: 'Invalid Age - Enter Number',
               },
             },
           ],

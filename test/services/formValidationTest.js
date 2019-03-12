@@ -176,6 +176,17 @@ describe('validation', () => {
                 postCode: 'S105NW',
                 cautionedAgainstResident: 'No',
                 telephone: '07700000000',
+                residents: [{ name: 'n', relationship: 'n' }, { name: 'name', relationship: 'n', age: 'sss' }],
+              },
+              outcome: { residents: { 1: { age: 'Invalid Age - Enter Number' } } },
+            },
+            {
+              formResponse: {
+                addressLine1: 'a1',
+                addressTown: 't1',
+                postCode: 'S105NW',
+                cautionedAgainstResident: 'No',
+                telephone: '07700000000',
                 residents: [{ name: 'n', relationship: 'n' }],
                 occupier: { name: 'o', relationship: 'r' },
               },
