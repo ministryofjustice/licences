@@ -5,6 +5,6 @@ mixin errorBannerWithDetail(errorObject)
         h2.heading-medium.error-summary-heading#error-summary-heading
           | There is a problem
         ul.error-summary-list
-          each val in errorObject
+          each val, key in errorObject
             li
-              a(href="#error-anchor") #{val}
+              a(href="#"+key) #{val}

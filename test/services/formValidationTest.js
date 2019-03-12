@@ -732,7 +732,7 @@ describe('validation', () => {
                 appointmentAddress: 'b',
               },
             },
-            outcome: { ATTENDDEPENDENCY: { appointmentDate: 'Enter a date that is in the future' } },
+            outcome: { ATTENDDEPENDENCY: { appointmentDate: 'The reporting date must be today or in the future' } },
           },
           {
             formResponse: {
@@ -1518,7 +1518,7 @@ describe('validation', () => {
           { formResponse: { reportingDate: '12/03/2025', reportingTime: '15:00' }, outcome: {} },
           {
             formResponse: { reportingDate: '12/03/2016', reportingTime: '15:00' },
-            outcome: { reportingDate: 'Enter a date that is in the future' },
+            outcome: { reportingDate: 'The reporting date must be today or in the future' },
           },
           {
             formResponse: { reportingDate: '24/24/2025', reportingTime: '15:00' },
@@ -1526,11 +1526,11 @@ describe('validation', () => {
           },
           {
             formResponse: { reportingDate: '', reportingTime: '15:00' },
-            outcome: { reportingDate: 'Enter a valid date' },
+            outcome: { reportingDate: 'Enter a date' },
           },
           {
             formResponse: { reportingDate: '', reportingTime: '' },
-            outcome: { reportingDate: 'Enter a valid date', reportingTime: 'Enter a valid time' },
+            outcome: { reportingDate: 'Enter a date', reportingTime: 'Enter a time' },
           },
           {
             formResponse: { reportingDate: '12/03/2025', reportingTime: '24:40' },

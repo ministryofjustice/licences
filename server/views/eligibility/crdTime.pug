@@ -7,7 +7,7 @@ block formItems
   - var crdTimeValue = data ? data.decision : null;
   - var dmApprovedValue = data ? data.dmApproval : null;
 
-  div.form-group.inline
+  div#decision(class=errorObject.decision ? "form-group form-group-error inline" : "form-group inline")
     div.multiple-choice(data-target="dmApprovalForm")
       input#crdTimeYes(type="radio" checked=crdTimeValue === 'Yes' name="decision" value="Yes")
       label(for="crdTimeYes") Yes

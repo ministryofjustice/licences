@@ -49,13 +49,11 @@ module.exports = {
         reportingDate: {
           splitDate: { day: 'reportingDay', month: 'reportingMonth', year: 'reportingYear' },
           responseType: 'requiredDate',
-          validationMessage: 'Enter a valid date',
         },
       },
       {
         reportingTime: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time',
         },
       },
     ],
