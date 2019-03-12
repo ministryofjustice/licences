@@ -6,7 +6,7 @@ block question
 block formItems
   - var suitabilityValue = data.decision || null;
 
-  div.form-group.inline
+  div#decision(class=errorObject.decision ? "form-group form-group-error inline" : "form-group inline")
     div.multiple-choice(data-target="unsuitableForm")
       input#unsuitableYes(type="radio" checked=suitabilityValue === 'Yes' name="decision" value="Yes")
       label(for="unsuitableYes") Yes

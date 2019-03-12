@@ -130,6 +130,14 @@ const defaultErrorMessages = {
     errorType === 'string.regex.base'
       ? 'Enter a telephone number, like 01632 960 001 or 07700 900 982'
       : 'Enter a telephone number',
+
+  requiredDate: errorType => {
+    if (errorType === 'date.min') return 'The reporting date must be today or in the future'
+    if (errorType === 'date.format') return 'Enter a valid date'
+    return 'Enter a date'
+  },
+
+  requiredTime: errorType => (errorType === 'date.format' ? 'Enter a valid time' : 'Enter a time'),
 }
 
 const validationProcedures = {
@@ -203,7 +211,7 @@ function validate({ formResponse, pageConfig, formType = 'standard', bespokeCond
 
 function getErrorMessage(fieldConfig, error, errorMethod) {
   if (error.type === 'date.min') {
-    return 'Enter a date that is in the future'
+    return 'The reporting date must be today or in the future'
   }
 
   const defaultForType = (config, joiError) => {

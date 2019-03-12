@@ -232,7 +232,9 @@ module.exports = function createLicenceService(licenceClient) {
   function getCombinedDate(dateConfig, userInput) {
     const { day, month, year } = dateConfig.splitDate
 
-    return `${userInput[[day]]}/${userInput[[month]]}/${userInput[[year]]}`
+    if ([day, month, year].every(item => userInput[item].length === 0)) return ''
+
+    return `${userInput[day]}/${userInput[month]}/${userInput[year]}`
   }
 
   function addSplitDateFields(rawData, formFieldsConfig) {

@@ -45,7 +45,7 @@ mixin addressForm(errorObject)
 
       div.pure-g
         div.pure-u-4-5
-          div.form-group.inline.smallPaddingTop
+          div#cautionedAgainstResident(class=errorObject.cautionedAgainstResident ? "form-group form-group-error inline smallPaddingTop" : "form-group inline smallPaddingTop")
             p According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
 
             div.multiple-choice
