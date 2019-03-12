@@ -16,7 +16,7 @@ block content
               if index === 'occupier'
                 each occVal, occKey in error
                   li
-                    a(href="#occupier" + occKey + "-0") Occupier: #{occVal}
+                    a(href="#occupier" + occKey) Occupier: #{occVal}
               else if index === 'residents'
                 each resident, resIndex in error
                   each resVal, resKey in resident
@@ -24,7 +24,7 @@ block content
                       a(href="#resident" + resKey + "-" + resIndex) Resident: #{resVal}
               else
                 li
-                  a(href="#" + index + "-" + 0) #{error}
+                  a(href="#" + index) #{error}
 
     h2.heading-large Proposed curfew address
 
