@@ -22,15 +22,18 @@ module.exports = function createNotificationService(notifyClient, audit) {
 
     const { templateId } = templates[type]
 
-    notificationData.emails.forEach(async email => {
-      try {
-        await notifyClient.sendEmail(templateId, email, { personalisation: notificationData })
-      } catch (error) {
-        logger.error('Error sending notification email ', email)
-        logger.error(error.stack)
-        logger.error('error notifying for type', type)
-        logger.error('error notifying for data', notificationData)
-      }
+    notificationData.emails.forEach(email => {
+      notifyClient
+        .sendEmail(templateId, email, { personalisation: notificationData })
+        .then(() => {
+          logger.info(`Successful notify for email: ${email}`)
+        })
+        .catch(error => {
+          logger.error('Error sending notification email ', email)
+          logger.error(error.stack)
+          logger.error('error notifying for type', type)
+          logger.error('error notifying for data', notificationData)
+        })
     })
 
     auditEvent(username, notificationData.booking_id, type, notificationData)
