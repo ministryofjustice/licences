@@ -46,9 +46,6 @@ describe('/hdc/licenceConditions', () => {
       { url: '/hdc/licenceConditions/standard/1', content: 'Not commit any offence' },
       { url: '/hdc/licenceConditions/additionalConditions/1', content: 'Select additional conditions</h1>' },
       { url: '/hdc/licenceConditions/conditionsSummary/1', content: 'Add additional condition' },
-
-      // Is this meant to be here?
-      // {url: '/hdc/reporting/reportingInstructions/1', content: 'Reporting instructions'}
     ]
 
     testFormPageGets(app, routes, licenceService)

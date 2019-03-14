@@ -1,7 +1,7 @@
 const request = require('supertest')
 
 const {
-  userAdminServiceStub,
+  createUserAdminServiceStub,
   auditStub,
   createPrisonerServiceStub,
   createLicenceServiceStub,
@@ -11,8 +11,6 @@ const {
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createAdminRoute = require('../../server/routes/admin/admin')
-
-let app
 
 const user1 = {
   nomisId: 'user1',
@@ -29,20 +27,22 @@ const user2 = {
 }
 
 describe('/admin', () => {
-  beforeEach(() => {
-    app = createApp({}, 'batchUser')
+  let userAdminService
 
+  beforeEach(() => {
     auditStub.record.reset()
 
-    userAdminServiceStub.findRoUsers.reset()
-    userAdminServiceStub.getRoUsers.reset()
-    userAdminServiceStub.getRoUser.reset()
+    userAdminService = createUserAdminServiceStub()
 
-    userAdminServiceStub.getRoUsers.resolves([user1, user2])
-    userAdminServiceStub.findRoUsers.resolves([user1])
-    userAdminServiceStub.getRoUser.resolves(user1)
+    userAdminService.findRoUsers.reset()
+    userAdminService.getRoUsers.reset()
+    userAdminService.getRoUser.reset()
 
-    userAdminServiceStub.verifyUserDetails.resolves({
+    userAdminService.getRoUsers.resolves([user1, user2])
+    userAdminService.findRoUsers.resolves([user1])
+    userAdminService.getRoUser.resolves(user1)
+
+    userAdminService.verifyUserDetails.resolves({
       username: 'nomisUser',
       firstName: 'nomisFirst',
       lastName: 'nomisLast',
@@ -51,6 +51,7 @@ describe('/admin', () => {
 
   describe('GET /admin', () => {
     it('redirects to ro user list', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .get('/admin/')
         .expect(302)
@@ -60,16 +61,18 @@ describe('/admin', () => {
 
   describe('GET /admin/roUsers', () => {
     it('calls user service and renders HTML output', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .get('/admin/roUsers')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(() => {
-          expect(userAdminServiceStub.getRoUsers).to.be.calledOnce()
+          expect(userAdminService.getRoUsers).to.be.calledOnce()
         })
     })
 
     it('should display the user details', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .get('/admin/roUsers')
         .expect(200)
@@ -80,7 +83,7 @@ describe('/admin', () => {
     })
 
     it('should throw if submitted by non-authorised user', () => {
-      app = createApp({}, 'roUser')
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'roUser')
       return request(app)
         .get('/admin/roUsers')
         .expect(403)
@@ -89,24 +92,26 @@ describe('/admin', () => {
 
   describe('POST /admin/roUsers', () => {
     it('redirects back to page and does not call user service when no search term', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers')
         .send({ searchTerm: '  ' })
         .expect(302)
         .expect(() => {
-          expect(userAdminServiceStub.findRoUsers).not.to.be.calledOnce()
+          expect(userAdminService.findRoUsers).not.to.be.calledOnce()
         })
     })
 
     it('calls user service and renders HTML output', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers')
         .send({ searchTerm: 'aQuery' })
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(userAdminServiceStub.findRoUsers).to.be.calledOnce()
-          expect(userAdminServiceStub.findRoUsers).to.be.calledWith('aQuery')
+          expect(userAdminService.findRoUsers).to.be.calledOnce()
+          expect(userAdminService.findRoUsers).to.be.calledWith('aQuery')
           expect(res.text).to.contain('user1')
           expect(res.text).not.to.contain('user2')
         })
@@ -115,13 +120,14 @@ describe('/admin', () => {
 
   describe('GET /admin/roUsers/edit', () => {
     it('calls user service and shows user details', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .get('/admin/roUsers/edit/1')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(userAdminServiceStub.getRoUser).to.be.calledOnce()
-          expect(userAdminServiceStub.getRoUser).to.be.calledWith('1')
+          expect(userAdminService.getRoUser).to.be.calledOnce()
+          expect(userAdminService.getRoUser).to.be.calledWith('1')
           expect(res.text).to.contain('value="user1"')
           expect(res.text).to.contain('value="d1"')
           expect(res.text).to.contain('value="f1"')
@@ -132,25 +138,27 @@ describe('/admin', () => {
 
   describe('POST /admin/roUsers/edit', () => {
     it('redirects back to page and does not call user service when missing delius id', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/edit/1')
         .send({ newNomisId: '1', deliusId: '', newDeliusId: '', first: 'f', last: 'l' })
         .expect(302)
         .expect('Location', '/admin/roUsers/edit/1')
         .expect(() => {
-          expect(userAdminServiceStub.findRoUsers).not.to.be.calledOnce()
+          expect(userAdminService.findRoUsers).not.to.be.calledOnce()
         })
     })
 
     it('calls user service and redirects to user list', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/edit/1')
         .send({ nomisId: '1n', originalDeliusId: 'd', deliusId: 'dn', first: 'f', last: 'l' })
         .expect(302)
         .expect('Location', '/admin/roUsers')
         .expect(() => {
-          expect(userAdminServiceStub.updateRoUser).to.be.calledOnce()
-          expect(userAdminServiceStub.updateRoUser).to.be.calledWith('token', '1', {
+          expect(userAdminService.updateRoUser).to.be.calledOnce()
+          expect(userAdminService.updateRoUser).to.be.calledWith('token', '1', {
             originalDeliusId: 'd',
             first: 'f',
             last: 'l',
@@ -161,6 +169,7 @@ describe('/admin', () => {
     })
 
     it('Audits the edit user event', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/edit/1')
         .send({ nomisId: 'nid', deliusId: 'did' })
@@ -179,13 +188,14 @@ describe('/admin', () => {
 
   describe('GET /admin/roUsers/delete', () => {
     it('calls user service and shows user details', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .get('/admin/roUsers/delete/1')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(userAdminServiceStub.getRoUser).to.be.calledOnce()
-          expect(userAdminServiceStub.getRoUser).to.be.calledWith('1')
+          expect(userAdminService.getRoUser).to.be.calledOnce()
+          expect(userAdminService.getRoUser).to.be.calledWith('1')
           expect(res.text).to.contain('nomisId">user1')
           expect(res.text).to.contain('deliusId">d1')
           expect(res.text).to.contain('firstName">f1')
@@ -196,18 +206,20 @@ describe('/admin', () => {
 
   describe('POST /admin/roUsers/delete', () => {
     it('calls user service and redirects to user list', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/delete/1')
         .send()
         .expect(302)
         .expect('Location', '/admin/roUsers')
         .expect(() => {
-          expect(userAdminServiceStub.deleteRoUser).to.be.calledOnce()
-          expect(userAdminServiceStub.deleteRoUser).to.be.calledWith('1')
+          expect(userAdminService.deleteRoUser).to.be.calledOnce()
+          expect(userAdminService.deleteRoUser).to.be.calledWith('1')
         })
     })
 
     it('Audits the delete user event', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/delete/1')
         .expect(302)
@@ -224,6 +236,7 @@ describe('/admin', () => {
   })
 
   describe('GET /admin/roUsers/add', () => {
+    const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
     it('shows add user form', () => {
       return request(app)
         .get('/admin/roUsers/add/')
@@ -237,36 +250,39 @@ describe('/admin', () => {
 
   describe('POST /admin/roUsers/add', () => {
     it('redirects back to page and does not call user service when missing nomis id', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/add/')
         .send({ newNomisId: '   ', newDeliusId: 'delius', first: 'first', last: 'last' })
         .expect(302)
         .expect('Location', '/admin/roUsers/add')
         .expect(() => {
-          expect(userAdminServiceStub.addRoUser).not.to.be.calledOnce()
+          expect(userAdminService.addRoUser).not.to.be.calledOnce()
         })
     })
 
     it('redirects back to page and does not call user service when missing delius id', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/add/')
         .send({ newNomisId: 'nomisId', newDeliusId: '  ', first: 'first', last: 'last' })
         .expect(302)
         .expect('Location', '/admin/roUsers/add')
         .expect(() => {
-          expect(userAdminServiceStub.addRoUser).not.to.be.calledOnce()
+          expect(userAdminService.addRoUser).not.to.be.calledOnce()
         })
     })
 
     it('calls user service and redirects to user list', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/add/')
         .send({ nomisId: 'nomisId', deliusId: 'deliusId', first: 'first', last: 'last' })
         .expect(302)
         .expect('Location', '/admin/roUsers')
         .expect(() => {
-          expect(userAdminServiceStub.addRoUser).to.be.calledOnce()
-          expect(userAdminServiceStub.addRoUser).to.be.calledWith('token', {
+          expect(userAdminService.addRoUser).to.be.calledOnce()
+          expect(userAdminService.addRoUser).to.be.calledWith('token', {
             deliusId: 'deliusId',
             first: 'first',
             last: 'last',
@@ -276,6 +292,7 @@ describe('/admin', () => {
     })
 
     it('Audits the add user event', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/add/')
         .send({ nomisId: 'nid', deliusId: 'did' })
@@ -294,17 +311,19 @@ describe('/admin', () => {
 
   describe('GET /admin/roUsers/verify', () => {
     it('calls nomis and returns JSON', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(200)
         .expect('Content-Type', /json/)
         .expect(() => {
-          expect(userAdminServiceStub.verifyUserDetails).to.be.calledOnce()
-          expect(userAdminServiceStub.verifyUserDetails).to.be.calledWith('token', 'USER_NAME')
+          expect(userAdminService.verifyUserDetails).to.be.calledOnce()
+          expect(userAdminService.verifyUserDetails).to.be.calledWith('token', 'USER_NAME')
         })
     })
 
     it('should display the user details', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(200)
@@ -316,8 +335,8 @@ describe('/admin', () => {
     })
 
     it('should give 404 when no match for user name', () => {
-      userAdminServiceStub.verifyUserDetails.rejects()
-
+      userAdminService.verifyUserDetails.rejects()
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(404)
@@ -325,7 +344,7 @@ describe('/admin', () => {
     })
 
     it('should throw if submitted by non-authorised user', () => {
-      app = createApp({}, 'roUser')
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'roUser')
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(403)
@@ -333,13 +352,14 @@ describe('/admin', () => {
   })
 })
 
-function createApp({ licenceServiceStub }, user) {
+function createApp({ licenceServiceStub, userAdminServiceStub }, user) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const userAdminService = userAdminServiceStub || createUserAdminServiceStub()
 
   const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
-  const route = baseRouter(createAdminRoute({ userAdminService: userAdminServiceStub }), {
+  const route = baseRouter(createAdminRoute({ userAdminService }), {
     auditKey: 'USER_MANAGEMENT',
   })
 

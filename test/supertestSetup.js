@@ -68,16 +68,20 @@ const createPdfServiceStub = () => ({
   generatePdf: sinon.stub().resolves(),
 })
 
-const userAdminServiceStub = {
+const createUserAdminServiceStub = () => ({
   getRoUsers: sinon.stub().resolves(),
   getRoUser: sinon.stub().resolves(),
-  getRoUserByDeliusId: sinon.stub().resolves(),
+  getRoUserByDeliusId: sinon.stub().resolves({}),
   updateRoUser: sinon.stub().resolves(),
   deleteRoUser: sinon.stub().resolves(),
   addRoUser: sinon.stub().resolves(),
   findRoUsers: sinon.stub().resolves(),
   verifyUserDetails: sinon.stub().resolves(),
-}
+})
+
+const createNotificationServiceStub = () => ({
+  notify: sinon.stub().resolves(),
+})
 
 const caseListServiceStub = {
   getHdcCaseList: sinon.stub().resolves([]),
@@ -160,7 +164,8 @@ const setup = {
   caseListServiceStub,
   createNomisPushServiceStub,
   createPdfServiceStub,
-  userAdminServiceStub,
+  createUserAdminServiceStub,
+  createNotificationServiceStub,
   authenticationMiddleware,
   testFormPageGets,
   appSetup(route, user = 'caUser', prefix = '') {
