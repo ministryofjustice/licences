@@ -5,7 +5,7 @@ const { isEmpty } = require('../utils/functionalHelpers')
 
 module.exports = function createNotificationService(notifyClient, audit) {
   async function notify(username, type, notificationData) {
-    if (notifyKey === 'NOTIFY_OFF') {
+    if (isEmpty(notifyKey) || notifyKey === 'NOTIFY_OFF') {
       logger.warn('No notification API key - notifications disabled')
       return
     }
