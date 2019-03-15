@@ -5,3 +5,4 @@ govuk_modules/
 seeds/
 coverage/
 build/
+package-lock.json
