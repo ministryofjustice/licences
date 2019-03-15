@@ -42,7 +42,7 @@ class CaselistSpec extends GebReportingSpec {
 
     where:
     type         | sample                 | status
-    'Unstarted'  | 'eligibility/started'  | 'Checking eligibility'
+    'Unstarted'  | 'eligibility/started'  | 'Not started'
     'Sent to RO' | 'assessment/unstarted' | 'With responsible officer'
   }
 

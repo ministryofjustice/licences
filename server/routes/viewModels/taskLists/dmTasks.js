@@ -170,7 +170,7 @@ module.exports = ({ decisions, tasks, stage }) => {
 
 function getDecisionLabel({ decisions, tasks, stage }) {
   const { refused, refusalReason } = decisions
-  const statusLabel = getStatusLabel({ decisions, tasks, stage }, 'DM')
+  const { statusLabel } = getStatusLabel({ decisions, tasks, stage }, 'DM')
 
   if (refused && refusalReason) {
     return `${statusLabel} : ${refusalReason}`

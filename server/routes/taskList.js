@@ -23,7 +23,7 @@ module.exports = ({ prisonerService, licenceService, audit }) => router => {
 
       const licenceStatus = getLicenceStatus(licence)
       const allowedTransition = getAllowedTransition(licenceStatus, req.user.role)
-      const statusLabel = getStatusLabel(licenceStatus, req.user.role)
+      const { statusLabel } = getStatusLabel(licenceStatus, req.user.role)
 
       const taskListModel = getTaskListModel(
         req.user.role,

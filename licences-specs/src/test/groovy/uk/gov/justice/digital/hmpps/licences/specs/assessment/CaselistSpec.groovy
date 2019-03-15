@@ -40,9 +40,9 @@ class CaselistSpec extends GebReportingSpec {
 
     where:
     type        | sample                 | status
-    'Unstarted' | 'assessment/unstarted' | 'Address provided'
-    'Doing'     | 'assessment/reporting' | 'Assessment ongoing'
-    'Done'      | 'assessment/done'      | 'Assessment ongoing'
+    'Unstarted' | 'assessment/unstarted' | 'Not started'
+    'Doing'     | 'assessment/reporting' | 'In progress'
+    'Done'      | 'assessment/done'      | 'In progress'
   }
 
   @Unroll

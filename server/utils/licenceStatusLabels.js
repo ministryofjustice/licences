@@ -3,15 +3,45 @@ const { taskStates } = require('../services/config/taskStates')
 
 module.exports = { getStatusLabel }
 
-const UNSTARTED_LABEL = 'Not started'
+const status = {
+  // active
+  notStarted: { statusLabel: 'Not started', activeCase: true },
+  eligible: { statusLabel: 'Eligible', activeCase: true },
+  addressRejected: { statusLabel: 'Address not suitable', activeCase: true },
+  bassRequest: { statusLabel: 'BASS request', activeCase: true },
+  bassAreaRejected: { statusLabel: 'BASS area rejected', activeCase: true },
+  approved: { statusLabel: 'Approved', activeCase: true },
+  postponed: { statusLabel: 'Postponed', activeCase: true },
+  addressSuitable: { statusLabel: 'Address suitable', activeCase: true },
+  withPrison: { statusLabel: 'With prison', activeCase: true },
+  withResponsibleOfficer: { statusLabel: 'With responsible officer', activeCase: true },
+  withDecisionMaker: { statusLabel: 'With decision maker', activeCase: true },
+  varyingLicence: { statusLabel: 'Varying licence', activeCase: true },
+  awaitingRefusal: { statusLabel: 'Awaiting refusal', activeCase: true },
+  licenceCreated: { statusLabel: 'Licence created', activeCase: true },
+  notComplete: { statusLabel: 'Not complete', activeCase: true },
+  inProgress: { statusLabel: 'In progress', activeCase: true },
+
+  // inactive
+  notEligible: { statusLabel: 'Not eligible', activeCase: false },
+  presumedUnsuitable: { statusLabel: 'Presumed unsuitable', activeCase: false },
+  notEnoughTime: { statusLabel: 'Not enough time', activeCase: false },
+  optedOut: { statusLabel: 'Opted out', activeCase: false },
+  refused: { statusLabel: 'Refused', activeCase: false },
+  bassOfferWithdrawn: { statusLabel: 'BASS offer withdrawn', activeCase: false },
+  bassRequestWithdrawn: { statusLabel: 'BASS request withdrawn', activeCase: false },
+}
 
 function getStatusLabel(licenceStatus, role) {
-  if (!licenceStatus || !licenceStatus.stage || !licenceStatus.decisions || !licenceStatus.tasks) {
-    return UNSTARTED_LABEL
-  }
-
-  if (licenceStatus.stage === licenceStages.UNSTARTED) {
-    return UNSTARTED_LABEL
+  // can these things all happen?
+  if (
+    !licenceStatus ||
+    !licenceStatus.stage ||
+    licenceStatus.stage === licenceStages.UNSTARTED ||
+    !licenceStatus.decisions ||
+    !licenceStatus.tasks
+  ) {
+    return status.notStarted
   }
 
   return statusLabels(licenceStatus, role)
@@ -21,13 +51,13 @@ function statusLabels(licenceStatus, role) {
   const labels = {
     [licenceStages.ELIGIBILITY]: {
       CA: caEligibilityLabel,
-      RO: () => 'Checking eligibility',
-      DM: () => 'Checking eligibility',
+      RO: () => status.withPrison,
+      DM: () => status.withPrison,
     },
     [licenceStages.PROCESSING_RO]: {
       CA: roProcessingCaLabel,
       RO: roProcessingLabel,
-      DM: () => 'With responsible officer',
+      DM: () => status.withResponsibleOfficer,
     },
     [licenceStages.PROCESSING_CA]: {
       CA: caProcessingLabel,
@@ -35,8 +65,8 @@ function statusLabels(licenceStatus, role) {
       DM: caProcessingDmLabel,
     },
     [licenceStages.APPROVAL]: {
-      CA: () => 'With decision maker',
-      RO: () => 'With decision maker',
+      CA: () => status.withDecisionMaker,
+      RO: () => status.withDecisionMaker,
       DM: dmProcessingLabel,
     },
     [licenceStages.DECIDED]: {
@@ -55,9 +85,9 @@ function statusLabels(licenceStatus, role) {
       DM: postApprovalLabel,
     },
     [licenceStages.VARY]: {
-      CA: () => 'Varying licence',
-      RO: () => 'Varying licence',
-      DM: () => 'Varying licence',
+      CA: () => status.varyingLicence,
+      RO: () => status.varyingLicence,
+      DM: () => status.varyingLicence,
     },
   }
 
@@ -66,57 +96,57 @@ function statusLabels(licenceStatus, role) {
 
 function caEligibilityLabel(licenceStatus) {
   const labels = [
-    { decision: 'excluded', label: 'Excluded (Ineligible)' },
-    { decision: 'unsuitableResult', label: 'Presumed unsuitable' },
-    { decision: 'insufficientTimeContinue', label: 'Not enough time' },
-    { decision: 'insufficientTime', label: 'Not enough time - rejected' },
-    { decision: 'optedOut', label: 'Opted out' },
-    { decision: 'bassReferralNeeded', label: 'Getting address' },
-    { decision: 'curfewAddressRejected', label: 'Address rejected' },
-    { decision: 'eligible', label: 'Eligible' },
+    { decision: 'excluded', label: status.notEligible },
+    { decision: 'unsuitableResult', label: status.presumedUnsuitable },
+    { decision: 'insufficientTimeContinue', label: status.notEnoughTime },
+    { decision: 'insufficientTime', label: status.notEnoughTime },
+    { decision: 'optedOut', label: status.optedOut },
+    { decision: 'bassReferralNeeded', label: status.eligible },
+    { decision: 'curfewAddressRejected', label: status.addressRejected },
+    { decision: 'eligible', label: status.eligible },
   ]
 
-  return getLabel(labels, licenceStatus) || 'Checking eligibility'
+  return getLabel(labels, licenceStatus) || status.notStarted
 }
 
 function caProcessingLabel(licenceStatus) {
   const bassRouteLabels = [
-    { decision: 'bassWithdrawalReason', value: 'offer', label: 'BASS offer withdrawn' },
-    { decision: 'bassWithdrawalReason', value: 'request', label: 'BASS request withdrawn' },
+    { decision: 'bassWithdrawalReason', value: 'offer', label: status.bassOfferWithdrawn },
+    { decision: 'bassWithdrawalReason', value: 'request', label: status.bassRequestWithdrawn },
   ]
 
   const addressRouteLabels = [
-    { decision: 'curfewAddressWithdrawn', label: 'Address withdrawn' },
-    { decision: 'curfewAddressRejected', label: 'Address not suitable' },
+    { decision: 'curfewAddressWithdrawn', label: status.addressRejected },
+    { decision: 'curfewAddressRejected', label: status.addressRejected },
   ]
 
   const commonLabels = [
-    { decision: 'finalChecksRefused', label: 'Refused' },
-    { decision: 'postponed', label: 'Postponed' },
-    { decision: 'excluded', label: 'Excluded (Ineligible)' },
+    { decision: 'finalChecksRefused', label: status.refused },
+    { decision: 'postponed', label: status.postponed },
+    { decision: 'excluded', label: status.notEligible },
   ]
 
   const labels = licenceStatus.decisions.bassReferralNeeded
     ? commonLabels.concat(bassRouteLabels)
     : commonLabels.concat(addressRouteLabels)
 
-  return getLabel(labels, licenceStatus) || 'Review case'
+  return getLabel(labels, licenceStatus) || status.addressSuitable
 }
 
 function caProcessingRoLabel(licenceStatus) {
-  const labels = [{ decision: 'postponed', label: 'Postponed' }]
+  const labels = [{ decision: 'postponed', label: status.postponed }]
 
-  return getLabel(labels, licenceStatus) || 'Submitted to prison case admin'
+  return getLabel(labels, licenceStatus) || status.withPrison
 }
 
 function caProcessingDmLabel(licenceStatus) {
-  const labels = [{ decision: 'postponed', label: 'Postponed' }]
+  const labels = [{ decision: 'postponed', label: status.postponed }]
 
-  return getLabel(labels, licenceStatus) || 'Submitted to prison case admin'
+  return getLabel(labels, licenceStatus) || status.withPrison
 }
 
 function roProcessingLabel(licenceStatus) {
-  const optOutLabel = getLabel([{ decision: 'optedOut', label: 'Opted out' }], licenceStatus)
+  const optOutLabel = getLabel([{ decision: 'optedOut', label: status.optedOut }], licenceStatus)
 
   if (optOutLabel) {
     return optOutLabel
@@ -124,14 +154,14 @@ function roProcessingLabel(licenceStatus) {
 
   if (licenceStatus.decisions.bassReferralNeeded) {
     if (licenceStatus.tasks.bassAreaCheck === taskStates.UNSTARTED) {
-      return 'BASS request'
+      return status.bassRequest
     }
 
     if (licenceStatus.decisions.bassAreaNotSuitable) {
-      return 'BASS area rejected'
+      return status.bassAreaRejected
     }
   } else if (licenceStatus.tasks.curfewAddressReview === taskStates.UNSTARTED) {
-    return 'Address provided'
+    return status.notStarted
   }
 
   if (
@@ -145,31 +175,31 @@ function roProcessingLabel(licenceStatus) {
       licenceStatus.tasks.reportingInstructions,
     ])
   ) {
-    return 'Assessment ongoing'
+    return status.inProgress
   }
 
-  return 'Address provided'
+  return status.notStarted
 }
 
 function roProcessingCaLabel(licenceStatus) {
-  const labels = [{ decision: 'optedOut', label: 'Opted out' }]
+  const labels = [{ decision: 'optedOut', label: status.optedOut }]
 
-  return getLabel(labels, licenceStatus) || 'With responsible officer'
+  return getLabel(labels, licenceStatus) || status.withResponsibleOfficer
 }
 
 function dmProcessingLabel(licenceStatus) {
-  const labels = [{ decision: 'insufficientTimeStop', label: 'Awaiting refusal' }]
+  const labels = [{ decision: 'insufficientTimeStop', label: status.awaitingRefusal }]
 
-  return getLabel(labels, licenceStatus) || 'Make decision'
+  return getLabel(labels, licenceStatus) || status.notStarted
 }
 
 function caDecisionLabel(licenceStatus) {
   if (licenceStatus.decisions.approved) {
     if (licenceStatus.tasks.createLicence === taskStates.DONE) {
-      return 'Licence created'
+      return status.licenceCreated
     }
 
-    return 'Create licence'
+    return status.approved
   }
 
   return decisionLabel(licenceStatus)
@@ -178,19 +208,19 @@ function caDecisionLabel(licenceStatus) {
 function decisionLabel(licenceStatus) {
   if (licenceStatus.decisions.approved) {
     if (licenceStatus.tasks.createLicence === taskStates.DONE) {
-      return 'Licence created'
+      return status.licenceCreated
     }
   }
 
-  const labels = [{ decision: 'approved', label: 'Approved' }, { decision: 'refused', label: 'Refused' }]
+  const labels = [{ decision: 'approved', label: status.approved }, { decision: 'refused', label: status.refused }]
 
-  return getLabel(labels, licenceStatus) || 'Not complete'
+  return getLabel(labels, licenceStatus) || status.notComplete
 }
 
 function postApprovalLabel(licenceStatus) {
-  const labels = [{ decision: 'refused', label: 'Refused' }]
+  const labels = [{ decision: 'refused', label: status.refused }]
 
-  return getLabel(labels, licenceStatus) || 'Licence updated'
+  return getLabel(labels, licenceStatus) || status.licenceCreated
 }
 
 function getLabel(labels, licenceStatus) {

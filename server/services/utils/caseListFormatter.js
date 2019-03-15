@@ -23,8 +23,8 @@ function decoratePrisonerDetails(licences, role) {
   return prisoner => {
     const formattedPrisoner = formatObjectForView(prisoner)
     const decoratedPrisoner = addRoleSpecificDecoration(formattedPrisoner, role, licences)
-    const { stage, status } = getStatus(prisoner, licences, role)
-    return { ...decoratedPrisoner, stage, status }
+    const { stage, status, activeCase } = getStatus(prisoner, licences, role)
+    return { ...decoratedPrisoner, stage, status, activeCase }
   }
 }
 
@@ -34,11 +34,12 @@ function getStatus(prisoner, licences, role) {
   })
 
   if (!licenceForPrisoner) {
-    return { stage: licenceStages.UNSTARTED, status: 'Not started' }
+    return { stage: licenceStages.UNSTARTED, status: 'Not started', activeCase: true }
   }
 
   const licenceStatus = getLicenceStatus(licenceForPrisoner)
-  return { stage: licenceForPrisoner.stage, status: getStatusLabel(licenceStatus, role) }
+  const { statusLabel, activeCase } = getStatusLabel(licenceStatus, role)
+  return { stage: licenceForPrisoner.stage, status: statusLabel, activeCase }
 }
 
 function sortList(role) {

@@ -40,7 +40,7 @@ class CaselistSpec extends GebReportingSpec {
 
     where:
     type        | sample                  | status
-    'Unstarted' | 'decision/unstarted'    | 'Make decision'
+    'Unstarted' | 'decision/unstarted'    | 'Not started'
     'Approved'  | 'decision/approved'     | 'Approved'
     'Postponed' | 'finalchecks/postponed' | 'Postponed'
   }
@@ -59,7 +59,7 @@ class CaselistSpec extends GebReportingSpec {
 
     where:
     status          | label       | sample
-    'Make decision' | 'Start now' | 'decision/unstarted'
+    'Not started'   | 'Start now' | 'decision/unstarted'
     'Approved'      | 'View'      | 'decision/approved'
   }
 
