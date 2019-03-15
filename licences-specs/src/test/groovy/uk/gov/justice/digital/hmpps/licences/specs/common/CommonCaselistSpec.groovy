@@ -79,7 +79,7 @@ class CommonCaselistSpec extends GebReportingSpec {
     to CaselistPage, 'inactive'
 
     then: 'The inactive case is shown with correct status'
-    statusFor(0) == 'Excluded (Ineligible)'
+    statusFor(0) == 'Not eligible'
   }
 
   def 'Search for offenders is available for RO'() {

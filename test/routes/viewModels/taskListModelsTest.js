@@ -1797,7 +1797,7 @@ describe('TaskList models', () => {
             text: 'Refuse HDC',
             type: 'btn',
           },
-          label: 'Make decision',
+          label: 'Not started',
           title: 'Final decision',
         },
       ])
@@ -1846,7 +1846,7 @@ describe('TaskList models', () => {
             text: 'Refuse HDC',
             type: 'btn',
           },
-          label: 'Make decision',
+          label: 'Not started',
           title: 'Final decision',
         },
       ])
@@ -1941,7 +1941,7 @@ describe('TaskList models', () => {
             text: 'Continue',
             type: 'btn',
           },
-          label: 'Make decision',
+          label: 'Not started',
           title: 'Final decision',
         },
       ])
@@ -2036,7 +2036,7 @@ describe('TaskList models', () => {
             text: 'Continue',
             type: 'btn',
           },
-          label: 'Make decision',
+          label: 'Not started',
           title: 'Final decision',
         },
       ])
@@ -2141,7 +2141,7 @@ describe('TaskList models', () => {
             text: 'Continue',
             type: 'btn',
           },
-          label: 'Make decision',
+          label: 'Not started',
           title: 'Final decision',
         },
       ])

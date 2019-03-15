@@ -14,7 +14,7 @@ describe('getStatusLabel', () => {
 
     examples.forEach(example => {
       it(`should give default label when licence is ${example.reason}`, () => {
-        expect(getStatusLabel(example.status, 'CA')).to.eql(defaultLabel)
+        expect(getStatusLabel(example.status, 'CA').statusLabel).to.eql(defaultLabel)
       })
     })
   })
@@ -24,15 +24,15 @@ describe('getStatusLabel', () => {
       const examples = [
         {
           status: { stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {} },
-          label: 'Checking eligibility',
+          label: 'Not started',
         },
         {
           status: { stage: licenceStages.ELIGIBILITY, decisions: { excluded: true }, tasks: {} },
-          label: 'Excluded (Ineligible)',
+          label: 'Not eligible',
         },
         {
           status: { stage: licenceStages.ELIGIBILITY, decisions: { insufficientTime: true }, tasks: {} },
-          label: 'Not enough time - rejected',
+          label: 'Not enough time',
         },
         {
           status: {
@@ -52,7 +52,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: { stage: licenceStages.ELIGIBILITY, decisions: { bassReferralNeeded: true }, tasks: {} },
-          label: 'Getting address',
+          label: 'Eligible',
         },
         {
           status: {
@@ -60,7 +60,7 @@ describe('getStatusLabel', () => {
             decisions: { curfewAddressRejected: true },
             tasks: {},
           },
-          label: 'Address rejected',
+          label: 'Address not suitable',
         },
         {
           status: {
@@ -68,7 +68,7 @@ describe('getStatusLabel', () => {
             decisions: { curfewAddressRejected: true, unsuitableResult: false },
             tasks: {},
           },
-          label: 'Address rejected',
+          label: 'Address not suitable',
         },
         {
           status: {
@@ -91,7 +91,7 @@ describe('getStatusLabel', () => {
             decisions: { excluded: true, insufficientTime: true, unsuitableResult: true },
             tasks: {},
           },
-          label: 'Excluded (Ineligible)',
+          label: 'Not eligible',
         },
         {
           status: {
@@ -110,11 +110,11 @@ describe('getStatusLabel', () => {
       const examples = [
         {
           status: { stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {} },
-          label: 'Review case',
+          label: 'Address suitable',
         },
         {
           status: { stage: licenceStages.PROCESSING_CA, decisions: { excluded: true }, tasks: {} },
-          label: 'Excluded (Ineligible)',
+          label: 'Not eligible',
         },
         {
           status: {
@@ -169,7 +169,7 @@ describe('getStatusLabel', () => {
             decisions: { excluded: true, curfewAddressApproved: 'rejected' },
             tasks: {},
           },
-          label: 'Excluded (Ineligible)',
+          label: 'Not eligible',
         },
         {
           status: {
@@ -196,7 +196,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: { stage: licenceStages.DECIDED, decisions: { approved: true }, tasks: {} },
-          label: 'Create licence',
+          label: 'Approved',
         },
         {
           status: { stage: licenceStages.DECIDED, decisions: { refused: true }, tasks: {} },
@@ -213,7 +213,7 @@ describe('getStatusLabel', () => {
       const examples = [
         {
           status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {} },
-          label: 'Address provided',
+          label: 'Not started',
         },
         {
           status: {
@@ -221,7 +221,7 @@ describe('getStatusLabel', () => {
             decisions: {},
             tasks: { curfewAddressReview: 'UNSTARTED', reportingInstructions: 'DONE' },
           },
-          label: 'Address provided',
+          label: 'Not started',
         },
         {
           status: {
@@ -229,19 +229,19 @@ describe('getStatusLabel', () => {
             decisions: {},
             tasks: { curfewAddressReview: 'DONE' },
           },
-          label: 'Assessment ongoing',
+          label: 'In progress',
         },
         {
           status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: { curfewHours: 'STARTED' } },
-          label: 'Assessment ongoing',
+          label: 'In progress',
         },
         {
           status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: { licenceConditions: 'DONE' } },
-          label: 'Assessment ongoing',
+          label: 'In progress',
         },
         {
           status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: { riskManagement: 'STARTED' } },
-          label: 'Assessment ongoing',
+          label: 'In progress',
         },
         {
           status: {
@@ -249,7 +249,7 @@ describe('getStatusLabel', () => {
             decisions: {},
             tasks: { reportingInstructions: 'DONE' },
           },
-          label: 'Assessment ongoing',
+          label: 'In progress',
         },
         {
           status: {
@@ -265,7 +265,7 @@ describe('getStatusLabel', () => {
             decisions: { bassReferralNeeded: true },
             tasks: { bassAreaCheck: 'DONE' },
           },
-          label: 'Assessment ongoing',
+          label: 'In progress',
         },
         {
           status: {
@@ -273,7 +273,7 @@ describe('getStatusLabel', () => {
             decisions: { bassReferralNeeded: true },
             tasks: { bassAreaCheck: 'STARTED' },
           },
-          label: 'Assessment ongoing',
+          label: 'In progress',
         },
         {
           status: {
@@ -292,11 +292,11 @@ describe('getStatusLabel', () => {
       const examples = [
         {
           status: { stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {} },
-          label: 'Submitted to prison case admin',
+          label: 'With prison',
         },
         {
           status: { stage: licenceStages.PROCESSING_CA, decisions: { excluded: true }, tasks: {} },
-          label: 'Submitted to prison case admin',
+          label: 'With prison',
         },
         {
           status: {
@@ -304,7 +304,7 @@ describe('getStatusLabel', () => {
             decisions: { curfewAddressApproved: 'rejected' },
             tasks: {},
           },
-          label: 'Submitted to prison case admin',
+          label: 'With prison',
         },
         {
           status: { stage: licenceStages.PROCESSING_CA, decisions: { postponed: true }, tasks: {} },
@@ -319,7 +319,7 @@ describe('getStatusLabel', () => {
       const examples = [
         {
           status: { stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {} },
-          label: 'Checking eligibility',
+          label: 'With prison',
         },
         {
           status: { stage: licenceStages.APPROVAL, decisions: { approved: true }, tasks: {} },
@@ -344,7 +344,7 @@ describe('getStatusLabel', () => {
       const examples = [
         {
           status: { stage: licenceStages.APPROVAL, decisions: {}, tasks: {} },
-          label: 'Make decision',
+          label: 'Not started',
         },
         {
           status: { stage: licenceStages.APPROVAL, decisions: { insufficientTimeStop: true }, tasks: {} },
@@ -359,7 +359,7 @@ describe('getStatusLabel', () => {
       const examples = [
         {
           status: { stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {} },
-          label: 'Checking eligibility',
+          label: 'With prison',
         },
         {
           status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {} },
@@ -367,7 +367,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: { stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {} },
-          label: 'Submitted to prison case admin',
+          label: 'With prison',
         },
         {
           status: { stage: licenceStages.DECIDED, decisions: { approved: true }, tasks: {} },
@@ -386,7 +386,7 @@ describe('getStatusLabel', () => {
   function assertLabels(examples, role) {
     examples.forEach(example => {
       it(`should give ${example.label}`, () => {
-        expect(getStatusLabel(example.status, role)).to.eql(example.label)
+        expect(getStatusLabel(example.status, role).statusLabel).to.eql(example.label)
       })
     })
   }

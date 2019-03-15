@@ -2,7 +2,7 @@ const logger = require('../../log.js')
 const { isEmpty, getIn } = require('../utils/functionalHelpers')
 
 module.exports = function createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter) {
-  async function getHdcCaseList(token, username, role, tab) {
+  async function getHdcCaseList(token, username, role, tab = 'active') {
     try {
       const nomisClient = nomisClientBuilder(token)
       const hdcEligibleReleases = await getCaseList(nomisClient, licenceClient, username, role)
@@ -13,7 +13,9 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
       }
 
       const formattedCaseList = await caseListFormatter.formatCaseList(hdcEligibleReleases, role)
-      return formattedCaseList.filter(prisoner => neededForRole(prisoner, role) && neededForTab(prisoner, tab))
+      return formattedCaseList.filter(
+        prisoner => neededForRole(prisoner, role) && prisoner.activeCase === (tab === 'active')
+      )
     } catch (error) {
       logger.error('Error during getHdcCaseList: ', error.stack)
       throw error
@@ -83,21 +85,4 @@ function neededForRole(prisoner, role) {
   }
 
   return true
-}
-
-function neededForTab(prisoner, tab) {
-  const inactiveStatuses = [
-    'Excluded (Ineligible)',
-    'Presumed unsuitable',
-    'Not enough time - rejected',
-    'Opted out',
-    'Address not suitable',
-    'Address withdrawn',
-    'BASS offer withdrawn',
-    'BASS request withdrawn',
-    'Refused',
-  ]
-
-  const isInactive = inactiveStatuses.includes(prisoner.status)
-  return isInactive === (tab === 'inactive')
 }
