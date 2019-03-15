@@ -61,10 +61,7 @@ module.exports = {
   tagManagerKey: get('TAG_MANAGER_KEY', null),
 
   notifications: {
-    notifyKey: get(
-      'NOTIFY_API_KEY',
-      'licencesdev-04decd8b-eef3-40c5-8157-0459fd2ebf8e-66103def-fdde-4194-9ba8-c29dddb4d995'
-    ),
+    notifyKey: get('NOTIFY_API_KEY', 'dummy-key'),
     dueDateFormat: 'dddd Do MMMM',
     roNewCaseWorkingDays: 10,
     roNewCaseTodayCutOff: 15,
