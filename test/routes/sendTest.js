@@ -355,7 +355,7 @@ describe('send', () => {
 
           const expectedData = {
             booking_id: '123',
-            emails: ['alistair.todd@digital.justice.gov.uk', 'alistair.todd+2@digital.justice.gov.uk'],
+            emails: ['hdc_test@digital.justice.gov.uk', 'hdc_test+2@digital.justice.gov.uk'],
             offender_dob: 'off-dob',
             offender_name: 'first last',
             sender_name: 'RO_USER',
@@ -382,7 +382,7 @@ describe('send', () => {
 
           const expectedData = {
             booking_id: '123',
-            emails: ['alistair.todd@digital.justice.gov.uk', 'alistair.todd+2@digital.justice.gov.uk'],
+            emails: ['hdc_test@digital.justice.gov.uk', 'hdc_test+2@digital.justice.gov.uk'],
             offender_dob: 'off-dob',
             offender_name: 'first last',
             sender_name: 'DM_USER',
