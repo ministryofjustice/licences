@@ -1,7 +1,7 @@
 module.exports = {
   LT1: {
-    ca: ['alistair.todd@digital.justice.gov.uk', 'alistair.todd+2@digital.justice.gov.uk'],
-    dm: ['alistair.todd@digital.justice.gov.uk'],
+    ca: ['hdc_test@digital.justice.gov.uk', 'hdc_test+2@digital.justice.gov.uk'],
+    dm: ['hdc_test@digital.justice.gov.uk'],
   },
   DTI: {
     ca: ['OMU.Deerbolt@hmps.gsi.gov.uk'],

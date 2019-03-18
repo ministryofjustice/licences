@@ -8,14 +8,14 @@ exports.seed = knex =>
           staff_id: 'DELIUS_ID_TEST',
           first_name: 'FIRSTA',
           last_name: 'LASTA',
-          org_email: 'alistair.todd@digital.justice.gov.uk',
+          org_email: 'hdc_test@digital.justice.gov.uk',
         },
         {
           nomis_id: 'RO_USER_MULTI',
           staff_id: 'DELIUS_ID_TEST_MULTI',
           first_name: 'FIRSTA',
           last_name: 'LASTA',
-          org_email: 'alistair.todd@digital.justice.gov.uk',
+          org_email: 'hdc_test@digital.justice.gov.uk',
         },
         {
           nomis_id: 'RO_USER',
@@ -26,7 +26,7 @@ exports.seed = knex =>
           job_role: 'Role 1',
           email: 'email@1',
           telephone: '1111',
-          org_email: 'alistair.todd@digital.justice.gov.uk',
+          org_email: 'hdc_test@digital.justice.gov.uk',
         },
         {
           nomis_id: 'RO_USER2',
@@ -37,7 +37,7 @@ exports.seed = knex =>
           job_role: 'Role 2',
           email: 'email@2',
           telephone: '2222',
-          org_email: 'alistair.todd@digital.justice.gov.uk',
+          org_email: 'hdc_test@digital.justice.gov.uk',
         },
         {
           nomis_id: 'RO_USER3',
@@ -48,7 +48,7 @@ exports.seed = knex =>
           job_role: 'Role 3',
           email: 'email@3',
           telephone: '3333',
-          org_email: 'alistair.todd@digital.justice.gov.uk',
+          org_email: 'hdc_test@digital.justice.gov.uk',
         },
         {
           nomis_id: 'RO_USER4',
@@ -59,7 +59,7 @@ exports.seed = knex =>
           job_role: 'Role 4',
           email: 'email@4',
           telephone: '4444',
-          org_email: 'alistair.todd@digital.justice.gov.uk',
+          org_email: 'hdc_test@digital.justice.gov.uk',
         },
         {
           nomis_id: 'RO_USER5',
@@ -70,7 +70,7 @@ exports.seed = knex =>
           job_role: 'Role 5',
           email: 'email@5',
           telephone: '5555',
-          org_email: 'alistair.todd@digital.justice.gov.uk',
+          org_email: 'hdc_test@digital.justice.gov.uk',
         },
         {
           nomis_id: 'RO_USER6',
@@ -81,7 +81,7 @@ exports.seed = knex =>
           job_role: 'Role 6',
           email: 'email@6',
           telephone: '6666',
-          org_email: 'alistair.todd@digital.justice.gov.uk',
+          org_email: 'hdc_test@digital.justice.gov.uk',
         },
         {
           nomis_id: 'RO_DEMO',
@@ -92,7 +92,7 @@ exports.seed = knex =>
           job_role: 'Responsible Officer',
           email: 'email@7',
           telephone: '6666',
-          org_email: 'alistair.todd@digital.justice.gov.uk',
+          org_email: 'hdc_test@digital.justice.gov.uk',
         },
       ])
     )

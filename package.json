@@ -29,7 +29,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "NODE_ENV=dev && lint-staged && mocha"
+      "pre-commit": "NODE_ENV=dev && lint-staged"
     }
   },
   "lint-staged": {
