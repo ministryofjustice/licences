@@ -344,7 +344,10 @@ module.exports = function createApp({
   app.use('/admin/', secureRoute(adminRouter({ userAdminService }), { auditKey: 'USER_MANAGEMENT' }))
   app.use('/hdc/contact/', secureRoute(contactRouter({ userAdminService })))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
-  app.use('/hdc/send/', secureRoute(sendRouter({ licenceService, prisonerService, notificationService, audit })))
+  app.use(
+    '/hdc/send/',
+    secureRoute(sendRouter({ licenceService, prisonerService, notificationService, userAdminService, audit }))
+  )
   app.use('/hdc/sent/', secureRoute(sentRouter({ licenceService, prisonerService })))
   app.use('/user/', secureRoute(userRouter({ userService })))
 

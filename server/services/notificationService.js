@@ -1,29 +1,53 @@
-const moment = require('moment')
 const templates = require('./config/notificationTemplates')
-const { domain } = require('../config')
+const { notifyKey } = require('../config').notifications
 const logger = require('../../log.js')
+const { isEmpty } = require('../utils/functionalHelpers')
 
-module.exports = function createNotificationService(notifyClient) {
-  async function notifyRoOfNewCase(name) {
-    const { templateId } = templates.sentToRo
-    const date = moment().format('Do MMMM YYYY')
-
-    try {
-      notifyClient.sendEmail(templateId, 'some-email@someone.com', {
-        personalisation: {
-          name,
-          date,
-          domain,
-        },
-      })
-    } catch (error) {
-      // TODO what do we want to do if notification fails?
-      logger.error('Error sending notification email ', error.errors)
-      return error.errors
+module.exports = function createNotificationService(notifyClient, audit) {
+  async function notify(username, type, notificationData) {
+    if (isEmpty(notifyKey) || notifyKey === 'NOTIFY_OFF') {
+      logger.warn('No notification API key - notifications disabled')
+      return
     }
+
+    if (isEmpty(notificationData) || isEmpty(notificationData.emails)) {
+      logger.warn('No email addresses for notification', notificationData)
+      return
+    }
+
+    if (isEmpty(templates[type])) {
+      logger.error(`Unmapped notification template type: $type`)
+      return
+    }
+
+    const { templateId } = templates[type]
+
+    notificationData.emails.forEach(email => {
+      notifyClient
+        .sendEmail(templateId, email, { personalisation: notificationData })
+        .then(() => {
+          logger.info(`Successful notify for email: ${email}`)
+        })
+        .catch(error => {
+          logger.error('Error sending notification email ', email)
+          logger.error(error.stack)
+          logger.error('error notifying for type', type)
+          logger.error('error notifying for data', notificationData)
+        })
+    })
+
+    auditEvent(username, notificationData.booking_id, type, notificationData)
+  }
+
+  function auditEvent(user, bookingId, notificationType, notificationData) {
+    audit.record('NOTIFY', user, {
+      bookingId,
+      notificationType,
+      notificationData,
+    })
   }
 
   return {
-    notifyRoOfNewCase,
+    notify,
   }
 }

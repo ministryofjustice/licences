@@ -58,9 +58,14 @@ module.exports = {
   },
 
   domain: get('DOMAIN', 'http://localhost:3000'),
-
-  notifyKey: get('NOTIFY_API_KEY', 'default_key'),
   tagManagerKey: get('TAG_MANAGER_KEY', null),
+
+  notifications: {
+    notifyKey: get('NOTIFY_API_KEY', 'dummy-key'),
+    dueDateFormat: 'dddd Do MMMM',
+    roNewCaseWorkingDays: 10,
+    roNewCaseTodayCutOff: 15,
+  },
 
   pushToNomis: get('PUSH_TO_NOMIS', 'no') === 'yes',
   use2019Conditions: get('NEW_CONDITIONS', 'no') === 'yes',

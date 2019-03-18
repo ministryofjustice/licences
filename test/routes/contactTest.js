@@ -3,7 +3,7 @@ const request = require('supertest')
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  userAdminServiceStub,
+  createUserAdminServiceStub,
   appSetup,
   auditStub,
   createSignInServiceStub,
@@ -24,10 +24,13 @@ const roUser = {
 }
 
 describe('/contact', () => {
+  let userAdminService
+
   beforeEach(() => {
-    app = createApp('caUser')
-    userAdminServiceStub.getRoUserByDeliusId.reset()
-    userAdminServiceStub.getRoUserByDeliusId.resolves(roUser)
+    userAdminService = createUserAdminServiceStub()
+    userAdminService.getRoUserByDeliusId.reset()
+    userAdminService.getRoUserByDeliusId.resolves(roUser)
+    app = createApp({ userAdminServiceStub: userAdminService }, 'caUser')
   })
 
   describe('GET /ro/deliusUserId', () => {
@@ -37,7 +40,7 @@ describe('/contact', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(() => {
-          expect(userAdminServiceStub.getRoUserByDeliusId).to.be.calledOnce()
+          expect(userAdminService.getRoUserByDeliusId).to.be.calledOnce()
         })
     })
 
@@ -56,13 +59,14 @@ describe('/contact', () => {
   })
 })
 
-function createApp(user) {
+function createApp({ userAdminServiceStub }, user) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const userAdminService = userAdminServiceStub || createUserAdminServiceStub()
 
   const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
-  const route = baseRouter(createContactRoute({ userAdminService: userAdminServiceStub }))
+  const route = baseRouter(createContactRoute({ userAdminService }))
 
   return appSetup(route, user, '/contact/')
 }
