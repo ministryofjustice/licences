@@ -81,6 +81,7 @@ const createUserAdminServiceStub = () => ({
 
 const createNotificationServiceStub = () => ({
   notify: sinon.stub().resolves(),
+  getNotificationData: sinon.stub().resolves(),
 })
 
 const caseListServiceStub = {

@@ -1,9 +1,6 @@
 const { asyncMiddleware } = require('../utils/middleware')
-const { getIn } = require('../utils/functionalHelpers')
-const notificationMailboxes = require('./config/notificationMailboxes')
-const { getRoNewCaseDueDate } = require('../utils/dueDates')
 
-module.exports = ({ licenceService, prisonerService, notificationService, userAdminService, audit }) => router => {
+module.exports = ({ licenceService, prisonerService, notificationService, audit }) => router => {
   router.get('/:destination/:bookingId', async (req, res) => {
     const { destination, bookingId } = req.params
     const transition = transitionForDestination[destination]
@@ -27,10 +24,10 @@ module.exports = ({ licenceService, prisonerService, notificationService, userAd
         prisonerService.getPrisonerDetails(bookingId, res.locals.token),
       ])
 
-      const notificationData = await getNotificationData({
+      const notifications = await notificationService.getNotificationData({
         prisonerDetails,
         token: res.locals.token,
-        transition,
+        notificationType: transition.notificationType,
         submissionTarget,
         bookingId,
         sendingUser: req.user,
@@ -38,7 +35,12 @@ module.exports = ({ licenceService, prisonerService, notificationService, userAd
 
       await Promise.all([
         licenceService.markForHandover(bookingId, transition.type),
-        notificationService.notify(req.user.username, transition.notification, notificationData),
+        notificationService.notify({
+          user: req.user.username,
+          type: transition.notificationType,
+          bookingId,
+          notifications,
+        }),
       ])
 
       if (transition.type === 'dmToCaReturn') {
@@ -52,16 +54,16 @@ module.exports = ({ licenceService, prisonerService, notificationService, userAd
   )
 
   const transitionForDestination = {
-    addressReview: { type: 'caToRo', receiver: 'RO', notification: 'RO_NEW' },
-    bassReview: { type: 'caToRo', receiver: 'RO', notification: 'RO_NEW' },
-    finalChecks: { type: 'roToCa', receiver: 'CA', notification: 'CA_RETURN' },
-    approval: { type: 'caToDm', receiver: 'DM', notification: 'DM_NEW' },
-    decided: { type: 'dmToCa', receiver: 'CA', notification: 'CA_DECISION' },
-    return: { type: 'dmToCaReturn', receiver: 'CA', notification: 'CA_RETURN' },
-    refusal: { type: 'caToDmRefusal', receiver: 'DM', notification: 'DM_NEW' },
-    addressRejected: { type: 'roToCaAddressRejected', receiver: 'CA', notification: 'CA_RETURN' },
-    bassAreaRejected: { type: 'roToCaAddressRejected', receiver: 'CA', notification: 'CA_RETURN' },
-    optedOut: { type: 'roToCaOptedOut', receiver: 'CA', notification: 'CA_RETURN' },
+    addressReview: { type: 'caToRo', receiver: 'RO', notificationType: 'RO_NEW' },
+    bassReview: { type: 'caToRo', receiver: 'RO', notificationType: 'RO_NEW' },
+    finalChecks: { type: 'roToCa', receiver: 'CA', notificationType: 'CA_RETURN' },
+    approval: { type: 'caToDm', receiver: 'DM', notificationType: 'DM_NEW' },
+    decided: { type: 'dmToCa', receiver: 'CA', notificationType: 'CA_DECISION' },
+    return: { type: 'dmToCaReturn', receiver: 'CA', notificationType: 'CA_RETURN' },
+    refusal: { type: 'caToDmRefusal', receiver: 'DM', notificationType: 'DM_NEW' },
+    addressRejected: { type: 'roToCaAddressRejected', receiver: 'CA', notificationType: 'CA_RETURN' },
+    bassAreaRejected: { type: 'roToCaAddressRejected', receiver: 'CA', notificationType: 'CA_RETURN' },
+    optedOut: { type: 'roToCaOptedOut', receiver: 'CA', notificationType: 'CA_RETURN' },
   }
 
   function auditEvent(user, bookingId, transitionType, submissionTarget) {
@@ -70,50 +72,6 @@ module.exports = ({ licenceService, prisonerService, notificationService, userAd
       transitionType,
       submissionTarget,
     })
-  }
-
-  async function getNotificationData({ prisonerDetails, token, transition, submissionTarget, bookingId, sendingUser }) {
-    const personalisation = {
-      offender_name: [prisonerDetails.firstName, prisonerDetails.lastName].join(' '),
-      offender_dob: prisonerDetails.dateOfBirth,
-      booking_id: bookingId,
-    }
-
-    const notificationDataMethod = {
-      CA_RETURN: getCaNotificationData,
-      CA_DECISION: getCaNotificationData,
-      RO_NEW: getRoNotificationData,
-      DM_NEW: getDmNotificationData,
-    }
-
-    const data = notificationDataMethod[transition.notification]
-      ? await notificationDataMethod[transition.notification]({ token, submissionTarget, bookingId, sendingUser })
-      : {}
-
-    return { ...personalisation, ...data }
-  }
-
-  function getCaNotificationData({ submissionTarget, sendingUser }) {
-    const emails = getIn(notificationMailboxes, [submissionTarget.agencyId, 'ca'])
-    return { sender_name: sendingUser.username, emails }
-  }
-
-  async function getRoNotificationData({ token, submissionTarget, bookingId }) {
-    const [establishment, ro] = await Promise.all([
-      prisonerService.getEstablishmentForPrisoner(bookingId, token),
-      userAdminService.getRoUserByDeliusId(submissionTarget.com.deliusId),
-    ])
-    const emails = [ro.orgEmail]
-    const date = getRoNewCaseDueDate()
-
-    return { ro_name: submissionTarget.com.name, prison: establishment.premise, emails, date }
-  }
-
-  async function getDmNotificationData({ token, bookingId }) {
-    const establishment = await prisonerService.getEstablishmentForPrisoner(bookingId, token)
-    const emails = getIn(notificationMailboxes, [establishment.agencyId, 'dm'])
-
-    return { emails, dm_name: 'todo' }
   }
 
   return router
