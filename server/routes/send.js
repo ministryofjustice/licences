@@ -37,7 +37,7 @@ module.exports = ({ licenceService, prisonerService, notificationService, audit 
         licenceService.markForHandover(bookingId, transition.type),
         notificationService.notify({
           user: req.user.username,
-          type: transition.notificationType,
+          notificationType: transition.notificationType,
           bookingId,
           notifications,
         }),

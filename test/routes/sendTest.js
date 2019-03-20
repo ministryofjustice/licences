@@ -326,7 +326,7 @@ describe('send', () => {
             expect(notificationService.notify).to.be.calledOnce()
             expect(notificationService.notify).to.be.calledWith({
               user: 'CA_USER_TEST',
-              type: 'RO_NEW',
+              notificationType: 'RO_NEW',
               bookingId: '123',
               notifications: notificationsData,
             })
@@ -359,7 +359,7 @@ describe('send', () => {
             expect(notificationService.notify).to.be.calledOnce()
             expect(notificationService.notify).to.be.calledWith({
               user: 'RO_USER',
-              type: 'CA_RETURN',
+              notificationType: 'CA_RETURN',
               bookingId: '123',
               notifications: notificationsData,
             })
@@ -392,7 +392,7 @@ describe('send', () => {
             expect(notificationService.notify).to.be.calledOnce()
             expect(notificationService.notify).to.be.calledWith({
               user: 'CA_USER_TEST',
-              type: 'DM_NEW',
+              notificationType: 'DM_NEW',
               bookingId: '123',
               notifications: notificationsData,
             })
@@ -425,7 +425,7 @@ describe('send', () => {
             expect(notificationService.notify).to.be.calledOnce()
             expect(notificationService.notify).to.be.calledWith({
               user: 'DM_USER',
-              type: 'CA_DECISION',
+              notificationType: 'CA_DECISION',
               bookingId: '123',
               notifications: notificationsData,
             })

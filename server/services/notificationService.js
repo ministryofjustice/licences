@@ -1,17 +1,25 @@
+const moment = require('moment')
 const templates = require('./config/notificationTemplates')
 const notificationMailboxes = require('./config/notificationMailboxes')
 const { notifyKey } = require('../config').notifications
 const logger = require('../../log.js')
 const { getIn, isEmpty } = require('../utils/functionalHelpers')
-const { getRoNewCaseDueDate } = require('../utils/dueDates')
+const { getRoCaseDueDate, getRoNewCaseDueDate } = require('../utils/dueDates')
 
-module.exports = function createNotificationService(prisonerService, userAdminService, notifyClient, audit) {
+module.exports = function createNotificationService(
+  prisonerService,
+  userAdminService,
+  deadlineService,
+  notifyClient,
+  audit
+) {
   async function getNotificationData({
     prisonerDetails,
     token,
     notificationType,
     submissionTarget,
     bookingId,
+    transitionDate,
     sendingUser,
   }) {
     const common = {
@@ -24,11 +32,21 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
       CA_RETURN: getCaNotificationData,
       CA_DECISION: getCaNotificationData,
       RO_NEW: getRoNotificationData,
+      RO_TWO_DAYS: getRoNotificationData,
+      RO_DUE: getRoNotificationData,
+      RO_OVERDUE: getRoNotificationData,
       DM_NEW: getDmNotificationData,
     }
 
     return notificationDataMethod[notificationType]
-      ? notificationDataMethod[notificationType]({ common, token, submissionTarget, bookingId, sendingUser })
+      ? notificationDataMethod[notificationType]({
+          common,
+          token,
+          submissionTarget,
+          bookingId,
+          transitionDate,
+          sendingUser,
+        })
       : []
   }
 
@@ -45,7 +63,7 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
     })
   }
 
-  async function getRoNotificationData({ common, token, submissionTarget, bookingId }) {
+  async function getRoNotificationData({ common, token, submissionTarget, bookingId, transitionDate }) {
     const deliusId = getIn(submissionTarget, ['com', 'deliusId'])
     if (isEmpty(deliusId)) {
       logger.error('Missing COM deliusId')
@@ -63,13 +81,15 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
       return []
     }
 
+    const date = transitionDate ? getRoCaseDueDate(moment(transitionDate)) : getRoNewCaseDueDate()
+
     return [
       {
         personalisation: {
           ...common,
           ro_name: submissionTarget.com.name,
           prison: establishment.premise,
-          date: getRoNewCaseDueDate(),
+          date,
         },
         email,
       },
@@ -91,7 +111,7 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
     return notifications
   }
 
-  async function notify({ user, type, bookingId, notifications } = {}) {
+  async function notify({ user, notificationType, bookingId, notifications } = {}) {
     if (isEmpty(notifyKey) || notifyKey === 'NOTIFY_OFF') {
       logger.warn('No notification API key - notifications disabled')
       return
@@ -102,12 +122,12 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
       return
     }
 
-    if (isEmpty(templates[type])) {
+    if (isEmpty(templates[notificationType])) {
       logger.warn(`Unmapped notification template type: $type`)
       return
     }
 
-    const { templateId } = templates[type]
+    const { templateId } = templates[notificationType]
 
     notifications.forEach(notification => {
       if (isEmpty(notification.email)) {
@@ -121,12 +141,12 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
           .catch(error => {
             logger.error('Error sending notification email ', notification.email)
             logger.error(error.stack)
-            logger.error('error notifying for type', type)
+            logger.error('error notifying for type', notificationType)
             logger.error('error notifying for data', notification.personalisation)
           })
       }
     })
-    auditEvent(user, bookingId, type, notifications)
+    auditEvent(user, bookingId, notificationType, notifications)
   }
 
   function auditEvent(user, bookingId, notificationType, notifications) {
@@ -137,8 +157,52 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
     })
   }
 
+  async function notifyRoReminders(token) {
+    await deadlineService.getOverdue('RO').then(licences => sendReminders(token, licences, 'RO_OVERDUE'))
+    await deadlineService.getDueInDays('RO', 0).then(licences => sendReminders(token, licences, 'RO_DUE'))
+    await deadlineService.getDueInDays('RO', 2).then(licences => sendReminders(token, licences, 'RO_TWO_DAYS'))
+  }
+
+  async function sendReminders(token, licences, notificationType) {
+    // This is intentionally sequential to avoid timeouts sometimes arising from multiple quick calls to NOMIS API
+    // Can't use for..of because eslint rules prohibit it
+    await licences.reduce(async (previous, nextLicence) => {
+      await previous
+      return sendReminder(token, notificationType, nextLicence)
+    }, Promise.resolve())
+  }
+
+  async function sendReminder(token, notificationType, { bookingId, transitionDate }) {
+    const [submissionTarget, prisonerDetails] = await Promise.all([
+      prisonerService.getOrganisationContactDetails('RO', bookingId, token),
+      prisonerService.getPrisonerDetails(bookingId, token),
+    ])
+
+    if (isEmpty(prisonerDetails) || isEmpty(submissionTarget)) {
+      logger.error(`Did not find notification data for booking id: ${bookingId}`)
+      return
+    }
+
+    const notifications = await getNotificationData({
+      prisonerDetails,
+      token,
+      notificationType,
+      submissionTarget,
+      bookingId,
+      transitionDate,
+    })
+
+    notify({
+      user: 'NOTIFICATION_SERVICE',
+      notificationType,
+      bookingId,
+      notifications,
+    })
+  }
+
   return {
     getNotificationData,
     notify,
+    notifyRoReminders,
   }
 }

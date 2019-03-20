@@ -309,4 +309,64 @@ describe('licenceClient', () => {
       expect(sql).to.include(expectedContents3)
     })
   })
+
+  describe('getLicencesInStageBetweenDates', () => {
+    it('should call query', () => {
+      licencesProxy().getLicencesInStageBetweenDates('stage', 'from', 'upto')
+      expect(queryStub).to.have.callCount(1)
+    })
+
+    it('should pass in the correct sql', () => {
+      const expectedSelectClause = 'select l.booking_id as bookingId, l.transition_date as transitionDate'
+      const expectedWhereClause = 'where stage = $1 and transition_date >= $2 and transition_date < $3'
+
+      const result = licencesProxy().getLicencesInStageBetweenDates('stage', 'from', 'upto')
+
+      return result.then(() => {
+        expect(queryStub.getCalls()[0].args[0].text).includes(expectedSelectClause)
+        expect(queryStub.getCalls()[0].args[0].text).includes(expectedWhereClause)
+      })
+    })
+
+    it('should pass in the correct parameters', () => {
+      const expectedParameters = ['stage', 'from', 'upto']
+
+      const result = licencesProxy().getLicencesInStageBetweenDates('stage', 'from', 'upto')
+
+      return result.then(() => {
+        const { values } = queryStub.getCalls()[0].args[0]
+        expect(values).to.eql(expectedParameters)
+      })
+    })
+  })
+
+  describe('getLicencesInStageBeforeDate', () => {
+    it('should call query', () => {
+      licencesProxy().getLicencesInStageBeforeDate('stage', 'upto')
+      expect(queryStub).to.have.callCount(1)
+    })
+
+    it('should pass in the correct sql', () => {
+      const expectedSelectClause = 'select l.booking_id as bookingId, l.transition_date as transitionDate'
+      const expectedWhereClause = 'where stage = $1 and transition_date < $2'
+
+      const result = licencesProxy().getLicencesInStageBeforeDate('stage', 'upto')
+
+      return result.then(() => {
+        expect(queryStub.getCalls()[0].args[0].text).includes(expectedWhereClause)
+        expect(queryStub.getCalls()[0].args[0].text).includes(expectedSelectClause)
+      })
+    })
+
+    it('should pass in the correct parameters', () => {
+      const expectedParameters = ['stage', 'upto']
+
+      const result = licencesProxy().getLicencesInStageBeforeDate('stage', 'upto')
+
+      return result.then(() => {
+        const { values } = queryStub.getCalls()[0].args[0]
+        expect(values).to.eql(expectedParameters)
+      })
+    })
+  })
 })

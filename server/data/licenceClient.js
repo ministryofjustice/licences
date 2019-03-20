@@ -125,6 +125,28 @@ module.exports = {
 
     return db.query(query)
   },
+
+  async getLicencesInStageBetweenDates(stage, from, upto) {
+    const query = {
+      text: `select l.booking_id as bookingId, l.transition_date as transitionDate
+                   from licences l where stage = $1 and transition_date >= $2 and transition_date < $3`,
+      values: [stage, from, upto],
+    }
+
+    const { rows } = await db.query(query)
+    return rows
+  },
+
+  async getLicencesInStageBeforeDate(stage, upto) {
+    const query = {
+      text: `select l.booking_id as bookingId, l.transition_date as transitionDate
+                   from licences l where stage = $1 and transition_date < $2`,
+      values: [stage, upto],
+    }
+
+    const { rows } = await db.query(query)
+    return rows
+  },
 }
 
 async function updateVersion(bookingId, postRelease) {
