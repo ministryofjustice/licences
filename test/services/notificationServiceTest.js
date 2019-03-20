@@ -5,16 +5,32 @@ describe('notificationService', () => {
   let service
   let prisonerService
   let userAdminService
+  let deadlineService
   let configClient
   let notifyClient
   let audit
 
+  const transitionDate = '2019-01-01 12:00:00'
+
   beforeEach(() => {
     prisonerService = {
       getEstablishmentForPrisoner: sinon.stub().resolves({ premise: 'HMP Blah', agencyId: 'LT1' }),
+      getOrganisationContactDetails: sinon.stub().resolves({ com: { deliusId: 'delius' } }),
+      getPrisonerPersonalDetails: sinon
+        .stub()
+        .resolves({ firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1', offenderNo: 'AB1234A' }),
     }
     userAdminService = {
       getRoUserByDeliusId: sinon.stub().resolves({ orgEmail: 'expected@ro.email' }),
+    }
+    deadlineService = {
+      getDueInDays: sinon.stub().resolves([{ booking_id: 1, transition_date: transitionDate }]),
+      getOverdue: sinon
+        .stub()
+        .resolves([
+          { booking_id: 2, transition_date: transitionDate },
+          { booking_id: 3, transition_date: transitionDate },
+        ]),
     }
     configClient = {
       getMailboxes: sinon
@@ -30,55 +46,97 @@ describe('notificationService', () => {
     audit = {
       record: sinon.stub().resolves({}),
     }
-    service = createNotificationService(prisonerService, userAdminService, configClient, notifyClient, audit)
+    service = createNotificationService(
+      prisonerService,
+      userAdminService,
+      deadlineService,
+      configClient,
+      notifyClient,
+      audit
+    )
   })
 
   describe('notify', () => {
     it('should do nothing if no template id configured', async () => {
       const notifications = [{ email: ['email@email.com'] }]
-      await service.notify({ sendingUserName: 'username', type: 'UNKNOWN_TYPE', bookingId: 123, notifications })
+      await service.notify({
+        sendingUserName: 'username',
+        notificationType: 'UNKNOWN_TYPE',
+        bookingId: 123,
+        notifications,
+      })
       expect(notifyClient.sendEmail).not.to.be.calledOnce()
     })
 
     it('should do nothing if empty data', async () => {
       const notifications = [{}]
-      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({
+        sendingUserName: 'username',
+        notificationType: 'CA_RETURN',
+        bookingId: 123,
+        notifications,
+      })
       expect(notifyClient.sendEmail).not.to.be.calledOnce()
     })
 
     it('should do nothing if empty emails', async () => {
       const notifications = [{ email: [] }]
-      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({
+        sendingUserName: 'username',
+        notificationType: 'CA_RETURN',
+        bookingId: 123,
+        notifications,
+      })
       expect(notifyClient.sendEmail).not.to.be.calledOnce()
     })
 
     it('should call sendEmail from notifyClient', async () => {
       const notifications = [{ email: 'email@email.com' }]
-      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({
+        sendingUserName: 'username',
+        notificationType: 'CA_RETURN',
+        bookingId: 123,
+        notifications,
+      })
       expect(notifyClient.sendEmail).to.be.calledOnce()
     })
 
     it('should pass in the template id', async () => {
       const notifications = [{ email: ['email@email.com'] }]
-      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ user: 'username', notificationType: 'CA_RETURN', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).to.be.calledWith(templates.CA_RETURN.templateId, sinon.match.any, sinon.match.any)
     })
 
     it('should pass in the email address', async () => {
       const notifications = [{ email: 'email@email.com' }]
-      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({
+        sendingUserName: 'username',
+        notificationType: 'CA_RETURN',
+        bookingId: 123,
+        notifications,
+      })
       expect(notifyClient.sendEmail).to.be.calledWith(sinon.match.any, 'email@email.com', sinon.match.any)
     })
 
     it('should pass in the data', async () => {
       const notifications = [{ personalisation: { a: 'a' }, email: ['email@email.com'] }]
-      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({
+        sendingUserName: 'username',
+        notificationType: 'CA_RETURN',
+        bookingId: 123,
+        notifications,
+      })
       expect(notifyClient.sendEmail).to.be.calledWith(sinon.match.any, sinon.match.any, { personalisation: { a: 'a' } })
     })
 
     it('should audit the event', async () => {
       const notifications = [{ personalisation: { a: 'a' }, email: 'email@email.com' }]
-      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({
+        sendingUserName: 'username',
+        notificationType: 'CA_RETURN',
+        bookingId: 123,
+        notifications,
+      })
       expect(audit.record).to.be.calledOnce()
       expect(audit.record).to.be.calledWith('NOTIFY', 'username', {
         bookingId: 123,
@@ -89,7 +147,12 @@ describe('notificationService', () => {
 
     it('should call sendEmail from notifyClient once for each email', async () => {
       const notifications = [{ email: '1@1.com' }, { email: '2@2.com' }, { email: '3@3.com' }]
-      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({
+        sendingUserName: 'username',
+        notificationType: 'CA_RETURN',
+        bookingId: 123,
+        notifications,
+      })
       expect(notifyClient.sendEmail).to.be.calledThrice()
       expect(notifyClient.sendEmail).to.be.calledWith(sinon.match.any, '1@1.com', sinon.match.any)
       expect(notifyClient.sendEmail).to.be.calledWith(sinon.match.any, '2@2.com', sinon.match.any)
@@ -98,7 +161,12 @@ describe('notificationService', () => {
 
     it('should audit the event only once when multiple email addresses', async () => {
       const notifications = [{ email: '1@1.com' }, { email: '2@2.com' }, { email: '3@3.com' }]
-      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({
+        sendingUserName: 'username',
+        notificationType: 'CA_RETURN',
+        bookingId: 123,
+        notifications,
+      })
       expect(audit.record).to.be.calledOnce()
       expect(audit.record).to.be.calledWith('NOTIFY', 'username', {
         bookingId: 123,
@@ -319,6 +387,106 @@ describe('notificationService', () => {
 
       const result = await service.sendNotifications(inputs)
       expect(result).to.eql([])
+    })
+  })
+
+  describe('notifyReminders', () => {
+    it('should get notifiable booking IDs from deadline service', async () => {
+      await service.notifyRoReminders('token')
+      expect(deadlineService.getOverdue).to.be.calledOnce()
+      expect(deadlineService.getDueInDays).to.be.calledTwice()
+      expect(deadlineService.getDueInDays).to.be.calledWith('RO', 0)
+      expect(deadlineService.getDueInDays).to.be.calledWith('RO', 2)
+    })
+
+    it('should do nothing further if empty notifiable cases', async () => {
+      deadlineService.getDueInDays = sinon.stub().resolves()
+      deadlineService.getOverdue = sinon.stub().resolves()
+      await service.notifyRoReminders('token')
+
+      expect(prisonerService.getOrganisationContactDetails).to.have.callCount(0)
+      expect(prisonerService.getPrisonerPersonalDetails).to.have.callCount(0)
+    })
+
+    it('should do nothing further if no notifiable cases', async () => {
+      deadlineService.getDueInDays = sinon.stub().resolves([])
+      deadlineService.getOverdue = sinon.stub().resolves([])
+      await service.notifyRoReminders('token')
+
+      expect(prisonerService.getOrganisationContactDetails).to.have.callCount(0)
+      expect(prisonerService.getPrisonerPersonalDetails).to.have.callCount(0)
+    })
+
+    it('should get submissionTarget and prisonerDetails for each notifiable case', async () => {
+      await service.notifyRoReminders('token')
+      expect(prisonerService.getOrganisationContactDetails).to.have.callCount(4)
+      expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('RO', 1, 'token')
+      expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('RO', 2, 'token')
+      expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('RO', 3, 'token')
+
+      expect(prisonerService.getPrisonerPersonalDetails).to.have.callCount(4)
+      expect(prisonerService.getPrisonerPersonalDetails).to.be.calledWith(1, 'token')
+      expect(prisonerService.getPrisonerPersonalDetails).to.be.calledWith(2, 'token')
+      expect(prisonerService.getPrisonerPersonalDetails).to.be.calledWith(3, 'token')
+    })
+
+    it('should call notify client for each notification', async () => {
+      const expectedCommonData = {
+        offender_dob: '1/1/1',
+        offender_name: 'First Last',
+        offender_noms: 'AB1234A',
+        domain: 'http://localhost:3000',
+      }
+
+      const firstNotification = {
+        ...expectedCommonData,
+        booking_id: 2,
+        date: 'Tuesday 15th January',
+        prison: 'HMP Blah',
+        ro_name: undefined,
+      }
+      const secondNotification = {
+        ...expectedCommonData,
+        booking_id: 3,
+        date: 'Tuesday 15th January',
+        prison: 'HMP Blah',
+        ro_name: undefined,
+      }
+      const overdueTemplate = templates.RO_OVERDUE.templateId
+      const expectedEmail = 'expected@ro.email'
+
+      await service.notifyRoReminders('token')
+
+      expect(notifyClient.sendEmail).to.have.callCount(4)
+      expect(notifyClient.sendEmail).to.be.calledWith(overdueTemplate, expectedEmail, {
+        personalisation: firstNotification,
+      })
+      expect(notifyClient.sendEmail).to.be.calledWith(overdueTemplate, expectedEmail, {
+        personalisation: secondNotification,
+      })
+    })
+
+    it('should continue with subsequent reminder types even after a failure', async () => {
+      deadlineService.getOverdue.rejects(new Error('error message'))
+      deadlineService.getDueInDays = sinon.stub().resolves()
+      await service.notifyRoReminders('token')
+
+      expect(deadlineService.getOverdue).to.be.calledOnce()
+      expect(deadlineService.getDueInDays).to.be.calledTwice()
+      expect(deadlineService.getDueInDays).to.be.calledWith('RO', 0)
+      expect(deadlineService.getDueInDays).to.be.calledWith('RO', 2)
+    })
+
+    it('should continue trying all other notifications even after a failure', async () => {
+      prisonerService.getOrganisationContactDetails.rejects(new Error('error message'))
+      await service.notifyRoReminders('token')
+
+      expect(deadlineService.getOverdue).to.be.calledOnce()
+      expect(deadlineService.getDueInDays).to.be.calledTwice()
+      expect(deadlineService.getDueInDays).to.be.calledWith('RO', 0)
+      expect(deadlineService.getDueInDays).to.be.calledWith('RO', 2)
+      expect(prisonerService.getOrganisationContactDetails).to.have.callCount(4)
+      expect(prisonerService.getPrisonerPersonalDetails).to.have.callCount(4)
     })
   })
 })

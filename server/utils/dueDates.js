@@ -2,18 +2,59 @@ const moment = require('moment-business-days')
 const { dueDateFormat, roNewCaseWorkingDays, roNewCaseTodayCutOff } = require('../config').notifications
 
 module.exports = {
+  getRoCaseDueDate,
   getRoNewCaseDueDate,
+  getRoOverdueCasesDate,
+  getRoDueCasesDates,
 }
 
-function getRoNewCaseDueDate() {
-  const now = moment().locale('en-holidays')
-  const daysToAdd = now.hour() >= roNewCaseTodayCutOff ? roNewCaseWorkingDays + 1 : roNewCaseWorkingDays
+const holidaysLocalName = 'holidaysLocale'
 
-  return now.businessAdd(daysToAdd).format(dueDateFormat)
+function getRoNewCaseDueDate() {
+  return addRoWorkingDays(moment().locale(holidaysLocalName))
+}
+
+function getRoCaseDueDate(startMoment) {
+  if (!moment.isMoment(startMoment)) {
+    return null
+  }
+
+  return addRoWorkingDays(startMoment.locale(holidaysLocalName))
+}
+
+function addRoWorkingDays(startMoment) {
+  const extraDaysAllowance = startMoment.hour() >= roNewCaseTodayCutOff ? 1 : 0
+  return startMoment.businessAdd(roNewCaseWorkingDays + extraDaysAllowance).format(dueDateFormat)
+}
+
+function getRoOverdueCasesDate() {
+  const now = moment().locale(holidaysLocalName)
+
+  return now
+    .businessSubtract(roNewCaseWorkingDays + 1)
+    .hour(roNewCaseTodayCutOff - 1)
+    .format('YYYY-MM-DD HH:59:59')
+}
+
+function getRoDueCasesDates(workingDaysUntilDue) {
+  const now = moment().locale(holidaysLocalName)
+  const workingDaysBefore = roNewCaseWorkingDays - workingDaysUntilDue
+
+  return {
+    upto: now
+      .businessSubtract(workingDaysBefore)
+      .hour(roNewCaseTodayCutOff - 1)
+      .format('YYYY-MM-DD HH:59:59'),
+    from: now
+      .businessSubtract(workingDaysBefore + 1)
+      .hour(roNewCaseTodayCutOff)
+      .format('YYYY-MM-DD HH:00:00'),
+  }
 }
 
 // Use a custom locale to avoid conflict with other customisations of the en locale eg caseListFormatter.js
-moment.defineLocale('en-holidays', {
+const holidaysLocale = holidaysLocalName
+moment.defineLocale(holidaysLocale, {
   parentLocale: 'en',
   holidays: [
     '19-04-2019',
