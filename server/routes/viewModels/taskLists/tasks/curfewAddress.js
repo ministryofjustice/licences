@@ -5,6 +5,9 @@ module.exports = {
     const { optedOut, addressWithdrawn, addressReviewFailed } = decisions
     const { curfewAddressReview, riskManagement } = tasks
 
+    console.log(curfewAddressReview)
+    console.log(riskManagement)
+
     if (optedOut) {
       return 'Opted out'
     }
@@ -14,7 +17,7 @@ module.exports = {
     if (addressReviewFailed) {
       return 'Address rejected'
     }
-    if (curfewAddressReview === 'DONE' && riskManagement === 'DONE') {
+    if (curfewAddressReview === 'DONE') {
       return 'Address checked'
     }
     return 'Not completed'
