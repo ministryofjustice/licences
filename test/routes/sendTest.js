@@ -18,25 +18,27 @@ describe('send', () => {
   let userAdminService
   let notificationService
 
+  const notificationsData = [{ email: 'email1@email.com' }, { email: 'email2@email.com' }]
+  const prisonerDetails = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob' }
+  const submissionTarget = { premise: 'HMP Blah', agencyId: 'LT1', com: { name: 'Something', deliusId: 'delius' } }
+
   beforeEach(() => {
     licenceService = createLicenceServiceStub()
     prisonerService = createPrisonerServiceStub()
     userAdminService = createUserAdminServiceStub()
     notificationService = createNotificationServiceStub()
 
-    prisonerService.getOrganisationContactDetails = sinon
-      .stub()
-      .resolves({ premise: 'HMP Blah', agencyId: 'LT1', com: { name: 'Something', deliusId: 'delius' } })
+    prisonerService.getOrganisationContactDetails = sinon.stub().resolves(submissionTarget)
 
     prisonerService.getEstablishmentForPrisoner = sinon
       .stub()
       .resolves({ premise: 'HMP Blah', com: { name: 'Something' } })
 
-    prisonerService.getPrisonerDetails = sinon
-      .stub()
-      .resolves({ firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob' })
+    prisonerService.getPrisonerDetails = sinon.stub().resolves(prisonerDetails)
 
     userAdminService.getRoUserByDeliusId = sinon.stub().resolves({ orgEmail: 'expected@email' })
+
+    notificationService.getNotificationData = sinon.stub().resolves(notificationsData)
 
     auditStub.record.reset()
     notificationService.notify.reset()
@@ -298,143 +300,136 @@ describe('send', () => {
     })
 
     describe('Notifications', () => {
-      describe('Arriving before 3pm', () => {
-        let clock
+      it('Notifies for new RO case', () => {
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            userAdminServiceStub: userAdminService,
+            notificationServiceStub: notificationService,
+          },
+          'caUser'
+        )
 
-        beforeEach(() => {
-          clock = sinon.useFakeTimers(new Date('March 11, 2019 14:59:59').getTime())
-        })
-
-        afterEach(() => {
-          clock.restore()
-        })
-
-        it('Notifies for new RO case', () => {
-          const app = createApp(
-            {
-              licenceServiceStub: licenceService,
-              prisonerServiceStub: prisonerService,
-              userAdminServiceStub: userAdminService,
-              notificationServiceStub: notificationService,
-            },
-            'caUser'
-          )
-
-          const expectedData = {
-            booking_id: '123',
-            date: 'Monday 25th March',
-            emails: ['expected@email'],
-            offender_dob: 'off-dob',
-            offender_name: 'first last',
-            prison: 'HMP Blah',
-            ro_name: 'Something',
-          }
-
-          return request(app)
-            .post('/hdc/send/addressReview/123')
-            .expect(() => {
-              expect(prisonerService.getEstablishmentForPrisoner).to.be.calledOnce()
-              expect(prisonerService.getEstablishmentForPrisoner).to.be.calledWith('123', 'token')
-              expect(userAdminService.getRoUserByDeliusId).to.be.calledOnce()
-              expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('delius')
-              expect(notificationService.notify).to.be.calledOnce()
-              expect(notificationService.notify).to.be.calledWith('CA_USER_TEST', 'RO_NEW', expectedData)
+        return request(app)
+          .post('/hdc/send/addressReview/123')
+          .expect(() => {
+            expect(notificationService.getNotificationData).to.be.calledOnce()
+            expect(notificationService.getNotificationData).to.be.calledWith({
+              prisonerDetails,
+              token: 'token',
+              notificationType: 'RO_NEW',
+              submissionTarget,
+              bookingId: '123',
+              sendingUser: sinon.match.any,
             })
-        })
-
-        it('Notifies for returned CA case', () => {
-          const app = createApp(
-            {
-              licenceServiceStub: licenceService,
-              prisonerServiceStub: prisonerService,
-              userAdminServiceStub: userAdminService,
-              notificationServiceStub: notificationService,
-            },
-            'roUser'
-          )
-
-          const expectedData = {
-            booking_id: '123',
-            emails: ['hdc_test@digital.justice.gov.uk', 'hdc_test+2@digital.justice.gov.uk'],
-            offender_dob: 'off-dob',
-            offender_name: 'first last',
-            sender_name: 'RO_USER',
-          }
-
-          return request(app)
-            .post('/hdc/send/finalChecks/123')
-            .expect(() => {
-              expect(notificationService.notify).to.be.calledOnce()
-              expect(notificationService.notify).to.be.calledWith('RO_USER', 'CA_RETURN', expectedData)
+            expect(notificationService.notify).to.be.calledOnce()
+            expect(notificationService.notify).to.be.calledWith({
+              user: 'CA_USER_TEST',
+              type: 'RO_NEW',
+              bookingId: '123',
+              notifications: notificationsData,
             })
-        })
-
-        it('Notifies for decided CA case', () => {
-          const app = createApp(
-            {
-              licenceServiceStub: licenceService,
-              prisonerServiceStub: prisonerService,
-              userAdminServiceStub: userAdminService,
-              notificationServiceStub: notificationService,
-            },
-            'dmUser'
-          )
-
-          const expectedData = {
-            booking_id: '123',
-            emails: ['hdc_test@digital.justice.gov.uk', 'hdc_test+2@digital.justice.gov.uk'],
-            offender_dob: 'off-dob',
-            offender_name: 'first last',
-            sender_name: 'DM_USER',
-          }
-
-          return request(app)
-            .post('/hdc/send/decided/123')
-            .expect(() => {
-              expect(notificationService.notify).to.be.calledOnce()
-              expect(notificationService.notify).to.be.calledWith('DM_USER', 'CA_DECISION', expectedData)
-            })
-        })
+          })
       })
 
-      describe('Arriving after 3pm', () => {
-        let clock
+      it('Notifies for returned CA case', () => {
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            userAdminServiceStub: userAdminService,
+            notificationServiceStub: notificationService,
+          },
+          'roUser'
+        )
 
-        beforeEach(() => {
-          clock = sinon.useFakeTimers(new Date('March 11, 2019 15:00:00').getTime())
-        })
-
-        afterEach(() => {
-          clock.restore()
-        })
-
-        it('Notifies for new RO case - adds extra day when 3pm or later', () => {
-          const app = createApp(
-            {
-              licenceServiceStub: licenceService,
-              prisonerServiceStub: prisonerService,
-              userAdminServiceStub: userAdminService,
-              notificationServiceStub: notificationService,
-            },
-            'caUser'
-          )
-
-          const expectedData = {
-            booking_id: '123',
-            date: 'Tuesday 26th March',
-            emails: ['expected@email'],
-            offender_dob: 'off-dob',
-            offender_name: 'first last',
-            prison: 'HMP Blah',
-            ro_name: 'Something',
-          }
-
-          return request(app)
-            .post('/hdc/send/addressReview/123')
-            .expect(() => {
-              expect(notificationService.notify).to.be.calledWith('CA_USER_TEST', 'RO_NEW', expectedData)
+        return request(app)
+          .post('/hdc/send/finalChecks/123')
+          .expect(() => {
+            expect(notificationService.getNotificationData).to.be.calledOnce()
+            expect(notificationService.getNotificationData).to.be.calledWith({
+              prisonerDetails,
+              token: 'system-token',
+              notificationType: 'CA_RETURN',
+              submissionTarget,
+              bookingId: '123',
+              sendingUser: sinon.match.any,
             })
-        })
+            expect(notificationService.notify).to.be.calledOnce()
+            expect(notificationService.notify).to.be.calledWith({
+              user: 'RO_USER',
+              type: 'CA_RETURN',
+              bookingId: '123',
+              notifications: notificationsData,
+            })
+          })
+      })
+
+      it('Notifies for new DM case', () => {
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            userAdminServiceStub: userAdminService,
+            notificationServiceStub: notificationService,
+          },
+          'caUser'
+        )
+
+        return request(app)
+          .post('/hdc/send/approval/123')
+          .expect(() => {
+            expect(notificationService.getNotificationData).to.be.calledOnce()
+            expect(notificationService.getNotificationData).to.be.calledWith({
+              prisonerDetails,
+              token: 'token',
+              notificationType: 'DM_NEW',
+              submissionTarget,
+              bookingId: '123',
+              sendingUser: sinon.match.any,
+            })
+            expect(notificationService.notify).to.be.calledOnce()
+            expect(notificationService.notify).to.be.calledWith({
+              user: 'CA_USER_TEST',
+              type: 'DM_NEW',
+              bookingId: '123',
+              notifications: notificationsData,
+            })
+          })
+      })
+
+      it('Notifies for decided CA case', () => {
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            userAdminServiceStub: userAdminService,
+            notificationServiceStub: notificationService,
+          },
+          'dmUser'
+        )
+
+        return request(app)
+          .post('/hdc/send/decided/123')
+          .expect(() => {
+            expect(notificationService.getNotificationData).to.be.calledOnce()
+            expect(notificationService.getNotificationData).to.be.calledWith({
+              prisonerDetails,
+              token: 'token',
+              notificationType: 'CA_DECISION',
+              submissionTarget,
+              bookingId: '123',
+              sendingUser: sinon.match.any,
+            })
+            expect(notificationService.notify).to.be.calledOnce()
+            expect(notificationService.notify).to.be.calledWith({
+              user: 'DM_USER',
+              type: 'CA_DECISION',
+              bookingId: '123',
+              notifications: notificationsData,
+            })
+          })
       })
     })
   })

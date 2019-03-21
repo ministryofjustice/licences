@@ -33,7 +33,7 @@ const pdfService = createPdfService(logger, licenceService, conditionsService, p
 const reportingService = createReportingService(audit)
 const userAdminService = createUserAdminService(nomisClientBuilder, userClient)
 const userService = createUserService(nomisClientBuilder)
-const notificationService = createNotificationService(notifyClient, audit)
+const notificationService = createNotificationService(prisonerService, userAdminService, notifyClient, audit)
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 
 const app = createApp({
