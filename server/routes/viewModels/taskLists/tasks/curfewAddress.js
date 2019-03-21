@@ -3,10 +3,7 @@ const { viewEdit, standardAction, change } = require('./utils/actions')
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
     const { optedOut, addressWithdrawn, addressReviewFailed } = decisions
-    const { curfewAddressReview, riskManagement } = tasks
-
-    console.log(curfewAddressReview)
-    console.log(riskManagement)
+    const { curfewAddressReview } = tasks
 
     if (optedOut) {
       return 'Opted out'
