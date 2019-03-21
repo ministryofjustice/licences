@@ -24,7 +24,7 @@ mixin addressDetail(type, address, review)
       div.borderBottomLight.smallPaddingBottom
         if address.occupier
           p Main occupier
-          if address.occupier.isOffender
+          if address.occupier.isOffender && address.occupier.isOffender == 'Yes'
             p.bold.pure-u-1.noMargin The offender is the main occupier
           else if address.occupier.name || address.occupier.relationship
             div.pure-g.smallMarginTop

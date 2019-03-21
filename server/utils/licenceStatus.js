@@ -441,6 +441,10 @@ function getCurfewAddressReviewState(licence) {
 
   const taskCompletion = () => {
     const { consent, electricity } = addressReview
+
+    if (offenderIsOccupier && electricity) {
+      return taskStates.DONE
+    }
     if (consent && electricity) {
       return taskStates.DONE
     }

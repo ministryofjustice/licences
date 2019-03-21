@@ -685,6 +685,137 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.bespoke).to.eql(4)
     })
 
+    context('curfewAddressReview task', () => {
+      context('offender is main occupier', () => {
+        it('should be UNSTARTED when electricity not answered', () => {
+          const licence = {
+            stage: 'PROCESSING_RO',
+            licence: {
+              proposedAddress: {
+                curfewAddress: {
+                  occupier: {
+                    isOffender: 'Yes',
+                  },
+                },
+              },
+              curfew: {
+                curfewAddressReview: {},
+              },
+            },
+          }
+          const status = getLicenceStatus(licence)
+          expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED)
+        })
+        it('should be DONE when electricity answered', () => {
+          const licence = {
+            stage: 'PROCESSING_RO',
+            licence: {
+              proposedAddress: {
+                curfewAddress: {
+                  occupier: {
+                    isOffender: 'Yes',
+                  },
+                },
+              },
+              curfew: {
+                curfewAddressReview: {
+                  electricity: 'No',
+                },
+              },
+            },
+          }
+          const status = getLicenceStatus(licence)
+          expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE)
+        })
+      })
+
+      context('offender is not main occupier', () => {
+        it('should be DONE when consent & electricity answered', () => {
+          const licence = {
+            stage: 'PROCESSING_RO',
+            licence: {
+              proposedAddress: {
+                curfewAddress: {
+                  occupier: {
+                    isOffender: 'No',
+                  },
+                },
+              },
+              curfew: {
+                curfewAddressReview: {
+                  electricity: 'Yes',
+                  consent: 'No',
+                },
+              },
+            },
+          }
+          const status = getLicenceStatus(licence)
+          expect(status.tasks.curfewAddressReview).to.eql(taskStates.DONE)
+        })
+        it('should be STARTED when consent answered', () => {
+          const licence = {
+            stage: 'PROCESSING_RO',
+            licence: {
+              proposedAddress: {
+                curfewAddress: {
+                  occupier: {
+                    isOffender: 'No',
+                  },
+                },
+              },
+              curfew: {
+                curfewAddressReview: {
+                  consent: 'No',
+                },
+              },
+            },
+          }
+          const status = getLicenceStatus(licence)
+          expect(status.tasks.curfewAddressReview).to.eql(taskStates.STARTED)
+        })
+        it('should be STARTED when electricity answered', () => {
+          const licence = {
+            stage: 'PROCESSING_RO',
+            licence: {
+              proposedAddress: {
+                curfewAddress: {
+                  occupier: {
+                    isOffender: 'No',
+                  },
+                },
+              },
+              curfew: {
+                curfewAddressReview: {
+                  electricity: 'No',
+                },
+              },
+            },
+          }
+          const status = getLicenceStatus(licence)
+          expect(status.tasks.curfewAddressReview).to.eql(taskStates.STARTED)
+        })
+        it('should be UNSTARTED when electricity and consent not answered', () => {
+          const licence = {
+            stage: 'PROCESSING_RO',
+            licence: {
+              proposedAddress: {
+                curfewAddress: {
+                  occupier: {
+                    isOffender: 'No',
+                  },
+                },
+              },
+              curfew: {
+                curfewAddressReview: {},
+              },
+            },
+          }
+          const status = getLicenceStatus(licence)
+          expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED)
+        })
+      })
+    })
+
     it('should show address review APPROVED when consent, electricity and curfewAddressApproved are Yes', () => {
       const licence = {
         stage: 'PROCESSING_CA',
