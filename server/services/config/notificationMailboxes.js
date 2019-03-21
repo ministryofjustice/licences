@@ -2,13 +2,13 @@ module.exports = {
   LT1: {
     ca: ['hdc_test@digital.justice.gov.uk', 'hdc_test+2@digital.justice.gov.uk'],
     dm: [
-      { email: 'hdc_test@digital.justice.gov.uk', name: 'DM Test1' },
-      { email: 'hdc_test+2@digital.justice.gov.uk', name: 'DM Test2' },
+      { email: 'hdc_test@digital.justice.gov.uk', name: 'LT1 DM' },
+      { email: 'hdc_test+2@digital.justice.gov.uk', name: 'LT1 DM2' },
     ],
   },
   LT4: {
     ca: ['hdc_test@digital.justice.gov.uk'],
-    dm: [{ email: 'hdc_test@digital.justice.gov.uk', name: 'DM StageTest' }],
+    dm: [{ email: 'hdc_test@digital.justice.gov.uk', name: 'LT4 DM' }],
   },
   DTI: {
     ca: ['OMU.Deerbolt@hmps.gsi.gov.uk'],
