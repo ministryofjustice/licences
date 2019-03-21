@@ -5,7 +5,7 @@
     "no-use-before-define": "off",
     "prefer-destructuring": "warn",
     "consistent-return": "off",
-    "no-console": 2
+    "no-console": "error"
   },
   "plugins": ["prettier"]
 }
