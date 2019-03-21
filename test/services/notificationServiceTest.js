@@ -257,7 +257,7 @@ describe('notificationService', () => {
               booking_id: '123',
               offender_dob: '1/1/1',
               offender_name: 'First Last',
-              dm_name: 'DM Test1',
+              dm_name: 'LT1 DM',
             },
           },
           {
@@ -266,7 +266,7 @@ describe('notificationService', () => {
               booking_id: '123',
               offender_dob: '1/1/1',
               offender_name: 'First Last',
-              dm_name: 'DM Test2',
+              dm_name: 'LT1 DM2',
             },
           },
         ])
