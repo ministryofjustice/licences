@@ -60,7 +60,7 @@ module.exports = {
   domain: get('DOMAIN', 'http://localhost:3000'),
   tagManagerKey: get('TAG_MANAGER_KEY', null),
 
-  notificationConfig: {
+  notifications: {
     notifyKey: get('NOTIFY_API_KEY', 'dummy-key'),
     dueDateFormat: 'dddd Do MMMM',
     roNewCaseWorkingDays: 10,

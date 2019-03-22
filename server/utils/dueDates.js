@@ -1,5 +1,5 @@
 const moment = require('moment-business-days')
-const { dueDateFormat, roNewCaseWorkingDays, roNewCaseTodayCutOff } = require('../config').notificationConfig
+const { dueDateFormat, roNewCaseWorkingDays, roNewCaseTodayCutOff } = require('../config').notifications
 
 module.exports = {
   getRoNewCaseDueDate,
