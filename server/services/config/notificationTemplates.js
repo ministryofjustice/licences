@@ -1,14 +1,14 @@
 module.exports = {
   CA_RETURN: {
-    templateId: '028b128b-7839-4e20-b892-fa83338cf368',
+    templateId: '7e581130-de71-4b3f-bac0-ce95c0275525',
   },
   CA_DECISION: {
-    templateId: '5ad2c78f-8827-4a73-ac63-b30f4d298214',
+    templateId: 'fe1f7ff3-ac5d-4785-8cd8-ae42cf6a27ab',
   },
   RO_NEW: {
-    templateId: '466d6e42-abd4-4068-b3ec-039b049ec735',
+    templateId: '9afc4ab7-5d3f-4703-805b-8d5b7c0c7cea',
   },
   DM_NEW: {
-    templateId: 'ef9993ac-a0b7-4cb4-ac98-793c5e8a15f9',
+    templateId: 'b06bfd70-0b7b-4ccf-9b6d-9e577e282ed1',
   },
 }

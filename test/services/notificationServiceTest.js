@@ -179,6 +179,7 @@ describe('notificationService', () => {
               offender_name: 'First Last',
               prison: 'HMP Blah',
               ro_name: 'RO Name',
+              domain: 'http://localhost:3000',
             },
           },
         ])
@@ -214,6 +215,7 @@ describe('notificationService', () => {
               offender_dob: '1/1/1',
               offender_name: 'First Last',
               sender_name: 'sender',
+              domain: 'http://localhost:3000',
             },
           },
           {
@@ -223,6 +225,7 @@ describe('notificationService', () => {
               offender_dob: '1/1/1',
               offender_name: 'First Last',
               sender_name: 'sender',
+              domain: 'http://localhost:3000',
             },
           },
         ])
@@ -258,6 +261,7 @@ describe('notificationService', () => {
               offender_dob: '1/1/1',
               offender_name: 'First Last',
               dm_name: 'LT1 DM',
+              domain: 'http://localhost:3000',
             },
           },
           {
@@ -267,6 +271,7 @@ describe('notificationService', () => {
               offender_dob: '1/1/1',
               offender_name: 'First Last',
               dm_name: 'LT1 DM2',
+              domain: 'http://localhost:3000',
             },
           },
         ])
