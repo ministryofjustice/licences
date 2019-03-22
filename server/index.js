@@ -9,7 +9,7 @@ const userClient = require('./data/userClient')
 const nomisClientBuilder = require('./data/nomisClientBuilder')
 const pdfFormatter = require('./services/utils/pdfFormatter')
 
-const notifyClient = new NotifyClient(config.notifications.notifyKey)
+const notifyClient = new NotifyClient(config.notificationConfig.notifyKey)
 const createSignInService = require('./authentication/signInService')
 const createLicenceService = require('./services/licenceService')
 const { createPrisonerService } = require('./services/prisonerService')

@@ -1,6 +1,6 @@
 const templates = require('./config/notificationTemplates')
 const notificationMailboxes = require('./config/notificationMailboxes')
-const { notifyKey } = require('../config').notifications
+const { notificationConfig, domain } = require('../config')
 const logger = require('../../log.js')
 const { getIn, isEmpty } = require('../utils/functionalHelpers')
 const { getRoNewCaseDueDate } = require('../utils/dueDates')
@@ -18,6 +18,7 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
       offender_name: [prisonerDetails.firstName, prisonerDetails.lastName].join(' '),
       offender_dob: prisonerDetails.dateOfBirth,
       booking_id: bookingId,
+      domain,
     }
 
     const notificationDataMethod = {
@@ -92,7 +93,7 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
   }
 
   async function notify({ user, type, bookingId, notifications } = {}) {
-    if (isEmpty(notifyKey) || notifyKey === 'NOTIFY_OFF') {
+    if (isEmpty(notificationConfig.notifyKey) || notificationConfig.notifyKey === 'NOTIFY_OFF') {
       logger.warn('No notification API key - notifications disabled')
       return
     }
