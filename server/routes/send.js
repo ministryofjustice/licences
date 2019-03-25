@@ -19,13 +19,14 @@ module.exports = ({ licenceService, prisonerService, notificationService, audit 
       const { destination, bookingId } = req.params
       const transition = transitionForDestination[destination]
 
-      const [submissionTarget, prisonerDetails] = await Promise.all([
-        prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, res.locals.token),
-        prisonerService.getPrisonerDetails(bookingId, res.locals.token),
-      ])
+      const submissionTarget = await prisonerService.getOrganisationContactDetails(
+        transition.receiver,
+        bookingId,
+        res.locals.token
+      )
 
       const notifications = await notificationService.getNotificationData({
-        prisonerDetails,
+        prisoner: res.locals.prisoner,
         token: res.locals.token,
         notificationType: transition.notificationType,
         submissionTarget,

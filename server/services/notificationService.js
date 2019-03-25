@@ -9,17 +9,11 @@ const { getIn, isEmpty } = require('../utils/functionalHelpers')
 const { getRoNewCaseDueDate } = require('../utils/dueDates')
 
 module.exports = function createNotificationService(prisonerService, userAdminService, notifyClient, audit) {
-  async function getNotificationData({
-    prisonerDetails,
-    token,
-    notificationType,
-    submissionTarget,
-    bookingId,
-    sendingUser,
-  }) {
+  async function getNotificationData({ prisoner, token, notificationType, submissionTarget, bookingId, sendingUser }) {
     const common = {
-      offender_name: [prisonerDetails.firstName, prisonerDetails.lastName].join(' '),
-      offender_dob: prisonerDetails.dateOfBirth,
+      offender_name: [prisoner.firstName, prisoner.lastName].join(' '),
+      offender_dob: prisoner.dateOfBirth,
+      offender_noms: prisoner.offenderNo,
       booking_id: bookingId,
       domain,
     }
