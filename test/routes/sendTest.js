@@ -19,7 +19,7 @@ describe('send', () => {
   let notificationService
 
   const notificationsData = [{ email: 'email1@email.com' }, { email: 'email2@email.com' }]
-  const prisonerDetails = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob' }
+  const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
   const submissionTarget = { premise: 'HMP Blah', agencyId: 'LT1', com: { name: 'Something', deliusId: 'delius' } }
 
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe('send', () => {
       .stub()
       .resolves({ premise: 'HMP Blah', com: { name: 'Something' } })
 
-    prisonerService.getPrisonerDetails = sinon.stub().resolves(prisonerDetails)
+    prisonerService.getPrisonerPersonalDetails = sinon.stub().resolves(prisoner)
 
     userAdminService.getRoUserByDeliusId = sinon.stub().resolves({ orgEmail: 'expected@email' })
 
@@ -314,9 +314,13 @@ describe('send', () => {
         return request(app)
           .post('/hdc/send/addressReview/123')
           .expect(() => {
+            expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce()
+            expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('RO', '123', 'token')
+            expect(prisonerService.getPrisonerPersonalDetails).to.be.calledOnce()
+            expect(prisonerService.getPrisonerPersonalDetails).to.be.calledWith('123', 'token')
             expect(notificationService.getNotificationData).to.be.calledOnce()
             expect(notificationService.getNotificationData).to.be.calledWith({
-              prisonerDetails,
+              prisoner,
               token: 'token',
               notificationType: 'RO_NEW',
               submissionTarget,
@@ -347,9 +351,13 @@ describe('send', () => {
         return request(app)
           .post('/hdc/send/finalChecks/123')
           .expect(() => {
+            expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce()
+            expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('CA', '123', 'system-token')
+            expect(prisonerService.getPrisonerPersonalDetails).to.be.calledOnce()
+            expect(prisonerService.getPrisonerPersonalDetails).to.be.calledWith('123', 'system-token')
             expect(notificationService.getNotificationData).to.be.calledOnce()
             expect(notificationService.getNotificationData).to.be.calledWith({
-              prisonerDetails,
+              prisoner,
               token: 'system-token',
               notificationType: 'CA_RETURN',
               submissionTarget,
@@ -380,9 +388,13 @@ describe('send', () => {
         return request(app)
           .post('/hdc/send/approval/123')
           .expect(() => {
+            expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce()
+            expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('DM', '123', 'token')
+            expect(prisonerService.getPrisonerPersonalDetails).to.be.calledOnce()
+            expect(prisonerService.getPrisonerPersonalDetails).to.be.calledWith('123', 'token')
             expect(notificationService.getNotificationData).to.be.calledOnce()
             expect(notificationService.getNotificationData).to.be.calledWith({
-              prisonerDetails,
+              prisoner,
               token: 'token',
               notificationType: 'DM_NEW',
               submissionTarget,
@@ -413,9 +425,13 @@ describe('send', () => {
         return request(app)
           .post('/hdc/send/decided/123')
           .expect(() => {
+            expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce()
+            expect(prisonerService.getOrganisationContactDetails).to.be.calledWith('CA', '123', 'token')
+            expect(prisonerService.getPrisonerPersonalDetails).to.be.calledOnce()
+            expect(prisonerService.getPrisonerPersonalDetails).to.be.calledWith('123', 'token')
             expect(notificationService.getNotificationData).to.be.calledOnce()
             expect(notificationService.getNotificationData).to.be.calledWith({
-              prisonerDetails,
+              prisoner,
               token: 'token',
               notificationType: 'CA_DECISION',
               submissionTarget,

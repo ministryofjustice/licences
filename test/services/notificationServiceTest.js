@@ -100,9 +100,18 @@ describe('notificationService', () => {
   })
 
   describe('getNotificationData', () => {
+    const prisoner = { firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1', offenderNo: 'AB1234A' }
+    const expectedCommonData = {
+      booking_id: '123',
+      offender_dob: '1/1/1',
+      offender_name: 'First Last',
+      offender_noms: 'AB1234A',
+      domain: 'http://localhost:3000',
+    }
+
     it('should return empty when unknown notification type', async () => {
       const data = await service.getNotificationData({
-        prisonerDetails: {},
+        prisoner: {},
         notificationType: 'UNKNOWN',
       })
 
@@ -123,7 +132,7 @@ describe('notificationService', () => {
       it('should return empty when missing COM delius ID', async () => {
         userAdminService.getRoUserByDeliusId = sinon.stub().resolves({ orgEmail: '' })
         const data = await service.getNotificationData({
-          prisonerDetails: {},
+          prisoner: {},
           notificationType: 'RO_NEW',
           submissionTarget: { com: { deliusId: '' } },
         })
@@ -134,7 +143,7 @@ describe('notificationService', () => {
       it('should return empty when missing RO orgEmail', async () => {
         userAdminService.getRoUserByDeliusId = sinon.stub().resolves({ orgEmail: '' })
         const data = await service.getNotificationData({
-          prisonerDetails: {},
+          prisoner: {},
           notificationType: 'RO_NEW',
           submissionTarget: { com: { deliusId: 'deliusId', name: 'RO Name' } },
         })
@@ -147,7 +156,7 @@ describe('notificationService', () => {
 
         expect(
           service.getNotificationData({
-            prisonerDetails: {},
+            prisoner: {},
             notificationType: 'RO_NEW',
             submissionTarget: { com: { deliusId: 'deliusId', name: 'RO Name' } },
           })
@@ -156,7 +165,7 @@ describe('notificationService', () => {
 
       it('should generate RO notification data', async () => {
         const data = await service.getNotificationData({
-          prisonerDetails: { firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1' },
+          prisoner,
           token: 'token',
           notificationType: 'RO_NEW',
           submissionTarget: { com: { deliusId: 'deliusId', name: 'RO Name' } },
@@ -173,13 +182,10 @@ describe('notificationService', () => {
           {
             email: 'expected@ro.email',
             personalisation: {
-              booking_id: '123',
-              date: 'Monday 25th March',
-              offender_dob: '1/1/1',
-              offender_name: 'First Last',
+              ...expectedCommonData,
               prison: 'HMP Blah',
               ro_name: 'RO Name',
-              domain: 'http://localhost:3000',
+              date: 'Monday 25th March',
             },
           },
         ])
@@ -189,7 +195,7 @@ describe('notificationService', () => {
     describe('CA notification data', () => {
       it('should return empty when missing CA email addresses for agency', async () => {
         const data = await service.getNotificationData({
-          prisonerDetails: {},
+          prisoner: {},
           notificationType: 'CA_RETURN',
           submissionTarget: { agencyId: 'MISSING' },
         })
@@ -199,7 +205,7 @@ describe('notificationService', () => {
 
       it('should generate CA notification data', async () => {
         const data = await service.getNotificationData({
-          prisonerDetails: { firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1' },
+          prisoner,
           token: 'token',
           notificationType: 'CA_RETURN',
           submissionTarget: { agencyId: 'LT1' },
@@ -211,21 +217,15 @@ describe('notificationService', () => {
           {
             email: 'hdc_test@digital.justice.gov.uk',
             personalisation: {
-              booking_id: '123',
-              offender_dob: '1/1/1',
-              offender_name: 'First Last',
+              ...expectedCommonData,
               sender_name: 'sender',
-              domain: 'http://localhost:3000',
             },
           },
           {
             email: 'hdc_test+2@digital.justice.gov.uk',
             personalisation: {
-              booking_id: '123',
-              offender_dob: '1/1/1',
-              offender_name: 'First Last',
+              ...expectedCommonData,
               sender_name: 'sender',
-              domain: 'http://localhost:3000',
             },
           },
         ])
@@ -236,7 +236,7 @@ describe('notificationService', () => {
       it('should return empty when missing DM email addresses for agency', async () => {
         prisonerService.getEstablishmentForPrisoner = sinon.stub().resolves({ agencyId: 'MISSING' })
         const data = await service.getNotificationData({
-          prisonerDetails: {},
+          prisoner: {},
           notificationType: 'DM_NEW',
         })
 
@@ -245,7 +245,7 @@ describe('notificationService', () => {
 
       it('should generate DM notification data', async () => {
         const data = await service.getNotificationData({
-          prisonerDetails: { firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1' },
+          prisoner,
           token: 'token',
           notificationType: 'DM_NEW',
           submissionTarget: { agencyId: 'LT1' },
@@ -257,21 +257,15 @@ describe('notificationService', () => {
           {
             email: 'hdc_test@digital.justice.gov.uk',
             personalisation: {
-              booking_id: '123',
-              offender_dob: '1/1/1',
-              offender_name: 'First Last',
+              ...expectedCommonData,
               dm_name: 'LT1 DM',
-              domain: 'http://localhost:3000',
             },
           },
           {
             email: 'hdc_test+2@digital.justice.gov.uk',
             personalisation: {
-              booking_id: '123',
-              offender_dob: '1/1/1',
-              offender_name: 'First Last',
+              ...expectedCommonData,
               dm_name: 'LT1 DM2',
-              domain: 'http://localhost:3000',
             },
           },
         ])
