@@ -12,14 +12,24 @@ module.exports = {
   },
   DTI: {
     ca: ['OMU.Deerbolt@hmps.gsi.gov.uk'],
-    dm: [{ email: 'DM.Deerbolt@hmps.gsi.gov.uk', name: 'Deerbolt Decision Maker' }],
+    dm: [
+      { email: 'gavin.arnell@hmps.gsi.gov.uk', name: 'Gavin Arnell' },
+      { email: 'hugh.storey@hmps.gsi.gov.uk', name: 'Hugh Storey' },
+      { email: 'paul.flack@hmps.gsi.gov.uk', name: 'Paul Flack' },
+    ],
   },
   HHI: {
     ca: ['OMU.HolmeHouse@hmps.gsi.gov.uk'],
-    dm: [{ email: 'DM.HolmeHouse@hmps.gsi.gov.uk', name: 'Holme House Decision Maker' }],
+    dm: [
+      { email: 'shaun.clark@hmps.gsi.gov.uk', name: 'Shaun Clark' },
+      { email: 'laura.otto@hmps.gsi.gov.uk', name: 'Laura Otto' },
+    ],
   },
   WEI: {
     ca: ['OMU.Wealstun@hmps.gsi.gov.uk'],
-    dm: [{ email: 'DM.Wealstun@hmps.gsi.gov.uk', name: 'Wealstun Decision Maker' }],
+    dm: [
+      { email: 'mark.creek@hmps.gsi.gov.uk', name: 'Mark Creek' },
+      { email: 'sarah.smith7@hmps.gsi.gov.uk', name: 'Sarah Smith' },
+    ],
   },
 }
