@@ -26,6 +26,8 @@ const auth = require('./authentication/auth')
 const defaultRouter = require('../server/routes/default')
 
 const adminRouter = require('../server/routes/admin/admin')
+const userAdminRouter = require('../server/routes/admin/users')
+const mailboxesAdminRouter = require('../server/routes/admin/mailboxes')
 const apiRouter = require('../server/routes/api')
 const caseListRouter = require('../server/routes/caseList')
 const contactRouter = require('../server/routes/contact')
@@ -65,6 +67,7 @@ module.exports = function createApp({
   notificationService,
   userService,
   nomisPushService,
+  configClient,
   audit,
 }) {
   const app = express()
@@ -341,7 +344,9 @@ module.exports = function createApp({
     })
   )
   app.use('/caseList/', secureRoute(caseListRouter({ caseListService })))
-  app.use('/admin/', secureRoute(adminRouter({ userAdminService }), { auditKey: 'USER_MANAGEMENT' }))
+  app.use('/admin/', secureRoute(adminRouter()))
+  app.use('/admin/roUsers/', secureRoute(userAdminRouter({ userAdminService }), { auditKey: 'USER_MANAGEMENT' }))
+  app.use('/admin/mailboxes/', secureRoute(mailboxesAdminRouter({ configClient })))
   app.use('/hdc/contact/', secureRoute(contactRouter({ userAdminService })))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
   app.use('/hdc/send/', secureRoute(sendRouter({ licenceService, prisonerService, notificationService, audit })))

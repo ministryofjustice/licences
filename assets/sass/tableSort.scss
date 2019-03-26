@@ -1,0 +1,16 @@
+#list.tablesorter {
+    thead tr .sortable {
+        background-image: url($path+'/bg.gif');
+        background-repeat: no-repeat;
+        background-position: 95% 50%;
+        cursor: pointer;
+    }
+    thead tr .headerSortUp {
+        background-image: url($path+'/asc.gif');
+    }
+    thead tr .headerSortDown {
+        background-image: url($path+'/desc.gif');
+    }
+}
+
+#list tr:nth-child(even) {background-color: $highlight-colour}

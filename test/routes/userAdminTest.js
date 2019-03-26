@@ -10,7 +10,7 @@ const {
 } = require('../supertestSetup')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createAdminRoute = require('../../server/routes/admin/admin')
+const createAdminRoute = require('../../server/routes/admin/users')
 
 const user1 = {
   nomisId: 'user1',
@@ -46,16 +46,6 @@ describe('/admin', () => {
       username: 'nomisUser',
       firstName: 'nomisFirst',
       lastName: 'nomisLast',
-    })
-  })
-
-  describe('GET /admin', () => {
-    it('redirects to ro user list', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
-      return request(app)
-        .get('/admin/')
-        .expect(302)
-        .expect('Location', '/admin/roUsers')
     })
   })
 
@@ -363,5 +353,5 @@ function createApp({ licenceServiceStub, userAdminServiceStub }, user) {
     auditKey: 'USER_MANAGEMENT',
   })
 
-  return appSetup(route, user, '/admin/')
+  return appSetup(route, user, '/admin/roUsers/')
 }
