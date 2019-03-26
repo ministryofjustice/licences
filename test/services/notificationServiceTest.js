@@ -5,6 +5,7 @@ describe('notificationService', () => {
   let service
   let prisonerService
   let userAdminService
+  let configClient
   let notifyClient
   let audit
 
@@ -15,13 +16,21 @@ describe('notificationService', () => {
     userAdminService = {
       getRoUserByDeliusId: sinon.stub().resolves({ orgEmail: 'expected@ro.email' }),
     }
+    configClient = {
+      getMailboxes: sinon
+        .stub()
+        .resolves([
+          { email: 'test1@email.address', name: 'Name One' },
+          { email: 'test2@email.address', name: 'Name Two' },
+        ]),
+    }
     notifyClient = {
       sendEmail: sinon.stub().resolves({}),
     }
     audit = {
       record: sinon.stub().resolves({}),
     }
-    service = createNotificationService(prisonerService, userAdminService, notifyClient, audit)
+    service = createNotificationService(prisonerService, userAdminService, configClient, notifyClient, audit)
   })
 
   describe('notify', () => {
@@ -205,6 +214,18 @@ describe('notificationService', () => {
 
     describe('CA notification data', () => {
       it('should return empty when missing CA email addresses for agency', async () => {
+        configClient.getMailboxes = sinon.stub().resolves()
+        const data = await service.getNotificationData({
+          prisoner: {},
+          notificationType: 'CA_RETURN',
+          submissionTarget: { agencyId: 'MISSING' },
+        })
+
+        expect(data).to.eql([])
+      })
+
+      it('should return empty when missing CA email addresses for agency', async () => {
+        configClient.getMailboxes = sinon.stub().resolves([])
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'CA_RETURN',
@@ -226,14 +247,14 @@ describe('notificationService', () => {
 
         expect(data).to.eql([
           {
-            email: 'hdc_test@digital.justice.gov.uk',
+            email: 'test1@email.address',
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
             },
           },
           {
-            email: 'hdc_test+2@digital.justice.gov.uk',
+            email: 'test2@email.address',
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
@@ -245,7 +266,7 @@ describe('notificationService', () => {
 
     describe('DM notification data', () => {
       it('should return empty when missing DM email addresses for agency', async () => {
-        prisonerService.getEstablishmentForPrisoner = sinon.stub().resolves({ agencyId: 'MISSING' })
+        configClient.getMailboxes = sinon.stub().resolves([])
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'DM_NEW',
@@ -266,17 +287,17 @@ describe('notificationService', () => {
 
         expect(data).to.eql([
           {
-            email: 'hdc_test@digital.justice.gov.uk',
+            email: 'test1@email.address',
             personalisation: {
               ...expectedCommonData,
-              dm_name: 'LT1 DM',
+              dm_name: 'Name One',
             },
           },
           {
-            email: 'hdc_test+2@digital.justice.gov.uk',
+            email: 'test2@email.address',
             personalisation: {
               ...expectedCommonData,
-              dm_name: 'LT1 DM2',
+              dm_name: 'Name Two',
             },
           },
         ])
