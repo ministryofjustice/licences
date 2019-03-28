@@ -54,7 +54,8 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
       prisonerService.getEstablishmentForPrisoner(bookingId, token),
       userAdminService.getRoUserByDeliusId(deliusId),
     ])
-    const email = ro.orgEmail
+
+    const email = getIn(ro, ['orgEmail'])
 
     if (isEmpty(email)) {
       logger.error(`Missing orgEmail for RO: ${deliusId}`)

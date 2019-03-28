@@ -140,6 +140,17 @@ describe('notificationService', () => {
         expect(data).to.eql([])
       })
 
+      it('should return empty when missing COM', async () => {
+        userAdminService.getRoUserByDeliusId = sinon.stub().resolves(null)
+        const data = await service.getNotificationData({
+          prisoner: {},
+          notificationType: 'RO_NEW',
+          submissionTarget: { com: { deliusId: 'deliusId' } },
+        })
+
+        expect(data).to.eql([])
+      })
+
       it('should return empty when missing RO orgEmail', async () => {
         userAdminService.getRoUserByDeliusId = sinon.stub().resolves({ orgEmail: '' })
         const data = await service.getNotificationData({
