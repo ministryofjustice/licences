@@ -15,9 +15,14 @@ function createPrisonerService(nomisClientBuilder) {
 
       const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
 
-      return formatObjectForView(prisoners[0])
+      const prisoner = prisoners[0]
+      if (!prisoner) {
+        return null
+      }
+
+      return formatObjectForView(prisoner)
     } catch (error) {
-      logger.error('Error getting prisoner personal details')
+      logger.error('Error getting prisoner personal details', error.stack)
       return null
     }
   }

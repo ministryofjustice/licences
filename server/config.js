@@ -69,4 +69,11 @@ module.exports = {
 
   pushToNomis: get('PUSH_TO_NOMIS', 'no') === 'yes',
   use2019Conditions: get('NEW_CONDITIONS', 'no') === 'yes',
+
+  jobs: {
+    systemUser: get('SYSTEM_USER', ''),
+    roReminders: get('RO_REMINDER_SCHEDULE', '0 1 * * 1-5'),
+    active: get('SCHEDULED_REMINDERS', 'no') === 'yes',
+    overlapTimeout: 5000,
+  },
 }

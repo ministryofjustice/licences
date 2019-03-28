@@ -24,6 +24,8 @@ const createUserService = require('./services/userService')
 const createNotificationService = require('./services/notificationService')
 const createNomisPushService = require('./services/nomisPushService')
 const createDeadlineService = require('./services/deadlineService')
+const createJobSchedulerService = require('./services/jobSchedulerService')
+const createNotificationJobs = require('./services/jobs/notificationJobs')
 
 const signInService = createSignInService(audit)
 const licenceService = createLicenceService(licenceClient)
@@ -45,6 +47,8 @@ const notificationService = createNotificationService(
   audit
 )
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
+const notificationJobs = createNotificationJobs(notificationService, signInService)
+const jobSchedulerService = createJobSchedulerService(notificationJobs)
 
 const app = createApp({
   signInService,
@@ -60,6 +64,7 @@ const app = createApp({
   nomisPushService,
   deadlineService,
   configClient,
+  jobSchedulerService,
   audit,
 })
 
