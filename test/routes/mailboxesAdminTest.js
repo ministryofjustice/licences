@@ -76,58 +76,58 @@ describe('/admin', () => {
   })
 
   describe('POST /admin/mailboxes/edit', () => {
-    it('redirects back to page and does not call config client when missing establishment', () => {
-      const app = createApp(configClient, 'batchUser')
-      return request(app)
-        .post('/admin/mailboxes/edit/1')
-        .send({ establishment: '', email: 'email1', role: 'CA', name: 'name1' })
-        .expect(302)
-        .expect('Location', '/admin/mailboxes/edit/1')
-        .expect(() => {
-          expect(configClient.updateMailbox).not.to.be.calledOnce()
+    describe('Invalid inputs', () => {
+      const examples = [
+        {
+          input: { establishment: 'establishment1', email: '', role: 'CA', name: 'name1' },
+          reason: 'missing email',
+        },
+        {
+          input: { establishment: '', email: 'email1', role: 'CA', name: 'name1' },
+          reason: 'missing establishment',
+        },
+        { input: {}, reason: 'missing all' },
+        {
+          input: { establishment: 'establishment1', email: 'email1', role: 'RO', name: 'name1' },
+          reason: 'role not CA or DM',
+        },
+      ]
+
+      examples.forEach(example => {
+        it(`redirects back to page and does not call config client when ${example.reason}`, () => {
+          const app = createApp(configClient, 'batchUser')
+          return request(app)
+            .post('/admin/mailboxes/edit/1')
+            .send(example.input)
+            .expect(302)
+            .expect('Location', '/admin/mailboxes/edit/1')
+            .expect(() => {
+              expect(configClient.updateMailbox).not.to.be.calledOnce()
+            })
         })
+      })
     })
 
-    it('redirects back to page and does not call config client when missing email', () => {
-      const app = createApp(configClient, 'batchUser')
-      return request(app)
-        .post('/admin/mailboxes/edit/1')
-        .send({ establishment: '1', email: '', role: 'CA', name: 'name1' })
-        .expect(302)
-        .expect('Location', '/admin/mailboxes/edit/1')
-        .expect(() => {
-          expect(configClient.updateMailbox).not.to.be.calledOnce()
-        })
-    })
+    describe('Valid inputs', () => {
+      const examples = [
+        { establishment: '1', email: 'email1', role: 'CA', name: 'name1' },
+        { establishment: '*^^*', email: 'NOT_AN_EMAIL^%$$', role: 'CA', name: '22' },
+      ]
 
-    it('redirects back to page and does not call config client when role not CA or DM', () => {
-      const app = createApp(configClient, 'batchUser')
-      return request(app)
-        .post('/admin/mailboxes/edit/1')
-        .send({ establishment: '1', email: 'email1', role: 'RO', name: 'name1' })
-        .expect(302)
-        .expect('Location', '/admin/mailboxes/edit/1')
-        .expect(() => {
-          expect(configClient.updateMailbox).not.to.be.calledOnce()
+      examples.forEach(exampleValidInput => {
+        it('calls config client and redirects to mailbox list', () => {
+          const app = createApp(configClient, 'batchUser')
+          return request(app)
+            .post('/admin/mailboxes/edit/1')
+            .send(exampleValidInput)
+            .expect(302)
+            .expect('Location', '/admin/mailboxes')
+            .expect(() => {
+              expect(configClient.updateMailbox).to.be.calledOnce()
+              expect(configClient.updateMailbox).to.be.calledWith('1', exampleValidInput)
+            })
         })
-    })
-
-    it('calls config client and redirects to mailbox list', () => {
-      const app = createApp(configClient, 'batchUser')
-      return request(app)
-        .post('/admin/mailboxes/edit/1')
-        .send({ establishment: '1', email: 'email1', role: 'CA', name: 'name1' })
-        .expect(302)
-        .expect('Location', '/admin/mailboxes')
-        .expect(() => {
-          expect(configClient.updateMailbox).to.be.calledOnce()
-          expect(configClient.updateMailbox).to.be.calledWith('1', {
-            establishment: '1',
-            email: 'email1',
-            role: 'CA',
-            name: 'name1',
-          })
-        })
+      })
     })
   })
 
@@ -178,58 +178,58 @@ describe('/admin', () => {
   })
 
   describe('POST /admin/mailboxes/add', () => {
-    it('redirects back to page and does not call config client when missing email', () => {
-      const app = createApp(configClient, 'batchUser')
-      return request(app)
-        .post('/admin/mailboxes/add/')
-        .send({ establishment: 'establishment1', email: '', role: 'role1', name: 'name1' })
-        .expect(302)
-        .expect('Location', '/admin/mailboxes/add')
-        .expect(() => {
-          expect(configClient.addMailbox).not.to.be.calledOnce()
+    describe('Invalid inputs', () => {
+      const examples = [
+        {
+          input: { establishment: 'establishment1', email: '', role: 'CA', name: 'name1' },
+          reason: 'missing email',
+        },
+        {
+          input: { establishment: '', email: 'email1', role: 'CA', name: 'name1' },
+          reason: 'missing establishment',
+        },
+        { input: {}, reason: 'missing all' },
+        {
+          input: { establishment: 'establishment1', email: 'email1', role: 'RO', name: 'name1' },
+          reason: 'role not CA or DM',
+        },
+      ]
+
+      examples.forEach(example => {
+        it(`redirects back to page and does not call config client when ${example.reason}`, () => {
+          const app = createApp(configClient, 'batchUser')
+          return request(app)
+            .post('/admin/mailboxes/add/')
+            .send(example.input)
+            .expect(302)
+            .expect('Location', '/admin/mailboxes/add')
+            .expect(() => {
+              expect(configClient.addMailbox).not.to.be.calledOnce()
+            })
         })
+      })
     })
 
-    it('redirects back to page and does not call config client when missing establishment', () => {
-      const app = createApp(configClient, 'batchUser')
-      return request(app)
-        .post('/admin/mailboxes/add/')
-        .send({ establishment: '', email: 'email1', role: 'role1', name: 'name1' })
-        .expect(302)
-        .expect('Location', '/admin/mailboxes/add')
-        .expect(() => {
-          expect(configClient.addMailbox).not.to.be.calledOnce()
-        })
-    })
+    describe('Valid inputs', () => {
+      const examples = [
+        { establishment: '1', email: 'email1', role: 'CA', name: 'name1' },
+        { establishment: '*^^*', email: 'NOT_AN_EMAIL^%$$', role: 'CA', name: ';DROP TABLE LICENCES' },
+      ]
 
-    it('redirects back to page and does not call config client when role not CA or DM', () => {
-      const app = createApp(configClient, 'batchUser')
-      return request(app)
-        .post('/admin/mailboxes/add/')
-        .send({ establishment: 'establishment1', email: 'email1', role: 'RO', name: 'name1' })
-        .expect(302)
-        .expect('Location', '/admin/mailboxes/add')
-        .expect(() => {
-          expect(configClient.addMailbox).not.to.be.calledOnce()
+      examples.forEach(exampleValidInput => {
+        it('calls config client and redirects to mailbox list', () => {
+          const app = createApp(configClient, 'batchUser')
+          return request(app)
+            .post('/admin/mailboxes/add/')
+            .send(exampleValidInput)
+            .expect(302)
+            .expect('Location', '/admin/mailboxes')
+            .expect(() => {
+              expect(configClient.addMailbox).to.be.calledOnce()
+              expect(configClient.addMailbox).to.be.calledWith(exampleValidInput)
+            })
         })
-    })
-
-    it('calls config client and redirects to user list', () => {
-      const app = createApp(configClient, 'batchUser')
-      return request(app)
-        .post('/admin/mailboxes/add/')
-        .send({ establishment: 'establishment1', email: 'email1', role: 'CA', name: 'name1' })
-        .expect(302)
-        .expect('Location', '/admin/mailboxes')
-        .expect(() => {
-          expect(configClient.addMailbox).to.be.calledOnce()
-          expect(configClient.addMailbox).to.be.calledWith({
-            establishment: 'establishment1',
-            email: 'email1',
-            role: 'CA',
-            name: 'name1',
-          })
-        })
+      })
     })
   })
 })

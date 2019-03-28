@@ -29,6 +29,7 @@ module.exports = ({ configClient }) => (router, audited) => {
     const userInput = req.body
 
     const error = validateMailboxInputs(userInput)
+
     if (error) {
       req.flash('errors', error)
       req.flash('userInput', userInput)

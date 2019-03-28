@@ -48,15 +48,23 @@ describe('configClient', () => {
     })
 
     it('should pass in the correct sql and params', () => {
-      const expectedClause = 'where id = $1'
+      const expectedSelectClause = 'select id, email, establishment, role, name from'
+      const expectedWhereClause = 'where id = $1'
 
       const result = userProxy().getMailbox('id')
 
       return result.then(() => {
         const call = queryStub.getCalls()[0].args[0]
-        expect(call.text).includes(expectedClause)
+        expect(call.text).includes(expectedSelectClause)
+        expect(call.text).includes(expectedWhereClause)
         expect(call.values).to.eql(['id'])
       })
+    })
+
+    it('should handle empty result', () => {
+      queryStub = sinon.stub().resolves({})
+      userProxy().getMailbox('id')
+      expect(queryStub).to.have.callCount(1)
     })
   })
 

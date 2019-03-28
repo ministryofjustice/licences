@@ -13,7 +13,8 @@ module.exports = {
 
   async getMailboxes(establishment, role) {
     const query = {
-      text: 'select * from notifications_config where establishment = $1 and role = $2  order by establishment ASC',
+      text:
+        'select id, email, establishment, role, name from notifications_config where establishment = $1 and role = $2  order by establishment ASC',
       values: [establishment, role],
     }
 
@@ -24,13 +25,13 @@ module.exports = {
 
   async getMailbox(id) {
     const query = {
-      text: 'select * from notifications_config where id = $1',
+      text: 'select id, email, establishment, role, name from notifications_config where id = $1',
       values: [id],
     }
 
     const { rows } = await db.query(query)
 
-    return rows[0]
+    return rows ? rows[0] : {}
   },
 
   async updateMailbox(id, { email, establishment, role, name }) {

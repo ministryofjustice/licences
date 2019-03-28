@@ -17,7 +17,7 @@ module.exports = ({ userAdminService }) => (router, audited) => {
     asyncMiddleware(async (req, res) => {
       const { searchTerm } = req.body
 
-      if (searchTerm.trim() === '') {
+      if (!searchTerm || searchTerm.trim() === '') {
         return res.redirect('/admin/roUsers')
       }
 

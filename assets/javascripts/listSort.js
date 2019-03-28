@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-$(document).ready(init)
-
-function init() {
+$(document).ready(() => {
   $('#list').tablesorter()
-}
+})
