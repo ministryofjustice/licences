@@ -14,7 +14,14 @@ module.exports = function createNotificationService(
   notifyClient,
   audit
 ) {
-  async function getNotificationData({ prisoner, token, notificationType, submissionTarget, bookingId, sendingUser }) {
+  async function getNotificationData({
+    prisoner,
+    token,
+    notificationType,
+    submissionTarget,
+    bookingId,
+    sendingUserName,
+  }) {
     const common = {
       offender_name: [prisoner.firstName, prisoner.lastName].join(' '),
       offender_dob: prisoner.dateOfBirth,
@@ -31,18 +38,18 @@ module.exports = function createNotificationService(
     }
 
     return notificationDataMethod[notificationType]
-      ? notificationDataMethod[notificationType]({ common, token, submissionTarget, bookingId, sendingUser })
+      ? notificationDataMethod[notificationType]({ common, token, submissionTarget, bookingId, sendingUserName })
       : []
   }
 
-  async function getCaNotificationData({ common, submissionTarget, sendingUser }) {
+  async function getCaNotificationData({ common, submissionTarget, sendingUserName }) {
     const mailboxes = await configClient.getMailboxes(submissionTarget.agencyId, 'CA')
 
     if (isEmpty(mailboxes)) {
       logger.error(`Missing CA notification email addresses for agencyId: ${submissionTarget.agencyId}`)
       return []
     }
-    const personalisation = { ...common, sender_name: sendingUser.username }
+    const personalisation = { ...common, sender_name: sendingUserName }
 
     return mailboxes.map(mailbox => {
       return { personalisation, email: mailbox.email }
@@ -96,7 +103,42 @@ module.exports = function createNotificationService(
     })
   }
 
-  async function notify({ user, type, bookingId, notifications } = {}) {
+  async function sendNotifications({
+    prisoner,
+    notificationType,
+    submissionTarget,
+    bookingId,
+    sendingUserName,
+    token,
+  }) {
+    try {
+      const notifications = await getNotificationData({
+        prisoner,
+        token,
+        notificationType,
+        submissionTarget,
+        bookingId,
+        sendingUserName,
+      })
+
+      await notify({
+        sendingUserName,
+        notificationType,
+        bookingId,
+        notifications,
+      })
+
+      return notifications
+    } catch (error) {
+      logger.warn(
+        `Error sending notification for bookingId: ${bookingId}, transition: ${notificationType}`,
+        error.stack
+      )
+      return []
+    }
+  }
+
+  async function notify({ sendingUserName, type, bookingId, notifications } = {}) {
     if (isEmpty(notifyKey) || notifyKey === 'NOTIFY_OFF') {
       logger.warn('No notification API key - notifications disabled')
       return
@@ -131,7 +173,7 @@ module.exports = function createNotificationService(
           })
       }
     })
-    auditEvent(user, bookingId, type, notifications)
+    auditEvent(sendingUserName, bookingId, type, notifications)
   }
 
   function auditEvent(user, bookingId, notificationType, notifications) {
@@ -144,6 +186,7 @@ module.exports = function createNotificationService(
 
   return {
     getNotificationData,
+    sendNotifications,
     notify,
   }
 }
