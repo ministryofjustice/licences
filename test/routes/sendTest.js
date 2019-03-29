@@ -409,30 +409,6 @@ describe('send', () => {
             })
           })
       })
-
-      it('Completes the sending process even when errors arise from notify', () => {
-        notificationService.sendNotifications.rejects(new Error('dead'))
-
-        const app = createApp(
-          {
-            licenceServiceStub: licenceService,
-            prisonerServiceStub: prisonerService,
-            userAdminServiceStub: userAdminService,
-            notificationServiceStub: notificationService,
-          },
-          'dmUser'
-        )
-
-        return request(app)
-          .post('/hdc/send/return/123')
-          .expect(() => {
-            expect(prisonerService.getOrganisationContactDetails).to.be.calledOnce()
-            expect(licenceService.markForHandover).to.be.calledOnce()
-            expect(licenceService.removeDecision).to.be.calledOnce()
-            expect(auditStub.record).to.be.calledOnce()
-            expect(notificationService.sendNotifications).to.be.calledOnce()
-          })
-      })
     })
   })
 })

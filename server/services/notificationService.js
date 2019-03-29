@@ -127,11 +127,14 @@ module.exports = function createNotificationService(
         bookingId,
         notifications,
       })
+
+      return notifications
     } catch (error) {
       logger.warn(
         `Error sending notification for bookingId: ${bookingId}, transition: ${notificationType}`,
         error.stack
       )
+      return []
     }
   }
 

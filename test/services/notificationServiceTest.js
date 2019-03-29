@@ -304,4 +304,21 @@ describe('notificationService', () => {
       })
     })
   })
+
+  describe('sendNotifications', () => {
+    it('Should not error if internal errors, just return empty', async () => {
+      prisonerService.getEstablishmentForPrisoner.rejects(new Error('dead'))
+      const inputs = {
+        prisoner: {},
+        notificationType: {},
+        submissionTarget: {},
+        bookingId: {},
+        sendingUserName: {},
+        token: {},
+      }
+
+      const result = await service.sendNotifications(inputs)
+      expect(result).to.eql([])
+    })
+  })
 })
