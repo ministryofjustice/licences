@@ -36,49 +36,49 @@ describe('notificationService', () => {
   describe('notify', () => {
     it('should do nothing if no template id configured', async () => {
       const notifications = [{ email: ['email@email.com'] }]
-      await service.notify({ user: 'username', type: 'UNKNOWN_TYPE', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'UNKNOWN_TYPE', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).not.to.be.calledOnce()
     })
 
     it('should do nothing if empty data', async () => {
       const notifications = [{}]
-      await service.notify({ user: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).not.to.be.calledOnce()
     })
 
     it('should do nothing if empty emails', async () => {
       const notifications = [{ email: [] }]
-      await service.notify({ user: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).not.to.be.calledOnce()
     })
 
     it('should call sendEmail from notifyClient', async () => {
       const notifications = [{ email: 'email@email.com' }]
-      await service.notify({ user: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).to.be.calledOnce()
     })
 
     it('should pass in the template id', async () => {
       const notifications = [{ email: ['email@email.com'] }]
-      await service.notify({ user: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).to.be.calledWith(templates.CA_RETURN.templateId, sinon.match.any, sinon.match.any)
     })
 
     it('should pass in the email address', async () => {
       const notifications = [{ email: 'email@email.com' }]
-      await service.notify({ user: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).to.be.calledWith(sinon.match.any, 'email@email.com', sinon.match.any)
     })
 
     it('should pass in the data', async () => {
       const notifications = [{ personalisation: { a: 'a' }, email: ['email@email.com'] }]
-      await service.notify({ user: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).to.be.calledWith(sinon.match.any, sinon.match.any, { personalisation: { a: 'a' } })
     })
 
     it('should audit the event', async () => {
       const notifications = [{ personalisation: { a: 'a' }, email: 'email@email.com' }]
-      await service.notify({ user: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
       expect(audit.record).to.be.calledOnce()
       expect(audit.record).to.be.calledWith('NOTIFY', 'username', {
         bookingId: 123,
@@ -89,7 +89,7 @@ describe('notificationService', () => {
 
     it('should call sendEmail from notifyClient once for each email', async () => {
       const notifications = [{ email: '1@1.com' }, { email: '2@2.com' }, { email: '3@3.com' }]
-      await service.notify({ user: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).to.be.calledThrice()
       expect(notifyClient.sendEmail).to.be.calledWith(sinon.match.any, '1@1.com', sinon.match.any)
       expect(notifyClient.sendEmail).to.be.calledWith(sinon.match.any, '2@2.com', sinon.match.any)
@@ -98,7 +98,7 @@ describe('notificationService', () => {
 
     it('should audit the event only once when multiple email addresses', async () => {
       const notifications = [{ email: '1@1.com' }, { email: '2@2.com' }, { email: '3@3.com' }]
-      await service.notify({ user: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
+      await service.notify({ sendingUserName: 'username', type: 'CA_RETURN', bookingId: 123, notifications })
       expect(audit.record).to.be.calledOnce()
       expect(audit.record).to.be.calledWith('NOTIFY', 'username', {
         bookingId: 123,
@@ -190,7 +190,7 @@ describe('notificationService', () => {
           notificationType: 'RO_NEW',
           submissionTarget: { com: { deliusId: 'deliusId', name: 'RO Name' } },
           bookingId: '123',
-          sendingUser: 'sender',
+          sendingUserName: 'sender',
         })
 
         expect(prisonerService.getEstablishmentForPrisoner).to.be.calledOnce()
@@ -242,7 +242,7 @@ describe('notificationService', () => {
           notificationType: 'CA_RETURN',
           submissionTarget: { agencyId: 'LT1' },
           bookingId: '123',
-          sendingUser: { username: 'sender' },
+          sendingUserName: 'sender',
         })
 
         expect(data).to.eql([
@@ -282,7 +282,7 @@ describe('notificationService', () => {
           notificationType: 'DM_NEW',
           submissionTarget: { agencyId: 'LT1' },
           bookingId: '123',
-          sendingUser: { username: 'sender' },
+          sendingUserName: 'sender',
         })
 
         expect(data).to.eql([

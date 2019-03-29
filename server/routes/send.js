@@ -1,4 +1,5 @@
 const { asyncMiddleware } = require('../utils/middleware')
+const logger = require('../../log.js')
 
 module.exports = ({ licenceService, prisonerService, notificationService, audit }) => router => {
   router.get('/:destination/:bookingId', async (req, res) => {
@@ -25,30 +26,29 @@ module.exports = ({ licenceService, prisonerService, notificationService, audit 
         res.locals.token
       )
 
-      const notifications = await notificationService.getNotificationData({
-        prisoner: res.locals.prisoner,
-        token: res.locals.token,
-        notificationType: transition.notificationType,
-        submissionTarget,
-        bookingId,
-        sendingUser: req.user,
-      })
-
-      await Promise.all([
-        licenceService.markForHandover(bookingId, transition.type),
-        notificationService.notify({
-          user: req.user.username,
-          type: transition.notificationType,
-          bookingId,
-          notifications,
-        }),
-      ])
+      await licenceService.markForHandover(bookingId, transition.type)
 
       if (transition.type === 'dmToCaReturn') {
         await licenceService.removeDecision(bookingId, res.locals.licence)
       }
 
       auditEvent(req.user.username, bookingId, transition.type, submissionTarget)
+
+      try {
+        await notificationService.sendNotifications({
+          bookingId,
+          prisoner: res.locals.prisoner,
+          notificationType: transition.notificationType,
+          submissionTarget,
+          sendingUserName: req.user.username,
+          token: res.locals.token,
+        })
+      } catch (error) {
+        logger.warn(
+          `Error sending notification for bookingId: ${bookingId}, transition: ${transition.type}`,
+          error.stack
+        )
+      }
 
       res.redirect(`/hdc/sent/${transition.receiver}/${transition.type}/${bookingId}`)
     })
