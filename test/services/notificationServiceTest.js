@@ -224,7 +224,7 @@ describe('notificationService', () => {
         expect(data).to.eql([])
       })
 
-      it('should return empty when missing CA email addresses for agency', async () => {
+      it('should return empty when empty CA email addresses for agency', async () => {
         configClient.getMailboxes = sinon.stub().resolves([])
         const data = await service.getNotificationData({
           prisoner: {},
