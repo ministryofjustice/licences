@@ -1,0 +1,56 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+
+  -var inputs = userInput ? userInput : mailbox ? mailbox : {}
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/mailboxes") Back
+  +errorBannerWithDetail(errors, [
+    { field: 'email' },
+    { field: 'establishment' },
+    { field: 'role' }
+  ])
+
+  h2.heading-large
+    if mailbox
+      | Edit Mailbox
+    else
+      | Add Mailbox
+
+  form#reportingForm(method='POST')
+    input(type="hidden" name="_csrf" value=csrfToken)
+    if (mailbox)
+      input(type="hidden" name="id" value=mailbox.id)
+
+    div#user.pure-g
+      div.pure-u-1.pure-u-md-2-5
+        div.pure-u-1.pure-u-md-4-5
+          div.form-group
+            label.form-label(for="establishment") Establishment
+            input#establishment.form-control(name="establishment" type="text" value=inputs.establishment)
+
+      div.pure-u-1.pure-u-md-2-5
+        div.pure-u-1.pure-u-md-4-5
+          div.form-group
+            label.form-label(for="role") Role
+            input#role.form-control(name="role" type="text" value=inputs.role)
+
+      div.pure-u-1.pure-u-md-2-5
+        div.pure-u-1.pure-u-md-4-5
+          div.form-group
+            label.form-label(for="email") Email
+            input#email.form-control(name="email" type="text" value=inputs.email)
+
+      div.pure-u-1.pure-u-md-2-5
+        div.pure-u-1.pure-u-md-4-5
+          div.form-group
+            label.form-label(for="name") Name
+            input#name.form-control(name="name" type="text" value=inputs.name)
+
+    div.paddingBottom.smallPaddingTop
+      div.pure-u-1.inlineButtons
+        input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save")
+        a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/mailboxes" role="button") Cancel
+

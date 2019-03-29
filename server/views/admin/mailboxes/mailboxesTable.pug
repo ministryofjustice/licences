@@ -1,0 +1,31 @@
+table#list.tablesorter.largeMarginBottom
+  thead
+    tr
+      th.sortable Establishment
+      th.sortable Role
+      th.sortable Email
+      th.sortable Name
+      th
+      th
+  tbody
+    if mailboxes && mailboxes.length > 0
+      each mailbox, index in mailboxes
+        tr
+          td.establishment.searchable
+            if mailbox.establishment
+              | #{mailbox.establishment}
+          td.role.searchable
+            if mailbox.role
+              | #{mailbox.role}
+          td.email.searchable
+            if mailbox.email
+              | #{mailbox.email}
+          td.name.searchable
+            if mailbox.name
+              |  #{mailbox.name}
+          td
+            a.button.button-primary.fullWidth.center(href="/admin/mailboxes/edit/" + mailbox.id role="button")
+              | Edit
+          td
+            a.button.button-secondary.fullWidth.center(href="/admin/mailboxes/delete/" + mailbox.id role="button")
+              | Delete

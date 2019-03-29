@@ -6,6 +6,7 @@ const audit = require('./data/audit')
 
 const licenceClient = require('./data/licenceClient')
 const userClient = require('./data/userClient')
+const configClient = require('./data/configClient')
 const nomisClientBuilder = require('./data/nomisClientBuilder')
 const pdfFormatter = require('./services/utils/pdfFormatter')
 
@@ -48,6 +49,7 @@ const app = createApp({
   notificationService,
   userService,
   nomisPushService,
+  configClient,
   audit,
 })
 

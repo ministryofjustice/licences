@@ -1,0 +1,44 @@
+extends ../../layout
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/mailboxes") Back
+
+  h2.heading-large Delete Mailbox?
+
+  form#deleteUserForm(method='POST')
+    input(type="hidden" name="_csrf" value=csrfToken)
+    input(type="hidden" name="id" value=mailbox.id)
+
+    div#user.pure-g
+      div.pure-u-1
+        table#users.largeMarginBottom
+          thead
+            tr
+              th Establishment
+              th Role
+              th Email
+              th Name
+              th
+          tbody
+            tr.user
+              td
+                if mailbox.establishment
+                  | #{mailbox.establishment}
+              td
+                if mailbox.role
+                  | #{mailbox.role}
+              td
+                if mailbox.email
+                  | #{mailbox.email}
+              td
+                if mailbox.name
+                  | #{mailbox.name}
+
+
+    div.paddingBottom.smallPaddingTop
+      div.pure-u-1.inlineButtons
+        input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Delete mailbox")
+        a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/mailboxes" role="button") Cancel
+
