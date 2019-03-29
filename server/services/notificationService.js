@@ -1,5 +1,4 @@
 const templates = require('./config/notificationTemplates')
-const notificationMailboxes = require('./config/notificationMailboxes')
 const {
   notifications: { notifyKey },
   domain,
@@ -8,7 +7,13 @@ const logger = require('../../log.js')
 const { getIn, isEmpty } = require('../utils/functionalHelpers')
 const { getRoNewCaseDueDate } = require('../utils/dueDates')
 
-module.exports = function createNotificationService(prisonerService, userAdminService, notifyClient, audit) {
+module.exports = function createNotificationService(
+  prisonerService,
+  userAdminService,
+  configClient,
+  notifyClient,
+  audit
+) {
   async function getNotificationData({ prisoner, token, notificationType, submissionTarget, bookingId, sendingUser }) {
     const common = {
       offender_name: [prisoner.firstName, prisoner.lastName].join(' '),
@@ -30,16 +35,17 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
       : []
   }
 
-  function getCaNotificationData({ common, submissionTarget, sendingUser }) {
-    const emails = getIn(notificationMailboxes, [submissionTarget.agencyId, 'ca'])
-    if (isEmpty(emails)) {
+  async function getCaNotificationData({ common, submissionTarget, sendingUser }) {
+    const mailboxes = await configClient.getMailboxes(submissionTarget.agencyId, 'CA')
+
+    if (isEmpty(mailboxes)) {
       logger.error(`Missing CA notification email addresses for agencyId: ${submissionTarget.agencyId}`)
       return []
     }
     const personalisation = { ...common, sender_name: sendingUser.username }
 
-    return emails.map(email => {
-      return { personalisation, email }
+    return mailboxes.map(mailbox => {
+      return { personalisation, email: mailbox.email }
     })
   }
 
@@ -77,17 +83,17 @@ module.exports = function createNotificationService(prisonerService, userAdminSe
 
   async function getDmNotificationData({ common, token, bookingId }) {
     const establishment = await prisonerService.getEstablishmentForPrisoner(bookingId, token)
-    const contacts = getIn(notificationMailboxes, [establishment.agencyId, 'dm'])
-    if (isEmpty(contacts)) {
+
+    const mailboxes = await configClient.getMailboxes(establishment.agencyId, 'DM')
+
+    if (isEmpty(mailboxes)) {
       logger.error(`Missing DM notification email addresses for agencyId: ${establishment.agencyId}`)
       return []
     }
 
-    const notifications = contacts.map(contact => {
-      return { personalisation: { ...common, dm_name: contact.name }, email: contact.email }
+    return mailboxes.map(mailbox => {
+      return { personalisation: { ...common, dm_name: mailbox.name }, email: mailbox.email }
     })
-
-    return notifications
   }
 
   async function notify({ user, type, bookingId, notifications } = {}) {
