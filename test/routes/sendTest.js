@@ -278,7 +278,14 @@ describe('send', () => {
       })
 
       it('shows sent confirmation', () => {
-        const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService }, 'dmUser')
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            notificationServiceStub: notificationService,
+          },
+          'dmUser'
+        )
 
         return request(app)
           .post('/hdc/send/return/123')

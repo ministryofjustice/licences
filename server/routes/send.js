@@ -1,5 +1,4 @@
 const { asyncMiddleware } = require('../utils/middleware')
-const logger = require('../../log.js')
 
 module.exports = ({ licenceService, prisonerService, notificationService, audit }) => router => {
   router.get('/:destination/:bookingId', async (req, res) => {
@@ -34,21 +33,14 @@ module.exports = ({ licenceService, prisonerService, notificationService, audit 
 
       auditEvent(req.user.username, bookingId, transition.type, submissionTarget)
 
-      try {
-        await notificationService.sendNotifications({
-          bookingId,
-          prisoner: res.locals.prisoner,
-          notificationType: transition.notificationType,
-          submissionTarget,
-          sendingUserName: req.user.username,
-          token: res.locals.token,
-        })
-      } catch (error) {
-        logger.warn(
-          `Error sending notification for bookingId: ${bookingId}, transition: ${transition.type}`,
-          error.stack
-        )
-      }
+      notificationService.sendNotifications({
+        bookingId,
+        prisoner: res.locals.prisoner,
+        notificationType: transition.notificationType,
+        submissionTarget,
+        sendingUserName: req.user.username,
+        token: res.locals.token,
+      })
 
       res.redirect(`/hdc/sent/${transition.receiver}/${transition.type}/${bookingId}`)
     })

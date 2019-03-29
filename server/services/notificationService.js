@@ -111,21 +111,28 @@ module.exports = function createNotificationService(
     sendingUserName,
     token,
   }) {
-    const notifications = await getNotificationData({
-      prisoner,
-      token,
-      notificationType,
-      submissionTarget,
-      bookingId,
-      sendingUserName,
-    })
+    try {
+      const notifications = await getNotificationData({
+        prisoner,
+        token,
+        notificationType,
+        submissionTarget,
+        bookingId,
+        sendingUserName,
+      })
 
-    notify({
-      sendingUserName,
-      notificationType,
-      bookingId,
-      notifications,
-    })
+      await notify({
+        sendingUserName,
+        notificationType,
+        bookingId,
+        notifications,
+      })
+    } catch (error) {
+      logger.warn(
+        `Error sending notification for bookingId: ${bookingId}, transition: ${notificationType}`,
+        error.stack
+      )
+    }
   }
 
   async function notify({ sendingUserName, type, bookingId, notifications } = {}) {
