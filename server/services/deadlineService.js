@@ -16,23 +16,13 @@ module.exports = function createDeadlineService(licenceClient) {
     }
     rejectIfUnknown(role)
     const { from, upto } = dueDateMethods[role].due(days)
-    try {
-      return licenceClient.getLicencesInStageBetweenDates(roleStages[role], from, upto)
-    } catch (error) {
-      logger.error('Error getting due licences', error.stack)
-      throw error
-    }
+    return licenceClient.getLicencesInStageBetweenDates(roleStages[role], from, upto)
   }
 
   async function getOverdue(role) {
     rejectIfUnknown(role)
     const upto = dueDateMethods[role].overdue()
-    try {
-      return licenceClient.getLicencesInStageBeforeDate(roleStages[role], upto)
-    } catch (error) {
-      logger.error('Error getting overdue licences', error.stack)
-      throw error
-    }
+    return licenceClient.getLicencesInStageBeforeDate(roleStages[role], upto)
   }
 
   function rejectIfUnknown(role) {
