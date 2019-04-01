@@ -311,23 +311,6 @@ describe('licenceClient', () => {
   })
 
   describe('getLicencesInStageBetweenDates', () => {
-    it('should call query', () => {
-      licencesProxy().getLicencesInStageBetweenDates('stage', 'from', 'upto')
-      expect(queryStub).to.have.callCount(1)
-    })
-
-    it('should pass in the correct sql', () => {
-      const expectedSelectClause = 'select l.booking_id, l.transition_date'
-      const expectedWhereClause = 'where stage = $1 and transition_date >= $2 and transition_date < $3'
-
-      const result = licencesProxy().getLicencesInStageBetweenDates('stage', 'from', 'upto')
-
-      return result.then(() => {
-        expect(queryStub.getCalls()[0].args[0].text).includes(expectedSelectClause)
-        expect(queryStub.getCalls()[0].args[0].text).includes(expectedWhereClause)
-      })
-    })
-
     it('should pass in the correct parameters', () => {
       const expectedParameters = ['stage', 'from', 'upto']
 
@@ -341,23 +324,6 @@ describe('licenceClient', () => {
   })
 
   describe('getLicencesInStageBeforeDate', () => {
-    it('should call query', () => {
-      licencesProxy().getLicencesInStageBeforeDate('stage', 'upto')
-      expect(queryStub).to.have.callCount(1)
-    })
-
-    it('should pass in the correct sql', () => {
-      const expectedSelectClause = 'select l.booking_id, l.transition_date'
-      const expectedWhereClause = 'where stage = $1 and transition_date < $2'
-
-      const result = licencesProxy().getLicencesInStageBeforeDate('stage', 'upto')
-
-      return result.then(() => {
-        expect(queryStub.getCalls()[0].args[0].text).includes(expectedWhereClause)
-        expect(queryStub.getCalls()[0].args[0].text).includes(expectedSelectClause)
-      })
-    })
-
     it('should pass in the correct parameters', () => {
       const expectedParameters = ['stage', 'upto']
 
