@@ -1,3 +1,4 @@
+const moment = require('moment')
 const templates = require('./config/notificationTemplates')
 const {
   notifications: { notifyKey },
@@ -5,11 +6,12 @@ const {
 } = require('../config')
 const logger = require('../../log.js')
 const { getIn, isEmpty } = require('../utils/functionalHelpers')
-const { getRoNewCaseDueDate } = require('../utils/dueDates')
+const { getRoCaseDueDate, getRoNewCaseDueDate } = require('../utils/dueDates')
 
 module.exports = function createNotificationService(
   prisonerService,
   userAdminService,
+  deadlineService,
   configClient,
   notifyClient,
   audit
@@ -20,6 +22,7 @@ module.exports = function createNotificationService(
     notificationType,
     submissionTarget,
     bookingId,
+    transitionDate,
     sendingUserName,
   }) {
     const common = {
@@ -34,15 +37,30 @@ module.exports = function createNotificationService(
       CA_RETURN: getCaNotificationData,
       CA_DECISION: getCaNotificationData,
       RO_NEW: getRoNotificationData,
+      RO_TWO_DAYS: getRoNotificationData,
+      RO_DUE: getRoNotificationData,
+      RO_OVERDUE: getRoNotificationData,
       DM_NEW: getDmNotificationData,
     }
 
     return notificationDataMethod[notificationType]
-      ? notificationDataMethod[notificationType]({ common, token, submissionTarget, bookingId, sendingUserName })
+      ? notificationDataMethod[notificationType]({
+          common,
+          token,
+          submissionTarget,
+          bookingId,
+          transitionDate,
+          sendingUserName,
+        })
       : []
   }
 
   async function getCaNotificationData({ common, submissionTarget, sendingUserName }) {
+    if (isEmpty(submissionTarget, ['agencyId'])) {
+      logger.error('Missing agencyId for CA notification')
+      return []
+    }
+
     const mailboxes = await configClient.getMailboxes(submissionTarget.agencyId, 'CA')
 
     if (isEmpty(mailboxes)) {
@@ -56,7 +74,7 @@ module.exports = function createNotificationService(
     })
   }
 
-  async function getRoNotificationData({ common, token, submissionTarget, bookingId }) {
+  async function getRoNotificationData({ common, token, submissionTarget, bookingId, transitionDate }) {
     const deliusId = getIn(submissionTarget, ['com', 'deliusId'])
     if (isEmpty(deliusId)) {
       logger.error('Missing COM deliusId')
@@ -69,19 +87,27 @@ module.exports = function createNotificationService(
     ])
 
     const email = getIn(ro, ['orgEmail'])
+    const prison = getIn(establishment, ['premise'])
 
     if (isEmpty(email)) {
       logger.error(`Missing orgEmail for RO: ${deliusId}`)
       return []
     }
 
+    if (isEmpty(prison)) {
+      logger.error(`Missing prison for bookingId: ${bookingId}`)
+      return []
+    }
+
+    const date = transitionDate ? getRoCaseDueDate(moment(transitionDate)) : getRoNewCaseDueDate()
+
     return [
       {
         personalisation: {
           ...common,
           ro_name: submissionTarget.com.name,
-          prison: establishment.premise,
-          date: getRoNewCaseDueDate(),
+          prison,
+          date,
         },
         email,
       },
@@ -105,11 +131,12 @@ module.exports = function createNotificationService(
 
   async function sendNotifications({
     prisoner,
+    token,
     notificationType,
     submissionTarget,
     bookingId,
+    transitionDate,
     sendingUserName,
-    token,
   }) {
     try {
       const notifications = await getNotificationData({
@@ -118,8 +145,13 @@ module.exports = function createNotificationService(
         notificationType,
         submissionTarget,
         bookingId,
+        transitionDate,
         sendingUserName,
       })
+
+      if (isEmpty(notifications)) {
+        return []
+      }
 
       await notify({
         sendingUserName,
@@ -138,7 +170,7 @@ module.exports = function createNotificationService(
     }
   }
 
-  async function notify({ sendingUserName, type, bookingId, notifications } = {}) {
+  async function notify({ sendingUserName, notificationType, bookingId, notifications } = {}) {
     if (isEmpty(notifyKey) || notifyKey === 'NOTIFY_OFF') {
       logger.warn('No notification API key - notifications disabled')
       return
@@ -149,12 +181,12 @@ module.exports = function createNotificationService(
       return
     }
 
-    if (isEmpty(templates[type])) {
+    if (isEmpty(templates[notificationType])) {
       logger.warn(`Unmapped notification template type: $type`)
       return
     }
 
-    const { templateId } = templates[type]
+    const { templateId } = templates[notificationType]
 
     notifications.forEach(notification => {
       if (isEmpty(notification.email)) {
@@ -168,12 +200,10 @@ module.exports = function createNotificationService(
           .catch(error => {
             logger.error('Error sending notification email ', notification.email)
             logger.error(error.stack)
-            logger.error('error notifying for type', type)
-            logger.error('error notifying for data', notification.personalisation)
           })
       }
     })
-    auditEvent(sendingUserName, bookingId, type, notifications)
+    auditEvent(sendingUserName, bookingId, notificationType, notifications)
   }
 
   function auditEvent(user, bookingId, notificationType, notifications) {
@@ -184,9 +214,63 @@ module.exports = function createNotificationService(
     })
   }
 
+  async function notifyRoReminders(token) {
+    await notifyCases(token, () => deadlineService.getOverdue('RO'), 'RO_OVERDUE')
+    await notifyCases(token, () => deadlineService.getDueInDays('RO', 0), 'RO_DUE')
+    await notifyCases(token, () => deadlineService.getDueInDays('RO', 2), 'RO_TWO_DAYS')
+  }
+
+  async function notifyCases(token, caseFinderMethod, notificationType) {
+    try {
+      const cases = await caseFinderMethod()
+      if (!isEmpty(cases)) {
+        await sendReminders(token, cases, notificationType)
+      }
+    } catch (error) {
+      logger.error(`Error notifying cases for notification type: ${notificationType}`, error.stack)
+    }
+  }
+
+  async function sendReminders(token, licences, notificationType) {
+    // This is intentionally sequential to avoid timeouts sometimes arising from multiple quick calls to NOMIS API
+    await licences.reduce(async (previous, nextLicence) => {
+      await previous
+      return sendReminder(token, notificationType, nextLicence.booking_id, nextLicence.transition_date)
+    }, Promise.resolve())
+  }
+
+  async function sendReminder(token, notificationType, bookingId, transitionDate) {
+    const [submissionTarget, prisoner] = await getPrisonerData(bookingId, token)
+
+    if (isEmpty(submissionTarget) || isEmpty(prisoner)) {
+      return
+    }
+
+    sendNotifications({
+      prisoner,
+      notificationType,
+      submissionTarget,
+      bookingId,
+      sendingUserName: 'NOTIFICATION_SERVICE',
+      token,
+      transitionDate,
+    })
+  }
+
+  async function getPrisonerData(bookingId, token) {
+    return Promise.all([
+      prisonerService.getOrganisationContactDetails('RO', bookingId, token),
+      prisonerService.getPrisonerPersonalDetails(bookingId, token),
+    ]).catch(error => {
+      logger.error('Error getting prisoner details for notification', error.stack)
+      return []
+    })
+  }
+
   return {
     getNotificationData,
     sendNotifications,
     notify,
+    notifyRoReminders,
   }
 }
