@@ -323,10 +323,7 @@ module.exports = function createApp({
           return next(err2)
         }
 
-        const redirection = req.session.returnTo || '/'
-        req.session.returnTo = null
-
-        return res.redirect(redirection)
+        return res.redirect(req.session.returnTo || '/')
       })
       return null
     })(req, res, next)

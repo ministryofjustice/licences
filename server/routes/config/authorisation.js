@@ -2,7 +2,9 @@ module.exports = {
   '/admin': {
     authorised: [{ role: 'BATCHLOAD' }],
   },
-
+  '/caseList/': {
+    authorised: [{ role: 'CA' }, { role: 'RO' }, { role: 'DM' }],
+  },
   '/hdc/eligibility/': {
     authorised: [{ role: 'CA' }],
   },
