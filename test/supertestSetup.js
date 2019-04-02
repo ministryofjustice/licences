@@ -134,6 +134,7 @@ const users = {
       caseLoadId: 'caseLoadId',
       description: '---',
     },
+    activeCaseLoadId: 'caseLoadId',
   },
   roUser: {
     name: 'ro last',
