@@ -1,9 +1,6 @@
-const express = require('express')
 const config = require('../config')
 
-module.exports = () => {
-  const router = express.Router()
-
+module.exports = () => router => {
   router.get('/', (req, res) => {
     if (req.user && config.roles.admin.includes(req.user.role)) {
       return res.redirect('/admin/')

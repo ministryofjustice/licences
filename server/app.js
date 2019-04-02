@@ -322,7 +322,11 @@ module.exports = function createApp({
         if (err2) {
           return next(err2)
         }
-        return res.redirect(req.session.returnTo || '/')
+
+        const redirection = req.session.returnTo || '/'
+        req.session.returnTo = null
+
+        return res.redirect(redirection)
       })
       return null
     })(req, res, next)
@@ -335,7 +339,7 @@ module.exports = function createApp({
     next()
   })
 
-  app.use('/', defaultRouter())
+  app.use('/', secureRoute(defaultRouter()))
 
   app.use(
     '/hdc/taskList/',
