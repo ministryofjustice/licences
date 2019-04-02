@@ -1,4 +1,5 @@
 const { asyncMiddleware } = require('../utils/middleware')
+const { roles } = require('../config')
 
 module.exports = ({ userService }) => router => {
   router.get(
@@ -9,7 +10,8 @@ module.exports = ({ userService }) => router => {
         userService.getAllCaseLoads(req.user, res.locals.token),
       ])
 
-      res.render(`user/admin`, { allRoles, allCaseLoads, user: req.user })
+      const isAdmin = roles.admin.includes(req.user.role)
+      res.render(`user/admin`, { allRoles, allCaseLoads, user: req.user, isAdmin })
     })
   )
 
@@ -20,7 +22,7 @@ module.exports = ({ userService }) => router => {
         await userService.setRole(req.body.role, req.user)
       }
 
-      if (req.body.caseLoad !== req.user.activeCaseLoad.caseLoadId) {
+      if (req.body.caseLoadId !== req.user.activeCaseLoadId) {
         await userService.setActiveCaseLoad(req.body.caseLoad, req.user, res.locals.token)
       }
 

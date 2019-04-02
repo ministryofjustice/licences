@@ -22,6 +22,13 @@ describe('GET /caseList', () => {
     app = createApp('caUser')
   })
 
+  it('returns forbidden status if logged in as admin user role', () => {
+    app = createApp('batchUser')
+    return request(app)
+      .get('/caselist/')
+      .expect(403)
+  })
+
   it('redirects if accesss /', () => {
     return request(app)
       .get('/caselist/')

@@ -1,8 +1,9 @@
 const logger = require('../../log')
-const { asyncMiddleware } = require('../utils/middleware')
+const { asyncMiddleware, authorisationMiddleware } = require('../utils/middleware')
 const { globalSearchUrl } = require('../config').nomis
 
 module.exports = ({ caseListService }) => router => {
+  router.use(authorisationMiddleware)
   router.get('/', (req, res) => res.redirect('/caseList/active'))
 
   router.get(

@@ -61,6 +61,18 @@ describe('/user', () => {
           expect(res.text).to.contain('<option value="2"')
         })
     })
+
+    it(`does not render the case load dropdown if user is admin role`, () => {
+      const app = createApp({ userService }, 'batchUser')
+      return request(app)
+        .get('/')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).not.to.contain('<option value="1"')
+          expect(res.text).not.to.contain('<option value="2"')
+        })
+    })
   })
 
   describe('user page post', () => {
@@ -87,22 +99,22 @@ describe('/user', () => {
         })
     })
 
-    it(`calls setActiveCaseload if caseLod is different to that on user`, () => {
+    it(`calls setActiveCaseload if caseLoad is different to that on user`, () => {
       const app = createApp({ userService }, 'caUser')
       return request(app)
         .post('/')
-        .send({ caseLoad: 'caseLoadId2' })
+        .send({ caseLoadId: 'caseLoadId2' })
         .expect(302)
         .expect(() => {
           expect(userService.setActiveCaseLoad).to.be.calledOnce()
         })
     })
 
-    it(`does not call setActiveCaseload if caseLod is the same as that on user`, () => {
+    it(`does not call setActiveCaseload if caseLoad is the same as that on user`, () => {
       const app = createApp({ userService }, 'caUser')
       return request(app)
         .post('/')
-        .send({ caseLoad: 'caseLoadId' })
+        .send({ caseLoadId: 'caseLoadId' })
         .expect(302)
         .expect(() => {
           expect(userService.setActiveCaseLoad).to.not.be.called()
