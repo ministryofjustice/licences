@@ -18,6 +18,10 @@ module.exports = {
       },
     ],
     validate: true,
+    nomisPush: {
+      status: ['eligibility', 'excluded', 'decision'],
+      reason: ['eligibility', 'excluded', 'reason'],
+    },
     nextPath: {
       decisions: [
         {
@@ -74,6 +78,10 @@ module.exports = {
       },
     ],
     validate: true,
+    nomisPush: {
+      status: ['eligibility', 'exceptionalCircumstances', 'decision'],
+      reason: ['eligibility', 'suitability', 'reason'],
+    },
     nextPath: {
       decisions: [
         {

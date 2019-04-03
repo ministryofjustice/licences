@@ -170,51 +170,59 @@ describe('/hdc/finalChecks', () => {
       })
     })
 
-    it('should push the postponement to nomis', () => {
-      const licenceService = createLicenceServiceStub()
-      licenceService.update.resolves({
-        finalChecks: { postpone: { decision: 'Yes', postponeReason: 'Something' } },
-      })
-      const signInService = createSignInServiceStub()
-      signInService.getClientCredentialsTokens.resolves('new token')
-      const nomisPushService = createNomisPushServiceStub()
-      const app = createApp(
+    describe('push to nomis', () => {
+      const specs = [
         {
-          licenceServiceStub: licenceService,
-          signInServiceStub: signInService,
-          nomisPushServiceStub: nomisPushService,
+          type: 'postpone',
+          path: '/hdc/finalChecks/postpone/1',
+          data: { finalChecks: { postpone: { decision: 'ABC', postponeReason: 'XYZ' } } },
         },
-        'caUser',
-        { pushToNomis: true }
-      )
+        {
+          type: 'refusal',
+          path: '/hdc/finalChecks/refusal/1',
+          data: { finalChecks: { refusal: { decision: 'ABC', reason: 'XYZ' } } },
+        },
+      ]
 
-      return request(app)
-        .post('/hdc/finalChecks/postpone/1')
-        .send({ decision: 'Yes' })
-        .expect(302)
-        .expect(() => {
-          expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
-          expect(nomisPushService.pushStatus).to.be.calledOnce()
-          expect(nomisPushService.pushStatus).to.be.calledWith(
-            '1',
-            { postpone: 'Yes', postponeReason: 'Something' },
-            'new token'
+      specs.forEach(spec => {
+        it(`should push ${spec.type} status to nomis`, () => {
+          const licenceService = createLicenceServiceStub()
+          licenceService.update.resolves(spec.data)
+          const nomisPushService = createNomisPushServiceStub()
+          const app = createApp(
+            {
+              licenceServiceStub: licenceService,
+              nomisPushServiceStub: nomisPushService,
+            },
+            'caUser',
+            { pushToNomis: true }
           )
+
+          return request(app)
+            .post(spec.path)
+            .send({ decision: 'Yes' })
+            .expect(302)
+            .expect(() => {
+              expect(nomisPushService.pushStatus).to.be.calledOnce()
+              expect(nomisPushService.pushStatus).to.be.calledWith(
+                '1',
+                { type: spec.type, status: 'ABC', reason: 'XYZ' },
+                'CA_USER_TEST'
+              )
+            })
         })
+      })
     })
 
     it('should not push the postponement to nomis if config variable is false', () => {
       const licenceService = createLicenceServiceStub()
       licenceService.update.resolves({
-        finalChecks: { postpone: { decision: 'Yes', postponeReason: 'Something' } },
+        finalChecks: { postpone: { decision: 'ABC', postponeReason: 'XYZ' } },
       })
-      const signInService = createSignInServiceStub()
-      signInService.getClientCredentialsTokens.resolves('new token')
       const nomisPushService = createNomisPushServiceStub()
       const app = createApp(
         {
           licenceServiceStub: licenceService,
-          signInServiceStub: signInService,
           nomisPushServiceStub: nomisPushService,
         },
         'caUser',
@@ -226,17 +234,16 @@ describe('/hdc/finalChecks', () => {
         .send({ decision: 'Yes' })
         .expect(302)
         .expect(() => {
-          expect(signInService.getClientCredentialsTokens).to.not.be.called()
           expect(nomisPushService.pushStatus).to.not.be.called()
         })
     })
   })
 })
 
-function createApp({ licenceServiceStub, signInServiceStub, nomisPushServiceStub }, user, config = {}) {
+function createApp({ licenceServiceStub, nomisPushServiceStub }, user, config = {}) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
-  const signInService = signInServiceStub || createSignInServiceStub()
+  const signInService = createSignInServiceStub()
   signInService.getClientCredentialsTokens.resolves('new token')
   const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
 
@@ -248,7 +255,7 @@ function createApp({ licenceServiceStub, signInServiceStub, nomisPushServiceStub
     signInService,
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, signInService, nomisPushService }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
 
   return appSetup(route, user, '/hdc/finalChecks')
 }

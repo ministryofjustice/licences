@@ -1,7 +1,7 @@
 const { getIn, isEmpty, firstItem, lastItem } = require('../../utils/functionalHelpers')
 const { getPathFor } = require('../../utils/routes')
 
-module.exports = ({ formConfig, licenceService, sectionName }) => {
+module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, config }) => {
   function get(req, res) {
     const { formName, bookingId, action } = req.params
     return formGet(req, res, formName, bookingId, action)
@@ -63,12 +63,25 @@ module.exports = ({ formConfig, licenceService, sectionName }) => {
 
     if (formConfig[formName].validate) {
       const errors = validationErrors(updatedLicence)
-
       if (!isEmpty(errors)) {
         req.flash('errors', errors)
         const actionPath = action ? `${action}/` : ''
         return res.redirect(`/hdc/${sectionName}/${formName}/${actionPath}${bookingId}`)
       }
+    }
+
+    const pushConfig = getIn(formConfig, [formName, 'nomisPush'])
+
+    if (getIn(config, ['pushToNomis']) && pushConfig) {
+      await nomisPushService.pushStatus(
+        bookingId,
+        {
+          type: formName,
+          status: !isEmpty(pushConfig.status) ? getIn(updatedLicence, pushConfig.status) : undefined,
+          reason: !isEmpty(pushConfig.reason) ? getIn(updatedLicence, pushConfig.reason) : undefined,
+        },
+        req.user.username
+      )
     }
 
     if (req.body.anchor) {

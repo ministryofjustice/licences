@@ -79,6 +79,10 @@ module.exports = {
         },
       },
     ],
+    nomisPush: {
+      status: ['finalChecks', 'postpone', 'decision'],
+      reason: ['finalChecks', 'postpone', 'postponeReason'],
+    },
     nextPath: {
       path: '/hdc/taskList/',
     },
@@ -99,6 +103,10 @@ module.exports = {
     pageDataMap: ['licence', 'finalChecks', 'refusal'],
     saveSection: ['finalChecks', 'refusal'],
     fields: [{ decision: {} }, { reason: {} }, { outOfTimeReasons: {} }],
+    nomisPush: {
+      status: ['finalChecks', 'refusal', 'decision'],
+      reason: ['finalChecks', 'refusal', 'reason'],
+    },
     nextPath: {
       path: '/hdc/taskList/',
     },

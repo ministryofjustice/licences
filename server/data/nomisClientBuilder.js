@@ -129,9 +129,9 @@ module.exports = token => {
       return nomisPut({ path, body })
     },
 
-    async putApprovalStatus(bookingId, approvalStatus) {
+    async putApprovalStatus(bookingId, { approvalStatus, refusedReason }) {
       const path = `${apiUrl}/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/approval-status`
-      const body = { approvalStatus, date: moment().format('YYYY-MM-DD') }
+      const body = { approvalStatus, refusedReason, date: moment().format('YYYY-MM-DD') }
 
       return nomisPut({ path, body })
     },

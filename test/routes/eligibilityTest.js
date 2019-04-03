@@ -8,6 +8,7 @@ const {
   appSetup,
   testFormPageGets,
   createSignInServiceStub,
+  createNomisPushServiceStub,
 } = require('../supertestSetup')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -225,12 +226,81 @@ describe('/hdc/eligibility', () => {
         .expect('Location', '/hdc/eligibility/exceptionalCircumstances/1')
     })
   })
+
+  describe('push to nomis', () => {
+    const specs = [
+      {
+        type: 'excluded',
+        path: '/hdc/eligibility/excluded/1',
+        data: { eligibility: { excluded: { decision: 'ABC', reason: 'XYZ' } } },
+      },
+      {
+        type: 'exceptionalCircumstances',
+        path: '/hdc/eligibility/exceptionalCircumstances/1',
+        data: { eligibility: { exceptionalCircumstances: { decision: 'ABC' }, suitability: { reason: 'XYZ' } } },
+      },
+    ]
+
+    specs.forEach(spec => {
+      it(`should push ${spec.type} status to nomis`, () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.update.resolves(spec.data)
+        const nomisPushService = createNomisPushServiceStub()
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            nomisPushServiceStub: nomisPushService,
+          },
+          'caUser',
+          { pushToNomis: true }
+        )
+
+        return request(app)
+          .post(spec.path)
+          .send({ decision: 'Yes' })
+          .expect(302)
+          .expect(() => {
+            expect(nomisPushService.pushStatus).to.be.calledOnce()
+            expect(nomisPushService.pushStatus).to.be.calledWith(
+              '1',
+              { type: spec.type, status: 'ABC', reason: 'XYZ' },
+              'CA_USER_TEST'
+            )
+          })
+      })
+    })
+  })
+
+  it('should not push the postponement to nomis if config variable is false', () => {
+    const licenceService = createLicenceServiceStub()
+    licenceService.update.resolves({
+      eligibility: { excluded: { decision: 'ABC', reason: 'XYZ' } },
+    })
+    const nomisPushService = createNomisPushServiceStub()
+    const app = createApp(
+      {
+        licenceServiceStub: licenceService,
+        nomisPushServiceStub: nomisPushService,
+      },
+      'caUser',
+      { pushToNomis: false }
+    )
+
+    return request(app)
+      .post('/hdc/eligibility/excluded/1')
+      .send({ decision: 'Yes' })
+      .expect(302)
+      .expect(() => {
+        expect(nomisPushService.pushStatus).to.not.be.called()
+      })
+  })
 })
 
-function createApp({ licenceServiceStub }, user) {
+function createApp({ licenceServiceStub, nomisPushServiceStub }, user, config = {}) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
@@ -238,8 +308,9 @@ function createApp({ licenceServiceStub }, user) {
     authenticationMiddleware,
     audit: auditStub,
     signInService,
+    config,
   })
-  const route = baseRouter(createRoute({ licenceService }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
 
   return appSetup(route, user, '/hdc/eligibility')
 }
