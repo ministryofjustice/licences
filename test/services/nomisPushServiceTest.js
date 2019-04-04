@@ -8,6 +8,7 @@ describe('nomisPushService', () => {
   beforeEach(() => {
     nomisClientMock = {
       putApprovalStatus: sinon.stub().resolves(),
+      putChecksPassed: sinon.stub().resolves(),
     }
     const nomisClientBuilder = sinon.stub().returns(nomisClientMock)
     signInService = {
@@ -208,6 +209,15 @@ describe('nomisPushService', () => {
       )
       expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
+    })
+  })
+
+  describe('pushChecksPassed', () => {
+    it('should call nomisClient.putChecksPassed', async () => {
+      await service.pushChecksPassed('1', 'user')
+      expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
+      expect(nomisClientMock.putChecksPassed).to.be.calledOnce()
+      expect(nomisClientMock.putChecksPassed).to.be.calledWith('1')
     })
   })
 })
