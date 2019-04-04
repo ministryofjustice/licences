@@ -124,6 +124,16 @@ describe('nomisPushService', () => {
           data: { type: 'postpone', status: 'Yes', reason: 'outstandingRisk' },
           approvalStatus: { approvalStatus: 'PP OUT RISK', refusedReason: 'OUTSTANDING' },
         },
+        {
+          example: 'Refused - addressUnsuitable',
+          data: { type: 'refusal', status: 'Yes', reason: 'addressUnsuitable' },
+          approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },
+        },
+        {
+          example: 'Refused - addressUnsuitable',
+          data: { type: 'refusal', status: 'Yes', reason: 'insufficientTime' },
+          approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'LIMITS' },
+        },
       ]
 
       specs.forEach(spec => {

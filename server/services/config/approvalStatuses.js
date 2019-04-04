@@ -26,6 +26,7 @@ module.exports = {
     refusal: {
       Yes: {
         addressUnsuitable: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },
+        insufficientTime: { approvalStatus: 'REJECTED', refusedReason: 'LIMITS' },
       },
     },
     excluded: {
