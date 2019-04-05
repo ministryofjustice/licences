@@ -3,7 +3,7 @@ const createStandardRoutes = require('./routeWorkers/standard')
 const { getIn, mergeWithRight } = require('../utils/functionalHelpers')
 const formConfig = require('./config/proposedAddress')
 
-module.exports = ({ licenceService }) => (router, audited) => {
+module.exports = ({ licenceService, nomisPushService }) => (router, audited, { pushToNomis }) => {
   const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'proposedAddress' })
 
   router.get('/curfewAddressChoice/:action/:bookingId', asyncMiddleware(getChoice))
@@ -35,6 +35,10 @@ module.exports = ({ licenceService }) => (router, audited) => {
         licenceService.updateSection('proposedAddress', bookingId, newProposedAddress),
         licenceService.updateSection('bassReferral', bookingId, bassReferral),
       ])
+
+      if (pushToNomis && decision === 'OptOut') {
+        await nomisPushService.pushStatus(bookingId, { type: 'optOut', status: 'Yes' }, req.user.username)
+      }
 
       const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/`
 

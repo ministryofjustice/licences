@@ -3,53 +3,211 @@ const createNomisPushService = require('../../server/services/nomisPushService')
 describe('nomisPushService', () => {
   let service
   let nomisClientMock
+  let signInService
 
   beforeEach(() => {
     nomisClientMock = {
       putApprovalStatus: sinon.stub().resolves(),
     }
     const nomisClientBuilder = sinon.stub().returns(nomisClientMock)
-    service = createNomisPushService(nomisClientBuilder)
+    signInService = {
+      getClientCredentialsTokens: sinon.stub().returns('token'),
+    }
+    service = createNomisPushService(nomisClientBuilder, signInService)
   })
 
   describe('pushStatus', () => {
-    it('should call nomisClient.putApprovalStatus with bookingId, status and systemToken', async () => {
-      await service.pushStatus('1', { approval: 'Yes' }, 'token')
+    describe('required pushes', () => {
+      const specs = [
+        {
+          example: 'Release approved',
+          data: { type: 'release', status: 'Yes' },
+          approvalStatus: { approvalStatus: 'APPROVED' },
+        },
+        {
+          example: 'Release refused - addressUnsuitable',
+          data: { type: 'release', status: 'No', reason: 'addressUnsuitable' },
+          approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },
+        },
+        {
+          example: 'Release refused - insufficientTime',
+          data: { type: 'release', status: 'No', reason: 'insufficientTime' },
+          approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'LIMITS' },
+        },
+        {
+          example: 'Release refused - outOfTime',
+          data: { type: 'release', status: 'No', reason: 'outOfTime' },
+          approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'UNDER_14DAYS' },
+        },
+        {
+          example: 'Release refused - noAvailableAddress',
+          data: { type: 'release', status: 'No', reason: 'noAvailableAddress' },
+          approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },
+        },
+        {
+          example: 'Opted out',
+          data: { type: 'optOut', status: 'Yes' },
+          approvalStatus: { approvalStatus: 'OPT_OUT', refusedReason: 'INM_REQUEST' },
+        },
+        {
+          example: 'Excluded - sexOffenderRegister',
+          data: { type: 'excluded', status: 'Yes', reason: 'sexOffenderRegister' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'SEX_OFFENCE' },
+        },
+        {
+          example: 'Excluded - convictedSexOffences',
+          data: { type: 'excluded', status: 'Yes', reason: 'convictedSexOffences' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'EXT_SENT' },
+        },
+        {
+          example: 'Excluded - rotlFail',
+          data: { type: 'excluded', status: 'Yes', reason: 'rotlFail' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'FAIL_RTN' },
+        },
+        {
+          example: 'Excluded - communityCurfew',
+          data: { type: 'excluded', status: 'Yes', reason: 'communityCurfew' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'CURFEW' },
+        },
+        {
+          example: 'Excluded - returnedAtRisk',
+          data: { type: 'excluded', status: 'Yes', reason: 'returnedAtRisk' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'S116' },
+        },
+        {
+          example: 'Excluded - hdcCurfewConditions',
+          data: { type: 'excluded', status: 'Yes', reason: 'hdcCurfewConditions' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'HDC_RECALL' },
+        },
+        {
+          example: 'Excluded - servingRecall',
+          data: { type: 'excluded', status: 'Yes', reason: 'servingRecall' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE' },
+        },
+        {
+          example: 'Excluded - deportation',
+          data: { type: 'excluded', status: 'Yes', reason: 'deportation' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'FNP' },
+        },
+        {
+          example: 'Unsuitable - sexOffender',
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'sexOffender' },
+          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'UNSUIT_SEX' },
+        },
+        {
+          example: 'Unsuitable - deportationLiable',
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'deportationLiable' },
+          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'DEPORT' },
+        },
+        {
+          example: 'Unsuitable - immigrationStatusUnclear',
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'immigrationStatusUnclear' },
+          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'DEPORT' },
+        },
+        {
+          example: 'Unsuitable - recalled',
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'recalled' },
+          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'CUR' },
+        },
+        {
+          example: 'Unsuitable - sentenceCategory',
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'sentenceCategory' },
+          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'UNSUIT_OFF' },
+        },
+        {
+          example: 'Postponed - investigation',
+          data: { type: 'postpone', status: 'Yes', reason: 'investigation' },
+          approvalStatus: { approvalStatus: 'PP INVEST', refusedReason: 'OUTSTANDING' },
+        },
+        {
+          example: 'Postponed - outstandingRisk',
+          data: { type: 'postpone', status: 'Yes', reason: 'outstandingRisk' },
+          approvalStatus: { approvalStatus: 'PP OUT RISK', refusedReason: 'OUTSTANDING' },
+        },
+        {
+          example: 'Refused - addressUnsuitable',
+          data: { type: 'refusal', status: 'Yes', reason: 'addressUnsuitable' },
+          approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },
+        },
+        {
+          example: 'Refused - addressUnsuitable',
+          data: { type: 'refusal', status: 'Yes', reason: 'insufficientTime' },
+          approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'LIMITS' },
+        },
+      ]
+
+      specs.forEach(spec => {
+        it(`should call nomisClient.putApprovalStatus for ${spec.example} with the correct values`, async () => {
+          await service.pushStatus('1', spec.data, 'user')
+          expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
+          expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
+          expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', spec.approvalStatus)
+        })
+      })
+    })
+
+    it('should not call nomisClient.putApprovalStatus if no type', async () => {
+      await service.pushStatus('1', { type: undefined, status: 'Yes', reason: 'something' }, 'user')
+      expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
+      expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
+    })
+
+    it('should not call nomisClient.putApprovalStatus if no status', async () => {
+      await service.pushStatus('1', { type: 'release', status: undefined, reason: 'something' }, 'user')
+      expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
+      expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
+    })
+
+    it('should not call nomisClient.putApprovalStatus if no matching update', async () => {
+      await service.pushStatus('1', { type: 'release', status: 'No', reason: 'unmatched-reason' }, 'user')
+      expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
+      expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
+    })
+
+    it('should not call nomisClient.putApprovalStatus if no matching update when array of reasons', async () => {
+      await service.pushStatus('1', { type: 'release', status: 'No', reason: ['unmatched-reason'] }, 'user')
+      expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
+      expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
+    })
+
+    it('should not call nomisClient.putApprovalStatus if no matching update when empty array of reasons', async () => {
+      await service.pushStatus('1', { type: 'release', status: 'No', reason: [] }, 'user')
+      expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
+      expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
+    })
+
+    it('should also accept reason in an array', async () => {
+      await service.pushStatus('1', { type: 'release', status: 'No', reason: ['insufficientTime'] }, 'user')
+      expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
-      expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'APPROVED', 'token')
+      expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', {
+        approvalStatus: 'REJECTED',
+        refusedReason: 'LIMITS',
+      })
     })
 
-    it('should call nomisClient.putApprovalStatus with Rejected if approvalDecision is No', async () => {
-      await service.pushStatus('1', { approval: 'No' }, 'token')
+    it('should use the first reason when there are many', async () => {
+      await service.pushStatus(
+        '1',
+        { type: 'release', status: 'No', reason: ['insufficientTime', 'addressUnsuitable', 'unmatched-reason'] },
+        'user'
+      )
+      expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
-      expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'REJECTED', 'token')
+      expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', {
+        approvalStatus: 'REJECTED',
+        refusedReason: 'LIMITS',
+      })
     })
 
-    it('should not nomisClient.putApprovalStatus if no decision', async () => {
-      await service.pushStatus('1', { approval: undefined }, 'token')
-      expect(nomisClientMock.putApprovalStatus).to.not.be.called()
-    })
-
-    it('should call nomisClient.putApprovalStatus if postpone investigation', async () => {
-      await service.pushStatus('1', { postpone: 'Yes', postponeReason: 'investigation' }, 'token')
-      expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
-      expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'PP INVEST', 'token')
-    })
-
-    it('should call nomisClient.putApprovalStatus if postpone outstanding risk', async () => {
-      await service.pushStatus('1', { postpone: 'Yes', postponeReason: 'outstandingRisk' }, 'token')
-      expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
-      expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', 'PP OUT RISK', 'token')
-    })
-
-    it('should not call nomisClient.putApprovalStatus if postpone No', async () => {
-      await service.pushStatus('1', { postpone: 'No', postponeReason: 'outstandingRisk' }, 'token')
-      expect(nomisClientMock.putApprovalStatus).to.not.be.calledOnce()
-    })
-
-    it('should not call nomisClient.putApprovalStatus if no recognised reason', async () => {
-      await service.pushStatus('1', { postpone: 'Yes', postponeReason: '' }, 'token')
-      expect(nomisClientMock.putApprovalStatus).to.not.be.calledOnce()
+    it('should not call nomisClient.putApprovalStatus if no matching update when first reason unmatched', async () => {
+      await service.pushStatus(
+        '1',
+        { type: 'release', status: 'No', reason: ['unmatched-reason', 'insufficientTime', 'addressUnsuitable'] },
+        'user'
+      )
+      expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
+      expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
     })
   })
 })

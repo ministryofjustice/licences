@@ -8,6 +8,7 @@ const {
   appSetup,
   testFormPageGets,
   createSignInServiceStub,
+  createNomisPushServiceStub,
 } = require('../supertestSetup')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -241,6 +242,45 @@ describe('/hdc/proposedAddress', () => {
           })
       })
     })
+
+    it(`should push optout status to nomis`, () => {
+      const nomisPushService = createNomisPushServiceStub()
+      const app = createApp(
+        {
+          nomisPushServiceStub: nomisPushService,
+        },
+        'caUser',
+        { pushToNomis: true }
+      )
+
+      return request(app)
+        .post('/hdc/proposedAddress/curfewAddressChoice/1')
+        .send({ decision: 'OptOut' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushStatus).to.be.calledOnce()
+          expect(nomisPushService.pushStatus).to.be.calledWith('1', { type: 'optOut', status: 'Yes' }, 'CA_USER_TEST')
+        })
+    })
+
+    it(`should not push nomis if not optout`, () => {
+      const nomisPushService = createNomisPushServiceStub()
+      const app = createApp(
+        {
+          nomisPushServiceStub: nomisPushService,
+        },
+        'caUser',
+        { pushToNomis: true }
+      )
+
+      return request(app)
+        .post('/hdc/proposedAddress/curfewAddressChoice/1')
+        .send({ decision: 'Other' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushStatus).not.to.be.called()
+        })
+    })
   })
 
   describe('rejected', () => {
@@ -284,10 +324,11 @@ describe('/hdc/proposedAddress', () => {
   })
 })
 
-function createApp({ licenceServiceStub }, user) {
+function createApp({ licenceServiceStub, nomisPushServiceStub }, user, config = {}) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
@@ -295,8 +336,9 @@ function createApp({ licenceServiceStub }, user) {
     authenticationMiddleware,
     audit: auditStub,
     signInService,
+    config,
   })
-  const route = baseRouter(createRoute({ licenceService }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
 
   return appSetup(route, user, '/hdc/proposedAddress')
 }

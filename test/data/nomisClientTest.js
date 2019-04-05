@@ -468,20 +468,40 @@ describe('nomisClient', () => {
     })
 
     it('should inject bookingId into api endpoint', () => {
-      fakeNomis.put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status').reply(200, {})
+      fakeNomis
+        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status')
+        .reply(200, { result: 'answer' })
 
-      return expect(nomisClient.putApprovalStatus('aaa', 'Approved')).to.eventually.eql({})
+      return expect(
+        nomisClient.putApprovalStatus('aaa', { approvalStatus: 'status', refusedReason: 'reason' })
+      ).to.eventually.eql({ result: 'answer' })
     })
 
-    it('should pass in the status and date', () => {
+    it('should pass in the status and date but no reason if not specified', () => {
       fakeNomis
         .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
-          approvalStatus: 'Approved',
+          approvalStatus: 'status',
           date: '2018-05-31',
         })
-        .reply(200, {})
+        .reply(200, { result: 'answer' })
 
-      return expect(nomisClient.putApprovalStatus('aaa', 'Approved')).to.eventually.eql({})
+      return expect(nomisClient.putApprovalStatus('aaa', { approvalStatus: 'status' })).to.eventually.eql({
+        result: 'answer',
+      })
+    })
+
+    it('should pass in the status, reason, and date', () => {
+      fakeNomis
+        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
+          approvalStatus: 'status',
+          refusedReason: 'reason',
+          date: '2018-05-31',
+        })
+        .reply(200, { result: 'answer' })
+
+      return expect(
+        nomisClient.putApprovalStatus('aaa', { approvalStatus: 'status', refusedReason: 'reason' })
+      ).to.eventually.eql({ result: 'answer' })
     })
   })
 })

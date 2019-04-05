@@ -141,9 +141,8 @@ describe('/hdc/approval', () => {
     })
 
     it('should push the decision to nomis if config variable is true', () => {
-      signInServiceStub.getClientCredentialsTokens.resolves('new token')
-      licenceServiceStub.update.resolves({ approval: { release: { decision: 'UPDATED' } } })
-      app = createApp({ licenceServiceStub, nomisPushServiceStub, signInServiceStub }, 'dmUser', {
+      licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
+      app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
         pushToNomis: true,
       })
       return request(app)
@@ -151,16 +150,18 @@ describe('/hdc/approval', () => {
         .send({ decision: 'Yes' })
         .expect(302)
         .expect(() => {
-          expect(signInServiceStub.getClientCredentialsTokens).to.be.calledOnce()
           expect(nomisPushServiceStub.pushStatus).to.be.calledOnce()
-          expect(nomisPushServiceStub.pushStatus).to.be.calledWith('1', { approval: 'UPDATED' }, 'new token')
+          expect(nomisPushServiceStub.pushStatus).to.be.calledWith(
+            '1',
+            { type: 'release', status: 'ABC', reason: undefined },
+            'DM_USER'
+          )
         })
     })
 
     it('should not push the decision to nomis if config variable is false', () => {
-      signInServiceStub.getClientCredentialsTokens.resolves('new token')
-      licenceServiceStub.update.resolves({ approval: { release: { decision: 'UPDATED' } } })
-      app = createApp({ licenceServiceStub, nomisPushServiceStub, signInServiceStub }, 'dmUser', {
+      licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
+      app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
         pushToNomis: false,
       })
       return request(app)
@@ -168,7 +169,6 @@ describe('/hdc/approval', () => {
         .send({ decision: 'Yes' })
         .expect(302)
         .expect(() => {
-          expect(signInServiceStub.getClientCredentialsTokens).to.not.be.called()
           expect(nomisPushServiceStub.pushStatus).to.not.be.called()
         })
     })
@@ -181,9 +181,6 @@ describe('/hdc/approval', () => {
         .send({})
         .expect(302)
         .expect('Location', '/hdc/approval/release/1')
-        .expect(() => {
-          expect(licenceServiceStub.update).to.not.be.called()
-        })
     })
 
     it('should throw if submitted by non-DM user', () => {

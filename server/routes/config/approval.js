@@ -32,6 +32,10 @@ module.exports = {
         },
       },
     ],
+    nomisPush: {
+      status: ['approval', 'release', 'decision'],
+      reason: ['approval', 'release', 'reason'],
+    },
     nextPath: {
       path: '/hdc/send/decided/',
     },

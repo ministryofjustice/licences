@@ -354,16 +354,13 @@ module.exports = function createApp({
   app.use('/hdc/sent/', secureRoute(sentRouter({ licenceService, prisonerService })))
   app.use('/user/', secureRoute(userRouter({ userService })))
 
-  app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService })))
-  app.use(
-    '/hdc/approval/',
-    secureRoute(approvalRouter({ licenceService, prisonerService, nomisPushService, signInService }))
-  )
+  app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService })))
+  app.use('/hdc/approval/', secureRoute(approvalRouter({ licenceService, prisonerService, nomisPushService })))
   app.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({ licenceService })))
   app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({ licenceService, conditionsService })))
   app.use('/hdc/curfew/', secureRoute(curfewRouter({ licenceService })))
-  app.use('/hdc/eligibility/', secureRoute(eligibilityRouter({ licenceService })))
-  app.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({ licenceService, signInService, nomisPushService })))
+  app.use('/hdc/eligibility/', secureRoute(eligibilityRouter({ licenceService, nomisPushService })))
+  app.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({ licenceService, nomisPushService })))
   app.use('/hdc/review/', secureRoute(reviewRouter({ licenceService, conditionsService, prisonerService })))
   app.use('/hdc/reporting/', secureRoute(reportingRouter({ licenceService })))
   app.use('/hdc/risk/', secureRoute(riskRouter({ licenceService })))
