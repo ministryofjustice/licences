@@ -59,7 +59,7 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, c
     await pushStatus(updatedLicence, formName, bookingId, req.user.username)
 
     if (processingCallback) {
-      processingCallback({ req, bookingId, updatedLicence })
+      await processingCallback({ req, bookingId, updatedLicence })
     }
 
     if (req.body.anchor) {
