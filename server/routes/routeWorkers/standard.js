@@ -21,12 +21,19 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, c
     res.render(`${sectionName}/${formName}`, viewData)
   }
 
-  async function post(req, res) {
-    const { formName, bookingId, action } = req.params
-    return formPost(req, res, formName, bookingId, action)
+  function callbackPost(formName, processingCallback) {
+    return (req, res) => {
+      const { bookingId, action } = req.params
+      return formPost(req, res, formName, bookingId, action, processingCallback)
+    }
   }
 
-  async function formPost(req, res, formName, bookingId, action) {
+  async function post(req, res) {
+    const { formName, bookingId, action } = req.params
+    return formPost(req, res, formName, bookingId, action, null)
+  }
+
+  async function formPost(req, res, formName, bookingId, action, processingCallback) {
     const nextPath = getPathFor({ data: req.body, config: formConfig[formName], action })
     const { targetSection, targetForm } = getTarget(formName)
 
@@ -50,7 +57,10 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, c
     }
 
     await pushStatus(updatedLicence, formName, bookingId, req.user.username)
-    await pushChecksPassed(updatedLicence, formName, bookingId, req.user.username)
+
+    if (processingCallback) {
+      processingCallback({ req, bookingId, updatedLicence })
+    }
 
     if (req.body.anchor) {
       return res.redirect(`${nextPath}${bookingId}#${req.body.anchor}`)
@@ -107,19 +117,10 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, c
     }
   }
 
-  async function pushChecksPassed(updatedLicence, formName, bookingId, username) {
-    if (getIn(config, ['pushToNomis']) && formName === 'suitability') {
-      const notExcluded = getIn(updatedLicence, ['eligibility', 'excluded', 'decision']) === 'No'
-      const notUnsuitable = getIn(updatedLicence, ['eligibility', 'suitability', 'decision']) === 'No'
-      if (notExcluded && notUnsuitable) {
-        await nomisPushService.pushChecksPassed(bookingId, username)
-      }
-    }
-  }
-
   return {
     get,
     post,
+    callbackPost,
     formPost,
   }
 }
