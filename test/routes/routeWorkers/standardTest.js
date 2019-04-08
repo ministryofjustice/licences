@@ -13,6 +13,7 @@ describe('formPost', () => {
 
     const req = {
       body: {},
+      params: { bookingId: 123 },
       user: {
         username: 'testUser',
       },
@@ -164,6 +165,18 @@ describe('formPost', () => {
         await standardRoute.formPost(req, res, 'testForm', '123', '')
         expect(nomisPushService.pushStatus).to.be.calledOnce()
         expect(nomisPushService.pushStatus).to.be.calledWith('123', expectedData, 'testUser')
+      })
+    })
+
+    describe('processingCallback', () => {
+      it('should invoke the processing callback if one is supplied', async () => {
+        const standardRoute = createRoute({})
+        const callback = sinon.stub()
+        const callbackPost = standardRoute.callbackPost('testForm', callback)
+
+        await callbackPost(req, res)
+        expect(callback).to.be.calledOnce()
+        expect(callback).to.be.calledWith({ req, bookingId: 123, updatedLicence: testLicence })
       })
     })
   })
