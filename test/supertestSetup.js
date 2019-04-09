@@ -170,6 +170,7 @@ const setup = {
   createNotificationServiceStub,
   authenticationMiddleware,
   testFormPageGets,
+  users,
   appSetup(route, user = 'caUser', prefix = '') {
     const app = express()
 
