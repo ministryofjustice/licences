@@ -5,6 +5,7 @@ const {
   authenticationMiddleware,
   createPrisonerServiceStub,
   createLicenceServiceStub,
+  users,
   appSetup,
 } = require('../supertestSetup')
 
@@ -107,6 +108,7 @@ describe('/user', () => {
         .expect(302)
         .expect(() => {
           expect(userService.setActiveCaseLoad).to.be.calledOnce()
+          expect(userService.setActiveCaseLoad).to.be.calledWith('caseLoadId2', users.caUser, 'token')
         })
     })
 
@@ -115,6 +117,17 @@ describe('/user', () => {
       return request(app)
         .post('/')
         .send({ caseLoadId: 'caseLoadId' })
+        .expect(302)
+        .expect(() => {
+          expect(userService.setActiveCaseLoad).to.not.be.called()
+        })
+    })
+
+    it(`does not call setActiveCaseload if caseLoadId is missing`, () => {
+      const app = createApp({ userService }, 'caUser')
+      return request(app)
+        .post('/')
+        .send({ someOtherId: 'caseLoadId' })
         .expect(302)
         .expect(() => {
           expect(userService.setActiveCaseLoad).to.not.be.called()

@@ -1,4 +1,5 @@
 const { asyncMiddleware } = require('../utils/middleware')
+const { getIn } = require('../utils/functionalHelpers')
 const { roles } = require('../config')
 
 module.exports = ({ userService }) => router => {
@@ -22,8 +23,10 @@ module.exports = ({ userService }) => router => {
         await userService.setRole(req.body.role, req.user)
       }
 
-      if (req.body.caseLoadId !== req.user.activeCaseLoadId) {
-        await userService.setActiveCaseLoad(req.body.caseLoad, req.user, res.locals.token)
+      const caseLoadId = getIn(req, ['body', 'caseLoadId'])
+
+      if (caseLoadId && caseLoadId !== req.user.activeCaseLoadId) {
+        await userService.setActiveCaseLoad(caseLoadId, req.user, res.locals.token)
       }
 
       res.redirect('/user')
