@@ -1,3 +1,6 @@
+const logger = require('../../log')
+const { isEmpty } = require('../utils/functionalHelpers')
+
 module.exports = function createUserService(nomisClientBuilder, userClient) {
   async function updateRoUser(
     token,
@@ -108,11 +111,57 @@ module.exports = function createUserService(nomisClientBuilder, userClient) {
     }
   }
 
+  async function getIncompleteRoUsers(token) {
+    const incomplete = await userClient.getIncompleteRoUsers()
+    if (isEmpty(incomplete)) {
+      return []
+    }
+
+    const bookingIds = incomplete.map(u => u.bookingId)
+    const offenders = await getOffenderNomis(token, bookingIds)
+
+    return addMappingDetails(incomplete, offenders)
+  }
+
+  async function getOffenderNomis(token, bookingIds) {
+    try {
+      const nomisClient = nomisClientBuilder(token)
+      const offenders = await nomisClient.getOffenderSentencesByBookingId(bookingIds, false)
+
+      if (isEmpty(offenders)) {
+        return null
+      }
+
+      return new Map(offenders.map(o => [o.bookingId.toString(), o.offenderNo]))
+    } catch (error) {
+      logger.warn('Error getting offender nomis numbers for incomplete ROs', error.stack)
+      return []
+    }
+  }
+
+  function addMappingDetails(incomplete, offenderIds) {
+    return incomplete.map(u => ({
+      ...u,
+      offenderNomis: offenderIds ? offenderIds.get(u.bookingId.toString()) : undefined,
+      mapping: getMappingDetails(u),
+    }))
+  }
+
+  function getMappingDetails(incompleteUser) {
+    const [first, ...last] = incompleteUser.sentName ? incompleteUser.sentName.split(' ') : []
+    return {
+      deliusId: incompleteUser.sentStaffCode,
+      first,
+      last: !isEmpty(last) ? last.join(' ') : undefined,
+    }
+  }
+
   return {
     verifyUserDetails,
     addRoUser,
     updateRoUser,
     getRoUsers: userClient.getRoUsers,
+    getIncompleteRoUsers,
     getRoUser: userClient.getRoUser,
     getRoUserByDeliusId: userClient.getRoUserByDeliusId,
     deleteRoUser: userClient.deleteRoUser,

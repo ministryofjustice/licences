@@ -39,6 +39,52 @@ describe('userClient', () => {
     })
   })
 
+  describe('getIncompleteRoUsers', () => {
+    const incompleteUsers = {
+      rows: [
+        {
+          first_name: 1,
+          last_name: 2,
+          mapped: 3,
+          auth_onboarded: 4,
+          nomis_id: 5,
+          sent_timestamp: '2019-01-01',
+          booking_id: 7,
+          sent_staffcode: 8,
+          sent_name: 9,
+        },
+      ],
+    }
+
+    beforeEach(() => {
+      queryStub = sinon.stub().resolves(incompleteUsers)
+    })
+
+    it('should call query', () => {
+      userProxy().getIncompleteRoUsers()
+      expect(queryStub).to.have.callCount(1)
+    })
+
+    it('should convert results', async () => {
+      const converted = [
+        {
+          first: 1,
+          last: 2,
+          mapped: 3,
+          onboarded: 4,
+          nomisId: 5,
+          sent: '01/01/2019',
+          bookingId: 7,
+          sentStaffCode: 8,
+          sentName: 9,
+        },
+      ]
+      const results = await userProxy().getIncompleteRoUsers()
+      expect(queryStub).to.have.callCount(1)
+      expect(results).to.eql(converted)
+    })
+  })
+
   describe('getRoUser', () => {
     it('should call query', () => {
       userProxy().getRoUser('id')

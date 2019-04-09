@@ -70,6 +70,7 @@ const createPdfServiceStub = () => ({
 
 const createUserAdminServiceStub = () => ({
   getRoUsers: sinon.stub().resolves(),
+  getIncompleteRoUsers: sinon.stub().resolves(),
   getRoUser: sinon.stub().resolves(),
   getRoUserByDeliusId: sinon.stub().resolves({}),
   updateRoUser: sinon.stub().resolves(),

@@ -6,7 +6,7 @@ block content
   -var inputs = userInput ? userInput : roUser ? roUser : {}
 
   div.back-link-container.smallPaddingTop
-    a#back.link-back(href="/admin/") Back
+    a#back.link-back(href="javascript: window.history.back();") Back
   +errorBannerWithDetail(errors, [
     { field: 'nomisId' },
     { field: 'deliusId' }
@@ -102,7 +102,7 @@ block content
     div.paddingBottom.smallPaddingTop
       div.pure-u-1.inlineButtons
         input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save")
-        a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/admin/roUsers" role="button") Cancel
+        a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="javascript: window.history.back();" role="button") Cancel
 
   hr
   include verifyNomis

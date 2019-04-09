@@ -379,6 +379,20 @@ describe('nomisClient', () => {
       ])
     })
 
+    it('should return data from api without release dates if disabled', () => {
+      fakeNomis
+        .post(`/offender-sentences/bookings`, ['1'])
+        .reply(200, [{ sentenceDetail: { conditionalReleaseDate: 'a' } }])
+
+      return expect(nomisClient.getOffenderSentencesByBookingId(['1'], false)).to.eventually.eql([
+        {
+          sentenceDetail: {
+            conditionalReleaseDate: 'a',
+          },
+        },
+      ])
+    })
+
     it('should reject if api fails', () => {
       fakeNomis.post(`/offender-sentences`, ['1']).reply(500)
 

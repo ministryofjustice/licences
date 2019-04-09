@@ -1,0 +1,15 @@
+extends ../../layout
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/") Back
+
+  div.pure-g
+    div.pure-u-1.searchLink.alignRight.smallPaddingTop
+      a#incompleteUserLink(href='/admin/roUsers') View complete users
+
+    div.pure-u-1
+      h2.heading-medium Incomplete RO users
+      include incompleteUsersTable
+

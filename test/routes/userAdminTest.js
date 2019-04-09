@@ -26,6 +26,42 @@ const user2 = {
   last: 'l2',
 }
 
+const incomplete1 = {
+  first: 1,
+  last: 1,
+  mapped: false,
+  onboarded: 1,
+  nomisId: 1,
+  sent: 1,
+  bookingId: 1,
+  sentStaffCode: 'INCOMPLETE USER 1',
+  sentName: 1,
+}
+
+const incomplete2 = {
+  first: 2,
+  last: 2,
+  mapped: 2,
+  onboarded: false,
+  nomisId: 2,
+  sent: 2,
+  bookingId: 2,
+  sentStaffCode: 'INCOMPLETE USER 2',
+  sentName: 2,
+}
+
+const completeUser = {
+  first: 2,
+  last: 2,
+  mapped: true,
+  onboarded: true,
+  nomisId: 2,
+  sent: 2,
+  bookingId: 2,
+  sentStaffCode: 'FINISHED USER',
+  sentName: 2,
+}
+
 describe('/admin', () => {
   let userAdminService
 
@@ -37,8 +73,10 @@ describe('/admin', () => {
     userAdminService.findRoUsers.reset()
     userAdminService.getRoUsers.reset()
     userAdminService.getRoUser.reset()
+    userAdminService.getIncompleteRoUsers.reset()
 
     userAdminService.getRoUsers.resolves([user1, user2])
+    userAdminService.getIncompleteRoUsers.resolves([incomplete1, incomplete2])
     userAdminService.findRoUsers.resolves([user1])
     userAdminService.getRoUser.resolves(user1)
 
@@ -377,6 +415,69 @@ describe('/admin', () => {
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(403)
+    })
+  })
+
+  describe('GET /admin/roUsers/incomplete', () => {
+    it('calls user service and renders HTML output', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      return request(app)
+        .get('/admin/roUsers/incomplete')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(() => {
+          expect(userAdminService.getIncompleteRoUsers).to.be.calledOnce()
+        })
+    })
+
+    it('should display the incomplete user details', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      return request(app)
+        .get('/admin/roUsers/incomplete')
+        .expect(200)
+        .expect(res => {
+          expect(res.text).to.contain('INCOMPLETE USER 1')
+          expect(res.text).to.contain('INCOMPLETE USER 2')
+        })
+    })
+
+    it('should not display details of complete users (mapped and onboarded', () => {
+      userAdminService.getIncompleteRoUsers.resolves([completeUser, incomplete2])
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      return request(app)
+        .get('/admin/roUsers/incomplete')
+        .expect(200)
+        .expect(res => {
+          expect(res.text).not.to.contain('FINISHED USER')
+          expect(res.text).to.contain('INCOMPLETE USER 2')
+        })
+    })
+
+    it('should throw if submitted by non-authorised user', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'roUser')
+      return request(app)
+        .get('/admin/roUsers/incomplete')
+        .expect(403)
+    })
+  })
+
+  describe('POST /admin/roUsers/incomplete/add', () => {
+    it('redirects to add user', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      return request(app)
+        .post('/admin/roUsers/incomplete/add')
+        .send({ incompleteUser: '{ "sentStaffCode": "STAFF CODE", "sentName": "FIRST LAST LAST2"}' })
+        .expect(302)
+        .expect('Location', '/admin/roUsers/add')
+    })
+
+    it('redirects to incomplete users if parsing error', () => {
+      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      return request(app)
+        .post('/admin/roUsers/incomplete/add')
+        .send({ incompleteUser: '{ "invalid json" }' })
+        .expect(302)
+        .expect('Location', '/admin/roUsers/incomplete')
     })
   })
 })

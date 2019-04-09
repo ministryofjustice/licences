@@ -8,7 +8,7 @@ module.exports = ({ userAdminService }) => (router, audited) => {
     '/',
     asyncMiddleware(async (req, res) => {
       const roUsers = await userAdminService.getRoUsers()
-      return res.render('admin/users/list', { roUsers, heading: 'All RO users' })
+      return res.render('admin/users/list', { roUsers, heading: 'RO users' })
     })
   )
 
@@ -126,6 +126,26 @@ module.exports = ({ userAdminService }) => (router, audited) => {
       return { deliusId: 'Delius staff id is required' }
     }
   }
+
+  router.get(
+    '/incomplete',
+    asyncMiddleware(async (req, res) => {
+      const incompleteUsers = await userAdminService.getIncompleteRoUsers(res.locals.token)
+      return res.render('admin/users/incompleteList', { incompleteUsers })
+    })
+  )
+
+  router.post('/incomplete/add', async (req, res) => {
+    try {
+      const input = req.body.incompleteUser
+      const userInput = JSON.parse(input)
+      req.flash('userInput', userInput)
+
+      return res.redirect('/admin/roUsers/add')
+    } catch (error) {
+      return res.redirect('/admin/roUsers/incomplete')
+    }
+  })
 
   return router
 }
