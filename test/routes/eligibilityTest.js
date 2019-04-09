@@ -294,6 +294,134 @@ describe('/hdc/eligibility', () => {
         expect(nomisPushService.pushStatus).to.not.be.called()
       })
   })
+
+  describe('pushChecksPassed', () => {
+    it('should not send to nomisPushService if main config off', async () => {
+      const nomisPushService = createNomisPushServiceStub()
+      const licenceService = createLicenceServiceStub()
+      const licence = { eligibility: {} }
+      licenceService.update.resolves(licence)
+
+      const app = createApp(
+        {
+          licenceServiceStub: licenceService,
+          nomisPushServiceStub: nomisPushService,
+        },
+        'caUser',
+        { pushToNomis: false }
+      )
+
+      return request(app)
+        .post('/hdc/eligibility/suitability/1')
+        .send({ decision: 'Yes' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushChecksPassed).to.not.be.called()
+        })
+    })
+
+    const checksFailedExamples = [
+      {
+        type: 'unsuitable',
+        licence: { eligibility: { suitability: { decision: 'Yes' } } },
+      },
+      {
+        type: 'excluded',
+        licence: { eligibility: { excluded: { decision: 'Yes' } } },
+      },
+      {
+        type: ' excluded not answered',
+        licence: { eligibility: { excluded: {}, suitability: { decision: 'No' } } },
+      },
+      {
+        type: ' suitability not answered',
+        licence: { eligibility: { excluded: { decision: 'No' }, suitability: {} } },
+      },
+    ]
+
+    checksFailedExamples.forEach(example => {
+      it(`should NOT send to nomisPushService when  ${example.type}`, async () => {
+        const nomisPushService = createNomisPushServiceStub()
+        const licenceService = createLicenceServiceStub()
+        licenceService.update.resolves(example.licence)
+
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            nomisPushServiceStub: nomisPushService,
+          },
+          'caUser',
+          { pushToNomis: true }
+        )
+
+        return request(app)
+          .post('/hdc/eligibility/suitability/1')
+          .send({ decision: 'Yes' })
+          .expect(302)
+          .expect(() => {
+            expect(nomisPushService.pushChecksPassed).to.not.be.called()
+          })
+      })
+    })
+
+    it('should NOT send to nomisPushService when suitable but on different form', async () => {
+      const licence = {
+        eligibility: {
+          excluded: {
+            decision: 'No',
+          },
+          suitability: {
+            decision: 'No',
+          },
+        },
+      }
+      const nomisPushService = createNomisPushServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.update.resolves(licence)
+
+      const app = createApp(
+        {
+          licenceServiceStub: licenceService,
+          nomisPushServiceStub: nomisPushService,
+        },
+        'caUser',
+        { pushToNomis: true }
+      )
+
+      return request(app)
+        .post('/hdc/eligibility/excluded/1')
+        .send({ decision: 'Yes' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushChecksPassed).to.not.be.called()
+        })
+    })
+
+    it('should send to nomisPushService when checks passed', async () => {
+      const licence = { eligibility: { excluded: { decision: 'No' }, suitability: { decision: 'No' } } }
+      const nomisPushService = createNomisPushServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.update.resolves(licence)
+
+      const app = createApp(
+        {
+          licenceServiceStub: licenceService,
+          nomisPushServiceStub: nomisPushService,
+        },
+        'caUser',
+        { pushToNomis: true }
+      )
+
+      return request(app)
+        .post('/hdc/eligibility/suitability/1')
+        .send({ decision: 'Yes' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushChecksPassed).to.be.calledOnce()
+          expect(nomisPushService.pushChecksPassed).to.be.calledWith('1', 'CA_USER_TEST')
+        })
+    })
+  })
 })
 
 function createApp({ licenceServiceStub, nomisPushServiceStub }, user, config = {}) {

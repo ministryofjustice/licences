@@ -90,6 +90,7 @@ const caseListServiceStub = {
 
 const createNomisPushServiceStub = () => ({
   pushStatus: sinon.stub().resolves(),
+  pushChecksPassed: sinon.stub().resolves(),
 })
 
 function testFormPageGets(app, routes, licenceServiceStub) {
