@@ -11,16 +11,16 @@ module.exports = (nomisClientBuilder, signInService) => {
       return null
     }
 
-    const systemToken = await signInService.getClientCredentialsTokens(userName)
-    const nomisClient = nomisClientBuilder(systemToken)
+    const systemTokens = await signInService.getClientCredentialsTokens(userName)
+    const nomisClient = nomisClientBuilder(systemTokens.token)
 
     logger.info('Pushing approval status to nomis', approvalStatus)
     return nomisClient.putApprovalStatus(bookingId, approvalStatus)
   }
 
   async function pushChecksPassed(bookingId, userName) {
-    const systemToken = await signInService.getClientCredentialsTokens(userName)
-    const nomisClient = nomisClientBuilder(systemToken)
+    const systemTokens = await signInService.getClientCredentialsTokens(userName)
+    const nomisClient = nomisClientBuilder(systemTokens.token)
 
     logger.info('Pushing checks passed to nomis')
     return nomisClient.putChecksPassed(bookingId)

@@ -2,6 +2,7 @@ const createNomisPushService = require('../../server/services/nomisPushService')
 
 describe('nomisPushService', () => {
   let service
+  let nomisClientBuilder
   let nomisClientMock
   let signInService
 
@@ -10,9 +11,9 @@ describe('nomisPushService', () => {
       putApprovalStatus: sinon.stub().resolves(),
       putChecksPassed: sinon.stub().resolves(),
     }
-    const nomisClientBuilder = sinon.stub().returns(nomisClientMock)
+    nomisClientBuilder = sinon.stub().returns(nomisClientMock)
     signInService = {
-      getClientCredentialsTokens: sinon.stub().returns('token'),
+      getClientCredentialsTokens: sinon.stub().returns({ token: 'valid-token' }),
     }
     service = createNomisPushService(nomisClientBuilder, signInService)
   })
@@ -140,6 +141,8 @@ describe('nomisPushService', () => {
       specs.forEach(spec => {
         it(`should call nomisClient.putApprovalStatus for ${spec.example} with the correct values`, async () => {
           await service.pushStatus('1', spec.data, 'user')
+          expect(nomisClientBuilder).to.be.calledOnce()
+          expect(nomisClientBuilder).to.be.calledWith('valid-token')
           expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
           expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
           expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', spec.approvalStatus)
@@ -180,6 +183,7 @@ describe('nomisPushService', () => {
     it('should also accept reason in an array', async () => {
       await service.pushStatus('1', { type: 'release', status: 'No', reason: ['insufficientTime'] }, 'user')
       expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
+      expect(nomisClientBuilder).to.be.calledWith('valid-token')
       expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', {
         approvalStatus: 'REJECTED',
@@ -194,6 +198,7 @@ describe('nomisPushService', () => {
         'user'
       )
       expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
+      expect(nomisClientBuilder).to.be.calledWith('valid-token')
       expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).to.be.calledWith('1', {
         approvalStatus: 'REJECTED',
@@ -216,6 +221,7 @@ describe('nomisPushService', () => {
     it('should call nomisClient.putChecksPassed', async () => {
       await service.pushChecksPassed('1', 'user')
       expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
+      expect(nomisClientBuilder).to.be.calledWith('valid-token')
       expect(nomisClientMock.putChecksPassed).to.be.calledOnce()
       expect(nomisClientMock.putChecksPassed).to.be.calledWith('1')
     })
