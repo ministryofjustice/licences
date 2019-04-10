@@ -96,10 +96,11 @@ describe('userAdminService', () => {
         email: 8,
         orgEmail: 9,
         telephone: 10,
+        onboarded: 11,
       })
 
       expect(userClient.updateRoUser).to.be.calledOnce()
-      expect(userClient.updateRoUser).to.be.calledWith('nomisId', 1, 3, 4, 5, 6, 7, 8, 9, 10)
+      expect(userClient.updateRoUser).to.be.calledWith('nomisId', 1, 3, 4, 5, 6, 7, 8, 9, 10, 11)
     })
   })
 
@@ -131,13 +132,14 @@ describe('userAdminService', () => {
         email: 7,
         orgEmail: 8,
         telephone: 9,
+        onboarded: 10,
       })
 
       expect(userClient.getRoUser).to.be.calledOnce()
       expect(userClient.getRoUser).to.be.calledWith('nomisId')
 
       expect(userClient.addRoUser).to.be.calledOnce()
-      expect(userClient.addRoUser).to.be.calledWith('nomisId', 2, 3, 4, 5, 6, 7, 8, 9)
+      expect(userClient.addRoUser).to.be.calledWith('nomisId', 2, 3, 4, 5, 6, 7, 8, 9, 10)
     })
   })
 

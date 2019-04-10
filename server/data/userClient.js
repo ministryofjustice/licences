@@ -58,14 +58,27 @@ module.exports = {
     jobRole,
     email,
     orgEmail,
-    telephone
+    telephone,
+    onboarded
   ) {
     const query = {
       text: `update staff_ids 
                     set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5, 
-                    organisation = $6, job_role = $7, email = $8, org_email = $9, telephone = $10 
+                    organisation = $6, job_role = $7, email = $8, org_email = $9, telephone = $10, auth_onboarded = $11
                     where nomis_id = $1`,
-      values: [originalNomisId, nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone],
+      values: [
+        originalNomisId,
+        nomisId,
+        deliusId,
+        first,
+        last,
+        organisation,
+        jobRole,
+        email,
+        orgEmail,
+        telephone,
+        onboarded,
+      ],
     }
 
     return db.query(query)
@@ -80,12 +93,12 @@ module.exports = {
     return db.query(query)
   },
 
-  async addRoUser(nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone) {
+  async addRoUser(nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone, onboarded) {
     const query = {
       text: `insert into staff_ids
-                (nomis_id, staff_id, first_name, last_name, organisation, job_role, email, org_email, telephone)
-                values($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-      values: [nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone],
+                (nomis_id, staff_id, first_name, last_name, organisation, job_role, email, org_email, telephone, auth_onboarded)
+                values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      values: [nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone, onboarded],
     }
 
     return db.query(query)
@@ -126,6 +139,7 @@ function convertPropertyNames(user) {
         email: user.email,
         orgEmail: user.org_email,
         telephone: user.telephone,
+        onboarded: user.auth_onboarded,
       }
     : null
 }

@@ -25,6 +25,7 @@ block content
               th Email
               th Organisation Email
               th Telephone
+              th Onboarded
               th
           tbody
             tr.user
@@ -55,6 +56,9 @@ block content
               td.telephone
                 if roUser.telephone
                   | #{roUser.telephone}
+              td.onboarded
+                if roUser.onboarded
+                  img(src="/public/images/large_tick.svg" alt="white tick" height="30px")
 
 
     div.paddingBottom.smallPaddingTop

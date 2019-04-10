@@ -12,7 +12,10 @@ function getEnvironmentVariable(name) {
   throw new Error(`Missing env var ${name}`)
 }
 
-fs.writeFileSync(target, JSON.stringify({
-  buildNumber: getEnvironmentVariable('BUILD_NUMBER'),
-  gitRef: getEnvironmentVariable('GIT_REF'),
-}))
+fs.writeFileSync(
+  target,
+  JSON.stringify({
+    buildNumber: getEnvironmentVariable('BUILD_NUMBER'),
+    gitRef: getEnvironmentVariable('GIT_REF'),
+  })
+)

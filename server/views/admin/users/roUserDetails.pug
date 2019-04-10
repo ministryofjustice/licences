@@ -78,6 +78,15 @@ block content
             label.form-label(for="telephone") Telephone
             input#telephone.form-control(name="telephone" type="text" value=inputs.telephone)
       div.pure-u-1.pure-u-md-2-5
+        div.pure-u-1.pure-u-md-4-5
+          div.form-group.inline
+            label.form-label(for="onboardedYes") In SSO
+            div.multiple-choice
+              input#onboardedYes(type='radio', checked=inputs.onboarded name='onboarded', value='1')
+              label(for='onboardedYes') Yes
+            div.multiple-choice
+              input#onboardedNo(type='radio', checked=!inputs.onboarded name='onboarded', value='0')
+              label(for='onboardedNo') No
 
       div.pure-u-1.pure-u-md-2-5
         div.pure-u-1.pure-u-md-4-5
