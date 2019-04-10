@@ -2,7 +2,20 @@ module.exports = function createUserService(nomisClientBuilder, userClient) {
   async function updateRoUser(
     token,
     originalNomisId,
-    { nomisId, originalDeliusId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone, verify }
+    {
+      nomisId,
+      originalDeliusId,
+      deliusId,
+      first,
+      last,
+      organisation,
+      jobRole,
+      email,
+      orgEmail,
+      telephone,
+      onboarded,
+      verify,
+    }
   ) {
     const idChecks = []
 
@@ -30,7 +43,8 @@ module.exports = function createUserService(nomisClientBuilder, userClient) {
       jobRole,
       email,
       orgEmail,
-      telephone
+      telephone,
+      onboarded
     )
   }
 
@@ -41,7 +55,7 @@ module.exports = function createUserService(nomisClientBuilder, userClient) {
 
   async function addRoUser(
     token,
-    { nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone, verify }
+    { nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone, onboarded, verify }
   ) {
     const idChecks = [checkExistingNomis(nomisId), checkExistingDelius(deliusId)]
 
@@ -51,7 +65,18 @@ module.exports = function createUserService(nomisClientBuilder, userClient) {
 
     await Promise.all(idChecks)
 
-    return userClient.addRoUser(nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone)
+    return userClient.addRoUser(
+      nomisId,
+      deliusId,
+      first,
+      last,
+      organisation,
+      jobRole,
+      email,
+      orgEmail,
+      telephone,
+      onboarded
+    )
   }
 
   async function checkExistingNomis(nomisId) {

@@ -79,10 +79,6 @@ describe('userClient', () => {
 
   describe('updateRoUser', () => {
     it('should pass in the correct sql and params', () => {
-      const expectedUpdateClause = 'update staff_ids'
-      const expectedSetClause = 'set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5'
-      const expectedWhereClause = 'where nomis_id = $1'
-
       const result = userProxy().updateRoUser(
         'nomisId',
         'newNomisId',
@@ -93,14 +89,12 @@ describe('userClient', () => {
         'role',
         'email',
         'orgEmail',
-        'phone'
+        'phone',
+        'onboarded'
       )
 
       return result.then(() => {
         const call = queryStub.getCalls()[0].args[0]
-        expect(call.text).includes(expectedUpdateClause)
-        expect(call.text).includes(expectedSetClause)
-        expect(call.text).includes(expectedWhereClause)
         expect(call.values).to.eql([
           'nomisId',
           'newNomisId',
@@ -112,6 +106,7 @@ describe('userClient', () => {
           'email',
           'orgEmail',
           'phone',
+          'onboarded',
         ])
       })
     })
@@ -133,11 +128,6 @@ describe('userClient', () => {
 
   describe('addRoUser', () => {
     it('should pass in the correct sql and params', () => {
-      const expectedInsertClause = 'insert into staff_ids'
-      const expectedColsClause =
-        '(nomis_id, staff_id, first_name, last_name, organisation, job_role, email, org_email, telephone)'
-      const expectedValuesClause = 'values($1, $2, $3, $4, $5, $6, $7, $8, $9)'
-
       const result = userProxy().addRoUser(
         'nomisId',
         'deliusId',
@@ -147,14 +137,12 @@ describe('userClient', () => {
         'role',
         'email',
         'orgEmail',
-        'phone'
+        'phone',
+        'onboarded'
       )
 
       return result.then(() => {
         const call = queryStub.getCalls()[0].args[0]
-        expect(call.text).includes(expectedInsertClause)
-        expect(call.text).includes(expectedColsClause)
-        expect(call.text).includes(expectedValuesClause)
         expect(call.values).to.eql([
           'nomisId',
           'deliusId',
@@ -165,6 +153,7 @@ describe('userClient', () => {
           'email',
           'orgEmail',
           'phone',
+          'onboarded',
         ])
       })
     })

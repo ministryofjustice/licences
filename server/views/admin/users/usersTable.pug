@@ -5,6 +5,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
       th Delius Staff ID
       th First Name
       th Last Name
+      th In SSO
       th
       th
   tbody
@@ -23,6 +24,9 @@ table#hdcEligiblePrisoners.largeMarginBottom
           td.lastName
             if roUser.last
               |  #{roUser.last}
+          td.onboarded.center
+            if roUser.onboarded
+              img(src="/public/images/large_tick.svg" alt="white tick" height="30px")
           td.edit
             a.button.button-primary.fullWidth.center(href="/admin/roUsers/edit/" + roUser.nomisId role="button")
               | Edit
