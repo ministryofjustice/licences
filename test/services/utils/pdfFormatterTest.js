@@ -280,8 +280,8 @@ describe('pdfFormatter', () => {
 
     const data = formatWith({ licence })
 
-    expect(data.values.PSS).to.eql(expected)
-    expect(data.missing).to.not.have.property('PSS')
+    expect(data.values.PSSCONDITIONS).to.eql(expected)
+    expect(data.missing).to.not.have.property('PSSCONDITIONS')
   })
 
   it('should skip placeholder when standard conditions only', () => {
@@ -292,9 +292,9 @@ describe('pdfFormatter', () => {
     const data = formatWith({ licence })
 
     expect(data.values.CONDITIONS).to.eql('')
-    expect(data.values.PSS).to.eql('')
+    expect(data.values.PSSCONDITIONS).to.eql('')
     expect(data.missing.CONDITIONS).to.eql(displayNames.CONDITIONS)
-    expect(data.missing.PSS).to.eql(displayNames.PSS)
+    expect(data.missing.PSSCONDITIONS).to.eql(displayNames.PSSCONDITIONS)
   })
 
   it('should skip placeholder when additional conditions needed but not supplied', () => {
@@ -305,9 +305,9 @@ describe('pdfFormatter', () => {
     const data = formatWith({ licence })
 
     expect(data.values.CONDITIONS).to.eql('')
-    expect(data.values.PSS).to.eql('')
+    expect(data.values.PSSCONDITIONS).to.eql('')
     expect(data.missing.CONDITIONS).to.eql(displayNames.CONDITIONS)
-    expect(data.missing.PSS).to.eql(displayNames.PSS)
+    expect(data.missing.PSSCONDITIONS).to.eql(displayNames.PSSCONDITIONS)
   })
 
   it('should skip placeholder when additional conditions empty', () => {
@@ -318,9 +318,9 @@ describe('pdfFormatter', () => {
     const data = formatWith({ licence })
 
     expect(data.values.CONDITIONS).to.eql('')
-    expect(data.values.PSS).to.eql('')
+    expect(data.values.PSSCONDITIONS).to.eql('')
     expect(data.missing.CONDITIONS).to.eql(displayNames.CONDITIONS)
-    expect(data.missing.PSS).to.eql(displayNames.PSS)
+    expect(data.missing.PSSCONDITIONS).to.eql(displayNames.PSSCONDITIONS)
   })
 
   it('should take version number and date from approvedVersionDetails', () => {
@@ -382,7 +382,7 @@ const allValuesEmpty = {
   OFF_NOMS: 'PLACEHOLDER',
   OFF_PHOTO: 'PLACEHOLDER',
   OFF_PNC: '',
-  PSS: '',
+  PSSCONDITIONS: '',
   REPORTING_ADDRESS: 'PLACEHOLDER',
   REPORTING_AT: 'PLACEHOLDER',
   REPORTING_NAME: 'PLACEHOLDER',
@@ -410,7 +410,7 @@ const displayNames = {
   conditions: {
     optional: {
       CONDITIONS: 'Additional conditions',
-      PSS: 'Post-sentence supervision conditions',
+      PSSCONDITIONS: 'Post-sentence supervision conditions',
     },
   },
   curfew: {

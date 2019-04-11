@@ -349,9 +349,9 @@ module.exports = {
       group: 'conditions',
       required: 'optional',
     },
-    PSS: {
+    PSSCONDITIONS: {
       noPlaceholder: true,
-      paths: [['pss']],
+      paths: [['pssconditions']],
       displayName: 'Post-sentence supervision conditions',
       startIndex: 9,
       divider: '\n\n',

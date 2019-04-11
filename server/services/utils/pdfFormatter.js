@@ -16,7 +16,7 @@ function formatPdfData(
   placeholder = DEFAULT_PLACEHOLDER
 ) {
   const conditions = getConditionsForConfig(licence, templateName, 'CONDITIONS')
-  const pss = getConditionsForConfig(licence, templateName, 'PSS')
+  const pssconditions = getConditionsForConfig(licence, templateName, 'PSSCONDITIONS')
   const photo = image ? image.toString('base64') : null
   const taggingCompany = { telephone: config.pdf.taggingCompanyTelephone }
   const curfewAddress = pickCurfewAddress(licence)
@@ -27,7 +27,7 @@ function formatPdfData(
     curfewAddress,
     establishment,
     conditions,
-    pss,
+    pssconditions,
     photo,
     taggingCompany,
     approvedVersionDetails,
