@@ -37,6 +37,13 @@ describe('userClient', () => {
       userProxy().getRoUsers()
       expect(queryStub).to.have.callCount(1)
     })
+
+    it('should return empty if no matches', async () => {
+      queryStub = sinon.stub().resolves({})
+      const result = await userProxy().getRoUsers('id')
+      expect(queryStub).to.have.callCount(1)
+      expect(result).to.eql([])
+    })
   })
 
   describe('getRoUser', () => {
@@ -46,7 +53,7 @@ describe('userClient', () => {
     })
 
     it('should pass in the correct sql and params', () => {
-      const expectedClause = 'where nomis_id = $1'
+      const expectedClause = 'where upper(nomis_id) = upper($1)'
 
       const result = userProxy().getRoUser('id')
 
@@ -55,6 +62,13 @@ describe('userClient', () => {
         expect(call.text).includes(expectedClause)
         expect(call.values).to.eql(['id'])
       })
+    })
+
+    it('should return empty if no matches', async () => {
+      queryStub = sinon.stub().resolves({})
+      const result = await userProxy().getRoUser('id')
+      expect(queryStub).to.have.callCount(1)
+      expect(result).to.eql(undefined)
     })
   })
 
@@ -65,7 +79,7 @@ describe('userClient', () => {
     })
 
     it('should pass in the correct sql and params', () => {
-      const expectedClause = 'where staff_id = $1'
+      const expectedClause = 'where upper(staff_id) = upper($1)'
 
       const result = userProxy().getRoUserByDeliusId('id')
 
@@ -74,6 +88,32 @@ describe('userClient', () => {
         expect(call.text).includes(expectedClause)
         expect(call.values).to.eql(['id'])
       })
+    })
+  })
+
+  describe('getDeliusUserName', () => {
+    it('should call query', () => {
+      userProxy().getDeliusUserName('id')
+      expect(queryStub).to.have.callCount(1)
+    })
+
+    it('should pass in the correct sql and params', () => {
+      const expectedClause = 'where upper(nomis_id) = upper($1)'
+
+      const result = userProxy().getDeliusUserName('id')
+
+      return result.then(() => {
+        const call = queryStub.getCalls()[0].args[0]
+        expect(call.text).includes(expectedClause)
+        expect(call.values).to.eql(['id'])
+      })
+    })
+
+    it('should return undefined if no matches', async () => {
+      queryStub = sinon.stub().resolves({})
+      const result = await userProxy().getDeliusUserName('id')
+      expect(queryStub).to.have.callCount(1)
+      expect(result).to.eql(undefined)
     })
   })
 
@@ -185,6 +225,13 @@ describe('userClient', () => {
         expect(call.text).includes(expectedOrderByClause)
         expect(call.values).to.eql(['%searchTerm%'])
       })
+    })
+
+    it('should return empty if no matches', async () => {
+      queryStub = sinon.stub().resolves({})
+      const result = await userProxy().findRoUsers('id')
+      expect(queryStub).to.have.callCount(1)
+      expect(result).to.eql([])
     })
   })
 })
