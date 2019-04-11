@@ -52,7 +52,7 @@ describe('userClient', () => {
       expect(queryStub).to.have.callCount(1)
     })
 
-    it('should pass in the correct sql and params', () => {
+    it('should pass in the correct params and do case-insensitive search', () => {
       const expectedClause = 'where upper(nomis_id) = upper($1)'
 
       const result = userProxy().getRoUser('id')
@@ -78,7 +78,7 @@ describe('userClient', () => {
       expect(queryStub).to.have.callCount(1)
     })
 
-    it('should pass in the correct sql and params', () => {
+    it('should pass in the correct params and do case-insensitive search', () => {
       const expectedClause = 'where upper(staff_id) = upper($1)'
 
       const result = userProxy().getRoUserByDeliusId('id')
@@ -97,7 +97,7 @@ describe('userClient', () => {
       expect(queryStub).to.have.callCount(1)
     })
 
-    it('should pass in the correct sql and params', () => {
+    it('should pass in the correct params and do case-insensitive search', () => {
       const expectedClause = 'where upper(nomis_id) = upper($1)'
 
       const result = userProxy().getDeliusUserName('id')
