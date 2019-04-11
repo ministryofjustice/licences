@@ -2,21 +2,6 @@ const moment = require('moment')
 const db = require('./dataAccess/db')
 
 module.exports = {
-  async getDeliusUserName(nomisUserName) {
-    const query = {
-      text: 'select staff_id from staff_ids where nomis_id = $1',
-      values: [nomisUserName],
-    }
-
-    const { rows } = await db.query(query)
-
-    if (rows[0]) {
-      return rows[0].staff_id
-    }
-
-    return undefined
-  },
-
   async getRoUsers() {
     const query = {
       text: 'select * from staff_ids order by nomis_id asc',
@@ -24,7 +9,11 @@ module.exports = {
 
     const { rows } = await db.query(query)
 
-    return rows.map(convertPropertyNames)
+    if (rows) {
+      return rows.map(convertPropertyNames)
+    }
+
+    return []
   },
 
   async getIncompleteRoUsers() {
@@ -63,24 +52,32 @@ module.exports = {
 
   async getRoUser(nomisId) {
     const query = {
-      text: 'select * from staff_ids where nomis_id = $1',
+      text: 'select * from staff_ids where upper(nomis_id) = upper($1)',
       values: [nomisId],
     }
 
     const { rows } = await db.query(query)
 
-    return convertPropertyNames(rows[0])
+    if (rows && rows[0]) {
+      return convertPropertyNames(rows[0])
+    }
+
+    return null
   },
 
   async getRoUserByDeliusId(deliusId) {
     const query = {
-      text: 'select * from staff_ids where staff_id = $1',
+      text: 'select * from staff_ids where upper(staff_id) = upper($1)',
       values: [deliusId],
     }
 
     const { rows } = await db.query(query)
 
-    return convertPropertyNames(rows[0])
+    if (rows && rows[0]) {
+      return convertPropertyNames(rows[0])
+    }
+
+    return null
   },
 
   async updateRoUser(
@@ -158,7 +155,11 @@ module.exports = {
 
     const { rows } = await db.query(query)
 
-    return rows.map(convertPropertyNames)
+    if (rows) {
+      return rows.map(convertPropertyNames)
+    }
+
+    return []
   },
 }
 

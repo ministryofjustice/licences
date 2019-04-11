@@ -199,13 +199,22 @@ describe('licenceClient', () => {
       expect(queryStub).to.have.callCount(1)
     })
 
-    it('should pass in the correct parameters', () => {
+    it('should pass in the correct params and do case-insensitive search', () => {
+      const expectedClause = 'where upper(nomis_id) = upper($1)'
       const result = licencesProxy().getDeliusUserName(5)
 
       return result.then(() => {
-        const { values } = queryStub.getCalls()[0].args[0]
+        const { text, values } = queryStub.getCalls()[0].args[0]
+        expect(text).includes(expectedClause)
         expect(values).to.eql([5])
       })
+    })
+
+    it('should return null if no matches', async () => {
+      queryStub = sinon.stub().resolves({})
+      const result = await licencesProxy().getDeliusUserName('id')
+      expect(queryStub).to.have.callCount(1)
+      expect(result).to.eql(null)
     })
   })
 

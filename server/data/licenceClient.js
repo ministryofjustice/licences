@@ -102,17 +102,17 @@ module.exports = {
 
   async getDeliusUserName(nomisUserName) {
     const query = {
-      text: 'select staff_id from staff_ids where nomis_id = $1',
+      text: 'select staff_id from staff_ids where upper(nomis_id) = upper($1)',
       values: [nomisUserName],
     }
 
     const { rows } = await db.query(query)
 
-    if (rows[0]) {
+    if (rows && rows[0]) {
       return rows[0].staff_id
     }
 
-    return undefined
+    return null
   },
 
   saveApprovedLicenceVersion(bookingId, template) {

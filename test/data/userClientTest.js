@@ -37,6 +37,13 @@ describe('userClient', () => {
       userProxy().getRoUsers()
       expect(queryStub).to.have.callCount(1)
     })
+
+    it('should return empty if no matches', async () => {
+      queryStub = sinon.stub().resolves({})
+      const result = await userProxy().getRoUsers('id')
+      expect(queryStub).to.have.callCount(1)
+      expect(result).to.eql([])
+    })
   })
 
   describe('getIncompleteRoUsers', () => {
@@ -91,16 +98,23 @@ describe('userClient', () => {
       expect(queryStub).to.have.callCount(1)
     })
 
-    it('should pass in the correct sql and params', () => {
-      const expectedClause = 'where nomis_id = $1'
+    it('should pass in the correct params and do case-insensitive search', () => {
+      const expectedClause = 'where upper(nomis_id) = upper($1)'
 
       const result = userProxy().getRoUser('id')
 
       return result.then(() => {
-        const call = queryStub.getCalls()[0].args[0]
-        expect(call.text).includes(expectedClause)
-        expect(call.values).to.eql(['id'])
+        const { text, values } = queryStub.getCalls()[0].args[0]
+        expect(text).includes(expectedClause)
+        expect(values).to.eql(['id'])
       })
+    })
+
+    it('should return empty if no matches', async () => {
+      queryStub = sinon.stub().resolves({})
+      const result = await userProxy().getRoUser('id')
+      expect(queryStub).to.have.callCount(1)
+      expect(result).to.eql(null)
     })
   })
 
@@ -110,16 +124,23 @@ describe('userClient', () => {
       expect(queryStub).to.have.callCount(1)
     })
 
-    it('should pass in the correct sql and params', () => {
-      const expectedClause = 'where staff_id = $1'
+    it('should pass in the correct params and do case-insensitive search', () => {
+      const expectedClause = 'where upper(staff_id) = upper($1)'
 
       const result = userProxy().getRoUserByDeliusId('id')
 
       return result.then(() => {
-        const call = queryStub.getCalls()[0].args[0]
-        expect(call.text).includes(expectedClause)
-        expect(call.values).to.eql(['id'])
+        const { text, values } = queryStub.getCalls()[0].args[0]
+        expect(text).includes(expectedClause)
+        expect(values).to.eql(['id'])
       })
+    })
+
+    it('should return empty if no matches', async () => {
+      queryStub = sinon.stub().resolves({})
+      const result = await userProxy().getRoUserByDeliusId('id')
+      expect(queryStub).to.have.callCount(1)
+      expect(result).to.eql(null)
     })
   })
 
@@ -165,9 +186,9 @@ describe('userClient', () => {
       const result = userProxy().deleteRoUser('nomisId')
 
       return result.then(() => {
-        const call = queryStub.getCalls()[0].args[0]
-        expect(call.text).includes(expectedClause)
-        expect(call.values).to.eql(['nomisId'])
+        const { text, values } = queryStub.getCalls()[0].args[0]
+        expect(text).includes(expectedClause)
+        expect(values).to.eql(['nomisId'])
       })
     })
   })
@@ -225,12 +246,19 @@ describe('userClient', () => {
       const result = userProxy().findRoUsers('searchTerm')
 
       return result.then(() => {
-        const call = queryStub.getCalls()[0].args[0]
-        expect(call.text).includes(expectedSelectClause)
-        expectedWhereClauses.forEach(clause => expect(call.text).includes(clause))
-        expect(call.text).includes(expectedOrderByClause)
-        expect(call.values).to.eql(['%searchTerm%'])
+        const { text, values } = queryStub.getCalls()[0].args[0]
+        expect(text).includes(expectedSelectClause)
+        expectedWhereClauses.forEach(clause => expect(text).includes(clause))
+        expect(text).includes(expectedOrderByClause)
+        expect(values).to.eql(['%searchTerm%'])
       })
+    })
+
+    it('should return empty if no matches', async () => {
+      queryStub = sinon.stub().resolves({})
+      const result = await userProxy().findRoUsers('id')
+      expect(queryStub).to.have.callCount(1)
+      expect(result).to.eql([])
     })
   })
 })
