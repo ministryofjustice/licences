@@ -1,21 +1,6 @@
 const db = require('./dataAccess/db')
 
 module.exports = {
-  async getDeliusUserName(nomisUserName) {
-    const query = {
-      text: 'select staff_id from staff_ids where upper(nomis_id) = upper($1)',
-      values: [nomisUserName],
-    }
-
-    const { rows } = await db.query(query)
-
-    if (rows && rows[0]) {
-      return rows[0].staff_id
-    }
-
-    return undefined
-  },
-
   async getRoUsers() {
     const query = {
       text: 'select * from staff_ids order by nomis_id asc',
@@ -42,7 +27,7 @@ module.exports = {
       return convertPropertyNames(rows[0])
     }
 
-    return undefined
+    return null
   },
 
   async getRoUserByDeliusId(deliusId) {
@@ -57,7 +42,7 @@ module.exports = {
       return convertPropertyNames(rows[0])
     }
 
-    return undefined
+    return null
   },
 
   async updateRoUser(
