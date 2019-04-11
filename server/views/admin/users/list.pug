@@ -6,14 +6,14 @@ block content
     a#back.link-back(href="/admin/") Back
 
   div.pure-g
-    div.pure-u-1.searchLink.alignRight.sm-padTop55.u-paddingTop
+    div.pure-u-1.searchLink.alignRight.smallPaddingTop
       a#addUserLink(href='/admin/roUsers/add') Add user
+    div.pure-u-1.searchLink.alignRight
+      a#incompleteUserLink(href='/admin/roUsers/incomplete') View incomplete users
 
     include userSearchForm
 
-    div.pure-u-1.largeMarginTop
+    div.pure-u-1
       h2.heading-medium #{heading}
-        include usersTable
+      include usersTable
 
-block append scripts
-  script(src="/public/javascripts/pagination.js?" + version)

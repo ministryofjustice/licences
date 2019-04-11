@@ -21,9 +21,13 @@ describe('userAdminService', () => {
     last_name: 'l2',
   }
 
+  const incomplete1 = { bookingId: 1, sentStaffCode: 'DELIUS', sentName: 'FIRST LAST LAST2' }
+  const incomplete2 = { bookingId: 2 }
+
   beforeEach(() => {
     userClient = {
       getRoUsers: sinon.stub().resolves([user1, user2]),
+      getIncompleteRoUsers: sinon.stub().resolves(),
       getRoUser: sinon.stub().resolves(user2),
       getRoUserByDeliusId: sinon.stub().resolves(user2),
       updateRoUser: sinon.stub().resolves({}),
@@ -33,6 +37,7 @@ describe('userAdminService', () => {
 
     nomisClient = {
       getUserInfo: sinon.stub().resolves({}),
+      getOffenderSentencesByBookingId: sinon.stub().resolves({}),
     }
 
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
@@ -149,6 +154,67 @@ describe('userAdminService', () => {
 
       expect(nomisClient.getUserInfo).to.be.calledOnce()
       expect(nomisClient.getUserInfo).to.be.calledWith('userName')
+    })
+  })
+
+  describe('getIncompleteRoUsers', () => {
+    it('should call user client and should not call nomisClient if no incomplete users', async () => {
+      userClient.getIncompleteRoUsers = sinon.stub().resolves([])
+      const result = await service.getIncompleteRoUsers()
+
+      expect(userClient.getIncompleteRoUsers).to.be.calledOnce()
+      expect(userClient.getIncompleteRoUsers).to.be.calledWith()
+      expect(result).to.eql([])
+      expect(nomisClient.getOffenderSentencesByBookingId).not.to.be.calledOnce()
+    })
+
+    it('should call nomisClient with incomplete users booking IDs', async () => {
+      userClient.getIncompleteRoUsers = sinon.stub().resolves([incomplete1, incomplete2])
+      const expectedBookingIds = [1, 2]
+
+      await service.getIncompleteRoUsers()
+      expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledOnce()
+      expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledWith(expectedBookingIds, false)
+    })
+
+    it('should add mapping data', async () => {
+      userClient.getIncompleteRoUsers = sinon.stub().resolves([incomplete1, incomplete2])
+      const expected1 = {
+        bookingId: 1,
+        sentName: 'FIRST LAST LAST2',
+        sentStaffCode: 'DELIUS',
+        offenderNomis: undefined,
+        mapping: {
+          deliusId: 'DELIUS',
+          first: 'FIRST',
+          last: 'LAST LAST2',
+        },
+      }
+
+      const expected2 = {
+        bookingId: 2,
+        offenderNomis: undefined,
+        mapping: {
+          deliusId: undefined,
+          first: undefined,
+          last: undefined,
+        },
+      }
+
+      const result = await service.getIncompleteRoUsers()
+      expect(result).to.eql([expected1, expected2])
+    })
+
+    it('should add offender numbers from nomis', async () => {
+      userClient.getIncompleteRoUsers = sinon.stub().resolves([incomplete1, incomplete2])
+      nomisClient.getOffenderSentencesByBookingId.resolves([
+        { bookingId: 1, offenderNo: 'NOMIS 1' },
+        { bookingId: 2, offenderNo: 'NOMIS 2' },
+      ])
+
+      const result = await service.getIncompleteRoUsers()
+      expect(result[0].offenderNomis).to.eql('NOMIS 1')
+      expect(result[1].offenderNomis).to.eql('NOMIS 2')
     })
   })
 })
