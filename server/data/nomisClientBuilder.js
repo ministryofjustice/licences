@@ -2,7 +2,7 @@ const moment = require('moment')
 const superagent = require('superagent')
 const logger = require('../../log')
 const config = require('../config')
-const { merge, pipe } = require('../utils/functionalHelpers')
+const { merge, pipe, getIn } = require('../utils/functionalHelpers')
 const { NoTokenError } = require('../utils/errors')
 
 const timeoutSpec = {
@@ -194,7 +194,9 @@ function nomisPushBuilder(verb, token) {
       const result = await updateMethod[verb](token, path, body, headers, responseType)
       return result.body
     } catch (error) {
-      logger.warn('Error calling nomis', path, error.stack)
+      logger.warn('Error calling nomis', path)
+      logger.warn(error.stack)
+      logger.warn(getIn(error, ['response', 'text']))
       throw error
     }
   }
