@@ -94,27 +94,27 @@ describe('nomisPushService', () => {
         {
           example: 'Unsuitable - sexOffender',
           data: { type: 'exceptionalCircumstances', status: 'No', reason: 'sexOffender' },
-          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'UNSUIT_SEX' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_SEX' },
         },
         {
           example: 'Unsuitable - deportationLiable',
           data: { type: 'exceptionalCircumstances', status: 'No', reason: 'deportationLiable' },
-          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'DEPORT' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'DEPORT' },
         },
         {
           example: 'Unsuitable - immigrationStatusUnclear',
           data: { type: 'exceptionalCircumstances', status: 'No', reason: 'immigrationStatusUnclear' },
-          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'DEPORT' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'DEPORT' },
         },
         {
           example: 'Unsuitable - recalled',
           data: { type: 'exceptionalCircumstances', status: 'No', reason: 'recalled' },
-          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'CUR' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CUR' },
         },
         {
           example: 'Unsuitable - sentenceCategory',
           data: { type: 'exceptionalCircumstances', status: 'No', reason: 'sentenceCategory' },
-          approvalStatus: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'UNSUIT_OFF' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_OFF' },
         },
         {
           example: 'Postponed - investigation',

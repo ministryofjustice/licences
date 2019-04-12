@@ -43,11 +43,11 @@ module.exports = {
     },
     exceptionalCircumstances: {
       No: {
-        sexOffender: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'UNSUIT_SEX' },
-        deportationLiable: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'DEPORT' },
-        immigrationStatusUnclear: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'DEPORT' },
-        recalled: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'CUR' },
-        sentenceCategory: { approvalStatus: 'PRES_UNSUIT', refusedReason: 'UNSUIT_OFF' },
+        sexOffender: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_SEX' },
+        deportationLiable: { approvalStatus: 'PRES UNSUIT', refusedReason: 'DEPORT' },
+        immigrationStatusUnclear: { approvalStatus: 'PRES UNSUIT', refusedReason: 'DEPORT' },
+        recalled: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CUR' },
+        sentenceCategory: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_OFF' },
       },
     },
   },
