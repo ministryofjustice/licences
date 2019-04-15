@@ -34,8 +34,8 @@ const incomplete1 = {
   nomisId: 1,
   sent: 1,
   bookingId: 1,
-  sentStaffCode: 'INCOMPLETE USER 1',
-  sentName: 1,
+  assignedId: 'INCOMPLETE USER 1',
+  assignedName: 1,
 }
 
 const incomplete2 = {
@@ -46,20 +46,8 @@ const incomplete2 = {
   nomisId: 2,
   sent: 2,
   bookingId: 2,
-  sentStaffCode: 'INCOMPLETE USER 2',
-  sentName: 2,
-}
-
-const completeUser = {
-  first: 2,
-  last: 2,
-  mapped: true,
-  onboarded: true,
-  nomisId: 2,
-  sent: 2,
-  bookingId: 2,
-  sentStaffCode: 'FINISHED USER',
-  sentName: 2,
+  assignedId: 'INCOMPLETE USER 2',
+  assignedName: 2,
 }
 
 describe('/admin', () => {
@@ -441,18 +429,6 @@ describe('/admin', () => {
         })
     })
 
-    it('should not display details of complete users (mapped and onboarded', () => {
-      userAdminService.getIncompleteRoUsers.resolves([completeUser, incomplete2])
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
-      return request(app)
-        .get('/admin/roUsers/incomplete')
-        .expect(200)
-        .expect(res => {
-          expect(res.text).not.to.contain('FINISHED USER')
-          expect(res.text).to.contain('INCOMPLETE USER 2')
-        })
-    })
-
     it('should throw if submitted by non-authorised user', () => {
       const app = createApp({ userAdminServiceStub: userAdminService }, 'roUser')
       return request(app)
@@ -466,18 +442,18 @@ describe('/admin', () => {
       const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/incomplete/add')
-        .send({ incompleteUser: '{ "sentStaffCode": "STAFF CODE", "sentName": "FIRST LAST LAST2"}' })
+        .send({ assignedId: 'STAFF CODE', assignedName: 'FIRST LAST LAST2' })
         .expect(302)
         .expect('Location', '/admin/roUsers/add')
     })
 
-    it('redirects to incomplete users if parsing error', () => {
+    it('redirects even if missing data', () => {
       const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
       return request(app)
         .post('/admin/roUsers/incomplete/add')
-        .send({ incompleteUser: '{ "invalid json" }' })
+        .send({ missing: 'error' })
         .expect(302)
-        .expect('Location', '/admin/roUsers/incomplete')
+        .expect('Location', '/admin/roUsers/add')
     })
   })
 })

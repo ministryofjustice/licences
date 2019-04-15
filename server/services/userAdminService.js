@@ -1,7 +1,7 @@
 const logger = require('../../log')
-const { isEmpty } = require('../utils/functionalHelpers')
+const { isEmpty, merge } = require('../utils/functionalHelpers')
 
-module.exports = function createUserService(nomisClientBuilder, userClient) {
+module.exports = function createUserService(nomisClientBuilder, userClient, signInService, prisonerService) {
   async function updateRoUser(
     token,
     originalNomisId,
@@ -111,49 +111,92 @@ module.exports = function createUserService(nomisClientBuilder, userClient) {
     }
   }
 
-  async function getIncompleteRoUsers(token) {
-    const incomplete = await userClient.getIncompleteRoUsers()
+  async function getIncompleteRoUsers(userName) {
+    const systemTokens = await signInService.getClientCredentialsTokens(userName)
+
+    const bookingIds = await userClient.getCasesRequiringRo()
+    if (isEmpty(bookingIds)) {
+      return []
+    }
+
+    const all = await findRequiredRos(systemTokens.token, bookingIds)
+    if (isEmpty(all)) {
+      return []
+    }
+
+    const required = uniqueByAssignedId(all)
+    const incomplete = await findIncomplete(required)
     if (isEmpty(incomplete)) {
       return []
     }
 
-    const bookingIds = incomplete.map(u => u.bookingId)
-    const offenders = await getOffenderNomis(token, bookingIds)
-
-    return addMappingDetails(incomplete, offenders)
+    return addOffenderNomis(systemTokens.token, incomplete)
   }
 
-  async function getOffenderNomis(token, bookingIds) {
-    try {
-      const nomisClient = nomisClientBuilder(token)
-      const offenders = await nomisClient.getOffenderSentencesByBookingId(bookingIds, false)
+  async function findRequiredRos(token, bookingIds) {
+    const required = await Promise.all(
+      bookingIds.map(async bookingId => {
+        try {
+          const { com } = await prisonerService.getCom(bookingId, token)
+          if (com) {
+            return { assignedId: com.deliusId, assignedName: com.name, bookingId }
+          }
+        } catch (error) {
+          logger.warn(`Error in getCom for incomplete users, booking id ${bookingId}`, error.stack)
+        }
+      })
+    )
 
-      if (isEmpty(offenders)) {
-        return null
-      }
-
-      return new Map(offenders.map(o => [o.bookingId.toString(), o.offenderNo]))
-    } catch (error) {
-      logger.warn('Error getting offender nomis numbers for incomplete ROs', error.stack)
-      return []
-    }
+    return required.filter(e => e)
   }
 
-  function addMappingDetails(incomplete, offenderIds) {
-    return incomplete.map(u => ({
-      ...u,
-      offenderNomis: offenderIds ? offenderIds.get(u.bookingId.toString()) : undefined,
-      mapping: getMappingDetails(u),
-    }))
+  function uniqueByAssignedId(assignments) {
+    return Object.values(
+      assignments.reduce((unique, assignment) => {
+        if (assignment.assignedId && !unique[assignment.assignedId]) {
+          return merge(unique, { [assignment.assignedId]: assignment })
+        }
+        return unique
+      }, {})
+    )
   }
 
-  function getMappingDetails(incompleteUser) {
-    const [first, ...last] = incompleteUser.sentName ? incompleteUser.sentName.split(' ') : []
-    return {
-      deliusId: incompleteUser.sentStaffCode,
-      first,
-      last: !isEmpty(last) ? last.join(' ') : undefined,
-    }
+  async function findIncomplete(assignments) {
+    const incomplete = await Promise.all(
+      assignments.map(async assignment => {
+        try {
+          const staff = await userClient.getRoUserByDeliusId(assignment.assignedId)
+          if (staff && !staff.onboarded) {
+            return merge(merge(assignment, staff), { mapped: true })
+          }
+          if (!staff) {
+            return merge(assignment, { mapped: false })
+          }
+        } catch (error) {
+          logger.warn(
+            `Error in getRoUserByDeliusId for incomplete users, assigned Id ${assignment.assignedId}`,
+            error.stack
+          )
+        }
+      })
+    )
+
+    return incomplete.filter(e => e)
+  }
+
+  async function addOffenderNomis(token, assignments) {
+    const nomisClient = nomisClientBuilder(token)
+
+    return Promise.all(
+      assignments.map(async assignment => {
+        try {
+          const booking = await nomisClient.getBooking(assignment.bookingId)
+          return merge(assignment, { offenderNo: booking.offenderNo })
+        } catch (error) {
+          logger.warn(`Error in getBooking for incomplete users, bookingId: ${assignment.bookingId}`, error.stack)
+        }
+      })
+    )
   }
 
   return {

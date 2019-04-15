@@ -1,4 +1,3 @@
-const moment = require('moment')
 const db = require('./dataAccess/db')
 
 module.exports = {
@@ -16,35 +15,15 @@ module.exports = {
     return []
   },
 
-  async getIncompleteRoUsers() {
+  async getCasesRequiringRo() {
     const query = {
-      text: `select
-               timestamp as sent_timestamp,
-               details -> 'bookingId' as booking_id,
-               details -> 'submissionTarget' -> 'com' -> 'deliusId' as sent_staffcode,
-               details -> 'submissionTarget' -> 'com' -> 'name' as sent_name,
-               (s.staff_id is not null) as mapped,
-               s.auth_onboarded,
-               s.first_name, s.last_name, s.nomis_id
-             from (
-                    select *,
-                           row_number() over (
-                             partition by (a.details -> 'submissionTarget' -> 'com' -> 'deliusId')
-                             order by a.timestamp ASC
-                             ) as rownbr
-                    from audit a
-                           left join staff_ids s
-                                     on s.staff_id = (a.details-> 'submissionTarget' -> 'com' ->> 'deliusId')
-                    where a.action = 'SEND'
-                      and a.details @> '{ "transitionType": "caToRo" }'
-                  ) s
-             where rownbr = 1`,
+      text: `select booking_id from licences where stage in ('ELIGIBILITY', 'PROCESSING_RO')`,
     }
 
     const { rows } = await db.query(query)
 
     if (rows) {
-      return rows.map(convertIncompleteUserPropertyNames)
+      return rows.map(r => r.booking_id).filter(r => r)
     }
 
     return []
@@ -176,22 +155,6 @@ function convertPropertyNames(user) {
         orgEmail: user.org_email,
         telephone: user.telephone,
         onboarded: user.auth_onboarded,
-      }
-    : null
-}
-
-function convertIncompleteUserPropertyNames(user) {
-  return user
-    ? {
-        first: user.first_name,
-        last: user.last_name,
-        mapped: user.mapped,
-        onboarded: user.auth_onboarded,
-        nomisId: user.nomis_id,
-        sent: moment(user.sent_timestamp).format('DD/MM/YYYY'),
-        bookingId: user.booking_id,
-        sentStaffCode: user.sent_staffcode,
-        sentName: user.sent_name,
       }
     : null
 }

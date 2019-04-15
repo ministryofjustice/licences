@@ -3,52 +3,48 @@ table.largeMarginBottom
     tr
       th Delius staff code
       th Name
-      th First seen
-      th Offender
-      th Mapped
-      th In SSO
-      th Mapped user nomis ID
-      th Mapped user name
+      th Assigned Offender
+      th Mapped?
+      th In SSO?
+      th Mapped Nomis ID
+      th Mapped name
       th
   tbody
     if incompleteUsers && incompleteUsers.length > 0
       each incompleteUser, index in incompleteUsers
-        if !(incompleteUser.mapped && incompleteUser.onboarded)
-          tr.hdcEligible
-            td
-              if incompleteUser.sentStaffCode
-                | #{incompleteUser.sentStaffCode}
-            td
-              if incompleteUser.sentName
-                | #{incompleteUser.sentName}
-            td
-              if incompleteUser.sent
-                | #{incompleteUser.sent}
-            td
-              if incompleteUser.offenderNomis
-                | #{incompleteUser.offenderNomis}
-            td.center
-              if incompleteUser.mapped
-                img(src="/public/images/large_tick.svg" alt="white tick" height="30px")
-            td.center
-              if incompleteUser.onboarded
-                img(src="/public/images/large_tick.svg" alt="white tick" height="30px")
-            td
-              if incompleteUser.nomisId
-                | #{incompleteUser.nomisId}
-            td
-              if incompleteUser.first
-                | #{incompleteUser.first}
-              if incompleteUser.last
-                |  #{incompleteUser.last}
+        tr.hdcEligible
+          td
+            if incompleteUser.assignedId
+              | #{incompleteUser.assignedId}
+          td
+            if incompleteUser.assignedName
+              | #{incompleteUser.assignedName}
+          td
+            if incompleteUser.offenderNo
+              | #{incompleteUser.offenderNo}
+          td.center
+            if incompleteUser.mapped
+              img(src="/public/images/large_tick.svg" alt="white tick" height="30px")
+          td.center
+            if incompleteUser.onboarded
+              img(src="/public/images/large_tick.svg" alt="white tick" height="30px")
+          td
+            if incompleteUser.nomisId
+              | #{incompleteUser.nomisId}
+          td
+            if incompleteUser.first
+              | #{incompleteUser.first}
+            if incompleteUser.last
+              |  #{incompleteUser.last}
 
-            td.edit
-              if incompleteUser.mapped
-                a.button.button-primary.fullWidth.center(href="/admin/roUsers/edit/" + incompleteUser.nomisId role="button")
-                  | Edit
-              else
-                form(method='POST' action='/admin/roUsers/incomplete/add')
-                  input(type="hidden" name="_csrf" value=csrfToken)
-                  input(type="hidden" name="incompleteUser" value=incompleteUser.mapping)
-                  input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Add user")
+          td.edit
+            if incompleteUser.mapped
+              a.button.button-primary.fullWidth.center(href="/admin/roUsers/edit/" + incompleteUser.nomisId role="button")
+                | Edit
+            else
+              form(method='POST' action='/admin/roUsers/incomplete/add')
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="assignedId" value=incompleteUser.assignedId)
+                input(type="hidden" name="assignedName" value=incompleteUser.assignedName)
+                input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Add user")
 

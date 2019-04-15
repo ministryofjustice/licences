@@ -1,5 +1,5 @@
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
-const { firstItem } = require('../../utils/functionalHelpers')
+const { firstItem, isEmpty } = require('../../utils/functionalHelpers')
 
 module.exports = ({ userAdminService }) => (router, audited) => {
   router.use(authorisationMiddleware)
@@ -130,21 +130,23 @@ module.exports = ({ userAdminService }) => (router, audited) => {
   router.get(
     '/incomplete',
     asyncMiddleware(async (req, res) => {
-      const incompleteUsers = await userAdminService.getIncompleteRoUsers(res.locals.token)
+      const incompleteUsers = await userAdminService.getIncompleteRoUsers(req.user.username)
       return res.render('admin/users/incompleteList', { incompleteUsers })
     })
   )
 
   router.post('/incomplete/add', async (req, res) => {
-    try {
-      const input = req.body.incompleteUser
-      const userInput = JSON.parse(input)
-      req.flash('userInput', userInput)
+    const { assignedId, assignedName } = req.body
+    const [first, ...last] = assignedName ? assignedName.split(' ') : []
 
-      return res.redirect('/admin/roUsers/add')
-    } catch (error) {
-      return res.redirect('/admin/roUsers/incomplete')
+    const userInput = {
+      deliusId: assignedId,
+      first,
+      last: !isEmpty(last) ? last.join(' ') : undefined,
     }
+
+    req.flash('userInput', userInput)
+    return res.redirect('/admin/roUsers/add')
   })
 
   return router

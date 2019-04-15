@@ -46,49 +46,31 @@ describe('userClient', () => {
     })
   })
 
-  describe('getIncompleteRoUsers', () => {
-    const incompleteUsers = {
-      rows: [
-        {
-          first_name: 1,
-          last_name: 2,
-          mapped: 3,
-          auth_onboarded: 4,
-          nomis_id: 5,
-          sent_timestamp: '2019-01-01',
-          booking_id: 7,
-          sent_staffcode: 8,
-          sent_name: 9,
-        },
-      ],
+  describe('getCasesRequiringRo', () => {
+    const cases = {
+      rows: [{ booking_id: 1 }, { booking_id: undefined }, { booking_id: 3 }, { booking_id: 4 }],
     }
 
     beforeEach(() => {
-      queryStub = sinon.stub().resolves(incompleteUsers)
+      queryStub = sinon.stub().resolves(cases)
     })
 
     it('should call query', () => {
-      userProxy().getIncompleteRoUsers()
+      userProxy().getCasesRequiringRo()
       expect(queryStub).to.have.callCount(1)
     })
 
-    it('should convert results', async () => {
-      const converted = [
-        {
-          first: 1,
-          last: 2,
-          mapped: 3,
-          onboarded: 4,
-          nomisId: 5,
-          sent: '01/01/2019',
-          bookingId: 7,
-          sentStaffCode: 8,
-          sentName: 9,
-        },
-      ]
-      const results = await userProxy().getIncompleteRoUsers()
+    it('should extract booking ids', async () => {
+      const results = await userProxy().getCasesRequiringRo()
       expect(queryStub).to.have.callCount(1)
-      expect(results).to.eql(converted)
+      expect(results).to.eql([1, 3, 4])
+    })
+
+    it('should return empty if no results', async () => {
+      queryStub = sinon.stub().resolves({})
+      const results = await userProxy().getCasesRequiringRo()
+      expect(queryStub).to.have.callCount(1)
+      expect(results).to.eql([])
     })
   })
 
