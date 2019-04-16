@@ -5,6 +5,8 @@ const createUserService = require('../../server/services/userAdminService')
 describe('userAdminService', () => {
   let userClient
   let nomisClient
+  let signInService
+  let prisonerService
   let service
 
   const user1 = {
@@ -21,13 +23,10 @@ describe('userAdminService', () => {
     last_name: 'l2',
   }
 
-  const incomplete1 = { bookingId: 1, sentStaffCode: 'DELIUS', sentName: 'FIRST LAST LAST2' }
-  const incomplete2 = { bookingId: 2 }
-
   beforeEach(() => {
     userClient = {
       getRoUsers: sinon.stub().resolves([user1, user2]),
-      getIncompleteRoUsers: sinon.stub().resolves(),
+      getCasesRequiringRo: sinon.stub().resolves(),
       getRoUser: sinon.stub().resolves(user2),
       getRoUserByDeliusId: sinon.stub().resolves(user2),
       updateRoUser: sinon.stub().resolves({}),
@@ -38,11 +37,20 @@ describe('userAdminService', () => {
     nomisClient = {
       getUserInfo: sinon.stub().resolves({}),
       getOffenderSentencesByBookingId: sinon.stub().resolves({}),
+      getBooking: sinon.stub().resolves({}),
+    }
+
+    signInService = {
+      getClientCredentialsTokens: sinon.stub().resolves({ token: 'system-token' }),
+    }
+
+    prisonerService = {
+      getCom: sinon.stub().resolves({}),
     }
 
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
 
-    service = createUserService(nomisClientBuilder, userClient)
+    service = createUserService(nomisClientBuilder, userClient, signInService, prisonerService)
   })
 
   afterEach(() => {
@@ -158,63 +166,113 @@ describe('userAdminService', () => {
   })
 
   describe('getIncompleteRoUsers', () => {
-    it('should call user client and should not call nomisClient if no incomplete users', async () => {
-      userClient.getIncompleteRoUsers = sinon.stub().resolves([])
+    it('should call user client but not proceed if no bookingIds', async () => {
+      userClient.getCasesRequiringRo = sinon.stub().resolves([])
+
       const result = await service.getIncompleteRoUsers()
 
-      expect(userClient.getIncompleteRoUsers).to.be.calledOnce()
-      expect(userClient.getIncompleteRoUsers).to.be.calledWith()
+      expect(userClient.getCasesRequiringRo).to.be.calledOnce()
+      expect(userClient.getCasesRequiringRo).to.be.calledWith()
+      expect(prisonerService.getCom).not.to.be.calledOnce()
       expect(result).to.eql([])
-      expect(nomisClient.getOffenderSentencesByBookingId).not.to.be.calledOnce()
     })
 
-    it('should call nomisClient with incomplete users booking IDs', async () => {
-      userClient.getIncompleteRoUsers = sinon.stub().resolves([incomplete1, incomplete2])
-      const expectedBookingIds = [1, 2]
+    it('should call getCom for each booking ID', async () => {
+      userClient.getCasesRequiringRo = sinon.stub().resolves([1, 2])
 
       await service.getIncompleteRoUsers()
-      expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledOnce()
-      expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledWith(expectedBookingIds, false)
+
+      expect(prisonerService.getCom).to.be.calledTwice()
+      expect(prisonerService.getCom).to.be.calledWith(1, 'system-token')
+      expect(prisonerService.getCom).to.be.calledWith(2, 'system-token')
     })
 
-    it('should add mapping data', async () => {
-      userClient.getIncompleteRoUsers = sinon.stub().resolves([incomplete1, incomplete2])
-      const expected1 = {
-        bookingId: 1,
-        sentName: 'FIRST LAST LAST2',
-        sentStaffCode: 'DELIUS',
-        offenderNomis: undefined,
-        mapping: {
-          deliusId: 'DELIUS',
-          first: 'FIRST',
-          last: 'LAST LAST2',
-        },
-      }
+    it('should not lookup staff records if none required', async () => {
+      userClient.getCasesRequiringRo = sinon.stub().resolves([1, 2])
+      prisonerService.getCom = sinon.stub().resolves({})
 
-      const expected2 = {
-        bookingId: 2,
-        offenderNomis: undefined,
-        mapping: {
-          deliusId: undefined,
-          first: undefined,
-          last: undefined,
-        },
-      }
+      await service.getIncompleteRoUsers()
+
+      expect(userClient.getRoUserByDeliusId).not.to.be.calledOnce()
+    })
+
+    it('should lookup staff record for each unique assignedId', async () => {
+      userClient.getCasesRequiringRo = sinon.stub().resolves([1, 2, 3])
+      prisonerService.getCom = sinon.stub()
+      prisonerService.getCom.onCall(0).resolves({ com: { deliusId: 'delius0', name: 'deliusName0' } })
+      prisonerService.getCom.onCall(1).resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      prisonerService.getCom.onCall(2).resolves({ com: { deliusId: 'delius1', name: 'deliusName2' } })
+
+      await service.getIncompleteRoUsers()
+
+      expect(userClient.getRoUserByDeliusId).to.be.calledTwice()
+      expect(userClient.getRoUserByDeliusId).to.be.calledWith('delius0')
+      expect(userClient.getRoUserByDeliusId).to.be.calledWith('delius1')
+    })
+
+    it('should add offender nomis for each incomplete', async () => {
+      userClient.getCasesRequiringRo = sinon.stub().resolves([1, 2, 3])
+      prisonerService.getCom = sinon.stub()
+      prisonerService.getCom.onCall(0).resolves({ com: { deliusId: 'delius0', name: 'deliusName0' } })
+      prisonerService.getCom.onCall(1).resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      prisonerService.getCom.onCall(2).resolves({ com: { deliusId: 'delius2', name: 'deliusName2' } })
+      userClient.getRoUserByDeliusId = sinon.stub().resolves(null)
+
+      await service.getIncompleteRoUsers()
+
+      expect(nomisClient.getBooking).to.be.calledThrice()
+      expect(nomisClient.getBooking).to.be.calledWith(1)
+      expect(nomisClient.getBooking).to.be.calledWith(2)
+      expect(nomisClient.getBooking).to.be.calledWith(3)
+    })
+
+    it('should not return if present and onboarded', async () => {
+      userClient.getCasesRequiringRo = sinon.stub().resolves([1])
+      prisonerService.getCom = sinon.stub().resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      userClient.getRoUserByDeliusId = sinon.stub().resolves({ onboarded: true })
 
       const result = await service.getIncompleteRoUsers()
-      expect(result).to.eql([expected1, expected2])
+
+      expect(result).to.eql([])
     })
 
-    it('should add offender numbers from nomis', async () => {
-      userClient.getIncompleteRoUsers = sinon.stub().resolves([incomplete1, incomplete2])
-      nomisClient.getOffenderSentencesByBookingId.resolves([
-        { bookingId: 1, offenderNo: 'NOMIS 1' },
-        { bookingId: 2, offenderNo: 'NOMIS 2' },
+    it('should return mapped if present but not onboarded', async () => {
+      userClient.getCasesRequiringRo = sinon.stub().resolves([1])
+      prisonerService.getCom = sinon.stub().resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      userClient.getRoUserByDeliusId = sinon.stub().resolves({ onboarded: false })
+      nomisClient.getBooking = sinon.stub().resolves({ offenderNo: 'off1' })
+
+      const result = await service.getIncompleteRoUsers()
+
+      expect(result).to.eql([
+        {
+          assignedId: 'delius1',
+          assignedName: 'deliusName1',
+          bookingId: 1,
+          mapped: true,
+          offenderNo: 'off1',
+          onboarded: false,
+        },
       ])
+    })
+
+    it('should return unmapped if not present', async () => {
+      userClient.getCasesRequiringRo = sinon.stub().resolves([1])
+      prisonerService.getCom = sinon.stub().resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      userClient.getRoUserByDeliusId = sinon.stub().resolves(null)
+      nomisClient.getBooking = sinon.stub().resolves({ offenderNo: 'off1' })
 
       const result = await service.getIncompleteRoUsers()
-      expect(result[0].offenderNomis).to.eql('NOMIS 1')
-      expect(result[1].offenderNomis).to.eql('NOMIS 2')
+
+      expect(result).to.eql([
+        {
+          assignedId: 'delius1',
+          assignedName: 'deliusName1',
+          bookingId: 1,
+          mapped: false,
+          offenderNo: 'off1',
+        },
+      ])
     })
   })
 })
