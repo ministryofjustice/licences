@@ -165,39 +165,39 @@ describe('/hdc/approval', () => {
           .send({ decision: 'Yes' })
           .expect(403)
       })
-    })
 
-    it('should push the decision to nomis if config variable is true', () => {
-      licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
-      app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
-        pushToNomis: true,
-      })
-      return request(app)
-        .post('/hdc/approval/release/1')
-        .send({ decision: 'Yes' })
-        .expect(302)
-        .expect(() => {
-          expect(nomisPushServiceStub.pushStatus).to.be.calledOnce()
-          expect(nomisPushServiceStub.pushStatus).to.be.calledWith(
-            '1',
-            { type: 'release', status: 'ABC', reason: undefined },
-            'DM_USER'
-          )
+      it('should push the decision to nomis if config variable is true', () => {
+        licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
+        app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
+          pushToNomis: true,
         })
-    })
+        return request(app)
+          .post(route.url)
+          .send({ decision: 'Yes' })
+          .expect(302)
+          .expect(() => {
+            expect(nomisPushServiceStub.pushStatus).to.be.calledOnce()
+            expect(nomisPushServiceStub.pushStatus).to.be.calledWith(
+              '1',
+              { type: route.formName, status: 'ABC', reason: undefined },
+              'DM_USER'
+            )
+          })
+      })
 
-    it('should not push the decision to nomis if config variable is false', () => {
-      licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
-      app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
-        pushToNomis: false,
-      })
-      return request(app)
-        .post('/hdc/approval/release/1')
-        .send({ decision: 'Yes' })
-        .expect(302)
-        .expect(() => {
-          expect(nomisPushServiceStub.pushStatus).to.not.be.called()
+      it('should not push the decision to nomis if config variable is false', () => {
+        licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
+        app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
+          pushToNomis: false,
         })
+        return request(app)
+          .post(route.url)
+          .send({ decision: 'Yes' })
+          .expect(302)
+          .expect(() => {
+            expect(nomisPushServiceStub.pushStatus).to.not.be.called()
+          })
+      })
     })
 
     it('should throw if submitted by non-DM user case insensitively', () => {

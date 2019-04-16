@@ -17,6 +17,12 @@ module.exports = {
         outOfTime: { approvalStatus: 'REJECTED', refusedReason: 'UNDER_14DAYS' },
       },
     },
+    refuseReason: {
+      No: {
+        addressUnsuitable: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },
+        insufficientTime: { approvalStatus: 'REJECTED', refusedReason: 'LIMITS' },
+      },
+    },
     postpone: {
       Yes: {
         investigation: { approvalStatus: 'PP INVEST', refusedReason: 'OUTSTANDING' },
