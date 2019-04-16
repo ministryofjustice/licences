@@ -48,7 +48,7 @@ describe('userClient', () => {
 
   describe('getCasesRequiringRo', () => {
     const cases = {
-      rows: [{ booking_id: 1 }, { booking_id: undefined }, { booking_id: 3 }, { booking_id: 4 }],
+      rows: [{ booking_id: 1 }, { booking_id: 3 }, { booking_id: 4 }],
     }
 
     beforeEach(() => {

@@ -23,7 +23,7 @@ module.exports = {
     const { rows } = await db.query(query)
 
     if (rows) {
-      return rows.map(r => r.booking_id).filter(r => r)
+      return rows.map(r => r.booking_id)
     }
 
     return []
