@@ -147,7 +147,7 @@ module.exports = function createUserService(nomisClientBuilder, userClient, sign
       })
     )
 
-    return required.filter(e => e)
+    return required.filter(Boolean)
   }
 
   function uniqueByAssignedId(assignments) {
@@ -181,7 +181,7 @@ module.exports = function createUserService(nomisClientBuilder, userClient, sign
       })
     )
 
-    return incomplete.filter(e => e)
+    return incomplete.filter(Boolean)
   }
 
   async function addOffenderNomis(token, assignments) {
