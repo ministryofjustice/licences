@@ -1,6 +1,8 @@
 block excludedForm
 
-  - var vals = data.reason || ''
+  - var noAddress = licenceStatus.decisions.curfewAddressRejected ? 'addressUnsuitable' : ''
+  - var noTime = licenceStatus.decisions.insufficientTimeStop ? 'insufficientTime' : ''
+  - var vals = data.reason || noAddress + noTime
 
   div
     if errorObject.reason

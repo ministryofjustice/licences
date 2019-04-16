@@ -18,12 +18,10 @@ block content
         input#releaseYes(type="hidden"  name="decision" value="No")
 
         div.paddingBottom.largeMarginBottom
-          if licenceStatus.decisions.insufficientTimeStop
-            div HDC refused because there is not enough time. (Less than 4 weeks to conditional release date)
-          if licenceStatus.decisions.curfewAddressRejected
-            div HDC refused because there is no suitable curfew address
-          else
-            div HDC refused
+
+          div#releaseForm.panel.panel-border-narrow
+            include includes/release
+
           br
           div.paddingBottom.smallPaddingTop
             input#continueBtn.requiredButton.button(type="submit" value="Save and continue")

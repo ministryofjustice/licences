@@ -42,7 +42,21 @@ module.exports = {
   },
   refuseReason: {
     licenceSection: 'release',
-    fields: [{ decision: {} }],
+    validate: true,
+    fields: [
+      {
+        decision: {
+          responseType: 'requiredYesNo',
+          validationMessage: 'Select yes or no',
+        },
+      },
+      {
+        reason: {
+          responseType: 'selection',
+          validationMessage: 'Select a reason',
+        },
+      },
+    ],
     nextPath: {
       path: '/hdc/send/decided/',
     },
