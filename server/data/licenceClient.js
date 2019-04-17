@@ -107,12 +107,7 @@ module.exports = {
     }
 
     const { rows } = await db.query(query)
-
-    if (rows && rows[0]) {
-      return rows[0].staff_id
-    }
-
-    return null
+    return rows
   },
 
   saveApprovedLicenceVersion(bookingId, template) {

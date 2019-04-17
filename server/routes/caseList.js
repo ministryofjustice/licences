@@ -11,7 +11,7 @@ module.exports = ({ caseListService }) => router => {
     asyncMiddleware(async (req, res) => {
       logger.debug('GET /caseList')
 
-      const hdcEligible = await caseListService.getHdcCaseList(
+      const { hdcEligible, message } = await caseListService.getHdcCaseList(
         res.locals.token,
         req.user.username,
         req.user.role,
@@ -20,6 +20,7 @@ module.exports = ({ caseListService }) => router => {
 
       return res.render('caseList/index', {
         hdcEligible,
+        message,
         labels,
         tab: req.params.tab,
         globalSearchUrl: `${globalSearchUrl}?referrer=licences`,
