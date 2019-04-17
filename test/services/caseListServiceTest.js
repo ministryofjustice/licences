@@ -25,6 +25,37 @@ describe('caseListService', () => {
       },
     },
   ]
+
+  const formattedPrisoners = [
+    {
+      bookingId: 0,
+      offenderNo: 'A12345',
+      firstName: 'Mark',
+      middleNames: '',
+      lastName: 'Andrews',
+      agencyLocationDesc: 'HMP Berwin',
+      internalLocationDesc: 'A-C-2-002',
+      sentenceDetail: {
+        homeDetentionCurfewEligibilityDate: '07/09/2017',
+        conditionalReleaseDate: '2017-12-15',
+        effectiveConditionalReleaseDate: '16/12/2017',
+        receptionDate: '2018-01-03',
+      },
+      stage: 'UNSTARTED',
+      status: 'Not started',
+      activeCase: true,
+      due: {
+        overdue: true,
+        text: '266 days overdue',
+      },
+    },
+  ]
+
+  const noEligibleCasesResponse = {
+    hdcEligible: [],
+    message: 'No HDC cases',
+  }
+
   const user = {
     username: '123',
     token: 'token',
@@ -60,7 +91,7 @@ describe('caseListService', () => {
 
     licenceClient = {
       getLicences: sinon.stub().resolves([]),
-      getDeliusUserName: sinon.stub().returns('foo-username'),
+      getDeliusUserName: sinon.stub().returns([{ staff_id: 'foo-username' }]),
     }
 
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
@@ -73,68 +104,75 @@ describe('caseListService', () => {
     it('should format dates', async () => {
       nomisClient.getHdcEligiblePrisoners.returns(hdcEligiblePrisoners)
 
-      const result = await service.getHdcCaseList(user.token, user.username, user.role)
+      const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
 
-      expect(result[0].sentenceDetail.homeDetentionCurfewEligibilityDate).to.eql('07/09/2017')
-      expect(result[0].sentenceDetail.effectiveConditionalReleaseDate).to.eql('16/12/2017')
+      expect(hdcEligible[0].sentenceDetail.homeDetentionCurfewEligibilityDate).to.eql('07/09/2017')
+      expect(hdcEligible[0].sentenceDetail.effectiveConditionalReleaseDate).to.eql('16/12/2017')
     })
 
     it('should capitalise names', async () => {
       nomisClient.getHdcEligiblePrisoners.returns(hdcEligiblePrisoners)
-
-      const result = await service.getHdcCaseList(user.token, user.username, user.role)
-
-      expect(result[0].firstName).to.eql('Mark')
-      expect(result[0].lastName).to.eql('Andrews')
+      const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+      expect(hdcEligible[0].firstName).to.eql('Mark')
+      expect(hdcEligible[0].lastName).to.eql('Andrews')
     })
 
     it('should add a status to the prisoners', async () => {
       nomisClient.getHdcEligiblePrisoners.returns(hdcEligiblePrisoners)
-
-      const result = await service.getHdcCaseList(user.token, user.username, user.role)
-
-      expect(result[0].status).to.eql('Not started')
+      const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+      expect(hdcEligible[0].status).to.eql('Not started')
     })
 
     it('should add a processing stage to the prisoners', async () => {
       nomisClient.getHdcEligiblePrisoners.returns(hdcEligiblePrisoners)
-
-      const result = await service.getHdcCaseList(user.token, user.username, user.role)
-
-      expect(result[0].stage).to.eql('UNSTARTED')
+      const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+      expect(hdcEligible[0].stage).to.eql('UNSTARTED')
     })
 
-    it('should return empty array if no results', () => {
+    it('should return empty array and message if no results', () => {
       nomisClient.getHdcEligiblePrisoners.resolves([])
-
-      return expect(service.getHdcCaseList(user.token, user.username, user.role)).to.eventually.eql([])
+      return expect(service.getHdcCaseList(user.token, user.username, user.role)).to.eventually.eql(
+        noEligibleCasesResponse
+      )
     })
 
-    it('should return empty array if no null returned', () => {
+    it('should return empty array if null returned', () => {
       nomisClient.getHdcEligiblePrisoners.resolves(null)
-
-      return expect(service.getHdcCaseList(user.token, user.username, user.role)).to.eventually.eql([])
+      return expect(service.getHdcCaseList(user.token, user.username, user.role)).to.eventually.eql(
+        noEligibleCasesResponse
+      )
     })
 
     context('when user is a CA', () => {
+      let clock
+
+      beforeEach(() => {
+        clock = sinon.useFakeTimers(new Date('May 31, 2018 00:00:00').getTime())
+      })
+
+      afterEach(() => {
+        clock.restore()
+      })
+
       it('should call getHdcEligiblePrisoners from nomisClient', () => {
         service.getHdcCaseList(user.token, user.username, user.role)
-
         expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce()
         expect(nomisClient.getHdcEligiblePrisoners.firstCall.args.length).to.eql(0)
       })
 
+      it('should return eligible prisoners', async () => {
+        nomisClient.getHdcEligiblePrisoners.returns(hdcEligiblePrisoners)
+        const result = await service.getHdcCaseList(user.token, user.username, user.role)
+        expect(result.hdcEligible).to.eql(formattedPrisoners)
+      })
+
+      it('should return message when no eligible prisoners', async () => {
+        nomisClient.getHdcEligiblePrisoners.returns([])
+        const result = await service.getHdcCaseList(user.token, user.username, user.role)
+        expect(result).to.eql({ hdcEligible: [], message: 'No HDC cases' })
+      })
+
       describe('adding the hdced countdown', () => {
-        let clock
-
-        beforeEach(() => {
-          clock = sinon.useFakeTimers(new Date('May 31, 2018 00:00:00').getTime())
-        })
-
-        afterEach(() => {
-          clock.restore()
-        })
-
         it('should add the number of days until hdced', async () => {
           nomisClient.getHdcEligiblePrisoners.returns([
             {
@@ -146,8 +184,8 @@ describe('caseListService', () => {
             },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, user.role)
-          expect(result[0].due).to.eql({ text: '1 day', overdue: false })
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          expect(hdcEligible[0].due).to.eql({ text: '1 day', overdue: false })
         })
 
         it('should show 0 days if it is today', async () => {
@@ -161,8 +199,8 @@ describe('caseListService', () => {
             },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, user.role)
-          expect(result[0].due).to.eql({ text: '0 days', overdue: false })
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          expect(hdcEligible[0].due).to.eql({ text: '0 days', overdue: false })
         })
 
         it('should set overdue if in the past', async () => {
@@ -176,8 +214,8 @@ describe('caseListService', () => {
             },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, user.role)
-          expect(result[0].due).to.eql({ text: '1 day overdue', overdue: true })
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          expect(hdcEligible[0].due).to.eql({ text: '1 day overdue', overdue: true })
         })
 
         it('should add in weeks if longer than 14 days', async () => {
@@ -191,8 +229,8 @@ describe('caseListService', () => {
             },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, user.role)
-          expect(result[0].due).to.eql({ text: '2 weeks', overdue: false })
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          expect(hdcEligible[0].due).to.eql({ text: '2 weeks', overdue: false })
         })
 
         it('should add in days if less than 14 days', async () => {
@@ -206,8 +244,8 @@ describe('caseListService', () => {
             },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, user.role)
-          expect(result[0].due).to.eql({ text: '13 days', overdue: false })
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          expect(hdcEligible[0].due).to.eql({ text: '13 days', overdue: false })
         })
 
         it('should add in months if longer than 12 weeks', async () => {
@@ -221,8 +259,8 @@ describe('caseListService', () => {
             },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, user.role)
-          expect(result[0].due).to.eql({ text: '7 months', overdue: false })
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          expect(hdcEligible[0].due).to.eql({ text: '7 months', overdue: false })
         })
 
         it('should add in years if longer than 18 months', async () => {
@@ -236,8 +274,8 @@ describe('caseListService', () => {
             },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, user.role)
-          expect(result[0].due).to.eql({ text: '2 years', overdue: false })
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          expect(hdcEligible[0].due).to.eql({ text: '2 years', overdue: false })
         })
       })
     })
@@ -245,9 +283,7 @@ describe('caseListService', () => {
     context('when user is a RO', () => {
       it('should call getROPrisoners && getOffenderSentencesByBookingId from nomisClient', async () => {
         nomisClient.getROPrisoners.resolves(roPrisoners)
-
         await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-
         expect(nomisClient.getROPrisoners).to.be.calledOnce()
         expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledOnce()
         expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledWith(['A', 'B', 'C'])
@@ -255,29 +291,40 @@ describe('caseListService', () => {
 
       it('should not call getOffenderSentencesByBookingId when no results from getROPrisoners', async () => {
         nomisClient.getROPrisoners.resolves([])
-
         await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-
         expect(nomisClient.getROPrisoners).to.be.calledOnce()
         expect(nomisClient.getOffenderSentencesByBookingId).not.to.be.calledOnce()
       })
 
       it('should call getDeliusUserName without capitalising username', async () => {
         licenceClient.getDeliusUserName.resolves(undefined)
-
         await service.getHdcCaseList(ROUser.token, 'aAaA', ROUser.role)
-
         expect(licenceClient.getDeliusUserName).to.be.calledWith('aAaA')
       })
 
-      it('should return empty array if no delius user name found', async () => {
-        licenceClient.getDeliusUserName.resolves(undefined)
+      it('should use uppercase delius username when calling nomis', async () => {
+        licenceClient.getDeliusUserName.resolves([{ staff_id: 'delius_id' }])
+        await service.getHdcCaseList(ROUser.token, 'user', ROUser.role)
+        expect(nomisClient.getROPrisoners).to.be.calledOnce()
+        expect(nomisClient.getROPrisoners).to.be.calledWith('DELIUS_ID')
+      })
 
+      it('should return empty array and explanation message if no eligible releases found', async () => {
+        nomisClient.getROPrisoners.resolves([])
         const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        expect(result).to.eql({ hdcEligible: [], message: 'No HDC cases' })
+      })
 
-        expect(result).to.eql([])
-        expect(nomisClient.getROPrisoners).not.to.be.calledOnce()
-        expect(nomisClient.getHdcEligiblePrisoners).not.to.be.calledOnce()
+      it('should return empty array and explanation message if no delius user name found', async () => {
+        licenceClient.getDeliusUserName.resolves(undefined)
+        const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        expect(result).to.eql({ hdcEligible: [], message: 'Delius username not found for current user' })
+      })
+
+      it('should return empty array and explanation message if too many delius user names found', async () => {
+        licenceClient.getDeliusUserName.resolves([{ staff_id: '1' }, { staff_id: '2' }])
+        const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        expect(result).to.eql({ hdcEligible: [], message: 'Multiple Delius usernames found for current user' })
       })
 
       describe('days since case received', () => {
@@ -316,8 +363,8 @@ describe('caseListService', () => {
             { booking_id: 'a', transition_date: '2018-05-31 15:23:39.530927', stage: 'PROCESSING_RO' },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(result[0].received).to.eql({ text: 'Today', days: '0' })
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].received).to.eql({ text: 'Today', days: '0' })
         })
 
         it('should add the number of days until hdced', async () => {
@@ -327,8 +374,8 @@ describe('caseListService', () => {
             { booking_id: 'a', transition_date: '2018-05-20 15:23:39.530927', stage: 'PROCESSING_RO' },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(result[0].received).to.eql({ text: '10 days ago', days: '10' })
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].received).to.eql({ text: '10 days ago', days: '10' })
         })
 
         it('should not add the number of days if not in PROCESSING_RO', async () => {
@@ -338,8 +385,8 @@ describe('caseListService', () => {
             { booking_id: 'a', transition_date: '2018-05-16 15:23:39.530927', stage: 'MODIFIED' },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(result[0].received).to.be.undefined()
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].received).to.be.undefined()
         })
 
         it('should order on days since received first', async () => {
@@ -350,9 +397,9 @@ describe('caseListService', () => {
             { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO' },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(result[0].bookingId).to.eql('b')
-          expect(result[1].bookingId).to.eql('a')
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].bookingId).to.eql('b')
+          expect(hdcEligible[1].bookingId).to.eql('a')
         })
 
         it('should order on days since received first', async () => {
@@ -363,9 +410,9 @@ describe('caseListService', () => {
             { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO' },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(result[0].bookingId).to.eql('a')
-          expect(result[1].bookingId).to.eql('b')
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].bookingId).to.eql('a')
+          expect(hdcEligible[1].bookingId).to.eql('b')
         })
 
         it('should prioritise those with received date', async () => {
@@ -376,9 +423,9 @@ describe('caseListService', () => {
             { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO' },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(result[0].bookingId).to.eql('b')
-          expect(result[1].bookingId).to.eql('a')
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].bookingId).to.eql('b')
+          expect(hdcEligible[1].bookingId).to.eql('a')
         })
 
         it('should sort by release date if neither have received date', async () => {
@@ -389,9 +436,9 @@ describe('caseListService', () => {
             { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'MODIFIED' },
           ])
 
-          const result = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(result[0].bookingId).to.eql('a')
-          expect(result[1].bookingId).to.eql('b')
+          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].bookingId).to.eql('a')
+          expect(hdcEligible[1].bookingId).to.eql('b')
         })
       })
     })
@@ -443,21 +490,21 @@ describe('caseListService', () => {
       it('should order by homeDetentionCurfewEligibilityDate first', async () => {
         nomisClient.getHdcEligiblePrisoners.resolves([offender3, offender1, offender2])
 
-        const result = await service.getHdcCaseList(user.token, user.username, user.role)
+        const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
 
-        expect(result[0].name).to.eql('offender1')
-        expect(result[1].name).to.eql('offender2')
-        expect(result[2].name).to.eql('offender3')
+        expect(hdcEligible[0].name).to.eql('offender1')
+        expect(hdcEligible[1].name).to.eql('offender2')
+        expect(hdcEligible[2].name).to.eql('offender3')
       })
 
       it('should order by releaseDate second', async () => {
         nomisClient.getHdcEligiblePrisoners.resolves([offender5, offender4, offender3])
 
-        const result = await service.getHdcCaseList(user.token, user.username, user.role)
+        const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
 
-        expect(result[0].name).to.eql('offender3')
-        expect(result[1].name).to.eql('offender4')
-        expect(result[2].name).to.eql('offender5')
+        expect(hdcEligible[0].name).to.eql('offender3')
+        expect(hdcEligible[1].name).to.eql('offender4')
+        expect(hdcEligible[2].name).to.eql('offender5')
       })
     })
 
@@ -492,9 +539,9 @@ describe('caseListService', () => {
           it('should not filter any statuses out', () => {
             caseListFormatter.formatCaseList.resolves(caseListAllStatuses)
 
-            return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'active')).to.eventually.eql(
-              caseListAllStatuses
-            )
+            return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'active')).to.eventually.eql({
+              hdcEligible: caseListAllStatuses,
+            })
           })
         })
 
@@ -502,15 +549,17 @@ describe('caseListService', () => {
           it('should filter any statuses out', () => {
             caseListFormatter.formatCaseList.resolves(caseListAllStatuses)
 
-            return expect(service.getHdcCaseList(user.token, user.username, 'RO', 'active')).to.eventually.eql([
-              { stage: 'PROCESSING_RO', activeCase: true },
-              { stage: 'PROCESSING_CA', activeCase: true },
-              { stage: 'APPROVAL', activeCase: true },
-              { stage: 'DECIDED', activeCase: true },
-              { stage: 'MODIFIED', activeCase: true },
-              { stage: 'MODIFIED_APPROVAL', activeCase: true },
-              { stage: 'PROCESSING_CA', status: 'Postponed', activeCase: true },
-            ])
+            return expect(service.getHdcCaseList(user.token, user.username, 'RO', 'active')).to.eventually.eql({
+              hdcEligible: [
+                { stage: 'PROCESSING_RO', activeCase: true },
+                { stage: 'PROCESSING_CA', activeCase: true },
+                { stage: 'APPROVAL', activeCase: true },
+                { stage: 'DECIDED', activeCase: true },
+                { stage: 'MODIFIED', activeCase: true },
+                { stage: 'MODIFIED_APPROVAL', activeCase: true },
+                { stage: 'PROCESSING_CA', status: 'Postponed', activeCase: true },
+              ],
+            })
           })
         })
 
@@ -518,11 +567,13 @@ describe('caseListService', () => {
           it('should filter any statuses out', () => {
             caseListFormatter.formatCaseList.resolves(caseListAllStatuses)
 
-            return expect(service.getHdcCaseList(user.token, user.username, 'DM', 'active')).to.eventually.eql([
-              { stage: 'APPROVAL', activeCase: true },
-              { stage: 'DECIDED', activeCase: true },
-              { stage: 'PROCESSING_CA', status: 'Postponed', activeCase: true },
-            ])
+            return expect(service.getHdcCaseList(user.token, user.username, 'DM', 'active')).to.eventually.eql({
+              hdcEligible: [
+                { stage: 'APPROVAL', activeCase: true },
+                { stage: 'DECIDED', activeCase: true },
+                { stage: 'PROCESSING_CA', status: 'Postponed', activeCase: true },
+              ],
+            })
           })
         })
       })
@@ -540,21 +591,23 @@ describe('caseListService', () => {
         it('should remove inactive statuses when tab is active', () => {
           caseListFormatter.formatCaseList.resolves(allStatuses)
 
-          return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'active')).to.eventually.eql([
-            {
-              stage: 'ELIGIBILITY',
-              status: 'Not started',
-              activeCase: true,
-            },
-          ])
+          return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'active')).to.eventually.eql({
+            hdcEligible: [
+              {
+                stage: 'ELIGIBILITY',
+                status: 'Not started',
+                activeCase: true,
+              },
+            ],
+          })
         })
 
         it('should remove active statuses when tab is inactive', () => {
           caseListFormatter.formatCaseList.resolves(allStatuses)
 
-          return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'inactive')).to.eventually.eql([
-            { stage: 'ELIGIBILITY', status: 'Refused', activeCase: false },
-          ])
+          return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'inactive')).to.eventually.eql({
+            hdcEligible: [{ stage: 'ELIGIBILITY', status: 'Refused', activeCase: false }],
+          })
         })
       })
     })

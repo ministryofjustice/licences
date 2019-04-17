@@ -5,17 +5,19 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
   async function getHdcCaseList(token, username, role, tab = 'active') {
     try {
       const nomisClient = nomisClientBuilder(token)
-      const hdcEligibleReleases = await getCaseList(nomisClient, licenceClient, username, role)
+      const { hdcEligible, message } = await getCaseList(nomisClient, licenceClient, username, role)
 
-      if (isEmpty(hdcEligibleReleases)) {
+      if (isEmpty(hdcEligible)) {
         logger.info('No hdc eligible prisoners')
-        return []
+        return { hdcEligible: [], message: message || 'No HDC cases' }
       }
 
-      const formattedCaseList = await caseListFormatter.formatCaseList(hdcEligibleReleases, role)
-      return formattedCaseList.filter(
+      const formattedCaseList = await caseListFormatter.formatCaseList(hdcEligible, role)
+      const formatted = formattedCaseList.filter(
         prisoner => neededForRole(prisoner, role) && prisoner.activeCase === (tab === 'active')
       )
+
+      return { hdcEligible: formatted }
     } catch (error) {
       logger.error('Error during getHdcCaseList: ', error.stack)
       throw error
@@ -27,32 +29,56 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
 
 async function getCaseList(nomisClient, licenceClient, username, role) {
   const asyncCaseRetrievalMethod = {
-    CA: nomisClient.getHdcEligiblePrisoners,
+    CA: getCaDmCaseLists(nomisClient),
     RO: getROCaseList(nomisClient, licenceClient, username),
-    DM: nomisClient.getHdcEligiblePrisoners,
+    DM: getCaDmCaseLists(nomisClient),
   }
 
   return asyncCaseRetrievalMethod[role]()
 }
 
+function getCaDmCaseLists(nomisClient) {
+  return async () => {
+    const hdcEligible = await nomisClient.getHdcEligiblePrisoners()
+    return { hdcEligible }
+  }
+}
+
 function getROCaseList(nomisClient, licenceClient, username) {
   return async () => {
-    const deliusUserName = await licenceClient.getDeliusUserName(username)
+    const deliusIds = await licenceClient.getDeliusUserName(username)
 
-    if (!deliusUserName) {
-      logger.warn(`No delius user ID for nomis ID '${username}'`)
-      return []
+    if (!Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staff_id)) {
+      logger.error(`No delius user ID for nomis ID '${username}'`)
+      return {
+        hdcEligible: [],
+        message: 'Delius username not found for current user',
+      }
     }
 
-    const requiredPrisoners = await nomisClient.getROPrisoners(deliusUserName)
+    if (deliusIds.length > 1) {
+      logger.error(`Multiple delius user ID for nomis ID '${username}'`)
+      return {
+        hdcEligible: [],
+        message: 'Multiple Delius usernames found for current user',
+      }
+    }
+
+    const staffCode = deliusIds[0].staff_id.toUpperCase()
+    const requiredPrisoners = await nomisClient.getROPrisoners(staffCode)
 
     if (!isEmpty(requiredPrisoners)) {
       const requiredIDs = requiredPrisoners.map(prisoner => prisoner.bookingId)
       const offenders = await nomisClient.getOffenderSentencesByBookingId(requiredIDs)
-      return offenders.filter(prisoner => getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
+
+      const hdcEligible = offenders.filter(prisoner =>
+        getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate'])
+      )
+      return { hdcEligible }
     }
 
-    return []
+    logger.warn(`No eligible releases found for RO user nomis ID: '${username}, using delius ID: ${staffCode}'`)
+    return { hdcEligible: [] }
   }
 }
 

@@ -152,24 +152,37 @@ describe('formatForView', () => {
       const object = { com: [{ firstName: 'first', lastName: 'last' }] }
       const expectedOutput = {
         com: {
-          deliusId: undefined,
+          deliusId: null,
           name: 'First Last',
+          message: null,
         },
       }
 
       expect(formatObjectForView(object)).to.eql(expectedOutput)
     })
 
-    it('should give empty if com list missing', () => {
+    it('should give nulls if com list missing', () => {
       const object = { com: undefined }
-      const expectedOutput = { com: {} }
+      const expectedOutput = {
+        com: {
+          deliusId: null,
+          name: null,
+          message: null,
+        },
+      }
 
       expect(formatObjectForView(object)).to.eql(expectedOutput)
     })
 
-    it('should give empty if com list empty', () => {
+    it('should give nulls if com list empty', () => {
       const object = { com: [] }
-      const expectedOutput = { com: {} }
+      const expectedOutput = {
+        com: {
+          deliusId: null,
+          name: null,
+          message: null,
+        },
+      }
 
       expect(formatObjectForView(object)).to.eql(expectedOutput)
     })

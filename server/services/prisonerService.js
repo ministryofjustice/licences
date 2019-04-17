@@ -1,8 +1,10 @@
 const logger = require('../../log.js')
 const { formatObjectForView } = require('./utils/formatForView')
-const { merge, getIn } = require('../utils/functionalHelpers')
+const { getIn } = require('../utils/functionalHelpers')
 
 module.exports = { createPrisonerService }
+
+class RoRelationshipError extends Error {}
 
 function createPrisonerService(nomisClientBuilder) {
   async function getPrisonerPersonalDetails(bookingId, token) {
@@ -32,13 +34,11 @@ function createPrisonerService(nomisClientBuilder) {
         return
       }
 
-      const [aliases, offences, coms] = await Promise.all([
+      const [aliases, offences, com] = await Promise.all([
         nomisClient.getAliases(bookingId),
         nomisClient.getMainOffence(bookingId),
-        nomisClient.getComRelation(bookingId),
+        findResponsibleOfficer(bookingId, token),
       ])
-
-      const com = await getComDetails(nomisClient, coms)
 
       const { CRO, PNC } = selectEntriesWithTypes(await nomisClient.getIdentifiers(bookingId), ['PNC', 'CRO'])
 
@@ -50,7 +50,7 @@ function createPrisonerService(nomisClientBuilder) {
         PNC,
         offences,
         ...image,
-        com,
+        com: [com],
         aliases,
       })
     } catch (error) {
@@ -59,15 +59,95 @@ function createPrisonerService(nomisClientBuilder) {
     }
   }
 
-  async function getComDetails(nomisClient, coms) {
-    if (!coms[0]) {
-      return null
+  async function getResponsibleOfficer(bookingId, token) {
+    logger.info(`getResponsibleOfficer: ${bookingId}`)
+    const com = await findResponsibleOfficer(bookingId, token)
+    return formatObjectForView({ com: [com] })
+  }
+
+  async function findResponsibleOfficer(bookingId, token) {
+    logger.info(`findResponsibleOfficer: ${bookingId}`)
+
+    try {
+      const nomisClient = nomisClientBuilder(token)
+      const roRelation = await getRoRelation(nomisClient, bookingId)
+      return await getRoDetails(nomisClient, roRelation)
+    } catch (error) {
+      if (error instanceof RoRelationshipError) {
+        logger.error(`findResponsibleOfficer for: ${bookingId}`, error.message)
+        return { message: error.message }
+      }
+
+      logger.error(`findResponsibleOfficer for: ${bookingId}`, error.stack)
+      throw error
+    }
+  }
+
+  async function getRoRelation(nomisClient, bookingId) {
+    const relations = await getRoRelations(nomisClient, bookingId)
+    if (!relations[0]) {
+      throw new RoRelationshipError('No RO relationship')
     }
 
-    const personIdentifiers = await nomisClient.getPersonIdentifiers(coms[0].personId)
+    if (Array.isArray(relations) && relations.length > 1) {
+      throw new RoRelationshipError('Multiple RO relationships')
+    }
+
+    const personId = getIn(relations, [[0], 'personId'])
+    if (!personId) {
+      throw new RoRelationshipError('No RO person identifier')
+    }
+
+    return relations[0]
+  }
+
+  async function getRoRelations(nomisClient, bookingId) {
+    try {
+      return await nomisClient.getRoRelations(bookingId)
+    } catch (error) {
+      if (error.status === 404) {
+        logger.error(`RO relationship not found for booking id: ${bookingId}`)
+        throw new RoRelationshipError('No RO relationship')
+      }
+
+      logger.error('Error getting RO relationship', error.stack)
+      throw error
+    }
+  }
+
+  async function getRoDetails(nomisClient, roRelation) {
+    const { personId } = roRelation
+    const personIdentifiers = await getPersonIdentifiers(nomisClient, personId)
+
+    if (!personIdentifiers || personIdentifiers.length < 1) {
+      throw new RoRelationshipError('No person identifiers')
+    }
 
     const id = personIdentifiers.find(record => record.identifierType === 'EXTERNAL_REL')
-    return [merge(coms[0], { deliusId: id.identifierValue })]
+
+    if (!id) {
+      throw new RoRelationshipError('No EXTERNAL_REL person identifier')
+    }
+
+    if (!id.identifierValue) {
+      throw new RoRelationshipError('No EXTERNAL_REL person identifier value')
+    }
+
+    return { ...roRelation, deliusId: id.identifierValue }
+  }
+
+  async function getPersonIdentifiers(nomisClient, personId) {
+    try {
+      return await nomisClient.getPersonIdentifiers(personId)
+    } catch (error) {
+      if (error.status === 404) {
+        logger.warn(`Person identifiers not found for person id: ${personId}`)
+        throw new RoRelationshipError('No RO external relationship')
+      }
+
+      logger.error('Error getting person identifiers', error.stack)
+      throw error
+    }
   }
 
   function getPrisonerImage(imageId, token) {
@@ -126,30 +206,9 @@ function createPrisonerService(nomisClientBuilder) {
     }
   }
 
-  async function getCom(bookingId, token) {
-    try {
-      logger.info(`getCom: ${bookingId}`)
-
-      const nomisClient = nomisClientBuilder(token)
-      const coms = await nomisClient.getComRelation(bookingId)
-
-      const com = await getComDetails(nomisClient, coms)
-
-      return formatObjectForView({ com })
-    } catch (error) {
-      if (error.status === 404) {
-        logger.warn(`COM not found for booking id: ${bookingId}`)
-        return null
-      }
-
-      logger.error('Error getting COM', error.stack)
-      throw error
-    }
-  }
-
   async function getOrganisationContactDetails(role, bookingId, token) {
     if (role.toUpperCase() === 'RO') {
-      return getCom(bookingId, token)
+      return getResponsibleOfficer(bookingId, token)
     }
 
     if (role.toUpperCase() === 'CA') {
@@ -173,7 +232,7 @@ function createPrisonerService(nomisClientBuilder) {
     getPrisonerImage,
     getEstablishmentForPrisoner,
     getEstablishment,
-    getCom,
+    getResponsibleOfficer,
     getPrisonerPersonalDetails,
     getOrganisationContactDetails,
   }

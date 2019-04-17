@@ -285,17 +285,17 @@ describe('nomisClient', () => {
     })
   })
 
-  describe('getComRelation', () => {
+  describe('getRoRelations', () => {
     it('should return data from api', () => {
       fakeNomis.get(`/bookings/1/relationships?relationshipType=RO`).reply(200, { key: 'value' })
 
-      return expect(nomisClient.getComRelation('1')).to.eventually.eql({ key: 'value' })
+      return expect(nomisClient.getRoRelations('1')).to.eventually.eql({ key: 'value' })
     })
 
     it('should reject if api fails', () => {
       fakeNomis.get(`/bookings/1/relationships?query=relationshipType%3Aeq%3A%27RO%27`).reply(500)
 
-      return expect(nomisClient.getComRelation('1')).to.be.rejected()
+      return expect(nomisClient.getRoRelations('1')).to.be.rejected()
     })
   })
 
