@@ -48,7 +48,8 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, c
     })
 
     if (formConfig[formName].validate) {
-      const errors = validationErrors(updatedLicence, formName, res)
+      const errors = validationErrors(updatedLicence[targetSection][targetForm], formName, res)
+
       if (!isEmpty(errors)) {
         req.flash('errors', errors)
         const actionPath = action ? `${action}/` : ''
@@ -81,10 +82,10 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, c
     return { targetSection, targetForm }
   }
 
-  function validationErrors(updatedLicence, formName, res) {
-    const form = updatedLicence[sectionName][formName]
+  function validationErrors(form, formName, res) {
     // address is in array
     const formToValidate = form && form.addresses ? lastItem(form.addresses) : form
+
     return licenceService.validateForm({
       formResponse: formToValidate,
       pageConfig: formConfig[formName],

@@ -1,42 +1,42 @@
 const standard = require('../../../server/routes/routeWorkers/standard')
 const { createLicenceServiceStub, createNomisPushServiceStub } = require('../../supertestSetup')
 
+const testLicence = {
+  sectionName: { testForm: {} },
+  statusProperty: 'testStatus',
+  reasonProperty: 'testReason',
+  nestedStatusProperty: { subStatus: 'subStatus' },
+  nestedReasonProperty: { subReason: { subSubReason: 'subSubReason' } },
+}
+
+const req = {
+  body: {},
+  params: { bookingId: 123 },
+  user: {
+    username: 'testUser',
+  },
+  flash: () => {},
+}
+
+const res = {
+  locals: {
+    licence: testLicence,
+    licenceStatus: { decisions: {} },
+  },
+  redirect: () => {},
+}
+
+let licenceService
+let nomisPushService
+
+beforeEach(() => {
+  licenceService = createLicenceServiceStub()
+  nomisPushService = createNomisPushServiceStub()
+  licenceService.update.resolves(testLicence)
+})
+
 describe('formPost', () => {
   describe('push to nomis', () => {
-    const testLicence = {
-      sectionName: { testForm: {} },
-      statusProperty: 'testStatus',
-      reasonProperty: 'testReason',
-      nestedStatusProperty: { subStatus: 'subStatus' },
-      nestedReasonProperty: { subReason: { subSubReason: 'subSubReason' } },
-    }
-
-    const req = {
-      body: {},
-      params: { bookingId: 123 },
-      user: {
-        username: 'testUser',
-      },
-      flash: () => {},
-    }
-
-    const res = {
-      locals: {
-        licence: testLicence,
-        licenceStatus: { decisions: {} },
-      },
-      redirect: () => {},
-    }
-
-    let licenceService
-    let nomisPushService
-
-    beforeEach(() => {
-      licenceService = createLicenceServiceStub()
-      nomisPushService = createNomisPushServiceStub()
-      licenceService.update.resolves(testLicence)
-    })
-
     function createRoute({ nomisPush, config = { pushToNomis: true }, validate = false }) {
       const formConfig = {
         testForm: {
@@ -178,6 +178,64 @@ describe('formPost', () => {
         expect(callback).to.be.calledOnce()
         expect(callback).to.be.calledWith({ req, bookingId: 123, updatedLicence: testLicence })
       })
+    })
+  })
+
+  describe('form validation', () => {
+    function createRoute({ formConfig }) {
+      return standard({
+        formConfig,
+        licenceService,
+        sectionName: 'sectionName',
+        nomisPushService,
+      })
+    }
+
+    const saveSectionInput = { input: 'saveSection' }
+    const formInput = { input: 'form' }
+
+    beforeEach(() => {
+      licenceService.update.resolves({
+        save: { section: saveSectionInput },
+        sectionName: { testForm: formInput },
+      })
+    })
+
+    it('should use the save section for validation if specified', async () => {
+      const formConfig = {
+        testForm: {
+          validate: true,
+          saveSection: ['save', 'section'],
+          nextPath: {
+            path: 'something',
+          },
+        },
+      }
+
+      const standardRoute = createRoute({ formConfig })
+      await standardRoute.formPost(req, res, 'testForm', '123', '')
+
+      expect(licenceService.validateForm).to.be.calledOnce()
+      const calledWith = licenceService.validateForm.getCalls()[0].args[0]
+      expect(calledWith.formResponse).to.eql(saveSectionInput)
+    })
+
+    it('should use the form input for validation if no save section specified', async () => {
+      const formConfig = {
+        testForm: {
+          validate: true,
+          nextPath: {
+            path: 'something',
+          },
+        },
+      }
+
+      const standardRoute = createRoute({ formConfig })
+      await standardRoute.formPost(req, res, 'testForm', '123', '')
+
+      expect(licenceService.validateForm).to.be.calledOnce()
+      const calledWith = licenceService.validateForm.getCalls()[0].args[0]
+      expect(calledWith.formResponse).to.eql(formInput)
     })
   })
 })

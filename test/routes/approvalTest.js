@@ -56,8 +56,8 @@ describe('/hdc/approval', () => {
     })
     app = createApp({ licenceServiceStub: service }, 'dmUser')
     const routes = [
-      // {url: '/hdc/approval/release/1', content: 'Do you approve HDC release for this offender?'},
-      { url: '/hdc/approval/refuseReason/1', content: 'HDC refused because there is no suitable curfew address' },
+      { url: '/hdc/approval/release/1', content: 'Do you approve HDC release for this offender?' },
+      { url: '/hdc/approval/refuseReason/1', content: 'HDC refused' },
     ]
 
     testFormPageGets(app, routes, service)
@@ -83,11 +83,19 @@ describe('/hdc/approval', () => {
         })
     })
 
-    it('should throw if requested by non-DM user', () => {
+    it('release should throw if requested by non-DM user', () => {
       const caApp = createApp({ licenceServiceStub }, 'caUser')
 
       return request(caApp)
         .get('/hdc/approval/release/1')
+        .expect(403)
+    })
+
+    it('refuseReason should throw if requested by non-DM user', () => {
+      const caApp = createApp({ licenceServiceStub }, 'caUser')
+
+      return request(caApp)
+        .get('/hdc/approval/refuseReason/1')
         .expect(403)
     })
   })
@@ -138,65 +146,65 @@ describe('/hdc/approval', () => {
             expect(res.header.location).to.equal(route.nextPath)
           })
       })
-    })
 
-    it('should push the decision to nomis if config variable is true', () => {
-      licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
-      app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
-        pushToNomis: true,
+      it('should redirect to same page if errors on input', () => {
+        licenceServiceStub.validateForm.returns({ decision: 'Error 1' })
+
+        return request(app)
+          .post(route.url)
+          .send({})
+          .expect(302)
+          .expect('Location', route.url)
       })
-      return request(app)
-        .post('/hdc/approval/release/1')
-        .send({ decision: 'Yes' })
-        .expect(302)
-        .expect(() => {
-          expect(nomisPushServiceStub.pushStatus).to.be.calledOnce()
-          expect(nomisPushServiceStub.pushStatus).to.be.calledWith(
-            '1',
-            { type: 'release', status: 'ABC', reason: undefined },
-            'DM_USER'
-          )
-        })
-    })
 
-    it('should not push the decision to nomis if config variable is false', () => {
-      licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
-      app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
-        pushToNomis: false,
+      it('should throw if submitted by non-DM user', () => {
+        const caApp = createApp({ licenceServiceStub }, 'caUser')
+
+        return request(caApp)
+          .post(route.url)
+          .send({ decision: 'Yes' })
+          .expect(403)
       })
-      return request(app)
-        .post('/hdc/approval/release/1')
-        .send({ decision: 'Yes' })
-        .expect(302)
-        .expect(() => {
-          expect(nomisPushServiceStub.pushStatus).to.not.be.called()
+
+      it('should push the decision to nomis if config variable is true', () => {
+        licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
+        app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
+          pushToNomis: true,
         })
-    })
+        return request(app)
+          .post(route.url)
+          .send({ decision: 'Yes' })
+          .expect(302)
+          .expect(() => {
+            expect(nomisPushServiceStub.pushStatus).to.be.calledOnce()
+            expect(nomisPushServiceStub.pushStatus).to.be.calledWith(
+              '1',
+              { type: route.formName, status: 'ABC', reason: undefined },
+              'DM_USER'
+            )
+          })
+      })
 
-    it('should redirect to same page if errors on input', () => {
-      licenceServiceStub.validateForm.returns({ decision: 'Error 1' })
-
-      return request(app)
-        .post('/hdc/approval/release/1')
-        .send({})
-        .expect(302)
-        .expect('Location', '/hdc/approval/release/1')
-    })
-
-    it('should throw if submitted by non-DM user', () => {
-      const caApp = createApp({ licenceServiceStub }, 'caUser')
-
-      return request(caApp)
-        .post('/hdc/approval/release/1')
-        .send({ decision: 'Yes' })
-        .expect(403)
+      it('should not push the decision to nomis if config variable is false', () => {
+        licenceServiceStub.update.resolves({ approval: { release: { decision: 'ABC' } } })
+        app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
+          pushToNomis: false,
+        })
+        return request(app)
+          .post(route.url)
+          .send({ decision: 'Yes' })
+          .expect(302)
+          .expect(() => {
+            expect(nomisPushServiceStub.pushStatus).to.not.be.called()
+          })
+      })
     })
 
     it('should throw if submitted by non-DM user case insensitively', () => {
       const caApp = createApp({ licenceServiceStub }, 'caUser')
 
       return request(caApp)
-        .post('/hdc/Approval/release/1')
+        .post('/hdc/Approval/refuseReason/1')
         .send({ decision: 'Yes' })
         .expect(403)
     })

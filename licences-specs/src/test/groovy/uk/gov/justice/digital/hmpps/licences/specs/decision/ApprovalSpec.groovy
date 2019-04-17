@@ -5,6 +5,7 @@ import spock.lang.PendingFeature
 import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
+import uk.gov.justice.digital.hmpps.licences.pages.decision.ApprovalRefusePage
 import uk.gov.justice.digital.hmpps.licences.pages.decision.ApprovalReleasePage
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilityExclusionPage
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilitySuitabilityPage
@@ -73,5 +74,41 @@ class ApprovalSpec extends GebReportingSpec {
 
     then: 'I see the previous values'
     releaseRadios.checked == 'Yes'
+  }
+
+  def 'When sent for refusal, shows reason chosen by CA - insufficient time'() {
+
+    given: 'Sent for refusal due to insufficient time'
+    testData.loadLicence('decision/insufficientTime')
+
+    when: 'I view the refusal page'
+    to ApprovalRefusePage, testData.markAndrewsBookingId
+
+    then: 'I see the reason chosen by the CA'
+    reasonsForm.isDisplayed()
+
+    reasonsItem('insufficientTime').checked
+    
+    !reasonsItem('addressUnsuitable').checked
+    !reasonsItem('noAvailableAddress').checked
+    !reasonsItem('outOfTime').checked
+  }
+
+  def 'When sent for refusal, shows reason chosen by CA - address unsuitable'() {
+
+    given: 'Sent for refusal due to address rejected'
+    testData.loadLicence('decision/address-rejected')
+
+    when: 'I view the refusal page'
+    to ApprovalRefusePage, testData.markAndrewsBookingId
+
+    then: 'I see the reason chosen by the CA'
+    reasonsForm.isDisplayed()
+
+    reasonsItem('addressUnsuitable').checked
+
+    !reasonsItem('insufficientTime').checked
+    !reasonsItem('noAvailableAddress').checked
+    !reasonsItem('outOfTime').checked
   }
 }
