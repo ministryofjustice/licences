@@ -209,13 +209,6 @@ describe('licenceClient', () => {
         expect(values).to.eql([5])
       })
     })
-
-    it('should return null if no matches', async () => {
-      queryStub = sinon.stub().resolves({})
-      const result = await licencesProxy().getDeliusUserName('id')
-      expect(queryStub).to.have.callCount(1)
-      expect(result).to.eql(null)
-    })
   })
 
   describe('saveApprovedVersion', () => {
