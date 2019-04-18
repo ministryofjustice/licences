@@ -535,18 +535,20 @@ describe('nomisClient', () => {
         .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed')
         .reply(200, { result: 'answer' })
 
-      return expect(nomisClient.putChecksPassed('aaa')).to.eventually.eql({ result: 'answer' })
+      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })).to.eventually.eql({
+        result: 'answer',
+      })
     })
 
-    it('should pass in passed=true  and date', () => {
+    it('should pass in passed value and date', () => {
       fakeNomis
         .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed', {
-          passed: 'true',
+          passed: true,
           date: '2018-05-31',
         })
         .reply(200, { result: 'answer' })
 
-      return expect(nomisClient.putChecksPassed('aaa', { approvalStatus: 'status' })).to.eventually.eql({
+      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })).to.eventually.eql({
         result: 'answer',
       })
     })

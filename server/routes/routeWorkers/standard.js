@@ -106,15 +106,15 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, c
     const pushConfig = getIn(formConfig, [formName, 'nomisPush'])
 
     if (getIn(config, ['pushToNomis']) && pushConfig) {
-      await nomisPushService.pushStatus(
-        bookingId,
-        {
-          type: formName,
-          status: !isEmpty(pushConfig.status) ? getIn(updatedLicence, pushConfig.status) : undefined,
-          reason: !isEmpty(pushConfig.reason) ? getIn(updatedLicence, pushConfig.reason) : undefined,
-        },
-        username
-      )
+      const status = !isEmpty(pushConfig.status) ? getIn(updatedLicence, pushConfig.status) : undefined
+      const reason = !isEmpty(pushConfig.reason) ? getIn(updatedLicence, pushConfig.reason) : undefined
+      const statusForFailure = pushConfig.checksFailedStatusValue
+
+      if (statusForFailure && status === statusForFailure) {
+        await nomisPushService.pushChecksPassed({ bookingId, passed: false, username })
+      }
+
+      await nomisPushService.pushStatus({ bookingId, data: { type: formName, status, reason }, username })
     }
   }
 

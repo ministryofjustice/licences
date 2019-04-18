@@ -261,11 +261,11 @@ describe('/hdc/eligibility', () => {
           .expect(302)
           .expect(() => {
             expect(nomisPushService.pushStatus).to.be.calledOnce()
-            expect(nomisPushService.pushStatus).to.be.calledWith(
-              '1',
-              { type: spec.type, status: 'ABC', reason: 'XYZ' },
-              'CA_USER_TEST'
-            )
+            expect(nomisPushService.pushStatus).to.be.calledWith({
+              bookingId: '1',
+              data: { type: spec.type, status: 'ABC', reason: 'XYZ' },
+              username: 'CA_USER_TEST',
+            })
           })
       })
     })
@@ -418,7 +418,11 @@ describe('/hdc/eligibility', () => {
         .expect(302)
         .expect(() => {
           expect(nomisPushService.pushChecksPassed).to.be.calledOnce()
-          expect(nomisPushService.pushChecksPassed).to.be.calledWith('1', 'CA_USER_TEST')
+          expect(nomisPushService.pushChecksPassed).to.be.calledWith({
+            bookingId: '1',
+            passed: true,
+            username: 'CA_USER_TEST',
+          })
         })
     })
   })

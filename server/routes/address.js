@@ -37,7 +37,11 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, { p
       ])
 
       if (pushToNomis && decision === 'OptOut') {
-        await nomisPushService.pushStatus(bookingId, { type: 'optOut', status: 'Yes' }, req.user.username)
+        await nomisPushService.pushStatus({
+          bookingId,
+          data: { type: 'optOut', status: 'Yes' },
+          username: req.user.username,
+        })
       }
 
       const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/`

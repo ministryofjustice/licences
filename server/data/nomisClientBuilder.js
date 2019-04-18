@@ -141,9 +141,9 @@ module.exports = token => {
       return nomisPut({ path, body })
     },
 
-    async putChecksPassed(bookingId) {
+    async putChecksPassed({ bookingId, passed }) {
       const path = `${apiUrl}/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/checks-passed`
-      const body = { passed: 'true', date: moment().format('YYYY-MM-DD') }
+      const body = { passed, date: moment().format('YYYY-MM-DD') }
 
       return nomisPut({ path, body })
     },
