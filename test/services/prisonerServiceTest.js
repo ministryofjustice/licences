@@ -244,12 +244,12 @@ describe('prisonerDetailsService', () => {
     })
 
     it('should return message when 404 in api when getting person identifiers', () => {
-      nomisClientMock.getRoRelations.resolves([])
+      nomisClientMock.getRoRelations.resolves([{ personId: '123' }])
       nomisClientMock.getPersonIdentifiers.rejects({ status: 404 })
       return expect(service.getResponsibleOfficer('123', 'username')).to.eventually.eql({
         com: {
           deliusId: null,
-          message: 'No RO relationship',
+          message: 'No RO external relationship',
           name: null,
         },
       })
