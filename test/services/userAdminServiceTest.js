@@ -228,7 +228,9 @@ describe('userAdminService', () => {
 
     it('should not return if present and onboarded', async () => {
       userClient.getCasesRequiringRo = sinon.stub().resolves([1])
-      prisonerService.getResponsibleOfficer = sinon.stub()
+      prisonerService.getResponsibleOfficer = sinon
+        .stub()
+        .resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
       userClient.getRoUserByDeliusId = sinon.stub().resolves({ onboarded: true })
 
       const result = await service.getIncompleteRoUsers()
