@@ -56,7 +56,7 @@ const createConditionsServiceStub = () => ({
 
 const createPrisonerServiceStub = () => ({
   getEstablishmentForPrisoner: sinon.stub().resolves(),
-  getCom: sinon.stub().resolves(),
+  getResponsibleOfficer: sinon.stub().resolves(),
   getPrisonerDetails: sinon.stub().resolves({}),
   getPrisonerImage: sinon.stub().resolves({ image: 'image' }),
   getPrisonerPersonalDetails: sinon.stub().resolves({ firstName: 'fn', lastName: 'ln', dateOfBirth: '1980-01-01' }),

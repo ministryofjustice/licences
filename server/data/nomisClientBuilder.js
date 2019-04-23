@@ -50,7 +50,7 @@ module.exports = token => {
       return nomisGet({ path })
     },
 
-    getComRelation(bookingId) {
+    getRoRelations(bookingId) {
       const path = `${apiUrl}/bookings/${bookingId}/relationships`
       const query = { relationshipType: 'RO' }
       return nomisGet({ path, query })

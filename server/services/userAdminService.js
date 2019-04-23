@@ -130,14 +130,15 @@ module.exports = function createUserService(nomisClientBuilder, userClient, sign
       return []
     }
 
-    return addOffenderNomis(systemTokens.token, incomplete)
+    const r = await addOffenderNomis(systemTokens.token, incomplete)
+    return r.filter(Boolean)
   }
 
   async function findRequiredRos(token, bookingIds) {
     const required = await Promise.all(
       bookingIds.map(async bookingId => {
         try {
-          const { com } = await prisonerService.getCom(bookingId, token)
+          const { com } = await prisonerService.getResponsibleOfficer(bookingId, token)
           if (com) {
             return { assignedId: com.deliusId, assignedName: com.name, bookingId }
           }

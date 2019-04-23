@@ -46,7 +46,7 @@ describe('caseListService', () => {
       activeCase: true,
       due: {
         overdue: true,
-        text: '587 days overdue',
+        text: '266 days overdue',
       },
     },
   ]
@@ -144,6 +144,16 @@ describe('caseListService', () => {
     })
 
     context('when user is a CA', () => {
+      let clock
+
+      beforeEach(() => {
+        clock = sinon.useFakeTimers(new Date('May 31, 2018 00:00:00').getTime())
+      })
+
+      afterEach(() => {
+        clock.restore()
+      })
+
       it('should call getHdcEligiblePrisoners from nomisClient', () => {
         service.getHdcCaseList(user.token, user.username, user.role)
         expect(nomisClient.getHdcEligiblePrisoners).to.be.calledOnce()
@@ -163,16 +173,6 @@ describe('caseListService', () => {
       })
 
       describe('adding the hdced countdown', () => {
-        let clock
-
-        beforeEach(() => {
-          clock = sinon.useFakeTimers(new Date('May 31, 2018 00:00:00').getTime())
-        })
-
-        afterEach(() => {
-          clock.restore()
-        })
-
         it('should add the number of days until hdced', async () => {
           nomisClient.getHdcEligiblePrisoners.returns([
             {

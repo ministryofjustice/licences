@@ -45,7 +45,7 @@ describe('userAdminService', () => {
     }
 
     prisonerService = {
-      getCom: sinon.stub().resolves({}),
+      getResponsibleOfficer: sinon.stub().resolves({}),
     }
 
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
@@ -173,23 +173,23 @@ describe('userAdminService', () => {
 
       expect(userClient.getCasesRequiringRo).to.be.calledOnce()
       expect(userClient.getCasesRequiringRo).to.be.calledWith()
-      expect(prisonerService.getCom).not.to.be.calledOnce()
+      expect(prisonerService.getResponsibleOfficer).not.to.be.calledOnce()
       expect(result).to.eql([])
     })
 
-    it('should call getCom for each booking ID', async () => {
+    it('should call getResponsibleOfficer for each booking ID', async () => {
       userClient.getCasesRequiringRo = sinon.stub().resolves([1, 2])
 
       await service.getIncompleteRoUsers()
 
-      expect(prisonerService.getCom).to.be.calledTwice()
-      expect(prisonerService.getCom).to.be.calledWith(1, 'system-token')
-      expect(prisonerService.getCom).to.be.calledWith(2, 'system-token')
+      expect(prisonerService.getResponsibleOfficer).to.be.calledTwice()
+      expect(prisonerService.getResponsibleOfficer).to.be.calledWith(1, 'system-token')
+      expect(prisonerService.getResponsibleOfficer).to.be.calledWith(2, 'system-token')
     })
 
     it('should not lookup staff records if none required', async () => {
       userClient.getCasesRequiringRo = sinon.stub().resolves([1, 2])
-      prisonerService.getCom = sinon.stub().resolves({})
+      prisonerService.getResponsibleOfficer = sinon.stub().resolves({})
 
       await service.getIncompleteRoUsers()
 
@@ -198,10 +198,10 @@ describe('userAdminService', () => {
 
     it('should lookup staff record for each unique assignedId', async () => {
       userClient.getCasesRequiringRo = sinon.stub().resolves([1, 2, 3])
-      prisonerService.getCom = sinon.stub()
-      prisonerService.getCom.onCall(0).resolves({ com: { deliusId: 'delius0', name: 'deliusName0' } })
-      prisonerService.getCom.onCall(1).resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
-      prisonerService.getCom.onCall(2).resolves({ com: { deliusId: 'delius1', name: 'deliusName2' } })
+      prisonerService.getResponsibleOfficer = sinon.stub()
+      prisonerService.getResponsibleOfficer.onCall(0).resolves({ com: { deliusId: 'delius0', name: 'deliusName0' } })
+      prisonerService.getResponsibleOfficer.onCall(1).resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      prisonerService.getResponsibleOfficer.onCall(2).resolves({ com: { deliusId: 'delius1', name: 'deliusName2' } })
 
       await service.getIncompleteRoUsers()
 
@@ -212,10 +212,10 @@ describe('userAdminService', () => {
 
     it('should add offender nomis for each incomplete', async () => {
       userClient.getCasesRequiringRo = sinon.stub().resolves([1, 2, 3])
-      prisonerService.getCom = sinon.stub()
-      prisonerService.getCom.onCall(0).resolves({ com: { deliusId: 'delius0', name: 'deliusName0' } })
-      prisonerService.getCom.onCall(1).resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
-      prisonerService.getCom.onCall(2).resolves({ com: { deliusId: 'delius2', name: 'deliusName2' } })
+      prisonerService.getResponsibleOfficer = sinon.stub()
+      prisonerService.getResponsibleOfficer.onCall(0).resolves({ com: { deliusId: 'delius0', name: 'deliusName0' } })
+      prisonerService.getResponsibleOfficer.onCall(1).resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      prisonerService.getResponsibleOfficer.onCall(2).resolves({ com: { deliusId: 'delius2', name: 'deliusName2' } })
       userClient.getRoUserByDeliusId = sinon.stub().resolves(null)
 
       await service.getIncompleteRoUsers()
@@ -228,7 +228,9 @@ describe('userAdminService', () => {
 
     it('should not return if present and onboarded', async () => {
       userClient.getCasesRequiringRo = sinon.stub().resolves([1])
-      prisonerService.getCom = sinon.stub().resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      prisonerService.getResponsibleOfficer = sinon
+        .stub()
+        .resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
       userClient.getRoUserByDeliusId = sinon.stub().resolves({ onboarded: true })
 
       const result = await service.getIncompleteRoUsers()
@@ -238,7 +240,9 @@ describe('userAdminService', () => {
 
     it('should return mapped if present but not onboarded', async () => {
       userClient.getCasesRequiringRo = sinon.stub().resolves([1])
-      prisonerService.getCom = sinon.stub().resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      prisonerService.getResponsibleOfficer = sinon
+        .stub()
+        .resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
       userClient.getRoUserByDeliusId = sinon.stub().resolves({ onboarded: false })
       nomisClient.getBooking = sinon.stub().resolves({ offenderNo: 'off1' })
 
@@ -258,7 +262,9 @@ describe('userAdminService', () => {
 
     it('should return unmapped if not present', async () => {
       userClient.getCasesRequiringRo = sinon.stub().resolves([1])
-      prisonerService.getCom = sinon.stub().resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
+      prisonerService.getResponsibleOfficer = sinon
+        .stub()
+        .resolves({ com: { deliusId: 'delius1', name: 'deliusName1' } })
       userClient.getRoUserByDeliusId = sinon.stub().resolves(null)
       nomisClient.getBooking = sinon.stub().resolves({ offenderNo: 'off1' })
 

@@ -29,6 +29,7 @@ describe('prisonerDetailsService', () => {
     com: {
       deliusId: 'delius1',
       name: 'Comfirst Comlast',
+      message: null,
     },
     agencyLocationId: 'ABC',
     CRO: 'CRO001',
@@ -46,7 +47,7 @@ describe('prisonerDetailsService', () => {
       getImageInfo: sinon.stub().resolves(imageInfoResponse),
       getImageData: sinon.stub().resolves(imageDataResponse),
       getEstablishment: sinon.stub().resolves(establishmentResponse),
-      getComRelation: sinon.stub().resolves(comRelationResponse),
+      getRoRelations: sinon.stub().resolves(comRelationResponse),
       getPersonIdentifiers: sinon.stub().resolves(comIdentifiersResponse),
       getRecentMovements: sinon.stub().resolves(recentMovementsResponse),
     }
@@ -61,7 +62,7 @@ describe('prisonerDetailsService', () => {
       expect(nomisClientMock.getOffenderSentencesByBookingId).to.be.calledOnce()
       expect(nomisClientMock.getAliases).to.be.calledOnce()
       expect(nomisClientMock.getMainOffence).to.be.calledOnce()
-      expect(nomisClientMock.getComRelation).to.be.calledOnce()
+      expect(nomisClientMock.getRoRelations).to.be.calledOnce()
       expect(nomisClientMock.getPersonIdentifiers).to.be.calledOnce()
       expect(nomisClientMock.getImageInfo).to.be.calledOnce()
       expect(nomisClientMock.getIdentifiers).to.be.calledOnce()
@@ -69,7 +70,7 @@ describe('prisonerDetailsService', () => {
       expect(nomisClientMock.getOffenderSentencesByBookingId).to.be.calledWith(1)
       expect(nomisClientMock.getAliases).to.be.calledWith(1)
       expect(nomisClientMock.getMainOffence).to.be.calledWith(1)
-      expect(nomisClientMock.getComRelation).to.be.calledWith(1)
+      expect(nomisClientMock.getRoRelations).to.be.calledWith(1)
       expect(nomisClientMock.getPersonIdentifiers).to.be.calledWith('personId')
       expect(nomisClientMock.getImageInfo).to.be.calledWith(2)
       expect(nomisClientMock.getIdentifiers).to.be.calledWith(1)
@@ -170,12 +171,12 @@ describe('prisonerDetailsService', () => {
     })
   })
 
-  describe('getCom', () => {
+  describe('getResponsibleOfficer', () => {
     it('should call the api with the nomis id', async () => {
-      await service.getCom('123', 'username')
+      await service.getResponsibleOfficer('123', 'username')
 
-      expect(nomisClientMock.getComRelation).to.be.calledOnce()
-      expect(nomisClientMock.getComRelation).to.be.calledWith('123')
+      expect(nomisClientMock.getRoRelations).to.be.calledOnce()
+      expect(nomisClientMock.getRoRelations).to.be.calledWith('123')
     })
 
     it('should return the result of the api call', () => {
@@ -183,43 +184,135 @@ describe('prisonerDetailsService', () => {
         com: {
           deliusId: 'delius1',
           name: 'Comfirst Comlast',
+          message: null,
         },
       }
 
-      return expect(service.getCom('123', 'username')).to.eventually.eql(expectedComData)
-    })
-
-    it('should throw if error in api when getting establishment', () => {
-      nomisClientMock.getComRelation.rejects(new Error('dead'))
-      return expect(service.getCom('123', 'username')).to.be.rejected()
-    })
-
-    it('should NOT throw but return null if 404 in api when getting establishment', () => {
-      nomisClientMock.getComRelation.rejects({ status: 404 })
-      return expect(service.getCom('123', 'username')).to.eventually.eql(null)
-    })
-
-    it('should throw if error in api when getting establishment if error ststus other than 404', () => {
-      nomisClientMock.getComRelation.rejects({ status: 401 })
-      return expect(service.getCom('123', 'username')).to.be.rejected()
+      return expect(service.getResponsibleOfficer('123', 'username')).to.eventually.eql(expectedComData)
     })
 
     it('should obtain delius user id from first identifer of type delius', () => {
+      nomisClientMock.getPersonIdentifiers = sinon
+        .stub()
+        .resolves([
+          { identifierType: 'EXTERNAL_REL', identifierValue: 'delius1' },
+          { identifierType: 'EXTERNAL_REL', identifierValue: 'delius2' },
+        ])
+
       const expectedComData = {
         com: {
           deliusId: 'delius1',
           name: 'Comfirst Comlast',
+          message: null,
         },
       }
 
-      return expect(service.getCom('123', 'username')).to.eventually.eql(expectedComData)
+      return expect(service.getResponsibleOfficer('123', 'username')).to.eventually.eql(expectedComData)
+    })
+
+    it('should throw if error in api when getting relationships', () => {
+      nomisClientMock.getRoRelations.rejects(new Error('dead'))
+      return expect(service.getResponsibleOfficer('123', 'username')).to.be.rejected()
+    })
+
+    it('should throw if error in api when getting identifiers', () => {
+      nomisClientMock.getRoRelations.resolves([{ personId: '123' }])
+      nomisClientMock.getPersonIdentifiers.rejects(new Error('dead'))
+      return expect(service.getResponsibleOfficer('123', 'username')).to.be.rejected()
+    })
+
+    it('should throw if error in api when getting relationships if error status other than 404', () => {
+      nomisClientMock.getRoRelations.rejects({ status: 401 })
+      return expect(service.getResponsibleOfficer('123', 'username')).to.be.rejected()
+    })
+
+    it('should throw if error in api when getting identifiers if error status other than 404', () => {
+      nomisClientMock.getRoRelations.resolves([{ personId: '123' }])
+      nomisClientMock.getPersonIdentifiers.rejects({ status: 401 })
+      return expect(service.getResponsibleOfficer('123', 'username')).to.be.rejected()
+    })
+
+    it('should return message when 404 in api when getting RO relationship', () => {
+      nomisClientMock.getRoRelations.rejects({ status: 404 })
+      return expect(service.getResponsibleOfficer('123', 'username')).to.eventually.eql({
+        com: {
+          deliusId: null,
+          message: 'No RO relationship',
+          name: null,
+        },
+      })
+    })
+
+    it('should return message when 404 in api when getting person identifiers', () => {
+      nomisClientMock.getRoRelations.resolves([{ personId: '123' }])
+      nomisClientMock.getPersonIdentifiers.rejects({ status: 404 })
+      return expect(service.getResponsibleOfficer('123', 'username')).to.eventually.eql({
+        com: {
+          deliusId: null,
+          message: 'No RO external relationship',
+          name: null,
+        },
+      })
+    })
+
+    const errorMessageScenarios = [
+      {
+        label: 'empty RO relationships',
+        relationships: [],
+        identifiers: {},
+        message: 'No RO relationship',
+      },
+      {
+        label: 'multiple RO relationships',
+        relationships: [{}, {}],
+        identifiers: {},
+        message: 'Multiple RO relationships',
+      },
+      {
+        label: 'missing person identifier',
+        relationships: [{ personId: '' }],
+        identifiers: {},
+        message: 'No RO person identifier',
+      },
+      {
+        label: 'missing person identifiers',
+        relationships: [{ personId: '123' }],
+        identifiers: [],
+        message: 'No person identifiers',
+      },
+      {
+        label: 'missing external rel identifier type',
+        relationships: [{ personId: '123' }],
+        identifiers: [{ identifierType: 'other' }],
+        message: 'No EXTERNAL_REL person identifier',
+      },
+      {
+        label: 'missing external rel identifier value',
+        relationships: [{ personId: '123' }],
+        identifiers: [{ identifierType: 'EXTERNAL_REL', identifierValue: '' }],
+        message: 'No EXTERNAL_REL person identifier value',
+      },
+    ]
+
+    errorMessageScenarios.forEach(scenario => {
+      it(`should return message if ${scenario.label}`, () => {
+        nomisClientMock.getRoRelations.resolves(scenario.relationships)
+        nomisClientMock.getPersonIdentifiers.resolves(scenario.identifiers)
+        return expect(service.getResponsibleOfficer('123', 'username')).to.eventually.eql({
+          com: {
+            deliusId: null,
+            message: scenario.message,
+            name: null,
+          },
+        })
+      })
     })
   })
 
   describe('getOrganisationContactDetails', () => {
     it('should get COM for RO', async () => {
       await service.getOrganisationContactDetails('RO', '123', 'token')
-      expect(nomisClientMock.getComRelation).to.be.calledOnce()
+      expect(nomisClientMock.getRoRelations).to.be.calledOnce()
     })
 
     it('should get establishment for CA', async () => {
@@ -230,7 +323,7 @@ describe('prisonerDetailsService', () => {
     it('should not call anything for DM', async () => {
       await service.getOrganisationContactDetails('DM', '123', 'token')
       expect(nomisClientMock.getEstablishment).to.not.be.calledOnce()
-      expect(nomisClientMock.getComRelation).to.not.be.calledOnce()
+      expect(nomisClientMock.getRoRelations).to.not.be.calledOnce()
     })
   })
 })
