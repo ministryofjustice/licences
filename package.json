@@ -55,6 +55,7 @@
   },
   "homepage": "https://github.com/noms-digital-studio/licences#readme",
   "dependencies": {
+    "adm-zip": "^0.4.13",
     "applicationinsights": "^1.1.0",
     "body-parser": "^1.18.3",
     "case": "^1.6.1",
