@@ -570,18 +570,6 @@ describe('nomisClient', () => {
       })
     })
 
-    it('should throw error if passed is undefined', () => {
-      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa' })).to.be.rejectedWith(
-        `Missing required input parameter 'passed'`
-      )
-    })
-
-    it('should throw error if passed is null', () => {
-      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: null })).to.be.rejectedWith(
-        `Missing required input parameter 'passed'`
-      )
-    })
-
     it('should throw error if passed is not boolean', () => {
       return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: 0 })).to.be.rejectedWith(
         `Missing required input parameter 'passed'`
