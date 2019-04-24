@@ -18,6 +18,23 @@ describe('nomisClient', () => {
     nock.cleanAll()
   })
 
+  describe('nomisClient', () => {
+    it('should throw error on GET when no token', () => {
+      const badClient = nomisClientBuilder()
+      return expect(badClient.getBooking('1')).to.be.rejectedWith('Unauthorised access')
+    })
+
+    it('should throw error on POST when no token', () => {
+      const badClient = nomisClientBuilder()
+      return expect(badClient.getOffenderSentencesByBookingId(['1'])).to.be.rejectedWith('Unauthorised access')
+    })
+
+    it('should throw error on PUT when no token', () => {
+      const badClient = nomisClientBuilder()
+      return expect(badClient.putActiveCaseLoad('1')).to.be.rejectedWith('Unauthorised access')
+    })
+  })
+
   describe('getBooking', () => {
     it('should return data from api', () => {
       fakeNomis.get(`/bookings/1`).reply(200, { key: 'value' })
@@ -551,6 +568,24 @@ describe('nomisClient', () => {
       return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })).to.eventually.eql({
         result: 'answer',
       })
+    })
+
+    it('should throw error if passed is undefined', () => {
+      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa' })).to.be.rejectedWith(
+        `Missing required input parameter 'passed'`
+      )
+    })
+
+    it('should throw error if passed is null', () => {
+      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: null })).to.be.rejectedWith(
+        `Missing required input parameter 'passed'`
+      )
+    })
+
+    it('should throw error if passed is not boolean', () => {
+      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: 0 })).to.be.rejectedWith(
+        `Missing required input parameter 'passed'`
+      )
     })
   })
 })
