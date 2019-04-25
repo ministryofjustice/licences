@@ -1727,6 +1727,52 @@ describe('TaskList models', () => {
   })
 
   describe('dmTasks', () => {
+    const eligibilitySummary = { task: 'eligibilitySummaryTask' }
+    const returnPCA = {
+      title: 'Return to prison case admin',
+      action: { type: 'btn-secondary', href: '/hdc/send/return/', text: 'Return to prison case admin' },
+    }
+    const risk = {
+      title: 'Risk management',
+      label: 'Not completed',
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+    }
+    const victim = {
+      title: 'Victim liaison',
+      label: 'Not completed',
+      action: { href: '/hdc/review/victimLiaison/', text: 'View', type: 'btn-secondary' },
+    }
+    const curfew = {
+      title: 'Curfew hours',
+      label: 'Not completed',
+      action: { href: '/hdc/review/curfewHours/', text: 'View', type: 'btn-secondary' },
+    }
+    const conditions = {
+      title: 'Additional conditions',
+      label: 'Not completed',
+      action: { href: '/hdc/review/conditions/', text: 'View', type: 'btn-secondary' },
+    }
+    const reporting = {
+      title: 'Reporting instructions',
+      label: 'Not completed',
+      action: { href: '/hdc/review/reporting/', text: 'View', type: 'btn-secondary' },
+    }
+    const review = {
+      title: 'Review case',
+      label: 'Not completed',
+      action: { type: 'btn-secondary', href: '/hdc/review/finalChecks/', text: 'View' },
+    }
+    const release = {
+      title: 'Final decision',
+      label: 'Not started',
+      action: { href: '/hdc/approval/release/', text: 'Continue', type: 'btn' },
+    }
+    const bass = {
+      title: 'BASS address',
+      label: 'BASS referral requested',
+      action: { href: '/hdc/review/bassOffer/', text: 'View', type: 'btn-secondary' },
+    }
+
     it('should return eligibility and refusal if there is insufficient time', () => {
       expect(
         taskListModel(
@@ -1741,15 +1787,11 @@ describe('TaskList models', () => {
           null
         )
       ).to.eql([
-        { task: 'eligibilitySummaryTask' },
+        eligibilitySummary,
         {
-          action: {
-            href: '/hdc/approval/refuseReason/',
-            text: 'Refuse HDC',
-            type: 'btn',
-          },
-          label: 'Awaiting refusal',
           title: 'Final decision',
+          label: 'Awaiting refusal',
+          action: { href: '/hdc/approval/refuseReason/', text: 'Refuse HDC', type: 'btn' },
         },
       ])
     })
@@ -1773,32 +1815,17 @@ describe('TaskList models', () => {
           null
         )
       ).to.eql([
-        { task: 'eligibilitySummaryTask' },
+        eligibilitySummary,
         {
           title: 'Proposed curfew address',
           label: 'Address withdrawn',
-          action: {
-            type: 'btn-secondary',
-            href: '/hdc/review/address/',
-            text: 'View',
-          },
+          action: { type: 'btn-secondary', href: '/hdc/review/address/', text: 'View' },
         },
+        returnPCA,
         {
-          title: 'Return to prison case admin',
-          action: {
-            type: 'btn-secondary',
-            href: '/hdc/send/return/',
-            text: 'Return to prison case admin',
-          },
-        },
-        {
-          action: {
-            href: '/hdc/approval/refuseReason/',
-            text: 'Refuse HDC',
-            type: 'btn',
-          },
-          label: 'Not started',
           title: 'Final decision',
+          label: 'Not started',
+          action: { href: '/hdc/approval/refuseReason/', text: 'Refuse HDC', type: 'btn' },
         },
       ])
     })
@@ -1822,32 +1849,17 @@ describe('TaskList models', () => {
           null
         )
       ).to.eql([
-        { task: 'eligibilitySummaryTask' },
+        eligibilitySummary,
         {
           title: 'Proposed curfew address',
           label: 'Not completed',
-          action: {
-            type: 'btn-secondary',
-            href: '/hdc/review/address/',
-            text: 'View',
-          },
+          action: { type: 'btn-secondary', href: '/hdc/review/address/', text: 'View' },
         },
+        returnPCA,
         {
-          title: 'Return to prison case admin',
-          action: {
-            type: 'btn-secondary',
-            href: '/hdc/send/return/',
-            text: 'Return to prison case admin',
-          },
-        },
-        {
-          action: {
-            href: '/hdc/approval/refuseReason/',
-            text: 'Refuse HDC',
-            type: 'btn',
-          },
-          label: 'Not started',
           title: 'Final decision',
+          label: 'Not started',
+          action: { href: '/hdc/approval/refuseReason/', text: 'Refuse HDC', type: 'btn' },
         },
       ])
     })
@@ -1873,77 +1885,18 @@ describe('TaskList models', () => {
         )
       ).to.eql([
         {
-          action: {
-            href: '/hdc/review/address/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
           title: 'Proposed curfew address',
-        },
-        {
-          action: {
-            href: '/hdc/review/risk/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
           label: 'Not completed',
-          title: 'Risk management',
+          action: { href: '/hdc/review/address/', text: 'View', type: 'btn-secondary' },
         },
-        {
-          action: {
-            href: '/hdc/review/victimLiaison/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Victim liaison',
-        },
-        {
-          action: {
-            href: '/hdc/review/curfewHours/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Curfew hours',
-        },
-        {
-          action: {
-            href: '/hdc/review/conditions/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Additional conditions',
-        },
-        {
-          action: {
-            href: '/hdc/review/reporting/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Reporting instructions',
-        },
-        { task: 'finalChecksTask' },
-        {
-          action: {
-            href: '/hdc/send/return/',
-            text: 'Return to prison case admin',
-            type: 'btn-secondary',
-          },
-          title: 'Return to prison case admin',
-        },
-        {
-          action: {
-            href: '/hdc/approval/release/',
-            text: 'Continue',
-            type: 'btn',
-          },
-          label: 'Not started',
-          title: 'Final decision',
-        },
+        risk,
+        victim,
+        curfew,
+        conditions,
+        reporting,
+        review,
+        returnPCA,
+        release,
       ])
     })
 
@@ -1966,80 +1919,7 @@ describe('TaskList models', () => {
           {},
           null
         )
-      ).to.eql([
-        {
-          title: 'BASS address',
-          label: 'BASS referral requested',
-          action: {
-            href: '/hdc/review/bassOffer/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-        },
-        {
-          action: {
-            href: '/hdc/review/risk/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Risk management',
-        },
-        {
-          action: {
-            href: '/hdc/review/victimLiaison/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Victim liaison',
-        },
-        {
-          action: {
-            href: '/hdc/review/curfewHours/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Curfew hours',
-        },
-        {
-          action: {
-            href: '/hdc/review/conditions/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Additional conditions',
-        },
-        {
-          action: {
-            href: '/hdc/review/reporting/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Reporting instructions',
-        },
-        { task: 'finalChecksTask' },
-        {
-          action: {
-            href: '/hdc/send/return/',
-            text: 'Return to prison case admin',
-            type: 'btn-secondary',
-          },
-          title: 'Return to prison case admin',
-        },
-        {
-          action: {
-            href: '/hdc/approval/release/',
-            text: 'Continue',
-            type: 'btn',
-          },
-          label: 'Not started',
-          title: 'Final decision',
-        },
-      ])
+      ).to.eql([bass, risk, victim, curfew, conditions, reporting, review, returnPCA, release])
     })
 
     it('should display postponement if confiscationOrder is true', () => {
@@ -2063,87 +1943,24 @@ describe('TaskList models', () => {
           null
         )
       ).to.eql([
+        bass,
+        risk,
+        victim,
+        curfew,
+        conditions,
+        reporting,
         {
-          title: 'BASS address',
-          label: 'BASS referral requested',
-          action: {
-            href: '/hdc/review/bassOffer/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
+          title: 'Review case',
+          label: 'WARNING||The offender is subject to a confiscation order',
+          action: { type: 'btn-secondary', href: '/hdc/review/finalChecks/', text: 'View' },
         },
         {
-          action: {
-            href: '/hdc/review/risk/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Risk management',
-        },
-        {
-          action: {
-            href: '/hdc/review/victimLiaison/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Victim liaison',
-        },
-        {
-          action: {
-            href: '/hdc/review/curfewHours/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Curfew hours',
-        },
-        {
-          action: {
-            href: '/hdc/review/conditions/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Additional conditions',
-        },
-        {
-          action: {
-            href: '/hdc/review/reporting/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Reporting instructions',
-        },
-        { task: 'finalChecksTask' },
-        {
-          action: {
-            href: '/hdc/finalChecks/postpone/',
-            text: 'Postpone',
-            type: 'btn',
-          },
-          label: 'Use this to indicate that the process is postponed if a confiscation order is in place',
           title: 'Postpone',
+          label: 'Use this to indicate that the process is postponed if a confiscation order is in place',
+          action: { href: '/hdc/finalChecks/postpone/', text: 'Postpone', type: 'btn' },
         },
-        {
-          action: {
-            href: '/hdc/send/return/',
-            text: 'Return to prison case admin',
-            type: 'btn-secondary',
-          },
-          title: 'Return to prison case admin',
-        },
-        {
-          action: {
-            href: '/hdc/approval/release/',
-            text: 'Continue',
-            type: 'btn',
-          },
-          label: 'Not started',
-          title: 'Final decision',
-        },
+        returnPCA,
+        release,
       ])
     })
   })

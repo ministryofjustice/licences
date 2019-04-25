@@ -39,7 +39,11 @@ mixin label(text)
           i.icon.icon-important
             span.visually-hidden Warning
 
-          strong.bold-small #{sections[1]}
+          if sections.length > 2
+            each section in sections.slice(1)
+              strong.bold-small.smallMarginBottom #{section}
+          else
+            strong.bold-small #{sections[1]}
 
   else if sections[0] === 'ALERT'
     span.alert.bold #{sections[1]}

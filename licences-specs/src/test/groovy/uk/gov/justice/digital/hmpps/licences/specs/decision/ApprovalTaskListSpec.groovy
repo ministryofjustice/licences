@@ -52,10 +52,10 @@ class ApprovalTaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see the right number of task buttons'
-    taskListActions.size() == 8
+    taskListActions.size() == 9
 
     and: 'The tasks for reviewing RO and CA input have View buttons'
-    taskListActions.take(6).every { it.text() == 'View' }
+    taskListActions.take(7).every { it.text() == 'View' }
 
     and: 'The final decision task has a Continue button'
     taskListAction(tasks.decision).text() == 'Continue'
