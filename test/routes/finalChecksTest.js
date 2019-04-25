@@ -204,11 +204,11 @@ describe('/hdc/finalChecks', () => {
             .expect(302)
             .expect(() => {
               expect(nomisPushService.pushStatus).to.be.calledOnce()
-              expect(nomisPushService.pushStatus).to.be.calledWith(
-                '1',
-                { type: spec.type, status: 'ABC', reason: 'XYZ' },
-                'CA_USER_TEST'
-              )
+              expect(nomisPushService.pushStatus).to.be.calledWith({
+                bookingId: '1',
+                data: { type: spec.type, status: 'ABC', reason: 'XYZ' },
+                username: 'CA_USER_TEST',
+              })
             })
         })
       })

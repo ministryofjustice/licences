@@ -18,7 +18,7 @@ module.exports = ({ licenceService, signInService, nomisPushService }) => (route
       const notExcluded = getIn(updatedLicence, ['eligibility', 'excluded', 'decision']) === 'No'
       const notUnsuitable = getIn(updatedLicence, ['eligibility', 'suitability', 'decision']) === 'No'
       if (notExcluded && notUnsuitable) {
-        await nomisPushService.pushChecksPassed(bookingId, req.user.username)
+        await nomisPushService.pushChecksPassed({ bookingId, passed: true, username: req.user.username })
       }
     }
   }

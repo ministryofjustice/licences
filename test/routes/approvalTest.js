@@ -177,11 +177,11 @@ describe('/hdc/approval', () => {
           .expect(302)
           .expect(() => {
             expect(nomisPushServiceStub.pushStatus).to.be.calledOnce()
-            expect(nomisPushServiceStub.pushStatus).to.be.calledWith(
-              '1',
-              { type: route.formName, status: 'ABC', reason: undefined },
-              'DM_USER'
-            )
+            expect(nomisPushServiceStub.pushStatus).to.be.calledWith({
+              bookingId: '1',
+              data: { type: route.formName, status: 'ABC', reason: undefined },
+              username: 'DM_USER',
+            })
           })
       })
 

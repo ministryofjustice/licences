@@ -3,7 +3,7 @@ const superagent = require('superagent')
 const logger = require('../../log')
 const config = require('../config')
 const { merge, pipe, getIn } = require('../utils/functionalHelpers')
-const { NoTokenError } = require('../utils/errors')
+const { unauthorisedError } = require('../utils/errors')
 
 const timeoutSpec = {
   response: config.nomis.timeout.response,
@@ -141,9 +141,13 @@ module.exports = token => {
       return nomisPut({ path, body })
     },
 
-    async putChecksPassed(bookingId) {
+    async putChecksPassed({ bookingId, passed }) {
+      if (typeof passed !== 'boolean') {
+        throw new Error(`Missing required input parameter 'passed'`)
+      }
+
       const path = `${apiUrl}/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/checks-passed`
-      const body = { passed: 'true', date: moment().format('YYYY-MM-DD') }
+      const body = { passed, date: moment().format('YYYY-MM-DD') }
 
       return nomisPut({ path, body })
     },
@@ -159,7 +163,7 @@ module.exports = token => {
 function nomisGetBuilder(token) {
   return async ({ path, query = '', headers = {}, responseType = '' } = {}) => {
     if (!token) {
-      throw new NoTokenError()
+      throw unauthorisedError()
     }
 
     try {
@@ -187,7 +191,7 @@ function nomisPushBuilder(verb, token) {
 
   return async ({ path, body = '', headers = {}, responseType = '' } = {}) => {
     if (!token) {
-      throw new NoTokenError()
+      throw unauthorisedError()
     }
 
     try {

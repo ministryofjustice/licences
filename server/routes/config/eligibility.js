@@ -21,6 +21,7 @@ module.exports = {
     nomisPush: {
       status: ['eligibility', 'excluded', 'decision'],
       reason: ['eligibility', 'excluded', 'reason'],
+      checksFailedStatusValue: 'Yes',
     },
     nextPath: {
       decisions: [
@@ -81,6 +82,7 @@ module.exports = {
     nomisPush: {
       status: ['eligibility', 'exceptionalCircumstances', 'decision'],
       reason: ['eligibility', 'suitability', 'reason'],
+      checksFailedStatusValue: 'No',
     },
     nextPath: {
       decisions: [

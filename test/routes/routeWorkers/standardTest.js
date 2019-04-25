@@ -60,22 +60,28 @@ describe('formPost', () => {
     }
 
     describe('pushStatus', () => {
+      const bookingId = '123'
+      const username = 'testUser'
+
       it('should not send to nomisPushService if main config off', async () => {
         const nomisPush = {
           status: ['statusProperty'],
           reason: ['reasonProperty'],
+          checksFailedStatusValue: 'testStatus',
         }
 
         const standardRoute = createRoute({ nomisPush, config: { pushToNomis: false } })
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
         expect(nomisPushService.pushStatus).not.to.be.calledOnce()
+        expect(nomisPushService.pushChecksPassed).not.to.be.calledOnce()
       })
 
       it('should not send to nomisPushService when validation errors', async () => {
         const nomisPush = {
           status: ['statusProperty'],
           reason: ['reasonProperty'],
+          checksFailedStatusValue: 'testStatus',
         }
 
         licenceService.validateForm.returns(['some errors'])
@@ -83,6 +89,7 @@ describe('formPost', () => {
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
         expect(nomisPushService.pushStatus).not.to.be.calledOnce()
+        expect(nomisPushService.pushChecksPassed).not.to.be.calledOnce()
       })
 
       it('should not send to nomisPushService if no form config', async () => {
@@ -90,6 +97,7 @@ describe('formPost', () => {
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
         expect(nomisPushService.pushStatus).not.to.be.calledOnce()
+        expect(nomisPushService.pushChecksPassed).not.to.be.calledOnce()
       })
 
       it('should send the specified licence fields to nomisPushService', async () => {
@@ -108,7 +116,11 @@ describe('formPost', () => {
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
         expect(nomisPushService.pushStatus).to.be.calledOnce()
-        expect(nomisPushService.pushStatus).to.be.calledWith('123', expectedData, 'testUser')
+        expect(nomisPushService.pushStatus).to.be.calledWith({
+          bookingId,
+          data: expectedData,
+          username,
+        })
       })
 
       it('should send the specified licence fields to nomisPushService when fields are nested', async () => {
@@ -127,7 +139,11 @@ describe('formPost', () => {
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
         expect(nomisPushService.pushStatus).to.be.calledOnce()
-        expect(nomisPushService.pushStatus).to.be.calledWith('123', expectedData, 'testUser')
+        expect(nomisPushService.pushStatus).to.be.calledWith({
+          bookingId,
+          data: expectedData,
+          username,
+        })
       })
 
       it('should send to nomisPushService even if fields are not found', async () => {
@@ -146,7 +162,11 @@ describe('formPost', () => {
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
         expect(nomisPushService.pushStatus).to.be.calledOnce()
-        expect(nomisPushService.pushStatus).to.be.calledWith('123', expectedData, 'testUser')
+        expect(nomisPushService.pushStatus).to.be.calledWith({
+          bookingId,
+          data: expectedData,
+          username,
+        })
       })
 
       it('should not try to access licence data if not specified', async () => {
@@ -164,7 +184,54 @@ describe('formPost', () => {
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
         expect(nomisPushService.pushStatus).to.be.calledOnce()
-        expect(nomisPushService.pushStatus).to.be.calledWith('123', expectedData, 'testUser')
+        expect(nomisPushService.pushStatus).to.be.calledWith({
+          bookingId,
+          data: expectedData,
+          username,
+        })
+      })
+
+      it('should send checks passed when configured and status matches', async () => {
+        const nomisPush = {
+          status: ['statusProperty'],
+          reason: ['reasonProperty'],
+          checksFailedStatusValue: 'testStatus',
+        }
+
+        const standardRoute = createRoute({ nomisPush })
+
+        await standardRoute.formPost(req, res, 'testForm', '123', '')
+        expect(nomisPushService.pushChecksPassed).to.be.calledOnce()
+        expect(nomisPushService.pushChecksPassed).to.be.calledWith({
+          bookingId,
+          passed: false,
+          username,
+        })
+      })
+
+      it('should not send checks passed when configured and status does not match', async () => {
+        const nomisPush = {
+          status: ['statusProperty'],
+          reason: ['reasonProperty'],
+          checksFailedStatusValue: 'not-matched',
+        }
+
+        const standardRoute = createRoute({ nomisPush })
+
+        await standardRoute.formPost(req, res, 'testForm', '123', '')
+        expect(nomisPushService.pushChecksPassed).not.to.be.calledOnce()
+      })
+
+      it('should not send checks passed when not configured', async () => {
+        const nomisPush = {
+          status: ['statusProperty'],
+          reason: ['reasonProperty'],
+        }
+
+        const standardRoute = createRoute({ nomisPush })
+
+        await standardRoute.formPost(req, res, 'testForm', '123', '')
+        expect(nomisPushService.pushChecksPassed).not.to.be.calledOnce()
       })
     })
 

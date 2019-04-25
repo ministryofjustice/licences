@@ -18,6 +18,23 @@ describe('nomisClient', () => {
     nock.cleanAll()
   })
 
+  describe('nomisClient', () => {
+    it('should throw error on GET when no token', () => {
+      const badClient = nomisClientBuilder()
+      return expect(badClient.getBooking('1')).to.be.rejectedWith('Unauthorised access')
+    })
+
+    it('should throw error on POST when no token', () => {
+      const badClient = nomisClientBuilder()
+      return expect(badClient.getOffenderSentencesByBookingId(['1'])).to.be.rejectedWith('Unauthorised access')
+    })
+
+    it('should throw error on PUT when no token', () => {
+      const badClient = nomisClientBuilder()
+      return expect(badClient.putActiveCaseLoad('1')).to.be.rejectedWith('Unauthorised access')
+    })
+  })
+
   describe('getBooking', () => {
     it('should return data from api', () => {
       fakeNomis.get(`/bookings/1`).reply(200, { key: 'value' })
@@ -535,20 +552,28 @@ describe('nomisClient', () => {
         .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed')
         .reply(200, { result: 'answer' })
 
-      return expect(nomisClient.putChecksPassed('aaa')).to.eventually.eql({ result: 'answer' })
+      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })).to.eventually.eql({
+        result: 'answer',
+      })
     })
 
-    it('should pass in passed=true  and date', () => {
+    it('should pass in passed value and date', () => {
       fakeNomis
         .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed', {
-          passed: 'true',
+          passed: true,
           date: '2018-05-31',
         })
         .reply(200, { result: 'answer' })
 
-      return expect(nomisClient.putChecksPassed('aaa', { approvalStatus: 'status' })).to.eventually.eql({
+      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })).to.eventually.eql({
         result: 'answer',
       })
+    })
+
+    it('should throw error if passed is not boolean', () => {
+      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: 0 })).to.be.rejectedWith(
+        `Missing required input parameter 'passed'`
+      )
     })
   })
 })

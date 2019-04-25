@@ -259,7 +259,11 @@ describe('/hdc/proposedAddress', () => {
         .expect(302)
         .expect(() => {
           expect(nomisPushService.pushStatus).to.be.calledOnce()
-          expect(nomisPushService.pushStatus).to.be.calledWith('1', { type: 'optOut', status: 'Yes' }, 'CA_USER_TEST')
+          expect(nomisPushService.pushStatus).to.be.calledWith({
+            bookingId: '1',
+            data: { type: 'optOut', status: 'Yes' },
+            username: 'CA_USER_TEST',
+          })
         })
     })
 

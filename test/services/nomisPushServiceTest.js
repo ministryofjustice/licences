@@ -6,6 +6,9 @@ describe('nomisPushService', () => {
   let nomisClientMock
   let signInService
 
+  const bookingId = '1'
+  const username = 'user'
+
   beforeEach(() => {
     nomisClientMock = {
       putApprovalStatus: sinon.stub().resolves(),
@@ -140,7 +143,7 @@ describe('nomisPushService', () => {
 
       specs.forEach(spec => {
         it(`should call nomisClient.putApprovalStatus for ${spec.example} with the correct values`, async () => {
-          await service.pushStatus('1', spec.data, 'user')
+          await service.pushStatus({ bookingId, data: spec.data, username })
           expect(nomisClientBuilder).to.be.calledOnce()
           expect(nomisClientBuilder).to.be.calledWith('valid-token')
           expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
@@ -151,37 +154,57 @@ describe('nomisPushService', () => {
     })
 
     it('should not call nomisClient.putApprovalStatus if no type', async () => {
-      await service.pushStatus('1', { type: undefined, status: 'Yes', reason: 'something' }, 'user')
+      await service.pushStatus({
+        bookingId,
+        data: { type: undefined, status: 'Yes', reason: 'something' },
+        username,
+      })
       expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
     })
 
     it('should not call nomisClient.putApprovalStatus if no status', async () => {
-      await service.pushStatus('1', { type: 'release', status: undefined, reason: 'something' }, 'user')
+      await service.pushStatus({
+        bookingId,
+        data: { type: 'release', status: undefined, reason: 'something' },
+        username,
+      })
       expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
     })
 
     it('should not call nomisClient.putApprovalStatus if no matching update', async () => {
-      await service.pushStatus('1', { type: 'release', status: 'No', reason: 'unmatched-reason' }, 'user')
+      await service.pushStatus({
+        bookingId,
+        data: { type: 'release', status: 'No', reason: 'unmatched-reason' },
+        username,
+      })
       expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
     })
 
     it('should not call nomisClient.putApprovalStatus if no matching update when array of reasons', async () => {
-      await service.pushStatus('1', { type: 'release', status: 'No', reason: ['unmatched-reason'] }, 'user')
+      await service.pushStatus({
+        bookingId,
+        data: { type: 'release', status: 'No', reason: ['unmatched-reason'] },
+        username,
+      })
       expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
     })
 
     it('should not call nomisClient.putApprovalStatus if no matching update when empty array of reasons', async () => {
-      await service.pushStatus('1', { type: 'release', status: 'No', reason: [] }, 'user')
+      await service.pushStatus({ bookingId, data: { type: 'release', status: 'No', reason: [] }, username })
       expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
     })
 
     it('should also accept reason in an array', async () => {
-      await service.pushStatus('1', { type: 'release', status: 'No', reason: ['insufficientTime'] }, 'user')
+      await service.pushStatus({
+        bookingId,
+        data: { type: 'release', status: 'No', reason: ['insufficientTime'] },
+        username,
+      })
       expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
       expect(nomisClientBuilder).to.be.calledWith('valid-token')
       expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
@@ -192,11 +215,11 @@ describe('nomisPushService', () => {
     })
 
     it('should use the first reason when there are many', async () => {
-      await service.pushStatus(
-        '1',
-        { type: 'release', status: 'No', reason: ['insufficientTime', 'addressUnsuitable', 'unmatched-reason'] },
-        'user'
-      )
+      await service.pushStatus({
+        bookingId,
+        data: { type: 'release', status: 'No', reason: ['insufficientTime', 'addressUnsuitable', 'unmatched-reason'] },
+        username,
+      })
       expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
       expect(nomisClientBuilder).to.be.calledWith('valid-token')
       expect(nomisClientMock.putApprovalStatus).to.be.calledOnce()
@@ -207,11 +230,11 @@ describe('nomisPushService', () => {
     })
 
     it('should not call nomisClient.putApprovalStatus if no matching update when first reason unmatched', async () => {
-      await service.pushStatus(
-        '1',
-        { type: 'release', status: 'No', reason: ['unmatched-reason', 'insufficientTime', 'addressUnsuitable'] },
-        'user'
-      )
+      await service.pushStatus({
+        bookingId,
+        data: { type: 'release', status: 'No', reason: ['unmatched-reason', 'insufficientTime', 'addressUnsuitable'] },
+        username,
+      })
       expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
     })
@@ -219,11 +242,11 @@ describe('nomisPushService', () => {
 
   describe('pushChecksPassed', () => {
     it('should call nomisClient.putChecksPassed', async () => {
-      await service.pushChecksPassed('1', 'user')
+      await service.pushChecksPassed({ bookingId, passed: true, username })
       expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
       expect(nomisClientBuilder).to.be.calledWith('valid-token')
       expect(nomisClientMock.putChecksPassed).to.be.calledOnce()
-      expect(nomisClientMock.putChecksPassed).to.be.calledWith('1')
+      expect(nomisClientMock.putChecksPassed).to.be.calledWith({ bookingId: '1', passed: true })
     })
   })
 })

@@ -3,27 +3,27 @@ const { getIn } = require('../utils/functionalHelpers')
 const { statusValues, statusReasonValues } = require('./config/approvalStatuses')
 
 module.exports = (nomisClientBuilder, signInService) => {
-  async function pushStatus(bookingId, dataObject, userName) {
-    const approvalStatus = getApprovalStatus(dataObject)
+  async function pushStatus({ bookingId, data, username }) {
+    const approvalStatus = getApprovalStatus(data)
 
     if (!approvalStatus) {
       logger.info('No approval status to push to nomis')
       return null
     }
 
-    const systemTokens = await signInService.getClientCredentialsTokens(userName)
+    const systemTokens = await signInService.getClientCredentialsTokens(username)
     const nomisClient = nomisClientBuilder(systemTokens.token)
 
     logger.info('Pushing approval status to nomis', approvalStatus)
     return nomisClient.putApprovalStatus(bookingId, approvalStatus)
   }
 
-  async function pushChecksPassed(bookingId, userName) {
-    const systemTokens = await signInService.getClientCredentialsTokens(userName)
+  async function pushChecksPassed({ bookingId, passed, username }) {
+    const systemTokens = await signInService.getClientCredentialsTokens(username)
     const nomisClient = nomisClientBuilder(systemTokens.token)
 
-    logger.info('Pushing checks passed to nomis')
-    return nomisClient.putChecksPassed(bookingId)
+    logger.info(`Pushing checks passed=${passed} to nomis for bookingId: ${bookingId}`)
+    return nomisClient.putChecksPassed({ bookingId, passed })
   }
 
   return {
