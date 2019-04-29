@@ -26,6 +26,9 @@ const res = {
   redirect: () => {},
 }
 
+const bookingId = '123'
+const username = 'testUser'
+
 let licenceService
 let nomisPushService
 
@@ -60,14 +63,11 @@ describe('formPost', () => {
     }
 
     describe('pushStatus', () => {
-      const bookingId = '123'
-      const username = 'testUser'
-
       it('should not send to nomisPushService if main config off', async () => {
         const nomisPush = {
           status: ['statusProperty'],
           reason: ['reasonProperty'],
-          checksFailedStatusValue: 'testStatus',
+          checksPassed: { failState: 'testStatus' },
         }
 
         const standardRoute = createRoute({ nomisPush, config: { pushToNomis: false } })
@@ -81,7 +81,7 @@ describe('formPost', () => {
         const nomisPush = {
           status: ['statusProperty'],
           reason: ['reasonProperty'],
-          checksFailedStatusValue: 'testStatus',
+          checksPassed: { failState: 'testStatus' },
         }
 
         licenceService.validateForm.returns(['some errors'])
@@ -190,30 +190,62 @@ describe('formPost', () => {
           username,
         })
       })
+    })
 
-      it('should send checks passed when configured and status matches', async () => {
+    describe('push checks passed', () => {
+      const examples = [
+        { label: 'fail status matches', checksPassed: { failState: 'testStatus' }, result: false },
+        { label: 'pass status matches', checksPassed: { passState: 'testStatus' }, result: true },
+        {
+          label: 'only fail status matches',
+          checksPassed: { failState: 'testStatus', passState: 'not-matched' },
+          result: false,
+        },
+        {
+          label: 'pass & fail status matches',
+          checksPassed: { failState: 'testStatus', passState: 'testStatus' },
+          result: true,
+        },
+      ]
+
+      examples.forEach(example => {
+        it(example.label, async () => {
+          const nomisPush = {
+            status: ['statusProperty'],
+            reason: ['reasonProperty'],
+            checksPassed: example.checksPassed,
+          }
+
+          const standardRoute = createRoute({ nomisPush })
+
+          await standardRoute.formPost(req, res, 'testForm', '123', '')
+          expect(nomisPushService.pushChecksPassed).to.be.calledOnce()
+          expect(nomisPushService.pushChecksPassed).to.be.calledWith({
+            bookingId,
+            passed: example.result,
+            username,
+          })
+        })
+      })
+
+      it('should not send checks passed when configured and fail status does not match', async () => {
         const nomisPush = {
           status: ['statusProperty'],
           reason: ['reasonProperty'],
-          checksFailedStatusValue: 'testStatus',
+          checksPassed: { failState: 'not-matched' },
         }
 
         const standardRoute = createRoute({ nomisPush })
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushChecksPassed).to.be.calledOnce()
-        expect(nomisPushService.pushChecksPassed).to.be.calledWith({
-          bookingId,
-          passed: false,
-          username,
-        })
+        expect(nomisPushService.pushChecksPassed).not.to.be.calledOnce()
       })
 
-      it('should not send checks passed when configured and status does not match', async () => {
+      it('should not send checks passed when configured and neither status matches', async () => {
         const nomisPush = {
           status: ['statusProperty'],
           reason: ['reasonProperty'],
-          checksFailedStatusValue: 'not-matched',
+          checksPassed: { failState: 'not-matched', passState: 'not-matched' },
         }
 
         const standardRoute = createRoute({ nomisPush })

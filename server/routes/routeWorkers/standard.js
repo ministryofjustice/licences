@@ -108,14 +108,27 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, c
     if (getIn(config, ['pushToNomis']) && pushConfig) {
       const status = !isEmpty(pushConfig.status) ? getIn(updatedLicence, pushConfig.status) : undefined
       const reason = !isEmpty(pushConfig.reason) ? getIn(updatedLicence, pushConfig.reason) : undefined
-      const statusForFailure = pushConfig.checksFailedStatusValue
 
-      if (statusForFailure && status === statusForFailure) {
-        await nomisPushService.pushChecksPassed({ bookingId, passed: false, username })
+      const { failState, passState } = pushConfig.checksPassed ? pushConfig.checksPassed : {}
+
+      const failed = definedAndMatches(failState, status)
+      const passed = definedAndMatches(passState, status)
+
+      // No push unless status matches for pass or fail, ie not when missing.
+      // Passed/failed will always be opposite of each other.
+      if (failed || passed) {
+        await nomisPushService.pushChecksPassed({ bookingId, passed, username })
       }
 
       await nomisPushService.pushStatus({ bookingId, data: { type: formName, status, reason }, username })
     }
+  }
+
+  function definedAndMatches(candidate, status) {
+    if (candidate) {
+      return candidate === status
+    }
+    return false
   }
 
   return {
