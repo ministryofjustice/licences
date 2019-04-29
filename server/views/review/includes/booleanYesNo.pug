@@ -1,0 +1,8 @@
+mixin booleanYesNo(id, property)
+  span(id=id).block.bold.midMarginBottom
+    if property === true
+      | Yes
+    else if property === false
+      | No
+    else
+      | -

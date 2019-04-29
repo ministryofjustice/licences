@@ -1,0 +1,38 @@
+extends ../layout
+include includes/booleanYesNo
+
+block content
+
+  - var finalChecks = data.finalChecks || {}
+
+  include ../includes/backToCheckList
+  include ../includes/personalDetailsSummary
+
+  div.pure-u-1.pure-u-md-1-2.paddingBottom
+    h2.heading-large Review case
+
+    div.smallPaddingTop
+      span.block.smallMarginBottom Has the offender committed an offence in prison which was referred to the police or independent adjudicator and is not resolved?
+      +booleanYesNo("seriousOffence",licenceStatus.decisions.seriousOffence)
+
+    div.smallPaddingTop
+      span.block.smallMarginBottom Is the offender currently on remand for another offence?
+      +booleanYesNo("onRemand",licenceStatus.decisions.onRemand)
+
+    div.smallPaddingTop
+      span.block.smallMarginBottom Is the offender subject to a confiscation order?
+      +booleanYesNo("confiscationOrder",licenceStatus.decisions.confiscationOrder)
+
+    if licenceStatus.decisions.confiscationOrder
+      div.smallPaddingTop
+        span.block.smallMarginBottom Has the prosecuting/enforcement authority and regional confiscation unit been consulted regarding the proposed release on HDC?
+
+        span#confiscationUnitConsulted.block.bold.midMarginBottom
+          | #{finalChecks.confiscationOrder.confiscationUnitConsulted}
+
+        if finalChecks.confiscationOrder.comments
+          div.panel.panel-border-narrow
+            span.block Comments
+            span#comments.block.bold
+              | #{finalChecks.confiscationOrder.comments}
+
