@@ -1,0 +1,14 @@
+extends ../layout
+include includes/additionalConditions
+
+block content
+
+  - var address = data.curfew && data.curfew.approvedPremisesAddress ? data.curfew.approvedPremisesAddress : {}
+
+  include ../includes/backToCheckList
+  include ../includes/personalDetailsSummary
+
+  h2.heading-large Approved premises
+
+  div.pure-u-md-1-2.paddingBottom
+    include ./includes/approvedPremisesAddress

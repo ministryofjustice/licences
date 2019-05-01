@@ -279,6 +279,45 @@ function validateGroup({ licence, group, bespokeConditions }) {
         missingMessage: 'Enter the reporting instructions',
       },
     ],
+    PROCESSING_RO_APPROVED_PREMISES: [
+      {
+        formResponse: getIn(licence, ['curfew', 'approvedPremisesAddress']),
+        formType: 'approvedPremisesAddress',
+        pageConfig: curfewConfig.approvedPremisesAddress,
+        section: 'curfew',
+        missingMessage: 'Enter the approved premises address details',
+      },
+      {
+        formResponse: getIn(licence, ['licenceConditions', 'standard']),
+        formType: 'standard',
+        pageConfig: conditionsConfig.standard,
+        section: 'licenceConditions',
+        missingMessage: 'standard conditions error message',
+      },
+      {
+        formResponse: getIn(licence, ['licenceConditions', 'additional']),
+        conditionallyActive:
+          getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'Yes',
+        formType: 'additional',
+        pageConfig: conditionsConfig.additional,
+        section: 'licenceConditions',
+        missingMessage: 'Enter one or more additional conditions',
+      },
+      {
+        formResponse: getIn(licence, ['curfew', 'curfewHours']),
+        formType: 'curfewHours',
+        pageConfig: curfewConfig.curfewHours,
+        section: 'curfew',
+        missingMessage: 'Enter the proposed curfew hours',
+      },
+      {
+        formResponse: getIn(licence, ['reporting', 'reportingInstructions']),
+        formType: 'reportingInstructions',
+        pageConfig: reportingConfig.reportingInstructions,
+        section: 'reporting',
+        missingMessage: 'Enter the reporting instructions',
+      },
+    ],
     PROCESSING_RO_ADDRESS_REVIEW_REJECTED: [
       {
         formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),

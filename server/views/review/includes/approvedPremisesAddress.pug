@@ -1,0 +1,21 @@
+include ./itemAndError
+-var address = data.curfew && data.curfew.approvedPremisesAddress || {}
+-var errors = errorObject.curfew && errorObject.curfew.approvedPremisesAddress || {}
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    | Address
+  div.pure-u-1-2#addressDetails
+
+    +itemAndError(address.addressLine1, errors.addressLine1, "address1")
+    if address.addressLine2
+      span#address2.block.bold #{address.addressLine2}
+    +itemAndError(address.addressTown, errors.addressTown, "town")
+    +itemAndError(address.postCode, errors.postCode, "postCode")
+
+div.pure-g.midPaddingTopBottom
+  div.pure-u-1-2
+    | Contact number
+  div.pure-u-1-2
+    div
+      +itemAndError(address.telephone, errors.telephone, "telephone")

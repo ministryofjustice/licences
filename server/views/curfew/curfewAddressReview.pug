@@ -34,46 +34,12 @@ block content
                 label(for="hdcConsentNo") No
 
               div#consentForm.panel.panel-border-narrow.js-hidden
-                div.form-group
-                  p Is there an electricity supply?
-                  div.multiple-choice
-                    input#electricityYes(type="radio" checked=data.electricity === 'Yes' name="electricity" value="Yes")
-                    label(for="electricityYes") Yes
-                  div.multiple-choice
-                    input#electricityNo(type="radio" checked=data.electricity === 'No' name="electricity" value="No")
-                    label(for="electricityNo") No
-
-                div.form-group
-                  p Did you do a home visit?
-                  div.multiple-choice
-                    input#homeVisitConductedYes(type="radio" checked=data.homeVisitConducted === 'Yes' name="homeVisitConducted" value="Yes")
-                    label(for="homeVisitConductedYes") Yes
-                  div.multiple-choice
-                    input#homeVisitConductedNo(type="radio" checked=data.homeVisitConducted === 'No' name="homeVisitConducted" value="No")
-                    label(for="homeVisitConductedNo") No
+                include includes/consentForm
 
             else
               div#consentForm
-
                 h3.heading-medium Curfew address review
-
-                div.form-group
-                  p Is there an electricity supply?
-                  div.multiple-choice
-                    input#electricityYes(type="radio" checked=data.electricity === 'Yes' name="electricity" value="Yes")
-                    label(for="electricityYes") Yes
-                  div.multiple-choice
-                    input#electricityNo(type="radio" checked=data.electricity === 'No' name="electricity" value="No")
-                    label(for="electricityNo") No
-
-                div.form-group
-                  p Did you do a home visit?
-                  div.multiple-choice
-                    input#homeVisitConductedYes(type="radio" checked=data.homeVisitConducted === 'Yes' name="homeVisitConducted" value="Yes")
-                    label(for="homeVisitConductedYes") Yes
-                  div.multiple-choice
-                    input#homeVisitConductedNo(type="radio" checked=data.homeVisitConducted === 'No' name="homeVisitConducted" value="No")
-                    label(for="homeVisitConductedNo") No
+                include includes/consentForm
 
           div.form-group
             label(for='addressReviewComments') Provide details (optional)
