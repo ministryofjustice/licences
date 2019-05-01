@@ -3,6 +3,7 @@ const {
   getRoAction,
   getCaPostApprovalAction,
   getCaProcessingAction,
+  getDmAction,
 } = require('../../../../../server/routes/viewModels/taskLists/tasks/curfewAddress')
 
 describe('curfew address task', () => {
@@ -43,6 +44,24 @@ describe('curfew address task', () => {
       ).to.equal('Address checked')
     })
 
+    it('should return Approved premises label if approved premises required and done', () => {
+      expect(
+        getLabel({
+          decisions: { approvedPremisesRequired: true },
+          tasks: { approvedPremisesAddress: 'DONE' },
+        })
+      ).to.equal('Approved premises required')
+    })
+
+    it('should return incomplete label if approved premises required but not done', () => {
+      expect(
+        getLabel({
+          decisions: { approvedPremisesRequired: true },
+          tasks: { approvedPremisesAddress: 'STARTED' },
+        })
+      ).to.equal('Not completed')
+    })
+
     it('should return Not completed if none of above', () => {
       expect(
         getLabel({
@@ -54,7 +73,7 @@ describe('curfew address task', () => {
   })
 
   describe('getRoAction', () => {
-    it('should link to review page if curfewAddressRejected', () => {
+    it('should link to approvedPremises if curfewAddressRejected', () => {
       expect(
         getRoAction({
           decisions: { curfewAddressRejected: true },
@@ -62,12 +81,12 @@ describe('curfew address task', () => {
         })
       ).to.eql({
         text: 'Change',
-        href: '/hdc/curfew/curfewAddressReview/',
+        href: '/hdc/curfew/approvedPremises/',
         type: 'link',
       })
     })
 
-    it('should show btn to curfewAddressReview if curfewAddressReview: UNSTARTED', () => {
+    it('should show btn to approvedPremises if curfewAddressReview: UNSTARTED', () => {
       expect(
         getRoAction({
           decisions: {},
@@ -75,12 +94,12 @@ describe('curfew address task', () => {
         })
       ).to.eql({
         text: 'Start now',
-        href: '/hdc/curfew/curfewAddressReview/',
+        href: '/hdc/curfew/approvedPremises/',
         type: 'btn',
       })
     })
 
-    it('should show change link to curfewAddressReview if curfewAddressReview: DONE', () => {
+    it('should show change link to approvedPremises if curfewAddressReview: DONE', () => {
       expect(
         getRoAction({
           decisions: {},
@@ -88,12 +107,12 @@ describe('curfew address task', () => {
         })
       ).to.eql({
         text: 'Change',
-        href: '/hdc/curfew/curfewAddressReview/',
+        href: '/hdc/curfew/approvedPremises/',
         type: 'link',
       })
     })
 
-    it('should show continue btn to curfewAddressReview if curfewAddressReview: !DONE || UNSTARTED', () => {
+    it('should show continue btn to approvedPremises if curfewAddressReview: !DONE || UNSTARTED', () => {
       expect(
         getRoAction({
           decisions: {},
@@ -101,7 +120,7 @@ describe('curfew address task', () => {
         })
       ).to.eql({
         text: 'Continue',
-        href: '/hdc/curfew/curfewAddressReview/',
+        href: '/hdc/curfew/approvedPremises/',
         type: 'btn',
       })
     })
@@ -133,6 +152,19 @@ describe('curfew address task', () => {
         type: 'btn-secondary',
       })
     })
+
+    it('should btn to approved premises choice page if approvedPremisesRequired', () => {
+      expect(
+        getCaPostApprovalAction({
+          decisions: { approvedPremisesRequired: true },
+          tasks: {},
+        })
+      ).to.eql({
+        text: 'View/Edit',
+        href: '/hdc/curfew/approvedPremisesChoice/',
+        type: 'btn-secondary',
+      })
+    })
   })
 
   describe('getCaProcessingAction', () => {
@@ -143,35 +175,22 @@ describe('curfew address task', () => {
           tasks: { curfewAddress: 'UNSTARTED' },
         })
       ).to.eql({
-        text: 'Start now',
-        href: '/hdc/proposedAddress/curfewAddressChoice/',
-        type: 'btn',
-      })
-    })
-
-    it('should link to 3 way choice if opted out and curfew address done', () => {
-      expect(
-        getCaProcessingAction({
-          decisions: { optedOut: true },
-          tasks: { curfewAddress: 'DONE' },
-        })
-      ).to.eql({
         text: 'Change',
         href: '/hdc/proposedAddress/curfewAddressChoice/',
         type: 'link',
       })
     })
 
-    it('should continue to 3 way choice if opted out and curfew address !done or unstarted', () => {
+    it('should link to 3 way choice if opted out', () => {
       expect(
         getCaProcessingAction({
           decisions: { optedOut: true },
-          tasks: { curfewAddress: 'SOMETHING' },
+          tasks: {},
         })
       ).to.eql({
-        text: 'Continue',
+        text: 'Change',
         href: '/hdc/proposedAddress/curfewAddressChoice/',
-        type: 'btn',
+        type: 'link',
       })
     })
 
@@ -198,6 +217,34 @@ describe('curfew address task', () => {
         text: 'Change',
         href: '/hdc/review/address/',
         type: 'link',
+      })
+    })
+  })
+
+  describe('getDmAction', () => {
+    it('should link to approvedPremisesAddress if approved premises required', () => {
+      expect(
+        getDmAction({
+          decisions: { approvedPremisesRequired: true },
+          tasks: {},
+        })
+      ).to.eql({
+        text: 'View',
+        href: '/hdc/review/approvedPremisesAddress/',
+        type: 'btn-secondary',
+      })
+    })
+
+    it('should link to address if approved premises not required', () => {
+      expect(
+        getDmAction({
+          decisions: { approvedPremisesRequired: false },
+          tasks: {},
+        })
+      ).to.eql({
+        text: 'View',
+        href: '/hdc/review/address/',
+        type: 'btn-secondary',
       })
     })
   })

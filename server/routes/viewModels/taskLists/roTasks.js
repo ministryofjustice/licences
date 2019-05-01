@@ -15,6 +15,7 @@ module.exports = {
       curfewAddressRejected,
       addressReviewFailed,
       bassAreaNotSuitable,
+      approvedPremisesRequired,
     } = decisions
 
     const addressRejectedInRiskPhase = curfewAddressRejected && addressUnsuitable
@@ -39,7 +40,7 @@ module.exports = {
         title: 'Risk management',
         label: riskManagement.getLabel({ decisions, tasks }),
         action: riskManagement.getRoAction({ decisions, tasks }),
-        visible: validAddress || addressRejectedInRiskPhase,
+        visible: !approvedPremisesRequired && (validAddress || addressRejectedInRiskPhase),
       },
       {
         title: 'Victim liaison',

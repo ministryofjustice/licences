@@ -1,12 +1,15 @@
-const { viewEdit, standardAction, change } = require('./utils/actions')
+const { view, viewEdit, standardAction, change } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
-    const { optedOut, addressWithdrawn, addressReviewFailed } = decisions
-    const { curfewAddressReview } = tasks
+    const { optedOut, addressWithdrawn, addressReviewFailed, approvedPremisesRequired } = decisions
+    const { curfewAddressReview, approvedPremisesAddress } = tasks
 
     if (optedOut) {
       return 'Opted out'
+    }
+    if (approvedPremisesRequired) {
+      return approvedPremisesAddress === 'DONE' ? 'Approved premises required' : 'Not completed'
     }
     if (addressWithdrawn) {
       return 'Address withdrawn'
@@ -27,16 +30,20 @@ module.exports = {
     if (curfewAddressRejected) {
       return {
         text: 'Change',
-        href: '/hdc/curfew/curfewAddressReview/',
+        href: '/hdc/curfew/approvedPremises/',
         type: 'link',
       }
     }
 
-    return standardAction(curfewAddressReview, '/hdc/curfew/curfewAddressReview/')
+    return standardAction(curfewAddressReview, '/hdc/curfew/approvedPremises/')
   },
 
   getCaPostApprovalAction: ({ decisions }) => {
-    const { addressWithdrawn } = decisions
+    const { addressWithdrawn, approvedPremisesRequired } = decisions
+
+    if (approvedPremisesRequired) {
+      return viewEdit('/hdc/curfew/approvedPremisesChoice/')
+    }
 
     if (addressWithdrawn) {
       return viewEdit('/hdc/curfew/consentWithdrawn/')
@@ -45,13 +52,31 @@ module.exports = {
   },
 
   getCaProcessingAction: ({ decisions, tasks }) => {
-    const { optedOut } = decisions
+    const { optedOut, approvedPremisesRequired } = decisions
     const { curfewAddress } = tasks
 
-    if (optedOut || curfewAddress === 'UNSTARTED') {
+    if (optedOut) {
+      return change('/hdc/proposedAddress/curfewAddressChoice/')
+    }
+
+    if (approvedPremisesRequired) {
+      return viewEdit('/hdc/curfew/approvedPremisesChoice/')
+    }
+
+    if (curfewAddress === 'UNSTARTED') {
       return standardAction(curfewAddress, '/hdc/proposedAddress/curfewAddressChoice/')
     }
 
     return change('/hdc/review/address/')
+  },
+
+  getDmAction: ({ decisions }) => {
+    const { approvedPremisesRequired } = decisions
+
+    if (approvedPremisesRequired) {
+      return view('/hdc/review/approvedPremisesAddress/')
+    }
+
+    return view('/hdc/review/address/')
   },
 }

@@ -16,6 +16,7 @@ module.exports = ({ decisions, tasks, stage }) => {
     curfewAddressRejected,
     bassReferralNeeded,
     confiscationOrder,
+    approvedPremisesRequired,
   } = decisions
 
   if (insufficientTimeStop) {
@@ -78,11 +79,7 @@ module.exports = ({ decisions, tasks, stage }) => {
     {
       title: 'Proposed curfew address',
       label: curfewAddress.getLabel({ decisions, tasks }),
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/review/address/',
-        text: 'View',
-      },
+      action: curfewAddress.getDmAction({ decisions }),
     },
     {
       title: 'Risk management',
@@ -171,6 +168,10 @@ module.exports = ({ decisions, tasks, stage }) => {
 
     if (task.title === 'Postpone') {
       return confiscationOrder
+    }
+
+    if (task.title === 'Risk management') {
+      return !approvedPremisesRequired
     }
 
     return true
