@@ -387,12 +387,21 @@ module.exports = function createLicenceService(licenceClient) {
   }
 
   function validateFormGroup({ licence, stage, decisions = {}, tasks = {} } = {}) {
-    const { addressUnsuitable, bassAreaNotSuitable, bassReferralNeeded, addressReviewFailed } = decisions
+    const {
+      addressUnsuitable,
+      bassAreaNotSuitable,
+      bassReferralNeeded,
+      addressReviewFailed,
+      approvedPremisesRequired,
+    } = decisions
     const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED'
     const newBassAreaAddedForReview = stage !== 'PROCESSING_RO' && tasks.bassAreaCheck === 'UNSTARTED'
 
     const groupName = () => {
       if (stage === 'PROCESSING_RO') {
+        if (approvedPremisesRequired) {
+          return 'PROCESSING_RO_APPROVED_PREMISES'
+        }
         if (addressReviewFailed) {
           return 'PROCESSING_RO_ADDRESS_REVIEW_REJECTED'
         }

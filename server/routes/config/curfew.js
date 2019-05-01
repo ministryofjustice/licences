@@ -1,4 +1,77 @@
 module.exports = {
+  approvedPremises: {
+    pageDataMap: ['licence'],
+    fields: [
+      {
+        required: {
+          validationMessage: 'Say if the offender should be sent to approved premises',
+        },
+      },
+    ],
+    nextPath: {
+      decisions: [
+        {
+          discriminator: 'required',
+          No: {
+            path: '/hdc/curfew/curfewAddressReview/',
+            change: '/hdc/curfew/curfewAddressReview/change/',
+          },
+          Yes: {
+            path: '/hdc/curfew/approvedPremisesAddress/',
+            change: '/hdc/curfew/approvedPremisesAddress/change/',
+          },
+        },
+      ],
+      path: '/hdc/curfew/approvedPremisesAddress/',
+      change: '/hdc/curfew/approvedPremisesAddress/change/',
+    },
+  },
+  approvedPremisesAddress: {
+    licenceSection: 'approvedPremisesAddress',
+    validate: true,
+    fields: [
+      {
+        addressLine1: {
+          responseType: 'requiredString',
+          validationMessage: 'Enter an address',
+        },
+      },
+      {
+        addressLine2: {
+          responseType: 'optionalString',
+        },
+      },
+      {
+        addressTown: {
+          responseType: 'requiredString',
+          validationMessage: 'Enter a town or city',
+        },
+      },
+      {
+        postCode: {
+          responseType: 'requiredPostcode',
+          validationMessage: 'Enter a postcode',
+        },
+      },
+      {
+        telephone: {
+          responseType: 'optionalPhone',
+        },
+      },
+    ],
+    nextPath: {
+      path: '/hdc/taskList/',
+      change: '/hdc/review/licenceDetails/',
+    },
+  },
+  approvedPremisesChoice: {
+    pageDataMap: ['licence'],
+    nextPath: {
+      discriminator: 'decision',
+      ApprovedPremises: '/hdc/curfew/approvedPremisesAddress/',
+      OptOut: '/hdc/taskList/',
+    },
+  },
   curfewAddressReview: {
     pageDataMap: ['licence'],
     fields: [

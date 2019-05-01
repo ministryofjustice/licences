@@ -1631,6 +1631,20 @@ describe('licenceService', () => {
       })
     })
 
+    it('should use correct group when approvedPremisesRequired', () => {
+      const decisions = {
+        approvedPremisesRequired: true,
+      }
+
+      service.validateFormGroup({ licence: {}, stage: 'PROCESSING_RO', decisions, tasks: {} })
+
+      expect(validateGroupStub).to.be.calledOnce()
+      expect(validateGroupStub).to.be.calledWith({
+        licence: {},
+        group: 'PROCESSING_RO_APPROVED_PREMISES',
+        bespokeConditions: { offenderIsMainOccupier: undefined },
+      })
+    })
     it('should use correct group when new address for review', () => {
       service.validateFormGroup({
         licence: {},

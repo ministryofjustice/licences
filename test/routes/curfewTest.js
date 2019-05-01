@@ -8,6 +8,7 @@ const {
   appSetup,
   testFormPageGets,
   createSignInServiceStub,
+  createNomisPushServiceStub,
 } = require('../supertestSetup')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -66,6 +67,38 @@ describe('/hdc/curfew', () => {
         url: '/hdc/curfew/consentWithdrawn/1',
         content: 'The landlord/homeowner has withdrawn consent',
         user: 'caUser',
+      },
+    ]
+
+    testFormPageGets(app, routes, licenceService)
+  })
+
+  describe('approved premises routes', () => {
+    const licenceService = createLicenceServiceStub()
+    licenceService.getLicence = sinon.stub().resolves({
+      licence: {
+        curfew: {
+          approvedPremises: {
+            approvedPremisesRequired: true,
+          },
+          approvedPremisesAddress: {
+            addressLine1: 'address1',
+          },
+        },
+      },
+    })
+    const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+
+    const routes = [
+      {
+        url: '/hdc/curfew/approvedPremises/1',
+        content: 'Does the offender need to be sent to approved premises',
+        user: 'roUser',
+      },
+      {
+        url: '/hdc/curfew/approvedPremisesAddress/1',
+        content: 'name="addressLine1" value="address1"',
+        user: 'roUser',
       },
     ]
 
@@ -380,10 +413,11 @@ describe('/hdc/curfew', () => {
   })
 })
 
-function createApp({ licenceServiceStub, prisonerServiceStub }, user) {
+function createApp({ licenceServiceStub, prisonerServiceStub, nomisPushServiceStub }, user, config = {}) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
@@ -391,8 +425,9 @@ function createApp({ licenceServiceStub, prisonerServiceStub }, user) {
     authenticationMiddleware,
     audit: auditStub,
     signInService,
+    config,
   })
-  const route = baseRouter(createRoute({ licenceService }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
 
   return appSetup(route, user, '/hdc/curfew')
 }
