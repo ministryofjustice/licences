@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.licences.pages.assessment
 
 import geb.Page
+import uk.gov.justice.digital.hmpps.licences.modules.AddressDetailsModule
+import uk.gov.justice.digital.hmpps.licences.modules.ApprovedPremisesModule
 import uk.gov.justice.digital.hmpps.licences.modules.BassRequestModule
 import uk.gov.justice.digital.hmpps.licences.modules.ConditionsSummaryModule
 import uk.gov.justice.digital.hmpps.licences.modules.CurfewDetailsModule
@@ -32,6 +34,8 @@ class LicenceDetailsPage extends Page {
     reporting { module(ReportingDetailsModule) }
 
     bass { module(BassRequestModule) }
+
+    approvedPremises { module(ApprovedPremisesModule) }
 
     changeDetailsLink { section ->
       $("#${section}EditLink")

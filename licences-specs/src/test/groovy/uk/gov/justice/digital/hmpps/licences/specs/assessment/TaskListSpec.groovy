@@ -6,6 +6,7 @@ import spock.lang.Stepwise
 import spock.lang.Unroll
 import uk.gov.justice.digital.hmpps.Stage
 import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.ApprovedPremisesPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.BassAreaCheckPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewAddressReviewPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceDetailsPage
@@ -110,7 +111,7 @@ class TaskListSpec extends GebReportingSpec {
 
     where:
     task             | page
-    tasks.address    | CurfewAddressReviewPage
+    tasks.address    | ApprovedPremisesPage
     tasks.conditions | LicenceConditionsStandardPage
     tasks.risk       | RiskManagementPage
     tasks.victim     | VictimLiaisonPage
@@ -190,6 +191,7 @@ class TaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see only the address and submit tasks'
+    taskListActions.size() == 2
     taskListAction(tasks.address).text() == 'Change'
     taskListAction(tasks.submit).text() == 'Continue'
   }
@@ -218,6 +220,7 @@ class TaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see only the BASS and submit tasks'
+    // taskListActions.size() == 2 BROKEN? What is the real spec?
     taskListAction(tasks.bass).text() == 'Change'
     taskListAction(tasks.submit).text() == 'Continue'
   }
@@ -262,6 +265,18 @@ class TaskListSpec extends GebReportingSpec {
     bass.proposed.county == 'BASS County'
     bass.area.bassAreaSuitable == 'No'
     bass.area.bassAreaReason == 'Reason'
+  }
+
+  def 'When Approved Premises required, does not show risk task'() {
+
+    given: 'approved premises required'
+    testData.loadLicence('assessment/approved-premises')
+
+    when: 'I view the tasklist'
+    to TaskListPage, testData.markAndrewsBookingId
+
+    then: 'The risk task is not shown'
+    taskListActions.size() == 6
   }
 }
 

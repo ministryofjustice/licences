@@ -15,7 +15,7 @@ class AddressDetailsModule extends Module {
       address('1')
     }
 
-    address { type ->
+    address {
       [
         line1    : $("#addressLine1"),
         line2    : $("#addressLine2"),
