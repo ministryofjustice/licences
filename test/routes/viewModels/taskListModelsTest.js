@@ -432,7 +432,7 @@ describe('TaskList models', () => {
       ])
     })
 
-    it('should show risk if adderss unsuitable', () => {
+    it('should show risk if address unsuitable', () => {
       expect(
         taskListModel(
           'CA',
@@ -616,14 +616,9 @@ describe('TaskList models', () => {
           {
             decisions: {
               curfewAddressApproved: false,
-              bassReferralNeeded: true,
-              bassWithdrawn: false,
-              bassAccepted: null,
               optedOut: true,
             },
-            tasks: {
-              bassAreaCheck: 'DONE',
-            },
+            tasks: {},
             stage: 'PROCESSING_CA',
           },
           {},
@@ -631,82 +626,12 @@ describe('TaskList models', () => {
         )
       ).to.eql([
         {
-          title: 'BASS address',
-          label: 'BASS referral requested',
+          title: 'Proposed curfew address',
+          label: 'Opted out',
           action: {
-            href: '/hdc/bassReferral/bassOffer/',
-            text: 'Continue',
-            type: 'btn',
-          },
-          visible: true,
-        },
-        {
-          action: {
-            href: '/hdc/risk/riskManagement/',
-            text: 'View/Edit',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Risk management',
-          visible: true,
-        },
-        {
-          action: {
-            href: '/hdc/victim/victimLiaison/',
-            text: 'View/Edit',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Victim liaison',
-          visible: true,
-        },
-        {
-          action: {
-            href: '/hdc/curfew/curfewHours/',
-            text: 'View/Edit',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Curfew hours',
-          visible: true,
-        },
-        {
-          action: {
-            href: '/hdc/review/conditions/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Additional conditions',
-          visible: true,
-        },
-        {
-          action: {
-            href: '/hdc/review/reporting/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Reporting instructions',
-          visible: true,
-        },
-        {
-          action: {
-            href: '/hdc/finalChecks/seriousOffence/',
-            text: 'Continue',
-            type: 'btn',
-          },
-          label: 'Not completed',
-          title: 'Review case',
-          visible: true,
-        },
-        {
-          title: 'Postpone or refuse',
-          label: "Postpone the case if you're waiting for information on risk management",
-          action: {
-            href: '/hdc/finalChecks/postpone/',
-            text: 'Postpone',
-            type: 'btn',
+            href: '/hdc/proposedAddress/curfewAddressChoice/',
+            text: 'Change',
+            type: 'link',
           },
           visible: true,
         },
@@ -1238,6 +1163,108 @@ describe('TaskList models', () => {
         },
       ])
     })
+
+    it('should return list of tasks excluding risk when approved premises required', () => {
+      expect(
+        taskListModel(
+          'CA',
+          false,
+          {
+            decisions: {
+              eligible: true,
+              approvedPremisesRequired: true,
+              bassReferralNeeded: false,
+              bassWithdrawn: false,
+              bassExcluded: false,
+              bassAccepted: null,
+              optedOut: false,
+              dmRefused: false,
+              excluded: false,
+            },
+            tasks: {
+              approvedPremisesAddress: 'DONE',
+            },
+            stage: 'DECIDED',
+          },
+          {},
+          null
+        )
+      ).to.eql([
+        { task: 'eligibilitySummaryTask', visible: true },
+        {
+          action: {
+            href: '/hdc/curfew/approvedPremisesChoice/',
+            text: 'View/Edit',
+            type: 'btn-secondary',
+          },
+          label: 'Approved premises required',
+          title: 'Proposed curfew address',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/victim/victimLiaison/',
+            text: 'View/Edit',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Victim liaison',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/curfew/curfewHours/',
+            text: 'View/Edit',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Curfew hours',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/licenceConditions/standard/',
+            text: 'View/Edit',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Additional conditions',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/reporting/reportingInstructions/',
+            text: 'View/Edit',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Reporting instructions',
+          visible: true,
+        },
+        { task: 'finalChecksTask', visible: true },
+        {
+          title: 'Postpone or refuse',
+          label: "Postpone the case if you're waiting for information on risk management",
+          action: {
+            href: '/hdc/finalChecks/postpone/',
+            text: 'Postpone',
+            type: 'btn',
+          },
+          visible: true,
+        },
+        {
+          label: 'Refuse the case if there is no available address or not enough time',
+          title: null,
+          action: { type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/' },
+          visible: true,
+        },
+        {
+          action: null,
+          title: 'Create licence',
+          visible: true,
+        },
+      ])
+    })
   })
 
   describe('roTasksPostApproval', () => {
@@ -1524,7 +1551,7 @@ describe('TaskList models', () => {
       ).to.eql([
         {
           action: {
-            href: '/hdc/curfew/curfewAddressReview/',
+            href: '/hdc/curfew/approvedPremises/',
             text: 'Continue',
             type: 'btn',
           },
@@ -1707,7 +1734,7 @@ describe('TaskList models', () => {
       ).to.eql([
         {
           action: {
-            href: '/hdc/curfew/curfewAddressReview/',
+            href: '/hdc/curfew/approvedPremises/',
             text: 'Change',
             type: 'link',
           },
@@ -1795,6 +1822,79 @@ describe('TaskList models', () => {
           },
           label: 'Not completed',
           title: 'BASS area check',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/review/licenceDetails/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          title: 'Submit to prison case admin',
+          label: 'Ready to submit',
+          visible: true,
+        },
+      ])
+    })
+
+    it('should show all tasks except risk if approved premises required', () => {
+      expect(
+        taskListModel(
+          'RO',
+          false,
+          { decisions: { approvedPremisesRequired: true }, tasks: {}, stage: 'PROCESSING_RO' },
+          {},
+          'roToCa'
+        )
+      ).to.eql([
+        {
+          action: {
+            href: '/hdc/curfew/approvedPremises/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Proposed curfew address',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/victim/victimLiaison/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Victim liaison',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/curfew/curfewHours/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Curfew hours',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/licenceConditions/standard/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Additional conditions',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/reporting/reportingInstructions/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Reporting instructions',
           visible: true,
         },
         {
@@ -2005,6 +2105,92 @@ describe('TaskList models', () => {
           null
         )
       ).to.eql([bass, risk, victim, curfew, conditions, reporting, review, returnPCA, release])
+    })
+
+    it('should display standard tasks if approvedPremisesRequired', () => {
+      expect(
+        taskListModel(
+          'DM',
+          false,
+          {
+            decisions: {
+              insufficientTimeStop: false,
+              approvedPremisesRequired: true,
+              addressWithdrawn: false,
+              curfewAddressRejected: false,
+              curfewAddressApproved: false,
+            },
+            tasks: {},
+            stage: 'APPROVAL',
+          },
+          {},
+          null
+        )
+      ).to.eql([
+        {
+          action: {
+            href: '/hdc/review/approvedPremisesAddress/',
+            text: 'View',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Proposed curfew address',
+        },
+        {
+          action: {
+            href: '/hdc/review/victimLiaison/',
+            text: 'View',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Victim liaison',
+        },
+        {
+          action: {
+            href: '/hdc/review/curfewHours/',
+            text: 'View',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Curfew hours',
+        },
+        {
+          action: {
+            href: '/hdc/review/conditions/',
+            text: 'View',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Additional conditions',
+        },
+        {
+          action: {
+            href: '/hdc/review/reporting/',
+            text: 'View',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Reporting instructions',
+        },
+        { task: 'finalChecksTask' },
+        {
+          action: {
+            href: '/hdc/send/return/',
+            text: 'Return to prison case admin',
+            type: 'btn-secondary',
+          },
+          title: 'Return to prison case admin',
+        },
+        {
+          action: {
+            href: '/hdc/approval/release/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not started',
+          title: 'Final decision',
+        },
+      ])
     })
 
     it('should display postponement if confiscationOrder is true', () => {

@@ -72,6 +72,7 @@ module.exports = {
       bassReferralNeeded,
       bassWithdrawn,
       bassAccepted,
+      approvedPremisesRequired,
       curfewAddressApproved,
       addressUnsuitable,
       optedOut,
@@ -81,6 +82,8 @@ module.exports = {
     const bassAreaChecked = bassAreaCheck === 'DONE'
     const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted)
     const bassChecksDone = bassReferralNeeded && bassAreaChecked && !bassWithdrawn && !bassExcluded
+
+    const validAddress = approvedPremisesRequired || curfewAddressApproved || bassChecksDone
 
     return [
       {
@@ -109,7 +112,8 @@ module.exports = {
           href: '/hdc/risk/riskManagement/',
           text: 'View/Edit',
         },
-        visible: curfewAddressApproved || bassChecksDone || addressUnsuitable,
+        visible:
+          (!optedOut && !approvedPremisesRequired && curfewAddressApproved) || addressUnsuitable || bassChecksDone,
       },
       {
         title: 'Victim liaison',
@@ -119,7 +123,7 @@ module.exports = {
           href: '/hdc/victim/victimLiaison/',
           text: 'View/Edit',
         },
-        visible: curfewAddressApproved || bassChecksDone,
+        visible: !optedOut && validAddress,
       },
       {
         title: 'Curfew hours',
@@ -129,7 +133,7 @@ module.exports = {
           href: '/hdc/curfew/curfewHours/',
           text: 'View/Edit',
         },
-        visible: curfewAddressApproved || bassChecksDone,
+        visible: !optedOut && validAddress,
       },
       {
         title: 'Additional conditions',
@@ -139,7 +143,7 @@ module.exports = {
           href: '/hdc/review/conditions/',
           text: 'View',
         },
-        visible: curfewAddressApproved || bassChecksDone,
+        visible: !optedOut && validAddress,
       },
       {
         title: 'Reporting instructions',
@@ -149,19 +153,19 @@ module.exports = {
           href: '/hdc/review/reporting/',
           text: 'View',
         },
-        visible: curfewAddressApproved || bassChecksDone,
+        visible: !optedOut && validAddress,
       },
       {
         title: 'Review case',
         label: finalChecks.getLabel({ decisions, tasks }),
         action: finalChecks.getCaProcessingAction({ decisions, tasks }),
-        visible: curfewAddressApproved || bassChecksDone,
+        visible: !optedOut && validAddress,
       },
       {
         title: 'Postpone or refuse',
         label: postponement.getLabel({ decisions, tasks }),
         action: postponement.getAction({ decisions, tasks }),
-        visible: curfewAddressApproved || bassChecksDone,
+        visible: !optedOut && validAddress,
       },
       {
         title: null,
@@ -199,6 +203,7 @@ module.exports = {
   getCaTasksPostApproval: stage => ({ decisions, tasks, allowedTransition }) => {
     const {
       curfewAddressApproved,
+      approvedPremisesRequired,
       addressUnsuitable,
       eligible,
       bassReferralNeeded,
@@ -212,10 +217,12 @@ module.exports = {
     const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted)
     const bassOfferMade = bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
 
+    const validAddress = approvedPremisesRequired || curfewAddressApproved || bassOfferMade
+
     return [
       {
         task: 'eligibilitySummaryTask',
-        visible: curfewAddressApproved || bassOfferMade,
+        visible: validAddress,
       },
       {
         title: 'Curfew address',
@@ -243,7 +250,7 @@ module.exports = {
           href: '/hdc/risk/riskManagement/',
           text: 'View/Edit',
         },
-        visible: eligible && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
+        visible: !approvedPremisesRequired && eligible && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
       },
       {
         title: 'Victim liaison',
@@ -253,7 +260,7 @@ module.exports = {
           href: '/hdc/victim/victimLiaison/',
           text: 'View/Edit',
         },
-        visible: eligible && (curfewAddressApproved || bassOfferMade),
+        visible: eligible && validAddress,
       },
       {
         title: 'Curfew hours',
@@ -263,7 +270,7 @@ module.exports = {
           href: '/hdc/curfew/curfewHours/',
           text: 'View/Edit',
         },
-        visible: eligible && (curfewAddressApproved || bassOfferMade),
+        visible: eligible && validAddress,
       },
       {
         title: 'Additional conditions',
@@ -273,7 +280,7 @@ module.exports = {
           href: '/hdc/licenceConditions/standard/',
           text: 'View/Edit',
         },
-        visible: eligible && (curfewAddressApproved || bassOfferMade),
+        visible: eligible && validAddress,
       },
       {
         title: 'Reporting instructions',
@@ -283,19 +290,19 @@ module.exports = {
           href: '/hdc/reporting/reportingInstructions/',
           text: 'View/Edit',
         },
-        visible: eligible && (curfewAddressApproved || bassOfferMade),
+        visible: eligible && validAddress,
       },
       {
         title: 'Review case',
         label: finalChecks.getLabel({ decisions, tasks }),
         action: finalChecks.getCaProcessingAction({ decisions, tasks }),
-        visible: eligible && (curfewAddressApproved || bassOfferMade),
+        visible: eligible && validAddress,
       },
       {
         title: 'Postpone or refuse',
         label: postponement.getLabel({ decisions, tasks }),
         action: postponement.getAction({ decisions, tasks }),
-        visible: eligible && (curfewAddressApproved || bassOfferMade),
+        visible: eligible && validAddress,
       },
       {
         title: null,
@@ -330,10 +337,7 @@ module.exports = {
       {
         title: 'Create licence',
         action: createLicence.getCaAction({ decisions, tasks, stage }),
-        visible:
-          eligible &&
-          (curfewAddressApproved || bassOfferMade) &&
-          !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition),
+        visible: eligible && validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition),
       },
       {
         task: 'informOffenderTask',
