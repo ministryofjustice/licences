@@ -216,6 +216,9 @@ describe('getLicenceStatus', () => {
               electricity: 'Yes',
               homeVisitConducted: 'Yes',
             },
+            approvedPremises: {
+              approvedPremisesRequireed: 'No',
+            },
           },
           risk: {
             riskManagement: {
@@ -290,6 +293,7 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.refusalReason).to.eql(
         'No available address, address unsuitable, out of time, insufficient time'
       )
+      expect(status.decisions.approvedPremisesRequired).to.eql(false)
     })
 
     it('should show refusal reason if not in array', () => {
@@ -397,6 +401,7 @@ describe('getLicenceStatus', () => {
       expect(status.tasks.finalChecks).to.eql(taskStates.UNSTARTED)
       expect(status.tasks.approval).to.eql(taskStates.UNSTARTED)
       expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED)
+      expect(status.tasks.approvedPremisesAddress).to.eql(taskStates.UNSTARTED)
     })
 
     it('should show tasks UNSTARTED when task data missing', () => {
@@ -428,6 +433,7 @@ describe('getLicenceStatus', () => {
       expect(status.tasks.finalChecks).to.eql(taskStates.UNSTARTED)
       expect(status.tasks.approval).to.eql(taskStates.UNSTARTED)
       expect(status.tasks.createLicence).to.eql(taskStates.UNSTARTED)
+      expect(status.tasks.approvedPremisesAddress).to.eql(taskStates.UNSTARTED)
     })
 
     it('should show tasks STARTED when task data incomplete for tasks that can be STARTED', () => {
@@ -443,6 +449,12 @@ describe('getLicenceStatus', () => {
             curfewAddressReview: {
               consent: 'Yes',
               homeVisitConducted: 'Yes',
+            },
+            approvedPremises: {
+              required: 'Yes',
+            },
+            approvedPremisesAddress: {
+              postCode: '1',
             },
           },
           bassReferral: {
@@ -488,6 +500,7 @@ describe('getLicenceStatus', () => {
       expect(status.tasks.licenceConditions).to.eql(taskStates.STARTED)
       expect(status.tasks.riskManagement).to.eql(taskStates.STARTED)
       expect(status.tasks.finalChecks).to.eql(taskStates.STARTED)
+      expect(status.tasks.approvedPremisesAddress).to.eql(taskStates.STARTED)
     })
 
     it('should show tasks DONE when task data complete', () => {
@@ -546,6 +559,14 @@ describe('getLicenceStatus', () => {
               consent: 'Yes',
               electricity: 'Yes',
               homeVisitConducted: 'Yes',
+            },
+            approvedPremises: {
+              required: 'Yes',
+            },
+            approvedPremisesAddress: {
+              addressLine1: '1',
+              addressTown: '1',
+              postCode: '1',
             },
           },
           licenceConditions: {
@@ -619,6 +640,7 @@ describe('getLicenceStatus', () => {
       expect(status.tasks.finalChecks).to.eql(taskStates.DONE)
       expect(status.tasks.approval).to.eql(taskStates.DONE)
       expect(status.tasks.createLicence).to.eql(taskStates.DONE)
+      expect(status.tasks.approvedPremisesAddress).to.eql(taskStates.DONE)
     })
   })
 
@@ -816,122 +838,221 @@ describe('getLicenceStatus', () => {
       })
     })
 
-    it('should show address review APPROVED when consent, electricity and curfewAddressApproved are Yes', () => {
-      const licence = {
-        stage: 'PROCESSING_CA',
-        licence: {
-          proposedAddress: {
-            curfewAddress: {
-              addressLine1: 'address',
+    context('bass address RO task', () => {
+      it('should show bassAreaCheck UNSTARTED when empty', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            bassReferral: {
+              bassAreaCheck: {},
             },
           },
-          curfew: {
-            curfewHours: 'anything',
-            curfewAddressReview: {
-              consent: 'Yes',
-              electricity: 'Yes',
-              homeVisitConducted: 'No',
-            },
-          },
-          risk: {
-            riskManagement: {
-              proposedAddressSuitable: 'Yes',
-            },
-          },
-        },
-      }
+        }
 
-      const status = getLicenceStatus(licence)
+        const status = getLicenceStatus(licence)
 
-      expect(status.decisions.curfewAddressApproved).to.eql(true)
-    })
+        expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED)
+        expect(status.decisions.bassAreaSuitable).to.eql(undefined)
+      })
 
-    it('should show address review WITHDRAWN when in rejections list', () => {
-      const licence = {
-        stage: 'PROCESSING_CA',
-        licence: {
-          proposedAddress: {
-            curfewAddress: {},
-            rejections: [
-              {
-                address: {
-                  addressLine1: 'line1',
-                },
-                addressReview: {
-                  curfewAddressReview: {
-                    consent: 'Yes',
-                    electricity: 'Yes',
-                    homeVisitConducted: 'Yes',
-                  },
-                },
-                withdrawalReason: 'withdrawAddress',
+      it('should show bassAreaCheck STARTED when unsuitable and no reason', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            bassReferral: {
+              bassAreaCheck: {
+                bassAreaSuitable: 'No',
               },
-            ],
-          },
-          risk: {
-            riskManagement: {
-              proposedAddressSuitable: 'Yes',
             },
           },
-          curfew: {
-            curfewHours: 'anything',
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.bassAreaCheck).to.eql(taskStates.STARTED)
+        expect(status.decisions.bassAreaSuitable).to.eql(false)
+      })
+
+      it('should show bassAreaCheck DONE when unsuitable with reason', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            bassReferral: {
+              bassAreaCheck: {
+                bassAreaSuitable: 'No',
+                bassAreaReason: 'reason',
+              },
+            },
           },
-        },
-      }
+        }
 
-      const status = getLicenceStatus(licence)
+        const status = getLicenceStatus(licence)
 
-      expect(status.decisions.addressWithdrawn).to.eql(true)
+        expect(status.tasks.bassAreaCheck).to.eql(taskStates.DONE)
+        expect(status.decisions.bassAreaNotSuitable).to.eql(true)
+      })
     })
 
-    it('should show address review REJECTED when address is not suitable', () => {
-      const licence = {
-        stage: 'PROCESSING_CA',
-        licence: {
-          proposedAddress: {
-            curfewAddress: {
-              addressLine1: 'address',
+    context('Approved Premises address', () => {
+      it('should be UNSTARTED when empty', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            curfew: {
+              approvedPremises: {
+                required: 'Yes',
+              },
+              approvedPremisesAddress: {},
             },
           },
-          curfew: {
-            curfewHours: 'anything',
-            curfewAddressReview: {
-              consent: 'Yes',
-              electricity: 'Yes',
-              homeVisitConducted: 'No',
+        }
+        const status = getLicenceStatus(licence)
+        expect(status.tasks.approvedPremisesAddress).to.eql(taskStates.UNSTARTED)
+      })
+      it('should be UNSTARTED when approved premises not required', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            curfew: {
+              approvedPremises: {
+                required: 'No',
+              },
+              approvedPremisesAddress: {
+                addressLine1: '1',
+                addressTown: '1',
+                postCode: '1',
+              },
             },
           },
-          risk: {
-            riskManagement: {
-              proposedAddressSuitable: 'No',
+        }
+        const status = getLicenceStatus(licence)
+        expect(status.tasks.approvedPremisesAddress).to.eql(taskStates.UNSTARTED)
+      })
+      it('should be STARTED if some present', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            curfew: {
+              approvedPremises: {
+                required: 'Yes',
+              },
+              approvedPremisesAddress: {
+                addressLine1: '1',
+              },
             },
           },
-        },
-      }
-
-      const status = getLicenceStatus(licence)
-
-      expect(status.decisions.curfewAddressRejected).to.eql(true)
-      expect(status.decisions.addressReviewFailed).to.eql(false)
-      expect(status.decisions.addressUnsuitable).to.eql(true)
+        }
+        const status = getLicenceStatus(licence)
+        expect(status.tasks.approvedPremisesAddress).to.eql(taskStates.STARTED)
+      })
+      it('should be DONE when all mandatory present', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            curfew: {
+              approvedPremises: {
+                required: 'Yes',
+              },
+              approvedPremisesAddress: {
+                addressLine1: '1',
+                addressTown: '1',
+                postCode: '1',
+              },
+            },
+          },
+        }
+        const status = getLicenceStatus(licence)
+        expect(status.tasks.approvedPremisesAddress).to.eql(taskStates.DONE)
+      })
     })
+  })
 
-    it('should show address review UNSTARTED when there are active addresses', () => {
-      const licence = {
-        stage: 'PROCESSING_CA',
-        licence: {
-          proposedAddress: {
-            curfewAddress: {
-              addresses: [
+  context('PROCESSING_CA', () => {
+    context('final checks address review', () => {
+      it('should show address review APPROVED when consent, electricity and curfewAddressApproved are Yes', () => {
+        const licence = {
+          stage: 'PROCESSING_CA',
+          licence: {
+            proposedAddress: {
+              curfewAddress: {
+                addressLine1: 'address',
+              },
+            },
+            curfew: {
+              curfewHours: 'anything',
+              curfewAddressReview: {
+                consent: 'Yes',
+                electricity: 'Yes',
+                homeVisitConducted: 'No',
+              },
+            },
+            risk: {
+              riskManagement: {
+                proposedAddressSuitable: 'Yes',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.decisions.curfewAddressApproved).to.eql(true)
+      })
+
+      it('should show address review WITHDRAWN when in rejections list', () => {
+        const licence = {
+          stage: 'PROCESSING_CA',
+          licence: {
+            proposedAddress: {
+              curfewAddress: {},
+              rejections: [
                 {
-                  consent: 'Yes',
-                  electricity: 'Yes',
-                  homeVisitConducted: 'No',
-                },
-                {
-                  addressLine1: 'a',
+                  address: {
+                    addressLine1: 'line1',
+                  },
+                  addressReview: {
+                    curfewAddressReview: {
+                      consent: 'Yes',
+                      electricity: 'Yes',
+                      homeVisitConducted: 'Yes',
+                    },
+                  },
+                  withdrawalReason: 'withdrawAddress',
                 },
               ],
+            },
+            risk: {
+              riskManagement: {
+                proposedAddressSuitable: 'Yes',
+              },
+            },
+            curfew: {
+              curfewHours: 'anything',
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.decisions.addressWithdrawn).to.eql(true)
+      })
+
+      it('should show address review REJECTED when address is not suitable', () => {
+        const licence = {
+          stage: 'PROCESSING_CA',
+          licence: {
+            proposedAddress: {
+              curfewAddress: {
+                addressLine1: 'address',
+              },
+            },
+            curfew: {
+              curfewHours: 'anything',
+              curfewAddressReview: {
+                consent: 'Yes',
+                electricity: 'Yes',
+                homeVisitConducted: 'No',
+              },
             },
             risk: {
               riskManagement: {
@@ -939,68 +1060,48 @@ describe('getLicenceStatus', () => {
               },
             },
           },
-          curfew: {
-            curfewHours: 'anything',
-          },
-        },
-      }
+        }
 
-      const status = getLicenceStatus(licence)
+        const status = getLicenceStatus(licence)
 
-      expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED)
-    })
+        expect(status.decisions.curfewAddressRejected).to.eql(true)
+        expect(status.decisions.addressReviewFailed).to.eql(false)
+        expect(status.decisions.addressUnsuitable).to.eql(true)
+      })
 
-    it('should show bassAreaCheck UNSTARTED when empty', () => {
-      const licence = {
-        stage: 'PROCESSING_RO',
-        licence: {
-          bassReferral: {
-            bassAreaCheck: {},
-          },
-        },
-      }
-
-      const status = getLicenceStatus(licence)
-
-      expect(status.tasks.bassAreaCheck).to.eql(taskStates.UNSTARTED)
-      expect(status.decisions.bassAreaSuitable).to.eql(undefined)
-    })
-
-    it('should show bassAreaCheck STARTED when unsuitable and no reason', () => {
-      const licence = {
-        stage: 'PROCESSING_RO',
-        licence: {
-          bassReferral: {
-            bassAreaCheck: {
-              bassAreaSuitable: 'No',
+      it('should show address review UNSTARTED when there are active addresses', () => {
+        const licence = {
+          stage: 'PROCESSING_CA',
+          licence: {
+            proposedAddress: {
+              curfewAddress: {
+                addresses: [
+                  {
+                    consent: 'Yes',
+                    electricity: 'Yes',
+                    homeVisitConducted: 'No',
+                  },
+                  {
+                    addressLine1: 'a',
+                  },
+                ],
+              },
+              risk: {
+                riskManagement: {
+                  proposedAddressSuitable: 'No',
+                },
+              },
+            },
+            curfew: {
+              curfewHours: 'anything',
             },
           },
-        },
-      }
+        }
 
-      const status = getLicenceStatus(licence)
+        const status = getLicenceStatus(licence)
 
-      expect(status.tasks.bassAreaCheck).to.eql(taskStates.STARTED)
-      expect(status.decisions.bassAreaSuitable).to.eql(false)
-    })
-
-    it('should show bassAreaCheck DONE when unsuitable with reason', () => {
-      const licence = {
-        stage: 'PROCESSING_RO',
-        licence: {
-          bassReferral: {
-            bassAreaCheck: {
-              bassAreaSuitable: 'No',
-              bassAreaReason: 'reason',
-            },
-          },
-        },
-      }
-
-      const status = getLicenceStatus(licence)
-
-      expect(status.tasks.bassAreaCheck).to.eql(taskStates.DONE)
-      expect(status.decisions.bassAreaNotSuitable).to.eql(true)
+        expect(status.tasks.curfewAddressReview).to.eql(taskStates.UNSTARTED)
+      })
     })
   })
 
