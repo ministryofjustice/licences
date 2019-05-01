@@ -14,6 +14,7 @@ const caSubmitBassReview = require('../taskLists/tasks/caSubmitBassReview')
 const caSubmitApproval = require('../taskLists/tasks/caSubmitApproval')
 const hdcRefusal = require('../taskLists/tasks/hdcRefusal')
 const createLicence = require('../taskLists/tasks/createLicence')
+const finalChecks = require('./tasks/finalChecks')
 
 module.exports = {
   getCaTasksEligibility: ({ decisions, tasks, allowedTransition }) => {
@@ -151,7 +152,9 @@ module.exports = {
         visible: curfewAddressApproved || bassChecksDone,
       },
       {
-        task: 'finalChecksTask',
+        title: 'Review case',
+        label: finalChecks.getLabel({ decisions, tasks }),
+        action: finalChecks.getCaProcessingAction({ decisions, tasks }),
         visible: curfewAddressApproved || bassChecksDone,
       },
       {
@@ -283,7 +286,9 @@ module.exports = {
         visible: eligible && (curfewAddressApproved || bassOfferMade),
       },
       {
-        task: 'finalChecksTask',
+        title: 'Review case',
+        label: finalChecks.getLabel({ decisions, tasks }),
+        action: finalChecks.getCaProcessingAction({ decisions, tasks }),
         visible: eligible && (curfewAddressApproved || bassOfferMade),
       },
       {

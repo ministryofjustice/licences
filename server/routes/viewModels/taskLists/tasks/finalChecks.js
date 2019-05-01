@@ -1,3 +1,5 @@
+const { standardAction } = require('./utils/actions')
+
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
     const { finalChecks } = tasks
@@ -22,5 +24,11 @@ module.exports = {
     }
 
     return finalChecks === 'DONE' ? 'Confirmed' : 'Not completed'
+  },
+
+  getCaProcessingAction: ({ tasks }) => {
+    const { finalChecks } = tasks
+
+    return standardAction(finalChecks, '/hdc/finalChecks/seriousOffence/')
   },
 }
