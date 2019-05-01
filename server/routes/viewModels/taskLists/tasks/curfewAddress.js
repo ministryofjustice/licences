@@ -39,7 +39,11 @@ module.exports = {
   },
 
   getCaPostApprovalAction: ({ decisions }) => {
-    const { addressWithdrawn, approvedPremisesRequired } = decisions
+    const { optedOut, addressWithdrawn, approvedPremisesRequired } = decisions
+
+    if (optedOut) {
+      return change('/hdc/proposedAddress/curfewAddressChoice/')
+    }
 
     if (approvedPremisesRequired) {
       return viewEdit('/hdc/curfew/approvedPremisesChoice/')
