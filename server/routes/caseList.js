@@ -37,6 +37,7 @@ const labels = {
     Eligible: 'Continue',
     'Address not suitable': 'Continue',
     'Address suitable': 'Continue',
+    'Approved premises': 'Continue',
     Approved: 'Continue',
     'Licence created': 'Continue',
     'Presumed unsuitable': 'Change',

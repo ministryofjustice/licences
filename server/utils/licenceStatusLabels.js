@@ -7,6 +7,7 @@ const status = {
   // active
   notStarted: { statusLabel: 'Not started', activeCase: true },
   eligible: { statusLabel: 'Eligible', activeCase: true },
+  approvedPremisesRequired: { statusLabel: 'Approved premises', activeCase: true },
   addressRejected: { statusLabel: 'Address not suitable', activeCase: true },
   bassRequest: { statusLabel: 'BASS request', activeCase: true },
   bassAreaRejected: { statusLabel: 'BASS area rejected', activeCase: true },
@@ -116,6 +117,7 @@ function caProcessingLabel(licenceStatus) {
   ]
 
   const addressRouteLabels = [
+    { decision: 'approvedPremisesRequired', label: status.approvedPremisesRequired },
     { decision: 'curfewAddressWithdrawn', label: status.addressRejected },
     { decision: 'curfewAddressRejected', label: status.addressRejected },
   ]
@@ -124,6 +126,7 @@ function caProcessingLabel(licenceStatus) {
     { decision: 'finalChecksRefused', label: status.refused },
     { decision: 'postponed', label: status.postponed },
     { decision: 'excluded', label: status.notEligible },
+    { decision: 'optedOut', label: status.optedOut },
   ]
 
   const labels = licenceStatus.decisions.bassReferralNeeded
@@ -160,14 +163,13 @@ function roProcessingLabel(licenceStatus) {
     if (licenceStatus.decisions.bassAreaNotSuitable) {
       return status.bassAreaRejected
     }
-  } else if (licenceStatus.tasks.curfewAddressReview === taskStates.UNSTARTED) {
-    return status.notStarted
   }
 
   if (
     anyStarted([
       licenceStatus.tasks.bassAreaCheck,
       licenceStatus.tasks.curfewAddressReview,
+      licenceStatus.tasks.approvedPremisesAddress,
       licenceStatus.tasks.curfewHours,
       licenceStatus.tasks.licenceConditions,
       licenceStatus.tasks.riskManagement,

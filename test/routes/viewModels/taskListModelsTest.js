@@ -1241,7 +1241,16 @@ describe('TaskList models', () => {
           title: 'Reporting instructions',
           visible: true,
         },
-        { task: 'finalChecksTask', visible: true },
+        {
+          action: {
+            href: '/hdc/finalChecks/seriousOffence/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Review case',
+          visible: true,
+        },
         {
           title: 'Postpone or refuse',
           label: "Postpone the case if you're waiting for information on risk management",
@@ -2172,7 +2181,15 @@ describe('TaskList models', () => {
           label: 'Not completed',
           title: 'Reporting instructions',
         },
-        { task: 'finalChecksTask' },
+        {
+          action: {
+            href: '/hdc/review/finalChecks/',
+            text: 'View',
+            type: 'btn-secondary',
+          },
+          label: 'Not completed',
+          title: 'Review case',
+        },
         {
           action: {
             href: '/hdc/send/return/',
