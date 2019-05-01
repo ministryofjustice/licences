@@ -2,10 +2,8 @@ package uk.gov.justice.digital.hmpps.licences.pages.assessment
 
 import geb.Page
 import geb.module.RadioButtons
-import uk.gov.justice.digital.hmpps.licences.modules.AddressDetailsModule
 import uk.gov.justice.digital.hmpps.licences.modules.CurfewDetailsModule
 import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
-import uk.gov.justice.digital.hmpps.licences.modules.OccupierDetailsModule
 
 class CurfewAddressReviewPage extends Page {
 

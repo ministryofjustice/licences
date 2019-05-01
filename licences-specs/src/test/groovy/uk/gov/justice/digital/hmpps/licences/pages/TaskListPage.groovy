@@ -39,6 +39,9 @@ class TaskListPage extends Page {
       $('h2', text: contains(taskName)).closest('div').next().find('.taskListAction')
     }
 
+    errorSummary(required: false) { $('#error-summary-heading') }
+    errorBanner(required: false) { $('.error-banner') }
+
     warnings(required: false) { find('.warning')*.text() }
   }
 }

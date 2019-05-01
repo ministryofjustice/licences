@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewHoursPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.VictimLiaisonPage
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.BassRejectedPage
+import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.ApprovedPremisesChoicePage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.BassOfferPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksSeriousOffencePage
 import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewAddressPage
@@ -217,5 +218,23 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
 
     and: 'I can only submit for refusal'
     $('h2', text: contains('Submit to decision maker')).closest('div').text().contains('Ready to submit for refusal')
+  }
+
+  def 'When Approved Premises required, does not show risk task'() {
+
+    given: 'approved premises required'
+    testData.loadLicence('finalchecks/approved-premises')
+
+    when: 'I view the tasklist'
+    to TaskListPage, testData.markAndrewsBookingId
+
+    then: 'The risk task is not shown'
+    taskListActions.size() == 8
+
+    when: 'I view the curfew address task'
+    taskListAction(tasks.address).click()
+
+    then: 'I see the AP choice page'
+    at ApprovedPremisesChoicePage
   }
 }
