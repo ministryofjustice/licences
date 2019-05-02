@@ -41,9 +41,9 @@ mixin label(text)
 
           if sections.length > 2
             each section in sections.slice(1)
-              strong.bold-small.smallMarginBottom #{section}
+              strong.bold-small.smallMarginBottom.warning #{section}
           else
-            strong.bold-small #{sections[1]}
+            strong.bold-small.warning #{sections[1]}
 
   else if sections[0] === 'ALERT'
     span.alert.bold #{sections[1]}
