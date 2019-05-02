@@ -1724,6 +1724,46 @@ describe('TaskList models', () => {
         },
       ])
     })
+
+    it('should show only bass task and send if bass failed', () => {
+      expect(
+        taskListModel(
+          'RO',
+          false,
+          {
+            decisions: {
+              bassAreaNotSuitable: true,
+              bassReferralNeeded: true,
+            },
+            tasks: {},
+            stage: 'APPROVAL',
+          },
+          {},
+          'roToCa'
+        )
+      ).to.eql([
+        {
+          action: {
+            href: '/hdc/bassReferral/bassAreaCheck/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'BASS area check',
+          visible: true,
+        },
+        {
+          action: {
+            href: '/hdc/review/licenceDetails/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          title: 'Submit to prison case admin',
+          label: 'Ready to submit',
+          visible: true,
+        },
+      ])
+    })
   })
 
   describe('dmTasks', () => {
