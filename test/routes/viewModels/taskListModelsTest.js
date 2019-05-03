@@ -349,7 +349,16 @@ describe('TaskList models', () => {
           title: 'Reporting instructions',
           visible: true,
         },
-        { task: 'finalChecksTask', visible: true },
+        {
+          action: {
+            href: '/hdc/finalChecks/seriousOffence/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Review case',
+          visible: true,
+        },
         {
           label: "Postpone the case if you're waiting for information on risk management",
           title: 'Postpone or refuse',
@@ -564,7 +573,16 @@ describe('TaskList models', () => {
           title: 'Reporting instructions',
           visible: true,
         },
-        { task: 'finalChecksTask', visible: true },
+        {
+          action: {
+            href: '/hdc/finalChecks/seriousOffence/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Review case',
+          visible: true,
+        },
         {
           title: 'Postpone or refuse',
           label: "Postpone the case if you're waiting for information on risk management",
@@ -672,7 +690,16 @@ describe('TaskList models', () => {
           title: 'Reporting instructions',
           visible: true,
         },
-        { task: 'finalChecksTask', visible: true },
+        {
+          action: {
+            href: '/hdc/finalChecks/seriousOffence/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Review case',
+          visible: true,
+        },
         {
           title: 'Postpone or refuse',
           label: "Postpone the case if you're waiting for information on risk management",
@@ -925,7 +952,16 @@ describe('TaskList models', () => {
           title: 'Reporting instructions',
           visible: true,
         },
-        { task: 'finalChecksTask', visible: true },
+        {
+          action: {
+            href: '/hdc/finalChecks/seriousOffence/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Review case',
+          visible: true,
+        },
         {
           title: 'Postpone or refuse',
           label: "Postpone the case if you're waiting for information on risk management",
@@ -1038,7 +1074,16 @@ describe('TaskList models', () => {
           title: 'Reporting instructions',
           visible: true,
         },
-        { task: 'finalChecksTask', visible: true },
+        {
+          action: {
+            href: '/hdc/finalChecks/seriousOffence/',
+            text: 'Continue',
+            type: 'btn',
+          },
+          label: 'Not completed',
+          title: 'Review case',
+          visible: true,
+        },
         {
           title: 'Postpone or refuse',
           label: "Postpone the case if you're waiting for information on risk management",

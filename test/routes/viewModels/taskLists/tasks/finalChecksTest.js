@@ -1,4 +1,7 @@
-const { getLabel } = require('../../../../../server/routes/viewModels/taskLists/tasks/finalChecks')
+const {
+  getLabel,
+  getCaProcessingAction,
+} = require('../../../../../server/routes/viewModels/taskLists/tasks/finalChecks')
 
 describe('final checks task', () => {
   describe('getLabel', () => {
@@ -38,6 +41,45 @@ describe('final checks task', () => {
       expect(labels[0]).to.equal('WARNING')
       expect(labels.length).to.equal(4)
       expect(labels).to.contain('The offender is on remand')
+    })
+  })
+
+  describe('getCaProcessingAction', () => {
+    it('should show start button to serious offence question when final checks UNSTARTED', () => {
+      expect(
+        getCaProcessingAction({
+          decisions: {},
+          tasks: { finalChecks: 'UNSTARTED' },
+        })
+      ).to.eql({
+        text: 'Start now',
+        href: '/hdc/finalChecks/seriousOffence/',
+        type: 'btn',
+      })
+    })
+    it('should show change link to serious offence question when final checks DONE', () => {
+      expect(
+        getCaProcessingAction({
+          decisions: {},
+          tasks: { finalChecks: 'DONE' },
+        })
+      ).to.eql({
+        text: 'Change',
+        href: '/hdc/finalChecks/seriousOffence/',
+        type: 'link',
+      })
+    })
+    it('should show continue button to serious offence question when final checks STARTED', () => {
+      expect(
+        getCaProcessingAction({
+          decisions: {},
+          tasks: { finalChecks: 'STARTED' },
+        })
+      ).to.eql({
+        text: 'Continue',
+        href: '/hdc/finalChecks/seriousOffence/',
+        type: 'btn',
+      })
     })
   })
 })

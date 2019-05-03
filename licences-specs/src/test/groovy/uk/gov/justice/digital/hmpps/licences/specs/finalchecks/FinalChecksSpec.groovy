@@ -101,25 +101,8 @@ class FinalChecksSpec extends GebReportingSpec {
     then: 'I see the task list'
     at TaskListPage
 
-    and: 'I see the summary test for the saved values'
-    seriousOffenceAnswer.text() == 'The offender is under investigation or been charged for a serious offence in custody'
-    onRemandAnswer.text() == 'The offender is not on remand'
-    confiscationOrderAnswer.text() == 'The offender is not subject to a confiscation order'
-  }
-
-  def 'Tasklist shows answers with alert styling when answers are Yes'() {
-
-    given: 'Serious Offence and On Remand'
-    testData.loadLicence('finalchecks/serious-offence-on-remand')
-
-    when: 'I view the task list'
-    to TaskListPage, testData.markAndrewsBookingId
-
-    then: 'I see the the final check status summary with alert styling'
-    seriousOffenceAnswer.classes().contains('alert')
-    onRemandAnswer.classes().contains('alert')
-    confiscationOrderAnswer.classes().contains('alert')
-
+    and: 'I see the summary text for the saved values'
+    warnings.contains('The offender is under investigation or been charged for a serious offence in custody')
   }
 
 }

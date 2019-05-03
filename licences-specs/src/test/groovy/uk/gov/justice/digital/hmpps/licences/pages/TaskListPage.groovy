@@ -25,10 +25,6 @@ class TaskListPage extends Page {
     crdTimeAnswer(required: false) { $('#crdTimeAnswer') }
     exceptionalCircumstanceAnswer(required: false) { $('#exceptionalCircumstances') }
 
-    seriousOffenceAnswer(required: false) { $('#seriousOffenceAnswer') }
-    onRemandAnswer(required: false) { $('#onRemandAnswer') }
-    confiscationOrderAnswer(required: false) { $('#confiscationOrderAnswer') }
-
     printEligibilityFormButton(required: false) { $('#eligibilityFormPrint') }
     eligibilityFormPrintStatusText(required: false) { $('#eligibilityFormPrintStatusText') }
     eligibilityFormPrintStatusIcon(required: false) { $('#eligibilityFormPrintStatusIcon') }
@@ -42,5 +38,7 @@ class TaskListPage extends Page {
     taskListAction(required: false) { taskName ->
       $('h2', text: contains(taskName)).closest('div').next().find('.taskListAction')
     }
+
+    warnings(required: false) { find('.warning')*.text() }
   }
 }
