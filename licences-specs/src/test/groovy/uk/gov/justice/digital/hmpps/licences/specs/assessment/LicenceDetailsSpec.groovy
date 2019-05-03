@@ -170,9 +170,9 @@ class LicenceDetailsSpec extends GebReportingSpec {
 
     then: 'I see the address detail'
     $('#curfewAddressDetails').isDisplayed()
-    $('#riskDetails').isDisplayed()
 
     and: 'I do not see the other sections'
+    !$('#riskDetails').isDisplayed()
     !$('#curfewHoursDetails').isDisplayed()
     !$('#conditionsDetails').isDisplayed()
     !$('#reportingDetails').isDisplayed()

@@ -9,10 +9,18 @@ const roSubmit = require('./tasks/roSubmit')
 
 module.exports = {
   getRoTasks: ({ decisions, tasks, allowedTransition }) => {
-    const { bassReferralNeeded, addressUnsuitable, curfewAddressRejected, addressReviewFailed } = decisions
+    const {
+      bassReferralNeeded,
+      addressUnsuitable,
+      curfewAddressRejected,
+      addressReviewFailed,
+      bassAreaNotSuitable,
+    } = decisions
 
     const addressRejectedInRiskPhase = curfewAddressRejected && addressUnsuitable
     const addressRejectedInReviewPhase = curfewAddressRejected && addressReviewFailed
+
+    const validAddress = !curfewAddressRejected && !bassAreaNotSuitable
 
     return [
       {
@@ -31,31 +39,31 @@ module.exports = {
         title: 'Risk management',
         label: riskManagement.getLabel({ decisions, tasks }),
         action: riskManagement.getRoAction({ decisions, tasks }),
-        visible: !curfewAddressRejected || addressRejectedInRiskPhase,
+        visible: validAddress || addressRejectedInRiskPhase,
       },
       {
         title: 'Victim liaison',
         label: victimLiaison.getLabel({ decisions, tasks }),
         action: victimLiaison.getRoAction({ decisions, tasks }),
-        visible: !curfewAddressRejected,
+        visible: validAddress,
       },
       {
         title: 'Curfew hours',
         label: curfewHours.getLabel({ decisions, tasks }),
         action: curfewHours.getRoAction({ decisions, tasks }),
-        visible: !curfewAddressRejected,
+        visible: validAddress,
       },
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }),
         action: additionalConditions.getRoAction({ decisions, tasks }),
-        visible: !curfewAddressRejected,
+        visible: validAddress,
       },
       {
         title: 'Reporting instructions',
         label: reportingInstructions.getLabel({ decisions, tasks }),
         action: reportingInstructions.getRoAction({ decisions, tasks }),
-        visible: !curfewAddressRejected,
+        visible: validAddress,
       },
       {
         title: 'Submit to prison case admin',
