@@ -263,10 +263,10 @@ describe('prisonerDetailsService', () => {
         message: 'No RO relationship',
       },
       {
-        label: 'multiple RO relationships',
-        relationships: [{}, {}],
+        label: 'multiple missing person identifier',
+        relationships: [{ personId: '' }, { personId: null }, { personId: undefined }],
         identifiers: {},
-        message: 'Multiple RO relationships',
+        message: 'No RO person identifier',
       },
       {
         label: 'missing person identifier',
@@ -305,6 +305,47 @@ describe('prisonerDetailsService', () => {
             name: null,
           },
         })
+      })
+    })
+
+    const sortingScenarios = [
+      {
+        label: 'only one id in many relations',
+        relationships: [{ personId: '' }, { personId: null }, { personId: '1' }],
+        selected: '1',
+      },
+      {
+        label: 'highest number',
+        relationships: [{ personId: 222 }, { personId: 333 }, { personId: 111 }],
+        selected: 333,
+      },
+      {
+        label: 'highest string number',
+        relationships: [{ personId: '299' }, { personId: '301' }, { personId: '1' }],
+        selected: '301',
+      },
+      {
+        label: 'highest string',
+        relationships: [{ personId: 'caaa' }, { personId: 'bzzz' }, { personId: 'a999' }],
+        selected: 'caaa',
+      },
+      {
+        label: 'only one relation',
+        relationships: [{ personId: 'c' }],
+        selected: 'c',
+      },
+      {
+        label: 'either one if same',
+        relationships: [{ personId: 2 }, { personId: 2 }, { personId: 2 }, { personId: 2 }],
+        selected: 2,
+      },
+    ]
+
+    sortingScenarios.forEach(scenario => {
+      it(`should select person id where ${scenario.label}`, async () => {
+        nomisClientMock.getRoRelations.resolves(scenario.relationships)
+        await service.getResponsibleOfficer('123', 'username')
+        expect(nomisClientMock.getPersonIdentifiers).to.be.calledWith(scenario.selected)
       })
     })
   })
