@@ -1,6 +1,6 @@
 const logger = require('../../log.js')
 const { formatObjectForView } = require('./utils/formatForView')
-const { getIn } = require('../utils/functionalHelpers')
+const { getIn, isEmpty } = require('../utils/functionalHelpers')
 
 module.exports = { createPrisonerService }
 
@@ -89,16 +89,15 @@ function createPrisonerService(nomisClientBuilder) {
       throw new RoRelationshipError('No RO relationship')
     }
 
-    if (Array.isArray(relations) && relations.length > 1) {
-      throw new RoRelationshipError('Multiple RO relationships')
-    }
+    const personIds = relations.filter(r => !isEmpty(r.personId))
 
-    const personId = getIn(relations, [[0], 'personId'])
-    if (!personId) {
+    if (personIds.length > 1) {
+      logger.warn(`Multiple RO relationships for bookingId: ${bookingId}`)
+    } else if (isEmpty(personIds)) {
       throw new RoRelationshipError('No RO person identifier')
     }
 
-    return relations[0]
+    return personIds.sort((a, b) => b.personId - a.personId)[0]
   }
 
   async function getRoRelations(nomisClient, bookingId) {
