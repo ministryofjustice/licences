@@ -84,11 +84,12 @@ describe('nomisPushService', () => {
           data: { type: 'excluded', status: 'Yes', reason: 'hdcCurfewConditions' },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'HDC_RECALL' },
         },
-        {
-          example: 'Excluded - servingRecall',
-          data: { type: 'excluded', status: 'Yes', reason: 'servingRecall' },
-          approvalStatus: { approvalStatus: 'INELIGIBLE' },
-        },
+        // PENDING - requires definition of refusal reason
+        // {
+        //   example: 'Excluded - servingRecall',
+        //   data: { type: 'excluded', status: 'Yes', reason: 'servingRecall' },
+        //   approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'TBD' },
+        // },
         {
           example: 'Excluded - deportation',
           data: { type: 'excluded', status: 'Yes', reason: 'deportation' },

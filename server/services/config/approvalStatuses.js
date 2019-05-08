@@ -43,7 +43,8 @@ module.exports = {
         communityCurfew: { approvalStatus: 'INELIGIBLE', refusedReason: 'CURFEW' },
         returnedAtRisk: { approvalStatus: 'INELIGIBLE', refusedReason: 'S116' },
         hdcCurfewConditions: { approvalStatus: 'INELIGIBLE', refusedReason: 'HDC_RECALL' },
-        servingRecall: { approvalStatus: 'INELIGIBLE' },
+        // PENDING - requires definition of refusal reason
+        // servingRecall: { approvalStatus: 'INELIGIBLE', refusedReason: 'TBD' },
         deportation: { approvalStatus: 'INELIGIBLE', refusedReason: 'FNP' },
       },
     },
