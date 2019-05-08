@@ -72,6 +72,38 @@ describe('/hdc/curfew', () => {
     testFormPageGets(app, routes, licenceService)
   })
 
+  describe('approved premises routes', () => {
+    const licenceService = createLicenceServiceStub()
+    licenceService.getLicence = sinon.stub().resolves({
+      licence: {
+        curfew: {
+          approvedPremises: {
+            approvedPremisesRequired: true,
+          },
+          approvedPremisesAddress: {
+            addressLine1: 'address1',
+          },
+        },
+      },
+    })
+    const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+
+    const routes = [
+      {
+        url: '/hdc/curfew/approvedPremises/1',
+        content: 'Does the offender need to be sent to approved premises',
+        user: 'roUser',
+      },
+      {
+        url: '/hdc/curfew/approvedPremisesAddress/1',
+        content: 'name="addressLine1" value="address1"',
+        user: 'roUser',
+      },
+    ]
+
+    testFormPageGets(app, routes, licenceService)
+  })
+
   describe('POST /hdc/curfew/:form/:bookingId', () => {
     const routes = [
       {

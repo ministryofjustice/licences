@@ -7,6 +7,9 @@ const formConfig = require('./config/curfew')
 module.exports = ({ licenceService }) => (router, audited) => {
   const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'curfew' })
 
+  router.get('/approvedPremises/:bookingId', addressReviewGets('approvedPremises'))
+  router.get('/approvedPremises/:action/:bookingId', addressReviewGets('approvedPremises'))
+
   router.get('/curfewAddressReview/:bookingId', addressReviewGets('curfewAddressReview'))
   router.get('/curfewAddressReview/:action/:bookingId', addressReviewGets('curfewAddressReview'))
 
