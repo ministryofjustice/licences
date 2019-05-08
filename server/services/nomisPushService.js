@@ -1,6 +1,7 @@
 const logger = require('../../log.js')
 const { getIn } = require('../utils/functionalHelpers')
 const { statusValues, statusReasonValues } = require('./config/approvalStatuses')
+const { nomisPushError } = require('../utils/errors')
 
 module.exports = (nomisClientBuilder, signInService) => {
   async function pushStatus({ bookingId, data, username }) {
@@ -15,7 +16,15 @@ module.exports = (nomisClientBuilder, signInService) => {
     const nomisClient = nomisClientBuilder(systemTokens.token)
 
     logger.info('Pushing approval status to nomis', approvalStatus)
-    return nomisClient.putApprovalStatus(bookingId, approvalStatus)
+    try {
+      return await nomisClient.putApprovalStatus(bookingId, approvalStatus)
+    } catch (error) {
+      if (error.status === 409) {
+        logger.error(`409 CONFLICT when posting approval status for booking id: ${bookingId}`)
+        throw nomisPushError('Approval Status')
+      }
+      throw error
+    }
   }
 
   async function pushChecksPassed({ bookingId, passed, username }) {
@@ -23,7 +32,15 @@ module.exports = (nomisClientBuilder, signInService) => {
     const nomisClient = nomisClientBuilder(systemTokens.token)
 
     logger.info(`Pushing checks passed=${passed} to nomis for bookingId: ${bookingId}`)
-    return nomisClient.putChecksPassed({ bookingId, passed })
+    try {
+      return await nomisClient.putChecksPassed({ bookingId, passed })
+    } catch (error) {
+      if (error.status === 409) {
+        logger.error(`409 CONFLICT when posting checks passed for booking id: ${bookingId}`)
+        throw nomisPushError('Checks Done')
+      }
+      throw error
+    }
   }
 
   return {

@@ -388,9 +388,8 @@ function handleKnownErrors(error, req, res, next) {
     logger.error(`Bad csurf token: ${error.stack}`)
   }
 
-  if (error.name === 'NoToken') {
-    logger.error('No token found for user')
-    return res.redirect('/logout')
+  if (error.name === 'NomisPushConflict') {
+    return res.render('nomis-push-error-409', { error })
   }
 
   switch (error.status) {

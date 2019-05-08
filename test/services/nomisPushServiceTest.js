@@ -238,6 +238,13 @@ describe('nomisPushService', () => {
       expect(signInService.getClientCredentialsTokens).not.to.be.calledOnce()
       expect(nomisClientMock.putApprovalStatus).not.to.be.calledOnce()
     })
+
+    it('should throw custom error if API gives 409', async () => {
+      nomisClientMock.putApprovalStatus.rejects({ status: 409 })
+      await expect(
+        service.pushStatus({ bookingId, data: { type: 'release', status: 'Yes' }, username })
+      ).to.be.rejectedWith('Nomis Push Conflict')
+    })
   })
 
   describe('pushChecksPassed', () => {
@@ -247,6 +254,13 @@ describe('nomisPushService', () => {
       expect(nomisClientBuilder).to.be.calledWith('valid-token')
       expect(nomisClientMock.putChecksPassed).to.be.calledOnce()
       expect(nomisClientMock.putChecksPassed).to.be.calledWith({ bookingId: '1', passed: true })
+    })
+
+    it('should throw custom error if API gives 409', async () => {
+      nomisClientMock.putChecksPassed.rejects({ status: 409 })
+      await expect(service.pushChecksPassed({ bookingId, passed: true, username })).to.be.rejectedWith(
+        'Nomis Push Conflict'
+      )
     })
   })
 })
