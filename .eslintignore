@@ -7,3 +7,4 @@ coverage/
 build/
 package-lock.json
 README.md
+licences-specs/src/test/resources/licences/

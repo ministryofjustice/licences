@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.licences.specs.assessment
 
 import geb.spock.GebReportingSpec
+import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Unroll
@@ -152,7 +153,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
 
     where:
     section       | page
-    'address'     | CurfewAddressReviewPage
+    'address'     | ApprovedPremisesPage
     'curfewHours' | CurfewHoursPage
     'conditions'  | LicenceConditionsStandardPage
     'risk'        | RiskManagementPage
@@ -176,6 +177,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     !$('#curfewHoursDetails').isDisplayed()
     !$('#conditionsDetails').isDisplayed()
     !$('#reportingDetails').isDisplayed()
+    !$('#victimDetails').isDisplayed()
   }
 
   @Unroll
@@ -209,5 +211,26 @@ class LicenceDetailsSpec extends GebReportingSpec {
     bass.proposed.town == 'BASS Town'
     bass.area.bassAreaSuitable == 'No'
     bass.area.bassAreaReason == 'Reason'
+  }
+
+  @Ignore
+  def 'Shows approved premises details when approved premises required'() {
+
+    given: 'Approved premises required'
+    testData.loadLicence('assessment/approved-premises-done')
+
+    when: 'I view the licence details summary page for the licence record'
+    to LicenceDetailsPage, testData.markAndrewsBookingId
+
+    then: 'I see the approved premises address details'
+    $('#approvedPremisesDetails').isDisplayed()
+    approvedPremises.address.line1 == 'AP1'
+    approvedPremises.address.line2 == 'AP2'
+    approvedPremises.address.town == 'APtown'
+    approvedPremises.address.postCode == 'AP11AP'
+    approvedPremises.address.telephone == '111'
+
+    and: 'I do not see the risk section'
+    !$('#riskDetails').isDisplayed()
   }
 }
