@@ -177,6 +177,34 @@ describe('prisonerDetailsService', () => {
 
       expect(nomisClientMock.getRoRelations).to.be.calledOnce()
       expect(nomisClientMock.getRoRelations).to.be.calledWith('123')
+
+      expect(nomisClientMock.getPersonIdentifiers).to.be.calledOnce()
+      expect(nomisClientMock.getPersonIdentifiers).to.be.calledWith('personId')
+    })
+
+    it('should get person details for all relations with a person ID', async () => {
+      nomisClientMock.getRoRelations.resolves([
+        { personId: '1' },
+        { personId: '2' },
+        { personId: '3' },
+        { missingPersonId: 'missing' },
+      ])
+
+      await service.getResponsibleOfficer('123', 'username')
+
+      expect(nomisClientMock.getPersonIdentifiers).to.be.calledThrice()
+      expect(nomisClientMock.getPersonIdentifiers).to.be.calledWith('1')
+      expect(nomisClientMock.getPersonIdentifiers).to.be.calledWith('2')
+      expect(nomisClientMock.getPersonIdentifiers).to.be.calledWith('3')
+      expect(nomisClientMock.getPersonIdentifiers).not.to.be.calledWith('missing')
+    })
+
+    it('should not get person details when no relations have person ID', async () => {
+      nomisClientMock.getRoRelations.resolves([{ missingPersonId: '1' }, { missingPersonId: '2' }])
+
+      await service.getResponsibleOfficer('123', 'username')
+
+      expect(nomisClientMock.getPersonIdentifiers).not.to.be.calledOnce()
     })
 
     it('should return the result of the api call', () => {
@@ -278,19 +306,19 @@ describe('prisonerDetailsService', () => {
         label: 'missing person identifiers',
         relationships: [{ personId: '123' }],
         identifiers: [],
-        message: 'No person identifiers',
+        message: 'No RO with a Delius staff code',
       },
       {
         label: 'missing external rel identifier type',
         relationships: [{ personId: '123' }],
         identifiers: [{ identifierType: 'other' }],
-        message: 'No EXTERNAL_REL person identifier',
+        message: 'No RO with a Delius staff code',
       },
       {
         label: 'missing external rel identifier value',
         relationships: [{ personId: '123' }],
         identifiers: [{ identifierType: 'EXTERNAL_REL', identifierValue: '' }],
-        message: 'No EXTERNAL_REL person identifier value',
+        message: 'No RO with a Delius staff code',
       },
     ]
 
@@ -310,42 +338,53 @@ describe('prisonerDetailsService', () => {
 
     const sortingScenarios = [
       {
-        label: 'only one id in many relations',
-        relationships: [{ personId: '' }, { personId: null }, { personId: '1' }],
-        selected: '1',
+        label: 'only one person id, use that one',
+        relationships: [{ personId: '' }, { personId: null }, { personId: 1 }],
+        identifiers: [[{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius1' }]],
+        selected: 'delius1',
       },
       {
-        label: 'highest number',
-        relationships: [{ personId: 222 }, { personId: 333 }, { personId: 111 }],
-        selected: 333,
+        label: 'only one delius id, use that one',
+        relationships: [{ personId: 1 }, { personId: 2 }, { personId: 3 }],
+        identifiers: [
+          [{ identifierType: 'EXTERNAL_REL', identifierValue: null }],
+          [{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius2' }],
+          [{}],
+        ],
+        selected: 'delius2',
       },
       {
-        label: 'highest string number',
-        relationships: [{ personId: '299' }, { personId: '301' }, { personId: '1' }],
-        selected: '301',
+        label: 'multiple delius ids, use highest person id (NB not highest delius id)',
+        relationships: [{ personId: '1' }, { personId: '2' }, { personId: '3' }],
+        identifiers: [
+          [{ identifierType: 'EXTERNAL_REL', identifierValue: '999' }],
+          [{ identifierType: 'EXTERNAL_REL', identifierValue: '1' }],
+          [{ identifierType: 'EXTERNAL_REL', identifierValue: '-1' }],
+        ],
+        selected: '-1',
       },
       {
-        label: 'highest string',
-        relationships: [{ personId: 'caaa' }, { personId: 'bzzz' }, { personId: 'a999' }],
-        selected: 'caaa',
-      },
-      {
-        label: 'only one relation',
-        relationships: [{ personId: 'c' }],
-        selected: 'c',
-      },
-      {
-        label: 'either one if same',
-        relationships: [{ personId: 2 }, { personId: 2 }, { personId: 2 }, { personId: 2 }],
-        selected: 2,
+        label: 'multiple delius ids, use either one if same person id',
+        relationships: [{ personId: 1 }, { personId: 1 }],
+        identifiers: [
+          [{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius1' }],
+          [{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius1' }],
+        ],
+        selected: 'delius1',
       },
     ]
 
     sortingScenarios.forEach(scenario => {
       it(`should select person id where ${scenario.label}`, async () => {
         nomisClientMock.getRoRelations.resolves(scenario.relationships)
-        await service.getResponsibleOfficer('123', 'username')
-        expect(nomisClientMock.getPersonIdentifiers).to.be.calledWith(scenario.selected)
+
+        scenario.identifiers.forEach((response, index) => {
+          nomisClientMock.getPersonIdentifiers.onCall(index).resolves(response)
+        })
+
+        const ro = await service.getResponsibleOfficer('123', 'username')
+
+        expect(ro.com.deliusId).to.eql(scenario.selected)
       })
     })
   })
