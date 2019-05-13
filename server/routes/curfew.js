@@ -1,14 +1,86 @@
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
 const { getPathFor } = require('../utils/routes')
-const { getIn } = require('../utils/functionalHelpers')
+const { getIn, mergeWithRight } = require('../utils/functionalHelpers')
 const formConfig = require('./config/curfew')
 
-module.exports = ({ licenceService }) => (router, audited) => {
+module.exports = ({ licenceService, nomisPushService }) => (router, audited, { pushToNomis }) => {
   const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'curfew' })
 
   router.get('/approvedPremises/:bookingId', addressReviewGets('approvedPremises'))
   router.get('/approvedPremises/:action/:bookingId', addressReviewGets('approvedPremises'))
+
+  router.get('/approvedPremisesChoice/:action/:bookingId', asyncMiddleware(getChoice))
+  router.get('/approvedPremisesChoice/:bookingId', asyncMiddleware(getChoice))
+
+  function getChoice(req, res) {
+    const { bookingId } = req.params
+    const { licence } = res.locals
+    const data = { decision: getApprovedPremisesChoice(getIn(licence, ['licence'])) }
+    const viewData = { data, errorObject: {}, bookingId }
+
+    return res.render('curfew/approvedPremisesChoice', viewData)
+  }
+
+  function getApprovedPremisesChoice(licence) {
+    if (isYes(licence, ['proposedAddress', 'optOut', 'decision'])) {
+      return 'OptOut'
+    }
+
+    if (isYes(licence, ['curfew', 'approvedPremises', 'required'])) {
+      return 'ApprovedPremises'
+    }
+
+    return null
+  }
+
+  function isYes(licence, pathSegments) {
+    const answer = getIn(licence, pathSegments)
+    return answer && answer === 'Yes'
+  }
+
+  router.post(
+    '/approvedPremisesChoice/:bookingId',
+    audited,
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.params
+      const { decision } = req.body
+      const { licence } = res.locals
+
+      const curfew = getIn(licence, ['licence', 'curfew'])
+      const newCurfew = mergeWithRight(curfew, approvedPremisesContents[decision])
+
+      const proposedAddress = getIn(licence, ['licence', 'proposedAddress'])
+      const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision])
+
+      await Promise.all([
+        licenceService.updateSection('proposedAddress', bookingId, newProposedAddress),
+        licenceService.updateSection('curfew', bookingId, newCurfew),
+      ])
+
+      if (pushToNomis && decision === 'OptOut') {
+        await nomisPushService.pushStatus({
+          bookingId,
+          data: { type: 'optOut', status: 'Yes' },
+          username: req.user.username,
+        })
+      }
+
+      const nextPath = formConfig.approvedPremisesChoice.nextPath[decision] || `/hdc/taskList/`
+
+      return res.redirect(`${nextPath}${bookingId}`)
+    })
+  )
+
+  const approvedPremisesContents = {
+    OptOut: { approvedPremises: { required: 'No' } },
+    ApprovedPremises: { approvedPremises: { required: 'Yes' } },
+  }
+
+  const proposedAddressContents = {
+    OptOut: { optOut: { decision: 'Yes' } },
+    ApprovedPremises: { optOut: { decision: 'No' } },
+  }
 
   router.get('/curfewAddressReview/:bookingId', addressReviewGets('curfewAddressReview'))
   router.get('/curfewAddressReview/:action/:bookingId', addressReviewGets('curfewAddressReview'))

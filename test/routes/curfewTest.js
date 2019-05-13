@@ -8,6 +8,7 @@ const {
   appSetup,
   testFormPageGets,
   createSignInServiceStub,
+  createNomisPushServiceStub,
 } = require('../supertestSetup')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -102,6 +103,161 @@ describe('/hdc/curfew', () => {
     ]
 
     testFormPageGets(app, routes, licenceService)
+  })
+
+  describe('POST /hdc/curfew/approvedPremisesChoice/:bookingId', () => {
+    const routes = [
+      {
+        url: '/hdc/curfew/approvedPremisesChoice/1',
+        body: { bookingId: 1, decision: 'OptOut' },
+        nextPath: '/hdc/taskList/1',
+        user: 'caUser',
+        addressContent: {
+          optOut: { decision: 'Yes' },
+          original: 'contents',
+        },
+        curfewContent: { approvedPremises: { required: 'No' } },
+      },
+      {
+        url: '/hdc/curfew/approvedPremisesChoice/1',
+        body: { bookingId: 1, decision: 'ApprovedPremises' },
+        nextPath: '/hdc/curfew/approvedPremisesAddress/1',
+        user: 'caUser',
+        addressContent: {
+          optOut: { decision: 'No' },
+          original: 'contents',
+        },
+        curfewContent: { approvedPremises: { required: 'Yes' } },
+      },
+    ]
+
+    routes.forEach(route => {
+      it(`renders the correct path '${route.nextPath}' page`, () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence = sinon.stub().resolves({
+          licence: {
+            proposedAddress: {
+              original: 'contents',
+            },
+          },
+          stage: 'PROCESSING_CA',
+        })
+        const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+        return request(app)
+          .post(route.url)
+          .send(route.body)
+          .expect(302)
+          .expect(res => {
+            expect(licenceService.updateSection).to.be.calledTwice()
+            expect(licenceService.updateSection).to.be.calledWith('proposedAddress', '1', route.addressContent)
+            expect(licenceService.updateSection).to.be.calledWith('curfew', '1', route.curfewContent)
+            expect(res.header.location).to.equal(route.nextPath)
+          })
+      })
+
+      it('throws an error if logged in as dm', () => {
+        const licenceService = createLicenceServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService }, 'dmUser')
+
+        return request(app)
+          .post(route.url)
+          .send(route.body)
+          .expect(403)
+      })
+    })
+  })
+
+  describe('approvedPremisesChoice', () => {
+    const routes = [
+      {
+        answer: 'none',
+        licence: {},
+        yes: [],
+        no: ['input id="optout" type="radio" checked', 'input id="ApprovedPremises" type="radio" checked'],
+      },
+      {
+        answer: 'optout',
+        licence: { proposedAddress: { optOut: { decision: 'Yes' } } },
+        yes: ['input id="optout" type="radio" checked'],
+        no: ['input id="ApprovedPremises" type="radio" checked'],
+      },
+      {
+        answer: 'ApprovedPremises',
+        licence: { curfew: { approvedPremises: { required: 'Yes' } } },
+        yes: ['input id="ApprovedPremises" type="radio" checked'],
+        no: ['input id="optout" type="radio" checked'],
+      },
+    ]
+
+    routes.forEach(route => {
+      it(`should show ${route.answer} selected`, () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.resolves({ licence: route.licence, stage: 'PROCESSING_CA' })
+        const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+
+        return request(app)
+          .get('/hdc/curfew/approvedPremisesChoice/1')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            route.yes.forEach(content => {
+              expect(res.text).to.include(content)
+            })
+            route.no.forEach(content => {
+              expect(res.text).to.not.include(content)
+            })
+          })
+      })
+    })
+
+    it(`should push optout status to nomis`, () => {
+      const nomisPushService = createNomisPushServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.resolves({ licence: {}, stage: 'PROCESSING_CA' })
+      const app = createApp(
+        {
+          nomisPushServiceStub: nomisPushService,
+          licenceServiceStub: licenceService,
+        },
+        'caUser',
+        { pushToNomis: true }
+      )
+
+      return request(app)
+        .post('/hdc/curfew/approvedPremisesChoice/1')
+        .send({ decision: 'OptOut' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushStatus).to.be.calledOnce()
+          expect(nomisPushService.pushStatus).to.be.calledWith({
+            bookingId: '1',
+            data: { type: 'optOut', status: 'Yes' },
+            username: 'CA_USER_TEST',
+          })
+        })
+    })
+
+    it(`should not push nomis if not optout`, () => {
+      const nomisPushService = createNomisPushServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.resolves({ licence: {}, stage: 'PROCESSING_CA' })
+      const app = createApp(
+        {
+          nomisPushServiceStub: nomisPushService,
+          licenceServiceStub: licenceService,
+        },
+        'caUser',
+        { pushToNomis: true }
+      )
+
+      return request(app)
+        .post('/hdc/curfew/approvedPremisesChoice/1')
+        .send({ decision: 'Other' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushStatus).not.to.be.called()
+        })
+    })
   })
 
   describe('POST /hdc/curfew/:form/:bookingId', () => {
@@ -412,10 +568,11 @@ describe('/hdc/curfew', () => {
   })
 })
 
-function createApp({ licenceServiceStub, prisonerServiceStub }, user) {
+function createApp({ licenceServiceStub, prisonerServiceStub, nomisPushServiceStub }, user, config = {}) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
@@ -423,8 +580,9 @@ function createApp({ licenceServiceStub, prisonerServiceStub }, user) {
     authenticationMiddleware,
     audit: auditStub,
     signInService,
+    config,
   })
-  const route = baseRouter(createRoute({ licenceService }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
 
   return appSetup(route, user, '/hdc/curfew')
 }

@@ -64,6 +64,14 @@ module.exports = {
       change: '/hdc/review/licenceDetails/',
     },
   },
+  approvedPremisesChoice: {
+    pageDataMap: ['licence'],
+    nextPath: {
+      discriminator: 'decision',
+      ApprovedPremises: '/hdc/curfew/approvedPremisesAddress/',
+      OptOut: '/hdc/taskList/',
+    },
+  },
   curfewAddressReview: {
     pageDataMap: ['licence'],
     fields: [
