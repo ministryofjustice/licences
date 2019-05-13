@@ -32,6 +32,7 @@ const apiRouter = require('../server/routes/api')
 const caseListRouter = require('../server/routes/caseList')
 const contactRouter = require('../server/routes/contact')
 const pdfRouter = require('../server/routes/pdf')
+const formsRouter = require('../server/routes/forms')
 const sendRouter = require('../server/routes/send')
 const sentRouter = require('../server/routes/sent')
 const taskListRouter = require('./routes/taskList')
@@ -62,6 +63,7 @@ module.exports = function createApp({
   conditionsService,
   caseListService,
   pdfService,
+  formService,
   userAdminService,
   reportingService,
   notificationService,
@@ -350,6 +352,7 @@ module.exports = function createApp({
   app.use('/admin/mailboxes/', secureRoute(mailboxesAdminRouter({ configClient })))
   app.use('/hdc/contact/', secureRoute(contactRouter({ userAdminService })))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
+  app.use('/hdc/forms/', secureRoute(formsRouter({ formService })))
   app.use('/hdc/send/', secureRoute(sendRouter({ licenceService, prisonerService, notificationService, audit })))
   app.use('/hdc/sent/', secureRoute(sentRouter({ licenceService, prisonerService })))
   app.use('/user/', secureRoute(userRouter({ userService })))
