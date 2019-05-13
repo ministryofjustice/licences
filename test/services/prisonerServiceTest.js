@@ -336,56 +336,62 @@ describe('prisonerDetailsService', () => {
       })
     })
 
-    const sortingScenarios = [
-      {
-        label: 'only one person id, use that one',
-        relationships: [{ personId: '' }, { personId: null }, { personId: 1 }],
-        identifiers: [[{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius1' }]],
-        selected: 'delius1',
-      },
-      {
-        label: 'only one delius id, use that one',
-        relationships: [{ personId: 1 }, { personId: 2 }, { personId: 3 }],
-        identifiers: [
-          [{ identifierType: 'EXTERNAL_REL', identifierValue: null }],
-          [{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius2' }],
-          [{}],
-        ],
-        selected: 'delius2',
-      },
-      {
-        label: 'multiple delius ids, use highest person id (NB not highest delius id)',
-        relationships: [{ personId: '1' }, { personId: '2' }, { personId: '3' }],
-        identifiers: [
-          [{ identifierType: 'EXTERNAL_REL', identifierValue: '999' }],
-          [{ identifierType: 'EXTERNAL_REL', identifierValue: '1' }],
-          [{ identifierType: 'EXTERNAL_REL', identifierValue: '-1' }],
-        ],
-        selected: '-1',
-      },
-      {
-        label: 'multiple delius ids, use either one if same person id',
-        relationships: [{ personId: 1 }, { personId: 1 }],
-        identifiers: [
-          [{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius1' }],
-          [{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius1' }],
-        ],
-        selected: 'delius1',
-      },
-    ]
+    it('should get the only delius ID of multiple persons but only one with delius ID', async () => {
+      const relations = [{ personId: 1 }, { personId: 2 }, { personId: 3 }]
+      const person1 = [{ identifierType: 'EXTERNAL_REL', identifierValue: null }]
+      const person2 = [{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius2' }]
+      const person3 = [{ identifierType: 'EXTERNAL_REL', identifierValue: null }]
 
-    sortingScenarios.forEach(scenario => {
-      it(`should select person id where ${scenario.label}`, async () => {
-        nomisClientMock.getRoRelations.resolves(scenario.relationships)
+      nomisClientMock.getRoRelations.resolves(relations)
+      nomisClientMock.getPersonIdentifiers.withArgs(1).resolves(person1)
+      nomisClientMock.getPersonIdentifiers.withArgs(2).resolves(person2)
+      nomisClientMock.getPersonIdentifiers.withArgs(3).resolves(person3)
 
-        scenario.identifiers.forEach((response, index) => {
-          nomisClientMock.getPersonIdentifiers.onCall(index).resolves(response)
-        })
+      const ro = await service.getResponsibleOfficer('123', 'username')
 
-        const ro = await service.getResponsibleOfficer('123', 'username')
+      expect(ro.com.deliusId).to.eql('delius2')
+    })
 
-        expect(ro.com.deliusId).to.eql(scenario.selected)
-      })
+    it('should get the delius ID for the highest person ID when multiple persons with delius IDs', async () => {
+      const relations = [{ personId: 1 }, { personId: 2 }, { personId: 3 }]
+      const person1 = [{ identifierType: 'EXTERNAL_REL', identifierValue: '999' }]
+      const person2 = [{ identifierType: 'EXTERNAL_REL', identifierValue: '1' }]
+      const person3 = [{ identifierType: 'EXTERNAL_REL', identifierValue: '-1' }]
+
+      nomisClientMock.getRoRelations.resolves(relations)
+      nomisClientMock.getPersonIdentifiers.withArgs(1).resolves(person1)
+      nomisClientMock.getPersonIdentifiers.withArgs(2).resolves(person2)
+      nomisClientMock.getPersonIdentifiers.withArgs(3).resolves(person3)
+
+      const ro = await service.getResponsibleOfficer('123', 'username')
+
+      expect(ro.com.deliusId).to.eql('-1')
+    })
+
+    it('should get the available delius ID when duplicate person IDs', async () => {
+      const relations = [{ personId: 1 }, { personId: 1 }]
+      const person1 = [{ identifierType: 'EXTERNAL_REL', identifierValue: null }]
+      const person2 = [{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius1' }]
+
+      nomisClientMock.getRoRelations.resolves(relations)
+      nomisClientMock.getPersonIdentifiers.onCall(0).resolves(person1)
+      nomisClientMock.getPersonIdentifiers.onCall(1).resolves(person2)
+
+      const ro = await service.getResponsibleOfficer('123', 'username')
+
+      expect(ro.com.deliusId).to.eql('delius1')
+    })
+
+    it('should get the delius ID of the only available person ID', async () => {
+      const relations = [{ personId: '' }, { personId: null }, { personId: 1 }]
+      const identifiers = [{ identifierType: 'EXTERNAL_REL', identifierValue: 'delius1' }]
+
+      nomisClientMock.getRoRelations.resolves(relations)
+      nomisClientMock.getPersonIdentifiers.withArgs(1).resolves(identifiers)
+
+      const ro = await service.getResponsibleOfficer('123', 'username')
+
+      expect(ro.com.deliusId).to.eql('delius1')
     })
   })
 
