@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const AdmZip = require('adm-zip')
 
 const version = process.argv[2]
 
@@ -19,3 +20,8 @@ const dockerrun = {
 const output = JSON.stringify(dockerrun, null, 2)
 
 fs.writeFileSync(path.resolve(__dirname, '../Dockerrun.aws.json'), output)
+
+const zip = new AdmZip()
+zip.addLocalFile(`${__dirname}/../Dockerrun.aws.json`)
+zip.addLocalFile(`${__dirname}/../.ebextensions/nginx.config', '.ebextensions`)
+zip.writeZip(`${__dirname}/../deploy.zip`)

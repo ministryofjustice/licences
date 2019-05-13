@@ -193,7 +193,7 @@ jobs:
             git push origin ${VERSION}
             ~/.local/bin/eb deploy --label ${VERSION}
       - store_artifacts:
-          path: Dockerrun.aws.json
+          path: deploy.zip
 
   accept_stage:
     working_directory: ~/noms-digital-studio/licences
