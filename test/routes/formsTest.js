@@ -30,12 +30,12 @@ describe('/forms/', () => {
       app = createApp('caUser')
 
       return request(app)
-        .get('/hdc/forms/templateName/1')
+        .get('/hdc/forms/forms_hdc_eligible/1')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
         .expect(() => {
           expect(formService.generatePdf).to.be.calledOnce()
-          expect(formService.generatePdf).to.be.calledWith('templateName', licence.licence, prisoner)
+          expect(formService.generatePdf).to.be.calledWith('forms_hdc_eligible', licence.licence, prisoner)
         })
     })
 
@@ -43,8 +43,16 @@ describe('/forms/', () => {
       app = createApp('dmUser')
 
       return request(app)
-        .get('/hdc/forms/templateName/1')
+        .get('/hdc/forms/forms_hdc_eligible/1')
         .expect(403)
+    })
+
+    it('should throw if unknown form template name', () => {
+      app = createApp('caUser')
+
+      return request(app)
+        .get('/hdc/forms/unknown/1')
+        .expect(500)
     })
   })
 

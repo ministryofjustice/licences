@@ -52,6 +52,16 @@ module.exports = {
     taggingCompanyTelephone: get('TAGGING_CO_PHONE', '01234 567890'),
   },
 
+  formTemplates: [
+    'forms_hdc_eligible',
+    'forms_hdc_optout',
+    'forms_hdc_postponed',
+    'forms_hdc_refused',
+    'forms_hdc_approved',
+    'forms_hdc_address_checks',
+    'forms_hdc_address',
+  ],
+
   roles: {
     admin: ['BATCHLOAD'],
     user: ['CA', 'RO', 'DM'],
