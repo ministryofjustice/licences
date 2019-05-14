@@ -68,6 +68,10 @@ const createPdfServiceStub = () => ({
   generatePdf: sinon.stub().resolves(),
 })
 
+const createFormServiceStub = () => ({
+  generatePdf: sinon.stub().resolves(),
+})
+
 const createUserAdminServiceStub = () => ({
   getRoUsers: sinon.stub().resolves(),
   getIncompleteRoUsers: sinon.stub().resolves(),
@@ -168,6 +172,7 @@ const setup = {
   caseListServiceStub,
   createNomisPushServiceStub,
   createPdfServiceStub,
+  createFormServiceStub,
   createUserAdminServiceStub,
   createNotificationServiceStub,
   authenticationMiddleware,
