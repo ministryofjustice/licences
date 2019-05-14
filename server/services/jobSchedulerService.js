@@ -26,7 +26,7 @@ module.exports = function createJobSchedulerService(notificationJobs) {
   const executions = {}
 
   function createScheduledJobs() {
-    if (active) {
+    if (process.env.NODE_ENV === 'test' || active) {
       jobs.forEach(job => {
         logger.info(`Scheduling job: ${job.name}`)
         const execution = schedule.scheduleJob(job.name, job.spec, job.function)
