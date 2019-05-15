@@ -10,7 +10,7 @@ module.exports = function createJobSchedulerService(notificationJobs) {
     config.db.port
   }/${config.db.database}`
 
-  const { active, overlapTimeout } = config.jobs
+  const { autostart, overlapTimeout } = config.jobs
 
   const roLock = advisoryLock(connectionString)('roReminders')
 
@@ -24,16 +24,6 @@ module.exports = function createJobSchedulerService(notificationJobs) {
   ]
 
   const executions = {}
-
-  function createScheduledJobs() {
-    if (process.env.NODE_ENV === 'test' || active) {
-      jobs.forEach(job => {
-        logger.info(`Scheduling job: ${job.name}`)
-        const execution = schedule.scheduleJob(job.name, job.spec, job.function)
-        executions[job.name] = execution
-      })
-    }
-  }
 
   function nextExecution(job) {
     if (!job) {
@@ -68,20 +58,38 @@ module.exports = function createJobSchedulerService(notificationJobs) {
     })
   }
 
-  function restartJob(jobName) {
+  function startAllJobs() {
+    jobs.forEach(job => {
+      activate(job)
+    })
+  }
+
+  function startJob(jobName) {
     const job = jobs.find(j => j.name === jobName)
     if (job) {
-      logger.info(`Scheduling job: ${job.name}`)
-      executions[job.name].reschedule(job.spec)
+      activate(job)
     }
   }
 
-  createScheduledJobs()
+  function activate(job) {
+    logger.info(`Scheduling job: ${job.name}`)
+    if (executions[job.name]) {
+      executions[job.name].reschedule(job.spec)
+    } else {
+      executions[job.name] = schedule.scheduleJob(job.name, job.spec, job.function)
+    }
+  }
+
+  if (autostart) {
+    logger.info('Auto-starting scheduled jobs')
+    startAllJobs()
+  }
 
   return {
     listJobs,
-    cancelJob,
+    startAllJobs,
+    startJob,
     cancelAllJobs,
-    restartJob,
+    cancelJob,
   }
 }

@@ -21,6 +21,7 @@ describe('jobSchedulerService', () => {
 
       jobs = createNotificationJobs(notificationService, signInService)
       service = createJobSchedulerService(jobs)
+      service.startAllJobs()
     })
 
     afterEach(() => {
@@ -43,7 +44,7 @@ describe('jobSchedulerService', () => {
       const jobName = service.listJobs()[0].name
       service.cancelJob(jobName)
       expect(service.listJobs()[0].next).to.eql(null)
-      service.restartJob(jobName)
+      service.startJob(jobName)
       expect(service.listJobs()[0].next).to.not.eql(null)
     })
 
@@ -73,14 +74,15 @@ describe('jobSchedulerService', () => {
 
     it('should schedule jobs using the scheduler library', async () => {
       const scheduleStub = {
-        scheduleJob: sinon.stub().returns({}),
+        scheduleJob: sinon.stub().returns({ reschedule: sinon.stub().returns() }),
       }
 
       const stubbedService = proxyquire('../../server/services/jobSchedulerService', {
         'node-schedule': scheduleStub,
       })
 
-      await stubbedService(jobs)
+      const service = stubbedService(jobs)
+      await service.startAllJobs()
 
       expect(scheduleStub.scheduleJob).to.be.calledOnce()
       expect(scheduleStub.scheduleJob).to.be.calledWith('roReminders', config.jobs.roReminders, sinon.match.func)
