@@ -85,54 +85,42 @@ module.exports = {
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassChecksDone
 
+    const proposedAddressTask = {
+      title: 'Proposed curfew address',
+      label: curfewAddress.getLabel({ decisions, tasks }),
+      action: curfewAddress.getCaProcessingAction({ decisions, tasks }),
+      visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
+    }
+
+    const curfewAddressTask = {
+      title: 'Curfew address',
+      label: proposedAddress.getLabel({ decisions, tasks }),
+      action: proposedAddress.getCaAction({ decisions, tasks }),
+      visible: allowedTransition === 'caToRo',
+    }
+
+    const bassTask = {
+      title: 'BASS address',
+      label: bassOfferTask.getLabel({ decisions, tasks }),
+      action: bassOfferTask.getAction({ decisions, tasks }),
+      visible: bassReferralNeeded,
+    }
+
+    const refusalTask = {
+      title: null,
+      label: hdcRefusal.getLabel({ decisions }),
+      action: hdcRefusal.getCaAction({ decisions }),
+      visible: true,
+    }
+
     if (optedOut) {
-      return [
-        {
-          title: 'Proposed curfew address',
-          label: curfewAddress.getLabel({ decisions, tasks }),
-          action: curfewAddress.getCaProcessingAction({ decisions, tasks }),
-          visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
-        },
-        {
-          title: 'Curfew address',
-          label: proposedAddress.getLabel({ decisions, tasks }),
-          action: proposedAddress.getCaAction({ decisions, tasks }),
-          visible: allowedTransition === 'caToRo',
-        },
-        {
-          title: 'BASS address',
-          label: bassOfferTask.getLabel({ decisions, tasks }),
-          action: bassOfferTask.getAction({ decisions, tasks }),
-          visible: bassReferralNeeded,
-        },
-        {
-          title: null,
-          label: hdcRefusal.getLabel({ decisions }),
-          action: hdcRefusal.getCaAction({ decisions }),
-          visible: true,
-        },
-      ].filter(task => task.visible)
+      return [proposedAddressTask, curfewAddressTask, bassTask, refusalTask].filter(task => task.visible)
     }
 
     return [
-      {
-        title: 'Proposed curfew address',
-        label: curfewAddress.getLabel({ decisions, tasks }),
-        action: curfewAddress.getCaProcessingAction({ decisions, tasks }),
-        visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
-      },
-      {
-        title: 'Curfew address',
-        label: proposedAddress.getLabel({ decisions, tasks }),
-        action: proposedAddress.getCaAction({ decisions, tasks }),
-        visible: allowedTransition === 'caToRo',
-      },
-      {
-        title: 'BASS address',
-        label: bassOfferTask.getLabel({ decisions, tasks }),
-        action: bassOfferTask.getAction({ decisions, tasks }),
-        visible: bassReferralNeeded,
-      },
+      proposedAddressTask,
+      curfewAddressTask,
+      bassTask,
       {
         title: 'Risk management',
         label: riskManagement.getLabel({ decisions, tasks }),
@@ -195,12 +183,7 @@ module.exports = {
         action: postponement.getAction({ decisions, tasks }),
         visible: validAddress,
       },
-      {
-        title: null,
-        label: hdcRefusal.getLabel({ decisions }),
-        action: hdcRefusal.getCaAction({ decisions }),
-        visible: true,
-      },
+      refusalTask,
       {
         title: 'Submit to decision maker',
         label: caSubmitApproval.getLabel({ decisions, allowedTransition }),
@@ -247,24 +230,22 @@ module.exports = {
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassOfferMade
 
+    const eligibilitySummaryTask = {
+      task: 'eligibilitySummaryTask',
+      visible: validAddress,
+    }
+
+    const informOffenderTask = {
+      task: 'informOffenderTask',
+      visible: true,
+    }
+
     if (!eligible) {
-      return [
-        {
-          task: 'eligibilitySummaryTask',
-          visible: validAddress,
-        },
-        {
-          task: 'informOffenderTask',
-          visible: true,
-        },
-      ].filter(task => task.visible)
+      return [eligibilitySummaryTask, informOffenderTask].filter(task => task.visible)
     }
 
     return [
-      {
-        task: 'eligibilitySummaryTask',
-        visible: validAddress,
-      },
+      eligibilitySummaryTask,
       {
         title: 'Curfew address',
         label: proposedAddress.getLabel({ decisions, tasks }),
