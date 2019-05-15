@@ -6,9 +6,9 @@ const logger = require('../../log.js')
 const { onceOnly } = require('./jobs/jobUtils')
 
 module.exports = function createJobSchedulerService(notificationJobs) {
-  const connectionString = `postgres://${config.db.username}:${config.db.password}@${config.db.server}:5432/${
-    config.db.database
-  }`
+  const connectionString = `postgres://${config.db.username}:${config.db.password}@${config.db.server}:${
+    config.db.port
+  }/${config.db.database}`
 
   const { active, overlapTimeout } = config.jobs
 

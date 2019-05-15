@@ -24,6 +24,7 @@ module.exports = {
     server: get('DB_SERVER', 'localhost'),
     database: get('DB_NAME', 'licences'),
     sslEnabled: get('DB_SSL_ENABLED', 'true'),
+    port: 5432,
   },
 
   nomis: {
