@@ -85,6 +85,35 @@ module.exports = {
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassChecksDone
 
+    if (optedOut) {
+      return [
+        {
+          title: 'Proposed curfew address',
+          label: curfewAddress.getLabel({ decisions, tasks }),
+          action: curfewAddress.getCaProcessingAction({ decisions, tasks }),
+          visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
+        },
+        {
+          title: 'Curfew address',
+          label: proposedAddress.getLabel({ decisions, tasks }),
+          action: proposedAddress.getCaAction({ decisions, tasks }),
+          visible: allowedTransition === 'caToRo',
+        },
+        {
+          title: 'BASS address',
+          label: bassOfferTask.getLabel({ decisions, tasks }),
+          action: bassOfferTask.getAction({ decisions, tasks }),
+          visible: bassReferralNeeded,
+        },
+        {
+          title: null,
+          label: hdcRefusal.getLabel({ decisions }),
+          action: hdcRefusal.getCaAction({ decisions }),
+          visible: true,
+        },
+      ].filter(task => task.visible)
+    }
+
     return [
       {
         title: 'Proposed curfew address',
@@ -112,8 +141,7 @@ module.exports = {
           href: '/hdc/risk/riskManagement/',
           text: 'View/Edit',
         },
-        visible:
-          (!optedOut && !approvedPremisesRequired && curfewAddressApproved) || addressUnsuitable || bassChecksDone,
+        visible: (!approvedPremisesRequired && curfewAddressApproved) || addressUnsuitable || bassChecksDone,
       },
       {
         title: 'Victim liaison',
@@ -123,7 +151,7 @@ module.exports = {
           href: '/hdc/victim/victimLiaison/',
           text: 'View/Edit',
         },
-        visible: !optedOut && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Curfew hours',
@@ -133,7 +161,7 @@ module.exports = {
           href: '/hdc/curfew/curfewHours/',
           text: 'View/Edit',
         },
-        visible: !optedOut && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Additional conditions',
@@ -143,7 +171,7 @@ module.exports = {
           href: '/hdc/review/conditions/',
           text: 'View',
         },
-        visible: !optedOut && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Reporting instructions',
@@ -153,19 +181,19 @@ module.exports = {
           href: '/hdc/review/reporting/',
           text: 'View',
         },
-        visible: !optedOut && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Review case',
         label: finalChecks.getLabel({ decisions, tasks }),
         action: finalChecks.getCaProcessingAction({ decisions, tasks }),
-        visible: !optedOut && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Postpone or refuse',
         label: postponement.getLabel({ decisions, tasks }),
         action: postponement.getAction({ decisions, tasks }),
-        visible: !optedOut && validAddress,
+        visible: validAddress,
       },
       {
         title: null,
@@ -177,25 +205,25 @@ module.exports = {
         title: 'Submit to decision maker',
         label: caSubmitApproval.getLabel({ decisions, allowedTransition }),
         action: caSubmitApproval.getCaAction({ allowedTransition }),
-        visible: !optedOut && allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo',
+        visible: allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo',
       },
       {
         title: 'Submit to decision maker',
         label: caSubmitRefusal.getLabel({ decisions }),
         action: caSubmitRefusal.getCaAction({ decisions }),
-        visible: !optedOut && allowedTransition === 'caToDmRefusal',
+        visible: allowedTransition === 'caToDmRefusal',
       },
       {
         title: 'Submit curfew address',
         label: caSubmitAddressReview.getLabel({ tasks }),
         action: caSubmitAddressReview.getCaAction({ decisions, tasks }),
-        visible: !bassReferralNeeded && !optedOut && allowedTransition === 'caToRo',
+        visible: !bassReferralNeeded && allowedTransition === 'caToRo',
       },
       {
         title: 'Send for BASS area checks',
         label: caSubmitBassReview.getLabel({ decisions, tasks }),
         action: caSubmitBassReview.getCaAction({ decisions, tasks }),
-        visible: bassReferralNeeded && !optedOut && allowedTransition === 'caToRo',
+        visible: bassReferralNeeded && allowedTransition === 'caToRo',
       },
     ].filter(task => task.visible)
   },
@@ -219,6 +247,19 @@ module.exports = {
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassOfferMade
 
+    if (!eligible) {
+      return [
+        {
+          task: 'eligibilitySummaryTask',
+          visible: validAddress,
+        },
+        {
+          task: 'informOffenderTask',
+          visible: true,
+        },
+      ].filter(task => task.visible)
+    }
+
     return [
       {
         task: 'eligibilitySummaryTask',
@@ -228,19 +269,19 @@ module.exports = {
         title: 'Curfew address',
         label: proposedAddress.getLabel({ decisions, tasks }),
         action: proposedAddress.getCaAction({ decisions, tasks }),
-        visible: eligible && allowedTransition === 'caToRo',
+        visible: allowedTransition === 'caToRo',
       },
       {
         title: 'BASS address',
         label: bassAddress.getLabel({ decisions, tasks }),
         action: bassAddress.getCaAction({ tasks }),
-        visible: bassReferralNeeded && eligible && allowedTransition !== 'caToRo',
+        visible: bassReferralNeeded && allowedTransition !== 'caToRo',
       },
       {
         title: 'Proposed curfew address',
         label: curfewAddress.getLabel({ decisions, tasks }),
         action: curfewAddress.getCaPostApprovalAction({ decisions, tasks }),
-        visible: !bassReferralNeeded && eligible && allowedTransition !== 'caToRo',
+        visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
       },
       {
         title: 'Risk management',
@@ -250,7 +291,7 @@ module.exports = {
           href: '/hdc/risk/riskManagement/',
           text: 'View/Edit',
         },
-        visible: !approvedPremisesRequired && eligible && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
+        visible: !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
       },
       {
         title: 'Victim liaison',
@@ -260,7 +301,7 @@ module.exports = {
           href: '/hdc/victim/victimLiaison/',
           text: 'View/Edit',
         },
-        visible: eligible && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Curfew hours',
@@ -270,7 +311,7 @@ module.exports = {
           href: '/hdc/curfew/curfewHours/',
           text: 'View/Edit',
         },
-        visible: eligible && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Additional conditions',
@@ -280,7 +321,7 @@ module.exports = {
           href: '/hdc/licenceConditions/standard/',
           text: 'View/Edit',
         },
-        visible: eligible && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Reporting instructions',
@@ -290,58 +331,54 @@ module.exports = {
           href: '/hdc/reporting/reportingInstructions/',
           text: 'View/Edit',
         },
-        visible: eligible && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Review case',
         label: finalChecks.getLabel({ decisions, tasks }),
         action: finalChecks.getCaProcessingAction({ decisions, tasks }),
-        visible: eligible && validAddress,
+        visible: validAddress,
       },
       {
         title: 'Postpone or refuse',
         label: postponement.getLabel({ decisions, tasks }),
         action: postponement.getAction({ decisions, tasks }),
-        visible: eligible && validAddress,
+        visible: validAddress,
       },
       {
         title: null,
         label: hdcRefusal.getLabel({ decisions }),
         action: hdcRefusal.getCaAction({ decisions }),
-        visible: eligible && !dmRefused,
+        visible: !dmRefused,
       },
       {
         title: 'Submit to decision maker',
         label: caSubmitApproval.getLabel({ decisions, allowedTransition }),
         action: caSubmitApproval.getCaAction({ allowedTransition }),
-        visible: eligible && allowedTransition === 'caToDm',
+        visible: allowedTransition === 'caToDm',
       },
       {
         title: 'Submit to decision maker',
         label: caSubmitRefusal.getLabel({ decisions }),
         action: caSubmitRefusal.getCaAction({ decisions }),
-        visible: eligible && allowedTransition === 'caToDmRefusal',
+        visible: allowedTransition === 'caToDmRefusal',
       },
       {
         title: 'Send for BASS area checks',
         label: caSubmitBassReview.getLabel({ decisions, tasks }),
         action: caSubmitBassReview.getCaAction({ decisions, tasks }),
-        visible: eligible && bassReferralNeeded && allowedTransition === 'caToRo',
+        visible: bassReferralNeeded && allowedTransition === 'caToRo',
       },
       {
         title: 'Submit curfew address',
         label: caSubmitAddressReview.getLabel({ tasks }),
         action: caSubmitAddressReview.getCaAction({ decisions, tasks }),
-        visible: eligible && !bassReferralNeeded && allowedTransition === 'caToRo',
+        visible: !bassReferralNeeded && allowedTransition === 'caToRo',
       },
       {
         title: 'Create licence',
         action: createLicence.getCaAction({ decisions, tasks, stage }),
-        visible: eligible && validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition),
-      },
-      {
-        task: 'informOffenderTask',
-        visible: !eligible,
+        visible: validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition),
       },
     ].filter(task => task.visible)
   },
