@@ -6,7 +6,7 @@ const config = require('../../config')
 
 const DEFAULT_PLACEHOLDER = 'N/A'
 
-module.exports = { formatPdfData, DEFAULT_PLACEHOLDER }
+module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress }
 
 function formatPdfData(
   templateName,
