@@ -213,7 +213,6 @@ class LicenceDetailsSpec extends GebReportingSpec {
     bass.area.bassAreaReason == 'Reason'
   }
 
-  @Ignore
   def 'Shows approved premises details when approved premises required'() {
 
     given: 'Approved premises required'
