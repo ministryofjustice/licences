@@ -12,7 +12,8 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
       prisonerService.getPrisonerDetails(bookingId, token),
       prisonerService.getEstablishmentForPrisoner(bookingId, token),
     ])
-    const image = await prisonerService.getPrisonerImage(prisonerInfo.facialImageId, token)
+
+    const image = prisonerInfo.facialImageId ? await getImage(prisonerInfo.facialImageId, token) : null
 
     return pdfFormatter.formatPdfData(
       templateName,
@@ -24,6 +25,15 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
       image,
       { ...rawLicence.approvedVersionDetails, approvedVersion: rawLicence.approvedVersion }
     )
+  }
+
+  async function getImage(facialImageId, token) {
+    try {
+      return await prisonerService.getPrisonerImage(facialImageId, token)
+    } catch (error) {
+      logger.error('Error during getPrisonerImage: ', error.stack)
+      return null
+    }
   }
 
   async function getPdf(templateName, values) {

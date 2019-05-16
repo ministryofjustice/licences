@@ -269,5 +269,45 @@ describe('pdfService', () => {
       prisonerService.getPrisonerDetails.rejects(new Error('dead'))
       return expect(service.getPdfLicenceData(templateName, '123', rawLicence, 'token')).to.be.rejected()
     })
+
+    it('should not try to get image data if missing facialImageId, use null instead', async () => {
+      prisonerService.getPrisonerDetails.resolves({})
+
+      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token')
+
+      expect(prisonerService.getPrisonerImage).not.to.be.calledOnce()
+
+      expect(pdfFormatter.formatPdfData).to.be.calledOnce()
+      expect(pdfFormatter.formatPdfData).to.be.calledWith(
+        templateName,
+        {
+          licence,
+          prisonerInfo: {},
+          establishment: establishmentResponse,
+        },
+        null,
+        { a: 'a', approvedVersion: 1.3 }
+      )
+    })
+
+    it('should use null for photo if error getting image', async () => {
+      prisonerService.getPrisonerImage.rejects(new Error('dead'))
+
+      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token')
+
+      expect(prisonerService.getPrisonerImage).to.be.calledOnce()
+
+      expect(pdfFormatter.formatPdfData).to.be.calledOnce()
+      expect(pdfFormatter.formatPdfData).to.be.calledWith(
+        templateName,
+        {
+          licence,
+          prisonerInfo: prisonerResponse,
+          establishment: establishmentResponse,
+        },
+        null,
+        { a: 'a', approvedVersion: 1.3 }
+      )
+    })
   })
 })
