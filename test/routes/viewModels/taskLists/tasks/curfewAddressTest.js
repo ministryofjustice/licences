@@ -166,7 +166,7 @@ describe('curfew address task', () => {
       })
     })
 
-    it('should btn to 3 way choice if opted out', () => {
+    it('should link to 3 way choice if opted out', () => {
       expect(
         getCaPostApprovalAction({
           decisions: { optedOut: true },
@@ -181,7 +181,7 @@ describe('curfew address task', () => {
   })
 
   describe('getCaProcessingAction', () => {
-    it('should btn to 3 way choice if opted out', () => {
+    it('should link to 3 way choice if opted out', () => {
       expect(
         getCaProcessingAction({
           decisions: { optedOut: true },
