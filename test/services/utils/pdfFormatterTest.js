@@ -120,6 +120,49 @@ describe('pdfFormatter', () => {
     expect(data.missing).to.not.have.property('CURFEW_ADDRESS')
   })
 
+  it('should use approved premises address instead of curfew address when approved premises required', () => {
+    const licence = {
+      proposedAddress: {
+        curfewAddress: {
+          addresses: [
+            {
+              addressLine1: 'first',
+              addressLine2: 'second',
+              addressTown: '',
+              postCode: 'post',
+            },
+          ],
+        },
+      },
+      bassReferral: {
+        bassRequest: { bassRequested: 'Yes' },
+        bassOffer: {
+          bassAccepted: 'Yes',
+          postCode: 'BASS PC',
+          addressTown: 'BASS Town',
+          addressLine1: 'BASS 1',
+          addressLine2: 'BASS 2',
+        },
+      },
+      curfew: {
+        approvedPremises: {
+          required: 'Yes',
+        },
+        approvedPremisesAddress: {
+          addressLine1: 'AP 1',
+          addressLine2: 'AP 2',
+          addressTown: 'AP Town',
+          postCode: 'AP PC',
+        },
+      },
+    }
+
+    const data = formatWith({ licence })
+
+    expect(data.values.CURFEW_ADDRESS).to.eql('AP 1\nAP 2\nAP Town\nAP PC')
+    expect(data.missing).to.not.have.property('CURFEW_ADDRESS')
+  })
+
   it('should use BASS address instead of curfew address when BASS requested and accepted', () => {
     const licence = {
       proposedAddress: {
