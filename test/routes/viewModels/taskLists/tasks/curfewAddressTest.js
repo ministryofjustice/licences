@@ -165,6 +165,19 @@ describe('curfew address task', () => {
         type: 'btn-secondary',
       })
     })
+
+    it('should btn to 3 way choice if opted out', () => {
+      expect(
+        getCaPostApprovalAction({
+          decisions: { optedOut: true },
+          tasks: { curfewAddress: 'UNSTARTED' },
+        })
+      ).to.eql({
+        text: 'Change',
+        href: '/hdc/proposedAddress/curfewAddressChoice/',
+        type: 'link',
+      })
+    })
   })
 
   describe('getCaProcessingAction', () => {
