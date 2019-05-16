@@ -55,6 +55,14 @@ module.exports = {
     }
   },
 
+  view: href => {
+    return {
+      text: 'View',
+      type: 'btn-secondary',
+      href,
+    }
+  },
+
   change: href => {
     return {
       text: 'Change',

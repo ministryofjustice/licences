@@ -62,7 +62,7 @@ function canSendRoToCa(licenceStatus) {
     tasks.curfewAddressReview,
     tasks.curfewHours,
     tasks.licenceConditions,
-    tasks.riskManagement,
+    decisions.approvedPremisesRequired ? taskStates.DONE : tasks.riskManagement,
     tasks.victim,
     tasks.reportingInstructions,
   ]
@@ -78,14 +78,14 @@ function canSendDmToCa(licenceStatus) {
 function canSendCaToRo(licenceStatus) {
   const { tasks, decisions, stage } = licenceStatus
 
-  const { eligible, optedOut, bassReferralNeeded, curfewAddressRejected } = decisions
+  const { eligible, optedOut, bassReferralNeeded, curfewAddressRejected, approvedPremisesRequired } = decisions
 
   if (['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
     if (bassReferralNeeded) {
       if (licenceStatus.tasks.bassAreaCheck === taskStates.UNSTARTED) {
         return true
       }
-    } else if (tasks.curfewAddressReview === taskStates.UNSTARTED) {
+    } else if (!optedOut && !approvedPremisesRequired && tasks.curfewAddressReview === taskStates.UNSTARTED) {
       return true
     }
   }
@@ -160,7 +160,8 @@ function canSendCaToDm(licenceStatus) {
   const required = getRequiredTasks(decisions, tasks)
   const tasksComplete = required.every(it => it === taskStates.DONE)
 
-  const addressOk = decisions.bassReferralNeeded || decisions.curfewAddressApproved
+  const addressOk =
+    decisions.bassReferralNeeded || decisions.curfewAddressApproved || decisions.approvedPremisesRequired
 
   const decisionsOk = !decisions.excluded && !decisions.postponed && !decisions.finalChecksRefused && addressOk
 

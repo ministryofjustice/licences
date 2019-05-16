@@ -148,6 +148,14 @@ describe('getStatusLabel', () => {
           },
           label: 'BASS request withdrawn',
         },
+        {
+          status: {
+            stage: licenceStages.PROCESSING_CA,
+            decisions: { approvedPremisesRequired: true },
+            tasks: {},
+          },
+          label: 'Approved premises',
+        },
       ]
 
       assertLabels(examples, 'CA')
@@ -221,7 +229,7 @@ describe('getStatusLabel', () => {
             decisions: {},
             tasks: { curfewAddressReview: 'UNSTARTED', reportingInstructions: 'DONE' },
           },
-          label: 'Not started',
+          label: 'In progress',
         },
         {
           status: {
@@ -282,6 +290,14 @@ describe('getStatusLabel', () => {
             tasks: {},
           },
           label: 'BASS area rejected',
+        },
+        {
+          status: {
+            stage: licenceStages.PROCESSING_RO,
+            decisions: { approvedPremisesRequired: true },
+            tasks: { approvedPremisesAddress: 'STARTED' },
+          },
+          label: 'In progress',
         },
       ]
 
