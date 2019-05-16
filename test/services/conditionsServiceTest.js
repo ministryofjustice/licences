@@ -291,6 +291,46 @@ describe('conditionsService', () => {
       expect(output).to.eql(expectedOutput)
     })
 
+    it('should replace placeholder text for drug testing appointment conditions for view', () => {
+      const rawLicence = {
+        licenceConditions: {
+          additional: {
+            1: {
+              drug_testing_name: 'name',
+              drug_testing_address: 'address',
+            },
+          },
+          bespoke: [],
+        },
+      }
+      const selectedConditions = [
+        {
+          id: 1,
+          user_input: 'drug_testing',
+          text: 'The condition [placeholder] with input',
+          field_position: { drug_testing_name: 0, drug_testing_address: 1 },
+          group_name: 'g',
+          subgroup_name: 'sg',
+        },
+      ]
+
+      const output = service.populateAdditionalConditionsAsObject(rawLicence, selectedConditions)
+
+      const expectedOutput = {
+        licenceConditions: [
+          {
+            content: [{ text: 'The condition ' }, { variable: 'name, address' }, { text: ' with input' }],
+            group: 'g',
+            subgroup: 'sg',
+            id: 1,
+            inputRequired: true,
+          },
+        ],
+      }
+
+      expect(output).to.eql(expectedOutput)
+    })
+
     it('should join all fields and separators for multi field conditions when some missing', () => {
       const rawLicence = {
         licenceConditions: {
@@ -575,6 +615,48 @@ describe('conditionsService', () => {
             user_input: 'attendSampleDetails',
             text: 'The condition [placeholder] with input',
             field_position: { attendSampleDetailsName: 0, attendSampleDetailsAddress: 1 },
+            group_name: 'g',
+            subgroup_name: 'sg',
+          },
+        ]
+
+        const output = service.populateAdditionalConditionsAsObject(rawLicence, selectedConditions, errors)
+
+        const expectedOutput = {
+          licenceConditions: [
+            {
+              content: [{ text: 'The condition ' }, { error: '[Missing], address' }, { text: ' with input' }],
+              group: 'g',
+              subgroup: 'sg',
+              id: 1,
+              inputRequired: true,
+            },
+          ],
+        }
+
+        expect(output).to.eql(expectedOutput)
+      })
+
+      it('should replace placeholder text for drug testing appointment conditions with errors', () => {
+        const rawLicence = {
+          licenceConditions: {
+            additional: {
+              1: {
+                drug_testing_name: 'name',
+                drug_testing_address: 'address',
+              },
+            },
+            bespoke: [],
+          },
+        }
+
+        const errors = { 1: { drug_testing_name: 'Missing' } }
+        const selectedConditions = [
+          {
+            id: 1,
+            user_input: 'drug_testing',
+            text: 'The condition [placeholder] with input',
+            field_position: { drug_testing_name: 0, drug_testing_address: 1 },
             group_name: 'g',
             subgroup_name: 'sg',
           },

@@ -106,6 +106,11 @@ module.exports = joi.object({
     attendSampleDetailsName: joi.string().required(),
     attendSampleDetailsAddress: joi.string().required(),
   }),
+  POLYGRAPH: joi.object({}),
+  DRUG_TESTING: joi.object({
+    drug_testing_name: joi.string().required(),
+    drug_testing_address: joi.string().required(),
+  }),
 
   // 2019
   DO_NOT_CONTACT_PRISONERS: joi.object({}),
