@@ -1277,7 +1277,7 @@ describe('TaskList models', () => {
   })
 
   describe('roTasksPostApproval', () => {
-    it('should return four taskes', () => {
+    it('should return four tasks', () => {
       expect(
         taskListModel(
           'RO',
@@ -1295,21 +1295,66 @@ describe('TaskList models', () => {
           title: 'Risk management',
           label: 'Not completed',
           action: { type: 'btn', text: 'Continue', href: '/hdc/risk/riskManagement/' },
+          visible: true,
         },
         {
           title: 'Curfew hours',
           label: 'Not completed',
           action: { type: 'btn', text: 'Continue', href: '/hdc/curfew/curfewHours/' },
+          visible: true,
         },
         {
           title: 'Additional conditions',
           label: 'Not completed',
           action: { type: 'btn', text: 'Continue', href: '/hdc/licenceConditions/standard/' },
+          visible: true,
         },
         {
           title: 'Reporting instructions',
           label: 'Not completed',
           action: { type: 'btn', text: 'Continue', href: '/hdc/reporting/reportingInstructions/' },
+          visible: true,
+        },
+      ])
+    })
+
+    it('should hide risk and show address taks when approved premises', () => {
+      expect(
+        taskListModel(
+          'RO',
+          false,
+          {
+            decisions: { approvedPremisesRequired: true },
+            tasks: {},
+            stage: 'DECIDED',
+          },
+          { version: 1 },
+          null
+        )
+      ).to.eql([
+        {
+          title: 'Proposed curfew address',
+          label: 'Not completed',
+          action: { type: 'btn', text: 'Continue', href: '/hdc/curfew/approvedPremises/' },
+          visible: true,
+        },
+        {
+          title: 'Curfew hours',
+          label: 'Not completed',
+          action: { type: 'btn', text: 'Continue', href: '/hdc/curfew/curfewHours/' },
+          visible: true,
+        },
+        {
+          title: 'Additional conditions',
+          label: 'Not completed',
+          action: { type: 'btn', text: 'Continue', href: '/hdc/licenceConditions/standard/' },
+          visible: true,
+        },
+        {
+          title: 'Reporting instructions',
+          label: 'Not completed',
+          action: { type: 'btn', text: 'Continue', href: '/hdc/reporting/reportingInstructions/' },
+          visible: true,
         },
       ])
     })
@@ -2145,68 +2190,13 @@ describe('TaskList models', () => {
           label: 'Not completed',
           title: 'Proposed curfew address',
         },
-        {
-          action: {
-            href: '/hdc/review/victimLiaison/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Victim liaison',
-        },
-        {
-          action: {
-            href: '/hdc/review/curfewHours/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Curfew hours',
-        },
-        {
-          action: {
-            href: '/hdc/review/conditions/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Additional conditions',
-        },
-        {
-          action: {
-            href: '/hdc/review/reporting/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Reporting instructions',
-        },
-        {
-          action: {
-            href: '/hdc/review/finalChecks/',
-            text: 'View',
-            type: 'btn-secondary',
-          },
-          label: 'Not completed',
-          title: 'Review case',
-        },
-        {
-          action: {
-            href: '/hdc/send/return/',
-            text: 'Return to prison case admin',
-            type: 'btn-secondary',
-          },
-          title: 'Return to prison case admin',
-        },
-        {
-          action: {
-            href: '/hdc/approval/release/',
-            text: 'Continue',
-            type: 'btn',
-          },
-          label: 'Not started',
-          title: 'Final decision',
-        },
+        victim,
+        curfew,
+        conditions,
+        reporting,
+        review,
+        returnPCA,
+        release,
       ])
     })
 

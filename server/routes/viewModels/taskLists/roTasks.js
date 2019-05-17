@@ -76,27 +76,39 @@ module.exports = {
   },
 
   getRoTasksPostApproval: ({ decisions, tasks }) => {
+    const { approvedPremisesRequired } = decisions
+
     return [
+      {
+        title: 'Proposed curfew address',
+        label: curfewAddress.getLabel({ decisions, tasks }),
+        action: curfewAddress.getRoAction({ decisions, tasks }),
+        visible: approvedPremisesRequired,
+      },
       {
         title: 'Risk management',
         label: riskManagement.getLabel({ decisions, tasks }),
         action: riskManagement.getRoAction({ decisions, tasks }),
+        visible: !approvedPremisesRequired,
       },
       {
         title: 'Curfew hours',
         label: curfewHours.getLabel({ decisions, tasks }),
         action: curfewHours.getRoAction({ decisions, tasks }),
+        visible: true,
       },
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }),
         action: additionalConditions.getRoAction({ decisions, tasks }),
+        visible: true,
       },
       {
         title: 'Reporting instructions',
         label: reportingInstructions.getLabel({ decisions, tasks }),
         action: reportingInstructions.getRoAction({ decisions, tasks }),
+        visible: true,
       },
-    ]
+    ].filter(task => task.visible)
   },
 }
