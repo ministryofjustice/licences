@@ -1,6 +1,7 @@
-const logger = require('../../log')
+const { getReviewSections } = require('./viewModels/reviewModels')
 const { asyncMiddleware } = require('../utils/middleware')
 const { getIn } = require('../utils/functionalHelpers')
+const logger = require('../../log')
 
 module.exports = ({ licenceService, conditionsService, prisonerService }) => router => {
   router.get(
@@ -23,9 +24,12 @@ module.exports = ({ licenceService, conditionsService, prisonerService }) => rou
 
       const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
 
+      const sections = getReviewSections(licenceStatus)
+
       res.render(`review/${sectionName}`, {
         bookingId,
         data,
+        sections,
         prisonerInfo,
         stage,
         licenceVersion,

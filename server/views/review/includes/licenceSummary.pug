@@ -1,11 +1,8 @@
 include additionalConditions
 
--var validAddress = (!licenceStatus.decisions.curfewAddressRejected && !licenceStatus.decisions.bassAreaNotSuitable && !licenceStatus.decisions.approvedPremisesRequired)
-
 div.largeMarginBottom
 
-  if (licenceStatus.decisions.bassReferralNeeded)
-    // BASS
+  if sections.bassArea
     div.borderBottom
       div.pure-g
         div.pure-u-1.pure-u-md-1-2
@@ -20,8 +17,7 @@ div.largeMarginBottom
       else
         p.alert.bold(id='bass-address-error') Enter the BASS area details
 
-  else if (licenceStatus.decisions.approvedPremisesRequired)
-    // Approed premises address
+  else if sections.approvedPremisesAddress
     div.borderBottom
       div.pure-g
         div.pure-u-1.pure-u-md-1-2
@@ -36,7 +32,6 @@ div.largeMarginBottom
       else
         include approvedPremisesAddress
   else
-    // Proposed address
     div.borderBottom
       div.pure-g
         div.pure-u-1.pure-u-md-1-2
@@ -53,7 +48,7 @@ div.largeMarginBottom
       else
         include curfewAddress
 
-  if licenceStatus.decisions.addressUnsuitable || validAddress
+  if sections.riskManagement
     // Risk
     div.borderBottom
       div.pure-g
@@ -69,7 +64,7 @@ div.largeMarginBottom
       else
         include riskManagement
 
-  if validAddress
+  if sections.victimLiaison
     // Victim liaison
     div.borderBottom
       div.pure-g
@@ -85,6 +80,7 @@ div.largeMarginBottom
       else
         include victimLiaison
 
+  if sections.curfewHours
     // Curfew hours
     div.borderBottom
       div.pure-g
@@ -100,6 +96,7 @@ div.largeMarginBottom
       else
         include curfewHours
 
+  if sections.additionalConditions
     // Additional condition
     div.borderBottom
       div.pure-g
@@ -122,6 +119,7 @@ div.largeMarginBottom
         else
           p Not complete
 
+  if sections.reportingInstructions
     // Reporting instructions
     div.borderBottom
       div.pure-g
