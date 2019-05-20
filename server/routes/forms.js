@@ -22,5 +22,13 @@ module.exports = ({ formService }) => router => {
     })
   )
 
+  router.get(
+    '/:bookingId',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.params
+      return res.render('forms/all', { bookingId })
+    })
+  )
+
   return router
 }

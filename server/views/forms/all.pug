@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+
+  include ../includes/back
+
+  h1.heading-large Forms
+
+  h2.heading-medium
+    span PDF forms to download or print
+
+  div.pure-g.largeMarginBottom.midPaddingBottom
+    div.pure-u-1
+      ul
+        li
+          a(href="/hdc/forms/forms_hdc_eligible/" + bookingId target="_blank") Eligible
+        li
+          a(href="/hdc/forms/forms_hdc_address_checks/" + bookingId target="_blank") Information about address checks
+        li
+          a(href="/hdc/forms/forms_hdc_address/" + bookingId target="_blank") Address form
+        li
+          a(href="/hdc/forms/forms_hdc_optout/" + bookingId target="_blank") Opt out
+        li
+          a(href="/hdc/forms/forms_hdc_postponed/" + bookingId target="_blank") Postponed
+        li
+          a(href="/hdc/forms/forms_hdc_refused/" + bookingId target="_blank") Refused
+        li
+          a(href="/hdc/forms/forms_hdc_approved/" + bookingId target="_blank") Approved

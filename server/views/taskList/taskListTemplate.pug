@@ -12,8 +12,10 @@ include ./includes/utils
 
 block content
 
-  div.back-link-container
-    a.link-back(href="/caseList") Back to case list
+  if user.role === 'CA'
+    include ../includes/back-caselist-and-forms
+  else
+    include ../includes/backToCaseList
 
     if licenceStatus.decisions.excluded
       div.error-banner.marginTopMedium

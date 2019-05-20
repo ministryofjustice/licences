@@ -56,6 +56,29 @@ describe('/forms/', () => {
     })
   })
 
+  describe('/forms/:bookingId/', () => {
+    it('should throw if a non CA tries to access the page', () => {
+      app = createApp('dmUser')
+
+      return request(app)
+        .get('/hdc/forms/1')
+        .expect(403)
+    })
+
+    it('should list all forms with bookingId', () => {
+      app = createApp('caUser')
+
+      return request(app)
+        .get('/hdc/forms/1')
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).to.contain('href="/hdc/forms/forms_hdc_eligible/1')
+          expect(res.text).to.contain('href="/hdc/forms/forms_hdc_approved/1')
+          expect(res.text).to.contain('href="/hdc/forms/forms_hdc_refused/1')
+        })
+    })
+  })
+
   function createApp(user) {
     const signInService = createSignInServiceStub()
     const baseRouter = standardRouter({

@@ -3,7 +3,10 @@ extends ../layout
 
 block content
 
-  include ../includes/back
+  if user.role === 'CA'
+    include ../includes/back-and-forms
+  else
+    include ../includes/back
 
   h1.heading-large Licence details
   include ../taskList/prisonerDetails
