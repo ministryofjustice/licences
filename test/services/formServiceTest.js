@@ -92,10 +92,53 @@ describe('formService', () => {
       expect(pdfService.getPdf).to.be.calledWith('templateName', expectedData)
     })
 
+    it('should map first refusal reason from DM refusal with multiple reasons', async () => {
+      const prisoner = {}
+      const licence = {
+        approval: { release: { reason: ['insufficientTime', 'other', 'other', 'other'] } },
+      }
+
+      const expectedData = {
+        CREATION_DATE: '25/04/2019',
+        CURFEW_ADDRESS: 'line1\nline2\ntown\npostcode',
+        EST_PREMISE: '',
+        OFF_NAME: '',
+        OFF_NOMS: '',
+        REFUSAL_REASON: 'there is not enough time before you’re due to be released',
+        SENT_CRD: '',
+        SENT_HDCED: '',
+      }
+
+      await service.generatePdf('templateName', licence, prisoner)
+      expect(pdfService.getPdf).to.be.calledWith('templateName', expectedData)
+    })
+
     it('should map refusal reason from final checks refusal', async () => {
       const prisoner = {}
       const licence = {
         finalChecks: { release: { reason: 'noAvailableAddress' } },
+        approval: { release: { reason: 'insufficientTime' } },
+      }
+
+      const expectedData = {
+        CREATION_DATE: '25/04/2019',
+        CURFEW_ADDRESS: 'line1\nline2\ntown\npostcode',
+        EST_PREMISE: '',
+        OFF_NAME: '',
+        OFF_NOMS: '',
+        REFUSAL_REASON: 'there is no suitable address for you to live at',
+        SENT_CRD: '',
+        SENT_HDCED: '',
+      }
+
+      await service.generatePdf('templateName', licence, prisoner)
+      expect(pdfService.getPdf).to.be.calledWith('templateName', expectedData)
+    })
+
+    it('should map first refusal reason from final checks refusal with multiple reasons', async () => {
+      const prisoner = {}
+      const licence = {
+        finalChecks: { release: { reason: ['noAvailableAddress', 'other', 'other'] } },
         approval: { release: { reason: 'insufficientTime' } },
       }
 
