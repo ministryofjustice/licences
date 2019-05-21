@@ -52,12 +52,17 @@ module.exports = function createFormService(pdfService, pdfFormatter) {
 
   function getRefusalReason(licence) {
     const finalChecksRefusalReason = getIn(licence, ['finalChecks', 'release', 'reason'])
+
     if (finalChecksRefusalReason) {
-      return refusalReasonlabels[finalChecksRefusalReason] || ''
+      return refusalReasonlabels[pickFirst(finalChecksRefusalReason)] || ''
     }
 
     const dmRefusalReason = getIn(licence, ['approval', 'release', 'reason'])
-    return refusalReasonlabels[dmRefusalReason] || ''
+    return refusalReasonlabels[pickFirst(dmRefusalReason)] || ''
+  }
+
+  function pickFirst(reasons) {
+    return Array.isArray(reasons) ? reasons[0] : reasons
   }
 
   return {
