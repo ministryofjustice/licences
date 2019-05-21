@@ -1,20 +1,26 @@
 const moment = require('moment')
-const { getIn } = require('../utils/functionalHelpers')
+const { isEmpty, getIn, mergeWithRight } = require('../utils/functionalHelpers')
+const { formsDateFormat } = require('../config')
+const {
+  requiredFields,
+  refusalReasonlabels,
+  ineligibleReasonlabels,
+  unsuitableReasonlabels,
+} = require('./config/formConfig')
+const logger = require('../../log.js')
 
 module.exports = function createFormService(pdfService, pdfFormatter) {
   async function generatePdf(templateName, licence, prisoner) {
-    const dateNow = moment().format('DD/MM/YYYY')
-
-    const values = {
-      CREATION_DATE: dateNow,
-      OFF_NAME: getOffenderName(prisoner),
-      OFF_NOMS: getValue(prisoner, ['offenderNo']),
-      EST_PREMISE: getValue(prisoner, ['agencyLocationDesc']),
-      SENT_HDCED: getValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']),
-      SENT_CRD: getValue(prisoner, ['sentenceDetail', 'releaseDate']),
-      REFUSAL_REASON: getRefusalReason(licence),
-      CURFEW_ADDRESS: getCurfewAddress(pdfFormatter.pickCurfewAddress(licence)),
+    if (!requiredFields[templateName]) {
+      logger.warn(`No such form template: ${templateName}`)
+      return null
     }
+
+    const required = requiredFields[templateName]
+
+    const values = required.reduce((allValues, field) => {
+      return mergeWithRight(allValues, { [field]: fieldValue(licence, prisoner, field) })
+    }, {})
 
     return pdfService.getPdf(templateName, values)
   }
@@ -32,6 +38,44 @@ module.exports = function createFormService(pdfService, pdfFormatter) {
     )
   }
 
+  function getDateValue(data, path) {
+    const value = getValue(data, path)
+    try {
+      if (moment(value, 'DD-MM-YYYY').isValid()) {
+        return moment(value, 'DD-MM-YYYY').format(formsDateFormat)
+      }
+    } catch (error) {
+      // ignore
+    }
+    return value
+  }
+
+  function pickFirst(reasons) {
+    return Array.isArray(reasons) ? reasons[0] : reasons
+  }
+
+  function fieldValue(licence, prisoner, field) {
+    const fieldFunction = {
+      CREATION_DATE: () => moment().format(formsDateFormat),
+      OFF_NAME: () => getOffenderName(prisoner),
+      OFF_NOMS: () => getValue(prisoner, ['offenderNo']),
+      EST_PREMISE: () => getValue(prisoner, ['agencyLocationDesc']),
+      SENT_HDCED: () => getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']),
+      SENT_CRD: () => getDateValue(prisoner, ['sentenceDetail', 'releaseDate']),
+      CURFEW_ADDRESS: () => getCurfewAddress(pdfFormatter.pickCurfewAddress(licence)),
+      REFUSAL_REASON: () => getRefusalReason(licence),
+      INELIGIBLE_REASON: () => getIneligibleReason(licence),
+      UNSUITABLE_REASON: () => getUnsuitableReason(licence),
+    }
+
+    if (!fieldFunction[field]) {
+      logger.warn(`No field function for form field name: ${field}`)
+      return null
+    }
+
+    return fieldFunction[field]()
+  }
+
   function getOffenderName(prisonerInfo) {
     return combine(prisonerInfo, [['firstName'], ['middleName'], ['lastName']], ' ')
   }
@@ -40,29 +84,26 @@ module.exports = function createFormService(pdfService, pdfFormatter) {
     return address ? combine(address, [['addressLine1'], ['addressLine2'], ['addressTown'], ['postCode']], '\n') : ''
   }
 
-  const noAddress = 'there is no suitable address for you to live at'
-  const noTime = 'there is not enough time before you’re due to be released'
-
-  const refusalReasonlabels = {
-    addressUnsuitable: noAddress,
-    insufficientTime: noTime,
-    outOfTime: noTime,
-    noAvailableAddress: noAddress,
-  }
-
   function getRefusalReason(licence) {
-    const finalChecksRefusalReason = getIn(licence, ['finalChecks', 'release', 'reason'])
-
-    if (finalChecksRefusalReason) {
-      return refusalReasonlabels[pickFirst(finalChecksRefusalReason)] || ''
+    const finalChecksReasons = ['finalChecks', 'release', 'reason']
+    if (!isEmpty(getIn(licence, finalChecksReasons))) {
+      return getReasonLabel(licence, finalChecksReasons, refusalReasonlabels)
     }
 
-    const dmRefusalReason = getIn(licence, ['approval', 'release', 'reason'])
-    return refusalReasonlabels[pickFirst(dmRefusalReason)] || ''
+    return getReasonLabel(licence, ['approval', 'release', 'reason'], refusalReasonlabels)
   }
 
-  function pickFirst(reasons) {
-    return Array.isArray(reasons) ? reasons[0] : reasons
+  function getIneligibleReason(licence) {
+    return getReasonLabel(licence, ['eligibility', 'excluded', 'reason'], ineligibleReasonlabels)
+  }
+
+  function getUnsuitableReason(licence) {
+    return getReasonLabel(licence, ['eligibility', 'suitability', 'reason'], unsuitableReasonlabels)
+  }
+
+  function getReasonLabel(licence, path, labels) {
+    const reasons = getIn(licence, path)
+    return labels[pickFirst(reasons)] || ''
   }
 
   return {
