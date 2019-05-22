@@ -52,6 +52,7 @@ module.exports = {
     taggingCompanyTelephone: get('TAGGING_CO_PHONE', '01234 567890'),
   },
 
+  formsDateFormat: 'Do MMMM YYYY',
   formTemplates: {
     forms_hdc_eligible: 'Eligible',
     forms_hdc_ineligible: 'Not eligible',

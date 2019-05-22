@@ -3,15 +3,18 @@ extends ../layout
 block content
 
   include ../includes/back
+  include ../includes/personalDetailsSummary
 
   h1.heading-large Forms
 
-  h2.heading-medium
-    span PDF forms to download or print
+  h2#subHeading.heading-medium
+    span HDC forms for #{prisoner.firstName} #{prisoner.lastName}
+
+  div.midMarginBottom These forms will open in a new tab for printing
 
   div.pure-g.largeMarginBottom.midPaddingBottom
     div.pure-u-1
-      ul
+      ul#printableForms
         if forms && forms.length > 0
           each form in forms
             li
