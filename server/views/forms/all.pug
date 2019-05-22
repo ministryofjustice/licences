@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+
+  include ../includes/back
+
+  h1.heading-large Forms
+
+  h2.heading-medium
+    span PDF forms to download or print
+
+  div.pure-g.largeMarginBottom.midPaddingBottom
+    div.pure-u-1
+      ul
+        if forms && forms.length > 0
+          each form in forms
+            li
+              a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}

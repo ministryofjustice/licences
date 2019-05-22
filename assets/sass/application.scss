@@ -404,3 +404,14 @@ input[type="time"] {
 .highlighted-string {
     background-color: darkorange;
 }
+
+.forms-link {
+  display: inline-block;
+  margin-top: 15px;
+  margin-right: 10px;
+  font-size: 16px;
+  line-height: 1.25;
+  margin-bottom: 15px;
+  text-decoration: none;
+  border-bottom: 1px solid #0b0c0c;
+}

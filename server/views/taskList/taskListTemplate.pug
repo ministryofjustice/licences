@@ -12,21 +12,23 @@ include ./includes/utils
 
 block content
 
-  div.back-link-container
-    a.link-back(href="/caseList") Back to case list
+  if user.role === 'CA'
+    include ../includes/back-caselist-and-forms
+  else
+    include ../includes/backToCaseList
 
-    if licenceStatus.decisions.excluded
-      div.error-banner.marginTopMedium
-        strong.bold The offender is statutorily excluded from HDC
-    else if licenceStatus.decisions.unsuitableResult
-      div.error-banner.marginTopMedium
-        strong.bold The offender is presumed unsuitable for HDC release
-    else if licenceStatus.decisions.refused
-      div.error-banner.marginTopMedium
-        strong.bold Home detention curfew refused - #{licenceStatus.decisions.refusalReason}
-    else if licenceStatus.decisions.optedOut
-      div.error-banner.marginTopMedium
-        strong.bold The offender has opted out from Home Detention Curfew
+  if licenceStatus.decisions.excluded
+    div.error-banner.marginTopMedium
+      strong.bold The offender is statutorily excluded from HDC
+  else if licenceStatus.decisions.unsuitableResult
+    div.error-banner.marginTopMedium
+      strong.bold The offender is presumed unsuitable for HDC release
+  else if licenceStatus.decisions.refused
+    div.error-banner.marginTopMedium
+      strong.bold Home detention curfew refused - #{licenceStatus.decisions.refusalReason}
+  else if licenceStatus.decisions.optedOut
+    div.error-banner.marginTopMedium
+      strong.bold The offender has opted out from Home Detention Curfew
 
   if !user.role
     p Error

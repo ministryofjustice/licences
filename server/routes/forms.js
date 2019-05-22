@@ -1,5 +1,6 @@
 const { asyncMiddleware } = require('../utils/middleware')
 const { formTemplates } = require('../config')
+const { isEmpty } = require('../utils/functionalHelpers')
 
 module.exports = ({ formService }) => router => {
   router.get(
@@ -11,7 +12,7 @@ module.exports = ({ formService }) => router => {
         prisoner,
       } = res.locals
 
-      if (!formTemplates.includes(templateName)) {
+      if (isEmpty(formTemplates[templateName])) {
         throw new Error(`unknown form template: ${templateName}`)
       }
 
@@ -19,6 +20,14 @@ module.exports = ({ formService }) => router => {
 
       res.type('application/pdf')
       return res.end(pdf, 'binary')
+    })
+  )
+
+  router.get(
+    '/:bookingId',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.params
+      return res.render('forms/all', { bookingId, forms: Object.entries(formTemplates) })
     })
   )
 
