@@ -40,12 +40,8 @@ module.exports = function createFormService(pdfService, pdfFormatter) {
 
   function getDateValue(data, path) {
     const value = getValue(data, path)
-    try {
-      if (moment(value, 'DD-MM-YYYY').isValid()) {
-        return moment(value, 'DD-MM-YYYY').format(formsDateFormat)
-      }
-    } catch (error) {
-      // ignore
+    if (moment(value, 'DD-MM-YYYY').isValid()) {
+      return moment(value, 'DD-MM-YYYY').format(formsDateFormat)
     }
     return value
   }
