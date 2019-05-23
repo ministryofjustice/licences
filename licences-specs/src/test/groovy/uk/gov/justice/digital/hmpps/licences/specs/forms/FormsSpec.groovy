@@ -47,4 +47,15 @@ class FormsSpec extends GebReportingSpec {
     then: 'the links include the offenders booking id'
     formLinks.every {it.getAttribute('href').endsWith(testData.markAndrewsBookingId) }
   }
+
+  def 'hides forms link if no licence record'() {
+    given: 'licence not yet started'
+    testData.deleteLicences()
+
+    when: 'viewing the task list for an offender'
+    to TaskListPage, testData.markAndrewsBookingId
+
+    then: 'there is no forms page link'
+    !formsLink.isDisplayed()
+  }
 }
