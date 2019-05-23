@@ -7,6 +7,7 @@ const audit = require('./data/audit')
 const licenceClient = require('./data/licenceClient')
 const userClient = require('./data/userClient')
 const configClient = require('./data/configClient')
+const dbLockingClient = require('./data/dbLockingClient')
 const nomisClientBuilder = require('./data/nomisClientBuilder')
 const pdfFormatter = require('./services/utils/pdfFormatter')
 
@@ -50,7 +51,7 @@ const notificationService = createNotificationService(
 )
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 const notificationJobs = createNotificationJobs(notificationService, signInService)
-const jobSchedulerService = createJobSchedulerService(notificationJobs)
+const jobSchedulerService = createJobSchedulerService(dbLockingClient, notificationJobs)
 
 const app = createApp({
   signInService,

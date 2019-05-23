@@ -10,6 +10,7 @@ describe('jobSchedulerService', () => {
     let jobs
     let signInService
     let notificationService
+    let dbLockingClient
 
     beforeEach(() => {
       signInService = {
@@ -20,8 +21,12 @@ describe('jobSchedulerService', () => {
         notifyRoReminders: sinon.stub().resolves({}),
       }
 
+      dbLockingClient = {
+        query: sinon.stub().resolves({}),
+      }
+
       jobs = createNotificationJobs(notificationService, signInService)
-      service = createJobSchedulerService(jobs)
+      service = createJobSchedulerService(dbLockingClient, jobs)
       service.startAllJobs()
     })
 
@@ -38,7 +43,7 @@ describe('jobSchedulerService', () => {
       expect(job.name).to.eql('roReminders')
       expect(job.schedule).to.eql(config.jobs.roReminders)
       expect(moment(job.next, 'dddd Do MMMM HH:mm:ss').isValid()).to.eql(true)
-      expect(job.outcome).to.eql('(pending)')
+      expect(job.outcome).to.eql(undefined)
     })
 
     it('should cancel job and remove next execution', async () => {
@@ -74,6 +79,7 @@ describe('jobSchedulerService', () => {
     let jobs
     let signInService
     let notificationService
+    let dbLockingClient
 
     beforeEach(() => {
       signInService = {
@@ -82,6 +88,10 @@ describe('jobSchedulerService', () => {
 
       notificationService = {
         notifyRoReminders: sinon.stub().resolves({}),
+      }
+
+      dbLockingClient = {
+        query: sinon.stub().resolves({}),
       }
 
       jobs = createNotificationJobs(notificationService, signInService)
@@ -96,7 +106,7 @@ describe('jobSchedulerService', () => {
         'node-schedule': scheduleStub,
       })
 
-      const service = stubbedService(jobs)
+      const service = stubbedService(dbLockingClient, jobs)
       await service.startAllJobs()
 
       expect(scheduleStub.scheduleJob).to.be.calledOnce()

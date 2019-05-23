@@ -2,10 +2,12 @@ const schedule = require('node-schedule')
 const moment = require('moment')
 const config = require('../config')
 const logger = require('../../log.js')
-const { onceOnly } = require('./jobs/jobUtils')
+const createJobUtils = require('./jobs/jobUtils')
 
-module.exports = function createJobSchedulerService(notificationJobs) {
+module.exports = function createJobSchedulerService(dbLockingClient, notificationJobs) {
   const { autostart, overlapTimeout } = config.jobs
+
+  const jobUtils = createJobUtils(dbLockingClient)
 
   function jobResultCallback(name) {
     return (error, result) => {
@@ -15,7 +17,7 @@ module.exports = function createJobSchedulerService(notificationJobs) {
         return
       }
       logger.info(`Scheduled job: ${name}, finished with success`, result)
-      outcomes[name] = { success: true, output: result }
+      outcomes[name] = { success: true, output: JSON.stringify(result) }
     }
   }
 
@@ -23,7 +25,12 @@ module.exports = function createJobSchedulerService(notificationJobs) {
     {
       name: 'roReminders',
       spec: config.jobs.roReminders,
-      function: onceOnly(notificationJobs.roReminders, 'roReminders', overlapTimeout, jobResultCallback('roReminders')),
+      function: jobUtils.onceOnly(
+        notificationJobs.roReminders,
+        'roReminders',
+        overlapTimeout,
+        jobResultCallback('roReminders')
+      ),
     },
   ]
 
@@ -44,7 +51,7 @@ module.exports = function createJobSchedulerService(notificationJobs) {
         name: job.name,
         schedule: job.spec,
         next: nextExecution(executions[job.name]),
-        outcome: outcomes[job.name] ? JSON.stringify(outcomes[job.name]) : '(pending)',
+        outcome: outcomes[job.name],
       }
     })
   }

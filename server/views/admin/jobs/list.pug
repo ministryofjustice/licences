@@ -26,7 +26,7 @@ block content
           tr(class=outcome.success === false ? "alert" : "")
             td #{job.name}
             td #{job.schedule}
-            td #{outcome.output}
+            td #{outcome.output || 'Not run'}
             td #{job.next}
             td
               if (job.next)

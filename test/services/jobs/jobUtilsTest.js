@@ -1,60 +1,57 @@
-const proxyquire = require('proxyquire')
-
-proxyquire.noCallThru()
+const createJobUtils = require('../../../server/services/jobs/jobUtils')
 
 describe('jobUtils', () => {
   let jobFunction
-  let queryStub
   let callback
-
-  const proxy = (query = queryStub) => {
-    return proxyquire('../../../server/services/jobs/jobUtils', {
-      '../../data/dataAccess/db': {
-        query,
-      },
-    })
-  }
+  let dbLockingClient
+  let jobUtils
 
   beforeEach(() => {
     jobFunction = sinon.stub().returns('job result')
-    queryStub = sinon.stub().resolves({ rows: [{ pg_try_advisory_lock: true }] })
+    dbLockingClient = {
+      tryLock: sinon.stub().resolves(true),
+      unlock: sinon.stub().resolves(true),
+    }
     callback = sinon.stub().returns()
+
+    jobUtils = createJobUtils(dbLockingClient)
   })
 
   it('should lock, execute, unlock', async () => {
-    const runner = proxy().onceOnly(jobFunction, 'name', 0, callback)
+    const runner = jobUtils.onceOnly(jobFunction, 'name', 0, callback)
     await runner()
 
-    expect(queryStub).to.be.calledTwice()
-    expect(queryStub.getCalls()[0].args[0].text).includes('select pg_try_advisory_lock($1)')
-    expect(queryStub.getCalls()[1].args[0].text).includes('select pg_advisory_unlock($1)')
+    expect(dbLockingClient.tryLock).to.be.calledOnce()
+    expect(dbLockingClient.unlock).to.be.calledOnce()
     expect(jobFunction).to.be.calledOnce()
+    expect(dbLockingClient.tryLock).to.be.calledWith('name')
+    expect(dbLockingClient.unlock).to.be.calledWith('name')
   })
 
   it('should not execute without lock', async () => {
-    queryStub = sinon.stub().resolves({ rows: [{ pg_try_advisory_lock: false }] })
+    dbLockingClient.tryLock = sinon.stub().resolves(false)
 
-    const runner = proxy().onceOnly(jobFunction, 'name', 0, callback)
+    const runner = jobUtils.onceOnly(jobFunction, 'name', 0, callback)
     await runner()
 
-    expect(queryStub).to.be.calledTwice()
+    expect(dbLockingClient.tryLock).to.be.calledOnce()
+    expect(dbLockingClient.unlock).to.be.calledOnce()
     expect(jobFunction).not.to.be.calledOnce()
   })
 
   it('should unlock if function throws', async () => {
     jobFunction = sinon.stub().throws()
 
-    const runner = proxy().onceOnly(jobFunction, 'name', 0, callback)
+    const runner = jobUtils.onceOnly(jobFunction, 'name', 0, callback)
     await runner()
 
-    expect(queryStub).to.be.calledTwice()
-    expect(queryStub.getCalls()[0].args[0].text).includes('select pg_try_advisory_lock($1)')
-    expect(queryStub.getCalls()[1].args[0].text).includes('select pg_advisory_unlock($1)')
+    expect(dbLockingClient.tryLock).to.be.calledOnce()
+    expect(dbLockingClient.unlock).to.be.calledOnce()
     expect(jobFunction).to.be.calledOnce()
   })
 
   it('should call callback on success', async () => {
-    const runner = proxy().onceOnly(jobFunction, 'name', 0, callback)
+    const runner = jobUtils.onceOnly(jobFunction, 'name', 0, callback)
     await runner()
 
     expect(callback).to.be.calledOnce()
@@ -62,9 +59,9 @@ describe('jobUtils', () => {
   })
 
   it('should call callback on missed lock', async () => {
-    queryStub = sinon.stub().resolves({ rows: [{ pg_try_advisory_lock: false }] })
+    dbLockingClient.tryLock = sinon.stub().resolves(false)
 
-    const runner = proxy().onceOnly(jobFunction, 'name', 0, callback)
+    const runner = jobUtils.onceOnly(jobFunction, 'name', 0, callback)
     await runner()
 
     expect(callback).to.be.calledOnce()
@@ -74,7 +71,7 @@ describe('jobUtils', () => {
   it('should call callback on job function error', async () => {
     jobFunction = sinon.stub().throws({ message: 'DEAD' })
 
-    const runner = proxy().onceOnly(jobFunction, 'name', 0, callback)
+    const runner = jobUtils.onceOnly(jobFunction, 'name', 0, callback)
     await runner()
 
     expect(callback).to.be.calledOnce()
@@ -82,12 +79,12 @@ describe('jobUtils', () => {
   })
 
   it('should call callback on lock error', async () => {
-    queryStub = sinon
+    dbLockingClient.tryLock = sinon
       .stub()
       .onCall(0)
       .rejects({ message: 'DEAD' })
 
-    const runner = proxy().onceOnly(jobFunction, 'name', 0, callback)
+    const runner = jobUtils.onceOnly(jobFunction, 'name', 0, callback)
     await runner()
 
     expect(callback).to.be.calledOnce()
