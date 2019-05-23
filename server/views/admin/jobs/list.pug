@@ -1,0 +1,45 @@
+extends ../../layout
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/") Back
+
+  div.pure-g
+
+    div.pure-u-1.largeMarginTop
+      h2.heading-medium Scheduled jobs
+
+      table.largeMarginBottom
+        thead
+          tr
+            th Job
+            th Schedule
+            th Last outcome
+            th Next run
+            th
+            th
+        tbody
+
+        each job in jobs
+          -var outcome = job.outcome || {}
+          tr(class=outcome.success === false ? "alert" : "")
+            td #{job.name}
+            td #{job.schedule}
+            td #{outcome.output}
+            td #{job.next}
+            td
+              if (job.next)
+                form(method='POST' action='/admin/jobs/cancel')
+                  input(type="hidden" name="_csrf" value=csrfToken)
+                  input(type="hidden" name="jobName" value=job.name)
+                  input.requiredButton.button(type="submit" value="Turn off")
+
+              else
+                form(method='POST' action='/admin/jobs/reschedule')
+                  input(type="hidden" name="_csrf" value=csrfToken)
+                  input(type="hidden" name="jobName" value=job.name)
+                  input.requiredButton.button(type="submit" value="Turn on")
+
+block append scripts
+  script(src="/public/javascripts/scheduledJobs.js?" + version)

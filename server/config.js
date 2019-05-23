@@ -24,6 +24,7 @@ module.exports = {
     server: get('DB_SERVER', 'localhost'),
     database: get('DB_NAME', 'licences'),
     sslEnabled: get('DB_SSL_ENABLED', 'true'),
+    port: 5432,
   },
 
   nomis: {
@@ -84,4 +85,11 @@ module.exports = {
 
   pushToNomis: get('PUSH_TO_NOMIS', 'no') === 'yes',
   use2019Conditions: get('NEW_CONDITIONS', 'no') === 'yes',
+
+  jobs: {
+    systemUser: get('REMINDERS_SYSTEM_USER', ''),
+    roReminders: get('REMINDERS_SCHEDULE_RO', '0 1 * * 1-5'),
+    autostart: get('SCHEDULED_JOBS_AUTOSTART', 'no') === 'yes',
+    overlapTimeout: get('SCHEDULED_JOBS_OVERLAP', 5000),
+  },
 }

@@ -215,9 +215,11 @@ module.exports = function createNotificationService(
   }
 
   async function notifyRoReminders(token) {
-    await notifyCases(token, () => deadlineService.getOverdue('RO'), 'RO_OVERDUE')
-    await notifyCases(token, () => deadlineService.getDueInDays('RO', 0), 'RO_DUE')
-    await notifyCases(token, () => deadlineService.getDueInDays('RO', 2), 'RO_TWO_DAYS')
+    const overdue = await notifyCases(token, () => deadlineService.getOverdue('RO'), 'RO_OVERDUE')
+    const due = await notifyCases(token, () => deadlineService.getDueInDays('RO', 0), 'RO_DUE')
+    const soon = await notifyCases(token, () => deadlineService.getDueInDays('RO', 2), 'RO_TWO_DAYS')
+
+    return { overdue, due, soon }
   }
 
   async function notifyCases(token, caseFinderMethod, notificationType) {
@@ -226,6 +228,7 @@ module.exports = function createNotificationService(
       if (!isEmpty(cases)) {
         await sendReminders(token, cases, notificationType)
       }
+      return cases ? cases.length : 0
     } catch (error) {
       logger.error(`Error notifying cases for notification type: ${notificationType}`, error.stack)
     }
