@@ -390,7 +390,7 @@ describe('notificationService', () => {
     })
   })
 
-  describe('notifyReminders', () => {
+  describe('notifyRoReminders', () => {
     it('should get notifiable booking IDs from deadline service', async () => {
       await service.notifyRoReminders('token')
       expect(deadlineService.getOverdue).to.be.calledOnce()
@@ -399,13 +399,19 @@ describe('notificationService', () => {
       expect(deadlineService.getDueInDays).to.be.calledWith('RO', 2)
     })
 
+    it('should return counts of notifiable cases', async () => {
+      const result = await service.notifyRoReminders('token')
+      expect(result).to.eql({ overdue: 2, due: 1, soon: 1 })
+    })
+
     it('should do nothing further if empty notifiable cases', async () => {
       deadlineService.getDueInDays = sinon.stub().resolves()
       deadlineService.getOverdue = sinon.stub().resolves()
-      await service.notifyRoReminders('token')
+      const result = await service.notifyRoReminders('token')
 
       expect(prisonerService.getOrganisationContactDetails).to.have.callCount(0)
       expect(prisonerService.getPrisonerPersonalDetails).to.have.callCount(0)
+      expect(result).to.eql({ overdue: 0, due: 0, soon: 0 })
     })
 
     it('should do nothing further if no notifiable cases', async () => {
