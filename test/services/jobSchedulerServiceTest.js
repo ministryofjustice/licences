@@ -2,7 +2,6 @@ const proxyquire = require('proxyquire')
 const moment = require('moment')
 const createJobSchedulerService = require('../../server/services/jobSchedulerService')
 const createNotificationJobs = require('../../server/services/jobs/notificationJobs')
-const config = require('../../server/config')
 
 describe('jobSchedulerService', () => {
   describe('createScheduledJobs', () => {
@@ -11,6 +10,8 @@ describe('jobSchedulerService', () => {
     let signInService
     let notificationService
     let dbLockingClient
+    let configClient
+    const jobSpec = '* * * * * *'
 
     beforeEach(() => {
       signInService = {
@@ -25,8 +26,12 @@ describe('jobSchedulerService', () => {
         query: sinon.stub().resolves({}),
       }
 
+      configClient = {
+        getJobSpec: sinon.stub().resolves(jobSpec),
+      }
+
       jobs = createNotificationJobs(notificationService, signInService)
-      service = createJobSchedulerService(dbLockingClient, jobs)
+      service = createJobSchedulerService(dbLockingClient, configClient, jobs)
       service.startAllJobs()
     })
 
@@ -35,43 +40,56 @@ describe('jobSchedulerService', () => {
     })
 
     it('should list jobs', async () => {
-      expect(service.listJobs().length).to.eql(1)
+      const jobList = await service.listJobs()
+      expect(jobList.length).to.eql(1)
     })
 
     it('should create RO reminders job', async () => {
-      const job = service.listJobs()[0]
+      const jobList = await service.listJobs()
+      const job = jobList[0]
       expect(job.name).to.eql('roReminders')
-      expect(job.schedule).to.eql(config.jobs.roReminders)
+      expect(job.schedule).to.eql(jobSpec)
       expect(moment(job.next, 'dddd Do MMMM HH:mm:ss').isValid()).to.eql(true)
       expect(job.outcome).to.eql(undefined)
     })
 
     it('should cancel job and remove next execution', async () => {
-      const jobName = service.listJobs()[0].name
-      expect(service.listJobs()[0].next).to.not.eql(null)
+      const jobList = await service.listJobs()
+      const jobName = jobList[0].name
+      expect(jobList[0].next).to.not.eql(null)
       service.cancelJob(jobName)
-      expect(service.listJobs()[0].next).to.eql(null)
+
+      const endJobsList = await service.listJobs()
+      expect(endJobsList[0].next).to.eql(null)
     })
 
     it('should restart job and set next execution', async () => {
-      const jobName = service.listJobs()[0].name
+      const jobList = await service.listJobs()
+      const jobName = jobList[0].name
       service.cancelJob(jobName)
-      expect(service.listJobs()[0].next).to.eql(null)
+      const midJobList = await service.listJobs()
+      expect(midJobList[0].next).to.eql(null)
       service.startJob(jobName)
-      expect(service.listJobs()[0].next).to.not.eql(null)
+      const endJobList = await service.listJobs()
+      expect(endJobList[0].next).to.not.eql(null)
     })
 
     it('should cancel all jobs', async () => {
-      expect(service.listJobs().some(job => job.next === null)).to.eql(false)
+      const jobList = await service.listJobs()
+      expect(jobList.some(job => job.next === null)).to.eql(false)
       service.cancelAllJobs()
-      expect(service.listJobs().some(job => job.next !== null)).to.eql(false)
+      const endJobList = await service.listJobs()
+      expect(endJobList.some(job => job.next !== null)).to.eql(false)
     })
 
     it('should restart all jobs', async () => {
+      await service.listJobs()
       service.cancelAllJobs()
-      expect(service.listJobs().some(job => job.next !== null)).to.eql(false)
+      const jobList = await service.listJobs()
+      expect(jobList.some(job => job.next !== null)).to.eql(false)
       service.startAllJobs()
-      expect(service.listJobs().some(job => job.next === null)).to.eql(false)
+      const endJobList = await service.listJobs()
+      expect(endJobList.some(job => job.next === null)).to.eql(false)
     })
   })
 
@@ -80,6 +98,8 @@ describe('jobSchedulerService', () => {
     let signInService
     let notificationService
     let dbLockingClient
+    let configClient
+    const jobSpec = '* * * * * *'
 
     beforeEach(() => {
       signInService = {
@@ -94,7 +114,11 @@ describe('jobSchedulerService', () => {
         query: sinon.stub().resolves({}),
       }
 
-      jobs = createNotificationJobs(notificationService, signInService)
+      configClient = {
+        getJobSpec: sinon.stub().resolves(jobSpec),
+      }
+
+      jobs = createNotificationJobs(notificationService, configClient, signInService)
     })
 
     it('should schedule jobs using the scheduler library', async () => {
@@ -106,11 +130,11 @@ describe('jobSchedulerService', () => {
         'node-schedule': scheduleStub,
       })
 
-      const service = stubbedService(dbLockingClient, jobs)
+      const service = stubbedService(dbLockingClient, configClient, jobs)
       await service.startAllJobs()
 
       expect(scheduleStub.scheduleJob).to.be.calledOnce()
-      expect(scheduleStub.scheduleJob).to.be.calledWith('roReminders', config.jobs.roReminders, sinon.match.func)
+      expect(scheduleStub.scheduleJob).to.be.calledWith('roReminders', jobSpec, sinon.match.func)
     })
   })
 })
