@@ -25,9 +25,14 @@ block content
           -var outcome = job.outcome || {}
           tr(class=outcome.success === false ? "alert" : "")
             td #{job.name}
-            td #{job.schedule}
+            td
+              form(method='POST' action='/admin/jobs/update')
+                input(type="hidden" name="_csrf" value=csrfToken)
+                input(type="hidden" name="jobName" value=job.name)
+                input.smallMarginRight(type="text" name="schedule" value=job.schedule size="10")
+                input.requiredButton.button.button-secondary(type="submit" value="Update")
             td #{outcome.output || 'Not run'}
-            td #{job.next}
+            td #{job.next || 'Not scheduled. Validate cron & turn on'}
             td
               if (job.next)
                 form(method='POST' action='/admin/jobs/cancel')

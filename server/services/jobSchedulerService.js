@@ -83,7 +83,11 @@ module.exports = function createJobSchedulerService(dbLockingClient, notificatio
   function startJob(jobName) {
     const job = jobs.find(j => j.name === jobName)
     if (job) {
-      activate(job)
+      try {
+        activate(job)
+      } catch (error) {
+        logger.error(`Error starting ${job.name} with ${job.spec}`, error)
+      }
     }
   }
 
@@ -93,6 +97,15 @@ module.exports = function createJobSchedulerService(dbLockingClient, notificatio
       executions[job.name].reschedule(job.spec)
     } else {
       executions[job.name] = schedule.scheduleJob(job.name, job.spec, job.function)
+    }
+  }
+
+  function updateJob(jobName, newSchedule) {
+    const job = jobs.find(j => j.name === jobName)
+    if (job) {
+      cancelJob(jobName)
+      job.spec = newSchedule
+      logger.info(`Updated: ${job.name} with new schedule: ${newSchedule}`)
     }
   }
 
@@ -107,5 +120,6 @@ module.exports = function createJobSchedulerService(dbLockingClient, notificatio
     startJob,
     cancelAllJobs,
     cancelJob,
+    updateJob,
   }
 }

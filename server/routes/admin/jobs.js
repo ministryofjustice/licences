@@ -26,5 +26,14 @@ module.exports = ({ jobSchedulerService }) => router => {
     })
   )
 
+  router.post(
+    '/update',
+    asyncMiddleware(async (req, res) => {
+      const { jobName, schedule } = req.body
+      jobSchedulerService.updateJob(jobName, schedule)
+      res.redirect('/admin/jobs')
+    })
+  )
+
   return router
 }
