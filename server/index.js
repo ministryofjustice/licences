@@ -51,7 +51,7 @@ const notificationService = createNotificationService(
 )
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 const notificationJobs = createNotificationJobs(notificationService, signInService)
-const jobSchedulerService = createJobSchedulerService(dbLockingClient, notificationJobs)
+const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 
 const app = createApp({
   signInService,

@@ -127,4 +127,24 @@ describe('configClient', () => {
       })
     })
   })
+
+  describe('getJobSpec', () => {
+    it('should pass in the correct params', () => {
+      const result = userProxy().getJobSpec('name')
+      return result.then(() => {
+        const call = queryStub.getCalls()[0].args[0]
+        expect(call.values).to.eql(['name'])
+      })
+    })
+  })
+
+  describe('setJobSpec', () => {
+    it('should pass in the correct params', () => {
+      const result = userProxy().setJobSpec('name', 'spec')
+      return result.then(() => {
+        const call = queryStub.getCalls()[0].args[0]
+        expect(call.values).to.eql(['name', 'spec'])
+      })
+    })
+  })
 })
