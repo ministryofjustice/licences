@@ -8,7 +8,7 @@ describe('notificationJobs', () => {
   const notifyRoRemindersResult = { result: 'result' }
 
   beforeEach(() => {
-    signInService = { getClientCredentialsTokens: sinon.stub().resolves({ token: 'test-token' }) }
+    signInService = { getAnonymousClientCredentialsTokens: sinon.stub().resolves({ token: 'test-token' }) }
     notificationService = { notifyRoReminders: sinon.stub().resolves(notifyRoRemindersResult) }
 
     jobs = createNotificationJobs(notificationService, signInService)
@@ -17,7 +17,7 @@ describe('notificationJobs', () => {
   it('should sign in and trigger notifications', async () => {
     const result = await jobs.roReminders()
 
-    expect(signInService.getClientCredentialsTokens).to.be.calledOnce()
+    expect(signInService.getAnonymousClientCredentialsTokens).to.be.calledOnce()
     expect(notificationService.notifyRoReminders).to.be.calledOnce()
     expect(notificationService.notifyRoReminders).to.be.calledWith('test-token')
     expect(result).to.eql(notifyRoRemindersResult)

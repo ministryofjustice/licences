@@ -35,6 +35,13 @@ const signInService = () => {
 
       return oauthTokenRequest(oauthAdminClientToken, oauthRequest)
     },
+
+    async getAnonymousClientCredentialsTokens() {
+      const oauthAdminClientToken = generateAdminOauthClientToken()
+      const oauthRequest = { grant_type: 'client_credentials' }
+
+      return oauthTokenRequest(oauthAdminClientToken, oauthRequest)
+    },
   }
 }
 
