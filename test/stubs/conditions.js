@@ -387,7 +387,7 @@ module.exports = {
         {
           id: 'DRUG_TESTING',
           text:
-            '(a) Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. (b) Not to take any action that could hamper or frustrate the drug testing process.',
+            'Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process.',
           user_input: 'drug_testing',
           active: true,
           field_position: {
@@ -882,7 +882,7 @@ module.exports = {
         {
           id: 'DRUG_TESTING',
           text:
-            '(a) Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. (b) Not to take any action that could hamper or frustrate the drug testing process.',
+            'Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process.',
           user_input: 'drug_testing',
           active: true,
           field_position: {
@@ -1380,7 +1380,7 @@ module.exports = {
         {
           id: 'DRUG_TESTING',
           text:
-            '(a) Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. (b) Not to take any action that could hamper or frustrate the drug testing process.',
+            'Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process.',
           user_input: 'drug_testing',
           active: true,
           field_position: {
