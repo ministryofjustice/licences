@@ -133,3 +133,7 @@ Create a new seed file
 ```
 npm run knex seed:make <script-name>
 ```
+
+# Feature specs
+
+Feature specs are in /licences-specs which has its own README
