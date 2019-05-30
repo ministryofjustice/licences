@@ -90,6 +90,12 @@ module.exports = {
           validationMessage: 'Select yes or no',
         },
       },
+      {
+        residentOffenceDetails: {
+          responseType: 'requiredStringIf_cautionedAgainstResident_Yes',
+          validationMessage: 'Provide details of the conviction or caution',
+        },
+      },
     ],
     nextPath: {
       path: '/hdc/taskList/',

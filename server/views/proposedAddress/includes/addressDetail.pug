@@ -51,8 +51,9 @@ mixin addressDetail(type, address, review)
       if address.cautionedAgainstResident
         div.pure-u-md-5-6
           p According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
-
-            p.bold(id="cautioned-" + type) #{address.cautionedAgainstResident}
+            p.bold.noMargin(id="cautioned-" + type) #{address.cautionedAgainstResident}
+            if address.cautionedAgainstResident === 'Yes'
+              p.bold.noMargin #{address.residentOffenceDetails}
 
   if review.consent
     div.pure-g.largeMarginTop.paddingTop.smallPaddingBottom.borderTopLight

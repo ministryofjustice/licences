@@ -24,6 +24,7 @@ class ProposedAddressCurfewAddressPage extends Page {
     residents { module(ResidentDetailsModule) }
 
     cautionedRadios { $(name: "cautionedAgainstResident").module(RadioButtons) }
+    cautionedDetails { $('#residentOffenceDetails') }
 
     alternativeAddressRadios { $(name: "alternativeAddress").module(RadioButtons) }
 

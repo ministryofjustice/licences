@@ -48,9 +48,15 @@ mixin addressForm(errorObject)
           div#cautionedAgainstResident(class=errorObject.cautionedAgainstResident ? "form-group form-group-error inline smallPaddingTop" : "form-group inline smallPaddingTop")
             p According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
 
-            div.multiple-choice
+            div.multiple-choice(data-target="residentOffenceDetailsForm")
               input(id="cautionedYes" type="radio" checked=data.cautionedAgainstResident === 'Yes' name="cautionedAgainstResident" value="Yes")
               label(for="cautionedYes") Yes
             div.multiple-choice
               input(id="cautionedNo-" + index type="radio" checked=data.cautionedAgainstResident === 'No' name="cautionedAgainstResident" value="No")
               label(for="cautionedNo-" + index) No
+
+            div#residentOffenceDetailsForm.panel.panel-border-narrow.js-hidden
+              label(for='residentOffenceDetails') Please enter details
+                textarea(name='residentOffenceDetails' id='residentOffenceDetails' class='form-control' rows='5' aria-label="Enter details")
+                  if data.residentOffenceDetails
+                    | #{data.residentOffenceDetails}
