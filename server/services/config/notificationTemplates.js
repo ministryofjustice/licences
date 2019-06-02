@@ -9,13 +9,13 @@ module.exports = {
     templateId: '9afc4ab7-5d3f-4703-805b-8d5b7c0c7cea',
   },
   RO_TWO_DAYS: {
-    templateId: '7f37bc44-de7f-4992-8e3a-bb158efab70d',
+    templateId: 'd435ace7-a65c-4ff2-82fb-f461e886fa45',
   },
   RO_DUE: {
-    templateId: '6db64b32-eaf5-4f8a-b3b3-980787232bc2',
+    templateId: '0d7d1475-a784-4126-bd47-787e3939ce57',
   },
   RO_OVERDUE: {
-    templateId: '7d1b70f5-f27b-4e7d-ac8d-ecfe48c8b496',
+    templateId: '69beb252-f4b1-4837-9715-cc429e448664',
   },
   DM_NEW: {
     templateId: 'b06bfd70-0b7b-4ccf-9b6d-9e577e282ed1',
