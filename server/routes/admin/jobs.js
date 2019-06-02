@@ -6,7 +6,7 @@ module.exports = ({ jobSchedulerService }) => router => {
   router.get(
     '/',
     asyncMiddleware(async (req, res) => {
-      return res.render('admin/jobs/list', { jobs: jobSchedulerService.listJobs() })
+      return res.render('admin/jobs/list', { jobs: await jobSchedulerService.listJobs() })
     })
   )
 
@@ -22,6 +22,15 @@ module.exports = ({ jobSchedulerService }) => router => {
     '/reschedule',
     asyncMiddleware(async (req, res) => {
       jobSchedulerService.startJob(req.body.jobName)
+      res.redirect('/admin/jobs')
+    })
+  )
+
+  router.post(
+    '/update',
+    asyncMiddleware(async (req, res) => {
+      const { jobName, schedule } = req.body
+      await jobSchedulerService.updateJob(jobName, schedule)
       res.redirect('/admin/jobs')
     })
   )

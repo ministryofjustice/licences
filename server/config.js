@@ -88,7 +88,6 @@ module.exports = {
 
   jobs: {
     systemUser: get('REMINDERS_SYSTEM_USER', ''),
-    roReminders: get('REMINDERS_SCHEDULE_RO', '0 1 * * 1-5'),
     autostart: get('SCHEDULED_JOBS_AUTOSTART', 'no') === 'yes',
     overlapTimeout: get('SCHEDULED_JOBS_OVERLAP', 5000),
   },

@@ -4,7 +4,7 @@ const config = require('../config')
 const logger = require('../../log.js')
 const createJobUtils = require('./jobs/jobUtils')
 
-module.exports = function createJobSchedulerService(dbLockingClient, notificationJobs) {
+module.exports = function createJobSchedulerService(dbLockingClient, configClient, notificationJobs) {
   const { autostart, overlapTimeout } = config.jobs
 
   const jobUtils = createJobUtils(dbLockingClient)
@@ -24,7 +24,6 @@ module.exports = function createJobSchedulerService(dbLockingClient, notificatio
   const jobs = [
     {
       name: 'roReminders',
-      spec: config.jobs.roReminders,
       function: jobUtils.onceOnly(
         notificationJobs.roReminders,
         'roReminders',
@@ -45,15 +44,18 @@ module.exports = function createJobSchedulerService(dbLockingClient, notificatio
     return next ? moment(next.toDate()).format('dddd Do MMMM HH:mm:ss') : null
   }
 
-  function listJobs() {
-    return jobs.map(job => {
-      return {
-        name: job.name,
-        schedule: job.spec,
-        next: nextExecution(executions[job.name]),
-        outcome: outcomes[job.name],
-      }
-    })
+  async function listJobs() {
+    return Promise.all(
+      jobs.map(async job => {
+        const spec = await configClient.getJobSpec(job.name)
+        return {
+          name: job.name,
+          schedule: spec,
+          next: nextExecution(executions[job.name]),
+          outcome: outcomes[job.name],
+        }
+      })
+    )
   }
 
   function cancelJob(jobName) {
@@ -75,24 +77,40 @@ module.exports = function createJobSchedulerService(dbLockingClient, notificatio
   }
 
   function startAllJobs() {
-    jobs.forEach(job => {
-      activate(job)
-    })
+    return Promise.all(
+      jobs.map(job => {
+        return activate(job)
+      })
+    )
   }
 
   function startJob(jobName) {
     const job = jobs.find(j => j.name === jobName)
     if (job) {
-      activate(job)
+      try {
+        return activate(job)
+      } catch (error) {
+        logger.error(`Error starting ${job.name}`, error)
+      }
     }
   }
 
-  function activate(job) {
+  async function activate(job) {
     logger.info(`Scheduling job: ${job.name}`)
+    const spec = await configClient.getJobSpec(job.name)
     if (executions[job.name]) {
-      executions[job.name].reschedule(job.spec)
+      executions[job.name].reschedule(spec)
     } else {
-      executions[job.name] = schedule.scheduleJob(job.name, job.spec, job.function)
+      executions[job.name] = schedule.scheduleJob(job.name, spec, job.function)
+    }
+  }
+
+  async function updateJob(jobName, newSchedule) {
+    const job = jobs.find(j => j.name === jobName)
+    if (job) {
+      cancelJob(jobName)
+      await configClient.setJobSpec(job.name, newSchedule)
+      logger.info(`Updated: ${job.name} with new schedule: ${newSchedule}`)
     }
   }
 
@@ -107,5 +125,6 @@ module.exports = function createJobSchedulerService(dbLockingClient, notificatio
     startJob,
     cancelAllJobs,
     cancelJob,
+    updateJob,
   }
 }

@@ -64,4 +64,24 @@ module.exports = {
 
     return db.query(query)
   },
+
+  async getJobSpec(name) {
+    const query = {
+      text: 'select spec from job_config where name = $1',
+      values: [name],
+    }
+
+    const { rows } = await db.query(query)
+
+    return rows ? rows[0].spec : {}
+  },
+
+  async setJobSpec(name, spec) {
+    const query = {
+      text: `update job_config set spec = $2 where name = $1`,
+      values: [name, spec],
+    }
+
+    return db.query(query)
+  },
 }
