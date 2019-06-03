@@ -57,7 +57,7 @@ describe('notificationService', () => {
   })
 
   describe('notify', () => {
-    it('should do nothing if no template id configured', async () => {
+    it('should do nothing if template ID not in active template list', async () => {
       const notifications = [{ email: ['email@email.com'] }]
       await service.notify({
         sendingUserName: 'username',
@@ -378,7 +378,7 @@ describe('notificationService', () => {
       prisonerService.getEstablishmentForPrisoner.rejects(new Error('dead'))
       const inputs = {
         prisoner: {},
-        notificationType: {},
+        notificationType: 'CA_RETURN',
         submissionTarget: {},
         bookingId: {},
         sendingUserName: {},
