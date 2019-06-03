@@ -118,7 +118,14 @@ function getRoStageState(licence) {
   } = getCurfewAddressReviewState(licence)
   const { curfewHours } = getCurfewHoursState(licence)
   const { reportingInstructions } = getReportingInstructionsState(licence)
-  const { licenceConditions, standardOnly, additional, bespoke } = getLicenceConditionsState(licence)
+  const {
+    licenceConditions,
+    standardOnly,
+    additional,
+    bespoke,
+    bespokeRejected,
+    bespokePending,
+  } = getLicenceConditionsState(licence)
   const { bassAreaCheck, bassAreaSuitable, bassAreaNotSuitable } = getBassAreaState(licence)
 
   return {
@@ -130,6 +137,8 @@ function getRoStageState(licence) {
       standardOnly,
       additional,
       bespoke,
+      bespokeRejected,
+      bespokePending,
       bassAreaSuitable,
       bassAreaNotSuitable,
       approvedPremisesRequired,
@@ -530,6 +539,8 @@ function getLicenceConditionsState(licence) {
       standardOnly: false,
       additional: 0,
       bespoke: 0,
+      bespokeRejected: 0,
+      bespokePending: 0,
       totalCount: 0,
       licenceConditions: taskStates.UNSTARTED,
     }
@@ -545,10 +556,18 @@ function getLicenceConditionsState(licence) {
 
   const totalCount = additional + bespoke
 
+  const rejected = bespokes ? bespokes.filter(b => b.approved === 'No') : 0
+  const bespokeRejected = rejected ? rejected.length : 0
+
+  const notAnswered = bespokes ? bespokes.filter(b => isEmpty(b.approved)) : 0
+  const bespokePending = notAnswered ? notAnswered.length : 0
+
   return {
     standardOnly,
     additional,
     bespoke,
+    bespokeRejected,
+    bespokePending,
     totalCount,
     licenceConditions: standardOnly || totalCount > 0 ? taskStates.DONE : taskStates.STARTED,
   }

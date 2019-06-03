@@ -695,7 +695,15 @@ describe('getLicenceStatus', () => {
               1: {},
               2: {},
             },
-            bespoke: [1, 2, 3, 4],
+            bespoke: [
+              {
+                text: '1',
+                approved: 'No',
+              },
+              {
+                text: '2',
+              },
+            ],
           },
         },
       }
@@ -704,7 +712,9 @@ describe('getLicenceStatus', () => {
 
       expect(status.decisions.standardOnly).to.eql(false)
       expect(status.decisions.additional).to.eql(2)
-      expect(status.decisions.bespoke).to.eql(4)
+      expect(status.decisions.bespoke).to.eql(2)
+      expect(status.decisions.bespokePending).to.eql(1)
+      expect(status.decisions.bespokeRejected).to.eql(1)
     })
 
     context('curfewAddressReview task', () => {
