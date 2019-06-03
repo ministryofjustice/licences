@@ -103,15 +103,24 @@ class ProposedAddressSpec extends GebReportingSpec {
     address.preferred.postCode.value('S1 4JQ')
     address.preferred.telephone.value('001')
 
-    occupier.preferred.name.value('Name')
-    occupier.preferred.relationship.value('Relation')
+    occupier.details.name.value('Name')
+    occupier.details.relationship.value('Relation')
 
-    cautionedRadios.checked = 'No'
+    cautionedRadios.checked = 'Yes'
+    cautionedDetails.value('some details')
 
     find('#continueBtn').click()
 
     then: 'I see the task list'
     at TaskListPage
+
+    when: 'I return to the form'
+    to ProposedAddressCurfewAddressPage, testData.markAndrewsBookingId
+
+    then: 'I see the entered values'
+    cautionedDetails.value() == 'some details'
+    address.preferred.line1.value() == 'Address 1'
+    occupier.details.name.value() == 'Name'
   }
 
   def 'I can enter extra residents to addresses'() {

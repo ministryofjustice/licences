@@ -45,6 +45,11 @@ module.exports = {
         isOffender: joi.valid(['Yes', 'No']).optional(),
       }),
       cautionedAgainstResident: joi.valid(['Yes', 'No']).required(),
+      residentOffenceDetails: joi.when('cautionedAgainstResident', {
+        is: 'Yes',
+        then: joi.string().required(),
+        otherwise: joi.any().optional(),
+      }),
     })
     .required(),
 
