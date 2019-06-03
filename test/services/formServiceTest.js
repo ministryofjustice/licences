@@ -111,7 +111,7 @@ describe('formService', () => {
     it('should map refusal reason from final checks refusal', async () => {
       const prisoner = {}
       const licence = {
-        finalChecks: { release: { reason: 'noAvailableAddress' } },
+        finalChecks: { refusal: { reason: 'noAvailableAddress' } },
         approval: { release: { reason: 'insufficientTime' } },
       }
 
@@ -131,7 +131,7 @@ describe('formService', () => {
     it('should map first refusal reason from final checks refusal with multiple reasons', async () => {
       const prisoner = {}
       const licence = {
-        finalChecks: { release: { reason: ['noAvailableAddress', 'other', 'other'] } },
+        finalChecks: { refusal: { reason: ['noAvailableAddress', 'other', 'other'] } },
         approval: { release: { reason: 'insufficientTime' } },
       }
 
