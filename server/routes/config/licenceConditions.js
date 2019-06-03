@@ -275,6 +275,22 @@ module.exports = {
         },
       },
       {
+        DRUG_TESTING: {
+          contains: [
+            {
+              drug_testing_name: {
+                validationMessage: 'Enter appointment name',
+              },
+            },
+            {
+              drug_testing_address: {
+                validationMessage: 'Enter appointment address',
+              },
+            },
+          ],
+        },
+      },
+      {
         ATTENDDEPENDENCY: {
           contains: [
             {

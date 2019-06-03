@@ -372,6 +372,33 @@ module.exports = {
         },
       ],
     },
+    'Restricted additional conditions': {
+      base: [
+        {
+          id: 'POLYGRAPH',
+          text:
+            'To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph.',
+          user_input: null,
+          active: true,
+          field_position: null,
+          group_name: 'Restricted additional conditions',
+          subgroup_name: null,
+        },
+        {
+          id: 'DRUG_TESTING',
+          text:
+            'Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process.',
+          user_input: 'drug_testing',
+          active: true,
+          field_position: {
+            drug_testing_name: 0,
+            drug_testing_address: 1,
+          },
+          group_name: 'Restricted additional conditions',
+          subgroup_name: null,
+        },
+      ],
+    },
     'Post-sentence supervision only': {
       base: [
         {
@@ -833,6 +860,37 @@ module.exports = {
           field_position: null,
           group_name: 'Technology',
           subgroup_name: 'Cameras and photos',
+          selected: false,
+          user_submission: {},
+        },
+      ],
+    },
+    'Restricted additional conditions': {
+      base: [
+        {
+          id: 'POLYGRAPH',
+          text:
+            'To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph.',
+          user_input: null,
+          active: true,
+          field_position: null,
+          group_name: 'Restricted additional conditions',
+          subgroup_name: null,
+          selected: false,
+          user_submission: {},
+        },
+        {
+          id: 'DRUG_TESTING',
+          text:
+            'Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process.',
+          user_input: 'drug_testing',
+          active: true,
+          field_position: {
+            drug_testing_name: 0,
+            drug_testing_address: 1,
+          },
+          group_name: 'Restricted additional conditions',
+          subgroup_name: null,
           selected: false,
           user_submission: {},
         },
@@ -1300,6 +1358,37 @@ module.exports = {
           field_position: null,
           group_name: 'Technology',
           subgroup_name: 'Cameras and photos',
+          selected: false,
+          user_submission: {},
+        },
+      ],
+    },
+    'Restricted additional conditions': {
+      base: [
+        {
+          id: 'POLYGRAPH',
+          text:
+            'To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph.',
+          user_input: null,
+          active: true,
+          field_position: null,
+          group_name: 'Restricted additional conditions',
+          subgroup_name: null,
+          selected: false,
+          user_submission: {},
+        },
+        {
+          id: 'DRUG_TESTING',
+          text:
+            'Attend [INSERT NAME AND ADDRESS], as reasonably required by your supervising officer, to give a sample of oral fluid / urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the condition of your licence requiring you to be of good behaviour. Not to take any action that could hamper or frustrate the drug testing process.',
+          user_input: 'drug_testing',
+          active: true,
+          field_position: {
+            drug_testing_name: 0,
+            drug_testing_address: 1,
+          },
+          group_name: 'Restricted additional conditions',
+          subgroup_name: null,
           selected: false,
           user_submission: {},
         },
