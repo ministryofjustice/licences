@@ -20,6 +20,22 @@ suitable mocks, eg mojdigitalstudio/licences-nomis-mocks, and an oauth server eg
 
 eg you can use docker-compose up to start everything
 
+### Stage environment
+
+In stage, the environment variables are prefixed with STAGE\_
+
+The following are required
+
+- STAGE_LICENCES_URI - root uri for the stage licences app
+- STAGE_USER_PASS - password for the \_TEST users in stage
+
+NB Stage uses a real (dev) deployment of the auth server, not a mock. This means that user passwords periodically expire.
+
+When passwords expire, update the passwords for all \_TEST users, and update the STAGE_USER_PASS env var in Circle CI
+
+Test users employed by feature tests are listed in
+/licences/licences-specs/src/test/groovy/uk/gov/justice/digital/hmpps/licences/util/Actions.groovy
+
 ## Execution
 
 In src.test/resources/GebConfig.groovy you can change from headless mode
