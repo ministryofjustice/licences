@@ -81,7 +81,7 @@ module.exports = function createFormService(pdfService, pdfFormatter) {
   }
 
   function getRefusalReason(licence) {
-    const finalChecksReasons = ['finalChecks', 'release', 'reason']
+    const finalChecksReasons = ['finalChecks', 'refusal', 'reason']
     if (!isEmpty(getIn(licence, finalChecksReasons))) {
       return getReasonLabel(licence, finalChecksReasons, refusalReasonlabels)
     }
