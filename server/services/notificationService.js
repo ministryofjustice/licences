@@ -1,7 +1,7 @@
 const moment = require('moment')
 const templates = require('./config/notificationTemplates')
 const {
-  notifications: { notifyKey },
+  notifications: { notifyKey, activeTemplates },
   domain,
 } = require('../config')
 const logger = require('../../log.js')
@@ -138,6 +138,10 @@ module.exports = function createNotificationService(
     transitionDate,
     sendingUserName,
   }) {
+    if (!activeTemplates.includes(notificationType)) {
+      return
+    }
+
     try {
       const notifications = await getNotificationData({
         prisoner,

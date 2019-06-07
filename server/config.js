@@ -81,6 +81,10 @@ module.exports = {
     dueDateFormat: 'dddd Do MMMM',
     roNewCaseWorkingDays: 10,
     roNewCaseTodayCutOff: 15,
+    activeTemplates: get(
+      'NOTIFY_ACTIVE_TEMPLATES',
+      'CA_RETURN,CA_DECISION,RO_NEW,RO_TWO_DAYS,RO_DUE,RO_OVERDUE,DM_NEW'
+    ).split(','),
   },
 
   pushToNomis: get('PUSH_TO_NOMIS', 'no') === 'yes',
