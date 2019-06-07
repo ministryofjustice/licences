@@ -2,14 +2,24 @@ const { standardAction } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
-    const { standardOnly, bespoke, additional } = decisions
+    const { standardOnly, bespoke, bespokeRejected, bespokePending, additional } = decisions
     const { licenceConditions } = tasks
 
     if (licenceConditions === 'DONE') {
       if (standardOnly) {
         return 'Standard conditions only'
       }
+
+      const unapproved =
+        bespokeRejected > 0 ? 'Some bespoke conditions were rejected. These will not be included in the licence.' : ''
+      const pending = bespokePending ? 'You still need approval for some bespoke conditions. ' : ''
+
+      if (unapproved || pending) {
+        return ['WARNING', unapproved, pending].filter(Boolean).join('||')
+      }
+
       const totalConditions = bespoke + additional
+
       return `${totalConditions} condition${totalConditions > 1 ? 's' : ''} added`
     }
     return 'Not completed'
