@@ -157,7 +157,7 @@ module.exports = {
         action: {
           type: 'btn-secondary',
           href: '/hdc/review/conditions/',
-          text: 'View',
+          text: 'View/Edit',
         },
         visible: validAddress,
       },
