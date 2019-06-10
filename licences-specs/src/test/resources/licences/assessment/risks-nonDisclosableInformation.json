@@ -1,0 +1,108 @@
+{
+  "stage": "PROCESSING_CA",
+  "licence": {
+    "eligibility": {
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      },
+      "crdTime": {
+        "decision": "No"
+      }
+    },
+    "proposedAddress": {
+      "optOut": {
+        "decision": "No"
+      },
+      "bassReferral": {
+        "decision": "No"
+      },
+      "curfewAddress": {
+        "addressLine1": "Street",
+        "addressLine2": "",
+        "addressTown": "Town",
+        "postCode": "AB1 1AB",
+        "telephone": "0123 456789",
+        "occupier": {
+          "name": "Main Occupier",
+          "age": "21",
+          "relationship": "Brother"
+        },
+        "residents": [
+          {
+            "name": "Other resident",
+            "age": "10",
+            "relationship": "Son"
+          },
+          {
+            "name": "",
+            "age": "",
+            "relationship": ""
+          },
+          {
+            "name": "",
+            "age": "",
+            "relationship": ""
+          }
+        ],
+        "cautionedAgainstResident": "No"
+      }
+    },
+    "curfew": {
+      "curfewHours": {
+        "mondayFrom": "19:00",
+        "mondayUntil": "07:00",
+        "tuesdayFrom": "19:00",
+        "tuesdayUntil": "07:00",
+        "wednesdayFrom": "19:00",
+        "wednesdayUntil": "07:00",
+        "thursdayFrom": "19:00",
+        "thursdayUntil": "07:00",
+        "fridayFrom": "19:00",
+        "fridayUntil": "07:00",
+        "saturdayFrom": "19:00",
+        "saturdayUntil": "07:00",
+        "sundayFrom": "19:00",
+        "sundayUntil": "07:00"
+      },
+      "curfewAddressReview": {
+        "consent": "Yes",
+        "electricity": "Yes",
+        "homeVisitConducted": "Yes"
+      },
+      "addressSafety": {
+        "deemedSafe": "Yes"
+      }
+    },
+    "licenceConditions": {
+      "standard": {
+        "additionalConditionsRequired": "Yes"
+      },
+      "additional": {
+        "NOCAMERAPHONE": {}
+      },
+      "bespoke": [
+        {
+          "text": "First bespoke condition",
+          "approved": "Yes"
+        }
+      ]
+    },
+    "risk": {
+      "riskManagement": {
+        "planningActions": "No",
+        "awaitingInformation": "No",
+        "proposedAddressSuitable": "Yes",
+        "hasNonDisclosableInformation": "Yes",
+        "nonDisclosableInformation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      }
+    },
+    "victim": {
+      "victimLiaison": {
+        "decision": "No"
+      }
+    }
+  }
+}

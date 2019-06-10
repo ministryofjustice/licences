@@ -12,7 +12,6 @@ import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewHoursPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.VictimLiaisonPage
-import uk.gov.justice.digital.hmpps.licences.pages.eligibility.BassRejectedPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.ApprovedPremisesChoicePage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.BassOfferPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksSeriousOffencePage

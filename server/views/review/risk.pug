@@ -1,5 +1,6 @@
 extends ../layout
 include includes/additionalConditions
+include ../risk/mixins
 
 block content
 
@@ -37,3 +38,5 @@ block content
         p Explain why you made your decision
 
         span#unsuitableReason.block.bold #{risk.unsuitableReason}
+
+    +readOnlyNonDisclosableInformation(risk)

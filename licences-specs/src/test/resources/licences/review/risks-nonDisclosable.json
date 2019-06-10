@@ -1,0 +1,77 @@
+{
+  "stage": "PROCESSING_CA",
+  "licence": {
+    "eligibility": {
+      "excluded": {
+        "decision": "No"
+      },
+      "suitability": {
+        "decision": "No"
+      },
+      "crdTime": {
+        "decision": "No"
+      }
+    },
+    "proposedAddress": {
+      "optOut": {
+        "decision": "No"
+      },
+      "addressProposed": {
+        "decision": "Yes"
+      },
+      "curfewAddress": {
+        "addressLine1": "Street",
+        "addressLine2": "",
+        "addressTown": "Town",
+        "postCode": "AB1 1AB",
+        "telephone": "0123 456789",
+        "occupier": {
+          "name": "Main Occupier",
+          "relationship": "Father",
+          "age": "22"
+        },
+        "residents": [
+          {
+            "name": "Other Resident",
+            "relationship": "Son",
+            "age": "11"
+          }
+        ],
+        "cautionedAgainstResident": "No",
+        "consent": "No"
+      }
+    },
+    "curfew": {
+      "curfewAddressReview": {
+        "consent": "No"
+      }
+    },
+    "risk": {
+      "riskManagement": {
+        "planningActions": "Yes",
+        "awaitingInformation": "Yes",
+        "riskManagementDetails": "Information details",
+        "proposedAddressSuitable": "No",
+        "unsuitableReason": "Reason",
+        "hasNonDisclosableInformation": "Yes",
+        "nonDisclosableInformation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      }
+    },
+    "victim": {
+      "victimLiaison": {
+        "decision": "Yes",
+        "victimLiaisonDetails": "Victim details"
+      }
+    },
+    "reporting": {
+      "reportingInstructions": {
+        "name": "Name",
+        "buildingAndStreet1": "Street",
+        "buildingAndStreet2": "",
+        "townOrCity": "Town",
+        "postcode": "AB1 1AB",
+        "telephone": "0123 456789"
+      }
+    }
+  }
+}

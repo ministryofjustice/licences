@@ -1,0 +1,11 @@
+mixin readOnlyNonDisclosableInformation(risk)
+  if risk.hasNonDisclosableInformation === 'Yes'
+    div.smallPaddingTop
+      h3.heading-small.smallPaddingBottom Non-disclosable information
+      div.warning-container
+        div#nonDisclosableInformationView.notice.largeMarginBottom #{risk.nonDisclosableInformation}
+        div.notice
+          i.icon.icon-important
+            span.visually-hidden Warning
+
+          strong.bold-small.warning This information should not be shared with the offender under any circumstance, including where a subject access request is made.

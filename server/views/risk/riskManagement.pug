@@ -1,5 +1,7 @@
 extends ../layout
 
+include mixins
+
 block content
 
   div.pure-g
@@ -59,7 +61,30 @@ block content
                     | #{data.unsuitableReason}
 
 
-        include ../includes/roModificationWarning
+          if user.role === 'RO'
+            div.form-group.inline.smallPaddingTop
+              h3.heading-small Non-disclosable information
+              p Do you have information that cannot be disclosed to the offender?
+
+              div.multiple-choice(data-target="reasonFormNonDisclosableInformation")
+                input#nonDisclosableYes(type="radio" checked=data.hasNonDisclosableInformation === 'Yes' name="hasNonDisclosableInformation" value="Yes")
+                label(for="nonDisclosableYes") Yes
+
+              div.multiple-choice
+                input#nonDisclosableNo(type="radio" checked=data.hasNonDisclosableInformation === 'No' name="hasNonDisclosableInformation" value="No")
+                label(for="nonDisclosableNo") No
+
+              div#reasonFormNonDisclosableInformation.panel.js-hidden
+                textarea(name='nonDisclosableInformation' id='nonDisclosableInformation' class='form-control' rows='5', aria-label="Provide the non-disclosable information")
+                  if data.nonDisclosableInformation
+                    | #{data.nonDisclosableInformation}
+                p.paddingTop.bold This information should not be shared with the offender under any circumstance, including where a subject access request is made.
+          else
+            input(type="hidden" name='hasNonDisclosableInformation' id='hasNonDisclosableInformation' value=data.hasNonDisclosableInformation)
+            input(type="hidden" name='nonDisclosableInformation'    id='nonDisclosableInformation'    value=data.nonDisclosableInformation)
+            +readOnlyNonDisclosableInformation(data)
+
+                include ../includes/roModificationWarning
 
         if (action === 'change')
           include ../includes/formSubmit

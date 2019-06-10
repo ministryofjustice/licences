@@ -37,7 +37,7 @@ module.exports = (
   { version, versionDetails, approvedVersion = {}, approvedVersionDetails = {} } = {},
   allowedTransition
 ) => {
-  const taskList = getTaskList(role, stage, postRelease)
+  const taskListName = getTaskListName(role, stage, postRelease)
 
   const getTaskListTasksMethod = {
     dmTasks: getDmTasks,
@@ -49,7 +49,7 @@ module.exports = (
     vary: getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails }),
   }
 
-  if (!getTaskListTasksMethod[taskList]) {
+  if (!getTaskListTasksMethod[taskListName]) {
     return [
       {
         title: 'No active licence',
@@ -58,10 +58,10 @@ module.exports = (
     ]
   }
 
-  return getTaskListTasksMethod[taskList]({ decisions, tasks, stage, allowedTransition })
+  return getTaskListTasksMethod[taskListName]({ decisions, tasks, stage, allowedTransition })
 }
 
-function getTaskList(role, stage, postRelease) {
+function getTaskListName(role, stage, postRelease) {
   if (postRelease) {
     return 'vary'
   }

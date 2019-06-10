@@ -233,6 +233,7 @@ describe('validation', () => {
               awaitingInformation: 'No',
               proposedAddressSuitable: 'No',
               unsuitableReason: '',
+              hasNonDisclosableInformation: 'No',
             },
             outcome: { unsuitableReason: 'Provide details of why you made this decision' },
           },
@@ -242,15 +243,23 @@ describe('validation', () => {
               awaitingInformation: 'No',
               proposedAddressSuitable: 'No',
               unsuitableReason: 'Reason',
+              hasNonDisclosableInformation: 'No',
             },
             outcome: {},
           },
           {
-            formResponse: { planningActions: '', awaitingInformation: '', proposedAddressSuitable: '' },
+            formResponse: {
+              planningActions: '',
+              awaitingInformation: '',
+              proposedAddressSuitable: '',
+              hasNonDisclosableInformation: '',
+            },
             outcome: {
               planningActions: 'Say if there are risk management actions',
               awaitingInformation: 'Say if you are still awaiting information',
               proposedAddressSuitable: 'Say if the proposed address is suitable',
+              hasNonDisclosableInformation:
+                'Say if you want to add information that cannot be disclosed to the offender',
             },
           },
           {
@@ -258,6 +267,26 @@ describe('validation', () => {
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
+              hasNonDisclosableInformation: 'No',
+            },
+            outcome: {},
+          },
+          {
+            formResponse: {
+              planningActions: 'Yes',
+              awaitingInformation: 'Yes',
+              proposedAddressSuitable: 'Yes',
+              hasNonDisclosableInformation: 'Yes',
+            },
+            outcome: { nonDisclosableInformation: 'Provide information that cannot be disclosed to the offender' },
+          },
+          {
+            formResponse: {
+              planningActions: 'Yes',
+              awaitingInformation: 'Yes',
+              proposedAddressSuitable: 'Yes',
+              hasNonDisclosableInformation: 'Yes',
+              nonDisclosableInformation: 'text',
             },
             outcome: {},
           },
@@ -1754,6 +1783,7 @@ describe('validation', () => {
         planningActions: 'No',
         awaitingInformation: 'No',
         proposedAddressSuitable: 'Yes',
+        hasNonDisclosableInformation: 'No',
       }
       const validVictim = { decision: 'No' }
       const validCurfewHours = {
@@ -1835,7 +1865,9 @@ describe('validation', () => {
       }
 
       const invalidLicence = {
-        risk: { riskManagement: { planningActions: '', awaitingInformation: 'No' } },
+        risk: {
+          riskManagement: { planningActions: '', awaitingInformation: 'No', hasNonDisclosableInformation: 'No' },
+        },
         victim: { victimLiaison: validVictim },
         curfew: {
           curfewHours: validCurfewHours,
