@@ -97,7 +97,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     taskListActions.size() == 9
 
     and: 'The tasks for reviewing RO input have View buttons'
-    taskListActions.take(6)*.text() == ['Change', 'View/Edit', 'View/Edit', 'View/Edit', 'View', 'View']
+    taskListActions.take(6)*.text() == ['Change', 'View/Edit', 'View/Edit', 'View/Edit', 'View/Edit', 'View']
 
     and: 'The final checks task has a Start button'
     taskListAction(tasks.final).text() == 'Start now'
