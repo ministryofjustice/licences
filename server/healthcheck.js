@@ -1,4 +1,5 @@
-const { dbCheck, nomisApiCheck, pdfApiCheck, authCheck } = require('./data/healthcheck')
+const config = require('./config')
+const { dbCheck, nomisApiCheck, deliusApiCheck, pdfApiCheck, authCheck } = require('./data/healthcheck')
 
 function db() {
   return dbCheck()
@@ -10,6 +11,12 @@ function nomisApi() {
   return nomisApiCheck()
     .then(result => ({ name: 'nomis', status: 'ok', message: result }))
     .catch(err => ({ name: 'nomis', status: 'ERROR', message: err }))
+}
+
+function deliusApi() {
+  return deliusApiCheck()
+    .then(result => ({ name: 'delius', status: 'ok', message: result }))
+    .catch(err => ({ name: 'delius', status: 'ERROR', message: err }))
 }
 
 function pdfApi() {
@@ -25,7 +32,7 @@ function auth() {
 }
 
 module.exports = function healthcheck(callback, detailed = false) {
-  const checks = detailed ? [db, nomisApi, pdfApi, auth] : [db, nomisApi, auth]
+  const checks = getChecks(detailed)
 
   return Promise.all(checks.map(fn => fn())).then(checkResults => {
     const allOk = checkResults.every(item => item.status === 'ok')
@@ -35,6 +42,16 @@ module.exports = function healthcheck(callback, detailed = false) {
     }
     callback(null, addAppInfo(result))
   })
+}
+
+function getChecks(detailed) {
+  const checks = detailed ? [db, nomisApi, pdfApi, auth] : [db, nomisApi, auth]
+
+  if (config.roServiceType === 'DELIUS') {
+    return [...checks, deliusApi]
+  }
+
+  return checks
 }
 
 function gatherCheckInfo(total, currentValue) {

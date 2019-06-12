@@ -23,25 +23,33 @@ describe('healthcheck', () => {
   describe('healthcheck', () => {
     let dbCheckStub
     let nomisApiCheckStub
+    let deliusApiCheckStub
     let authCheckStub
 
     beforeEach(() => {
       dbCheckStub = sandbox.stub().resolves([{ totalRows: { value: 0 } }])
       nomisApiCheckStub = sandbox.stub().resolves('OK')
+      deliusApiCheckStub = sandbox.stub().resolves('OK')
       authCheckStub = sandbox.stub().resolves('OK')
     })
 
-    const healthcheckProxy = (dbCheck = dbCheckStub, nomisApiCheck = nomisApiCheckStub, authCheck = authCheckStub) => {
+    const healthcheckProxy = (
+      dbCheck = dbCheckStub,
+      nomisApiCheck = nomisApiCheckStub,
+      deliusApiCheck = deliusApiCheckStub,
+      authCheck = authCheckStub
+    ) => {
       return proxyquire('../../server/healthcheck', {
         './data/healthcheck': {
           dbCheck,
           nomisApiCheck,
+          deliusApiCheck,
           authCheck,
         },
       })
     }
 
-    it('should return healthy if db and licences checks resolve OK', () => {
+    it('should return healthy if checks resolve OK', () => {
       return healthcheckProxy()(callback).then(() => {
         const calledWith = callback.getCalls()[0].args[1]
 
@@ -50,6 +58,7 @@ describe('healthcheck', () => {
 
         expect(calledWith.checks.db).to.eql('OK')
         expect(calledWith.checks.nomis).to.eql('OK')
+        expect(calledWith.checks.delius).to.eql('OK')
         expect(calledWith.checks.auth).to.eql('OK')
       })
     })
@@ -64,6 +73,7 @@ describe('healthcheck', () => {
         expect(calledWith.healthy).to.eql(false)
         expect(calledWith.checks.db).to.eql('rubbish')
         expect(calledWith.checks.nomis).to.eql('OK')
+        expect(calledWith.checks.delius).to.eql('OK')
         expect(calledWith.checks.auth).to.eql('OK')
       })
     })
@@ -71,13 +81,14 @@ describe('healthcheck', () => {
     it('should return unhealthy if nomis rejects promise', () => {
       const nomisApiCheckStubReject = sandbox.stub().rejects(404)
 
-      return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject)(callback).then(() => {
+      return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject, deliusApiCheckStub)(callback).then(() => {
         const calledWith = callback.getCalls()[0].args[1]
 
         expect(callback).to.have.callCount(1)
         expect(calledWith.healthy).to.eql(false)
         expect(calledWith.checks.db).to.eql('OK')
         expect(calledWith.checks.nomis).to.eql(404)
+        expect(calledWith.checks.delius).to.eql('OK')
         expect(calledWith.checks.auth).to.eql('OK')
       })
     })
@@ -85,15 +96,35 @@ describe('healthcheck', () => {
     it('should return unhealthy if auth rejects promise', () => {
       const authCheckStubReject = sandbox.stub().rejects(404)
 
-      return healthcheckProxy(dbCheckStub, nomisApiCheckStub, authCheckStubReject)(callback).then(() => {
-        const calledWith = callback.getCalls()[0].args[1]
+      return healthcheckProxy(dbCheckStub, nomisApiCheckStub, deliusApiCheckStub, authCheckStubReject)(callback).then(
+        () => {
+          const calledWith = callback.getCalls()[0].args[1]
 
-        expect(callback).to.have.callCount(1)
-        expect(calledWith.healthy).to.eql(false)
-        expect(calledWith.checks.db).to.eql('OK')
-        expect(calledWith.checks.nomis).to.eql('OK')
-        expect(calledWith.checks.auth).to.eql(404)
-      })
+          expect(callback).to.have.callCount(1)
+          expect(calledWith.healthy).to.eql(false)
+          expect(calledWith.checks.db).to.eql('OK')
+          expect(calledWith.checks.nomis).to.eql('OK')
+          expect(calledWith.checks.delius).to.eql('OK')
+          expect(calledWith.checks.auth).to.eql(404)
+        }
+      )
+    })
+
+    it('should return unhealthy if delius rejects promise', () => {
+      const deliusCheckStubReject = sandbox.stub().rejects(404)
+
+      return healthcheckProxy(dbCheckStub, nomisApiCheckStub, deliusCheckStubReject, authCheckStub)(callback).then(
+        () => {
+          const calledWith = callback.getCalls()[0].args[1]
+
+          expect(callback).to.have.callCount(1)
+          expect(calledWith.healthy).to.eql(false)
+          expect(calledWith.checks.db).to.eql('OK')
+          expect(calledWith.checks.nomis).to.eql('OK')
+          expect(calledWith.checks.delius).to.eql(404)
+          expect(calledWith.checks.auth).to.eql('OK')
+        }
+      )
     })
   })
 })
