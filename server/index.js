@@ -80,4 +80,12 @@ const app = createApp({
   audit,
 })
 
+function createRoService() {
+  if (config.roServiceType === 'DELIUS') {
+    return createDeliusRoService(deliusClient)
+  }
+
+  return createNomisRoService()
+}
+
 module.exports = app
