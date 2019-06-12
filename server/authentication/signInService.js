@@ -29,18 +29,18 @@ const signInService = () => {
       return { token, refreshToken, refreshTime }
     },
 
-    async getClientCredentialsTokens(username) {
-      const oauthAdminClientToken = generateAdminOauthClientToken()
+    async getClientCredentialsTokens(username, service = 'nomis') {
+      const oauthAdminClientToken = generateAdminOauthClientToken(service)
       const oauthRequest = { grant_type: 'client_credentials', username }
 
       return oauthTokenRequest(oauthAdminClientToken, oauthRequest)
     },
 
-    async getAnonymousClientCredentialsTokens() {
-      const oauthAdminClientToken = generateAdminOauthClientToken()
+    async getAnonymousClientCredentialsTokens(service = 'nomis') {
+      const oauthAdminClientToken = generateAdminOauthClientToken(service)
       const oauthRequest = { grant_type: 'client_credentials' }
 
-      return oauthTokenRequest(oauthAdminClientToken, oauthRequest)
+      return oauthTokenRequest(oauthAdminClientToken, oauthRequest, service)
     },
   }
 }

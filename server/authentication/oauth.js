@@ -9,8 +9,8 @@ const generate = (clientId, clientSecret) => {
 
 const generateOauthClientToken = () => generate(config.nomis.apiClientId, config.nomis.apiClientSecret)
 
-const generateAdminOauthClientToken = () =>
-  generate(config.nomis.licencesAdminApiClientId, config.nomis.licencesAdminApiClientSecret)
+const generateAdminOauthClientToken = service =>
+  generate(config[service].admin.apiClientId, config[service].admin.apiClientSecret)
 
 module.exports = {
   generateOauthClientToken,
