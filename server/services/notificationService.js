@@ -75,7 +75,7 @@ module.exports = function createNotificationService(
   }
 
   async function getRoNotificationData({ common, token, submissionTarget, bookingId, transitionDate }) {
-    const deliusId = getIn(submissionTarget, ['com', 'deliusId'])
+    const deliusId = getIn(submissionTarget, ['deliusId'])
     if (isEmpty(deliusId)) {
       logger.error('Missing COM deliusId')
       return []
@@ -105,7 +105,7 @@ module.exports = function createNotificationService(
       {
         personalisation: {
           ...common,
-          ro_name: submissionTarget.com.name,
+          ro_name: submissionTarget.name,
           prison,
           date,
         },

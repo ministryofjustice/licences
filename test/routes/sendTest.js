@@ -19,7 +19,7 @@ describe('send', () => {
   let notificationService
 
   const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
-  const submissionTarget = { premise: 'HMP Blah', agencyId: 'LT1', com: { name: 'Something', deliusId: 'delius' } }
+  const submissionTarget = { premise: 'HMP Blah', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
 
   beforeEach(() => {
     licenceService = createLicenceServiceStub()
@@ -269,7 +269,8 @@ describe('send', () => {
               bookingId: '123',
               transitionType: 'dmToCaReturn',
               submissionTarget: {
-                com: { deliusId: 'delius', name: 'Something' },
+                deliusId: 'delius',
+                name: 'Something',
                 premise: 'HMP Blah',
                 agencyId: 'LT1',
               },

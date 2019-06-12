@@ -147,47 +147,6 @@ describe('formatForView', () => {
     })
   })
 
-  describe('com', () => {
-    it('should extract first coms first and last name and capitalise', () => {
-      const object = { com: [{ firstName: 'first', lastName: 'last' }] }
-      const expectedOutput = {
-        com: {
-          deliusId: null,
-          name: 'First Last',
-          message: null,
-        },
-      }
-
-      expect(formatObjectForView(object)).to.eql(expectedOutput)
-    })
-
-    it('should give nulls if com list missing', () => {
-      const object = { com: undefined }
-      const expectedOutput = {
-        com: {
-          deliusId: null,
-          name: null,
-          message: null,
-        },
-      }
-
-      expect(formatObjectForView(object)).to.eql(expectedOutput)
-    })
-
-    it('should give nulls if com list empty', () => {
-      const object = { com: [] }
-      const expectedOutput = {
-        com: {
-          deliusId: null,
-          name: null,
-          message: null,
-        },
-      }
-
-      expect(formatObjectForView(object)).to.eql(expectedOutput)
-    })
-  })
-
   describe('offences', () => {
     it('should extract first offence description', () => {
       const object = { offences: [{ offenceDescription: 'first' }, { offenceDescription: 'second' }] }

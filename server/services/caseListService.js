@@ -1,11 +1,11 @@
 const logger = require('../../log.js')
 const { isEmpty, getIn } = require('../utils/functionalHelpers')
 
-module.exports = function createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter) {
+module.exports = function createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter) {
   async function getHdcCaseList(token, username, role, tab = 'active') {
     try {
       const nomisClient = nomisClientBuilder(token)
-      const { hdcEligible, message } = await getCaseList(nomisClient, licenceClient, username, role)
+      const { hdcEligible, message } = await getCaseList(nomisClient, roService, licenceClient, username, role, token)
 
       if (isEmpty(hdcEligible)) {
         logger.info('No hdc eligible prisoners')
@@ -27,10 +27,10 @@ module.exports = function createCaseListService(nomisClientBuilder, licenceClien
   return { getHdcCaseList }
 }
 
-async function getCaseList(nomisClient, licenceClient, username, role) {
+async function getCaseList(nomisClient, roService, licenceClient, username, role, token) {
   const asyncCaseRetrievalMethod = {
     CA: getCaDmCaseLists(nomisClient),
-    RO: getROCaseList(nomisClient, licenceClient, username),
+    RO: getROCaseList(nomisClient, roService, licenceClient, username, token),
     DM: getCaDmCaseLists(nomisClient),
   }
 
@@ -44,7 +44,7 @@ function getCaDmCaseLists(nomisClient) {
   }
 }
 
-function getROCaseList(nomisClient, licenceClient, username) {
+function getROCaseList(nomisClient, roService, licenceClient, username, token) {
   return async () => {
     const deliusIds = await licenceClient.getDeliusUserName(username)
 
@@ -65,12 +65,10 @@ function getROCaseList(nomisClient, licenceClient, username) {
     }
 
     const staffCode = deliusIds[0].staff_id.toUpperCase()
-    const requiredPrisoners = await nomisClient.getROPrisoners(staffCode)
 
-    if (!isEmpty(requiredPrisoners)) {
-      const requiredIDs = requiredPrisoners.map(prisoner => prisoner.bookingId)
-      const offenders = await nomisClient.getOffenderSentencesByBookingId(requiredIDs)
+    const offenders = await roService.getROPrisoners(staffCode, token)
 
+    if (!isEmpty(offenders)) {
       const hdcEligible = offenders.filter(prisoner =>
         getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate'])
       )

@@ -138,7 +138,7 @@ module.exports = function createUserService(nomisClientBuilder, userClient, sign
     const required = await Promise.all(
       bookingIds.map(async bookingId => {
         try {
-          const { com } = await prisonerService.getResponsibleOfficer(bookingId, token)
+          const com = await prisonerService.getResponsibleOfficer(bookingId, token)
           if (com) {
             return { assignedId: com.deliusId, assignedName: com.name, bookingId }
           }

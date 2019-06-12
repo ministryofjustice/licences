@@ -6,6 +6,7 @@ describe('caseListService', () => {
   let nomisClient
   let service
   let licenceClient
+  let roService
 
   const roPrisoners = [{ bookingId: 'A' }, { bookingId: 'B' }, { bookingId: 'C' }]
   const hdcEligiblePrisoners = [
@@ -70,7 +71,10 @@ describe('caseListService', () => {
   beforeEach(() => {
     nomisClient = {
       getHdcEligiblePrisoners: sinon.stub(),
-      getOffenderSentencesByBookingId: sinon.stub().resolves([
+    }
+
+    roService = {
+      getROPrisoners: sinon.stub().resolves([
         {
           bookingId: 0,
           offenderNo: 'A12345',
@@ -86,7 +90,6 @@ describe('caseListService', () => {
           },
         },
       ]),
-      getROPrisoners: sinon.stub(),
     }
 
     licenceClient = {
@@ -97,7 +100,7 @@ describe('caseListService', () => {
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
     const caseListFormatter = createCaseListFormatter(logger, licenceClient)
 
-    service = createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter)
+    service = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
   })
 
   describe('getHdcCaseList', () => {
@@ -281,19 +284,10 @@ describe('caseListService', () => {
     })
 
     context('when user is a RO', () => {
-      it('should call getROPrisoners && getOffenderSentencesByBookingId from nomisClient', async () => {
-        nomisClient.getROPrisoners.resolves(roPrisoners)
+      it('should call getROPrisoners', async () => {
+        roService.getROPrisoners.resolves(roPrisoners)
         await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-        expect(nomisClient.getROPrisoners).to.be.calledOnce()
-        expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledOnce()
-        expect(nomisClient.getOffenderSentencesByBookingId).to.be.calledWith(['A', 'B', 'C'])
-      })
-
-      it('should not call getOffenderSentencesByBookingId when no results from getROPrisoners', async () => {
-        nomisClient.getROPrisoners.resolves([])
-        await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-        expect(nomisClient.getROPrisoners).to.be.calledOnce()
-        expect(nomisClient.getOffenderSentencesByBookingId).not.to.be.calledOnce()
+        expect(roService.getROPrisoners).to.be.calledOnce()
       })
 
       it('should call getDeliusUserName without capitalising username', async () => {
@@ -302,15 +296,15 @@ describe('caseListService', () => {
         expect(licenceClient.getDeliusUserName).to.be.calledWith('aAaA')
       })
 
-      it('should use uppercase delius username when calling nomis', async () => {
+      it('should use uppercase delius username when calling roService', async () => {
         licenceClient.getDeliusUserName.resolves([{ staff_id: 'delius_id' }])
         await service.getHdcCaseList(ROUser.token, 'user', ROUser.role)
-        expect(nomisClient.getROPrisoners).to.be.calledOnce()
-        expect(nomisClient.getROPrisoners).to.be.calledWith('DELIUS_ID')
+        expect(roService.getROPrisoners).to.be.calledOnce()
+        expect(roService.getROPrisoners).to.be.calledWith('DELIUS_ID')
       })
 
       it('should return empty array and explanation message if no eligible releases found', async () => {
-        nomisClient.getROPrisoners.resolves([])
+        roService.getROPrisoners.resolves([])
         const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).to.eql({ hdcEligible: [], message: 'No HDC cases' })
       })
@@ -357,8 +351,7 @@ describe('caseListService', () => {
         })
 
         it('should add Today to those received today', async () => {
-          nomisClient.getROPrisoners.resolves(['a'])
-          nomisClient.getOffenderSentencesByBookingId.resolves([offender1])
+          roService.getROPrisoners.resolves([offender1])
           licenceClient.getLicences.resolves([
             { booking_id: 'a', transition_date: '2018-05-31 15:23:39.530927', stage: 'PROCESSING_RO' },
           ])
@@ -368,8 +361,7 @@ describe('caseListService', () => {
         })
 
         it('should add the number of days until hdced', async () => {
-          nomisClient.getROPrisoners.resolves(['a'])
-          nomisClient.getOffenderSentencesByBookingId.resolves([offender1])
+          roService.getROPrisoners.resolves([offender1])
           licenceClient.getLicences.resolves([
             { booking_id: 'a', transition_date: '2018-05-20 15:23:39.530927', stage: 'PROCESSING_RO' },
           ])
@@ -379,8 +371,7 @@ describe('caseListService', () => {
         })
 
         it('should not add the number of days if not in PROCESSING_RO', async () => {
-          nomisClient.getROPrisoners.resolves(['a'])
-          nomisClient.getOffenderSentencesByBookingId.resolves([offender1])
+          roService.getROPrisoners.resolves([offender1])
           licenceClient.getLicences.resolves([
             { booking_id: 'a', transition_date: '2018-05-16 15:23:39.530927', stage: 'MODIFIED' },
           ])
@@ -390,8 +381,7 @@ describe('caseListService', () => {
         })
 
         it('should order on days since received first', async () => {
-          nomisClient.getROPrisoners.resolves(['a'])
-          nomisClient.getOffenderSentencesByBookingId.resolves([offender1, offender2])
+          roService.getROPrisoners.resolves([offender1, offender2])
           licenceClient.getLicences.resolves([
             { booking_id: 'a', transition_date: '2018-05-20 15:23:39.530927', stage: 'PROCESSING_RO' },
             { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO' },
@@ -403,8 +393,7 @@ describe('caseListService', () => {
         })
 
         it('should order on days since received first', async () => {
-          nomisClient.getROPrisoners.resolves(['a'])
-          nomisClient.getOffenderSentencesByBookingId.resolves([offender1, offender2])
+          roService.getROPrisoners.resolves([offender1, offender2])
           licenceClient.getLicences.resolves([
             { booking_id: 'a', transition_date: '2018-05-17 15:23:39.530927', stage: 'PROCESSING_RO' },
             { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO' },
@@ -416,8 +405,7 @@ describe('caseListService', () => {
         })
 
         it('should prioritise those with received date', async () => {
-          nomisClient.getROPrisoners.resolves(['a'])
-          nomisClient.getOffenderSentencesByBookingId.resolves([offender1, offender2])
+          roService.getROPrisoners.resolves([offender1, offender2])
           licenceClient.getLicences.resolves([
             { booking_id: 'a', transition_date: '2018-05-17 15:23:39.530927', stage: 'MODIFIED' },
             { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO' },
@@ -429,8 +417,7 @@ describe('caseListService', () => {
         })
 
         it('should sort by release date if neither have received date', async () => {
-          nomisClient.getROPrisoners.resolves(['a'])
-          nomisClient.getOffenderSentencesByBookingId.resolves([offender2, offender1])
+          roService.getROPrisoners.resolves([offender2, offender1])
           licenceClient.getLicences.resolves([
             { booking_id: 'a', transition_date: '2018-05-17 15:23:39.530927', stage: 'MODIFIED' },
             { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'MODIFIED' },
@@ -525,13 +512,9 @@ describe('caseListService', () => {
       ]
 
       beforeEach(() => {
-        nomisClient.getHdcEligiblePrisoners.resolves(['a'])
-        nomisClient.getOffenderSentencesByBookingId.resolves([
-          { sentenceDetail: { homeDetentionCurfewEligibilityDate: 'a' } },
-        ])
-        nomisClient.getROPrisoners.resolves(['a'])
+        nomisClient.getHdcEligiblePrisoners.resolves([{ sentenceDetail: { homeDetentionCurfewEligibilityDate: 'a' } }])
         const nomisClientBuilder = sinon.stub().returns(nomisClient)
-        service = createCaseListService(nomisClientBuilder, licenceClient, caseListFormatter)
+        service = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
       })
 
       describe('By stage', () => {
