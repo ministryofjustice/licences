@@ -14,7 +14,7 @@ class RiskDetailsModule extends Module {
         riskManagementDetail          : $("#details").text(),
         addressSuitable               : $("#proposedAddressSuitable").text(),
         unsuitableReason              : $("#unsuitableReason").text(),
-        nonDisclosableInformationView : $("#nonDisclosableInformationView").text()
+        nonDisclosableInformationView : $("#nonDisclosableInformationDetailsView").text()
       ]
     }
   }

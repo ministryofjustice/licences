@@ -32,14 +32,14 @@ module.exports = {
         },
       },
       {
-        hasNonDisclosableInformation: {
+        nonDisclosableInformation: {
           responseType: 'requiredYesNo',
           validationMessage: 'Say if you want to add information that cannot be disclosed to the offender',
         },
       },
       {
-        nonDisclosableInformation: {
-          responseType: 'requiredStringIf_hasNonDisclosableInformation_Yes',
+        nonDisclosableInformationDetails: {
+          responseType: 'requiredStringIf_nonDisclosableInformation_Yes',
           validationMessage: 'Provide information that cannot be disclosed to the offender',
         },
       },

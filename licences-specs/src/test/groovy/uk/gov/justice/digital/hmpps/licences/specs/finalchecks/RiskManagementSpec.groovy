@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.licences.specs.assessment
+package uk.gov.justice.digital.hmpps.licences.specs.finalchecks
 
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
@@ -9,7 +9,7 @@ import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
-class CaRiskManagementSpec extends GebReportingSpec {
+class RiskManagementSpec extends GebReportingSpec {
 
   @Shared
   TestData testData = new TestData()

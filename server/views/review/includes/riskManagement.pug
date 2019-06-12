@@ -51,6 +51,6 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     div.pure-g
       span.pure-u-3-4 Do you have information that cannot be disclosed to the offender?
   div.pure-u-1-2
-    +itemAndError(risk.hasNonDisclosableInformation, errors.hasNonDisclosableInformation, "hasNonDisclosableInformation")
-    if risk.hasNonDisclosableInformation === 'Yes' && errors.nonDisclosableInformation
-      +itemAndError(risk.nonDisclosableInformation, errors.nonDisclosableInformation, "nonDisclosableInformation")
+    +itemAndError(risk.nonDisclosableInformation, errors.nonDisclosableInformation, "nonDisclosableInformation")
+    if risk.nonDisclosableInformation === 'Yes' && errors.nonDisclosableInformationDetails
+      +itemAndError(risk.nonDisclosableInformationDetails, errors.nonDisclosableInformationDetails, "nonDisclosableInformationDetails")
