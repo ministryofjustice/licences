@@ -37,9 +37,19 @@ module.exports = {
     },
     apiClientId: get('API_CLIENT_ID', 'licences'),
     apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret'),
-    licencesAdminApiClientId: get('ADMIN_API_CLIENT_ID', 'licencesadmin'),
-    licencesAdminApiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'clientsecret'),
+    admin: {
+      apiClientId: get('ADMIN_API_CLIENT_ID', 'licencesadmin'),
+      apiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'clientsecret'),
+    },
     globalSearchUrl: get('GLOBAL_SEARCH_URL', 'http://localhost:3002/global-search'),
+  },
+
+  delius: {
+    apiUrl: get('DELIUS_API_URL', 'http://localhost:9090/communityapi/api'),
+    admin: {
+      apiClientId: get('DELIUS_API_CLIENT_ID', 'licencesadmin'),
+      apiClientSecret: get('DELIUS_API_CLIENT_SECRET', 'clientsecret'),
+    },
   },
 
   https: production,
@@ -89,6 +99,7 @@ module.exports = {
 
   pushToNomis: get('PUSH_TO_NOMIS', 'no') === 'yes',
   use2019Conditions: get('NEW_CONDITIONS', 'no') === 'yes',
+  roServiceType: get('RO_SERVICE_TYPE', 'NOMIS'),
 
   jobs: {
     systemUser: get('REMINDERS_SYSTEM_USER', ''),
