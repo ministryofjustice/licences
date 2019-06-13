@@ -29,6 +29,7 @@ const adminRouter = require('../server/routes/admin/admin')
 const userAdminRouter = require('../server/routes/admin/users')
 const mailboxesAdminRouter = require('../server/routes/admin/mailboxes')
 const jobsAdminRouter = require('../server/routes/admin/jobs')
+const deliusAdminRouter = require('../server/routes/admin/delius')
 const apiRouter = require('../server/routes/api')
 const caseListRouter = require('../server/routes/caseList')
 const contactRouter = require('../server/routes/contact')
@@ -72,6 +73,7 @@ module.exports = function createApp({
   nomisPushService,
   configClient,
   jobSchedulerService,
+  deliusRoService,
   audit,
 }) {
   const app = express()
@@ -353,6 +355,7 @@ module.exports = function createApp({
   app.use('/admin/roUsers/', secureRoute(userAdminRouter({ userAdminService }), { auditKey: 'USER_MANAGEMENT' }))
   app.use('/admin/mailboxes/', secureRoute(mailboxesAdminRouter({ configClient })))
   app.use('/admin/jobs/', secureRoute(jobsAdminRouter({ jobSchedulerService })))
+  app.use('/admin/delius/', secureRoute(deliusAdminRouter({ deliusRoService })))
   app.use('/hdc/contact/', secureRoute(contactRouter({ userAdminService })))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
   app.use('/hdc/forms/', secureRoute(formsRouter({ formService })))
