@@ -156,7 +156,7 @@ module.exports = {
         label: additionalConditions.getLabel({ decisions, tasks }),
         action: {
           type: 'btn-secondary',
-          href: '/hdc/review/conditions/',
+          href: '/hdc/licenceConditions/standard/',
           text: 'View/Edit',
         },
         visible: validAddress,

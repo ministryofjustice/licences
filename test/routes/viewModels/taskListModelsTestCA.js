@@ -180,16 +180,6 @@ describe('TaskList models', () => {
     visible: true,
   }
 
-  const additionalConditions = {
-    action: {
-      href: '/hdc/review/conditions/',
-      text: 'View/Edit',
-      type: 'btn-secondary',
-    },
-    label: 'Not completed',
-    title: 'Additional conditions',
-    visible: true,
-  }
   const additionalConditionsEdit = {
     action: {
       href: '/hdc/licenceConditions/standard/',
@@ -458,7 +448,7 @@ describe('TaskList models', () => {
         riskManagement,
         victimLiasion,
         curfewHours,
-        additionalConditions,
+        additionalConditionsEdit,
         reportingInstructionsReview,
         reviewCase,
         postponeOrRefuse,
@@ -540,7 +530,7 @@ describe('TaskList models', () => {
         riskManagement,
         victimLiasion,
         curfewHours,
-        additionalConditions,
+        additionalConditionsEdit,
         reportingInstructionsReview,
         reviewCase,
         postponeOrRefuse,
