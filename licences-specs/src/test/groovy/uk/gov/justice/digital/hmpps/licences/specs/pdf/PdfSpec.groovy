@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.licences.specs.pdf
 
 import geb.spock.GebReportingSpec
-import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
