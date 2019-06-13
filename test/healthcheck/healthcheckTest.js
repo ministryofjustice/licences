@@ -46,6 +46,9 @@ describe('healthcheck', () => {
           deliusApiCheck,
           authCheck,
         },
+        './config': {
+          roServiceType: 'DELIUS',
+        },
       })
     }
 
@@ -58,6 +61,7 @@ describe('healthcheck', () => {
 
         expect(calledWith.checks.db).to.eql('OK')
         expect(calledWith.checks.nomis).to.eql('OK')
+        expect(calledWith.checks.delius).to.eql('OK')
         expect(calledWith.checks.auth).to.eql('OK')
       })
     })
@@ -72,6 +76,7 @@ describe('healthcheck', () => {
         expect(calledWith.healthy).to.eql(false)
         expect(calledWith.checks.db).to.eql('rubbish')
         expect(calledWith.checks.nomis).to.eql('OK')
+        expect(calledWith.checks.delius).to.eql('OK')
         expect(calledWith.checks.auth).to.eql('OK')
       })
     })
@@ -86,6 +91,7 @@ describe('healthcheck', () => {
         expect(calledWith.healthy).to.eql(false)
         expect(calledWith.checks.db).to.eql('OK')
         expect(calledWith.checks.nomis).to.eql(404)
+        expect(calledWith.checks.delius).to.eql('OK')
         expect(calledWith.checks.auth).to.eql('OK')
       })
     })
@@ -101,7 +107,25 @@ describe('healthcheck', () => {
           expect(calledWith.healthy).to.eql(false)
           expect(calledWith.checks.db).to.eql('OK')
           expect(calledWith.checks.nomis).to.eql('OK')
+          expect(calledWith.checks.delius).to.eql('OK')
           expect(calledWith.checks.auth).to.eql(404)
+        }
+      )
+    })
+
+    it('should return unhealthy if delius rejects promise', () => {
+      const deliusCheckStubReject = sandbox.stub().rejects(404)
+
+      return healthcheckProxy(dbCheckStub, nomisApiCheckStub, deliusCheckStubReject, authCheckStub)(callback).then(
+        () => {
+          const calledWith = callback.getCalls()[0].args[1]
+
+          expect(callback).to.have.callCount(1)
+          expect(calledWith.healthy).to.eql(false)
+          expect(calledWith.checks.db).to.eql('OK')
+          expect(calledWith.checks.nomis).to.eql('OK')
+          expect(calledWith.checks.delius).to.eql(404)
+          expect(calledWith.checks.auth).to.eql('OK')
         }
       )
     })
