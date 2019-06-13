@@ -27,6 +27,7 @@ services:
       - HOST=licences.hmpps.dsd.test
       - PDF_SERVICE_HOST=http://hdc-pdfgenerator:8080
       - GLOBAL_SEARCH_URL=http://localhost:3002/global-search
+      - ENABLE_TEST_UTILS=true
 
   licences-nomis-mocks:
     image: mojdigitalstudio/licences-nomis-mocks:latest

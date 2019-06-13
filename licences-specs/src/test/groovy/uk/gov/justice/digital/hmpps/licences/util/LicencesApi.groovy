@@ -35,6 +35,10 @@ class LicencesApi {
     )
 
     println("Status: " + response.status)
+    if (response.status > 299) {
+      throw new Exception("Received an HTTP ${response.status} status code while attempting to create a licence. Licence creation failed.")
+    }
+
     if (response.data) {
       println("Content Type: " + response.contentType)
       println("Headers: " + response.getAllHeaders())

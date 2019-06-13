@@ -127,7 +127,7 @@ module.exports = function createApp({
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
 
-  if (config.enableTestUtils) {
+  if (config.enableTestUtils === 'true') {
     app.use('/utils/', utilsRouter())
   }
 
