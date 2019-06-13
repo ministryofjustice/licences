@@ -31,6 +31,18 @@ module.exports = {
           validationMessage: 'Provide details of why you made this decision',
         },
       },
+      {
+        nonDisclosableInformation: {
+          responseType: 'requiredYesNo',
+          validationMessage: 'Say if you want to add information that cannot be disclosed to the offender',
+        },
+      },
+      {
+        nonDisclosableInformationDetails: {
+          responseType: 'requiredStringIf_nonDisclosableInformation_Yes',
+          validationMessage: 'Provide information that cannot be disclosed to the offender',
+        },
+      },
     ],
     nextPath: {
       path: '/hdc/taskList/',

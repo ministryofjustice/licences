@@ -1,5 +1,7 @@
 extends ../layout
 
+include mixins
+
 block content
 
   div.pure-g
@@ -58,6 +60,13 @@ block content
                   if data.unsuitableReason
                     | #{data.unsuitableReason}
 
+
+          if user.role === 'RO'
+            +nonDisclosableInformation(data)
+          else
+            input(type="hidden" name='nonDisclosableInformation' id='nonDisclosableInformation' value=data.nonDisclosableInformation)
+            input(type="hidden" name='nonDisclosableInformationDetails'    id='nonDisclosableInformationDetails'    value=data.nonDisclosableInformationDetails)
+            +readOnlyNonDisclosableInformation(data)
 
         include ../includes/roModificationWarning
 

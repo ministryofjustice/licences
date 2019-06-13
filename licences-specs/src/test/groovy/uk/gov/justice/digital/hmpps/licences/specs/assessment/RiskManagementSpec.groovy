@@ -41,6 +41,7 @@ class RiskManagementSpec extends GebReportingSpec {
     riskManagementRadios.checked == null
     awaitingInformationRadios.checked == null
     addressSuitableRadios.checked == null
+    nonDisclosableInformationRadios.checked == null
   }
 
   def 'Address suitability reasons shown when No'() {
@@ -57,6 +58,23 @@ class RiskManagementSpec extends GebReportingSpec {
     then: 'I see the reason form'
     addressSuitableForm.isDisplayed()
   }
+
+  def 'Non-disclosable information shown when Yes'() {
+
+    when: 'At risk management page'
+    at RiskManagementPage
+
+    then: 'I dont see the non-disclosable text box'
+    !nonDisclosableInformationForm.isDisplayed()
+
+    when: 'I select yes for non-disclosable information'
+    nonDisclosableInformationRadios.checked = 'Yes'
+
+    then: 'I see the non-disclosable information text box'
+    nonDisclosableInformationForm.isDisplayed()
+  }
+
+
 
   def 'Modified choices are saved after save and continue'() {
 

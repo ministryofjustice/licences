@@ -419,3 +419,22 @@ input[type="time"] {
   text-decoration: none;
   border-bottom: 1px solid #0b0c0c;
 }
+
+%container-shared {
+  box-sizing: border-box;
+  padding: 1em;
+
+  .notice strong {
+    padding-left: 75px;
+  }
+}
+
+.notice-container {
+  @extend %container-shared;
+  background-color: #FFF0D5;
+}
+
+.warning-container {
+  @extend %container-shared;
+  background-color: $mellow-red-25;
+}
