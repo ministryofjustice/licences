@@ -11,9 +11,17 @@ proxyquire.noCallThru()
 
 describe('healthcheck', () => {
   let callback
+  let dbCheckStub
+  let nomisApiCheckStub
+  let deliusApiCheckStub
+  let authCheckStub
 
   beforeEach(() => {
     callback = sandbox.spy()
+    dbCheckStub = sandbox.stub().resolves([{ totalRows: { value: 0 } }])
+    nomisApiCheckStub = sandbox.stub().resolves('OK')
+    deliusApiCheckStub = sandbox.stub().resolves('OK')
+    authCheckStub = sandbox.stub().resolves('OK')
   })
 
   afterEach(() => {
@@ -21,18 +29,6 @@ describe('healthcheck', () => {
   })
 
   describe('healthcheck', () => {
-    let dbCheckStub
-    let nomisApiCheckStub
-    let deliusApiCheckStub
-    let authCheckStub
-
-    beforeEach(() => {
-      dbCheckStub = sandbox.stub().resolves([{ totalRows: { value: 0 } }])
-      nomisApiCheckStub = sandbox.stub().resolves('OK')
-      deliusApiCheckStub = sandbox.stub().resolves('OK')
-      authCheckStub = sandbox.stub().resolves('OK')
-    })
-
     const healthcheckProxy = (
       dbCheck = dbCheckStub,
       nomisApiCheck = nomisApiCheckStub,
@@ -128,6 +124,42 @@ describe('healthcheck', () => {
           expect(calledWith.checks.auth).to.eql('OK')
         }
       )
+    })
+  })
+
+  describe('healthcheck without delius', () => {
+    const deliusHealthcheckProxy = (
+      dbCheck = dbCheckStub,
+      nomisApiCheck = nomisApiCheckStub,
+      deliusApiCheck = deliusApiCheckStub,
+      authCheck = authCheckStub
+    ) => {
+      return proxyquire('../../server/healthcheck', {
+        './data/healthcheck': {
+          dbCheck,
+          nomisApiCheck,
+          deliusApiCheck,
+          authCheck,
+        },
+        './config': {
+          roServiceType: 'NOMIS',
+        },
+      })
+    }
+
+    it('should not call delius healthcheck', () => {
+      return deliusHealthcheckProxy()(callback).then(() => {
+        const calledWith = callback.getCalls()[0].args[1]
+
+        expect(callback).to.have.callCount(1)
+        expect(calledWith.healthy).to.eql(true)
+
+        expect(calledWith.checks.db).to.eql('OK')
+        expect(calledWith.checks.nomis).to.eql('OK')
+        expect(calledWith.checks.auth).to.eql('OK')
+
+        expect(calledWith.checks.delius).to.eql(undefined)
+      })
     })
   })
 })
