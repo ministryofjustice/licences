@@ -6,6 +6,7 @@ const logger = require('../../log.js')
 
 module.exports = {
   nomisApiCheck,
+  deliusApiCheck,
   dbCheck,
   pdfApiCheck,
   authCheck,
@@ -15,42 +16,26 @@ function dbCheck() {
   return db.query('SELECT 1 AS ok')
 }
 
-function nomisApiCheck() {
-  return new Promise((resolve, reject) => {
-    superagent
-      .get(`${getHealthcheckUrl()}/health`)
-      .timeout({
-        response: 4000,
-        deadline: 4500,
-      })
-      .end((error, result) => {
-        try {
-          if (error) {
-            logger.error(error.stack, 'Error calling Nomis API')
-            return reject(`${error.status} | ${error.code} | ${error.errno}`)
-          }
-
-          if (result.status === 200) {
-            return resolve('OK')
-          }
-
-          return reject(result.status)
-        } catch (apiError) {
-          logger.error(apiError.stack, 'Exception calling Nomis API')
-          return reject(apiError)
-        }
-      })
-  })
-}
-
-function getHealthcheckUrl() {
-  return config.nomis.apiUrl.replace('/api', '')
-}
-
 function pdfApiCheck() {
+  return serviceApiCheck('pdf', `${config.pdf.pdfServiceHost}/health`)
+}
+
+function nomisApiCheck() {
+  return serviceApiCheck('nomis', `${getHealthcheckUrl('nomis')}/health`)
+}
+
+function deliusApiCheck() {
+  return serviceApiCheck('delius', `${config.delius.apiUrl}/remote-status`)
+}
+
+function getHealthcheckUrl(name) {
+  return config[name].apiUrl.replace('/api', '')
+}
+
+const serviceApiCheck = (name, url) => {
   return new Promise((resolve, reject) => {
     superagent
-      .get(`${config.pdf.pdfServiceHost}/health`)
+      .get(url)
       .timeout({
         response: 4000,
         deadline: 4500,
@@ -58,7 +43,7 @@ function pdfApiCheck() {
       .end((error, result) => {
         try {
           if (error) {
-            logger.error(error.stack, 'Error calling PDF API')
+            logger.error(error.stack, `Error calling ${name} API`)
             return reject(`${error.status} | ${error.code} | ${error.errno}`)
           }
 
@@ -68,7 +53,7 @@ function pdfApiCheck() {
 
           return reject(result.status)
         } catch (apiError) {
-          logger.error(apiError.stack, 'Exception calling PDF API')
+          logger.error(apiError.stack, `Exception calling ${name} API`)
           return reject(apiError)
         }
       })
