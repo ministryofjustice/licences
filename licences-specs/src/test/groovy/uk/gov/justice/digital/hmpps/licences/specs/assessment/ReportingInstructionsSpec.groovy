@@ -39,6 +39,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
 
     and: 'The options are unset'
     name.value() == ''
+    organisation.value() == ''
     street.value() == ''
     town.value() == ''
     postcode.value() == ''
@@ -52,6 +53,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
 
     when: 'I enter new values'
     name << 'sample name'
+    organisation << 'sample organisation'
     street << 'sample street'
     town << 'sample town'
     postcode << 'AB1 1AB'
@@ -66,6 +68,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
 
     then: 'I see the original values'
     name.value() == ''
+    organisation.value() == ''
     street.value() == ''
     town.value() == ''
     postcode.value() == ''
@@ -79,6 +82,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
 
     when: 'I enter new values'
     name << 'sample name'
+    organisation << 'sample organisation'
     street << 'sample street'
     town << 'sample town'
     postcode << 'AB1 1AB'
@@ -92,6 +96,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
 
     then: 'I see the previously entered values'
     name.value() == 'sample name'
+    organisation.value() == 'sample organisation'
     street.value() == 'sample street'
     town.value() == 'sample town'
     postcode.value() == 'AB1 1AB'

@@ -6,11 +6,13 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
   div.pure-u-1-2
     div.pure-g
       div.pure-u-3-4
-        span Name
+        span.block Name
+        span.block Organisation
   div.pure-u-1-2
     div.pure-g
       div.pure-u-2-3
         +itemAndError(reportingInstructions.name, errors.name, "reportingName")
+        +itemAndError(reportingInstructions.organisation, errors.organisation, "reportingOrganisation")
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
   div.pure-u-1-2

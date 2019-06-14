@@ -9,6 +9,12 @@ module.exports = {
         },
       },
       {
+        organisation: {
+          responseType: 'requiredString',
+          validationMessage: 'Enter a CRC/NPS organisation name',
+        },
+      },
+      {
         buildingAndStreet1: {
           responseType: 'requiredString',
           validationMessage: 'Enter a building or street',

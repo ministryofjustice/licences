@@ -131,6 +131,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     then: 'I see the reporting details'
 
     reporting.name == 'Reporting Name'
+    reporting.organisation == 'Reporting Organisation'
 
     reporting.address.line1 == 'Street'
     reporting.address.town == 'Town'

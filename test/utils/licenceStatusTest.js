@@ -589,6 +589,7 @@ describe('getLicenceStatus', () => {
           reporting: {
             reportingInstructions: {
               name: 'name',
+              organisation: 'organisation',
               buildingAndStreet1: 1,
               townOrCity: 2,
               postcode: 3,

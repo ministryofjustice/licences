@@ -332,7 +332,8 @@ describe('validation', () => {
           {
             formResponse: {
               name: 'n',
-              buildingAndStreet1: 'o',
+              organisation: 'o',
+              buildingAndStreet1: 'b',
               townOrCity: 't',
               postcode: 'S1 4JQ',
               telephone: '0770000000',
@@ -342,6 +343,7 @@ describe('validation', () => {
           {
             formResponse: {
               name: '',
+              organisation: '',
               buildingAndStreet1: '',
               townOrCity: '',
               postcode: 'a',
@@ -349,6 +351,7 @@ describe('validation', () => {
             },
             outcome: {
               name: 'Enter a name',
+              organisation: 'Enter a CRC/NPS organisation name',
               buildingAndStreet1: 'Enter a building or street',
               townOrCity: 'Enter a town or city',
               postcode: 'Enter a postcode in the right format',
@@ -1808,7 +1811,8 @@ describe('validation', () => {
       }
       const validReportingInstructions = {
         name: 'n',
-        buildingAndStreet1: 'o',
+        organisation: 'o',
+        buildingAndStreet1: 'b',
         townOrCity: 't',
         postcode: 'S1 4JQ',
         telephone: '0770000000',

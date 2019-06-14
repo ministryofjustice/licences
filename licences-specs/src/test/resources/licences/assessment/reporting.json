@@ -97,6 +97,7 @@
     "reporting": {
       "reportingInstructions": {
         "name": "Reporting Name",
+        "organisation": "Reporting Organisation",
         "buildingAndStreet1": "Street",
         "buildingAndStreet2": "",
         "townOrCity": "Town",

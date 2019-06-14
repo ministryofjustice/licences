@@ -18,5 +18,6 @@ class ReportingDetailsModule extends Module {
     }
 
     name { $("#reportingName").text() }
+    organisation { $("#reportingOrganisation").text() }
   }
 }
