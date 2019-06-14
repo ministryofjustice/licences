@@ -1,6 +1,5 @@
 const moment = require('moment')
 const setCase = require('case')
-const { getIn } = require('../../utils/functionalHelpers')
 
 module.exports = { formatObjectForView, formatObjectForViewWithOptions }
 
@@ -51,20 +50,6 @@ function formatOffences(offences) {
   return offences && offences[0] ? offences[0].offenceDescription : ''
 }
 
-function formatCom(coms) {
-  const name = setCase.capital(
-    [getIn(coms, [[0], 'firstName']), getIn(coms, [[0], 'lastName'])]
-      .join(' ')
-      .trim()
-      .toLowerCase()
-  )
-  return {
-    name: name || null,
-    deliusId: getIn(coms, [[0], 'deliusId']) || null,
-    message: getIn(coms, [[0], 'message']) || null,
-  }
-}
-
 function formatAliases(aliasesList) {
   return aliasesList && aliasesList[0]
     ? aliasesList
@@ -81,7 +66,6 @@ const customFields = {
   premise: formatAgencyLocationDesc,
   phones: formatAgencyBusinessPhone,
   offences: formatOffences,
-  com: formatCom,
   aliases: formatAliases,
 }
 

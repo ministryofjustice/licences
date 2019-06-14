@@ -15,7 +15,7 @@ describe('notificationService', () => {
   beforeEach(() => {
     prisonerService = {
       getEstablishmentForPrisoner: sinon.stub().resolves({ premise: 'HMP Blah', agencyId: 'LT1' }),
-      getOrganisationContactDetails: sinon.stub().resolves({ com: { deliusId: 'delius' } }),
+      getOrganisationContactDetails: sinon.stub().resolves({ deliusId: 'delius' }),
       getPrisonerPersonalDetails: sinon
         .stub()
         .resolves({ firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1', offenderNo: 'AB1234A' }),
@@ -211,7 +211,7 @@ describe('notificationService', () => {
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'RO_NEW',
-          submissionTarget: { com: { deliusId: '' } },
+          submissionTarget: { deliusId: '' },
         })
 
         expect(data).to.eql([])
@@ -222,7 +222,7 @@ describe('notificationService', () => {
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'RO_NEW',
-          submissionTarget: { com: { deliusId: 'deliusId' } },
+          submissionTarget: { deliusId: 'deliusId' },
         })
 
         expect(data).to.eql([])
@@ -233,7 +233,7 @@ describe('notificationService', () => {
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'RO_NEW',
-          submissionTarget: { com: { deliusId: 'deliusId', name: 'RO Name' } },
+          submissionTarget: { deliusId: 'deliusId', name: 'RO Name' },
         })
 
         expect(data).to.eql([])
@@ -246,7 +246,7 @@ describe('notificationService', () => {
           service.getNotificationData({
             prisoner: {},
             notificationType: 'RO_NEW',
-            submissionTarget: { com: { deliusId: 'deliusId', name: 'RO Name' } },
+            submissionTarget: { deliusId: 'deliusId', name: 'RO Name' },
           })
         ).to.be.rejected()
       })
@@ -256,7 +256,7 @@ describe('notificationService', () => {
           prisoner,
           token: 'token',
           notificationType: 'RO_NEW',
-          submissionTarget: { com: { deliusId: 'deliusId', name: 'RO Name' } },
+          submissionTarget: { deliusId: 'deliusId', name: 'RO Name' },
           bookingId: '123',
           sendingUserName: 'sender',
         })
