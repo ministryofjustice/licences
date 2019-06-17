@@ -29,13 +29,13 @@ describe('deliusClient', () => {
 
   describe('getROPrisoners', () => {
     it('should return data from api', () => {
-      fakeDelius.get(`/staff/staffCode/1/managedOffenders?current=true`).reply(200, { key: 'value' })
+      fakeDelius.get(`/staff/staffCode/1/managedOffenders`).reply(200, { key: 'value' })
 
       return expect(deliusClient.getROPrisoners('1')).to.eventually.eql({ key: 'value' })
     })
 
     it('should reject if api fails', () => {
-      fakeDelius.get(`/staff/staffCode/1/managedOffenders?current=true`).reply(500)
+      fakeDelius.get(`/staff/staffCode/1/managedOffenders`).reply(500)
 
       return expect(deliusClient.getROPrisoners('1')).to.be.rejected()
     })
@@ -43,13 +43,13 @@ describe('deliusClient', () => {
 
   describe('getResponsibleOfficer', () => {
     it('should return data from api', () => {
-      fakeDelius.get(`/offenders/nomsNumber/1/responsibleOfficers?current=true`).reply(200, { key: 'value' })
+      fakeDelius.get(`/offenders/nomsNumber/1/responsibleOfficers`).reply(200, { key: 'value' })
 
       return expect(deliusClient.getResponsibleOfficer('1')).to.eventually.eql({ key: 'value' })
     })
 
     it('should reject if api fails', () => {
-      fakeDelius.get(`/offenders/nomsNumber/1/responsibleOfficers?current=true`).reply(500)
+      fakeDelius.get(`/offenders/nomsNumber/1/responsibleOfficers`).reply(500)
 
       return expect(deliusClient.getResponsibleOfficer('1')).to.be.rejected()
     })

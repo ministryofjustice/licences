@@ -14,18 +14,16 @@ module.exports = signInService => {
   return {
     getROPrisoners(deliusStaffCode) {
       const path = `${apiUrl}/staff/staffCode/${deliusStaffCode}/managedOffenders`
-      const query = { current: true }
-      return deliusGet({ path, query })
+      return deliusGet({ path })
     },
 
     getResponsibleOfficer(offenderNo) {
       const path = `${apiUrl}/offenders/nomsNumber/${offenderNo}/responsibleOfficers`
-      const query = { current: true }
-      return deliusGet({ path, query })
+      return deliusGet({ path })
     },
   }
 
-  async function deliusGet({ path, query = '' } = {}) {
+  async function deliusGet({ path } = {}) {
     const token = await signInService.getAnonymousClientCredentialsTokens('delius')
     if (!token) {
       throw unauthorisedError()
@@ -34,7 +32,6 @@ module.exports = signInService => {
     try {
       const result = await superagent
         .get(path)
-        .query(query)
         .set('Authorization', `Bearer ${token.token}`)
         .timeout(timeoutSpec)
 
