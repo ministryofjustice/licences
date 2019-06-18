@@ -15,6 +15,7 @@ class ReportingInstructionsPage extends Page {
     header { module(HeaderModule) }
 
     name { $('#name') }
+    organisation { $('#organisation') }
     street { $('#building') }
     town { $('#town') }
     postcode { $('#postcode') }

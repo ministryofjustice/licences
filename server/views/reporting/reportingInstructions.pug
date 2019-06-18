@@ -22,6 +22,10 @@ block content
               input#name.form-control(name="name" type="text" value=data.name aria-label="Name (or Duty Officer's name)")
 
             div.form-group
+              label.form-label(for="organisation") CRC/NPS organisation
+              input#organisation.form-control(name="organisation" type="text" value=data.organisation aria-label="CRC or NPS organisation name")
+
+            div.form-group
               label.form-label(for="building") Building and street
               input#building.midMarginBottom.form-control(name="buildingAndStreet1" type="text" value=data.buildingAndStreet1 aria-label="Building and street")
               input#street.form-control.block(name="buildingAndStreet2" type="text" value=data.buildingAndStreet2)
