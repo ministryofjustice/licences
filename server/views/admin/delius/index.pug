@@ -1,0 +1,46 @@
+extends ../../layout
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/") Back
+
+  div.pure-g
+    div.pure-u-1.largeMarginTop
+      h2.heading-medium Get managed offenders
+
+      form(method='POST' action='/admin/delius/managedOffenders')
+        input(type="hidden" name="_csrf" value=csrfToken)
+
+        div.pure-u-2-3.midPaddingBottom
+          div.pure-g.u-paddingBottom
+            div.pure-u-1
+              label.form-label(for="staffCode") Delius staff code
+            div.pure-u-sm-5-12
+              input.form-control(id="staffCode" type="text" name="staffCode")
+            div.pure-u-sm-1-6.sm-PadLeftRight15
+              input.requiredButton.button(type="submit" value="Search")
+            div.pure-u-sm-5-12
+
+
+
+    div.pure-u-1.largeMarginTop
+      h2.heading-medium Get responsible officer
+
+      form(method='POST' action='/admin/delius/responsibleOfficer')
+        input(type="hidden" name="_csrf" value=csrfToken)
+
+        div.pure-u-2-3.midPaddingBottom
+          div.pure-g.u-paddingBottom
+            div.pure-u-1.midPaddingBottom Search by booking id OR offender number
+            div.pure-u-sm-5-12
+              label.form-label(for="bookingId") Booking id
+            div.pure-u-sm-5-12.sm-PadLeftRight15
+              label.form-label(for="offenderNo") Offender number
+            div.pure-u-sm-1-6
+            div.pure-u-sm-5-12
+              input.form-control(id="bookingId" type="text" name="bookingId")
+            div.pure-u-sm-5-12.sm-PadLeftRight15
+              input.form-control(id="offenderNo" type="text" name="bookingId")
+            div.pure-u-sm-1-6
+              input.requiredButton.button(type="submit" value="Search")

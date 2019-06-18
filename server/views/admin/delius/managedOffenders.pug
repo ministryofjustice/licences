@@ -1,0 +1,22 @@
+extends ../../layout
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/delius") Back
+
+  div.pure-g.pure-u-1
+    table.largeMarginBottom
+      thead
+        tr
+          th Booking id
+          th Offender no
+          th First name
+          th Last name
+      tbody
+        each offender in offenders
+          tr
+            td #{offender.bookingId}
+            td #{offender.offenderNo}
+            td #{offender.firstName}
+            td #{offender.lastName}
