@@ -5,17 +5,17 @@ const noTime = 'there is not enough time before you’re due to be released'
 
 module.exports = {
   requiredFields: {
-    forms_hdc_eligible: [...headerFields, 'SENT_HDCED', 'SENT_CRD'],
-    forms_hdc_optout: [...headerFields, 'SENT_CRD'],
-    forms_hdc_postponed: headerFields,
-    forms_hdc_refused: [...headerFields, 'REFUSAL_REASON', 'SENT_CRD'],
-    forms_hdc_approved: [...headerFields, 'CURFEW_ADDRESS', 'SENT_HDCED', 'SENT_CRD'],
-    forms_hdc_address_checks: [...headerFields, 'SENT_HDCED'],
-    forms_hdc_address: [...headerFields, 'SENT_HDCED'],
-    forms_hdc_address_unsuitable: headerFields,
-    forms_hdc_ineligible: [...headerFields, 'INELIGIBLE_REASON'],
-    forms_hdc_no_time: [...headerFields, 'SENT_CRD'],
-    forms_hdc_unsuitable: [...headerFields, 'UNSUITABLE_REASON'],
+    eligible: [...headerFields, 'SENT_HDCED', 'SENT_CRD'],
+    optout: [...headerFields, 'SENT_CRD'],
+    postponed: headerFields,
+    refused: [...headerFields, 'REFUSAL_REASON', 'SENT_CRD'],
+    approved: [...headerFields, 'CURFEW_ADDRESS', 'SENT_HDCED', 'SENT_CRD'],
+    address_checks: [...headerFields, 'SENT_HDCED'],
+    address: [...headerFields, 'SENT_HDCED'],
+    address_unsuitable: headerFields,
+    ineligible: [...headerFields, 'INELIGIBLE_REASON'],
+    no_time: [...headerFields, 'SENT_CRD'],
+    unsuitable: [...headerFields, 'UNSUITABLE_REASON'],
   },
 
   refusalReasonlabels: {

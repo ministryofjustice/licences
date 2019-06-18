@@ -1,0 +1,208 @@
+body {
+  padding-left: 1cm;
+  padding-right: 0.5cm;
+  font-family: "nta", Arial, helvetica, sans-serif;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: left;
+  font-weight: normal
+}
+
+.pagebreak {
+  page-break-before: always;
+}
+
+.no-break {
+  page-break-inside: avoid;
+}
+
+pre {
+  font-family: "nta", Arial, helvetica, sans-serif;
+  white-space: pre-wrap;
+}
+
+.alert {
+  font-weight: bold;
+  color: red;
+}
+
+.block {
+  display: block;
+}
+
+.tinyPaddingBottom {
+  padding-bottom: 5px;
+}
+
+.smallPaddingBottom {
+  padding-bottom: 10px;
+}
+
+.paddingBottom {
+  padding-bottom: 30px;
+}
+
+.largePaddingBottom {
+  padding-bottom: 50px;
+}
+
+.padRight15 {
+  padding-right: 15px;
+}
+
+.padRight30 {
+  padding-right: 30px;
+}
+
+.padRight7 {
+  padding-right: 7px;
+}
+
+.padLeft7 {
+  padding-left: 7px;
+}
+
+.padLeft15 {
+  padding-left: 15px;
+}
+
+.padLeft30 {
+  padding-left: 30px;
+}
+
+.byHand {
+  display: block;
+  padding-bottom: 10px;
+}
+
+ol {
+  padding-left: 0px;
+
+  li: {
+    padding-bottom: 6px;
+  }
+}
+
+ul.byHand {
+  list-style: none;
+  padding-left: 0px;
+}
+
+ul.byHand li {
+  padding-bottom: 10px;
+}
+
+p {
+  margin-bottom: 0.2cm;
+}
+
+h1 {
+  margin-top: 0.6cm;
+  margin-bottom: 0.4cm;
+  font-size: 15pt;
+  font-weight: normal
+}
+
+h2 {
+  margin-top: 0.5cm;
+  margin-bottom: 0.3cm;
+  font-size: 13pt;
+  font-weight: normal
+}
+
+h3 {
+  margin-top: 0.3cm;
+  margin-bottom: 0;
+  font-size: 11pt;
+  font-weight: normal
+}
+
+ul.disc li {
+  list-style-type: disc;
+}
+
+ul.disc li:before {
+  content: none;
+}
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  empty-cells: show;
+}
+
+table.wide {
+  width: 100%;
+}
+
+table.semi-wide {
+  width: 75%;
+}
+
+table.noborder td {
+  padding: 0px;
+}
+
+tr {
+  line-height: 15px;
+}
+
+tr.top {
+  vertical-align: top;
+}
+
+tr.spaceUnder>td {
+  padding-bottom: 1em;
+}
+
+tr.spaceOver>td {
+  padding-top: 1em;
+}
+
+.smallMarginBottom {
+  margin-bottom: 10px;
+}
+
+.midMarginBottom {
+  margin-bottom: 20px;
+}
+
+.largeMarginBottom {
+  margin-bottom: 30px;
+}
+
+.box {
+  border: 1px solid black;
+  width: 100%;
+}
+
+input[type="checkbox"]{
+  width: 20px;
+  height: 20px;
+  -webkit-appearance: none;
+  border: 1px solid black;
+  position: relative;
+  top: 5px;
+  margin-right: 10px;
+}
+
+.center {
+  text-align: center;
+}
+
+.bold {
+  font-weight: bold
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.entry {
+  font-weight: bold;
+}
+
+.conditions {
+  margin-left: 20px;
+  text-align: justify-all;
+}

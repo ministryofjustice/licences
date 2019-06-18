@@ -1,0 +1,32 @@
+include includes/formsHeader
+
+doctype html
+html(lang="en")
+  head
+    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+
+  body
+
+    block content
+
+      div
+
+        +header('opt out')
+
+        p I do not want to be considered for home detention curfew (tagging) because:
+
+        p
+          input#tick(type='checkbox')
+          label(for="tick") I have nowhere to stay
+
+        p Other reason:
+        div.box(style={height: '3cm'})
+
+        p If you don't have an address, Bail and Accommodation Support Services (BASS) will try to help you find somewhere to stay. Ask prison staff for more information.
+
+        p I understand that I will not be released until #{SENT_CRD}.
+
+        ul.byHand
+          li Signed:
+          li Name:
+

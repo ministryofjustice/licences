@@ -1,5 +1,5 @@
 const { asyncMiddleware } = require('../utils/middleware')
-const { formTemplates } = require('../config')
+const { formTemplates, pdfOptions, domain } = require('../config')
 const { isEmpty } = require('../utils/functionalHelpers')
 
 module.exports = ({ formService }) => router => {
@@ -16,10 +16,13 @@ module.exports = ({ formService }) => router => {
         throw new Error(`unknown form template: ${templateName}`)
       }
 
-      const pdf = await formService.generatePdf(templateName, licence, prisoner)
+      const pageData = await formService.getTemplateData(templateName, licence, prisoner)
 
-      res.type('application/pdf')
-      return res.end(pdf, 'binary')
+      res.renderPDF(
+        `forms/${templateName}`,
+        { ...pageData, domain },
+        { filename: `${prisoner.offenderNo}.pdf`, pdfOptions }
+      )
     })
   )
 
