@@ -66,6 +66,7 @@ module.exports = {
         action: reportingInstructions.getRoAction({ decisions, tasks }),
         visible: validAddress,
       },
+      curfewAddressFormTask,
       {
         title: 'Submit to prison case admin',
         label: roSubmit.getLabel({ allowedTransition }),
@@ -109,6 +110,18 @@ module.exports = {
         action: reportingInstructions.getRoAction({ decisions, tasks }),
         visible: true,
       },
+      curfewAddressFormTask,
     ].filter(task => task.visible)
   },
+}
+
+const curfewAddressFormTask = {
+  title: 'Curfew address check form',
+  action: {
+    text: 'Create PDF',
+    type: 'btn',
+    href: '/hdc/forms/curfewAddress/',
+    newTab: true,
+  },
+  visible: true,
 }

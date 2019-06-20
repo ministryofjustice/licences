@@ -1,0 +1,23 @@
+div.no-break.smallPaddingBottom#risk
+  h2 Risk management
+  p Are there any risk management planning actions that must take place prior to release before the address can be considered suitable?
+    br
+    span.entry #{riskManagement.planningActions}
+
+  p Are you still waiting for information?
+    br
+    span.entry #{riskManagement.awaitingInformation}
+
+  p Details of outstanding actions or information
+    br
+    if riskManagement.riskManagementDetails
+      span.entry #{riskManagement.riskManagementDetails}
+    else
+      span.entry None
+
+  p Additional information about the offender or the address to assist the EMS provider on the day of release
+    br
+    if riskManagement.emsInformation === 'Yes'
+      span.entry #{riskManagement.emsInformationDetails}
+    else
+      span.entry None

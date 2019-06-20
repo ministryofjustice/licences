@@ -1,0 +1,12 @@
+div.no-break.smallPaddingBottom#victim
+  h2 Victim liaison
+  p Is this a Victim Contact Service qualifying case where the victim has opted in?
+    br
+    span.entry #{victimLiaison.decision}
+
+  p Details of any comments received
+    br
+    if victimLiaison.victimLiaisonDetails
+      span.entry #{victimLiaison.victimLiaisonDetails}
+    else
+      span.entry None

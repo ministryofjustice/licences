@@ -5,6 +5,7 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const cookieSession = require('cookie-session')
 const flash = require('connect-flash')
+const pdfRenderer = require('@ministryofjustice/express-template-to-pdf')
 const auth = require('./mockAuthentication')
 
 const { authenticationMiddleware } = auth
@@ -192,6 +193,7 @@ const setup = {
     })
     app.use(cookieSession({ keys: [''] }))
     app.use(flash())
+    app.use(pdfRenderer())
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(prefix, route)

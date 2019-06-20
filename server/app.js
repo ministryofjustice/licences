@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser')
 const express = require('express')
 const path = require('path')
 const flash = require('connect-flash')
+const pdfRenderer = require('@ministryofjustice/express-template-to-pdf')
 
 const helmet = require('helmet')
 const csurf = require('csurf')
@@ -89,6 +90,7 @@ module.exports = function createApp({
   // View Engine Configuration
   app.set('views', path.join(__dirname, '../server/views'))
   app.set('view engine', 'pug')
+  app.use(pdfRenderer())
 
   // Server Configuration
   app.set('port', process.env.PORT || 3000)
@@ -358,7 +360,7 @@ module.exports = function createApp({
   app.use('/admin/delius/', secureRoute(deliusAdminRouter({ deliusRoService })))
   app.use('/hdc/contact/', secureRoute(contactRouter({ userAdminService })))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
-  app.use('/hdc/forms/', secureRoute(formsRouter({ formService })))
+  app.use('/hdc/forms/', secureRoute(formsRouter({ formService, conditionsService, prisonerService, configClient })))
   app.use('/hdc/send/', secureRoute(sendRouter({ licenceService, prisonerService, notificationService, audit })))
   app.use('/hdc/sent/', secureRoute(sentRouter({ licenceService, prisonerService })))
   app.use('/user/', secureRoute(userRouter({ userService })))

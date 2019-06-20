@@ -66,6 +66,103 @@ describe('conditionsService', () => {
         licenceConditions: {},
       })
     })
+
+    it('should return licence with additional conditions', () => {
+      const licence = {
+        licenceConditions: {
+          additional: { ATTENDDEPENDENCY: { appointmentDate: '12/03/1985' } },
+        },
+      }
+
+      return expect(service.populateLicenceWithConditions(licence)).to.eql({
+        licenceConditions: [
+          {
+            content: [
+              {
+                text: 'Attend ',
+              },
+              {
+                variable: ' on 12/03/1985 at ',
+              },
+              {
+                text: ', as directed, to address your dependency on, or propensity to misuse, a controlled drug.',
+              },
+            ],
+            group: 'Post-sentence supervision only',
+            id: 'ATTENDDEPENDENCY',
+            inputRequired: true,
+            subgroup: null,
+          },
+        ],
+      })
+    })
+
+    it('should return licence with bespoke conditions', () => {
+      const licence = {
+        licenceConditions: {
+          additional: {},
+          bespoke: [{ text: 'approved text', approved: 'Yes' }, { text: 'unapproved text', approved: 'No' }],
+        },
+      }
+
+      return expect(service.populateLicenceWithConditions(licence)).to.eql({
+        licenceConditions: [
+          {
+            approved: 'Yes',
+            content: [
+              {
+                text: 'approved text',
+              },
+            ],
+            group: 'Bespoke',
+            id: 'bespoke-0',
+            subgroup: null,
+          },
+          {
+            approved: 'No',
+            content: [
+              {
+                text: 'unapproved text',
+              },
+            ],
+            group: 'Bespoke',
+            id: 'bespoke-1',
+            subgroup: null,
+          },
+        ],
+      })
+    })
+  })
+
+  describe('populateLicenceWithApprovedConditions', () => {
+    it('should return licence with only approved bespoke conditions', () => {
+      const licence = {
+        licenceConditions: {
+          additional: {},
+          bespoke: [
+            { text: 'approved text', approved: 'Yes' },
+            { text: 'unapproved text', approved: 'No' },
+            { text: 'unapproved text' },
+          ],
+        },
+      }
+
+      return expect(service.populateLicenceWithApprovedConditions(licence)).to.eql({
+        licenceConditions: [
+          {
+            approved: 'Yes',
+            content: [
+              {
+                text: 'approved text',
+              },
+            ],
+            group: 'Bespoke',
+            id: 'bespoke-0',
+            subgroup: null,
+          },
+        ],
+      })
+    })
   })
 
   describe('createConditionsObjectForLicence', () => {

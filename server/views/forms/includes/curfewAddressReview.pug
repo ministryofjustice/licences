@@ -1,0 +1,18 @@
+div.no-break.smallPaddingBottom#curfewAddressReview
+  h2 Informed consent and electricity supply
+  table.wide.noborder
+    tr
+      td Does the main occupier give informed consent to HDC at the address?
+      td.entry
+        if occupier.isOffender === 'Yes'
+          | Offender is main occupier
+        else
+          | #{curfewAddressReview.consent}
+
+    tr
+      td Was a home visit conducted in this case?
+      td.entry #{curfewAddressReview.homeVisitConducted}
+
+    tr
+      td Does the address have an electricity supply?
+      td.entry #{curfewAddressReview.electricity}
