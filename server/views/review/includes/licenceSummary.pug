@@ -111,3 +111,10 @@ div.largeMarginBottom
 
       +errorMessageOrBlock(errorObject.reporting && errorObject.reporting.reportingInstructions, 'reporting-error')
         include reportingInstructions
+
+  if user.role == 'RO'
+    div.taskListSingleLineItem.midPaddingBottom.borderBottom
+      div.pure-u-1.pure-u-md-3-4
+        h2.heading-medium Curfew address check form
+      div.pure-u-1.pure-u-md-1-4.center.buttonContainer
+        a#backBtn.requiredButton.button.smallMarginTop(href="/hdc/forms/curfewAddress/" + bookingId target="_blank" role="button") Create PDF

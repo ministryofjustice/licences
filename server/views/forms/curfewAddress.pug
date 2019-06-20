@@ -1,0 +1,46 @@
+-var sentenceDetail = prisoner && prisoner.sentenceDetail || {}
+-var curfewAddress = licence.proposedAddress && licence.proposedAddress.curfewAddress || {}
+-var occupier = curfewAddress.occupier || {}
+-var bassRequest = licence.bassReferral && licence.bassReferral.bassRequest || {}
+-var bassAreaCheck = licence.bassReferral && licence.bassReferral.bassAreaCheck || {}
+-var curfewAddressReview = licence.curfew && licence.curfew.curfewAddressReview|| {}
+-var riskManagement = licence.risk && licence.risk.riskManagement|| {}
+-var victimLiaison = licence.victim && licence.victim.victimLiaison|| {}
+-var reportingInstructions = licence.reporting && licence.reporting.reportingInstructions|| {}
+
+
+doctype html
+html(lang="en")
+  head
+    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+
+  body
+
+    block content
+
+      div
+        h1 Home detention curfew - Address checks
+        span.alert (This form may be disclosed to the offender on request)
+
+      include includes/offender
+
+      if isBass
+        include includes/bassArea
+      else
+        include includes/proposedAddress
+
+      include includes/prisonCompleted
+
+      if !isBass
+        include includes/curfewAddressReview
+        
+      include includes/reporting
+        
+      include includes/conditions
+        
+      include includes/risk
+        
+      include includes/victim
+
+      include includes/probationCompleted
+        

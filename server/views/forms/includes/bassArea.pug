@@ -1,0 +1,22 @@
+div.no-break.smallPaddingBottom#bassArea
+  h2 BASS Case
+  p Proposed area for release
+    table.wide.noborder
+      if (bassRequest.specificArea === 'Yes')
+        tr
+          td Town
+          td.entry #{bassRequest.proposedTown}
+        tr
+          td County
+          td.entry #{bassRequest.proposedCounty}
+        tr
+          td Is this BASS area approved?
+          td.entry #{bassAreaCheck.bassAreaSuitable}
+      else
+        tr
+          td.entry(colspan="2") No specific area
+      tr
+        td Comments
+        td.entry #{bassAreaCheck.bassAreaReason}
+
+

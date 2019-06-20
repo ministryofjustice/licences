@@ -1,0 +1,46 @@
+div.no-break.smallPaddingBottom#offenderDetails
+  h2 Offender details
+  table.wide
+    tr
+      td Surname
+      td.entry #{prisoner.lastName}
+      td Forename(s)
+      td.entry #{prisoner.firstName}
+
+    tr.spaceUnder
+      td DOB
+      td(colspan="3").entry #{prisoner.dateOfBirth}
+
+    tr.spaceUnder
+      td NOMIS no.
+      td.entry #{prisoner.offenderNo}
+      td PNC no.
+      td.entry #{prisoner.PNC}
+
+    tr
+      td Prison
+      td.entry #{prisoner.agencyLocationDesc}
+      td Court
+      td.entry
+
+    tr
+      td.nowrap Sentence date
+      td.entry
+      td Sentence length
+      td.entry
+
+    tr
+      td HDCED
+      td.entry #{sentenceDetail.homeDetentionCurfewEligibilityDate}
+      td CRD/ARD
+      td.entry #{sentenceDetail.releaseDate}
+
+    tr.spaceUnder
+      td TUSED
+      td.entry #{sentenceDetail.topupSupervisionExpiryDate}
+      td SLED/SED
+      td.entry #{sentenceDetail.sentenceExpiryDate}
+
+    tr.top
+      td Offence(s)
+      td(colspan="3").entry #{prisoner.offences}

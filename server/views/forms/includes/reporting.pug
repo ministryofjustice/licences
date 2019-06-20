@@ -1,0 +1,34 @@
+div.no-break.smallPaddingBottom#reporting
+  h2 Reporting instructions
+  table.wide.noborder
+    tr
+      td Report to
+      td.entry #{reportingInstructions.name}
+
+    tr
+      td NPS/CRC Organisation
+      td.entry #{reportingInstructions.organisation}
+
+    tr
+      td Date
+      td.entry
+
+    tr.spaceUnder
+      td Time
+      td.entry
+
+    tr.top.spaceUnder
+      td Reporting address
+      td
+        span.block.bold #{reportingInstructions.buildingAndStreet1}
+        span.block.bold #{reportingInstructions.buildingAndStreet2}
+        span.block.bold #{reportingInstructions.townOrCity}
+        span.block.bold #{reportingInstructions.postcode}
+
+    tr
+      td Breach notification email
+      td.entry
+
+    tr
+      td Telephone
+      td.entry #{reportingInstructions.telephone}
