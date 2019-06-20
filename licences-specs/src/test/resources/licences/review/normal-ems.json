@@ -101,7 +101,8 @@
         "planningActions": "No",
         "awaitingInformation": "No",
         "proposedAddressSuitable": "Yes",
-        "emsInformation": "No"
+        "emsInformation": "Yes",
+        "emsInformationDetails": "EMS Information Details"
       }
     },
     "victim": {

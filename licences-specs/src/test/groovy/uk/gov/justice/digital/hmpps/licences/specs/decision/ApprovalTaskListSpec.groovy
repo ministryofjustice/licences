@@ -3,17 +3,7 @@ package uk.gov.justice.digital.hmpps.licences.specs.decision
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
-import spock.lang.Unroll
-import uk.gov.justice.digital.hmpps.Stage
-import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
-import uk.gov.justice.digital.hmpps.licences.pages.SendPage
-import uk.gov.justice.digital.hmpps.licences.pages.SentPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
-import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksSeriousOffencePage
-import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewAddressPage
-import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewConditionsPage
-import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewReportingPage
-import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewRiskPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
