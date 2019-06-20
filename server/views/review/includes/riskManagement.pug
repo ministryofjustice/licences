@@ -45,6 +45,15 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
     if risk.proposedAddressSuitable === 'No'
       +itemAndError(risk.unsuitableReason, errors.unsuitableReason, "unsuitableReason")
 
+if risk.proposedAddressSuitable === 'Yes'
+  div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+      div.pure-g
+        span.pure-u-3-4 Is there any additional information about the offender or the address (e.g. if it is difficult to access) to assist the EMS provider on the day of release?
+    div.pure-u-1-2
+      +itemAndError(risk.emsInformation, errors.emsInformation, 'emsInformation')
+      if risk.emsInformation ==='Yes'
+        +itemAndError(risk.emsInformationDetails, errors.emsInformationDetails, 'emsInformationDetails')
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
   div.pure-u-1-2

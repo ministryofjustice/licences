@@ -266,6 +266,7 @@ describe('validation', () => {
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
+              emsInformation: 'No',
               nonDisclosableInformation: 'No',
             },
             outcome: {},
@@ -275,6 +276,7 @@ describe('validation', () => {
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
+              emsInformation: 'No',
               nonDisclosableInformation: 'Yes',
             },
             outcome: {
@@ -286,10 +288,43 @@ describe('validation', () => {
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
+              emsInformation: 'No',
               nonDisclosableInformation: 'Yes',
               nonDisclosableInformationDetails: 'text',
             },
             outcome: {},
+          },
+          {
+            formResponse: {
+              planningActions: 'Yes',
+              awaitingInformation: 'Yes',
+              proposedAddressSuitable: 'Yes',
+              emsInformation: 'Yes',
+              nonDisclosableInformation: 'No',
+            },
+            outcome: { emsInformationDetails: 'Provide information about the offender or the address' },
+          },
+          {
+            formResponse: {
+              planningActions: 'Yes',
+              awaitingInformation: 'Yes',
+              proposedAddressSuitable: 'Yes',
+              emsInformation: 'Yes',
+              emsInformationDetails: '',
+              nonDisclosableInformation: 'No',
+            },
+            outcome: { emsInformationDetails: 'Provide information about the offender or the address' },
+          },
+          {
+            formResponse: {
+              planningActions: 'Yes',
+              awaitingInformation: 'Yes',
+              proposedAddressSuitable: 'Yes',
+              nonDisclosableInformation: 'No',
+            },
+            outcome: {
+              emsInformation: 'Say if you want to provide additional information about the offender or the address',
+            },
           },
         ]
 
@@ -1787,6 +1822,7 @@ describe('validation', () => {
         planningActions: 'No',
         awaitingInformation: 'No',
         proposedAddressSuitable: 'Yes',
+        emsInformation: 'No',
         nonDisclosableInformation: 'No',
       }
       const validVictim = { decision: 'No' }

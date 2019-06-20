@@ -39,4 +39,11 @@ block content
 
         span#unsuitableReason.block.bold #{risk.unsuitableReason}
 
-    +readOnlyNonDisclosableInformation(risk)
+    if risk.proposedAddressSuitable === 'Yes' && risk.emsInformation === 'Yes'
+      div.smallPaddingTop
+        p Is there any additional information about the offender or the address (e.g. if it is difficult to access) to assist the EMS provider on the day of release?
+
+        span#emsInformationDetails.block.bold #{risk.emsInformationDetails}
+
+
+  +readOnlyNonDisclosableInformation(risk)

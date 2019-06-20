@@ -18,10 +18,13 @@ class RiskManagementPage extends Page {
     riskManagementRadios { $(name: "planningActions").module(RadioButtons) }
     awaitingInformationRadios { $(name: "awaitingInformation").module(RadioButtons) }
     addressSuitableRadios { $(name: "proposedAddressSuitable").module(RadioButtons) }
+    emsInformationRadios(required: false) { $(name: "emsInformation").module(RadioButtons) }
     nonDisclosableInformationRadios { $(name: "nonDisclosableInformation").module(RadioButtons) }
 
     riskManagementForm { $("#riskManagementDetails") }
     addressSuitableForm(required: false) { $("#unsuitableReason") }
+    emsInformationForm(required: false) { $("#emsInformationForm") }
+    emsInformationDetails(required: false) { $("#emsInformationDetails") }
     nonDisclosableInformationForm (required: false) { $("#nonDisclosableInformationDetails") }
     nonDisclosableInformationView (required: false) { $("#nonDisclosableInformationDetailsView") }
   }
