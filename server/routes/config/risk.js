@@ -32,6 +32,22 @@ module.exports = {
         },
       },
       {
+        emsInformation: {
+          dependentOn: 'proposedAddressSuitable',
+          predicate: 'Yes',
+          responseType: 'requiredYesNoIf_proposedAddressSuitable_Yes',
+          validationMessage: 'Say if you want to provide additional information about the offender or the address',
+        },
+      },
+      {
+        emsInformationDetails: {
+          dependentOn: 'proposedAddressSuitable',
+          predicate: 'Yes',
+          responseType: 'requiredStringIf_emsInformation_Yes',
+          validationMessage: 'Provide information about the offender or the address',
+        },
+      },
+      {
         nonDisclosableInformation: {
           responseType: 'requiredYesNo',
           validationMessage: 'Say if you want to add information that cannot be disclosed to the offender',

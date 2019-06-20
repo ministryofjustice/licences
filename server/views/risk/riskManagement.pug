@@ -47,7 +47,7 @@ block content
           div.form-group.inline.smallPaddingTop
             p Is the address proposed by the offender suitable?
 
-            div.multiple-choice
+            div.multiple-choice(data-target='emsInformationForm')
               input#suitableYes(type="radio" checked=data.proposedAddressSuitable === 'Yes' name="proposedAddressSuitable" value="Yes")
               label(for="suitableYes") Yes
             div.multiple-choice(data-target="reasonForm")
@@ -60,6 +60,21 @@ block content
                   if data.unsuitableReason
                     | #{data.unsuitableReason}
 
+          div#emsInformationForm.form-group.inline.smallPaddingTop.js-hidden
+            p Is there any additional information about the offender or the address (e.g. if it is difficult to access) to assist the EMS provider on the day of release?
+
+            div.multiple-choice(data-target="emsInformationFormDetails")
+              input#emsInformationYes(type="radio" checked=data.emsInformation === 'Yes' name="emsInformation" value="Yes")
+              label(for="emsInformationYes") Yes
+
+            div.multiple-choice
+              input#emsInformationNo(type="radio" checked=data.emsInformation === 'No' name="emsInformation" value="No")
+              label(for="emsInformationNo") No
+
+            div#emsInformationFormDetails.panel.panel-border-narrow.js-hidden
+              textarea(name='emsInformationDetails' id='emsInformationDetails' class='form-control' rows='5' aria-label='Provide the information')
+                if data.emsInformationDetails
+                  | #{data.emsInformationDetails}
 
           if user.role === 'RO'
             +nonDisclosableInformation(data)

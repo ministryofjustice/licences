@@ -59,12 +59,52 @@ class RiskManagementSpec extends GebReportingSpec {
     addressSuitableForm.isDisplayed()
   }
 
+  def 'EMS Information radios shown when address suitable is Yes'() {
+
+    when: 'At risk management page'
+    at RiskManagementPage
+
+    then: 'I dont see the EMS information radio buttons'
+    !emsInformationForm.isDisplayed()
+
+    when: 'I select Yes for address suitability'
+    addressSuitableRadios.checked = 'Yes'
+
+    then: 'I see the EMS Information buttons'
+    emsInformationForm.isDisplayed()
+  }
+
+
+  def 'EMS Information text box shown when address suitable is Yes'() {
+
+    when: 'At risk management page'
+    at RiskManagementPage
+    and: 'I select Yes for address suitability'
+    addressSuitableRadios.checked = 'Yes'
+
+    then: 'I see the EMS Information buttons'
+    emsInformationForm.isDisplayed()
+    !emsInformationDetails.isDisplayed()
+
+    when: 'I select No'
+    emsInformationRadios.checked = 'No'
+
+    then: 'I do not see the EMS information text box'
+    !emsInformationDetails.isDisplayed()
+
+    when: 'I select Yes'
+    emsInformationRadios.checked = 'Yes'
+
+    then: 'I see the EMS Information text box'
+    emsInformationDetails.isDisplayed()
+  }
+
   def 'Non-disclosable information shown when Yes'() {
 
     when: 'At risk management page'
     at RiskManagementPage
 
-    then: 'I dont see the non-disclosable text box'
+    then: 'I don\'t see the non-disclosable text box'
     !nonDisclosableInformationForm.isDisplayed()
 
     when: 'I select yes for non-disclosable information'
