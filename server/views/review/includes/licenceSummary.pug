@@ -43,8 +43,8 @@ div.largeMarginBottom
             if(stage === 'ELIGIBILITY' && user.role === 'CA')
               a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change
 
-      if errorObject.curfewAddress && (typeof errorObject.curfewAddress.curfewAddressReview === 'string')
-        p.alert.bold(id='proposed-address-error') #{errorObject.curfewAddress.curfewAddressReview}
+      if errorObject.curfew && (typeof errorObject.curfew.curfewAddressReview === 'string')
+        p.alert.bold(id='proposed-address-error') #{errorObject.curfew.curfewAddressReview}
       else
         include curfewAddress
 
@@ -76,7 +76,7 @@ div.largeMarginBottom
               a#victimEditLink(href="/hdc/victim/victimLiaison/change/" + bookingId) Change
 
       if errorObject.victim && typeof errorObject.victim.victimLiaison === 'string'
-        p.alert.bold(id='risk-error') #{errorObject.victim.victimLiaison}
+        p.alert.bold(id='victim-error') #{errorObject.victim.victimLiaison}
       else
         include victimLiaison
 

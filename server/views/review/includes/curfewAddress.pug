@@ -1,7 +1,7 @@
 include ./itemAndError
 -var address = data.proposedAddress && data.proposedAddress.curfewAddress || {}
 -var addressReview = data.curfew && data.curfew.curfewAddressReview || {}
--var errors = errorObject.proposedAddress && errorObject.proposedAddress.curfewAddress || {}
+-var errors = errorObject.curfew || {}
 - var reviewErrors = errors.curfewAddressReview || {}
 - var offenderIsMainOccupier = licenceStatus.decisions.offenderIsMainOccupier;
 
@@ -102,4 +102,4 @@ if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
       div.pure-u-1-2
         | Address review details
       div.pure-u-1-2
-        span.bold #{address.addressReviewComments}
+        span.bold #{addressReview.addressReviewComments}

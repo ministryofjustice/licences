@@ -1957,7 +1957,10 @@ describe('validation', () => {
         {
           licence: {},
           standardOutcome: {
-            risk: { riskManagement: 'Enter the risk management and victim liaison details' },
+            risk: { riskManagement: 'Enter the risk management details' },
+            victim: {
+              victimLiaison: 'Enter the victim liaison details',
+            },
             curfew: {
               curfewHours: 'Enter the proposed curfew hours',
               curfewAddressReview: 'Enter the curfew address review details',
@@ -1976,7 +1979,7 @@ describe('validation', () => {
             curfew: {
               curfewAddressReview: 'Enter the curfew address review details',
             },
-            risk: { riskManagement: 'Enter the risk management and victim liaison details' },
+            risk: { riskManagement: 'Enter the risk management details' },
           },
         },
         {

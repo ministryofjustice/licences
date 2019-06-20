@@ -24,5 +24,7 @@ class AddressDetailsModule extends Module {
         telephone: $("#telephone")
       ]
     }
+
+    electricitySupplyError(required:false) { $('#electricity-curfew-error').text() }
   }
 }

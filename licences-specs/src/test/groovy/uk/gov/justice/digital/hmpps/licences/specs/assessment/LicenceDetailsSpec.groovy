@@ -233,4 +233,32 @@ class LicenceDetailsSpec extends GebReportingSpec {
     and: 'I do not see the risk section'
     !$('#riskDetails').isDisplayed()
   }
+
+  def 'Shows error messages for sections that have not been started'() {
+    given: 'No sections have been started'
+    testData.loadLicence('assessment/unstarted')
+
+    when: 'I view the licence details summary page for the licence record'
+    to LicenceDetailsPage, testData.markAndrewsBookingId
+
+    then: 'I see the error messages for each uncompleted section'
+
+    proposedAddressError == 'Enter the curfew address review details'
+    riskError == 'Enter the risk management details'
+    victimLiaisonError == 'Enter the victim liaison details'
+    curfewHoursError == 'Enter the proposed curfew hours'
+    additionalConditionsError == 'Select one or more additional conditions'
+    reportingInstructionsError == 'Enter the reporting instructions'
+  }
+
+  def 'Shows error messages for incomplete address review section'() {
+    given: 'Proposed curfew address section is incomplete'
+    testData.loadLicence('assessment/address-incomplete')
+
+    when: 'I view the licence details summary page for the licence record'
+    to LicenceDetailsPage, testData.markAndrewsBookingId
+
+    then: 'I see an error message for incomplete details'
+    addressDetails.electricitySupplyError == 'Say if there is an electricity supply'
+  }
 }
