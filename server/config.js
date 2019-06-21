@@ -46,9 +46,10 @@ module.exports = {
 
   delius: {
     apiUrl: get('DELIUS_API_URL', 'http://localhost:9090/communityapi/api'),
+    authUrl: get('NOMIS_AUTH_URL', 'http://localhost:9090/elite2api'),
     admin: {
-      apiClientId: get('DELIUS_API_CLIENT_ID', 'licencesadmin'),
-      apiClientSecret: get('DELIUS_API_CLIENT_SECRET', 'clientsecret'),
+      apiClientId: get('ADMIN_API_CLIENT_ID', 'licencesadmin'),
+      apiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'clientsecret'),
     },
   },
 

@@ -25,7 +25,7 @@ function nomisApiCheck() {
 }
 
 function deliusApiCheck() {
-  return serviceApiCheck('delius', `${config.delius.apiUrl}/remote-status`)
+  return serviceApiCheck('delius', `${getHealthcheckUrl('delius')}/health`)
 }
 
 function getHealthcheckUrl(name) {
