@@ -7,6 +7,7 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights
     .setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY)
     .setAutoCollectExceptions(false) // logger handles these
+    .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
     .start()
   appInsights.defaultClient.context.tags['ai.cloud.role'] = `${packageData.name}`
   module.exports = appInsights
