@@ -23,10 +23,10 @@ environments {
 
 // Default if geb.env is not set to one of 'chrome', or 'chromeHeadless'
 driver = {
-  // Uncomment for mac
-   System.setProperty('webdriver.chrome.driver', '/usr/local/bin/chromedriver')
+  System.setProperty('webdriver.chrome.driver', '/Applications/chromedriver')
+//  System.setProperty('webdriver.chrome.driver', '/usr/local/bin/chromedriver')
   ChromeOptions options = new ChromeOptions()
-  options.addArguments('chrome')
+  options.addArguments('headless')
   new ChromeDriver(options)
 }
 
