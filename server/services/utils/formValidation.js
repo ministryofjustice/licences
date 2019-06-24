@@ -262,7 +262,14 @@ function validateGroup({ licence, group, bespokeConditions }) {
         formType: 'riskManagement',
         pageConfig: riskConfig.riskManagement,
         section: 'risk',
-        missingMessage: 'Enter the risk management and victim liaison details',
+        missingMessage: 'Enter the risk management details',
+      },
+      {
+        formResponse: getIn(licence, ['victim', 'victimLiaison']),
+        formType: 'victimLiaison',
+        pageConfig: victimConfig.victimLiaison,
+        section: 'victim',
+        missingMessage: 'Enter the victim liaison details',
       },
       {
         formResponse: getIn(licence, ['curfew', 'curfewHours']),
@@ -340,7 +347,7 @@ function validateGroup({ licence, group, bespokeConditions }) {
         formType: 'riskManagement',
         pageConfig: riskConfig.riskManagement,
         section: 'risk',
-        missingMessage: 'Enter the risk management and victim liaison details',
+        missingMessage: 'Enter the risk management details',
       },
     ],
     BASS_AREA: [

@@ -9,6 +9,7 @@ import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 import uk.gov.justice.digital.hmpps.licences.modules.OffenderDetailsModule
 import uk.gov.justice.digital.hmpps.licences.modules.ReportingDetailsModule
 import uk.gov.justice.digital.hmpps.licences.modules.RiskDetailsModule
+import uk.gov.justice.digital.hmpps.licences.modules.AddressDetailsModule
 
 class LicenceDetailsPage extends Page {
 
@@ -35,9 +36,17 @@ class LicenceDetailsPage extends Page {
 
     approvedPremises { module(ApprovedPremisesModule) }
 
+    addressDetails { module(AddressDetailsModule) }
+
     changeDetailsLink { section ->
       $("#${section}EditLink")
     }
-  }
 
+    proposedAddressError(required: false) { $('#proposed-address-error').text() }
+    riskError(required: false) { $('#risk-error').text() }
+    victimLiaisonError(required: false) { $('#victim-error').text() }
+    curfewHoursError(required: false) { $('#curfew-hours-error').text() }
+    additionalConditionsError(required: false) { $('#noConditionsError').text() }
+    reportingInstructionsError(required: false) { $('#reporting-error').text() }
+  }
 }
