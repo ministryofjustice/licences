@@ -1,99 +1,115 @@
 include additionalConditions
 
-mixin change(url, anchorId)
-  a(id=anchorId href=url) Change
-
-mixin alert(text, id)
-  p.alert.bold(id=id) #{text}
-
-mixin titleRow(title, titleId)
-  div.pure-g
-    div.pure-u-1.pure-u-md-1-2
-      h2(id=titleId).heading-medium #{title}
-    div.pure-u-1.pure-u-md-1-2.alignRight
-      div.pure-u-md-1-2.change-details
-        block
-
-mixin roCase
-  if (stage === 'PROCESSING_RO' && user.role === 'RO')
-    block
-
-mixin caCase
-  if(stage === 'ELIGIBILITY' && user.role === 'CA')
-    block
-
-mixin errorMessageOrBlock(errorMessage, errorId)
-  if errorMessage && typeof(errorMessage) === 'string'
-    +alert(errorMessage, errorId)
-  else
-    block
-
 div.largeMarginBottom
 
   if sections.bassArea
     div.borderBottom
-      +titleRow('Proposed BASS area', 'bassAreaDetails')
-        +roCase
-          +change("/hdc/bassReferral/bassAreaCheck/change/" + bookingId, 'bassEditLink' )
+      div.pure-g
+        div.pure-u-1.pure-u-md-1-2
+          h2#bassAreaDetails.heading-medium Proposed BASS area
+        div.pure-u-1.pure-u-md-1-2.alignRight
+          div.pure-u-md-1-2.change-details
+            if (stage === 'PROCESSING_RO' && user.role === 'RO')
+              a#bassEditLink(href="/hdc/bassReferral/bassAreaCheck/change/" + bookingId) Change
 
       if !showErrors || data.bassReferral && data.bassReferral.bassAreaCheck
         include bassArea
       else
-        +alert('Enter the BASS area details', 'bass-address-error')
+        p.alert.bold(id='bass-address-error') Enter the BASS area details
 
   else if sections.approvedPremisesAddress
     div.borderBottom
-      +titleRow('Approved premises', 'approvedPremisesDetails')
-        +roCase
-          +change("/hdc/curfew/approvedPremises/change/" + bookingId, 'addressEditLink')
+      div.pure-g
+        div.pure-u-1.pure-u-md-1-2
+          h2#approvedPremisesDetails.heading-medium Approved premises
+        div.pure-u-1.pure-u-md-1-2.alignRight
+          div.pure-u-md-1-2.change-details
+            if (stage === 'PROCESSING_RO' && user.role === 'RO')
+              a#addressEditLink(href="/hdc/curfew/approvedPremises/change/" + bookingId) Change
 
-      +errorMessageOrBlock(errorObject.approvedPremisesAddress, 'approvedPremisesAddress-error')
+      if errorObject.approvedPremisesAddress && (typeof errorObject.approvedPremisesAddress === 'string')
+        p.alert.bold(id='approvedPremisesAddress-error') #{errorObject.approvedPremisesAddress}
+      else
         include approvedPremisesAddress
   else
     div.borderBottom
-      +titleRow('Proposed curfew address', 'curfewAddressDetails')
-        +roCase
-          +change("/hdc/curfew/approvedPremises/change/" + bookingId, 'addressEditLink')
-        +caCase
-          +change("/hdc/proposedAddress/curfewAddress/change/" + bookingId, 'addressEditLink')
+      div.pure-g
+        div.pure-u-1.pure-u-md-1-2
+          h2#curfewAddressDetails.heading-medium Proposed curfew address
+        div.pure-u-1.pure-u-md-1-2.alignRight
+          div.pure-u-md-1-2.change-details
+            if (stage === 'PROCESSING_RO' && user.role === 'RO')
+              a#addressEditLink(href="/hdc/curfew/approvedPremises/change/" + bookingId) Change
+            if(stage === 'ELIGIBILITY' && user.role === 'CA')
+              a#addressEditLink(href="/hdc/proposedAddress/curfewAddress/change/" + bookingId) Change
 
-      +errorMessageOrBlock(errorObject.curfew && errorObject.curfew.curfewAddressReview, 'proposed-address-error')
+      if errorObject.curfew && (typeof errorObject.curfew.curfewAddressReview === 'string')
+        p.alert.bold(id='proposed-address-error') #{errorObject.curfew.curfewAddressReview}
+      else
         include curfewAddress
 
   if sections.riskManagement
+    // Risk
     div.borderBottom
-      +titleRow('Risk', 'riskDetails')
-        +roCase
-          +change("/hdc/risk/riskManagement/change/" + bookingId, 'riskEditLink')
+      div.pure-g
+        div.pure-u-1.pure-u-md-1-2
+          h2#riskDetails.heading-medium Risk
+        if (stage === 'PROCESSING_RO' && user.role === 'RO')
+          div.pure-u-1.pure-u-md-1-2.alignRight
+            div.pure-u-md-1-2.change-details
+              a#riskEditLink(href="/hdc/risk/riskManagement/change/" + bookingId) Change
 
-      +errorMessageOrBlock(errorObject.risk && errorObject.risk.riskManagement, 'risk-error')
+      if errorObject.risk && typeof errorObject.risk.riskManagement === 'string'
+        p.alert.bold(id='risk-error') #{errorObject.risk.riskManagement}
+      else
         include riskManagement
 
   if sections.victimLiaison
+    // Victim liaison
     div.borderBottom
-      +titleRow('Victim liaison', 'victimDetails')
-        +roCase
-          +change("/hdc/victim/victimLiaison/change/" + bookingId, 'victimEditLink')
+      div.pure-g
+        div.pure-u-1.pure-u-md-1-2
+          h2#victimDetails.heading-medium Victim liaison
+        if (stage === 'PROCESSING_RO' && user.role === 'RO')
+          div.pure-u-1.pure-u-md-1-2.alignRight
+            div.pure-u-md-1-2.change-details
+              a#victimEditLink(href="/hdc/victim/victimLiaison/change/" + bookingId) Change
 
-      +errorMessageOrBlock(errorObject.victim && errorObject.victim.victimLiaison, 'victim-error')
+      if errorObject.victim && typeof errorObject.victim.victimLiaison === 'string'
+        p.alert.bold(id='victim-error') #{errorObject.victim.victimLiaison}
+      else
         include victimLiaison
 
   if sections.curfewHours
+    // Curfew hours
     div.borderBottom
-      +titleRow('Proposed HDC curfew hours', 'curfewHoursDetails')
-        +roCase
-          +change("/hdc/curfew/curfewHours/change/" + bookingId, 'curfewHoursEditLink')
+      div.pure-g
+        div.pure-u-1.pure-u-md-1-2
+          h2#curfewHoursDetails.heading-medium Proposed HDC curfew hours
+        if (stage === 'PROCESSING_RO' && user.role === 'RO')
+          div.pure-u-1.pure-u-md-1-2.alignRight
+            div.pure-u-md-1-2.change-details
+              a#curfewHoursEditLink(href="/hdc/curfew/curfewHours/change/" + bookingId) Change
 
-      +errorMessageOrBlock(errorObject.curfew && errorObject.curfew.curfewHours, 'curfew-hours-error')
+      if errorObject.curfew && typeof errorObject.curfew.curfewHours === 'string'
+        p.alert.bold(id='curfew-hours-error') #{errorObject.curfew.curfewHours}
+      else
         include curfewHours
 
   if sections.additionalConditions
+    // Additional condition
     div.borderBottom
-      +titleRow('Additional conditions', 'additionalConditions')
-        +roCase
-          +change("/hdc/licenceConditions/standard/change/" + bookingId, 'conditionsEditLink')
+      div.pure-g
+        div.pure-u-1.pure-u-md-1-2
+          h2.heading-medium Additional conditions
+        if (stage === 'PROCESSING_RO' && user.role === 'RO')
+          div.pure-u-1.pure-u-md-1-2.alignRight
+            div.pure-u-md-1-2.change-details
+              a#conditionsEditLink(href="/hdc/licenceConditions/standard/change/" + bookingId) Change
 
-      +errorMessageOrBlock(errorObject.licenceConditions, 'additional-conditions-error')
+      if typeof errorObject.licenceConditions === 'string'
+        p.alert.bold(id='additional-conditions-error') #{errorObject.licenceConditions}
+      else
         if licenceStatus.decisions.standardOnly
           p No additional conditions selected
         else if data.licenceConditions && data.licenceConditions.length > 0
@@ -104,10 +120,17 @@ div.largeMarginBottom
           p Not complete
 
   if sections.reportingInstructions
+    // Reporting instructions
     div.borderBottom
-      +titleRow('Reporting instructions', 'reportingDetails')
-        +roCase
-          +change("/hdc/reporting/reportingInstructions/change/" + bookingId, 'reportingEditLink')
+      div.pure-g
+        div.pure-u-1.pure-u-md-1-2
+          h2#reportingDetails.heading-medium Reporting instructions
+        if (stage === 'PROCESSING_RO' && user.role === 'RO')
+          div.pure-u-1.pure-u-md-1-2.alignRight
+            div.pure-u-md-1-2.change-details
+              a#reportingEditLink(href="/hdc/reporting/reportingInstructions/change/" + bookingId) Change
 
-      +errorMessageOrBlock(errorObject.reporting && errorObject.reporting.reportingInstructions, 'reporting-error')
+      if errorObject.reporting && typeof errorObject.reporting.reportingInstructions === 'string'
+        p.alert.bold(id='reporting-error') #{errorObject.reporting.reportingInstructions}
+      else
         include reportingInstructions
