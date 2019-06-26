@@ -11,8 +11,10 @@ module.exports = {
       }
 
       const unapproved =
-        bespokeRejected > 0 ? 'Some bespoke conditions were rejected. These will not be included in the licence.' : ''
-      const pending = bespokePending ? 'You still need approval for some bespoke conditions. ' : ''
+        bespokeRejected > 0
+          ? 'Some bespoke conditions were rejected. Remove these and inform the responsible officer.'
+          : ''
+      const pending = bespokePending ? 'You still need approval for some bespoke conditions.' : ''
 
       if (unapproved || pending) {
         return ['WARNING', unapproved, pending].filter(Boolean).join('||')
