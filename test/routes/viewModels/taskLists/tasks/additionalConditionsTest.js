@@ -41,6 +41,35 @@ describe('additional conditions task', () => {
       ).to.equal('2 conditions added')
     })
 
+    it('should return rejected action message if bespoke conditions have been rejected', () => {
+      expect(
+        getLabel({
+          decisions: { bespokeRejected: 1 },
+          tasks: { licenceConditions: 'DONE' },
+        })
+      ).to.equal('WARNING||Some bespoke conditions were rejected. Remove these and inform the responsible officer.')
+    })
+
+    it('should return pending action message if bespoke conditions have not been approved', () => {
+      expect(
+        getLabel({
+          decisions: { bespokePending: 1 },
+          tasks: { licenceConditions: 'DONE' },
+        })
+      ).to.equal('WARNING||You still need approval for some bespoke conditions.')
+    })
+
+    it('should return rejected and pending action messages if some bespoke conditions have not been approved and some have been rejected', () => {
+      expect(
+        getLabel({
+          decisions: { bespokeRejected: 1, bespokePending: 1 },
+          tasks: { licenceConditions: 'DONE' },
+        })
+      ).to.equal(
+        'WARNING||Some bespoke conditions were rejected. Remove these and inform the responsible officer.||You still need approval for some bespoke conditions.'
+      )
+    })
+
     it('should return Not completed if task not DONE', () => {
       expect(
         getLabel({
