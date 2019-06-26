@@ -8,6 +8,9 @@ module.exports = {
   '/hdc/eligibility/': {
     authorised: [{ role: 'CA' }],
   },
+  '/hdc/forms/curfewAddress': {
+    authorised: [{ role: 'RO' }],
+  },
   '/hdc/forms/': {
     authorised: [{ role: 'CA' }],
   },

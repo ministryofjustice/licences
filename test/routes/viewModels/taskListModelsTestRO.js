@@ -93,6 +93,12 @@ describe('TaskList models', () => {
     visible: true,
   }
 
+  const curfewAddressCheck = {
+    title: 'Curfew address check form',
+    action: { type: 'btn', href: '/hdc/forms/curfewAddress/', text: 'Create PDF', newTab: true },
+    visible: true,
+  }
+
   const createLicenceVersion1 = {
     title: 'Create licence',
     label: 'Ready to create version 1',
@@ -143,7 +149,7 @@ describe('TaskList models', () => {
   }
 
   describe('roTasksPostApproval', () => {
-    it('should return four tasks', () => {
+    it('should return standard tasks', () => {
       expect(
         taskListModel(
           'RO',
@@ -156,7 +162,7 @@ describe('TaskList models', () => {
           { version: 1 },
           null
         )
-      ).to.eql([riskManagement, curfewHours, additionalConditions, reportingInstructions])
+      ).to.eql([riskManagement, curfewHours, additionalConditions, reportingInstructions, curfewAddressCheck])
     })
 
     it('should hide risk and show address taks when approved premises', () => {
@@ -172,7 +178,7 @@ describe('TaskList models', () => {
           { version: 1 },
           null
         )
-      ).to.eql([proposedCurfewAddress, curfewHours, additionalConditions, reportingInstructions])
+      ).to.eql([proposedCurfewAddress, curfewHours, additionalConditions, reportingInstructions, curfewAddressCheck])
     })
   })
 
@@ -325,6 +331,7 @@ describe('TaskList models', () => {
         curfewHours,
         additionalConditions,
         reportingInstructions,
+        curfewAddressCheck,
         submitCA,
       ])
     })
@@ -362,11 +369,12 @@ describe('TaskList models', () => {
         curfewHours,
         additionalConditions,
         reportingInstructions,
+        curfewAddressCheck,
         submitCA,
       ])
     })
 
-    it('should show only curfew address review task and send if review failed', () => {
+    it('should show only curfew address review task, pdf print task, and send if review failed', () => {
       expect(
         taskListModel(
           'RO',
@@ -384,10 +392,10 @@ describe('TaskList models', () => {
           {},
           'roToCa'
         )
-      ).to.eql([proposedCurfewAddressRejected, submitCA])
+      ).to.eql([proposedCurfewAddressRejected, curfewAddressCheck, submitCA])
     })
 
-    it('should show only risk task and send if unsuitable failed', () => {
+    it('should show only risk task, pdf print task, and send if unsuitable failed', () => {
       expect(
         taskListModel(
           'RO',
@@ -405,10 +413,10 @@ describe('TaskList models', () => {
           {},
           'roToCa'
         )
-      ).to.eql([riskManagementAddressUnsuitable, submitCA])
+      ).to.eql([riskManagementAddressUnsuitable, curfewAddressCheck, submitCA])
     })
 
-    it('should show only bass task and send if bass failed', () => {
+    it('should show only bass task, pdf print task, and send if bass failed', () => {
       expect(
         taskListModel(
           'RO',
@@ -424,7 +432,7 @@ describe('TaskList models', () => {
           {},
           'roToCa'
         )
-      ).to.eql([bassAreaCheck, submitCA])
+      ).to.eql([bassAreaCheck, curfewAddressCheck, submitCA])
     })
 
     it('should show all tasks except risk if approved premises required', () => {
@@ -442,6 +450,7 @@ describe('TaskList models', () => {
         curfewHours,
         additionalConditions,
         reportingInstructions,
+        curfewAddressCheck,
         submitCA,
       ])
     })
