@@ -47,7 +47,7 @@ div.largeMarginBottom
         +roCase
           +change("/hdc/curfew/approvedPremises/change/" + bookingId, 'addressEditLink')
 
-      +errorMessageOrBlock(errorObject.approvedPremisesAddress, 'approvedPremisesAddress-error')
+      +errorMessageOrBlock(errorObject.curfew && errorObject.curfew.approvedPremisesAddress, 'approvedPremisesAddress-error')
         include approvedPremisesAddress
   else
     div.borderBottom
