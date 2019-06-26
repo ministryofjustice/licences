@@ -1,0 +1,25 @@
+include includes/formsHeader
+
+doctype html
+html(lang="en")
+  head
+    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+
+  body
+
+    block content
+
+      div
+
+        +header('refused')
+
+        p We have checked your case and decided that you will not be released on home detention curfew (tagging). This is because #{REFUSAL_REASON}.
+
+        p You will be released from prison on #{SENT_CRD}.
+
+        ul.byHand
+          li Signed:
+          li Name:
+          li Grade:
+          li Date:
+

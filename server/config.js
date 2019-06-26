@@ -66,17 +66,17 @@ module.exports = {
 
   formsDateFormat: 'Do MMMM YYYY',
   formTemplates: {
-    forms_hdc_eligible: 'Eligible',
-    forms_hdc_ineligible: 'Not eligible',
-    forms_hdc_unsuitable: 'Not suitable',
-    forms_hdc_address_checks: 'Information about address checks',
-    forms_hdc_address: 'Address form',
-    forms_hdc_address_unsuitable: 'Address unsuitable',
-    forms_hdc_optout: 'Opt out',
-    forms_hdc_postponed: 'Postponed',
-    forms_hdc_no_time: 'Not enough time',
-    forms_hdc_refused: 'Refused',
-    forms_hdc_approved: 'Approved',
+    eligible: 'Eligible',
+    ineligible: 'Not eligible',
+    unsuitable: 'Not suitable',
+    address_checks: 'Information about address checks',
+    address: 'Address form',
+    address_unsuitable: 'Address unsuitable',
+    optout: 'Opt out',
+    postponed: 'Postponed',
+    no_time: 'Not enough time',
+    refused: 'Refused',
+    approved: 'Approved',
   },
 
   pdfOptions: {

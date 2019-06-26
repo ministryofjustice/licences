@@ -2,7 +2,6 @@ const createFormService = require('../../server/services/formService')
 
 describe('formService', () => {
   let service
-  let pdfService
   let pdfFormatter
   let clock
 
@@ -16,13 +15,10 @@ describe('formService', () => {
   }
 
   beforeEach(() => {
-    pdfService = {
-      getPdf: sinon.stub().resolves(),
-    }
     pdfFormatter = {
       pickCurfewAddress: sinon.stub().returns(address),
     }
-    service = createFormService(pdfService, pdfFormatter)
+    service = createFormService(pdfFormatter)
     clock = sinon.useFakeTimers(new Date('April 25, 2019 01:00:00').getTime())
   })
 
@@ -30,7 +26,7 @@ describe('formService', () => {
     clock.restore()
   })
 
-  describe('generatePdf', () => {
+  describe('getTemplateData', () => {
     it('should call pdf service with template name and expected data', async () => {
       const licence = {}
       const prisoner = {
@@ -49,10 +45,10 @@ describe('formService', () => {
         SENT_HDCED: 'hdced',
       }
 
-      await service.generatePdf('forms_hdc_approved', licence, prisoner)
+      const data = await service.getTemplateData('approved', licence, prisoner)
       expect(pdfFormatter.pickCurfewAddress).to.be.calledOnce()
-      expect(pdfService.getPdf).to.be.calledOnce()
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_approved', expectedData)
+
+      expect(data).to.eql(expectedData)
     })
 
     it('should combine offender name, ignoring empty', async () => {
@@ -68,8 +64,8 @@ describe('formService', () => {
         SENT_HDCED: '',
       }
 
-      await service.generatePdf('forms_hdc_eligible', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_eligible', expectedData)
+      const data = await service.getTemplateData('eligible', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should map refusal reason from DM refusal', async () => {
@@ -85,8 +81,8 @@ describe('formService', () => {
         SENT_CRD: '',
       }
 
-      await service.generatePdf('forms_hdc_refused', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_refused', expectedData)
+      const data = await service.getTemplateData('refused', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should map first refusal reason from DM refusal with multiple reasons', async () => {
@@ -104,8 +100,8 @@ describe('formService', () => {
         SENT_CRD: '',
       }
 
-      await service.generatePdf('forms_hdc_refused', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_refused', expectedData)
+      const data = await service.getTemplateData('refused', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should map refusal reason from final checks refusal', async () => {
@@ -124,8 +120,8 @@ describe('formService', () => {
         SENT_CRD: '',
       }
 
-      await service.generatePdf('forms_hdc_refused', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_refused', expectedData)
+      const data = await service.getTemplateData('refused', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should map first refusal reason from final checks refusal with multiple reasons', async () => {
@@ -144,8 +140,8 @@ describe('formService', () => {
         SENT_CRD: '',
       }
 
-      await service.generatePdf('forms_hdc_refused', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_refused', expectedData)
+      const data = await service.getTemplateData('refused', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should map excluded reason', async () => {
@@ -160,8 +156,8 @@ describe('formService', () => {
         INELIGIBLE_REASON: 'of your conviction history',
       }
 
-      await service.generatePdf('forms_hdc_ineligible', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_ineligible', expectedData)
+      const data = await service.getTemplateData('ineligible', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should map first excluded reason when multiple', async () => {
@@ -176,8 +172,8 @@ describe('formService', () => {
         INELIGIBLE_REASON: 'of your conviction history',
       }
 
-      await service.generatePdf('forms_hdc_ineligible', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_ineligible', expectedData)
+      const data = await service.getTemplateData('ineligible', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should map unsuitable reason', async () => {
@@ -192,8 +188,8 @@ describe('formService', () => {
         UNSUITABLE_REASON: 'you are likely to be deported',
       }
 
-      await service.generatePdf('forms_hdc_unsuitable', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_unsuitable', expectedData)
+      const data = await service.getTemplateData('unsuitable', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should map first unsuitable reason when multiple', async () => {
@@ -208,8 +204,8 @@ describe('formService', () => {
         UNSUITABLE_REASON: 'you are likely to be deported',
       }
 
-      await service.generatePdf('forms_hdc_unsuitable', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_unsuitable', expectedData)
+      const data = await service.getTemplateData('unsuitable', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should format dates', async () => {
@@ -225,8 +221,8 @@ describe('formService', () => {
         SENT_HDCED: '1st May 2019',
       }
 
-      await service.generatePdf('forms_hdc_eligible', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_eligible', expectedData)
+      const data = await service.getTemplateData('eligible', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
 
     it('should use unformatted date when invalid', async () => {
@@ -244,8 +240,8 @@ describe('formService', () => {
         SENT_HDCED: 'Not a date',
       }
 
-      await service.generatePdf('forms_hdc_eligible', licence, prisoner)
-      expect(pdfService.getPdf).to.be.calledWith('forms_hdc_eligible', expectedData)
+      const data = await service.getTemplateData('eligible', licence, prisoner)
+      expect(data).to.eql(expectedData)
     })
   })
 })

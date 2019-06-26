@@ -52,10 +52,13 @@ module.exports = ({ formService, conditionsService, prisonerService, configClien
         throw new Error(`unknown form template: ${templateName}`)
       }
 
-      const pdf = await formService.generatePdf(templateName, licence, prisoner)
+      const pageData = await formService.getTemplateData(templateName, licence, prisoner)
 
-      res.type('application/pdf')
-      return res.end(pdf, 'binary')
+      res.renderPDF(
+        `forms/${templateName}`,
+        { ...pageData, domain },
+        { filename: `${prisoner.offenderNo}.pdf`, pdfOptions }
+      )
     })
   )
 

@@ -1,0 +1,60 @@
+include includes/formsHeader
+
+doctype html
+html(lang="en")
+  head
+    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+
+  body
+
+    block content
+
+      div
+
+        +header('address form')
+
+        p During your first week in prison we said you’re eligible for home detention curfew (tagging).
+
+        p Under home detention curfew you would have to:
+
+        ul.disc
+          li stay at home during certain hours (your curfew)
+          li wear an electronic tag - to make sure you follow your curfew        
+
+        p It would mean you could be released on #{SENT_HDCED}.
+
+        h2 What you need to do now
+
+        p You now need to fill in this address form and return it by
+
+        p Try to provide details of at least one address where you could live. If you can, think of a second address in case your first choice is not suitable.
+
+        p If you don’t have a place to stay, Bail and Accommodation Support Services (BASS) will try to help you find somewhere to stay.
+
+        h2 I do not have an address
+
+        p Where would you like to live?
+        ul.byHand
+          li Town:
+          li County:
+          li Signed:
+          li Date:              
+
+        div.pagebreak
+        h2 I can provide an address
+        
+        p What address would you prefer to live at?
+        include includes/addressEntry
+        
+        h2 Is there another address you could live at?
+        p Provide a second address if you can, in case your first address is not suitable.
+        include includes/addressEntry
+        
+        p As far as I know the information I provided is correct. I am happy for the main person living at the address or the landlord to be contacted.
+        
+        ul.byHand
+          li Signed:
+          li Date:
+        
+
+

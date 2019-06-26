@@ -9,8 +9,8 @@ const {
 } = require('./config/formConfig')
 const logger = require('../../log.js')
 
-module.exports = function createFormService(pdfService, pdfFormatter) {
-  async function generatePdf(templateName, licence, prisoner) {
+module.exports = function createFormService(pdfFormatter) {
+  async function getTemplateData(templateName, licence, prisoner) {
     if (!requiredFields[templateName]) {
       logger.warn(`No such form template: ${templateName}`)
       return null
@@ -22,7 +22,7 @@ module.exports = function createFormService(pdfService, pdfFormatter) {
       return mergeWithRight(allValues, { [field]: fieldValue(licence, prisoner, field) })
     }, {})
 
-    return pdfService.getPdf(templateName, values)
+    return values
   }
 
   function getValue(data, path) {
@@ -103,6 +103,6 @@ module.exports = function createFormService(pdfService, pdfFormatter) {
   }
 
   return {
-    generatePdf,
+    getTemplateData,
   }
 }

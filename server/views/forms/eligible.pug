@@ -1,0 +1,39 @@
+include includes/formsHeader
+
+doctype html
+html(lang="en")
+  head
+    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+
+  body
+
+    block content
+
+      div
+
+        +header('eligible')
+
+        p You are eligible for early release from prison on home detention curfew (tagging).
+
+        h2 What this means for you
+        p This means you could be released from prison on #{SENT_HDCED} if you:
+
+        ul.disc
+          li behave well in prison
+          li have somewhere to live after you leave prison
+
+        p If you are released early you would have to:
+
+        ul.disc
+          li stay at home during certain hours (your curfew)
+          li wear an electronic tag - to make sure you follow your curfew
+
+
+        p You would have a curfew and electronic tag until #{SENT_CRD}.
+
+        h2 What happens next
+        p Think about where you could live if you were released on #{SENT_HDCED}. We will give you a form to fill in with the address details closer to the date you can be released on home detention curfew.
+
+        p If you can, think of a second address in case your first choice is not suitable.
+
+        p If you don’t have a place to stay, Bail and Accommodation Support Services (BASS) could help you find somewhere. We will pass your details on to BASS if you need it
