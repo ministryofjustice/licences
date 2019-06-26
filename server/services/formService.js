@@ -9,7 +9,7 @@ const {
 } = require('./config/formConfig')
 const logger = require('../../log.js')
 
-module.exports = function createFormService(pdfFormatter) {
+module.exports = function createFormService(pdfFormatter, conditionsService, prisonerService, configClient) {
   async function getTemplateData(templateName, licence, prisoner) {
     if (!requiredFields[templateName]) {
       logger.warn(`No such form template: ${templateName}`)
@@ -102,7 +102,55 @@ module.exports = function createFormService(pdfFormatter) {
     return labels[pickFirst(reasons)] || ''
   }
 
+  async function getCurfewAddressCheckData(agencyLocationId, licence, isBass, bookingId, token) {
+    const [conditions, prisoner, caMailboxes] = await Promise.all([
+      conditionsService.getFullTextForApprovedConditions(licence),
+      prisonerService.getPrisonerDetails(bookingId, token),
+      configClient.getMailboxes(agencyLocationId, 'CA'),
+    ])
+
+    const prisonEmail = getIn(caMailboxes, [0, 'email']) || null
+
+    const sentenceDetail = getIn(prisoner, ['sentenceDetail']) || {}
+    const responsibleOfficer = getIn(prisoner, ['com']) || {}
+
+    const curfewAddressDetails = getCurfewAddressDetails(isBass, licence)
+
+    const reportingInstructions = getIn(licence, ['reporting', 'reportingInstructions']) || {}
+    const riskManagement = getIn(licence, ['risk', 'riskManagement']) || {}
+    const victimLiaison = getIn(licence, ['victim', 'victimLiaison']) || {}
+
+    return {
+      prisoner,
+      sentenceDetail,
+      isBass,
+      ...curfewAddressDetails,
+      prisonEmail,
+      reportingInstructions,
+      conditions,
+      riskManagement,
+      victimLiaison,
+      responsibleOfficer,
+    }
+  }
+
+  function getCurfewAddressDetails(isBass, licence) {
+    if (isBass) {
+      return {
+        bassRequest: getIn(licence, ['bassReferral', 'bassRequest']) || {},
+        bassAreaCheck: getIn(licence, ['bassReferral', 'bassAreaCheck']) || {},
+      }
+    }
+
+    return {
+      curfewAddress: getIn(licence, ['proposedAddress', 'curfewAddress']) || {},
+      curfewAddressReview: getIn(licence, ['curfew', 'curfewAddressReview']) || {},
+      occupier: getIn(licence, ['proposedAddress', 'curfewAddress', 'occupier']) || {},
+    }
+  }
+
   return {
     getTemplateData,
+    getCurfewAddressCheckData,
   }
 }

@@ -1,15 +1,9 @@
 div.no-break.smallPaddingBottom#licenceConditions
   h2 Licence conditions
-  if standardConditions
-    ol
-      for condition in standardConditions
-        li
-          | !{condition.text}
-      if licence.licenceConditions
-        for condition in licence.licenceConditions
-          li
-            for item in condition.content
-              if item.text
-                | !{item.text}
-              if item.variable
-                span.bold #{item.variable}
+  ol
+    for condition in conditions.standardConditions
+      li
+        | !{condition}
+    for condition in conditions.additionalConditions
+      li
+        | !{condition}

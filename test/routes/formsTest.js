@@ -7,9 +7,7 @@ const createRoute = require('../../server/routes/forms')
 describe('/forms/', () => {
   let licenceService
   let prisonerService
-  let conditionsService
   let formService
-  let configClient
 
   let app
 
@@ -26,6 +24,21 @@ describe('/forms/', () => {
     lastName: 'LAST',
     firstName: 'FIRST MIDDLE',
     dateOfBirth: '01/01/2001',
+    agencyLocationId: '123',
+  }
+  const curfewData = {
+    prisoner,
+    sentenceDetail: {},
+    isBass: false,
+    curfewAddress: {},
+    curfewAddressReview: {},
+    occupier: {},
+    prisonEmail: {},
+    reportingInstructions: {},
+    conditions: { standardConditions: ['STANDARD CONDITION'], additionalConditions: ['ADDITIONAL CONDITION'] },
+    riskManagement: {},
+    victimLiaison: {},
+    responsibleOfficer: {},
   }
 
   beforeEach(() => {
@@ -39,23 +52,7 @@ describe('/forms/', () => {
     }
     formService = {
       getTemplateData: sinon.stub().resolves(formTemplateData),
-    }
-    conditionsService = {
-      populateLicenceWithApprovedConditions: sinon.stub().resolves({
-        licenceConditions: [
-          {
-            content: [{ text: 'ADDITIONAL CONDITION' }],
-            group: 'g',
-            subgroup: 'sg',
-            id: 1,
-            inputRequired: false,
-          },
-        ],
-      }),
-      getStandardConditions: sinon.stub().resolves([{ text: 'STANDARD CONDITION' }]),
-    }
-    configClient = {
-      getMailboxes: sinon.stub().resolves({}),
+      getCurfewAddressCheckData: sinon.stub().resolves(curfewData),
     }
   })
 
@@ -133,7 +130,7 @@ describe('/forms/', () => {
   })
 
   describe('/curfewAddress/:bookingId/', () => {
-    it('calls the services to get the data', () => {
+    it('calls the form service to get the data', () => {
       app = createApp('roUser')
 
       return request(app)
@@ -144,11 +141,14 @@ describe('/forms/', () => {
           expect(Buffer.isBuffer(res.body)).to.equal(true)
         })
         .expect(() => {
-          expect(conditionsService.populateLicenceWithApprovedConditions).to.be.calledOnce()
-          expect(conditionsService.getStandardConditions).to.be.calledOnce()
-          expect(prisonerService.getPrisonerDetails).to.be.calledOnce()
-          expect(prisonerService.getResponsibleOfficer).to.be.calledOnce()
-          expect(configClient.getMailboxes).to.be.calledOnce()
+          expect(formService.getCurfewAddressCheckData).to.be.calledOnce()
+          expect(formService.getCurfewAddressCheckData).to.be.calledWith(
+            '123',
+            licence.licence,
+            undefined,
+            '1',
+            'system-token'
+          )
         })
     })
 
@@ -185,7 +185,7 @@ describe('/forms/', () => {
       authenticationMiddleware,
       signInService,
     })
-    const route = baseRouter(createRoute({ formService, conditionsService, prisonerService, configClient }))
+    const route = baseRouter(createRoute({ formService }))
     return appSetup(route, user, '/hdc/forms')
   }
 })

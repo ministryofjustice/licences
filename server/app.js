@@ -360,7 +360,7 @@ module.exports = function createApp({
   app.use('/admin/delius/', secureRoute(deliusAdminRouter({ deliusRoService })))
   app.use('/hdc/contact/', secureRoute(contactRouter({ userAdminService })))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
-  app.use('/hdc/forms/', secureRoute(formsRouter({ formService, conditionsService, prisonerService, configClient })))
+  app.use('/hdc/forms/', secureRoute(formsRouter({ formService })))
   app.use('/hdc/send/', secureRoute(sendRouter({ licenceService, prisonerService, notificationService, audit })))
   app.use('/hdc/sent/', secureRoute(sentRouter({ licenceService, prisonerService })))
   app.use('/user/', secureRoute(userRouter({ userService })))
