@@ -33,7 +33,7 @@ describe('/forms/', () => {
       getLicence: sinon.stub().resolves(licence),
     }
     prisonerService = {
-      getPrisonerPersonalDetails: sinon.stub().resolves({}),
+      getPrisonerPersonalDetails: sinon.stub().resolves(prisoner),
       getPrisonerDetails: sinon.stub().resolves(prisoner),
       getResponsibleOfficer: sinon.stub().resolves({}),
     }
@@ -144,8 +144,6 @@ describe('/forms/', () => {
           expect(Buffer.isBuffer(res.body)).to.equal(true)
         })
         .expect(() => {
-          expect(formService.generatePdf).not.to.be.calledOnce()
-
           expect(conditionsService.populateLicenceWithApprovedConditions).to.be.calledOnce()
           expect(conditionsService.getStandardConditions).to.be.calledOnce()
           expect(prisonerService.getPrisonerDetails).to.be.calledOnce()
