@@ -6,6 +6,28 @@ const { getAdditionalConditionsConfig, standardConditions, multiFields } = requi
 module.exports = function createConditionsService({ use2019Conditions }) {
   const additionalConditions = getAdditionalConditionsConfig(use2019Conditions)
 
+  function getFullTextForApprovedConditions(licence) {
+    const conditions = populateLicenceWithApprovedConditions(licence).licenceConditions
+
+    const additionalConditionsText = isEmpty(conditions)
+      ? []
+      : conditions.filter(it => it.group !== 'Bespoke' || it.approved === 'Yes').map(it => getConditionText(it.content))
+
+    const standardConditionsText = standardConditions.map(it => it.text.replace(/\.+$/, ''))
+
+    return {
+      standardConditions: standardConditionsText,
+      additionalConditions: additionalConditionsText,
+    }
+  }
+
+  function getConditionText(content) {
+    return content
+      .map(({ text, variable }) => text || variable)
+      .join('')
+      .replace(/\.+$/, '')
+  }
+
   function getStandardConditions() {
     return standardConditions
   }
@@ -215,6 +237,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     populateLicenceWithApprovedConditions,
     createConditionsObjectForLicence,
     populateAdditionalConditionsAsObject,
+    getFullTextForApprovedConditions,
   }
 }
 

@@ -1041,4 +1041,52 @@ describe('conditionsService', () => {
       })
     })
   })
+
+  describe('getFullTextForApprovedConditions', () => {
+    const standardConditionsText = standardConditions.map(it => it.text.replace(/\.+$/, ''))
+
+    it('should always return standard conditions even for empty licence', () => {
+      const licence = {
+        licenceConditions: {},
+      }
+
+      return expect(service.getFullTextForApprovedConditions(licence)).to.eql({
+        standardConditions: standardConditionsText,
+        additionalConditions: [],
+      })
+    })
+
+    it('should return additional conditions as text', () => {
+      const licence = {
+        licenceConditions: {
+          additional: { ATTENDDEPENDENCY: { appointmentDate: '12/03/1985' } },
+        },
+      }
+
+      return expect(service.getFullTextForApprovedConditions(licence)).to.eql({
+        standardConditions: standardConditionsText,
+        additionalConditions: [
+          'Attend  on 12/03/1985 at , as directed, to address your dependency on, or propensity to misuse, a controlled drug',
+        ],
+      })
+    })
+
+    it('should return only approved bespoke conditions', () => {
+      const licence = {
+        licenceConditions: {
+          additional: {},
+          bespoke: [
+            { text: 'approved text', approved: 'Yes' },
+            { text: 'unapproved text', approved: 'No' },
+            { text: 'unapproved text' },
+          ],
+        },
+      }
+
+      return expect(service.getFullTextForApprovedConditions(licence)).to.eql({
+        standardConditions: standardConditionsText,
+        additionalConditions: ['approved text'],
+      })
+    })
+  })
 })

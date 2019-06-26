@@ -1,9 +1,9 @@
 const moment = require('moment')
 const { asyncMiddleware } = require('../utils/middleware')
 const { formTemplates, formsDateFormat, pdfOptions, domain } = require('../config')
-const { isEmpty } = require('../utils/functionalHelpers')
+const { isEmpty, getIn } = require('../utils/functionalHelpers')
 
-module.exports = ({ formService, conditionsService, prisonerService, configClient }) => router => {
+module.exports = ({ formService }) => router => {
   router.get(
     '/curfewAddress/:bookingId',
     asyncMiddleware(async (req, res) => {
@@ -14,28 +14,20 @@ module.exports = ({ formService, conditionsService, prisonerService, configClien
         licenceStatus,
       } = res.locals
 
-      const [fullLicence, standardConditions, fullPrisoner, ro, ca] = await Promise.all([
-        conditionsService.populateLicenceWithApprovedConditions(licence),
-        conditionsService.getStandardConditions(),
-        prisonerService.getPrisonerDetails(bookingId, req.user.token),
-        prisonerService.getResponsibleOfficer(bookingId, req.user.token),
-        configClient.getMailboxes(prisoner.agencyLocationId, 'CA'),
-      ])
+      const isBass = getIn(licenceStatus, ['decisions', 'bassReferralNeeded'])
 
-      return res.renderPDF(
-        'forms/curfewAddress',
-        {
-          prisoner: fullPrisoner,
-          licence: fullLicence,
-          standardConditions,
-          isBass: licenceStatus.decisions.bassReferralNeeded,
-          ro,
-          ca: ca[0] || {},
-          domain,
-          completionDate: moment().format(formsDateFormat),
-        },
-        { filename: `${fullPrisoner.offenderNo}.pdf`, pdfOptions }
+      const pageData = await formService.getCurfewAddressCheckData(
+        prisoner.agencyLocationId,
+        licence,
+        isBass,
+        bookingId,
+        res.locals.token
       )
+
+      const completionDate = moment().format(formsDateFormat)
+      const filename = `${prisoner.offenderNo}.pdf`
+
+      return res.renderPDF('forms/curfewAddress', { ...pageData, domain, completionDate }, { filename, pdfOptions })
     })
   )
 

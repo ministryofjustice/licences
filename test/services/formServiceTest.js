@@ -4,6 +4,9 @@ describe('formService', () => {
   let service
   let pdfFormatter
   let clock
+  let conditionsService
+  let prisonerService
+  let configClient
 
   const creationDate = '25th April 2019'
 
@@ -18,7 +21,16 @@ describe('formService', () => {
     pdfFormatter = {
       pickCurfewAddress: sinon.stub().returns(address),
     }
-    service = createFormService(pdfFormatter)
+    conditionsService = {
+      getFullTextForApprovedConditions: sinon.stub().returns({}),
+    }
+    prisonerService = {
+      getPrisonerDetails: sinon.stub().returns({}),
+    }
+    configClient = {
+      getMailboxes: sinon.stub().returns([{ email: 'first' }, { email: 'second' }]),
+    }
+    service = createFormService(pdfFormatter, conditionsService, prisonerService, configClient)
     clock = sinon.useFakeTimers(new Date('April 25, 2019 01:00:00').getTime())
   })
 
@@ -242,6 +254,57 @@ describe('formService', () => {
 
       const data = await service.getTemplateData('eligible', licence, prisoner)
       expect(data).to.eql(expectedData)
+    })
+  })
+
+  describe('getCurfewAddressCheckData', () => {
+    const licence = {
+      bassReferral: {
+        bassRequest: 'bassRequest',
+        bassAreaCheck: 'bassAreaCheck',
+      },
+      proposedAddress: {
+        curfewAddress: { occupier: 'occupier' },
+      },
+      curfew: {
+        curfewAddressReview: 'curfewAddressReview',
+      },
+    }
+
+    it('should call services for data', async () => {
+      await service.getCurfewAddressCheckData('agencyLocationId', licence, true, 'bookingId', 'token')
+
+      expect(conditionsService.getFullTextForApprovedConditions).to.be.calledOnce()
+      expect(conditionsService.getFullTextForApprovedConditions).to.be.calledWith(licence)
+
+      expect(prisonerService.getPrisonerDetails).to.be.calledOnce()
+      expect(prisonerService.getPrisonerDetails).to.be.calledWith('bookingId', 'token')
+
+      expect(configClient.getMailboxes).to.be.calledOnce()
+      expect(configClient.getMailboxes).to.be.calledWith('agencyLocationId', 'CA')
+    })
+
+    it('should select first CA email', async () => {
+      const data = await service.getCurfewAddressCheckData('agencyLocationId', licence, true, 'bookingId', 'token')
+      expect(data.prisonEmail).to.eql('first')
+    })
+
+    it('should return bass data when is Bass', async () => {
+      const data = await service.getCurfewAddressCheckData('agencyLocationId', licence, true, 'bookingId', 'token')
+      expect(data.bassRequest).to.eql('bassRequest')
+      expect(data.bassAreaCheck).to.eql('bassAreaCheck')
+      expect(data.curfewAddress).to.eql(undefined)
+      expect(data.curfewAddressReview).to.eql(undefined)
+      expect(data.occupier).to.eql(undefined)
+    })
+
+    it('should return curfew address data when not Bass', async () => {
+      const data = await service.getCurfewAddressCheckData('agencyLocationId', licence, false, 'bookingId', 'token')
+      expect(data.bassRequest).to.eql(undefined)
+      expect(data.bassAreaCheck).to.eql(undefined)
+      expect(data.curfewAddress).to.eql({ occupier: 'occupier' })
+      expect(data.curfewAddressReview).to.eql('curfewAddressReview')
+      expect(data.occupier).to.eql('occupier')
     })
   })
 })
