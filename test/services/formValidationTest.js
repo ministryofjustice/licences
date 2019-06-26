@@ -1379,6 +1379,29 @@ describe('validation', () => {
           })
         })
       })
+
+      describe('approvedPremisesAddress', () => {
+        const { approvedPremisesAddress } = require('../../server/routes/config/curfew')
+
+        const options = [
+          {
+            formResponse: { telephone: 'abc' },
+            outcome: {
+              addressLine1: 'Enter an address',
+              addressTown: 'Enter a town or city',
+              postCode: 'Enter a postcode',
+              telephone: 'Enter a telephone number in the right format',
+            },
+          },
+        ]
+
+        options.forEach(option => {
+          it(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+            const { outcome, formResponse } = option
+            expect(service.validateForm({ formResponse, pageConfig: approvedPremisesAddress })).to.eql(outcome)
+          })
+        })
+      })
     })
 
     describe('bassReferral', () => {

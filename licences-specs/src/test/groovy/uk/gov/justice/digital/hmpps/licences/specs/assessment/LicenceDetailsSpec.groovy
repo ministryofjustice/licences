@@ -1,13 +1,11 @@
 package uk.gov.justice.digital.hmpps.licences.specs.assessment
 
 import geb.spock.GebReportingSpec
-import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Unroll
 import uk.gov.justice.digital.hmpps.Stage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.*
-import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewAddressPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -232,6 +230,18 @@ class LicenceDetailsSpec extends GebReportingSpec {
 
     and: 'I do not see the risk section'
     !$('#riskDetails').isDisplayed()
+  }
+
+  def 'Shows approved premises address error message when no address provided'() {
+
+    given: 'Approved premises section started'
+    testData.loadLicence('assessment/approved-premises')
+
+    when: 'I view the licence details summary page for the licence record'
+    to LicenceDetailsPage, testData.markAndrewsBookingId
+
+    then: 'I see the a warning message'
+    $('#approvedPremisesAddress-error').text() == 'Enter the approved premises address details'
   }
 
   def 'Shows error messages for sections that have not been started'() {
