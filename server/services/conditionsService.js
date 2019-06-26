@@ -29,7 +29,11 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     return formatConditionsInput(requestBody, selectedConditionsConfig)
   }
 
-  function populateLicenceWithConditions(licence, errors = {}) {
+  function populateLicenceWithApprovedConditions(licence) {
+    return populateLicenceWithConditions(licence, null, true)
+  }
+
+  function populateLicenceWithConditions(licence, errors = {}, approvedOnly = false) {
     if (getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No') {
       return licence
     }
@@ -46,7 +50,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
       conditionIdsSelected.includes(condition.id)
     )
 
-    return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors)
+    return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors, approvedOnly)
   }
 
   function createConditionsObjectForLicence(additional, bespoke) {
@@ -75,7 +79,12 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     }, {})
   }
 
-  function populateAdditionalConditionsAsObject(rawLicence, selectedConditionsConfig, inputErrors = {}) {
+  function populateAdditionalConditionsAsObject(
+    rawLicence,
+    selectedConditionsConfig,
+    inputErrors = {},
+    approvedOnly = false
+  ) {
     const { additional, bespoke } = rawLicence.licenceConditions
 
     const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, inputErrors)
@@ -85,8 +94,11 @@ module.exports = function createConditionsService({ use2019Conditions }) {
       .map(getObjectForAdditional)
 
     const populatedBespoke = bespoke ? bespoke.map(getObjectForBespoke) : []
+    const selectedBespoke = approvedOnly
+      ? populatedBespoke.filter(condition => condition.approved === 'Yes')
+      : populatedBespoke
 
-    return { ...rawLicence, licenceConditions: [...populatedAdditional, ...populatedBespoke] }
+    return { ...rawLicence, licenceConditions: [...populatedAdditional, ...selectedBespoke] }
   }
 
   function createAdditionalMethod(rawLicence, selectedConditions, inputErrors) {
@@ -200,6 +212,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     getAdditionalConditions,
     formatConditionInputs,
     populateLicenceWithConditions,
+    populateLicenceWithApprovedConditions,
     createConditionsObjectForLicence,
     populateAdditionalConditionsAsObject,
   }

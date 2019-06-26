@@ -37,6 +37,7 @@ class TaskListSpec extends GebReportingSpec {
     risk      : 'Risk management',
     victim    : 'Victim liaison',
     reporting : 'Reporting instructions',
+    createPDF : 'Curfew address check form',
     submit    : 'Submit to prison case admin'
   ]
 
@@ -47,6 +48,8 @@ class TaskListSpec extends GebReportingSpec {
   def cleanupSpec() {
     actions.logOut()
   }
+
+  def allTasksCount = 8
 
   @Stage
   def 'Shows details of the prisoner (from nomis)'() {
@@ -84,16 +87,17 @@ class TaskListSpec extends GebReportingSpec {
     at CaselistPage
   }
 
-  def 'Shows start now button for all tasks except submit'() {
+  def 'Shows start now button for all tasks except create PDF and submit'() {
 
     when: 'I view the page'
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see the task buttons and the submit button'
-    taskListActions.size() == 7
+    taskListActions.size() == allTasksCount
 
     and: 'The buttons all say Start'
     taskListActions.take(5).every { it.text() == 'Start now' }
+    taskListAction(tasks.createPDF).text() == 'Create PDF'
     taskListActions.last().text() == 'Continue'
   }
 
@@ -127,7 +131,7 @@ class TaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see the task buttons and the submit button'
-    taskListActions.size() == 7
+    taskListActions.size() == allTasksCount
 
     and: 'The links for completed tasks all say Change'
     taskListAction(tasks.address).text() == 'Change'
@@ -146,7 +150,7 @@ class TaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see the task buttons'
-    taskListActions.size() == 7
+    taskListActions.size() == allTasksCount
 
     and: 'There is a submit to OMU button'
     taskListAction(tasks.submit).text() == 'Continue'
@@ -190,8 +194,8 @@ class TaskListSpec extends GebReportingSpec {
     when: 'I view the tasklist'
     to TaskListPage, testData.markAndrewsBookingId
 
-    then: 'I see only the address and submit tasks'
-    taskListActions.size() == 2
+    then: 'I see only the address and and PDF and submit tasks'
+    taskListActions.size() == 3
     taskListAction(tasks.address).text() == 'Change'
     taskListAction(tasks.submit).text() == 'Continue'
   }
@@ -219,8 +223,8 @@ class TaskListSpec extends GebReportingSpec {
     when: 'I view the tasklist'
     to TaskListPage, testData.markAndrewsBookingId
 
-    then: 'I see only the BASS and submit tasks'
-    taskListActions.size() == 2
+    then: 'I see only the BASS and PDF and submit tasks'
+    taskListActions.size() == 3
     taskListAction(tasks.bass).text() == 'Change'
     taskListAction(tasks.submit).text() == 'Continue'
   }
@@ -276,7 +280,7 @@ class TaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'The risk task is not shown'
-    taskListActions.size() == 6
+    taskListActions.size() == allTasksCount-1
   }
 }
 

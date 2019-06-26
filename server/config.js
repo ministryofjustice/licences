@@ -89,6 +89,16 @@ module.exports = {
     },
   },
 
+  pdfOptions: {
+    format: 'A4',
+    border: {
+      top: '30px',
+      bottom: '20px',
+      left: '30px',
+      right: '20px',
+    },
+  },
+
   roles: {
     admin: ['BATCHLOAD'],
     user: ['CA', 'RO', 'DM'],

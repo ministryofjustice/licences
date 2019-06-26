@@ -1,0 +1,65 @@
+div.no-break.smallPaddingBottom#curfewAddress
+  h2 Release address information provided by the offender
+  table.semi-wide.noborder
+    tr.top.spaceUnder
+      td Proposed address
+      td
+        span.block.bold #{curfewAddress.addressLine1}
+        span.block.bold #{curfewAddress.addressLine2}
+        span.block.bold #{curfewAddress.addressTown}
+        span.block.bold #{curfewAddress.postCode}
+
+    tr
+      td Telephone
+      td.entry #{curfewAddress.telephone}
+
+    tr
+      td Does this address have an electricity supply?
+      td.entry #{curfewAddressReview.electricity}
+
+  p.bold Main occupier/landlord
+    if occupier.isOffender === 'Yes'
+      span.bold Offender is main occupier
+    else
+      table.wide.noborder
+        tr
+          td Name
+          td.entry #{occupier.name}
+
+        tr
+          td Telephone
+          td.entry #{occupier.telephone}
+        tr
+          td Alternative telephone
+          td.entry #{occupier.alternateTelephone}
+
+        tr.top.spaceOver
+          td Address
+          td
+            span.block.bold #{occupier.addressLine1}
+            span.block.bold #{occupier.addressLine2}
+            span.block.bold #{occupier.addressTown}
+            span.block.bold #{occupier.postCode}
+
+  p.bold Residents at the address and the relationship to the offender
+    if curfewAddress.residents
+      table.wide.noborder
+        tr
+          td Name
+          td Relationship
+          td Age (if under 18 years)
+        for resident in curfewAddress.residents
+          tr.bold
+            td #{resident.name}
+            td #{resident.relationship}
+            td #{resident.age}
+    else
+      br
+      span.entry None
+
+  p Self-reported previous convictions or cautions against any of the above, or any neighbours at the address
+    br
+    if curfewAddress.cautionedAgainstResident === 'Yes'
+      span.entry #{curfewAddress.residentOffenceDetails}
+    else if curfewAddress.cautionedAgainstResident === 'No'
+      span.entry None
