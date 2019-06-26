@@ -42,15 +42,26 @@ module.exports = function createDeliusRoService(deliusClient, nomisClientBuilder
 }
 
 function formatCom(com) {
-  const name = setCase.capital(
-    [getIn(com, [0, 'forenames']), getIn(com, [0, 'surname'])]
-      .join(' ')
-      .trim()
-      .toLowerCase()
-  )
+  const message = getIn(com, ['message']) || null
+
+  if (com && com[0]) {
+    const { forenames, surname, staffCode, ...rest } = com[0]
+    const name = setCase.capital(
+      [forenames, surname]
+        .join(' ')
+        .trim()
+        .toLowerCase()
+    )
+    return {
+      name: name || null,
+      deliusId: getIn(com, [0, 'staffCode']) || null,
+      ...rest,
+    }
+  }
+
   return {
-    name: name || null,
-    deliusId: getIn(com, [0, 'staffCode']) || null,
-    message: getIn(com, ['message']) || null,
+    deliusId: null,
+    name: null,
+    message,
   }
 }
