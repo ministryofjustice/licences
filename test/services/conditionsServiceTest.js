@@ -1056,6 +1056,17 @@ describe('conditionsService', () => {
       })
     })
 
+    it('should return standard conditions only when no additional conditions required', () => {
+      const licence = {
+        licenceConditions: { standard: { additionalConditionsRequired: 'No' } },
+      }
+
+      return expect(service.getFullTextForApprovedConditions(licence)).to.eql({
+        standardConditions: standardConditionsText,
+        additionalConditions: [],
+      })
+    })
+
     it('should return additional conditions as text', () => {
       const licence = {
         licenceConditions: {

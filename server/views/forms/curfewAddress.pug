@@ -15,12 +15,14 @@ html(lang="en")
 
       if isBass
         include includes/bassArea
+      else if isAP
+        include includes/approvedPremises
       else
         include includes/proposedAddress
 
       include includes/prisonCompleted
 
-      if !isBass
+      if !isBass && !isAP
         include includes/curfewAddressReview
         
       include includes/reporting

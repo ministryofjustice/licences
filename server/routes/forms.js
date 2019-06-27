@@ -15,14 +15,16 @@ module.exports = ({ formService }) => router => {
       } = res.locals
 
       const isBass = getIn(licenceStatus, ['decisions', 'bassReferralNeeded'])
+      const isAp = getIn(licenceStatus, ['decisions', 'approvedPremisesRequired'])
 
-      const pageData = await formService.getCurfewAddressCheckData(
-        prisoner.agencyLocationId,
+      const pageData = await formService.getCurfewAddressCheckData({
+        agencyLocationId: prisoner.agencyLocationId,
         licence,
         isBass,
+        isAp,
         bookingId,
-        res.locals.token
-      )
+        token: res.locals.token,
+      })
 
       const completionDate = moment().format(formsDateFormat)
       const filename = `${prisoner.offenderNo}.pdf`

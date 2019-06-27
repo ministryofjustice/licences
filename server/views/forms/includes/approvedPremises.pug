@@ -1,0 +1,16 @@
+div.no-break.smallPaddingBottom#bassArea
+  h2 Approved Premises Case
+  p Proposed approved premises address for release
+    table.semi-wide.noborder
+      tr.top.spaceUnder
+        td Proposed address
+        td
+          span.block.bold #{approvedPremisesAddress.addressLine1}
+          span.block.bold #{approvedPremisesAddress.addressLine2}
+          span.block.bold #{approvedPremisesAddress.addressTown}
+          span.block.bold #{approvedPremisesAddress.postCode}
+
+      tr
+        td Telephone
+        td.entry #{approvedPremisesAddress.telephone}
+

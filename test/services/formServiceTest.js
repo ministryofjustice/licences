@@ -268,11 +268,19 @@ describe('formService', () => {
       },
       curfew: {
         curfewAddressReview: 'curfewAddressReview',
+        approvedPremisesAddress: 'approvedPremisesAddress',
       },
     }
+    const agencyLocationId = 'agencyLocationId'
+    const bookingId = 'bookingId'
+    const token = 'token'
+    const isBass = false
+    const isAp = false
+
+    const curfewAddressRequest = { agencyLocationId, licence, isBass, isAp, bookingId, token }
 
     it('should call services for data', async () => {
-      await service.getCurfewAddressCheckData('agencyLocationId', licence, true, 'bookingId', 'token')
+      await service.getCurfewAddressCheckData(curfewAddressRequest)
 
       expect(conditionsService.getFullTextForApprovedConditions).to.be.calledOnce()
       expect(conditionsService.getFullTextForApprovedConditions).to.be.calledWith(licence)
@@ -285,23 +293,49 @@ describe('formService', () => {
     })
 
     it('should select first CA email', async () => {
-      const data = await service.getCurfewAddressCheckData('agencyLocationId', licence, true, 'bookingId', 'token')
+      const data = await service.getCurfewAddressCheckData(curfewAddressRequest)
       expect(data.prisonEmail).to.eql('first')
     })
 
     it('should return bass data when is Bass', async () => {
-      const data = await service.getCurfewAddressCheckData('agencyLocationId', licence, true, 'bookingId', 'token')
+      const data = await service.getCurfewAddressCheckData({
+        agencyLocationId,
+        licence,
+        isBass: true,
+        isAp,
+        bookingId,
+        token,
+      })
       expect(data.bassRequest).to.eql('bassRequest')
       expect(data.bassAreaCheck).to.eql('bassAreaCheck')
+      expect(data.approvedPremisesAddress).to.eql(undefined)
       expect(data.curfewAddress).to.eql(undefined)
       expect(data.curfewAddressReview).to.eql(undefined)
       expect(data.occupier).to.eql(undefined)
     })
 
-    it('should return curfew address data when not Bass', async () => {
-      const data = await service.getCurfewAddressCheckData('agencyLocationId', licence, false, 'bookingId', 'token')
+    it('should return AP data when is AP', async () => {
+      const data = await service.getCurfewAddressCheckData({
+        agencyLocationId,
+        licence,
+        isBass,
+        isAP: true,
+        bookingId,
+        token,
+      })
       expect(data.bassRequest).to.eql(undefined)
       expect(data.bassAreaCheck).to.eql(undefined)
+      expect(data.approvedPremisesAddress).to.eql('approvedPremisesAddress')
+      expect(data.curfewAddress).to.eql(undefined)
+      expect(data.curfewAddressReview).to.eql(undefined)
+      expect(data.occupier).to.eql(undefined)
+    })
+
+    it('should return curfew address data when not Bass and not AP', async () => {
+      const data = await service.getCurfewAddressCheckData(curfewAddressRequest)
+      expect(data.bassRequest).to.eql(undefined)
+      expect(data.bassAreaCheck).to.eql(undefined)
+      expect(data.approvedPremisesAddress).to.eql(undefined)
       expect(data.curfewAddress).to.eql({ occupier: 'occupier' })
       expect(data.curfewAddressReview).to.eql('curfewAddressReview')
       expect(data.occupier).to.eql('occupier')

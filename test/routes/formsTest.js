@@ -142,13 +142,70 @@ describe('/forms/', () => {
         })
         .expect(() => {
           expect(formService.getCurfewAddressCheckData).to.be.calledOnce()
-          expect(formService.getCurfewAddressCheckData).to.be.calledWith(
-            '123',
-            licence.licence,
-            undefined,
-            '1',
-            'system-token'
-          )
+          expect(formService.getCurfewAddressCheckData).to.be.calledWith({
+            agencyLocationId: '123',
+            licence: licence.licence,
+            isBass: undefined,
+            isAp: undefined,
+            bookingId: '1',
+            token: 'system-token',
+          })
+        })
+    })
+
+    it('requests bass data when is bass', () => {
+      const bassLicence = {
+        licence: {
+          bassReferral: { bassRequest: { bassRequested: 'Yes' } },
+          proposedAddress: { addressProposed: { decision: 'No' } },
+        },
+        stage: 'DECIDED',
+      }
+      licenceService.getLicence = sinon.stub().resolves(bassLicence)
+      app = createApp('roUser')
+
+      return request(app)
+        .get('/hdc/forms/curfewAddress/1')
+        .expect(200)
+        .expect('Content-Type', 'application/pdf')
+        .expect(res => {
+          expect(Buffer.isBuffer(res.body)).to.equal(true)
+        })
+        .expect(() => {
+          expect(formService.getCurfewAddressCheckData).to.be.calledOnce()
+          expect(formService.getCurfewAddressCheckData).to.be.calledWith({
+            agencyLocationId: '123',
+            licence: bassLicence.licence,
+            isBass: true,
+            isAp: false,
+            bookingId: '1',
+            token: 'system-token',
+          })
+        })
+    })
+
+    it('requests AP data when is AP', () => {
+      const apLicence = { licence: { curfew: { approvedPremises: { required: 'Yes' } } }, stage: 'DECIDED' }
+      licenceService.getLicence = sinon.stub().resolves(apLicence)
+      app = createApp('roUser')
+
+      return request(app)
+        .get('/hdc/forms/curfewAddress/1')
+        .expect(200)
+        .expect('Content-Type', 'application/pdf')
+        .expect(res => {
+          expect(Buffer.isBuffer(res.body)).to.equal(true)
+        })
+        .expect(() => {
+          expect(formService.getCurfewAddressCheckData).to.be.calledOnce()
+          expect(formService.getCurfewAddressCheckData).to.be.calledWith({
+            agencyLocationId: '123',
+            licence: apLicence.licence,
+            isBass: false,
+            isAp: true,
+            bookingId: '1',
+            token: 'system-token',
+          })
         })
     })
 

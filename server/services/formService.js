@@ -102,7 +102,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
     return labels[pickFirst(reasons)] || ''
   }
 
-  async function getCurfewAddressCheckData(agencyLocationId, licence, isBass, bookingId, token) {
+  async function getCurfewAddressCheckData({ agencyLocationId, licence, isBass, isAP, bookingId, token }) {
     const [conditions, prisoner, caMailboxes] = await Promise.all([
       conditionsService.getFullTextForApprovedConditions(licence),
       prisonerService.getPrisonerDetails(bookingId, token),
@@ -114,7 +114,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
     const sentenceDetail = getIn(prisoner, ['sentenceDetail']) || {}
     const responsibleOfficer = getIn(prisoner, ['com']) || {}
 
-    const curfewAddressDetails = getCurfewAddressDetails(isBass, licence)
+    const curfewAddressDetails = getCurfewAddressDetails(isBass, isAP, licence)
 
     const reportingInstructions = getIn(licence, ['reporting', 'reportingInstructions']) || {}
     const riskManagement = getIn(licence, ['risk', 'riskManagement']) || {}
@@ -124,6 +124,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
       prisoner,
       sentenceDetail,
       isBass,
+      isAP,
       ...curfewAddressDetails,
       prisonEmail,
       reportingInstructions,
@@ -134,11 +135,17 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
     }
   }
 
-  function getCurfewAddressDetails(isBass, licence) {
+  function getCurfewAddressDetails(isBass, isAP, licence) {
     if (isBass) {
       return {
         bassRequest: getIn(licence, ['bassReferral', 'bassRequest']) || {},
         bassAreaCheck: getIn(licence, ['bassReferral', 'bassAreaCheck']) || {},
+      }
+    }
+
+    if (isAP) {
+      return {
+        approvedPremisesAddress: getIn(licence, ['curfew', 'approvedPremisesAddress']) || {},
       }
     }
 

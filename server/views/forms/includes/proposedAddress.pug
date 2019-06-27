@@ -26,21 +26,6 @@ div.no-break.smallPaddingBottom#curfewAddress
           td Name
           td.entry #{occupier.name}
 
-        tr
-          td Telephone
-          td.entry #{occupier.telephone}
-        tr
-          td Alternative telephone
-          td.entry #{occupier.alternateTelephone}
-
-        tr.top.spaceOver
-          td Address
-          td
-            span.block.bold #{occupier.addressLine1}
-            span.block.bold #{occupier.addressLine2}
-            span.block.bold #{occupier.addressTown}
-            span.block.bold #{occupier.postCode}
-
   p.bold Residents at the address and the relationship to the offender
     if curfewAddress.residents
       table.wide.noborder
