@@ -5,6 +5,7 @@
 public
 assets/stylesheets/application.css
 assets/stylesheets/forms-pdf.css
+assets/stylesheets/licences-pdf.css
 lib/govuk_template.html
 govuk_modules
 node_modules/*

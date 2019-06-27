@@ -9,3 +9,6 @@
 ./node_modules/node-sass/bin/node-sass $@ \
     assets/sass/forms-pdf.scss \
     assets/stylesheets/forms-pdf.css
+./node_modules/node-sass/bin/node-sass $@ \
+    assets/sass/licences-pdf.scss \
+    assets/stylesheets/licences-pdf.css
