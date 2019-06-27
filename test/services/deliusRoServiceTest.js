@@ -10,6 +10,9 @@ describe('deliusRoService', () => {
       forenames: 'COMFIRST',
       surname: 'comLast',
       staffCode: 'delius1',
+      extraField1: 1,
+      extraField2: 2,
+      extraField3: 3,
     },
   ]
 
@@ -36,7 +39,6 @@ describe('deliusRoService', () => {
       const expectedOutput = {
         deliusId: 'deliusStaffCode',
         name: 'First Last',
-        message: null,
       }
 
       expect(service.formatCom([{ forenames: 'first', surname: 'last', staffCode: 'deliusStaffCode' }])).to.eql(
@@ -99,11 +101,13 @@ describe('deliusRoService', () => {
       expect(deliusClient.getResponsibleOfficer).to.be.calledWith(1)
     })
 
-    it('should return the result of the api call', () => {
+    it('should return the result of the api call including all fields', () => {
       const expectedComData = {
         deliusId: 'delius1',
         name: 'Comfirst Comlast',
-        message: null,
+        extraField1: 1,
+        extraField2: 2,
+        extraField3: 3,
       }
 
       return expect(service.findResponsibleOfficer('123', 'token')).to.eventually.eql(expectedComData)
