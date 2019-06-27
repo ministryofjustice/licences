@@ -7,13 +7,18 @@ module.exports = function createConditionsService({ use2019Conditions }) {
   const additionalConditions = getAdditionalConditionsConfig(use2019Conditions)
 
   function getFullTextForApprovedConditions(licence) {
+    const standardConditionsText = standardConditions.map(it => it.text.replace(/\.+$/, ''))
+    const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No'
+
+    if (standardOnly) {
+      return { standardConditions: standardConditionsText, additionalConditions: [] }
+    }
+
     const conditions = populateLicenceWithApprovedConditions(licence).licenceConditions
 
     const additionalConditionsText = isEmpty(conditions)
       ? []
       : conditions.filter(it => it.group !== 'Bespoke' || it.approved === 'Yes').map(it => getConditionText(it.content))
-
-    const standardConditionsText = standardConditions.map(it => it.text.replace(/\.+$/, ''))
 
     return {
       standardConditions: standardConditionsText,
