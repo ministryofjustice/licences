@@ -1,37 +1,31 @@
-doctype html
-html(lang="en")
-  head
-    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+extends forms-layout
 
-  body
+block content
 
-    block content
+  h1 Home detention curfew - Address checks
+  span.alert (This form may be disclosed to the offender on request)
 
-      div
-        h1 Home detention curfew - Address checks
-        span.alert (This form may be disclosed to the offender on request)
+  include includes/offender
 
-      include includes/offender
+  if isBass
+    include includes/bassArea
+  else if isAP
+    include includes/approvedPremises
+  else
+    include includes/proposedAddress
 
-      if isBass
-        include includes/bassArea
-      else if isAP
-        include includes/approvedPremises
-      else
-        include includes/proposedAddress
+  include includes/prisonCompleted
 
-      include includes/prisonCompleted
+  if !isBass && !isAP
+    include includes/curfewAddressReview
 
-      if !isBass && !isAP
-        include includes/curfewAddressReview
-        
-      include includes/reporting
-        
-      include includes/conditions
-        
-      include includes/risk
-        
-      include includes/victim
+  include includes/reporting
 
-      include includes/probationCompleted
+  include includes/conditions
+
+  include includes/risk
+
+  include includes/victim
+
+  include includes/probationCompleted
         

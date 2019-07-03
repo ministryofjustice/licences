@@ -1,27 +1,18 @@
-include includes/formsHeader
+extends forms-layout
 
-doctype html
-html(lang="en")
-  head
-    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
+  +header('not suitable')
 
-    block content
+  p We checked to see if you're eligible for release from prison on home detention curfew (tagging).
 
-      div
+  p Although you are eligible by law, you are presumed unsuitable for the scheme because #{UNSUITABLE_REASON}.
 
-        +header('not suitable')
-        
-        p We checked to see if you’re eligible for release from prison on home detention curfew (tagging). 
+  p This means you would only be considered for home detention curfew in exceptional circumstances.
 
-        p Although you are eligible by law, you are presumed unsuitable for the scheme because #{UNSUITABLE_REASON}.
+  h2 Don't agree with this decision?</h2>
 
-        p This means you would only be considered for home detention curfew in exceptional circumstances.
+  p If you want to challenge this decision you need to follow your prison complaints process, although we'll only change our decision in exceptional circumstances.
 
-        h2 Don’t agree with this decision?</h2>
-
-        p If you want to challenge this decision you need to follow your prison complaints process, although we’ll only change our decision in exceptional circumstances.
-
-        p Ask prison staff about how to do this.
+  p Ask prison staff about how to do this.
 

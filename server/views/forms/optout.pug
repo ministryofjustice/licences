@@ -1,32 +1,23 @@
-include includes/formsHeader
+extends forms-layout
 
-doctype html
-html(lang="en")
-  head
-    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
+  +header('opt out')
 
-    block content
+  p I do not want to be considered for home detention curfew (tagging) because:
 
-      div
+  p
+    input#tick(type='checkbox')
+    label(for="tick") I have nowhere to stay
 
-        +header('opt out')
+  p Other reason:
+  div.box(style={height: '3cm'})
 
-        p I do not want to be considered for home detention curfew (tagging) because:
+  p If you don't have an address, Bail and Accommodation Support Services (BASS) will try to help you find somewhere to stay. Ask prison staff for more information.
 
-        p
-          input#tick(type='checkbox')
-          label(for="tick") I have nowhere to stay
+  p I understand that I will not be released until #{SENT_CRD}.
 
-        p Other reason:
-        div.box(style={height: '3cm'})
-
-        p If you don't have an address, Bail and Accommodation Support Services (BASS) will try to help you find somewhere to stay. Ask prison staff for more information.
-
-        p I understand that I will not be released until #{SENT_CRD}.
-
-        ul.byHand
-          li Signed:
-          li Name:
+  ul.byHand
+    li Signed:
+    li Name:
 

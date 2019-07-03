@@ -1,4 +1,4 @@
-ul.byHand
+ul.byHand.no-break
   li Address line 1
   li Address line 2
   li Town or city
@@ -6,23 +6,26 @@ ul.byHand
   li Postcode
   li Telephone
 
-h2 Who is the main person living at this address?
-p We will contact them to make sure the address is suitable for you to live there. Provide the landlord’s details if no one else lives there.
+div.no-break
+  h2 Who is the main person living at this address?
+  p We will contact them to make sure the address is suitable for you to live there. Provide the landlord's details if no one else lives there.
 
-include mainOccupier
+  include mainOccupier
 
-h2 Does anyone else live at this address?
+div.no-break
+  h2 Does anyone else live at this address?
 
-p Yes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No
+  p Yes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No
 
-include otherResident
-include otherResident
-include otherResident
+  include otherResident
+  include otherResident
+  include otherResident
 
-h2 Have you ever been in trouble with the people living here or with the neighbours?
+div.no-break
+  h2 Have you ever been in trouble with the people living here or with the neighbours?
 
-p Yes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No
+  p Yes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No
 
-p If you answered yes, provide details:
+  p If you answered yes, provide details:
 
-div.box(style={height: '3cm'})
+  div.box(style={height: '3cm'})

@@ -1,25 +1,16 @@
-include includes/formsHeader
+extends forms-layout
 
-doctype html
-html(lang="en")
-  head
-    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
+  +header('refused')
 
-    block content
+  p We have checked your case and decided that you will not be released on home detention curfew (tagging). This is because #{REFUSAL_REASON}.
 
-      div
+  p You will be released from prison on #{SENT_CRD}.
 
-        +header('refused')
-
-        p We have checked your case and decided that you will not be released on home detention curfew (tagging). This is because #{REFUSAL_REASON}.
-
-        p You will be released from prison on #{SENT_CRD}.
-
-        ul.byHand
-          li Signed:
-          li Name:
-          li Grade:
-          li Date:
+  ul.byHand
+    li Signed:
+    li Name:
+    li Grade:
+    li Date:
 

@@ -6,3 +6,6 @@
     --include-path node_modules/govuk-elements-sass/public/sass \
     assets/sass/application.scss \
     assets/stylesheets/application.css
+./node_modules/node-sass/bin/node-sass $@ \
+    assets/sass/forms-pdf.scss \
+    assets/stylesheets/forms-pdf.css

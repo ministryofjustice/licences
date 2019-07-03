@@ -1,20 +1,11 @@
-include includes/formsHeader
+extends forms-layout
 
-doctype html
-html(lang="en")
-  head
-    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
+  +header('not eligible')
 
-    block content
+  p We checked to see if you're eligible for release from prison on home detention curfew (tagging).
 
-      div
+  p By law you are not eligible because #{INELIGIBLE_REASON}.
 
-        +header('not eligible')
-
-        p We checked to see if you’re eligible for release from prison on home detention curfew (tagging).
-
-        p By law you are not eligible because #{INELIGIBLE_REASON}.
-
-        p You cannot challenge this because it is based on the law, not on a decision by prison staff.
+  p You cannot challenge this because it is based on the law, not on a decision by prison staff.

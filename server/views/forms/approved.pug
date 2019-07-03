@@ -1,56 +1,47 @@
-include includes/formsHeader
+extends forms-layout
 
-doctype html
-html(lang="en")
-  head
-    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
+  +header('approved')
 
-    block content
+  p We have checked your case and agreed that you can leave prison early with a tag.
 
-      div
+  h3 Your release date
+  p You will be released on #{SENT_HDCED} (or as soon as possible after this date).
 
-        +header('approved')
+  h3 Your approved address
+  p You must live at:
+  pre #{CURFEW_ADDRESS}
 
-        p We have checked your case and agreed that you can leave prison early with a tag.
 
-        h3 Your release date
-        p You will be released on #{SENT_HDCED} (or as soon as possible after this date).
+  h3 When you leave prison
+  p You must wear an electronic tag and stay at home during certain hours until #{SENT_CRD}. We will explain:
 
-        h3 Your approved address
-        p You must live at:
-        pre #{CURFEW_ADDRESS}
-        
+  ul.disc
+    li the times you must stay at home (your curfew)
+    li the rules you must follow (conditions)
+    li who your probation officer is and when you first need to report to them
 
-        h3 When you leave prison
-        p You must wear an electronic tag and stay at home during certain hours until #{SENT_CRD}. We will explain:
 
-        ul.disc 
-          li the times you must stay at home (your curfew)
-          li the rules you must follow (conditions)
-          li who your probation officer is and when you first need to report to them
-        
+  h3 Your electronic tag
 
-        h3 Your electronic tag
+  p The person fitting the electronic tag will meet you at your address on the day you're released. They will:
 
-        p The person fitting the electronic tag will meet you at your address on the day you're released. They will:
+  ul.disc
+    li fit you with the tag
+    li set up the monitoring equipment
 
-        ul.disc 
-          li fit you with the tag
-          li set up the monitoring equipment
-        
 
-        p You will have to go back to prison if you:
+  p You will have to go back to prison if you:
 
-        ul.disc 
-          li damage the tagging and monitoring equipment
-          li are not at home during your curfew
+  ul.disc
+    li damage the tagging and monitoring equipment
+    li are not at home during your curfew
 
-        ul.byHand
-          li Signed:
-          li Name:
-          li Grade:
-          li Date:
+  ul.byHand
+    li Signed:
+    li Name:
+    li Grade:
+    li Date:
 
 

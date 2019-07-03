@@ -1,25 +1,16 @@
-include includes/formsHeader
+extends forms-layout
 
-doctype html
-html(lang="en")
-  head
-    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
+  +header('postponed')
 
-    block content
+  p We are still reviewing your case for release on home detention curfew (tagging).
 
-      div
+  p We will let you know our decision when we have all the information we need.
 
-        +header('postponed')
-
-        p We are still reviewing your case for release on home detention curfew (tagging).
-
-        p We will let you know our decision when we have all the information we need.
-
-        ul.byHand
-          li Signed:
-          li Name:
-          li Grade:
-          li Date:
+  ul.byHand
+    li Signed:
+    li Name:
+    li Grade:
+    li Date:
 
