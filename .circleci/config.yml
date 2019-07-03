@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/noms-digital-studio/licences
   docker:
-    - image: circleci/node:latest-browsers
+    - image: circleci/node:10-browsers
 
 version: 2
 jobs:
@@ -73,9 +73,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/noms-digital-studio/licences
-      - run:
-          name: update node-sass.
-          command: npm rebuild node-sass
       - run:
           name: Run the node app.
           command: npm start
