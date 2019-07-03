@@ -1,6 +1,7 @@
 const moment = require('moment')
 const { asyncMiddleware } = require('../utils/middleware')
 const { formTemplates, formsDateFormat, pdfOptions, domain } = require('../config')
+const { curfewAddressCheckFormFileName } = require('./utils/pdfUtils')
 const { isEmpty, getIn } = require('../utils/functionalHelpers')
 
 module.exports = ({ formService }) => router => {
@@ -27,7 +28,7 @@ module.exports = ({ formService }) => router => {
       })
 
       const completionDate = moment().format(formsDateFormat)
-      const filename = `${prisoner.offenderNo}.pdf`
+      const filename = curfewAddressCheckFormFileName(prisoner)
 
       return res.renderPDF('forms/curfewAddress', { ...pageData, domain, completionDate }, { filename, pdfOptions })
     })

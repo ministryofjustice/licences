@@ -65,6 +65,7 @@ module.exports = {
   },
 
   formsDateFormat: 'Do MMMM YYYY',
+  formsFileDateFormat: 'YYYYMMDD',
   formTemplates: {
     eligible: 'Eligible',
     ineligible: 'Not eligible',
