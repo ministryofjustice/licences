@@ -326,7 +326,7 @@ describe('send', () => {
               prisoner,
               bookingId: '123',
               notificationType: 'RO_NEW',
-              sendingUserName: sinon.match.any,
+              sendingUserName: 'ca last',
               submissionTarget,
               token: 'token',
             })
@@ -354,7 +354,7 @@ describe('send', () => {
               notificationType: 'CA_RETURN',
               submissionTarget,
               bookingId: '123',
-              sendingUserName: sinon.match.any,
+              sendingUserName: 'ro last',
             })
           })
       })
@@ -380,7 +380,7 @@ describe('send', () => {
               notificationType: 'DM_NEW',
               submissionTarget,
               bookingId: '123',
-              sendingUserName: sinon.match.any,
+              sendingUserName: 'ca last',
             })
           })
       })
@@ -406,7 +406,7 @@ describe('send', () => {
               notificationType: 'CA_DECISION',
               submissionTarget,
               bookingId: '123',
-              sendingUserName: sinon.match.any,
+              sendingUserName: 'dm last',
             })
           })
       })
