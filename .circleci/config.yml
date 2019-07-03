@@ -74,6 +74,9 @@ jobs:
       - attach_workspace:
           at: ~/noms-digital-studio/licences
       - run:
+          name: update node-sass.
+          command: npm rebuild node-sass
+      - run:
           name: Run the node app.
           command: npm start
           background: true
