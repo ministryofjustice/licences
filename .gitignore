@@ -4,7 +4,7 @@
 .port.tmp
 public
 assets/stylesheets/application.css
-assets/stylesheets/pdf.css
+assets/stylesheets/forms-pdf.css
 lib/govuk_template.html
 govuk_modules
 node_modules/*

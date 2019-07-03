@@ -82,11 +82,11 @@ module.exports = {
 
   pdfOptions: {
     format: 'A4',
-    border: {
-      top: '30px',
-      bottom: '20px',
-      left: '30px',
-      right: '20px',
+    margin: {
+      top: '80px',
+      bottom: '70px',
+      left: '50px',
+      right: '30px',
     },
   },
 

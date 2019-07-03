@@ -1,43 +1,34 @@
-include includes/formsHeader
+extends forms-layout
 
-doctype html
-html(lang="en")
-  head
-    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
+  +header('information about address checks')
 
-    block content
+  p During your first week in prison we said you're eligible for home detention curfew (tagging).
 
-      div
+  p Under home detention curfew you would have to:
 
-        +header('information about address checks')
+  ul.disc
+    li stay at home during certain hours (your curfew)
+    li wear an electronic tag - to make sure you follow your curfew
 
-        p During your first week in prison we said you’re eligible for home detention curfew (tagging).
+  p It would mean you could be released on #{SENT_HDCED}
 
-        p Under home detention curfew you would have to:
+  h2 What you need to do now
 
-        ul.disc 
-          li stay at home during certain hours (your curfew)
-          li wear an electronic tag - to make sure you follow your curfew
+  p You now need to fill in the address form and return it by
 
-        p It would mean you could be released on #{SENT_HDCED}
+  h2 What we will do
 
-        h2 What you need to do now
+  p We will:
 
-        p You now need to fill in the address form and return it by
+  ol
+    li Check that the address you provided is suitable - this includes talking to anyone else who lives there.
+    li Assess any risks of releasing you on home detention curfew.
+    li Let you know our final decision (in writing).
 
-        h2 What we will do
+  h2 Not interested?
 
-        p We will:
-
-        ol
-          li Check that the address you provided is suitable - this includes talking to anyone else who lives there.
-          li Assess any risks of releasing you on home detention curfew.
-          li Let you know our final decision (in writing).
-
-        h2 Not interested?
-
-        p Not interested in being released early with home detention curfew (tagging)? Just fill in the ‘opt out’ form.
+  p Not interested in being released early with home detention curfew (tagging)? Just fill in the 'opt out' form.
 
 

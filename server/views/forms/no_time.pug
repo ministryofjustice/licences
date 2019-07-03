@@ -1,19 +1,10 @@
-include includes/formsHeader
+extends forms-layout
 
-doctype html
-html(lang="en")
-  head
-    link(href= domain + "/public/stylesheets/pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
+  +header('not enough time')
 
-    block content
-
-      div
-
-        +header('not enough time')
-
-        p We checked to see if you can be released from prison on home detention curfew (tagging).
-        p We cannot release you on home detention curfew as there is not enough time to carry out our checks before your release date.
-        p You will be released on #{SENT_CRD}.
+  p We checked to see if you can be released from prison on home detention curfew (tagging).
+  p We cannot release you on home detention curfew as there is not enough time to carry out our checks before your release date.
+  p You will be released on #{SENT_CRD}.
 

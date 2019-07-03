@@ -55,7 +55,7 @@
   },
   "homepage": "https://github.com/noms-digital-studio/licences#readme",
   "dependencies": {
-    "@ministryofjustice/express-template-to-pdf": "^1.0.4",
+    "@ministryofjustice/express-template-to-pdf": "^2.1.0",
     "adm-zip": "^0.4.13",
     "applicationinsights": "^1.4.0",
     "applicationinsights-native-metrics": "0.0.5",

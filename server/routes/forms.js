@@ -48,12 +48,8 @@ module.exports = ({ formService }) => router => {
       }
 
       const pageData = await formService.getTemplateData(templateName, licence, prisoner)
-
-      res.renderPDF(
-        `forms/${templateName}`,
-        { ...pageData, domain },
-        { filename: `${prisoner.offenderNo}.pdf`, pdfOptions }
-      )
+      const filename = `${prisoner.offenderNo}.pdf`
+      return res.renderPDF(`forms/${templateName}`, { ...pageData, domain }, { filename, pdfOptions })
     })
   )
 
