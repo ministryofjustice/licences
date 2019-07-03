@@ -1,4 +1,5 @@
 const { asyncMiddleware } = require('../utils/middleware')
+const { sendingUserName } = require('../utils/userProfile')
 
 module.exports = ({ licenceService, prisonerService, notificationService, audit }) => router => {
   router.get('/:destination/:bookingId', async (req, res) => {
@@ -38,7 +39,7 @@ module.exports = ({ licenceService, prisonerService, notificationService, audit 
         prisoner: res.locals.prisoner,
         notificationType: transition.notificationType,
         submissionTarget,
-        sendingUserName: req.user.username,
+        sendingUserName: sendingUserName(req.user),
         token: res.locals.token,
       })
 
