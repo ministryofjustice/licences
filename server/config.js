@@ -60,33 +60,46 @@ module.exports = {
   sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', { requireInProduction: true }),
 
   pdf: {
-    pdfServiceHost: get('PDF_SERVICE_HOST', 'http://localhost:8081'),
-    taggingCompanyTelephone: get('TAGGING_CO_PHONE', '01234 567890'),
-  },
-
-  formsDateFormat: 'Do MMMM YYYY',
-  formsFileDateFormat: 'YYYYMMDD',
-  formTemplates: {
-    eligible: 'Eligible',
-    ineligible: 'Not eligible',
-    unsuitable: 'Not suitable',
-    address_checks: 'Information about address checks',
-    address: 'Address form',
-    address_unsuitable: 'Address unsuitable',
-    optout: 'Opt out',
-    postponed: 'Postponed',
-    no_time: 'Not enough time',
-    refused: 'Refused',
-    approved: 'Approved',
-  },
-
-  pdfOptions: {
-    format: 'A4',
-    margin: {
-      top: '80px',
-      bottom: '70px',
-      left: '50px',
-      right: '30px',
+    licences: {
+      pdfServiceHost: get('PDF_SERVICE_HOST', 'http://localhost:8081'),
+      taggingCompanyTelephone: get('TAGGING_CO_PHONE', '01234 567890'),
+      localTemplates: ['hdc_ap'],
+      pdfOptions: {
+        format: 'A4',
+        margin: {
+          top: '80px',
+          bottom: '70px',
+          left: '50px',
+          right: '30px',
+        },
+        displayHeaderFooter: true,
+      },
+    },
+    forms: {
+      formsDateFormat: 'Do MMMM YYYY',
+      formsFileDateFormat: 'YYYYMMDD',
+      formTemplates: {
+        eligible: 'Eligible',
+        ineligible: 'Not eligible',
+        unsuitable: 'Not suitable',
+        address_checks: 'Information about address checks',
+        address: 'Address form',
+        address_unsuitable: 'Address unsuitable',
+        optout: 'Opt out',
+        postponed: 'Postponed',
+        no_time: 'Not enough time',
+        refused: 'Refused',
+        approved: 'Approved',
+      },
+      pdfOptions: {
+        format: 'A4',
+        margin: {
+          top: '80px',
+          bottom: '70px',
+          left: '50px',
+          right: '30px',
+        },
+      },
     },
   },
 

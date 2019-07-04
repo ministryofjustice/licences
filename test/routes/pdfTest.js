@@ -1,4 +1,5 @@
 const request = require('supertest')
+const pdfParse = require('pdf-parse')
 
 const {
   createPdfServiceStub,
@@ -42,6 +43,7 @@ describe('PDF:', () => {
     app = createApp({ licenceServiceStub, pdfServiceStub, prisonerServiceStub }, 'caUser')
     auditStub.record.reset()
     pdfServiceStub.getPdfLicenceData.reset()
+    pdfServiceStub.getPdf.reset()
     licenceServiceStub.getLicence.resolves({ licence: { key: 'value' } })
     prisonerServiceStub.getPrisonerPersonalDetails.resolves({ agencyLocationId: 'somewhere' })
   })
@@ -257,6 +259,35 @@ describe('PDF:', () => {
     })
   })
 
+  describe('local PDF creation', () => {
+    it('Gets pdf data and renders response as PDF', async () => {
+      pdfServiceStub.getPdfLicenceData.resolves({ values: { OFF_NAME: 'NAME', OFF_NOMS: 'NOMS', OFF_DOB: 'DOB' } })
+
+      const res = await request(app)
+        .get('/hdc/pdf/create/hdc_ap/123')
+        .expect(200)
+        .expect('Content-Type', 'application/pdf')
+
+      expect(Buffer.isBuffer(res.body)).to.equal(true)
+      expect(pdfServiceStub.generatePdf).not.to.be.calledOnce()
+      expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce()
+      expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
+        'hdc_ap',
+        '123',
+        { licence: { key: 'value' } },
+        'token',
+        false
+      )
+
+      const pdf = await pdfParse(res.body)
+      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+
+      // Just enough to verify that we made a PDF with some text and some licence data in it
+      expect(pdfText).to.contain('Name: NAMEPrison no: NOMSDate of Birth: DOB')
+      expect(pdfText).to.contain('Page 1 of 3 - AP HDC Licence v1.0')
+    })
+  })
+
   describe('GET /create', () => {
     it('Calls pdf service and renders response as PDF', () => {
       const pdf1AsBytes = Buffer.from([80, 68, 70, 45, 49])
@@ -275,7 +306,7 @@ describe('PDF:', () => {
             'token',
             false
           )
-          expect(res.body.toString()).to.include('PDF-1')
+          expect(res.body.toString()).to.eql('PDF-1')
         })
     })
 

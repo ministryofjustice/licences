@@ -1,6 +1,11 @@
 const moment = require('moment')
 const { asyncMiddleware } = require('../utils/middleware')
-const { formTemplates, formsDateFormat, pdfOptions, domain } = require('../config')
+const {
+  pdf: {
+    forms: { formTemplates, formsDateFormat, pdfOptions },
+  },
+  domain,
+} = require('../config')
 const { curfewAddressCheckFormFileName } = require('./utils/pdfUtils')
 const { isEmpty, getIn } = require('../utils/functionalHelpers')
 

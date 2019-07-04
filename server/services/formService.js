@@ -1,6 +1,10 @@
 const moment = require('moment')
 const { isEmpty, getIn, mergeWithRight } = require('../utils/functionalHelpers')
-const { formsDateFormat } = require('../config')
+const {
+  pdf: {
+    forms: { formsDateFormat },
+  },
+} = require('../config')
 const {
   requiredFields,
   refusalReasonlabels,

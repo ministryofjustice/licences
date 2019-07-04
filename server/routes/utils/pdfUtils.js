@@ -1,5 +1,9 @@
 const moment = require('moment')
-const { formsFileDateFormat } = require('../../config')
+const {
+  pdf: {
+    forms: { formsFileDateFormat },
+  },
+} = require('../../config')
 
 function curfewAddressCheckFormFileName(prisoner) {
   const fileDate = moment().format(formsFileDateFormat)

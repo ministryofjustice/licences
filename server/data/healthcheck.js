@@ -17,7 +17,7 @@ function dbCheck() {
 }
 
 function pdfApiCheck() {
-  return serviceApiCheck('pdf', `${config.pdf.pdfServiceHost}/health`)
+  return serviceApiCheck('pdf', `${config.pdf.licences.pdfServiceHost}/health`)
 }
 
 function nomisApiCheck() {

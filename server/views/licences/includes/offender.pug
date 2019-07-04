@@ -1,0 +1,22 @@
+table.wide
+  tr
+    td.nopad
+      table
+        tr
+          td Name:
+          td.entry(colspan="3") #{OFF_NAME}
+        tr
+          td Date of Birth:
+          td.entry(colspan="3") #{OFF_DOB}
+        tr
+          td Prison no:
+          td.entry #{OFF_NOMS}
+          td CRO no:
+          td.entry #{OFF_CRO}
+        tr
+          td Booking no:
+          td.entry #{OFF_BOOKING}
+          td PNC Id:
+          td.entry #{OFF_PNC}
+    td.nopad
+      img(width="130px" src="data:image/jpeg;base64," + OFF_PHOTO)

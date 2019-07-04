@@ -49,7 +49,7 @@ describe('pdfService', () => {
     }
 
     service = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter)
-    fakePdfGenerator = nock(`${config.pdf.pdfServiceHost}`)
+    fakePdfGenerator = nock(`${config.pdf.licences.pdfServiceHost}`)
   })
 
   afterEach(() => {
@@ -106,7 +106,7 @@ describe('pdfService', () => {
         approvedVersionDetails: { version: 4, template: 'other_template' },
       }
 
-      await service.generatePdf(templateName, '123', rawLicence, 'token', true)
+      await service.generatePdf('vary_hdc_ap_pss', '123', rawLicence, 'token', true)
 
       expect(licenceService.update).to.be.calledOnce()
       expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce()
@@ -114,8 +114,9 @@ describe('pdfService', () => {
       expect(licenceService.getLicence).to.be.calledOnce()
     })
 
-    it('should pass postApproval to update', async () => {
+    it('should pass postRelease to update', async () => {
       fakePdfGenerator.post('/generate', { templateName: 'vary_hdc_ap_pss', values }).reply(200, pdf1AsBytes)
+      const postRelease = true
 
       const rawLicence = {
         licence: { key: 'value' },
@@ -123,7 +124,7 @@ describe('pdfService', () => {
         approvedVersionDetails: { version: 4, template: 'other_template' },
       }
 
-      await service.generatePdf(templateName, '123', rawLicence, 'token', true)
+      await service.generatePdf('vary_hdc_ap_pss', '123', rawLicence, 'token', postRelease)
 
       expect(licenceService.update.getCalls()[0].args[0].postRelease).to.eql(true)
     })
@@ -137,7 +138,7 @@ describe('pdfService', () => {
         approvedVersionDetails: { version: 3, template: 'hdc_ap_pss' },
       }
 
-      await service.generatePdf(templateName, '123', rawLicence, 'username')
+      await service.generatePdf(templateName, '123', rawLicence, 'token')
 
       expect(licenceService.update).not.to.be.calledOnce()
       expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce()
@@ -153,65 +154,12 @@ describe('pdfService', () => {
         versionDetails: { version: 1, vary_version: 0 },
       }
 
-      await service.generatePdf(templateName, '123', rawLicence, 'username')
+      await service.generatePdf(templateName, '123', rawLicence, 'token')
 
       expect(licenceService.update).not.to.be.calledOnce()
       expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce()
       expect(licenceService.saveApprovedLicenceVersion).to.be.calledWith('123')
       expect(licenceService.getLicence).to.be.calledOnce()
-    })
-
-    it('should replace the approver value if postDecision and vary_approver added', async () => {
-      pdfFormatter.formatPdfData.resolves({ values: { APPROVER: '1', VARY_APPROVER: '2' } })
-      const prValues = { APPROVER: '2', VARY_APPROVER: '2' }
-
-      fakePdfGenerator.post('/generate', { templateName: 'vary_hdc_ap_pss', values: prValues }).reply(200, pdf1AsBytes)
-
-      const rawLicence = {
-        licence: { key: 'value' },
-        versionDetails: { version: 4 },
-        approvedVersionDetails: { version: 4, template: 'hdc_ap_pss' },
-      }
-
-      await service.generatePdf(templateName, '123', rawLicence, 'username', true)
-
-      expect(licenceService.saveApprovedLicenceVersion).to.not.be.called()
-    })
-
-    it('should not replace the approver value if postDecision and no vary_approver added', async () => {
-      pdfFormatter.formatPdfData.resolves({ values: { APPROVER: '1', VARY_APPROVER: 'placeholder' } })
-
-      fakePdfGenerator
-        .post('/generate', { templateName: 'vary_hdc_ap_pss', values: { APPROVER: '1', VARY_APPROVER: 'placeholder' } })
-        .reply(200, pdf1AsBytes)
-
-      const rawLicence = {
-        licence: { key: 'value' },
-        versionDetails: { version: 4 },
-        approvedVersionDetails: { version: 4, template: 'hdc_ap_pss' },
-      }
-
-      await service.generatePdf(templateName, '123', rawLicence, 'username', true)
-
-      expect(licenceService.saveApprovedLicenceVersion).to.not.be.called()
-    })
-
-    it('should not replace the approver value if not postDecision', async () => {
-      pdfFormatter.formatPdfData.resolves({ values: { APPROVER: '1', VARY_APPROVER: '2' } })
-
-      fakePdfGenerator
-        .post('/generate', { templateName, values: { APPROVER: '1', VARY_APPROVER: '2' } })
-        .reply(200, pdf1AsBytes)
-
-      const rawLicence = {
-        licence: { key: 'value' },
-        versionDetails: { version: 4 },
-        approvedVersionDetails: { version: 4, template: 'hdc_ap_pss' },
-      }
-
-      await service.generatePdf(templateName, '123', rawLicence, 'username', false)
-
-      expect(licenceService.saveApprovedLicenceVersion).to.not.be.called()
     })
   })
 
@@ -235,10 +183,11 @@ describe('pdfService', () => {
       licence: { key: 'value' },
       approvedVersion: 1.3,
       approvedVersionDetails: { a: 'a' },
+      versionDetails: { a: 'a' },
     }
 
     it('should request details from services and pass to formatter', async () => {
-      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token')
+      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token', false)
 
       expect(conditionsService.populateLicenceWithConditions).to.be.calledOnce()
       expect(conditionsService.populateLicenceWithConditions).to.be.calledWith(licence)
@@ -267,13 +216,13 @@ describe('pdfService', () => {
 
     it('should throw if error in other service', () => {
       prisonerService.getPrisonerDetails.rejects(new Error('dead'))
-      return expect(service.getPdfLicenceData(templateName, '123', rawLicence, 'token')).to.be.rejected()
+      return expect(service.getPdfLicenceData(templateName, '123', rawLicence, 'token', false)).to.be.rejected()
     })
 
     it('should not try to get image data if missing facialImageId, use null instead', async () => {
       prisonerService.getPrisonerDetails.resolves({})
 
-      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token')
+      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token', false)
 
       expect(prisonerService.getPrisonerImage).not.to.be.calledOnce()
 
@@ -293,7 +242,7 @@ describe('pdfService', () => {
     it('should use null for photo if error getting image', async () => {
       prisonerService.getPrisonerImage.rejects(new Error('dead'))
 
-      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token')
+      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token', false)
 
       expect(prisonerService.getPrisonerImage).to.be.calledOnce()
 
