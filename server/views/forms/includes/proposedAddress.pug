@@ -17,17 +17,18 @@ div.no-break.smallPaddingBottom#curfewAddress
       td Does this address have an electricity supply?
       td.entry #{curfewAddressReview.electricity}
 
-  p.bold Main occupier/landlord
+  p Main occupier/landlord
     if occupier.isOffender === 'Yes'
-      span.bold Offender is main occupier
+      br
+      span.entry Offender is main occupier
     else
       table.wide.noborder
         tr
           td Name
           td.entry #{occupier.name}
 
-  p.bold Residents at the address and the relationship to the offender
-    if curfewAddress.residents
+  p Residents at the address and the relationship to the offender
+    if curfewAddress.residents && curfewAddress.residents.length < 0
       table.wide.noborder
         tr
           td Name

@@ -9,14 +9,14 @@ block content
 
   if isBass
     include includes/bassArea
-  else if isAP
+  else if isAp
     include includes/approvedPremises
   else
     include includes/proposedAddress
 
   include includes/prisonCompleted
 
-  if !isBass && !isAP
+  if !isBass && !isAp
     include includes/curfewAddressReview
 
   include includes/reporting

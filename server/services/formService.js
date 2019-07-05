@@ -106,19 +106,23 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
     return labels[pickFirst(reasons)] || ''
   }
 
-  async function getCurfewAddressCheckData({ agencyLocationId, licence, isBass, isAP, bookingId, token }) {
+  async function getCurfewAddressCheckData({ agencyLocationId, licence, isBass, isAp, bookingId, token }) {
     const [conditions, prisoner, caMailboxes] = await Promise.all([
       conditionsService.getFullTextForApprovedConditions(licence),
       prisonerService.getPrisonerDetails(bookingId, token),
       configClient.getMailboxes(agencyLocationId, 'CA'),
     ])
 
+    if (isBass === undefined || isAp === undefined) {
+      throw new Error('Missing mandatory input')
+    }
+
     const prisonEmail = getIn(caMailboxes, [0, 'email']) || null
 
     const sentenceDetail = getIn(prisoner, ['sentenceDetail']) || {}
     const responsibleOfficer = getIn(prisoner, ['com']) || {}
 
-    const curfewAddressDetails = getCurfewAddressDetails(isBass, isAP, licence)
+    const curfewAddressDetails = getCurfewAddressDetails(isBass, isAp, licence)
 
     const reportingInstructions = getIn(licence, ['reporting', 'reportingInstructions']) || {}
     const riskManagement = getIn(licence, ['risk', 'riskManagement']) || {}
@@ -128,7 +132,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
       prisoner,
       sentenceDetail,
       isBass,
-      isAP,
+      isAp,
       ...curfewAddressDetails,
       prisonEmail,
       reportingInstructions,
@@ -139,7 +143,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
     }
   }
 
-  function getCurfewAddressDetails(isBass, isAP, licence) {
+  function getCurfewAddressDetails(isBass, isAp, licence) {
     if (isBass) {
       return {
         bassRequest: getIn(licence, ['bassReferral', 'bassRequest']) || {},
@@ -147,7 +151,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
       }
     }
 
-    if (isAP) {
+    if (isAp) {
       return {
         approvedPremisesAddress: getIn(licence, ['curfew', 'approvedPremisesAddress']) || {},
       }
