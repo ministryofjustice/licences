@@ -145,8 +145,8 @@ describe('/forms/', () => {
           expect(formService.getCurfewAddressCheckData).to.be.calledWith({
             agencyLocationId: '123',
             licence: licence.licence,
-            isBass: undefined,
-            isAp: undefined,
+            isBass: false,
+            isAp: false,
             bookingId: '1',
             token: 'system-token',
           })

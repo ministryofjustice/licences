@@ -340,5 +340,55 @@ describe('formService', () => {
       expect(data.curfewAddressReview).to.eql('curfewAddressReview')
       expect(data.occupier).to.eql('occupier')
     })
+
+    it('should require isAp to be true or false but never undefined', async () => {
+      return expect(
+        service.getCurfewAddressCheckData({
+          agencyLocationId,
+          licence,
+          isBass,
+          isAp: undefined,
+          bookingId,
+          token,
+        })
+      ).to.eventually.be.rejected()
+    })
+
+    it('should require isAp to be true or false but never missing', async () => {
+      return expect(
+        service.getCurfewAddressCheckData({
+          agencyLocationId,
+          licence,
+          isBass,
+          bookingId,
+          token,
+        })
+      ).to.eventually.be.rejected()
+    })
+
+    it('should require isBass to be true or false but never undefined', async () => {
+      return expect(
+        service.getCurfewAddressCheckData({
+          agencyLocationId,
+          licence,
+          isBass: undefined,
+          isAp: false,
+          bookingId,
+          token,
+        })
+      ).to.eventually.be.rejected()
+    })
+
+    it('should require isBass to be true or false but never missing', async () => {
+      return expect(
+        service.getCurfewAddressCheckData({
+          agencyLocationId,
+          licence,
+          isAp: false,
+          bookingId,
+          token,
+        })
+      ).to.eventually.be.rejected()
+    })
   })
 })

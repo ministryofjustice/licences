@@ -113,6 +113,10 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
       configClient.getMailboxes(agencyLocationId, 'CA'),
     ])
 
+    if (isBass === undefined || isAp === undefined) {
+      throw new Error('Missing mandatory input')
+    }
+
     const prisonEmail = getIn(caMailboxes, [0, 'email']) || null
 
     const sentenceDetail = getIn(prisoner, ['sentenceDetail']) || {}

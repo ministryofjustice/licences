@@ -20,8 +20,8 @@ module.exports = ({ formService }) => router => {
         licenceStatus,
       } = res.locals
 
-      const isBass = getIn(licenceStatus, ['decisions', 'bassReferralNeeded'])
-      const isAp = getIn(licenceStatus, ['decisions', 'approvedPremisesRequired'])
+      const isBass = getIn(licenceStatus, ['decisions', 'bassReferralNeeded']) === true
+      const isAp = getIn(licenceStatus, ['decisions', 'approvedPremisesRequired']) === true
 
       const pageData = await formService.getCurfewAddressCheckData({
         agencyLocationId: prisoner.agencyLocationId,
