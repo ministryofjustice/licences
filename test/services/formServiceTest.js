@@ -319,7 +319,7 @@ describe('formService', () => {
         agencyLocationId,
         licence,
         isBass,
-        isAP: true,
+        isAp: true,
         bookingId,
         token,
       })
