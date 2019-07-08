@@ -98,6 +98,11 @@ div.largeMarginBottom
           p No additional conditions selected
         else if data.licenceConditions && data.licenceConditions.length > 0
           +additionalConditions()
+          div.pure-g.borderBottomLight.midPaddingTopBottom
+            div.pure-u-1.pure-u-md-18-24.sm-padRight30.u-paddingBottom
+              div.heading-small.noMargin.smallPaddingBottom Explain why you selected these conditions
+              div.conditionSummary.content #{data.additionalConditionsJustification}
+
         else if showErrors
           p(id='noConditionsError' class="bold alert") Select one or more additional conditions
         else

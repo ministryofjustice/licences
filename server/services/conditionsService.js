@@ -114,6 +114,11 @@ module.exports = function createConditionsService({ use2019Conditions }) {
   ) {
     const { additional, bespoke } = rawLicence.licenceConditions
 
+    const additionalConditionsJustification = getIn(rawLicence, [
+      'licenceConditions',
+      'conditionsSummary',
+      'additionalConditionsJustification',
+    ])
     const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, inputErrors)
 
     const populatedAdditional = Object.keys(additional)
@@ -125,7 +130,11 @@ module.exports = function createConditionsService({ use2019Conditions }) {
       ? populatedBespoke.filter(condition => condition.approved === 'Yes')
       : populatedBespoke
 
-    return { ...rawLicence, licenceConditions: [...populatedAdditional, ...selectedBespoke] }
+    return {
+      ...rawLicence,
+      licenceConditions: [...populatedAdditional, ...selectedBespoke],
+      additionalConditionsJustification,
+    }
   }
 
   function createAdditionalMethod(rawLicence, selectedConditions, inputErrors) {

@@ -1,14 +1,28 @@
 extends ../layout
 
+include ../includes/errorBannerWithDetailObject
+
 include ../review/includes/additionalConditions
 block content
 
   include ../includes/back
   include ../includes/personalDetailsSummary
 
+  +errorBannerWithDetail(errors)
+
   div.largePaddingBottom
     if data.licenceConditions && data.licenceConditions.length > 0
       h1.heading-large Check additional conditions
+      div.pure-g
+        div.pure-u-1.pure-u-md-15-24
+          div.paddingBottom.smallPaddingTop
+            div.notice-container
+              div.notice
+                i.icon.icon-important
+                  span.visually-hidden Warning
+                strong.bold-small
+                  | Any additional conditions selected must be reasonable and proportionate to manage the offender's risk
+
       div.borderBottomLight
       +additionalConditions('editable')
 
@@ -24,17 +38,24 @@ block content
 
   if data.licenceConditions && data.licenceConditions.length > 0
     div.pure-g
-      div.pure-u-1.pure-u-md-15-24
-        div.paddingBottom.smallPaddingTop
-          div.notice-container
-            div.notice
-              i.icon.icon-important
-                span.visually-hidden Warning
-              strong.bold-small
-                | Any additional conditions selected must be reasonable and proportionate to manage the offender's risk
+    div.pure-g
+      div.pure-u-1.pure-u-md-1-2
+        div.form-group
+          form(method="post")
 
-  -var actionText = action === 'change' ? 'Save and continue' : 'Save and return to task list'
+            input(type="hidden" name="_csrf" value=csrfToken)
+            input(type="hidden" name="bookingId" value=bookingId || '')
 
-  div.paddingBottom.smallPaddingTop
-    div.pure-u-1.inlineButtons
-      a#continueBtn.requiredButton.button.smallMarginTop(href=nextPath + bookingId role="button") #{actionText}
+            label(for='additionalConditionsJustification') Explain why you selected these conditions
+            textarea(name='additionalConditionsJustification' id='additionalConditionsJustification' class='form-control' rows='5' aria-label="Explain why you selected these conditions")
+              if data.additionalConditionsJustification
+                | #{data.additionalConditionsJustification}
+
+            if (action === 'change')
+              div.paddingBottom.smallPaddingTop
+                div.pure-u-1.inlineButtons
+                  input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save and continue")
+            else
+              div.paddingBottom.smallPaddingTop
+                div.pure-u-1.inlineButtons
+                  input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save and return to task list")

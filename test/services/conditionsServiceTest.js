@@ -71,6 +71,7 @@ describe('conditionsService', () => {
       const licence = {
         licenceConditions: {
           additional: { ATTENDDEPENDENCY: { appointmentDate: '12/03/1985' } },
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
 
@@ -94,6 +95,7 @@ describe('conditionsService', () => {
             subgroup: null,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       })
     })
 
@@ -130,6 +132,7 @@ describe('conditionsService', () => {
             subgroup: null,
           },
         ],
+        additionalConditionsJustification: undefined,
       })
     })
   })
@@ -161,6 +164,7 @@ describe('conditionsService', () => {
             subgroup: null,
           },
         ],
+        additionalConditionsJustification: undefined,
       })
     })
   })
@@ -195,7 +199,13 @@ describe('conditionsService', () => {
 
   describe('populateAdditionalConditionsAsObject', () => {
     it('should add text to licence if selected and has no user input', () => {
-      const rawLicence = { licenceConditions: { additional: { 1: {} }, bespoke: [] } }
+      const rawLicence = {
+        licenceConditions: {
+          additional: { 1: {} },
+          bespoke: [],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
+        },
+      }
       const selectedConditions = [
         {
           id: 1,
@@ -218,6 +228,7 @@ describe('conditionsService', () => {
             inputRequired: false,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -228,6 +239,7 @@ describe('conditionsService', () => {
         licenceConditions: {
           additional: { 1: {} },
           bespoke: [{ text: 'bespoke1', approved: 'Yes' }, { text: 'bespoke2', approved: 'No' }],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
       const selectedConditions = [
@@ -266,6 +278,7 @@ describe('conditionsService', () => {
             approved: 'No',
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -273,7 +286,11 @@ describe('conditionsService', () => {
 
     it('should return object for view containing condition sections', () => {
       const rawLicence = {
-        licenceConditions: { additional: { 1: { appointmentName: 'injected' } }, bespoke: [] },
+        licenceConditions: {
+          additional: { 1: { appointmentName: 'injected' } },
+          bespoke: [],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
+        },
       }
       const selectedConditions = [
         {
@@ -298,6 +315,7 @@ describe('conditionsService', () => {
             inputRequired: true,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -314,6 +332,7 @@ describe('conditionsService', () => {
             },
           },
           bespoke: [],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
       const selectedConditions = [
@@ -343,6 +362,7 @@ describe('conditionsService', () => {
             inputRequired: true,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -358,6 +378,7 @@ describe('conditionsService', () => {
             },
           },
           bespoke: [],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
       const selectedConditions = [
@@ -383,6 +404,7 @@ describe('conditionsService', () => {
             inputRequired: true,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -398,6 +420,7 @@ describe('conditionsService', () => {
             },
           },
           bespoke: [],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
       const selectedConditions = [
@@ -423,6 +446,7 @@ describe('conditionsService', () => {
             inputRequired: true,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -438,6 +462,7 @@ describe('conditionsService', () => {
             },
           },
           bespoke: [],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
       const selectedConditions = [
@@ -463,6 +488,7 @@ describe('conditionsService', () => {
             inputRequired: true,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -473,6 +499,7 @@ describe('conditionsService', () => {
         licenceConditions: {
           additional: { 1: { field: 'injected', appointmentTime: 'injected2' } },
           bespoke: [],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
       const selectedConditions = [
@@ -504,6 +531,7 @@ describe('conditionsService', () => {
             inputRequired: true,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -514,6 +542,7 @@ describe('conditionsService', () => {
         licenceConditions: {
           additional: { 1: { field: 'injected', appointmentTime: 'injected2' } },
           bespoke: [],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
       const selectedConditions = [
@@ -545,6 +574,7 @@ describe('conditionsService', () => {
             inputRequired: true,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -558,6 +588,7 @@ describe('conditionsService', () => {
             2: { groupsOrOrganisation: 'injected3' },
           },
           bespoke: [],
+          conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
       const selectedConditions = [
@@ -606,6 +637,7 @@ describe('conditionsService', () => {
             inputRequired: true,
           },
         ],
+        additionalConditionsJustification: 'Justification of additional conditions',
       }
 
       expect(output).to.eql(expectedOutput)
@@ -614,7 +646,11 @@ describe('conditionsService', () => {
     context('When there are errors in user input', () => {
       it('should return object for view containing input errors', () => {
         const rawLicence = {
-          licenceConditions: { additional: { 1: { appointmentName: 'injected' } }, bespoke: [] },
+          licenceConditions: {
+            additional: { 1: { appointmentName: 'injected' } },
+            bespoke: [],
+            conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
+          },
         }
         const errorLicence = { 1: { appointmentName: 'ERROR' } }
         const selectedConditions = [
@@ -640,6 +676,7 @@ describe('conditionsService', () => {
               inputRequired: true,
             },
           ],
+          additionalConditionsJustification: 'Justification of additional conditions',
         }
 
         expect(output).to.eql(expectedOutput)
@@ -656,6 +693,7 @@ describe('conditionsService', () => {
               },
             },
             bespoke: [],
+            conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
           },
         }
 
@@ -687,6 +725,7 @@ describe('conditionsService', () => {
               inputRequired: true,
             },
           ],
+          additionalConditionsJustification: 'Justification of additional conditions',
         }
 
         expect(output).to.eql(expectedOutput)
@@ -702,6 +741,7 @@ describe('conditionsService', () => {
               },
             },
             bespoke: [],
+            conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
           },
         }
 
@@ -729,6 +769,7 @@ describe('conditionsService', () => {
               inputRequired: true,
             },
           ],
+          additionalConditionsJustification: 'Justification of additional conditions',
         }
 
         expect(output).to.eql(expectedOutput)
@@ -744,6 +785,7 @@ describe('conditionsService', () => {
               },
             },
             bespoke: [],
+            conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
           },
         }
 
@@ -771,6 +813,7 @@ describe('conditionsService', () => {
               inputRequired: true,
             },
           ],
+          additionalConditionsJustification: 'Justification of additional conditions',
         }
 
         expect(output).to.eql(expectedOutput)

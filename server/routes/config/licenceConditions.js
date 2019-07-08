@@ -613,6 +613,15 @@ module.exports = {
     ],
   },
   conditionsSummary: {
+    fields: [
+      {
+        additionalConditionsJustification: {
+          responseType: 'requiredString',
+          validationMessage: 'You must explain why you selected these additional conditions',
+        },
+      },
+    ],
+    validate: true,
     nextPath: {
       path: '/hdc/taskList/',
       change: '/hdc/review/licenceDetails/',

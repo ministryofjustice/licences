@@ -74,7 +74,9 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
     })
     const data = conditionsService.populateLicenceWithConditions(licence, errorObject)
 
-    res.render(`licenceConditions/conditionsSummary`, { bookingId, data, nextPath, action })
+    const errorList = req.flash('errors')
+    const errors = (errorList && errorList[0]) || {}
+    res.render(`licenceConditions/conditionsSummary`, { bookingId, data, nextPath, action, errors })
   }
 
   router.post('/additionalConditions/:bookingId/delete/:conditionId', audited, asyncMiddleware(postDelete))
