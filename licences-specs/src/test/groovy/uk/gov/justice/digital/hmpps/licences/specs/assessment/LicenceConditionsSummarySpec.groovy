@@ -5,6 +5,7 @@ import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsAdditionalPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsSummaryPage
+import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -121,4 +122,32 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     then: 'The deleted condition is no longer shown'
     conditions.additional.size() == 5
   }
+
+  def "Save without justification text is rejected"() {
+    given: 'Viewing the conditions summary'
+    at LicenceConditionsSummaryPage
+
+    when: 'I try to save the additional conditions without providing justification text'
+    submitButton.click()
+
+    then: 'computer says no'
+    at LicenceConditionsSummaryPage
+    conditions.additional.size() == 5
+     errorMessages == ['You must explain why you selected these additional conditions']
+  }
+
+  def "Save with justification text succeeds"() {
+    given: 'Viewing the conditions summary'
+    at LicenceConditionsSummaryPage
+
+    and: 'I supply justification text'
+    justificationText = 'My justifications'
+
+    when: 'I try to save the additional conditions'
+    submitButton.click()
+
+    then: 'I am successful'
+    at TaskListPage
+  }
+
 }
