@@ -109,6 +109,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     conditions.additional[1].number == '2.'
     conditions.additional[1].content == 'First bespoke condition'
 
+    conditions.justification == 'They were necessary.'
   }
 
   def 'Shows risk management details'() {

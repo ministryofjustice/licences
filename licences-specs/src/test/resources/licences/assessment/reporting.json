@@ -85,7 +85,10 @@
           "text": "First bespoke condition",
           "approved": "Yes"
         }
-      ]
+      ],
+      "conditionsSummary": {
+        "additionalConditionsJustification": "They were necessary."
+      }
     },
     "risk": {
       "riskManagement": {
