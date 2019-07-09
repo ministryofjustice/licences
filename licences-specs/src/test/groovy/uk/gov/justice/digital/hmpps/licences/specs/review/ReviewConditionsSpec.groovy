@@ -48,6 +48,7 @@ class ReviewConditionsSpec extends GebReportingSpec {
     conditions.additional[2].content == 'Second bespoke condition'
     conditions.additional[2].approved == 'Not approved'
 
+    conditions.justification == 'They were necessary.'
   }
 
   def 'Shows message when no additional conditions entered by RO'() {

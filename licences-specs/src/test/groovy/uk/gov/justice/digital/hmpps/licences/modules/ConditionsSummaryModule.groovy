@@ -22,5 +22,7 @@ class ConditionsSummaryModule extends Module {
         ]
       }
     }
+
+    justification { $('div[data-qa="additionalConditionsJustification"]').text() }
   }
 }
