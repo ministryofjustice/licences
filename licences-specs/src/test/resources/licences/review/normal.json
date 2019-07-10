@@ -94,7 +94,10 @@
           "text": "Second bespoke condition",
           "approved": "No"
         }
-      ]
+      ],
+      "conditionsSummary": {
+        "additionalConditionsJustification": "They were necessary."
+      }
     },
     "risk": {
       "riskManagement": {

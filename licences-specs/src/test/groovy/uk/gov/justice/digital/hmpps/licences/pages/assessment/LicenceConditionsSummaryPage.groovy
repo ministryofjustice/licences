@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.licences.pages.assessment
 
 import geb.Page
-import geb.module.Checkbox
 import uk.gov.justice.digital.hmpps.licences.modules.ConditionsSummaryModule
 import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
+import uk.gov.justice.digital.hmpps.licences.modules.ErrorModule
 
 class LicenceConditionsSummaryPage extends Page {
 
@@ -19,5 +19,10 @@ class LicenceConditionsSummaryPage extends Page {
 
     conditions { module(ConditionsSummaryModule) }
 
+    errorMessages ( required: false ) { $('.error-summary-list').$('li')*.text() }
+
+    submitButton( required: false ) { $('#continueBtn') }
+
+    justificationText { $('#additionalConditionsJustification') }
   }
 }
