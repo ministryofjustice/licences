@@ -69,6 +69,7 @@ jobs:
       NOMIS_API_URL: https://licences-demo-mocks.herokuapp.com/elite2api/api
       NOMIS_AUTH_URL: https://nomis-oauth2-server.herokuapp.com/auth
       PDF_SERVICE_HOST: https://licences-demo-mocks.herokuapp.com/pdfgenerator
+      DELIUS_API_URL: http://licences-nomis-mocks:9090/communityapi/api
     steps:
       - checkout
       - attach_workspace:
