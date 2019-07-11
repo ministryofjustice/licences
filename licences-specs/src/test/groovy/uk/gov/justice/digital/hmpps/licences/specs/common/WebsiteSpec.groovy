@@ -75,8 +75,9 @@ class WebsiteSpec extends GebReportingSpec {
     def json = driver.pageSource - ' xmlns="http://www.w3.org/1999/xhtml"' - '<html><head></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">'
     def response = new JsonSlurper().parseText(json)
 
-    response.healthy == true
-    response.checks.db == 'OK'
-    response.checks.nomis == 'OK'
+    response.uptime > 0.0
+    response.name == "Licences"
+    !response.version.isEmpty()
+    response.api == [auth: 'UP', delius: 'UP', pdfGenerator: 'UP']
   }
 }

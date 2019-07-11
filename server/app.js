@@ -19,7 +19,7 @@ const passport = require('passport')
 const ensureHttps = require('./utils/ensureHttps')
 
 const config = require('../server/config')
-const healthcheck = require('../server/healthcheck')
+const healthFactory = require('./services/healthcheck')
 
 const logger = require('../log.js')
 const auth = require('./authentication/auth')
@@ -259,31 +259,23 @@ module.exports = function createApp({
     next()
   })
 
-  // Express Routing Configuration
+  const health = healthFactory(
+    config.nomis.apiUrl.replace('/api', ''),
+    config.delius.apiUrl.replace('/api', ''),
+    config.pdf.licences.pdfServiceHost.replace('/api', '')
+  )
+
   app.get('/health', (req, res, next) => {
-    healthcheck((err, result) => {
+    health((err, result) => {
       if (err) {
         return next(err)
       }
-      if (!result.healthy) {
+      if (!(result.status === 'UP')) {
         res.status(503)
       }
-
       res.json(result)
+      return result
     })
-  })
-
-  app.get('/health-detailed', (req, res, next) => {
-    healthcheck((err, result) => {
-      if (err) {
-        return next(err)
-      }
-      if (!result.healthy) {
-        res.status(503)
-      }
-
-      res.json(result)
-    }, true)
   })
 
   app.get('/feedback', (req, res) => {
