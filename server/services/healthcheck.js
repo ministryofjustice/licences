@@ -34,7 +34,7 @@ module.exports = function healthcheckFactory(authUrl, deliusUrl, pdfUrl) {
   const checks = [
     service('auth', `${authUrl}/ping`),
     service('delius', `${deliusUrl}/health`),
-    service('pdfGenerator', `${pdfUrl}/health`),
+    service('pdfGenerator', `${pdfUrl}/ping`),
   ]
 
   return callback =>
