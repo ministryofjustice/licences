@@ -33,7 +33,7 @@ const addAppInfo = result => {
 module.exports = function healthcheckFactory(authUrl, deliusUrl, pdfUrl) {
   const checks = [
     service('auth', `${authUrl}/ping`),
-    service('delius', `${deliusUrl}/health`),
+    service('delius', `${deliusUrl}/ping`),
     service('pdfGenerator', `${pdfUrl}/ping`),
   ]
 
