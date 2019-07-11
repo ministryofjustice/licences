@@ -24,6 +24,7 @@ services:
       - NOMIS_API_URL=http://licences-nomis-mocks:9090/elite2api/api
       - NOMIS_AUTH_URL=http://nomis-oauth2-server:8080/auth
       - NOMIS_AUTH_EXTERNAL_URL=http://localhost:8080/auth
+      - DELIUS_API_URL=http://licences-nomis-mocks:9090/communityapi/api
       - HOST=licences.hmpps.dsd.test
       - PDF_SERVICE_HOST=http://hdc-pdfgenerator:8080
       - GLOBAL_SEARCH_URL=http://localhost:3002/global-search
