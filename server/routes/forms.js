@@ -1,4 +1,5 @@
 const moment = require('moment')
+const logger = require('../../log.js')
 const { asyncMiddleware } = require('../utils/middleware')
 const {
   pdf: {
@@ -52,9 +53,17 @@ module.exports = ({ formService }) => router => {
         throw new Error(`unknown form template: ${templateName}`)
       }
 
-      const pageData = await formService.getTemplateData(templateName, licence, prisoner)
-      const filename = `${prisoner.offenderNo}.pdf`
-      return res.renderPDF(`forms/${templateName}`, { ...pageData, domain }, { filename, pdfOptions })
+      logger.info(`Render PDF for form '${templateName}'`)
+
+      try {
+        const pageData = await formService.getTemplateData(templateName, licence, prisoner)
+        const filename = `${prisoner.offenderNo}.pdf`
+        const pdf = res.renderPDF(`forms/${templateName}`, { ...pageData, domain }, { filename, pdfOptions })
+        logger.info(`Returning rendered PDF for form '${templateName}'`)
+        return pdf
+      } catch (e) {
+        logger.warn(`Caught an exception while rendering form ${templateName}: ${e}`)
+      }
     })
   )
 

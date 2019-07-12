@@ -167,6 +167,7 @@ function nomisGetBuilder(token) {
     }
 
     try {
+      logger.debug(`GET ${path}`)
       const result = await superagent
         .get(path)
         .query(query)
@@ -175,6 +176,7 @@ function nomisGetBuilder(token) {
         .responseType(responseType)
         .timeout(timeoutSpec)
 
+      logger.debug(`GET ${path} -> ${result.status}`)
       return result.body
     } catch (error) {
       logger.warn('Error calling nomis', path, error.stack)
@@ -195,7 +197,9 @@ function nomisPushBuilder(verb, token) {
     }
 
     try {
+      logger.debug(`${verb} ${path}`)
       const result = await updateMethod[verb](token, path, body, headers, responseType)
+      logger.debug(`${verb} ${path} -> ${result.status}`)
       return result.body
     } catch (error) {
       logger.error('Error calling nomis', path, error.stack)

@@ -30,10 +30,12 @@ module.exports = signInService => {
     }
 
     try {
+      logger.debug(`GET ${path}`)
       const result = await superagent
         .get(path)
         .set('Authorization', `Bearer ${token.token}`)
         .timeout(timeoutSpec)
+      logger.debug(`GET ${path} -> ${result.status}`)
 
       return result.body
     } catch (error) {
