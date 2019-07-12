@@ -1,7 +1,7 @@
 const logger = require('./log')
 const config = require('./server/config')
 const app = require('./server/index')
-const healthcheck = require('./server/healthcheck')
+const healthcheck = require('./server/services/healthcheck')
 const appInsights = require('./azure-appinsights')
 const { flattenMeta } = require('./server/misc')
 

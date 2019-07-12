@@ -1,165 +1,80 @@
-const chai = require('chai')
-const sinon = require('sinon')
-const sinonChai = require('sinon-chai')
+const nock = require('nock')
+const { serviceCheckFactory } = require('../../server/data/healthcheck')
 
-const { expect } = chai
-chai.use(sinonChai)
-const sandbox = sinon.createSandbox()
-const proxyquire = require('proxyquire')
-
-proxyquire.noCallThru()
-
-describe('healthcheck', () => {
-  let callback
-  let dbCheckStub
-  let nomisApiCheckStub
-  let deliusApiCheckStub
-  let authCheckStub
+describe('service healthcheck', () => {
+  const healthcheck = serviceCheckFactory('externalService', 'http://test-service.com/ping')
+  let fakeServiceApi
 
   beforeEach(() => {
-    callback = sandbox.spy()
-    dbCheckStub = sandbox.stub().resolves([{ totalRows: { value: 0 } }])
-    nomisApiCheckStub = sandbox.stub().resolves('OK')
-    deliusApiCheckStub = sandbox.stub().resolves('OK')
-    authCheckStub = sandbox.stub().resolves('OK')
+    fakeServiceApi = nock('http://test-service.com')
   })
 
   afterEach(() => {
-    sandbox.restore()
+    nock.cleanAll()
   })
 
-  describe('healthcheck', () => {
-    const healthcheckProxy = (
-      dbCheck = dbCheckStub,
-      nomisApiCheck = nomisApiCheckStub,
-      deliusApiCheck = deliusApiCheckStub,
-      authCheck = authCheckStub
-    ) => {
-      return proxyquire('../../server/healthcheck', {
-        './data/healthcheck': {
-          dbCheck,
-          nomisApiCheck,
-          deliusApiCheck,
-          authCheck,
-        },
-        './config': {
-          roServiceType: 'DELIUS',
-        },
-      })
-    }
+  describe('check healthy', () => {
+    it('should return data from api', async () => {
+      fakeServiceApi.get('/ping').reply(200, 'pong')
 
-    it('should return healthy if checks resolve OK', () => {
-      return healthcheckProxy()(callback).then(() => {
-        const calledWith = callback.getCalls()[0].args[1]
-
-        expect(callback).to.have.callCount(1)
-        expect(calledWith.healthy).to.eql(true)
-
-        expect(calledWith.checks.db).to.eql('OK')
-        expect(calledWith.checks.nomis).to.eql('OK')
-        expect(calledWith.checks.delius).to.eql('OK')
-        expect(calledWith.checks.auth).to.eql('OK')
-      })
-    })
-
-    it('should return unhealthy if db rejects promise', () => {
-      const dbCheckStubReject = sandbox.stub().rejects({ message: 'rubbish' })
-
-      return healthcheckProxy(dbCheckStubReject)(callback).then(() => {
-        const calledWith = callback.getCalls()[0].args[1]
-
-        expect(callback).to.have.callCount(1)
-        expect(calledWith.healthy).to.eql(false)
-        expect(calledWith.checks.db).to.eql('rubbish')
-        expect(calledWith.checks.nomis).to.eql('OK')
-        expect(calledWith.checks.delius).to.eql('OK')
-        expect(calledWith.checks.auth).to.eql('OK')
-      })
-    })
-
-    it('should return unhealthy if nomis rejects promise', () => {
-      const nomisApiCheckStubReject = sandbox.stub().rejects(404)
-
-      return healthcheckProxy(dbCheckStub, nomisApiCheckStubReject, deliusApiCheckStub)(callback).then(() => {
-        const calledWith = callback.getCalls()[0].args[1]
-
-        expect(callback).to.have.callCount(1)
-        expect(calledWith.healthy).to.eql(false)
-        expect(calledWith.checks.db).to.eql('OK')
-        expect(calledWith.checks.nomis).to.eql(404)
-        expect(calledWith.checks.delius).to.eql('OK')
-        expect(calledWith.checks.auth).to.eql('OK')
-      })
-    })
-
-    it('should return unhealthy if auth rejects promise', () => {
-      const authCheckStubReject = sandbox.stub().rejects(404)
-
-      return healthcheckProxy(dbCheckStub, nomisApiCheckStub, deliusApiCheckStub, authCheckStubReject)(callback).then(
-        () => {
-          const calledWith = callback.getCalls()[0].args[1]
-
-          expect(callback).to.have.callCount(1)
-          expect(calledWith.healthy).to.eql(false)
-          expect(calledWith.checks.db).to.eql('OK')
-          expect(calledWith.checks.nomis).to.eql('OK')
-          expect(calledWith.checks.delius).to.eql('OK')
-          expect(calledWith.checks.auth).to.eql(404)
-        }
-      )
-    })
-
-    it('should return unhealthy if delius rejects promise', () => {
-      const deliusCheckStubReject = sandbox.stub().rejects(404)
-
-      return healthcheckProxy(dbCheckStub, nomisApiCheckStub, deliusCheckStubReject, authCheckStub)(callback).then(
-        () => {
-          const calledWith = callback.getCalls()[0].args[1]
-
-          expect(callback).to.have.callCount(1)
-          expect(calledWith.healthy).to.eql(false)
-          expect(calledWith.checks.db).to.eql('OK')
-          expect(calledWith.checks.nomis).to.eql('OK')
-          expect(calledWith.checks.delius).to.eql(404)
-          expect(calledWith.checks.auth).to.eql('OK')
-        }
-      )
+      const output = await healthcheck()
+      expect(output).equal('UP')
     })
   })
 
-  describe('healthcheck without delius', () => {
-    const deliusHealthcheckProxy = (
-      dbCheck = dbCheckStub,
-      nomisApiCheck = nomisApiCheckStub,
-      deliusApiCheck = deliusApiCheckStub,
-      authCheck = authCheckStub
-    ) => {
-      return proxyquire('../../server/healthcheck', {
-        './data/healthcheck': {
-          dbCheck,
-          nomisApiCheck,
-          deliusApiCheck,
-          authCheck,
-        },
-        './config': {
-          roServiceType: 'NOMIS',
-        },
-      })
-    }
+  describe('check unhealthy', () => {
+    it('should throw error from api', async () => {
+      fakeServiceApi
+        .get('/ping')
+        .thrice()
+        .reply(500)
 
-    it('should not call delius healthcheck', () => {
-      return deliusHealthcheckProxy()(callback).then(() => {
-        const calledWith = callback.getCalls()[0].args[1]
+      await expect(healthcheck()).to.be.rejectedWith('Internal Server Error')
+    })
+  })
 
-        expect(callback).to.have.callCount(1)
-        expect(calledWith.healthy).to.eql(true)
+  describe('check healthy retry test', () => {
+    it('Should retry twice if request fails', async () => {
+      fakeServiceApi
+        .get('/ping')
+        .reply(500, { failure: 'one' })
+        .get('/ping')
+        .reply(500, { failure: 'two' })
+        .get('/ping')
+        .reply(200, 'pong')
 
-        expect(calledWith.checks.db).to.eql('OK')
-        expect(calledWith.checks.nomis).to.eql('OK')
-        expect(calledWith.checks.auth).to.eql('OK')
+      const response = await healthcheck()
+      expect(response).equal('UP')
+    })
 
-        expect(calledWith.checks.delius).to.eql(undefined)
-      })
+    it('Should retry twice if request times out', async () => {
+      fakeServiceApi
+        .get('/ping')
+        .delay(10000) // delay set to 10s, timeout to 900/3=300ms
+        .reply(200, { failure: 'one' })
+        .get('/ping')
+        .delay(10000)
+        .reply(200, { failure: 'two' })
+        .get('/ping')
+        .reply(200, 'pong')
+
+      const response = await healthcheck()
+      expect(response).equal('UP')
+    })
+
+    it('Should fail if request times out three times', async () => {
+      fakeServiceApi
+        .get('/ping')
+        .delay(10000) // delay set to 10s, timeout to 900/3=300ms
+        .reply(200, { failure: 'one' })
+        .get('/ping')
+        .delay(10000)
+        .reply(200, { failure: 'two' })
+        .get('/ping')
+        .delay(10000)
+        .reply(200, { failure: 'three' })
+
+      await expect(healthcheck()).to.be.rejectedWith('Response timeout of 1000ms exceeded')
     })
   })
 })
