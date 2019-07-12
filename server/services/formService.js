@@ -15,6 +15,7 @@ const logger = require('../../log.js')
 
 module.exports = function createFormService(pdfFormatter, conditionsService, prisonerService, configClient) {
   async function getTemplateData(templateName, licence, prisoner) {
+    logger.info(`getTemplateData for '${templateName}'`)
     if (!requiredFields[templateName]) {
       logger.warn(`No such form template: ${templateName}`)
       return null
@@ -26,6 +27,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
       return mergeWithRight(allValues, { [field]: fieldValue(licence, prisoner, field) })
     }, {})
 
+    logger.info(`getTemplateData for '${templateName}'. Extracted template data for ${Object.keys(values).join(', ')}`)
     return values
   }
 
