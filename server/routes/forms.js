@@ -2,10 +2,10 @@ const moment = require('moment')
 const logger = require('../../log.js')
 const { asyncMiddleware } = require('../utils/middleware')
 const {
+  port,
   pdf: {
     forms: { formTemplates, formsDateFormat, pdfOptions },
   },
-  domain,
 } = require('../config')
 const { curfewAddressCheckFormFileName } = require('./utils/pdfUtils')
 const { isEmpty, getIn } = require('../utils/functionalHelpers')
@@ -36,7 +36,7 @@ module.exports = ({ formService }) => router => {
       const completionDate = moment().format(formsDateFormat)
       const filename = curfewAddressCheckFormFileName(prisoner)
 
-      return res.renderPDF('forms/curfewAddress', { ...pageData, domain, completionDate }, { filename, pdfOptions })
+      return res.renderPDF('forms/curfewAddress', { ...pageData, port, completionDate }, { filename, pdfOptions })
     })
   )
 
@@ -58,7 +58,7 @@ module.exports = ({ formService }) => router => {
       try {
         const pageData = await formService.getTemplateData(templateName, licence, prisoner)
         const filename = `${prisoner.offenderNo}.pdf`
-        const pdf = res.renderPDF(`forms/${templateName}`, { ...pageData, domain }, { filename, pdfOptions })
+        const pdf = res.renderPDF(`forms/${templateName}`, { ...pageData, port }, { filename, pdfOptions })
         logger.info(`Returning rendered PDF for form '${templateName}'`)
         return pdf
       } catch (e) {

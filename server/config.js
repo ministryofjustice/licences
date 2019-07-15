@@ -109,6 +109,7 @@ module.exports = {
   },
 
   domain: get('DOMAIN', 'http://localhost:3000'),
+  port: get('PORT', 3000),
   tagManagerKey: get('TAG_MANAGER_KEY', null),
 
   notifications: {

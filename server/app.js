@@ -93,7 +93,7 @@ module.exports = function createApp({
   app.use(pdfRenderer())
 
   // Server Configuration
-  app.set('port', process.env.PORT || 3000)
+  app.set('port', config.port)
 
   // HACK: Azure doesn't support X-Forwarded-Proto so we add it manually
   // http://stackoverflow.com/a/18455265/173062

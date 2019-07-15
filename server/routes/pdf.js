@@ -4,7 +4,7 @@ const { templates } = require('./config/pdf')
 const versionInfo = require('../utils/versionInfo')
 const { firstItem, getIn, isEmpty } = require('../utils/functionalHelpers')
 const {
-  domain,
+  port,
   pdf: {
     licences: { pdfOptions, localTemplates },
   },
@@ -136,7 +136,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
 
     return res.renderPDF(
       `licences/${templateName}`,
-      { domain, ...pdfData.values },
+      { port, ...pdfData.values },
       { filename, pdfOptions: { ...pdfOptions, headerTemplate, footerTemplate } }
     )
   }
