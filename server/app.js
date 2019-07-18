@@ -261,6 +261,7 @@ module.exports = function createApp({
 
   const health = healthFactory(
     config.nomis.apiUrl.replace('/api', ''),
+    config.nomis.authUrl.replace('/api', ''),
     config.delius.apiUrl.replace('/api', ''),
     config.pdf.licences.pdfServiceHost.replace('/api', '')
   )
