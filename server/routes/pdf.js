@@ -40,6 +40,43 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   })
 
   router.get(
+    '/offenceDate/:bookingId',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.params
+
+      const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token)
+      const errors = firstItem(req.flash('errors')) || {}
+
+      const lastTemplate = getIn(res.locals.licence, ['approvedVersionDetails', 'template'])
+
+      return res.render('pdf/offenceDate', { bookingId, templates, prisoner, errors, lastTemplate })
+    })
+  )
+
+  router.post('/offenceDate/:bookingId', (req, res) => {
+    const { bookingId } = req.params
+    const { decision } = req.body
+
+    if (decision === undefined || decision === '') {
+      // TODO show error
+      req.flash('errors', { decision: 'Select Yes or No' })
+      return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
+    }
+
+    // res.redirect(`/hdc/pdf/taskList/${decision}/${bookingId}`)
+    res.redirect(`/hdc/pdf/offenceDate/${bookingId}/${decision}`)
+  })
+
+  router.get(
+    '/offenceDate/:bookingId/:decision',
+    asyncMiddleware(async (req, res) => {
+      // const { bookingId, decision } = req.param
+      const { bookingId } = req.param
+      return res.redirect(`/hdc/pdf/select/${bookingId}`)
+    })
+  )
+
+  router.get(
     '/taskList/:templateName/:bookingId',
     asyncMiddleware(async (req, res) => {
       const { bookingId, templateName } = req.params

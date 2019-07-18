@@ -10,9 +10,9 @@ module.exports = {
     }
 
     if (bassReferralNeeded) {
-      return bassAddress === 'DONE' ? continueBtn('/hdc/pdf/select/') : null
+      return bassAddress === 'DONE' ? continueBtn('/hdc/pdf/offenceDate/') : null
     }
 
-    return addressWithdrawn ? null : continueBtn('/hdc/pdf/select/')
+    return addressWithdrawn ? null : continueBtn('/hdc/pdf/offenceDate/')
   },
 }
