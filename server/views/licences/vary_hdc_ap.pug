@@ -23,7 +23,7 @@ html(lang="en")
           | resettle successfully into the community.
 
         li
-          | Your Home Detention Curfew commences on
+          | Your Home Detention Curfew commenced on
           =" "
           span.entry #{SENT_HDCAD}
           |  and expires on
@@ -31,24 +31,32 @@ html(lang="en")
           span.entry #{SENT_CRD}
 
         li
-          | Your supervision commences on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
+          | Your supervision expires on
           =" "
           span.entry #{SENT_LED}
           |  unless this licence is previously revoked.
 
-        +reportOnRelease(REPORTING_NAME, REPORTING_ADDRESS, REPORTING_AT, REPORTING_ON)
 
       div.smallPaddingBottom
 
       h2 Home Detention Curfew
 
       ol.continue
-        +curfewAddress(CURFEW_ADDRESS, '7')
+        li The address(es) to which you are curfewed are:
+          br
+          br
+          span.pre.entry #{CURFEW_ADDRESS}
+          br
+          br
+          | Details of curfew times are shown below at paragraph 6.
 
-        +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
+        li
+            | On the day of your release, you will be subject to curfew at your curfew address.
+            |  The contractor will visit you at this address before
+            | midnight during this period in order to fit you with the tag. You must show the contractor this copy of the
+            | licence to confirm your identity. Your curfew will then run until the curfew finish time the following morning.  
+            | On your last day of curfew the contractor will visit you to remove the tag and monitoring equipment. This will
+            | take place in the last two hours of your last curfew period; i.e. between 10pm and midnight.
 
         include includes/curfewTimes
         +curfewConditions()
@@ -57,4 +65,4 @@ html(lang="en")
 
       +contactPoints(MONITOR, EST_PHONE)
 
-      +signatures(APPROVER, CREATION_DATE, OFF_NAME)
+      +signatures(VARY_APPROVER, CREATION_DATE, OFF_NAME)

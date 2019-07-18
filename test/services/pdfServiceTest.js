@@ -106,7 +106,7 @@ describe('pdfService', () => {
         approvedVersionDetails: { version: 4, template: 'other_template' },
       }
 
-      await service.generatePdf('vary_hdc_ap_pss', '123', rawLicence, 'token', true)
+      await service.generatePdf('hdc_ap_pss', '123', rawLicence, 'token', true)
 
       expect(licenceService.update).to.be.calledOnce()
       expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce()
@@ -124,7 +124,7 @@ describe('pdfService', () => {
         approvedVersionDetails: { version: 4, template: 'other_template' },
       }
 
-      await service.generatePdf('vary_hdc_ap_pss', '123', rawLicence, 'token', postRelease)
+      await service.generatePdf('hdc_ap_pss', '123', rawLicence, 'token', postRelease)
 
       expect(licenceService.update.getCalls()[0].args[0].postRelease).to.eql(true)
     })

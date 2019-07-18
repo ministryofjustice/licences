@@ -209,10 +209,10 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
       const qualifiedTemplateName = `${postRelease ? 'vary_' : ''}${templateName}`
 
       if (localTemplates.includes(qualifiedTemplateName)) {
-        return createPdfLocal(res, qualifiedTemplateName, bookingId, licence, res.locals.token, postRelease)
+        return createPdfLocal(res, templateName, bookingId, licence, res.locals.token, postRelease)
       }
 
-      return createPdfRemote(res, qualifiedTemplateName, bookingId, licence, res.locals.token, postRelease)
+      return createPdfRemote(res, templateName, bookingId, licence, res.locals.token, postRelease)
     })
   )
 
@@ -229,9 +229,10 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
     const filename = `${pdfData.values.OFF_NOMS}.pdf`
     const headerTemplate = getHeader(pdfData)
     const footerTemplate = getFooter(pdfData, templateName)
+    const qualifiedTemplateName = `${postRelease ? 'vary_' : ''}${templateName}`
 
     return res.renderPDF(
-      `licences/${templateName}`,
+      `licences/${qualifiedTemplateName}`,
       { port, ...pdfData.values },
       { filename, pdfOptions: { ...pdfOptions, headerTemplate, footerTemplate } }
     )

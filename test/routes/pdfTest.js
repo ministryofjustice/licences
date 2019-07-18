@@ -294,13 +294,13 @@ describe('PDF:', () => {
       pdfServiceStub.generatePdf.resolves(pdf1AsBytes)
 
       return request(app)
-        .get('/hdc/pdf/create/hdc_ap_pss/123')
+        .get('/hdc/pdf/create/vary_hdc_yn/123')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
         .expect(res => {
           expect(pdfServiceStub.generatePdf).to.be.calledOnce()
           expect(pdfServiceStub.generatePdf).to.be.calledWith(
-            'hdc_ap_pss',
+            'vary_hdc_yn',
             '123',
             { licence: { key: 'value' } },
             'token',
@@ -315,13 +315,13 @@ describe('PDF:', () => {
       pdfServiceStub.generatePdf.resolves(pdf1AsBytes)
 
       return request(app)
-        .get('/hdc/pdf/create/hdc_ap_pss/123')
+        .get('/hdc/pdf/create/vary_hdc_yn/123')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
         .expect(() => {
           expect(auditStub.record).to.be.calledOnce()
           expect(auditStub.record).to.be.calledWith('CREATE_PDF', 'CA_USER_TEST', {
-            path: '/hdc/pdf/create/hdc_ap_pss/123',
+            path: '/hdc/pdf/create/vary_hdc_yn/123',
             bookingId: '123',
             userInput: {},
           })
