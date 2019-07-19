@@ -1,5 +1,4 @@
-extends ../layout
-include ../includes/errorBannerWithDetail
+extends ../formTemplates/formTemplate
 
 block content
 
@@ -8,24 +7,34 @@ block content
       include ../includes/backToTaskList
       include ../includes/personalDetailsSummary
       +errorBannerWithDetail(errors, [
-        {field: 'decision', message: 'Select yes or no'}
+        {field: 'decision', message: 'Select yes or no 2'}
       ])
 
   div.pure-u-1.pure-u-md-1-2
-    h2.heading-large Did they commit their offence before 1 February 2015?
+    h2.heading-large Did the offender commit the offence before 1st February 2015?xx
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)
     input(type="hidden" name="bookingId" value=bookingId || '')
-    div.form-group.inline
-      div.multiple-choice
-        input#seriousOffenceYes(type="radio" name="decision" value="Yes")
-        label(for="seriousOffenceYes") Yes
-      div.multiple-choice
-        input#seriousOffenceNo(type="radio" name="decision" value="No")
-        label(for="seriousOffenceNo") No
+    div.form-group
+      div.inline
+        div.multiple-choice(data-target="licenceTypeSelection")
+          input#seriousOffenceYes(type="radio" name="decision" value="Yes")
+          label(for="seriousOffenceYes") Yes
+        div.multiple-choice
+          input#seriousOffenceNo(type="radio" name="decision" value="No")
+          label(for="seriousOffenceNo") No
+
+    div.form-group
+
+      div#licenceTypeSelection.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
+        h2.heading-large Licence Type
+        for template in templates
+          div.multiple-choice
+            input(type="radio" name="licence-group" value=template.label)
+            label(for=template.id) #{template.label}
+
 
     div.largePaddingBottom.smallPaddingTop
           div.inlineButtons
             input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
-

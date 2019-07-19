@@ -59,7 +59,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
 
     if (decision === undefined || decision === '') {
       // TODO show error
-      req.flash('errors', { decision: 'Select Yes or No' })
+      req.flash('errors', { decision: 'Select Yes or No 1' })
       return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
     }
 
