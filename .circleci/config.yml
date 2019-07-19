@@ -196,39 +196,6 @@ jobs:
       - store_artifacts:
           path: deploy.zip
 
-  accept_stage:
-    working_directory: ~/noms-digital-studio/licences
-    docker:
-      - image: circleci/openjdk:11-jdk-node-browsers
-    steps:
-      - checkout
-      - restore_cache:
-          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - restore_cache:
-          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
-      - run:
-          name: feature tests for stage
-          command: |
-            export LICENCES_URI="$STAGE_LICENCES_URI"
-            export USER_PASS="$STAGE_USER_PASS"
-            ./gradlew clean stageTest
-      - save_cache:
-          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-          paths:
-            - /home/circleci/.gradle/wrapper
-      - save_cache:
-          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
-          paths:
-            - /home/circleci/.gradle/caches
-      - store_test_results:
-          path: licences-specs/build/test-results
-          destination: junit
-      - store_artifacts:
-          path: licences-specs/build/geb-reports/uk/gov/justice/digital/hmpps/licences/specs
-          destination: stage/feature-reports
-      - store_artifacts:
-          path: licences-specs/build/test-results
-          destination: stage/junit-reports
 workflows:
   version: 2
   build_test_deploy:
@@ -261,6 +228,3 @@ workflows:
       - deploy_stage:
           requires:
             - hold
-      - accept_stage:
-          requires:
-            - deploy_stage
