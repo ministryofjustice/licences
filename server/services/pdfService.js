@@ -6,6 +6,7 @@ const pdfGenPath = `${config.pdf.licences.pdfServiceHost}/generate`
 
 module.exports = function createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter) {
   async function getPdfLicenceData(templateName, bookingId, rawLicence, token, postRelease) {
+    logger.error('in getPdfLicenceData wait for check and update version')
     const versionedLicence = await checkAndUpdateVersion(rawLicence, bookingId, templateName, postRelease)
 
     const [licence, prisonerInfo, establishment] = await Promise.all([
@@ -55,11 +56,13 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
 
   // todo - when all licence types migrated, remove this
   async function generatePdf(templateName, bookingId, rawLicence, token, postRelease) {
+    logger.error('in generatePdf')
     const { values } = await getPdfLicenceData(templateName, bookingId, rawLicence, token, postRelease)
     return getPdf(templateName, values)
   }
 
   async function checkAndUpdateVersion(rawLicence, bookingId, template, postRelease) {
+    logger.error('in checka dn upodate versipj n')
     const { isNewTemplate, isNewVersion } = versionInfo(rawLicence, template)
 
     if (isNewTemplate) {

@@ -14,6 +14,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   router.get(
     '/select/:bookingId',
     asyncMiddleware(async (req, res) => {
+      logger.error('In  GET select/:bookingId')
       const { bookingId } = req.params
 
       const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token)
@@ -26,6 +27,8 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   )
 
   router.post('/select/:bookingId', (req, res) => {
+    logger.error('In  POST select/:bookingId')
+
     const { bookingId } = req.params
     const { decision } = req.body
 
@@ -42,6 +45,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   router.get(
     '/offenceDate/:bookingId',
     asyncMiddleware(async (req, res) => {
+      logger.error('In  GET select/:bookingIfcvcxzvd')
       const { bookingId } = req.params
 
       const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token)
@@ -54,22 +58,34 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   )
 
   router.post('/offenceDate/:bookingId', (req, res) => {
+    logger.error('In  GET select/:bookingIvfzdsvfd')
     const { bookingId } = req.params
-    const { decision } = req.body
+    const { offenceBeforeCutoff, licenceTypeBeforeCutoff, licenceTypeAfterCutoff } = req.body
 
-    if (decision === undefined || decision === '') {
-      // TODO show error
-      req.flash('errors', { decision: 'Select Yes or No 1' })
+    if (offenceBeforeCutoff === undefined || offenceBeforeCutoff === '') {
+      req.flash('errors', { offenceBefore: 'Select yes or no' })
+      return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
+    }
+
+    if (offenceBeforeCutoff === 'Yes' && (licenceTypeBeforeCutoff === undefined || licenceTypeBeforeCutoff === '')) {
+      req.flash('errors', { licenceTypeBeforeCutoff: 'Select a licence type' })
+      // return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
+    }
+
+    if (offenceBeforeCutoff === 'No' && (licenceTypeAfterCutoff === undefined || licenceTypeAfterCutoff === '')) {
+      req.flash('errors', { licenceTypeAfterCutoff: 'Select a licence type' })
       return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
     }
 
     // res.redirect(`/hdc/pdf/taskList/${decision}/${bookingId}`)
-    res.redirect(`/hdc/pdf/offenceDate/${bookingId}/${decision}`)
+    // res.redirect(`/hdc/pdf/offenceDate/${bookingId}/${decision}`)
+    // return res.redirect(`/hdc/pdf/select/${bookingId}`)
   })
 
   router.get(
     '/offenceDate/:bookingId/:decision',
     asyncMiddleware(async (req, res) => {
+      logger.error('In  GET select/:bookingId s\fdsdz')
       // const { bookingId, decision } = req.param
       const { bookingId } = req.param
       return res.redirect(`/hdc/pdf/select/${bookingId}`)
@@ -79,6 +95,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   router.get(
     '/taskList/:templateName/:bookingId',
     asyncMiddleware(async (req, res) => {
+      logger.error('In  POST tasklist template booking')
       const { bookingId, templateName } = req.params
       const { licence } = res.locals
       logger.debug(`GET pdf/taskList/${templateName}/${bookingId}`)
@@ -89,6 +106,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         throw new Error(`Invalid licence template name: ${templateName}`)
       }
 
+      logger.error("111 calling getpdflicence from ''/taskList/:templateName/:bookingId")
       const [prisoner, { missing }] = await Promise.all([
         prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
         pdfService.getPdfLicenceData(templateName, bookingId, licence, res.locals.token),
@@ -118,10 +136,12 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   router.get(
     '/missing/:section/:templateName/:bookingId',
     asyncMiddleware(async (req, res) => {
+      logger.error('In  GET select/:bookingIscscdsd')
       const { bookingId, templateName, section } = req.params
       const { licence } = res.locals
       logger.debug(`GET pdf/missing/${section}/${templateName}/${bookingId}`)
 
+      logger.error("calling getpdflicence from '/missing/:section/:templateName/:bookingId'")
       const [prisoner, { missing }] = await Promise.all([
         prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
         pdfService.getPdfLicenceData(templateName, bookingId, licence, res.locals.token),
@@ -143,6 +163,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
     '/create/:templateName/:bookingId',
     audited,
     asyncMiddleware(async (req, res) => {
+      logger.error('In  GET select/:bookingIdgdb sdfbbgdsbvc')
       const { bookingId, templateName } = req.params
       const { licence, postRelease } = res.locals
       logger.debug(`GET pdf/create/${templateName}/${bookingId}`)
@@ -165,6 +186,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   }
 
   async function createPdfLocal(res, templateName, bookingId, licence, token, postRelease) {
+    logger.error('in createPdfLocal')
     const pdfData = await pdfService.getPdfLicenceData(templateName, bookingId, licence, token, postRelease)
 
     const filename = `${pdfData.values.OFF_NOMS}.pdf`

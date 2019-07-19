@@ -33,6 +33,7 @@ module.exports = function createLicenceService(licenceClient) {
   }
 
   async function getLicence(bookingId) {
+    logger.error('In getLicence in licence service')
     try {
       const details = await Promise.all([
         licenceClient.getLicence(bookingId),
@@ -68,11 +69,13 @@ module.exports = function createLicenceService(licenceClient) {
   }
 
   function createLicence({ bookingId, data = {}, stage = null } = {}) {
+    logger.error('In createLicence')
     const varyVersion = stage === 'VARY' ? 1 : 0
     return licenceClient.createLicence(bookingId, data, licenceStages[stage], 1, varyVersion)
   }
 
   async function updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease) {
+    logger.error('In updateLucenceConditions')
     try {
       const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])
       const licenceConditions = { ...existingLicenceConditions, ...newConditionsObject }
@@ -91,6 +94,7 @@ module.exports = function createLicenceService(licenceClient) {
   }
 
   async function deleteLicenceCondition(bookingId, existingLicence, conditionId) {
+    logger.error('In deleteLicenceConditio')
     try {
       const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])
 
@@ -143,6 +147,7 @@ module.exports = function createLicenceService(licenceClient) {
   }
 
   function updateModificationStage(bookingId, stage, { requiresApproval, noModify }) {
+    logger.error('In updateMoodificationStage')
     if (noModify) {
       return
     }
@@ -159,6 +164,7 @@ module.exports = function createLicenceService(licenceClient) {
   const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {})
 
   async function update({ bookingId, originalLicence, config, userInput, licenceSection, formName, postRelease }) {
+    logger.error('In update  xx')
     const stage = getIn(originalLicence, ['stage'])
     const licence = getIn(originalLicence, ['licence'])
 
@@ -189,6 +195,7 @@ module.exports = function createLicenceService(licenceClient) {
   }
 
   function getUpdatedLicence({ licence, fieldMap, userInput, licenceSection, formName }) {
+    logger.error('In getUpdatedLicence')
     const answers = getFormResponse(fieldMap, userInput)
 
     return { ...licence, [licenceSection]: { ...licence[licenceSection], [formName]: answers } }

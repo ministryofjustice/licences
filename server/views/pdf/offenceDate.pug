@@ -7,34 +7,41 @@ block content
       include ../includes/backToTaskList
       include ../includes/personalDetailsSummary
       +errorBannerWithDetail(errors, [
-        {field: 'decision', message: 'Select yes or no 2'}
+        {field: 'offenceBeforeCutoff', message: 'Select yes or no 2'}
       ])
 
   div.pure-u-1.pure-u-md-1-2
-    h2.heading-large Did the offender commit the offence before 1st February 2015?xx
+    h2.heading-large Was the offence committed before 1st February 2015?
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)
     input(type="hidden" name="bookingId" value=bookingId || '')
     div.form-group
       div.inline
-        div.multiple-choice(data-target="licenceTypeSelection")
-          input#seriousOffenceYes(type="radio" name="decision" value="Yes")
-          label(for="seriousOffenceYes") Yes
-        div.multiple-choice
-          input#seriousOffenceNo(type="radio" name="decision" value="No")
-          label(for="seriousOffenceNo") No
+        div.multiple-choice(data-target="licenceTypeSelectionYes")
+          input#offenceBeforeYes(type="radio" name="offenceBeforeCutoff" value="Yes")
+          label(for="offenceBeforeYes") Yes
+        div.multiple-choice(data-target="licenceTypeSelectionNo")
+          input#offenceBeforeNo(type="radio" name="offenceBeforeCutoff" value="No")
+          label(for="offenceBeforeNo") No
 
     div.form-group
+      div#licenceTypeSelectionYes.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
+        h2.heading-large Licence Type
+        for template in templates
+          if template.validForOldOffence
+            div.multiple-choice
+              input(id=template.id type="radio" name="licenceTypeBeforeCutoff" value=template.label)
+              label(for=template.id) #{template.label}
 
-      div#licenceTypeSelection.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
+      div#licenceTypeSelectionNo.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
         h2.heading-large Licence Type
         for template in templates
           div.multiple-choice
-            input(type="radio" name="licence-group" value=template.label)
+            input(type="radio" name="licenceTypeAfterCutoff" value=template.label)
             label(for=template.id) #{template.label}
 
 
     div.largePaddingBottom.smallPaddingTop
           div.inlineButtons
-            input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+            input#continueButton.requiredButton.button(type="submit" value="Save and continue")
