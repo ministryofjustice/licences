@@ -29,6 +29,69 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     )
   }
 
+  async function getPdfLicenceDataAndUpdateLicenceType(
+    templateName,
+    offenceBeforeCutoff,
+    bookingId,
+    rawLicence,
+    token,
+    postRelease
+  ) {
+    logger.error('in getPdfLicenceDataAndUpdateLicenceType wait for check and update version')
+    const versionedLicence = await updateLicenceTypeTemplate(
+      rawLicence,
+      bookingId,
+      templateName,
+      offenceBeforeCutoff,
+      postRelease
+    )
+
+    const [licence, prisonerInfo, establishment] = await Promise.all([
+      conditionsService.populateLicenceWithConditions(versionedLicence.licence),
+      prisonerService.getPrisonerDetails(bookingId, token),
+      prisonerService.getEstablishmentForPrisoner(bookingId, token),
+    ])
+
+    const image = prisonerInfo.facialImageId ? await getImage(prisonerInfo.facialImageId, token) : null
+
+    return pdfFormatter.formatPdfData(
+      templateName,
+      {
+        licence,
+        prisonerInfo,
+        establishment,
+      },
+      image,
+      { ...rawLicence.approvedVersionDetails, approvedVersion: rawLicence.approvedVersion }
+    )
+  }
+
+  async function updateLicenceTypeTemplate(rawLicence, bookingId, template, offenceBeforeCutoff, postRelease) {
+    logger.error('in updateLicenceTypeTemplate')
+    const { isNewTemplate, isNewVersion } = versionInfo(rawLicence, template)
+
+    // TODO what is this nomodify?
+
+    if (isNewTemplate) {
+      await licenceService.update({
+        bookingId,
+        originalLicence: rawLicence,
+        config: { fields: [{ decision: {} }, { offenceCommittedBeforeFeb2015: {} }], noModify: true },
+        userInput: { decision: template, offenceCommittedBeforeFeb2015: offenceBeforeCutoff },
+        licenceSection: 'document',
+        formName: 'template',
+        postRelease,
+      })
+    }
+
+    if (isNewVersion || isNewTemplate) {
+      await licenceService.saveApprovedLicenceVersion(bookingId, template)
+      return licenceService.getLicence(bookingId)
+    }
+
+    return rawLicence
+  }
+
   async function getImage(facialImageId, token) {
     try {
       return await prisonerService.getPrisonerImage(facialImageId, token)
@@ -86,6 +149,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
   }
 
   return {
+    getPdfLicenceDataAndUpdateLicenceType,
     getPdfLicenceData,
     getPdf,
     generatePdf,

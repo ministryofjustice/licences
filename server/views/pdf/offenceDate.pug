@@ -11,7 +11,7 @@ block content
       ])
 
   div.pure-u-1.pure-u-md-1-2
-    h2.heading-large Was the offence committed before 1st February 2015? ?
+    h2.heading-large Was the offence committed before 1st February 2015?
 
 
   form(method="post")
@@ -27,7 +27,6 @@ block content
         label(for="offenceBeforeNo") No
 
 
-
     div(id="licenceTypeBeforeCutoff", class=Object.keys(errors).includes("licenceTypeBeforeCutoff") ? "form-group form-group-error " : "")
       div#licenceTypeSelectionYes.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
         h2.heading-large Licence Type
@@ -35,7 +34,7 @@ block content
           if template.validForOldOffence
             - var templateIdForYes = template.id + "Yes"
             div.multiple-choice
-              input(id=templateIdForYes type="radio" name="licenceTypeAfterRadio" value=template.label)
+              input(id=templateIdForYes type="radio" name="licenceTypeBeforeRadio" value=template.id checked=licenceIdBefore === template.id)
               label(for=templateIdForYes) #{template.label}
 
     div(id="licenceTypeAfterCutoff", class=Object.keys(errors).includes("licenceTypeAfterCutoff") ? "form-group form-group-error " : "")
@@ -44,7 +43,7 @@ block content
         for template in templates
           - var templateIdForNo = template.id + "No"
           div.multiple-choice
-            input(id=templateIdForNo type="radio" name="licenceTypeAfterRadio" value=template.label)
+            input(id=templateIdForNo type="radio" name="licenceTypeAfterRadio" value=template.id checked=licenceIdAfter === template.id)
             label(for=template.id) #{template.label}
 
 
