@@ -53,7 +53,21 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
 
       const lastTemplate = getIn(res.locals.licence, ['approvedVersionDetails', 'template'])
 
-      return res.render('pdf/offenceDate', { bookingId, templates, prisoner, errors, lastTemplate })
+      let offenceBeforeCutoff = ''
+      if (Object.keys(errors).includes('licenceTypeBeforeCutoff')) {
+        offenceBeforeCutoff = 'Yes'
+      } else if (Object.keys(errors).includes('licenceTypeAfterCutoff')) {
+        offenceBeforeCutoff = 'No'
+      }
+
+      return res.render('pdf/offenceDate', {
+        bookingId,
+        templates,
+        prisoner,
+        errors,
+        lastTemplate,
+        offenceBeforeCutoff,
+      })
     })
   )
 
@@ -69,7 +83,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
 
     if (offenceBeforeCutoff === 'Yes' && (licenceTypeBeforeCutoff === undefined || licenceTypeBeforeCutoff === '')) {
       req.flash('errors', { licenceTypeBeforeCutoff: 'Select a licence type' })
-      // return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
+      return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
     }
 
     if (offenceBeforeCutoff === 'No' && (licenceTypeAfterCutoff === undefined || licenceTypeAfterCutoff === '')) {

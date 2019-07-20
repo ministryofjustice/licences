@@ -11,34 +11,40 @@ block content
       ])
 
   div.pure-u-1.pure-u-md-1-2
-    h2.heading-large Was the offence committed before 1st February 2015?
+    h2.heading-large Was the offence committed before 1st February 2015? ?
+
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)
     input(type="hidden" name="bookingId" value=bookingId || '')
-    div.form-group
-      div.inline
-        div.multiple-choice(data-target="licenceTypeSelectionYes")
-          input#offenceBeforeYes(type="radio" name="offenceBeforeCutoff" value="Yes")
-          label(for="offenceBeforeYes") Yes
-        div.multiple-choice(data-target="licenceTypeSelectionNo")
-          input#offenceBeforeNo(type="radio" name="offenceBeforeCutoff" value="No")
-          label(for="offenceBeforeNo") No
 
-    div.form-group
+    div(id="offenceBefore", class=Object.keys(errors).includes("offenceBefore") ? "form-group form-group-error inline" : "form-group inline")
+      div.multiple-choice(data-target="licenceTypeSelectionYes")
+        input#offenceBeforeYes(type="radio" name="offenceBeforeCutoff" value="Yes" checked=offenceBeforeCutoff === 'Yes')
+        label(for="offenceBeforeYes") Yes
+      div.multiple-choice(data-target="licenceTypeSelectionNo")
+        input#offenceBeforeNo(type="radio" name="offenceBeforeCutoff" value="No" checked=offenceBeforeCutoff === 'No')
+        label(for="offenceBeforeNo") No
+
+
+
+    div(id="licenceTypeBeforeCutoff", class=Object.keys(errors).includes("licenceTypeBeforeCutoff") ? "form-group form-group-error " : "")
       div#licenceTypeSelectionYes.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
         h2.heading-large Licence Type
         for template in templates
           if template.validForOldOffence
+            - var templateIdForYes = template.id + "Yes"
             div.multiple-choice
-              input(id=template.id type="radio" name="licenceTypeBeforeCutoff" value=template.label)
-              label(for=template.id) #{template.label}
+              input(id=templateIdForYes type="radio" name="licenceTypeAfterRadio" value=template.label)
+              label(for=templateIdForYes) #{template.label}
 
+    div(id="licenceTypeAfterCutoff", class=Object.keys(errors).includes("licenceTypeAfterCutoff") ? "form-group form-group-error " : "")
       div#licenceTypeSelectionNo.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
         h2.heading-large Licence Type
         for template in templates
+          - var templateIdForNo = template.id + "No"
           div.multiple-choice
-            input(type="radio" name="licenceTypeAfterCutoff" value=template.label)
+            input(id=templateIdForNo type="radio" name="licenceTypeAfterRadio" value=template.label)
             label(for=template.id) #{template.label}
 
 
