@@ -68,28 +68,21 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
 
   async function updateLicenceTypeTemplate(rawLicence, bookingId, template, offenceBeforeCutoff, postRelease) {
     logger.error('in updateLicenceTypeTemplate')
-    const { isNewTemplate, isNewVersion } = versionInfo(rawLicence, template)
 
     // TODO what is this nomodify?
 
-    if (isNewTemplate) {
-      await licenceService.update({
-        bookingId,
-        originalLicence: rawLicence,
-        config: { fields: [{ decision: {} }, { offenceCommittedBeforeFeb2015: {} }], noModify: true },
-        userInput: { decision: template, offenceCommittedBeforeFeb2015: offenceBeforeCutoff },
-        licenceSection: 'document',
-        formName: 'template',
-        postRelease,
-      })
-    }
+    await licenceService.update({
+      bookingId,
+      originalLicence: rawLicence,
+      config: { fields: [{ decision: {} }, { offenceCommittedBeforeFeb2015: {} }], noModify: true },
+      userInput: { decision: template, offenceCommittedBeforeFeb2015: offenceBeforeCutoff },
+      licenceSection: 'document',
+      formName: 'template',
+      postRelease,
+    })
 
-    if (isNewVersion || isNewTemplate) {
-      await licenceService.saveApprovedLicenceVersion(bookingId, template)
-      return licenceService.getLicence(bookingId)
-    }
-
-    return rawLicence
+    await licenceService.saveApprovedLicenceVersion(bookingId, template)
+    return licenceService.getLicence(bookingId)
   }
 
   async function getImage(facialImageId, token) {

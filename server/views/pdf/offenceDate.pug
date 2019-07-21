@@ -22,31 +22,27 @@ block content
       div.multiple-choice(data-target="licenceTypeSelectionYes")
         input#offenceBeforeYes(type="radio" name="offenceBeforeCutoff" value="Yes" checked=offenceBeforeCutoff === 'Yes')
         label(for="offenceBeforeYes") Yes
-      div.multiple-choice(data-target="licenceTypeSelectionNo")
+      div.multiple-choice(data-target="licenceTypeSelectionYes")
         input#offenceBeforeNo(type="radio" name="offenceBeforeCutoff" value="No" checked=offenceBeforeCutoff === 'No')
         label(for="offenceBeforeNo") No
 
 
-    div(id="licenceTypeBeforeCutoff", class=Object.keys(errors).includes("licenceTypeBeforeCutoff") ? "form-group form-group-error " : "")
+    div(id="licenceTypeRadioList", class=Object.keys(errors).includes("licenceTypeRadioList") ? "form-group form-group-error " : "")
       div#licenceTypeSelectionYes.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
         h2.heading-large Licence Type
         for template in templates
           if template.validForOldOffence
-            - var templateIdForYes = template.id + "Yes"
             div.multiple-choice
-              input(id=templateIdForYes type="radio" name="licenceTypeBeforeRadio" value=template.id checked=licenceIdBefore === template.id)
-              label(for=templateIdForYes) #{template.label}
-
-    div(id="licenceTypeAfterCutoff", class=Object.keys(errors).includes("licenceTypeAfterCutoff") ? "form-group form-group-error " : "")
-      div#licenceTypeSelectionNo.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
-        h2.heading-large Licence Type
-        for template in templates
-          - var templateIdForNo = template.id + "No"
-          div.multiple-choice
-            input(id=templateIdForNo type="radio" name="licenceTypeAfterRadio" value=template.id checked=licenceIdAfter === template.id)
-            label(for=template.id) #{template.label}
+              input(id=template.id type="radio" name="licenceTypeRadio" value=template.id checked=licenceTemplateId === template.id)
+              label(for=template.id) #{template.label}
+          else
+            div.multiple-choice.js-hidden.licence-type-for-no
+              input(id=template.id type="radio" name="licenceTypeRadio" value=template.id checked=licenceTemplateId === template.id)
+              label(for=template.id) #{template.label}
 
 
     div.largePaddingBottom.smallPaddingTop
           div.inlineButtons
             input#continueButton.requiredButton.button(type="submit" value="Save and continue")
+block append scripts
+  script(src="/public/javascripts/offenceDate.js?" + version)

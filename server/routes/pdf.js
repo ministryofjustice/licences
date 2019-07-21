@@ -1,6 +1,6 @@
 const logger = require('../../log')
 const { asyncMiddleware } = require('../utils/middleware')
-const { templates } = require('./config/pdf')
+const { templates, templatesForOldOffence } = require('./config/pdf')
 const versionInfo = require('../utils/versionInfo')
 const { firstItem, getIn, isEmpty } = require('../utils/functionalHelpers')
 const {
@@ -49,9 +49,9 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
       const { bookingId } = req.params
 
       const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token)
-      const errors = firstItem(req.flash('errors')) || {}
+      let errors = firstItem(req.flash('errors')) || {}
 
-      const template = getIn(res.locals.licence, ['approvedVersionDetails', 'template'])
+      let licenceTemplateId = getIn(res.locals.licence, ['approvedVersionDetails', 'template'])
       const offenceCommittedBeforeFeb2015 = getIn(res.locals.licence.licence, [
         'document',
         'template',
@@ -59,19 +59,19 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
       ])
 
       let offenceBeforeCutoff = ''
-      let licenceIdBefore = ''
-      let licenceIdAfter = ''
 
-      if (Object.keys(errors).includes('licenceTypeBeforeCutoff')) {
+      if (Object.keys(errors).includes('licenceTypeRadioListYes')) {
         offenceBeforeCutoff = 'Yes'
-      } else if (Object.keys(errors).includes('licenceTypeAfterCutoff')) {
+        const errorMessage = errors.licenceTypeRadioListYes
+        errors = { licenceTypeRadioList: errorMessage }
+        licenceTemplateId = ''
+      } else if (Object.keys(errors).includes('licenceTypeRadioListNo')) {
         offenceBeforeCutoff = 'No'
-      } else if (offenceCommittedBeforeFeb2015 === 'Yes') {
+        const errorMessage = errors.licenceTypeRadioListNo
+        errors = { licenceTypeRadioList: errorMessage }
+        licenceTemplateId = ''
+      } else if (offenceCommittedBeforeFeb2015 === 'Yes' || offenceCommittedBeforeFeb2015 === 'No') {
         offenceBeforeCutoff = offenceCommittedBeforeFeb2015
-        licenceIdBefore = template
-      } else if (offenceCommittedBeforeFeb2015 === 'No') {
-        offenceBeforeCutoff = offenceCommittedBeforeFeb2015
-        licenceIdAfter = template
       }
 
       return res.render('pdf/offenceDate', {
@@ -79,8 +79,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         templates,
         prisoner,
         errors,
-        licenceIdBefore,
-        licenceIdAfter,
+        licenceTemplateId,
         offenceBeforeCutoff,
       })
     })
@@ -89,27 +88,23 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   router.post('/offenceDate/:bookingId', (req, res) => {
     logger.error('In  GET select/:bookingIvfzdsvfd')
     const { bookingId } = req.params
-    const { offenceBeforeCutoff, licenceTypeBeforeRadio, licenceTypeAfterRadio } = req.body
+    const { offenceBeforeCutoff, licenceTypeRadio } = req.body
 
     if (offenceBeforeCutoff === undefined || offenceBeforeCutoff === '') {
       req.flash('errors', { offenceBefore: 'Select yes or no' })
       return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
     }
 
-    if (offenceBeforeCutoff === 'Yes' && (licenceTypeBeforeRadio === undefined || licenceTypeBeforeRadio === '')) {
-      req.flash('errors', { licenceTypeBeforeCutoff: 'Select a licence type' })
+    if (beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)) {
+      req.flash('errors', { licenceTypeRadioListYes: 'Select a licence type' })
+      return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
+    }
+    if (afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)) {
+      req.flash('errors', { licenceTypeRadioListNo: 'Select a licence type' })
       return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
     }
 
-    if (offenceBeforeCutoff === 'No' && (licenceTypeAfterRadio === undefined || licenceTypeAfterRadio === '')) {
-      req.flash('errors', { licenceTypeAfterCutoff: 'Select a licence type' })
-      return res.redirect(`/hdc/pdf/offenceDate/${bookingId}`)
-    }
-
-    const licenceTemplate = offenceBeforeCutoff === 'Yes' ? licenceTypeBeforeRadio : licenceTypeAfterRadio
-
-    // res.redirect(`/hdc/pdf/taskList/${decision}/${bookingId}`)
-    // res.redirect(`/hdc/pdf/offenceDate/${bookingId}/${decision}`)
+    const licenceTemplate = licenceTypeRadio
 
     res.redirect(`/hdc/pdf/taskList/${licenceTemplate}/${offenceBeforeCutoff}/${bookingId}`)
   })
@@ -317,4 +312,15 @@ function getTemplateLabel(templateName) {
 function getTemplateVersionLabel(templateName) {
   const { label, version } = templates.find(template => template.id === templateName)
   return [label, version].join(' v')
+}
+
+function beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) {
+  return (
+    offenceBeforeCutoff === 'Yes' &&
+    (licenceTypeRadio === undefined || licenceTypeRadio === '' || !templatesForOldOffence.includes(licenceTypeRadio))
+  )
+}
+
+function afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) {
+  return offenceBeforeCutoff === 'No' && (licenceTypeRadio === undefined || licenceTypeRadio === '')
 }

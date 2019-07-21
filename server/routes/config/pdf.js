@@ -31,4 +31,5 @@ module.exports = {
       validForOldOffence: false,
     },
   ],
+  templatesForOldOffence: ['hdc_ap', 'hdc_ap_pss', 'hdc_pss'],
 }
