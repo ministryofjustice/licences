@@ -19,7 +19,6 @@ module.exports = ({ prisonerService, licenceService, audit }) => router => {
       }
 
       const postRelease = prisonerInfo.agencyLocationId ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT' : false
-      logger.error('In tasklist.js calling getLicence() ')
       const licence = await licenceService.getLicence(bookingId)
 
       const licenceStatus = getLicenceStatus(licence)

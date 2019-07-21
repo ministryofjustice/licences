@@ -50,7 +50,7 @@ module.exports = ({ version, versionDetails, approvedVersion, approvedVersionDet
     {
       title: 'Create licence',
       label: `Ready to create version ${version}`,
-      action: { type: 'btn', text: 'Continue', href: '/hdc/pdf/offenceDate/' },
+      action: { type: 'btn', text: 'Continue', href: '/hdc/pdf/select/' },
       visible: !licenceUnstarted && isNewVersion,
     },
   ].filter(task => task.visible)

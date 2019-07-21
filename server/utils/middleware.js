@@ -21,7 +21,6 @@ function asyncMiddleware(fn) {
 function checkLicenceMiddleware(licenceService, prisonerService) {
   return async (req, res, next, bookingId) => {
     try {
-      logger.error('In middleware.js calling getLicence() ')
       const [licence, prisoner] = await Promise.all([
         licenceService.getLicence(bookingId),
         prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),

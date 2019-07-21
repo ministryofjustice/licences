@@ -1,11 +1,9 @@
 const express = require('express')
 const { checkLicenceMiddleware, authorisationMiddleware, auditMiddleware } = require('../../utils/middleware')
 const { authenticationMiddleware } = require('../../authentication/auth')
-const logger = require('../../../log.js')
 
 module.exports = ({ licenceService, prisonerService, audit, signInService, config }) => {
   return (routes, { auditKey = 'UPDATE_SECTION', licenceRequired = true } = {}) => {
-    logger.error('in standard calling getLicense')
     const router = express.Router()
     const auditMethod = auditMiddleware(audit, auditKey)
 

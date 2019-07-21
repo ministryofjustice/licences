@@ -6,13 +6,10 @@ block content
     div.pure-u-1
       include ../includes/backToTaskList
       include ../includes/personalDetailsSummary
-      +errorBannerWithDetail(errors, [
-        {field: 'offenceBeforeCutoff', message: 'Select yes or no 2'}
-      ])
+      +errorBannerWithDetail(errors)
 
   div.pure-u-1.pure-u-md-1-2
     h2.heading-large Was the offence committed before 1st February 2015?
-
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)
@@ -25,7 +22,6 @@ block content
       div.multiple-choice(data-target="licenceTypeSelectionYes")
         input#offenceBeforeNo(type="radio" name="offenceBeforeCutoff" value="No" checked=offenceBeforeCutoff === 'No')
         label(for="offenceBeforeNo") No
-
 
     div(id="licenceTypeRadioList", class=Object.keys(errors).includes("licenceTypeRadioList") ? "form-group form-group-error " : "")
       div#licenceTypeSelectionYes.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
@@ -40,9 +36,9 @@ block content
               input(id=template.id type="radio" name="licenceTypeRadio" value=template.id checked=licenceTemplateId === template.id)
               label(for=template.id) #{template.label}
 
-
     div.largePaddingBottom.smallPaddingTop
           div.inlineButtons
             input#continueButton.requiredButton.button(type="submit" value="Save and continue")
+
 block append scripts
-  script(src="/public/javascripts/offenceDate.js?" + version)
+  script(src="/public/javascripts/selectLicenceType.js?" + version)
