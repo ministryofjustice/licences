@@ -78,6 +78,6 @@ class WebsiteSpec extends GebReportingSpec {
     response.uptime > 0.0
     response.name == "Licences"
     !response.version.isEmpty()
-    response.api == [auth: 'UP', delius: 'UP', pdfGenerator: 'UP']
+    response.api == [elite2: 'UP', auth: 'UP', delius: 'UP', pdfGenerator: 'UP']
   }
 }
