@@ -55,10 +55,10 @@ describe('PDF:', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).to.include('<option value="hdc_ap_pss">AP PSS HDC Licence</option>')
-          expect(res.text).to.include('<option value="hdc_yn">HDC Young Person\'s Licence</option>')
-          expect(res.text).to.include('<option value="hdc_ap">AP HDC Licence</option>')
-          expect(res.text).to.include('<option value="hdc_pss">HDC PSS Notice of Supervision</option>')
+          expect(res.text).to.include('<option value="hdc_ap_pss">Basic licence with top-up supervision</option>')
+          expect(res.text).to.include('<option value="hdc_yn">Young person’s licence</option>')
+          expect(res.text).to.include('<option value="hdc_ap">Basic licence</option>')
+          expect(res.text).to.include('<option value="hdc_pss">Top up supervision licence</option>')
         })
     })
 
@@ -70,10 +70,10 @@ describe('PDF:', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).to.include('<option value="hdc_ap_pss">AP PSS HDC Licence</option>')
-          expect(res.text).to.include('<option value="hdc_yn">HDC Young Person\'s Licence</option>')
-          expect(res.text).to.include('<option value="hdc_ap" selected>AP HDC Licence</option>')
-          expect(res.text).to.include('<option value="hdc_pss">HDC PSS Notice of Supervision</option>')
+          expect(res.text).to.include('<option value="hdc_ap_pss">Basic licence with top-up supervision</option>')
+          expect(res.text).to.include('<option value="hdc_yn">Young person’s licence</option>')
+          expect(res.text).to.include('<option value="hdc_ap" selected>Basic licence</option>')
+          expect(res.text).to.include('<option value="hdc_pss">Top up supervision licence</option>')
         })
     })
 
@@ -195,7 +195,7 @@ describe('PDF:', () => {
         .expect(res => {
           expect(res.text).to.include('Ready to print')
           expect(res.text).to.include('11/12/13')
-          expect(res.text).to.include('AP HDC Licence')
+          expect(res.text).to.include('Basic licence')
           expect(res.text).to.include('Version 1')
         })
     })
@@ -215,9 +215,9 @@ describe('PDF:', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).to.include('Ready to print new version')
-          expect(res.text).to.include('AP PSS HDC Licence')
+          expect(res.text).to.include('Basic licence with top-up supervision')
           expect(res.text).to.include('11/12/13')
-          expect(res.text).to.include('AP HDC Licence')
+          expect(res.text).to.include('Basic licence')
           expect(res.text).to.include('Version 1.0')
         })
     })
@@ -238,7 +238,7 @@ describe('PDF:', () => {
         .expect(res => {
           expect(res.text).to.include('Ready to print new version')
           expect(res.text).to.include('11/12/13')
-          expect(res.text).to.include('AP HDC Licence')
+          expect(res.text).to.include('Basic licence')
           expect(res.text).to.include('Version 1.1')
         })
     })
@@ -284,7 +284,7 @@ describe('PDF:', () => {
 
       // Just enough to verify that we made a PDF with some text and some licence data in it
       expect(pdfText).to.contain('Name: NAMEPrison no: NOMSDate of Birth: DOB')
-      expect(pdfText).to.contain('Page 1 of 3 - AP HDC Licence v1.0')
+      expect(pdfText).to.contain('Page 1 of 3 - Basic licence v1.0')
     })
   })
 

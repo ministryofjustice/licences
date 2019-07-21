@@ -8,7 +8,7 @@ module.exports = {
     },
     {
       id: 'hdc_ap_pss',
-      label: 'Basic licence with top-up supervision ',
+      label: 'Basic licence with top-up supervision',
       version: '1.0',
       validForOldOffence: true,
     },
