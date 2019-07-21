@@ -77,10 +77,14 @@ class PdfSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
     taskListAction('Create licence').click()
 
+    and: 'I choose a offence bfore'
+    at LicenceTemplatePage
+    offenceBeforeRadio.checked = 'Yes'
+
     and: 'I choose a template'
     at LicenceTemplatePage
-    templateTypes.selected = 'hdc_ap'
-    find('#continueBtn').click()
+    templateTypes.checked = 'hdc_ap'
+    find('#continueButton').click()
 
     then: 'I see the create licence tasklist'
     at LicenceTaskListPage
