@@ -1,6 +1,7 @@
 const superagent = require('superagent')
 const config = require('../config')
 const versionInfo = require('../utils/versionInfo')
+const { getIn } = require('../utils/functionalHelpers')
 
 const pdfGenPath = `${config.pdf.licences.pdfServiceHost}/generate`
 
@@ -65,6 +66,18 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
   }
 
   async function updateLicenceTypeTemplate(rawLicence, bookingId, template, offenceBeforeCutoff, postRelease) {
+    const decision = getIn(rawLicence, ['licence', 'document', 'template', 'decision'])
+    const offenceCommittedBeforeFeb2015 = getIn(rawLicence, [
+      'licence',
+      'document',
+      'template',
+      'offenceCommittedBeforeFeb2015',
+    ])
+
+    if (template === decision && offenceBeforeCutoff === offenceCommittedBeforeFeb2015) {
+      return rawLicence
+    }
+
     await licenceService.update({
       bookingId,
       originalLicence: rawLicence,
