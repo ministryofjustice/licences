@@ -18,10 +18,10 @@ block content
     div.largePaddingBottom
       div(id="offenceBefore", class=Object.keys(errors).includes("offenceBefore") ? "form-group form-group-error inline" : "form-group inline")
         div.multiple-choice(data-target="licenceTypeSelectionYes")
-          input#offenceBeforeYes(type="radio" name="offenceBeforeCutoff" value="Yes" checked=offenceBeforeCutoff === 'Yes')
+          input#offenceBeforeYes(type="radio" name="offenceBeforeCutoff" value="Yes" checked=offenceCommittedBeforeFeb2015 === 'Yes')
           label(for="offenceBeforeYes") Yes
         div.multiple-choice(data-target="licenceTypeSelectionYes")
-          input#offenceBeforeNo(type="radio" name="offenceBeforeCutoff" value="No" checked=offenceBeforeCutoff === 'No')
+          input#offenceBeforeNo(type="radio" name="offenceBeforeCutoff" value="No" checked=offenceCommittedBeforeFeb2015 === 'No')
           label(for="offenceBeforeNo") No
 
       div(id="licenceTypeRadioList", class=Object.keys(errors).includes("licenceTypeRadioList") ? "form-group form-group-error " : "")

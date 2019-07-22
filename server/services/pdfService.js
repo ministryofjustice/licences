@@ -86,6 +86,37 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     return licenceService.getLicence(bookingId)
   }
 
+  async function updateOffenceCommittedBefore(
+    rawLicence,
+    bookingId,
+    offenceCommittedBeforeCutoffDecision,
+    templateId,
+    postRelease
+  ) {
+    const offenceCommittedBeforeFeb2015 = getIn(rawLicence, [
+      'licence',
+      'document',
+      'template',
+      'offenceCommittedBeforeFeb2015',
+    ])
+
+    if (offenceCommittedBeforeCutoffDecision === offenceCommittedBeforeFeb2015) {
+      return rawLicence
+    }
+
+    await licenceService.update({
+      bookingId,
+      originalLicence: rawLicence,
+      config: { fields: [{ decision: {} }, { offenceCommittedBeforeFeb2015: {} }], noModify: true },
+      userInput: { decision: templateId, offenceCommittedBeforeFeb2015: offenceCommittedBeforeCutoffDecision },
+      licenceSection: 'document',
+      formName: 'template',
+      postRelease,
+    })
+
+    return licenceService.getLicence(bookingId)
+  }
+
   async function getImage(facialImageId, token) {
     try {
       return await prisonerService.getPrisonerImage(facialImageId, token)
@@ -141,6 +172,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
   }
 
   return {
+    updateOffenceCommittedBefore,
     getPdfLicenceDataAndUpdateLicenceType,
     getPdfLicenceData,
     getPdf,

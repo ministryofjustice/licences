@@ -77,7 +77,7 @@ class PdfSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
     taskListAction('Create licence').click()
 
-    and: 'I choose a offence bfore'
+    and: 'I choose a offence before'
     at LicenceTemplatePage
     offenceBeforeRadio.checked = 'Yes'
 

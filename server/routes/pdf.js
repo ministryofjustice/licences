@@ -45,30 +45,13 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
       const { bookingId } = req.params
 
       const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token)
-      let errors = firstItem(req.flash('errors')) || {}
-
-      let licenceTemplateId = getIn(res.locals.licence, ['approvedVersionDetails', 'template'])
+      const errors = firstItem(req.flash('errors')) || {}
+      const licenceTemplateId = getIn(res.locals.licence.licence, ['document', 'template', 'decision'])
       const offenceCommittedBeforeFeb2015 = getIn(res.locals.licence.licence, [
         'document',
         'template',
         'offenceCommittedBeforeFeb2015',
       ])
-
-      let offenceBeforeCutoff = ''
-
-      if (Object.keys(errors).includes('licenceTypeRadioListYes')) {
-        offenceBeforeCutoff = 'Yes'
-        const errorMessage = errors.licenceTypeRadioListYes
-        errors = { licenceTypeRadioList: errorMessage }
-        licenceTemplateId = ''
-      } else if (Object.keys(errors).includes('licenceTypeRadioListNo')) {
-        offenceBeforeCutoff = 'No'
-        const errorMessage = errors.licenceTypeRadioListNo
-        errors = { licenceTypeRadioList: errorMessage }
-        licenceTemplateId = ''
-      } else if (offenceCommittedBeforeFeb2015 === 'Yes' || offenceCommittedBeforeFeb2015 === 'No') {
-        offenceBeforeCutoff = offenceCommittedBeforeFeb2015
-      }
 
       return res.render('pdf/selectLicenceType', {
         bookingId,
@@ -76,33 +59,37 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         prisoner,
         errors,
         licenceTemplateId,
-        offenceBeforeCutoff,
+        offenceCommittedBeforeFeb2015,
       })
     })
   )
 
-  router.post('/selectLicenceType/:bookingId', (req, res) => {
-    const { bookingId } = req.params
-    const { offenceBeforeCutoff, licenceTypeRadio } = req.body
+  router.post(
+    '/selectLicenceType/:bookingId',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.params
+      const { offenceBeforeCutoff, licenceTypeRadio } = req.body
 
-    if (offenceBeforeCutoff === undefined || offenceBeforeCutoff === '') {
-      req.flash('errors', { offenceBefore: 'Select yes or no' })
-      return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
-    }
+      if (offenceBeforeCutoff === undefined || offenceBeforeCutoff === '') {
+        req.flash('errors', { offenceBefore: 'Select yes or no' })
+        return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
+      }
 
-    if (beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)) {
-      req.flash('errors', { licenceTypeRadioListYes: 'Select a licence type' })
-      return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
-    }
-    if (afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)) {
-      req.flash('errors', { licenceTypeRadioListNo: 'Select a licence type' })
-      return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
-    }
+      if (
+        beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) ||
+        afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)
+      ) {
+        req.flash('errors', { licenceTypeRadioList: 'Select a licence type' })
+        const { licence } = res.locals
+        await Promise.all([
+          pdfService.updateOffenceCommittedBefore(licence, bookingId, offenceBeforeCutoff, '', res.locals.token),
+        ])
+        return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
+      }
 
-    const licenceTemplate = licenceTypeRadio
-
-    res.redirect(`/hdc/pdf/taskList/${licenceTemplate}/${offenceBeforeCutoff}/${bookingId}`)
-  })
+      res.redirect(`/hdc/pdf/taskList/${licenceTypeRadio}/${offenceBeforeCutoff}/${bookingId}`)
+    })
+  )
 
   router.get(
     '/taskList/:templateName/:offenceBeforeCutoff/:bookingId',
