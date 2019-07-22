@@ -53,19 +53,13 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
 
     const image = prisonerInfo.facialImageId ? await getImage(prisonerInfo.facialImageId, token) : null
 
-    return pdfFormatter.formatPdfData(
-      templateName,
-      {
-        licence,
-        prisonerInfo,
-        establishment,
-      },
-      image,
-      { ...rawLicence.approvedVersionDetails, approvedVersion: rawLicence.approvedVersion }
-    )
+    return pdfFormatter.formatPdfData(templateName, { licence, prisonerInfo, establishment }, image, {
+      ...rawLicence.approvedVersionDetails,
+      approvedVersion: rawLicence.approvedVersion,
+    })
   }
 
-  async function updateLicenceTypeTemplate(rawLicence, bookingId, template, offenceBeforeCutoff, postRelease) {
+  async function updateLicenceTypeTemplate(rawLicence, bookingId, template, offenceCommittedBeforeCutoff, postRelease) {
     const decision = getIn(rawLicence, ['licence', 'document', 'template', 'decision'])
     const offenceCommittedBeforeFeb2015 = getIn(rawLicence, [
       'licence',
@@ -74,7 +68,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
       'offenceCommittedBeforeFeb2015',
     ])
 
-    if (template === decision && offenceBeforeCutoff === offenceCommittedBeforeFeb2015) {
+    if (template === decision && offenceCommittedBeforeCutoff === offenceCommittedBeforeFeb2015) {
       return rawLicence
     }
 
@@ -82,7 +76,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
       bookingId,
       originalLicence: rawLicence,
       config: { fields: [{ decision: {} }, { offenceCommittedBeforeFeb2015: {} }], noModify: true },
-      userInput: { decision: template, offenceCommittedBeforeFeb2015: offenceBeforeCutoff },
+      userInput: { decision: template, offenceCommittedBeforeFeb2015: offenceCommittedBeforeCutoff },
       licenceSection: 'document',
       formName: 'template',
       postRelease,
