@@ -302,5 +302,49 @@ describe('pdfService', () => {
 
       expect(licenceService.update).not.to.be.calledOnce()
     })
+
+    it('should write to the database when there is no licence type', async () => {
+      const rawLicenceData = {
+        licence: {
+          key: 'value',
+          document: {
+            template: {
+              decision: 'hdc_ap_pss',
+              offenceCommittedBeforeFeb2015: 'Yes',
+            },
+          },
+        },
+        versionDetails: { version: 4, vary_version: 0 },
+        approvedVersionDetails: { version: 3, template: 'hdc_ap_pss' },
+      }
+
+      const templateId = ''
+      const offenceCommittedBefore = 'Yes'
+      await service.updateOffenceCommittedBefore(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
+
+      expect(licenceService.update).to.be.calledOnce()
+    })
+
+    it('should not write to the database if templateId and licece type havent changed', async () => {
+      const rawLicenceData = {
+        licence: {
+          key: 'value',
+          document: {
+            template: {
+              decision: '',
+              offenceCommittedBeforeFeb2015: 'Yes',
+            },
+          },
+        },
+        versionDetails: { version: 4, vary_version: 0 },
+        approvedVersionDetails: { version: 3, template: 'hdc_ap_pss' },
+      }
+
+      const templateId = ''
+      const offenceCommittedBefore = 'Yes'
+      await service.updateOffenceCommittedBefore(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
+
+      expect(licenceService.update).not.to.be.calledOnce()
+    })
   })
 })

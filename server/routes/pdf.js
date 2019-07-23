@@ -1,6 +1,6 @@
 const logger = require('../../log')
 const { asyncMiddleware } = require('../utils/middleware')
-const { templates, templatesForOldOffence } = require('./config/pdf')
+const { templates, templatesForNewOffence } = require('./config/pdf')
 const versionInfo = require('../utils/versionInfo')
 const { firstItem, getIn, isEmpty } = require('../utils/functionalHelpers')
 const {
@@ -43,7 +43,6 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
     '/selectLicenceType/:bookingId',
     asyncMiddleware(async (req, res) => {
       const { bookingId } = req.params
-
       const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token)
       const errors = firstItem(req.flash('errors')) || {}
       const licenceTemplateId = getIn(res.locals.licence.licence, ['document', 'template', 'decision'])
@@ -278,12 +277,12 @@ function getTemplateVersionLabel(templateName) {
 }
 
 function beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) {
-  return (
-    offenceBeforeCutoff === 'Yes' &&
-    (licenceTypeRadio === undefined || licenceTypeRadio === '' || !templatesForOldOffence.includes(licenceTypeRadio))
-  )
+  return offenceBeforeCutoff === 'Yes' && (licenceTypeRadio === undefined || licenceTypeRadio === '')
 }
 
 function afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) {
-  return offenceBeforeCutoff === 'No' && (licenceTypeRadio === undefined || licenceTypeRadio === '')
+  return (
+    offenceBeforeCutoff === 'No' &&
+    (licenceTypeRadio === undefined || licenceTypeRadio === '' || !templatesForNewOffence.includes(licenceTypeRadio))
+  )
 }
