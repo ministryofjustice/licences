@@ -11,7 +11,7 @@ describe('create licence task', () => {
         })
       ).to.eql({
         text: 'Continue',
-        href: '/hdc/pdf/select/',
+        href: '/hdc/pdf/selectLicenceType/',
         type: 'btn',
       })
     })
@@ -25,7 +25,7 @@ describe('create licence task', () => {
         })
       ).to.eql({
         text: 'Continue',
-        href: '/hdc/pdf/select/',
+        href: '/hdc/pdf/selectLicenceType/',
         type: 'btn',
       })
     })

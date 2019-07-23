@@ -258,5 +258,49 @@ describe('pdfService', () => {
         { a: 'a', approvedVersion: 1.3 }
       )
     })
+
+    it('should update licence if template and offence date check are different to previous version', async () => {
+      fakePdfGenerator.post('/generate', { templateName, values }).reply(200, pdf1AsBytes)
+
+      const rawLicenceData = {
+        licence: {
+          key: 'value',
+          document: {
+            template: {
+              decision: 'hdc_ap',
+              offenceCommittedBeforeFeb2015: 'No',
+            },
+          },
+        },
+        versionDetails: { version: 4, vary_version: 0 },
+        approvedVersionDetails: { version: 3, template: 'hdc_ap_pss' },
+      }
+
+      await service.getPdfLicenceDataAndUpdateLicenceType(templateName, 'Yes', '123', rawLicenceData, 'token')
+
+      expect(licenceService.update).to.be.calledOnce()
+    })
+
+    it('should not update licence if template and offence date check is same', async () => {
+      fakePdfGenerator.post('/generate', { templateName, values }).reply(200, pdf1AsBytes)
+
+      const rawLicenceData = {
+        licence: {
+          key: 'value',
+          document: {
+            template: {
+              decision: 'hdc_ap_pss',
+              offenceCommittedBeforeFeb2015: 'Yes',
+            },
+          },
+        },
+        versionDetails: { version: 4, vary_version: 0 },
+        approvedVersionDetails: { version: 3, template: 'hdc_ap_pss' },
+      }
+
+      await service.getPdfLicenceDataAndUpdateLicenceType(templateName, 'Yes', '123', rawLicenceData, 'token')
+
+      expect(licenceService.update).not.to.be.calledOnce()
+    })
   })
 })

@@ -1,13 +1,11 @@
 package uk.gov.justice.digital.hmpps.licences.pages.pdf
 
 import geb.Page
-import geb.module.Select
-import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
-import uk.gov.justice.digital.hmpps.licences.modules.OffenderDetailsModule
+import geb.module.RadioButtons
 
 class LicenceTemplatePage extends Page {
 
-  static url = '/hdc/pdf/select'
+  static url = '/hdc/pdf/selectLicenceType'
 
   static at = {
     browser.currentUrl.contains(url)
@@ -15,6 +13,7 @@ class LicenceTemplatePage extends Page {
 
   static content = {
 
-    templateTypes { $(name: "decision").module(Select) }
+    offenceBeforeRadio { $(name: "offenceBeforeCutoff").module(RadioButtons) }
+    templateTypes { $(name: "licenceTypeRadio").module(RadioButtons) }
   }
 }

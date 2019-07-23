@@ -1,6 +1,6 @@
 const logger = require('../../log')
 const { asyncMiddleware } = require('../utils/middleware')
-const { templates } = require('./config/pdf')
+const { templates, templatesForOldOffence } = require('./config/pdf')
 const versionInfo = require('../utils/versionInfo')
 const { firstItem, getIn, isEmpty } = require('../utils/functionalHelpers')
 const {
@@ -38,6 +38,102 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
 
     res.redirect(`/hdc/pdf/taskList/${decision}/${bookingId}`)
   })
+
+  router.get(
+    '/selectLicenceType/:bookingId',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.params
+
+      const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token)
+      const errors = firstItem(req.flash('errors')) || {}
+      const licenceTemplateId = getIn(res.locals.licence.licence, ['document', 'template', 'decision'])
+      const offenceCommittedBeforeFeb2015 = getIn(res.locals.licence.licence, [
+        'document',
+        'template',
+        'offenceCommittedBeforeFeb2015',
+      ])
+
+      return res.render('pdf/selectLicenceType', {
+        bookingId,
+        templates,
+        prisoner,
+        errors,
+        licenceTemplateId,
+        offenceCommittedBeforeFeb2015,
+      })
+    })
+  )
+
+  router.post(
+    '/selectLicenceType/:bookingId',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId } = req.params
+      const { offenceBeforeCutoff, licenceTypeRadio } = req.body
+
+      if (offenceBeforeCutoff === undefined || offenceBeforeCutoff === '') {
+        req.flash('errors', { offenceBefore: 'Select yes or no' })
+        return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
+      }
+
+      if (
+        beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) ||
+        afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)
+      ) {
+        req.flash('errors', { licenceTypeRadioList: 'Select a licence type' })
+        const { licence } = res.locals
+        await Promise.all([
+          pdfService.updateOffenceCommittedBefore(licence, bookingId, offenceBeforeCutoff, '', res.locals.token),
+        ])
+        return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
+      }
+
+      res.redirect(`/hdc/pdf/taskList/${licenceTypeRadio}/${offenceBeforeCutoff}/${bookingId}`)
+    })
+  )
+
+  router.get(
+    '/taskList/:templateName/:offenceBeforeCutoff/:bookingId',
+    asyncMiddleware(async (req, res) => {
+      const { bookingId, templateName, offenceBeforeCutoff } = req.params
+      const { licence } = res.locals
+
+      const templateLabel = getTemplateLabel(templateName)
+
+      if (!templateLabel) {
+        throw new Error(`Invalid licence template name: ${templateName}`)
+      }
+
+      const [prisoner, { missing }] = await Promise.all([
+        prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
+        pdfService.getPdfLicenceDataAndUpdateLicenceType(
+          templateName,
+          offenceBeforeCutoff,
+          bookingId,
+          licence,
+          res.locals.token
+        ),
+      ])
+      const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
+      const groupsRequired = postRelease ? 'mandatoryPostRelease' : 'mandatory'
+
+      const incompleteGroups = Object.keys(missing).filter(group => missing[group][groupsRequired])
+      const incompletePreferredGroups = Object.keys(missing).filter(group => missing[group].preferred)
+
+      const canPrint = !incompleteGroups || isEmpty(incompleteGroups)
+
+      return res.render('pdf/createLicenceTaskList', {
+        bookingId,
+        missing,
+        templateName,
+        prisoner,
+        incompleteGroups,
+        incompletePreferredGroups,
+        canPrint,
+        postRelease,
+        versionInfo: versionInfo(licence, templateName),
+      })
+    })
+  )
 
   router.get(
     '/taskList/:templateName/:bookingId',
@@ -178,4 +274,15 @@ function getTemplateLabel(templateName) {
 function getTemplateVersionLabel(templateName) {
   const { label, version } = templates.find(template => template.id === templateName)
   return [label, version].join(' v')
+}
+
+function beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) {
+  return (
+    offenceBeforeCutoff === 'Yes' &&
+    (licenceTypeRadio === undefined || licenceTypeRadio === '' || !templatesForOldOffence.includes(licenceTypeRadio))
+  )
+}
+
+function afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) {
+  return offenceBeforeCutoff === 'No' && (licenceTypeRadio === undefined || licenceTypeRadio === '')
 }

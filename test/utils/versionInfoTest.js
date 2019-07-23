@@ -52,7 +52,7 @@ describe('versionInfo', () => {
           },
           'hdc_ap_pss'
         ).templateLabel
-      ).to.eql('AP PSS HDC Licence')
+      ).to.eql('Basic licence with top-up supervision')
     })
 
     it('should return template label stored on version', () => {
@@ -65,7 +65,7 @@ describe('versionInfo', () => {
           },
           'hdc_ap_pss'
         ).lastTemplateLabel
-      ).to.eql("HDC Young Person's Licence")
+      ).to.eql('Young person’s licence')
     })
 
     it('should return new template if passed in is different to previous', () => {
