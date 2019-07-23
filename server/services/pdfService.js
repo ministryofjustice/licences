@@ -145,7 +145,9 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
   // todo - when all licence types migrated, remove this
   async function generatePdf(templateName, bookingId, rawLicence, token, postRelease) {
     const { values } = await getPdfLicenceData(templateName, bookingId, rawLicence, token, postRelease)
-    return getPdf(templateName, values)
+    const qualifiedTemplateName = `${postRelease ? 'vary_' : ''}${templateName}`
+
+    return getPdf(qualifiedTemplateName, values)
   }
 
   async function checkAndUpdateVersion(rawLicence, bookingId, template, postRelease) {
