@@ -28,12 +28,12 @@ block content
         div#licenceTypeSelectionYes.pure-u-1.pure-u-md-4-5.js-hidden.fieldset
           h2.heading-large Licence Type
           for template in templates
-            if template.validForOldOffence
+            if template.validForNewOffence
               div.multiple-choice
                 input(id=template.id type="radio" name="licenceTypeRadio" value=template.id checked=licenceTemplateId === template.id)
                 label(for=template.id) #{template.label}
             else
-              div.multiple-choice.js-hidden.licence-type-for-no
+              div.multiple-choice.js-hidden.licence-type-for-old-offence
                 input(id=template.id type="radio" name="licenceTypeRadio" value=template.id checked=licenceTemplateId === template.id)
                 label(for=template.id) #{template.label}
 
