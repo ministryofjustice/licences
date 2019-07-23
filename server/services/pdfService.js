@@ -99,8 +99,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
       'template',
       'offenceCommittedBeforeFeb2015',
     ])
-
-    const currentTemplateId = getIn(rawLicence, ['licence', 'document', 'template', 'offenceCommittedBeforeFeb2015'])
+    const currentTemplateId = getIn(rawLicence, ['licence', 'document', 'template', 'decision'])
 
     if (offenceCommittedBeforeCutoffDecision === offenceCommittedBeforeFeb2015 && templateId === currentTemplateId) {
       return rawLicence
