@@ -8,7 +8,6 @@ services:
     depends_on:
       - licence-db
       - licences-nomis-mocks
-      - hdc-pdfgenerator
       - nomis-oauth2-server
     ports:
       - '3000:3000'
@@ -52,19 +51,6 @@ services:
       - POSTGRES_PASSWORD=licences
       - POSTGRES_USER=licences
       - POSTGRES_DB=licences
-
-  hdc-pdfgenerator:
-    image: mojdigitalstudio/pdf-generator
-    networks:
-      - hmpps
-    container_name: hdc-pdfgenerator
-    restart: always
-    ports:
-      - '8081:8080'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health']
-    environment:
-      - PORT=8080
 
   nomis-oauth2-server:
     image: mojdigitalstudio/nomis-oauth2-server:latest

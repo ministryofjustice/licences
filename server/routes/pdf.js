@@ -6,7 +6,7 @@ const { firstItem, getIn, isEmpty } = require('../utils/functionalHelpers')
 const {
   port,
   pdf: {
-    licences: { pdfOptions, localTemplates },
+    licences: { pdfOptions },
   },
 } = require('../config')
 
@@ -202,40 +202,23 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
     audited,
     asyncMiddleware(async (req, res) => {
       const { bookingId, templateName } = req.params
-      const { licence, postRelease } = res.locals
+      const { licence, postRelease, token } = res.locals
       logger.debug(`GET pdf/create/${templateName}/${bookingId}`)
 
+      const pdfData = await pdfService.getPdfLicenceData(templateName, bookingId, licence, token, postRelease)
+
+      const filename = `${pdfData.values.OFF_NOMS}.pdf`
+      const headerTemplate = getHeader(pdfData)
+      const footerTemplate = getFooter(pdfData, templateName)
       const qualifiedTemplateName = `${postRelease ? 'vary_' : ''}${templateName}`
 
-      if (localTemplates.includes(qualifiedTemplateName)) {
-        return createPdfLocal(res, templateName, bookingId, licence, res.locals.token, postRelease)
-      }
-
-      return createPdfRemote(res, templateName, bookingId, licence, res.locals.token, postRelease)
+      return res.renderPDF(
+        `licences/${qualifiedTemplateName}`,
+        { port, ...pdfData.values },
+        { filename, pdfOptions: { ...pdfOptions, headerTemplate, footerTemplate } }
+      )
     })
   )
-
-  async function createPdfRemote(res, templateName, bookingId, licence, token, postRelease) {
-    const pdf = await pdfService.generatePdf(templateName, bookingId, licence, token, postRelease)
-
-    res.type('application/pdf')
-    return res.end(pdf, 'binary')
-  }
-
-  async function createPdfLocal(res, templateName, bookingId, licence, token, postRelease) {
-    const pdfData = await pdfService.getPdfLicenceData(templateName, bookingId, licence, token, postRelease)
-
-    const filename = `${pdfData.values.OFF_NOMS}.pdf`
-    const headerTemplate = getHeader(pdfData)
-    const footerTemplate = getFooter(pdfData, templateName)
-    const qualifiedTemplateName = `${postRelease ? 'vary_' : ''}${templateName}`
-
-    return res.renderPDF(
-      `licences/${qualifiedTemplateName}`,
-      { port, ...pdfData.values },
-      { filename, pdfOptions: { ...pdfOptions, headerTemplate, footerTemplate } }
-    )
-  }
 
   return router
 }

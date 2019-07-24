@@ -61,20 +61,7 @@ module.exports = {
 
   pdf: {
     licences: {
-      pdfServiceHost: get('PDF_SERVICE_HOST', 'http://localhost:8081'),
       taggingCompanyTelephone: get('TAGGING_CO_PHONE', '01234 567890'),
-      localTemplates: [
-        'hdc_ap',
-        'vary_hdc_ap',
-        'hdc_ap_pss',
-        'vary_hdc_ap_pss',
-        'hdc_pss',
-        'vary_hdc_pss',
-        'hdc_u12',
-        'vary_hdc_u12',
-        'hdc_yn',
-        'vary_hdc_yn',
-      ],
       pdfOptions: {
         format: 'A4',
         margin: {

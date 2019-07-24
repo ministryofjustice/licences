@@ -1,9 +1,5 @@
-const superagent = require('superagent')
-const config = require('../config')
 const versionInfo = require('../utils/versionInfo')
 const { getIn } = require('../utils/functionalHelpers')
-
-const pdfGenPath = `${config.pdf.licences.pdfServiceHost}/generate`
 
 module.exports = function createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter) {
   async function getPdfLicenceData(templateName, bookingId, rawLicence, token, postRelease) {
@@ -127,30 +123,6 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     }
   }
 
-  // todo - when all licence types migrated, remove this
-  async function getPdf(templateName, values) {
-    logger.info(`Creating PDF at URI '${pdfGenPath}' for template '${templateName}'`)
-
-    try {
-      const result = await superagent.post(pdfGenPath).send({
-        templateName,
-        values,
-      })
-      return Buffer.from(result.body)
-    } catch (error) {
-      logger.error('Error during generate PDF: ', error.stack)
-      throw error
-    }
-  }
-
-  // todo - when all licence types migrated, remove this
-  async function generatePdf(templateName, bookingId, rawLicence, token, postRelease) {
-    const { values } = await getPdfLicenceData(templateName, bookingId, rawLicence, token, postRelease)
-    const qualifiedTemplateName = `${postRelease ? 'vary_' : ''}${templateName}`
-
-    return getPdf(qualifiedTemplateName, values)
-  }
-
   async function checkAndUpdateVersion(rawLicence, bookingId, template, postRelease) {
     const { isNewTemplate, isNewVersion } = versionInfo(rawLicence, template)
 
@@ -178,7 +150,5 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     updateOffenceCommittedBefore,
     getPdfLicenceDataAndUpdateLicenceType,
     getPdfLicenceData,
-    getPdf,
-    generatePdf,
   }
 }
