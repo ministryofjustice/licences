@@ -21,7 +21,7 @@ html(lang="en")
           | relevant purposes of each type of supervision are explained in the sections below.
 
         li
-          | Your Home Detention Curfew commences on
+          | Your Home Detention Curfew commenced on
           =" "
           span.entry #{SENT_HDCAD}
           |  and expires on
@@ -29,10 +29,7 @@ html(lang="en")
           span.entry #{SENT_CRD}
 
         li
-          | Your supervision on licence commences on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
+          | Your supervision on licence expires on
           =" "
           span.entry #{SENT_LED}
           |  unless this licence is previously revoked.
@@ -41,11 +38,9 @@ html(lang="en")
           | Your post-sentence supervision period commences on
           =" "
           span.entry #{SENT_LED}
-          |  and expires on
-          =" "
-          span.entry #{SENT_TUSED}
 
-        +reportOnRelease(REPORTING_NAME, REPORTING_ADDRESS, REPORTING_AT, REPORTING_ON)
+
+        //+reportOnRelease(REPORTING_NAME, REPORTING_ADDRESS, REPORTING_AT, REPORTING_ON)
 
         div.smallPaddingBottom
 
@@ -56,7 +51,7 @@ html(lang="en")
             | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
             | manage your return into the community.
 
-          +curfewAddress(CURFEW_ADDRESS, '9')
+          +curfewAddress(CURFEW_ADDRESS, '8')
 
           +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
 
@@ -129,4 +124,4 @@ html(lang="en")
         | Your release is also subject to the conditions specified on your licence, all of which have been imposed in
         | accordance with Chapter 6 of the Act.
 
-      +signatures(APPROVER, CREATION_DATE, OFF_NAME)
+      +signatures(VARY_APPROVER, CREATION_DATE, OFF_NAME)

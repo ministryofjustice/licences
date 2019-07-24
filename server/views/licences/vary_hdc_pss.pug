@@ -20,7 +20,7 @@ html(lang="en")
           | in the sections below.
 
         li
-          | Your Home Detention Curfew commences on
+          | Your Home Detention Curfew commenced on
           =" "
           span.entry #{SENT_HDCAD}
           |  and expires on
@@ -28,14 +28,9 @@ html(lang="en")
           span.entry #{SENT_CRD}
 
         li
-          | Your post-sentence supervision period commences on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
+          | Your post-sentence supervision period expires on
           =" "
           span.entry #{SENT_TUSED}
-
-        +reportOnRelease(REPORTING_NAME, REPORTING_ADDRESS, REPORTING_AT, REPORTING_ON)
 
         div.smallPaddingBottom
 
@@ -45,9 +40,9 @@ html(lang="en")
           | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
           | manage your return into the community.
 
-        +curfewAddress(CURFEW_ADDRESS, '8')
+        +curfewAddress(CURFEW_ADDRESS, '6')
 
-        +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
+        //+firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
 
         include includes/curfewTimes
 

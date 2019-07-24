@@ -21,7 +21,7 @@ html(lang="en")
           | prevent re-offending and (c) help you to resettle successfully into the community.
 
         li
-          | Your Home Detention Curfew commences on
+          | Your Home Detention Curfew commenced on
           =" "
           span.entry #{SENT_HDCAD}
           |  and expires on
@@ -29,28 +29,9 @@ html(lang="en")
           span.entry #{SENT_CRD}
 
         li
-          | Your supervision commences on
-          =" "
-          span.entry #{SENT_CRD}
-          |  and expires on
+          | Your supervision expires on
           =" "
           span.entry #{SENT_LED}
-
-        li
-          | On release you must report without delay to:
-          br
-          br
-          span.entry #{REPORTING_NAME}
-          br
-          span.pre.entry #{REPORTING_ADDRESS}
-          br
-          br
-          | At
-          =" "
-          span.entry #{REPORTING_AT}
-          |  on
-          =" "
-          span.entry #{REPORTING_ON}
 
       div.smallPaddingBottom
 
@@ -58,9 +39,9 @@ html(lang="en")
 
       ol.continue
 
-        +curfewAddress(CURFEW_ADDRESS, '7')
+        +curfewAddress(CURFEW_ADDRESS, '5')
 
-        +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
+        //+firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
 
         include includes/curfewTimes
 
@@ -75,5 +56,5 @@ html(lang="en")
 
       br
 
-      +signatures(APPROVER, CREATION_DATE, OFF_NAME)
+      +signatures(VARY_APPROVER, CREATION_DATE, OFF_NAME)
 
