@@ -1,68 +1,54 @@
-include includes/licenceMixins
+extends vary_licence
 
-doctype html
-html(lang="en")
-  head
-    link(href= "http://127.0.0.1:" + port + "/public/stylesheets/licences-pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
+  ol.start
+    li
+      | Under the provisions of Chapter 6 of the Criminal Justice Act 2003 you are being released on licence.
+      | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
+      | manage your return into the community. You will also be under the supervision of a nominated officer. The
+      | objectives of this supervision are to (a) protect the public, (b) prevent re-offending and (c) help you to
+      | resettle successfully into the community.
 
-    block content
+    li
+      | Your Home Detention Curfew commenced on
+      =" "
+      span.entry #{SENT_HDCAD}
+      |  and expires on
+      =" "
+      span.entry #{SENT_CRD}
 
-      +heading('LICENCE')
-
-      include includes/offender
-
-
-      ol.start
-        li
-          | Under the provisions of Chapter 6 of the Criminal Justice Act 2003 you are being released on licence.
-          | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
-          | manage your return into the community. You will also be under the supervision of a nominated officer. The
-          | objectives of this supervision are to (a) protect the public, (b) prevent re-offending and (c) help you to
-          | resettle successfully into the community.
-
-        li
-          | Your Home Detention Curfew commenced on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
-          =" "
-          span.entry #{SENT_CRD}
-
-        li
-          | Your supervision expires on
-          =" "
-          span.entry #{SENT_LED}
-          |  unless this licence is previously revoked.
+    li
+      | Your supervision expires on
+      =" "
+      span.entry #{SENT_LED}
+      |  unless this licence is previously revoked.
 
 
-      div.smallPaddingBottom
+  div.smallPaddingBottom
 
-      h2 Home Detention Curfew
+  h2 Home Detention Curfew
 
-      ol.continue
-        li The address(es) to which you are curfewed are:
-          br
-          br
-          span.pre.entry #{CURFEW_ADDRESS}
-          br
-          br
-          | Details of curfew times are shown below at paragraph 6.
+  ol.continue
+    li The address(es) to which you are curfewed are:
+      br
+      br
+      span.pre.entry #{CURFEW_ADDRESS}
+      br
+      br
+      | Details of curfew times are shown below at paragraph 6.
 
-        li
-            | On the day of your release, you will be subject to curfew at your curfew address.
-            |  The contractor will visit you at this address before
-            | midnight during this period in order to fit you with the tag. You must show the contractor this copy of the
-            | licence to confirm your identity. Your curfew will then run until the curfew finish time the following morning.  
-            | On your last day of curfew the contractor will visit you to remove the tag and monitoring equipment. This will
-            | take place in the last two hours of your last curfew period; i.e. between 10pm and midnight.
+    li
+        | On the day of your release, you will be subject to curfew at your curfew address.
+        |  The contractor will visit you at this address before
+        | midnight during this period in order to fit you with the tag. You must show the contractor this copy of the
+        | licence to confirm your identity. Your curfew will then run until the curfew finish time the following morning.  
+        | On your last day of curfew the contractor will visit you to remove the tag and monitoring equipment. This will
+        | take place in the last two hours of your last curfew period; i.e. between 10pm and midnight.
 
-        include includes/curfewTimes
-        +curfewConditions()
+    include includes/curfewTimes
+    +curfewConditions()
 
-      +probationSupervision(CONDITIONS, SENT_LED, SENT_SED)
+  +probationSupervision(CONDITIONS, SENT_LED, SENT_SED)
 
-      +contactPoints(MONITOR, EST_PHONE)
-
-      +signatures(VARY_APPROVER, CREATION_DATE, OFF_NAME)
+  +contactPoints(MONITOR, EST_PHONE)

@@ -1,66 +1,53 @@
-include includes/licenceMixins
+extends licence
 
-doctype html
-html(lang="en")
-  head
-    link(href= "http://127.0.0.1:" + port + "/public/stylesheets/licences-pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block heading
+  +heading('NOTICE OF SUPERVISION')
 
-  body
+block content
+  ol.start
+    li
+      | Under the provisions of Chapter 6 of the Criminal Justice Act 2003 you are being released on Home Detention
+      | Curfew (HDC) and post-sentence supervision. The relevant purposes of each type of supervision are explained
+      | in the sections below.
 
-    block content
+    li
+      | Your Home Detention Curfew commences on
+      =" "
+      span.entry #{SENT_HDCAD}
+      |  and expires on
+      =" "
+      span.entry #{SENT_CRD}
 
-      +heading('NOTICE OF SUPERVISION')
+    li
+      | Your post-sentence supervision period commences on
+      =" "
+      span.entry #{SENT_HDCAD}
+      |  and expires on
+      =" "
+      span.entry #{SENT_TUSED}
 
-      include includes/offender
+    +reportOnRelease(REPORTING_NAME, REPORTING_ADDRESS, REPORTING_AT, REPORTING_ON)
 
-      ol.start
-        li
-          | Under the provisions of Chapter 6 of the Criminal Justice Act 2003 you are being released on Home Detention
-          | Curfew (HDC) and post-sentence supervision. The relevant purposes of each type of supervision are explained
-          | in the sections below.
+    div.smallPaddingBottom
 
-        li
-          | Your Home Detention Curfew commences on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
-          =" "
-          span.entry #{SENT_CRD}
+    h2 Home Detention Curfew
 
-        li
-          | Your post-sentence supervision period commences on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
-          =" "
-          span.entry #{SENT_TUSED}
+    li
+      | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
+      | manage your return into the community.
 
-        +reportOnRelease(REPORTING_NAME, REPORTING_ADDRESS, REPORTING_AT, REPORTING_ON)
+    +curfewAddress(CURFEW_ADDRESS, '8')
 
-        div.smallPaddingBottom
+    +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
 
-        h2 Home Detention Curfew
+    include includes/curfewTimes
 
-        li
-          | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
-          | manage your return into the community.
+    +curfewConditions()
 
-        +curfewAddress(CURFEW_ADDRESS, '8')
+  +postSentenceSupervison(CONDITIONS, SENT_CRD, '', SENT_SED, SENT_TUSED)
 
-        +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
+  +contactPoints(MONITOR, EST_PHONE)
 
-        include includes/curfewTimes
-
-        +curfewConditions()
-
-      +postSentenceSupervison(CONDITIONS, SENT_CRD, '', SENT_SED, SENT_TUSED)
-
-      +contactPoints(MONITOR, EST_PHONE)
-
-      p
-        | Your release is also subject to the conditions specified on your licence, all of which have been imposed in
-        | accordance with Chapter 6 of the Act.
-      br
-
-      +signatures(APPROVER, CREATION_DATE, OFF_NAME)
-
+  p
+    | Your release is also subject to the conditions specified on your licence, all of which have been imposed in
+    | accordance with Chapter 6 of the Act.

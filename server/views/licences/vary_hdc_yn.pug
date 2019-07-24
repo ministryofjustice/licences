@@ -1,60 +1,46 @@
-include includes/licenceMixins
+extends vary_licence
 
-doctype html
-html(lang="en")
-  head
-    link(href= "http://127.0.0.1:" + port + "/public/stylesheets/licences-pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
-    block content
+  ol.start
+    li
+      | Under the provisions of Chapter 6 of the Criminal Justice Act 2003 you are being released on licence. You
+      | will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you manage your
+      | return into the community. Under the provisions of Section 256B of the 2003 Act you will also be under the
+      | supervision of a nominated officer. The objectives of this supervision are to (a) protect the public, (b)
+      | prevent re-offending and (c) help you to resettle successfully into the community.
 
-      +heading('LICENCE')
+    li
+      | Your Home Detention Curfew commenced on
+      =" "
+      span.entry #{SENT_HDCAD}
+      |  and expires on
+      =" "
+      span.entry #{SENT_CRD}
 
-      include includes/offender
+    li
+      | Your supervision expires on
+      =" "
+      span.entry #{SENT_LED}
 
-      ol.start
-        li
-          | Under the provisions of Chapter 6 of the Criminal Justice Act 2003 you are being released on licence. You
-          | will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you manage your
-          | return into the community. Under the provisions of Section 256B of the 2003 Act you will also be under the
-          | supervision of a nominated officer. The objectives of this supervision are to (a) protect the public, (b)
-          | prevent re-offending and (c) help you to resettle successfully into the community.
+  div.smallPaddingBottom
 
-        li
-          | Your Home Detention Curfew commenced on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
-          =" "
-          span.entry #{SENT_CRD}
+  h2 Home Detention Curfew
 
-        li
-          | Your supervision expires on
-          =" "
-          span.entry #{SENT_LED}
+  ol.continue
 
-      div.smallPaddingBottom
+    +curfewAddress(CURFEW_ADDRESS, '6')
 
-      h2 Home Detention Curfew
+    +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
 
-      ol.continue
+    include includes/curfewTimes
 
-        +curfewAddress(CURFEW_ADDRESS, '5')
+    +curfewConditions()
+      li.entry
+        | It is a condition of your release on licence that you are well behaved, do not commit any offence and
+        | do not do anything which could undermine the objectives of your early release from prison.
 
-        //+firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
+  +probationSupervision(CONDITIONS, '', SENT_SED)
 
-        include includes/curfewTimes
-
-        +curfewConditions()
-          li.entry
-            | It is a condition of your release on licence that you are well behaved, do not commit any offence and
-            | do not do anything which could undermine the objectives of your early release from prison.
-
-      +probationSupervision(CONDITIONS, '', SENT_SED)
-
-      +contactPoints(MONITOR, EST_PHONE)
-
-      br
-
-      +signatures(VARY_APPROVER, CREATION_DATE, OFF_NAME)
+  +contactPoints(MONITOR, EST_PHONE)
 

@@ -1,57 +1,45 @@
-include includes/licenceMixins
+extends vary_licence
 
-doctype html
-html(lang="en")
-  head
-    link(href= "http://127.0.0.1:" + port + "/public/stylesheets/licences-pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
 
-  body
-    block content
+  ol.start
+    li
+      | Under the provisions of section 246 of the Criminal Justice Act 2003 you are being released on licence and
+      | must comply with the conditions of this licence.
 
-      +heading('LICENCE')
+    li
+      | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
+      | manage your return into the community.
 
-      include includes/offender
+    li
+      | Your Home Detention Curfew commenced on
+      =" "
+      span.entry #{SENT_HDCAD}
+      |  and expires on
+      =" "
+      span.entry #{SENT_CRD}
+      |  unless this licence is previously revoked.
 
-      ol.start
-        li
-          | Under the provisions of section 246 of the Criminal Justice Act 2003 you are being released on licence and
-          | must comply with the conditions of this licence.
+    li
+      | The address(es) to which you are curfewed is / are:
+      br
+      br
+      span.pre.entry #{CURFEW_ADDRESS}
+      br
+      br
+      | Details of curfew times are shown below at paragraph 5.
 
-        li
-          | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
-          | manage your return into the community.
+    include includes/curfewTimes
 
-        li
-          | Your Home Detention Curfew commenced on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
-          =" "
-          span.entry #{SENT_CRD}
-          |  unless this licence is previously revoked.
+    +curfewConditions()
+      li
+        span.entry
+          | It is a condition of your release on licence that you are well behaved, do not commit any offence and do not do
+          | anything which could undermine the objectives of your early release from prison.
 
-        li
-          | The address(es) to which you are curfewed is / are:
-          br
-          br
-          span.pre.entry #{CURFEW_ADDRESS}
-          br
-          br
-          | Details of curfew times are shown below at paragraph 5.
+    li Your sentence expires on
+      =" "
+      span.entry #{SENT_SED}
 
-        include includes/curfewTimes
+  +contactPoints(MONITOR, EST_PHONE)
 
-        +curfewConditions()
-          li
-            span.entry
-              | It is a condition of your release on licence that you are well behaved, do not commit any offence and do not do
-              | anything which could undermine the objectives of your early release from prison.
-
-        li Your sentence expires on
-          =" "
-          span.entry #{SENT_SED}
-
-        +contactPoints(MONITOR, EST_PHONE)
-        br
-        br
-        +signatures(VARY_APPROVER, CREATION_DATE, OFF_NAME)

@@ -1,72 +1,58 @@
-include includes/licenceMixins
+extends licence
 
-doctype html
-html(lang="en")
-  head
-    link(href= "http://127.0.0.1:" + port + "/public/stylesheets/licences-pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
+  ol.start
+    li
+      | Under the provisions of section 246 of the Criminal Justice Act 2003 you are being released on licence and
+      | must comply with the conditions of this licence.
 
-  body
-    block content
+    li
+      | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
+      | manage your return into the community.
 
-      +heading('LICENCE')
+    li
+      | Your Home Detention Curfew commences on
+      =" "
+      span.entry #{SENT_HDCAD}
+      |  and expires on
+      =" "
+      span.entry #{SENT_CRD}
+      |  unless this licence is previously revoked.
 
-      include includes/offender
+    li
+      | The address(es) to which you are curfewed is / are:
+      br
+      br
+      span.pre.entry #{CURFEW_ADDRESS}
+      br
+      br
+      | Details of curfew times are shown below at paragraph 6.
 
-      ol.start
-        li
-          | Under the provisions of section 246 of the Criminal Justice Act 2003 you are being released on licence and
-          | must comply with the conditions of this licence.
+    li
+      | On the day of your release, you will be curfewed at your curfew address from
+      =" "
+      span.entry #{CURFEW_FIRST_FROM}
+      |  until
+      =" "
+      span.entry #{CURFEW_FIRST_UNTIL}.
+      |  The contractor will visit you at this address during this time in order to fit you with the tag.
+      | You must show the contractor this copy of the licence to confirm your identity. Your curfew will then run until
+      | the curfew finish time the following morning. On your last day of curfew the contractor will visit you to remove
+      | the tag and monitoring equipment. This will take place in the last two hours of your last curfew period, i.e.
+      | between 10pm and midnight.
 
-        li
-          | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
-          | manage your return into the community.
+    include includes/curfewTimes
 
-        li
-          | Your Home Detention Curfew commences on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
-          =" "
-          span.entry #{SENT_CRD}
-          |  unless this licence is previously revoked.
+    +curfewConditions()
+      li
+        span.entry
+          | It is a condition of your release on licence that you are well behaved, do not commit any offence and do not do
+          | anything which could undermine the objectives of your early release from prison.
 
-        li
-          | The address(es) to which you are curfewed is / are:
-          br
-          br
-          span.pre.entry #{CURFEW_ADDRESS}
-          br
-          br
-          | Details of curfew times are shown below at paragraph 6.
+    li Your sentence expires on
+      =" "
+      span.entry #{SENT_SED}
 
-        li
-          | On the day of your release, you will be curfewed at your curfew address from
-          =" "
-          span.entry #{CURFEW_FIRST_FROM}
-          |  until
-          =" "
-          span.entry #{CURFEW_FIRST_UNTIL}.
-          |  The contractor will visit you at this address during this time in order to fit you with the tag.
-          | You must show the contractor this copy of the licence to confirm your identity. Your curfew will then run until
-          | the curfew finish time the following morning. On your last day of curfew the contractor will visit you to remove
-          | the tag and monitoring equipment. This will take place in the last two hours of your last curfew period, i.e.
-          | between 10pm and midnight.
+  div.pagebreak
 
-        include includes/curfewTimes
-
-        +curfewConditions()
-          li
-            span.entry
-              | It is a condition of your release on licence that you are well behaved, do not commit any offence and do not do
-              | anything which could undermine the objectives of your early release from prison.
-
-        li Your sentence expires on
-          =" "
-          span.entry #{SENT_SED}
-
-        div.pagebreak
-
-        +contactPoints(MONITOR, EST_PHONE)
-        br
-        br
-        +signatures(APPROVER, CREATION_DATE, OFF_NAME)
+  +contactPoints(MONITOR, EST_PHONE)
