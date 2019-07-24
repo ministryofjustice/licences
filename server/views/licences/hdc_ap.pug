@@ -1,60 +1,45 @@
-include includes/licenceMixins
+extends licence
 
-doctype html
-html(lang="en")
-  head
-    link(href= "http://127.0.0.1:3000/public/stylesheets/licences-pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+block content
+  ol.start
+    li
+      | Under the provisions of Chapter 6 of the Criminal Justice Act 2003 you are being released on licence.
+      | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
+      | manage your return into the community. You will also be under the supervision of a nominated officer. The
+      | objectives of this supervision are to (a) protect the public, (b) prevent re-offending and (c) help you to
+      | resettle successfully into the community.
 
-  body
+    li
+      | Your Home Detention Curfew commences on
+      =" "
+      span.entry #{SENT_HDCAD}
+      |  and expires on
+      =" "
+      span.entry #{SENT_CRD}
 
-    block content
+    li
+      | Your supervision commences on
+      =" "
+      span.entry #{SENT_HDCAD}
+      |  and expires on
+      =" "
+      span.entry #{SENT_LED}
+      |  unless this licence is previously revoked.
 
-      +heading('LICENCE')
+    +reportOnRelease(REPORTING_NAME, REPORTING_ADDRESS, REPORTING_AT, REPORTING_ON)
 
-      include includes/offender
+  div.smallPaddingBottom
 
+  h2 Home Detention Curfew
 
-      ol.start
-        li
-          | Under the provisions of Chapter 6 of the Criminal Justice Act 2003 you are being released on licence.
-          | You will be subject to a Home Detention Curfew. The objective of the Home Detention Curfew is to help you
-          | manage your return into the community. You will also be under the supervision of a nominated officer. The
-          | objectives of this supervision are to (a) protect the public, (b) prevent re-offending and (c) help you to
-          | resettle successfully into the community.
+  ol.continue
+    +curfewAddress(CURFEW_ADDRESS, '7')
 
-        li
-          | Your Home Detention Curfew commences on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
-          =" "
-          span.entry #{SENT_CRD}
+    +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
 
-        li
-          | Your supervision commences on
-          =" "
-          span.entry #{SENT_HDCAD}
-          |  and expires on
-          =" "
-          span.entry #{SENT_LED}
-          |  unless this licence is previously revoked.
+    include includes/curfewTimes
+    +curfewConditions()
 
-        +reportOnRelease(REPORTING_NAME, REPORTING_ADDRESS, REPORTING_AT, REPORTING_ON)
+  +probationSupervision(CONDITIONS, SENT_LED, SENT_SED)
 
-      div.smallPaddingBottom
-
-      h2 Home Detention Curfew
-
-      ol.continue
-        +curfewAddress(CURFEW_ADDRESS, '7')
-
-        +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
-
-        include includes/curfewTimes
-        +curfewConditions()
-
-      +probationSupervision(CONDITIONS, SENT_LED, SENT_SED)
-
-      +contactPoints(MONITOR, EST_PHONE)
-
-      +signatures(APPROVER, CREATION_DATE, OFF_NAME)
+  +contactPoints(MONITOR, EST_PHONE)
