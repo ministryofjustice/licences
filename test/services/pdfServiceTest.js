@@ -276,7 +276,7 @@ describe('pdfService', () => {
         approvedVersionDetails: { version: 3, template: 'hdc_ap_pss' },
       }
 
-      await service.getPdfLicenceData(templateName, 'Yes', '123', rawLicenceData, 'token')
+      await service.getPdfLicenceDataAndUpdateLicenceType(templateName, 'Yes', '123', rawLicenceData, 'token')
 
       expect(licenceService.update).to.be.calledOnce()
     })
@@ -298,7 +298,7 @@ describe('pdfService', () => {
         approvedVersionDetails: { version: 3, template: 'hdc_ap_pss' },
       }
 
-      await service.getPdfLicenceData(templateName, 'Yes', '123', rawLicenceData, 'token')
+      await service.getPdfLicenceDataAndUpdateLicenceType(templateName, 'Yes', '123', rawLicenceData, 'token')
 
       expect(licenceService.update).not.to.be.calledOnce()
     })
