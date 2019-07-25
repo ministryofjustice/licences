@@ -52,21 +52,20 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)
       ) {
         req.flash('errors', { licenceTypeRadioList: 'Select a licence type' })
-        await pdfService.updateLicenceTypeFields(licence, bookingId, offenceBeforeCutoff, '', token)
+        await pdfService.updateOffenceCommittedBefore(licence, bookingId, offenceBeforeCutoff, '', token)
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
       }
-
-      await pdfService.updateLicenceAndApprovedVersion(licenceTypeRadio, offenceBeforeCutoff, bookingId, licence, token)
 
       res.redirect(`/hdc/pdf/taskList/${licenceTypeRadio}/${offenceBeforeCutoff}/${bookingId}`)
     })
   )
 
   router.get(
-    '/taskList/:templateId/:offenceBeforeCutoff/:bookingId',
+    '/taskList/:templateName/:offenceBeforeCutoff/:bookingId',
     asyncMiddleware(async (req, res) => {
       const { bookingId, templateName, offenceBeforeCutoff } = req.params
       const { licence } = res.locals
+
       const templateLabel = getTemplateLabel(templateName)
 
       if (!templateLabel) {
@@ -75,12 +74,20 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
 
       const [prisoner, { missing }] = await Promise.all([
         prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
-        pdfService.getPdfLicenceData(templateName, offenceBeforeCutoff, bookingId, licence, res.locals.token),
+        pdfService.getPdfLicenceDataAndUpdateLicenceType(
+          templateName,
+          offenceBeforeCutoff,
+          bookingId,
+          licence,
+          res.locals.token
+        ),
       ])
       const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
       const groupsRequired = postRelease ? 'mandatoryPostRelease' : 'mandatory'
+
       const incompleteGroups = Object.keys(missing).filter(group => missing[group][groupsRequired])
       const incompletePreferredGroups = Object.keys(missing).filter(group => missing[group].preferred)
+
       const canPrint = !incompleteGroups || isEmpty(incompleteGroups)
 
       return res.render('pdf/createLicenceTaskList', {
