@@ -102,19 +102,19 @@ describe('TaskList models', () => {
   const createLicenceVersion1 = {
     title: 'Create licence',
     label: 'Ready to create version 1',
-    action: { type: 'btn', href: '/hdc/pdf/select/', text: 'Continue' },
+    action: { type: 'btn', href: '/hdc/pdf/selectLicenceType/', text: 'Continue' },
     visible: true,
   }
   const createLicenceVersion22 = {
     title: 'Create licence',
     label: 'Ready to create version 2.2',
-    action: { type: 'btn', href: '/hdc/pdf/select/', text: 'Continue' },
+    action: { type: 'btn', href: '/hdc/pdf/selectLicenceType/', text: 'Continue' },
     visible: true,
   }
   const createLicenceVersion12 = {
     title: 'Create licence',
     label: 'Ready to create version 1.2',
-    action: { type: 'btn', href: '/hdc/pdf/select/', text: 'Continue' },
+    action: { type: 'btn', href: '/hdc/pdf/selectLicenceType/', text: 'Continue' },
     visible: true,
   }
 

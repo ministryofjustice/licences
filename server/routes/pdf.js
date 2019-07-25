@@ -64,7 +64,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
     '/taskList/:templateName/:offenceBeforeCutoff/:bookingId',
     asyncMiddleware(async (req, res) => {
       const { bookingId, templateName, offenceBeforeCutoff } = req.params
-      const { licence } = res.locals
+      const { licence, token } = res.locals
 
       const templateLabel = getTemplateLabel(templateName)
 
@@ -73,14 +73,8 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
       }
 
       const [prisoner, { missing }] = await Promise.all([
-        prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
-        pdfService.getPdfLicenceDataAndUpdateLicenceType(
-          templateName,
-          offenceBeforeCutoff,
-          bookingId,
-          licence,
-          res.locals.token
-        ),
+        prisonerService.getPrisonerPersonalDetails(bookingId, token),
+        pdfService.getPdfLicenceDataAndUpdateLicenceType(templateName, offenceBeforeCutoff, bookingId, licence, token),
       ])
       const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
       const groupsRequired = postRelease ? 'mandatoryPostRelease' : 'mandatory'

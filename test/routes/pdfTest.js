@@ -47,32 +47,35 @@ describe('PDF:', () => {
     prisonerServiceStub.getPrisonerPersonalDetails.resolves({ agencyLocationId: 'somewhere' })
   })
 
-  describe('GET /select', () => {
+  describe('GET /selectLicenceType', () => {
     it('renders dropdown containing licence types', () => {
       return request(app)
-        .get('/hdc/pdf/select/123')
+        .get('/hdc/pdf/selectLicenceType/123')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).to.include('<option value="hdc_ap_pss">Basic licence with top-up supervision</option>')
-          expect(res.text).to.include('<option value="hdc_yn">Young person’s licence</option>')
-          expect(res.text).to.include('<option value="hdc_ap">Basic licence</option>')
-          expect(res.text).to.include('<option value="hdc_pss">Top up supervision licence</option>')
+          expect(res.text).to.include('<input id="hdc_ap" type="radio" name="licenceTypeRadio" value="hdc_ap">')
+          expect(res.text).to.include('<input id="hdc_ap_pss" type="radio" name="licenceTypeRadio" value="hdc_ap_pss">')
+          expect(res.text).to.include('<input id="hdc_yn" type="radio" name="licenceTypeRadio" value="hdc_yn">')
+          expect(res.text).to.include('<input id="hdc_pss" type="radio" name="licenceTypeRadio" value="hdc_pss">')
         })
     })
 
-    it('defaults to type used in last approved version', () => {
-      licenceServiceStub.getLicence.resolves({ approvedVersionDetails: { template: 'hdc_ap' } })
+    it('defaults to type used in last version', () => {
+      licenceServiceStub.getLicence.resolves({
+        approvedVersionDetails: { template: 'hdc_ap' },
+        licence: { document: { template: { decision: 'hdc_ap', offenceCommittedBeforeFeb2015: 'Yes' } } },
+      })
 
       return request(app)
-        .get('/hdc/pdf/select/123')
+        .get('/hdc/pdf/selectLicenceType/123')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).to.include('<option value="hdc_ap_pss">Basic licence with top-up supervision</option>')
-          expect(res.text).to.include('<option value="hdc_yn">Young person’s licence</option>')
-          expect(res.text).to.include('<option value="hdc_ap" selected>Basic licence</option>')
-          expect(res.text).to.include('<option value="hdc_pss">Top up supervision licence</option>')
+          expect(res.text).to.include('<input id="hdc_ap" type="radio" name="licenceTypeRadio" value="hdc_ap" checked>')
+          expect(res.text).to.include('<input id="hdc_ap_pss" type="radio" name="licenceTypeRadio" value="hdc_ap_pss">')
+          expect(res.text).to.include('<input id="hdc_yn" type="radio" name="licenceTypeRadio" value="hdc_yn">')
+          expect(res.text).to.include('<input id="hdc_pss" type="radio" name="licenceTypeRadio" value="hdc_pss">')
         })
     })
 
@@ -82,33 +85,33 @@ describe('PDF:', () => {
       licenceServiceStub.getLicence.resolves({ approvedVersionDetails: { template: 'hdc_ap' } })
 
       return request(app)
-        .get('/hdc/pdf/select/123')
+        .get('/hdc/pdf/selectLicenceType/123')
         .expect(403)
     })
   })
 
-  describe('POST /select', () => {
+  describe('POST /selectLicenceType', () => {
     it('redirects to the page of the selected pdf', () => {
       return request(app)
-        .post('/hdc/pdf/select/123')
-        .send({ decision: 'hdc_ap_pss' })
+        .post('/hdc/pdf/selectLicenceType/123')
+        .send({ offenceBeforeCutoff: 'Yes', licenceTypeRadio: 'hdc_ap_pss' })
         .expect(302)
-        .expect('Location', '/hdc/pdf/taskList/hdc_ap_pss/123')
+        .expect('Location', '/hdc/pdf/taskList/hdc_ap_pss/Yes/123')
     })
 
     it('redirects back to the select page if nothing selected', () => {
       return request(app)
-        .post('/hdc/pdf/select/123')
+        .post('/hdc/pdf/selectLicenceType/123')
         .send({ decision: '' })
         .expect(302)
-        .expect('Location', '/hdc/pdf/select/123')
+        .expect('Location', '/hdc/pdf/selectLicenceType/123')
     })
 
     it('should throw if a non ca or ro tries to post to the route', () => {
       app = createApp({}, 'dmUser', '/hdc/pdf')
 
       return request(app)
-        .post('/hdc/pdf/select/123')
+        .post('/hdc/pdf/selectLicenceType/123')
         .send({ decision: '' })
         .expect(403)
     })
@@ -116,10 +119,10 @@ describe('PDF:', () => {
 
   describe('GET /taskList', () => {
     it('Shows incomplete status on each task with missing data', () => {
-      pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing)
+      pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithMissing)
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap_pss/123')
+        .get('/hdc/pdf/taskList/hdc_ap_pss/Yes/123')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -127,9 +130,10 @@ describe('PDF:', () => {
           expect(res.text).to.include('id="reportingTaskStatus">Not complete')
           expect(res.text).to.include('id="sentenceTaskStatus">Not complete')
           expect(res.text).to.not.include('id="varApprovalTaskStatus">')
-          expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce()
-          expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
+          expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledOnce()
+          expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledWith(
             'hdc_ap_pss',
+            'Yes',
             '123',
             { licence: { key: 'value' } },
             'token'
