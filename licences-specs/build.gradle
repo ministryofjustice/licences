@@ -44,9 +44,3 @@ task mockTest(type: Test) {
   systemProperty 'geb.env', 'chromeHeadless'
   group = 'verification'
 }
-
-task stageTest(type: Test) {
-  group = 'verification'
-  systemProperty 'geb.env', 'chromeHeadless'
-  systemProperty 'spock.configuration', 'StageSpockConfig.groovy'
-}

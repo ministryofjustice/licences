@@ -4,7 +4,6 @@ import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Unroll
-import uk.gov.justice.digital.hmpps.Stage
 import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
 import uk.gov.justice.digital.hmpps.licences.pages.SendPage
 import uk.gov.justice.digital.hmpps.licences.pages.SentPage
@@ -51,7 +50,6 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     actions.logOut()
   }
 
-  @Stage
   def 'Shows details of the prisoner (from nomis)'() {
 
     when: 'I view the task list page'

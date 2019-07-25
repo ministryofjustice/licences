@@ -4,18 +4,10 @@ import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Unroll
-import uk.gov.justice.digital.hmpps.Stage
 import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.ApprovedPremisesPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.BassAreaCheckPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewAddressReviewPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceDetailsPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.ReportingInstructionsPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
 import uk.gov.justice.digital.hmpps.licences.pages.SentPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsStandardPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.VictimLiaisonPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.*
 import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewLicencePage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
@@ -51,7 +43,6 @@ class TaskListSpec extends GebReportingSpec {
 
   def allTasksCount = 8
 
-  @Stage
   def 'Shows details of the prisoner (from nomis)'() {
 
     given: 'An unprocessed licence'
@@ -156,7 +147,6 @@ class TaskListSpec extends GebReportingSpec {
     taskListAction(tasks.submit).text() == 'Continue'
   }
 
-  // @Stage todo prep data on stage
   def 'I can submit the licence back to the CA'() {
 
     given: 'All tasks done'
