@@ -1,0 +1,16 @@
+include includes/licenceMixins
+
+doctype html
+html(lang="en")
+  head
+    link(href= "http://127.0.0.1:" + port + "/public/stylesheets/licences-pdf.css?" + version, media="print", rel="stylesheet", type="text/css")
+
+  body
+    block heading
+      +heading('LICENCE')
+
+    include includes/offender
+    block content
+    block signatures
+      +signatures(APPROVER, CREATION_DATE, OFF_NAME)
+

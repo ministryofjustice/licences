@@ -1,4 +1,4 @@
-extends licence
+extends vary_licence
 
 block content
 
@@ -11,7 +11,7 @@ block content
       | prevent re-offending and (c) help you to resettle successfully into the community.
 
     li
-      | Your Home Detention Curfew commences on
+      | Your Home Detention Curfew commenced on
       =" "
       span.entry #{SENT_HDCAD}
       |  and expires on
@@ -19,28 +19,9 @@ block content
       span.entry #{SENT_CRD}
 
     li
-      | Your supervision commences on
-      =" "
-      span.entry #{SENT_CRD}
-      |  and expires on
+      | Your supervision expires on
       =" "
       span.entry #{SENT_LED}
-
-    li
-      | On release you must report without delay to:
-      br
-      br
-      span.entry #{REPORTING_NAME}
-      br
-      span.pre.entry #{REPORTING_ADDRESS}
-      br
-      br
-      | At
-      =" "
-      span.entry #{REPORTING_AT}
-      |  on
-      =" "
-      span.entry #{REPORTING_ON}
 
   div.smallPaddingBottom
 
@@ -48,7 +29,7 @@ block content
 
   ol.continue
 
-    +curfewAddress(CURFEW_ADDRESS, '7')
+    +curfewAddress(CURFEW_ADDRESS, '6')
 
     +firstDayCurfew(CURFEW_FIRST_FROM, CURFEW_FIRST_UNTIL)
 
@@ -62,3 +43,4 @@ block content
   +probationSupervision(CONDITIONS, '', SENT_SED)
 
   +contactPoints(MONITOR, EST_PHONE)
+

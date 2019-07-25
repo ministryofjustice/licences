@@ -1,10 +1,8 @@
 package uk.gov.justice.digital.hmpps.licences.specs.eligibility
 
 import geb.spock.GebReportingSpec
-import spock.lang.PendingFeature
 import spock.lang.Shared
 import spock.lang.Stepwise
-import uk.gov.justice.digital.hmpps.Stage
 import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.BassRejectedPage
@@ -29,7 +27,6 @@ class EligibilityTaskListSpec extends GebReportingSpec {
     actions.logOut()
   }
 
-  @Stage
   def 'Shows details of the prisoner (from nomis)'() {
 
     when: 'I view the task list page'

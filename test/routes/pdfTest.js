@@ -43,7 +43,6 @@ describe('PDF:', () => {
     app = createApp({ licenceServiceStub, pdfServiceStub, prisonerServiceStub }, 'caUser')
     auditStub.record.reset()
     pdfServiceStub.getPdfLicenceData.reset()
-    pdfServiceStub.getPdf.reset()
     licenceServiceStub.getLicence.resolves({ licence: { key: 'value' } })
     prisonerServiceStub.getPrisonerPersonalDetails.resolves({ agencyLocationId: 'somewhere' })
   })
@@ -269,7 +268,6 @@ describe('PDF:', () => {
         .expect('Content-Type', 'application/pdf')
 
       expect(Buffer.isBuffer(res.body)).to.equal(true)
-      expect(pdfServiceStub.generatePdf).not.to.be.calledOnce()
       expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce()
       expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
         'hdc_ap',
@@ -290,38 +288,28 @@ describe('PDF:', () => {
 
   describe('GET /create', () => {
     it('Calls pdf service and renders response as PDF', () => {
-      const pdf1AsBytes = Buffer.from([80, 68, 70, 45, 49])
-      pdfServiceStub.generatePdf.resolves(pdf1AsBytes)
+      pdfServiceStub.getPdfLicenceData.resolves({ values: { OFF_NOMS: 'XX01234X' } })
 
       return request(app)
-        .get('/hdc/pdf/create/vary_hdc_yn/123')
+        .get('/hdc/pdf/create/hdc_ap/123')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
         .expect(res => {
-          expect(pdfServiceStub.generatePdf).to.be.calledOnce()
-          expect(pdfServiceStub.generatePdf).to.be.calledWith(
-            'vary_hdc_yn',
-            '123',
-            { licence: { key: 'value' } },
-            'token',
-            false
-          )
-          expect(res.body.toString()).to.eql('PDF-1')
+          expect(res.body.toString()).to.include('%PDF-1.4')
         })
     })
 
     it('Audits the PDF creation event', () => {
-      const pdf1AsBytes = Buffer.from([80, 68, 70, 45, 49])
-      pdfServiceStub.generatePdf.resolves(pdf1AsBytes)
+      pdfServiceStub.getPdfLicenceData.resolves({ values: { OFF_NOMS: 'XX01234X' } })
 
       return request(app)
-        .get('/hdc/pdf/create/vary_hdc_yn/123')
+        .get('/hdc/pdf/create/hdc_ap/123')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
         .expect(() => {
           expect(auditStub.record).to.be.calledOnce()
           expect(auditStub.record).to.be.calledWith('CREATE_PDF', 'CA_USER_TEST', {
-            path: '/hdc/pdf/create/vary_hdc_yn/123',
+            path: '/hdc/pdf/create/hdc_ap/123',
             bookingId: '123',
             userInput: {},
           })
@@ -330,9 +318,6 @@ describe('PDF:', () => {
 
     it('should throw if a non ca or ro tries to create the pdf', () => {
       app = createApp({}, 'dmUser')
-
-      const pdf1AsBytes = Buffer.from([80, 68, 70, 45, 49])
-      pdfServiceStub.generatePdf.resolves(pdf1AsBytes)
 
       return request(app)
         .get('/hdc/pdf/create/hdc_ap_pss/123')

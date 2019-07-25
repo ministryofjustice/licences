@@ -3,17 +3,15 @@
 $(document).ready(init)
 
 function init() {
-  if ($('#offenceBeforeNo').is(':checked')) {
-    $('.licence-type-for-no').removeClass('js-hidden')
+  if ($('#offenceBeforeYes').is(':checked')) {
+    $('.licence-type-for-old-offence').removeClass('js-hidden')
   }
 
-  $('#offenceBeforeNo').click(function() {
-    console.log('Hello' + $(offenceBeforeYes).val())
-    $('.licence-type-for-no').removeClass('js-hidden')
+  $('#offenceBeforeYes').click(function() {
+    $('.licence-type-for-old-offence').removeClass('js-hidden')
   })
 
-  $('#offenceBeforeYes').click(function() {
-    console.log('Hello 2' + $(offenceBeforeYes).val())
-    $('.licence-type-for-no').addClass('js-hidden')
+  $('#offenceBeforeNo').click(function() {
+    $('.licence-type-for-old-offence').addClass('js-hidden')
   })
 }
