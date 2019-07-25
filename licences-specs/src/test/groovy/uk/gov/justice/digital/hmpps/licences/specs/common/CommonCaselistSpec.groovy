@@ -1,11 +1,8 @@
 package uk.gov.justice.digital.hmpps.licences.specs.common
 
 import geb.spock.GebReportingSpec
-import spock.lang.Ignore
 import spock.lang.Shared
-import spock.lang.Stepwise
 import spock.lang.Unroll
-import uk.gov.justice.digital.hmpps.Stage
 import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
@@ -27,7 +24,6 @@ class CommonCaselistSpec extends GebReportingSpec {
   }
 
   @Unroll
-  @Stage
   def 'Shows the caseload of HDC eligible prisoners for #user'() {
 
     given: 'No licences started'
@@ -48,7 +44,6 @@ class CommonCaselistSpec extends GebReportingSpec {
   }
 
   @Unroll
-  @Stage
   def 'Shows licence case summary details (from nomis) for #user'() {
 
     when: 'I view the case list'

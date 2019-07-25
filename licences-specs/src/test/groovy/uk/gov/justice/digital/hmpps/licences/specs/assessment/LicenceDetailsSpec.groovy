@@ -4,7 +4,6 @@ import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Unroll
-import uk.gov.justice.digital.hmpps.Stage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.*
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
@@ -28,7 +27,6 @@ class LicenceDetailsSpec extends GebReportingSpec {
     actions.logOut()
   }
 
-  @Stage
   def 'Shows offender details'() {
 
     when: 'I view the licence details summary page for the licence record'
