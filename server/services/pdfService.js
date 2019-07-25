@@ -1,35 +1,11 @@
 const superagent = require('superagent')
 const config = require('../config')
-const versionInfo = require('../utils/versionInfo')
 const { getIn } = require('../utils/functionalHelpers')
 
 const pdfGenPath = `${config.pdf.licences.pdfServiceHost}/generate`
 
 module.exports = function createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter) {
-  async function getPdfLicenceData(templateName, bookingId, rawLicence, token, postRelease) {
-    const versionedLicence = await checkAndUpdateVersion(rawLicence, bookingId, templateName, postRelease)
-
-    const [licence, prisonerInfo, establishment] = await Promise.all([
-      conditionsService.populateLicenceWithConditions(versionedLicence.licence),
-      prisonerService.getPrisonerDetails(bookingId, token),
-      prisonerService.getEstablishmentForPrisoner(bookingId, token),
-    ])
-
-    const image = prisonerInfo.facialImageId ? await getImage(prisonerInfo.facialImageId, token) : null
-
-    return pdfFormatter.formatPdfData(
-      templateName,
-      {
-        licence,
-        prisonerInfo,
-        establishment,
-      },
-      image,
-      { ...rawLicence.approvedVersionDetails, approvedVersion: rawLicence.approvedVersion }
-    )
-  }
-
-  async function getPdfLicenceDataAndUpdateLicenceType(
+  async function updateLicenceAndApprovedVersion(
     templateName,
     offenceBeforeCutoff,
     bookingId,
@@ -37,13 +13,13 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     token,
     postRelease
   ) {
-    const versionedLicence = await updateLicenceTypeTemplate(
-      rawLicence,
-      bookingId,
-      templateName,
-      offenceBeforeCutoff,
-      postRelease
-    )
+    await updateLicenceTypeFields(rawLicence, bookingId, offenceBeforeCutoff, templateName, postRelease)
+
+    await licenceService.saveApprovedLicenceVersion(bookingId, templateName)
+  }
+
+  async function getPdfLicenceData(templateName, offenceBeforeCutoff, bookingId, rawLicence, token) {
+    const versionedLicence = licenceService.getLicence(bookingId)
 
     const [licence, prisonerInfo, establishment] = await Promise.all([
       conditionsService.populateLicenceWithConditions(versionedLicence.licence),
@@ -59,34 +35,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     })
   }
 
-  async function updateLicenceTypeTemplate(rawLicence, bookingId, template, offenceCommittedBeforeCutoff, postRelease) {
-    const decision = getIn(rawLicence, ['licence', 'document', 'template', 'decision'])
-    const offenceCommittedBeforeFeb2015 = getIn(rawLicence, [
-      'licence',
-      'document',
-      'template',
-      'offenceCommittedBeforeFeb2015',
-    ])
-
-    if (template === decision && offenceCommittedBeforeCutoff === offenceCommittedBeforeFeb2015) {
-      return rawLicence
-    }
-
-    await licenceService.update({
-      bookingId,
-      originalLicence: rawLicence,
-      config: { fields: [{ decision: {} }, { offenceCommittedBeforeFeb2015: {} }], noModify: true },
-      userInput: { decision: template, offenceCommittedBeforeFeb2015: offenceCommittedBeforeCutoff },
-      licenceSection: 'document',
-      formName: 'template',
-      postRelease,
-    })
-
-    await licenceService.saveApprovedLicenceVersion(bookingId, template)
-    return licenceService.getLicence(bookingId)
-  }
-
-  async function updateOffenceCommittedBefore(
+  async function updateLicenceTypeFields(
     rawLicence,
     bookingId,
     offenceCommittedBeforeCutoffDecision,
@@ -150,32 +99,9 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     return getPdf(qualifiedTemplateName, values)
   }
 
-  async function checkAndUpdateVersion(rawLicence, bookingId, template, postRelease) {
-    const { isNewTemplate, isNewVersion } = versionInfo(rawLicence, template)
-
-    if (isNewTemplate) {
-      await licenceService.update({
-        bookingId,
-        originalLicence: rawLicence,
-        config: { fields: [{ decision: {} }], noModify: true },
-        userInput: { decision: template },
-        licenceSection: 'document',
-        formName: 'template',
-        postRelease,
-      })
-    }
-
-    if (isNewVersion || isNewTemplate) {
-      await licenceService.saveApprovedLicenceVersion(bookingId, template)
-      return licenceService.getLicence(bookingId)
-    }
-
-    return rawLicence
-  }
-
   return {
-    updateOffenceCommittedBefore,
-    getPdfLicenceDataAndUpdateLicenceType,
+    updateLicenceAndApprovedVersion,
+    updateLicenceTypeFields,
     getPdfLicenceData,
     getPdf,
     generatePdf,
