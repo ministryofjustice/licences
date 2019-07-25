@@ -27,7 +27,20 @@ block content
       span.pre.entry #{CURFEW_ADDRESS}
       br
       br
-      | Details of curfew times are shown below at paragraph 5.
+      | Details of curfew times are shown below at paragraph 6.
+
+    li
+      | On the day of your release, you will be curfewed at your curfew address from
+      =" "
+      span.entry #{CURFEW_FIRST_FROM}
+      |  until
+      =" "
+      span.entry #{CURFEW_FIRST_UNTIL}.
+      |  The contractor will visit you at this address during this time in order to fit you with the tag.
+      | You must show the contractor this copy of the licence to confirm your identity. Your curfew will then run until
+      | the curfew finish time the following morning. On your last day of curfew the contractor will visit you to remove
+      | the tag and monitoring equipment. This will take place in the last two hours of your last curfew period, i.e.
+      | between 10pm and midnight.
 
     include includes/curfewTimes
 
@@ -40,6 +53,8 @@ block content
     li Your sentence expires on
       =" "
       span.entry #{SENT_SED}
+
+  div.pagebreak
 
   +contactPoints(MONITOR, EST_PHONE)
 
