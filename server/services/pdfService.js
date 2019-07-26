@@ -56,6 +56,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
   }
 
   async function updateLicenceTypeTemplate(rawLicence, bookingId, template, offenceCommittedBeforeCutoff, postRelease) {
+    const { isNewTemplate, isNewVersion } = versionInfo(rawLicence, template)
     const decision = getIn(rawLicence, ['licence', 'document', 'template', 'decision'])
     const offenceCommittedBeforeFeb2015 = getIn(rawLicence, [
       'licence',
@@ -78,7 +79,9 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
       postRelease,
     })
 
-    await licenceService.saveApprovedLicenceVersion(bookingId, template)
+    if (isNewVersion || isNewTemplate) {
+      await licenceService.saveApprovedLicenceVersion(bookingId, template)
+    }
     return licenceService.getLicence(bookingId)
   }
 
