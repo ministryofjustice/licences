@@ -85,7 +85,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     return licenceService.getLicence(bookingId)
   }
 
-  async function updateOffenceCommittedBefore(
+  async function updateLicenceTypeFields(
     rawLicence,
     bookingId,
     offenceCommittedBeforeCutoffDecision,
@@ -150,7 +150,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
   }
 
   return {
-    updateOffenceCommittedBefore,
+    updateLicenceTypeFields,
     getPdfLicenceDataAndUpdateLicenceType,
     getPdfLicenceData,
   }

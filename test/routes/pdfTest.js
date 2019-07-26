@@ -43,6 +43,7 @@ describe('PDF:', () => {
     app = createApp({ licenceServiceStub, pdfServiceStub, prisonerServiceStub }, 'caUser')
     auditStub.record.reset()
     pdfServiceStub.getPdfLicenceData.reset()
+    pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.reset()
     licenceServiceStub.getLicence.resolves({ licence: { key: 'value' } })
     prisonerServiceStub.getPrisonerPersonalDetails.resolves({ agencyLocationId: 'somewhere' })
   })
@@ -122,7 +123,7 @@ describe('PDF:', () => {
       pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithMissing)
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap_pss/Yes/123')
+        .get('/hdc/pdf/taskList/hdc_ap_pss/Yes/1231')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -134,7 +135,7 @@ describe('PDF:', () => {
           expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledWith(
             'hdc_ap_pss',
             'Yes',
-            '123',
+            '1231',
             { licence: { key: 'value' } },
             'token'
           )
@@ -143,10 +144,10 @@ describe('PDF:', () => {
 
     it('Shows incomplete status on var approver task when post approval', () => {
       prisonerServiceStub.getPrisonerPersonalDetails.resolves({ agencyLocationId: 'out' })
-      pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing)
+      pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithMissing)
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap_pss/123')
+        .get('/hdc/pdf/taskList/hdc_ap_pss/Yes/1232')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -154,10 +155,11 @@ describe('PDF:', () => {
           expect(res.text).to.not.include('id="reportingTaskStatus">Not complete')
           expect(res.text).to.not.include('id="sentenceTaskStatus">Not complete')
           expect(res.text).to.include('id="varApprovalTaskStatus">Not complete')
-          expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce()
-          expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
+          expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledOnce()
+          expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledWith(
             'hdc_ap_pss',
-            '123',
+            'Yes',
+            '1232',
             { licence: { key: 'value' } },
             'token'
           )
@@ -165,18 +167,19 @@ describe('PDF:', () => {
     })
 
     it('Does not allow print when missing values', () => {
-      pdfServiceStub.getPdfLicenceData.resolves(valuesWithMissing)
+      pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithMissing)
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap_pss/123')
+        .get('/hdc/pdf/taskList/hdc_ap_pss/No/1233')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).not.to.include('Ready to create')
-          expect(pdfServiceStub.getPdfLicenceData).to.be.calledOnce()
-          expect(pdfServiceStub.getPdfLicenceData).to.be.calledWith(
+          expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledOnce()
+          expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledWith(
             'hdc_ap_pss',
-            '123',
+            'No',
+            '1233',
             { licence: { key: 'value' } },
             'token'
           )
@@ -184,7 +187,7 @@ describe('PDF:', () => {
     })
 
     it('Shows template version info - same version when same template', () => {
-      pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing)
+      pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithoutMissing)
 
       licenceServiceStub.getLicence.resolves({
         versionDetails: { version: 1 },
@@ -192,7 +195,7 @@ describe('PDF:', () => {
       })
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap/123')
+        .get('/hdc/pdf/taskList/hdc_ap/Yes/1234')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -204,7 +207,7 @@ describe('PDF:', () => {
     })
 
     it('Shows template version info - new version when new template', () => {
-      pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing)
+      pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithoutMissing)
 
       licenceServiceStub.getLicence.resolves({
         version: 2,
@@ -213,7 +216,7 @@ describe('PDF:', () => {
       })
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap_pss/123')
+        .get('/hdc/pdf/taskList/hdc_ap_pss/Yes/1235')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -226,7 +229,7 @@ describe('PDF:', () => {
     })
 
     it('Shows template version info - new version when modified licence version', () => {
-      pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing)
+      pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithoutMissing)
 
       licenceServiceStub.getLicence.resolves({
         version: 3.2,
@@ -235,7 +238,7 @@ describe('PDF:', () => {
       })
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap/123')
+        .get('/hdc/pdf/taskList/hdc_ap/Yes/1236')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -249,7 +252,7 @@ describe('PDF:', () => {
     it('should throw if a non ca or ro tries to access the taskList', () => {
       app = createApp({}, 'dmUser')
 
-      pdfServiceStub.getPdfLicenceData.resolves(valuesWithoutMissing)
+      pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithoutMissing)
 
       licenceServiceStub.getLicence.resolves({
         version: 2,
@@ -257,7 +260,7 @@ describe('PDF:', () => {
       })
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap/123')
+        .get('/hdc/pdf/taskList/hdc_ap/Yes/1237')
         .expect(403)
     })
   })

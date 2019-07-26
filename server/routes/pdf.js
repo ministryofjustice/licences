@@ -52,7 +52,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)
       ) {
         req.flash('errors', { licenceTypeRadioList: 'Select a licence type' })
-        await pdfService.updateOffenceCommittedBefore(licence, bookingId, offenceBeforeCutoff, '', token)
+        await pdfService.updateLicenceTypeFields(licence, bookingId, offenceBeforeCutoff, '', token)
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
       }
 
