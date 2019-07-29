@@ -68,6 +68,7 @@ const createPdfServiceStub = () => ({
   getPdfLicenceData: sinon.stub().resolves(),
   getPdf: sinon.stub().resolves(),
   generatePdf: sinon.stub().resolves(),
+  updateLicenceTypeFields: sinon.stub().resolves(),
 })
 
 const createFormServiceStub = () => ({
