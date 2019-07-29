@@ -47,26 +47,28 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
       }
 
+      await pdfService.updateLicenceTypeFields(licence, bookingId, offenceBeforeCutoff, '', token)
+
       if (
         beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) ||
         afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)
       ) {
         req.flash('errors', { licenceTypeRadioList: 'Select a licence type' })
-        await pdfService.updateLicenceTypeFields(licence, bookingId, offenceBeforeCutoff, '', token)
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
       }
 
-      res.redirect(`/hdc/pdf/taskList/${licenceTypeRadio}/${offenceBeforeCutoff}/${bookingId}`)
+      res.redirect(`/hdc/pdf/taskList/${licenceTypeRadio}/${bookingId}`)
     })
   )
 
   router.get(
-    '/taskList/:templateName/:offenceBeforeCutoff/:bookingId',
+    '/taskList/:templateName/:bookingId',
     asyncMiddleware(async (req, res) => {
-      const { bookingId, templateName, offenceBeforeCutoff } = req.params
+      const { bookingId, templateName } = req.params
       const { licence, token } = res.locals
 
       const templateLabel = getTemplateLabel(templateName)
+      const offenceBeforeCutoff = getIn(licence.licence, ['document', 'template', 'offenceCommittedBeforeFeb2015'])
 
       if (!templateLabel) {
         throw new Error(`Invalid licence template name: ${templateName}`)

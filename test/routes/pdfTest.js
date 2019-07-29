@@ -97,7 +97,7 @@ describe('PDF:', () => {
         .post('/hdc/pdf/selectLicenceType/123')
         .send({ offenceBeforeCutoff: 'Yes', licenceTypeRadio: 'hdc_ap_pss' })
         .expect(302)
-        .expect('Location', '/hdc/pdf/taskList/hdc_ap_pss/Yes/123')
+        .expect('Location', '/hdc/pdf/taskList/hdc_ap_pss/123')
     })
 
     it('redirects back to the select page if nothing selected', () => {
@@ -123,7 +123,7 @@ describe('PDF:', () => {
       pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithMissing)
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap_pss/Yes/1231')
+        .get('/hdc/pdf/taskList/hdc_ap_pss/1231')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -134,7 +134,7 @@ describe('PDF:', () => {
           expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledOnce()
           expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledWith(
             'hdc_ap_pss',
-            'Yes',
+            undefined,
             '1231',
             { licence: { key: 'value' } },
             'token'
@@ -147,7 +147,7 @@ describe('PDF:', () => {
       pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithMissing)
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap_pss/Yes/1232')
+        .get('/hdc/pdf/taskList/hdc_ap_pss/1232')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -158,7 +158,7 @@ describe('PDF:', () => {
           expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledOnce()
           expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledWith(
             'hdc_ap_pss',
-            'Yes',
+            undefined,
             '1232',
             { licence: { key: 'value' } },
             'token'
@@ -170,7 +170,7 @@ describe('PDF:', () => {
       pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType.resolves(valuesWithMissing)
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap_pss/No/1233')
+        .get('/hdc/pdf/taskList/hdc_ap_pss/1233')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -178,7 +178,7 @@ describe('PDF:', () => {
           expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledOnce()
           expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledWith(
             'hdc_ap_pss',
-            'No',
+            undefined,
             '1233',
             { licence: { key: 'value' } },
             'token'
@@ -195,7 +195,7 @@ describe('PDF:', () => {
       })
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap/Yes/1234')
+        .get('/hdc/pdf/taskList/hdc_ap/1234')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -216,7 +216,7 @@ describe('PDF:', () => {
       })
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap_pss/Yes/1235')
+        .get('/hdc/pdf/taskList/hdc_ap_pss/1235')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -238,7 +238,7 @@ describe('PDF:', () => {
       })
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap/Yes/1236')
+        .get('/hdc/pdf/taskList/hdc_ap/1236')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
@@ -260,7 +260,7 @@ describe('PDF:', () => {
       })
 
       return request(app)
-        .get('/hdc/pdf/taskList/hdc_ap/Yes/1237')
+        .get('/hdc/pdf/taskList/hdc_ap/1237')
         .expect(403)
     })
   })
