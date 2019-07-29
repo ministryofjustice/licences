@@ -12,34 +12,6 @@ const {
 
 module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   router.get(
-    '/select/:bookingId',
-    asyncMiddleware(async (req, res) => {
-      const { bookingId } = req.params
-
-      const prisoner = await prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token)
-      const errors = firstItem(req.flash('errors')) || {}
-
-      const lastTemplate = getIn(res.locals.licence, ['approvedVersionDetails', 'template'])
-
-      return res.render('pdf/select', { bookingId, templates, prisoner, errors, lastTemplate })
-    })
-  )
-
-  router.post('/select/:bookingId', (req, res) => {
-    const { bookingId } = req.params
-    const { decision } = req.body
-
-    const templateIds = templates.map(template => template.id)
-
-    if (decision === '' || !templateIds.includes(decision)) {
-      req.flash('errors', { decision: 'Select a licence type' })
-      return res.redirect(`/hdc/pdf/select/${bookingId}`)
-    }
-
-    res.redirect(`/hdc/pdf/taskList/${decision}/${bookingId}`)
-  })
-
-  router.get(
     '/selectLicenceType/:bookingId',
     asyncMiddleware(async (req, res) => {
       const { bookingId } = req.params
@@ -68,8 +40,9 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
     asyncMiddleware(async (req, res) => {
       const { bookingId } = req.params
       const { offenceBeforeCutoff, licenceTypeRadio } = req.body
+      const { licence, token } = res.locals
 
-      if (offenceBeforeCutoff === undefined || offenceBeforeCutoff === '') {
+      if (isEmpty(offenceBeforeCutoff)) {
         req.flash('errors', { offenceBefore: 'Select yes or no' })
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
       }
@@ -79,10 +52,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)
       ) {
         req.flash('errors', { licenceTypeRadioList: 'Select a licence type' })
-        const { licence } = res.locals
-        await Promise.all([
-          pdfService.updateOffenceCommittedBefore(licence, bookingId, offenceBeforeCutoff, '', res.locals.token),
-        ])
+        await pdfService.updateLicenceTypeFields(licence, bookingId, offenceBeforeCutoff, '', token)
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
       }
 
@@ -94,7 +64,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
     '/taskList/:templateName/:offenceBeforeCutoff/:bookingId',
     asyncMiddleware(async (req, res) => {
       const { bookingId, templateName, offenceBeforeCutoff } = req.params
-      const { licence } = res.locals
+      const { licence, token } = res.locals
 
       const templateLabel = getTemplateLabel(templateName)
 
@@ -103,53 +73,8 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
       }
 
       const [prisoner, { missing }] = await Promise.all([
-        prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
-        pdfService.getPdfLicenceDataAndUpdateLicenceType(
-          templateName,
-          offenceBeforeCutoff,
-          bookingId,
-          licence,
-          res.locals.token
-        ),
-      ])
-      const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
-      const groupsRequired = postRelease ? 'mandatoryPostRelease' : 'mandatory'
-
-      const incompleteGroups = Object.keys(missing).filter(group => missing[group][groupsRequired])
-      const incompletePreferredGroups = Object.keys(missing).filter(group => missing[group].preferred)
-
-      const canPrint = !incompleteGroups || isEmpty(incompleteGroups)
-
-      return res.render('pdf/createLicenceTaskList', {
-        bookingId,
-        missing,
-        templateName,
-        prisoner,
-        incompleteGroups,
-        incompletePreferredGroups,
-        canPrint,
-        postRelease,
-        versionInfo: versionInfo(licence, templateName),
-      })
-    })
-  )
-
-  router.get(
-    '/taskList/:templateName/:bookingId',
-    asyncMiddleware(async (req, res) => {
-      const { bookingId, templateName } = req.params
-      const { licence } = res.locals
-      logger.debug(`GET pdf/taskList/${templateName}/${bookingId}`)
-
-      const templateLabel = getTemplateLabel(templateName)
-
-      if (!templateLabel) {
-        throw new Error(`Invalid licence template name: ${templateName}`)
-      }
-
-      const [prisoner, { missing }] = await Promise.all([
-        prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
-        pdfService.getPdfLicenceData(templateName, bookingId, licence, res.locals.token),
+        prisonerService.getPrisonerPersonalDetails(bookingId, token),
+        pdfService.getPdfLicenceDataAndUpdateLicenceType(templateName, offenceBeforeCutoff, bookingId, licence, token),
       ])
       const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
       const groupsRequired = postRelease ? 'mandatoryPostRelease' : 'mandatory'

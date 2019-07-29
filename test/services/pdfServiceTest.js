@@ -190,7 +190,7 @@ describe('pdfService', () => {
 
       const templateId = ''
       const offenceCommittedBefore = 'Yes'
-      await service.updateOffenceCommittedBefore(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
+      await service.updateLicenceTypeFields(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
 
       expect(licenceService.update).to.be.calledOnce()
     })
@@ -212,7 +212,7 @@ describe('pdfService', () => {
 
       const templateId = ''
       const offenceCommittedBefore = 'Yes'
-      await service.updateOffenceCommittedBefore(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
+      await service.updateLicenceTypeFields(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
 
       expect(licenceService.update).not.to.be.calledOnce()
     })
