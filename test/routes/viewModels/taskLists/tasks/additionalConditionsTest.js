@@ -47,7 +47,9 @@ describe('additional conditions task', () => {
           decisions: { bespokeRejected: 1 },
           tasks: { licenceConditions: 'DONE' },
         })
-      ).to.equal('WARNING||Some bespoke conditions were rejected. Remove these and inform the responsible officer.')
+      ).to.equal(
+        'WARNING||Some bespoke conditions have not been approved. Contact Public Protection Casework Section and ask them to review these.'
+      )
     })
 
     it('should return pending action message if bespoke conditions have not been approved', () => {
@@ -66,7 +68,7 @@ describe('additional conditions task', () => {
           tasks: { licenceConditions: 'DONE' },
         })
       ).to.equal(
-        'WARNING||Some bespoke conditions were rejected. Remove these and inform the responsible officer.||You still need approval for some bespoke conditions.'
+        'WARNING||Some bespoke conditions have not been approved. Contact Public Protection Casework Section and ask them to review these.||You still need approval for some bespoke conditions.'
       )
     })
 
