@@ -12,7 +12,7 @@ module.exports = {
 
       const unapproved =
         bespokeRejected > 0
-          ? 'Some bespoke conditions were rejected. Remove these and inform the responsible officer.'
+          ? 'Some bespoke conditions have not been approved. Contact Public Protection Casework Section and ask them to review these.'
           : ''
       const pending = bespokePending ? 'You still need approval for some bespoke conditions.' : ''
 
