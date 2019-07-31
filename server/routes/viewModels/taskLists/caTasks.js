@@ -153,7 +153,7 @@ module.exports = {
       },
       {
         title: 'Additional conditions',
-        label: additionalConditions.getLabel({ decisions, tasks }),
+        label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
         action: {
           type: 'btn-secondary',
           href: '/hdc/licenceConditions/standard/',
@@ -296,7 +296,7 @@ module.exports = {
       },
       {
         title: 'Additional conditions',
-        label: additionalConditions.getLabel({ decisions, tasks }),
+        label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
         action: {
           type: 'btn-secondary',
           href: '/hdc/licenceConditions/standard/',
