@@ -23,7 +23,7 @@ describe('/hdc/vary', () => {
     const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
     const routes = [
-      { url: '/hdc/vary/evidence/1', content: 'Provide evidence' },
+      { url: '/hdc/vary/evidence/1', content: 'Provide justification' },
       { url: '/hdc/vary/licenceDetails/1', content: 'Enter licence details' },
       { url: '/hdc/vary/address/1', content: 'Curfew address' },
       { url: '/hdc/vary/reportingAddress/1', content: 'name="reportingAddressLine1" value="this"' },
