@@ -5,7 +5,7 @@ module.exports = {
       {
         evidence: {
           responseType: 'requiredString',
-          validationMessage: 'Provide evidence you have approval',
+          validationMessage: 'Provide evidence you have approval and give justification',
         },
       },
     ],

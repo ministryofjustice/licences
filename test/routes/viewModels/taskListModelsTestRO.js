@@ -127,7 +127,7 @@ describe('TaskList models', () => {
 
   const vary = { task: 'varyLicenceTask', visible: true }
   const permissionForVariation = {
-    title: 'Permission for variation',
+    title: 'Permission for variation and justification of conditions',
     action: { type: 'link', text: 'Change', href: '/hdc/vary/evidence/' },
     visible: true,
   }

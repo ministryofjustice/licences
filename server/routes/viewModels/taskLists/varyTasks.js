@@ -23,7 +23,7 @@ module.exports = ({ version, versionDetails, approvedVersion, approvedVersionDet
       visible: licenceUnstarted,
     },
     {
-      title: 'Permission for variation',
+      title: 'Permission for variation and justification of conditions',
       action: { type: 'link', text: 'Change', href: '/hdc/vary/evidence/' },
       visible: !licenceUnstarted,
     },
