@@ -1,7 +1,7 @@
 const { standardAction } = require('./utils/actions')
 
 module.exports = {
-  getLabel: ({ decisions, tasks }) => {
+  getLabel: ({ decisions, tasks }, role) => {
     const { standardOnly, bespoke, bespokeRejected, bespokePending, additional } = decisions
     const { licenceConditions } = tasks
 
@@ -10,10 +10,12 @@ module.exports = {
         return 'Standard conditions only'
       }
 
-      const unapproved =
-        bespokeRejected > 0
-          ? 'Some bespoke conditions have not been approved. Contact Public Protection Casework Section and ask them to review these.'
-          : ''
+      const bespokeConditionsText =
+        role === 'CA'
+          ? 'Some bespoke conditions were rejected. Remove these and inform the responsible officer.'
+          : 'Some bespoke conditions have not been approved. Contact Public Protection Casework Section and ask them to review these.'
+
+      const unapproved = bespokeRejected > 0 ? bespokeConditionsText : ''
       const pending = bespokePending ? 'You still need approval for some bespoke conditions.' : ''
 
       if (unapproved || pending) {
