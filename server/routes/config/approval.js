@@ -15,6 +15,11 @@ module.exports = {
         },
       },
       {
+        reasonForDecision: {
+          responseType: 'optionalString',
+        },
+      },
+      {
         notedComments: {
           conditionallyActive: { confiscationOrder: true },
           dependentOn: 'decision',

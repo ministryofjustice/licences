@@ -50,7 +50,7 @@ block content
                 label(for="releaseNo") No, I refuse
 
             else
-              div.multiple-choice(data-target="decisionReasonForm")
+              div.multiple-choice
                 input#releaseYes(type="radio" checked=releaseValue === 'Yes'  name="decision" value="Yes")
                 label(for="releaseYes") Yes, I approve
 
@@ -61,13 +61,17 @@ block content
             div#releaseForm.js-hidden
               div.panel
                 include includes/release
-              div.panel
-                include includes/decisionReason
 
             div#decisionReasonForm.js-hidden
-              div.panel
-                include includes/decisionReason
+              div.panel.panel-border-narrow
+                label(for='reasonForDecision') Reason for decision (optional)
+                textarea(name='reasonForDecision' id='reasonForDecision' class='form-control' rows='15' aria-label="Reason for decision")
+                  if data.reasonForDecision
+                    | #{data.reasonForDecision}
 
 
           div.paddingBottom.smallPaddingTop
             input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+
+block append scripts
+  script(src="/public/javascripts/decisionReason.js?" + version)
