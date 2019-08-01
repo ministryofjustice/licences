@@ -58,8 +58,20 @@ block content
                 input#releaseNo(type="radio" checked=releaseValue === 'No' name="decision" value="No")
                 label(for="releaseNo") No, I refuse
 
-            div#releaseForm.panel.panel-border-narrow.js-hidden
-              include includes/release
+            div#releaseForm.js-hidden
+              div.panel
+                include includes/release
+
+            div#decisionReasonForm.js-hidden
+              div.panel.panel-border-narrow
+                label(for='reasonForDecision') Reason for decision (optional)
+                textarea(name='reasonForDecision' id='reasonForDecision' class='form-control' rows='15' aria-label="Reason for decision")
+                  if data.reasonForDecision
+                    | #{data.reasonForDecision}
+
 
           div.paddingBottom.smallPaddingTop
             input#continueBtn.requiredButton.button(type="submit" value="Save and continue")
+
+block append scripts
+  script(src="/public/javascripts/decisionReason.js?" + version)
