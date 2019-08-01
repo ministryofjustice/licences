@@ -11,7 +11,7 @@ function init() {
     $('#decisionReasonForm').removeClass('js-hidden')
   })
 
-  $('#offenceBeforeNo').click(function() {
+  $('#releaseYes').click(function() {
     $('#decisionReasonForm').removeClass('js-hidden')
   })
 }
