@@ -4,7 +4,7 @@
 #
 # Parameters:
 #       1. ENV - [t3|t2|preprod|prod]
-#       2. CLIENT - the client Id and secret, comma-separated
+#       2. CLIENT - the client Id and secret, colon-separated 
 #       3. USER - the name of the client used to authenticate 
 #       4  BATCH - the size of batches (with 30 second pauses between them)
 #       5. FILE - the name of the file containing the user data
@@ -32,6 +32,8 @@ FILE=${5?No file specified}
 # Set the environment-specific hostname for the oauth2 service
 if [[ "$ENV" == "t3" ]]; then
   HOST="https://gateway.t3.nomis-api.hmpps.dsd.io"
+elif [[ "$ENV" == "t2" ]]; then
+  HOST="https://gateway.t2.nomis-api.hmpps.dsd.io"
 else 
   HOST="https://gateway.$ENV.nomis-api.service.hmpps.dsd.io"
 fi
@@ -42,7 +44,7 @@ if [[ ! -f "$FILE" ]]; then
   exit 1
 fi
 
-# Get  token for the client name / secret and store it in a hidden file .access_token
+# Get  token for the client name / secret and store it in the environment variable TOKEN
 TOKEN_RESPONSE=$(curl -s -k -d "" -X POST "$HOST/auth/oauth/token?grant_type=client_credentials&username=$USER" -H "Authorization: Basic $(echo -n $CLIENT | base64)")
 TOKEN=$(echo "$TOKEN_RESPONSE" | jq -er .access_token)
 if [[ $? -ne 0 ]]; then
