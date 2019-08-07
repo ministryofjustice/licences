@@ -1,7 +1,8 @@
 const moment = require('moment')
+const { append, compose, converge, head, identity, mergeDeepLeft, unless } = require('ramda')
 const templates = require('./config/notificationTemplates')
 const {
-  notifications: { notifyKey, activeTemplates },
+  notifications: { notifyKey, activeTemplates, clearingOfficeEmail },
   domain,
 } = require('../config')
 const logger = require('../../log.js')
@@ -34,12 +35,13 @@ module.exports = function createNotificationService(
     }
 
     const notificationDataMethod = {
-      CA_RETURN: getCaNotificationData,
+      CA_RETURN: getCaAndClearingOfficeNotificationData,
+      DM_TO_CA_RETURN: getCaNotificationData,
       CA_DECISION: getCaNotificationData,
-      RO_NEW: getRoNotificationData,
+      RO_NEW: getRoAndClearingOfficeNotificationData,
       RO_TWO_DAYS: getRoNotificationData,
       RO_DUE: getRoNotificationData,
-      RO_OVERDUE: getRoNotificationData,
+      RO_OVERDUE: getRoAndClearingOfficeNotificationData,
       DM_NEW: getDmNotificationData,
     }
 
@@ -54,6 +56,34 @@ module.exports = function createNotificationService(
         })
       : []
   }
+
+  // notification -> notification
+  const clearingOfficeNotificationFromPrototype = mergeDeepLeft({ email: clearingOfficeEmail })
+
+  // [notification] -> [notification]
+  const appendClearingOfficeNotification = converge(append, [
+    compose(
+      clearingOfficeNotificationFromPrototype,
+      head
+    ),
+    identity,
+  ])
+
+  // [notification] -> [notification]
+  const appendClearingOfficeNotificationIfNotEmpty = unless(isEmpty, appendClearingOfficeNotification)
+
+  // (a -> b) -> Promise -> Promise
+  const andThen = fn => promise => promise.then(fn)
+
+  const getCaAndClearingOfficeNotificationData = compose(
+    andThen(appendClearingOfficeNotificationIfNotEmpty),
+    getCaNotificationData
+  )
+
+  const getRoAndClearingOfficeNotificationData = compose(
+    andThen(appendClearingOfficeNotificationIfNotEmpty),
+    getRoNotificationData
+  )
 
   async function getCaNotificationData({ common, submissionTarget, sendingUserName }) {
     if (isEmpty(submissionTarget, ['agencyId'])) {

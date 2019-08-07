@@ -115,9 +115,10 @@ module.exports = {
     dueDateFormat: 'dddd Do MMMM',
     roNewCaseWorkingDays: 10,
     roNewCaseTodayCutOff: 15,
+    clearingOfficeEmail: get('CLEARING_OFFICE_EMAIL', 'HDC.ClearingOffice@justice.gov.uk'),
     activeTemplates: get(
       'NOTIFY_ACTIVE_TEMPLATES',
-      'CA_RETURN,CA_DECISION,RO_NEW,RO_TWO_DAYS,RO_DUE,RO_OVERDUE,DM_NEW'
+      'CA_RETURN,CA_DECISION,RO_NEW,RO_TWO_DAYS,RO_DUE,RO_OVERDUE,DM_NEW, DM_TO_CA_RETURN'
     ).split(','),
   },
 

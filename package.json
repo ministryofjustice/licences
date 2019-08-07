@@ -95,7 +95,7 @@
     "passport-oauth2": "^1.4.0",
     "path": "^0.12.7",
     "pg": "^7.8.0",
-    "poll-endpoint-for": "0.0.4",
+    "poll-endpoint-for": "0.0.7",
     "pug": "^2.0.3",
     "querystring": "^0.2.0",
     "ramda": "^0.25.0",

@@ -2,6 +2,9 @@ module.exports = {
   CA_RETURN: {
     templateId: '7e581130-de71-4b3f-bac0-ce95c0275525',
   },
+  DM_TO_CA_RETURN: {
+    templateId: '7e581130-de71-4b3f-bac0-ce95c0275525',
+  },
   CA_DECISION: {
     templateId: 'fe1f7ff3-ac5d-4785-8cd8-ae42cf6a27ab',
   },

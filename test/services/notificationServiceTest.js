@@ -1,5 +1,6 @@
 const createNotificationService = require('../../server/services/notificationService')
 const templates = require('../../server/services/config/notificationTemplates')
+const config = require('../../server/config')
 
 describe('notificationService', () => {
   let service
@@ -276,6 +277,15 @@ describe('notificationService', () => {
               date: 'Monday 25th March',
             },
           },
+          {
+            email: config.notifications.clearingOfficeEmail,
+            personalisation: {
+              ...expectedCommonData,
+              prison: 'HMP Blah',
+              ro_name: 'RO Name',
+              date: 'Monday 25th March',
+            },
+          },
         ])
       })
     })
@@ -308,6 +318,43 @@ describe('notificationService', () => {
           prisoner,
           token: 'token',
           notificationType: 'CA_RETURN',
+          submissionTarget: { agencyId: 'LT1' },
+          bookingId: '123',
+          sendingUserName: 'sender',
+        })
+
+        expect(data).to.eql([
+          {
+            email: 'test1@email.address',
+            personalisation: {
+              ...expectedCommonData,
+              sender_name: 'sender',
+            },
+          },
+          {
+            email: 'test2@email.address',
+            personalisation: {
+              ...expectedCommonData,
+              sender_name: 'sender',
+            },
+          },
+          {
+            email: config.notifications.clearingOfficeEmail,
+            personalisation: {
+              ...expectedCommonData,
+              sender_name: 'sender',
+            },
+          },
+        ])
+      })
+    })
+
+    describe('DM_TO_CA notification data', () => {
+      it('should generate DM_TO_CA notification data', async () => {
+        const data = await service.getNotificationData({
+          prisoner,
+          token: 'token',
+          notificationType: 'DM_TO_CA_RETURN',
           submissionTarget: { agencyId: 'LT1' },
           bookingId: '123',
           sendingUserName: 'sender',
@@ -463,7 +510,7 @@ describe('notificationService', () => {
 
       await service.notifyRoReminders('token')
 
-      expect(notifyClient.sendEmail).to.have.callCount(4)
+      expect(notifyClient.sendEmail).to.have.callCount(6)
       expect(notifyClient.sendEmail).to.be.calledWith(overdueTemplate, expectedEmail, {
         personalisation: firstNotification,
       })
