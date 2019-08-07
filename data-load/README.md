@@ -121,9 +121,11 @@ The CSV file contains the following data :
 
 - Example data
 
+```
 MaryPippinsNPS,NA02280,Mary,Pippins,N02,Officer,mary.pippins@justice.gov.uk,marys-nannies-group@justice.gov.uk,01222 334343
 MaryPaperNPS,NA02279,Mary,Paper,N02,Officer,mary.papers@justice.gov.uk,marys-nannies-group@justice.gov.uk,01222 334344
 MaryPoppinsNPS,NA02278,Mary,Poppins,N02,Officer,mary.poppins@justice.gov.uk,marys-nannies-group@justice.gov.uk,01222 334355
+```
 
 - Executing the SQL
 
