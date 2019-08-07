@@ -152,14 +152,14 @@ const REPORTING_AT = {
   paths: [['licence', 'reporting', 'reportingDate', 'reportingTime']],
   displayName: 'Reporting at',
   group: 'reporting',
-  required: 'mandatory',
+  required: 'optional',
 }
 
 const REPORTING_ON = {
   paths: [['licence', 'reporting', 'reportingDate', 'reportingDate']],
   displayName: 'Reporting on',
   group: 'reporting',
-  required: 'mandatory',
+  required: 'optional',
 }
 
 const CURFEW_ADDRESS = {
@@ -179,13 +179,13 @@ const CURFEW_FIRST_FROM = {
   paths: [['licence', 'curfew', 'firstNight', 'firstNightFrom']],
   displayName: 'Curfew first night from',
   group: 'firstNight',
-  required: 'mandatory',
+  required: 'optional',
 }
 const CURFEW_FIRST_UNTIL = {
   paths: [['licence', 'curfew', 'firstNight', 'firstNightUntil']],
   displayName: 'Curfew first night until',
   group: 'firstNight',
-  required: 'mandatory',
+  required: 'optional',
 }
 const CURFEW_MON_FROM = {
   paths: [['licence', 'curfew', 'curfewHours', 'mondayFrom']],

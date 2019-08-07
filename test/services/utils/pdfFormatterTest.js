@@ -476,17 +476,15 @@ const displayNames = {
     },
   },
   firstNight: {
-    mandatory: {
+    optional: {
       CURFEW_FIRST_FROM: 'Curfew first night from',
       CURFEW_FIRST_UNTIL: 'Curfew first night until',
     },
   },
   reporting: {
-    mandatory: {
+    optional: {
       REPORTING_AT: 'Reporting at',
       REPORTING_ON: 'Reporting on',
-    },
-    optional: {
       REPORTING_ADDRESS: 'Reporting address',
       REPORTING_NAME: 'Reporting name',
     },
