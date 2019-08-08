@@ -90,7 +90,7 @@ class PdfSpec extends GebReportingSpec {
     at LicenceTaskListPage
   }
 
-  def 'Shows missing values on confirmation page'() {
+  def 'Reporting values are not mandatory'() {
 
     given: 'An approved licence with some fields missing'
     testData.loadLicence('decision/approved-missing')
@@ -99,6 +99,6 @@ class PdfSpec extends GebReportingSpec {
     to LicenceTaskListPage, 'hdc_ap', testData.markAndrewsBookingId
 
     then: 'Reporting and tagging company details are not complete'
-    driver.getPageSource().contains('Not complete')
+    !driver.getPageSource().contains('Not complete')
   }
 }

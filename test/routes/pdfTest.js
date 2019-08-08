@@ -151,8 +151,8 @@ describe('PDF:', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).to.include('id="firstNightTaskStatus">Not complete')
-          expect(res.text).to.include('id="reportingTaskStatus">Not complete')
+          expect(res.text).to.not.include('id="firstNightTaskStatus">Not complete')
+          expect(res.text).to.not.include('id="reportingTaskStatus">Not complete')
           expect(res.text).to.include('id="sentenceTaskStatus">Not complete')
           expect(res.text).to.include('id="varApprovalTaskStatus">Not complete')
           expect(pdfServiceStub.getPdfLicenceDataAndUpdateLicenceType).to.be.calledOnce()
