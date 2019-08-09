@@ -8,6 +8,7 @@
 #       3. USER - the name of the client used to authenticate 
 #       4  BATCH - the size of batches (with 30 second pauses between them)
 #       5. FILE - the name of the file containing the user data
+#       6. VARY_ROLE - [true|false] - true if all users in this load file should receive the ROLE_LICENCE_VARY role
 #
 # Example:
 # 
@@ -28,6 +29,7 @@ CLIENT=${2?No client specified}
 USER=${3?No user specified}
 BATCH=${4?No batch size specified}
 FILE=${5?No file specified}
+VARY_ROLE=${6?No vary role indicator specified}
 
 # Set the environment-specific hostname for the oauth2 service
 if [[ "$ENV" == "t3" ]]; then
@@ -55,8 +57,7 @@ fi
 
 AUTH_TOKEN="Bearer $TOKEN"
 
-## TEST calls to the API
-## used for testing/ checking
+## TEST calls to the API - used for testing prior to the full data load
 # curl -s "$HOST/auth/api/authuser/scripttest1" -H "Authorization: $AUTH_TOKEN" | jq .
 # curl -s "$HOST/auth/api/authuser/scripttest1/groups" -H "Authorization: $AUTH_TOKEN" | jq .
 # curl -s "$HOST/auth/api/authuser/scripttest1/roles" -H "Authorization: $AUTH_TOKEN" | jq .
@@ -72,8 +73,6 @@ AUTH_TOKEN="Bearer $TOKEN"
 
 cnt=0
 
-# Loop through the CSV file 
-
 while read LINE
 do
 
@@ -87,6 +86,16 @@ do
 
   # Output the user details to confirm it was created 
   curl -s "$HOST/auth/api/authuser/$user" -H "Authorization: $AUTH_TOKEN" | jq . 
+
+  if [[ "$VARY_ROLE" == "true" ]]
+  then
+      echo "Adding the ROLE_LICENCE_VARY role for $user"
+
+      curl -X PUT $HOST/auth/api/authuser/$user/roles/ROLE_LICENCE_VARY -H "Content-Length: 0" -H "Authorization: $AUTH_TOKEN" -H "accept: */*" -H "Content-Type: application/text" 
+
+      # Output the roles for the user to confirm
+      curl -s $HOST/auth/api/authuser/$user/roles -H "Authorization: $AUTH_TOKEN" | jq .
+  fi
 
   # Pause for 30 seconds every BATCH number of records
   cnt=$(($cnt+1))

@@ -54,14 +54,15 @@ The following are recommended checks to perform on the data to save time later i
 Use this to create new Auth accounts, one for each of the new users.
 The script uses the OAuth service API to create new users and assign them to the given groups, where applicable.
 Each new user will be sent an email to confirm their control of the email account and receive a link to set their password. 
+It is normal practice to load the standard users for a region from a separate file to the "Vary Licence" users.
 
 - Usage:
 
 ```
-$ ./user-load.sh <environment> <client-details> <admin-user> <batch-size> <CSV file> | tee results.txt
+$ ./user-load.sh <environment> <client-details> <admin-user> <batch-size> <CSV file> <Licence Vary flag>| tee results.txt
 ```
 
-NOTE: It is worth keeping a file of results to review later - in case of validation problems, duplicates or errors.
+NOTE: It is worth keeping a file of results to review later (results.txt in the above example) in case of validation problems, duplicates or errors.
 
 
 - Parameters
@@ -71,6 +72,7 @@ NOTE: It is worth keeping a file of results to review later - in case of validat
 * <admin-user>  -  Use your own admin account - it will be recorded in the audit logs as the username that performed these operations.
 * <batch-size>  - The batch size throttles the load (for limits in Gov Notify emailing) - it will pause for 30 seconds between each batch-size records.
 * <CSV file>  - The name of the file containing the user data
+* <Licence vary flag> - Use 'true' if these users should ALL receive the ROLE_LICENCE_VARY role, or 'false' if they are standard Delius users.
 
 - File format
 
@@ -126,6 +128,9 @@ MaryPippinsNPS,NA02280,Mary,Pippins,N02,Officer,mary.pippins@justice.gov.uk,mary
 MaryPaperNPS,NA02279,Mary,Paper,N02,Officer,mary.papers@justice.gov.uk,marys-nannies-group@justice.gov.uk,01222 334344
 MaryPoppinsNPS,NA02278,Mary,Poppins,N02,Officer,mary.poppins@justice.gov.uk,marys-nannies-group@justice.gov.uk,01222 334355
 ```
+
+Note: Licence vary users will not have a valid Delius Staff Id - they are created with their Auth username duplicated in the staff id column too.
+
 
 - Executing the SQL
 
