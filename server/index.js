@@ -54,7 +54,8 @@ const notificationService = createNotificationService(
   deadlineService,
   configClient,
   notifyClient,
-  audit
+  audit,
+  nomisClientBuilder
 )
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 const notificationJobs = createNotificationJobs(notificationService, signInService)
