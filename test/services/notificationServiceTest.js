@@ -10,6 +10,7 @@ describe('notificationService', () => {
   let configClient
   let notifyClient
   let audit
+  let nomisClient
 
   const transitionDate = '2019-01-01 12:00:00'
 
@@ -22,7 +23,9 @@ describe('notificationService', () => {
         .resolves({ firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1', offenderNo: 'AB1234A' }),
     }
     userAdminService = {
-      getRoUserByDeliusId: sinon.stub().resolves({ orgEmail: 'expected@ro.email' }),
+      getRoUserByDeliusId: sinon
+        .stub()
+        .resolves({ orgEmail: 'expected@ro.email', organisation: 'NPS Dewsbury (Kirklees and Wakefield)' }),
     }
     deadlineService = {
       getDueInDays: sinon.stub().resolves([{ booking_id: 1, transition_date: transitionDate }]),
@@ -47,13 +50,36 @@ describe('notificationService', () => {
     audit = {
       record: sinon.stub().resolves({}),
     }
+
+    nomisClient = {
+      getEstablishment: sinon.stub().resolves({
+        description: 'Moorland (HMP & YOI)',
+        agencyId: 'MDI',
+        agencyType: 'INST',
+        addressType: 'BUS',
+        premise: 'Moorland (HMP & YOI)',
+        locality: 'Yorkshire',
+        city: 'Doncaster',
+        country: 'England',
+        postCode: 'PE6 1BF',
+        phones: [
+          {
+            number: '484 555 6431',
+            type: 'BUS',
+          },
+        ],
+      }),
+    }
+    const nomisClientBuilder = sinon.stub().returns(nomisClient)
+
     service = createNotificationService(
       prisonerService,
       userAdminService,
       deadlineService,
       configClient,
       notifyClient,
-      audit
+      audit,
+      nomisClientBuilder
     )
   })
 
@@ -275,6 +301,7 @@ describe('notificationService', () => {
               prison: 'HMP Blah',
               ro_name: 'RO Name',
               date: 'Monday 25th March',
+              organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
             },
           },
           {
@@ -284,6 +311,7 @@ describe('notificationService', () => {
               prison: 'HMP Blah',
               ro_name: 'RO Name',
               date: 'Monday 25th March',
+              organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
             },
           },
         ])
@@ -329,6 +357,8 @@ describe('notificationService', () => {
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
+              ca_name: 'Name One',
+              prison: 'Moorland (HMP & YOI)',
             },
           },
           {
@@ -336,6 +366,8 @@ describe('notificationService', () => {
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
+              ca_name: 'Name Two',
+              prison: 'Moorland (HMP & YOI)',
             },
           },
           {
@@ -343,6 +375,8 @@ describe('notificationService', () => {
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
+              ca_name: 'Name One',
+              prison: 'Moorland (HMP & YOI)',
             },
           },
         ])
@@ -366,6 +400,8 @@ describe('notificationService', () => {
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
+              ca_name: 'Name One',
+              prison: 'Moorland (HMP & YOI)',
             },
           },
           {
@@ -373,6 +409,8 @@ describe('notificationService', () => {
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
+              ca_name: 'Name Two',
+              prison: 'Moorland (HMP & YOI)',
             },
           },
         ])
@@ -497,6 +535,7 @@ describe('notificationService', () => {
         date: 'Tuesday 15th January',
         prison: 'HMP Blah',
         ro_name: undefined,
+        organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
       }
       const secondNotification = {
         ...expectedCommonData,
@@ -504,6 +543,7 @@ describe('notificationService', () => {
         date: 'Tuesday 15th January',
         prison: 'HMP Blah',
         ro_name: undefined,
+        organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
       }
       const overdueTemplate = templates.RO_OVERDUE.templateId
       const expectedEmail = 'expected@ro.email'

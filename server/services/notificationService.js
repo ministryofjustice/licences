@@ -2,7 +2,7 @@ const moment = require('moment')
 const { append, compose, converge, head, identity, mergeDeepLeft, unless } = require('ramda')
 const templates = require('./config/notificationTemplates')
 const {
-  notifications: { notifyKey, activeTemplates, clearingOfficeEmail },
+  notifications: { notifyKey, activeNotificationTypes, clearingOfficeEmail },
   domain,
 } = require('../config')
 const logger = require('../../log.js')
@@ -15,7 +15,8 @@ module.exports = function createNotificationService(
   deadlineService,
   configClient,
   notifyClient,
-  audit
+  audit,
+  nomisClientBuilder
 ) {
   async function getNotificationData({
     prisoner,
@@ -85,22 +86,30 @@ module.exports = function createNotificationService(
     getRoNotificationData
   )
 
-  async function getCaNotificationData({ common, submissionTarget, sendingUserName }) {
-    if (isEmpty(submissionTarget, ['agencyId'])) {
+  async function getCaNotificationData({ common, token, submissionTarget, sendingUserName }) {
+    const agencyId = getIn(submissionTarget, ['agencyId'])
+
+    if (isEmpty(agencyId)) {
       logger.error('Missing agencyId for CA notification')
       return []
     }
 
+    const establishment = await nomisClientBuilder(token).getEstablishment(agencyId)
+    const prison = establishment.premise
+
     const mailboxes = await configClient.getMailboxes(submissionTarget.agencyId, 'CA')
 
     if (isEmpty(mailboxes)) {
-      logger.error(`Missing CA notification email addresses for agencyId: ${submissionTarget.agencyId}`)
+      logger.error(`Missing CA notification email addresses for agencyId: ${agencyId}`)
       return []
     }
-    const personalisation = { ...common, sender_name: sendingUserName }
+    const personalisation = { ...common, sender_name: sendingUserName, prison }
 
     return mailboxes.map(mailbox => {
-      return { personalisation, email: mailbox.email }
+      return {
+        personalisation: mergeDeepLeft({ ca_name: mailbox.name }, personalisation),
+        email: mailbox.email,
+      }
     })
   }
 
@@ -117,6 +126,7 @@ module.exports = function createNotificationService(
     ])
 
     const email = getIn(ro, ['orgEmail'])
+    const organisation = getIn(ro, ['organisation'])
     const prison = getIn(establishment, ['premise'])
 
     if (isEmpty(email)) {
@@ -136,6 +146,7 @@ module.exports = function createNotificationService(
         personalisation: {
           ...common,
           ro_name: submissionTarget.name,
+          organisation,
           prison,
           date,
         },
@@ -168,7 +179,7 @@ module.exports = function createNotificationService(
     transitionDate,
     sendingUserName,
   }) {
-    if (!activeTemplates.includes(notificationType)) {
+    if (!activeNotificationTypes.includes(notificationType)) {
       return
     }
 
