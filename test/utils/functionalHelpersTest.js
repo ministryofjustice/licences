@@ -1,9 +1,10 @@
 const {
+  addPaths,
   allValuesEmpty,
-  interleave,
   equals,
   getWhereKeyLike,
-  addPaths,
+  interleave,
+  isEmpty,
 } = require('../../server/utils/functionalHelpers')
 
 describe('functionalHelpers', () => {
@@ -105,6 +106,40 @@ describe('functionalHelpers', () => {
         },
         fifth: 'value3',
       })
+    })
+  })
+
+  describe('isEmpty', () => {
+    it('should return false for a non-empty string', () => {
+      expect(isEmpty('x')).to.eql(false)
+    })
+
+    it('should return false for a non-empty array', () => {
+      expect(isEmpty(['x'])).to.eql(false)
+    })
+
+    it('should return false for a non-empty object', () => {
+      expect(isEmpty({ a: 1 })).to.eql(false)
+    })
+
+    it('should return true for an empty string', () => {
+      expect(isEmpty('')).to.eql(true)
+    })
+
+    it('should return true for an empty array', () => {
+      expect(isEmpty([])).to.eql(true)
+    })
+
+    it('should return true for an empty object', () => {
+      expect(isEmpty({})).to.eql(true)
+    })
+
+    it('should return true for null', () => {
+      expect(isEmpty(null)).to.eql(true)
+    })
+
+    it('should return true for undefined', () => {
+      expect(isEmpty(undefined)).to.eql(true)
     })
   })
 })

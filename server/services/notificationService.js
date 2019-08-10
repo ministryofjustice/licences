@@ -1,5 +1,5 @@
 const moment = require('moment')
-const { append, compose, converge, head, identity, mergeDeepLeft, unless } = require('ramda')
+const R = require('ramda')
 const templates = require('./config/notificationTemplates')
 const {
   notifications: { notifyKey, activeNotificationTypes, clearingOfficeEmail },
@@ -35,17 +35,6 @@ module.exports = function createNotificationService(
       domain,
     }
 
-    const notificationDataMethod = {
-      CA_RETURN: getCaAndClearingOfficeNotificationData,
-      DM_TO_CA_RETURN: getCaNotificationData,
-      CA_DECISION: getCaNotificationData,
-      RO_NEW: getRoAndClearingOfficeNotificationData,
-      RO_TWO_DAYS: getRoNotificationData,
-      RO_DUE: getRoNotificationData,
-      RO_OVERDUE: getRoAndClearingOfficeNotificationData,
-      DM_NEW: getDmNotificationData,
-    }
-
     return notificationDataMethod[notificationType]
       ? notificationDataMethod[notificationType]({
           common,
@@ -58,35 +47,50 @@ module.exports = function createNotificationService(
       : []
   }
 
+  const missing = x => () => isEmpty(x)
+
+  // (a -> b) -> Promise a -> Promise b
+  const andThen = fn => promise => promise.then(fn)
+
+  // object -> string -> string
+  const replaceName = replacements => name => R.propOr(name, name, replacements)
+
+  // object -> [notification] -> [notification]
+  const replaceTemplateNames = replacements => R.map(R.over(R.lensProp('templateName'), replaceName(replacements)))
+
+  // (fn, replacements) -> [notifications] -> [notifications]
+  const thenReplaceTemplateNames = fn => replacements =>
+    R.compose(
+      andThen(replaceTemplateNames(replacements)),
+      fn
+    )
+
   // notification -> notification
-  const clearingOfficeNotificationFromPrototype = mergeDeepLeft({ email: clearingOfficeEmail })
+  const clearingOfficeNotificationFromPrototype = R.mergeDeepLeft({ email: clearingOfficeEmail, templateName: 'ADMIN' })
 
   // [notification] -> [notification]
-  const appendClearingOfficeNotification = converge(append, [
-    compose(
+  const appendClearingOfficeNotification = R.converge(R.append, [
+    R.compose(
       clearingOfficeNotificationFromPrototype,
-      head
+      R.head
     ),
-    identity,
+    R.identity,
   ])
 
   // [notification] -> [notification]
-  const appendClearingOfficeNotificationIfNotEmpty = unless(isEmpty, appendClearingOfficeNotification)
+  const appendClearingOfficeNotificationUnlessEmpty = R.unless(isEmpty, appendClearingOfficeNotification)
 
-  // (a -> b) -> Promise -> Promise
-  const andThen = fn => promise => promise.then(fn)
-
-  const getCaAndClearingOfficeNotificationData = compose(
-    andThen(appendClearingOfficeNotificationIfNotEmpty),
-    getCaNotificationData
+  const getCaAndClearingOfficeNotifications = R.compose(
+    andThen(appendClearingOfficeNotificationUnlessEmpty),
+    getCaNotifications
   )
 
-  const getRoAndClearingOfficeNotificationData = compose(
-    andThen(appendClearingOfficeNotificationIfNotEmpty),
-    getRoNotificationData
+  const getRoAndClearingOfficeNotifications = R.compose(
+    andThen(appendClearingOfficeNotificationUnlessEmpty),
+    getRoNotifications
   )
 
-  async function getCaNotificationData({ common, token, submissionTarget, sendingUserName }) {
+  async function getCaNotifications({ common, token, submissionTarget, sendingUserName }) {
     const agencyId = getIn(submissionTarget, ['agencyId'])
 
     if (isEmpty(agencyId)) {
@@ -107,13 +111,14 @@ module.exports = function createNotificationService(
 
     return mailboxes.map(mailbox => {
       return {
-        personalisation: mergeDeepLeft({ ca_name: mailbox.name }, personalisation),
+        personalisation: R.mergeDeepLeft({ ca_name: mailbox.name }, personalisation),
         email: mailbox.email,
+        templateName: 'STANDARD',
       }
     })
   }
 
-  async function getRoNotificationData({ common, token, submissionTarget, bookingId, transitionDate }) {
+  async function getRoNotifications({ common, token, submissionTarget, bookingId, transitionDate }) {
     const deliusId = getIn(submissionTarget, ['deliusId'])
     if (isEmpty(deliusId)) {
       logger.error('Missing COM deliusId')
@@ -125,14 +130,8 @@ module.exports = function createNotificationService(
       userAdminService.getRoUserByDeliusId(deliusId),
     ])
 
-    const email = getIn(ro, ['orgEmail'])
     const organisation = getIn(ro, ['organisation'])
     const prison = getIn(establishment, ['premise'])
-
-    if (isEmpty(email)) {
-      logger.error(`Missing orgEmail for RO: ${deliusId}`)
-      return []
-    }
 
     if (isEmpty(prison)) {
       logger.error(`Missing prison for bookingId: ${bookingId}`)
@@ -141,21 +140,29 @@ module.exports = function createNotificationService(
 
     const date = transitionDate ? getRoCaseDueDate(moment(transitionDate)) : getRoNewCaseDueDate()
 
-    return [
-      {
-        personalisation: {
-          ...common,
-          ro_name: submissionTarget.name,
-          organisation,
-          prison,
-          date,
-        },
-        email,
-      },
-    ]
+    return makeRoNotifications(
+      R.prop('email', ro),
+      R.prop('orgEmail', ro),
+      { personalisation: { ...common, ro_name: submissionTarget.name, organisation, prison, date } },
+      deliusId
+    )
   }
 
-  async function getDmNotificationData({ common, token, bookingId }) {
+  const makeRoNotifications = (email, orgEmail, base, deliusId) =>
+    R.compose(
+      R.ifElse(
+        missing(orgEmail),
+        R.tap(() => logger.error(`Missing orgEmail for RO: ${deliusId}`)),
+        R.append(R.mergeDeepRight(base, { email: orgEmail, templateName: 'ADMIN' }))
+      ),
+      R.ifElse(
+        missing(email),
+        R.tap(() => logger.error(`Missing email for RO: ${deliusId}`)),
+        R.append(R.mergeDeepRight(base, { email, templateName: 'STANDARD' }))
+      )
+    )([])
+
+  async function getDmNotifications({ common, token, bookingId }) {
     const establishment = await prisonerService.getEstablishmentForPrisoner(bookingId, token)
 
     const mailboxes = await configClient.getMailboxes(establishment.agencyId, 'DM')
@@ -166,8 +173,28 @@ module.exports = function createNotificationService(
     }
 
     return mailboxes.map(mailbox => {
-      return { personalisation: { ...common, dm_name: mailbox.name }, email: mailbox.email }
+      return { personalisation: { ...common, dm_name: mailbox.name }, email: mailbox.email, templateName: 'STANDARD' }
     })
+  }
+
+  const notificationDataMethod = {
+    CA_RETURN: thenReplaceTemplateNames(getCaAndClearingOfficeNotifications)({
+      STANDARD: 'CA_RETURN',
+      ADMIN: 'CA_RETURN_ADMIN',
+    }),
+    DM_TO_CA_RETURN: thenReplaceTemplateNames(getCaNotifications)({ STANDARD: 'CA_RETURN' }),
+    CA_DECISION: thenReplaceTemplateNames(getCaNotifications)({ STANDARD: 'CA_DECISION' }),
+    RO_NEW: thenReplaceTemplateNames(getRoAndClearingOfficeNotifications)({
+      STANDARD: 'RO_NEW',
+      ADMIN: 'RO_NEW_ADMIN',
+    }),
+    RO_TWO_DAYS: thenReplaceTemplateNames(getRoNotifications)({ STANDARD: 'RO_TWO_DAYS', ADMIN: 'RO_TWO_DAYS' }),
+    RO_DUE: thenReplaceTemplateNames(getRoNotifications)({ STANDARD: 'RO_DUE', ADMIN: 'RO_DUE' }),
+    RO_OVERDUE: thenReplaceTemplateNames(getRoAndClearingOfficeNotifications)({
+      STANDARD: 'RO_OVERDUE',
+      ADMIN: 'RO_OVERDUE_ADMIN',
+    }),
+    DM_NEW: thenReplaceTemplateNames(getDmNotifications)({ STANDARD: 'DM_NEW' }),
   }
 
   async function sendNotifications({
@@ -226,14 +253,14 @@ module.exports = function createNotificationService(
       return
     }
 
-    if (isEmpty(templates[notificationType])) {
-      logger.warn(`Unmapped notification template type: $type`)
-      return
-    }
-
-    const { templateId } = templates[notificationType]
-
     notifications.forEach(notification => {
+      if (isEmpty(templates[notification.templateName])) {
+        logger.warn(`Unmapped notification template name: ${notification.templateName}`)
+        return
+      }
+
+      const { templateId } = templates[notification.templateName]
+
       if (isEmpty(notification.email)) {
         logger.warn('Empty notification email')
       } else {

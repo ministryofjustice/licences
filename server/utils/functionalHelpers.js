@@ -1,39 +1,6 @@
 const R = require('ramda')
 
-module.exports = {
-  getIn,
-  isEmpty,
-  flatten: R.flatten,
-  notAllValuesEmpty,
-  allValuesEmpty,
-  replaceArrayItem,
-  lastItem: R.last,
-  merge: R.merge,
-  mergeWithRight: R.mergeDeepRight,
-  firstItem: R.head,
-  lastIndex,
-  removePath: R.dissocPath,
-  removePaths,
-  replacePath: R.assocPath,
-  interleave,
-  equals: R.equals,
-  difference: R.difference,
-  pipe: R.pipe,
-  removeFromArray: R.remove,
-  addToArray: R.append,
-  all: R.all,
-  getWhereKeyLike,
-  pickKey,
-  firstKey,
-  getFieldDetail,
-  getFieldName,
-  pick: R.pick,
-  pickBy: R.pickBy,
-  addPaths,
-  keys: R.keys,
-  mapObject: R.mapObjIndexed,
-  intersection: R.intersection,
-}
+const isEmpty = R.either(R.isEmpty, R.isNil)
 
 // pass in your object and a path in array format
 // http://ramdajs.com/docs/#path
@@ -41,16 +8,10 @@ function getIn(object, pathArray) {
   return R.path(pathArray, object)
 }
 
-function isEmpty(item) {
-  return R.isEmpty(item) || R.isNil(item)
-}
-
-function allValuesEmpty(object) {
-  return R.pipe(
-    R.values,
-    R.all(isEmpty)
-  )(object)
-}
+const allValuesEmpty = R.pipe(
+  R.values,
+  R.all(isEmpty)
+)
 
 function notAllValuesEmpty(object) {
   return !allValuesEmpty(object)
@@ -114,4 +75,39 @@ function getFieldName(fieldConfig) {
     R.keys,
     R.head
   )(fieldConfig)
+}
+
+module.exports = {
+  getIn,
+  isEmpty,
+  flatten: R.flatten,
+  notAllValuesEmpty,
+  allValuesEmpty,
+  replaceArrayItem,
+  lastItem: R.last,
+  merge: R.merge,
+  mergeWithRight: R.mergeDeepRight,
+  firstItem: R.head,
+  lastIndex,
+  removePath: R.dissocPath,
+  removePaths,
+  replacePath: R.assocPath,
+  interleave,
+  equals: R.equals,
+  difference: R.difference,
+  pipe: R.pipe,
+  removeFromArray: R.remove,
+  addToArray: R.append,
+  all: R.all,
+  getWhereKeyLike,
+  pickKey,
+  firstKey,
+  getFieldDetail,
+  getFieldName,
+  pick: R.pick,
+  pickBy: R.pickBy,
+  addPaths,
+  keys: R.keys,
+  mapObject: R.mapObjIndexed,
+  intersection: R.intersection,
 }

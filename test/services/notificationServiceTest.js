@@ -23,9 +23,11 @@ describe('notificationService', () => {
         .resolves({ firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1', offenderNo: 'AB1234A' }),
     }
     userAdminService = {
-      getRoUserByDeliusId: sinon
-        .stub()
-        .resolves({ orgEmail: 'expected@ro.email', organisation: 'NPS Dewsbury (Kirklees and Wakefield)' }),
+      getRoUserByDeliusId: sinon.stub().resolves({
+        orgEmail: 'admin@ro.email',
+        email: 'ro@ro.email',
+        organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+      }),
     }
     deadlineService = {
       getDueInDays: sinon.stub().resolves([{ booking_id: 1, transition_date: transitionDate }]),
@@ -88,7 +90,6 @@ describe('notificationService', () => {
       const notifications = [{ email: ['email@email.com'] }]
       await service.notify({
         sendingUserName: 'username',
-        notificationType: 'UNKNOWN_TYPE',
         bookingId: 123,
         notifications,
       })
@@ -118,7 +119,7 @@ describe('notificationService', () => {
     })
 
     it('should call sendEmail from notifyClient', async () => {
-      const notifications = [{ email: 'email@email.com' }]
+      const notifications = [{ email: 'email@email.com', templateName: 'CA_RETURN' }]
       await service.notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
@@ -129,13 +130,13 @@ describe('notificationService', () => {
     })
 
     it('should pass in the template id', async () => {
-      const notifications = [{ email: ['email@email.com'] }]
+      const notifications = [{ email: 'email@email.com', templateName: 'CA_RETURN' }]
       await service.notify({ user: 'username', notificationType: 'CA_RETURN', bookingId: 123, notifications })
       expect(notifyClient.sendEmail).to.be.calledWith(templates.CA_RETURN.templateId, sinon.match.any, sinon.match.any)
     })
 
     it('should pass in the email address', async () => {
-      const notifications = [{ email: 'email@email.com' }]
+      const notifications = [{ email: 'email@email.com', templateName: 'CA_RETURN' }]
       await service.notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
@@ -146,7 +147,7 @@ describe('notificationService', () => {
     })
 
     it('should pass in the data', async () => {
-      const notifications = [{ personalisation: { a: 'a' }, email: ['email@email.com'] }]
+      const notifications = [{ personalisation: { a: 'a' }, email: ['email@email.com'], templateName: 'CA_RETURN' }]
       await service.notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
@@ -173,7 +174,11 @@ describe('notificationService', () => {
     })
 
     it('should call sendEmail from notifyClient once for each email', async () => {
-      const notifications = [{ email: '1@1.com' }, { email: '2@2.com' }, { email: '3@3.com' }]
+      const notifications = [
+        { email: '1@1.com', templateName: 'CA_RETURN' },
+        { email: '2@2.com', templateName: 'CA_RETURN_ADMIN' },
+        { email: '3@3.com', templateName: 'CA_RETURN' },
+      ]
       await service.notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
@@ -295,7 +300,19 @@ describe('notificationService', () => {
 
         expect(data).to.eql([
           {
-            email: 'expected@ro.email',
+            email: 'ro@ro.email',
+            templateName: 'RO_NEW',
+            personalisation: {
+              ...expectedCommonData,
+              prison: 'HMP Blah',
+              ro_name: 'RO Name',
+              date: 'Monday 25th March',
+              organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+            },
+          },
+          {
+            email: 'admin@ro.email',
+            templateName: 'RO_NEW_ADMIN',
             personalisation: {
               ...expectedCommonData,
               prison: 'HMP Blah',
@@ -306,6 +323,7 @@ describe('notificationService', () => {
           },
           {
             email: config.notifications.clearingOfficeEmail,
+            templateName: 'RO_NEW_ADMIN',
             personalisation: {
               ...expectedCommonData,
               prison: 'HMP Blah',
@@ -354,6 +372,7 @@ describe('notificationService', () => {
         expect(data).to.eql([
           {
             email: 'test1@email.address',
+            templateName: 'CA_RETURN',
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
@@ -363,6 +382,7 @@ describe('notificationService', () => {
           },
           {
             email: 'test2@email.address',
+            templateName: 'CA_RETURN',
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
@@ -372,6 +392,7 @@ describe('notificationService', () => {
           },
           {
             email: config.notifications.clearingOfficeEmail,
+            templateName: 'CA_RETURN_ADMIN',
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
@@ -397,6 +418,7 @@ describe('notificationService', () => {
         expect(data).to.eql([
           {
             email: 'test1@email.address',
+            templateName: 'CA_RETURN',
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
@@ -406,6 +428,7 @@ describe('notificationService', () => {
           },
           {
             email: 'test2@email.address',
+            templateName: 'CA_RETURN',
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
@@ -441,6 +464,7 @@ describe('notificationService', () => {
         expect(data).to.eql([
           {
             email: 'test1@email.address',
+            templateName: 'DM_NEW',
             personalisation: {
               ...expectedCommonData,
               dm_name: 'Name One',
@@ -448,6 +472,7 @@ describe('notificationService', () => {
           },
           {
             email: 'test2@email.address',
+            templateName: 'DM_NEW',
             personalisation: {
               ...expectedCommonData,
               dm_name: 'Name Two',
@@ -546,11 +571,11 @@ describe('notificationService', () => {
         organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
       }
       const overdueTemplate = templates.RO_OVERDUE.templateId
-      const expectedEmail = 'expected@ro.email'
+      const expectedEmail = 'ro@ro.email'
 
       await service.notifyRoReminders('token')
 
-      expect(notifyClient.sendEmail).to.have.callCount(6)
+      expect(notifyClient.sendEmail).to.have.callCount(10)
       expect(notifyClient.sendEmail).to.be.calledWith(overdueTemplate, expectedEmail, {
         personalisation: firstNotification,
       })
