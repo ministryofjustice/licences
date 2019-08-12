@@ -1,10 +1,6 @@
 const moment = require('moment')
 const R = require('ramda')
 const templates = require('./config/notificationTemplates')
-const {
-  notifications: { notifyKey, activeNotificationTypes, clearingOfficeEmail },
-  domain,
-} = require('../config')
 const logger = require('../../log.js')
 const { getIn, isEmpty } = require('../utils/functionalHelpers')
 const { getRoCaseDueDate, getRoNewCaseDueDate } = require('../utils/dueDates')
@@ -16,7 +12,8 @@ module.exports = function createNotificationService(
   configClient,
   notifyClient,
   audit,
-  nomisClientBuilder
+  nomisClientBuilder,
+  { notifications: { notifyKey, activeNotificationTypes, clearingOfficeEmail, clearingOfficeEmailEnabled }, domain }
 ) {
   async function getNotificationData({
     prisoner,
@@ -66,7 +63,7 @@ module.exports = function createNotificationService(
     )
 
   // notification -> notification
-  const clearingOfficeNotificationFromPrototype = R.mergeDeepLeft({ email: clearingOfficeEmail, templateName: 'ADMIN' })
+  const clearingOfficeNotificationFromPrototype = R.mergeDeepLeft({ email: clearingOfficeEmail, templateName: 'COPY' })
 
   // [notification] -> [notification]
   const appendClearingOfficeNotification = R.converge(R.append, [
@@ -77,16 +74,20 @@ module.exports = function createNotificationService(
     R.identity,
   ])
 
-  // [notification] -> [notification]
-  const appendClearingOfficeNotificationUnlessEmpty = R.unless(isEmpty, appendClearingOfficeNotification)
+  const clearingOfficeEmailDisabled = () => clearingOfficeEmailEnabled.toUpperCase().trim() !== 'YES'
+
+  const appendClearingOfficeNotificationIfPossible = R.unless(
+    R.either(clearingOfficeEmailDisabled, isEmpty),
+    appendClearingOfficeNotification
+  )
 
   const getCaAndClearingOfficeNotifications = R.compose(
-    andThen(appendClearingOfficeNotificationUnlessEmpty),
+    andThen(appendClearingOfficeNotificationIfPossible),
     getCaNotifications
   )
 
   const getRoAndClearingOfficeNotifications = R.compose(
-    andThen(appendClearingOfficeNotificationUnlessEmpty),
+    andThen(appendClearingOfficeNotificationIfPossible),
     getRoNotifications
   )
 
@@ -153,7 +154,7 @@ module.exports = function createNotificationService(
       R.ifElse(
         missing(orgEmail),
         R.tap(() => logger.error(`Missing orgEmail for RO: ${deliusId}`)),
-        R.append(R.mergeDeepRight(base, { email: orgEmail, templateName: 'ADMIN' }))
+        R.append(R.mergeDeepRight(base, { email: orgEmail, templateName: 'COPY' }))
       ),
       R.ifElse(
         missing(email),
@@ -180,19 +181,16 @@ module.exports = function createNotificationService(
   const notificationDataMethod = {
     CA_RETURN: thenReplaceTemplateNames(getCaAndClearingOfficeNotifications)({
       STANDARD: 'CA_RETURN',
-      ADMIN: 'CA_RETURN_ADMIN',
+      COPY: 'CA_RETURN_COPY',
     }),
     DM_TO_CA_RETURN: thenReplaceTemplateNames(getCaNotifications)({ STANDARD: 'CA_RETURN' }),
     CA_DECISION: thenReplaceTemplateNames(getCaNotifications)({ STANDARD: 'CA_DECISION' }),
-    RO_NEW: thenReplaceTemplateNames(getRoAndClearingOfficeNotifications)({
-      STANDARD: 'RO_NEW',
-      ADMIN: 'RO_NEW_ADMIN',
-    }),
-    RO_TWO_DAYS: thenReplaceTemplateNames(getRoNotifications)({ STANDARD: 'RO_TWO_DAYS', ADMIN: 'RO_TWO_DAYS' }),
-    RO_DUE: thenReplaceTemplateNames(getRoNotifications)({ STANDARD: 'RO_DUE', ADMIN: 'RO_DUE' }),
+    RO_NEW: thenReplaceTemplateNames(getRoAndClearingOfficeNotifications)({ STANDARD: 'RO_NEW', COPY: 'RO_NEW_COPY' }),
+    RO_TWO_DAYS: thenReplaceTemplateNames(getRoNotifications)({ STANDARD: 'RO_TWO_DAYS', COPY: 'RO_TWO_DAYS_COPY' }),
+    RO_DUE: thenReplaceTemplateNames(getRoNotifications)({ STANDARD: 'RO_DUE', COPY: 'RO_DUE_COPY' }),
     RO_OVERDUE: thenReplaceTemplateNames(getRoAndClearingOfficeNotifications)({
       STANDARD: 'RO_OVERDUE',
-      ADMIN: 'RO_OVERDUE_ADMIN',
+      COPY: 'RO_OVERDUE_COPY',
     }),
     DM_NEW: thenReplaceTemplateNames(getDmNotifications)({ STANDARD: 'DM_NEW' }),
   }
