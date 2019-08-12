@@ -116,6 +116,7 @@ module.exports = {
     roNewCaseWorkingDays: 10,
     roNewCaseTodayCutOff: 15,
     clearingOfficeEmail: get('CLEARING_OFFICE_EMAIL', 'HDC.ClearingOffice@justice.gov.uk'),
+    clearingOfficeEmailEnabled: get('CLEARING_OFFICE_EMAIL_ENABLED', 'YES'),
     activeNotificationTypes: get(
       'NOTIFY_ACTIVE_TEMPLATES',
       'CA_RETURN,CA_DECISION,RO_NEW,RO_TWO_DAYS,RO_DUE,RO_OVERDUE,DM_NEW, DM_TO_CA_RETURN'

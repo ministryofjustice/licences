@@ -1,6 +1,5 @@
 const createNotificationService = require('../../server/services/notificationService')
 const templates = require('../../server/services/config/notificationTemplates')
-const config = require('../../server/config')
 
 describe('notificationService', () => {
   let service
@@ -11,10 +10,30 @@ describe('notificationService', () => {
   let notifyClient
   let audit
   let nomisClient
+  let config
 
   const transitionDate = '2019-01-01 12:00:00'
 
   beforeEach(() => {
+    config = {
+      notifications: {
+        notifyKey: 'dummy-key',
+        clearingOfficeEmail: 'HDC.ClearingOffice@justice.gov.uk',
+        clearingOfficeEmailEnabled: 'YES',
+        activeNotificationTypes: [
+          'CA_RETURN',
+          'CA_DECISION',
+          'RO_NEW',
+          'RO_TWO_DAYS',
+          'RO_DUE',
+          'RO_OVERDUE',
+          'DM_NEW',
+          'DM_TO_CA_RETURN',
+        ],
+      },
+      domain: 'http://localhost:3000',
+    }
+
     prisonerService = {
       getEstablishmentForPrisoner: sinon.stub().resolves({ premise: 'HMP Blah', agencyId: 'LT1' }),
       getOrganisationContactDetails: sinon.stub().resolves({ deliusId: 'delius' }),
@@ -81,7 +100,8 @@ describe('notificationService', () => {
       configClient,
       notifyClient,
       audit,
-      nomisClientBuilder
+      nomisClientBuilder,
+      config
     )
   })
 
@@ -130,9 +150,63 @@ describe('notificationService', () => {
     })
 
     it('should pass in the template id', async () => {
-      const notifications = [{ email: 'email@email.com', templateName: 'CA_RETURN' }]
+      const notifications = [
+        { email: 'email@email.com', templateName: 'CA_RETURN' },
+        { email: 'email@email.com', templateName: 'CA_RETURN_COPY' },
+        { email: 'email@email.com', templateName: 'CA_DECISION' },
+        { email: 'email@email.com', templateName: 'RO_NEW' },
+        { email: 'email@email.com', templateName: 'RO_NEW_COPY' },
+        { email: 'email@email.com', templateName: 'RO_TWO_DAYS' },
+        { email: 'email@email.com', templateName: 'RO_TWO_DAYS_COPY' },
+        { email: 'email@email.com', templateName: 'RO_DUE' },
+        { email: 'email@email.com', templateName: 'RO_DUE_COPY' },
+        { email: 'email@email.com', templateName: 'RO_OVERDUE' },
+        { email: 'email@email.com', templateName: 'RO_OVERDUE_COPY' },
+        { email: 'email@email.com', templateName: 'DM_NEW' },
+      ]
+
       await service.notify({ user: 'username', notificationType: 'CA_RETURN', bookingId: 123, notifications })
+
       expect(notifyClient.sendEmail).to.be.calledWith(templates.CA_RETURN.templateId, sinon.match.any, sinon.match.any)
+      expect(notifyClient.sendEmail).to.be.calledWith(
+        templates.CA_RETURN_COPY.templateId,
+        sinon.match.any,
+        sinon.match.any
+      )
+      expect(notifyClient.sendEmail).to.be.calledWith(
+        templates.CA_DECISION.templateId,
+        sinon.match.any,
+        sinon.match.any
+      )
+      expect(notifyClient.sendEmail).to.be.calledWith(templates.RO_NEW.templateId, sinon.match.any, sinon.match.any)
+      expect(notifyClient.sendEmail).to.be.calledWith(
+        templates.RO_NEW_COPY.templateId,
+        sinon.match.any,
+        sinon.match.any
+      )
+      expect(notifyClient.sendEmail).to.be.calledWith(
+        templates.RO_TWO_DAYS.templateId,
+        sinon.match.any,
+        sinon.match.any
+      )
+      expect(notifyClient.sendEmail).to.be.calledWith(
+        templates.RO_TWO_DAYS_COPY.templateId,
+        sinon.match.any,
+        sinon.match.any
+      )
+      expect(notifyClient.sendEmail).to.be.calledWith(templates.RO_DUE.templateId, sinon.match.any, sinon.match.any)
+      expect(notifyClient.sendEmail).to.be.calledWith(
+        templates.RO_DUE_COPY.templateId,
+        sinon.match.any,
+        sinon.match.any
+      )
+      expect(notifyClient.sendEmail).to.be.calledWith(templates.RO_OVERDUE.templateId, sinon.match.any, sinon.match.any)
+      expect(notifyClient.sendEmail).to.be.calledWith(
+        templates.RO_OVERDUE_COPY.templateId,
+        sinon.match.any,
+        sinon.match.any
+      )
+      expect(notifyClient.sendEmail).to.be.calledWith(templates.DM_NEW.templateId, sinon.match.any, sinon.match.any)
     })
 
     it('should pass in the email address', async () => {
@@ -176,7 +250,7 @@ describe('notificationService', () => {
     it('should call sendEmail from notifyClient once for each email', async () => {
       const notifications = [
         { email: '1@1.com', templateName: 'CA_RETURN' },
-        { email: '2@2.com', templateName: 'CA_RETURN_ADMIN' },
+        { email: '2@2.com', templateName: 'CA_RETURN_COPY' },
         { email: '3@3.com', templateName: 'CA_RETURN' },
       ]
       await service.notify({
@@ -261,7 +335,7 @@ describe('notificationService', () => {
       })
 
       it('should return empty when missing RO orgEmail', async () => {
-        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({ orgEmail: '' })
+        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({ orgEmail: '', email: '' })
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'RO_NEW',
@@ -312,7 +386,7 @@ describe('notificationService', () => {
           },
           {
             email: 'admin@ro.email',
-            templateName: 'RO_NEW_ADMIN',
+            templateName: 'RO_NEW_COPY',
             personalisation: {
               ...expectedCommonData,
               prison: 'HMP Blah',
@@ -323,7 +397,134 @@ describe('notificationService', () => {
           },
           {
             email: config.notifications.clearingOfficeEmail,
-            templateName: 'RO_NEW_ADMIN',
+            templateName: 'RO_NEW_COPY',
+            personalisation: {
+              ...expectedCommonData,
+              prison: 'HMP Blah',
+              ro_name: 'RO Name',
+              date: 'Monday 25th March',
+              organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+            },
+          },
+        ])
+      })
+
+      it('should generate RO notification data when no email', async () => {
+        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({
+          orgEmail: 'admin@ro.email',
+          email: '',
+          organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+        })
+
+        const data = await service.getNotificationData({
+          prisoner,
+          token: 'token',
+          notificationType: 'RO_NEW',
+          submissionTarget: { deliusId: 'deliusId', name: 'RO Name' },
+          bookingId: '123',
+          sendingUserName: 'sender',
+        })
+
+        expect(data).to.eql([
+          {
+            email: 'admin@ro.email',
+            templateName: 'RO_NEW_COPY',
+            personalisation: {
+              ...expectedCommonData,
+              prison: 'HMP Blah',
+              ro_name: 'RO Name',
+              date: 'Monday 25th March',
+              organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+            },
+          },
+          {
+            email: config.notifications.clearingOfficeEmail,
+            templateName: 'RO_NEW_COPY',
+            personalisation: {
+              ...expectedCommonData,
+              prison: 'HMP Blah',
+              ro_name: 'RO Name',
+              date: 'Monday 25th March',
+              organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+            },
+          },
+        ])
+      })
+
+      it('should generate RO notification data when no orgEmail', async () => {
+        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({
+          orgEmail: '',
+          email: 'ro@ro.email',
+          organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+        })
+
+        const data = await service.getNotificationData({
+          prisoner,
+          token: 'token',
+          notificationType: 'RO_NEW',
+          submissionTarget: { deliusId: 'deliusId', name: 'RO Name' },
+          bookingId: '123',
+          sendingUserName: 'sender',
+        })
+
+        expect(data).to.eql([
+          {
+            email: 'ro@ro.email',
+            templateName: 'RO_NEW',
+            personalisation: {
+              ...expectedCommonData,
+              prison: 'HMP Blah',
+              ro_name: 'RO Name',
+              date: 'Monday 25th March',
+              organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+            },
+          },
+          {
+            email: config.notifications.clearingOfficeEmail,
+            templateName: 'RO_NEW_COPY',
+            personalisation: {
+              ...expectedCommonData,
+              prison: 'HMP Blah',
+              ro_name: 'RO Name',
+              date: 'Monday 25th March',
+              organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+            },
+          },
+        ])
+      })
+
+      it('should no generate RO clearing office notification data if the co email is disabled', async () => {
+        config.notifications.clearingOfficeEmailEnabled = 'No'
+        service = createNotificationService(
+          prisonerService,
+          userAdminService,
+          deadlineService,
+          configClient,
+          notifyClient,
+          audit,
+          sinon.stub().returns(nomisClient),
+          config
+        )
+
+        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({
+          orgEmail: '',
+          email: 'ro@ro.email',
+          organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+        })
+
+        const data = await service.getNotificationData({
+          prisoner,
+          token: 'token',
+          notificationType: 'RO_NEW',
+          submissionTarget: { deliusId: 'deliusId', name: 'RO Name' },
+          bookingId: '123',
+          sendingUserName: 'sender',
+        })
+
+        expect(data).to.eql([
+          {
+            email: 'ro@ro.email',
+            templateName: 'RO_NEW',
             personalisation: {
               ...expectedCommonData,
               prison: 'HMP Blah',
@@ -392,7 +593,7 @@ describe('notificationService', () => {
           },
           {
             email: config.notifications.clearingOfficeEmail,
-            templateName: 'CA_RETURN_ADMIN',
+            templateName: 'CA_RETURN_COPY',
             personalisation: {
               ...expectedCommonData,
               sender_name: 'sender',
