@@ -48,11 +48,11 @@ module.exports = ({ licenceService, conditionsService, prisonerService }) => rou
 }
 
 function shouldValidate(role, stage, postApproval) {
-  return postApproval ? role === 'CA' : stagesForRole[role].includes(stage)
-}
-
-const stagesForRole = {
-  CA: ['ELIGIBILITY', 'PROCESSING_CA', 'FINAL_CHECKS'],
-  RO: ['PROCESSING_RO'],
-  DM: ['APPROVAL'],
+  return postApproval
+    ? role === 'CA'
+    : {
+        CA: ['ELIGIBILITY', 'PROCESSING_CA', 'FINAL_CHECKS'],
+        RO: ['PROCESSING_RO'],
+        DM: ['APPROVAL'],
+      }[role].includes(stage)
 }

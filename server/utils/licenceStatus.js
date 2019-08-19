@@ -524,7 +524,16 @@ function getReportingInstructionsState(licence) {
       return taskStates.UNSTARTED
     }
 
-    const required = ['name', 'organisation', 'buildingAndStreet1', 'townOrCity', 'postcode', 'telephone']
+    const required = [
+      'name',
+      'organisation',
+      'buildingAndStreet1',
+      'townOrCity',
+      'postcode',
+      'telephone',
+      'reportingDate',
+      'reportingTime',
+    ]
     if (required.some(field => isEmpty(getIn(reportingInstructions, [field])))) {
       return taskStates.STARTED
     }

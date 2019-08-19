@@ -42,12 +42,14 @@ describe('/hdc/reporting', () => {
         url: '/hdc/reporting/reportingInstructions/1',
         body: { bookingId: 1 },
         section: 'reportingInstructions',
+        targetForm: 'reportingInstructions',
         nextPath: '/hdc/taskList/1',
       },
       {
         url: '/hdc/reporting/reportingDate/1',
         body: { bookingId: 1 },
         section: 'reportingDate',
+        targetForm: 'reportingInstructions',
         nextPath: '/hdc/pdf/taskList/1',
       },
     ]
@@ -70,7 +72,7 @@ describe('/hdc/reporting', () => {
               config: formConfig[route.section],
               userInput: route.body,
               licenceSection: 'reporting',
-              formName: route.section,
+              formName: route.targetForm,
               postRelease: false,
             })
 
@@ -96,7 +98,7 @@ describe('/hdc/reporting', () => {
               config: formConfig[route.section],
               userInput: route.body,
               licenceSection: 'reporting',
-              formName: route.section,
+              formName: route.targetForm,
               postRelease: false,
             })
 

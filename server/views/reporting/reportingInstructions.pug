@@ -45,6 +45,33 @@ block content
                   label.form-label(for="telephone") Telephone
                   input#telephone.form-control.small(name="telephone" type="text" value=data.telephone aria-label="Telephone")
 
+            p Enter the reporting date and time
+
+            div(class=errorObject.reportingDate ? "form-group form-group-error": "form-group")
+              fieldset
+                if errorObject.reportingDate
+                  legend
+                    span.error-message #{errorObject.reportingDate}
+                div.form-date
+                  div.form-group.form-group-day
+                    label.form-label(for="reportingDate") Day
+                    input#reportingDate(class=errorObject.reportingDate ? "form-control-error form-control": "form-control" name="reportingDay" type="number" pattern="[0-9]*" value=data.reportingDay)
+
+                  div.form-group.form-group-month
+                    label.form-label(for="reportingMonth") Month
+                    input#reportingMonth(class=errorObject.reportingDate ? "form-control-error form-control": "form-control" name="reportingMonth" type="number" pattern="[0-9]*" value=data.reportingMonth)
+
+                  div.form-group.form-group-year
+                    label.form-label(for="reportingYear") Year
+                    input#reportingYear(class=errorObject.reportingDate ? "form-control-error form-control": "form-control" name="reportingYear" type="number" pattern="[0-9]*" value=data.reportingYear)
+
+            div(class=errorObject.reportingTime ? "form-group form-group-error": "form-group")
+              label.form-label(for="reportingTime")
+                span Time
+                if errorObject.reportingTime
+                  span.error-message #{errorObject.reportingTime}
+              input#reportingTime(class=errorObject.reportingTime ? "form-control-error form-control midMarginBottom": "midMarginBottom form-control" name="reportingTime" type="time" value=data.reportingTime)
+
     include ../includes/roModificationWarning
 
     if (action === 'change')

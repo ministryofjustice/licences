@@ -12,11 +12,11 @@ import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewHoursPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsStandardPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.VictimLiaisonPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.ReportingInstructionsPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.ApprovedPremisesChoicePage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.BassOfferPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksSeriousOffencePage
 import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewAddressPage
-import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewReportingPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -93,7 +93,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     taskListActions.size() == 9
 
     and: 'The tasks for reviewing RO input have View buttons'
-    taskListActions.take(6)*.text() == ['Change', 'View/Edit', 'View/Edit', 'View/Edit', 'View/Edit', 'View']
+    taskListActions.take(6)*.text() == ['Change', 'View/Edit', 'View/Edit', 'View/Edit', 'View/Edit', 'View/Edit']
 
     and: 'The final checks task has a Start button'
     taskListAction(tasks.final).text() == 'Start now'
@@ -142,7 +142,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     'conditions'   | tasks.conditions  | LicenceConditionsStandardPage
     'risk'         | tasks.risk        | RiskManagementPage
     'victim'       | tasks.victim      | VictimLiaisonPage
-    'reporting'    | tasks.reporting   | ReviewReportingPage
+    'reporting'    | tasks.reporting   | ReportingInstructionsPage
     'final checks' | tasks.final       | FinalChecksSeriousOffencePage
     'submit'       | tasks.submit      | SendPage
   }

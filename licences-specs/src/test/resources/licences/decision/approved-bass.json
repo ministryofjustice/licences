@@ -39,74 +39,73 @@
         "addressLine2": "",
         "bassAccepted": "Yes"
       }
-    }
-  },
-  "curfew": {
-    "curfewHours": {
-      "firstNightFrom": "18:30",
-      "firstNightUntil": "10:11",
-      "mondayFrom": "21:22",
-      "mondayUntil": "08:09",
-      "tuesdayFrom": "19:00",
-      "tuesdayUntil": "07:00",
-      "wednesdayFrom": "19:00",
-      "wednesdayUntil": "07:00",
-      "thursdayFrom": "19:00",
-      "thursdayUntil": "07:00",
-      "fridayFrom": "19:00",
-      "fridayUntil": "07:00",
-      "saturdayFrom": "19:00",
-      "saturdayUntil": "07:00",
-      "sundayFrom": "18:19",
-      "sundayUntil": "06:07"
-    }
-  },
-  "licenceConditions": {
-    "standard": {
-      "additionalConditionsRequired": "Yes"
     },
-    "additional": {
-      "NOCAMERAPHONE": {}
-    },
-    "bespoke": [
-      {
-        "text": "First bespoke condition",
-        "approved": "Yes"
+    "curfew": {
+      "curfewHours": {
+        "firstNightFrom": "18:30",
+        "firstNightUntil": "10:11",
+        "mondayFrom": "21:22",
+        "mondayUntil": "08:09",
+        "tuesdayFrom": "19:00",
+        "tuesdayUntil": "07:00",
+        "wednesdayFrom": "19:00",
+        "wednesdayUntil": "07:00",
+        "thursdayFrom": "19:00",
+        "thursdayUntil": "07:00",
+        "fridayFrom": "19:00",
+        "fridayUntil": "07:00",
+        "saturdayFrom": "19:00",
+        "saturdayUntil": "07:00",
+        "sundayFrom": "18:19",
+        "sundayUntil": "06:07"
       }
-    ]
-  },
-  "risk": {
-    "riskManagement": {
-      "planningActions": "No",
-      "awaitingInformation": "No",
-      "victimLiaison": "No"
-    }
-  },
-  "reporting": {
-    "reportingInstructions": {
-      "name": "Reporting Name",
-      "buildingAndStreet1": "Street",
-      "buildingAndStreet2": "",
-      "townOrCity": "Town",
-      "postcode": "AB1 1AB",
-      "telephone": "0123 456789"
-    }
-  },
-  "finalChecks": {
-    "onRemand": {
-      "decision": "No"
     },
-    "seriousOffence": {
-      "decision": "No"
+    "licenceConditions": {
+      "standard": {
+        "additionalConditionsRequired": "Yes"
+      },
+      "additional": {
+        "NOCAMERAPHONE": {}
+      },
+      "bespoke": [
+        {
+          "text": "First bespoke condition",
+          "approved": "Yes"
+        }
+      ]
     },
-    "confiscationOrder": {
-      "decision": "No"
-    }
-  },
-  "approval": {
-    "release": {
-      "decision": "Yes"
+    "risk": {
+      "riskManagement": {
+        "planningActions": "No",
+        "awaitingInformation": "No",
+        "victimLiaison": "No"
+      }
+    },
+    "reporting": {
+      "reportingInstructions": {
+        "name": "Reporting Name",
+        "buildingAndStreet1": "Street",
+        "buildingAndStreet2": "",
+        "townOrCity": "Town",
+        "postcode": "AB1 1AB",
+        "telephone": "0123 456789"
+      }
+    },
+    "finalChecks": {
+      "onRemand": {
+        "decision": "No"
+      },
+      "seriousOffence": {
+        "decision": "No"
+      },
+      "confiscationOrder": {
+        "decision": "No"
+      }
+    },
+    "approval": {
+      "release": {
+        "decision": "Yes"
+      }
     }
   }
-}
 }

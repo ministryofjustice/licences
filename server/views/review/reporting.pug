@@ -27,6 +27,14 @@ block content
         span#reportingTown.block.bold #{reporting.townOrCity}
         span#reportingPostCode.block.bold #{reporting.postcode}
 
-      div.smallPaddingTop
+      div.smallPaddingTop.paddingBottom
         span.block Telephone
         span#reportingTelephone.block.bold #{reporting.telephone}
+
+      div.smallPaddingTop.paddingBottom
+        span.block Reporting date
+        span#reportingDate.block.bold #{reporting.reportingDate}
+
+      div.smallPaddingTop
+        span.block Reporting time
+        span#reportingTime.block.bold #{reporting.reportingTime}

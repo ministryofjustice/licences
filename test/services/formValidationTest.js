@@ -372,6 +372,8 @@ describe('validation', () => {
               townOrCity: 't',
               postcode: 'S1 4JQ',
               telephone: '0770000000',
+              reportingDate: '01/02/2030',
+              reportingTime: '12:34',
             },
             outcome: {},
           },
@@ -383,6 +385,8 @@ describe('validation', () => {
               townOrCity: '',
               postcode: 'a',
               telephone: '',
+              reportingDate: '',
+              reportingTime: '',
             },
             outcome: {
               name: 'Enter a name',
@@ -391,6 +395,8 @@ describe('validation', () => {
               townOrCity: 'Enter a town or city',
               postcode: 'Enter a postcode in the right format',
               telephone: 'Enter a telephone number',
+              reportingDate: 'Enter a date',
+              reportingTime: 'Enter a time',
             },
           },
         ]
@@ -1875,6 +1881,8 @@ describe('validation', () => {
         townOrCity: 't',
         postcode: 'S1 4JQ',
         telephone: '0770000000',
+        reportingDate: '01/02/2030',
+        reportingTime: '12:34',
       }
 
       const validAddressReview = { consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes' }
