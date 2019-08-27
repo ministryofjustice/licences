@@ -166,8 +166,8 @@ module.exports = {
         label: reportingInstructions.getLabel({ decisions, tasks }),
         action: {
           type: 'btn-secondary',
-          href: '/hdc/review/reporting/',
-          text: 'View',
+          href: '/hdc/reporting/reportingInstructions/',
+          text: 'View/Edit',
         },
         visible: validAddress,
       },

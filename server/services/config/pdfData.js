@@ -149,14 +149,14 @@ const REPORTING_ADDRESS = {
 }
 
 const REPORTING_AT = {
-  paths: [['licence', 'reporting', 'reportingDate', 'reportingTime']],
+  paths: [['licence', 'reporting', 'reportingInstructions', 'reportingTime']],
   displayName: 'Reporting at',
   group: 'reporting',
   required: 'optional',
 }
 
 const REPORTING_ON = {
-  paths: [['licence', 'reporting', 'reportingDate', 'reportingDate']],
+  paths: [['licence', 'reporting', 'reportingInstructions', 'reportingDate']],
   displayName: 'Reporting on',
   group: 'reporting',
   required: 'optional',

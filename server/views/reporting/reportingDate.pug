@@ -6,9 +6,17 @@ block question
 block formItems
   input(type="hidden" name="path" value=action)
 
+  input(type="hidden" name="name" value=data.name)
+  input(type="hidden" name="organisation"  value=data.organisation)
+  input(type="hidden" name="buildingAndStreet1" value=data.buildingAndStreet1)
+  input(type="hidden" name="buildingAndStreet2" value=data.buildingAndStreet2)
+  input(type="hidden" name="townOrCity" value=data.townOrCity)
+  input(type="hidden" name="postcode" value=data.postcode)
+  input(type="hidden" name="telephone" value=data.telephone)
+
   div#address.pure-g
     div.pure-u-3-5
-      div(class=errorObject.reportingDate ? "form-group form-group-error" : "form-group")
+      div(class=errorObject.reportingDate ? "form-group form-group-error": "form-group")
         fieldset
           if errorObject.reportingDate
             legend
@@ -16,20 +24,20 @@ block formItems
           div.form-date
             div.form-group.form-group-day
               label.form-label(for="reportingDate") Day
-              input#reportingDate(class=errorObject.reportingDate ? "form-control-error form-control" : "form-control" name="reportingDay" type="number" pattern="[0-9]*" value=data.reportingDay)
+              input#reportingDate(class=errorObject.reportingDate ? "form-control-error form-control": "form-control" name="reportingDay" type="number" pattern="[0-9]*" value=data.reportingDay)
 
             div.form-group.form-group-month
               label.form-label(for="reportingMonth") Month
-              input#reportingMonth(class=errorObject.reportingDate ? "form-control-error form-control" : "form-control" name="reportingMonth" type="number" pattern="[0-9]*" value=data.reportingMonth)
+              input#reportingMonth(class=errorObject.reportingDate ? "form-control-error form-control": "form-control" name="reportingMonth" type="number" pattern="[0-9]*" value=data.reportingMonth)
 
             div.form-group.form-group-year
               label.form-label(for="reportingYear") Year
-              input#reportingYear(class=errorObject.reportingDate ? "form-control-error form-control" : "form-control" name="reportingYear" type="number" pattern="[0-9]*" value=data.reportingYear)
+              input#reportingYear(class=errorObject.reportingDate ? "form-control-error form-control": "form-control" name="reportingYear" type="number" pattern="[0-9]*" value=data.reportingYear)
 
       div(class=errorObject.reportingTime ? "form-group form-group-error" : "form-group")
         label.form-label(for="reportingTime")
           span Time
           if errorObject.reportingTime
             span.error-message #{errorObject.reportingTime}
-        input#reportingTime(class=errorObject.reportingTime ? "form-control-error form-control midMarginBottom" : "midMarginBottom form-control" name="reportingTime" type="time" value=data.reportingTime)
+        input#reportingTime(class=errorObject.reportingTime ? "form-control-error form-control midMarginBottom": "midMarginBottom form-control" name="reportingTime" type="time" value=data.reportingTime)
 

@@ -6,5 +6,5 @@ seeds/
 coverage/
 build/
 package-lock.json
-README.md
+*.md
 licences-specs/src/test/resources/licences/

@@ -46,21 +46,11 @@ module.exports = function createNotificationService(
 
   const missing = x => () => isEmpty(x)
 
-  // (a -> b) -> Promise a -> Promise b
-  const andThen = fn => promise => promise.then(fn)
-
   // object -> string -> string
   const replaceName = replacements => name => R.propOr(name, name, replacements)
 
   // object -> [notification] -> [notification]
   const replaceTemplateNames = replacements => R.map(R.over(R.lensProp('templateName'), replaceName(replacements)))
-
-  // (fn, replacements) -> [notifications] -> [notifications]
-  const thenReplaceTemplateNames = fn => replacements =>
-    R.compose(
-      andThen(replaceTemplateNames(replacements)),
-      fn
-    )
 
   // notification -> notification
   const clearingOfficeNotificationFromPrototype = R.mergeDeepLeft({ email: clearingOfficeEmail, templateName: 'COPY' })
@@ -82,12 +72,12 @@ module.exports = function createNotificationService(
   )
 
   const getCaAndClearingOfficeNotifications = R.compose(
-    andThen(appendClearingOfficeNotificationIfPossible),
+    R.then(appendClearingOfficeNotificationIfPossible),
     getCaNotifications
   )
 
   const getRoAndClearingOfficeNotifications = R.compose(
-    andThen(appendClearingOfficeNotificationIfPossible),
+    R.then(appendClearingOfficeNotificationIfPossible),
     getRoNotifications
   )
 
@@ -179,20 +169,38 @@ module.exports = function createNotificationService(
   }
 
   const notificationDataMethod = {
-    CA_RETURN: thenReplaceTemplateNames(getCaAndClearingOfficeNotifications)({
-      STANDARD: 'CA_RETURN',
-      COPY: 'CA_RETURN_COPY',
-    }),
-    DM_TO_CA_RETURN: thenReplaceTemplateNames(getCaNotifications)({ STANDARD: 'CA_RETURN' }),
-    CA_DECISION: thenReplaceTemplateNames(getCaNotifications)({ STANDARD: 'CA_DECISION' }),
-    RO_NEW: thenReplaceTemplateNames(getRoAndClearingOfficeNotifications)({ STANDARD: 'RO_NEW', COPY: 'RO_NEW_COPY' }),
-    RO_TWO_DAYS: thenReplaceTemplateNames(getRoNotifications)({ STANDARD: 'RO_TWO_DAYS', COPY: 'RO_TWO_DAYS_COPY' }),
-    RO_DUE: thenReplaceTemplateNames(getRoNotifications)({ STANDARD: 'RO_DUE', COPY: 'RO_DUE_COPY' }),
-    RO_OVERDUE: thenReplaceTemplateNames(getRoAndClearingOfficeNotifications)({
-      STANDARD: 'RO_OVERDUE',
-      COPY: 'RO_OVERDUE_COPY',
-    }),
-    DM_NEW: thenReplaceTemplateNames(getDmNotifications)({ STANDARD: 'DM_NEW' }),
+    CA_RETURN: R.compose(
+      R.then(replaceTemplateNames({ STANDARD: 'CA_RETURN', COPY: 'CA_RETURN_COPY' })),
+      getCaAndClearingOfficeNotifications
+    ),
+    DM_TO_CA_RETURN: R.compose(
+      R.then(replaceTemplateNames({ STANDARD: 'CA_RETURN' })),
+      getCaNotifications
+    ),
+    CA_DECISION: R.compose(
+      R.then(replaceTemplateNames({ STANDARD: 'CA_DECISION' })),
+      getCaNotifications
+    ),
+    RO_NEW: R.compose(
+      R.then(replaceTemplateNames({ STANDARD: 'RO_NEW', COPY: 'RO_NEW_COPY' })),
+      getRoAndClearingOfficeNotifications
+    ),
+    RO_TWO_DAYS: R.compose(
+      R.then(replaceTemplateNames({ STANDARD: 'RO_TWO_DAYS', COPY: 'RO_TWO_DAYS_COPY' })),
+      getRoNotifications
+    ),
+    RO_DUE: R.compose(
+      R.then(replaceTemplateNames({ STANDARD: 'RO_DUE', COPY: 'RO_DUE_COPY' })),
+      getRoNotifications
+    ),
+    RO_OVERDUE: R.compose(
+      R.then(replaceTemplateNames({ STANDARD: 'RO_OVERDUE', COPY: 'RO_OVERDUE_COPY' })),
+      getRoAndClearingOfficeNotifications
+    ),
+    DM_NEW: R.compose(
+      R.then(replaceTemplateNames({ STANDARD: 'DM_NEW' })),
+      getDmNotifications
+    ),
   }
 
   async function sendNotifications({

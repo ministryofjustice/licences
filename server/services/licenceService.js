@@ -191,7 +191,13 @@ module.exports = function createLicenceService(licenceClient) {
   function getUpdatedLicence({ licence, fieldMap, userInput, licenceSection, formName }) {
     const answers = getFormResponse(fieldMap, userInput)
 
-    return { ...licence, [licenceSection]: { ...licence[licenceSection], [formName]: answers } }
+    return {
+      ...licence,
+      [licenceSection]: {
+        ...licence[licenceSection],
+        [formName]: answers,
+      },
+    }
   }
 
   function answersFromMapReducer(userInput) {

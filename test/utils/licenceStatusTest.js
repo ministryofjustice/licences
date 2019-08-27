@@ -594,6 +594,8 @@ describe('getLicenceStatus', () => {
               townOrCity: 2,
               postcode: 3,
               telephone: 4,
+              reportingDate: '01/02/2019',
+              reportingTime: '12:34',
             },
           },
           finalChecks: {

@@ -32,3 +32,19 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
         span Contact number
   div.pure-u-1-2
     +itemAndError(reportingInstructions.telephone, errors.telephone, "reportingTelephone")
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    div.pure-g
+      div.pure-u-3-4
+        span Reporting date
+  div.pure-u-1-2
+    +itemAndError(reportingInstructions.reportingDate, errors.reportingDate, "reportingDate")
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    div.pure-g
+      div.pure-u-3-4
+        span Reporting time
+  div.pure-u-1-2
+    +itemAndError(reportingInstructions.reportingTime, errors.reportingTime, "reportingTime")

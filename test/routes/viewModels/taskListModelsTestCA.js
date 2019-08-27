@@ -193,8 +193,8 @@ describe('TaskList models', () => {
 
   const reportingInstructionsReview = {
     action: {
-      href: '/hdc/review/reporting/',
-      text: 'View',
+      href: '/hdc/reporting/reportingInstructions/',
+      text: 'View/Edit',
       type: 'btn-secondary',
     },
     label: 'Not completed',
