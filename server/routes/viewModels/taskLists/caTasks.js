@@ -18,7 +18,7 @@ const finalChecks = require('./tasks/finalChecks')
 
 module.exports = {
   getCaTasksEligibility: ({ decisions, tasks, allowedTransition }) => {
-    const { optedOut, eligible, bassReferralNeeded } = decisions
+    const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions
     const { eligibility, optOut } = tasks
 
     const eligibilityDone = eligibility === 'DONE'
@@ -46,6 +46,17 @@ module.exports = {
         action: proposedAddress.getCaAction({ decisions, tasks }),
         visible: eligible,
       },
+      {
+        title: 'Risk management',
+        label: riskManagement.getLabel({ decisions, tasks }),
+        action: {
+          type: 'btn-secondary',
+          href: '/hdc/risk/riskManagement/',
+          text: 'View/Edit',
+        },
+        visible: addressUnsuitable,
+      },
+
       {
         title: 'Submit to decision maker',
         label: caSubmitRefusal.getLabel({ decisions }),

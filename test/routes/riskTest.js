@@ -98,14 +98,14 @@ describe('/hdc/risk', () => {
           })
       })
 
-      it('throws when ca not in final checks or post approval', () => {
+      it('does not throw when ca not in final checks or post approval', () => {
         licenceService = createLicenceServiceStub()
         licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { key: 'value' } })
         const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
         return request(app)
           .post('/hdc/risk/riskManagement/1')
           .send(formResponse)
-          .expect(403)
+          .expect(302)
       })
     })
   })
