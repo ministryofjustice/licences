@@ -64,7 +64,10 @@ module.exports = {
     authorised: [{ role: 'RO' }, { role: 'CA', stage: ['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'] }],
   },
   '/hdc/risk/': {
-    authorised: [{ role: 'RO' }, { role: 'CA', stage: ['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'] }],
+    authorised: [
+      { role: 'RO' },
+      { role: 'CA', stage: ['ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'] },
+    ],
   },
   '/hdc/victim/': {
     authorised: [{ role: 'RO' }, { role: 'CA', stage: ['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'] }],
