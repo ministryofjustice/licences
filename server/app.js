@@ -354,7 +354,7 @@ module.exports = function createApp({
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
   app.use('/hdc/forms/', secureRoute(formsRouter({ formService })))
   app.use('/hdc/send/', secureRoute(sendRouter({ licenceService, prisonerService, notificationService, audit })))
-  app.use('/hdc/sent/', secureRoute(sentRouter({ licenceService, prisonerService })))
+  app.use('/hdc/sent/', secureRoute(sentRouter({ prisonerService })))
   app.use('/user/', secureRoute(userRouter({ userService })))
 
   app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService })))

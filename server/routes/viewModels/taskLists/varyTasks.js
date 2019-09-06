@@ -1,10 +1,10 @@
 const versionInfo = require('../../../utils/versionInfo')
 const { isEmpty } = require('../../../utils/functionalHelpers')
 
-module.exports = ({ version, versionDetails, approvedVersion, approvedVersionDetails }) => ({ stage }) => {
+module.exports = ({ version, versionDetails, approvedVersion, approvedVersionDetails, licence }) => ({ stage }) => {
   const licenceUnstarted = stage === 'UNSTARTED'
   const licenceVersionExists = !isEmpty(approvedVersionDetails)
-  const { isNewVersion } = versionInfo({ version, versionDetails, approvedVersionDetails })
+  const { isNewVersion } = versionInfo({ version, versionDetails, approvedVersionDetails, licence })
 
   return [
     {

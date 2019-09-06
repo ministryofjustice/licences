@@ -15,7 +15,7 @@ module.exports = {
   async getLicences(bookingIds) {
     const query = {
       text: `select l.licence, l.booking_id, l.stage, l.version, l.transition_date,
-                   v.version as approvedVersion 
+                   v.version as approved_version 
                    from licences l 
                    left outer join licence_versions v on v.id = (
                    select id from licence_versions

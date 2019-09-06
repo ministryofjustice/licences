@@ -1,7 +1,8 @@
 const { isEmpty, getIn } = require('./functionalHelpers')
 const { templates } = require('../routes/config/pdf')
 
-module.exports = ({ version, versionDetails, approvedVersionDetails }, templateName = null) => {
+module.exports = ({ version, versionDetails, approvedVersionDetails, licence }) => {
+  const templateName = getIn(licence, ['document', 'template', 'decision'])
   const isNewTemplate = !isEmpty(approvedVersionDetails) && templateName !== approvedVersionDetails.template
   const isNewVersion =
     isEmpty(approvedVersionDetails) ||

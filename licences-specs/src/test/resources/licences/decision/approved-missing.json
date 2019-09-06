@@ -119,6 +119,10 @@
       "release": {
         "decision": "Yes"
       }
+    },
+    "template": {
+      "decision": "hdc_ap",
+      "offenceCommittedBeforeFeb2015": "Yes"
     }
   }
 }
