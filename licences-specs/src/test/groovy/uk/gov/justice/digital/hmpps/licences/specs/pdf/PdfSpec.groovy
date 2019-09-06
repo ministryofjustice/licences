@@ -96,7 +96,7 @@ class PdfSpec extends GebReportingSpec {
     testData.loadLicence('decision/approved-missing')
 
     when: 'I begin creating the PDF licence'
-    to LicenceTaskListPage, 'hdc_ap', testData.markAndrewsBookingId
+    to LicenceTaskListPage, testData.markAndrewsBookingId
 
     then: 'Reporting and tagging company details are not complete'
     !driver.getPageSource().contains('Not complete')

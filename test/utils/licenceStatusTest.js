@@ -506,7 +506,7 @@ describe('getLicenceStatus', () => {
     it('should show tasks DONE when task data complete', () => {
       const licence = {
         stage: 'DECIDED',
-        approvedVersion: 1,
+        approved_version: 1,
         version: 1,
         licence: {
           eligibility: {
@@ -1266,7 +1266,7 @@ describe('getLicenceStatus', () => {
       const licence = {
         stage: 'DECIDED',
         version: 2,
-        approvedVersion: 1,
+        approved_version: 1,
         licence: {
           notEmpty: true,
         },
@@ -1281,7 +1281,7 @@ describe('getLicenceStatus', () => {
       const licence = {
         stage: 'DECIDED',
         version: 2,
-        approvedVersion: 2,
+        approved_version: 2,
         licence: {
           notEmpty: true,
         },

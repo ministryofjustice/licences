@@ -641,7 +641,7 @@ function isPostDecision(stage) {
 }
 
 function getLicenceCreatedTaskState(licenceRecord) {
-  const approvedVersion = getIn(licenceRecord, ['approvedVersion'])
+  const approvedVersion = getIn(licenceRecord, ['approved_version'])
 
   return approvedVersion && licenceRecord.version === approvedVersion ? 'DONE' : 'UNSTARTED'
 }

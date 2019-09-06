@@ -9,7 +9,10 @@ describe('pdfService', () => {
   let pdfFormatter
   let service
 
-  const licence = { key: 'value' }
+  const licence = {
+    key: 'value',
+    document: { template: { decision: 'hdc_ap_pss' } },
+  }
   const licenceResponse = { licence }
   const prisonerResponse = { facialImageId: 'imageId' }
   const establishmentResponse = {}
@@ -54,14 +57,14 @@ describe('pdfService', () => {
 
   describe('getPdfLicenceData', () => {
     const rawLicence = {
-      licence: { key: 'value' },
+      licence,
       approvedVersion: 1.3,
       approvedVersionDetails: { a: 'a' },
       versionDetails: { a: 'a' },
     }
 
     it('should request details from services and pass to formatter', async () => {
-      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token', false)
+      await service.getPdfLicenceData('123', rawLicence, 'token')
 
       expect(conditionsService.populateLicenceWithConditions).to.be.calledOnce()
       expect(conditionsService.populateLicenceWithConditions).to.be.calledWith(licence)
@@ -90,13 +93,13 @@ describe('pdfService', () => {
 
     it('should throw if error in other service', () => {
       prisonerService.getPrisonerDetails.rejects(new Error('dead'))
-      return expect(service.getPdfLicenceData(templateName, '123', rawLicence, 'token', false)).to.be.rejected()
+      return expect(service.getPdfLicenceData('123', rawLicence, 'token')).to.be.rejected()
     })
 
     it('should not try to get image data if missing facialImageId, use null instead', async () => {
       prisonerService.getPrisonerDetails.resolves({})
 
-      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token', false)
+      await service.getPdfLicenceData('123', rawLicence, 'token')
 
       expect(prisonerService.getPrisonerImage).not.to.be.calledOnce()
 
@@ -116,7 +119,7 @@ describe('pdfService', () => {
     it('should use null for photo if error getting image', async () => {
       prisonerService.getPrisonerImage.rejects(new Error('dead'))
 
-      await service.getPdfLicenceData(templateName, '123', rawLicence, 'token', false)
+      await service.getPdfLicenceData('123', rawLicence, 'token')
 
       expect(prisonerService.getPrisonerImage).to.be.calledOnce()
 
@@ -133,34 +136,32 @@ describe('pdfService', () => {
       )
     })
 
-    it('should update licence if template and offence date check are different to previous version', async () => {
+    it('should take snapshot if template is different to previous version', async () => {
       const rawLicenceData = {
         licence: {
           key: 'value',
           document: {
             template: {
               decision: 'hdc_ap',
-              offenceCommittedBeforeFeb2015: 'No',
             },
           },
         },
         versionDetails: { version: 4, vary_version: 0 },
-        approvedVersionDetails: { version: 3, template: 'hdc_ap_pss' },
+        approvedVersionDetails: { version: 4, template: 'hdc_ap_pss' },
       }
 
-      await service.getPdfLicenceDataAndUpdateLicenceType(templateName, 'Yes', '123', rawLicenceData, 'token')
+      await service.checkAndTakeSnapshot(rawLicenceData, '123')
 
-      expect(licenceService.update).to.be.calledOnce()
+      expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce()
     })
 
-    it('should not update licence if template and offence date check is same', async () => {
+    it('should take snapshot if version is different to previous version', async () => {
       const rawLicenceData = {
         licence: {
           key: 'value',
           document: {
             template: {
               decision: 'hdc_ap_pss',
-              offenceCommittedBeforeFeb2015: 'Yes',
             },
           },
         },
@@ -168,9 +169,28 @@ describe('pdfService', () => {
         approvedVersionDetails: { version: 3, template: 'hdc_ap_pss' },
       }
 
-      await service.getPdfLicenceDataAndUpdateLicenceType(templateName, 'Yes', '123', rawLicenceData, 'token')
+      await service.checkAndTakeSnapshot(rawLicenceData, '123')
 
-      expect(licenceService.update).not.to.be.calledOnce()
+      expect(licenceService.saveApprovedLicenceVersion).to.be.calledOnce()
+    })
+
+    it('should not take snapshot if template and version are the same', async () => {
+      const rawLicenceData = {
+        licence: {
+          key: 'value',
+          document: {
+            template: {
+              decision: 'hdc_ap_pss',
+            },
+          },
+        },
+        versionDetails: { version: 4, vary_version: 0 },
+        approvedVersionDetails: { version: 4, template: 'hdc_ap_pss' },
+      }
+
+      await service.checkAndTakeSnapshot(rawLicenceData, '123')
+
+      expect(licenceService.saveApprovedLicenceVersion).not.to.be.called()
     })
 
     it('should write to the database when there is no licence type', async () => {
@@ -190,7 +210,7 @@ describe('pdfService', () => {
 
       const templateId = ''
       const offenceCommittedBefore = 'Yes'
-      await service.updateLicenceTypeFields(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
+      await service.updateLicenceType(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
 
       expect(licenceService.update).to.be.calledOnce()
     })
@@ -212,7 +232,7 @@ describe('pdfService', () => {
 
       const templateId = ''
       const offenceCommittedBefore = 'Yes'
-      await service.updateLicenceTypeFields(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
+      await service.updateLicenceType(rawLicenceData, '123', offenceCommittedBefore, templateId, 'token')
 
       expect(licenceService.update).not.to.be.calledOnce()
     })

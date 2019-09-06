@@ -40,35 +40,35 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
     asyncMiddleware(async (req, res) => {
       const { bookingId } = req.params
       const { offenceBeforeCutoff, licenceTypeRadio } = req.body
-      const { licence, token } = res.locals
+      const { licence, postRelease } = res.locals
 
       if (isEmpty(offenceBeforeCutoff)) {
         req.flash('errors', { offenceBefore: 'Select yes or no' })
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
       }
 
-      await pdfService.updateLicenceTypeFields(licence, bookingId, offenceBeforeCutoff, '', token)
-
       if (
-        beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) ||
-        afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio)
+        (offenceBeforeCutoff === 'No' && !templatesForNewOffence.includes(licenceTypeRadio)) ||
+        (offenceBeforeCutoff === 'Yes' && !templates.map(t => t.id).includes(licenceTypeRadio))
       ) {
         req.flash('errors', { licenceTypeRadioList: 'Select a licence type' })
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
       }
 
-      res.redirect(`/hdc/pdf/taskList/${licenceTypeRadio}/${bookingId}`)
+      await pdfService.updateLicenceType(licence, bookingId, offenceBeforeCutoff, licenceTypeRadio, postRelease)
+
+      res.redirect(`/hdc/pdf/taskList/${bookingId}`)
     })
   )
 
   router.get(
-    '/taskList/:templateName/:bookingId',
+    '/taskList/:bookingId',
     asyncMiddleware(async (req, res) => {
-      const { bookingId, templateName } = req.params
+      const { bookingId } = req.params
       const { licence, token } = res.locals
 
+      const templateName = getIn(licence.licence, ['document', 'template', 'decision'])
       const templateLabel = getTemplateLabel(templateName)
-      const offenceBeforeCutoff = getIn(licence.licence, ['document', 'template', 'offenceCommittedBeforeFeb2015'])
 
       if (!templateLabel) {
         throw new Error(`Invalid licence template name: ${templateName}`)
@@ -76,7 +76,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
 
       const [prisoner, { missing }] = await Promise.all([
         prisonerService.getPrisonerPersonalDetails(bookingId, token),
-        pdfService.getPdfLicenceDataAndUpdateLicenceType(templateName, offenceBeforeCutoff, bookingId, licence, token),
+        pdfService.getPdfLicenceData(bookingId, licence, token),
       ])
       const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
 
@@ -98,21 +98,23 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         incompletePreferredGroups,
         canPrint,
         postRelease,
-        versionInfo: versionInfo(licence, templateName),
+        versionInfo: versionInfo(licence),
       })
     })
   )
 
   router.get(
-    '/missing/:section/:templateName/:bookingId',
+    '/missing/:section/:bookingId',
     asyncMiddleware(async (req, res) => {
-      const { bookingId, templateName, section } = req.params
+      const { bookingId, section } = req.params
       const { licence } = res.locals
-      logger.debug(`GET pdf/missing/${section}/${templateName}/${bookingId}`)
+      logger.debug(`GET pdf/missing/${section}/${bookingId}`)
+
+      const templateName = getIn(licence.licence, ['document', 'template', 'decision'])
 
       const [prisoner, { missing }] = await Promise.all([
         prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
-        pdfService.getPdfLicenceData(templateName, bookingId, licence, res.locals.token),
+        pdfService.getPdfLicenceData(bookingId, licence, res.locals.token),
       ])
 
       const data = {}
@@ -128,14 +130,17 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   )
 
   router.get(
-    '/create/:templateName/:bookingId',
+    '/create/:bookingId',
     audited,
     asyncMiddleware(async (req, res) => {
-      const { bookingId, templateName } = req.params
+      const { bookingId } = req.params
       const { licence, postRelease, token } = res.locals
-      logger.debug(`GET pdf/create/${templateName}/${bookingId}`)
+      logger.debug(`GET pdf/create/${bookingId}`)
 
-      const pdfData = await pdfService.getPdfLicenceData(templateName, bookingId, licence, token, postRelease)
+      const templateName = getIn(licence.licence, ['document', 'template', 'decision'])
+
+      const updatedDecoratedLicence = await pdfService.checkAndTakeSnapshot(licence, bookingId)
+      const pdfData = await pdfService.getPdfLicenceData(bookingId, updatedDecoratedLicence, token)
 
       const filename = `${pdfData.values.OFF_NOMS}.pdf`
       const headerTemplate = getHeader(pdfData)
@@ -187,15 +192,4 @@ function getTemplateLabel(templateName) {
 function getTemplateVersionLabel(templateName) {
   const { label, version } = templates.find(template => template.id === templateName)
   return [label, version].join(' v')
-}
-
-function beforeLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) {
-  return offenceBeforeCutoff === 'Yes' && (licenceTypeRadio === undefined || licenceTypeRadio === '')
-}
-
-function afterLicenceTypeNotSelected(offenceBeforeCutoff, licenceTypeRadio) {
-  return (
-    offenceBeforeCutoff === 'No' &&
-    (licenceTypeRadio === undefined || licenceTypeRadio === '' || !templatesForNewOffence.includes(licenceTypeRadio))
-  )
 }

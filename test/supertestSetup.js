@@ -64,11 +64,11 @@ const createPrisonerServiceStub = () => ({
 })
 
 const createPdfServiceStub = () => ({
-  getPdfLicenceDataAndUpdateLicenceType: sinon.stub().resolves(),
   getPdfLicenceData: sinon.stub().resolves(),
+  checkAndTakeSnapshot: sinon.stub().resolves(),
   getPdf: sinon.stub().resolves(),
   generatePdf: sinon.stub().resolves(),
-  updateLicenceTypeFields: sinon.stub().resolves(),
+  updateLicenceType: sinon.stub().resolves(),
 })
 
 const createFormServiceStub = () => ({

@@ -44,14 +44,12 @@ describe('versionInfo', () => {
 
     it('should return new template label', () => {
       expect(
-        versionInfo(
-          {
-            version: 1.0,
-            versionDetails: { version: 1, vary_version: 1 },
-            approvedVersionDetails: { version: 1, vary_version: 0 },
-          },
-          'hdc_ap_pss'
-        ).templateLabel
+        versionInfo({
+          version: 1.0,
+          versionDetails: { version: 1, vary_version: 1 },
+          approvedVersionDetails: { version: 1, vary_version: 0 },
+          licence: { document: { template: { decision: 'hdc_ap_pss' } } },
+        }).templateLabel
       ).to.eql('Basic licence with top-up supervision')
     })
 
@@ -83,14 +81,12 @@ describe('versionInfo', () => {
 
     it('should return not new template if passed in is same as previous', () => {
       expect(
-        versionInfo(
-          {
-            version: 1.0,
-            versionDetails: { version: 1, vary_version: 1 },
-            approvedVersionDetails: { version: 1, vary_version: 0, template: 'hdc_yn' },
-          },
-          'hdc_yn'
-        ).isNewTemplate
+        versionInfo({
+          version: 1.0,
+          versionDetails: { version: 1, vary_version: 1 },
+          approvedVersionDetails: { version: 1, vary_version: 0, template: 'hdc_yn' },
+          licence: { document: { template: { decision: 'hdc_yn' } } },
+        }).isNewTemplate
       ).to.eql(false)
     })
   })

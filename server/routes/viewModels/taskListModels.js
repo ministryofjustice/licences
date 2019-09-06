@@ -34,7 +34,7 @@ module.exports = (
   role,
   postRelease,
   { decisions, tasks, stage },
-  { version, versionDetails, approvedVersion = {}, approvedVersionDetails = {} } = {},
+  { version, versionDetails, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {},
   allowedTransition
 ) => {
   const taskListName = getTaskListName(role, stage, postRelease)
@@ -46,7 +46,7 @@ module.exports = (
     caTasksEligibility: getCaTasksEligibility,
     caTasksFinalChecks: getCaTasksFinalChecks,
     caTasksPostApproval: getCaTasksPostApproval(stage),
-    vary: getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails }),
+    vary: getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence }),
   }
 
   if (!getTaskListTasksMethod[taskListName]) {

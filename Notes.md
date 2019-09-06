@@ -40,7 +40,7 @@ standardRouter adds audit, authentication, checkLicence and authorisation middle
 If a request has a bookingId then checkLicenceMiddleware adds the following objects to res.locals
 
 ```
-      licence,         // from database licences.licence (by bookingId)
+      licence,         // from licenceService.getLicence
       prisoner,        // from elite2Api POST /offender-sentences/bookings with bookingId
       postRelease      // flag, computed asprisoner.agencyLocationId === 'OUT', implies that the prisoner has been released
       licenceStatus
@@ -48,6 +48,57 @@ If a request has a bookingId then checkLicenceMiddleware adds the following obje
 
 bookingId is present whenever the current page is 'prisoner' oriented. The taskList page and task related pages always
 include a bookingId in the request.
+
+The res.locals.licence object is _not_ a row from the licence table or an object from the licence column of the licence table
+
+It is a combination of
+
+- a formatted variant of the licence object from the licences table for :bookingId
+- the stage, version and vary_version from that row plus a formatted string containing that information
+- the version and vary_version from the latest licence_versions row for :bookingId plus a formatted string containing that information
+
+```ecmascript 6
+{
+  licence,               // Formatted version of the object in the licences column of the licences table for :bookingId
+  stage,                 // From the licence row for :bookingId
+  version,               // `${version}.${vary_version}` where version and vary_version are from the licence table
+  versionDetails,        // { version, vary_version } from the licence table
+  approvedVersion,       // `${version}.${vary_version}` from the most recent row of licence_versions table for :bookingId
+  approvedVersionDetails // { version, vary_version, template, timestamp } from the licence_versions table as above.
+}
+```
+
+For reference, the DDL for the licences table is:
+
+```postgresql
+create table licences
+(
+	id              serial                    not null constraint licences_pkey primary key,
+	licence         jsonb,
+	booking_id      integer                   not null,
+	stage           varchar(255)              not null,
+	version         integer                   not null,
+	transition_date timestamp with time zone,
+	vary_version    integer default 0         not null
+);
+```
+
+and for the licence_versions table:
+
+```postgresql
+create table licence_versions
+(
+	id           serial                                             not null constraint licence_versions_pkey primary key,
+	timestamp    timestamp with time zone default CURRENT_TIMESTAMP not null,
+	licence      jsonb,
+	booking_id   integer                                            not null,
+	version      integer                                            not null,
+	template     varchar(255)                                       not null,
+	vary_version integer default 0                                  not null,
+
+	constraint licence_versions_booking_id_version_vary_version_unique unique (booking_id, version, vary_version)
+);
+```
 
 The prisoner object is an OffenderSentenceDetail object in elite2Api:
 
@@ -99,25 +150,6 @@ For reference, it looks like this: (from https://gateway.t3.nomis-api.hmpps.dsd.
 
 The licenceStatus object describes the overall state (or perhaps progress) of a licence application. It is defined in server/utils/licenceStatus.js
 where its value is derived from a licence record.
-
-A licence record is a row from the licences database table. For reference, the DDL is:
-
-```postgresql
-create table licences
-(
-	id              serial                    not null constraint licences_pkey primary key,
-	licence         jsonb,
-	booking_id      integer                   not null,
-	stage           varchar(255)              not null,
-	version         integer                   not null,
-	transition_date timestamp with time zone,
-	vary_version    integer default 0         not null
-);
-
-create index licence_by_booking_id
-	on licences (booking_id, id, stage, version);
-
-```
 
 The licenceStatus object looks like
 
@@ -801,3 +833,181 @@ Most of the changes made above can stand. The original reportingInstructions and
 reportingInstructions and reportingDate removed. Application logic should work with this modified data structure.
 
 As before reportingInstructions should not be validated, but reportingDate should be, but on the reportingDate form only.
+
+## Licence Versions
+
+A licence is really a physical document which defines the conditions and obligations placed on a prisoner who is to
+be released under a Home Detention Curfew and / or supervision. This document, produced as a PDF file by the licence
+application, is versioned. What this means is that the data on which the PDF document depends is assigned a unique identifier that is
+displayed in the document and within the application.
+The data from which a document version was produced is stored as a snapshot in the licence_versions table.
+The next time a licence PDF is generated the data on which it depends is compared with the most recent snapshot.
+If a change is detected then a new version is assigned to the document and another snapshot recorded otherwise
+the PDF document is generated from the existing licence data using the current version information.
+
+### Detail
+
+A licence version is represented by two numbers, `version` and `vary_version`. `version` starts at 1, `vary_version` at 0.
+Before an offender is released each new licence version is represented by incrementing `version` and after release by
+incrementing `vary_version`.
+For example, a licence is created, then modified twice before the offender is released, then after release modified once more.
+The sequence of combined versions (version.vary_version) should be 1.0 -> 2.0 -> 3.0 (release) -> 3.1
+
+licenceClient.js provides the functions for interacting with the licences and licence_versions tables.
+Licence PDFs are generated from pug templates. Below `template` is the name or key of a particular licence template.  
+The template names/ids are defined in server/routes/config/pdf.js, and a
+spec for the data provided to each template is in server/services/config/pdf.js
+Here are the functions that interact with the licence_versions table.
+
+- getApprovedLicenceVersion(bookingId) returns the most recent version, vary_version, template, and timestamp from
+  licence_versions for a bookingId.
+- saveApprovedLicenceVersion(bookingId, template) insert a copy of the licences row for `booking_id` into licence_versions.
+
+The licence record for a booking is created by `createLicence`. `createLicence` defaults to using version=1, vary_version=0
+
+The `version` or `vary_version` on a licence record are changed using `updateVersion(bookingId, postRelease)`. `postRelease` selects
+the `vary_version` column if truthy otherwise `version`. The selected column's value is set to its maximum value in the
+licence_versions table + 1. Calling this function has no effect unless a new snapshot has been added to the licence_versions table
+since it was last called. `updateVersion` is only called from within licencesClient.js by:
+
+- `updateLicence(bookingId, licence={}, postRelease)` Replaces licence BSON with supplied value, then calls `updateVersion(bookingId, postRelease)`
+- `updateSection(section, bookingId, object, postRelease)` Replaces that part of the licence BSON selected by `section` with object, then call `updateVersion(bookingId, postRelease)`
+
+So every call to `updateLicence` or `updateSection` will update a version number but _only_ whn preceded by a call to
+`saveApprovedLicenceVersion`. In other words, any persisted change to a licences record made after `saveApprovedLicenceVersion`
+has been called will increment the licence version (once only)
+
+#### When is saveApprovedLicenceVersion called?
+
+licenceService.js delegates to `saveApprovedLicenceVersion`. pdfService.js has two calls to this function in
+
+1. `updateLicenceTypeTemplate` not exported. called by `getPdfLicenceDataAndUpdateLicenceType`.
+1. `checkAndUpdateVersion` not exported. Called by `getPdfLicenceData`.
+
+The second version appears to be much older than the first. They are very similar.
+The difference being that the first introduces an `offeneceBeforeCutoff` flag.
+This flag is passed through to updateLicenceTypeTemplate where it is used as an additional value.
+
+Let us examine what the original version does.
+
+The first thing getPdfLicenceData does is call checkAndUpdateVersion. Then it retrieves, formats and
+returns data with which to populate a licence document.
+
+What does checkAndUpdateVersion do? It uses server/utils/versionInfo.js to test the supplied 'rawLicence'.
+
+The test returns an object containing:
+
+```ecmascript 6
+{
+    currentVersion,     // version from supplied rawLicence
+    lastVersion,        // approvedVersionDetails from rawLicence
+    isNewVersion,       // flag, see below
+    templateLabel,      // template label - the user friendly name of the licence type. derived from supplied templateName
+    lastTemplateLabel,  // ditto - for approvedVersionDetails.template (name)
+    isNewTemplate,      // flag, see below
+  }
+```
+
+N.B. inspection of calls to getPdfLicenceData (all in routes/pdf.js) shows that
+rawLicence is res.locals.licence (see above) so,
+
+- rawLicence.version is `${version}.${vary_version}` from licences table
+- rawLicence.approvedVersionDetails is the latest `{ version, vary_version, template, timestamp }` from licence_versions.
+
+`isNewTemplate` is true iff there is an approvedVersionDetails and the supplied template name doesn't match the value in approvedVersionDetails
+
+`isNewVersion` is true iff there is no approvedVersionDetails or either of the version numbers from the licences record (rawLicence) is
+greater than the values in approvedVersionDetails.
+
+In pdfService `checkAndUpdateVersion`:
+
+- isNewTemplate => call `licenceService.update`
+- isNewVersion || isNewTemplate => call `licenceService.saveApprovedLicenceVersion`
+
+What does licenceService.update do?
+
+1. uses getUpdatedLicence to create an in memory copy of rawLicence.licence using
+
+```ecmascript 6
+{
+    licence: originalLicence.licence,
+    fieldMap: [{ decision: {} }],
+    userInput: { decision: template },
+    licenceSection: 'document',
+    formName: 'template'
+}
+```
+
+as input. What does that do?
+returns
+
+```ecmascript 6
+{
+ ...licence,
+ document: {
+   ...licence.document,
+   template: userInput.decision // ie template.
+ }
+}
+```
+
+In other words it makes a copy of licence with licence.document.template set to the passed template (name)
+
+2. If applying the changes does not change licence then return
+3. Store the new state of licence using licenceClient.updateLicence
+4. call updateModificationStage to... check and optionally update licences.stage.
+
+updateModificationStage details:
+if noModify do nothing
+
+if stage is 'DECIDED' or 'MODIFIED' then
+if requiresApproval then
+stage := MODIFIED_APPROVAL
+
+else if stage is 'DECIDED' then
+stage := MODIFIED
+
+In this case the call to licenceService.update from pdfService has config.noModfy: true, so it does... nothing.
+
+To summarize, if the template name changes then the new name is persisted in licences.licence at document.template.
+That's all that the licenceService.update call does in this situation.
+
+And to summarize `checkAndUpdateVersion`:
+
+1. if the template name changes store the new name in licences.licence.document.template.
+2. if the template name changed or there's no licence_versions or the licences versions are newer than the current licence_versions
+   copy the current state of licences to licence_versions.
+
+This means that every call to `getPdfLicenceData(templateName, bookingId, rawLicence, token, postRelease)`
+will take a snapshot of the current state of the licences row for the booking iff the template name has changed
+or there is no snapshot or the licence has been changed since the last snapshot.
+
+Provided that no further changes are made to the licences row (by updateLicence or updateSection in licenceClient.js)
+then every subsequent call to getPdfLicenceData will have no effect on snapshots or licence versions.
+
+Any call to updateLicence or updateSection will bump the licence version (once) so that the next call to
+getLicencePdfData will take a new snapshot.
+
+Blimey.
+
+#### Aside - other updates to licences record
+
+There are a number of calls to the updateLicence and updateSection functions in licenceClient.js
+All calls to licenceClient.js' updateLicence function are from licenceService.js
+Calls to updateSection are in licenceService.js, routes/address.js, routes/curfew.js (licenceService.js declares
+a function 'updateSection that just delegates to updateSection in licenceClient.js )
+
+The key related function in licencesService.js is update. This function is called from formPost in server/routes/routeWorkers/standard.js
+This means that update is called pretty much whenever a task is updated. See previous discussion about this.
+
+#### Uses of getPdfLicenceData, getPdfLicenceDataAndUpdateLicenceType and updateLicenceTypeFields from pdfService.js
+
+All calls to these functions come from routes/pdf.js
+
+### routes/pdf.js
+
+GET /selectLicenceType/:bookingId
+POST /selectLicenceType/:bookingId { offenceBeforeCutoff, licenceTypeRadio }
+GET /taskList/:templateName/:bookingId
+GET /missing/:section/:templateName/:bookingId
+GET /create/:templateName/:bookingId
