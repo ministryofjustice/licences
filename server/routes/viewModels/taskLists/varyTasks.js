@@ -13,7 +13,7 @@ module.exports = ({ version, versionDetails, approvedVersion, approvedVersionDet
       action: {
         type: 'btn',
         text: 'View',
-        href: `/hdc/pdf/create/${approvedVersionDetails.template}/`,
+        href: `/hdc/pdf/create/`,
         newTab: true,
       },
       visible: licenceVersionExists && !isNewVersion,
