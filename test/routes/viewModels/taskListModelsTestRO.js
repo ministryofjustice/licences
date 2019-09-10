@@ -121,7 +121,7 @@ describe('TaskList models', () => {
   const viewCurrentLicence = {
     title: 'View current licence',
     label: 'Licence version 2',
-    action: { type: 'btn', href: '/hdc/pdf/create/templateName/', text: 'View', newTab: true },
+    action: { type: 'btn', href: '/hdc/pdf/create/', text: 'View', newTab: true },
     visible: true,
   }
 
