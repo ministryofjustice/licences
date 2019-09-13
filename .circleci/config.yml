@@ -216,10 +216,6 @@ workflows:
             branches:
               only:
                 - /patch-.*/
-      - hold:
-          type: approval
-          requires:
-            - build_docker
       - deploy_stage:
           requires:
-            - hold
+            - build_docker
