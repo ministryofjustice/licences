@@ -24,6 +24,9 @@ block excludedForm
       div.multiple-choice
         input(type='checkbox' name='reason[]' id='returnedAtRisk' value='returnedAtRisk' checked=vals.indexOf('returnedAtRisk') !== -1)
         label(for='returnedAtRisk') Offender returned to custody during at risk period
+      div.multiple-choice
+        input(type='checkbox' name='reason[]' id='serving4YearsOrMore' value='serving4YearsOrMore' checked=vals.indexOf('serving4YearsOrMore') !== -1)
+        label(for='deportation') The offender is currently serving a sentence of 4 years or more
     div.pure-u-4-24
     div.pure-u-1.pure-u-md-10-24
       div.multiple-choice
