@@ -3,9 +3,23 @@ const logger = require('../../log.js')
 const { getIn, isEmpty } = require('../utils/functionalHelpers')
 
 module.exports = function createDeliusRoService(deliusClient, nomisClientBuilder) {
+  async function getROPrisonersFromDelius(staffCode) {
+    try {
+      return await deliusClient.getROPrisoners(staffCode)
+    } catch (error) {
+      if (error.status === 404) {
+        logger.warn(`Staff member not found in delius: ${staffCode}`)
+        return []
+      }
+
+      logger.error(`Problem retrieving RO prisoners for: ${staffCode}`, error.stack)
+      throw error
+    }
+  }
+
   async function getROPrisoners(staffCode, token) {
     const nomisClient = nomisClientBuilder(token)
-    const requiredPrisoners = await deliusClient.getROPrisoners(staffCode)
+    const requiredPrisoners = await getROPrisonersFromDelius(staffCode)
     if (!isEmpty(requiredPrisoners)) {
       const requiredIDs = requiredPrisoners.map(prisoner => prisoner.nomsNumber)
       return nomisClient.getOffenderSentencesByNomisId(requiredIDs)
