@@ -88,6 +88,12 @@ describe('deliusRoService', () => {
       const result = await service.getROPrisoners(123, 'token')
       expect(result).to.eql([])
     })
+
+    it('should return empty array when staff member not found in delius', async () => {
+      deliusClient.getROPrisoners.rejects({ status: 404 })
+      const result = await service.getROPrisoners(123, 'token')
+      expect(result).to.eql([])
+    })
   })
 
   describe('findResponsibleOfficer', () => {
