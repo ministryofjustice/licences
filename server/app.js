@@ -220,7 +220,7 @@ module.exports = function createApp({
       },
       colorize: true,
       requestWhitelist: ['url', 'method', 'originalUrl', 'query', 'body'],
-      ignoredRoutes: ['/health', '/favicon.ico'],
+      ignoredRoutes: ['/health', '/ping', '/favicon.ico'],
     })
   )
 
@@ -277,6 +277,8 @@ module.exports = function createApp({
       return result
     })
   })
+
+  app.get('/ping', (req, res) => res.send('pong'))
 
   app.get('/feedback', (req, res) => {
     return res.render('feedback', { returnURL: req.get('referer') })
