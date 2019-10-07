@@ -11,18 +11,23 @@ const timeoutSpec = {
 }
 
 const signInService = () => {
-  const getRefreshTokens = async (username, role, refreshToken) => {
+  const getRefreshTokens = async (username, role, refreshToken, service) => {
     const oauthClientToken = generateOauthClientToken()
     const oauthRequest = { grant_type: 'refresh_token', refresh_token: refreshToken }
 
-    return oauthTokenRequest(oauthClientToken, oauthRequest)
+    return oauthTokenRequest(oauthClientToken, oauthRequest, service)
   }
 
   return {
-    async getRefreshedToken(user) {
+    async getRefreshedToken(user, service = 'nomis') {
       logger.info(`Refreshing token for : ${user.username}`)
 
-      const { token, refreshToken, expiresIn } = await getRefreshTokens(user.username, user.role, user.refreshToken)
+      const { token, refreshToken, expiresIn } = await getRefreshTokens(
+        user.username,
+        user.role,
+        user.refreshToken,
+        service
+      )
 
       const refreshTime = fiveMinutesBefore(expiresIn)
 
@@ -33,13 +38,12 @@ const signInService = () => {
       const oauthAdminClientToken = generateAdminOauthClientToken(service)
       const oauthRequest = { grant_type: 'client_credentials', username }
 
-      return oauthTokenRequest(oauthAdminClientToken, oauthRequest)
+      return oauthTokenRequest(oauthAdminClientToken, oauthRequest, service)
     },
 
     async getAnonymousClientCredentialsTokens(service = 'nomis') {
       const oauthAdminClientToken = generateAdminOauthClientToken(service)
       const oauthRequest = { grant_type: 'client_credentials' }
-
       return oauthTokenRequest(oauthAdminClientToken, oauthRequest, service)
     },
   }
@@ -53,19 +57,19 @@ const parseOauthTokens = oauthResult => {
   return { token, refreshToken, expiresIn }
 }
 
-const getOauthToken = (oauthClientToken, requestSpec) => {
+const getOauthToken = (oauthClientToken, requestSpec, service) => {
   const oauthRequest = querystring.stringify(requestSpec)
 
   return superagent
-    .post(`${config.nomis.authUrl}/oauth/token`)
+    .post(`${config[service].authUrl}/oauth/token`)
     .set('Authorization', oauthClientToken)
     .set('content-type', 'application/x-www-form-urlencoded')
     .send(oauthRequest)
     .timeout(timeoutSpec)
 }
 
-const oauthTokenRequest = async (clientToken, oauthRequest) => {
-  const oauthResult = await getOauthToken(clientToken, oauthRequest)
+const oauthTokenRequest = async (clientToken, oauthRequest, service) => {
+  const oauthResult = await getOauthToken(clientToken, oauthRequest, service)
   logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
 
   return parseOauthTokens(oauthResult)

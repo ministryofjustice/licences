@@ -39,7 +39,7 @@ module.exports = signInService => {
 
       return result.body
     } catch (error) {
-      logger.warn('Error calling delius', path, error.stack)
+      logger.warn('Error calling delius', path, error.response, error.stack)
       throw error
     }
   }
