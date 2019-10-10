@@ -15,10 +15,18 @@ module.exports = {
         .optional(),
       addressTown: joi.string().required(),
       postCode: joi.postcode().required(),
-      telephone: joi
-        .string()
-        .regex(/^[0-9+\s]+$/)
-        .required(),
+      telephone: joi.when('occupier.isOffender', {
+        is: joi.not('Yes'),
+        then: joi
+          .string()
+          .regex(/^[0-9+\s]+$/)
+          .required(),
+        otherwise: joi
+          .string()
+          .regex(/^[0-9+\s]+$/)
+          .allow('')
+          .optional(),
+      }),
       residents: joi.array().items(
         joi.object().keys({
           name: joi.string().required(),

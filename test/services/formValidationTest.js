@@ -204,6 +204,44 @@ describe('validation', () => {
               },
               outcome: {},
             },
+            {
+              formResponse: {
+                addressLine1: 'a1',
+                addressTown: 't1',
+                postCode: 'S105NW',
+                cautionedAgainstResident: 'No',
+                telephone: '',
+                residents: [{ name: 'n', relationship: 'n' }],
+                occupier: { name: 'o', relationship: 'Enter a relationship', isOffender: 'Yes' },
+              },
+              outcome: {},
+            },
+            {
+              formResponse: {
+                addressLine1: 'a1',
+                addressTown: 't1',
+                postCode: 'S105NW',
+                cautionedAgainstResident: 'No',
+                telephone: '12345678900',
+                residents: [{ name: 'n', relationship: 'n' }],
+                occupier: { name: 'o', relationship: 'Enter a relationship', isOffender: 'Yes' },
+              },
+              outcome: {},
+            },
+            {
+              formResponse: {
+                addressLine1: 'a1',
+                addressTown: 't1',
+                postCode: 'S105NW',
+                cautionedAgainstResident: 'No',
+                telephone: '',
+                residents: [{ name: 'n', relationship: 'n' }],
+                occupier: { name: 'o', relationship: 'Enter a relationship', isOffender: 'No' },
+              },
+              outcome: {
+                telephone: 'Enter a telephone number',
+              },
+            },
           ]
 
           options.forEach(option => {
