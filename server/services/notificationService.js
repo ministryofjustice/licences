@@ -44,7 +44,11 @@ module.exports = function createNotificationService(
       : []
   }
 
-  const missing = x => () => isEmpty(x)
+  const logIfMissing = (val, message) => {
+    if (isEmpty(val)) {
+      logger.error(message)
+    }
+  }
 
   // object -> string -> string
   const replaceName = replacements => name => R.propOr(name, name, replacements)
@@ -52,17 +56,10 @@ module.exports = function createNotificationService(
   // object -> [notification] -> [notification]
   const replaceTemplateNames = replacements => R.map(R.over(R.lensProp('templateName'), replaceName(replacements)))
 
-  // notification -> notification
-  const clearingOfficeNotificationFromPrototype = R.mergeDeepLeft({ email: clearingOfficeEmail, templateName: 'COPY' })
-
-  // [notification] -> [notification]
-  const appendClearingOfficeNotification = R.converge(R.append, [
-    R.compose(
-      clearingOfficeNotificationFromPrototype,
-      R.head
-    ),
-    R.identity,
-  ])
+  const appendClearingOfficeNotification = notifications => [
+    ...notifications,
+    { ...notifications[0], email: clearingOfficeEmail, templateName: 'COPY' },
+  ]
 
   const clearingOfficeEmailDisabled = () => clearingOfficeEmailEnabled.toUpperCase().trim() !== 'YES'
 
@@ -71,14 +68,14 @@ module.exports = function createNotificationService(
     appendClearingOfficeNotification
   )
 
-  const getCaAndClearingOfficeNotifications = R.compose(
-    R.then(appendClearingOfficeNotificationIfPossible),
-    getCaNotifications
+  const getCaAndClearingOfficeNotifications = R.pipe(
+    getCaNotifications,
+    R.then(appendClearingOfficeNotificationIfPossible)
   )
 
-  const getRoAndClearingOfficeNotifications = R.compose(
-    R.then(appendClearingOfficeNotificationIfPossible),
-    getRoNotifications
+  const getRoAndClearingOfficeNotifications = R.pipe(
+    getRoNotifications,
+    R.then(appendClearingOfficeNotificationIfPossible)
   )
 
   async function getCaNotifications({ common, token, submissionTarget, sendingUserName }) {
@@ -102,7 +99,7 @@ module.exports = function createNotificationService(
 
     return mailboxes.map(mailbox => {
       return {
-        personalisation: R.mergeDeepLeft({ ca_name: mailbox.name }, personalisation),
+        personalisation: { ...personalisation, ca_name: mailbox.name },
         email: mailbox.email,
         templateName: 'STANDARD',
       }
@@ -139,19 +136,15 @@ module.exports = function createNotificationService(
     )
   }
 
-  const makeRoNotifications = (email, orgEmail, base, deliusId) =>
-    R.compose(
-      R.ifElse(
-        missing(orgEmail),
-        R.tap(() => logger.error(`Missing orgEmail for RO: ${deliusId}`)),
-        R.append(R.mergeDeepRight(base, { email: orgEmail, templateName: 'COPY' }))
-      ),
-      R.ifElse(
-        missing(email),
-        R.tap(() => logger.error(`Missing email for RO: ${deliusId}`)),
-        R.append(R.mergeDeepRight(base, { email, templateName: 'STANDARD' }))
-      )
-    )([])
+  const makeRoNotifications = (email, orgEmail, base, deliusId) => {
+    logIfMissing(orgEmail, `Missing orgEmail for RO: ${deliusId}`)
+    logIfMissing(email, `Missing email for RO: ${deliusId}`)
+
+    const orgNotification = isEmpty(orgEmail) ? [] : [{ ...base, email: orgEmail, templateName: 'COPY' }]
+    const roNotification = isEmpty(email) ? [] : [{ ...base, email, templateName: 'STANDARD' }]
+
+    return [...roNotification, ...orgNotification]
+  }
 
   async function getDmNotifications({ common, token, bookingId }) {
     const establishment = await prisonerService.getEstablishmentForPrisoner(bookingId, token)
