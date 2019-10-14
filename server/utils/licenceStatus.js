@@ -439,8 +439,15 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
       return taskStates.STARTED
     }
 
-    const required = ['cautionedAgainstResident', 'addressLine1', 'addressTown', 'postCode', 'telephone']
+    const required = ['cautionedAgainstResident', 'addressLine1', 'addressTown', 'postCode']
+
     if (required.some(field => !address[field])) {
+      return taskStates.STARTED
+    }
+
+    const offenderIsMainOccupier = getIn(address, ['occupier', 'isOffender']) === 'Yes'
+
+    if (!offenderIsMainOccupier && !address.telephone) {
       return taskStates.STARTED
     }
 
