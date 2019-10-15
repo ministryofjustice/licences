@@ -56,27 +56,46 @@ module.exports = function createNotificationService(
   // object -> [notification] -> [notification]
   const replaceTemplateNames = replacements => R.map(R.over(R.lensProp('templateName'), replaceName(replacements)))
 
-  const appendClearingOfficeNotification = notifications => [
-    ...notifications,
-    { ...notifications[0], email: clearingOfficeEmail, templateName: 'COPY' },
-  ]
+  const clearingOfficeEmailDisabled = clearingOfficeEmailEnabled.toUpperCase().trim() !== 'YES'
 
-  const clearingOfficeEmailDisabled = () => clearingOfficeEmailEnabled.toUpperCase().trim() !== 'YES'
+  const getRoOrgEmail = async ({ bookingId, token }) => {
+    const roOfficer = await prisonerService.getResponsibleOfficer(bookingId, token)
+    const deliusId = getIn(roOfficer, ['deliusId'])
 
-  const appendClearingOfficeNotificationIfPossible = R.unless(
-    R.either(clearingOfficeEmailDisabled, isEmpty),
-    appendClearingOfficeNotification
-  )
+    if (isEmpty(deliusId)) {
+      logger.error(`Missing COM deliusId for booking id: '${bookingId}'`, roOfficer)
+      return null
+    }
 
-  const getCaAndClearingOfficeNotifications = R.pipe(
-    getCaNotifications,
-    R.then(appendClearingOfficeNotificationIfPossible)
-  )
+    const ro = await userAdminService.getRoUserByDeliusId(deliusId)
+    return R.prop('orgEmail', ro)
+  }
 
-  const getRoAndClearingOfficeNotifications = R.pipe(
-    getRoNotifications,
-    R.then(appendClearingOfficeNotificationIfPossible)
-  )
+  const roOrganisationNotification = async (args, notifications) => {
+    const orgEmail = await getRoOrgEmail(args)
+    return isEmpty(orgEmail) || isEmpty(notifications)
+      ? []
+      : [{ ...notifications[0], email: orgEmail, templateName: 'COPY' }]
+  }
+
+  const clearingOfficeNotification = notifications =>
+    clearingOfficeEmailDisabled || isEmpty(notifications)
+      ? []
+      : [{ ...notifications[0], email: clearingOfficeEmail, templateName: 'COPY' }]
+
+  const getCaAndClearingOfficeAndRoOrganisationNotifications = async args => {
+    const notifications = await getCaNotifications(args)
+    return [
+      ...notifications,
+      ...clearingOfficeNotification(notifications),
+      ...(await roOrganisationNotification(args, notifications)),
+    ]
+  }
+
+  const getRoAndClearingOfficeNotifications = async args => {
+    const notifications = await getRoNotifications(args)
+    return [...notifications, ...clearingOfficeNotification(notifications)]
+  }
 
   async function getCaNotifications({ common, token, submissionTarget, sendingUserName }) {
     const agencyId = getIn(submissionTarget, ['agencyId'])
@@ -164,7 +183,7 @@ module.exports = function createNotificationService(
   const notificationDataMethod = {
     CA_RETURN: R.compose(
       R.then(replaceTemplateNames({ STANDARD: 'CA_RETURN', COPY: 'CA_RETURN_COPY' })),
-      getCaAndClearingOfficeNotifications
+      getCaAndClearingOfficeAndRoOrganisationNotifications
     ),
     DM_TO_CA_RETURN: R.compose(
       R.then(replaceTemplateNames({ STANDARD: 'CA_RETURN' })),

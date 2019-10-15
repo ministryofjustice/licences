@@ -40,6 +40,7 @@ describe('notificationService', () => {
       getPrisonerPersonalDetails: sinon
         .stub()
         .resolves({ firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1', offenderNo: 'AB1234A' }),
+      getResponsibleOfficer: sinon.stub().resolves({ deliusId: 'id-1' }),
     }
     userAdminService = {
       getRoUserByDeliusId: sinon.stub().resolves({
@@ -600,6 +601,17 @@ describe('notificationService', () => {
               ca_name: 'Name One',
               prison: 'Moorland (HMP & YOI)',
             },
+          },
+          {
+            email: 'admin@ro.email',
+            personalisation: {
+              ...expectedCommonData,
+              booking_id: '123',
+              sender_name: 'sender',
+              ca_name: 'Name One',
+              prison: 'Moorland (HMP & YOI)',
+            },
+            templateName: 'CA_RETURN_COPY',
           },
         ])
       })
