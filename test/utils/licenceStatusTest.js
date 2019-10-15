@@ -1473,6 +1473,51 @@ describe('getLicenceStatus', () => {
       const status = getLicenceStatus(licence)
       expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED)
     })
+
+    it('should show curfew address as STARTED if telephone empty and Main Occupier NOT checked', () => {
+      const licence = {
+        stage: 'PROCESSING_CA',
+        licence: {
+          proposedAddress: {
+            curfewAddress: {
+              addressLine1: '123 ABC',
+              addressTown: 'b',
+              postCode: 'c',
+              telephone: '',
+              occupier: {
+                isOffender: 'No',
+              },
+            },
+          },
+        },
+      }
+
+      const status = getLicenceStatus(licence)
+      expect(status.tasks.curfewAddress).to.eql(taskStates.STARTED)
+    })
+
+    it('should show curfew address as DONE if telephone empty and Main Occupier IS checked', () => {
+      const licence = {
+        stage: 'PROCESSING_CA',
+        licence: {
+          proposedAddress: {
+            curfewAddress: {
+              addressLine1: '123 ABC',
+              addressTown: 'b',
+              postCode: 'c',
+              cautionedAgainstResident: 'e',
+              telephone: '',
+              occupier: {
+                isOffender: 'Yes',
+              },
+            },
+          },
+        },
+      }
+
+      const status = getLicenceStatus(licence)
+      expect(status.tasks.curfewAddress).to.eql(taskStates.DONE)
+    })
   })
 
   context('bass', () => {
