@@ -166,11 +166,12 @@ module.exports = {
       {
         id: 'COMPLYREQUIREMENTS',
         text:
-          'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your alcohol / drug / sexual / violent / gambling / solvent abuse / anger / debt / prolific / offending behaviour problems at the [NAME OF COURSE / CENTRE].',
+          'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your [alcohol abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour/ offending behaviour] problems at the [NAME OF COURSE / CENTRE].',
         user_input: 'courseOrCentre',
         active: !use2019Conditions,
         field_position: {
-          courseOrCentre: '0',
+          abuseAndBehaviours: '0',
+          courseOrCentre: '1',
         },
         group_name: 'Drugs, health and behaviour',
         subgroup_name: null,

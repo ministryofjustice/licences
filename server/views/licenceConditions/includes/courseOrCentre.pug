@@ -1,5 +1,44 @@
-label(for='courseOrCentre') Name of course/centre
-textarea(name='courseOrCentre' id='courseOrCentre' class='form-control' rows='2' aria-label="Name of course and centre")
-  if condition.user_submission && condition.user_submission.courseOrCentre
-    | #{condition.user_submission.courseOrCentre}
+div.pure-g.paddingBottom
+  div.pure-u-3-4
+    label(for='courseOrCentre') Name of course/centre
+    textarea(name='courseOrCentre' id='courseOrCentre' class='form-control' rows='2' aria-label="Name of course and centre")
+      if condition.user_submission && condition.user_submission.courseOrCentre
+        | #{condition.user_submission.courseOrCentre}
 
+
+div.govuk-fieldset
+  div.multiple-choice
+    input(id='alcoholAbuse' type='checkbox' name='abuseAndBehaviours' value='alcohol abuse' checked=behaviours.includes('alcohol abuse'))
+    label(for='alcoholAbuse') alcohol abuse
+
+  div.multiple-choice
+    input(id='sexualAbuse' type='checkbox' name='abuseAndBehaviours' value='sexual abuse' checked=behaviours.includes('sexual abuse'))
+    label(for='sexualAbuse') sexual abuse
+
+  div.multiple-choice
+    input(id='violentBehaviour' type='checkbox' name='abuseAndBehaviours' value='violent behaviour' checked=behaviours.includes('violent behaviour'))
+    label(for='violentBehaviour') violent behaviour
+
+  div.multiple-choice
+    input(id='gambling' type='checkbox' name='abuseAndBehaviours' value='gambling' checked=behaviours.includes('gambling'))
+    label(for='gambling') gambling 
+
+  div.multiple-choice
+    input(id='solventAbuse' type='checkbox' name='abuseAndBehaviours' value='solvent abuse' checked=behaviours.includes('solvent abuse'))
+    label(for='solventAbuse') solvent abuse
+
+  div.multiple-choice
+    input(id='anger' type='checkbox' name='abuseAndBehaviours' value='anger' checked=behaviours.includes('anger'))
+    label(for='anger') anger
+
+  div.multiple-choice
+    input(id='debt' type='checkbox' name='abuseAndBehaviours' value='debt' checked=behaviours.includes('debt'))
+    label(for='debt') debt 
+
+  div.multiple-choice
+    input(id='prolificBehaviour' type='checkbox' name='abuseAndBehaviours' value='prolific behaviour' checked=behaviours.includes('prolific behaviour'))
+    label(for='prolificBehaviour') prolific behaviour
+
+  div.multiple-choice
+    input(id='offendingBehaviour' type='checkbox' name='abuseAndBehaviours' value='offending behaviour' checked=behaviours.includes('offending behaviour'))
+    label(for='offendingBehaviour') offending behaviour
