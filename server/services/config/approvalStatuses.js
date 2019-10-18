@@ -42,7 +42,7 @@ module.exports = {
         rotlFail: { approvalStatus: 'INELIGIBLE', refusedReason: 'FAIL_RTN' },
         communityCurfew: { approvalStatus: 'INELIGIBLE', refusedReason: 'CURFEW' },
         returnedAtRisk: { approvalStatus: 'INELIGIBLE', refusedReason: 'S116' },
-        serving4YearsOrMore: { approvalStatus: 'INELIGIBLE', refusedReason: 'SERVING_4_OR_MORE_YEARS' },
+        serving4YearsOrMore: { approvalStatus: 'INELIGIBLE', refusedReason: 'CJA03_4YRS' },
         hdcCurfewConditions: { approvalStatus: 'INELIGIBLE', refusedReason: 'HDC_RECALL' },
         servingRecall: { approvalStatus: 'INELIGIBLE', refusedReason: 'LRCOMP' },
         deportation: { approvalStatus: 'INELIGIBLE', refusedReason: 'FNP' },
