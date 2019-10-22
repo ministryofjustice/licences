@@ -150,4 +150,25 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     at TaskListPage
   }
 
+  def 'Selecting the "violent behaviour" and "anger" checkboxes on the additionalConditions page and then "save and continue", the user is taken to conditionsSummary page which displays the previous selections in the body text' () {
+
+    when: 'At additional conditions page'
+    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+
+    and: 'I select some conditions'
+    $("form").additionalConditions = ['COMPLYREQUIREMENTS']
+
+    and: 'I select violent behaviour and anger from Drugs, health and behaviour'
+    $("form").abuseAndBehaviours = ['violent behaviour', 'anger']
+
+    and: 'I save and continue'
+    find('#continueBtn').click()
+
+    then: 'I am taken to the conditions summary page and I see the previously entered values'
+    at LicenceConditionsSummaryPage
+
+    conditions.additional[0].content.contains('anger')
+    conditions.additional[0].content.contains('violent behaviour')
+  }
+
 }

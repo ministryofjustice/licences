@@ -30,7 +30,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
   def 'Standard conditions page shown first'() {
 
     given: 'At task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to (TaskListPage, testData.markAndrewsBookingId)
 
     when: 'I start the additional conditions task'
     taskListAction('Additional conditions').click()
@@ -145,6 +145,32 @@ class LicenceConditionsSpec extends GebReportingSpec {
     conditionsItem('NOCONTACTASSOCIATE').checked
     $("#groupsOrOrganisation").value() == 'sample input'
   }
+
+  def 'Abuse and behaviours checkboxes selected should still show as checked when user selects, saves, moves to next page and then returns back to Additional Conditions page again'() {
+
+    when: 'At additional conditions page'
+    at LicenceConditionsAdditionalPage
+
+    and: 'I select some conditions'
+    $("form").additionalConditions = ['COMPLYREQUIREMENTS']
+
+    and: 'I select alcohol and abuse from Drugs, health and behaviour'
+    $("form").abuseAndBehaviours = ['alcohol abuse']
+
+    and: 'I save and continue'
+    find('#continueBtn').click()
+
+    and: 'I return to the additional conditions page'
+    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+
+    then: 'I see the previously entered values'
+    conditionsItem('COMPLYREQUIREMENTS').checked
+
+    abuseAndBehaviours('alcohol abuse').checked
+    abuseAndBehaviours('solvent abuse').unchecked
+
+  }
+
 
   def 'I can add bespoke conditions'() {
     given: 'I am on the additional conditions page'

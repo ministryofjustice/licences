@@ -1,12 +1,12 @@
 const moment = require('moment')
 const romanise = require('romannumerals')
-const { getIn, isEmpty, mergeWithRight } = require('../../utils/functionalHelpers')
-const pdfData = require('../config/pdfData')
-const config = require('../../config')
+const { getIn, isEmpty, mergeWithRight } = require('../../../utils/functionalHelpers')
+const pdfData = require('../../config/pdfData')
+const config = require('../../../config')
 
 const DEFAULT_PLACEHOLDER = 'N/A'
 
-module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress }
+module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress, getConditionText }
 
 function formatPdfData(
   templateName,
@@ -32,7 +32,6 @@ function formatPdfData(
     taggingCompany,
     approvedVersionDetails,
   }
-
   return valueOrPlaceholder(allData, placeholder, templateName)
 }
 
@@ -125,9 +124,11 @@ function listCounter(start, index) {
     .toLowerCase()
 }
 
+const joinIfArray = value => (Array.isArray(value) ? value.join(', ') : value)
+
 function getConditionText(content, terminator) {
   return content
-    .map(({ text, variable }) => text || variable)
+    .map(({ text, variable }) => text || joinIfArray(variable))
     .join('')
     .replace(/\.+$/, '') // remove trailing period
     .concat(terminator)
