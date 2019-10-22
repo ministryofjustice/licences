@@ -61,7 +61,7 @@ module.exports = {
 
   pdf: {
     licences: {
-      taggingCompanyTelephone: get('TAGGING_CO_PHONE', '01234 567890'),
+      taggingCompanyTelephone: get('TAGGING_CO_PHONE', '0800 137 291'),
       pdfOptions: {
         format: 'A4',
         margin: {
