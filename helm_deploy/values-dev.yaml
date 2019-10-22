@@ -1,0 +1,31 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: docker.io/mojdigitalstudio/licences
+  tag: latest
+  pullPolicy: IfNotPresent
+  port: 3000
+
+ingress:
+  enabled: true
+  enable_whitelist: false
+  host: licences-dev.prison.service.justice.gov.uk
+  cert_secret: licences-cert
+  path: /
+
+env:
+  DOMAIN:
+  NOMIS_API_URL: "https://gateway.t3.nomis-api.hmpps.dsd.io/elite2api/api" 
+  NOMIS_AUTH_URL: "https://gateway.t3.nomis-api.hmpps.dsd.io/auth"
+  GLOBAL_SEARCH_URL: "https://whereabouts-dev.prison.service.justice.gov.uk/global-search"
+  AUTH_STRATEGY: "oauth"
+  PUSH_TO_NOMIS: "yes"
+  REMINDERS_SCHEDULE_RO: "0 1 * * 1-5"
+  SCHEDULED_JOBS_AUTOSTART: "no"
+  SCHEDULED_JOBS_OVERLAP: "5000"
+  NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,RO_TWO_DAYS,RO_DUE,RO_OVERDUE,DM_NEW,DM_TO_CA_RETURN"
+  RO_SERVICE_TYPE: "DELIUS"
+  DELIUS_API_URL: "https://community-proxy.apps.live-1.cloud-platform.service.justice.gov.uk/communityapi/api"
