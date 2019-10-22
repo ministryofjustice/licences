@@ -187,7 +187,7 @@ jobs:
           command: |
             VERSION=$(egrep buildNumber build-info.json | awk -F"\"" '{print $4}')
             npm run plant-beanstalk ${VERSION}
-            ~/.local/bin/eb deploy --label ${VERSION}
+            AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_EB AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_EB ~/.local/bin/eb deploy --label ${VERSION}
       - store_artifacts:
           path: deploy.zip
 
