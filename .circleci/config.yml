@@ -91,7 +91,6 @@ jobs:
           root: .
           paths:
             - node_modules
-            - build-info.json
             - assets/stylesheets
 
   integration_tests:
