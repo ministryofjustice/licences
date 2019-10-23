@@ -40,11 +40,23 @@ env:
         name: {{ template "app.name" . }}
         key: SESSION_SECRET
 
+  - name: API_CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_ID
+
   - name: API_CLIENT_SECRET 
     valueFrom:
       secretKeyRef:
         name: {{ template "app.name" . }}
         key: API_CLIENT_SECRET
+
+  - name: ADMIN_API_CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: ADMIN_API_CLIENT_ID
 
   - name: ADMIN_API_CLIENT_SECRET
     valueFrom:

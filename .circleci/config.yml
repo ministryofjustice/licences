@@ -245,6 +245,9 @@ workflows:
           requires:
             - build_docker
             - feature_tests
+          #filters:
+            #branches:
+              #only: master
       - request-preprod-approval:
           type: approval
           requires:
