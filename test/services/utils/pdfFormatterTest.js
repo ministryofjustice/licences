@@ -417,7 +417,7 @@ const allValuesEmpty = {
   CURFEW_WED_UNTIL: 'PLACEHOLDER',
   EST_PHONE: 'PLACEHOLDER',
   EST_PREMISE: 'PLACEHOLDER',
-  MONITOR: '01234 567890', // tagging co phone is hardcoded so always present
+  MONITOR: '0800 137 291', // tagging co phone is hardcoded so always present
   OFF_BOOKING: 'PLACEHOLDER',
   OFF_CRO: '',
   OFF_DOB: 'PLACEHOLDER',
