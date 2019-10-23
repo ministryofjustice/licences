@@ -122,5 +122,5 @@ env:
     value: "true"
 
   - name: DOMAIN
-    value: {{ .Values.ingress.host | quote }}
+    value: https://{{ .Values.ingress.host | quote }}
 {{- end -}}
