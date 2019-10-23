@@ -184,7 +184,7 @@ jobs:
             docker build --rm=false . \
               --build-arg BUILD_NUMBER=$APP_VERSION \
               --build-arg GIT_REF=$CIRCLE_SHA1 \
-              --tag "mojdigitalstudio/prisonstaffhub:$APP_VERSION" \
+              --tag "mojdigitalstudio/licences:$APP_VERSION" \
               --label "maintainer=dps-hmpps@digital.justice.gov.uk" \
               --label "app.version=$APP_VERSION" \
               --label "build.version=$APP_VERSION" \
@@ -193,14 +193,14 @@ jobs:
               --label "build.gitref=$CIRCLE_SHA1"
             
             # Copy build-info.json from image
-            docker run -it --rm mojdigitalstudio/prisonstaffhub:$APP_VERSION cat /app/build-info.json > build-info.json
+            docker run -it --rm mojdigitalstudio/licences:$APP_VERSION cat /app/build-info.json > build-info.json
             
             #if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
               #publish to docker hub as the tag
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-              docker tag mojdigitalstudio/prisonstaffhub:$APP_VERSION mojdigitalstudio/prisonstaffhub:latest
-              docker push mojdigitalstudio/prisonstaffhub:$APP_VERSION
-              docker push mojdigitalstudio/prisonstaffhub:latest
+              docker tag mojdigitalstudio/licences:$APP_VERSION mojdigitalstudio/licences:latest
+              docker push mojdigitalstudio/licences:$APP_VERSION
+              docker push mojdigitalstudio/licences:latest
             #fi
       - persist_to_workspace:
           root: .
