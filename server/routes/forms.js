@@ -21,19 +21,6 @@ module.exports = ({ formService }) => router => {
         licenceStatus,
       } = res.locals
 
-      const abuseAndBehaviours = getIn(res.locals.licence, [
-        'licence',
-        'licenceConditions',
-        'additional',
-        'COMPLYREQUIREMENTS',
-        'abuseAndBehaviours',
-      ])
-
-      if (Array.isArray(abuseAndBehaviours)) {
-        licence.licenceConditions.additional.COMPLYREQUIREMENTS.abuseAndBehaviours = abuseAndBehaviours.map(item => {
-          return ` ${item}`
-        })
-      }
       const isBass = getIn(licenceStatus, ['decisions', 'bassReferralNeeded']) === true
       const isAp = getIn(licenceStatus, ['decisions', 'approvedPremisesRequired']) === true
 

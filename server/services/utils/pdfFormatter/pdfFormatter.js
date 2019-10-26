@@ -124,7 +124,7 @@ function listCounter(start, index) {
     .toLowerCase()
 }
 
-const joinIfArray = value => (Array.isArray(value) ? value.join(', ') : value)
+const joinIfArray = value => (Array.isArray(value) ? value.join() : value)
 
 function getConditionText(content, terminator) {
   return content

@@ -77,6 +77,20 @@ module.exports = function createConditionsService({ use2019Conditions }) {
       conditionIdsSelected.includes(condition.id)
     )
 
+    const abuseAndBehavioursConditions = getIn(licence, [
+      'licenceConditions',
+      'additional',
+      'COMPLYREQUIREMENTS',
+      'abuseAndBehaviours',
+    ])
+
+    if (Array.isArray(abuseAndBehavioursConditions)) {
+      Object.assign(
+        abuseAndBehavioursConditions,
+        abuseAndBehavioursConditions.map((condition, index) => (index > 0 ? ` ${condition}` : condition))
+      )
+    }
+
     return populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors, approvedOnly)
   }
 

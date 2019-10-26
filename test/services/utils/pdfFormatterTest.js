@@ -401,7 +401,7 @@ describe('pdfFormatter', () => {
         text:
           'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
       },
-      { variable: ['anger', 'debt', 'offending behaviour'] },
+      { variable: ['anger', ' debt', ' offending behaviour'] },
       { text: ' problems at the ' },
       { variable: 'NHS Clinic' },
       { text: '.' },
