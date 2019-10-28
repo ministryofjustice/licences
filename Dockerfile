@@ -9,7 +9,8 @@ WORKDIR /app
 ADD . .
 
 # Install AWS RDS Root cert
-RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2015-root.pem > /app/root.cert
+RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem > /app/root.cert
+RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2015-root.pem >> /app/root.cert
 
 # Install latest chrome dev package libs so that the bundled version of Chromium installed by Puppeteer will work
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
