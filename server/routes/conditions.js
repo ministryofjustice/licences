@@ -30,8 +30,20 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
     const licence = getIn(res.locals.licence, ['licence'])
     const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || []
     const conditions = conditionsService.getAdditionalConditions(licence)
+    let behaviours =
+      getIn(conditions, ['Drugs, health and behaviour', 'base', 0, 'user_submission', 'abuseAndBehaviours']) || []
 
-    res.render('licenceConditions/additionalConditions', { action, bookingId, conditions, bespokeConditions })
+    if (typeof behaviours === 'string') {
+      behaviours = [behaviours]
+    }
+
+    res.render('licenceConditions/additionalConditions', {
+      action,
+      bookingId,
+      conditions,
+      bespokeConditions,
+      behaviours,
+    })
   }
 
   router.post('/additionalConditions/:bookingId', audited, asyncMiddleware(postAdditional))
