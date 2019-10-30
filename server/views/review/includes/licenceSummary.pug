@@ -30,7 +30,14 @@ mixin errorMessageOrBlock(errorMessage, errorId)
 
 div.largeMarginBottom
 
-  if sections.bassArea
+  if (sections.bassArea && sections.approvedPremisesAddress)
+    div.borderBottom
+        +titleRow('Approved premises', 'approvedPremisesDetails')
+          +roCase
+            +change("/hdc/bassReferral/bassAreaCheck/" + bookingId, 'addressEditLink')
+        +errorMessageOrBlock( errorObject.bassReferral && errorObject.bassReferral.approvedPremisesAddress, 'approvedPremisesAddress-error')
+          include approvedPremisesAddress
+  else if sections.bassArea
     div.borderBottom
       +titleRow('Proposed BASS area', 'bassAreaDetails')
         +roCase

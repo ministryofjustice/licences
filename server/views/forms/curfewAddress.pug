@@ -6,8 +6,9 @@ block content
   span.alert (This form may be disclosed to the offender on request)
 
   include includes/offender
-
-  if isBass
+  if isBass && isAp
+    include includes/approvedPremises
+  else if isBass
     include includes/bassArea
   else if isAp
     include includes/approvedPremises

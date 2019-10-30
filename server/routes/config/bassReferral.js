@@ -86,10 +86,69 @@ module.exports = {
           responseType: 'optionalString',
         },
       },
+      {
+        approvedPremisesRequiredYesNo: {
+          responseType: 'requiredYesNo',
+          validationMessage: 'Select Yes or No',
+        },
+      },
+    ],
+    nextPath: {
+      decisions: [
+        {
+          discriminator: 'approvedPremisesRequiredYesNo',
+          Yes: '/hdc/bassReferral/approvedPremisesAddress/',
+          No: '/hdc/taskList/',
+        },
+      ],
+      path: '/hdc/taskList/',
+    },
+  },
+  approvedPremisesAddress: {
+    licenceSection: 'approvedPremisesAddress',
+    validate: true,
+    fields: [
+      {
+        addressLine1: {
+          responseType: 'requiredString',
+          validationMessage: 'Enter an address',
+        },
+      },
+      {
+        addressLine2: {
+          responseType: 'optionalString',
+        },
+      },
+      {
+        addressTown: {
+          responseType: 'requiredString',
+          validationMessage: 'Enter a town or city',
+        },
+      },
+      {
+        postCode: {
+          responseType: 'requiredPostcode',
+          validationMessage: 'Enter a postcode',
+        },
+      },
+      {
+        telephone: {
+          responseType: 'optionalPhone',
+          validationMessage: 'Enter a telephone number in the right format',
+        },
+      },
     ],
     nextPath: {
       path: '/hdc/taskList/',
       change: '/hdc/review/licenceDetails/',
+    },
+  },
+  approvedPremisesChoice: {
+    pageDataMap: ['licence'],
+    nextPath: {
+      discriminator: 'decision',
+      ApprovedPremises: '/hdc/bassReferral/approvedPremisesAddress/',
+      OptOut: '/hdc/taskList/',
     },
   },
   bassOffer: {

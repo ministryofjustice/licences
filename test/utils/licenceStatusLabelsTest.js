@@ -265,7 +265,7 @@ describe('getStatusLabel', () => {
             decisions: { bassReferralNeeded: true },
             tasks: { bassAreaCheck: 'UNSTARTED' },
           },
-          label: 'BASS request',
+          label: 'Not started',
         },
         {
           status: {

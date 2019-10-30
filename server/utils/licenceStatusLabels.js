@@ -117,7 +117,6 @@ function caProcessingLabel(licenceStatus) {
   ]
 
   const addressRouteLabels = [
-    { decision: 'approvedPremisesRequired', label: status.approvedPremisesRequired },
     { decision: 'curfewAddressWithdrawn', label: status.addressRejected },
     { decision: 'curfewAddressRejected', label: status.addressRejected },
   ]
@@ -127,11 +126,12 @@ function caProcessingLabel(licenceStatus) {
     { decision: 'postponed', label: status.postponed },
     { decision: 'excluded', label: status.notEligible },
     { decision: 'optedOut', label: status.optedOut },
+    { decision: 'approvedPremisesRequired', label: status.approvedPremisesRequired },
   ]
 
   const labels = licenceStatus.decisions.bassReferralNeeded
-    ? commonLabels.concat(bassRouteLabels)
-    : commonLabels.concat(addressRouteLabels)
+  ? commonLabels.concat(bassRouteLabels)
+  : commonLabels.concat(addressRouteLabels)
 
   return getLabel(labels, licenceStatus) || status.addressSuitable
 }
@@ -157,7 +157,7 @@ function roProcessingLabel(licenceStatus) {
 
   if (licenceStatus.decisions.bassReferralNeeded) {
     if (licenceStatus.tasks.bassAreaCheck === taskStates.UNSTARTED) {
-      return status.bassRequest
+      return status.notStarted
     }
 
     if (licenceStatus.decisions.bassAreaNotSuitable) {

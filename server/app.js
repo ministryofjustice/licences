@@ -357,7 +357,7 @@ module.exports = function createApp({
 
   app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService })))
   app.use('/hdc/approval/', secureRoute(approvalRouter({ licenceService, prisonerService, nomisPushService })))
-  app.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({ licenceService })))
+  app.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({ licenceService, nomisPushService })))
   app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({ licenceService, conditionsService })))
   app.use('/hdc/curfew/', secureRoute(curfewRouter({ licenceService, nomisPushService })))
   app.use('/hdc/eligibility/', secureRoute(eligibilityRouter({ licenceService, nomisPushService })))

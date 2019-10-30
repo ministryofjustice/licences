@@ -1,6 +1,6 @@
 include ./itemAndError
--var address = data.curfew && data.curfew.approvedPremisesAddress || {}
--var errors = errorObject.curfew && errorObject.curfew.approvedPremisesAddress || {}
+-var address = data.curfew && data.curfew.approvedPremisesAddress || data.bassReferral && data.bassReferral.approvedPremisesAddress ||{}
+-var errors = errorObject.curfew && errorObject.curfew.approvedPremisesAddress || errorObject.bassReferral && errorObject.bassReferral.approvedPremisesAddress ||{}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
   div.pure-u-1-2

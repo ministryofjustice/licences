@@ -140,7 +140,10 @@ module.exports = {
           href: '/hdc/risk/riskManagement/',
           text: 'View/Edit',
         },
-        visible: (!approvedPremisesRequired && curfewAddressApproved) || addressUnsuitable || bassChecksDone,
+        visible:
+          (!approvedPremisesRequired && curfewAddressApproved) ||
+          addressUnsuitable ||
+          (bassChecksDone && !approvedPremisesRequired),
       },
       {
         title: 'Victim liaison',

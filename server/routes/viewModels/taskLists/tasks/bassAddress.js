@@ -1,9 +1,19 @@
-const { standardAction } = require('./utils/actions')
+const { standardAction, viewEdit } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
-    const { bassAreaNotSuitable, bassWithdrawn, bassWithdrawalReason, bassAccepted } = decisions
+    const {
+      bassAreaNotSuitable,
+      bassWithdrawn,
+      bassWithdrawalReason,
+      bassAccepted,
+      approvedPremisesRequired,
+    } = decisions
     const { bassOffer, bassAddress } = tasks
+
+    if (approvedPremisesRequired) {
+      return 'Approved premises required'
+    }
 
     if (bassAreaNotSuitable) {
       return 'BASS area rejected'
@@ -24,7 +34,11 @@ module.exports = {
   },
 
   getCaAction: ({ tasks }) => {
-    const { bassAddress } = tasks
-    return standardAction(bassAddress, '/hdc/bassReferral/bassOffer/')
+    const { bassAddress, approvedPremisesAddress } = tasks
+    if (approvedPremisesAddress === 'DONE') {
+      return viewEdit('/hdc/bassReferral/approvedPremisesChoice/')
+    } else {
+      return standardAction(bassAddress, '/hdc/bassReferral/bassOffer/')
+    }
   },
 }
