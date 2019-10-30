@@ -13,6 +13,7 @@ module.exports = ({ decisions, tasks, stage }) => {
   const {
     insufficientTimeStop,
     addressWithdrawn,
+    addressUnsuitable,
     curfewAddressRejected,
     bassReferralNeeded,
     confiscationOrder,
@@ -35,7 +36,7 @@ module.exports = ({ decisions, tasks, stage }) => {
   }
 
   if (addressWithdrawn || curfewAddressRejected) {
-    return [
+    const t = [
       { task: 'eligibilitySummaryTask' },
       {
         title: 'Proposed curfew address',
@@ -46,6 +47,21 @@ module.exports = ({ decisions, tasks, stage }) => {
           text: 'View',
         },
       },
+    ]
+
+    if (!(addressUnsuitable || addressWithdrawn)) {
+      t.push({
+        title: 'Risk management',
+        label: riskManagement.getLabel({ decisions, tasks }),
+        action: {
+          type: 'btn-secondary',
+          href: '/hdc/review/risk/',
+          text: 'View',
+        },
+      })
+    }
+
+    t.push(
       {
         title: 'Return to prison case admin',
         action: {
@@ -62,8 +78,9 @@ module.exports = ({ decisions, tasks, stage }) => {
           href: '/hdc/approval/refuseReason/',
           text: 'Refuse HDC',
         },
-      },
-    ]
+      }
+    )
+    return t
   }
 
   return [

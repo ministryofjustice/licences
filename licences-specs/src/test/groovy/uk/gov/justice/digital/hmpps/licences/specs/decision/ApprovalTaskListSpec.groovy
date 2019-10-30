@@ -59,8 +59,8 @@ class ApprovalTaskListSpec extends GebReportingSpec {
     when: 'I view the tasklist'
     to TaskListPage, testData.markAndrewsBookingId
 
-    then: 'I see only eligibility, address, return to PCA, refuse'
-    taskListActions.size() == 4
+    then: 'I see only eligibility, address, Risk Management return to PCA, refuse'
+    taskListActions.size() == 5
 
     and: 'I can only refuse the licence'
     taskListAction(tasks.decision).text() == 'Refuse HDC'
