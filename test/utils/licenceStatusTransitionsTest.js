@@ -653,7 +653,7 @@ describe('getAllowedTransition', () => {
     it('should allow CA to DM when approved premises', () => {
       const status = {
         stage: 'PROCESSING_CA',
-        tasks: { finalChecks: 'DONE' },
+        tasks: { finalChecks: 'DONE', approvedPremisesAddress: 'DONE' },
         decisions: { approvedPremisesRequired: true },
       }
 

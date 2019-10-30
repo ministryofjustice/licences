@@ -9,6 +9,9 @@ module.exports = {
       if (bassAreaSpecified) {
         return bassAreaSuitable ? 'BASS area suitable' : 'BASS area is not suitable'
       }
+      if (!bassAreaSpecified && decisions.approvedPremisesRequired === true) {
+        return 'Approved premises required'
+      }
       return 'No specific BASS area requested'
     }
     return 'Not completed'

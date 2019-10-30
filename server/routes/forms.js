@@ -35,8 +35,15 @@ module.exports = ({ formService }) => router => {
 
       const completionDate = moment().format(formsDateFormat)
       const filename = curfewAddressCheckFormFileName(prisoner)
-
-      return res.renderPDF('forms/curfewAddress', { ...pageData, port, completionDate }, { filename, pdfOptions })
+      const approvedPremisesAddress =
+        getIn(licence, ['curfew', 'approvedPremisesAddress']) ||
+        getIn(licence, ['bassReferral', 'approvedPremisesAddress']) ||
+        {}
+      return res.renderPDF(
+        'forms/curfewAddress',
+        { ...pageData, approvedPremisesAddress, port, completionDate },
+        { filename, pdfOptions }
+      )
     })
   )
 

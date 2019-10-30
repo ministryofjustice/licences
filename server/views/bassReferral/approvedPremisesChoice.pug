@@ -1,0 +1,14 @@
+extends ../formTemplates/formTemplate
+
+block question
+  | Does the offender need to be sent to approved premises?
+
+block formItems
+  div.form-group.smallPaddingTop
+
+    div.multiple-choice()
+      input#ApprovedPremises(type="radio" checked=data && data.decision === 'ApprovedPremises' name="decision" value="ApprovedPremises")
+      label(for="ApprovedPremises") Yes, the offender needs to be sent to approved premises
+    div.multiple-choice
+      input#optout(type="radio" checked=data && data.decision === 'OptOut' name="decision" value="OptOut")
+      label(for="optout") No, they opted out of HDC

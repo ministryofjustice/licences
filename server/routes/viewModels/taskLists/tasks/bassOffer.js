@@ -1,9 +1,21 @@
-const { standardAction, change } = require('./utils/actions')
+const { standardAction, change, viewEdit } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
-    const { bassAreaNotSuitable, bassWithdrawn, bassWithdrawalReason, bassAccepted, bassAreaSuitable } = decisions
-    const { bassOffer, bassAreaCheck } = tasks
+    const {
+      bassAreaNotSuitable,
+      bassWithdrawn,
+      bassWithdrawalReason,
+      bassAccepted,
+      bassAreaSuitable,
+      approvedPremisesRequired,
+      optedOut
+    } = decisions
+    const { bassOffer, bassAreaCheck, approvedPremisesAddress } = tasks
+    
+    if(optedOut){
+      return 'Opted out'
+    }
 
     if (bassAreaNotSuitable) {
       return 'BASS area rejected'
@@ -31,15 +43,23 @@ module.exports = {
       return 'Not completed'
     }
 
+    if (approvedPremisesRequired) {
+      return approvedPremisesAddress === 'DONE' ? 'Approved premises required' : 'Not completed'
+    }
+
     return 'BASS referral requested'
   },
 
   getAction: ({ decisions, tasks }) => {
-    const { bassWithdrawn } = decisions
+    const { bassWithdrawn, approvedPremisesRequired } = decisions
     const { bassAreaCheck, bassOffer, optOut, curfewAddress, bassRequest } = tasks
-
+    
     if (bassWithdrawn) {
       return change('/hdc/bassReferral/bassOffer/')
+    }
+
+    if (bassAreaCheck === 'DONE' && approvedPremisesRequired === true) {
+      return viewEdit('/hdc/bassReferral/approvedPremisesChoice/')
     }
 
     if (bassAreaCheck === 'DONE') {

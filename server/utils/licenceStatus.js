@@ -40,7 +40,6 @@ function getLicenceStatus(licenceRecord) {
   const results = getRequiredState(stage, licenceRecord.licence)
   const postApproval = isPostDecision(stage)
   const createLicence = postApproval ? getLicenceCreatedTaskState(licenceRecord) : taskStates.UNSTARTED
-
   return results.reduce(combiner, { stage, postApproval, decisions: {}, tasks: { createLicence } })
 }
 
@@ -456,8 +455,20 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
 }
 
 function getCurfewAddressReviewState(licence) {
-  const approvedPremisesRequiredAnswer = getIn(licence, ['curfew', 'approvedPremises', 'required']) || {}
-  const approvedPremisesAddressAnswer = getIn(licence, ['curfew', 'approvedPremisesAddress']) || {}
+  let approvedPremisesRequiredAnswer
+  let approvedPremisesAddressAnswer
+
+    approvedPremisesRequiredAnswer = getIn(licence, ['curfew', 'approvedPremises', 'required']) 
+    || getIn(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo'])
+    || {}
+
+    approvedPremisesAddressAnswer = getIn(licence, ['curfew', 'approvedPremisesAddress']) 
+    || getIn(licence, ['bassReferral', 'approvedPremisesAddress']) 
+    || {}
+
+  if (approvedPremisesRequiredAnswer === 'No') {
+    approvedPremisesAddressAnswer = {}
+  }
 
   const approvedPremisesAddressState = () => {
     if (isEmpty(approvedPremisesAddressAnswer)) {

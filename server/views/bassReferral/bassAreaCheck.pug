@@ -63,9 +63,24 @@ block content
             if bassAreaCheck.bassAreaReason
               | #{bassAreaCheck.bassAreaReason}
 
-      if (action === 'change')
+        div.pure-u-1.pure-u-sm-5-12.pure-g
+          div.form-group.inline
+
+          h3.heading-medium Does the offender need to be sent to approved premises?
+          
+          div#approvedPremisesRequiredYesNo(class=  errorObject.approvedPremisesRequiredYesNo ? "form-group form-group-error inline " : "form-group inline ")
+            div.multiple-choice
+              input#approvedPremisesRequiredYes(type="radio" checked=bassAreaCheck.approvedPremisesRequiredYesNo === 'Yes' name="approvedPremisesRequiredYesNo" value="Yes")
+              label(for="approvedPremisesRequiredYes") Yes
+            div.multiple-choice
+              input#approvedPremisesRequiredNo(type="radio" checked=bassAreaCheck.approvedPremisesRequiredYesNo === 'No' name="approvedPremisesRequiredYesNo" value="No")
+              label(for="approvedPremisesRequiredNo") No
+
         include ../includes/formSubmit
-      else
-        include ../includes/saveAndReturn
+
+      //- if (action === 'change')
+      //-   include ../includes/formSubmit
+      //- else
+      //-   include ../includes/saveAndReturn
 
 

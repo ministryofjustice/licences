@@ -98,7 +98,7 @@ module.exports = licenceStatus => {
       label: bassOffer.getLabel(licenceStatus),
       action: {
         type: 'btn-secondary',
-        href: '/hdc/review/bassOffer/',
+        href: approvedPremisesRequired ? '/hdc/review/approvedPremisesAddress/': '/hdc/review/bassOffer/',
         text: 'View',
       },
     },

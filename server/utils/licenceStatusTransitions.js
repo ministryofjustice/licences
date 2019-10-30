@@ -169,6 +169,11 @@ function canSendCaToDm(licenceStatus) {
 }
 
 function getRequiredTasks(decisions, tasks) {
+
+  if (decisions.approvedPremisesRequired) {
+    return [tasks.approvedPremisesAddress, tasks.finalChecks]
+  }
+
   if (decisions.bassReferralNeeded) {
     return [tasks.bassOffer, tasks.finalChecks]
   }
