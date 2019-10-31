@@ -1,4 +1,4 @@
-const { formatPdfData } = require('../../../server/services/utils/pdfFormatter')
+const { formatPdfData, getConditionText } = require('../../../server/services/utils/pdfFormatter/pdfFormatter')
 
 describe('pdfFormatter', () => {
   let clock
@@ -394,6 +394,25 @@ describe('pdfFormatter', () => {
     expect(data.values.APPROVER).to.eql('first last')
     expect(data.missing).to.not.have.property('APPROVER')
   })
+
+  it('should format conditions text with commas and spaces', () => {
+    const content = [
+      {
+        text:
+          'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
+      },
+      { variable: ['anger', 'debt', 'offending behaviour'] },
+      { text: ' problems at the ' },
+      { variable: 'NHS Clinic' },
+      { text: '.' },
+    ]
+    const terminator = ';'
+
+    const conditionText = getConditionText(content, terminator)
+    expect(conditionText).to.equal(
+      'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your anger, debt, offending behaviour problems at the NHS Clinic;'
+    )
+  })
 })
 
 const allValuesEmpty = {
@@ -417,7 +436,7 @@ const allValuesEmpty = {
   CURFEW_WED_UNTIL: 'PLACEHOLDER',
   EST_PHONE: 'PLACEHOLDER',
   EST_PREMISE: 'PLACEHOLDER',
-  MONITOR: '01234 567890', // tagging co phone is hardcoded so always present
+  MONITOR: '0800 137 291', // tagging co phone is hardcoded so always present
   OFF_BOOKING: 'PLACEHOLDER',
   OFF_CRO: '',
   OFF_DOB: 'PLACEHOLDER',

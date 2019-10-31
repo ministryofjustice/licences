@@ -700,10 +700,16 @@ describe('validation', () => {
               },
             },
           },
-          { formResponse: { COMPLYREQUIREMENTS: { courseOrCentre: 'g' } }, outcome: {} },
+          { formResponse: { COMPLYREQUIREMENTS: { courseOrCentre: 'g', abuseAndBehaviours: [] } }, outcome: {} },
           {
             formResponse: { COMPLYREQUIREMENTS: {} },
-            outcome: { COMPLYREQUIREMENTS: { courseOrCentre: 'Enter name of course / centre' } },
+            outcome: {
+              COMPLYREQUIREMENTS: {
+                courseOrCentre: 'Enter name of course / centre',
+                abuseAndBehaviours:
+                  'Select at least one option from the alcohol abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour / offending behaviour',
+              },
+            },
           },
           { formResponse: { ATTENDALL: { appointmentName: 'g', appointmentProfession: 'a' } }, outcome: {} },
           {

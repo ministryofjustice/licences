@@ -24,6 +24,10 @@ class LicenceConditionsAdditionalPage extends Page {
       $("input", value: conditionValue, name: "additionalConditions").module(Checkbox)
     }
 
+    abuseAndBehaviours { conditionValue ->
+      $("input", value: conditionValue, name: "abuseAndBehaviours").module(Checkbox)
+    }
+
     addBespokeRadios { $(name: "bespokeDecision").module(RadioButtons) }
     bespoke { module(BespokeConditionsModule) }
   }

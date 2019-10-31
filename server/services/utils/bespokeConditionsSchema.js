@@ -40,6 +40,7 @@ module.exports = joi.object({
   }),
   COMPLYREQUIREMENTS: joi.object({
     courseOrCentre: joi.string().required(),
+    abuseAndBehaviours: joi.any().required(),
   }),
   ATTENDALL: joi.object({
     appointmentName: joi.string().required(),

@@ -143,6 +143,12 @@ module.exports = {
                 validationMessage: 'Enter name of course / centre',
               },
             },
+            {
+              abuseAndBehaviours: {
+                validationMessage:
+                  'Select at least one option from the alcohol abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour / offending behaviour',
+              },
+            },
           ],
         },
       },
