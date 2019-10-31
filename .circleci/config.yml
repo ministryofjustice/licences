@@ -69,7 +69,7 @@ jobs:
           version: v2.13.1
       - run:
           name: Run helm lint
-          command: helm licences --values=values-dev.yaml --values=secrets-example.yaml
+          command: helm lint licences --values=values-dev.yaml --values=secrets-example.yaml
           working_directory: helm_deploy
       - run:
           name: Update npm
