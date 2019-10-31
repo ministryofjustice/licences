@@ -1,8 +1,0 @@
-branch-defaults:
-  master:
-    environment: licences-stage
-deploy:
-  artifact: deploy.zip
-global:
-  application_name: licences
-  default_region: eu-west-2

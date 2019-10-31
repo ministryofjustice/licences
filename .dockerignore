@@ -12,3 +12,4 @@ tests
 scss-report.txt
 eslint-report.html
 test-report.html
+helm_deploy

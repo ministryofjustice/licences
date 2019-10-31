@@ -3,10 +3,12 @@ MAINTAINER HMPPS Digital Studio <info@digital.justice.gov.uk>
 ARG BUILD_NUMBER
 ARG GIT_REF
 
+RUN addgroup --gid 2000 --system appgroup && \
+    adduser --uid 2000 --system appuser --gid 2000
+
 # Create app directory
-RUN mkdir -p /app
 WORKDIR /app
-ADD . .
+COPY --chown=appuser:appgroup . .
 
 # Install AWS RDS Root cert
 RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem > /app/root.cert
@@ -21,7 +23,7 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
       --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install && \
+RUN npm install --production && \
     npm run build && \
     export BUILD_NUMBER=${BUILD_NUMBER} && \
     export GIT_REF=${GIT_REF} && \
@@ -30,4 +32,7 @@ RUN npm install && \
 ENV PORT=3000
 
 EXPOSE 3000
+
+USER 2000
+
 CMD [ "npm", "start" ]
