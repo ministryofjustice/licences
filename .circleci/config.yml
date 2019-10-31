@@ -250,7 +250,7 @@ workflows:
       - deploy_dev:
           requires:
             - build_docker
-            - feature_tests
+            #- feature_tests
           filters:
             branches:
               only: master
