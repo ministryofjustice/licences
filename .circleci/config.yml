@@ -50,7 +50,7 @@ executors:
     docker:
       - image: circleci/python:3
     working_directory: ~/app
-  builder:  
+  builder:
     docker:
       - image: circleci/node:10-browsers
     working_directory: ~/app
@@ -197,10 +197,10 @@ jobs:
               --label "build.number=$CIRCLE_BUILD_NUM" \
               --label "build.url=$CIRCLE_BUILD_URL" \
               --label "build.gitref=$CIRCLE_SHA1"
-            
+
             # Copy build-info.json from image
             docker run -it --rm mojdigitalstudio/licences:$APP_VERSION cat /app/build-info.json > build-info.json
-            
+
             if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
               #publish to docker hub as the tag
               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
@@ -251,6 +251,7 @@ workflows:
           requires:
             - build_docker
             #- feature_tests
+            - integration_tests
           filters:
             branches:
               only: master
