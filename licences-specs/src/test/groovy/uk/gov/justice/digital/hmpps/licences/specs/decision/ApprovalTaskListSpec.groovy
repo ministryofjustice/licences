@@ -6,6 +6,7 @@ import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
+import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewConditionsPage
 
 @Stepwise
 class ApprovalTaskListSpec extends GebReportingSpec {
@@ -49,6 +50,16 @@ class ApprovalTaskListSpec extends GebReportingSpec {
 
     and: 'The final decision task has a Continue button'
     taskListAction(tasks.decision).text() == 'Continue'
+  }
+
+  def 'Additional conditions are read only'() {
+    when: 'I am on the Additional conditions page'
+    to ReviewConditionsPage, testData.markAndrewsBookingId
+
+    then: 'The licence conditions details are view only'
+    conditions.additional.size() == 2
+    conditions.additional.findAll{ it.editControl }.size() == 0
+    conditions.additional.findAll{ it.deleteControl }.size() == 0
   }
 
   def 'When address has been rejected, reduced task set shown'() {
