@@ -9,23 +9,76 @@ const reportingInstructions = require('./tasks/reportingInstructions')
 const finalChecks = require('./tasks/finalChecks')
 const { getStatusLabel } = require('../../../utils/licenceStatusLabels')
 
-module.exports = ({ decisions, tasks, stage }) => {
+const rejectedAddressTaskList = licenceStatus => {
   const {
-    insufficientTimeStop,
-    addressWithdrawn,
-    addressUnsuitable,
-    curfewAddressRejected,
-    bassReferralNeeded,
-    confiscationOrder,
-    approvedPremisesRequired,
-  } = decisions
+    decisions: { addressWithdrawn, addressUnsuitable },
+  } = licenceStatus
+
+  const taskList = [
+    { task: 'eligibilitySummaryTask' },
+    {
+      title: 'Proposed curfew address',
+      label: curfewAddress.getLabel(licenceStatus),
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/review/address/',
+        text: 'View',
+      },
+    },
+  ]
+
+  if (!(addressUnsuitable || addressWithdrawn)) {
+    taskList.push({
+      title: 'Risk management',
+      label: riskManagement.getLabel(licenceStatus),
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/review/risk/',
+        text: 'View',
+      },
+    })
+  }
+
+  taskList.push(
+    {
+      title: 'Return to prison case admin',
+      action: {
+        type: 'btn-secondary',
+        href: '/hdc/send/return/',
+        text: 'Return to prison case admin',
+      },
+    },
+    {
+      title: 'Final decision',
+      label: getDecisionLabel(licenceStatus),
+      action: {
+        type: 'btn',
+        href: '/hdc/approval/refuseReason/',
+        text: 'Refuse HDC',
+      },
+    }
+  )
+  return taskList
+}
+
+module.exports = licenceStatus => {
+  const {
+    decisions: {
+      insufficientTimeStop,
+      addressWithdrawn,
+      curfewAddressRejected,
+      bassReferralNeeded,
+      confiscationOrder,
+      approvedPremisesRequired,
+    },
+  } = licenceStatus
 
   if (insufficientTimeStop) {
     return [
       { task: 'eligibilitySummaryTask' },
       {
         title: 'Final decision',
-        label: getDecisionLabel({ decisions, tasks, stage }),
+        label: getDecisionLabel(licenceStatus),
         action: {
           type: 'btn',
           href: '/hdc/approval/refuseReason/',
@@ -36,57 +89,13 @@ module.exports = ({ decisions, tasks, stage }) => {
   }
 
   if (addressWithdrawn || curfewAddressRejected) {
-    const t = [
-      { task: 'eligibilitySummaryTask' },
-      {
-        title: 'Proposed curfew address',
-        label: curfewAddress.getLabel({ decisions, tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/review/address/',
-          text: 'View',
-        },
-      },
-    ]
-
-    if (!(addressUnsuitable || addressWithdrawn)) {
-      t.push({
-        title: 'Risk management',
-        label: riskManagement.getLabel({ decisions, tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/review/risk/',
-          text: 'View',
-        },
-      })
-    }
-
-    t.push(
-      {
-        title: 'Return to prison case admin',
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/send/return/',
-          text: 'Return to prison case admin',
-        },
-      },
-      {
-        title: 'Final decision',
-        label: getDecisionLabel({ decisions, tasks, stage }),
-        action: {
-          type: 'btn',
-          href: '/hdc/approval/refuseReason/',
-          text: 'Refuse HDC',
-        },
-      }
-    )
-    return t
+    return rejectedAddressTaskList(licenceStatus)
   }
 
   return [
     {
       title: 'BASS address',
-      label: bassOffer.getLabel({ decisions, tasks }),
+      label: bassOffer.getLabel(licenceStatus),
       action: {
         type: 'btn-secondary',
         href: '/hdc/review/bassOffer/',
@@ -95,12 +104,12 @@ module.exports = ({ decisions, tasks, stage }) => {
     },
     {
       title: 'Proposed curfew address',
-      label: curfewAddress.getLabel({ decisions, tasks }),
-      action: curfewAddress.getDmAction({ decisions }),
+      label: curfewAddress.getLabel(licenceStatus),
+      action: curfewAddress.getDmAction(licenceStatus),
     },
     {
       title: 'Risk management',
-      label: riskManagement.getLabel({ decisions, tasks }),
+      label: riskManagement.getLabel(licenceStatus),
       action: {
         type: 'btn-secondary',
         href: '/hdc/review/risk/',
@@ -109,7 +118,7 @@ module.exports = ({ decisions, tasks, stage }) => {
     },
     {
       title: 'Victim liaison',
-      label: victimLiaison.getLabel({ decisions, tasks }),
+      label: victimLiaison.getLabel(licenceStatus),
       action: {
         type: 'btn-secondary',
         href: '/hdc/review/victimLiaison/',
@@ -118,7 +127,7 @@ module.exports = ({ decisions, tasks, stage }) => {
     },
     {
       title: 'Curfew hours',
-      label: curfewHours.getLabel({ decisions, tasks }),
+      label: curfewHours.getLabel(licenceStatus),
       action: {
         type: 'btn-secondary',
         href: '/hdc/review/curfewHours/',
@@ -127,7 +136,7 @@ module.exports = ({ decisions, tasks, stage }) => {
     },
     {
       title: 'Additional conditions',
-      label: additionalConditions.getLabel({ decisions, tasks }),
+      label: additionalConditions.getLabel(licenceStatus),
       action: {
         type: 'btn-secondary',
         href: '/hdc/review/conditions/',
@@ -136,7 +145,7 @@ module.exports = ({ decisions, tasks, stage }) => {
     },
     {
       title: 'Reporting instructions',
-      label: reportingInstructions.getLabel({ decisions, tasks }),
+      label: reportingInstructions.getLabel(licenceStatus),
       action: {
         type: 'btn-secondary',
         href: '/hdc/review/reporting/',
@@ -145,7 +154,7 @@ module.exports = ({ decisions, tasks, stage }) => {
     },
     {
       title: 'Review case',
-      label: finalChecks.getLabel({ decisions, tasks }),
+      label: finalChecks.getLabel(licenceStatus),
       action: {
         type: 'btn-secondary',
         href: '/hdc/review/finalChecks/',
@@ -154,8 +163,8 @@ module.exports = ({ decisions, tasks, stage }) => {
     },
     {
       title: 'Postpone',
-      label: postponement.getLabel({ decisions }),
-      action: postponement.getAction({ decisions }),
+      label: postponement.getLabel(licenceStatus),
+      action: postponement.getAction(licenceStatus),
     },
     {
       title: 'Return to prison case admin',
@@ -167,7 +176,7 @@ module.exports = ({ decisions, tasks, stage }) => {
     },
     {
       title: 'Final decision',
-      label: getDecisionLabel({ decisions, tasks, stage }),
+      label: getDecisionLabel(licenceStatus),
       action: {
         type: 'btn',
         href: '/hdc/approval/release/',
@@ -195,9 +204,12 @@ module.exports = ({ decisions, tasks, stage }) => {
   })
 }
 
-function getDecisionLabel({ decisions, tasks, stage }) {
-  const { refused, refusalReason } = decisions
-  const { statusLabel } = getStatusLabel({ decisions, tasks, stage }, 'DM')
+function getDecisionLabel(licenceStatus) {
+  const { statusLabel } = getStatusLabel(licenceStatus, 'DM')
+
+  const {
+    decisions: { refused, refusalReason },
+  } = licenceStatus
 
   if (refused && refusalReason) {
     return `${statusLabel} : ${refusalReason}`
