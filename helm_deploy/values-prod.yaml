@@ -19,7 +19,7 @@ ingress:
   path: /
 
 env:
-  NOMIS_API_URL: "https://gateway.prod.nomis-api.service.hmpps.dsd.io/elite2api/api" 
+  NOMIS_API_URL: "https://gateway.prod.nomis-api.service.hmpps.dsd.io/elite2api/api"
   NOMIS_AUTH_URL: "https://gateway.prod.nomis-api.service.hmpps.dsd.io/auth"
   GLOBAL_SEARCH_URL: "https://whereabouts.prison.service.justice.gov.uk/global-search"
   AUTH_STRATEGY: "oauth"
@@ -27,7 +27,7 @@ env:
   REMINDERS_SCHEDULE_RO: "0 1 * * 1-5"
   SCHEDULED_JOBS_AUTOSTART: "yes"
   SCHEDULED_JOBS_OVERLAP: "5000"
-  NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,DM_NEW,DM_TO_CA_RETURN" 
+  NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,DM_NEW,DM_TO_CA_RETURN"
   RO_SERVICE_TYPE: "DELIUS"
   DELIUS_API_URL: "https://community-api.service.hmpps.dsd.io/communityapi/api"
 
@@ -56,3 +56,11 @@ whitelist:
   cloudplatform-live1-1: "35.178.209.113/32"
   cloudplatform-live1-2: "3.8.51.207/32"
   cloudplatform-live1-3: "35.177.252.54/32"
+  interservfls: "51.179.196.131/32"
+  sodexo1: "80.86.46.16/32"
+  sodexo2: "80.86.46.17/32"
+  sodexo3: "80.86.46.18/32"
+  dxc_webproxy1: "195.92.38.20/32"
+  dxc_webproxy2: "195.92.38.21/32"
+  dxc_webproxy3: "195.92.38.22/32"
+  dxc_webprox23: "195.92.38.23/32"
