@@ -104,7 +104,7 @@ jobs:
             - assets/stylesheets
 
   integration_tests:
-    executor: tests
+    executor: test
     steps:
       - checkout
       - restore_cache:
