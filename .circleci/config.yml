@@ -54,6 +54,10 @@ executors:
     docker:
       - image: circleci/node:10-browsers
     working_directory: ~/app
+  test:
+    docker:
+      - image: circleci/node:10-browsers
+    working_directory: ~/app
 
 orbs:
   aws-cli: circleci/aws-cli@0.1.13
@@ -100,8 +104,7 @@ jobs:
             - assets/stylesheets
 
   integration_tests:
-    working_directory: ~/noms-digital-studio/licences
-    executor: builder
+    executor: test
     steps:
       - checkout
       - restore_cache:
