@@ -75,12 +75,12 @@ jobs:
           name: Update npm
           command: 'sudo npm install -g npm@latest'
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-1-{{ checksum "package-lock.json" }}
       - run:
           name: Install Dependencies
           command: npm ci
       - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-1-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
       - run:
@@ -105,7 +105,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-1-{{ checksum "package-lock.json" }}
       - run:
           name: unit tests with coverage
           command: npm run test-with-coverage-ci
@@ -150,9 +150,9 @@ jobs:
           name: Seed db
           command: npm run seed
       - restore_cache:
-          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          key: gradle-wrapper-1-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
-          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
+          key: gradle-cache-1-{{ checksum "licences-specs/build.gradle" }}
       - run:
           name: Run Integration Tests
           command: ./gradlew mockTest --info
@@ -161,7 +161,7 @@ jobs:
           paths:
             - /home/circleci/.gradle/wrapper
       - save_cache:
-          key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
+          key: gradle-cache-1-{{ checksum "licences-specs/build.gradle" }}
           paths:
             - /home/circleci/.gradle/caches
       - store_artifacts:
