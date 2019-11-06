@@ -9,7 +9,7 @@ describe('deliusClient', () => {
   let signInService
 
   beforeEach(() => {
-    fakeDelius = nock(`${config.delius.apiUrl}`)
+    fakeDelius = nock(`${config.delius.apiUrl}${config.delius.apiPrefix}`)
     signInService = {
       getAnonymousClientCredentialsTokens: sinon.stub().resolves('token'),
     }
