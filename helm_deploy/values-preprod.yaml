@@ -17,7 +17,7 @@ ingress:
   path: /
 
 env:
-  NOMIS_API_URL: "https://gateway.preprod.nomis-api.service.hmpps.dsd.io/elite2api/api" 
+  NOMIS_API_URL: "https://gateway.preprod.nomis-api.service.hmpps.dsd.io/elite2api/api"
   NOMIS_AUTH_URL: "https://gateway.preprod.nomis-api.service.hmpps.dsd.io/auth"
   GLOBAL_SEARCH_URL: "https://whereabouts-preprod.prison.service.justice.gov.uk/global-search"
   AUTH_STRATEGY: "oauth"
@@ -27,7 +27,7 @@ env:
   SCHEDULED_JOBS_OVERLAP: "5000"
   NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,DM_NEW,DM_TO_CA_RETURN"
   RO_SERVICE_TYPE: "NOMIS"
-  DELIUS_API_URL: 
+  DELIUS_API_URL:
 
 whitelist:
   office: "217.33.148.210/32"
@@ -54,3 +54,7 @@ whitelist:
   cloudplatform-live1-1: "35.178.209.113/32"
   cloudplatform-live1-2: "3.8.51.207/32"
   cloudplatform-live1-3: "35.177.252.54/32"
+  interservfls: "51.179.196.131"
+  sodexo1: "80.86.46.16"
+  sodexo2: "80.86.46.17"
+  sodexo3: "80.86.46.18"
