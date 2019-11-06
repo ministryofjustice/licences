@@ -60,3 +60,7 @@ whitelist:
   sodexo1: "80.86.46.16/32"
   sodexo2: "80.86.46.17/32"
   sodexo3: "80.86.46.18/32"
+  dxc_webproxy1: "195.92.38.20/32"
+  dxc_webproxy2: "195.92.38.21/32"
+  dxc_webproxy3: "195.92.38.22/32"
+  dxc_webprox23: "195.92.38.23/32"
