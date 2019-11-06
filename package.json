@@ -1,7 +1,7 @@
 {
   "name": "licences",
   "version": "0.1.0",
-  "description": "Licences Application",
+  "description": "Licences  Application",
   "main": "server.js",
   "engines": {
     "node": "^10.15",

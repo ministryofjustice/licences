@@ -54,6 +54,10 @@ executors:
     docker:
       - image: circleci/node:10-browsers
     working_directory: ~/app
+  test:
+    docker:
+      - image: circleci/node:10-browsers
+    working_directory: ~/app
 
 orbs:
   aws-cli: circleci/aws-cli@0.1.13
