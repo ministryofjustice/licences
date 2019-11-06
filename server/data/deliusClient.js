@@ -8,7 +8,7 @@ const timeoutSpec = {
   deadline: config.nomis.timeout.deadline,
 }
 
-const { apiUrl } = config.delius
+const apiUrl = `${config.delius.apiUrl}${config.delius.apiPrefix}`
 
 module.exports = signInService => {
   return {

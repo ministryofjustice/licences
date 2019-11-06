@@ -45,12 +45,13 @@ module.exports = {
   },
 
   delius: {
-    apiUrl: get('DELIUS_API_URL', 'http://localhost:9090/communityapi/api'),
+    apiUrl: get('DELIUS_API_URL', 'http://localhost:9090/communityapi'),
     authUrl: get('DELIUS_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/elite2api')),
     admin: {
       apiClientId: get('DELIUS_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
       apiClientSecret: get('DELIUS_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret')),
     },
+    apiPrefix: get('DELIUS_API_PREFIX', '/api'),
   },
 
   https: production,

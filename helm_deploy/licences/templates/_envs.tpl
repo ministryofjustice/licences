@@ -46,7 +46,7 @@ env:
         name: {{ template "app.name" . }}
         key: API_CLIENT_ID
 
-  - name: API_CLIENT_SECRET 
+  - name: API_CLIENT_SECRET
     valueFrom:
       secretKeyRef:
         name: {{ template "app.name" . }}
@@ -114,6 +114,9 @@ env:
 
   - name: DELIUS_API_URL
     value: {{ .Values.env.DELIUS_API_URL | quote }}
+
+  - name: DELIUS_API_PREFIX
+    value: {{ .Values.env.DELIUS_API_PREFIX | quote }}
 
   - name: NODE_ENV
     value: production
