@@ -135,7 +135,7 @@ describe('TaskList models', () => {
       ).to.eql([eligibilitySummary, proposedCurfewAddressWithdrawn, returnPCA, finalDecisionRefuse])
     })
 
-    it('should display refusal tasks if address by Risk Management test but not bassReferralNeeded', () => {
+    it('should display refusal tasks if address rejected by Risk Management test but not bassReferralNeeded', () => {
       expect(
         taskListModel(
           'DM',
@@ -147,6 +147,7 @@ describe('TaskList models', () => {
               addressWithdrawn: false,
               addressUnsuitable: true,
               curfewAddressRejected: true,
+              addressReviewFailed: false,
             },
             tasks: {},
             stage: 'APPROVAL',
@@ -154,7 +155,13 @@ describe('TaskList models', () => {
           {},
           null
         )
-      ).to.eql([eligibilitySummary, proposedCurfewAddress, returnPCA, finalDecisionRefuse])
+      ).to.eql([
+        eligibilitySummary,
+        proposedCurfewAddress,
+        { ...riskManagement, label: 'Address unsuitable' },
+        returnPCA,
+        finalDecisionRefuse,
+      ])
     })
 
     it('should display refusal tasks if address rejected but not bassReferralNeeded', () => {
@@ -169,6 +176,7 @@ describe('TaskList models', () => {
               addressWithdrawn: false,
               addressUnsuitable: false,
               curfewAddressRejected: true,
+              addressReviewFailed: true,
             },
             tasks: {},
             stage: 'APPROVAL',
@@ -176,7 +184,12 @@ describe('TaskList models', () => {
           {},
           null
         )
-      ).to.eql([eligibilitySummary, proposedCurfewAddress, riskManagement, returnPCA, finalDecisionRefuse])
+      ).to.eql([
+        eligibilitySummary,
+        { ...proposedCurfewAddress, label: 'Address rejected' },
+        returnPCA,
+        finalDecisionRefuse,
+      ])
     })
 
     it('should display standard tasks if address approved', () => {
