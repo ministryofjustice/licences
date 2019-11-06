@@ -100,7 +100,6 @@ jobs:
             - assets/stylesheets
 
   integration_tests:
-    working_directory: ~/noms-digital-studio/licences
     executor: builder
     steps:
       - checkout
