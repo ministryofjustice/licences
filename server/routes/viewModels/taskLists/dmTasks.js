@@ -11,7 +11,7 @@ const { getStatusLabel } = require('../../../utils/licenceStatusLabels')
 
 const rejectedAddressTaskList = licenceStatus => {
   const {
-    decisions: { addressWithdrawn, addressUnsuitable },
+    decisions: { addressWithdrawn, addressReviewFailed },
   } = licenceStatus
 
   const taskList = [
@@ -27,7 +27,7 @@ const rejectedAddressTaskList = licenceStatus => {
     },
   ]
 
-  if (!(addressUnsuitable || addressWithdrawn)) {
+  if (!(addressReviewFailed || addressWithdrawn)) {
     taskList.push({
       title: 'Risk management',
       label: riskManagement.getLabel(licenceStatus),
@@ -64,12 +64,12 @@ const rejectedAddressTaskList = licenceStatus => {
 module.exports = licenceStatus => {
   const {
     decisions: {
-      insufficientTimeStop,
       addressWithdrawn,
-      curfewAddressRejected,
+      approvedPremisesRequired,
       bassReferralNeeded,
       confiscationOrder,
-      approvedPremisesRequired,
+      curfewAddressRejected,
+      insufficientTimeStop,
     },
   } = licenceStatus
 

@@ -80,12 +80,12 @@ module.exports = {
 
   getCaTasksFinalChecks: ({ decisions, tasks, allowedTransition }) => {
     const {
+      addressUnsuitable,
+      approvedPremisesRequired,
+      bassAccepted,
       bassReferralNeeded,
       bassWithdrawn,
-      bassAccepted,
-      approvedPremisesRequired,
       curfewAddressApproved,
-      addressUnsuitable,
       optedOut,
     } = decisions
 
