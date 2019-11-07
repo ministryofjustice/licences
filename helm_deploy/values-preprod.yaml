@@ -26,7 +26,7 @@ env:
   SCHEDULED_JOBS_AUTOSTART: "yes"
   SCHEDULED_JOBS_OVERLAP: "5000"
   NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,DM_NEW,DM_TO_CA_RETURN"
-  RO_SERVICE_TYPE: "NOMIS"
+  RO_SERVICE_TYPE: "DELIUS"
   DELIUS_API_URL: "https://community-api-secure.pre-prod.delius.probation.hmpps.dsd.io"
   DELIUS_API_PREFIX: "/secure"
 
