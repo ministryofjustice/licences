@@ -27,6 +27,5 @@ env:
   SCHEDULED_JOBS_AUTOSTART: "no"
   SCHEDULED_JOBS_OVERLAP: "5000"
   NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,RO_TWO_DAYS,RO_DUE,RO_OVERDUE,DM_NEW,DM_TO_CA_RETURN"
-  RO_SERVICE_TYPE: "DELIUS"
   DELIUS_API_URL: "https://community-proxy.apps.live-1.cloud-platform.service.justice.gov.uk/communityapi"
   DELIUS_API_PREFIX: "/api"

@@ -109,9 +109,6 @@ env:
   - name: NOTIFY_ACTIVE_TEMPLATES
     value: {{ .Values.env.NOTIFY_ACTIVE_TEMPLATES | quote }}
 
-  - name: RO_SERVICE_TYPE
-    value: {{ .Values.env.RO_SERVICE_TYPE | quote }}
-
   - name: DELIUS_API_URL
     value: {{ .Values.env.DELIUS_API_URL | quote }}
 

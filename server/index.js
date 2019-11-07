@@ -28,7 +28,6 @@ const createNomisPushService = require('./services/nomisPushService')
 const createDeadlineService = require('./services/deadlineService')
 const createJobSchedulerService = require('./services/jobSchedulerService')
 const createNotificationJobs = require('./services/jobs/notificationJobs')
-const createNomisRoService = require('./services/nomisRoService')
 const createDeliusClient = require('./data/deliusClient')
 const createDeliusRoService = require('./services/deliusRoService')
 
@@ -37,8 +36,7 @@ const licenceService = createLicenceService(licenceClient)
 const conditionsService = createConditionsService(config)
 const deliusClient = createDeliusClient(signInService)
 const deliusRoService = createDeliusRoService(deliusClient, nomisClientBuilder)
-const nomisRoService = createNomisRoService(nomisClientBuilder)
-const roService = config.roServiceType === 'DELIUS' ? deliusRoService : nomisRoService
+const roService = deliusRoService
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
 const caseListFormatter = createCaseListFormatter(logger, licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
