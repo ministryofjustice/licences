@@ -30,7 +30,7 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
 async function getCaseList(nomisClient, roService, licenceClient, username, role, token) {
   const asyncCaseRetrievalMethod = {
     CA: getCaDmCaseLists(nomisClient),
-    RO: getROCaseList(nomisClient, roService, licenceClient, username, token),
+    RO: getROCaseList(roService, licenceClient, username, token),
     DM: getCaDmCaseLists(nomisClient),
   }
 
@@ -44,7 +44,7 @@ function getCaDmCaseLists(nomisClient) {
   }
 }
 
-function getROCaseList(nomisClient, roService, licenceClient, username, token) {
+function getROCaseList(roService, licenceClient, username, token) {
   return async () => {
     const deliusIds = await licenceClient.getDeliusUserName(username)
 
