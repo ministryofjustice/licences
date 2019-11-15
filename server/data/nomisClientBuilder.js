@@ -40,20 +40,9 @@ module.exports = token => {
       return nomisGet({ path })
     },
 
-    getPersonIdentifiers(personId) {
-      const path = `${apiUrl}/persons/${personId}/identifiers`
-      return nomisGet({ path })
-    },
-
     getMainOffence(bookingId) {
       const path = `${apiUrl}/bookings/${bookingId}/mainOffence`
       return nomisGet({ path })
-    },
-
-    getRoRelations(bookingId) {
-      const path = `${apiUrl}/bookings/${bookingId}/relationships`
-      const query = { relationshipType: 'RO' }
-      return nomisGet({ path, query })
     },
 
     getImageInfo(imageId) {
@@ -95,11 +84,6 @@ module.exports = token => {
     getImageData(id) {
       const path = `${apiUrl}/images/${id}/data`
       return nomisGet({ path, responseType: 'blob' })
-    },
-
-    getROPrisoners(deliusUserName) {
-      const path = `${apiUrl}/offender-relationships/externalRef/${deliusUserName}/RO`
-      return nomisGet({ path })
     },
 
     getEstablishment(agencyLocationId) {

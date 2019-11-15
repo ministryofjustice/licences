@@ -126,7 +126,6 @@ module.exports = {
 
   pushToNomis: get('PUSH_TO_NOMIS', 'no') === 'yes',
   use2019Conditions: get('NEW_CONDITIONS', 'no') === 'yes',
-  roServiceType: get('RO_SERVICE_TYPE', 'NOMIS'),
 
   jobs: {
     systemUser: get('REMINDERS_SYSTEM_USER', ''),
