@@ -28,8 +28,8 @@ env:
   SCHEDULED_JOBS_AUTOSTART: "yes"
   SCHEDULED_JOBS_OVERLAP: "5000"
   NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,DM_NEW,DM_TO_CA_RETURN"
-  DELIUS_API_URL: "https://community-api.service.hmpps.dsd.io/communityapi"
-  DELIUS_API_PREFIX: "/api"
+  DELIUS_API_URL: "https://community-api-secure.probation.service.justice.gov.uk"
+  DELIUS_API_PREFIX: "/secure"
 
 whitelist:
   office: "217.33.148.210/32"
