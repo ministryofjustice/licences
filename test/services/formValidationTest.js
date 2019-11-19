@@ -1492,11 +1492,20 @@ describe('validation', () => {
         const pageConfig = bassAreaCheck
         const options = [
           { formResponse: { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: 'No' }, outcome: {} },
-          { formResponse: { bassAreaSuitable: 'No', approvedPremisesRequiredYesNo: 'No' }, outcome: { bassAreaReason: 'Enter a reason' } },
-          { formResponse: { bassAreaSuitable: 'No', bassAreaReason: 'reason', approvedPremisesRequiredYesNo: 'No' }, outcome: {} },
+          {
+            formResponse: { bassAreaSuitable: 'No', approvedPremisesRequiredYesNo: 'No' },
+            outcome: { bassAreaReason: 'Enter a reason' },
+          },
+          {
+            formResponse: { bassAreaSuitable: 'No', bassAreaReason: 'reason', approvedPremisesRequiredYesNo: 'No' },
+            outcome: {},
+          },
           { formResponse: { approvedPremisesRequiredYesNo: 'No' }, outcome: {} },
           { formResponse: { approvedPremisesRequiredYesNo: 'Yes' }, outcome: {} },
-          { formResponse: { approvedPremisesRequiredYesNo: '' }, outcome: { approvedPremisesRequiredYesNo: "Select Yes or No" } },
+          {
+            formResponse: { approvedPremisesRequiredYesNo: '' },
+            outcome: { approvedPremisesRequiredYesNo: 'Select Yes or No' },
+          },
         ]
 
         options.forEach(option => {
@@ -2121,7 +2130,7 @@ describe('validation', () => {
 
       context('bass requested', () => {
         const validBassRequest = { bassRequested: 'Yes', specificArea: 'No' }
-        const validBassAreaCheck = { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: "No" }
+        const validBassAreaCheck = { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: 'No' }
         const validBassLicence = {
           ...validLicence,
           bassReferral: {

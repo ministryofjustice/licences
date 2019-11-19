@@ -3,7 +3,7 @@ const { continueBtn } = require('./utils/actions')
 module.exports = {
   getCaAction: ({ decisions, tasks, stage }) => {
     const { approved, bassReferralNeeded, addressWithdrawn, approvedPremisesRequired } = decisions
-    const { bassAddress , approvedPremisesAddress} = tasks
+    const { bassAddress, approvedPremisesAddress } = tasks
 
     if (!approved || stage === 'MODIFIED_APPROVAL') {
       return null

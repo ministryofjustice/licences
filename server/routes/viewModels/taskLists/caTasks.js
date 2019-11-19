@@ -107,7 +107,7 @@ module.exports = {
       title: 'Curfew address',
       label: proposedAddress.getLabel({ decisions, tasks }),
       action: proposedAddress.getCaAction({ decisions, tasks }),
-      visible: allowedTransition === 'caToRo',
+      visible: !bassReferralNeeded && allowedTransition === 'caToRo',
     }
 
     const bassTask = {

@@ -29,58 +29,51 @@ block content
         div.pure-u-1-2
         div#noSpecificAreaMessage Offender does not have a preferred BASS area
 
-    div.pure-u-1.pure-u-md-1-2
 
-    hr
-
-    if bassRequest.specificArea === 'Yes'
-      h2.heading-medium Is the area suitable for the offender to live in?
 
     form(method="post")
       input(type="hidden" name="_csrf" value=csrfToken)
       input(type="hidden" name="bookingId" value=bookingId || '')
       input(type="hidden" name="bassAreaCheckSeen" value='true')
-      div.paddingBottom.largeMarginBottom
+      
 
-        if bassRequest.specificArea === 'Yes'
-          div.form-group.inline.smallPaddingTop
-            div.multiple-choice
-              input#yes(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'Yes' name="bassAreaSuitable" value="Yes")
-              label(for="yes") Yes
+      
+      div.form-group.inline
 
-            div.multiple-choice
-              input#no(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'No' name="bassAreaSuitable" value="No")
-              label(for="no") No
+        h3(name = 'approvedAddressRequired' class = 'heading-medium pure-u-2-5' ) Does the offender need to be sent to approved premises?
+        
+        div#approvedPremisesRequiredYesNo(class=  errorObject.approvedPremisesRequiredYesNo ? "form-group form-group-error inline " : "form-group inline ")
+          div.multiple-choice
+            input#approvedPremisesRequiredYes(type="radio" checked=bassAreaCheck.approvedPremisesRequiredYesNo === 'Yes' name="approvedPremisesRequiredYesNo" value="Yes")
+            label(for="approvedPremisesRequiredYes") Yes
+          div.multiple-choice(data-target="bassAreaDetails")
+            input#approvedPremisesRequiredNo(type="radio" checked=bassAreaCheck.approvedPremisesRequiredYesNo === 'No' name="approvedPremisesRequiredYesNo" value="No")
+            label(for="approvedPremisesRequiredNo") No
+            
 
-        div#bassAreaDetails.panel.panel-border-narrow
-
+        div#bassAreaDetails.js-hidden
           if bassRequest.specificArea === 'Yes'
-            label(for='bassAreaReason') Explain your decision
-          else
-            label(for='bassAreaReason') Enter any information that may affect the choice of BASS accommodation (optional)
+            h2.heading-medium Is the area suitable for the offender to live in?
 
-          textarea(name='bassAreaReason' id='bassAreaReason' class='form-control' rows='2' aria-label="Provide reasons why the BASS area is unsuitable")
-            if bassAreaCheck.bassAreaReason
-              | #{bassAreaCheck.bassAreaReason}
+            div.form-group.inline.smallPaddingTop
+              div.multiple-choice
+                input#yes(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'Yes' name="bassAreaSuitable" value="Yes")
+                label(for="yes") Yes
 
-        div.pure-u-1.pure-u-sm-5-12.pure-g
-          div.form-group.inline
+              div.multiple-choice
+                input#no(type="radio" checked=bassAreaCheck.bassAreaSuitable === 'No' name="bassAreaSuitable" value="No")
+                label(for="no") No
 
-          h3.heading-medium Does the offender need to be sent to approved premises?
-          
-          div#approvedPremisesRequiredYesNo(class=  errorObject.approvedPremisesRequiredYesNo ? "form-group form-group-error inline " : "form-group inline ")
-            div.multiple-choice
-              input#approvedPremisesRequiredYes(type="radio" checked=bassAreaCheck.approvedPremisesRequiredYesNo === 'Yes' name="approvedPremisesRequiredYesNo" value="Yes")
-              label(for="approvedPremisesRequiredYes") Yes
-            div.multiple-choice
-              input#approvedPremisesRequiredNo(type="radio" checked=bassAreaCheck.approvedPremisesRequiredYesNo === 'No' name="approvedPremisesRequiredYesNo" value="No")
-              label(for="approvedPremisesRequiredNo") No
-
-        include ../includes/formSubmit
-
-      //- if (action === 'change')
-      //-   include ../includes/formSubmit
-      //- else
-      //-   include ../includes/saveAndReturn
+          div.panel.panel-border-narrow   
+            if bassRequest.specificArea === 'Yes'
+              label(for='bassAreaReason') Explain your decision
+            else
+              label(for='bassAreaReason') Enter any information that may affect the choice of BASS accommodation (optional)
+        
+            textarea(name='bassAreaReason' id='bassAreaReason' class='form-control' rows='2' aria-label="Provide reasons why the BASS area is unsuitable")
+              if bassAreaCheck.bassAreaReason
+                | #{bassAreaCheck.bassAreaReason}
 
 
+
+      include ../includes/formSubmit

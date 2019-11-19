@@ -37,8 +37,7 @@ module.exports = {
     const { bassAddress, approvedPremisesAddress } = tasks
     if (approvedPremisesAddress === 'DONE') {
       return viewEdit('/hdc/bassReferral/approvedPremisesChoice/')
-    } else {
-      return standardAction(bassAddress, '/hdc/bassReferral/bassOffer/')
     }
+    return standardAction(bassAddress, '/hdc/bassReferral/bassOffer/')
   },
 }

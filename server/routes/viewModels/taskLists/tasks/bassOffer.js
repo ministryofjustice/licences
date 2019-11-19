@@ -9,11 +9,11 @@ module.exports = {
       bassAccepted,
       bassAreaSuitable,
       approvedPremisesRequired,
-      optedOut
+      optedOut,
     } = decisions
     const { bassOffer, bassAreaCheck, approvedPremisesAddress } = tasks
-    
-    if(optedOut){
+
+    if (optedOut) {
       return 'Opted out'
     }
 
@@ -39,7 +39,7 @@ module.exports = {
       return 'WARNING||Address not available'
     }
 
-    if (bassAreaCheck === 'DONE' && bassAreaSuitable) {
+    if (bassAreaCheck === 'DONE' && bassAreaSuitable && approvedPremisesAddress !== 'DONE') {
       return 'Not completed'
     }
 
@@ -53,7 +53,7 @@ module.exports = {
   getAction: ({ decisions, tasks }) => {
     const { bassWithdrawn, approvedPremisesRequired } = decisions
     const { bassAreaCheck, bassOffer, optOut, curfewAddress, bassRequest } = tasks
-    
+
     if (bassWithdrawn) {
       return change('/hdc/bassReferral/bassOffer/')
     }
