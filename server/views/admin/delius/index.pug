@@ -44,3 +44,26 @@ block content
               input.form-control(id="offenderNo" type="text" name="offenderNo")
             div.pure-u-sm-1-6
               input.requiredButton.button(type="submit" value="Search")
+
+    div.pure-u-1.largeMarginTop
+      h2.heading-medium Get Staff
+
+      form(method='POST' action='/admin/delius/staffDetails')
+        input(type="hidden" name="_csrf" value=csrfToken)
+
+        div.pure-u-2-3.midPaddingBottom
+          div.pure-g.u-paddingBottom
+            div.pure-u-1.midPaddingBottom Search by Staff Code or username
+            div.pure-u-sm-5-12.sm-PadLeftRight15
+              label.form-label(for="type") Type
+            div.pure-u-sm-5-12
+              label.form-label(for="value") value
+            div.pure-u-sm-1-6
+            div.pure-u-sm-5-12.sm-PadLeftRight15
+              select.form-control(id="type" name="type")
+                option(value="STAFF_CODE" selected) Staff code
+                option(value="USERNAME" ) Username
+            div.pure-u-sm-5-12.sm-PadLeftRight15
+              input.form-control(id="value" type="text" name="value")
+            div.pure-u-sm-1-6
+              input.requiredButton.button(type="submit" value="Search")

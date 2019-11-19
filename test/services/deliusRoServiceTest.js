@@ -27,6 +27,8 @@ describe('deliusRoService', () => {
     deliusClient = {
       getROPrisoners: sinon.stub().resolves(roPrisoners),
       getResponsibleOfficer: sinon.stub().resolves(roResponse),
+      getStaffDetailsByStaffCode: sinon.stub().resolves({ staffCode: 'N02A008' }),
+      getStaffDetailsByUsername: sinon.stub().resolves({ staffCode: 'N02A008' }),
     }
 
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
@@ -64,6 +66,30 @@ describe('deliusRoService', () => {
       }
 
       expect(service.formatCom([])).to.eql(expectedOutput)
+    })
+  })
+
+  describe('getStaffByCode', () => {
+    it('should call getStaffByCode from deliusClient', async () => {
+      await service.getStaffByCode('code-1')
+      expect(deliusClient.getStaffDetailsByStaffCode).to.be.calledWith('code-1')
+    })
+
+    it('should return message when 404 in api when getting RO relationship', () => {
+      deliusClient.getStaffDetailsByStaffCode.rejects({ status: 404 })
+      return expect(service.getStaffByCode('code-1')).to.eventually.eql(null)
+    })
+  })
+
+  describe('getStaffByUsername', () => {
+    it('should call getStaffByCode from deliusClient', async () => {
+      await service.getStaffByUsername('code-1')
+      expect(deliusClient.getStaffDetailsByUsername).to.be.calledWith('code-1')
+    })
+
+    it('should return message when 404 in api when getting RO relationship', () => {
+      deliusClient.getStaffDetailsByUsername.rejects({ status: 404 })
+      return expect(service.getStaffByUsername('code-1')).to.eventually.eql(null)
     })
   })
 

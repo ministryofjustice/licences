@@ -12,6 +12,15 @@ const apiUrl = `${config.delius.apiUrl}${config.delius.apiPrefix}`
 
 module.exports = signInService => {
   return {
+    getStaffDetailsByStaffCode(staffCode) {
+      const path = `${apiUrl}/staff/staffCode/${staffCode}`
+      return deliusGet({ path })
+    },
+
+    getStaffDetailsByUsername(username) {
+      const path = `${apiUrl}/staff/username/${username}`
+      return deliusGet({ path })
+    },
     getROPrisoners(deliusStaffCode) {
       const path = `${apiUrl}/staff/staffCode/${deliusStaffCode}/managedOffenders`
       return deliusGet({ path })

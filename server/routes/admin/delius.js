@@ -37,6 +37,19 @@ module.exports = ({ deliusRoService }) => router => {
     })
   )
 
+  router.post(
+    '/staffDetails',
+    asyncMiddleware(async (req, res) => {
+      const { value, type } = req.body
+
+      const staffDetails = type === 'STAFF_CODE' ? await staffByCode(value) : await staffByUsername(value)
+
+      logger.info(staffDetails)
+
+      res.render('admin/delius/staffDetails', { type, value, staffDetails })
+    })
+  )
+
   async function roByBookingId(bookingId, token) {
     logger.info('responsibleOfficer for bookingId', bookingId)
     return deliusRoService.findResponsibleOfficer(bookingId, token)
@@ -45,6 +58,16 @@ module.exports = ({ deliusRoService }) => router => {
   async function roByOffenderNo(offenderNo, token) {
     logger.info('responsibleOfficer for offenderNo', offenderNo)
     return deliusRoService.findResponsibleOfficerByOffenderNo(offenderNo, token)
+  }
+
+  async function staffByCode(code) {
+    logger.info('staff for code', code)
+    return deliusRoService.getStaffByCode(code)
+  }
+
+  async function staffByUsername(username) {
+    logger.info('staff for offenderNo', username)
+    return deliusRoService.getStaffByUsername(username)
   }
 
   return router
