@@ -455,16 +455,15 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
 }
 
 function getCurfewAddressReviewState(licence) {
-  let approvedPremisesRequiredAnswer
-  let approvedPremisesAddressAnswer
+  const approvedPremisesRequiredAnswer =
+    getIn(licence, ['curfew', 'approvedPremises', 'required']) ||
+    getIn(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo']) ||
+    {}
 
-    approvedPremisesRequiredAnswer = getIn(licence, ['curfew', 'approvedPremises', 'required']) 
-    || getIn(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo'])
-    || {}
-
-    approvedPremisesAddressAnswer = getIn(licence, ['curfew', 'approvedPremisesAddress']) 
-    || getIn(licence, ['bassReferral', 'approvedPremisesAddress']) 
-    || {}
+  let approvedPremisesAddressAnswer =
+    getIn(licence, ['curfew', 'approvedPremisesAddress']) ||
+    getIn(licence, ['bassReferral', 'approvedPremisesAddress']) ||
+    {}
 
   if (approvedPremisesRequiredAnswer === 'No') {
     approvedPremisesAddressAnswer = {}

@@ -4,7 +4,8 @@ const formConfig = require('./config/bassReferral')
 const { getIn, firstItem, mergeWithRight } = require('../utils/functionalHelpers')
 const recordList = require('../services/utils/recordList')
 
-module.exports = ({ licenceService, nomisPushService }) => (router, audited,  pushToNomis ) => {  // NB: pushToNomis may need to be { pushToNomis }
+module.exports = ({ licenceService, nomisPushService }) => (router, audited, pushToNomis) => {
+  // NB: pushToNomis may need to be { pushToNomis }
 
   const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'bassReferral' })
 
@@ -26,7 +27,6 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited,  pu
 
   router.get('/approvedPremisesChoice/:bookingId', asyncMiddleware(getChoice))
   function getChoice(req, res) {
- 
     const { bookingId } = req.params
     const { licence } = res.locals
     const data = { decision: getApprovedPremisesChoice(getIn(licence, ['licence'])) }
@@ -51,8 +51,6 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited,  pu
     const answer = getIn(licence, pathSegments)
     return answer && answer === 'Yes'
   }
-
-
 
   router.post(
     '/approvedPremisesChoice/:bookingId',
@@ -96,7 +94,6 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited,  pu
     OptOut: { optOut: { decision: 'Yes' } },
     ApprovedPremises: { optOut: { decision: 'No' } },
   }
-
 
   router.get(
     '/bassOffer/:bookingId',

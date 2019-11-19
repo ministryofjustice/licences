@@ -130,8 +130,8 @@ function caProcessingLabel(licenceStatus) {
   ]
 
   const labels = licenceStatus.decisions.bassReferralNeeded
-  ? commonLabels.concat(bassRouteLabels)
-  : commonLabels.concat(addressRouteLabels)
+    ? commonLabels.concat(bassRouteLabels)
+    : commonLabels.concat(addressRouteLabels)
 
   return getLabel(labels, licenceStatus) || status.addressSuitable
 }

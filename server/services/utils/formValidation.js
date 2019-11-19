@@ -492,7 +492,8 @@ function approvedAddressValidationConfig(licence) {
       section: 'curfew',
       missingMessage: 'Enter the approved premises address details',
     }
-  } else if (getIn(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo']) === 'Yes'){
+  }
+  if (getIn(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo']) === 'Yes') {
     return {
       formResponse: getIn(licence, ['bassReferral', 'approvedPremisesAddress']),
       formType: 'approvedPremisesAddress',
