@@ -3,6 +3,34 @@ const logger = require('../../log.js')
 const { getIn, isEmpty } = require('../utils/functionalHelpers')
 
 module.exports = function createDeliusRoService(deliusClient, nomisClientBuilder) {
+  async function getStaffByCode(staffCode) {
+    try {
+      return await deliusClient.getStaffDetailsByStaffCode(staffCode)
+    } catch (error) {
+      if (error.status === 404) {
+        logger.warn(`Staff member not found in delius for code: ${staffCode}`)
+        return null
+      }
+
+      logger.error(`Problem retrieving staff member for code: ${staffCode}`, error.stack)
+      throw error
+    }
+  }
+
+  async function getStaffByUsername(username) {
+    try {
+      return await deliusClient.getStaffDetailsByUsername(username)
+    } catch (error) {
+      if (error.status === 404) {
+        logger.warn(`Staff member not found in delius for username: ${username}`)
+        return null
+      }
+
+      logger.error(`Problem retrieving staff member for username: ${username}`, error.stack)
+      throw error
+    }
+  }
+
   async function getROPrisonersFromDelius(staffCode) {
     try {
       return await deliusClient.getROPrisoners(staffCode)
@@ -52,7 +80,14 @@ module.exports = function createDeliusRoService(deliusClient, nomisClientBuilder
     }
   }
 
-  return { getROPrisoners, formatCom, findResponsibleOfficer, findResponsibleOfficerByOffenderNo }
+  return {
+    getStaffByCode,
+    getStaffByUsername,
+    getROPrisoners,
+    formatCom,
+    findResponsibleOfficer,
+    findResponsibleOfficerByOffenderNo,
+  }
 }
 
 function formatCom(com) {
