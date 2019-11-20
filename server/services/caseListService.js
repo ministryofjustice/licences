@@ -23,7 +23,6 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
     return async () => {
       const deliusIds = await licenceClient.getDeliusUserName(username)
 
-
       if (!Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staff_id)) {
         logger.error(`No delius user ID for nomis ID '${username}'`)
         return {
@@ -41,6 +40,7 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
       }
 
       const staffCode = deliusIds[0].staff_id.toUpperCase()
+
       const offenders = await roService.getROPrisoners(staffCode, token)
 
       if (!isEmpty(offenders)) {
