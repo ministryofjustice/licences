@@ -177,7 +177,7 @@ For,
 
 ```
     CA and DM: elite2Api, /offender-sentences/home-detention-curfew-candidates     -> OffenderSentenceCalc
-    RO:        elite2Api, /offender-relationships/externalRef/${deliusUserName}/RO -> OffenderSummary
+    RO:        deliusApi, /staff/staffCode/${deliusStaffCode}/managedOffenders -> OffenderSummary
 ```
 
 Every row links to a taskList: hdc/taskList/:bookingId

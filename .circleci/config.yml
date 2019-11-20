@@ -110,10 +110,8 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: unit tests with coverage
-          command: npm run test-with-coverage-ci
-          environment:
-            MOCHA_FILE: ./reports/test-results.xml
+          name: unit tests
+          command: npm run test
       - store_test_results:
           path: ./reports
       - store_artifacts:
@@ -148,10 +146,10 @@ jobs:
           command: sleep 5
       - run:
           name: Initialise db
-          command: npm run migrate
+          command: npm run db:knex-migrate up
       - run:
           name: Seed db
-          command: npm run seed
+          command: npm run db:seed
       - restore_cache:
           key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:

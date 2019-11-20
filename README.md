@@ -1,6 +1,6 @@
 # Licences Application UI.
 
-[![CircleCI](https://circleci.com/gh/noms-digital-studio/licences/tree/master.svg?style=svg)](https://circleci.com/gh/noms-digital-studio/licences/tree/master)
+[![CircleCI](https://circleci.com/gh/ministryofjustice/licences/tree/master.svg?style=svg)](https://circleci.com/gh/ministryofjustice/licences)
 [![Known Vulnerabilities](https://snyk.io/test/github/noms-digital-studio/licences/badge.svg)](https://snyk.io/test/github/noms-digital-studio/licences)
 
 # Get Started
@@ -24,10 +24,10 @@ $ npm install
 $ npm run start
 ```
 
-Or, for development, run inspections, tests, watch for changes and start the server:
+Or, for development, watch for changes and start the server:
 
 ```
-$ npm run dev
+$ npm run start:dev
 ```
 
 To run locally you also need the database, the Nomis API mocks, and the auth server. These can all be started by running
@@ -44,8 +44,6 @@ docker-compose up
 - `npm run test` -> runs all unit tests
 - `npm run clean` -> cleans previously generated files
 - `npm run build` -> cleans and regenerates assets.
-- `npm run dev` -> all the above and starts app.
-- `npm run start-watchmode` -> starts app without running lint or test etc.
 
 # Environment variables
 
@@ -91,18 +89,12 @@ see https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
 
 ## Migrations
 
-Migrations are managed using [knex](http://knexjs.org/#Migrations-CLI) and [knex-migrate](https://github.com/sheerun/knex-migrate)
+Migrations are managed using [knex-migrate](https://github.com/sheerun/knex-migrate)
 
-Execute migration
-
-```
-npm migrate
-```
-
-Other migration commands
+Migration commands
 
 ```
-npm run knex-migrate <command>
+npm run db:knex-migrate <command>
 ```
 
 Commands
@@ -114,24 +106,12 @@ Commands
 - rollback Rollbacks last batch of migrations
 - redo Rollbacks last batch and performs all migrations
 
-Create a new migration script
-
-```
-npm run knex migrate:make <script-name>
-```
-
 ## Seed data
 
 Execute seed scripts to populate DB with test data
 
 ```
-npm run seed
-```
-
-Create a new seed file
-
-```
-npm run knex seed:make <script-name>
+npm run db:seed
 ```
 
 # Feature specs
