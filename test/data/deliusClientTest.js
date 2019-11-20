@@ -27,6 +27,34 @@ describe('deliusClient', () => {
     })
   })
 
+  describe('getStaffByStaffCode', () => {
+    it('should return data from api', () => {
+      fakeDelius.get(`/staff/staffCode/1`).reply(200, { key: 'value' })
+
+      return expect(deliusClient.getStaffDetailsByStaffCode('1')).to.eventually.eql({ key: 'value' })
+    })
+
+    it('should reject if api fails', () => {
+      fakeDelius.get(`/staff/staffCode/1`).reply(500)
+
+      return expect(deliusClient.getStaffDetailsByStaffCode('1')).to.be.rejected()
+    })
+  })
+
+  describe('getStaffByUsername', () => {
+    it('should return data from api', () => {
+      fakeDelius.get(`/staff/username/1`).reply(200, { key: 'value' })
+
+      return expect(deliusClient.getStaffDetailsByUsername('1')).to.eventually.eql({ key: 'value' })
+    })
+
+    it('should reject if api fails', () => {
+      fakeDelius.get(`/staff/staffCode/1`).reply(500)
+
+      return expect(deliusClient.getStaffDetailsByUsername('1')).to.be.rejected()
+    })
+  })
+
   describe('getROPrisoners', () => {
     it('should return data from api', () => {
       fakeDelius.get(`/staff/staffCode/1/managedOffenders`).reply(200, { key: 'value' })

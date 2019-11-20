@@ -20,22 +20,6 @@ suitable mocks, eg mojdigitalstudio/licences-nomis-mocks, and an oauth server eg
 
 eg you can use docker-compose up to start everything
 
-### Stage environment
-
-In stage, the environment variables are prefixed with STAGE\_
-
-The following are required
-
-- STAGE_LICENCES_URI - root uri for the stage licences app
-- STAGE_USER_PASS - password for the \_TEST users in stage
-
-NB Stage uses a real (dev) deployment of the auth server, not a mock. This means that user passwords periodically expire.
-
-When passwords expire, update the passwords for all \_TEST users, and update the STAGE_USER_PASS env var in Circle CI
-
-Test users employed by feature tests are listed in
-/licences/licences-specs/src/test/groovy/uk/gov/justice/digital/hmpps/licences/util/Actions.groovy
-
 ## Execution
 
 In src.test/resources/GebConfig.groovy you can change from headless mode
@@ -45,8 +29,6 @@ webdriver.chrome.driver property with your ChromeDriver path.
 Run with gradle or execute a specific test using your IDE.
 
 `./gradlew test` or `./gradlew mockTest` - executes all specs
-
-`./gradlew stageTest` - executes only specs marked with `@Stage`
 
 ## Writing Specs
 
@@ -64,19 +46,6 @@ depends on the prevous tests. Disadvantage is not being able to run an individua
 Advantage is not having to login and navigate back to the same page again.
 
 When adding or changing tests, consider the context assumed by existing tests.
-
-### Stage specs
-
-Use the `@Stage' annotation on a spec or a test to mark it for execution against the stage environment.
-
-Because this is a subset, consider what the context will be if previous tests in a Stepwise spec
-are not executed.
-
-Specs or individual tests should be tagged for stage only if they depend on an interaction with the
-nomis elite2 api. If it doesn't use elite2, then there's no difference between mock and stage.
-
-This only needs to include a few key tests that exercise the elite2 api interaction, not an exhaustive
-duplication.
 
 ### Test Data
 

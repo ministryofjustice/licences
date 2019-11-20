@@ -1,0 +1,40 @@
+extends ../../layout
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/delius") Back
+
+  h1 Staff details for #{type} of #{value}
+  div.pure-g.pure-u-1.paddingTop
+    div.pure-u-1-3
+    if !staffDetails
+      h2 Staff details do not exist in delius
+    else 
+      div.pure-u-1
+        table.largeMarginBottom
+          for entry in Object.entries(staffDetails)
+              if  !Array.isArray(entry[1]) && typeof entry[1] !== 'object'
+                tr 
+                  td #{entry[0]}  
+                  td #{entry[1]} 
+              if  typeof entry[1] === 'object' && !Array.isArray(entry[1])
+                each childField in Object.entries(entry[1])
+                  tr 
+                    td #{childField[0]} 
+                    td #{childField[1]} 
+
+        table.largeMarginBottom
+        for entry in Object.entries(staffDetails)
+            if Array.isArray(entry[1])
+              each child, index in entry[1]
+                strong #{entry[0] + ': ' + index}
+                table.largeMarginBottom
+                    for childField in Object.entries(child)  
+                      tr 
+                        td #{childField[0]} 
+                        if typeof childField[1] === 'object' 
+                          td #{Object.values(childField[1]).map((key, value) => key).join(': ') }
+                        else
+                          td #{childField[1] }  
+
