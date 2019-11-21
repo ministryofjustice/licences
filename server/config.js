@@ -89,6 +89,8 @@ module.exports = {
         no_time: 'Not enough time',
         refused: 'Refused',
         approved: 'Approved',
+        agency_notification: 'Agency notification',
+        cancel_agency_notification: 'Cancel agency notification',
       },
       pdfOptions: {
         format: 'A4',
