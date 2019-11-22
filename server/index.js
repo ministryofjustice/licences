@@ -24,6 +24,8 @@ const createCaseListFormatter = require('./services/utils/caseListFormatter')
 const createUserAdminService = require('./services/userAdminService')
 const createUserService = require('./services/userService')
 const createNotificationService = require('./services/notificationService')
+const createReminderService = require('./services/reminderService')
+
 const createNomisPushService = require('./services/nomisPushService')
 const createDeadlineService = require('./services/deadlineService')
 const createJobSchedulerService = require('./services/jobSchedulerService')
@@ -49,15 +51,15 @@ const deadlineService = createDeadlineService(licenceClient)
 const notificationService = createNotificationService(
   prisonerService,
   userAdminService,
-  deadlineService,
   configClient,
   notifyClient,
   audit,
   nomisClientBuilder,
   config
 )
+const reminderService = createReminderService(prisonerService, deadlineService, notificationService)
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
-const notificationJobs = createNotificationJobs(notificationService, signInService)
+const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 
 const app = createApp({
