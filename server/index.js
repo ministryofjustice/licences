@@ -24,6 +24,7 @@ const createCaseListFormatter = require('./services/utils/caseListFormatter')
 const createUserAdminService = require('./services/userAdminService')
 const createUserService = require('./services/userService')
 const createNotificationService = require('./services/notificationService')
+const createRoContactDetailsService = require('./services/roContactDetailsService')
 const createReminderService = require('./services/reminderService')
 
 const createNomisPushService = require('./services/nomisPushService')
@@ -47,9 +48,10 @@ const reportingService = createReportingService(audit)
 const userAdminService = createUserAdminService(nomisClientBuilder, userClient, signInService, prisonerService)
 const userService = createUserService(nomisClientBuilder)
 const deadlineService = createDeadlineService(licenceClient)
+const roContactDetailsService = createRoContactDetailsService(userAdminService)
 const notificationService = createNotificationService(
   prisonerService,
-  userAdminService,
+  roContactDetailsService,
   configClient,
   notifyClient,
   audit,

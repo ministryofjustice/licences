@@ -7,7 +7,7 @@ const { getRoCaseDueDate, getRoNewCaseDueDate } = require('../utils/dueDates')
 
 module.exports = function createNotificationService(
   prisonerService,
-  userAdminService,
+  roContactDetailsService,
   configClient,
   notifyClient,
   audit,
@@ -43,12 +43,6 @@ module.exports = function createNotificationService(
       : []
   }
 
-  const logIfMissing = (val, message) => {
-    if (isEmpty(val)) {
-      logger.error(message)
-    }
-  }
-
   // object -> string -> string
   const replaceName = replacements => name => R.propOr(name, name, replacements)
 
@@ -66,8 +60,8 @@ module.exports = function createNotificationService(
       return null
     }
 
-    const ro = await userAdminService.getRoUserByDeliusId(deliusId)
-    return R.prop('orgEmail', ro)
+    const roContactInfo = await roContactDetailsService.getContactDetails(deliusId)
+    return R.prop('orgEmail', roContactInfo)
   }
 
   const roOrganisationNotification = async (args, notifications) => {
@@ -131,12 +125,16 @@ module.exports = function createNotificationService(
       return []
     }
 
-    const [establishment, ro] = await Promise.all([
+    const [establishment, roContactInfo] = await Promise.all([
       prisonerService.getEstablishmentForPrisoner(bookingId, token),
-      userAdminService.getRoUserByDeliusId(deliusId),
+      roContactDetailsService.getContactDetails(deliusId),
     ])
 
-    const organisation = getIn(ro, ['organisation'])
+    if (!roContactInfo) {
+      logger.error(`No contact info for delius id: ${deliusId}`)
+      return []
+    }
+
     const prison = getIn(establishment, ['premise'])
 
     if (isEmpty(prison)) {
@@ -145,23 +143,13 @@ module.exports = function createNotificationService(
     }
 
     const date = transitionDate ? getRoCaseDueDate(moment(transitionDate)) : getRoNewCaseDueDate()
+    const { email, orgEmail, organisation } = roContactInfo
+    const base = { personalisation: { ...common, ro_name: submissionTarget.name, organisation, prison, date } }
 
-    return makeRoNotifications(
-      R.prop('email', ro),
-      R.prop('orgEmail', ro),
-      { personalisation: { ...common, ro_name: submissionTarget.name, organisation, prison, date } },
-      deliusId
-    )
-  }
-
-  const makeRoNotifications = (email, orgEmail, base, deliusId) => {
-    logIfMissing(orgEmail, `Missing orgEmail for RO: ${deliusId}`)
-    logIfMissing(email, `Missing email for RO: ${deliusId}`)
-
-    const orgNotification = isEmpty(orgEmail) ? [] : [{ ...base, email: orgEmail, templateName: 'COPY' }]
-    const roNotification = isEmpty(email) ? [] : [{ ...base, email, templateName: 'STANDARD' }]
-
-    return [...roNotification, ...orgNotification]
+    return [
+      ...(isEmpty(email) ? [] : [{ ...base, email, templateName: 'STANDARD' }]),
+      ...(isEmpty(orgEmail) ? [] : [{ ...base, email: orgEmail, templateName: 'COPY' }]),
+    ]
   }
 
   async function getDmNotifications({ common, token, bookingId }) {
