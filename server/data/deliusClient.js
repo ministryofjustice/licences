@@ -21,6 +21,7 @@ module.exports = signInService => {
       const path = `${apiUrl}/staff/username/${username}`
       return deliusGet({ path })
     },
+
     getROPrisoners(deliusStaffCode) {
       const path = `${apiUrl}/staff/staffCode/${deliusStaffCode}/managedOffenders`
       return deliusGet({ path })

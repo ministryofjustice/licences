@@ -8,7 +8,7 @@ describe('jobSchedulerService', () => {
     let service
     let jobs
     let signInService
-    let notificationService
+    let reminderService
     let dbLockingClient
     let configClient
     const jobSpec = '* * * * * *'
@@ -18,7 +18,7 @@ describe('jobSchedulerService', () => {
         getClientCredentialsTokens: sinon.stub().resolves({ token: 'system-user-token' }),
       }
 
-      notificationService = {
+      reminderService = {
         notifyRoReminders: sinon.stub().resolves({}),
       }
 
@@ -30,7 +30,7 @@ describe('jobSchedulerService', () => {
         getJobSpec: sinon.stub().resolves(jobSpec),
       }
 
-      jobs = createNotificationJobs(notificationService, signInService)
+      jobs = createNotificationJobs(reminderService, signInService)
       service = createJobSchedulerService(dbLockingClient, configClient, jobs)
       service.startAllJobs()
     })
@@ -96,7 +96,7 @@ describe('jobSchedulerService', () => {
   describe('scheduler', () => {
     let jobs
     let signInService
-    let notificationService
+    let reminderService
     let dbLockingClient
     let configClient
     const jobSpec = '* * * * * *'
@@ -106,7 +106,7 @@ describe('jobSchedulerService', () => {
         getClientCredentialsTokens: sinon.stub().resolves({ token: 'system-user-token' }),
       }
 
-      notificationService = {
+      reminderService = {
         notifyRoReminders: sinon.stub().resolves({}),
       }
 
@@ -118,7 +118,7 @@ describe('jobSchedulerService', () => {
         getJobSpec: sinon.stub().resolves(jobSpec),
       }
 
-      jobs = createNotificationJobs(notificationService, configClient, signInService)
+      jobs = createNotificationJobs(reminderService, configClient, signInService)
     })
 
     it('should schedule jobs using the scheduler library', async () => {
