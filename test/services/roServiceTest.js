@@ -1,6 +1,6 @@
-const createDeliusRoService = require('../../server/services/deliusRoService')
+const createRoService = require('../../server/services/roService')
 
-describe('deliusRoService', () => {
+describe('roService', () => {
   let service
   let nomisClient
   let deliusClient
@@ -33,7 +33,7 @@ describe('deliusRoService', () => {
 
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
 
-    service = createDeliusRoService(deliusClient, nomisClientBuilder)
+    service = createRoService(deliusClient, nomisClientBuilder)
   })
 
   describe('formatCom', () => {

@@ -2,7 +2,7 @@ const setCase = require('case')
 const logger = require('../../log.js')
 const { getIn, isEmpty } = require('../utils/functionalHelpers')
 
-module.exports = function createDeliusRoService(deliusClient, nomisClientBuilder) {
+module.exports = function createRoService(deliusClient, nomisClientBuilder) {
   async function getStaffByCode(staffCode) {
     try {
       return await deliusClient.getStaffDetailsByStaffCode(staffCode)

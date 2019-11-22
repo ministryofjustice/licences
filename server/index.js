@@ -31,14 +31,13 @@ const createDeadlineService = require('./services/deadlineService')
 const createJobSchedulerService = require('./services/jobSchedulerService')
 const createNotificationJobs = require('./services/jobs/notificationJobs')
 const createDeliusClient = require('./data/deliusClient')
-const createDeliusRoService = require('./services/deliusRoService')
+const createRoService = require('./services/roService')
 
 const signInService = createSignInService(audit)
 const licenceService = createLicenceService(licenceClient)
 const conditionsService = createConditionsService(config)
 const deliusClient = createDeliusClient(signInService)
-const deliusRoService = createDeliusRoService(deliusClient, nomisClientBuilder)
-const roService = deliusRoService
+const roService = createRoService(deliusClient, nomisClientBuilder)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
 const caseListFormatter = createCaseListFormatter(logger, licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
@@ -78,7 +77,7 @@ const app = createApp({
   deadlineService,
   configClient,
   jobSchedulerService,
-  deliusRoService,
+  roService,
   audit,
 })
 
