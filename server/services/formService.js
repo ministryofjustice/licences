@@ -68,6 +68,8 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
       REFUSAL_REASON: () => getRefusalReason(licence),
       INELIGIBLE_REASON: () => getIneligibleReason(licence),
       UNSUITABLE_REASON: () => getUnsuitableReason(licence),
+      CURFEW_HOURS: () => getValue(licence, ['curfew', 'curfewHours']),
+      CURFEW_FIRST: () => getValue(licence, ['curfew', 'firstNight']),
     }
 
     if (!fieldFunction[field]) {

@@ -1,11 +1,10 @@
 body {
-  padding-left: 1cm;
   padding-right: 0.5cm;
-  font-family: "nta", Arial, helvetica, sans-serif;
+  font-family: 'nta', Arial, helvetica, sans-serif;
   font-size: 14px;
   line-height: 20px;
   text-align: left;
-  font-weight: normal
+  font-weight: normal;
 }
 
 .pagebreak {
@@ -17,7 +16,7 @@ body {
 }
 
 pre {
-  font-family: "nta", Arial, helvetica, sans-serif;
+  font-family: 'nta', Arial, helvetica, sans-serif;
   white-space: pre-wrap;
 }
 
@@ -100,21 +99,21 @@ h1 {
   margin-top: 0.6cm;
   margin-bottom: 0.4cm;
   font-size: 18pt;
-  font-weight: normal
+  font-weight: normal;
 }
 
 h2 {
   margin-top: 0.5cm;
   margin-bottom: 0.3cm;
   font-size: 16pt;
-  font-weight: normal
+  font-weight: normal;
 }
 
 h3 {
   margin-top: 0.3cm;
   margin-bottom: 0;
   font-size: 14pt;
-  font-weight: normal
+  font-weight: normal;
 }
 
 ul.disc li {
@@ -143,6 +142,21 @@ table.noborder td {
   padding: 0px;
 }
 
+table.border {
+  border: 1px solid;
+
+  th,
+  td {
+    border: 1px solid;
+    padding: 0.5em;
+    height: 1.5em;
+  }
+}
+
+th.third {
+  width: 33.333%;
+}
+
 tr {
   line-height: 15px;
 }
@@ -151,11 +165,11 @@ tr.top {
   vertical-align: top;
 }
 
-tr.spaceUnder>td {
+tr.spaceUnder > td {
   padding-bottom: 1em;
 }
 
-tr.spaceOver>td {
+tr.spaceOver > td {
   padding-top: 1em;
 }
 
@@ -173,10 +187,11 @@ tr.spaceOver>td {
 
 .box {
   border: 1px solid black;
+  padding: 0.5em;
   width: 100%;
 }
 
-input[type="checkbox"]{
+input[type='checkbox'] {
   width: 20px;
   height: 20px;
   -webkit-appearance: none;
@@ -191,7 +206,7 @@ input[type="checkbox"]{
 }
 
 .bold {
-  font-weight: bold
+  font-weight: bold;
 }
 
 .nowrap {

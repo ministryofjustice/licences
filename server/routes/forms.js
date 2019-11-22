@@ -43,9 +43,10 @@ module.exports = ({ formService }) => router => {
   router.get(
     '/:templateName/:bookingId',
     asyncMiddleware(async (req, res) => {
-      const { templateName } = req.params
+      const { templateName, bookingId } = req.params
       const {
         licence: { licence },
+        licenceStatus,
         prisoner,
       } = res.locals
 
@@ -55,10 +56,28 @@ module.exports = ({ formService }) => router => {
 
       logger.info(`Render PDF for form '${templateName}'`)
 
+      const isBass = getIn(licenceStatus, ['decisions', 'bassReferralNeeded']) === true
+      const isAp = getIn(licenceStatus, ['decisions', 'approvedPremisesRequired']) === true
+
       try {
-        const pageData = await formService.getTemplateData(templateName, licence, prisoner)
+        const [pageData, curfewData] = await Promise.all([
+          formService.getTemplateData(templateName, licence, prisoner),
+          formService.getCurfewAddressCheckData({
+            agencyLocationId: prisoner.agencyLocationId,
+            licence,
+            isBass,
+            isAp,
+            bookingId,
+            token: res.locals.token,
+          }),
+        ])
+
         const filename = `${prisoner.offenderNo}.pdf`
-        const pdf = res.renderPDF(`forms/${templateName}`, { ...pageData, port }, { filename, pdfOptions })
+        const pdf = res.renderPDF(
+          `forms/${templateName}`,
+          { ...pageData, ...curfewData, port },
+          { filename, pdfOptions }
+        )
         logger.info(`Returning rendered PDF for form '${templateName}'`)
         return pdf
       } catch (e) {
