@@ -1,7 +1,7 @@
 const logger = require('../../../log')
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 
-module.exports = ({ deliusRoService }) => router => {
+module.exports = ({ roService }) => router => {
   router.use(authorisationMiddleware)
 
   router.get(
@@ -16,7 +16,7 @@ module.exports = ({ deliusRoService }) => router => {
     asyncMiddleware(async (req, res) => {
       const { staffCode } = req.body
       logger.info('managedOffenders for', staffCode)
-      const offenders = await deliusRoService.getROPrisoners(staffCode, res.locals.token)
+      const offenders = await roService.getROPrisoners(staffCode, res.locals.token)
       logger.info(offenders)
 
       res.render('admin/delius/managedOffenders', { offenders })
@@ -52,22 +52,22 @@ module.exports = ({ deliusRoService }) => router => {
 
   async function roByBookingId(bookingId, token) {
     logger.info('responsibleOfficer for bookingId', bookingId)
-    return deliusRoService.findResponsibleOfficer(bookingId, token)
+    return roService.findResponsibleOfficer(bookingId, token)
   }
 
   async function roByOffenderNo(offenderNo, token) {
     logger.info('responsibleOfficer for offenderNo', offenderNo)
-    return deliusRoService.findResponsibleOfficerByOffenderNo(offenderNo, token)
+    return roService.findResponsibleOfficerByOffenderNo(offenderNo, token)
   }
 
   async function staffByCode(code) {
     logger.info('staff for code', code)
-    return deliusRoService.getStaffByCode(code)
+    return roService.getStaffByCode(code)
   }
 
   async function staffByUsername(username) {
     logger.info('staff for offenderNo', username)
-    return deliusRoService.getStaffByUsername(username)
+    return roService.getStaffByUsername(username)
   }
 
   return router
