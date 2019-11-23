@@ -3,13 +3,17 @@ const createRoContactDetailsService = require('../../server/services/roContactDe
 describe('roContactDetailsService', () => {
   let service
   let userAdminService
+  let roService
 
   beforeEach(() => {
     userAdminService = {
       getRoUserByDeliusId: sinon.stub(),
     }
+    roService = {
+      getStaffByCode: sinon.stub(),
+    }
 
-    service = createRoContactDetailsService(userAdminService)
+    service = createRoContactDetailsService(userAdminService, roService)
   })
 
   describe('getContactDetails', () => {
@@ -26,6 +30,7 @@ describe('roContactDetailsService', () => {
 
       expect(result).to.eql(fullContactInfo)
       expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('delius-1')
+      expect(roService.getStaffByCode).not.to.be.calledWith('delius-1')
     })
 
     it('no staff record', async () => {
@@ -35,6 +40,7 @@ describe('roContactDetailsService', () => {
 
       expect(result).to.eql(null)
       expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('delius-1')
+      expect(roService.getStaffByCode).to.be.calledWith('delius-1')
     })
   })
 })

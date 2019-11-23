@@ -48,7 +48,7 @@ const reportingService = createReportingService(audit)
 const userAdminService = createUserAdminService(nomisClientBuilder, userClient, signInService, prisonerService)
 const userService = createUserService(nomisClientBuilder)
 const deadlineService = createDeadlineService(licenceClient)
-const roContactDetailsService = createRoContactDetailsService(userAdminService)
+const roContactDetailsService = createRoContactDetailsService(userAdminService, roService)
 const notificationService = createNotificationService(
   prisonerService,
   roContactDetailsService,

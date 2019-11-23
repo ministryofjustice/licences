@@ -1,7 +1,6 @@
 const superagent = require('superagent')
 const logger = require('../../log')
 const config = require('../config')
-const { unauthorisedError } = require('../utils/errors')
 
 const timeoutSpec = {
   response: config.nomis.timeout.response,
@@ -36,7 +35,7 @@ module.exports = signInService => {
   async function deliusGet({ path } = {}) {
     const token = await signInService.getAnonymousClientCredentialsTokens('delius')
     if (!token) {
-      throw unauthorisedError()
+      throw Error(`Failed to get token when attempting to call delius: ${path}`)
     }
 
     try {

@@ -23,7 +23,10 @@ describe('deliusClient', () => {
   describe('deliusClient', () => {
     it('should throw error on GET when no token', () => {
       signInService.getAnonymousClientCredentialsTokens.resolves(null)
-      return expect(deliusClient.getROPrisoners('1')).to.be.rejectedWith('Unauthorised access')
+      return expect(deliusClient.getROPrisoners('1')).to.be.rejectedWith(
+        Error,
+        /Failed to get token when attempting to call delius: .*?\/staff\/staffCode\/1\/managedOffenders/
+      )
     })
   })
 
