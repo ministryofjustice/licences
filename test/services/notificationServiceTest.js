@@ -4,7 +4,7 @@ const templates = require('../../server/services/config/notificationTemplates')
 describe('notificationService', () => {
   let service
   let prisonerService
-  let userAdminService
+  let roContactDetailsService
   let configClient
   let notifyClient
   let audit
@@ -39,8 +39,8 @@ describe('notificationService', () => {
         .resolves({ firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1', offenderNo: 'AB1234A' }),
       getResponsibleOfficer: sinon.stub().resolves({ deliusId: 'id-1' }),
     }
-    userAdminService = {
-      getRoUserByDeliusId: sinon.stub().resolves({
+    roContactDetailsService = {
+      getContactDetails: sinon.stub().resolves({
         orgEmail: 'admin@ro.email',
         email: 'ro@ro.email',
         organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
@@ -84,7 +84,7 @@ describe('notificationService', () => {
 
     service = createNotificationService(
       prisonerService,
-      userAdminService,
+      roContactDetailsService,
       configClient,
       notifyClient,
       audit,
@@ -301,7 +301,7 @@ describe('notificationService', () => {
       })
 
       it('should return empty when missing COM delius ID', async () => {
-        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({ orgEmail: '' })
+        roContactDetailsService.getContactDetails = sinon.stub().resolves({ orgEmail: '' })
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'RO_NEW',
@@ -312,7 +312,7 @@ describe('notificationService', () => {
       })
 
       it('should return empty when missing COM', async () => {
-        userAdminService.getRoUserByDeliusId = sinon.stub().resolves(null)
+        roContactDetailsService.getContactDetails = sinon.stub().resolves(null)
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'RO_NEW',
@@ -323,7 +323,18 @@ describe('notificationService', () => {
       })
 
       it('should return empty when missing RO orgEmail', async () => {
-        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({ orgEmail: '', email: '' })
+        roContactDetailsService.getContactDetails = sinon.stub().resolves({ orgEmail: '', email: '' })
+        const data = await service.getNotificationData({
+          prisoner: {},
+          notificationType: 'RO_NEW',
+          submissionTarget: { deliusId: 'deliusId', name: 'RO Name' },
+        })
+
+        expect(data).to.eql([])
+      })
+
+      it('should return empty when no contact details present', async () => {
+        roContactDetailsService.getContactDetails = sinon.stub().resolves(null)
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'RO_NEW',
@@ -357,8 +368,8 @@ describe('notificationService', () => {
 
         expect(prisonerService.getEstablishmentForPrisoner).to.be.calledOnce()
         expect(prisonerService.getEstablishmentForPrisoner).to.be.calledWith('123', 'token')
-        expect(userAdminService.getRoUserByDeliusId).to.be.calledOnce()
-        expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('deliusId')
+        expect(roContactDetailsService.getContactDetails).to.be.calledOnce()
+        expect(roContactDetailsService.getContactDetails).to.be.calledWith('deliusId')
 
         expect(data).to.eql([
           {
@@ -398,7 +409,7 @@ describe('notificationService', () => {
       })
 
       it('should generate RO notification data when no email', async () => {
-        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({
+        roContactDetailsService.getContactDetails = sinon.stub().resolves({
           orgEmail: 'admin@ro.email',
           email: '',
           organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
@@ -440,7 +451,7 @@ describe('notificationService', () => {
       })
 
       it('should generate RO notification data when no orgEmail', async () => {
-        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({
+        roContactDetailsService.getContactDetails = sinon.stub().resolves({
           orgEmail: '',
           email: 'ro@ro.email',
           organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
@@ -485,7 +496,7 @@ describe('notificationService', () => {
         config.notifications.clearingOfficeEmailEnabled = 'No'
         service = createNotificationService(
           prisonerService,
-          userAdminService,
+          roContactDetailsService,
           configClient,
           notifyClient,
           audit,
@@ -493,7 +504,7 @@ describe('notificationService', () => {
           config
         )
 
-        userAdminService.getRoUserByDeliusId = sinon.stub().resolves({
+        roContactDetailsService.getContactDetails = sinon.stub().resolves({
           orgEmail: '',
           email: 'ro@ro.email',
           organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
