@@ -8,7 +8,7 @@ const logIfMissing = (val, message) => {
   }
 }
 
-module.exports = function createRoContactDetailsService(userAdminService) {
+module.exports = function createRoContactDetailsService(userAdminService, roService) {
   async function getContactDetails(deliusId) {
     const ro = await userAdminService.getRoUserByDeliusId(deliusId)
 
@@ -27,6 +27,9 @@ module.exports = function createRoContactDetailsService(userAdminService) {
         organisation,
       }
     }
+
+    const staff = await roService.getStaffByCode(deliusId)
+    logger.info('Found staff result:', staff)
 
     return null
   }
