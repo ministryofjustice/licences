@@ -27,7 +27,6 @@ dependencies {
   testCompile 'com.mashape.unirest:unirest-java:1.4.9'
   testCompile 'org.awaitility:awaitility-groovy:2.0.0'
   testCompile "org.codehaus.groovy:groovy-all:$groovyVersion"
-  testCompile 'org.gebish:geb-core:2.0'
   testCompile "org.gebish:geb-core:$gebVersion"
   testCompile "org.gebish:geb-spock:$gebVersion"
   testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
