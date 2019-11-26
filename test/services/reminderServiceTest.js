@@ -4,7 +4,7 @@ describe('reminderService', () => {
   let service
   let prisonerService
   let deadlineService
-  let notificationService
+  let roNotificationSender
 
   const transitionDate = '2019-01-01 12:00:00'
 
@@ -28,11 +28,11 @@ describe('reminderService', () => {
         ]),
     }
 
-    notificationService = {
+    roNotificationSender = {
       sendNotifications: sinon.stub(),
     }
 
-    service = createReminderService(prisonerService, deadlineService, notificationService)
+    service = createReminderService(prisonerService, deadlineService, roNotificationSender)
   })
 
   describe('notifyRoReminders', () => {
@@ -84,8 +84,8 @@ describe('reminderService', () => {
     it('should call notify client for each notification', async () => {
       await service.notifyRoReminders('token')
 
-      expect(notificationService.sendNotifications).to.have.callCount(4)
-      expect(notificationService.sendNotifications).to.be.calledWith({
+      expect(roNotificationSender.sendNotifications).to.have.callCount(4)
+      expect(roNotificationSender.sendNotifications).to.be.calledWith({
         bookingId: 2,
         notificationType: 'RO_OVERDUE',
         prisoner: { dateOfBirth: '1/1/1', firstName: 'First', lastName: 'Last', offenderNo: 'AB1234A' },
@@ -95,7 +95,7 @@ describe('reminderService', () => {
         transitionDate: '2019-01-01 12:00:00',
       })
 
-      expect(notificationService.sendNotifications).to.be.calledWith({
+      expect(roNotificationSender.sendNotifications).to.be.calledWith({
         bookingId: 3,
         notificationType: 'RO_OVERDUE',
         prisoner: { dateOfBirth: '1/1/1', firstName: 'First', lastName: 'Last', offenderNo: 'AB1234A' },
@@ -105,7 +105,7 @@ describe('reminderService', () => {
         transitionDate: '2019-01-01 12:00:00',
       })
 
-      expect(notificationService.sendNotifications).to.be.calledWith({
+      expect(roNotificationSender.sendNotifications).to.be.calledWith({
         bookingId: 1,
         notificationType: 'RO_DUE',
         prisoner: { dateOfBirth: '1/1/1', firstName: 'First', lastName: 'Last', offenderNo: 'AB1234A' },
@@ -115,7 +115,7 @@ describe('reminderService', () => {
         transitionDate: '2019-01-01 12:00:00',
       })
 
-      expect(notificationService.sendNotifications).to.be.calledWith({
+      expect(roNotificationSender.sendNotifications).to.be.calledWith({
         bookingId: 1,
         notificationType: 'RO_TWO_DAYS',
         prisoner: { dateOfBirth: '1/1/1', firstName: 'First', lastName: 'Last', offenderNo: 'AB1234A' },

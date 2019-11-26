@@ -1,10 +1,10 @@
 const { asyncMiddleware } = require('../utils/middleware')
-const { sendingUserName } = require('../utils/userProfile')
+const transitionsForDestinations = require('../services/notifications/transitionsForDestinations')
 
-module.exports = ({ licenceService, prisonerService, notificationService, audit }) => router => {
+module.exports = ({ prisonerService, notificationService }) => router => {
   router.get('/:destination/:bookingId', async (req, res) => {
     const { destination, bookingId } = req.params
-    const transition = transitionForDestination[destination]
+    const transition = transitionsForDestinations[destination]
     const submissionTarget = await prisonerService.getOrganisationContactDetails(
       transition.receiver,
       bookingId,
@@ -18,55 +18,21 @@ module.exports = ({ licenceService, prisonerService, notificationService, audit 
     '/:destination/:bookingId',
     asyncMiddleware(async (req, res) => {
       const { destination, bookingId } = req.params
-      const transition = transitionForDestination[destination]
+      const { token, licence, prisoner } = res.locals
+      const transition = transitionsForDestinations[destination]
 
-      const submissionTarget = await prisonerService.getOrganisationContactDetails(
-        transition.receiver,
+      await notificationService.send({
+        transition,
         bookingId,
-        res.locals.token
-      )
-
-      await licenceService.markForHandover(bookingId, transition.type)
-
-      if (transition.type === 'dmToCaReturn') {
-        await licenceService.removeDecision(bookingId, res.locals.licence)
-      }
-
-      auditEvent(req.user.username, bookingId, transition.type, submissionTarget)
-
-      notificationService.sendNotifications({
-        bookingId,
-        prisoner: res.locals.prisoner,
-        notificationType: transition.notificationType,
-        submissionTarget,
-        sendingUserName: sendingUserName(req.user),
-        token: res.locals.token,
+        token,
+        licence,
+        prisoner,
+        user: req.user,
       })
 
       res.redirect(`/hdc/sent/${transition.receiver}/${transition.type}/${bookingId}`)
     })
   )
-
-  const transitionForDestination = {
-    addressReview: { type: 'caToRo', receiver: 'RO', notificationType: 'RO_NEW' },
-    bassReview: { type: 'caToRo', receiver: 'RO', notificationType: 'RO_NEW' },
-    finalChecks: { type: 'roToCa', receiver: 'CA', notificationType: 'CA_RETURN' },
-    approval: { type: 'caToDm', receiver: 'DM', notificationType: 'DM_NEW' },
-    decided: { type: 'dmToCa', receiver: 'CA', notificationType: 'CA_DECISION' },
-    return: { type: 'dmToCaReturn', receiver: 'CA', notificationType: 'DM_TO_CA_RETURN' },
-    refusal: { type: 'caToDmRefusal', receiver: 'DM', notificationType: 'DM_NEW' },
-    addressRejected: { type: 'roToCaAddressRejected', receiver: 'CA', notificationType: 'CA_RETURN' },
-    bassAreaRejected: { type: 'roToCaAddressRejected', receiver: 'CA', notificationType: 'CA_RETURN' },
-    optedOut: { type: 'roToCaOptedOut', receiver: 'CA', notificationType: 'CA_RETURN' },
-  }
-
-  function auditEvent(user, bookingId, transitionType, submissionTarget) {
-    audit.record('SEND', user, {
-      bookingId,
-      transitionType,
-      submissionTarget,
-    })
-  }
 
   return router
 }

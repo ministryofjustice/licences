@@ -1,7 +1,7 @@
 const logger = require('../../log.js')
 const { isEmpty } = require('../utils/functionalHelpers')
 
-module.exports = function createReminderService(prisonerService, deadlineService, notificationService) {
+module.exports = function createReminderService(prisonerService, deadlineService, roNotificationSender) {
   async function notifyRoReminders(token) {
     const overdue = await notifyCases(token, () => deadlineService.getOverdue('RO'), 'RO_OVERDUE')
     const due = await notifyCases(token, () => deadlineService.getDueInDays('RO', 0), 'RO_DUE')
@@ -29,7 +29,7 @@ module.exports = function createReminderService(prisonerService, deadlineService
       return
     }
 
-    notificationService.sendNotifications({
+    roNotificationSender.sendNotifications({
       prisoner,
       notificationType,
       submissionTarget,

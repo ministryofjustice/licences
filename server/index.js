@@ -23,7 +23,11 @@ const createReportingService = require('./services/reportingService')
 const createCaseListFormatter = require('./services/utils/caseListFormatter')
 const createUserAdminService = require('./services/userAdminService')
 const createUserService = require('./services/userService')
-const createNotificationService = require('./services/notificationService')
+const createNotificationSender = require('./services/notifications/notificationSender')
+const createRoNotificationSender = require('./services/notifications/roNotificationSender')
+const createCaAndDmNotificationSender = require('./services/notifications/caAndDmNotificationSender')
+const createNotificationService = require('./services/notifications/notificationService')
+
 const createRoContactDetailsService = require('./services/roContactDetailsService')
 const createReminderService = require('./services/reminderService')
 
@@ -49,16 +53,31 @@ const userAdminService = createUserAdminService(nomisClientBuilder, userClient, 
 const userService = createUserService(nomisClientBuilder)
 const deadlineService = createDeadlineService(licenceClient)
 const roContactDetailsService = createRoContactDetailsService(userAdminService, roService)
-const notificationService = createNotificationService(
+
+const notificationSender = createNotificationSender(notifyClient, audit, config)
+const roNotificationSender = createRoNotificationSender(
+  prisonerService,
+  roContactDetailsService,
+  notificationSender,
+  config
+)
+const caAndDmNotificationSender = createCaAndDmNotificationSender(
   prisonerService,
   roContactDetailsService,
   configClient,
-  notifyClient,
-  audit,
+  notificationSender,
   nomisClientBuilder,
   config
 )
-const reminderService = createReminderService(prisonerService, deadlineService, notificationService)
+
+const notificationService = createNotificationService(
+  roNotificationSender,
+  caAndDmNotificationSender,
+  audit,
+  licenceService,
+  prisonerService
+)
+const reminderService = createReminderService(prisonerService, deadlineService, roNotificationSender)
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
