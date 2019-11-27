@@ -5,8 +5,6 @@ const { getIn, firstItem, mergeWithRight } = require('../utils/functionalHelpers
 const recordList = require('../services/utils/recordList')
 
 module.exports = ({ licenceService, nomisPushService }) => (router, audited, pushToNomis) => {
-  // NB: pushToNomis may need to be { pushToNomis }
-
   const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'bassReferral' })
 
   router.post('/rejected/:bookingId', audited, asyncMiddleware(reject('area', 'rejected')))
