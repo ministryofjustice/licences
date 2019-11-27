@@ -1,0 +1,42 @@
+extends forms-layout
+
+block content
+
+  h1 Home detention curfew (tagging): Licence variation
+
+  table.semi-wide.midMarginBottom
+    tr.spaceUnder
+      td Prisoner name: #{OFF_NAME}
+      td DoB: #{prisoner.dateOfBirth}
+    tr.spaceUnder
+      td NOMIS: #{OFF_NOMS}
+      td PNCID: #{prisoner.PNC}
+    tr.spaceUnder
+      td Location: #{prisoner.internalLocationDesc}
+    tr.spaceUnder
+      td HDC release date: #{SENT_CRD}
+    tr.spaceUnder
+      td Curfew address: #{CURFEW_ADDRESS}
+    tr.spaceUnder
+      td Second Curfew Address (if required):
+
+  p The following changes have been made to the above’s licence conditions  (copy of revised licence attached where changes are permanent):
+
+  div.box(style={height: '7cm'}).midMarginBottom
+
+  p Has anything changed with regards to additional information that suggests that the offender presents a risk of harm or verbal abuse to the electronic monitoring provider’s staff? YES / NO
+
+  div.box(style={height: '2cm'}).midMarginBottom Please provide further details or indicate that no additional information is relevant:
+
+  p.midMarginBottom The above changes are: PERMANENT / TEMPORARY
+
+  table.semi-wide.midMarginBottom
+    tr
+      td The changes come into effect from:
+      td and end:
+
+  p.midMarginBottom Signed:
+  
+  p Date:
+
+  p.bold A copy of this form must be forwarded to the EMS provider, the probation provider, and the police.
