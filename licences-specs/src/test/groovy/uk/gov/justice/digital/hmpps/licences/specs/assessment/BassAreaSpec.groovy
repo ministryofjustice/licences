@@ -5,6 +5,7 @@ import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.BassAreaCheckPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.ApprovedPremisesAddressPageBassReferral
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -38,7 +39,7 @@ class BassAreaSpec extends GebReportingSpec {
     at BassAreaCheckPage
 
     and: 'The question "Does the offender need to be sent to approved premises?" is displayed'
-    approvedAddressRequired.isDisplayed()
+    approvedAddressRequired.displayed
 
     }
 
@@ -73,13 +74,13 @@ class BassAreaSpec extends GebReportingSpec {
       areaRadios.checked == null
 
       and: "The Area Suitable question and text are hidden"
-      !areaReasons.isDisplayed()
+      !areaReasons.displayed
 
-      then: 'I select No to Approved Premises required'
-      approvedRadios.value('No')
+      when: 'I select No to Approved Premises required'
+      approvedRadios.checked = 'No'
 
-      and: 'The reason input is displayed'
-      areaReasons.isDisplayed()
+      then: 'The reason input is displayed'
+      areaReasons.displayed
 
       and: 'The requested area is shown'
       bass.proposed.town == 'BASS Town'
@@ -97,17 +98,17 @@ class BassAreaSpec extends GebReportingSpec {
     then: 'I see the bass area page'
     at BassAreaCheckPage
 
-    then: 'I select No to Approved Premises required'
-    approvedRadios.value('No')
+    when: 'I select No to Approved Premises required'
+    approvedRadios.checked = 'No'
 
-    and: 'The reason input is displayed'
-    areaReasons.isDisplayed()
+    then: 'The reason input is displayed'
+    areaReasons.displayed
 
-    then: 'I select No to Approved Premises required'
-    approvedRadios.value('Yes')
+    when: 'I select No to Approved Premises required'
+    approvedRadios.checked = 'Yes'
 
-    and: 'The reason input is displayed'
-    !areaReasons.isDisplayed()
+    then: 'The reason input is displayed'
+    !areaReasons.displayed
   }
 
   def 'Shows previously saved values'() {
@@ -118,8 +119,8 @@ class BassAreaSpec extends GebReportingSpec {
     when: 'I view the bass area page'
     to BassAreaCheckPage, testData.markAndrewsBookingId
 
-    then: 'I select No to Approved Premises required'
-    approvedRadios.value('No')
+    and: 'I select No to Approved Premises required'
+    approvedRadios.checked = 'No'
 
     then: 'I see the previous values'
     areaRadios.checked == 'No'
@@ -138,13 +139,15 @@ class BassAreaSpec extends GebReportingSpec {
     at BassAreaCheckPage
 
     when: 'I select new options'
-    approvedRadios.value('Yes')
+    approvedRadios.checked = 'Yes'
 
     and: 'I choose return to tasklist'
     $('#backLink').click()
+
+    then: ' I am returned to the tasklist'
     at TaskListPage
 
-    and: 'I go back to the bass area page'
+    when: 'I go back to the bass area page'
     to BassAreaCheckPage, testData.markAndrewsBookingId
 
     then: 'Then the Approved Premises radios are not checked'
@@ -158,17 +161,18 @@ class BassAreaSpec extends GebReportingSpec {
 
     when: 'I view the bass area page'
     to BassAreaCheckPage, testData.markAndrewsBookingId
-    then: 'I select Approved Address No option'
-    approvedRadios.value('No')
 
-    and: 'The radios are not shown'
-    !areaRadios.isDisplayed()
+    and: 'I select Approved Address No option'
+    approvedRadios.checked = 'No'
 
-    and: 'The reason input is always shown'
-    areaReasons.isDisplayed()
+    then: 'The "Suitable area" radios are not shown'
+    !areaRadios.displayed
 
-    and: 'No preferred area message is shown'
-    $('#noSpecificAreaMessage').isDisplayed()
+    and: 'But the "Reason" input is always shown'
+    areaReasons.displayed
+
+    and: 'The "No preferred area" message is shown'
+    $('#noSpecificAreaMessage').displayed
   }
 
    def 'If the Approved premises YES radio is selected followed by the SAVE AND CONTINUE button, the user is taken to the Approved premises address input page'() {
@@ -178,14 +182,15 @@ class BassAreaSpec extends GebReportingSpec {
 
     when: 'I view the bass area page'
     to BassAreaCheckPage, testData.markAndrewsBookingId
-    then: 'I select Approved Address YES option'
-    approvedRadios.value('Yes')
+
+    and : 'I select Approved Address YES option'
+    approvedRadios.checked ='Yes'
 
     and: 'Then I select SAVE AND CONTINUE'
     saveAndContinue.click()
 
     then: 'The Approved premises address page is presented'
-    currentUrl.contains "/hdc/bassReferral/approvedPremisesAddress"
+    at ApprovedPremisesAddressPageBassReferral
   }
 
   def 'If the Approved premises NO radio is selected followed by the SAVE AND CONTINUE button, the user is taken to the Tasklist page'() {
@@ -195,13 +200,14 @@ class BassAreaSpec extends GebReportingSpec {
 
     when: 'I view the bass area page'
     to BassAreaCheckPage, testData.markAndrewsBookingId
-    then: 'I select Approved Address NO option'
-    approvedRadios.value('No')
+
+    and: 'I select Approved Address NO option'
+    approvedRadios.checked = 'No'
 
     and: 'Then I select SAVE AND CONTINUE'
     saveAndContinue.click()
 
-    then: 'The Approved premises address page is presented'
-    currentUrl.contains "/hdc/taskList/"
+    then: 'The Tasklist page is presented'
+    at TaskListPage
   }
 }
