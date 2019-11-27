@@ -161,6 +161,8 @@ class BassAreaSpec extends GebReportingSpec {
 
     when: 'I view the bass area page'
     to BassAreaCheckPage, testData.markAndrewsBookingId
+    then: 'I select Approved Address No option'
+    approvedRadios.value('No')
 
     and: 'I select Approved Address No option'
     approvedRadios.checked = 'No'
@@ -209,5 +211,39 @@ class BassAreaSpec extends GebReportingSpec {
 
     then: 'The Tasklist page is presented'
     at TaskListPage
+  }
+
+   def 'If the Approved premises YES radio is selected followed by the SAVE AND CONTINUE button, the user is taken to the Approved premises address input page'() {
+
+    given: 'No specific area requested'
+    testData.loadLicence('assessment/bassArea-unstarted-no-area')
+
+    when: 'I view the bass area page'
+    to BassAreaCheckPage, testData.markAndrewsBookingId
+    then: 'I select Approved Address YES option'
+    approvedRadios.value('Yes')
+
+    and: 'Then I select SAVE AND CONTINUE'
+    saveAndContinue.click()
+
+    then: 'The Approved premises address page is presented'
+    currentUrl.contains "/hdc/bassReferral/approvedPremisesAddress"
+  }
+
+  def 'If the Approved premises NO radio is selected followed by the SAVE AND CONTINUE button, the user is taken to the Tasklist page'() {
+
+    given: 'No specific area requested'
+    testData.loadLicence('assessment/bassArea-unstarted-no-area')
+
+    when: 'I view the bass area page'
+    to BassAreaCheckPage, testData.markAndrewsBookingId
+    then: 'I select Approved Address NO option'
+    approvedRadios.value('No')
+
+    and: 'Then I select SAVE AND CONTINUE'
+    saveAndContinue.click()
+
+    then: 'The Approved premises address page is presented'
+    currentUrl.contains "/hdc/taskList/"
   }
 }
