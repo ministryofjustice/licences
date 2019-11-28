@@ -1491,9 +1491,21 @@ describe('validation', () => {
       describe('bassAreaCheck', () => {
         const pageConfig = bassAreaCheck
         const options = [
-          { formResponse: { bassAreaSuitable: 'Yes' }, outcome: {} },
-          { formResponse: { bassAreaSuitable: 'No' }, outcome: { bassAreaReason: 'Enter a reason' } },
-          { formResponse: { bassAreaSuitable: 'No', bassAreaReason: 'reason' }, outcome: {} },
+          { formResponse: { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: 'No' }, outcome: {} },
+          {
+            formResponse: { bassAreaSuitable: 'No', approvedPremisesRequiredYesNo: 'No' },
+            outcome: { bassAreaReason: 'Enter a reason' },
+          },
+          {
+            formResponse: { bassAreaSuitable: 'No', bassAreaReason: 'reason', approvedPremisesRequiredYesNo: 'No' },
+            outcome: {},
+          },
+          { formResponse: { approvedPremisesRequiredYesNo: 'No' }, outcome: {} },
+          { formResponse: { approvedPremisesRequiredYesNo: 'Yes' }, outcome: {} },
+          {
+            formResponse: { approvedPremisesRequiredYesNo: '' },
+            outcome: { approvedPremisesRequiredYesNo: 'Select Yes or No' },
+          },
         ]
 
         options.forEach(option => {
@@ -2118,7 +2130,7 @@ describe('validation', () => {
 
       context('bass requested', () => {
         const validBassRequest = { bassRequested: 'Yes', specificArea: 'No' }
-        const validBassAreaCheck = { bassAreaSuitable: 'Yes' }
+        const validBassAreaCheck = { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: 'No' }
         const validBassLicence = {
           ...validLicence,
           bassReferral: {
@@ -2159,7 +2171,7 @@ describe('validation', () => {
 
       context('bass area suitable', () => {
         const validBassRequest = { bassRequested: 'No', specificArea: 'No' }
-        const validBassAreaCheck = { bassAreaSuitable: 'Yes' }
+        const validBassAreaCheck = { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: 'No' }
         const validBassLicence = {
           curfew: { curfewHours: validCurfewHours },
           bassReferral: {

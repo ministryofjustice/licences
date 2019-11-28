@@ -78,5 +78,18 @@ describe('bass area task', () => {
         type: 'btn',
       })
     })
+
+    it('should show change link to Bass area check if approvedPremisesAddress: DONE, irrespective of value in bassAreaCheck', () => {
+      expect(
+        getRoAction({
+          decisions: {},
+          tasks: { approvedPremisesAddress: 'DONE', bassAreaCheck: 'SOMETHING' },
+        })
+      ).to.eql({
+        text: 'Change',
+        href: '/hdc/bassReferral/bassAreaCheck/',
+        type: 'link',
+      })
+    })
   })
 })

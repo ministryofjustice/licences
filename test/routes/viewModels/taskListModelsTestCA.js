@@ -137,6 +137,17 @@ describe('TaskList models', () => {
     visible: true,
   }
 
+  const bassAddressWithApprovedAddress = {
+    title: 'BASS address',
+    label: 'Approved premises required',
+    action: {
+      href: '/hdc/bassReferral/approvedPremisesChoice/',
+      text: 'View/Edit',
+      type: 'btn-secondary',
+    },
+    visible: true,
+  }
+
   const riskManagement = {
     action: {
       href: '/hdc/risk/riskManagement/',
@@ -622,6 +633,38 @@ describe('TaskList models', () => {
           'caToRo'
         )
       ).to.eql([curfewAddress, refuse, submitCurfewAddress])
+    })
+
+    it('should show  Bass Address task with Approved Premises label and View/Edit button if AP input)', () => {
+      expect(
+        taskListModel(
+          'CA',
+          false,
+          {
+            decisions: {
+              bassReferralNeeded: true,
+              approvedPremisesRequired: true,
+            },
+            tasks: {
+              approvedPremisesAddress: 'DONE',
+              bassAreaCheck: 'DONE',
+            },
+            stage: 'PROCESSING_CA',
+          },
+          { approvedPremisesAddress: 'DONE' },
+          'null'
+        )
+      ).to.eql([
+        bassAddressWithApprovedAddress,
+        victimLiasion,
+        curfewHours,
+        additionalConditionsEdit,
+        reportingInstructionsReview,
+        reviewCase,
+        postponeOrRefuse,
+        refuse,
+        submitDecisionMaker,
+      ])
     })
   })
 

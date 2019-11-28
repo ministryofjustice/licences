@@ -29,6 +29,17 @@ describe('TaskList models', () => {
     visible: true,
   }
 
+  const bassAreaCheckWithApprovedAddress = {
+    action: {
+      href: '/hdc/bassReferral/bassAreaCheck/',
+      text: 'Change',
+      type: 'link',
+    },
+    label: 'Approved premises required',
+    title: 'BASS area check',
+    visible: true,
+  }
+
   const riskManagement = {
     title: 'Risk management',
     label: 'Not completed',
@@ -446,6 +457,30 @@ describe('TaskList models', () => {
         )
       ).to.eql([
         proposedCurfewAddress,
+        victimLiasion,
+        curfewHours,
+        additionalConditions,
+        reportingInstructions,
+        curfewAddressCheck,
+        submitCA,
+      ])
+    })
+
+    it('should show the Bass area check task with a label of Approved premises address if approved premises has been input', () => {
+      expect(
+        taskListModel(
+          'RO',
+          false,
+          {
+            decisions: { approvedPremisesRequired: true, bassReferralNeeded: true, curfewAddressRejected: false },
+            tasks: { curfewAddress: 'DONE', approvedPremisesAddress: 'DONE' },
+            stage: 'PROCESSING_RO',
+          },
+          {},
+          'roToCa'
+        )
+      ).to.eql([
+        bassAreaCheckWithApprovedAddress,
         victimLiasion,
         curfewHours,
         additionalConditions,

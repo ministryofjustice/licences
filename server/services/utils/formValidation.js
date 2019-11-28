@@ -287,13 +287,7 @@ function validateGroup({ licence, group, bespokeConditions }) {
       },
     ],
     PROCESSING_RO_APPROVED_PREMISES: [
-      {
-        formResponse: getIn(licence, ['curfew', 'approvedPremisesAddress']),
-        formType: 'approvedPremisesAddress',
-        pageConfig: curfewConfig.approvedPremisesAddress,
-        section: 'curfew',
-        missingMessage: 'Enter the approved premises address details',
-      },
+      approvedAddressValidationConfig(licence),
       {
         formResponse: getIn(licence, ['licenceConditions', 'standard']),
         formType: 'standard',
@@ -487,4 +481,25 @@ function isFulfilled(requirement, data) {
   const requiredAnswer = requirement[requirementName]
 
   return data[requirementName] === requiredAnswer
+}
+
+function approvedAddressValidationConfig(licence) {
+  if (getIn(licence, ['curfew', 'approvedPremises', 'required']) === 'Yes') {
+    return {
+      formResponse: getIn(licence, ['curfew', 'approvedPremisesAddress']),
+      formType: 'approvedPremisesAddress',
+      pageConfig: curfewConfig.approvedPremisesAddress,
+      section: 'curfew',
+      missingMessage: 'Enter the approved premises address details',
+    }
+  }
+  if (getIn(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo']) === 'Yes') {
+    return {
+      formResponse: getIn(licence, ['bassReferral', 'approvedPremisesAddress']),
+      formType: 'approvedPremisesAddress',
+      pageConfig: bassConfig.approvedPremisesAddress,
+      section: 'bassReferral',
+      missingMessage: 'Enter the approved premises address details',
+    }
+  }
 }

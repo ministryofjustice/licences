@@ -21,5 +21,11 @@ class BassAreaCheckPage extends Page {
     areaReasons { $('#bassAreaReason') }
 
     areaRadios(required: false) { $(name: "bassAreaSuitable").module(RadioButtons) }
+
+    approvedRadios(required: false) { $(name: "approvedPremisesRequiredYesNo").module(RadioButtons) }
+
+    approvedAddressRequired(required: false) {$( name: 'approvedAddressRequired')}
+
+    saveAndContinue(required: false){ $('#continueBtn')}
   }
 }

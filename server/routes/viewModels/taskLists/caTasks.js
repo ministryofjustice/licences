@@ -107,7 +107,7 @@ module.exports = {
       title: 'Curfew address',
       label: proposedAddress.getLabel({ decisions, tasks }),
       action: proposedAddress.getCaAction({ decisions, tasks }),
-      visible: allowedTransition === 'caToRo',
+      visible: !bassReferralNeeded && allowedTransition === 'caToRo',
     }
 
     const bassTask = {
@@ -140,7 +140,10 @@ module.exports = {
           href: '/hdc/risk/riskManagement/',
           text: 'View/Edit',
         },
-        visible: (!approvedPremisesRequired && curfewAddressApproved) || addressUnsuitable || bassChecksDone,
+        visible:
+          (!approvedPremisesRequired && curfewAddressApproved) ||
+          addressUnsuitable ||
+          (bassChecksDone && !approvedPremisesRequired),
       },
       {
         title: 'Victim liaison',
