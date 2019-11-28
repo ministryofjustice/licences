@@ -91,6 +91,7 @@ module.exports = {
         approved: 'Approved',
         agency_notification: 'Agency notification',
         cancel_agency_notification: 'Cancel agency notification',
+        licence_variation: 'Licence variation',
       },
       pdfOptions: {
         format: 'A4',

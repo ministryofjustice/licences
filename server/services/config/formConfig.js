@@ -18,6 +18,7 @@ module.exports = {
     unsuitable: [...headerFields, 'UNSUITABLE_REASON'],
     agency_notification: [...headerFields, 'CURFEW_FIRST', 'CURFEW_HOURS', 'CURFEW_ADDRESS', 'SENT_HDCED', 'SENT_CRD'],
     cancel_agency_notification: [...headerFields, 'CURFEW_HOURS', 'CURFEW_ADDRESS', 'SENT_HDCED', 'SENT_CRD'],
+    licence_variation: [...headerFields, 'CURFEW_ADDRESS', 'SENT_CRD'],
   },
 
   refusalReasonlabels: {
