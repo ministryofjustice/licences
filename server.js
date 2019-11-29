@@ -1,9 +1,11 @@
+const knex = require('knex')
 const logger = require('./log')
 const config = require('./server/config')
 const app = require('./server/index')
 const healthcheck = require('./server/services/healthcheck')
 const appInsights = require('./azure-appinsights')
 const { flattenMeta } = require('./server/misc')
+const knexfile = require('./knexfile')
 
 if (config.healthcheckInterval) {
   reportHealthcheck()
@@ -25,6 +27,16 @@ function recordHealthResult(err, results) {
   }
 }
 
-app.listen(app.get('port'), () => {
-  logger.info(`Licences server listening on port ${app.get('port')}`)
-})
+logger.debug('Migration start')
+
+knex({ ...knexfile })
+  .migrate.latest()
+  .then(() => {
+    logger.debug('Migration finished')
+    app.listen(app.get('port'), () => {
+      logger.info(`Licences server listening on port ${app.get('port')}`)
+    })
+  })
+  .catch(err => {
+    logger.error('Knex migration failed', err)
+  })
