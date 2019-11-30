@@ -6,5 +6,6 @@ seeds/
 coverage/
 build/
 package-lock.json
+jsconfig.json
 *.md
 licences-specs/src/test/resources/licences/
