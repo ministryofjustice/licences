@@ -28,7 +28,7 @@ module.exports = function createDeadlineService(licenceClient) {
   function rejectIfUnknown(role) {
     if (!roleStages[role] || !dueDateMethods[role]) {
       const message = `Unmatched role code for getting due dates: ${role}`
-      logger.error()
+      logger.error(message)
       throw new Error(message)
     }
   }

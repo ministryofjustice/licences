@@ -37,5 +37,5 @@ function combineDatesIn(conditionsFieldsRequired, inputObject) {
   }
 
   const [day, month, year] = ['appointmentDay', 'appointmentMonth', 'appointmentYear']
-  return merge(inputObject, { [DATE_FIELD]: `${inputObject[[day]]}/${inputObject[[month]]}/${inputObject[[year]]}` })
+  return merge(inputObject, { [DATE_FIELD]: `${inputObject[day]}/${inputObject[month]}/${inputObject[year]}` })
 }

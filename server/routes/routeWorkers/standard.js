@@ -1,7 +1,7 @@
 const { getIn, isEmpty, firstItem, lastItem } = require('../../utils/functionalHelpers')
 const { getPathFor } = require('../../utils/routes')
 
-module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, config }) => {
+module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = null, config = null }) => {
   function get(req, res) {
     const { formName, bookingId, action } = req.params
     return formGet(req, res, formName, bookingId, action)
@@ -109,7 +109,7 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService, c
       const status = !isEmpty(pushConfig.status) ? getIn(updatedLicence, pushConfig.status) : undefined
       const reason = !isEmpty(pushConfig.reason) ? getIn(updatedLicence, pushConfig.reason) : undefined
 
-      const { failState, passState } = pushConfig.checksPassed ? pushConfig.checksPassed : {}
+      const { failState = null, passState = null } = pushConfig.checksPassed ? pushConfig.checksPassed : {}
 
       const failed = definedAndMatches(failState, status)
       const passed = definedAndMatches(passState, status)

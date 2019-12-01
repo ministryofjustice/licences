@@ -100,7 +100,6 @@ module.exports = function createNotificationService(
         submissionTarget,
         bookingId,
         transitionDate,
-        sendingUserName,
         notificationConfig,
       })
 

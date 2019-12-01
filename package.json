@@ -13,7 +13,7 @@
     "start:dev": "npm run build && DEBUG=gov-starter-server* nodemon server.js",
     "test": "mocha",
     "lint": "eslint .",
-    "check": "tsc",
+    "typecheck": "tsc",
     "record-build-info": "node ./bin/record-build-info",
     "css-build": "./bin/build-css",
     "clean": "rm -rf public/* .port.tmp *.log build/* uploads/* test-results.xml",

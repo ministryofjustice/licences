@@ -3,7 +3,7 @@ const logger = require('../../../log.js')
 const { isEmpty } = require('../../utils/functionalHelpers')
 
 module.exports = function createNotificationSender(notifyClient, audit, { notifications: { notifyKey } }) {
-  async function notify({ sendingUserName, notificationType, bookingId, notifications } = {}) {
+  async function notify({ sendingUserName, notificationType, bookingId, notifications }) {
     if (isEmpty(notifyKey) || notifyKey === 'NOTIFY_OFF') {
       logger.warn('No notification API key - notifications disabled')
       return

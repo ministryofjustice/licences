@@ -14,6 +14,7 @@ const rejectedAddressTaskList = licenceStatus => {
     decisions: { addressWithdrawn, addressReviewFailed },
   } = licenceStatus
 
+  /** @type {Array<any>} */
   const taskList = [
     { task: 'eligibilitySummaryTask' },
     {

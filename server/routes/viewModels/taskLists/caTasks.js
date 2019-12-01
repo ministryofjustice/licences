@@ -157,7 +157,7 @@ module.exports = {
       },
       {
         title: 'Curfew hours',
-        label: curfewHours.getLabel({ decisions, tasks }),
+        label: curfewHours.getLabel({ tasks }),
         action: {
           type: 'btn-secondary',
           href: '/hdc/curfew/curfewHours/',
@@ -177,7 +177,7 @@ module.exports = {
       },
       {
         title: 'Reporting instructions',
-        label: reportingInstructions.getLabel({ decisions, tasks }),
+        label: reportingInstructions.getLabel({ tasks }),
         action: {
           type: 'btn-secondary',
           href: '/hdc/reporting/reportingInstructions/',
@@ -188,13 +188,13 @@ module.exports = {
       {
         title: 'Review case',
         label: finalChecks.getLabel({ decisions, tasks }),
-        action: finalChecks.getCaProcessingAction({ decisions, tasks }),
+        action: finalChecks.getCaProcessingAction({ tasks }),
         visible: validAddress,
       },
       {
         title: 'Postpone or refuse',
-        label: postponement.getLabel({ decisions, tasks }),
-        action: postponement.getAction({ decisions, tasks }),
+        label: postponement.getLabel({ decisions }),
+        action: postponement.getAction({ decisions }),
         visible: validAddress,
       },
       refusalTask,
@@ -275,7 +275,7 @@ module.exports = {
       {
         title: 'Proposed curfew address',
         label: curfewAddress.getLabel({ decisions, tasks }),
-        action: curfewAddress.getCaPostApprovalAction({ decisions, tasks }),
+        action: curfewAddress.getCaPostApprovalAction({ decisions }),
         visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
       },
       {
@@ -300,7 +300,7 @@ module.exports = {
       },
       {
         title: 'Curfew hours',
-        label: curfewHours.getLabel({ decisions, tasks }),
+        label: curfewHours.getLabel({ tasks }),
         action: {
           type: 'btn-secondary',
           href: '/hdc/curfew/curfewHours/',
@@ -320,7 +320,7 @@ module.exports = {
       },
       {
         title: 'Reporting instructions',
-        label: reportingInstructions.getLabel({ decisions, tasks }),
+        label: reportingInstructions.getLabel({ tasks }),
         action: {
           type: 'btn-secondary',
           href: '/hdc/reporting/reportingInstructions/',
@@ -331,13 +331,13 @@ module.exports = {
       {
         title: 'Review case',
         label: finalChecks.getLabel({ decisions, tasks }),
-        action: finalChecks.getCaProcessingAction({ decisions, tasks }),
+        action: finalChecks.getCaProcessingAction({ tasks }),
         visible: validAddress,
       },
       {
         title: 'Postpone or refuse',
-        label: postponement.getLabel({ decisions, tasks }),
-        action: postponement.getAction({ decisions, tasks }),
+        label: postponement.getLabel({ decisions }),
+        action: postponement.getAction({ decisions }),
         visible: validAddress,
       },
       {

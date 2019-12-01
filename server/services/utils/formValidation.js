@@ -184,7 +184,7 @@ module.exports = {
   validateGroup,
 }
 
-function validate({ formResponse, pageConfig, formType = 'standard', bespokeConditions = {} } = {}) {
+function validate({ formResponse, pageConfig, formType = 'standard', bespokeConditions = {} }) {
   const procedure = validationProcedures[formType] || validationProcedures.standard
   const fieldsConfig = getIn(pageConfig, ['fields'])
   const formSchema = procedure.getSchema(pageConfig, bespokeConditions)

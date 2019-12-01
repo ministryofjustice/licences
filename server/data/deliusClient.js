@@ -32,7 +32,7 @@ module.exports = signInService => {
     },
   }
 
-  async function deliusGet({ path } = {}) {
+  async function deliusGet({ path }) {
     const token = await signInService.getAnonymousClientCredentialsTokens('delius')
     if (!token) {
       throw Error(`Failed to get token when attempting to call delius: ${path}`)

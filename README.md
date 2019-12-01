@@ -24,7 +24,7 @@ $ npm install
 $ npm run start
 ```
 
-Or, for development, watch for changes and start the server:
+Or, for development, build css and restart server on file changes:
 
 ```
 $ npm run start:dev
@@ -44,6 +44,7 @@ docker-compose up
 - `npm run test` -> runs all unit tests
 - `npm run clean` -> cleans previously generated files
 - `npm run build` -> cleans and regenerates assets.
+- `npm run typecheck` -> runs typescript type checking
 
 # Environment variables
 

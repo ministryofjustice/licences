@@ -8,7 +8,7 @@ const {
   lastItem,
 } = require('../../utils/functionalHelpers')
 
-module.exports = ({ licence, path, allowEmpty = false } = {}) => {
+module.exports = ({ licence, path, allowEmpty = false }) => {
   const records = getIn(licence, path)
 
   if (!allowEmpty && isEmpty(records)) {

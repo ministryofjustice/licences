@@ -4,17 +4,12 @@ const createStandardRoutes = require('./routeWorkers/standard')
 const { getIn, firstItem } = require('../utils/functionalHelpers')
 const logger = require('../../log')
 
-module.exports = ({ licenceService, prisonerService, nomisPushService, signInService }) => (
-  router,
-  audited,
-  config
-) => {
+module.exports = ({ licenceService, prisonerService, nomisPushService }) => (router, audited, config) => {
   const standard = createStandardRoutes({
     formConfig,
     licenceService,
     sectionName: 'approval',
     nomisPushService,
-    signInService,
     config,
   })
 

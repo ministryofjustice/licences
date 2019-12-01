@@ -12,6 +12,7 @@ const gatherCheckInfo = (total, currentValue) => Object.assign({}, total, { [cur
 
 const getBuild = () => {
   try {
+    // @ts-ignore
     // eslint-disable-next-line import/no-unresolved,global-require
     return require('../../build-info.json')
   } catch (ex) {
