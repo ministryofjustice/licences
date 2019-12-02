@@ -12,10 +12,8 @@ image:
 ingress:
   enabled: true
   enable_whitelist: true
-  #host: licences.prison.service.justice.gov.uk
-  #cert_secret: licences-cert
-  host: licences.service.hmpps.dsd.io
-  cert_secret: licences-cert-dsd
+  host: licences.prison.service.justice.gov.uk
+  cert_secret: licences-cert
   path: /
 
 env:
