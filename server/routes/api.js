@@ -1,7 +1,7 @@
 const express = require('express')
 const swaggerUi = require('swagger-ui-express')
 const moment = require('moment')
-const swaggerDocument = require('./config/swagger')
+const swaggerDocument = require('./config/swagger.json')
 
 module.exports = ({ reportingService }) => {
   const router = express.Router()

@@ -34,7 +34,7 @@ module.exports = (
   role,
   postRelease,
   { decisions, tasks, stage },
-  { version, versionDetails, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {},
+  { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {},
   allowedTransition
 ) => {
   const taskListName = getTaskListName(role, stage, postRelease)

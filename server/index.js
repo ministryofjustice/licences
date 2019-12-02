@@ -38,7 +38,7 @@ const createNotificationJobs = require('./services/jobs/notificationJobs')
 const createDeliusClient = require('./data/deliusClient')
 const createRoService = require('./services/roService')
 
-const signInService = createSignInService(audit)
+const signInService = createSignInService()
 const licenceService = createLicenceService(licenceClient)
 const conditionsService = createConditionsService(config)
 const deliusClient = createDeliusClient(signInService)
@@ -95,7 +95,6 @@ const app = createApp({
   notificationService,
   userService,
   nomisPushService,
-  deadlineService,
   configClient,
   jobSchedulerService,
   roService,

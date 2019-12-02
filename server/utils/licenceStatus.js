@@ -729,7 +729,7 @@ function getBassAreaState(licence) {
 
   const bassAreaSuitable = bassAreaSuitableAnswer && bassAreaSuitableAnswer === 'Yes'
   const bassAreaNotSuitable = bassAreaSuitableAnswer && bassAreaSuitableAnswer === 'No'
-  const bassAreaCheck = getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason, bassAreaSuitable)
+  const bassAreaCheck = getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason)
 
   return {
     bassAreaSuitable,

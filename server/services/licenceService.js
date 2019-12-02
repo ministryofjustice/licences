@@ -67,7 +67,7 @@ module.exports = function createLicenceService(licenceClient) {
     }
   }
 
-  function createLicence({ bookingId, data = {}, stage = null } = {}) {
+  function createLicence({ bookingId, data = {}, stage = null }) {
     const varyVersion = stage === 'VARY' ? 1 : 0
     return licenceClient.createLicence(bookingId, data, licenceStages[stage], 1, varyVersion)
   }
@@ -94,7 +94,7 @@ module.exports = function createLicenceService(licenceClient) {
     try {
       const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])
 
-      const newConditions = removeCondition(existingLicenceConditions, conditionId, bookingId)
+      const newConditions = removeCondition(existingLicenceConditions, conditionId)
 
       return licenceClient.updateSection('licenceConditions', bookingId, newConditions)
     } catch (error) {
@@ -142,7 +142,7 @@ module.exports = function createLicenceService(licenceClient) {
     return licenceClient.updateStage(bookingId, newStage)
   }
 
-  function updateModificationStage(bookingId, stage, { requiresApproval, noModify }) {
+  function updateModificationStage(bookingId, stage, { requiresApproval, noModify = false }) {
     if (noModify) {
       return
     }
@@ -392,7 +392,7 @@ module.exports = function createLicenceService(licenceClient) {
     return updatedLicence
   }
 
-  function validateFormGroup({ licence, stage, decisions = {}, tasks = {} } = {}) {
+  function validateFormGroup({ licence, stage, decisions = {}, tasks = {} }) {
     const {
       addressUnsuitable,
       bassAreaNotSuitable,

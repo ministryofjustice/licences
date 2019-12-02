@@ -72,5 +72,6 @@ if (appInsights) {
     return flattenMeta(meta)
   })
 }
-
-module.exports = logger
+/** @type {winston.LoggerInstance & {audit?: Function }} */
+const log = logger
+module.exports = log

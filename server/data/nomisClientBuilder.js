@@ -145,7 +145,7 @@ module.exports = token => {
 }
 
 function nomisGetBuilder(token) {
-  return async ({ path, query = '', headers = {}, responseType = '' } = {}) => {
+  return async ({ path, query = {}, headers = {}, responseType = '' }) => {
     if (!token) {
       throw unauthorisedError()
     }
@@ -175,14 +175,14 @@ function nomisPushBuilder(verb, token) {
     post,
   }
 
-  return async ({ path, body = '', headers = {}, responseType = '' } = {}) => {
+  return async ({ path, body, headers = {}, responseType = '' }) => {
     if (!token) {
       throw unauthorisedError()
     }
 
     try {
       logger.debug(`${verb} ${path}`)
-      const result = await updateMethod[verb](token, path, body, headers, responseType)
+      const result = await updateMethod[verb](token, path, body || '', headers, responseType)
       logger.debug(`${verb} ${path} -> ${result.status}`)
       return result.body
     } catch (error) {

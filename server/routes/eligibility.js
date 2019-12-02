@@ -3,12 +3,11 @@ const { asyncMiddleware } = require('../utils/middleware')
 const { getIn } = require('../utils/functionalHelpers')
 const createStandardRoutes = require('./routeWorkers/standard')
 
-module.exports = ({ licenceService, signInService, nomisPushService }) => (router, audited, config) => {
+module.exports = ({ licenceService, nomisPushService }) => (router, audited, config) => {
   const standard = createStandardRoutes({
     formConfig,
     licenceService,
     sectionName: 'eligibility',
-    signInService,
     nomisPushService,
     config,
   })
