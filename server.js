@@ -3,12 +3,12 @@ const logger = require('./log')
 const app = require('./server/index')
 const knexfile = require('./knexfile')
 
-logger.debug('Migration start')
+logger.info('Migration start')
 
 knex({ ...knexfile })
   .migrate.latest()
   .then(() => {
-    logger.debug('Migration finished')
+    logger.info('Migration finished')
     app.listen(app.get('port'), () => {
       logger.info(`Licences server listening on port ${app.get('port')}`)
     })
