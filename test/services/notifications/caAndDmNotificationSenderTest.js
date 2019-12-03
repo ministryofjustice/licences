@@ -38,11 +38,7 @@ describe('sendCaAndDmNotifications', () => {
       getResponsibleOfficer: sinon.stub().resolves({ deliusId: 'id-1' }),
     }
     roContactDetailsService = {
-      getContactDetails: sinon.stub().resolves({
-        orgEmail: 'admin@ro.email',
-        email: 'ro@ro.email',
-        organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
-      }),
+      getFunctionalMailBox: sinon.stub().resolves('admin@ro.email'),
     }
     configClient = {
       getMailboxes: sinon

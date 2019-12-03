@@ -47,7 +47,7 @@ module.exports = function createNotificationService(
 
   const clearingOfficeEmailDisabled = clearingOfficeEmailEnabled.toUpperCase().trim() !== 'YES'
 
-  const getRoOrgEmail = async ({ bookingId, token }) => {
+  const getRoFunctionalMailBox = async ({ bookingId, token }) => {
     const roOfficer = await prisonerService.getResponsibleOfficer(bookingId, token)
     const deliusId = getIn(roOfficer, ['deliusId'])
 
@@ -56,12 +56,11 @@ module.exports = function createNotificationService(
       return null
     }
 
-    const roContactInfo = await roContactDetailsService.getContactDetails(deliusId)
-    return R.prop('orgEmail', roContactInfo)
+    return roContactDetailsService.getFunctionalMailBox(deliusId)
   }
 
   const roOrganisationNotification = async (args, notifications) => {
-    const orgEmail = await getRoOrgEmail(args)
+    const orgEmail = await getRoFunctionalMailBox(args)
     return isEmpty(orgEmail) || isEmpty(notifications)
       ? []
       : [{ ...notifications[0], email: orgEmail, templateName: 'COPY' }]
