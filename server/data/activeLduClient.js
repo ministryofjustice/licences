@@ -3,21 +3,20 @@ const db = require('./dataAccess/db')
 module.exports = {
   async addLdu(lduCode) {
     const query = {
-      text: `INSERT INTO active_local_delivery_units (ldu_code) VALUES ($1) ON CONFLICT (ldu_code) DO UPDATE SET ldu_code=active_local_delivery_units.ldu_code RETURNING ldu_code`,
+      text: `INSERT INTO active_local_delivery_units (ldu_code) VALUES ($1) 
+      ON CONFLICT (ldu_code) DO NOTHING`,
       values: [lduCode],
     }
-    const response = await db.query(query)
-    return response
+    return db.query(query)
   },
 
-  async doesLduExist(lduCode) {
+  async isLduPresent(lduCode) {
     const query = {
-      text: `SELECT ldu_code FROM active_local_delivery_units WHERE ldu_code=$1`,
+      text: `SELECT count(*) FROM active_local_delivery_units WHERE ldu_code=$1`,
       values: [lduCode],
     }
 
-    const response = await db.query(query)
-    const active = response && response.rows
-    return active ? 'true' : 'false'
+    const { rows } = await db.query(query)
+    return parseInt(rows[0].count, 10) > 0
   },
 }

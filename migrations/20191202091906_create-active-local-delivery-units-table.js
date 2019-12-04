@@ -7,6 +7,7 @@ exports.up = knex =>
         .notNullable()
         .defaultTo(knex.fn.now())
       table.string('ldu_code', 10).notNullable()
+      table.index(['ldu_code'], 'ldu_code')
     }),
   ])
 
