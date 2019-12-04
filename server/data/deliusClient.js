@@ -1,3 +1,6 @@
+/**
+ * @typedef {import("../../types/delius").DeliusClient} DeliusClient
+ */
 const superagent = require('superagent')
 const logger = require('../../log')
 const config = require('../config')
@@ -9,30 +12,33 @@ const timeoutSpec = {
 
 const apiUrl = `${config.delius.apiUrl}${config.delius.apiPrefix}`
 
+/**
+ * @return { DeliusClient }
+ */
 module.exports = signInService => {
   return {
     getStaffDetailsByStaffCode(staffCode) {
-      const path = `${apiUrl}/staff/staffCode/${staffCode}`
-      return deliusGet({ path })
+      return get(`${apiUrl}/staff/staffCode/${staffCode}`)
     },
 
     getStaffDetailsByUsername(username) {
-      const path = `${apiUrl}/staff/username/${username}`
-      return deliusGet({ path })
+      return get(`${apiUrl}/staff/username/${username}`)
     },
 
     getROPrisoners(deliusStaffCode) {
-      const path = `${apiUrl}/staff/staffCode/${deliusStaffCode}/managedOffenders`
-      return deliusGet({ path })
+      return get(`${apiUrl}/staff/staffCode/${deliusStaffCode}/managedOffenders`)
     },
 
     getResponsibleOfficer(offenderNo) {
-      const path = `${apiUrl}/offenders/nomsNumber/${offenderNo}/responsibleOfficers`
-      return deliusGet({ path })
+      return get(`${apiUrl}/offenders/nomsNumber/${offenderNo}/responsibleOfficers`)
+    },
+
+    getAllOffenderManagers(offenderNo) {
+      return get(`${apiUrl}/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)
     },
   }
 
-  async function deliusGet({ path }) {
+  async function get(path) {
     const token = await signInService.getAnonymousClientCredentialsTokens('delius')
     if (!token) {
       throw Error(`Failed to get token when attempting to call delius: ${path}`)

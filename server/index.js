@@ -55,12 +55,7 @@ const deadlineService = createDeadlineService(licenceClient)
 const roContactDetailsService = createRoContactDetailsService(userAdminService, roService)
 
 const notificationSender = createNotificationSender(notifyClient, audit, config)
-const roNotificationSender = createRoNotificationSender(
-  prisonerService,
-  roContactDetailsService,
-  notificationSender,
-  config
-)
+const roNotificationSender = createRoNotificationSender(notificationSender, config)
 const caAndDmNotificationSender = createCaAndDmNotificationSender(
   prisonerService,
   roContactDetailsService,
@@ -75,7 +70,8 @@ const notificationService = createNotificationService(
   caAndDmNotificationSender,
   audit,
   licenceService,
-  prisonerService
+  prisonerService,
+  roContactDetailsService
 )
 const reminderService = createReminderService(prisonerService, deadlineService, roNotificationSender)
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)

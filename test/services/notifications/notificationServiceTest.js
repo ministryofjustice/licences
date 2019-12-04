@@ -1,13 +1,14 @@
 const createNotificationService = require('../../../server/services/notifications/notificationService')
 const transitionForDestinations = require('../../../server/services/notifications/transitionsForDestinations')
 
-describe('send', () => {
+describe('NotificationService', () => {
   let roNotificationSender
   let caAndDmNotificationSender
   let audit
   let licenceService
   let prisonerService
   let notificationService
+  let roContactDetailsService
 
   const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
   const submissionTarget = { premise: 'HMP Blah', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
@@ -23,9 +24,12 @@ describe('send', () => {
       removeDecision: sinon.stub().resolves({}),
     }
 
+    roContactDetailsService = {
+      getResponsibleOfficerWithContactDetails: sinon.stub(),
+    }
     prisonerService = {
+      getEstablishmentForPrisoner: sinon.stub().resolves({ premise: 'HMP Blah', agencyId: 'LT1' }),
       getOrganisationContactDetails: sinon.stub().resolves(submissionTarget),
-      getEstablishmentForPrisoner: sinon.stub().resolves({ premise: 'HMP Blah', com: { name: 'Something' } }),
       getPrisonerPersonalDetails: sinon.stub().resolves(prisoner),
     }
 
@@ -46,12 +50,25 @@ describe('send', () => {
       caAndDmNotificationSender,
       audit,
       licenceService,
-      prisonerService
+      prisonerService,
+      roContactDetailsService
     )
   })
 
   describe('Get send/:destination/:bookingId', () => {
     it('handles caToRo when addressReview is destination', async () => {
+      const responsibleOfficer = {
+        name: 'Jo Smith',
+        deliusId: 'delius1',
+        email: 'ro@user.com',
+        lduCode: 'code-1',
+        lduDescription: 'lduDescription-1',
+        nomsNumber: 'AAAA12',
+        probationAreaCode: 'prob-code-1',
+        probationAreaDescription: 'prob-desc-1',
+      }
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.resolves(responsibleOfficer)
+
       await notificationService.send({
         transition: transitionForDestinations.addressReview,
         bookingId,
@@ -63,15 +80,14 @@ describe('send', () => {
 
       expect(roNotificationSender.sendNotifications).to.be.calledWith({
         bookingId,
+        responsibleOfficer,
+        prison: 'HMP Blah',
         notificationType: 'RO_NEW',
-        prisoner,
         sendingUserName: username,
-        submissionTarget,
-        token,
       })
       expect(audit.record).to.be.calledWith('SEND', username, {
         bookingId,
-        submissionTarget,
+        submissionTarget: responsibleOfficer,
         transitionType: 'caToRo',
       })
       expect(licenceService.markForHandover).to.be.calledWith(bookingId, 'caToRo')
@@ -79,6 +95,18 @@ describe('send', () => {
     })
 
     it('handles caToRo when bassReview is destination', async () => {
+      const responsibleOfficer = {
+        name: 'Jo Smith',
+        deliusId: 'delius1',
+        email: 'ro@user.com',
+        lduCode: 'code-1',
+        lduDescription: 'lduDescription-1',
+        nomsNumber: 'AAAA12',
+        probationAreaCode: 'prob-code-1',
+        probationAreaDescription: 'prob-desc-1',
+      }
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.resolves(responsibleOfficer)
+
       await notificationService.send({
         transition: transitionForDestinations.bassReview,
         bookingId,
@@ -90,18 +118,64 @@ describe('send', () => {
 
       expect(roNotificationSender.sendNotifications).to.be.calledWith({
         bookingId,
+        responsibleOfficer,
+        prison: 'HMP Blah',
         notificationType: 'RO_NEW',
-        prisoner,
         sendingUserName: username,
-        submissionTarget,
-        token,
       })
       expect(audit.record).to.be.calledWith('SEND', username, {
         bookingId,
-        submissionTarget,
+        submissionTarget: responsibleOfficer,
         transitionType: 'caToRo',
       })
       expect(licenceService.markForHandover).to.be.calledWith(bookingId, 'caToRo')
+      expect(licenceService.removeDecision).not.to.be.called()
+    })
+
+    it('caToRo when cannot get RO contact details', async () => {
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.resolves({ message: 'failed to find RO' })
+
+      await notificationService.send({
+        transition: transitionForDestinations.bassReview,
+        bookingId,
+        token,
+        licence,
+        prisoner,
+        user,
+      })
+
+      expect(roNotificationSender.sendNotifications).not.to.be.called()
+      expect(audit.record).not.to.be.called()
+      expect(licenceService.markForHandover).not.to.be.called()
+      expect(licenceService.removeDecision).not.to.be.called()
+    })
+
+    it('caToRo when cannot get prison', async () => {
+      const responsibleOfficer = {
+        name: 'Jo Smith',
+        deliusId: 'delius1',
+        email: 'ro@user.com',
+        lduCode: 'code-1',
+        lduDescription: 'lduDescription-1',
+        nomsNumber: 'AAAA12',
+        probationAreaCode: 'prob-code-1',
+        probationAreaDescription: 'prob-desc-1',
+      }
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.resolves(responsibleOfficer)
+      prisonerService.getEstablishmentForPrisoner.resolves({})
+
+      await notificationService.send({
+        transition: transitionForDestinations.bassReview,
+        bookingId,
+        token,
+        licence,
+        prisoner,
+        user,
+      })
+
+      expect(roNotificationSender.sendNotifications).not.to.be.called()
+      expect(audit.record).not.to.be.called()
+      expect(licenceService.markForHandover).not.to.be.called()
       expect(licenceService.removeDecision).not.to.be.called()
     })
 

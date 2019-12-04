@@ -10,9 +10,11 @@ describe('roService', () => {
       forenames: 'COMFIRST',
       surname: 'comLast',
       staffCode: 'delius1',
-      extraField1: 1,
-      extraField2: 2,
-      extraField3: 3,
+      lduCode: 'code-1',
+      lduDescription: 'lduDescription-1',
+      nomsNumber: 'AAAA12',
+      probationAreaCode: 'prob-code-1',
+      probationAreaDescription: 'prob-desc-1',
     },
   ]
 
@@ -29,6 +31,7 @@ describe('roService', () => {
       getResponsibleOfficer: sinon.stub().resolves(roResponse),
       getStaffDetailsByStaffCode: sinon.stub().resolves({ staffCode: 'N02A008' }),
       getStaffDetailsByUsername: sinon.stub().resolves({ staffCode: 'N02A008' }),
+      getAllOffenderManagers: sinon.stub(),
     }
 
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
@@ -41,17 +44,31 @@ describe('roService', () => {
       const expectedOutput = {
         deliusId: 'deliusStaffCode',
         name: 'First Last',
+        lduCode: 'code-1',
+        lduDescription: 'lduDescription-1',
+        nomsNumber: 'AAAA12',
+        probationAreaCode: 'prob-code-1',
+        probationAreaDescription: 'prob-desc-1',
       }
 
-      expect(service.formatCom([{ forenames: 'first', surname: 'last', staffCode: 'deliusStaffCode' }])).to.eql(
-        expectedOutput
-      )
+      expect(
+        service.formatCom([
+          {
+            forenames: 'first',
+            surname: 'last',
+            staffCode: 'deliusStaffCode',
+            lduCode: 'code-1',
+            lduDescription: 'lduDescription-1',
+            nomsNumber: 'AAAA12',
+            probationAreaCode: 'prob-code-1',
+            probationAreaDescription: 'prob-desc-1',
+          },
+        ])
+      ).to.eql(expectedOutput)
     })
 
     it('should give nulls if com missing', () => {
       const expectedOutput = {
-        deliusId: null,
-        name: null,
         message: null,
       }
 
@@ -60,8 +77,6 @@ describe('roService', () => {
 
     it('should give nulls if com empty', () => {
       const expectedOutput = {
-        deliusId: null,
-        name: null,
         message: null,
       }
 
@@ -137,9 +152,11 @@ describe('roService', () => {
       const expectedComData = {
         deliusId: 'delius1',
         name: 'Comfirst Comlast',
-        extraField1: 1,
-        extraField2: 2,
-        extraField3: 3,
+        lduCode: 'code-1',
+        lduDescription: 'lduDescription-1',
+        nomsNumber: 'AAAA12',
+        probationAreaCode: 'prob-code-1',
+        probationAreaDescription: 'prob-desc-1',
       }
 
       return expect(service.findResponsibleOfficer('123', 'token')).to.eventually.eql(expectedComData)
@@ -159,6 +176,71 @@ describe('roService', () => {
       deliusClient.getResponsibleOfficer.rejects({ status: 404 })
       return expect(service.findResponsibleOfficer('123', 'token')).to.eventually.eql({
         message: 'No RO relationship',
+      })
+    })
+  })
+
+  describe('findResponsibleOfficerByBookingId', () => {
+    it('should call the api with the offenderNo', async () => {
+      deliusClient.getAllOffenderManagers.resolves([])
+
+      await service.findResponsibleOfficerByBookingId('123', 'token')
+
+      expect(nomisClient.getBooking).to.be.calledOnce()
+      expect(nomisClient.getBooking).to.be.calledWith('123')
+
+      expect(deliusClient.getAllOffenderManagers).to.be.calledOnce()
+      expect(deliusClient.getAllOffenderManagers).to.be.calledWith(1)
+    })
+
+    it('should return the found COM', () => {
+      deliusClient.getAllOffenderManagers.resolves([
+        {
+          isResponsibleOfficer: true,
+          staff: { forenames: 'Jo', surname: 'Smith' },
+          staffCode: 'CODE-1',
+          team: { localDeliveryUnit: { code: 'LDU-1', description: 'LDU-1 Description' } },
+          probationArea: { code: 'PROB-1', description: 'PROB-1 Description' },
+        },
+      ])
+
+      const expectedComData = {
+        deliusId: 'CODE-1',
+        lduCode: 'LDU-1',
+        lduDescription: 'LDU-1 Description',
+        name: 'Jo Smith',
+        nomsNumber: 1,
+        probationAreaCode: 'PROB-1',
+        probationAreaDescription: 'PROB-1 Description',
+      }
+
+      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.eventually.eql(expectedComData)
+    })
+
+    it('offender has not been assigned a COM', () => {
+      deliusClient.getAllOffenderManagers.resolves([{ isResponsibleOfficer: false }])
+
+      const expectedComData = {
+        message: 'Offender has not been assigned a COM: 1',
+      }
+
+      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.eventually.eql(expectedComData)
+    })
+
+    it('should throw if error in api when getting ro', () => {
+      deliusClient.getAllOffenderManagers.rejects(new Error('dead'))
+      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.be.rejected()
+    })
+
+    it('should throw if error in api when getting relationships if error status other than 404', () => {
+      deliusClient.getAllOffenderManagers.rejects({ status: 401 })
+      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.be.rejected()
+    })
+
+    it('should return message when 404 in api when getting RO relationship', () => {
+      deliusClient.getAllOffenderManagers.rejects({ status: 404 })
+      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.eventually.eql({
+        message: 'Offender not present in delius',
       })
     })
   })
