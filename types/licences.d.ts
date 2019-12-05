@@ -59,5 +59,5 @@ export interface RoNotificationSender {
     responsibleOfficer: ResponsibleOfficerAndContactDetails,
     personalisation: any,
     config: any
-  ) => Promise<Array<any>>
+  ) => Array<any>
 }

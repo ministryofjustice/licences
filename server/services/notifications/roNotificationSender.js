@@ -37,7 +37,7 @@ module.exports = function createNotificationService(
   return {
     notificationTypes,
 
-    async getNotifications(responsibleOfficer, personalisation, { sendToClearingOffice, templateNames }) {
+    getNotifications(responsibleOfficer, personalisation, { sendToClearingOffice, templateNames }) {
       const { email, functionalMailbox } = responsibleOfficer
 
       const sendToRo = !isEmpty(email)
@@ -75,12 +75,11 @@ module.exports = function createNotificationService(
 
       try {
         const notifications = this.getNotifications(responsibleOfficer, personalisation, notificationConfig)
-
         await notificationSender.notify({ sendingUserName, notificationType, bookingId, notifications })
 
         return notifications
       } catch (error) {
-        logger.warn(
+        logger.error(
           `Error sending notification for bookingId: ${bookingId}, transition: ${notificationType}`,
           error.stack
         )

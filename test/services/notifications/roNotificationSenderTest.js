@@ -74,7 +74,7 @@ describe('sendRoNotifications', () => {
       }
 
       it('should generate RO notification data for RO_TWO_DAYS', async () => {
-        const data = await service.getNotifications(
+        const data = service.getNotifications(
           responsibleOfficer,
           personalisation,
           service.notificationTypes.RO_TWO_DAYS
@@ -94,12 +94,8 @@ describe('sendRoNotifications', () => {
         ])
       })
 
-      it('should generate RO notification data for RO_DUE', async () => {
-        const data = await service.getNotifications(
-          responsibleOfficer,
-          personalisation,
-          service.notificationTypes.RO_DUE
-        )
+      it('should generate RO notification data for RO_DUE', () => {
+        const data = service.getNotifications(responsibleOfficer, personalisation, service.notificationTypes.RO_DUE)
 
         expect(data).to.eql([
           {
@@ -116,11 +112,7 @@ describe('sendRoNotifications', () => {
       })
 
       it('should generate RO notification data when RO_OVERDUE', async () => {
-        const data = await service.getNotifications(
-          responsibleOfficer,
-          personalisation,
-          service.notificationTypes.RO_OVERDUE
-        )
+        const data = service.getNotifications(responsibleOfficer, personalisation, service.notificationTypes.RO_OVERDUE)
 
         expect(data).to.eql([
           {
@@ -142,7 +134,7 @@ describe('sendRoNotifications', () => {
       })
 
       it('should generate RO notification data when no email', async () => {
-        const data = await service.getNotifications(
+        const data = service.getNotifications(
           { ...responsibleOfficer, email: null },
           personalisation,
           service.notificationTypes.RO_NEW
@@ -163,7 +155,7 @@ describe('sendRoNotifications', () => {
       })
 
       it('should generate RO notification data when no orgEmail', async () => {
-        const data = await service.getNotifications(
+        const data = service.getNotifications(
           { ...responsibleOfficer, functionalMailbox: null },
           personalisation,
           service.notificationTypes.RO_NEW
@@ -187,7 +179,7 @@ describe('sendRoNotifications', () => {
         config.notifications.clearingOfficeEmailEnabled = 'No'
         service = createSendRoNotifications(notificationSender, config)
 
-        const data = await service.getNotifications(
+        const data = service.getNotifications(
           { ...responsibleOfficer, functionalMailbox: null },
           personalisation,
           service.notificationTypes.RO_NEW
