@@ -6,7 +6,10 @@ exports.up = knex =>
         .timestamp('timestamp')
         .notNullable()
         .defaultTo(knex.fn.now())
-      table.string('ldu_code', 10).notNullable()
+      table
+        .string('ldu_code', 10)
+        .notNullable()
+        .unique()
       table.index(['ldu_code'], 'ldu_code')
     }),
   ])
