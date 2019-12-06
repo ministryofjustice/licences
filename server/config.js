@@ -66,7 +66,7 @@ module.exports = {
       apiClientSecret: get('PROBATION_TEAMS_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret')),
     },
   },
- 
+
   https: production,
   staticResourceCacheDuration: 365 * oneDay,
 
