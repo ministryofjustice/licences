@@ -132,7 +132,7 @@ jobs:
       NOMIS_API_URL: https://licences-demo-mocks.herokuapp.com/elite2api/api
       NOMIS_AUTH_URL: https://nomis-oauth2-server.herokuapp.com/auth
       DELIUS_API_URL: https://licences-demo-mocks.herokuapp.com/communityapi
-      PROBATION_TEAMS_API_URL: https://licences-demo-mocks.herokuapp.com:9090/probationteams
+      PROBATION_TEAMS_API_URL: https://licences-demo-mocks.herokuapp.com/probationteams
     steps:
       - checkout
       - attach_workspace:
