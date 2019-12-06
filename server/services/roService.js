@@ -146,6 +146,7 @@ function formatCom(com) {
     )
     return {
       name: name || null,
+      isAllocated: true,
       deliusId: getIn(com, [0, 'staffCode']) || null,
       nomsNumber: rest.nomsNumber,
       lduCode: rest.lduCode,
@@ -163,19 +164,14 @@ function formatCom(com) {
  * @returns {ResponsibleOfficerResult}
  */
 function extractOffenderManager(offenderNumber, offenderManagers) {
-  const responsibleOfficer = offenderManagers.find(
-    manager => manager.isResponsibleOfficer && !manager.isPrisonOffenderManager
-  )
+  const responsibleOfficer = offenderManagers.find(manager => !manager.isPrisonOffenderManager)
   if (!responsibleOfficer) {
     return { message: `Offender has not been assigned a COM: ${offenderNumber}` }
-  }
-  if (responsibleOfficer.isUnallocated) {
-    // TODO: Need to potentially alert clearing office, if not assigned.
-    logger.warn(`responsible officer is an 'unallocated user': ${offenderNumber}`)
   }
   const {
     staff: { forenames, surname },
     staffCode,
+    isUnallocated,
     team: { localDeliveryUnit },
     probationArea,
   } = responsibleOfficer
@@ -187,6 +183,7 @@ function extractOffenderManager(offenderNumber, offenderManagers) {
   )
   return {
     name,
+    isAllocated: !isUnallocated,
     deliusId: staffCode,
     nomsNumber: offenderNumber,
     lduCode: localDeliveryUnit.code,

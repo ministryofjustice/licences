@@ -8,6 +8,7 @@ interface ResponsibleOfficer {
   lduDescription: string
   probationAreaCode: string
   probationAreaDescription: string
+  isAllocated: boolean,
 }
 
 interface ResponsibleOfficerAndContactDetails extends ResponsibleOfficer {

@@ -42,6 +42,7 @@ describe('roService', () => {
   describe('formatCom', () => {
     it('should extract first coms first and last name and capitalise', () => {
       const expectedOutput = {
+        isAllocated: true,
         deliusId: 'deliusStaffCode',
         name: 'First Last',
         lduCode: 'code-1',
@@ -152,6 +153,7 @@ describe('roService', () => {
       const expectedComData = {
         deliusId: 'delius1',
         name: 'Comfirst Comlast',
+        isAllocated: true,
         lduCode: 'code-1',
         lduDescription: 'lduDescription-1',
         nomsNumber: 'AAAA12',
@@ -199,6 +201,7 @@ describe('roService', () => {
           isResponsibleOfficer: true,
           staff: { forenames: 'Jo', surname: 'Smith' },
           staffCode: 'CODE-1',
+          isUnallocated: false,
           team: { localDeliveryUnit: { code: 'LDU-1', description: 'LDU-1 Description' } },
           probationArea: { code: 'PROB-1', description: 'PROB-1 Description' },
         },
@@ -207,6 +210,7 @@ describe('roService', () => {
       const expectedComData = {
         deliusId: 'CODE-1',
         lduCode: 'LDU-1',
+        isAllocated: true,
         lduDescription: 'LDU-1 Description',
         name: 'Jo Smith',
         nomsNumber: 1,
@@ -218,7 +222,7 @@ describe('roService', () => {
     })
 
     it('offender has not been assigned a COM', () => {
-      deliusClient.getAllOffenderManagers.resolves([{ isResponsibleOfficer: false }])
+      deliusClient.getAllOffenderManagers.resolves([{ isPrisonOffenderManager: true }])
 
       const expectedComData = {
         message: 'Offender has not been assigned a COM: 1',
