@@ -46,12 +46,25 @@ module.exports = {
 
   delius: {
     apiUrl: get('DELIUS_API_URL', 'http://localhost:9090/communityapi'),
-    authUrl: get('DELIUS_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/elite2api')),
+    authUrl: get('DELIUS_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:8080/auth')),
     admin: {
       apiClientId: get('DELIUS_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
       apiClientSecret: get('DELIUS_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret')),
     },
     apiPrefix: get('DELIUS_API_PREFIX', '/api'),
+  },
+
+  probationTeams: {
+    apiUrl: get('PROBATION_TEAMS_API_URL', 'http://localhost:9090/probationteams'),
+    authUrl: get('PROBATION_TEAMS_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:8080/auth')),
+    timeout: {
+      response: 30000,
+      deadline: 35000,
+    },
+    admin: {
+      apiClientId: get('PROBATION_TEAMS_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
+      apiClientSecret: get('PROBATION_TEAMS_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret')),
+    },
   },
 
   https: production,
