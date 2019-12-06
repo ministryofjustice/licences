@@ -31,12 +31,8 @@ const addAppInfo = result => {
   return Object.assign({}, result, buildInfo)
 }
 
-module.exports = function healthcheckFactory(elite2Url, authUrl, deliusUrl) {
-  const checks = [
-    service('elite2', `${elite2Url}/ping`),
-    service('auth', `${authUrl}/ping`),
-    service('delius', `${deliusUrl}/ping`),
-  ]
+module.exports = function healthcheckFactory(services) {
+  const checks = Object.entries(services).map(([name, url]) => service(name, url))
 
   return callback =>
     Promise.all(checks.map(fn => fn())).then(checkResults => {
