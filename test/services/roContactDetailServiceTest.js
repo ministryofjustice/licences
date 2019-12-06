@@ -11,7 +11,7 @@ describe('roContactDetailsService', () => {
     }
     roService = {
       getStaffByCode: sinon.stub(),
-      findResponsibleOfficerByBookingId: sinon.stub(),
+      findResponsibleOfficer: sinon.stub(),
     }
 
     service = createRoContactDetailsService(userAdminService, roService)
@@ -53,7 +53,7 @@ describe('roContactDetailsService', () => {
         organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
       }
 
-      roService.findResponsibleOfficerByBookingId.resolves({ deliusId: 'delius-1' })
+      roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
 
       userAdminService.getRoUserByDeliusId = sinon.stub().resolves(fullContactInfo)
 
@@ -70,7 +70,7 @@ describe('roContactDetailsService', () => {
     })
 
     it('Fail to find responsible officer', async () => {
-      roService.findResponsibleOfficerByBookingId.resolves({ message: 'could not find' })
+      roService.findResponsibleOfficer.resolves({ message: 'could not find' })
       userAdminService.getRoUserByDeliusId = sinon.stub().resolves(null)
 
       const result = await service.getResponsibleOfficerWithContactDetails('delius-1')
@@ -80,7 +80,7 @@ describe('roContactDetailsService', () => {
     })
 
     it('no staff record local, found in delius', async () => {
-      roService.findResponsibleOfficerByBookingId.resolves({ deliusId: 'delius-1' })
+      roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
 
       userAdminService.getRoUserByDeliusId.resolves(null)
       roService.getStaffByCode.resolves({ email: 'ro@ro.email.com', username: 'user-1' })
@@ -96,7 +96,7 @@ describe('roContactDetailsService', () => {
     })
 
     it('no staff record local, found in delius but not linked user', async () => {
-      roService.findResponsibleOfficerByBookingId.resolves({ deliusId: 'delius-1' })
+      roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
 
       userAdminService.getRoUserByDeliusId.resolves(null)
       roService.getStaffByCode.resolves({})

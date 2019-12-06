@@ -39,52 +39,6 @@ describe('roService', () => {
     service = createRoService(deliusClient, nomisClientBuilder)
   })
 
-  describe('formatCom', () => {
-    it('should extract first coms first and last name and capitalise', () => {
-      const expectedOutput = {
-        isAllocated: true,
-        deliusId: 'deliusStaffCode',
-        name: 'First Last',
-        lduCode: 'code-1',
-        lduDescription: 'lduDescription-1',
-        nomsNumber: 'AAAA12',
-        probationAreaCode: 'prob-code-1',
-        probationAreaDescription: 'prob-desc-1',
-      }
-
-      expect(
-        service.formatCom([
-          {
-            forenames: 'first',
-            surname: 'last',
-            staffCode: 'deliusStaffCode',
-            lduCode: 'code-1',
-            lduDescription: 'lduDescription-1',
-            nomsNumber: 'AAAA12',
-            probationAreaCode: 'prob-code-1',
-            probationAreaDescription: 'prob-desc-1',
-          },
-        ])
-      ).to.eql(expectedOutput)
-    })
-
-    it('should give nulls if com missing', () => {
-      const expectedOutput = {
-        message: null,
-      }
-
-      expect(service.formatCom(undefined)).to.eql(expectedOutput)
-    })
-
-    it('should give nulls if com empty', () => {
-      const expectedOutput = {
-        message: null,
-      }
-
-      expect(service.formatCom([])).to.eql(expectedOutput)
-    })
-  })
-
   describe('getStaffByCode', () => {
     it('should call getStaffByCode from deliusClient', async () => {
       await service.getStaffByCode('code-1')
@@ -140,53 +94,9 @@ describe('roService', () => {
 
   describe('findResponsibleOfficer', () => {
     it('should call the api with the offenderNo', async () => {
-      await service.findResponsibleOfficer('123', 'token')
-
-      expect(nomisClient.getBooking).to.be.calledOnce()
-      expect(nomisClient.getBooking).to.be.calledWith('123')
-
-      expect(deliusClient.getResponsibleOfficer).to.be.calledOnce()
-      expect(deliusClient.getResponsibleOfficer).to.be.calledWith(1)
-    })
-
-    it('should return the result of the api call including all fields', () => {
-      const expectedComData = {
-        deliusId: 'delius1',
-        name: 'Comfirst Comlast',
-        isAllocated: true,
-        lduCode: 'code-1',
-        lduDescription: 'lduDescription-1',
-        nomsNumber: 'AAAA12',
-        probationAreaCode: 'prob-code-1',
-        probationAreaDescription: 'prob-desc-1',
-      }
-
-      return expect(service.findResponsibleOfficer('123', 'token')).to.eventually.eql(expectedComData)
-    })
-
-    it('should throw if error in api when getting ro', () => {
-      deliusClient.getResponsibleOfficer.rejects(new Error('dead'))
-      return expect(service.findResponsibleOfficer('123', 'token')).to.be.rejected()
-    })
-
-    it('should throw if error in api when getting relationships if error status other than 404', () => {
-      deliusClient.getResponsibleOfficer.rejects({ status: 401 })
-      return expect(service.findResponsibleOfficer('123', 'token')).to.be.rejected()
-    })
-
-    it('should return message when 404 in api when getting RO relationship', () => {
-      deliusClient.getResponsibleOfficer.rejects({ status: 404 })
-      return expect(service.findResponsibleOfficer('123', 'token')).to.eventually.eql({
-        message: 'No RO relationship',
-      })
-    })
-  })
-
-  describe('findResponsibleOfficerByBookingId', () => {
-    it('should call the api with the offenderNo', async () => {
       deliusClient.getAllOffenderManagers.resolves([])
 
-      await service.findResponsibleOfficerByBookingId('123', 'token')
+      await service.findResponsibleOfficer('123', 'token')
 
       expect(nomisClient.getBooking).to.be.calledOnce()
       expect(nomisClient.getBooking).to.be.calledWith('123')
@@ -218,7 +128,7 @@ describe('roService', () => {
         probationAreaDescription: 'PROB-1 Description',
       }
 
-      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.eventually.eql(expectedComData)
+      return expect(service.findResponsibleOfficer('123', 'token')).to.eventually.eql(expectedComData)
     })
 
     it('offender has not been assigned a COM', () => {
@@ -228,22 +138,22 @@ describe('roService', () => {
         message: 'Offender has not been assigned a COM: 1',
       }
 
-      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.eventually.eql(expectedComData)
+      return expect(service.findResponsibleOfficer('123', 'token')).to.eventually.eql(expectedComData)
     })
 
     it('should throw if error in api when getting ro', () => {
       deliusClient.getAllOffenderManagers.rejects(new Error('dead'))
-      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.be.rejected()
+      return expect(service.findResponsibleOfficer('123', 'token')).to.be.rejected()
     })
 
     it('should throw if error in api when getting relationships if error status other than 404', () => {
       deliusClient.getAllOffenderManagers.rejects({ status: 401 })
-      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.be.rejected()
+      return expect(service.findResponsibleOfficer('123', 'token')).to.be.rejected()
     })
 
     it('should return message when 404 in api when getting RO relationship', () => {
       deliusClient.getAllOffenderManagers.rejects({ status: 404 })
-      return expect(service.findResponsibleOfficerByBookingId('123', 'token')).to.eventually.eql({
+      return expect(service.findResponsibleOfficer('123', 'token')).to.eventually.eql({
         message: 'Offender not present in delius',
       })
     })

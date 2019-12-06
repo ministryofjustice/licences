@@ -29,10 +29,6 @@ module.exports = signInService => {
       return get(`${apiUrl}/staff/staffCode/${deliusStaffCode}/managedOffenders`)
     },
 
-    getResponsibleOfficer(offenderNo) {
-      return get(`${apiUrl}/offenders/nomsNumber/${offenderNo}/responsibleOfficers`)
-    },
-
     getAllOffenderManagers(offenderNo) {
       return get(`${apiUrl}/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)
     },

@@ -72,19 +72,6 @@ describe('deliusClient', () => {
     })
   })
 
-  describe('getResponsibleOfficer', () => {
-    it('should return data from api', () => {
-      fakeDelius.get(`/offenders/nomsNumber/1/responsibleOfficers`).reply(200, { key: 'value' })
-
-      return expect(deliusClient.getResponsibleOfficer('1')).to.eventually.eql({ key: 'value' })
-    })
-
-    it('should reject if api fails', () => {
-      fakeDelius.get(`/offenders/nomsNumber/1/responsibleOfficers`).reply(500)
-
-      return expect(deliusClient.getResponsibleOfficer('1')).to.be.rejected()
-    })
-  })
   describe('getAllOffenderManagers', () => {
     it('should return data from api', () => {
       fakeDelius.get(`/offenders/nomsNumber/1/allOffenderManagers`).reply(200, { key: 'value' })
