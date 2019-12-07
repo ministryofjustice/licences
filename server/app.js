@@ -76,6 +76,7 @@ module.exports = function createApp({
   jobSchedulerService,
   roService,
   audit,
+  caService,
 }) {
   const app = express()
 
@@ -343,7 +344,7 @@ module.exports = function createApp({
 
   app.use(
     '/hdc/taskList/',
-    secureRoute(taskListRouter({ prisonerService, licenceService, audit }), {
+    secureRoute(taskListRouter({ prisonerService, licenceService, audit, caService }), {
       licenceRequired: false,
     })
   )

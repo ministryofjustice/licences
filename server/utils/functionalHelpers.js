@@ -2,6 +2,9 @@
  * @template T
  * @typedef {import("../../types/licences").Result<T>} Result
  */
+/**
+ * @typedef {import("../../types/licences").Error} Error
+ */
 const R = require('ramda')
 
 const isEmpty = R.either(R.isEmpty, R.isNil)
@@ -83,7 +86,7 @@ function getFieldName(fieldConfig) {
 
 /**
  * @template T
- * @type  {(result: Result<T>) => [T?, error?]}
+ * @type  {(result: Result<T>) => [T?, Error?]}
  */
 function unwrapResult(result) {
   const error = /** @type { Error } */ (result)
