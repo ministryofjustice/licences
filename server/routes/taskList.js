@@ -1,5 +1,6 @@
 /**
  * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ * @typedef {import("../services/caService").CaService} CaService
  */
 const path = require('path')
 const { asyncMiddleware } = require('../utils/middleware')
@@ -15,6 +16,7 @@ const logger = require('../../log')
  * @param {PrisonerService} args.prisonerService
  * @param {any} args.licenceService
  * @param {any} args.audit
+ * @param {CaService} args.caService
  */
 module.exports = ({ prisonerService, licenceService, audit }) => router => {
   router.get(

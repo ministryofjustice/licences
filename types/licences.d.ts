@@ -19,6 +19,7 @@ interface ResponsibleOfficerAndContactDetails extends ResponsibleOfficer {
 
 interface Error {
   message: string
+  code: string
 }
 
 type Result<T> = T | Error
@@ -69,4 +70,8 @@ export interface PrisonerService {
   getPrisonerImage: (imageId: number, token: string) => Promise<any>
   getPrisonerPersonalDetails: (bookingId: number, token: string) => Promise<any>
   getOrganisationContactDetails: (role: string, bookingId: number, token: string) => Promise<any>
+} 
+
+export interface CaService {
+  getReasonForNotContinuing: (bookingId: number, token: string) => Promise<string | undefined>
 }
