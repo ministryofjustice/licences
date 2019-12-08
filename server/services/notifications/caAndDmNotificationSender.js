@@ -47,20 +47,8 @@ module.exports = function createNotificationService(
 
   const clearingOfficeEmailDisabled = clearingOfficeEmailEnabled.toUpperCase().trim() !== 'YES'
 
-  const getRoFunctionalMailBox = async ({ bookingId, token }) => {
-    const roOfficer = await prisonerService.getResponsibleOfficer(bookingId, token)
-    const deliusId = getIn(roOfficer, ['deliusId'])
-
-    if (isEmpty(deliusId)) {
-      logger.error(`Missing COM deliusId for booking id: '${bookingId}'`, roOfficer)
-      return null
-    }
-
-    return roContactDetailsService.getFunctionalMailBox(deliusId)
-  }
-
   const roOrganisationNotification = async (args, notifications) => {
-    const orgEmail = await getRoFunctionalMailBox(args)
+    const orgEmail = await roContactDetailsService.getFunctionalMailBox(args.bookingId, args.token)
     return isEmpty(orgEmail) || isEmpty(notifications)
       ? []
       : [{ ...notifications[0], email: orgEmail, templateName: 'COPY' }]

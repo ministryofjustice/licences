@@ -30,11 +30,15 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
   return {
     async getStaffByCode(staffCode) {
       try {
-        return await deliusClient.getStaffDetailsByStaffCode(staffCode)
+        const result = await deliusClient.getStaffDetailsByStaffCode(staffCode)
+
+        if (!result.email || !result.username) {
+          return { message: `Staff and user not linked in delius: ${staffCode}` }
+        }
+        return result
       } catch (error) {
         if (error.status === 404) {
-          logger.warn(`Staff member not found in delius for code: ${staffCode}`)
-          return null
+          return { message: `Staff does not exist in delius: ${staffCode}` }
         }
 
         logger.error(`Problem retrieving staff member for code: ${staffCode}`, error.stack)

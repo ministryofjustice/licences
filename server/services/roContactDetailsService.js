@@ -1,11 +1,16 @@
 /**
+ * @template T
+ * @typedef {import("../../types/licences").Result<T>} Result
+ */
+/**
  * @typedef {import("../../types/licences").RoService} RoService
+ * @typedef {import("../data/probationTeamsClient").ProbationTeamsClient} ProbationTeamsClient
  * @typedef {import("../../types/licences").RoContactDetailsService} RoContactDetailsService
  * @typedef {import("../../types/licences").Error} Error
  * @typedef {import("../../types/licences").ResponsibleOfficer} ResponsibleOfficer
+ * @typedef {import("../../types/delius").StaffDetails} StaffDetails
  * @typedef {import("../../types/licences").ResponsibleOfficerAndContactDetails} ResponsibleOfficerAndContactDetails
  */
-const R = require('ramda')
 const { isEmpty } = require('../utils/functionalHelpers')
 const logger = require('../../log.js')
 
@@ -18,9 +23,22 @@ const logIfMissing = (val, message) => {
 /**
  * @param {any} userAdminService
  * @param {RoService} roService
+ * @param {ProbationTeamsClient} probationTeamsClient
  * @return {RoContactDetailsService}
  */
-module.exports = function createRoContactDetailsService(userAdminService, roService) {
+module.exports = function createRoContactDetailsService(userAdminService, roService, probationTeamsClient) {
+  /**
+   * @template T
+   * @param {Result<T>} result
+   * @returns {[T?, error?]};
+   ]}
+   */
+  function unwrapError(result) {
+    const error = /** @type { Error } */ (result)
+    const success = /** @type { T } */ (result)
+    return [!error.message && success, error.message && error]
+  }
+
   /**
    * @param {ResponsibleOfficer} deliusRo
    * @return {Promise<ResponsibleOfficerAndContactDetails>}
@@ -45,30 +63,32 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
     }
   }
 
-  return {
-    async getFunctionalMailBox(deliusId) {
-      const ro = await userAdminService.getRoUserByDeliusId(deliusId)
-
-      if (ro) {
-        const orgEmail = R.prop('orgEmail', ro)
-        logIfMissing(orgEmail, `Missing orgEmail for RO: ${deliusId}`)
-        return orgEmail
+  /**
+   * @typedef Mailboxes
+   * @property {string} email
+   * @property {string} functionalMailbox
+   *
+   * @param {string} deliusId
+   * @param {string} lduCode
+   * @returns {Promise<Error| Mailboxes>}
+   */
+  async function getMailboxes(deliusId, lduCode) {
+    const [staff, error] = unwrapError(await roService.getStaffByCode(deliusId))
+    return (
+      error || {
+        email: staff.email,
+        functionalMailbox: await probationTeamsClient.getFunctionalMailbox(lduCode),
       }
+    )
+  }
 
-      // TODO look up in delius and use LDU to look up org email in probation teams service
-      logger.error(`RO with ${deliusId} is not mapped in licences`)
-      return null
-    },
-
+  return {
     async getResponsibleOfficerWithContactDetails(bookingId, token) {
-      const result = await roService.findResponsibleOfficer(bookingId, token)
+      const [deliusRo, error] = unwrapError(await roService.findResponsibleOfficer(bookingId, token))
 
-      const error = /** @type { Error } */ (result)
-      if (error.message) {
+      if (error) {
         return error
       }
-
-      const deliusRo = /** @type { ResponsibleOfficer } */ (result)
 
       const localDetails = await getLocallyStoredContactDetails(deliusRo)
 
@@ -76,18 +96,29 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
         return localDetails
       }
 
-      const staff = await roService.getStaffByCode(deliusRo.deliusId)
+      const [mailboxes, mailboxesError] = unwrapError(await getMailboxes(deliusRo.deliusId, deliusRo.lduCode))
 
-      if (!staff) {
-        return { message: `Staff does not exist in delius: ${deliusRo.deliusId}` }
+      if (mailboxesError) {
+        return mailboxesError
       }
 
-      if (!staff.email || !staff.username) {
-        return { message: `Staff and user not linked in delius: ${deliusRo.deliusId}` }
+      return {
+        ...deliusRo,
+        email: mailboxes.email,
+        functionalMailbox: mailboxes.functionalMailbox,
+        organisation: deliusRo.lduDescription, // TODO: check this
+      }
+    },
+
+    async getFunctionalMailBox(bookingId, token) {
+      const [roOfficer, error] = unwrapError(await this.getResponsibleOfficerWithContactDetails(bookingId, token))
+
+      if (error) {
+        logger.error(`Failed to retrieve RO for booking id: '${bookingId}'`, error.message)
+        return null
       }
 
-      // TODO populate organisation and functional mailbox
-      return { ...deliusRo, email: staff.email }
+      return roOfficer.functionalMailbox
     },
   }
 }

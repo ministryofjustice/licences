@@ -31,11 +31,6 @@ describe('sendCaAndDmNotifications', () => {
 
     prisonerService = {
       getEstablishmentForPrisoner: sinon.stub().resolves({ premise: 'HMP Blah', agencyId: 'LT1' }),
-      getOrganisationContactDetails: sinon.stub().resolves({ deliusId: 'delius' }),
-      getPrisonerPersonalDetails: sinon
-        .stub()
-        .resolves({ firstName: 'First', lastName: 'Last', dateOfBirth: '1/1/1', offenderNo: 'AB1234A' }),
-      getResponsibleOfficer: sinon.stub().resolves({ deliusId: 'id-1' }),
     }
     roContactDetailsService = {
       getFunctionalMailBox: sinon.stub().resolves('admin@ro.email'),
