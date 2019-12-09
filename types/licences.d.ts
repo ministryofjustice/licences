@@ -27,7 +27,7 @@ export type ResponsibleOfficerResult = Result<ResponsibleOfficer>
 export type ResponsibleOfficerAndContactDetailsResult = Result<ResponsibleOfficerAndContactDetails>
 
 export interface RoService {
-  getStaffByCode: (staffCode: string) => Promise<StaffDetails>
+  getStaffByCode: (staffCode: string) => Promise<Result<StaffDetails>>
   getStaffByUsername: (username: string) => Promise<StaffDetails>
   getROPrisoners: (deliusStaffCode: string) => Promise<any>
   findResponsibleOfficer: (bookingId: number, token: string) => Promise<ResponsibleOfficerResult>
@@ -35,7 +35,7 @@ export interface RoService {
 }
 
 export interface RoContactDetailsService {
-  getFunctionalMailBox: (deliusId: String) => Promise<String>
+  getFunctionalMailBox: (deliusId: string) => Promise<string>
   getResponsibleOfficerWithContactDetails: (
     bookingId: number,
     token: string

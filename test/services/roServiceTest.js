@@ -47,7 +47,9 @@ describe('roService', () => {
 
     it('should return message when 404 in api when getting RO relationship', () => {
       deliusClient.getStaffDetailsByStaffCode.rejects({ status: 404 })
-      return expect(service.getStaffByCode('code-1')).to.eventually.eql(null)
+      return expect(service.getStaffByCode('code-1')).to.eventually.eql({
+        message: `Staff does not exist in delius: code-1`,
+      })
     })
   })
 

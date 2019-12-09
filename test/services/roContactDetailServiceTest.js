@@ -3,6 +3,7 @@ const createRoContactDetailsService = require('../../server/services/roContactDe
 describe('roContactDetailsService', () => {
   let service
   let userAdminService
+  let probationTeamsService
   let roService
 
   beforeEach(() => {
@@ -13,8 +14,11 @@ describe('roContactDetailsService', () => {
       getStaffByCode: sinon.stub(),
       findResponsibleOfficer: sinon.stub(),
     }
+    probationTeamsService = {
+      getFunctionalMailbox: sinon.stub(),
+    }
 
-    service = createRoContactDetailsService(userAdminService, roService)
+    service = createRoContactDetailsService(userAdminService, roService, probationTeamsService)
   })
 
   describe('getFunctionalMailBox', () => {
@@ -26,22 +30,26 @@ describe('roContactDetailsService', () => {
       }
 
       userAdminService.getRoUserByDeliusId = sinon.stub().resolves(fullContactInfo)
+      roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
 
       const result = await service.getFunctionalMailBox('delius-1')
 
       expect(result).to.eql('admin@ro.email')
       expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('delius-1')
-      expect(roService.getStaffByCode).not.to.be.calledWith('delius-1')
+      expect(roService.getStaffByCode).not.to.be.called()
     })
 
-    it('local data not stored', async () => {
+    it('local data not stored, retrieve from external service', async () => {
       userAdminService.getRoUserByDeliusId = sinon.stub().resolves(null)
+      roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
+      probationTeamsService.getFunctionalMailbox.resolves('ro-org@email.com')
+      roService.getStaffByCode.resolves({ email: 'ro@email.com' })
 
       const result = await service.getFunctionalMailBox('delius-1')
 
-      expect(result).to.eql(null)
+      expect(result).to.eql('ro-org@email.com')
       expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('delius-1')
-      expect(roService.getStaffByCode).not.to.be.calledWith('delius-1')
+      expect(roService.getStaffByCode).to.be.calledWith('delius-1')
     })
   })
 
@@ -54,7 +62,6 @@ describe('roContactDetailsService', () => {
       }
 
       roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
-
       userAdminService.getRoUserByDeliusId = sinon.stub().resolves(fullContactInfo)
 
       const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
@@ -83,6 +90,8 @@ describe('roContactDetailsService', () => {
       roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
 
       userAdminService.getRoUserByDeliusId.resolves(null)
+      roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1', lduDescription: 'Sheffield' })
+      probationTeamsService.getFunctionalMailbox.resolves('ro-org@email.com')
       roService.getStaffByCode.resolves({ email: 'ro@ro.email.com', username: 'user-1' })
 
       const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
@@ -90,6 +99,9 @@ describe('roContactDetailsService', () => {
       expect(result).to.eql({
         deliusId: 'delius-1',
         email: 'ro@ro.email.com',
+        functionalMailbox: 'ro-org@email.com',
+        lduDescription: 'Sheffield',
+        organisation: 'Sheffield',
       })
       expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('delius-1')
       expect(roService.getStaffByCode).to.be.calledWith('delius-1')
@@ -99,7 +111,9 @@ describe('roContactDetailsService', () => {
       roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
 
       userAdminService.getRoUserByDeliusId.resolves(null)
-      roService.getStaffByCode.resolves({})
+      roService.getStaffByCode.resolves({
+        message: 'Staff and user not linked in delius: delius-1',
+      })
 
       const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
 
