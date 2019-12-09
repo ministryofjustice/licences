@@ -92,7 +92,6 @@ export interface DeliusClient {
   getStaffDetailsByStaffCode: (staffCode : string) => Promise<StaffDetails>
   getStaffDetailsByUsername: (username: string) => Promise<StaffDetails>
   getROPrisoners: (deliusStaffCode: string) => Promise<any>
-  getResponsibleOfficer: (offenderNumber: string) =>  Promise<Array<ResponsibleOfficer>>
   getAllOffenderManagers: (offenderNumber: string) =>  Promise<Array<CommunityOrPrisonOffenderManager>>
 }
 

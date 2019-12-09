@@ -61,7 +61,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
     },
 
     async getResponsibleOfficerWithContactDetails(bookingId, token) {
-      const result = await roService.findResponsibleOfficerByBookingId(bookingId, token)
+      const result = await roService.findResponsibleOfficer(bookingId, token)
 
       const error = /** @type { Error } */ (result)
       if (error.message) {

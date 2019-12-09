@@ -30,8 +30,6 @@ export interface RoService {
   getStaffByCode: (staffCode: string) => Promise<StaffDetails>
   getStaffByUsername: (username: string) => Promise<StaffDetails>
   getROPrisoners: (deliusStaffCode: string) => Promise<any>
-  findResponsibleOfficerByBookingId: (bookingId: number, token: string) => Promise<ResponsibleOfficerResult>
-  formatCom: (officers: Array<DeliusResponsibleOfficer>) => ResponsibleOfficerResult
   findResponsibleOfficer: (bookingId: number, token: string) => Promise<ResponsibleOfficerResult>
   findResponsibleOfficerByOffenderNo: (offenderNumber: string) => Promise<ResponsibleOfficerResult>
 }
