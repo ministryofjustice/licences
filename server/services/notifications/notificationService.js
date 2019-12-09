@@ -6,7 +6,7 @@
  */
 const { sendingUserName } = require('../../utils/userProfile')
 const logger = require('../../../log.js')
-const { isEmpty } = require('../../utils/functionalHelpers')
+const { isEmpty, unwrapResult } = require('../../utils/functionalHelpers')
 
 /**
  * @param {RoContactDetailsService} roContactDetailsService
@@ -57,13 +57,11 @@ module.exports = function createNotificationService(
       roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
     ])
 
-    const error = /** @type { Error } */ (result)
-    if (error.message) {
+    const [responsibleOfficer, error] = unwrapResult(result)
+    if (error) {
       logger.error(`Problem retrieving contact details: ${error.message}`)
       return
     }
-
-    const responsibleOfficer = /** @type { ResponsibleOfficerAndContactDetails } */ (result)
 
     if (isEmpty(prison)) {
       logger.error(`Missing prison for bookingId: ${bookingId}`)

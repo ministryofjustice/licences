@@ -1,7 +1,13 @@
+/**
+ * @typedef {import("../../services/prisonerService").PrisonerService} PrisonerService
+ */
 const R = require('ramda')
 const logger = require('../../../log.js')
 const { getIn, isEmpty } = require('../../utils/functionalHelpers')
 
+/**
+ *  @param {PrisonerService} prisonerService
+ */
 module.exports = function createNotificationService(
   prisonerService,
   roContactDetailsService,

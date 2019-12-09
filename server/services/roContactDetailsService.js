@@ -1,8 +1,4 @@
 /**
- * @template T
- * @typedef {import("../../types/licences").Result<T>} Result
- */
-/**
  * @typedef {import("../../types/licences").RoService} RoService
  * @typedef {import("../data/probationTeamsClient").ProbationTeamsClient} ProbationTeamsClient
  * @typedef {import("../../types/licences").RoContactDetailsService} RoContactDetailsService
@@ -11,7 +7,7 @@
  * @typedef {import("../../types/delius").StaffDetails} StaffDetails
  * @typedef {import("../../types/licences").ResponsibleOfficerAndContactDetails} ResponsibleOfficerAndContactDetails
  */
-const { isEmpty } = require('../utils/functionalHelpers')
+const { isEmpty, unwrapResult } = require('../utils/functionalHelpers')
 const logger = require('../../log.js')
 
 const logIfMissing = (val, message) => {
@@ -27,18 +23,6 @@ const logIfMissing = (val, message) => {
  * @return {RoContactDetailsService}
  */
 module.exports = function createRoContactDetailsService(userAdminService, roService, probationTeamsClient) {
-  /**
-   * @template T
-   * @param {Result<T>} result
-   * @returns {[T?, error?]};
-   ]}
-   */
-  function unwrapError(result) {
-    const error = /** @type { Error } */ (result)
-    const success = /** @type { T } */ (result)
-    return [!error.message && success, error.message && error]
-  }
-
   /**
    * @param {ResponsibleOfficer} deliusRo
    * @return {Promise<ResponsibleOfficerAndContactDetails>}
@@ -73,7 +57,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
    * @returns {Promise<Error| Mailboxes>}
    */
   async function getMailboxes(deliusId, lduCode) {
-    const [staff, error] = unwrapError(await roService.getStaffByCode(deliusId))
+    const [staff, error] = unwrapResult(await roService.getStaffByCode(deliusId))
     return (
       error || {
         email: staff.email,
@@ -84,7 +68,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
 
   return {
     async getResponsibleOfficerWithContactDetails(bookingId, token) {
-      const [deliusRo, error] = unwrapError(await roService.findResponsibleOfficer(bookingId, token))
+      const [deliusRo, error] = unwrapResult(await roService.findResponsibleOfficer(bookingId, token))
 
       if (error) {
         return error
@@ -96,7 +80,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
         return localDetails
       }
 
-      const [mailboxes, mailboxesError] = unwrapError(await getMailboxes(deliusRo.deliusId, deliusRo.lduCode))
+      const [mailboxes, mailboxesError] = unwrapResult(await getMailboxes(deliusRo.deliusId, deliusRo.lduCode))
 
       if (mailboxesError) {
         return mailboxesError
@@ -111,7 +95,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
     },
 
     async getFunctionalMailBox(bookingId, token) {
-      const [roOfficer, error] = unwrapError(await this.getResponsibleOfficerWithContactDetails(bookingId, token))
+      const [roOfficer, error] = unwrapResult(await this.getResponsibleOfficerWithContactDetails(bookingId, token))
 
       if (error) {
         logger.error(`Failed to retrieve RO for booking id: '${bookingId}'`, error.message)

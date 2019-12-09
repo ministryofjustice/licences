@@ -8,8 +8,8 @@ block content
   h1 Staff details for #{type} of #{value}
   div.pure-g.pure-u-1.paddingTop
     div.pure-u-1-3
-    if !staffDetails
-      h2 Staff details do not exist in delius
+    if staffDetails.message
+      h2 Error retrieving staff details from delius: #{staffDetails.message}
     else 
       div.pure-u-1
         table.largeMarginBottom

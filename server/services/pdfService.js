@@ -1,6 +1,12 @@
+/**
+ * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ */
 const versionInfo = require('../utils/versionInfo')
 const { getIn } = require('../utils/functionalHelpers')
 
+/**
+ * @param {PrisonerService} prisonerService
+ */
 module.exports = function createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter) {
   async function getPdfLicenceData(bookingId, rawLicence, token) {
     const [licence, prisonerInfo, establishment] = await Promise.all([

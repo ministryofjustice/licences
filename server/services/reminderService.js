@@ -1,7 +1,27 @@
+/**
+ * @template T
+ * @typedef {import("../../types/licences").Result<T>} Result
+ */
+/**
+ * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ * @typedef {import("../services/roContactDetailsService").RoContactDetailsService} RoContactDetailsService
+ * @typedef {import("../../types/licences").ResponsibleOfficerAndContactDetails} ResponsibleOfficerAndContactDetails
+ * @typedef {import("../services/notifications/roNotificationSender").RoNotificationSender} RoNotificationSender
+ */
 const logger = require('../../log.js')
-const { isEmpty } = require('../utils/functionalHelpers')
+const { isEmpty, unwrapResult, raise, isError } = require('../utils/functionalHelpers')
 
-module.exports = function createReminderService(prisonerService, deadlineService, roNotificationSender) {
+/**
+ * @param {RoContactDetailsService} roContactDetailsService
+ * @param {PrisonerService} prisonerService
+ * @param {RoNotificationSender} roNotificationSender
+ */
+module.exports = function createReminderService(
+  roContactDetailsService,
+  prisonerService,
+  deadlineService,
+  roNotificationSender
+) {
   async function notifyRoReminders(token) {
     const overdue = await notifyCases(token, () => deadlineService.getOverdue('RO'), 'RO_OVERDUE')
     const due = await notifyCases(token, () => deadlineService.getDueInDays('RO', 0), 'RO_DUE')
@@ -23,19 +43,18 @@ module.exports = function createReminderService(prisonerService, deadlineService
   }
 
   async function sendReminder(token, notificationType, bookingId, transitionDate) {
-    const [submissionTarget, prisoner] = await getPrisonerData(bookingId, token)
+    const [[responsibleOfficer, prison] = [], error] = unwrapResult(await getNotificationData(bookingId, token))
 
-    if (isEmpty(submissionTarget) || isEmpty(prisoner)) {
+    if (error || isEmpty(prison)) {
       return
     }
 
     roNotificationSender.sendNotifications({
-      prisoner,
+      responsibleOfficer,
+      prison,
       notificationType,
-      submissionTarget,
       bookingId,
       sendingUserName: 'NOTIFICATION_SERVICE',
-      token,
       transitionDate,
     })
   }
@@ -48,14 +67,29 @@ module.exports = function createReminderService(prisonerService, deadlineService
     }, Promise.resolve())
   }
 
-  async function getPrisonerData(bookingId, token) {
+  /**
+   * @typedef {[ResponsibleOfficerAndContactDetails, string]} NotificationData
+   *
+   * @param {number} bookingId
+   * @param {string} token
+   * @returns {Promise<Result<NotificationData>>}
+   */
+  async function getNotificationData(bookingId, token) {
     return Promise.all([
-      prisonerService.getOrganisationContactDetails('RO', bookingId, token),
-      prisonerService.getPrisonerPersonalDetails(bookingId, token),
-    ]).catch(error => {
-      logger.error('Error getting prisoner details for notification', error.stack)
-      return []
-    })
+      prisonerService.getEstablishmentForPrisoner(bookingId, token),
+      roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
+    ])
+      .then(([{ premise: prison }, roResult]) => raise(roResult, prison))
+      .then(result => {
+        if (isError(result)) {
+          logger.error('Error loading data for reminder', result)
+        }
+        return result
+      })
+      .catch(error => {
+        logger.error('Error loading data for reminder', error.stack)
+        return { message: `Error loading data for reminder: ${error.message}` }
+      })
   }
 
   return { notifyRoReminders }

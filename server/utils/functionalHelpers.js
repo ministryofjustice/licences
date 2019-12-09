@@ -1,3 +1,7 @@
+/**
+ * @template T
+ * @typedef {import("../../types/licences").Result<T>} Result
+ */
 const R = require('ramda')
 
 const isEmpty = R.either(R.isEmpty, R.isNil)
@@ -77,6 +81,35 @@ function getFieldName(fieldConfig) {
   )(fieldConfig)
 }
 
+/**
+ * @template T
+ * @type  {(result: Result<T>) => boolean}
+ */
+function isError(result) {
+  const error = /** @type { Error } */ (result)
+  return Boolean(error.message)
+}
+
+/**
+ * @template T
+ * @type  {(result: Result<T>) => [T?, error?]}
+ */
+function unwrapResult(result) {
+  const error = /** @type { Error } */ (result)
+  const success = /** @type { T } */ (result)
+  return [!isError(result) ? success : undefined, isError(result) ? error : undefined]
+}
+
+/**
+ * @template T, Q
+ * @type {(result: Result<T>, other: Q) => Result<[T, Q]>}
+ */
+function raise(result, other) {
+  const error = /** @type { Error } */ (result)
+  const success = /** @type { T } */ (result)
+  return isError(result) ? error : [success, other]
+}
+
 module.exports = {
   getIn,
   isEmpty,
@@ -110,4 +143,7 @@ module.exports = {
   keys: R.keys,
   mapObject: R.mapObjIndexed,
   intersection: R.intersection,
+  unwrapResult,
+  raise,
+  isError,
 }

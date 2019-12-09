@@ -352,7 +352,7 @@ module.exports = function createApp({
   app.use('/admin/roUsers/', secureRoute(userAdminRouter({ userAdminService }), { auditKey: 'USER_MANAGEMENT' }))
   app.use('/admin/mailboxes/', secureRoute(mailboxesAdminRouter({ configClient })))
   app.use('/admin/jobs/', secureRoute(jobsAdminRouter({ jobSchedulerService })))
-  app.use('/admin/delius/', secureRoute(deliusAdminRouter({ roService })))
+  app.use('/admin/delius/', secureRoute(deliusAdminRouter(roService)))
   app.use('/hdc/contact/', secureRoute(contactRouter({ userAdminService })))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
   app.use('/hdc/forms/', secureRoute(formsRouter({ formService })))
