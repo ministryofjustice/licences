@@ -9,7 +9,7 @@
  * @typedef {import("../services/notifications/roNotificationSender").RoNotificationSender} RoNotificationSender
  */
 const logger = require('../../log.js')
-const { isEmpty, unwrapResult, raise, isError } = require('../utils/functionalHelpers')
+const { isEmpty, unwrapResult } = require('../utils/functionalHelpers')
 
 /**
  * @param {RoContactDetailsService} roContactDetailsService
@@ -75,21 +75,24 @@ module.exports = function createReminderService(
    * @returns {Promise<Result<NotificationData>>}
    */
   async function getNotificationData(bookingId, token) {
-    return Promise.all([
-      prisonerService.getEstablishmentForPrisoner(bookingId, token),
-      roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
-    ])
-      .then(([{ premise: prison }, roResult]) => raise(roResult, prison))
-      .then(result => {
-        if (isError(result)) {
-          logger.error('Error loading data for reminder', result)
-        }
-        return result
-      })
-      .catch(error => {
-        logger.error('Error loading data for reminder', error.stack)
-        return { message: `Error loading data for reminder: ${error.message}` }
-      })
+    try {
+      /** @type {[{premise: string}, Result<ResponsibleOfficerAndContactDetails>]} */
+      const [{ premise: prison }, roResult] = await Promise.all([
+        prisonerService.getEstablishmentForPrisoner(bookingId, token),
+        roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
+      ])
+
+      const [roWithContactDetails, error] = unwrapResult(roResult)
+      if (error) {
+        logger.error(`Error loading data for reminder: ${error.message}`)
+        return error
+      }
+
+      return [roWithContactDetails, prison]
+    } catch (error) {
+      logger.error('Error loading data for reminder', error.stack)
+      return { message: `Error loading data for reminder: ${error.message}` }
+    }
   }
 
   return { notifyRoReminders }

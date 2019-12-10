@@ -83,31 +83,13 @@ function getFieldName(fieldConfig) {
 
 /**
  * @template T
- * @type  {(result: Result<T>) => boolean}
- */
-function isError(result) {
-  const error = /** @type { Error } */ (result)
-  return Boolean(error.message)
-}
-
-/**
- * @template T
  * @type  {(result: Result<T>) => [T?, error?]}
  */
 function unwrapResult(result) {
   const error = /** @type { Error } */ (result)
   const success = /** @type { T } */ (result)
-  return [!isError(result) ? success : undefined, isError(result) ? error : undefined]
-}
-
-/**
- * @template T, Q
- * @type {(result: Result<T>, other: Q) => Result<[T, Q]>}
- */
-function raise(result, other) {
-  const error = /** @type { Error } */ (result)
-  const success = /** @type { T } */ (result)
-  return isError(result) ? error : [success, other]
+  const isError = Boolean(error.message)
+  return [!isError ? success : undefined, isError ? error : undefined]
 }
 
 module.exports = {
@@ -144,6 +126,4 @@ module.exports = {
   mapObject: R.mapObjIndexed,
   intersection: R.intersection,
   unwrapResult,
-  raise,
-  isError,
 }
