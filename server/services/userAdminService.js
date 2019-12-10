@@ -1,6 +1,12 @@
+/**
+ * @typedef {import("./prisonerService").PrisonerService} PrisonerService
+ */
 const logger = require('../../log')
-const { isEmpty, merge } = require('../utils/functionalHelpers')
+const { isEmpty, merge, unwrapResult } = require('../utils/functionalHelpers')
 
+/**
+ * @param {PrisonerService} prisonerService
+ */
 module.exports = function createUserService(nomisClientBuilder, userClient, signInService, prisonerService) {
   async function updateRoUser(
     token,
@@ -138,10 +144,11 @@ module.exports = function createUserService(nomisClientBuilder, userClient, sign
     const required = await Promise.all(
       bookingIds.map(async bookingId => {
         try {
-          const com = await prisonerService.getResponsibleOfficer(bookingId, token)
-          if (com) {
+          const [com, error] = unwrapResult(await prisonerService.getResponsibleOfficer(bookingId, token))
+          if (!error) {
             return { assignedId: com.deliusId, assignedName: com.name, bookingId }
           }
+          logger.warn(`Error finding RO for booking id ${bookingId}, message: '${error.message}'`)
         } catch (error) {
           logger.warn(`Error in getCom for incomplete users, booking id ${bookingId}`, error.stack)
         }

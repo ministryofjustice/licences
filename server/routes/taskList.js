@@ -1,3 +1,6 @@
+/**
+ * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ */
 const path = require('path')
 const { asyncMiddleware } = require('../utils/middleware')
 const { getLicenceStatus } = require('../utils/licenceStatus')
@@ -7,6 +10,12 @@ const { isEmpty } = require('../utils/functionalHelpers')
 const getTaskListModel = require('./viewModels/taskListModels')
 const logger = require('../../log')
 
+/**
+ * @param {object} args
+ * @param {PrisonerService} args.prisonerService
+ * @param {any} args.licenceService
+ * @param {any} args.audit
+ */
 module.exports = ({ prisonerService, licenceService, audit }) => router => {
   router.get(
     '/:bookingId',

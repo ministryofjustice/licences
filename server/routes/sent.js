@@ -1,5 +1,12 @@
+/**
+ * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ */
 const { asyncMiddleware } = require('../utils/middleware')
 
+/**
+ * @param {object} args
+ * @param {PrisonerService} args.prisonerService
+ */
 module.exports = ({ prisonerService }) => router => {
   router.get(
     '/:receiver/:type/:bookingId',

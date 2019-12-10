@@ -1,3 +1,6 @@
+/**
+ * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ */
 const logger = require('../../log.js')
 const authorisationConfig = require('../routes/config/authorisation')
 const { getWhereKeyLike, isEmpty } = require('../utils/functionalHelpers')
@@ -18,6 +21,9 @@ function asyncMiddleware(fn) {
   }
 }
 
+/**
+ * @param {PrisonerService} prisonerService
+ */
 function checkLicenceMiddleware(licenceService, prisonerService) {
   return async (req, res, next, bookingId) => {
     try {

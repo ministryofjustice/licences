@@ -1,9 +1,18 @@
+/**
+ * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ */
 const formConfig = require('./config/approval')
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
 const { getIn, firstItem } = require('../utils/functionalHelpers')
 const logger = require('../../log')
 
+/**
+ * @param {object} args
+ * @param {any} args.licenceService
+ * @param {PrisonerService} args.prisonerService
+ * @param {any} args.nomisPushService
+ */
 module.exports = ({ licenceService, prisonerService, nomisPushService }) => (router, audited, config) => {
   const standard = createStandardRoutes({
     formConfig,

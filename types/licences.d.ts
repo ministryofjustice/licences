@@ -8,7 +8,7 @@ interface ResponsibleOfficer {
   lduDescription: string
   probationAreaCode: string
   probationAreaDescription: string
-  isAllocated: boolean,
+  isAllocated: boolean
 }
 
 interface ResponsibleOfficerAndContactDetails extends ResponsibleOfficer {
@@ -29,7 +29,7 @@ export type ResponsibleOfficerAndContactDetailsResult = Result<ResponsibleOffice
 export interface RoService {
   getStaffByCode: (staffCode: string) => Promise<Result<StaffDetails>>
   getStaffByUsername: (username: string) => Promise<StaffDetails>
-  getROPrisoners: (deliusStaffCode: string) => Promise<any>
+  getROPrisoners: (deliusStaffCode: string, token: string) => Promise<any>
   findResponsibleOfficer: (bookingId: number, token: string) => Promise<ResponsibleOfficerResult>
   findResponsibleOfficerByOffenderNo: (offenderNumber: string) => Promise<ResponsibleOfficerResult>
 }
@@ -43,12 +43,12 @@ export interface RoContactDetailsService {
 }
 
 type NotificationArgs = {
-    responsibleOfficer: ResponsibleOfficerAndContactDetails
-    bookingId: number
-    notificationType: string
-    prison: string
-    transitionDate?: string
-    sendingUserName: string
+  responsibleOfficer: ResponsibleOfficerAndContactDetails
+  bookingId: number
+  notificationType: string
+  prison: string
+  transitionDate?: string
+  sendingUserName: string
 }
 
 export interface RoNotificationSender {
@@ -59,4 +59,14 @@ export interface RoNotificationSender {
     personalisation: any,
     config: any
   ) => Array<any>
+}
+
+export interface PrisonerService {
+  getPrisonerDetails: (bookingId: number, token: string) => Promise<any>
+  getResponsibleOfficer: (bookingId: number, token: string) => Promise<Result<ResponsibleOfficer>>
+  getEstablishmentForPrisoner: (bookingId: number, token: string) => Promise<any>
+  getEstablishment: (locationId: number, token: string) => Promise<any>
+  getPrisonerImage: (imageId: number, token: string) => Promise<any>
+  getPrisonerPersonalDetails: (bookingId: number, token: string) => Promise<any>
+  getOrganisationContactDetails: (role: string, bookingId: number, token: string) => Promise<any>
 }

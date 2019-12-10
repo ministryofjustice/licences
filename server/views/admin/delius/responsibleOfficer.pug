@@ -5,17 +5,20 @@ block content
   div.back-link-container.smallPaddingTop
     a#back.link-back(href="/admin/delius") Back
 
-  div.pure-g.pure-u-1.paddingTop
-    form(method='POST' action='/admin/delius/managedOffenders')
-      input(type="hidden" name="_csrf" value=csrfToken)
-      input(type="hidden" name="staffCode" value=ro.deliusId)
-      div.pure-u-1-3
-        input.link(type="submit" value="View managed offenders for " + ro.deliusId)
+    if ro.message
+      h2 Error retrieving responsible officer from delius: #{staffDetails.message}
+    else   
+      div.pure-g.pure-u-1.paddingTop
+        form(method='POST' action='/admin/delius/managedOffenders')
+          input(type="hidden" name="_csrf" value=csrfToken)
+          input(type="hidden" name="staffCode" value=ro.deliusId)
+          div.pure-u-1-3
+            input.link(type="submit" value="View managed offenders for " + ro.deliusId)
 
-      div.pure-u-1
-        table.largeMarginBottom
-          for entry in Object.entries(ro)
-            tr
-              td #{entry[0]}
-              td #{entry[1]}
+          div.pure-u-1
+            table.largeMarginBottom
+              for entry in Object.entries(ro)
+                tr
+                  td #{entry[0]}
+                  td #{entry[1]}
 

@@ -1,6 +1,14 @@
+/**
+ * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ */
 const { asyncMiddleware } = require('../utils/middleware')
 const transitionsForDestinations = require('../services/notifications/transitionsForDestinations')
 
+/**
+ * @param {object} args
+ * @param {PrisonerService} args.prisonerService
+ * @param {any} args.notificationService
+ */
 module.exports = ({ prisonerService, notificationService }) => router => {
   router.get('/:destination/:bookingId', async (req, res) => {
     const { destination, bookingId } = req.params

@@ -1,7 +1,13 @@
+/**
+ * @typedef {import("../../services/roService").RoService} RoService
+ */
 const logger = require('../../../log')
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 
-module.exports = ({ roService }) => router => {
+/**
+ * @param {RoService} roService
+ */
+module.exports = roService => router => {
   router.use(authorisationMiddleware)
 
   router.get(
@@ -28,11 +34,9 @@ module.exports = ({ roService }) => router => {
     asyncMiddleware(async (req, res) => {
       const { bookingId, offenderNo } = req.body
 
-      const ro = bookingId
-        ? await roByBookingId(bookingId, res.locals.token)
-        : await roByOffenderNo(offenderNo, res.locals.token)
+      const ro = bookingId ? await roByBookingId(bookingId, res.locals.token) : await roByOffenderNo(offenderNo)
 
-      logger.info(ro)
+      logger.info('Found ro:', ro)
       res.render('admin/delius/responsibleOfficer', { ro })
     })
   )
@@ -44,7 +48,7 @@ module.exports = ({ roService }) => router => {
 
       const staffDetails = type === 'STAFF_CODE' ? await staffByCode(value) : await staffByUsername(value)
 
-      logger.info(staffDetails)
+      logger.info('Found staff:', staffDetails)
 
       res.render('admin/delius/staffDetails', { type, value, staffDetails })
     })
@@ -55,9 +59,9 @@ module.exports = ({ roService }) => router => {
     return roService.findResponsibleOfficer(bookingId, token)
   }
 
-  async function roByOffenderNo(offenderNo, token) {
+  async function roByOffenderNo(offenderNo) {
     logger.info('responsibleOfficer for offenderNo', offenderNo)
-    return roService.findResponsibleOfficerByOffenderNo(offenderNo, token)
+    return roService.findResponsibleOfficerByOffenderNo(offenderNo)
   }
 
   async function staffByCode(code) {

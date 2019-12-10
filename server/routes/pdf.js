@@ -1,3 +1,6 @@
+/**
+ * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ */
 const logger = require('../../log')
 const { asyncMiddleware } = require('../utils/middleware')
 const { templates, templatesForNewOffence } = require('./config/pdf')
@@ -10,6 +13,11 @@ const {
   },
 } = require('../config')
 
+/**
+ * @param {object} args
+ * @param {any} args.pdfService
+ * @param {PrisonerService} args.prisonerService
+ */
 module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
   router.get(
     '/selectLicenceType/:bookingId',

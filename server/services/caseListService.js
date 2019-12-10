@@ -1,6 +1,12 @@
+/**
+ * @typedef {import("../services/roService").RoService} RoService
+ */
 const logger = require('../../log.js')
 const { isEmpty, getIn } = require('../utils/functionalHelpers')
 
+/**
+ * @param {RoService} roService
+ */
 module.exports = function createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter) {
   async function getCaseList(username, role, token) {
     const asyncCaseRetrievalMethod = {

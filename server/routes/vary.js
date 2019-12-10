@@ -1,3 +1,6 @@
+/**
+ * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ */
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
 const { pickBy, getFieldName, isEmpty, firstItem, getIn, lastItem } = require('../utils/functionalHelpers')
@@ -15,6 +18,11 @@ const expectedFieldsForForm = {
   ],
 }
 
+/**
+ * @param {object} args
+ * @param {any} args.licenceService
+ * @param {PrisonerService} args.prisonerService
+ */
 module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
   const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'vary' })
 

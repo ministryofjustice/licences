@@ -75,7 +75,12 @@ const notificationService = createNotificationService(
   prisonerService,
   roContactDetailsService
 )
-const reminderService = createReminderService(prisonerService, deadlineService, roNotificationSender)
+const reminderService = createReminderService(
+  roContactDetailsService,
+  prisonerService,
+  deadlineService,
+  roNotificationSender
+)
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
