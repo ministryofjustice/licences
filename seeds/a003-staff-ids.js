@@ -4,28 +4,10 @@ exports.seed = knex =>
     .then(() =>
       knex('staff_ids').insert([
         {
-          nomis_id: 'RO_USER_TEST',
-          staff_id: 'DELIUS_ID_TEST',
-          first_name: 'FIRSTA',
-          last_name: 'LASTA',
-          org_email: 'hdc_test@digital.justice.gov.uk',
-        },
-        {
           nomis_id: 'RO_USER_MULTI',
           staff_id: 'DELIUS_ID_TEST_MULTI',
           first_name: 'FIRSTA',
           last_name: 'LASTA',
-          org_email: 'hdc_test@digital.justice.gov.uk',
-        },
-        {
-          nomis_id: 'RO_USER',
-          staff_id: 'DELIUS_ID',
-          first_name: 'JESSY',
-          last_name: 'SMITH',
-          organisation: 'Organisation 1',
-          job_role: 'Role 1',
-          email: 'email@1',
-          telephone: '1111',
           org_email: 'hdc_test@digital.justice.gov.uk',
         },
         {
