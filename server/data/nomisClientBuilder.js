@@ -1,3 +1,9 @@
+/**
+ * @typedef {import("../../types/elite2api").Role} Role
+ * @typedef {import("../../types/elite2api").Profile} Profile
+ *
+ */
+
 const moment = require('moment')
 const superagent = require('superagent')
 const logger = require('../../log')
@@ -96,11 +102,17 @@ module.exports = token => {
       return nomisGet({ path })
     },
 
+    /**
+     * @returns {Promise<Profile>}
+     */
     getLoggedInUserInfo() {
       const path = `${authUrl}/api/user/me`
       return nomisGet({ path })
     },
 
+    /**
+     * @returns {Promise<[Role]>}
+     */
     getUserRoles() {
       const path = `${authUrl}/api/user/me/roles`
       return nomisGet({ path })
