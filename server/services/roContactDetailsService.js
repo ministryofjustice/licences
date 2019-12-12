@@ -57,13 +57,17 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
    * @returns {Promise<Error| Mailboxes>}
    */
   async function getMailboxes(deliusId, lduCode) {
+    logger.info(`looking up staff by code: ${deliusId}`)
     const [staff, error] = unwrapResult(await roService.getStaffByCode(deliusId))
-    return (
-      error || {
-        email: staff.email,
-        functionalMailbox: await probationTeamsClient.getFunctionalMailbox(lduCode),
-      }
-    )
+    if (error) {
+      return error
+    }
+    const functionalMailbox = await probationTeamsClient.getFunctionalMailbox(lduCode)
+    logger.info(`Got functional mailbox: '${functionalMailbox}' for '${lduCode}'`)
+    return {
+      email: staff.email,
+      functionalMailbox,
+    }
   }
 
   return {

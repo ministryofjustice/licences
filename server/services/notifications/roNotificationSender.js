@@ -75,6 +75,7 @@ module.exports = function createNotificationService(
 
       try {
         const notifications = this.getNotifications(responsibleOfficer, personalisation, notificationConfig)
+        logger.info('Sending notifications', notifications)
         await notificationSender.notify({ sendingUserName, notificationType, bookingId, notifications })
 
         return notifications
