@@ -45,13 +45,11 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
    *
    * Also, how do you add type annotations to curried functions???
    */
-  const getROCaseList = (username, token) => () =>
-    R.pipeWith(R.then, [
-      getStaffCodeFromDb,
-      staffCodeFromDb => staffCodeFromDb.orElse(() => getStaffCodeFromDelius(username)),
-      sc => sc.map(getOffendersForStaffCode(token)).match(R.identity, message => ({ hdcEligible: [], message })),
-    ])(username)
-
+  const getROCaseList = (username, token) => async () => {
+    const staffCodeFromDb = await getStaffCodeFromDb(username)
+    const staffCode = await staffCodeFromDb.orElse(async () => getStaffCodeFromDelius(username))
+    return staffCode.map(getOffendersForStaffCode(token)).match(R.identity, message => ({ hdcEligible: [], message }))
+  }
   /**
    * @param {string} username
    * @returns {Promise<Result<string, string>>}
