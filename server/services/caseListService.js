@@ -1,7 +1,12 @@
+/**
+ * @template S, E
+ * @typedef {import("../utils/ResultTypes").Result<S, E>} Result
+ */
 const R = require('ramda')
-const Result = require('../utils/Result')
+const ResultFactory = require('../utils/Result')
 /**
  * @typedef {import("../services/roService").RoService} RoService
+ * @typedef {import("../../types/delius").StaffDetails} StaffDetails
  */
 const logger = require('../../log.js')
 const { isEmpty } = require('../utils/functionalHelpers')
@@ -30,18 +35,17 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
   /**
    * Assume username is assigned to an RO.  Look up this user in the local db (staff_ids table) and take the staff code.
    * Alternatively if a unique staff code cannot be found in this db, ask Delius for a staff code.
-   *
-   * The code below is an ( ugly bodge / elegant solution ) that breaks the type contract on Result.orElse():
-   * staffCodeFromDB is a Result<string,string>, but getStaffCodeFromDelius() returns a Promise<Result<string,string>>
-   * This means that the .orElse() will return either a Result<string,string> or a Promise<Result<string,string>>
-   * Fortunately the 'await' prefix flattens nested Promises so that it all 'just works'.
-   *
    */
   const getROCaseList = (username, token) => async () => {
     const staffCodeFromDb = await getStaffCodeFromDb(username)
-    const staffCode = await staffCodeFromDb.orElse(() => getStaffCodeFromDelius(username))
+    const staffCode = await staffCodeFromDb.orElseTryAsync(() => getStaffCodeFromDelius(username))
     return staffCode.map(getOffendersForStaffCode(token)).match(R.identity, message => ({ hdcEligible: [], message }))
   }
+
+  /**
+   * @typedef DeliusId
+   * @property {string} staff_id
+   */
 
   /**
    * @param {string} username
@@ -64,28 +68,40 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
 
     return staffDetailsResult.flatMap(({ staffCode }) =>
       isEmpty(staffCode)
-        ? Result.Fail(`Delius did not supply a staff code for username ${username}`)
-        : Result.Success(staffCode)
+        ? ResultFactory.Fail(`Delius did not supply a staff code for username ${username}`)
+        : ResultFactory.Success(staffCode)
     )
   }
 
+  /**
+   * @param {string} username
+   * @returns {Promise<Result<StaffDetails, string>>}
+   */
   const getStaffDetailsFromDelius = async username => {
     const staffDetails = await roService.getStaffByUsername(username)
 
     return isEmpty(staffDetails)
-      ? Result.Fail(`Staff details not found in Delius for username: ${username}`)
-      : Result.Success(staffDetails)
+      ? ResultFactory.Fail(`Staff details not found in Delius for username: ${username}`)
+      : ResultFactory.Success(staffDetails)
   }
 
+  /**
+   * @param {DeliusId[]} deliusIds
+   * @returns {Result<DeliusId[], string>}
+   */
   const validateDeliusIds = deliusIds =>
     !Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staff_id)
-      ? Result.Fail('Delius username not found for current user')
-      : Result.Success(deliusIds)
+      ? ResultFactory.Fail('Delius username not found for current user')
+      : ResultFactory.Success(deliusIds)
 
+  /**
+   * @param {DeliusId[]} deliusIds
+   * @returns {Result<DeliusId, string>}
+   */
   const getDeliusId = deliusIds =>
     deliusIds.length > 1
-      ? Result.Fail('Multiple Delius usernames found for current user')
-      : Result.Success(deliusIds[0])
+      ? ResultFactory.Fail('Multiple Delius usernames found for current user')
+      : ResultFactory.Success(deliusIds[0])
 
   const getOffendersForStaffCode = token => async staffCode => {
     const offenders = await roService.getROPrisoners(staffCode, token)

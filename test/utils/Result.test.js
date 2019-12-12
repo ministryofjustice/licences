@@ -41,20 +41,20 @@ describe('Result', () => {
     ).to.eql('aa')
   })
 
-  it('Success.orElse', () => {
-    const result = Result.Success('a').orElse(() => Result.Success('b'))
+  it('Success.orElseTryAsync', async () => {
+    const result = await Result.Success('a').orElseTryAsync(() => Result.Success('b'))
     expect(result.isSuccess()).to.eql(true)
     expect(result.success()).to.eql('a')
   })
 
-  it('Fail.orElse -> Success', () => {
-    const result = Result.Fail('error').orElse(() => Result.Success('b'))
+  it('Fail.orElse -> Success', async () => {
+    const result = await Result.Fail('error').orElseTryAsync(() => Result.Success('b'))
     expect(result.isSuccess()).to.eql(true)
     expect(result.success()).to.eql('b')
   })
 
-  it('Fail.orElse -> Success', () => {
-    const result = Result.Fail('error1').orElse(() => Result.Fail('error2'))
+  it('Fail.orElse -> Success', async () => {
+    const result = await Result.Fail('error1').orElseTryAsync(() => Result.Fail('error2'))
     expect(result.isSuccess()).to.eql(false)
     expect(result.fail()).to.eql('error2')
   })
