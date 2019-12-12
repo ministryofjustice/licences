@@ -13,7 +13,11 @@ const Success = value => ({
 
   map(f) {
     const result = f(value)
-    // @ts-ignore
+    return Success(result)
+  },
+
+  async mapAsync(f) {
+    const result = await f(value)
     return Success(result)
   },
 
@@ -45,6 +49,10 @@ const Fail = error => ({
   fail: () => error,
 
   map() {
+    return Fail(error)
+  },
+
+  async mapAsync() {
     return Fail(error)
   },
 

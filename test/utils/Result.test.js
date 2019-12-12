@@ -41,6 +41,16 @@ describe('Result', () => {
     ).to.eql('aa')
   })
 
+  it('async mapping a Success', async () => {
+    const result = await Result.Success('a').mapAsync(async v => v + v)
+    expect(result.success()).to.eql('aa')
+  })
+
+  it('async mapping a Failure', async () => {
+    const result = await Result.Fail('a').mapAsync(async v => v + v)
+    expect(result.fail()).to.eql('a')
+  })
+
   it('Success.orElseTryAsync', async () => {
     const result = await Result.Success('a').orElseTryAsync(() => Result.Success('b'))
     expect(result.isSuccess()).to.eql(true)

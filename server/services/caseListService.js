@@ -3,11 +3,17 @@
  * @typedef {import("../utils/ResultTypes").Result<S, E>} Result
  */
 const R = require('ramda')
-const ResultFactory = require('../utils/Result')
+const { Success, Fail } = require('../utils/Result')
 /**
  * @typedef {import("../services/roService").RoService} RoService
  * @typedef {import("../../types/delius").StaffDetails} StaffDetails
  */
+
+/**
+ * @typedef DeliusId
+ * @property {string} staff_id
+ */
+
 const logger = require('../../log.js')
 const { isEmpty } = require('../utils/functionalHelpers')
 
@@ -39,13 +45,9 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
   const getROCaseList = (username, token) => async () => {
     const staffCodeFromDb = await getStaffCodeFromDb(username)
     const staffCode = await staffCodeFromDb.orElseTryAsync(() => getStaffCodeFromDelius(username))
-    return staffCode.map(getOffendersForStaffCode(token)).match(R.identity, message => ({ hdcEligible: [], message }))
+    const offendersForStaffCode = await staffCode.mapAsync(getOffendersForStaffCode(token))
+    return offendersForStaffCode.match(R.identity, message => ({ hdcEligible: [], message }))
   }
-
-  /**
-   * @typedef DeliusId
-   * @property {string} staff_id
-   */
 
   /**
    * @param {string} username
@@ -67,9 +69,7 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
     const staffDetailsResult = await getStaffDetailsFromDelius(username)
 
     return staffDetailsResult.flatMap(({ staffCode }) =>
-      isEmpty(staffCode)
-        ? ResultFactory.Fail(`Delius did not supply a staff code for username ${username}`)
-        : ResultFactory.Success(staffCode)
+      isEmpty(staffCode) ? Fail(`Delius did not supply a staff code for username ${username}`) : Success(staffCode)
     )
   }
 
@@ -81,8 +81,8 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
     const staffDetails = await roService.getStaffByUsername(username)
 
     return isEmpty(staffDetails)
-      ? ResultFactory.Fail(`Staff details not found in Delius for username: ${username}`)
-      : ResultFactory.Success(staffDetails)
+      ? Fail(`Staff details not found in Delius for username: ${username}`)
+      : Success(staffDetails)
   }
 
   /**
@@ -91,18 +91,19 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
    */
   const validateDeliusIds = deliusIds =>
     !Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staff_id)
-      ? ResultFactory.Fail('Delius username not found for current user')
-      : ResultFactory.Success(deliusIds)
+      ? Fail('Delius username not found for current user')
+      : Success(deliusIds)
 
   /**
    * @param {DeliusId[]} deliusIds
    * @returns {Result<DeliusId, string>}
    */
   const getDeliusId = deliusIds =>
-    deliusIds.length > 1
-      ? ResultFactory.Fail('Multiple Delius usernames found for current user')
-      : ResultFactory.Success(deliusIds[0])
+    deliusIds.length > 1 ? Fail('Multiple Delius usernames found for current user') : Success(deliusIds[0])
 
+  /**
+   * @type {(token: string) => (staffCode: string) => Promise<{hdcEligible : any[]}>}
+   */
   const getOffendersForStaffCode = token => async staffCode => {
     const offenders = await roService.getROPrisoners(staffCode, token)
     const hdcEligible = offenders.filter(R.path(['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
