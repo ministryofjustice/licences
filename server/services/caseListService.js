@@ -7,12 +7,6 @@ const logger = require('../../log.js')
 const { isEmpty } = require('../utils/functionalHelpers')
 
 /**
- * @typedef {Object<string[], string>} CaselistResponse
- * @property {string} message
- * @property {string[]} hdcEligible
- */
-
-/**
  * @param {RoService} roService
  */
 module.exports = function createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter) {
@@ -40,16 +34,15 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
    * The code below is an ( ugly bodge / elegant solution ) that breaks the type contract on Result.orElse():
    * staffCodeFromDB is a Result<string,string>, but getStaffCodeFromDelius() returns a Promise<Result<string,string>>
    * This means that the .orElse() will return either a Result<string,string> or a Promise<Result<string,string>>
-   * Fortunately Promise.then() flattens nested Promises so that it all 'just works', but there should be a better
-   * way to do this.
+   * Fortunately the 'await' prefix flattens nested Promises so that it all 'just works'.
    *
-   * Also, how do you add type annotations to curried functions???
    */
   const getROCaseList = (username, token) => async () => {
     const staffCodeFromDb = await getStaffCodeFromDb(username)
-    const staffCode = await staffCodeFromDb.orElse(async () => getStaffCodeFromDelius(username))
+    const staffCode = await staffCodeFromDb.orElse(() => getStaffCodeFromDelius(username))
     return staffCode.map(getOffendersForStaffCode(token)).match(R.identity, message => ({ hdcEligible: [], message }))
   }
+
   /**
    * @param {string} username
    * @returns {Promise<Result<string, string>>}
@@ -69,20 +62,19 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
   const getStaffCodeFromDelius = async username => {
     const staffDetailsResult = await getStaffDetailsFromDelius(username)
 
-    return staffDetailsResult.flatMap(staffDetails => {
-      const staffCode = R.prop('staffCode', staffDetails)
-      return staffCode
-        ? Result.Success(staffCode)
-        : Result.Fail(`Delius did not supply a staff code for username ${username}`)
-    })
+    return staffDetailsResult.flatMap(({ staffCode }) =>
+      isEmpty(staffCode)
+        ? Result.Fail(`Delius did not supply a staff code for username ${username}`)
+        : Result.Success(staffCode)
+    )
   }
 
   const getStaffDetailsFromDelius = async username => {
     const staffDetails = await roService.getStaffByUsername(username)
 
-    return staffDetails
-      ? Result.Success(staffDetails)
-      : Result.Fail(`Staff details not found in Delius for username: ${username}`)
+    return isEmpty(staffDetails)
+      ? Result.Fail(`Staff details not found in Delius for username: ${username}`)
+      : Result.Success(staffDetails)
   }
 
   const validateDeliusIds = deliusIds =>
