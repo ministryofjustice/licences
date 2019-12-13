@@ -84,10 +84,10 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
         return localDetails
       }
 
-      const [mailboxes, mailboxesError] = unwrapResult(await getMailboxes(deliusRo.deliusId, deliusRo.lduCode))
+      const [mailboxes, staffLookupError] = unwrapResult(await getMailboxes(deliusRo.deliusId, deliusRo.lduCode))
 
-      if (mailboxesError) {
-        return mailboxesError
+      if (staffLookupError) {
+        return staffLookupError
       }
 
       return {

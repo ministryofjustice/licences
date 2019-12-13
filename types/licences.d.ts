@@ -75,3 +75,18 @@ export interface PrisonerService {
 export interface CaService {
   getReasonForNotContinuing: (bookingId: number, token: string) => Promise<string | undefined>
 }
+
+export interface Warning {
+  id: number
+  bookingId: number
+  timestamp: Date
+  code: string
+  messsage: string
+}
+
+export interface WarningClient {
+  raiseWarning: (bookingId: number, code: string, messsage: string) => Promise<void>
+  acknowledgeWarning: (errorId: number) => Promise<boolean>
+  getOutstandingWarnings: () => Promise<List<Warning>>
+  getAcknowledgedWarnings: () => Promise<List<Warning>> 
+}
