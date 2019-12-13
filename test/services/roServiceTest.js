@@ -48,6 +48,7 @@ describe('roService', () => {
     it('should return message when 404 in api when getting RO relationship', () => {
       deliusClient.getStaffDetailsByStaffCode.rejects({ status: 404 })
       return expect(service.getStaffByCode('code-1')).to.eventually.eql({
+        code: 'STAFF_NOT_PRESENT',
         message: `Staff does not exist in delius: code-1`,
       })
     })
@@ -137,6 +138,7 @@ describe('roService', () => {
       deliusClient.getAllOffenderManagers.resolves([{ isPrisonOffenderManager: true }])
 
       const expectedComData = {
+        code: 'NO_COM_ASSIGNED',
         message: 'Offender has not been assigned a COM: 1',
       }
 
@@ -156,7 +158,8 @@ describe('roService', () => {
     it('should return message when 404 in api when getting RO relationship', () => {
       deliusClient.getAllOffenderManagers.rejects({ status: 404 })
       return expect(service.findResponsibleOfficer('123', 'token')).to.eventually.eql({
-        message: 'Offender not present in delius',
+        code: 'NO_OFFENDER_NUMBER',
+        message: 'Offender number not entered in delius',
       })
     })
   })

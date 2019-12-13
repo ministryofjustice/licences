@@ -3,10 +3,12 @@
  * @typedef {import("../../types/licences").RoService} RoService
  * @typedef {import("../../types/delius").CommunityOrPrisonOffenderManager} CommunityOrPrisonOffenderManager
  * @typedef {import("../../types/licences").ResponsibleOfficerResult} ResponsibleOfficerResult
+ * @typedef {import("../../types/licences").ResponsibleOfficer} ResponsibleOfficer
  */
 const setCase = require('case')
 const logger = require('../../log.js')
 const { isEmpty } = require('../utils/functionalHelpers')
+const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, STAFF_NOT_PRESENT, STAFF_NOT_LINKED } = require('./serviceErrors')
 
 /**
  * @param {DeliusClient} deliusClient
@@ -33,12 +35,12 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
         const result = await deliusClient.getStaffDetailsByStaffCode(staffCode)
 
         if (!result.email || !result.username) {
-          return { message: `Staff and user not linked in delius: ${staffCode}` }
+          return { code: STAFF_NOT_LINKED, message: `Staff and user not linked in delius: ${staffCode}` }
         }
         return result
       } catch (error) {
         if (error.status === 404) {
-          return { message: `Staff does not exist in delius: ${staffCode}` }
+          return { code: STAFF_NOT_PRESENT, message: `Staff does not exist in delius: ${staffCode}` }
         }
 
         logger.error(`Problem retrieving staff member for code: ${staffCode}`, error.stack)
@@ -82,11 +84,11 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
 
       try {
         const offenderManagers = await deliusClient.getAllOffenderManagers(offenderNo)
-        return extractOffenderManager(offenderNo, offenderManagers)
+        return extractCommunityOffenderManager(offenderNo, offenderManagers)
       } catch (error) {
         if (error.status === 404) {
           logger.error(`Offender not present in delius: ${offenderNo}`)
-          return { message: 'Offender not present in delius' }
+          return { code: NO_OFFENDER_NUMBER, message: 'Offender number not entered in delius' }
         }
 
         logger.error(`findResponsibleOfficer for: ${offenderNo}`, error.stack)
@@ -100,18 +102,25 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
  * @param {CommunityOrPrisonOffenderManager[]} offenderManagers
  * @returns {ResponsibleOfficerResult}
  */
-function extractOffenderManager(offenderNumber, offenderManagers) {
+function extractCommunityOffenderManager(offenderNumber, offenderManagers) {
   const responsibleOfficer = offenderManagers.find(manager => !manager.isPrisonOffenderManager)
-  if (!responsibleOfficer) {
-    return { message: `Offender has not been assigned a COM: ${offenderNumber}` }
-  }
+  return !responsibleOfficer
+    ? { code: NO_COM_ASSIGNED, message: `Offender has not been assigned a COM: ${offenderNumber}` }
+    : toResponsibleOfficer(offenderNumber, responsibleOfficer)
+}
+
+/**
+ * @param {CommunityOrPrisonOffenderManager} offenderManager
+ * @returns {ResponsibleOfficer}
+ */
+function toResponsibleOfficer(offenderNumber, offenderManager) {
   const {
     staff: { forenames, surname },
     staffCode,
     isUnallocated,
     team: { localDeliveryUnit },
     probationArea,
-  } = responsibleOfficer
+  } = offenderManager
   const name = setCase.capital(
     [forenames, surname]
       .join(' ')

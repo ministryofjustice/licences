@@ -10,6 +10,7 @@ const configClient = require('./data/configClient')
 const dbLockingClient = require('./data/dbLockingClient')
 const nomisClientBuilder = require('./data/nomisClientBuilder')
 const pdfFormatter = require('./services/utils/pdfFormatter')
+const lduActiveClient = require('./data/activeLduClient')
 
 const notifyClient = new NotifyClient(config.notifications.notifyKey)
 const createSignInService = require('./authentication/signInService')
@@ -38,6 +39,7 @@ const createNotificationJobs = require('./services/jobs/notificationJobs')
 const createDeliusClient = require('./data/deliusClient')
 const createProbationTeamsClient = require('./data/probationTeamsClient')
 const createRoService = require('./services/roService')
+const createCaService = require('./services/caService')
 
 const signInService = createSignInService()
 const licenceService = createLicenceService(licenceClient)
@@ -45,6 +47,7 @@ const conditionsService = createConditionsService(config)
 const deliusClient = createDeliusClient(signInService)
 const probationTeamsClient = createProbationTeamsClient(signInService)
 const roService = createRoService(deliusClient, nomisClientBuilder)
+const caService = createCaService(roService, lduActiveClient)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
 const caseListFormatter = createCaseListFormatter(logger, licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
@@ -102,6 +105,7 @@ const app = createApp({
   jobSchedulerService,
   roService,
   audit,
+  caService,
 })
 
 module.exports = app

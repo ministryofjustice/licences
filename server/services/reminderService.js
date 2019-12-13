@@ -10,6 +10,7 @@
  */
 const logger = require('../../log.js')
 const { isEmpty, unwrapResult } = require('../utils/functionalHelpers')
+const { NOTIFICATION_DATA_NOT_FOUND } = require('./serviceErrors')
 
 /**
  * @param {RoContactDetailsService} roContactDetailsService
@@ -91,7 +92,7 @@ module.exports = function createReminderService(
       return [roWithContactDetails, prison]
     } catch (error) {
       logger.error('Error loading data for reminder', error.stack)
-      return { message: `Error loading data for reminder: ${error.message}` }
+      return { code: NOTIFICATION_DATA_NOT_FOUND, message: `Error loading data for reminder: ${error.message}` }
     }
   }
 
