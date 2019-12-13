@@ -1,9 +1,9 @@
 const createCaService = require('../../server/services/caService')
-const activeLduClient = require('../../server/data/activeLduClient')
 
 describe('caService', () => {
   let roService
   let caService
+  const lduActiveClient = { isLduPresent: () => {} }
 
   describe('Responsible Officer is allocated and Ldu determined', () => {
     const responsibleOfficerOrError = {
@@ -15,24 +15,29 @@ describe('caService', () => {
       roService = {
         findResponsibleOfficer: sinon.stub().resolves(responsibleOfficerOrError),
       }
-      caService = createCaService(roService)
     })
 
     describe('getReasonForNotContinuing ', () => {
       it('should return null because Ro is COM and ldu is active', async () => {
-        activeLduClient.isLduPresent = sinon.stub().resolves(1)
+        lduActiveClient.isLduPresent = sinon.stub().resolves(1)
+        caService = createCaService(roService, lduActiveClient)
+
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
         expect(result).to.eql(null)
       })
 
       it('should return LDU_INACTIVE because ldu is not active', async () => {
-        activeLduClient.isLduPresent = sinon.stub().resolves(0)
+        lduActiveClient.isLduPresent = sinon.stub().resolves(0)
+        caService = createCaService(roService, lduActiveClient)
+
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
         expect(result).to.eql('LDU_INACTIVE')
       })
 
       it('should return COM_NOT_ALLOCATED because COM has not been assigned', async () => {
-        activeLduClient.isLduPresent = sinon.stub().resolves(1)
+        lduActiveClient.isLduPresent = sinon.stub().resolves(1)
+        caService = createCaService(roService, lduActiveClient)
+
         responsibleOfficerOrError.isAllocated = false
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
         expect(result).to.eql('COM_NOT_ALLOCATED')
@@ -51,9 +56,8 @@ describe('caService', () => {
       roService = {
         findResponsibleOfficer: sinon.stub().resolves(responsibleOfficerOrError),
       }
-      caService = createCaService(roService)
+      caService = createCaService(roService, lduActiveClient)
     })
-
     describe('getReasonForNotContinuing', () => {
       it('should return NO_OFFENDER_NUMBER because no offender number on nomis for bookingId', async () => {
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')

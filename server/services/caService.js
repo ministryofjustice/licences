@@ -9,7 +9,6 @@
  */
 
 const logger = require('../../log.js')
-const lduActiveClient = require('../data/activeLduClient')
 const { unwrapResult } = require('../utils/functionalHelpers')
 const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, LDU_INACTIVE, COM_NOT_ALLOCATED } = require('./serviceErrors')
 
@@ -17,7 +16,7 @@ const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, LDU_INACTIVE, COM_NOT_ALLOCATED } =
  * @param {RoService} roService
  * @returns {CaService} caService
  */
-module.exports = function createCaService(roService) {
+module.exports = function createCaService(roService, lduActiveClient) {
   return {
     async getReasonForNotContinuing(bookingId, token) {
       const [ro, error] = unwrapResult(await roService.findResponsibleOfficer(bookingId, token))
@@ -51,18 +50,3 @@ module.exports = function createCaService(roService) {
     },
   }
 }
-
-/* findResponsibleOfficer returns
-
-return {
-  name,
-  isAllocated: !isUnallocated,
-  deliusId: staffCode,
-  nomsNumber: offenderNumber,
-  lduCode: localDeliveryUnit.code,
-  lduDescription: localDeliveryUnit.description,
-  probationAreaCode: probationArea.code,
-  probationAreaDescription: probationArea.description,
-}
-
-*/
