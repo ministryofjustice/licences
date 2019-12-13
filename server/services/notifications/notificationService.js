@@ -1,16 +1,21 @@
 /**
  * @typedef {import("../../../types/licences").RoContactDetailsService} RoContactDetailsService
  * @typedef {import("../../../types/licences").RoNotificationSender} RoNotificationSender
+ * @typedef {import("../../../types/licences").PrisonerService} PrisonerService
+ * @typedef {import("../../../types/licences").WarningClient} WarningClient
  * @typedef {import("../../../types/licences").Error} Error
  * @typedef {import("../../../types/licences").ResponsibleOfficerAndContactDetails} ResponsibleOfficerAndContactDetails
  */
 const { sendingUserName } = require('../../utils/userProfile')
 const logger = require('../../../log.js')
 const { isEmpty, unwrapResult } = require('../../utils/functionalHelpers')
+const { STAFF_NOT_LINKED } = require('../serviceErrors')
 
 /**
  * @param {RoContactDetailsService} roContactDetailsService
  * @param {RoNotificationSender} roNotificationSender
+ * @param {PrisonerService} prisonerService
+ * @param {WarningClient} warningClient
  */
 module.exports = function createNotificationService(
   roNotificationSender,
@@ -18,7 +23,8 @@ module.exports = function createNotificationService(
   audit,
   licenceService,
   prisonerService,
-  roContactDetailsService
+  roContactDetailsService,
+  warningClient
 ) {
   const receiverToSender = {
     RO: sendRo,
@@ -60,7 +66,13 @@ module.exports = function createNotificationService(
     const [responsibleOfficer, error] = unwrapResult(result)
     if (error) {
       logger.error(`Problem retrieving contact details: ${error.message}`)
-      return
+      switch (error.code) {
+        case STAFF_NOT_LINKED:
+          await warningClient.raiseWarning(bookingId, error.code, error.message)
+          return
+        default:
+          return
+      }
     }
 
     if (isEmpty(prison)) {

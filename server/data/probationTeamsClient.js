@@ -14,7 +14,6 @@ const apiUrl = `${config.probationTeams.apiUrl}`
  */
 
 /**
- *
  * @return { ProbationTeamsClient }
  */
 module.exports = signInService => {
