@@ -66,13 +66,10 @@ module.exports = function createNotificationService(
     const [responsibleOfficer, error] = unwrapResult(result)
     if (error) {
       logger.error(`Problem retrieving contact details: ${error.message}`)
-      switch (error.code) {
-        case STAFF_NOT_LINKED:
-          await warningClient.raiseWarning(bookingId, error.code, error.message)
-          return
-        default:
-          return
+      if (error.code === STAFF_NOT_LINKED) {
+        await warningClient.raiseWarning(bookingId, error.code, error.message)
       }
+      return
     }
 
     if (isEmpty(prison)) {

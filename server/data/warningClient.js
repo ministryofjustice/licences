@@ -10,7 +10,8 @@ const db = require('./dataAccess/db')
 const WarningClient = {
   async raiseWarning(bookingId, code, messsage) {
     const query = {
-      text: `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false) ON CONFLICT (booking_id) DO NOTHING`,
+      text: `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false) 
+      ON CONFLICT (booking_id, code) where acknowledged = false DO NOTHING`,
       values: [bookingId, code, messsage],
     }
     return db.query(query)

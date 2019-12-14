@@ -19,7 +19,8 @@ describe('warningClient', () => {
 
   describe('raiseWarning', () => {
     it('should pass in the correct sql', () => {
-      const expectedInsert = `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false) ON CONFLICT (booking_id) DO NOTHING`
+      const expectedInsert = `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false) 
+      ON CONFLICT (booking_id, code) where acknowledged = false DO NOTHING`
 
       const result = warningClientProxy().raiseWarning(1, 'code-1', 'messsage-1')
 
