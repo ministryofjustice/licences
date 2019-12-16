@@ -1,5 +1,6 @@
 const createNotificationService = require('../../../server/services/notifications/notificationService')
 const transitionForDestinations = require('../../../server/services/notifications/transitionsForDestinations')
+const { STAFF_NOT_LINKED } = require('../../../server/services/serviceErrors')
 
 describe('NotificationService', () => {
   let roNotificationSender
@@ -7,6 +8,7 @@ describe('NotificationService', () => {
   let audit
   let licenceService
   let prisonerService
+  let warningClient
   let notificationService
   let roContactDetailsService
 
@@ -27,6 +29,11 @@ describe('NotificationService', () => {
     roContactDetailsService = {
       getResponsibleOfficerWithContactDetails: sinon.stub(),
     }
+
+    warningClient = {
+      raiseWarning: sinon.stub(),
+    }
+
     prisonerService = {
       getEstablishmentForPrisoner: sinon.stub().resolves({ premise: 'HMP Blah', agencyId: 'LT1' }),
       getOrganisationContactDetails: sinon.stub().resolves(submissionTarget),
@@ -51,7 +58,8 @@ describe('NotificationService', () => {
       audit,
       licenceService,
       prisonerService,
-      roContactDetailsService
+      roContactDetailsService,
+      warningClient
     )
   })
 
@@ -172,6 +180,33 @@ describe('NotificationService', () => {
         prisoner,
         user,
       })
+
+      expect(roNotificationSender.sendNotifications).not.to.be.called()
+      expect(audit.record).not.to.be.called()
+      expect(licenceService.markForHandover).not.to.be.called()
+      expect(licenceService.removeDecision).not.to.be.called()
+    })
+
+    it('caToRo when delius staff records are not linked to user', async () => {
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.resolves({
+        code: STAFF_NOT_LINKED,
+        message: 'Staff and user not linked in delius: STAFF-1',
+      })
+
+      await notificationService.send({
+        transition: transitionForDestinations.bassReview,
+        bookingId,
+        token,
+        licence,
+        prisoner,
+        user,
+      })
+
+      expect(warningClient.raiseWarning).to.be.calledWith(
+        bookingId,
+        STAFF_NOT_LINKED,
+        'Staff and user not linked in delius: STAFF-1'
+      )
 
       expect(roNotificationSender.sendNotifications).not.to.be.called()
       expect(audit.record).not.to.be.called()

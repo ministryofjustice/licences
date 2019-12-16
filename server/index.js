@@ -11,6 +11,7 @@ const dbLockingClient = require('./data/dbLockingClient')
 const nomisClientBuilder = require('./data/nomisClientBuilder')
 const pdfFormatter = require('./services/utils/pdfFormatter')
 const lduActiveClient = require('./data/activeLduClient')
+const warningClient = require('./data/warningClient')
 
 const notifyClient = new NotifyClient(config.notifications.notifyKey)
 const createSignInService = require('./authentication/signInService')
@@ -46,6 +47,7 @@ const licenceService = createLicenceService(licenceClient)
 const conditionsService = createConditionsService(config)
 const deliusClient = createDeliusClient(signInService)
 const probationTeamsClient = createProbationTeamsClient(signInService)
+
 const roService = createRoService(deliusClient, nomisClientBuilder)
 const caService = createCaService(roService, lduActiveClient)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
@@ -76,7 +78,8 @@ const notificationService = createNotificationService(
   audit,
   licenceService,
   prisonerService,
-  roContactDetailsService
+  roContactDetailsService,
+  warningClient
 )
 const reminderService = createReminderService(
   roContactDetailsService,
