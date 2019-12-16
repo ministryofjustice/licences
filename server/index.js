@@ -109,6 +109,7 @@ const app = createApp({
   roService,
   audit,
   caService,
+  warningClient,
 })
 
 module.exports = app

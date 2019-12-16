@@ -2,6 +2,7 @@
  * @typedef {import('../../types/licences').WarningClient} WarningClient
  */
 
+const format = require('pg-format')
 const db = require('./dataAccess/db')
 
 /**
@@ -17,14 +18,13 @@ const WarningClient = {
     return db.query(query)
   },
 
-  async acknowledgeWarning(errorId) {
+  async acknowledgeWarnings(errorIds) {
     const query = {
-      text: `UPDATE warnings SET acknowledged = true WHERE id=$1`,
-      values: [errorId],
+      text: format(`UPDATE warnings SET acknowledged = true WHERE id in (%L)`, errorIds),
     }
 
-    const { rows } = await db.query(query)
-    return parseInt(rows[0].count, 10) > 0
+    const { rowCount } = await db.query(query)
+    return rowCount
   },
 
   async getOutstandingWarnings() {
@@ -39,10 +39,11 @@ const WarningClient = {
       ORDER BY timestamp DESC
       LIMIT 500`,
     }
-    return db.query(query).rows
+    const { rows } = await db.query(query)
+    return rows
   },
 
-  getAcknowledgedWarnings() {
+  async getAcknowledgedWarnings() {
     const query = {
       text: `SELECT id
       ,      booking_id "bookingId"
@@ -54,7 +55,8 @@ const WarningClient = {
       ORDER BY timestamp DESC
       LIMIT 500`,
     }
-    return db.query(query).rows
+    const { rows } = await db.query(query)
+    return rows
   },
 }
 

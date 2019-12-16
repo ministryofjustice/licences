@@ -87,6 +87,13 @@ const createUserAdminServiceStub = () => ({
   verifyUserDetails: sinon.stub().resolves(),
 })
 
+const createWarningsClientStub = () => ({
+  raiseWarning: sinon.stub().resolves(),
+  acknowledgeWarnings: sinon.stub().resolves(),
+  getOutstandingWarnings: () => sinon.stub().resolves(),
+  getAcknowledgedWarnings: () => sinon.stub().resolves(),
+})
+
 const createNotificationServiceStub = () => ({
   notify: sinon.stub().resolves(),
   getNotificationData: sinon.stub().resolves(),
@@ -178,6 +185,7 @@ const setup = {
   createFormServiceStub,
   createUserAdminServiceStub,
   createNotificationServiceStub,
+  createWarningsClientStub,
   authenticationMiddleware,
   testFormPageGets,
   users,

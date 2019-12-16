@@ -86,7 +86,7 @@ export interface Warning {
 
 export interface WarningClient {
   raiseWarning: (bookingId: number, code: string, messsage: string) => Promise<void>
-  acknowledgeWarning: (errorId: number) => Promise<boolean>
+  acknowledgeWarnings: (errorIds: number[]) => Promise<number>
   getOutstandingWarnings: () => Promise<List<Warning>>
   getAcknowledgedWarnings: () => Promise<List<Warning>> 
 }
