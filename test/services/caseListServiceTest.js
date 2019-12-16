@@ -330,18 +330,10 @@ describe('caseListService', () => {
         expect(result).to.eql({ hdcEligible: [], message: 'Staff details not found in Delius for username: 123' })
       })
 
-      it('delius interaction throws', async () => {
+      it('delius interaction throws', () => {
         licenceClient.getDeliusUserName.resolves(undefined)
         roService.getStaffByUsername = sinon.stub().rejects('Delius went bang!')
-
-        // Meh. Can't use chai's expect().to.throw() because this is async code.
-        try {
-          await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-        } catch (e) {
-          // The test passed!
-          return
-        }
-        expect.fail()
+        return expect(service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)).to.be.rejected()
       })
 
       it("staff details found in Delius, but there's no staff code", async () => {
