@@ -32,28 +32,21 @@ describe('warningClient', () => {
     })
   })
 
-  describe('acknowledgeWarning', () => {
+  describe('acknowledgeWarnings', () => {
     it('should pass in the correct sql', async () => {
-      queryStub = sinon.stub().resolves({ rows: [{ count: 1 }] })
-      const expectedInsert = `UPDATE warnings SET acknowledged = true WHERE id=$1`
+      queryStub = sinon.stub().resolves({ rowCount: 2 })
+      const expectedInsert = "UPDATE warnings SET acknowledged = true WHERE id in ('1','2')"
 
-      await warningClientProxy().acknowledgeWarning(1)
+      await warningClientProxy().acknowledgeWarnings([1, 2])
 
-      const { text, values } = queryStub.getCalls()[0].args[0]
+      const { text } = queryStub.getCalls()[0].args[0]
       expect(text).to.include(expectedInsert)
-      expect(values).to.eql([1])
     })
 
-    it('should return true if warning is present', async () => {
-      queryStub = sinon.stub().resolves({ rows: [{ count: 1 }] })
-      const result = await warningClientProxy().acknowledgeWarning(1)
-      expect(result).to.eql(true)
-    })
-
-    it('should return false if warning is not present', async () => {
-      queryStub = sinon.stub().resolves({ rows: [{ count: 0 }] })
-      const result = await warningClientProxy().acknowledgeWarning(1)
-      expect(result).to.eql(false)
+    it('should return modified row count', async () => {
+      queryStub = sinon.stub().resolves({ rowCount: 2 })
+      const result = await warningClientProxy().acknowledgeWarnings([1, 2])
+      expect(result).to.eql(2)
     })
   })
 

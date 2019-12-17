@@ -1,0 +1,29 @@
+mixin showWarningsTable(addAck)
+  table#hdcEligiblePrisoners.largeMarginBottom
+    thead
+      tr
+        th Booking Id
+        th Error code
+        th Message
+        th Timestamp
+        if addAck
+          th Select
+    tbody
+      if warnings && warnings.length > 0
+        each warning, index in warnings
+          tr.hdcEligible
+            td.bookingId
+              if warning.bookingId
+                | #{warning.bookingId}
+            td.error-code
+              if warning.code
+                | #{warning.code}
+            td.message
+              if warning.message
+                | #{warning.message}
+            td.timestamp
+              if warning.timestamp
+                | #{warning.timestamp}
+            if addAck
+              td.edit
+                 input(type="checkbox" id="check-" + warning.bookingId value=warning.id name="bookingId[" + index + "]")

@@ -100,6 +100,7 @@
     "passport-oauth2": "^1.5.0",
     "path": "^0.12.7",
     "pg": "^7.14.0",
+    "pg-format": "^1.0.4",
     "poll-endpoint-for": "0.0.7",
     "pug": "^2.0.4",
     "querystring": "^0.2.0",

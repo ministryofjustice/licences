@@ -1,0 +1,16 @@
+extends ../../layout
+include warningsTable
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/") Back
+
+  div.pure-g
+    div.pure-u-1.searchLink.alignRight.smallPaddingTop
+      a#addUserLink(href='/admin/warnings/outstanding') View Outstanding
+
+    div.pure-u-1
+      h2.heading-medium #{heading}
+      +showWarningsTable(false)
+
