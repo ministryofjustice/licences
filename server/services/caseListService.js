@@ -1,8 +1,21 @@
 /**
- * @typedef {import("../services/roService").RoService} RoService
+ * @template S, E
+ * @typedef {import("../utils/ResultTypes").Result<S, E>} Result
  */
+const R = require('ramda')
+const { Success, Fail } = require('../utils/Result')
+/**
+ * @typedef {import("../services/roService").RoService} RoService
+ * @typedef {import("../../types/delius").StaffDetails} StaffDetails
+ */
+
+/**
+ * @typedef DeliusId
+ * @property {string} staff_id
+ */
+
 const logger = require('../../log.js')
-const { isEmpty, getIn } = require('../utils/functionalHelpers')
+const { isEmpty } = require('../utils/functionalHelpers')
 
 /**
  * @param {RoService} roService
@@ -25,40 +38,76 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
     }
   }
 
-  function getROCaseList(username, token) {
-    return async () => {
-      const deliusIds = await licenceClient.getDeliusUserName(username)
+  /**
+   * Assume username is assigned to an RO.  Look up this user in the local db (staff_ids table) and take the staff code.
+   * Alternatively if a unique staff code cannot be found in this db, ask Delius for a staff code.
+   */
+  const getROCaseList = (username, token) => async () => {
+    const staffCodeFromDb = await getStaffCodeFromDb(username)
+    const staffCode = await staffCodeFromDb.orRecoverAsync(() => getStaffCodeFromDelius(username))
+    const offendersForStaffCode = await staffCode.mapAsync(getOffendersForStaffCode(token))
+    return offendersForStaffCode.match(R.identity, message => ({ hdcEligible: [], message }))
+  }
 
-      if (!Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staff_id)) {
-        logger.error(`No delius user ID for nomis ID '${username}'`)
-        return {
-          hdcEligible: [],
-          message: 'Delius username not found for current user',
-        }
-      }
+  /**
+   * @param {string} username
+   * @returns {Promise<Result<string, string>>}
+   */
+  const getStaffCodeFromDb = async username => {
+    const deliusIds = await licenceClient.getDeliusUserName(username)
 
-      if (deliusIds.length > 1) {
-        logger.error(`Multiple delius user ID for nomis ID '${username}'`)
-        return {
-          hdcEligible: [],
-          message: 'Multiple Delius usernames found for current user',
-        }
-      }
+    return validateDeliusIds(deliusIds)
+      .flatMap(getDeliusId)
+      .map(id => id.staff_id.toUpperCase())
+  }
 
-      const staffCode = deliusIds[0].staff_id.toUpperCase()
+  /**
+   * @param {string} username
+   * @returns {Promise<Result<string, string>>}
+   */
+  const getStaffCodeFromDelius = async username => {
+    const staffDetailsResult = await getStaffDetailsFromDelius(username)
 
-      const offenders = await roService.getROPrisoners(staffCode, token)
+    return staffDetailsResult.flatMap(({ staffCode }) =>
+      isEmpty(staffCode) ? Fail(`Delius did not supply a staff code for username ${username}`) : Success(staffCode)
+    )
+  }
 
-      if (!isEmpty(offenders)) {
-        const hdcEligible = offenders.filter(prisoner =>
-          getIn(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate'])
-        )
-        return { hdcEligible }
-      }
+  /**
+   * @param {string} username
+   * @returns {Promise<Result<StaffDetails, string>>}
+   */
+  const getStaffDetailsFromDelius = async username => {
+    const staffDetails = await roService.getStaffByUsername(username)
 
-      logger.warn(`No eligible releases found for RO user nomis ID: '${username}, using delius ID: ${staffCode}'`)
-      return { hdcEligible: [] }
-    }
+    return isEmpty(staffDetails)
+      ? Fail(`Staff details not found in Delius for username: ${username}`)
+      : Success(staffDetails)
+  }
+
+  /**
+   * @param {DeliusId[]} deliusIds
+   * @returns {Result<DeliusId[], string>}
+   */
+  const validateDeliusIds = deliusIds =>
+    !Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staff_id)
+      ? Fail('Delius username not found for current user')
+      : Success(deliusIds)
+
+  /**
+   * @param {DeliusId[]} deliusIds
+   * @returns {Result<DeliusId, string>}
+   */
+  const getDeliusId = deliusIds =>
+    deliusIds.length > 1 ? Fail('Multiple Delius usernames found for current user') : Success(deliusIds[0])
+
+  /**
+   * @type {(token: string) => (staffCode: string) => Promise<{hdcEligible : any[]}>}
+   */
+  const getOffendersForStaffCode = token => async staffCode => {
+    const offenders = await roService.getROPrisoners(staffCode, token)
+    const hdcEligible = offenders.filter(R.path(['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
+    return { hdcEligible }
   }
 
   function neededForRole(prisoner, role) {

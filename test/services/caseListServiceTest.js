@@ -90,6 +90,13 @@ describe('caseListService', () => {
           },
         },
       ]),
+      getStaffByUsername: sinon.stub().resolves({
+        username: 'username',
+        email: 'email',
+        staffCode: 'ABC123',
+        staff: { forenames: 'user', surname: 'name' },
+        teams: [],
+      }),
     }
 
     licenceClient = {
@@ -309,16 +316,36 @@ describe('caseListService', () => {
         expect(result).to.eql({ hdcEligible: [], message: 'No HDC cases' })
       })
 
-      it('should return empty array and explanation message if no delius user name found', async () => {
+      it('should return empty array and explanation message if no delius user name found locally or in delius', async () => {
         licenceClient.getDeliusUserName.resolves(undefined)
+        roService.getStaffByUsername.resolves(undefined)
         const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-        expect(result).to.eql({ hdcEligible: [], message: 'Delius username not found for current user' })
+        expect(result).to.eql({ hdcEligible: [], message: 'Staff details not found in Delius for username: 123' })
       })
 
-      it('should return empty array and explanation message if too many delius user names found', async () => {
+      it('should return empty array and explanation message if too many delius user names found and username not found in Delius', async () => {
         licenceClient.getDeliusUserName.resolves([{ staff_id: '1' }, { staff_id: '2' }])
+        roService.getStaffByUsername.resolves(undefined)
         const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-        expect(result).to.eql({ hdcEligible: [], message: 'Multiple Delius usernames found for current user' })
+        expect(result).to.eql({ hdcEligible: [], message: 'Staff details not found in Delius for username: 123' })
+      })
+
+      it('delius interaction throws', () => {
+        licenceClient.getDeliusUserName.resolves(undefined)
+        roService.getStaffByUsername = sinon.stub().rejects('Delius went bang!')
+        return expect(service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)).to.be.rejected()
+      })
+
+      it("staff details found in Delius, but there's no staff code", async () => {
+        licenceClient.getDeliusUserName.resolves(undefined)
+        roService.getStaffByUsername.resolves({
+          username: '123',
+          email: 'email',
+          staff: { forenames: 'user', surname: 'name' },
+          teams: [],
+        })
+        const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        expect(result).to.eql({ hdcEligible: [], message: 'Delius did not supply a staff code for username 123' })
       })
 
       describe('days since case received', () => {
