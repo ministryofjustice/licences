@@ -21,6 +21,7 @@ module.exports = function createCaService(roService, lduActiveClient, { continue
     async getReasonForNotContinuing(bookingId, token) {
       if (!continueCaToRoFeatureFlag) {
         return null
+        // continueCaToRoFeatureFlag is defaulted to false in config so !continueCaToRoFeatureFlag means CA should proceed to RO without checking for errors
       }
 
       const [ro, error] = unwrapResult(await roService.findResponsibleOfficer(bookingId, token))
@@ -30,9 +31,10 @@ module.exports = function createCaService(roService, lduActiveClient, { continue
           `Found reason for not continuing processing booking: ${bookingId}, error: ${error.code}:${error.message}`
         )
         switch (error.code) {
-          case NO_OFFENDER_NUMBER:
-          case NO_COM_ASSIGNED:
-            return error.code
+          case 'NO_OFFENDER_NUMBER':
+            return { NO_OFFENDER_NUMBER }
+          case 'NO_COM_ASSIGNED':
+            return { NO_COM_ASSIGNED }
           default:
             throw new Error(`Unexpected error received: ${error.code}: ${error.message}`)
         }
@@ -41,12 +43,17 @@ module.exports = function createCaService(roService, lduActiveClient, { continue
       const { lduCode, isAllocated } = ro
 
       const isLduActive = await lduActiveClient.isLduPresent(lduCode)
+
+      if (!isLduActive && !isAllocated) {
+        return { LDU_INACTIVE, COM_NOT_ALLOCATED }
+      }
+
       if (!isLduActive) {
-        return LDU_INACTIVE
+        return { LDU_INACTIVE }
       }
 
       if (!isAllocated) {
-        return COM_NOT_ALLOCATED
+        return { COM_NOT_ALLOCATED }
       }
       // TODO: Do we need to warn if the com isn't the current responsible officer for the offender?
       // returning null means there is no reason preventing CA from continuing referral to RO

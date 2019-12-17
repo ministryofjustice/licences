@@ -108,6 +108,10 @@ const createNomisPushServiceStub = () => ({
   pushChecksPassed: sinon.stub().resolves(),
 })
 
+const createCaServiceStub = {
+  getReasonForNotContinuing: sinon.stub().resolves({}),
+}
+
 function testFormPageGets(app, routes, licenceServiceStub) {
   context('licence exists for bookingId', () => {
     routes.forEach(route => {
@@ -189,6 +193,7 @@ const setup = {
   authenticationMiddleware,
   testFormPageGets,
   users,
+  createCaServiceStub,
   appSetup(route, user = 'caUser', prefix = '') {
     const app = express()
 

@@ -50,6 +50,13 @@ $path: "/public/images/";
     text-align: center;
 }
 
+.button.button-disabled{
+    color: $white;
+    background-color: govuk-colour("green");
+    min-width: 120px;
+    text-align: center;
+}
+
 .hdc-footer-wrapper {
     max-width: 1170px;
     padding-left: 15px;
@@ -374,7 +381,7 @@ a.namedAnchor {
 }
 
 // Case lists status markers
-.terminalStateAlert {
+.terminalStateAlert, .error {
     font-weight: bold;
     color: $red;
 }
