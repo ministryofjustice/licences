@@ -51,9 +51,7 @@ describe('/contact', () => {
         .expect(res => {
           expect(res.text).to.contain('f1 l1')
           expect(res.text).to.contain('o1')
-          expect(res.text).to.contain('j1')
           expect(res.text).to.contain('e1')
-          expect(res.text).to.contain('t1')
         })
     })
   })

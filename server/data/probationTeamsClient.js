@@ -1,6 +1,9 @@
 const superagent = require('superagent')
 const logger = require('../../log')
 const config = require('../config')
+/**
+ * @typedef {import("../../types/probationTeams").ProbationTeamsClient} ProbationTeamsClient
+ */
 
 const timeoutSpec = {
   response: config.probationTeams.timeout.response,
@@ -8,10 +11,6 @@ const timeoutSpec = {
 }
 
 const apiUrl = `${config.probationTeams.apiUrl}`
-/**
- * @typedef ProbationTeamsClient
- * @property {(lduCode: string) => Promise<string>} getFunctionalMailbox
- */
 
 /**
  * @return { ProbationTeamsClient }

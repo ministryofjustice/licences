@@ -1,4 +1,5 @@
 const nock = require('nock')
+const caseMunger = require('case')
 
 const createUserService = require('../../server/services/userAdminService')
 
@@ -7,6 +8,8 @@ describe('userAdminService', () => {
   let nomisClient
   let signInService
   let prisonerService
+  let deliusClient
+  let probationTeamsClient
   let service
 
   const user1 = {
@@ -48,9 +51,34 @@ describe('userAdminService', () => {
       getResponsibleOfficer: sinon.stub().resolves({}),
     }
 
+    deliusClient = {
+      getStaffDetailsByStaffCode: sinon.stub().resolves({
+        username: 'eric',
+        email: 'a@b.com',
+        staffCode: 'STAFF_CODE',
+        staff: { forenames: 'forename', surname: 'surname' },
+        teams: [
+          {
+            localDeliveryUnit: { code: 'lduCode', description: 'LDU Description' },
+          },
+        ],
+      }),
+    }
+
+    probationTeamsClient = {
+      getFunctionalMailbox: sinon.stub().resolves('fmb@mailbox.com'),
+    }
+
     const nomisClientBuilder = sinon.stub().returns(nomisClient)
 
-    service = createUserService(nomisClientBuilder, userClient, signInService, prisonerService)
+    service = createUserService(
+      nomisClientBuilder,
+      userClient,
+      signInService,
+      prisonerService,
+      deliusClient,
+      probationTeamsClient
+    )
   })
 
   afterEach(() => {
@@ -77,13 +105,43 @@ describe('userAdminService', () => {
     })
   })
 
-  describe('getRoUserByDeliusId', () => {
+  describe('getRoUserByDeliusId (local)', () => {
     it('should call user client with params', async () => {
       const result = await service.getRoUserByDeliusId('id')
 
       expect(userClient.getRoUserByDeliusId).to.be.calledOnce()
       expect(userClient.getRoUserByDeliusId).to.be.calledWith('id')
       expect(result.nomis_id).to.eql('user2')
+    })
+  })
+
+  describe('getRoUserByDeliusId (delius)', () => {
+    it('should call user client with params', async () => {
+      userClient.getRoUserByDeliusId.resolves(null)
+
+      const result = await service.getRoUserByDeliusId('id')
+
+      expect(userClient.getRoUserByDeliusId).to.be.calledOnce()
+      expect(userClient.getRoUserByDeliusId).to.be.calledWith('id')
+
+      expect(deliusClient.getStaffDetailsByStaffCode).to.be.calledOnce()
+      expect(deliusClient.getStaffDetailsByStaffCode).to.be.calledWith('id')
+
+      expect(probationTeamsClient.getFunctionalMailbox).to.be.calledOnce()
+      expect(probationTeamsClient.getFunctionalMailbox).to.be.calledWith('lduCode')
+
+      expect(result).to.eql({
+        deliusId: 'STAFF_CODE',
+        email: 'a@b.com',
+        first: 'Forename',
+        jobRole: undefined,
+        last: 'Surname',
+        nomisId: 'eric',
+        onboarded: true,
+        orgEmail: 'fmb@mailbox.com',
+        organisation: 'LDU Description (lduCode)',
+        telephone: undefined,
+      })
     })
   })
 
@@ -273,6 +331,11 @@ describe('userAdminService', () => {
           offenderNo: 'off1',
         },
       ])
+    })
+
+    it('case.capital() accepts null and undefined', () => {
+      expect(caseMunger.capital(null)).to.equal('')
+      expect(caseMunger.capital(undefined)).to.equal('')
     })
   })
 })

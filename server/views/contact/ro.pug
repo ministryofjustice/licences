@@ -10,8 +10,6 @@ block content
     div.pure-u-1
       div.pure-u-2-3
         h2.heading-large.midPaddingBottom Responsible officer
-      div.pure-u-1-3.largeMarginTop.alignRight.change-details
-        a(href="../ro") View all
 
       div.pure-u-1
         if (contact)
@@ -20,17 +18,13 @@ block content
               thead
                 tr
                   th Name
-                  th Role
                   th Email
-                  th Telephone
-                  th Organisation
-                  th Org email
+                  th Local Delivery Unit
+                  th Functional mailbox
               tbody
                 tr.contact
                   td.name #{contact.first} #{contact.last}
-                  td.jobRole #{contact.jobRole}
                   td.email #{contact.email}
-                  td.telephone #{contact.telephone}
                   td.organisation #{contact.organisation}
                   td.email #{contact.orgEmail}
 

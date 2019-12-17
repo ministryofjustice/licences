@@ -70,7 +70,7 @@ export interface PrisonerService {
   getPrisonerImage: (imageId: number, token: string) => Promise<any>
   getPrisonerPersonalDetails: (bookingId: number, token: string) => Promise<any>
   getOrganisationContactDetails: (role: string, bookingId: number, token: string) => Promise<any>
-} 
+}
 
 export interface CaService {
   getReasonForNotContinuing: (bookingId: number, token: string) => Promise<string | undefined>
@@ -88,5 +88,52 @@ export interface WarningClient {
   raiseWarning: (bookingId: number, code: string, messsage: string) => Promise<void>
   acknowledgeWarnings: (errorIds: number[]) => Promise<number>
   getOutstandingWarnings: () => Promise<List<Warning>>
-  getAcknowledgedWarnings: () => Promise<List<Warning>> 
+  getAcknowledgedWarnings: () => Promise<List<Warning>>
+}
+
+export interface RoUser {
+  nomisId: string
+  deliusId: string
+  first: string
+  last: string
+  organisation: string
+  jobRole: string
+  email: string
+  orgEmail: string
+  telephone: string
+  onboarded: boolean
+}
+
+export interface UserClient {
+  getRoUsers: () => Promise<[RoUser]>
+  getRoUser: (nomisId: string) => Promise<RoUser>
+  getRoUserByDeliusId: (deliusId: string) => Promise<RoUser>
+  getCasesRequiringRo: () => Promise<[string]>
+  addRoUser: (
+    nomisId: string,
+    deliusId: string,
+    first: string,
+    last: string,
+    organisation: string,
+    jobRole: string,
+    email: string,
+    orgEmail: string,
+    telephone: string,
+    onboarded: boolean
+  ) => Promise<bigint>
+  updateRoUser: (
+    originalNomisId: string,
+    nomisId: string,
+    deliusId: string,
+    first: string,
+    last: string,
+    organisation: string,
+    jobRole: string,
+    email: string,
+    orgEmail: string,
+    telephone: string,
+    onboarded: boolean
+  ) => Promise<bigint>
+  deleteRoUser: (nomisId: string) => Promise<bigint>
+  findRoUsers: (searchTerm: string) => Promise<[RoUser]>
 }

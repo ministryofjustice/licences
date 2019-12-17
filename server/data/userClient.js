@@ -73,8 +73,8 @@ module.exports = {
     onboarded
   ) {
     const query = {
-      text: `update staff_ids 
-                    set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5, 
+      text: `update staff_ids
+                    set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5,
                     organisation = $6, job_role = $7, email = $8, org_email = $9, telephone = $10, auth_onboarded = $11
                     where nomis_id = $1`,
       values: [
@@ -117,9 +117,9 @@ module.exports = {
 
   async findRoUsers(searchTerm) {
     const query = {
-      text: `select * from staff_ids 
-                where 
-                    upper(nomis_id) like upper($1) or 
+      text: `select * from staff_ids
+                where
+                    upper(nomis_id) like upper($1) or
                     upper(staff_id) like upper($1) or
                     upper(first_name) like upper($1) or
                     upper(last_name) like upper($1) or

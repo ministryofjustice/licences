@@ -1,13 +1,32 @@
+const R = require('ramda')
+const caseMunger = require('case')
 /**
  * @typedef {import("./prisonerService").PrisonerService} PrisonerService
+ * @typedef {import("../../types/licences").UserClient} UserClient
+ * @typedef {import("../../types/licences").RoUser} RoUser
+ * @typedef {import("../../types/delius").DeliusClient} DeliusClient
+ * @typedef {import("../../types/delius").StaffDetails} StaffDetails
+ * @typedef {import("../../types/probationTeams").ProbationTeamsClient} ProbationTeamsClient
+ *
  */
 const logger = require('../../log')
 const { isEmpty, merge, unwrapResult } = require('../utils/functionalHelpers')
 
 /**
+ *
+ * @param {UserClient} userClient
  * @param {PrisonerService} prisonerService
+ * @param {DeliusClient} deliusClient
+ * @param {ProbationTeamsClient} probationTeamsClient
  */
-module.exports = function createUserService(nomisClientBuilder, userClient, signInService, prisonerService) {
+module.exports = function createUserService(
+  nomisClientBuilder,
+  userClient,
+  signInService,
+  prisonerService,
+  deliusClient,
+  probationTeamsClient
+) {
   async function updateRoUser(
     token,
     originalNomisId,
@@ -207,6 +226,40 @@ module.exports = function createUserService(nomisClientBuilder, userClient, sign
     )
   }
 
+  async function getRoUserByDeliusId(deliusId) {
+    const roUser = await userClient.getRoUserByDeliusId(deliusId)
+    if (roUser) return roUser
+    const deliusStaffDetails = await deliusClient.getStaffDetailsByStaffCode(deliusId)
+    return deliusStaffDetailsToRoUser(deliusStaffDetails)
+  }
+
+  /**
+   * @param {StaffDetails} deliusStaffDetails
+   * @return {Promise<RoUser>}
+   */
+  async function deliusStaffDetailsToRoUser(deliusStaffDetails) {
+    const lduCode = R.path(['teams', '0', 'localDeliveryUnit', 'code'], deliusStaffDetails)
+    const lduDescription = R.path(['teams', '0', 'localDeliveryUnit', 'description'], deliusStaffDetails)
+
+    return {
+      nomisId: deliusStaffDetails.username,
+      deliusId: deliusStaffDetails.staffCode,
+      first: caseMunger.capital(R.path(['staff', 'forenames'], deliusStaffDetails)),
+      last: caseMunger.capital(R.path(['staff', 'surname'], deliusStaffDetails)),
+      organisation: lduCode ? `${lduDescription} (${lduCode})` : undefined,
+      jobRole: undefined,
+      email: deliusStaffDetails.email,
+      orgEmail: await getFmb(lduCode),
+      telephone: undefined,
+      onboarded: true,
+    }
+  }
+
+  async function getFmb(lduCode) {
+    if (!lduCode) return undefined
+    return probationTeamsClient.getFunctionalMailbox(lduCode)
+  }
+
   return {
     verifyUserDetails,
     addRoUser,
@@ -214,7 +267,7 @@ module.exports = function createUserService(nomisClientBuilder, userClient, sign
     getRoUsers: userClient.getRoUsers,
     getIncompleteRoUsers,
     getRoUser: userClient.getRoUser,
-    getRoUserByDeliusId: userClient.getRoUserByDeliusId,
+    getRoUserByDeliusId,
     deleteRoUser: userClient.deleteRoUser,
     findRoUsers: userClient.findRoUsers,
   }
