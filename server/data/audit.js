@@ -10,6 +10,7 @@ const keys = [
   'CREATE_PDF',
   'USER_MANAGEMENT',
   'VARY_NOMIS_LICENCE_CREATED',
+  'WARNINGS',
 ]
 
 module.exports = {
