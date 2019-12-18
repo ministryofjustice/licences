@@ -1,19 +1,19 @@
 const createCaService = require('../../server/services/caService')
-
+// nb: the continueCaToRoFeatureFlag is negated in the caService so false will be true and vice-versa
 describe('caService', () => {
   let roService
   let caService
   const lduActiveClient = { isLduPresent: () => {} }
 
   describe('Creating the caService', () => {
-    describe('Ro is allocated, ldu is active and continueCaToRoFeatureFlag is yes', async () => {
+    describe('Ro is allocated, ldu is active and continueCaToRoFeatureFlag is true', async () => {
       const responsibleOfficer = {
         isAllocated: true,
         lduCode: 'ldu-123',
       }
 
       roService = { findResponsibleOfficer: sinon.stub().resolves(responsibleOfficer) }
-      const config = { continueCaToRoFeatureFlag: 'yes' }
+      const config = { continueCaToRoFeatureFlag: false }
       caService = createCaService(roService, lduActiveClient, config)
 
       it('Should return null', async () => {
@@ -23,7 +23,7 @@ describe('caService', () => {
       })
     })
 
-    describe('Responsible Officer is allocated and Ldu is determined but continueCaToRoFeatureFlag is no', () => {
+    describe('Responsible Officer is allocated and Ldu is determined but continueCaToRoFeatureFlag is false', () => {
       const responsibleOfficer = {
         isAllocated: true,
         lduCode: 'ldu-123',
@@ -34,13 +34,13 @@ describe('caService', () => {
           findResponsibleOfficer: sinon.stub().resolves(responsibleOfficer),
         }
 
-        const config = { continueCaToRoFeatureFlag: 'no' }
+        const config = { continueCaToRoFeatureFlag: true }
 
         caService = createCaService(roService, lduActiveClient, config)
       })
 
       describe('getReasonForNotContinuing ', () => {
-        it('should return null because Ro is COM and ldu is active but continueCaToRoFeatureFlag is no', async () => {
+        it('should return null because Ro is COM and ldu is active but continueCaToRoFeatureFlag is false', async () => {
           lduActiveClient.isLduPresent = sinon.stub().resolves(true)
 
           const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
@@ -61,7 +61,7 @@ describe('caService', () => {
           expect(result).to.eql('COM_NOT_ALLOCATED')
         })
 
-        it('should return LDU_INACTIVE because continueCaToRoFeatureFlag is no', async () => {
+        it('should return LDU_INACTIVE because continueCaToRoFeatureFlag is false', async () => {
           lduActiveClient.isLduPresent = sinon.stub().resolves(false)
 
           const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
@@ -81,7 +81,7 @@ describe('caService', () => {
           findResponsibleOfficer: sinon.stub().resolves(error),
         }
 
-        const config = { continueCaToRoFeatureFlag: 'no' }
+        const config = { continueCaToRoFeatureFlag: true }
 
         caService = createCaService(roService, lduActiveClient, config)
       })
