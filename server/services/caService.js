@@ -16,9 +16,13 @@ const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, LDU_INACTIVE, COM_NOT_ALLOCATED } =
  * @param {RoService} roService
  * @returns {CaService} caService
  */
-module.exports = function createCaService(roService, lduActiveClient) {
+module.exports = function createCaService(roService, lduActiveClient, { continueCaToRoFeatureFlag }) {
   return {
     async getReasonForNotContinuing(bookingId, token) {
+      if (continueCaToRoFeatureFlag === 'yes') {
+        return null
+      }
+
       const [ro, error] = unwrapResult(await roService.findResponsibleOfficer(bookingId, token))
 
       if (error) {
