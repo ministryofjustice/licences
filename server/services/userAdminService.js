@@ -1,13 +1,22 @@
 /**
  * @typedef {import("./prisonerService").PrisonerService} PrisonerService
+ * @typedef {import("../../types/probationTeams").ProbationTeamsClient} ProbationTeamsClient
+
  */
 const logger = require('../../log')
 const { isEmpty, merge, unwrapResult } = require('../utils/functionalHelpers')
 
 /**
  * @param {PrisonerService} prisonerService
+ * @param {ProbationTeamsClient} probationTeamsClient
  */
-module.exports = function createUserService(nomisClientBuilder, userClient, signInService, prisonerService) {
+module.exports = function createUserService(
+  nomisClientBuilder,
+  userClient,
+  signInService,
+  prisonerService,
+  probationTeamsClient
+) {
   async function updateRoUser(
     token,
     originalNomisId,
@@ -207,6 +216,11 @@ module.exports = function createUserService(nomisClientBuilder, userClient, sign
     )
   }
 
+  const getFunctionalMailbox = async lduCode => {
+    if (!lduCode) return undefined
+    return probationTeamsClient.getFunctionalMailbox(lduCode)
+  }
+
   return {
     verifyUserDetails,
     addRoUser,
@@ -217,5 +231,6 @@ module.exports = function createUserService(nomisClientBuilder, userClient, sign
     getRoUserByDeliusId: userClient.getRoUserByDeliusId,
     deleteRoUser: userClient.deleteRoUser,
     findRoUsers: userClient.findRoUsers,
+    getFunctionalMailbox,
   }
 }

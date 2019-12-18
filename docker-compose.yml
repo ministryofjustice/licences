@@ -30,29 +30,6 @@ services:
       - GLOBAL_SEARCH_URL=http://localhost:3002/global-search
       - ENABLE_TEST_UTILS=true
 
-  probation-teams:
-    image: mojdigitalstudio/probation-teams:latest
-    networks:
-      - hmpps
-    depends_on:
-      - licence-db
-    container_name: probation-teams
-    ports:
-      - '3003:3003'
-    healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:3003/health']
-    environment:
-      - SERVER_PORT=3003
-      - DATABASE_ENDPOINT=licence-db
-      - DATABASE_NAME=licences
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://licence-db/licences
-      - DATABASE_USERNAME=probation_teams
-      - DATABASE_PASSWORD=probation_teams
-      - SUPERUSER_USERNAME=licences
-      - SUPERUSER_PASSWORD=licences
-      - OAUTH_API_BASE_URL=http://nomis-oauth2-server:8080/auth
-      - SPRING_PROFILES_ACTIVE=postgres,stdout
-
   licences-nomis-mocks:
     image: mojdigitalstudio/licences-nomis-mocks:latest
     networks:

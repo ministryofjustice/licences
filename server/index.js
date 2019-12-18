@@ -56,7 +56,13 @@ const caseListService = createCaseListService(nomisClientBuilder, roService, lic
 const pdfService = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter)
 const formService = createFormService(pdfFormatter, conditionsService, prisonerService, configClient)
 const reportingService = createReportingService(audit)
-const userAdminService = createUserAdminService(nomisClientBuilder, userClient, signInService, prisonerService)
+const userAdminService = createUserAdminService(
+  nomisClientBuilder,
+  userClient,
+  signInService,
+  prisonerService,
+  probationTeamsClient
+)
 const userService = createUserService(nomisClientBuilder)
 const deadlineService = createDeadlineService(licenceClient)
 const roContactDetailsService = createRoContactDetailsService(userAdminService, roService, probationTeamsClient)
