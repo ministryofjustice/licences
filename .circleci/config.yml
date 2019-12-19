@@ -133,6 +133,7 @@ jobs:
       NOMIS_AUTH_URL: https://nomis-oauth2-server.herokuapp.com/auth
       DELIUS_API_URL: https://licences-demo-mocks.herokuapp.com/communityapi
       PROBATION_TEAMS_API_URL: https://licences-demo-mocks.herokuapp.com/probationteams
+      CONTINUE_CA_TO_RO_FEATURE_FLAG: yes
     steps:
       - checkout
       - attach_workspace:

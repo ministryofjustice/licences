@@ -49,7 +49,7 @@ const deliusClient = createDeliusClient(signInService)
 const probationTeamsClient = createProbationTeamsClient(signInService)
 
 const roService = createRoService(deliusClient, nomisClientBuilder)
-const caService = createCaService(roService, lduActiveClient)
+const caService = createCaService(roService, lduActiveClient, config)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
 const caseListFormatter = createCaseListFormatter(logger, licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
