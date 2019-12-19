@@ -32,8 +32,8 @@ div#personalDetails.pure-g.borderBottom.paddingBottom
       if (prisonerInfo.com)
         span#prisonerComName.block.bold
           if (prisonerInfo.com)
-            if(prisonerInfo.com.deliusId && prisonerInfo.com.name)
-              a(href="/hdc/contact/ro/" + prisonerInfo.com.deliusId) #{prisonerInfo.com.name}
+            if(bookingId && prisonerInfo.com.name)
+              a(href="/hdc/contact/" + bookingId) #{prisonerInfo.com.name}
             else if(prisonerInfo.com.name)
               | #{prisonerInfo.com.name}
             else if(prisonerInfo.com.message)

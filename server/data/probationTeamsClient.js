@@ -9,8 +9,7 @@ const timeoutSpec = {
 
 const apiUrl = `${config.probationTeams.apiUrl}`
 /**
- * @typedef ProbationTeamsClient
- * @property {(lduCode: string) => Promise<string>} getFunctionalMailbox
+ * @typedef {import("../../types/probationTeams").ProbationTeamsClient} ProbationTeamsClient
  */
 
 /**

@@ -1,21 +1,33 @@
 const { asyncMiddleware } = require('../utils/middleware')
-
-module.exports = ({ userAdminService }) => router => {
+const { unwrapResult } = require('../utils/functionalHelpers')
+/**
+ * @typedef {import("../../types/licences").RoService} RoService
+ * @typedef {import("../../types/licences").ResponsibleOfficerResult} ResponsibleOfficerResult
+ * @typedef {import("../../types/licences").ResponsibleOfficer} ResponsibleOfficer
+ */
+/**
+ *
+ * @param userAdminService
+ * @param {RoService} roService
+ * @returns {function(*): *}
+ */
+module.exports = (userAdminService, roService) => router => {
   router.get(
-    '/ro/',
+    '/:theBookingId',
     asyncMiddleware(async (req, res) => {
-      const roUsers = await userAdminService.getRoUsers()
-      return res.render('contact/roList', { roUsers })
-    })
-  )
+      // because 'bookingId' is treated specially - see standardRouter.js
+      const { theBookingId } = req.params
+      const [ro] = unwrapResult(await roService.findResponsibleOfficer(theBookingId, res.locals.token))
 
-  router.get(
-    '/ro/:deliusUserId',
-    asyncMiddleware(async (req, res) => {
-      const { deliusUserId } = req.params
-      const contact = await userAdminService.getRoUserByDeliusId(deliusUserId)
+      const contact = ro && ro.deliusId && (await userAdminService.getRoUserByDeliusId(ro.deliusId))
+      if (contact) {
+        return res.render('contact/ro', { contact })
+      }
 
-      return res.render('contact/ro', { contact })
+      return res.render('contact/deliusRo', {
+        ro,
+        functionalMailbox: ro && ro.lduCode && (await userAdminService.getFunctionalMailbox(ro.lduCode)),
+      })
     })
   )
 
