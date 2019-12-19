@@ -91,7 +91,7 @@ function getFieldName(fieldConfig) {
 function unwrapResult(result) {
   const error = /** @type { Error } */ (result)
   const success = /** @type { T } */ (result)
-  const isError = Boolean(error.message)
+  const isError = Boolean(error && error.message)
   return [!isError ? success : undefined, isError ? error : undefined]
 }
 

@@ -27,6 +27,22 @@ describe('/contact', () => {
         probationAreaDescription: 'PA Description',
         probationAreaCode: 'PA_CODE',
       }),
+      getStaffByCode: sinon.stub().resolves({
+        username: 'username',
+        email: '123456@somewhere.com',
+        staffCode: 'DELIUS_ID',
+        staff: { forenames: 'RO', surname: 'Name' },
+        teams: [
+          {
+            code: 'TEAM_CODE',
+            description: 'The Team',
+            telephone: '01234567890',
+            localDeliveryUnit: { code: 'ABC123', description: 'LDU Description' },
+            district: { code: 'D', description: 'District' },
+            borough: { code: 'B', description: 'Borough' },
+          },
+        ],
+      }),
     }
 
     userAdminService = {
@@ -63,6 +79,7 @@ describe('/contact', () => {
           expect(res.text).to.contain('PA Description')
           expect(res.text).to.contain('PA_CODE')
           expect(res.text).to.contain('abc@def.com')
+          expect(res.text).to.contain('123456@somewhere.com')
         })
     })
 
