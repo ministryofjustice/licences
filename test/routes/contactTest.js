@@ -88,6 +88,17 @@ describe('/contact', () => {
           expect(res.text).to.contain('org@email.com')
         })
     })
+
+    it('should handle absence of RO details (local and delius)', () => {
+      roService.findResponsibleOfficer.resolves({ message: 'message', code: 'ERROR_CODE' })
+
+      return request(app)
+        .get('/contact/123456')
+        .expect(200)
+        .expect(res => {
+          expect(res.text).to.contain('No contact details found')
+        })
+    })
   })
 })
 
