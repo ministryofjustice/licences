@@ -50,7 +50,8 @@ module.exports = signInService => {
 
       return result.body
     } catch (error) {
-      logger.warn('Error calling delius', path, error.response, error.stack)
+      const message = error && error.response && error.response.text
+      logger.error(`Error calling delius: ${path}, message: '${message}'`, error.stack)
       throw error
     }
   }
