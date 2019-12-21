@@ -19,7 +19,7 @@ module.exports = {
       throw new Error(`Unknown audit key: ${key}`)
     }
 
-    logger.audit('AUDIT', { key })
+    logger.info('AUDIT', { key })
 
     return addItem(key, user, data)
       .then(() => {
