@@ -7,7 +7,6 @@ const { flattenMeta } = require('./server/misc')
 const logger = new winston.Logger()
 
 winston.addColors({
-  audit: 'cyan',
   error: 'red',
   warn: 'yellow',
   info: 'green',
