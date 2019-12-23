@@ -1,19 +1,12 @@
-const winston = require('winston')
-const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
+// eslint-disable-next-line import/order
 const appInsights = require('./azure-appinsights')
+const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
+const winston = require('winston')
 const { flattenMeta } = require('./server/misc')
 
 const logger = new winston.Logger()
 
-logger.setLevels({
-  audit: 0,
-  error: 1,
-  warn: 2,
-  info: 3,
-  debug: 4,
-})
 winston.addColors({
-  audit: 'cyan',
   error: 'red',
   warn: 'yellow',
   info: 'green',
@@ -72,6 +65,5 @@ if (appInsights) {
     return flattenMeta(meta)
   })
 }
-/** @type {winston.LoggerInstance & {audit?: Function }} */
-const log = logger
-module.exports = log
+
+module.exports = logger
