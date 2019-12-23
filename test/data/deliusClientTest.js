@@ -38,7 +38,10 @@ describe('deliusClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeDelius.get(`/staff/staffCode/1`).reply(500)
+      fakeDelius
+        .get(`/staff/staffCode/1`)
+        .thrice()
+        .reply(500, '1')
 
       return expect(deliusClient.getStaffDetailsByStaffCode('1')).to.be.rejected()
     })
@@ -52,7 +55,10 @@ describe('deliusClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeDelius.get(`/staff/staffCode/1`).reply(500)
+      fakeDelius
+        .get(`/staff/staffCode/1`)
+        .thrice()
+        .reply(500)
 
       return expect(deliusClient.getStaffDetailsByUsername('1')).to.be.rejected()
     })
@@ -66,7 +72,10 @@ describe('deliusClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeDelius.get(`/staff/staffCode/1/managedOffenders`).reply(500)
+      fakeDelius
+        .get(`/staff/staffCode/1/managedOffenders`)
+        .thrice()
+        .reply(500)
 
       return expect(deliusClient.getROPrisoners('1')).to.be.rejected()
     })
@@ -80,7 +89,10 @@ describe('deliusClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeDelius.get(`/offenders/nomsNumber/1/allOffenderManagers`).reply(500)
+      fakeDelius
+        .get(`/offenders/nomsNumber/1/allOffenderManagers`)
+        .thrice()
+        .reply(500)
 
       return expect(deliusClient.getAllOffenderManagers('1')).to.be.rejected()
     })

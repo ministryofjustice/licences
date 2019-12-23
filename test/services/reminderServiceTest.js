@@ -48,6 +48,12 @@ describe('reminderService', () => {
       expect(result).to.eql({ overdue: 2, due: 1, soon: 1 })
     })
 
+    it('should handle when no establishment', async () => {
+      prisonerService.getEstablishmentForPrisoner = sinon.stub().resolves(null)
+      const result = await service.notifyRoReminders('token')
+      expect(result).to.eql({ overdue: 2, due: 1, soon: 1 })
+    })
+
     it('should do nothing further if empty notifiable cases', async () => {
       deadlineService.getDueInDays = sinon.stub().resolves()
       deadlineService.getOverdue = sinon.stub().resolves()

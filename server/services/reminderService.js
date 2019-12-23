@@ -78,7 +78,7 @@ module.exports = function createReminderService(
   async function getNotificationData(bookingId, token) {
     try {
       /** @type {[{premise: string}, Result<ResponsibleOfficerAndContactDetails>]} */
-      const [{ premise: prison }, roResult] = await Promise.all([
+      const [establishment, roResult] = await Promise.all([
         prisonerService.getEstablishmentForPrisoner(bookingId, token),
         roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
       ])
@@ -89,6 +89,7 @@ module.exports = function createReminderService(
         return error
       }
 
+      const { premise: prison } = establishment || {}
       return [roWithContactDetails, prison]
     } catch (error) {
       logger.error('Error loading data for reminder', error.stack)

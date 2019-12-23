@@ -170,7 +170,7 @@ describe('NotificationService', () => {
         probationAreaDescription: 'prob-desc-1',
       }
       roContactDetailsService.getResponsibleOfficerWithContactDetails.resolves(responsibleOfficer)
-      prisonerService.getEstablishmentForPrisoner.resolves({})
+      prisonerService.getEstablishmentForPrisoner.resolves(null)
 
       await notificationService.send({
         transition: transitionForDestinations.bassReview,
