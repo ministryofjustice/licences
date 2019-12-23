@@ -58,7 +58,7 @@ module.exports = function createNotificationService(
   }
 
   async function sendRo({ transition, bookingId, token, user }) {
-    const [{ premise: prison }, result] = await Promise.all([
+    const [establishment, result] = await Promise.all([
       prisonerService.getEstablishmentForPrisoner(bookingId, token),
       roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
     ])
@@ -71,7 +71,7 @@ module.exports = function createNotificationService(
       }
       return
     }
-
+    const { premise: prison } = establishment || {}
     if (isEmpty(prison)) {
       logger.error(`Missing prison for bookingId: ${bookingId}`)
       return
