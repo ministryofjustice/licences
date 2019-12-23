@@ -8,24 +8,24 @@ const superagent = require('superagent')
 const logger = require('../../log')
 const config = require('../config')
 
-const timeoutSpec = {
-  response: config.delius.timeout.response,
-  deadline: config.delius.timeout.deadline,
-}
-
-const agentOptions = {
-  maxSockets: config.nomis.agent.maxSockets,
-  maxFreeSockets: config.nomis.agent.maxFreeSockets,
-  freeSocketTimeout: config.nomis.agent.freeSocketTimeout,
-}
-
-const apiUrl = `${config.delius.apiUrl}${config.delius.apiPrefix}`
-const keepaliveAgent = apiUrl.startsWith('https') ? new HttpsAgent(agentOptions) : new Agent(agentOptions)
-
 /**
  * @return { DeliusClient }
  */
 module.exports = signInService => {
+  const timeoutSpec = {
+    response: config.delius.timeout.response,
+    deadline: config.delius.timeout.deadline,
+  }
+
+  const agentOptions = {
+    maxSockets: config.nomis.agent.maxSockets,
+    maxFreeSockets: config.nomis.agent.maxFreeSockets,
+    freeSocketTimeout: config.nomis.agent.freeSocketTimeout,
+  }
+
+  const apiUrl = `${config.delius.apiUrl}${config.delius.apiPrefix}`
+  const keepaliveAgent = apiUrl.startsWith('https') ? new HttpsAgent(agentOptions) : new Agent(agentOptions)
+
   return {
     getStaffDetailsByStaffCode(staffCode) {
       return get(`${apiUrl}/staff/staffCode/${staffCode}`)

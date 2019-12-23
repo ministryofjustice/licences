@@ -43,7 +43,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeNomis.get(`/bookings/1`).reply(500)
+      fakeNomis
+        .get(`/bookings/1`)
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getBooking('1')).to.be.rejected()
     })
@@ -57,7 +60,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeNomis.get(`/images/1`).reply(500)
+      fakeNomis
+        .get(`/images/1`)
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getImageInfo('1')).to.be.rejected()
     })
@@ -77,7 +83,10 @@ describe('nomisClient', () => {
     })
 
     it('should throw if api fails', () => {
-      fakeNomis.get(`/images/1`).reply(500)
+      fakeNomis
+        .get(`/images/1`)
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getImageData('1')).to.be.rejected()
     })
@@ -108,7 +117,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeNomis.get(url).reply(500)
+      fakeNomis
+        .get(url)
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getHdcEligiblePrisoners()).to.be.rejected()
     })
@@ -268,7 +280,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeNomis.get(`/bookings/1/aliases`).reply(500)
+      fakeNomis
+        .get(`/bookings/1/aliases`)
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getAliases('1')).to.be.rejected()
     })
@@ -282,7 +297,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeNomis.get(`/bookings/1/identifiers`).reply(500)
+      fakeNomis
+        .get(`/bookings/1/identifiers`)
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getIdentifiers('1')).to.be.rejected()
     })
@@ -296,7 +314,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeNomis.get(`/bookings/1/mainOffence`).reply(500)
+      fakeNomis
+        .get(`/bookings/1/mainOffence`)
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getMainOffence('1')).to.be.rejected()
     })
@@ -310,7 +331,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeNomis.get(`/agencies/prison/1`).reply(500)
+      fakeNomis
+        .get(`/agencies/prison/1`)
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getEstablishment('1')).to.be.rejected()
     })
@@ -325,16 +349,6 @@ describe('nomisClient', () => {
 
     afterEach(() => {
       clock.restore()
-    })
-
-    it('should not try to refresh if not an unauthorised response', () => {
-      fakeNomis
-        .get(`/agencies/prison/1`)
-        .reply(500)
-        .get(`/agencies/prison/1`)
-        .reply(200, { response: 'this' })
-
-      return expect(nomisClient.getEstablishment('1')).to.be.rejected()
     })
 
     it('should not try to refresh twice in a row', () => {
@@ -395,7 +409,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeAuth.get('/api/user/userName').reply(500)
+      fakeAuth
+        .get('/api/user/userName')
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getUserInfo('userName')).to.be.rejected()
     })
@@ -409,7 +426,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeAuth.get('/api/user/me').reply(500)
+      fakeAuth
+        .get('/api/user/me')
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getLoggedInUserInfo()).to.be.rejected()
     })
@@ -423,7 +443,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeAuth.get('/api/user/me/roles').reply(500)
+      fakeAuth
+        .get('/api/user/me/roles')
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getUserRoles()).to.be.rejected()
     })
@@ -437,7 +460,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeNomis.get('/users/me/caseLoads').reply(500)
+      fakeNomis
+        .get('/users/me/caseLoads')
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.getUserCaseLoads()).to.be.rejected()
     })
@@ -451,7 +477,10 @@ describe('nomisClient', () => {
     })
 
     it('should reject if api fails', () => {
-      fakeNomis.put('/users/me/activeCaseLoad').reply(500)
+      fakeNomis
+        .put('/users/me/activeCaseLoad')
+        .thrice()
+        .reply(500)
 
       return expect(nomisClient.putActiveCaseLoad('id')).to.be.rejected()
     })
