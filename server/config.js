@@ -35,6 +35,11 @@ module.exports = {
       response: 30000,
       deadline: 35000,
     },
+    agent: {
+      maxSockets: 100,
+      maxFreeSockets: 10,
+      freeSocketTimeout: 30000,
+    },
     apiClientId: get('API_CLIENT_ID', 'licences'),
     apiClientSecret: get('API_CLIENT_SECRET', 'clientsecret'),
     admin: {
@@ -50,6 +55,15 @@ module.exports = {
     admin: {
       apiClientId: get('DELIUS_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
       apiClientSecret: get('DELIUS_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret')),
+    },
+    timeout: {
+      response: 30000,
+      deadline: 35000,
+    },
+    agent: {
+      maxSockets: 100,
+      maxFreeSockets: 10,
+      freeSocketTimeout: 30000,
     },
     apiPrefix: get('DELIUS_API_PREFIX', '/api'),
   },

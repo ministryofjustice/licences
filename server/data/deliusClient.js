@@ -1,16 +1,26 @@
 /**
  * @typedef {import("../../types/delius").DeliusClient} DeliusClient
  */
+/** @type {any} */
+const Agent = require('agentkeepalive')
+const { HttpsAgent } = require('agentkeepalive')
 const superagent = require('superagent')
 const logger = require('../../log')
 const config = require('../config')
 
 const timeoutSpec = {
-  response: config.nomis.timeout.response,
-  deadline: config.nomis.timeout.deadline,
+  response: config.delius.timeout.response,
+  deadline: config.delius.timeout.deadline,
+}
+
+const agentOptions = {
+  maxSockets: config.nomis.agent.maxSockets,
+  maxFreeSockets: config.nomis.agent.maxFreeSockets,
+  freeSocketTimeout: config.nomis.agent.freeSocketTimeout,
 }
 
 const apiUrl = `${config.delius.apiUrl}${config.delius.apiPrefix}`
+const keepaliveAgent = apiUrl.startsWith('https') ? new HttpsAgent(agentOptions) : new Agent(agentOptions)
 
 /**
  * @return { DeliusClient }
@@ -44,7 +54,12 @@ module.exports = signInService => {
       logger.debug(`GET ${path}`)
       const result = await superagent
         .get(path)
+        .agent(keepaliveAgent)
         .set('Authorization', `Bearer ${token.token}`)
+        .retry(2, err => {
+          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
+          return undefined // retry handler only for logging retries, not to influence retry logic
+        })
         .timeout(timeoutSpec)
       logger.debug(`GET ${path} -> ${result.status}`)
 

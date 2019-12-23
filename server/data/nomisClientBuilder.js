@@ -4,6 +4,9 @@
  *
  */
 
+/** @type {any} */
+const Agent = require('agentkeepalive')
+const { HttpsAgent } = require('agentkeepalive')
 const moment = require('moment')
 const superagent = require('superagent')
 const logger = require('../../log')
@@ -18,6 +21,14 @@ const timeoutSpec = {
 
 const { apiUrl, authUrl } = config.nomis
 const invalidDate = 'Invalid date'
+
+const agentOptions = {
+  maxSockets: config.nomis.agent.maxSockets,
+  maxFreeSockets: config.nomis.agent.maxFreeSockets,
+  freeSocketTimeout: config.nomis.agent.freeSocketTimeout,
+}
+
+const keepaliveAgent = apiUrl.startsWith('https') ? new HttpsAgent(agentOptions) : new Agent(agentOptions)
 
 module.exports = token => {
   const nomisGet = nomisGetBuilder(token)
@@ -166,9 +177,14 @@ function nomisGetBuilder(token) {
       logger.debug(`GET ${path}`)
       const result = await superagent
         .get(path)
+        .agent(keepaliveAgent)
         .query(query)
         .set('Authorization', `Bearer ${token}`)
         .set(headers)
+        .retry(2, err => {
+          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
+          return undefined // retry handler only for logging retries, not to influence retry logic
+        })
         .responseType(responseType)
         .timeout(timeoutSpec)
 
@@ -208,6 +224,7 @@ function nomisPushBuilder(verb, token) {
 async function post(token, path, body, headers, responseType) {
   return superagent
     .post(path)
+    .agent(keepaliveAgent)
     .send(body)
     .set('Authorization', `Bearer ${token}`)
     .set(headers)
@@ -218,6 +235,7 @@ async function post(token, path, body, headers, responseType) {
 async function put(token, path, body, headers, responseType) {
   return superagent
     .put(path)
+    .agent(keepaliveAgent)
     .send(body)
     .set('Authorization', `Bearer ${token}`)
     .set(headers)
