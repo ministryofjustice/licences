@@ -65,7 +65,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
     it('should return error message for NO_OFFENDER_NUMBER', async () => {
       licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
-      caService.getReasonForNotContinuing.resolves({ NO_OFFENDER_NUMBER: 'NO_OFFENDER_NUMBER' })
+      caService.getReasonForNotContinuing.resolves(['NO_OFFENDER_NUMBER'])
 
       const app = createApp({
         licenceServiceStub: licenceService,
@@ -84,7 +84,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
     it('should return error message for NO_COM_ASSIGNED', async () => {
       licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
-      caService.getReasonForNotContinuing.resolves({ NO_COM_ASSIGNED: 'NO_COM_ASSIGNED' })
+      caService.getReasonForNotContinuing.resolves(['NO_COM_ASSIGNED'])
 
       const app = createApp({
         licenceServiceStub: licenceService,
@@ -103,7 +103,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
     it('should return error messages for LDU_INACTIVE plus COM_NOT_ALLOCATED', async () => {
       licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
-      const errors = { LDU_INACTIVE: 'LDU_INACTIVE', COM_NOT_ALLOCATED: 'COM_NOT_ALLOCATED' }
+      const errors = ['LDU_INACTIVE', 'COM_NOT_ALLOCATED']
       caService.getReasonForNotContinuing.resolves(errors)
 
       const app = createApp({
@@ -126,7 +126,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
     it('should disable the Start now button if there is an error', async () => {
       licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
-      caService.getReasonForNotContinuing.resolves({ LDU_INACTIVE: 'LDU_INACTIVE' })
+      caService.getReasonForNotContinuing.resolves(['LDU_INACTIVE'])
 
       const app = createApp({
         licenceServiceStub: licenceService,
@@ -145,7 +145,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
     it('should NOT disable the Start now button if there are no errors', async () => {
       licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
-      caService.getReasonForNotContinuing.resolves()
+      caService.getReasonForNotContinuing.resolves([])
 
       const app = createApp({
         licenceServiceStub: licenceService,

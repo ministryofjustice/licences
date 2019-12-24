@@ -10,7 +10,6 @@ const { getAllowedTransition } = require('../utils/licenceStatusTransitions')
 const { isEmpty } = require('../utils/functionalHelpers')
 const getTaskListModel = require('./viewModels/taskListModels')
 const logger = require('../../log')
-const caTasks = require('../routes/viewModels/taskLists/caTasks')
 const taskListErrors = require('./config/taskListErrors')
 
 /**
@@ -38,15 +37,23 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => rout
       const licenceStatus = getLicenceStatus(licence)
       const allowedTransition = getAllowedTransition(licenceStatus, req.user.role)
       const { statusLabel } = getStatusLabel(licenceStatus, req.user.role)
-      let taskListModel
-      const errorCodes = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
-      const errorObject = errorCodes ? getAllErrorMessages(errorCodes) : null
+      let errors
 
-      if (licenceStatus.stage === 'ELIGIBILITY' && req.user.role === 'CA' && errorObject) {
-        taskListModel = caTasks.getCaTasksEligibilityLduInactive(licenceStatus)
-      } else {
-        taskListModel = getTaskListModel(req.user.role, postRelease, licenceStatus, licence || {}, allowedTransition)
+      if (licenceStatus.stage === 'ELIGIBILITY' && req.user.role === 'CA') {
+        const errorCodesList = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+        if (errorCodesList.length > 0) {
+          errors = errorCodesList.map(error => taskListErrors[error])
+        }
       }
+
+      const taskListModel = getTaskListModel(
+        req.user.role,
+        postRelease,
+        licenceStatus,
+        licence || {},
+        allowedTransition,
+        errors
+      )
 
       res.render('taskList/taskListBuilder', {
         licenceStatus,
@@ -58,7 +65,7 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => rout
         bookingId,
         taskListModel,
         postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage),
-        errorObject,
+        errors,
       })
     })
   )
@@ -110,12 +117,4 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => rout
   )
 
   return router
-}
-
-const getAllErrorMessages = errorCodes => {
-  const errorMsgs = Object.keys(errorCodes)
-  return {
-    errMsg1: taskListErrors[errorMsgs[0]],
-    errMsg2: taskListErrors[errorMsgs[1]],
-  }
 }

@@ -17,35 +17,6 @@ const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
 
 module.exports = {
-  getCaTasksEligibilityLduInactive: ({ optedOut, eligible, decisions, tasks }) => {
-    const { eligibility, optOut } = tasks
-    const eligibilityDone = eligibility === 'DONE'
-    const optOutUnstarted = optOut === 'UNSTARTED'
-
-    return [
-      {
-        task: 'eligibilityTask',
-        visible: true,
-      },
-      {
-        title: 'Inform the offender',
-        label: 'You should now tell the offender using the relevant HDC form from NOMIS',
-        action: {
-          type: 'btn-secondary',
-          href: '/caseList/active',
-          text: 'Back to case list',
-        },
-        visible: eligibilityDone && optOutUnstarted && !optedOut,
-      },
-      {
-        title: 'Curfew address',
-        label: proposedAddress.getLabel({ decisions, tasks }),
-        action: { text: 'Start now', type: 'btn-disabled', href: '' },
-        visible: eligible,
-      },
-    ]
-  },
-
   getCaTasksEligibility: ({ decisions, tasks, allowedTransition }) => {
     const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions
     const { eligibility, optOut } = tasks

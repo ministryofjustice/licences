@@ -75,7 +75,7 @@ export interface PrisonerService {
 } 
 
 export interface CaService {
-  getReasonForNotContinuing: (bookingId: number, token: string) => Promise<object | undefined>
+  getReasonForNotContinuing: (bookingId: number, token: string) => Promise<Array<string> | undefined>
 }
 
 export interface Warning {

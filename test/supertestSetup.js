@@ -109,7 +109,7 @@ const createNomisPushServiceStub = () => ({
 })
 
 const createCaServiceStub = {
-  getReasonForNotContinuing: sinon.stub().resolves({}),
+  getReasonForNotContinuing: sinon.stub().resolves([]),
 }
 
 function testFormPageGets(app, routes, licenceServiceStub) {

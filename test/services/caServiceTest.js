@@ -15,10 +15,10 @@ describe('caService', () => {
     caService = createCaService(roService, lduActiveClient, config)
 
     describe('getReasonForNotContinuing', async () => {
-      it('Should return null', async () => {
+      it('Should return []', async () => {
         lduActiveClient.isLduPresent = sinon.stub().resolves(true)
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).to.eql(null)
+        expect(result).to.eql([])
       })
     })
   })
@@ -30,17 +30,17 @@ describe('caService', () => {
     })
 
     describe('getReasonForNotContinuing', async () => {
-      it('should return null because RO is allocated, Ldu is active', async () => {
+      it('should return [] because RO is allocated, Ldu is active', async () => {
         lduActiveClient.isLduPresent = sinon.stub().resolves(true)
 
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).to.eql(null)
+        expect(result).to.eql([])
       })
 
       it('should return LDU_INACTIVE', async () => {
         lduActiveClient.isLduPresent = sinon.stub().resolves(false)
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).to.eql({ LDU_INACTIVE: 'LDU_INACTIVE' })
+        expect(result).to.eql(['LDU_INACTIVE'])
       })
 
       it('should return COM_NOT_ALLOCATED', async () => {
@@ -48,7 +48,7 @@ describe('caService', () => {
         responsibleOfficer.isAllocated = false
 
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).to.eql({ COM_NOT_ALLOCATED: 'COM_NOT_ALLOCATED' })
+        expect(result).to.eql(['COM_NOT_ALLOCATED'])
       })
 
       it('should return LDU_INACTIVE and COM_NOT_ALLOCATED', async () => {
@@ -57,7 +57,7 @@ describe('caService', () => {
         roService = { findResponsibleOfficer: sinon.stub().resolves(responsibleOfficer) }
 
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).to.eql({ LDU_INACTIVE: 'LDU_INACTIVE', COM_NOT_ALLOCATED: 'COM_NOT_ALLOCATED' })
+        expect(result).to.eql(['LDU_INACTIVE', 'COM_NOT_ALLOCATED'])
       })
     })
   })
@@ -78,13 +78,13 @@ describe('caService', () => {
     })
     it('should return NO_OFFENDER_NUMBER because no offender number on nomis for bookingId', async () => {
       const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-      expect(result).to.eql({ NO_OFFENDER_NUMBER: 'NO_OFFENDER_NUMBER' })
+      expect(result).to.eql(['NO_OFFENDER_NUMBER'])
     })
 
     it('should return NO_COM_ASSIGNED', async () => {
       error.code = 'NO_COM_ASSIGNED'
       const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-      expect(result).to.eql({ NO_COM_ASSIGNED: 'NO_COM_ASSIGNED' })
+      expect(result).to.eql(['NO_COM_ASSIGNED'])
     })
   })
 })
