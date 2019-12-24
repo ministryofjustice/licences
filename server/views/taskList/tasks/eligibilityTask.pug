@@ -1,13 +1,5 @@
-div.largeMarginBottom
-  if errorObject && Object.keys(errorObject).length !== 0
-    div.error-summary(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
-      h2.heading-medium.error-summary-heading.center.noMargin.smallPaddingTopBottom#error-summary-heading
-        | There is a problem
-      ul.error-summary-list
-        each errorMsg in errorObject
-          li.error #{errorMsg}
-  div
-    h2.heading-medium Check eligibility
+div
+  h2.heading-medium Check eligibility
   if licenceStatus.tasks.eligibility !== 'DONE'
     div.pure-g
       div.pure-u-1.pure-u-md-3-4
