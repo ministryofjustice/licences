@@ -71,6 +71,7 @@ describe('roContactDetailsService', () => {
         email: 'ro@ro.email',
         functionalMailbox: 'admin@ro.email',
         organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+        isUnlinkedAccount: false,
       })
       expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('delius-1')
       expect(roService.getStaffByCode).not.to.be.calledWith('delius-1')
@@ -86,11 +87,16 @@ describe('roContactDetailsService', () => {
       expect(userAdminService.getRoUserByDeliusId).not.to.be.called()
     })
 
-    it('no staff record local, found in delius', async () => {
+    it('no staff record local, linked user found in delius', async () => {
       roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
 
       userAdminService.getRoUserByDeliusId.resolves(null)
-      roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1', lduDescription: 'Sheffield' })
+
+      roService.findResponsibleOfficer.resolves({
+        deliusId: 'delius-1',
+        lduDescription: 'Sheffield',
+        lduCode: 'SHF-1',
+      })
       probationTeamsService.getFunctionalMailbox.resolves('ro-org@email.com')
       roService.getStaffByCode.resolves({ email: 'ro@ro.email.com', username: 'user-1' })
 
@@ -101,7 +107,37 @@ describe('roContactDetailsService', () => {
         email: 'ro@ro.email.com',
         functionalMailbox: 'ro-org@email.com',
         lduDescription: 'Sheffield',
-        organisation: 'Sheffield',
+        isUnlinkedAccount: false,
+        lduCode: 'SHF-1',
+        organisation: 'Sheffield (SHF-1)',
+      })
+      expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('delius-1')
+      expect(roService.getStaffByCode).to.be.calledWith('delius-1')
+    })
+
+    it('no staff record local, un-linked user found in delius', async () => {
+      roService.findResponsibleOfficer.resolves({ deliusId: 'delius-1' })
+
+      userAdminService.getRoUserByDeliusId.resolves(null)
+
+      roService.findResponsibleOfficer.resolves({
+        deliusId: 'delius-1',
+        lduDescription: 'Sheffield',
+        lduCode: 'SHF-1',
+      })
+      probationTeamsService.getFunctionalMailbox.resolves('ro-org@email.com')
+      roService.getStaffByCode.resolves({})
+
+      const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
+
+      expect(result).to.eql({
+        deliusId: 'delius-1',
+        email: undefined,
+        functionalMailbox: 'ro-org@email.com',
+        lduDescription: 'Sheffield',
+        isUnlinkedAccount: true,
+        lduCode: 'SHF-1',
+        organisation: 'Sheffield (SHF-1)',
       })
       expect(userAdminService.getRoUserByDeliusId).to.be.calledWith('delius-1')
       expect(roService.getStaffByCode).to.be.calledWith('delius-1')

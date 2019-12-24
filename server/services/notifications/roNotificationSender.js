@@ -9,7 +9,7 @@ const { getRoCaseDueDate, getRoNewCaseDueDate } = require('../../utils/dueDates'
 /**
  * @return {RoNotificationSender}
  */
-module.exports = function createNotificationService(
+module.exports = function createRoNotificationSender(
   notificationSender,
   { notifications: { activeNotificationTypes, clearingOfficeEmail, clearingOfficeEmailEnabled }, domain }
 ) {
@@ -42,7 +42,7 @@ module.exports = function createNotificationService(
 
       const sendToRo = !isEmpty(email)
       const sendToRoOrg = !isEmpty(functionalMailbox)
-      const sendToClearing = sendToClearingOffice && !clearingOfficeEmailDisabled && (sendToRo || sendToRoOrg)
+      const sendToClearing = sendToClearingOffice && !clearingOfficeEmailDisabled
 
       return [
         ...(sendToRo ? [{ personalisation, email, templateName: templateNames.STANDARD }] : []),
