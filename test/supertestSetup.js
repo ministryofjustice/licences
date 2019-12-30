@@ -1,5 +1,4 @@
 const request = require('supertest')
-const sinon = require('sinon')
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
@@ -11,133 +10,133 @@ const auth = require('./mockAuthentication')
 const { authenticationMiddleware } = auth
 
 const loggerStub = {
-  debug: sinon.stub(),
-  info: sinon.stub(),
-  error: sinon.stub(),
+  debug: jest.fn(),
+  info: jest.fn(),
+  error: jest.fn(),
 }
 
 const auditStub = {
-  record: sinon.stub(),
+  record: jest.fn(),
 }
 
 const createSignInServiceStub = () => ({
-  signIn: sinon.stub().resolves(),
-  refresh: sinon.stub().resolves(),
-  getClientCredentialsTokens: sinon.stub().resolves({ token: 'system-token' }),
+  signIn: jest.fn().mockReturnValue(),
+  refresh: jest.fn().mockReturnValue(),
+  getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-token' }),
 })
 
 const createLicenceServiceStub = () => ({
-  getLicence: sinon.stub().resolves({ licence: { key: 'value' } }),
-  update: sinon.stub().resolves(),
-  updateSection: sinon.stub().resolves(),
-  updateLicenceConditions: sinon.stub().resolves(),
-  deleteLicenceCondition: sinon.stub().resolves(),
-  markForHandover: sinon.stub().resolves(),
-  createLicence: sinon.stub().resolves(),
-  updateAddress: sinon.stub().resolves(),
-  updateAddresses: sinon.stub().resolves(),
-  getEligibilityErrors: sinon.stub().returns(),
-  addAddress: sinon.stub().resolves(),
-  addSplitDateFields: sinon.stub().returnsArg(0),
-  removeDecision: sinon.stub().resolves({}),
-  validateForm: sinon.stub().returns({}),
-  validateFormGroup: sinon.stub().returns({}),
-  rejectProposedAddress: sinon.stub().returns({}),
-  reinstateProposedAddress: sinon.stub().returns({}),
-  createLicenceFromFlatInput: sinon.stub().resolves({}),
-  addCurfewHoursInput: sinon.stub().returns({}),
+  getLicence: jest.fn().mockReturnValue({ licence: { key: 'value' } }),
+  update: jest.fn().mockReturnValue(),
+  updateSection: jest.fn().mockReturnValue(),
+  updateLicenceConditions: jest.fn().mockReturnValue(),
+  deleteLicenceCondition: jest.fn().mockReturnValue(),
+  markForHandover: jest.fn().mockReturnValue(),
+  createLicence: jest.fn().mockReturnValue(),
+  updateAddress: jest.fn().mockReturnValue(),
+  updateAddresses: jest.fn().mockReturnValue(),
+  getEligibilityErrors: jest.fn().mockReturnValue(),
+  addAddress: jest.fn().mockReturnValue(),
+  addSplitDateFields: jest.fn(arg => arg),
+  removeDecision: jest.fn().mockReturnValue({}),
+  validateForm: jest.fn().mockReturnValue({}),
+  validateFormGroup: jest.fn().mockReturnValue({}),
+  rejectProposedAddress: jest.fn().mockReturnValue({}),
+  reinstateProposedAddress: jest.fn().mockReturnValue({}),
+  createLicenceFromFlatInput: jest.fn().mockReturnValue({}),
+  addCurfewHoursInput: jest.fn().mockReturnValue({}),
 })
 
 const createConditionsServiceStub = () => ({
-  getStandardConditions: sinon.stub().resolves(),
-  getAdditionalConditions: sinon.stub().resolves(),
-  formatConditionInputs: sinon.stub().resolves(),
-  populateLicenceWithConditions: sinon.stub().resolves({}),
+  getStandardConditions: jest.fn().mockReturnValue(),
+  getAdditionalConditions: jest.fn().mockReturnValue(),
+  formatConditionInputs: jest.fn().mockReturnValue(),
+  populateLicenceWithConditions: jest.fn().mockReturnValue({}),
 })
 
 const createPrisonerServiceStub = () => ({
-  getEstablishmentForPrisoner: sinon.stub().resolves(),
-  getResponsibleOfficer: sinon.stub().resolves(),
-  getPrisonerDetails: sinon.stub().resolves({}),
-  getPrisonerImage: sinon.stub().resolves({ image: 'image' }),
-  getPrisonerPersonalDetails: sinon.stub().resolves({ firstName: 'fn', lastName: 'ln', dateOfBirth: '1980-01-01' }),
+  getEstablishmentForPrisoner: jest.fn().mockReturnValue(),
+  getResponsibleOfficer: jest.fn().mockReturnValue(),
+  getPrisonerDetails: jest.fn().mockReturnValue({}),
+  getPrisonerImage: jest.fn().mockReturnValue({ image: 'image' }),
+  getPrisonerPersonalDetails: jest.fn().mockReturnValue({ firstName: 'fn', lastName: 'ln', dateOfBirth: '1980-01-01' }),
 })
 
 const createPdfServiceStub = () => ({
-  getPdfLicenceData: sinon.stub().resolves(),
-  checkAndTakeSnapshot: sinon.stub().resolves(),
-  getPdf: sinon.stub().resolves(),
-  generatePdf: sinon.stub().resolves(),
-  updateLicenceType: sinon.stub().resolves(),
+  getPdfLicenceData: jest.fn().mockReturnValue(),
+  checkAndTakeSnapshot: jest.fn().mockReturnValue(),
+  getPdf: jest.fn().mockReturnValue(),
+  generatePdf: jest.fn().mockReturnValue(),
+  updateLicenceType: jest.fn().mockReturnValue(),
 })
 
 const createFormServiceStub = () => ({
-  generatePdf: sinon.stub().resolves(),
+  generatePdf: jest.fn().mockReturnValue(),
 })
 
 const createUserAdminServiceStub = () => ({
-  getRoUsers: sinon.stub().resolves(),
-  getIncompleteRoUsers: sinon.stub().resolves(),
-  getRoUser: sinon.stub().resolves(),
-  getRoUserByDeliusId: sinon.stub().resolves({}),
-  updateRoUser: sinon.stub().resolves(),
-  deleteRoUser: sinon.stub().resolves(),
-  addRoUser: sinon.stub().resolves(),
-  findRoUsers: sinon.stub().resolves(),
-  verifyUserDetails: sinon.stub().resolves(),
+  getRoUsers: jest.fn().mockReturnValue(),
+  getIncompleteRoUsers: jest.fn().mockReturnValue(),
+  getRoUser: jest.fn().mockReturnValue(),
+  getRoUserByDeliusId: jest.fn().mockReturnValue({}),
+  updateRoUser: jest.fn().mockReturnValue(),
+  deleteRoUser: jest.fn().mockReturnValue(),
+  addRoUser: jest.fn().mockReturnValue(),
+  findRoUsers: jest.fn().mockReturnValue(),
+  verifyUserDetails: jest.fn().mockReturnValue(),
 })
 
 const createWarningsClientStub = () => ({
-  raiseWarning: sinon.stub().resolves(),
-  acknowledgeWarnings: sinon.stub().resolves(),
-  getOutstandingWarnings: () => sinon.stub().resolves(),
-  getAcknowledgedWarnings: () => sinon.stub().resolves(),
+  raiseWarning: jest.fn().mockReturnValue(),
+  acknowledgeWarnings: jest.fn().mockReturnValue(),
+  getOutstandingWarnings: () => jest.fn().mockReturnValue(),
+  getAcknowledgedWarnings: () => jest.fn().mockReturnValue(),
 })
 
 const createNotificationServiceStub = () => ({
-  notify: sinon.stub().resolves(),
-  getNotificationData: sinon.stub().resolves(),
+  notify: jest.fn().mockReturnValue(),
+  getNotificationData: jest.fn().mockReturnValue(),
 })
 
 const caseListServiceStub = {
-  getHdcCaseList: sinon.stub().resolves([]),
+  getHdcCaseList: jest.fn().mockReturnValue([]),
 }
 
 const createNomisPushServiceStub = () => ({
-  pushStatus: sinon.stub().resolves(),
-  pushChecksPassed: sinon.stub().resolves(),
+  pushStatus: jest.fn().mockReturnValue(),
+  pushChecksPassed: jest.fn().mockReturnValue(),
 })
 
 const createCaServiceStub = {
-  getReasonForNotContinuing: sinon.stub().resolves([]),
+  getReasonForNotContinuing: jest.fn().mockReturnValue([]),
 }
 
 function testFormPageGets(app, routes, licenceServiceStub) {
-  context('licence exists for bookingId', () => {
+  describe('licence exists for bookingId', () => {
     routes.forEach(route => {
-      it(`renders the ${route.url} page`, () => {
+      test(`renders the ${route.url} page`, () => {
         return request(app)
           .get(route.url)
           .expect(200)
           .expect('Content-Type', /html/)
           .expect(res => {
-            expect(res.text).to.contain(route.content)
+            expect(res.text).toContain(route.content)
           })
       })
     })
   })
 
-  context('licence doesnt exists for bookingId', () => {
+  describe('licence doesnt exists for bookingId', () => {
     beforeEach(() => {
-      licenceServiceStub.getLicence.resolves(null)
+      licenceServiceStub.getLicence.mockResolvedValue(null)
     })
     routes.forEach(route => {
-      it(`renders the ${route.url} page`, () => {
+      test(`renders the ${route.url} page`, () => {
         return request(app)
           .get(route.url)
           .expect(302)
           .expect(res => {
-            expect(res.header.location).to.equal('/')
+            expect(res.header.location).toBe('/')
           })
       })
     })

@@ -4,7 +4,12 @@ const config = require('../config')
 const logger = require('../../log.js')
 const createJobUtils = require('./jobs/jobUtils')
 
-module.exports = function createJobSchedulerService(dbLockingClient, configClient, notificationJobs) {
+module.exports = function createJobSchedulerService(
+  dbLockingClient,
+  configClient,
+  notificationJobs,
+  scheduleJob = schedule.scheduleJob
+) {
   const { autostart, overlapTimeout } = config.jobs
 
   const jobUtils = createJobUtils(dbLockingClient)
@@ -101,7 +106,7 @@ module.exports = function createJobSchedulerService(dbLockingClient, configClien
     if (executions[job.name]) {
       executions[job.name].reschedule(spec)
     } else {
-      executions[job.name] = schedule.scheduleJob(job.name, spec, job.function)
+      executions[job.name] = scheduleJob(job.name, spec, job.function)
     }
   }
 

@@ -1,14 +1,16 @@
 const { curfewAddressCheckFormFileName } = require('../../../server/routes/utils/pdfUtils')
 
 describe('curfewAddressCheckFormFileName', () => {
-  let clock
+  let realDateNow
 
   beforeEach(() => {
-    clock = sinon.useFakeTimers(new Date('May 31, 2018 12:00:00').getTime())
+    const time = new Date('May 31, 2018 12:00:00')
+    realDateNow = Date.now.bind(global.Date)
+    global.Date = jest.fn(() => time)
   })
 
   afterEach(() => {
-    clock.restore()
+    global.Date.now = realDateNow
   })
 
   const examples = [
@@ -47,8 +49,8 @@ describe('curfewAddressCheckFormFileName', () => {
   ]
 
   examples.forEach(example => {
-    it('generates filename using prisoner details, omitting empties', () => {
-      expect(curfewAddressCheckFormFileName(example.prisoner)).to.eql(example.filename)
+    test('generates filename using prisoner details, omitting empties', () => {
+      expect(curfewAddressCheckFormFileName(example.prisoner)).toEqual(example.filename)
     })
   })
 })

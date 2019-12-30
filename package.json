@@ -11,7 +11,8 @@
     "build": "npm run clean && npm run css-build",
     "start": "node server.js",
     "start:dev": "npm run build && DEBUG=gov-starter-server* nodemon server.js",
-    "test": "mocha",
+    "test": "jest",
+    "test-ci": "jest --runInBand",
     "lint": "eslint .",
     "typecheck": "tsc",
     "record-build-info": "node ./bin/record-build-info",
@@ -59,6 +60,30 @@
     "url": "https://github.com/noms-digital-studio/licences/issues"
   },
   "homepage": "https://github.com/noms-digital-studio/licences#readme",
+  "jest": {
+    "collectCoverageFrom": [
+      "(server|test)/**/*.{js,jsx,mjs}"
+    ],
+    "testMatch": [
+      "<rootDir>/(server|job|test)/**/?(*.)(spec|test).{js,jsx,mjs}"
+    ],
+    "testEnvironment": "node",
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "test-results/jest/"
+        }
+      ],
+      [
+        "./node_modules/jest-html-reporter",
+        {
+          "outputPath": "test-results/unit-test-reports.html"
+        }
+      ]
+    ]
+  },
   "dependencies": {
     "@ministryofjustice/express-template-to-pdf": "^2.1.0",
     "adm-zip": "^0.4.13",
@@ -116,24 +141,19 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.14",
-    "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
-    "dirty-chai": "^2.0.1",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-config-prettier": "^4.3.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.1",
     "husky": "^1.3.1",
+    "jest": "^24.9.0",
+    "jest-html-reporter": "^2.8.0",
+    "jest-junit": "^10.0.0",
     "lint-staged": "^8.2.1",
-    "mocha": "^5.2.0",
-    "mocha-junit-reporter": "^1.23.1",
     "nock": "^9.6.1",
     "pdf-parse": "^1.1.1",
     "prettier": "1.16.4",
-    "proxyquire": "^2.1.3",
-    "sinon": "^6.3.5",
-    "sinon-chai": "^3.3.0",
     "supertest": "^3.4.2",
     "typescript": "^3.7.2"
   }

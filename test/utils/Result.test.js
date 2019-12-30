@@ -1,120 +1,120 @@
 const Result = require('../../server/utils/Result')
 
 describe('Result', () => {
-  it('builds Success', () => {
-    expect(Result.Success('a').isSuccess()).to.eql(true)
+  test('builds Success', () => {
+    expect(Result.Success('a').isSuccess()).toBe(true)
   })
 
-  it('builds Fail', () => {
-    expect(Result.Fail('error').isSuccess()).to.eql(false)
+  test('builds Fail', () => {
+    expect(Result.Fail('error').isSuccess()).toBe(false)
   })
 
-  it('Success has a value', () => {
-    expect(Result.Success('a').success()).to.eql('a')
+  test('Success has a value', () => {
+    expect(Result.Success('a').success()).toBe('a')
   })
 
-  it('Success has no error', () => {
-    expect(() => Result.Success('a').fail()).to.throw()
+  test('Success has no error', () => {
+    expect(() => Result.Success('a').fail()).toThrowError()
   })
 
-  it('Fail has no value', () => {
-    expect(() => Result.Fail('a').success()).to.throw()
+  test('Fail has no value', () => {
+    expect(() => Result.Fail('a').success()).toThrowError()
   })
 
-  it('Fail has an error', () => {
-    expect(Result.Fail('error').fail()).to.eql('error')
+  test('Fail has an error', () => {
+    expect(Result.Fail('error').fail()).toBe('error')
   })
 
-  it('mapping Success yields Success', () => {
+  test('mapping Success yields Success', () => {
     expect(
       Result.Success('a')
         .map(v => v + v)
         .isSuccess()
-    ).to.eql(true)
+    ).toBe(true)
   })
 
-  it('mapping a Success', () => {
+  test('mapping a Success', () => {
     expect(
       Result.Success('a')
         .map(v => v + v)
         .success()
-    ).to.eql('aa')
+    ).toBe('aa')
   })
 
-  it('async mapping a Success', async () => {
+  test('async mapping a Success', async () => {
     const result = await Result.Success('a').mapAsync(async v => v + v)
-    expect(result.success()).to.eql('aa')
+    expect(result.success()).toBe('aa')
   })
 
-  it('async mapping a Failure', async () => {
+  test('async mapping a Failure', async () => {
     const result = await Result.Fail('a').mapAsync(async v => v + v)
-    expect(result.fail()).to.eql('a')
+    expect(result.fail()).toBe('a')
   })
 
-  it('Success.orRecoverAsync', async () => {
+  test('Success.orRecoverAsync', async () => {
     const resultP = Result.Success('a').orRecoverAsync(() => Result.Success('a'))
-    expect(resultP).to.be.instanceOf(Promise)
+    expect(resultP).toBeInstanceOf(Promise)
     const result = await resultP
-    expect(result.isSuccess()).to.eql(true)
-    expect(result.success()).to.eql('a')
+    expect(result.isSuccess()).toBe(true)
+    expect(result.success()).toBe('a')
   })
 
-  it('Fail.orRecoverAsync -> Success', async () => {
+  test('Fail.orRecoverAsync -> Success', async () => {
     const resultP = Result.Fail('error').orRecoverAsync(async () => Result.Success('b'))
-    expect(resultP).to.be.instanceOf(Promise)
+    expect(resultP).toBeInstanceOf(Promise)
     const result = await resultP
-    expect(result.isSuccess()).to.eql(true)
-    expect(result.success()).to.eql('b')
+    expect(result.isSuccess()).toBe(true)
+    expect(result.success()).toBe('b')
   })
 
-  it('Fail.orRecoverAsync -> Success', async () => {
+  test('Fail.orRecoverAsync -> Success', async () => {
     const resultP = Result.Fail('error1').orRecoverAsync(async () => Result.Fail('error2'))
-    expect(resultP).to.be.instanceOf(Promise)
+    expect(resultP).toBeInstanceOf(Promise)
     const result = await resultP
-    expect(result.isSuccess()).to.eql(false)
-    expect(result.fail()).to.eql('error2')
+    expect(result.isSuccess()).toBe(false)
+    expect(result.fail()).toBe('error2')
   })
 
-  it('flatMap Success -> Success', () => {
+  test('flatMap Success -> Success', () => {
     const result = Result.Success('a').flatMap(value => Result.Success(value + value))
-    expect(result.success()).to.eql('aa')
-    expect(result.isSuccess()).to.eql(true)
+    expect(result.success()).toBe('aa')
+    expect(result.isSuccess()).toBe(true)
   })
 
-  it('flatMap Success -> Fail', () => {
+  test('flatMap Success -> Fail', () => {
     const result = Result.Success('a').flatMap(value => Result.Fail(`error: ${value}`))
-    expect(result.fail()).to.eql('error: a')
-    expect(result.isSuccess()).to.eql(false)
+    expect(result.fail()).toBe('error: a')
+    expect(result.isSuccess()).toBe(false)
   })
 
-  it('mapping a Fail yields Fail', () => {
+  test('mapping a Fail yields Fail', () => {
     expect(
       Result.Fail('a')
         .map(v => v + v)
         .isSuccess()
-    ).to.eql(false)
+    ).toBe(false)
   })
 
-  it('mapping a Fail', () => {
+  test('mapping a Fail', () => {
     expect(
       Result.Fail('error')
         .map(x => x + x)
         .fail()
-    ).to.eql('error')
+    ).toBe('error')
   })
 
-  it('flatMap Fail', () => {
+  test('flatMap Fail', () => {
     const result = Result.Fail('error').flatMap(value => Result.Success(value + value))
 
-    expect(result.fail()).to.eql('error')
-    expect(result.isSuccess()).to.eql(false)
+    expect(result.fail()).toBe('error')
+    expect(result.isSuccess()).toBe(false)
   })
 
-  it('match Success', () => {
-    expect(Result.Success('a').match(v => v + v, () => 'fail')).to.eql('aa')
+  test('match Success', () => {
+    expect(Result.Success('a').match(v => v + v, () => 'fail')).toBe('aa')
   })
 
-  it('match Fail', () => {
-    expect(Result.Fail('a').match(v => v + v, e => `fail: ${e}`)).to.eql('fail: a')
+  test('match Fail', () => {
+    expect(Result.Fail('a').match(v => v + v, e => `fail: ${e}`)).toBe('fail: a')
   })
 })
