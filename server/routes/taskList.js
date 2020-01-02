@@ -41,9 +41,7 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => rout
 
       if (licenceStatus.stage === 'ELIGIBILITY' && req.user.role === 'CA') {
         const errorCodesList = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
-        if (errorCodesList.length > 0) {
-          errors = errorCodesList.map(error => taskListErrors[error])
-        }
+        errors = errorCodesList.map(error => taskListErrors[error])
       }
 
       const taskListModel = getTaskListModel(
