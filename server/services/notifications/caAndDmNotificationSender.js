@@ -8,7 +8,7 @@ const { getIn, isEmpty } = require('../../utils/functionalHelpers')
 /**
  *  @param {PrisonerService} prisonerService
  */
-module.exports = function createNotificationService(
+module.exports = function createCaAndDmNotificationSender(
   prisonerService,
   roContactDetailsService,
   configClient,

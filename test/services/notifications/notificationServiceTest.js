@@ -188,10 +188,18 @@ describe('NotificationService', () => {
     })
 
     it('caToRo when delius staff records are not linked to user', async () => {
-      roContactDetailsService.getResponsibleOfficerWithContactDetails.resolves({
-        code: STAFF_NOT_LINKED,
-        message: 'Staff and user not linked in delius: STAFF-1',
-      })
+      const responsibleOfficer = {
+        name: 'Jo Smith',
+        deliusId: 'STAFF-1',
+        lduCode: 'code-1',
+        lduDescription: 'lduDescription-1',
+        nomsNumber: 'AAAA12',
+        probationAreaCode: 'prob-code-1',
+        probationAreaDescription: 'prob-desc-1',
+        isUnlinkedAccount: true,
+      }
+
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.resolves(responsibleOfficer)
 
       await notificationService.send({
         transition: transitionForDestinations.bassReview,
@@ -208,9 +216,19 @@ describe('NotificationService', () => {
         'Staff and user not linked in delius: STAFF-1'
       )
 
-      expect(roNotificationSender.sendNotifications).not.to.be.called()
-      expect(audit.record).not.to.be.called()
-      expect(licenceService.markForHandover).not.to.be.called()
+      expect(roNotificationSender.sendNotifications).to.be.calledWith({
+        bookingId,
+        responsibleOfficer,
+        prison: 'HMP Blah',
+        notificationType: 'RO_NEW',
+        sendingUserName: username,
+      })
+      expect(audit.record).to.be.calledWith('SEND', username, {
+        bookingId,
+        submissionTarget: responsibleOfficer,
+        transitionType: 'caToRo',
+      })
+      expect(licenceService.markForHandover).to.be.calledWith(bookingId, 'caToRo')
       expect(licenceService.removeDecision).not.to.be.called()
     })
 

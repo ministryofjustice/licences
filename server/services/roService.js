@@ -8,7 +8,7 @@
 const setCase = require('case')
 const logger = require('../../log.js')
 const { isEmpty } = require('../utils/functionalHelpers')
-const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, STAFF_NOT_PRESENT, STAFF_NOT_LINKED } = require('./serviceErrors')
+const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, STAFF_NOT_PRESENT } = require('./serviceErrors')
 
 /**
  * @param {DeliusClient} deliusClient
@@ -33,10 +33,6 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
     async getStaffByCode(staffCode) {
       try {
         const result = await deliusClient.getStaffDetailsByStaffCode(staffCode)
-
-        if (!result.email || !result.username) {
-          return { code: STAFF_NOT_LINKED, message: `Staff and user not linked in delius: ${staffCode}` }
-        }
         return result
       } catch (error) {
         if (error.status === 404) {

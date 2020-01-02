@@ -1,4 +1,8 @@
 /**
+ * @template T
+ * @typedef {import("../../../types/licences").Result<T>} Result
+ */
+/**
  * @typedef {import("../../../types/licences").RoContactDetailsService} RoContactDetailsService
  * @typedef {import("../../../types/licences").RoNotificationSender} RoNotificationSender
  * @typedef {import("../../../types/licences").PrisonerService} PrisonerService
@@ -58,23 +62,27 @@ module.exports = function createNotificationService(
   }
 
   async function sendRo({ transition, bookingId, token, user }) {
+    /** @type {[{premise: string}, Result<ResponsibleOfficerAndContactDetails>]} */
     const [establishment, result] = await Promise.all([
       prisonerService.getEstablishmentForPrisoner(bookingId, token),
       roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
     ])
 
     const [responsibleOfficer, error] = unwrapResult(result)
+
     if (error) {
       logger.error(`Problem retrieving contact details: ${error.message}`)
-      if (error.code === STAFF_NOT_LINKED) {
-        await warningClient.raiseWarning(bookingId, error.code, error.message)
-      }
       return
     }
+
     const { premise: prison } = establishment || {}
     if (isEmpty(prison)) {
       logger.error(`Missing prison for bookingId: ${bookingId}`)
       return
+    }
+
+    if (responsibleOfficer.isUnlinkedAccount) {
+      await raiseUnlinkedAccountWarning(bookingId, responsibleOfficer.deliusId)
     }
 
     await licenceService.markForHandover(bookingId, transition.type)
@@ -88,6 +96,11 @@ module.exports = function createNotificationService(
       notificationType: transition.notificationType,
       sendingUserName: sendingUserName(user),
     })
+  }
+
+  async function raiseUnlinkedAccountWarning(bookingId, deliusId) {
+    logger.info(`Staff and user not linked in delius: ${deliusId}`)
+    await warningClient.raiseWarning(bookingId, STAFF_NOT_LINKED, `Staff and user not linked in delius: ${deliusId}`)
   }
 
   function auditEvent(user, bookingId, transitionType, submissionTarget) {

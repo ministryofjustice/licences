@@ -41,6 +41,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
 
     return {
       ...deliusRo,
+      isUnlinkedAccount: false,
       email,
       functionalMailbox: orgEmail,
       organisation,
@@ -51,6 +52,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
    * @typedef Mailboxes
    * @property {string} email
    * @property {string} functionalMailbox
+   * @property {boolean} isUnlinkedAccount
    *
    * @param {string} deliusId
    * @param {string} lduCode
@@ -65,6 +67,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
     const functionalMailbox = await probationTeamsClient.getFunctionalMailbox(lduCode)
     logger.info(`Got functional mailbox: '${functionalMailbox}' for '${lduCode}'`)
     return {
+      isUnlinkedAccount: staff.username === undefined,
       email: staff.email,
       functionalMailbox,
     }
@@ -92,9 +95,10 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
 
       return {
         ...deliusRo,
+        isUnlinkedAccount: mailboxes.isUnlinkedAccount,
         email: mailboxes.email,
         functionalMailbox: mailboxes.functionalMailbox,
-        organisation: deliusRo.lduDescription, // TODO: check this
+        organisation: `${deliusRo.lduDescription} (${deliusRo.lduCode})`,
       }
     },
 
