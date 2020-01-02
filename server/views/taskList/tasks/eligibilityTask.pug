@@ -4,7 +4,7 @@ div.largeMarginBottom
     div.pure-g
       div.pure-u-1.pure-u-md-3-4
         | Not completed
-      div.pure-u-1.pure-u-md-1-4.center
+      div.pure-u-1.pure-u-md-1-4.center.negativeMarginTop30
         if licenceStatus.tasks.eligibility === 'UNSTARTED'
           form(method="post", name="eligibilityStart", action='/hdc/taskList/eligibilityStart/')
             input(type="hidden" name="_csrf" value=csrfToken)

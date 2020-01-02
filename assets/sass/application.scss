@@ -149,6 +149,10 @@ $path: "/public/images/";
   margin-bottom: .83333em;
 }
 
+.negativeMarginTop30 {
+    margin-top:-30px
+}
+
 @media only screen and (max-width:640px) {
     .taskListAction {margin: 0; width: 100%; margin-top: 20px};
     .change {padding-top: 2em};
