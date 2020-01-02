@@ -7,6 +7,7 @@ const {
   appSetup,
   auditStub,
   createSignInServiceStub,
+  createCaServiceStub,
 } = require('../supertestSetup')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -34,17 +35,140 @@ const prisonerInfoResponse = {
 describe('GET /taskList/:prisonNumber', () => {
   let prisonerService
   let licenceService
+  let caService
 
   beforeEach(() => {
     licenceService = createLicenceServiceStub()
     prisonerService = createPrisonerServiceStub()
-    prisonerService.getPrisonerDetails = sinon.stub().resolves(prisonerInfoResponse)
+    prisonerService.getPrisonerDetails = sinon.stub().returns(prisonerInfoResponse)
+    caService = createCaServiceStub
   })
 
   describe('User is CA', () => {
+    it('should call caService.getReasonForNotContinuing', async () => {
+      licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(() => {
+          expect(caService.getReasonForNotContinuing).to.be.calledOnce()
+        })
+    })
+
+    it('should return error message for NO_OFFENDER_NUMBER', async () => {
+      licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
+      caService.getReasonForNotContinuing.resolves(['NO_OFFENDER_NUMBER'])
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).to.include('Offender number required but it is not entered in Delius')
+        })
+    })
+
+    it('should return error message for NO_COM_ASSIGNED', async () => {
+      licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
+      caService.getReasonForNotContinuing.resolves(['NO_COM_ASSIGNED'])
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).to.include('A Community Offender Manager has not been assigned')
+        })
+    })
+
+    it('should return error messages for LDU_INACTIVE plus COM_NOT_ALLOCATED', async () => {
+      licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
+      const errors = ['LDU_INACTIVE', 'COM_NOT_ALLOCATED']
+      caService.getReasonForNotContinuing.resolves(errors)
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).to.include(
+            'The Local Delivery Unit is in a geographical area that is currently inactive. Please refer via Nomis'
+          )
+          expect(res.text).to.include('The Community Offender Manager (COM) assigned is a pseudo.')
+        })
+    })
+
+    it('should disable the Start now button if there is an error', async () => {
+      licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
+      caService.getReasonForNotContinuing.resolves(['LDU_INACTIVE'])
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).to.include('button-disabled')
+        })
+    })
+
+    it('should NOT disable the Start now button if there are no errors', async () => {
+      licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
+      caService.getReasonForNotContinuing.resolves([])
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).to.not.include('button-disabled')
+        })
+    })
+
     it('should call getPrisonerDetails from prisonerDetailsService', () => {
       licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: {} })
-      const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
       return request(app)
         .get('/taskList/123')
         .expect(200)
@@ -57,7 +181,11 @@ describe('GET /taskList/:prisonNumber', () => {
 
     it('should should show ARD if no CRD', () => {
       licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: {} })
-      const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
       return request(app)
         .get('/taskList/123')
         .expect(200)
@@ -86,7 +214,11 @@ describe('GET /taskList/:prisonNumber', () => {
         },
       })
 
-      const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
 
       return request(app)
         .get('/taskList/1233456')
@@ -99,7 +231,11 @@ describe('GET /taskList/:prisonNumber', () => {
     it('should handle no eligibility', () => {
       licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: {} })
 
-      const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
 
       return request(app)
         .get('/taskList/1233456')
@@ -112,7 +248,11 @@ describe('GET /taskList/:prisonNumber', () => {
     context('when the is no licence in the db for the offender', () => {
       it('should still load the taskList', () => {
         licenceService.getLicence.resolves(null)
-        const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
         return request(app)
           .get('/taskList/123')
           .expect(200)
@@ -131,7 +271,11 @@ describe('GET /taskList/:prisonNumber', () => {
     })
 
     it('should redirect to eligibility section', () => {
-      const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
 
       return request(app)
         .post('/taskList/eligibilityStart')
@@ -144,7 +288,11 @@ describe('GET /taskList/:prisonNumber', () => {
 
     context('licence exists in db', () => {
       it('should not create a new licence', () => {
-        const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
 
         return request(app)
           .post('/taskList/eligibilityStart')
@@ -161,7 +309,11 @@ describe('GET /taskList/:prisonNumber', () => {
         licenceService.getLicence.resolves(undefined)
         licenceService.createLicence.resolves()
 
-        const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
 
         return request(app)
           .post('/taskList/eligibilityStart')
@@ -177,7 +329,11 @@ describe('GET /taskList/:prisonNumber', () => {
         licenceService.getLicence.resolves(undefined)
         licenceService.createLicence.resolves()
 
-        const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
 
         return request(app)
           .post('/taskList/eligibilityStart')
@@ -200,7 +356,11 @@ describe('GET /taskList/:prisonNumber', () => {
     })
 
     it('should redirect to vary/evidence page', () => {
-      const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
 
       return request(app)
         .post('/taskList/varyStart')
@@ -211,7 +371,11 @@ describe('GET /taskList/:prisonNumber', () => {
 
     context('licence does not exist in db', () => {
       it('should create a new licence', () => {
-        const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
 
         return request(app)
           .post('/taskList/varyStart')
@@ -231,7 +395,11 @@ describe('GET /taskList/:prisonNumber', () => {
         licenceService.getLicence.resolves(undefined)
         licenceService.createLicence.resolves()
 
-        const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
 
         return request(app)
           .post('/taskList/varyStart')
@@ -249,7 +417,11 @@ describe('GET /taskList/:prisonNumber', () => {
 
   describe('GET /image/:imageId', () => {
     it('should return an image', () => {
-      const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
 
       return request(app)
         .get('/taskList/image/123')
@@ -260,7 +432,11 @@ describe('GET /taskList/:prisonNumber', () => {
     it('should return placeholder if no image returned from nomis', () => {
       prisonerService.getPrisonerImage.resolves(null)
 
-      const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService })
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
 
       return request(app)
         .get('/taskList/image/123')
@@ -272,7 +448,10 @@ describe('GET /taskList/:prisonNumber', () => {
   describe('User is RO', () => {
     it('should pass the client credential token not the user one', () => {
       licenceService.getLicence.resolves({ stage: 'ELIGIBILITY', licence: {} })
-      const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService }, 'roUser')
+      const app = createApp(
+        { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+        'roUser'
+      )
       return request(app)
         .get('/taskList/123')
         .expect(200)
@@ -288,7 +467,10 @@ describe('GET /taskList/:prisonNumber', () => {
         licenceService.getLicence.resolves(undefined)
         prisonerService.getPrisonerDetails.resolves({ agencyLocationId: 'Out' })
 
-        const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService }, 'roUser')
+        const app = createApp(
+          { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+          'roUser'
+        )
 
         return request(app)
           .get('/taskList/123')
@@ -303,7 +485,10 @@ describe('GET /taskList/:prisonNumber', () => {
         licenceService.getLicence.resolves({ stage: 'VARY', licence: { variedFromLicenceNotInSystem: true } })
         prisonerService.getPrisonerDetails.resolves({ agencyLocationId: 'Out' })
 
-        const app = createApp({ licenceServiceStub: licenceService, prisonerServiceStub: prisonerService }, 'roUser')
+        const app = createApp(
+          { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+          'roUser'
+        )
 
         return request(app)
           .get('/taskList/123')
@@ -317,18 +502,20 @@ describe('GET /taskList/:prisonNumber', () => {
   })
 })
 
-function createApp({ licenceServiceStub, prisonerServiceStub }, user) {
+function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub }, user) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const caService = caServiceStub || createCaServiceStub
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, caService })
   const route = baseRouter(
     createRoute({
       licenceService,
       prisonerService,
       caseListService: caseListServiceStub,
       audit: auditStub,
+      caService,
     }),
     { licenceRequired: false }
   )

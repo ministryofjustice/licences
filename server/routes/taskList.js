@@ -10,6 +10,7 @@ const { getAllowedTransition } = require('../utils/licenceStatusTransitions')
 const { isEmpty } = require('../utils/functionalHelpers')
 const getTaskListModel = require('./viewModels/taskListModels')
 const logger = require('../../log')
+const taskListErrors = require('./config/taskListErrors')
 
 /**
  * @param {object} args
@@ -18,7 +19,8 @@ const logger = require('../../log')
  * @param {any} args.audit
  * @param {CaService} args.caService
  */
-module.exports = ({ prisonerService, licenceService, audit }) => router => {
+
+module.exports = ({ prisonerService, licenceService, audit, caService }) => router => {
   router.get(
     '/:bookingId',
     asyncMiddleware(async (req, res) => {
@@ -35,13 +37,22 @@ module.exports = ({ prisonerService, licenceService, audit }) => router => {
       const licenceStatus = getLicenceStatus(licence)
       const allowedTransition = getAllowedTransition(licenceStatus, req.user.role)
       const { statusLabel } = getStatusLabel(licenceStatus, req.user.role)
+      let errors
+
+      if (licenceStatus.stage === 'ELIGIBILITY' && req.user.role === 'CA') {
+        const errorCodesList = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+        if (errorCodesList.length > 0) {
+          errors = errorCodesList.map(error => taskListErrors[error])
+        }
+      }
 
       const taskListModel = getTaskListModel(
         req.user.role,
         postRelease,
         licenceStatus,
         licence || {},
-        allowedTransition
+        allowedTransition,
+        errors
       )
 
       res.render('taskList/taskListBuilder', {
@@ -54,6 +65,7 @@ module.exports = ({ prisonerService, licenceService, audit }) => router => {
         bookingId,
         taskListModel,
         postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage),
+        errors,
       })
     })
   )

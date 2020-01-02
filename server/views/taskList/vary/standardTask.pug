@@ -15,6 +15,7 @@ mixin action(actionConfig)
   - var isLink = actionConfig.type === 'link'
   - var isButton = actionConfig.type === 'btn'
   - var isSecondaryButton = actionConfig.type === 'btn-secondary'
+  - var isDisabledButton = actionConfig.type === 'btn-disabled'
   - var target = actionConfig.newTab ? '_blank' : null
   - var link = actionConfig.href.charAt(actionConfig.href.length - 1) === '/' ? actionConfig.href + prisonerInfo.bookingId : actionConfig.href
 
@@ -26,6 +27,9 @@ mixin action(actionConfig)
 
   else if isSecondaryButton
     a.taskListAction.center.button.button-secondary(href=link, target=target) #{actionConfig.text}
+  
+  else if isDisabledButton
+    a.taskListAction.center.button.button-disabled(disabled) #{actionConfig.text}
 
 mixin label(text)
   - var sections = text.split('||')
