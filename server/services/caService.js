@@ -40,9 +40,9 @@ module.exports = function createCaService(roService, lduActiveClient, { continue
         }
       }
 
-      const { lduCode, isAllocated } = ro
+      const { lduCode, isAllocated, probationAreaCode } = ro
 
-      const isLduActive = await lduActiveClient.isLduPresent(lduCode)
+      const isLduActive = await lduActiveClient.isLduPresent(lduCode, probationAreaCode)
 
       if (!isLduActive || !isAllocated) {
         return [...(!isLduActive ? [LDU_INACTIVE] : []), ...(!isAllocated ? [COM_NOT_ALLOCATED] : [])]
