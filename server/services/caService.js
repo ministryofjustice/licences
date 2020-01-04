@@ -6,6 +6,7 @@
  * @typedef {import("../../types/licences").Error} Error
  * @typedef {import("../../types/licences").CaService} CaService
  * @typedef {import("../../types/licences").RoService} RoService
+ *  @typedef {import("../data/activeLduClient")} ActiveLduClient
  */
 
 const logger = require('../../log.js')
@@ -14,12 +15,14 @@ const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, LDU_INACTIVE, COM_NOT_ALLOCATED } =
 
 /**
  * @param {RoService} roService
+ * @param {ActiveLduClient} activeLduClient
+ * @param {boolean} preventCaToRoHandoverOnInactiveLdusFlag
  * @returns {CaService} caService
  */
-module.exports = function createCaService(roService, lduActiveClient, { continueCaToRoFeatureFlag }) {
+module.exports = function createCaService(roService, activeLduClient, preventCaToRoHandoverOnInactiveLdusFlag) {
   return {
     async getReasonForNotContinuing(bookingId, token) {
-      if (!continueCaToRoFeatureFlag) {
+      if (!preventCaToRoHandoverOnInactiveLdusFlag) {
         return []
         // When this feature is disabled, we never block the CA from continuing the case
       }
@@ -42,7 +45,7 @@ module.exports = function createCaService(roService, lduActiveClient, { continue
 
       const { lduCode, isAllocated, probationAreaCode } = ro
 
-      const isLduActive = await lduActiveClient.isLduPresent(lduCode, probationAreaCode)
+      const isLduActive = await activeLduClient.isLduPresent(lduCode, probationAreaCode)
 
       if (!isLduActive || !isAllocated) {
         return [...(!isLduActive ? [LDU_INACTIVE] : []), ...(!isAllocated ? [COM_NOT_ALLOCATED] : [])]
