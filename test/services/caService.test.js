@@ -11,8 +11,7 @@ roService = { findResponsibleOfficer: jest.fn().mockResolvedValue(responsibleOff
 
 describe('caService', () => {
   describe('Allow CA to proceed to RO', () => {
-    const config = { continueCaToRoFeatureFlag: false }
-    caService = createCaService(roService, lduActiveClient, config)
+    caService = createCaService(roService, lduActiveClient, false)
 
     describe('getReasonForNotContinuing', () => {
       it('Should return []', async () => {
@@ -25,7 +24,7 @@ describe('caService', () => {
 
   describe('Prevent CA from proceeding to RO', () => {
     beforeEach(() => {
-      const config = { continueCaToRoFeatureFlag: true }
+      const config = { preventCaToRoHandoverOnInactiveLdusFlag: true }
       caService = createCaService(roService, lduActiveClient, config)
     })
 
@@ -72,9 +71,7 @@ describe('caService', () => {
         findResponsibleOfficer: jest.fn().mockResolvedValue(error),
       }
 
-      const config = { continueCaToRoFeatureFlag: true }
-
-      caService = createCaService(roService, lduActiveClient, config)
+      caService = createCaService(roService, lduActiveClient, true)
     })
     it('should return NO_OFFENDER_NUMBER because no offender number on nomis for bookingId', async () => {
       const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
