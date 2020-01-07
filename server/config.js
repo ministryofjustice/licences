@@ -16,6 +16,8 @@ function get(name, fallback, options = {}) {
 module.exports = {
   version: 0.1,
 
+  production,
+
   enableTestUtils: get('ENABLE_TEST_UTILS', false),
 
   db: {

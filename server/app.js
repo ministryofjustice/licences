@@ -58,7 +58,7 @@ const victimRouter = require('./routes/victim')
 const varyRouter = require('./routes/vary')
 
 const version = moment.now().toString()
-const production = process.env.NODE_ENV === 'production'
+const { production } = config
 
 module.exports = function createApp({
   signInService,
