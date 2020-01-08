@@ -19,4 +19,14 @@ module.exports = {
     const { rows } = await db.query(query)
     return parseInt(rows[0].count, 10) > 0
   },
+
+  async allActiveLdusInArea(probationAreaCode) {
+    const query = {
+      text: `SELECT ldu_code FROM active_local_delivery_units WHERE probation_area_code=$1`,
+      values: [probationAreaCode],
+    }
+
+    const { rows } = await db.query(query)
+    return rows
+  },
 }

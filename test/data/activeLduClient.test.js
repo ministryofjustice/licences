@@ -46,4 +46,19 @@ describe('Save and retrieve LDU codes', () => {
       expect(result).toBe(false)
     })
   })
+
+  describe('allActiveLdusInArea', () => {
+    const allActiveLdusInProbationArea = ['ABC', 'ABC123', 'ABC987']
+    test('should return list of cross-matching (ie the active ones) ldus', async () => {
+      db.query.mockReturnValue({ rows: [...allActiveLdusInProbationArea] })
+      const result = await activeLduClient.allActiveLdusInArea(probationAreaCode)
+      expect(result).toEqual(['ABC', 'ABC123', 'ABC987'])
+    })
+
+    test('should not return any unknown ldus', async () => {
+      db.query.mockReturnValue({ rows: [...allActiveLdusInProbationArea] })
+      const result = await activeLduClient.allActiveLdusInArea(probationAreaCode)
+      expect(result).not.toEqual(['ABC', 'XYZ', 'ABC123', 'ABC987', '12345'])
+    })
+  })
 })

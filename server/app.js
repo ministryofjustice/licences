@@ -79,6 +79,7 @@ module.exports = function createApp({
   audit,
   caService,
   warningClient,
+  // lduService, // temporarily commented
 }) {
   const app = express()
 

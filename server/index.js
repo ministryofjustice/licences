@@ -1,3 +1,4 @@
+// @ts-nocheck
 const { NotifyClient } = require('notifications-node-client')
 const createApp = require('./app')
 const logger = require('../log')
@@ -41,6 +42,7 @@ const createDeliusClient = require('./data/deliusClient')
 const createProbationTeamsClient = require('./data/probationTeamsClient')
 const createRoService = require('./services/roService')
 const createCaService = require('./services/caService')
+const createLduService = require('./services/lduService')
 
 const signInService = createSignInService()
 const licenceService = createLicenceService(licenceClient)
@@ -101,6 +103,7 @@ const reminderService = createReminderService(
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
+const lduService = createLduService(deliusClient, lduActiveClient)
 
 const app = createApp({
   signInService,
@@ -121,6 +124,7 @@ const app = createApp({
   audit,
   caService,
   warningClient,
+  lduService,
 })
 
 module.exports = app

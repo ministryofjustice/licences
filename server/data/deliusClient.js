@@ -42,6 +42,14 @@ module.exports = signInService => {
     getAllOffenderManagers(offenderNo) {
       return get(`${apiUrl}/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)
     },
+
+    getAllProbationAreas() {
+      return get(`${apiUrl}/probationAreas`)
+    },
+
+    getAllLdusForProbationArea(probationAreaCode) {
+      return get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits`)
+    },
   }
 
   async function get(path) {

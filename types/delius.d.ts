@@ -70,10 +70,22 @@ interface StaffDetails {
   teams: Team[];
 }
 
+interface ProbationAreas {
+  code: string;
+  description: string;
+}
+
+interface Ldus {
+  code: string;
+  description: string;
+}
+
 export interface DeliusClient {
   getStaffDetailsByStaffCode: (staffCode : string) => Promise<StaffDetails>
   getStaffDetailsByUsername: (username: string) => Promise<StaffDetails>
   getROPrisoners: (deliusStaffCode: string) => Promise<any>
   getAllOffenderManagers: (offenderNumber: string) =>  Promise<Array<CommunityOrPrisonOffenderManager>>
+  getAllProbationAreas: ()=> Promise<Array<ProbationAreas>>
+  getAllLdusForProbationArea: (probationAreaCode: string)=> Promise<Array<Ldus>>
 }
 
