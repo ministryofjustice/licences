@@ -1,0 +1,41 @@
+
+mixin caBlockedTask(task)
+        each code in task.errorCodes
+            div.largeMarginBottom
+            case code
+                when 'NO_OFFENDER_NUMBER'
+                    + noOffenderNumber()
+                when 'LDU_INACTIVE'
+                    + lduInactive()
+                when 'COM_NOT_ALLOCATED'
+                    + comNotAllocated()
+                default
+                    p.error An unknown Error occurred
+
+
+mixin noOffenderNumber()
+    h2.heading-medium No responsible officer is assigned to this case.
+    div.pure-g
+        div.pure-u-1.pure-u-md-3-4
+            p This is because there is no offender number recorded in Delius.
+            h3.heading-small What you need to do
+            p Ask a Delius user to enter the offender number. 
+            p The relationship will then show in the HDC service.
+
+mixin lduInactive()
+    h2.heading-medium The case cannot be processed in this system.
+    div.pure-g
+        div.pure-u-1.pure-u-md-3-4
+            p This is because the assigned Responsible officer is in an area not covered by the HDC pilot.
+            h3.heading-small What you need to do
+            p Process the case in NOMIS instead
+
+mixin comNotAllocated()
+    h2.heading-medium No responsible officer is assigned to this case.
+    div.pure-g
+        div.pure-u-1.pure-u-md-3-4
+            p This is because there is no Community Offender Manager showing in Delius.
+            h3.heading-small What you need to do
+            p Ask a Delius user to assign a Community Offender Manager.  
+            p The relationship will then show in the HDC service.
+
