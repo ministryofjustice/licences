@@ -3,7 +3,6 @@ const getDmTasks = require('./taskLists/dmTasks')
 const { getRoTasksPostApproval, getRoTasks } = require('./taskLists/roTasks')
 const { getCaTasksEligibility, getCaTasksFinalChecks, getCaTasksPostApproval } = require('./taskLists/caTasks')
 const getVaryTasks = require('./taskLists/varyTasks')
-const proposedAddress = require('./taskLists/tasks/proposedAddress')
 
 const taskListsConfig = {
   caTasksEligibility: {
@@ -36,8 +35,7 @@ module.exports = (
   postRelease,
   { decisions, tasks, stage },
   { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {},
-  allowedTransition,
-  errors
+  allowedTransition
 ) => {
   const taskListName = getTaskListName(role, stage, postRelease)
 
@@ -49,27 +47,6 @@ module.exports = (
     caTasksFinalChecks: getCaTasksFinalChecks,
     caTasksPostApproval: getCaTasksPostApproval(stage),
     vary: getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence }),
-  }
-  if (errors && errors.length > 0) {
-    return [
-      {
-        task: 'eligibilityTask',
-      },
-      {
-        title: 'Inform the offender',
-        label: 'You should now tell the offender using the relevant HDC form from NOMIS',
-        action: {
-          type: 'btn-secondary',
-          href: '/caseList/active',
-          text: 'Back to case list',
-        },
-      },
-      {
-        title: 'Curfew address',
-        label: proposedAddress.getLabel({ decisions, tasks }),
-        action: { text: 'Start now', type: 'btn-disabled', href: '' },
-      },
-    ]
   }
 
   if (!getTaskListTasksMethod[taskListName]) {
