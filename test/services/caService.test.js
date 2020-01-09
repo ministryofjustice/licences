@@ -81,7 +81,7 @@ describe('caService', () => {
     it('should return NO_COM_ASSIGNED', async () => {
       error.code = 'NO_COM_ASSIGNED'
       const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-      expect(result).toEqual(['NO_COM_ASSIGNED'])
+      expect(result).toEqual(['COM_NOT_ALLOCATED'])
     })
   })
 })

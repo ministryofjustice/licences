@@ -11,7 +11,7 @@
 
 const logger = require('../../log.js')
 const { unwrapResult } = require('../utils/functionalHelpers')
-const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, LDU_INACTIVE, COM_NOT_ALLOCATED } = require('./serviceErrors')
+const { NO_OFFENDER_NUMBER, LDU_INACTIVE, NO_COM_ASSIGNED, COM_NOT_ALLOCATED } = require('./serviceErrors')
 
 /**
  * @param {RoService} roService
@@ -34,10 +34,11 @@ module.exports = function createCaService(roService, activeLduClient, preventCaT
           `Found reason for not continuing processing booking: ${bookingId}, error: ${error.code}:${error.message}`
         )
         switch (error.code) {
-          case 'NO_OFFENDER_NUMBER':
+          case NO_OFFENDER_NUMBER:
             return [NO_OFFENDER_NUMBER]
-          case 'NO_COM_ASSIGNED':
-            return [NO_COM_ASSIGNED]
+          case NO_COM_ASSIGNED:
+            // Handle NO_COM_ASSIGNED and COM_NOT_ALLOCATED in the same way
+            return [COM_NOT_ALLOCATED]
           default:
             throw new Error(`Unexpected error received: ${error.code}: ${error.message}`)
         }
@@ -51,7 +52,6 @@ module.exports = function createCaService(roService, activeLduClient, preventCaT
         return [...(!isLduActive ? [LDU_INACTIVE] : []), ...(!isAllocated ? [COM_NOT_ALLOCATED] : [])]
       }
       // TODO: Do we need to warn if the com isn't the current responsible officer for the offender?
-      // returning null means there is no reason preventing CA from continuing referral to RO
       return []
     },
   }
