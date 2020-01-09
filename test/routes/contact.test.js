@@ -64,7 +64,7 @@ describe('/contact', () => {
           expect(roService.findResponsibleOfficer).toHaveBeenCalledWith('123456', 'token')
           expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalled()
           expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('DELIUS_ID')
-          expect(userAdminService.getFunctionalMailbox).toHaveBeenCalledWith('ABC123')
+          expect(userAdminService.getFunctionalMailbox).toHaveBeenCalledWith('PA_CODE', 'ABC123')
         })
     })
 

@@ -17,8 +17,9 @@ const apiUrl = `${config.probationTeams.apiUrl}`
  */
 module.exports = signInService => {
   return {
-    getFunctionalMailbox(lduCode) {
-      return get(`${apiUrl}/local-delivery-units/${lduCode}/functional-mailbox`)
+    async getFunctionalMailbox(probationAreaCode, lduCode) {
+      const ldu = await get(`${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}`)
+      return ldu && ldu.functionalMailbox
     },
   }
 

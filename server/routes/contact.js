@@ -24,7 +24,8 @@ module.exports = (userAdminService, roService) => router => {
         return res.render('contact/ro', { contact })
       }
 
-      const functionalMailbox = ro && ro.lduCode && (await userAdminService.getFunctionalMailbox(ro.lduCode))
+      const functionalMailbox =
+        ro && ro.lduCode && (await userAdminService.getFunctionalMailbox(ro.probationAreaCode, ro.lduCode))
       const staffDetailsResult = ro && ro.deliusId && (await roService.getStaffByCode(ro.deliusId))
       const [staffDetails] = unwrapResult(staffDetailsResult)
       const email = staffDetails && staffDetails.email

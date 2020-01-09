@@ -61,10 +61,11 @@ module.exports = function createRoContactDetailsService(
    * @property {boolean} isUnlinkedAccount
    *
    * @param {string} deliusId
+   * @param {string} probationAreaCode
    * @param {string} lduCode
    * @returns {Promise<Error| Mailboxes>}
    */
-  async function getMailboxes(deliusId, lduCode) {
+  async function getMailboxes(deliusId, probationAreaCode, lduCode) {
     if (!preventCaToRoHandoverOnInactiveLdusFlag) {
       logger.info(`Looking up contact details from delius for: ${deliusId} is currently disabled`)
       return {
@@ -79,8 +80,11 @@ module.exports = function createRoContactDetailsService(
     if (error) {
       return error
     }
-    const functionalMailbox = await probationTeamsClient.getFunctionalMailbox(lduCode)
-    logger.info(`Got functional mailbox: '${functionalMailbox}' for '${lduCode}'`, staff)
+    const functionalMailbox = await probationTeamsClient.getFunctionalMailbox(probationAreaCode, lduCode)
+    logger.info(
+      `Got functional mailbox: '${functionalMailbox}' for probation area '${probationAreaCode}', ldu ${lduCode}'`,
+      staff
+    )
     return {
       isUnlinkedAccount: staff.username === undefined,
       email: staff.email,
@@ -102,7 +106,9 @@ module.exports = function createRoContactDetailsService(
         return localDetails
       }
 
-      const [mailboxes, staffLookupError] = unwrapResult(await getMailboxes(deliusRo.deliusId, deliusRo.lduCode))
+      const [mailboxes, staffLookupError] = unwrapResult(
+        await getMailboxes(deliusRo.deliusId, deliusRo.probationAreaCode, deliusRo.lduCode)
+      )
 
       if (staffLookupError) {
         return staffLookupError
