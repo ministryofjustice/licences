@@ -17,6 +17,26 @@ const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
 
 module.exports = {
+  getTasksForBlocked: ({ decisions, tasks }) => [
+    {
+      task: 'eligibilityTask',
+    },
+    {
+      title: 'Inform the offender',
+      label: 'You should now tell the offender using the relevant HDC form from NOMIS',
+      action: {
+        type: 'btn-secondary',
+        href: '/caseList/active',
+        text: 'Back to case list',
+      },
+    },
+    {
+      title: 'Curfew address',
+      label: proposedAddress.getLabel({ decisions, tasks }),
+      action: { text: 'Start now', type: 'btn-disabled', href: '' },
+    },
+  ],
+
   getCaTasksEligibility: ({ decisions, tasks, allowedTransition }) => {
     const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions
     const { eligibility, optOut } = tasks

@@ -11,6 +11,7 @@ const { isEmpty } = require('../utils/functionalHelpers')
 const getTaskListModel = require('./viewModels/taskListModels')
 const logger = require('../../log')
 const taskListErrors = require('./config/taskListErrors')
+const { getTasksForBlocked } = require('./viewModels/taskLists/caTasks')
 
 /**
  * @param {object} args
@@ -37,23 +38,8 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => rout
       const licenceStatus = getLicenceStatus(licence)
       const allowedTransition = getAllowedTransition(licenceStatus, req.user.role)
       const { statusLabel } = getStatusLabel(licenceStatus, req.user.role)
-      let errors
 
-      if (licenceStatus.stage === 'ELIGIBILITY' && req.user.role === 'CA') {
-        const errorCodesList = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
-        errors = errorCodesList.map(error => taskListErrors[error])
-      }
-
-      const taskListModel = getTaskListModel(
-        req.user.role,
-        postRelease,
-        licenceStatus,
-        licence || {},
-        allowedTransition,
-        errors
-      )
-
-      res.render('taskList/taskListBuilder', {
+      const model = {
         licenceStatus,
         licenceVersion: licence ? licence.version : 0,
         approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
@@ -61,9 +47,34 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => rout
         statusLabel,
         prisonerInfo,
         bookingId,
-        taskListModel,
         postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage),
-        errors,
+      }
+
+      if (licenceStatus.stage === 'ELIGIBILITY' && req.user.role === 'CA') {
+        const errorCodesList = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+        const errors = errorCodesList.map(error => taskListErrors[error])
+
+        if (errors.length > 0) {
+          return res.render('taskList/taskListBuilder', {
+            ...model,
+            taskListModel: getTasksForBlocked(licenceStatus),
+            errors,
+          })
+        }
+      }
+
+      const taskListModel = getTaskListModel(
+        req.user.role,
+        postRelease,
+        licenceStatus,
+        licence || {},
+        allowedTransition
+      )
+
+      res.render('taskList/taskListBuilder', {
+        ...model,
+        taskListModel,
+        errors: [],
       })
     })
   )
