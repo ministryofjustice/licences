@@ -215,7 +215,7 @@ describe('NotificationService', () => {
       expect(warningClient.raiseWarning).toHaveBeenCalledWith(
         bookingId,
         STAFF_NOT_LINKED,
-        'Staff and user not linked in delius: STAFF-1'
+        `RO with delius staff code: 'STAFF-1' and name: 'Jo Smith', responsible for managing: 'AAAA12', has unlinked staff record in delius`
       )
 
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({

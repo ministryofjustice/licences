@@ -82,25 +82,6 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should return error message for NO_COM_ASSIGNED', async () => {
-      licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
-      caService.getReasonForNotContinuing.mockResolvedValue(['NO_COM_ASSIGNED'])
-
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
-      })
-
-      return request(app)
-        .get('/taskList/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain('A Community Offender Manager has not been assigned')
-        })
-    })
-
     test('should return error messages for LDU_INACTIVE plus COM_NOT_ALLOCATED', async () => {
       licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: { anyKey: 1 } })
       const errors = ['LDU_INACTIVE', 'COM_NOT_ALLOCATED']

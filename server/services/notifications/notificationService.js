@@ -82,7 +82,7 @@ module.exports = function createNotificationService(
     }
 
     if (responsibleOfficer.isUnlinkedAccount) {
-      await raiseUnlinkedAccountWarning(bookingId, responsibleOfficer.deliusId)
+      await raiseUnlinkedAccountWarning(bookingId, responsibleOfficer)
     }
 
     await licenceService.markForHandover(bookingId, transition.type)
@@ -98,9 +98,14 @@ module.exports = function createNotificationService(
     })
   }
 
-  async function raiseUnlinkedAccountWarning(bookingId, deliusId) {
-    logger.info(`Staff and user not linked in delius: ${deliusId}`)
-    await warningClient.raiseWarning(bookingId, STAFF_NOT_LINKED, `Staff and user not linked in delius: ${deliusId}`)
+  /** Need to alert staff to link the records manually otherwise we won't be able to access the RO's email address from their user record and so won't be able to notify them  */
+  async function raiseUnlinkedAccountWarning(bookingId, { deliusId, name, nomsNumber }) {
+    logger.info(`Staff and user records not linked in delius: ${deliusId}`)
+    await warningClient.raiseWarning(
+      bookingId,
+      STAFF_NOT_LINKED,
+      `RO with delius staff code: '${deliusId}' and name: '${name}', responsible for managing: '${nomsNumber}', has unlinked staff record in delius`
+    )
   }
 
   function auditEvent(user, bookingId, transitionType, submissionTarget) {
