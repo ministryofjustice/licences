@@ -54,12 +54,12 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => rout
         licenceStatus.stage === 'ELIGIBILITY' &&
         licenceStatus.tasks.eligibility === 'DONE'
       ) {
-        const errorCodes = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+        const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
 
-        if (errorCodes.length > 0) {
+        if (errorCode) {
           return res.render('taskList/taskListBuilder', {
             ...model,
-            taskListModel: getTasksForBlocked(errorCodes),
+            taskListModel: getTasksForBlocked(errorCode),
             errors: [],
           })
         }

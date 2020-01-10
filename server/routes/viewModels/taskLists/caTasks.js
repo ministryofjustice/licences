@@ -17,7 +17,7 @@ const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
 
 module.exports = {
-  getTasksForBlocked: errorCodes => [
+  getTasksForBlocked: errorCode => [
     {
       task: 'eligibilityTask',
     },
@@ -32,7 +32,7 @@ module.exports = {
     },
     {
       task: 'caBlockedTask',
-      errorCodes,
+      errorCode,
     },
   ],
 

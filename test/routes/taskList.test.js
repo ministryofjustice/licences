@@ -116,7 +116,7 @@ describe('GET /taskList/:prisonNumber', () => {
         stage: 'ELIGIBILITY',
         licence: licenceWithEligibilityComplete,
       })
-      caService.getReasonForNotContinuing.mockResolvedValue(['NO_OFFENDER_NUMBER'])
+      caService.getReasonForNotContinuing.mockResolvedValue('NO_OFFENDER_NUMBER')
 
       const app = createApp({
         licenceServiceStub: licenceService,
@@ -129,14 +129,13 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(res.text).toContain('This is because there is no offender number recorded in Delius.')
+          expect(res.text).toContain('This is because there is no offender number recorded in Delius')
         })
     })
 
-    test('should return error messages for LDU_INACTIVE plus COM_NOT_ALLOCATED', async () => {
+    test('should return error messages for LDU_INACTIVE', async () => {
       licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: licenceWithEligibilityComplete })
-      const errors = ['LDU_INACTIVE', 'COM_NOT_ALLOCATED']
-      caService.getReasonForNotContinuing.mockResolvedValue(errors)
+      caService.getReasonForNotContinuing.mockResolvedValue('LDU_INACTIVE')
 
       const app = createApp({
         licenceServiceStub: licenceService,
@@ -150,9 +149,27 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).toContain(
-            'This is because the assigned Responsible officer is in an area not covered by the HDC pilot.'
+            'This is because the assigned Responsible officer is in an area not covered by the HDC roll out'
           )
-          expect(res.text).toContain('This is because there is no Community Offender Manager showing in Delius.')
+        })
+    })
+
+    test('should return error messages for COM_NOT_ALLOCATED', async () => {
+      licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: licenceWithEligibilityComplete })
+      caService.getReasonForNotContinuing.mockResolvedValue('COM_NOT_ALLOCATED')
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('This is because there is no Community Offender Manager showing in Delius')
         })
     })
 
