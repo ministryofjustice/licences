@@ -1,3 +1,3 @@
 export interface ProbationTeamsClient {
-  getFunctionalMailbox: (lduCode: string) => Promise<string>
+  getFunctionalMailbox: (probationAreaCode: string, lduCode: string) => Promise<string>
 }

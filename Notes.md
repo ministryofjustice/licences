@@ -42,7 +42,7 @@ If a request has a bookingId then checkLicenceMiddleware adds the following obje
 ```
       licence,         // from licenceService.getLicence
       prisoner,        // from elite2Api POST /offender-sentences/bookings with bookingId
-      postRelease      // flag, computed asprisoner.agencyLocationId === 'OUT', implies that the prisoner has been released
+      postRelease      // flag, computed as prisoner.agencyLocationId === 'OUT', implies that the prisoner has been released
       licenceStatus
 ```
 
