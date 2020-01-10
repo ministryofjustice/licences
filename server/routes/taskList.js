@@ -10,7 +10,6 @@ const { getAllowedTransition } = require('../utils/licenceStatusTransitions')
 const { isEmpty } = require('../utils/functionalHelpers')
 const getTaskListModel = require('./viewModels/taskListModels')
 const logger = require('../../log')
-const taskListErrors = require('./config/taskListErrors')
 const { getTasksForBlocked } = require('./viewModels/taskLists/caTasks')
 
 /**
@@ -50,15 +49,18 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => rout
         postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage),
       }
 
-      if (licenceStatus.stage === 'ELIGIBILITY' && req.user.role === 'CA') {
-        const errorCodesList = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
-        const errors = errorCodesList.map(error => taskListErrors[error])
+      if (
+        req.user.role === 'CA' &&
+        licenceStatus.stage === 'ELIGIBILITY' &&
+        licenceStatus.tasks.eligibility === 'DONE'
+      ) {
+        const errorCodes = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
 
-        if (errors.length > 0) {
+        if (errorCodes.length > 0) {
           return res.render('taskList/taskListBuilder', {
             ...model,
-            taskListModel: getTasksForBlocked(licenceStatus),
-            errors,
+            taskListModel: getTasksForBlocked(errorCodes),
+            errors: [],
           })
         }
       }

@@ -17,7 +17,7 @@ const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
 
 module.exports = {
-  getTasksForBlocked: ({ decisions, tasks }) => [
+  getTasksForBlocked: errorCodes => [
     {
       task: 'eligibilityTask',
     },
@@ -31,9 +31,8 @@ module.exports = {
       },
     },
     {
-      title: 'Curfew address',
-      label: proposedAddress.getLabel({ decisions, tasks }),
-      action: { text: 'Start now', type: 'btn-disabled', href: '' },
+      task: 'caBlockedTask',
+      errorCodes,
     },
   ],
 
