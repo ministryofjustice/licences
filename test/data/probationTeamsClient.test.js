@@ -55,9 +55,7 @@ describe('probationTeamsClient', () => {
       test('should return undefined on 404', () => {
         fakeProbationTeamsService.get('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE').reply(404)
 
-        return expect(probationTeamsClient.getFunctionalMailbox('AREA_CODE', 'LDU_CODE')).resolves.toStrictEqual(
-          undefined
-        )
+        return expect(probationTeamsClient.getFunctionalMailbox('AREA_CODE', 'LDU_CODE')).resolves.toStrictEqual(null)
       })
     })
   })
