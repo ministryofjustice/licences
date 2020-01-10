@@ -17,7 +17,7 @@ describe('caService', () => {
       it('Should return []', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(true)
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).toEqual([])
+        expect(result).toEqual(null)
       })
     })
   })
@@ -33,13 +33,13 @@ describe('caService', () => {
         lduActiveClient.isLduPresent.mockResolvedValue(true)
 
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).toEqual([])
+        expect(result).toEqual(null)
       })
 
       it('should return LDU_INACTIVE', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(false)
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).toEqual(['LDU_INACTIVE'])
+        expect(result).toEqual('LDU_INACTIVE')
       })
 
       it('should return COM_NOT_ALLOCATED', async () => {
@@ -47,16 +47,16 @@ describe('caService', () => {
         responsibleOfficer.isAllocated = false
 
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).toEqual(['COM_NOT_ALLOCATED'])
+        expect(result).toEqual('COM_NOT_ALLOCATED')
       })
 
-      it('should return LDU_INACTIVE and COM_NOT_ALLOCATED', async () => {
+      it('should only return LDU_INACTIVE when LDU_INACTIVE and COM_NOT_ALLOCATED', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(false)
         responsibleOfficer.isAllocated = false
         roService = { findResponsibleOfficer: jest.fn().mockResolvedValue(responsibleOfficer) }
 
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-        expect(result).toEqual(['LDU_INACTIVE', 'COM_NOT_ALLOCATED'])
+        expect(result).toEqual('LDU_INACTIVE')
       })
     })
   })
@@ -75,13 +75,13 @@ describe('caService', () => {
     })
     it('should return NO_OFFENDER_NUMBER because no offender number on nomis for bookingId', async () => {
       const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-      expect(result).toEqual(['NO_OFFENDER_NUMBER'])
+      expect(result).toEqual('NO_OFFENDER_NUMBER')
     })
 
     it('should return NO_COM_ASSIGNED', async () => {
       error.code = 'NO_COM_ASSIGNED'
       const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
-      expect(result).toEqual(['COM_NOT_ALLOCATED'])
+      expect(result).toEqual('COM_NOT_ALLOCATED')
     })
   })
 })

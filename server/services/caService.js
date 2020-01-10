@@ -23,7 +23,7 @@ module.exports = function createCaService(roService, activeLduClient, preventCaT
   return {
     async getReasonForNotContinuing(bookingId, token) {
       if (!preventCaToRoHandoverOnInactiveLdusFlag) {
-        return []
+        return null
         // When this feature is disabled, we never block the CA from continuing the case
       }
 
@@ -35,10 +35,10 @@ module.exports = function createCaService(roService, activeLduClient, preventCaT
         )
         switch (error.code) {
           case NO_OFFENDER_NUMBER:
-            return [NO_OFFENDER_NUMBER]
+            return NO_OFFENDER_NUMBER
           case NO_COM_ASSIGNED:
             // Handle NO_COM_ASSIGNED and COM_NOT_ALLOCATED in the same way
-            return [COM_NOT_ALLOCATED]
+            return COM_NOT_ALLOCATED
           default:
             throw new Error(`Unexpected error received: ${error.code}: ${error.message}`)
         }
@@ -48,11 +48,15 @@ module.exports = function createCaService(roService, activeLduClient, preventCaT
 
       const isLduActive = await activeLduClient.isLduPresent(lduCode, probationAreaCode)
 
-      if (!isLduActive || !isAllocated) {
-        return [...(!isLduActive ? [LDU_INACTIVE] : []), ...(!isAllocated ? [COM_NOT_ALLOCATED] : [])]
+      if (!isLduActive) {
+        return LDU_INACTIVE
       }
-      // TODO: Do we need to warn if the com isn't the current responsible officer for the offender?
-      return []
+
+      if (!isAllocated) {
+        return COM_NOT_ALLOCATED
+      }
+
+      return null
     },
   }
 }
