@@ -7,9 +7,10 @@ afterEach(() => {
   db.query.mockReset()
 })
 
-describe('Save and retrieve LDU codes', () => {
+describe('Persist and check exitence of LDUs in active_local_delivery_units table', () => {
   const lduCode = 'ABCDE'
   const probationAreaCode = 'N02'
+  const activeLduCodes = ['ABCDE', 'terry', '1234']
 
   describe('addLdu', () => {
     test('should pass in the correct sql', async () => {
@@ -59,6 +60,15 @@ describe('Save and retrieve LDU codes', () => {
       db.query.mockReturnValue({ rows: [...allActiveLdusInProbationArea] })
       const result = await activeLduClient.allActiveLdusInArea(probationAreaCode)
       expect(result).not.toEqual(['ABC', 'XYZ', 'ABC123', 'ABC987', '12345'])
+    })
+  })
+
+  describe('Transaction to delete and insert LDUs in active_local_delivery_units table', () => {
+    describe('updateWithActiveLdu', () => {
+      test('should return undefined if transaction successful', async () => {
+        const result = await activeLduClient.updateWithActiveLdu(probationAreaCode, activeLduCodes)
+        expect(result).toBeUndefined()
+      })
     })
   })
 })

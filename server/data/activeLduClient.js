@@ -29,4 +29,27 @@ module.exports = {
     const { rows } = await db.query(query)
     return rows
   },
+
+  async updateWithActiveLdu(probationAreaCode, activeLduCodes) {
+    // flush then insert all the ldus in activeLduCodes array assigning the same probationAreaCode to each one
+
+    await db.inTransaction(async client => {
+      let dbQuery
+
+      dbQuery = {
+        text: `DELETE FROM active_local_delivery_units WHERE probation_area_code = $1`,
+        values: [probationAreaCode],
+      }
+
+      await client.query(dbQuery)
+
+      activeLduCodes.forEach(async lduCode => {
+        dbQuery = {
+          text: `INSERT INTO active_local_delivery_units (probation_area_code, ldu_code) VALUES ($1, $2)`,
+          values: [probationAreaCode, lduCode],
+        }
+        await client.query(dbQuery)
+      })
+    })
+  },
 }
