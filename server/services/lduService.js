@@ -22,7 +22,6 @@ module.exports = function createLduService(deliusClient, lduActiveClient) {
 
     async getActiveLdusForProbationArea(probationAreaCode) {
       return lduActiveClient.allActiveLdusInArea(probationAreaCode)
-      // return an array of strings showing the active ldu's in the probation area. Need these to put ticks in the checkboxes
     },
 
     async updateActiveLdus(probationAreaCode, activeLdus) {
@@ -44,11 +43,11 @@ module.exports = function createLduService(deliusClient, lduActiveClient) {
         .updateWithActiveLdu(probationAreaCode, activeLduCodes)
         .then(() => {
           logger.info(`${successLogMsg}`)
-          return 'success'
+          return true
         })
         .catch(e => {
           logger.error(`${failureLogMsg} ${e.message}`)
-          return 'fail'
+          return false
         })
 
       return dbResponse

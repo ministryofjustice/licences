@@ -31,23 +31,23 @@ describe('lduService', () => {
   })
 
   describe('updateActiveLdus', () => {
-    it('Should return success message', async () => {
-      lduActiveClient.updateWithActiveLdu.mockResolvedValue('success')
+    it('Should return true if successful message', async () => {
+      lduActiveClient.updateWithActiveLdu.mockResolvedValue(true)
       const result = await createLduService(deliusClient.getAllLdusForProbationArea, lduActiveClient).updateActiveLdus(
         probationAreaCode,
         activeLdus
       )
-      expect(result).toEqual('success')
+      expect(result).toBe(true)
     })
 
-    it('Should return failure message', async () => {
-      lduActiveClient.updateWithActiveLdu.mockRejectedValue('fail')
+    it('Should return false if operation failed', async () => {
+      lduActiveClient.updateWithActiveLdu.mockRejectedValue(false)
 
       const result = await createLduService(deliusClient.getAllLdusForProbationArea, lduActiveClient).updateActiveLdus(
         probationAreaCode,
         activeLdus
       )
-      expect(result).toEqual('fail')
+      expect(result).toBe(false)
     })
   })
 })

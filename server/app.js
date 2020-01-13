@@ -42,6 +42,7 @@ const sentRouter = require('../server/routes/sent')
 const taskListRouter = require('./routes/taskList')
 const utilsRouter = require('../server/routes/utils')
 const userRouter = require('../server/routes/user')
+const lduRouter = require('../server/routes/probationAreasAndLdus')
 
 const standardRouter = require('./routes/routeWorkers/standardRouter')
 const addressRouter = require('./routes/address')
@@ -79,7 +80,7 @@ module.exports = function createApp({
   audit,
   caService,
   warningClient,
-  // lduService, // temporarily commented
+  lduService,
 }) {
   const app = express()
 
@@ -364,6 +365,7 @@ module.exports = function createApp({
   app.use('/hdc/send/', secureRoute(sendRouter({ prisonerService, notificationService })))
   app.use('/hdc/sent/', secureRoute(sentRouter({ prisonerService })))
   app.use('/user/', secureRoute(userRouter({ userService })))
+  app.use('/areas-and-ldus/', secureRoute(lduRouter({ lduService })))
 
   app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService })))
   app.use('/hdc/approval/', secureRoute(approvalRouter({ licenceService, prisonerService, nomisPushService })))
