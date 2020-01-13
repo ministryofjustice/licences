@@ -1,21 +1,3 @@
-export interface ResponsibleOfficer {
-  nomsNumber: string
-  responsibleOfficerId: number
-  offenderManagerId: number
-  prisonOffenderManagerId: number
-  staffCode: string
-  surname: string
-  forenames: string
-  providerTeamCode: string
-  providerTeamDescription: string
-  lduCode: string
-  lduDescription: string
-  probationAreaCode: string
-  probationAreaDescription: string
-  omStartDate: Date
-  omEndDate: Date
-}
-
 interface Human {
   forenames: string
   surname: string
