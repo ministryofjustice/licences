@@ -21,6 +21,8 @@ describe('/contact', () => {
     roService = {
       findResponsibleOfficer: jest.fn().mockReturnValue({
         deliusId: 'DELIUS_ID',
+        teamCode: 'TEAM_CODE',
+        teamDescription: 'The Team',
         lduCode: 'ABC123',
         lduDescription: 'LDU Description',
         name: 'Ro Name',
@@ -64,7 +66,7 @@ describe('/contact', () => {
           expect(roService.findResponsibleOfficer).toHaveBeenCalledWith('123456', 'token')
           expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalled()
           expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('DELIUS_ID')
-          expect(userAdminService.getFunctionalMailbox).toHaveBeenCalledWith('PA_CODE', 'ABC123')
+          expect(userAdminService.getFunctionalMailbox).toHaveBeenCalledWith('PA_CODE', 'ABC123', 'TEAM_CODE')
         })
     })
 

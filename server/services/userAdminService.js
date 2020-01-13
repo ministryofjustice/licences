@@ -216,9 +216,9 @@ module.exports = function createUserService(
     )
   }
 
-  const getFunctionalMailbox = async (probationAreaCode, lduCode) => {
-    if (!lduCode) return undefined
-    return probationTeamsClient.getFunctionalMailbox(probationAreaCode, lduCode)
+  const getFunctionalMailbox = async (probationAreaCode, lduCode, teamCode) => {
+    if (!lduCode || !probationAreaCode || !teamCode) return undefined
+    return probationTeamsClient.getFunctionalMailbox(probationAreaCode, lduCode, teamCode)
   }
 
   return {

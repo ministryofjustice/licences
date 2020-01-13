@@ -10,6 +10,8 @@ describe('roService', () => {
       forenames: 'COMFIRST',
       surname: 'comLast',
       staffCode: 'delius1',
+      teamCode: 'TEAM_1',
+      teamDescription: 'The Team',
       lduCode: 'code-1',
       lduDescription: 'lduDescription-1',
       nomsNumber: 'AAAA12',
@@ -115,18 +117,24 @@ describe('roService', () => {
           staff: { forenames: 'Jo', surname: 'Smith' },
           staffCode: 'CODE-1',
           isUnallocated: false,
-          team: { localDeliveryUnit: { code: 'LDU-1', description: 'LDU-1 Description' } },
+          team: {
+            localDeliveryUnit: { code: 'LDU-1', description: 'LDU-1 Description' },
+            code: 'TEAM_1',
+            description: 'The Team',
+          },
           probationArea: { code: 'PROB-1', description: 'PROB-1 Description' },
         },
       ])
 
       const expectedComData = {
         deliusId: 'CODE-1',
-        lduCode: 'LDU-1',
         isAllocated: true,
-        lduDescription: 'LDU-1 Description',
         name: 'Jo Smith',
         nomsNumber: 1,
+        teamCode: 'TEAM_1',
+        teamDescription: 'The Team',
+        lduCode: 'LDU-1',
+        lduDescription: 'LDU-1 Description',
         probationAreaCode: 'PROB-1',
         probationAreaDescription: 'PROB-1 Description',
       }

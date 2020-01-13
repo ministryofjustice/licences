@@ -25,7 +25,12 @@ module.exports = (userAdminService, roService) => router => {
       }
 
       const functionalMailbox =
-        ro && ro.lduCode && (await userAdminService.getFunctionalMailbox(ro.probationAreaCode, ro.lduCode))
+        ro &&
+        ro.probationAreaCode &&
+        ro.lduCode &&
+        ro.teamCode &&
+        (await userAdminService.getFunctionalMailbox(ro.probationAreaCode, ro.lduCode, ro.teamCode))
+
       const staffDetailsResult = ro && ro.deliusId && (await roService.getStaffByCode(ro.deliusId))
       const [staffDetails] = unwrapResult(staffDetailsResult)
       const email = staffDetails && staffDetails.email

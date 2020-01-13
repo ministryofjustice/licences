@@ -4,6 +4,8 @@ interface ResponsibleOfficer {
   deliusId: string
   name: string
   nomsNumber: string
+  teamCode: string
+  teamDescription: string
   lduCode: string
   lduDescription: string
   probationAreaCode: string
@@ -72,7 +74,7 @@ export interface PrisonerService {
   getPrisonerImage: (imageId: number, token: string) => Promise<any>
   getPrisonerPersonalDetails: (bookingId: number, token: string) => Promise<any>
   getOrganisationContactDetails: (role: string, bookingId: number, token: string) => Promise<any>
-} 
+}
 
 export interface CaService {
   getReasonForNotContinuing: (bookingId: number, token: string) => Promise<string | undefined>
@@ -90,5 +92,5 @@ export interface WarningClient {
   raiseWarning: (bookingId: number, code: string, messsage: string) => Promise<void>
   acknowledgeWarnings: (errorIds: number[]) => Promise<number>
   getOutstandingWarnings: () => Promise<List<Warning>>
-  getAcknowledgedWarnings: () => Promise<List<Warning>> 
+  getAcknowledgedWarnings: () => Promise<List<Warning>>
 }

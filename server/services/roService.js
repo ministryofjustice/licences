@@ -106,6 +106,7 @@ function extractCommunityOffenderManager(offenderNumber, offenderManagers) {
 }
 
 /**
+ * @param {string} offenderNumber
  * @param {CommunityOrPrisonOffenderManager} offenderManager
  * @returns {ResponsibleOfficer}
  */
@@ -114,7 +115,7 @@ function toResponsibleOfficer(offenderNumber, offenderManager) {
     staff: { forenames, surname },
     staffCode,
     isUnallocated,
-    team: { localDeliveryUnit },
+    team: { localDeliveryUnit, code, description },
     probationArea,
   } = offenderManager
   const name = setCase.capital(
@@ -128,6 +129,8 @@ function toResponsibleOfficer(offenderNumber, offenderManager) {
     isAllocated: !isUnallocated,
     deliusId: staffCode,
     nomsNumber: offenderNumber,
+    teamCode: code,
+    teamDescription: description,
     lduCode: localDeliveryUnit.code,
     lduDescription: localDeliveryUnit.description,
     probationAreaCode: probationArea.code,

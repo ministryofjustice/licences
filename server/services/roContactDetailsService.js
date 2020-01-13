@@ -63,9 +63,10 @@ module.exports = function createRoContactDetailsService(
    * @param {string} deliusId
    * @param {string} probationAreaCode
    * @param {string} lduCode
+   * @param {string} teamCode
    * @returns {Promise<Error| Mailboxes>}
    */
-  async function getMailboxes(deliusId, probationAreaCode, lduCode) {
+  async function getMailboxes(deliusId, probationAreaCode, lduCode, teamCode) {
     if (!preventCaToRoHandoverOnInactiveLdusFlag) {
       logger.info(`Looking up contact details from delius for: ${deliusId} is currently disabled`)
       return {
@@ -80,9 +81,9 @@ module.exports = function createRoContactDetailsService(
     if (error) {
       return error
     }
-    const functionalMailbox = await probationTeamsClient.getFunctionalMailbox(probationAreaCode, lduCode)
+    const functionalMailbox = await probationTeamsClient.getFunctionalMailbox(probationAreaCode, lduCode, teamCode)
     logger.info(
-      `Got functional mailbox: '${functionalMailbox}' for probation area '${probationAreaCode}', ldu ${lduCode}'`,
+      `Got functional mailbox: '${functionalMailbox}' for probation area '${probationAreaCode}', ldu ${lduCode}, team ${teamCode}'`,
       staff
     )
     return {
@@ -107,7 +108,7 @@ module.exports = function createRoContactDetailsService(
       }
 
       const [mailboxes, staffLookupError] = unwrapResult(
-        await getMailboxes(deliusRo.deliusId, deliusRo.probationAreaCode, deliusRo.lduCode)
+        await getMailboxes(deliusRo.deliusId, deliusRo.probationAreaCode, deliusRo.lduCode, deliusRo.teamCode)
       )
 
       if (staffLookupError) {
