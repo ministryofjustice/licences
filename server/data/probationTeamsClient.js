@@ -1,4 +1,5 @@
 const superagent = require('superagent')
+const R = require('ramda')
 const logger = require('../../log')
 const config = require('../config')
 
@@ -17,9 +18,10 @@ const apiUrl = `${config.probationTeams.apiUrl}`
  */
 module.exports = signInService => {
   return {
-    async getFunctionalMailbox(probationAreaCode, lduCode) {
+    async getFunctionalMailbox(probationAreaCode, lduCode, teamCode) {
       const ldu = await get(`${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}`)
-      return ldu && ldu.functionalMailbox
+      const teamAddress = R.path(['probationTeams', teamCode, 'functionalMailbox'], ldu)
+      return teamAddress || (ldu && ldu.functionalMailbox)
     },
   }
 

@@ -14,8 +14,12 @@ describe('roContactDetailsService', () => {
       getStaffByCode: jest.fn(),
       findResponsibleOfficer: jest.fn().mockResolvedValue({
         deliusId: 'delius-1',
+        teamCode: 'TEAM_CODE',
+        teamDescription: 'The Team',
         lduDescription: 'Sheffield',
         lduCode: 'SHF-1',
+        probationAreaCode: 'PA1',
+        probationAreaDescription: 'Probation Area 1',
       }),
     }
     probationTeamsService = {
@@ -64,6 +68,7 @@ describe('roContactDetailsService', () => {
       expect(result).toBe(undefined)
       expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
       expect(probationTeamsService.getFunctionalMailbox).not.toHaveBeenCalled()
+      expect(roService.findResponsibleOfficer).toHaveBeenCalled()
       expect(roService.getStaffByCode).not.toHaveBeenCalled()
     })
   })
@@ -88,6 +93,10 @@ describe('roContactDetailsService', () => {
         isUnlinkedAccount: false,
         lduCode: 'SHF-1',
         lduDescription: 'Sheffield',
+        probationAreaCode: 'PA1',
+        probationAreaDescription: 'Probation Area 1',
+        teamCode: 'TEAM_CODE',
+        teamDescription: 'The Team',
       })
       expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
       expect(roService.getStaffByCode).not.toHaveBeenCalledWith('delius-1')
@@ -119,6 +128,10 @@ describe('roContactDetailsService', () => {
         organisation: 'Sheffield (SHF-1)',
         isUnlinkedAccount: false,
         lduCode: 'SHF-1',
+        probationAreaCode: 'PA1',
+        probationAreaDescription: 'Probation Area 1',
+        teamCode: 'TEAM_CODE',
+        teamDescription: 'The Team',
       })
       expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
       expect(roService.getStaffByCode).toHaveBeenCalledWith('delius-1')
@@ -140,6 +153,10 @@ describe('roContactDetailsService', () => {
         isUnlinkedAccount: false,
         lduCode: 'SHF-1',
         organisation: 'Sheffield (SHF-1)',
+        probationAreaCode: 'PA1',
+        probationAreaDescription: 'Probation Area 1',
+        teamCode: 'TEAM_CODE',
+        teamDescription: 'The Team',
       })
       expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
       expect(roService.getStaffByCode).toHaveBeenCalledWith('delius-1')
@@ -162,6 +179,10 @@ describe('roContactDetailsService', () => {
         isUnlinkedAccount: false,
         lduCode: 'SHF-1',
         organisation: 'Sheffield (SHF-1)',
+        probationAreaCode: 'PA1',
+        probationAreaDescription: 'Probation Area 1',
+        teamCode: 'TEAM_CODE',
+        teamDescription: 'The Team',
       })
       expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
       expect(roService.getStaffByCode).not.toHaveBeenCalled()
