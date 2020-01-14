@@ -44,15 +44,19 @@ module.exports = function createCaService(roService, activeLduClient, preventCaT
         }
       }
 
-      const { lduCode, isAllocated, probationAreaCode } = ro
+      const { deliusId, lduCode, isAllocated, probationAreaCode } = ro
 
       const isLduActive = await activeLduClient.isLduPresent(lduCode, probationAreaCode)
 
       if (!isLduActive) {
+        logger.info(
+          `Blocking case for booking: '${bookingId}', as Ldu: '${lduCode}' in Probation Area: '${probationAreaCode}' is not currently active`
+        )
         return LDU_INACTIVE
       }
 
       if (!isAllocated) {
+        logger.info(`Blocking case for booking: '${bookingId}' as staff: '${deliusId}' is not allocated`)
         return COM_NOT_ALLOCATED
       }
 
