@@ -47,6 +47,12 @@ const createLicenceServiceStub = () => ({
   addCurfewHoursInput: jest.fn().mockReturnValue({}),
 })
 
+const createLduServiceStub = () => ({
+  getAllProbationAreas: () => jest.fn().mockReturnValue([]),
+  getLdusForProbationArea: () => jest.fn().mockReturnValue([]),
+  updateActiveLdus: () => jest.fn().mockReturnValue(null),
+})
+
 const createConditionsServiceStub = () => ({
   getStandardConditions: jest.fn().mockReturnValue(),
   getAdditionalConditions: jest.fn().mockReturnValue(),
@@ -193,6 +199,7 @@ const setup = {
   testFormPageGets,
   users,
   createCaServiceStub,
+  createLduServiceStub,
   appSetup(route, user = 'caUser', prefix = '') {
     const app = express()
 

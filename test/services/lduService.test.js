@@ -1,53 +1,66 @@
 const createLduService = require('../../server/services/lduService')
 
-const deliusClient = { getAllLdusForProbationArea: jest.fn() }
-const lduActiveClient = { allActiveLdusInArea: jest.fn(), updateWithActiveLdu: jest.fn() }
-const onlyActiveLdus = ['ABC123', 'DEF345']
+const deliusClient = {
+  getAllLdusForProbationArea: jest.fn(),
+  getAllProbationAreas: jest.fn(),
+}
+const activeLduClient = {
+  allActiveLdusInArea: jest.fn(),
+  updateActiveLdu: jest.fn(),
+}
+
 const probationAreaCode = 'N02'
-const activeLdus = {}
+const activeLdus = ['ABC1234', 'DEF345']
+let lduService
 
 describe('lduService', () => {
+  beforeEach(async () => {
+    lduService = await createLduService(deliusClient, activeLduClient)
+  })
+
   afterEach(() => {
     jest.restoreAllMocks()
   })
-  describe('getActiveLdusForProbationArea', () => {
-    it('Should return an array of only the active LDUs', async () => {
-      lduActiveClient.allActiveLdusInArea.mockResolvedValue(onlyActiveLdus)
-      const result = await createLduService(
-        deliusClient.getAllLdusForProbationArea,
-        lduActiveClient
-      ).getActiveLdusForProbationArea(probationAreaCode)
-      expect(result).toEqual(['ABC123', 'DEF345'])
-    })
 
-    it('Should Not return LDUs not in the DB', async () => {
-      lduActiveClient.allActiveLdusInArea.mockResolvedValue(onlyActiveLdus)
-      const result = await createLduService(
-        deliusClient.getAllLdusForProbationArea,
-        lduActiveClient
-      ).getActiveLdusForProbationArea(probationAreaCode)
-      expect(result).not.toEqual(['ABC123', 'DEF345', 'XYZ'])
+  describe('getAllProbationAreas', () => {
+    it('Should return an array of Probation areas', async () => {
+      deliusClient.getAllProbationAreas.mockResolvedValue([
+        { code: 'ABC123', description: 'desc-1' },
+        { code: 'DEF345', description: 'desc-2' },
+      ])
+
+      const result = await lduService.getAllProbationAreas()
+
+      expect(result).toEqual([{ code: 'ABC123', description: 'desc-1' }, { code: 'DEF345', description: 'desc-2' }])
+
+      expect(deliusClient.getAllProbationAreas).toHaveBeenCalled()
+    })
+  })
+
+  describe('getLdusForProbationArea', () => {
+    it('Should return an array of only the active LDUs', async () => {
+      deliusClient.getAllLdusForProbationArea.mockResolvedValue([
+        { code: 'ABC123', description: 'desc-1' },
+        { code: 'DEF345', description: 'desc-2' },
+        { code: 'GHI678', description: 'desc-3' },
+      ])
+
+      activeLduClient.allActiveLdusInArea.mockResolvedValue([{ code: 'ABC123' }, { code: 'GHI678' }])
+
+      const result = await lduService.getLdusForProbationArea(probationAreaCode)
+      expect(result).toEqual([
+        { code: 'ABC123', description: 'desc-1', active: true },
+        { code: 'DEF345', description: 'desc-2', active: false },
+        { code: 'GHI678', description: 'desc-3', active: true },
+      ])
     })
   })
 
   describe('updateActiveLdus', () => {
-    it('Should return true if successful message', async () => {
-      lduActiveClient.updateWithActiveLdu.mockResolvedValue(true)
-      const result = await createLduService(deliusClient.getAllLdusForProbationArea, lduActiveClient).updateActiveLdus(
-        probationAreaCode,
-        activeLdus
-      )
-      expect(result).toBe(true)
-    })
+    it('Should call the activeLduClient to persist the new LDUs', async () => {
+      await lduService.updateActiveLdus(probationAreaCode, activeLdus)
 
-    it('Should return false if operation failed', async () => {
-      lduActiveClient.updateWithActiveLdu.mockRejectedValue(false)
-
-      const result = await createLduService(deliusClient.getAllLdusForProbationArea, lduActiveClient).updateActiveLdus(
-        probationAreaCode,
-        activeLdus
-      )
-      expect(result).toBe(false)
+      expect(activeLduClient.updateActiveLdu).toHaveBeenCalledWith(probationAreaCode, activeLdus)
     })
   })
 })

@@ -1,4 +1,3 @@
-// @ts-nocheck
 const { NotifyClient } = require('notifications-node-client')
 const createApp = require('./app')
 const logger = require('../log')
@@ -11,7 +10,7 @@ const configClient = require('./data/configClient')
 const dbLockingClient = require('./data/dbLockingClient')
 const nomisClientBuilder = require('./data/nomisClientBuilder')
 const pdfFormatter = require('./services/utils/pdfFormatter')
-const lduActiveClient = require('./data/activeLduClient')
+const activeLduClient = require('./data/activeLduClient')
 const warningClient = require('./data/warningClient')
 
 const notifyClient = new NotifyClient(config.notifications.notifyKey)
@@ -51,7 +50,7 @@ const deliusClient = createDeliusClient(signInService)
 const probationTeamsClient = createProbationTeamsClient(signInService)
 
 const roService = createRoService(deliusClient, nomisClientBuilder)
-const caService = createCaService(roService, lduActiveClient, config.preventCaToRoHandoverOnInactiveLdusFlag)
+const caService = createCaService(roService, activeLduClient, config.preventCaToRoHandoverOnInactiveLdusFlag)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
 const caseListFormatter = createCaseListFormatter(logger, licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
@@ -103,7 +102,7 @@ const reminderService = createReminderService(
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
-const lduService = createLduService(deliusClient, lduActiveClient)
+const lduService = createLduService(deliusClient, activeLduClient)
 
 const app = createApp({
   signInService,

@@ -1,4 +1,4 @@
-import { StaffDetails } from './delius'
+import { StaffDetails, Ldu, ProbationArea } from './delius'
 
 interface ResponsibleOfficer {
   deliusId: string
