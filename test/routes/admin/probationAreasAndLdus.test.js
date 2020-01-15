@@ -12,7 +12,7 @@ const {
 const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
 const createAdminRoute = require('../../../server/routes/admin/probationAreasAndLdus')
 
-describe('/areas-and-ldus', () => {
+describe('/locations', () => {
   const probationAreas = [
     { code: 'N01', description: 'desc-1' },
     { code: 'N02', description: 'desc-2' },
@@ -44,7 +44,7 @@ describe('/areas-and-ldus', () => {
     test("calls ldu service's getAllProbationAreas method and return JSON array", () => {
       const app = createApp('batchUser')
       return request(app)
-        .get('/admin/areas-and-ldus/probation-areas')
+        .get('/admin/locations/probation-areas')
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(() => {
@@ -55,7 +55,7 @@ describe('/areas-and-ldus', () => {
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
       return request(app)
-        .get('/admin/areas-and-ldus/probation-areas')
+        .get('/admin/locations/probation-areas')
         .expect(403)
     })
   })
@@ -64,7 +64,7 @@ describe('/areas-and-ldus', () => {
     test("calls ldu service's getLdusForProbationArea method and return JSON array", () => {
       const app = createApp('batchUser')
       return request(app)
-        .get('/admin/areas-and-ldus/probation-areas/N02/local-delivery-units')
+        .get('/admin/locations/probation-areas/N02/local-delivery-units')
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(() => {
@@ -75,7 +75,7 @@ describe('/areas-and-ldus', () => {
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
       return request(app)
-        .get('/admin/areas-and-ldus/probation-areas/N02/local-delivery-units')
+        .get('/admin/locations/probation-areas/N02/local-delivery-units')
         .expect(403)
     })
   })
@@ -84,7 +84,7 @@ describe('/areas-and-ldus', () => {
     test('Audits the acknowledge activating LDU', () => {
       const app = createApp('batchUser')
       return request(app)
-        .post('/admin/areas-and-ldus/probation-areas/N01/local-delivery-units/active')
+        .post('/admin/locations/probation-areas/N01/local-delivery-units/active')
         .send(activeLdusFromUi)
         .expect(302)
         .expect(() => {
@@ -94,7 +94,7 @@ describe('/areas-and-ldus', () => {
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
       return request(app)
-        .post('/admin/areas-and-ldus/probation-areas/N01/local-delivery-units/active')
+        .post('/admin/locations/probation-areas/N01/local-delivery-units/active')
         .send(activeLdusFromUi)
         .expect(403)
     })
@@ -111,6 +111,6 @@ describe('/areas-and-ldus', () => {
       auditKey: 'ACTIVE_LDUS',
     })
 
-    return appSetup(route, user, '/admin/areas-and-ldus')
+    return appSetup(route, user, '/admin/locations')
   }
 })

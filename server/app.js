@@ -359,7 +359,7 @@ module.exports = function createApp({
   app.use('/admin/jobs/', secureRoute(jobsAdminRouter({ jobSchedulerService })))
   app.use('/admin/delius/', secureRoute(deliusAdminRouter(roService)))
   app.use('/admin/warnings/', secureRoute(warningsRouter(warningClient), { auditKey: 'WARNINGS' }))
-  app.use('/admin/areas-and-ldus/', secureRoute(probationAreasAndLdusRouter(lduService), { auditKey: 'WARNINGS' }))
+  app.use('/admin/locations/', secureRoute(probationAreasAndLdusRouter(lduService), { auditKey: 'WARNINGS' }))
 
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService)))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))

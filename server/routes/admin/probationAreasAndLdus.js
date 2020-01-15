@@ -29,10 +29,11 @@ module.exports = lduService => (router, audited) => {
     '/probation-areas/:probationAreaCode/local-delivery-units/active',
     audited,
     asyncMiddleware(async (req, res) => {
-      const { probationAreaCode, activeLdus } = req.body
+      const { activeLdus } = req.body
+      const { probationAreaCode } = req.params
 
       await lduService.updateActiveLdus(probationAreaCode, activeLdus)
-      res.redirect(`/areas-and-ldus/update-active-ldus/${probationAreaCode}`)
+      res.redirect(`/admin/locations/probation-areas/${probationAreaCode}/local-delivery-units/active`)
     })
   )
 
