@@ -10,7 +10,7 @@ const {
 } = require('../../supertestSetup')
 
 const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
-const createAdminRoute = require('../../../server/routes/admin/probationAreasAndLdus')
+const createAdminRoute = require('../../../server/routes/admin/locations')
 
 describe('/locations', () => {
   const probationAreas = [
@@ -82,10 +82,10 @@ describe('/locations', () => {
       const app = createApp('batchUser')
 
       return request(app)
-        .post('/admin/locations/probation-areas/N02/local-delivery-units/active')
+        .post('/admin/locations/probation-areas/N02/local-delivery-units')
         .send({ activeLdus })
         .expect(302)
-        .expect('Location', '/admin/locations/probation-areas/N02/local-delivery-units/active')
+        .expect('Location', '/admin/locations/probation-areas/N02/local-delivery-units')
         .expect(() => {
           expect(lduService.updateActiveLdus).toHaveBeenCalledWith(probationAreaCode, activeLdus)
         })
@@ -93,7 +93,7 @@ describe('/locations', () => {
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
       return request(app)
-        .post('/admin/locations/probation-areas/N01/local-delivery-units/active')
+        .post('/admin/locations/probation-areas/N01/local-delivery-units')
         .send({ activeLdus })
         .expect(403)
     })
