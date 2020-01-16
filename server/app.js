@@ -31,6 +31,7 @@ const userAdminRouter = require('../server/routes/admin/users')
 const mailboxesAdminRouter = require('../server/routes/admin/mailboxes')
 const jobsAdminRouter = require('../server/routes/admin/jobs')
 const deliusAdminRouter = require('../server/routes/admin/delius')
+const locationsRouter = require('../server/routes/admin/locations')
 const warningsRouter = require('../server/routes/admin/warnings')
 const apiRouter = require('../server/routes/api')
 const caseListRouter = require('../server/routes/caseList')
@@ -79,6 +80,7 @@ module.exports = function createApp({
   audit,
   caService,
   warningClient,
+  lduService,
 }) {
   const app = express()
 
@@ -357,6 +359,8 @@ module.exports = function createApp({
   app.use('/admin/jobs/', secureRoute(jobsAdminRouter({ jobSchedulerService })))
   app.use('/admin/delius/', secureRoute(deliusAdminRouter(roService)))
   app.use('/admin/warnings/', secureRoute(warningsRouter(warningClient), { auditKey: 'WARNINGS' }))
+  app.use('/admin/locations/', secureRoute(locationsRouter(lduService), { auditKey: 'WARNINGS' }))
+
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService)))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
   app.use('/hdc/forms/', secureRoute(formsRouter({ formService })))

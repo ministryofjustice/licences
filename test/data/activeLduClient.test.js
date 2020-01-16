@@ -7,20 +7,10 @@ afterEach(() => {
   db.query.mockReset()
 })
 
-describe('Save and retrieve LDU codes', () => {
+describe('Persist and check exitence of LDUs in active_local_delivery_units table', () => {
   const lduCode = 'ABCDE'
   const probationAreaCode = 'N02'
-
-  describe('addLdu', () => {
-    test('should pass in the correct sql', async () => {
-      await activeLduClient.addLdu(lduCode, probationAreaCode)
-
-      const { text, values } = db.query.mock.calls[0][0]
-      expect(text).toContain(`INSERT INTO active_local_delivery_units (ldu_code, probation_area_code) VALUES ($1, $2) 
-      ON CONFLICT (ldu_code) DO NOTHING`)
-      expect(values).toEqual([lduCode, probationAreaCode])
-    })
-  })
+  const activeLduCodes = ['ABCDE', 'terry', '1234']
 
   describe('isLduPresent', () => {
     test('should pass in the correct sql', async () => {
@@ -44,6 +34,37 @@ describe('Save and retrieve LDU codes', () => {
 
       const result = await activeLduClient.isLduPresent()
       expect(result).toBe(false)
+    })
+  })
+
+  describe('allActiveLdusInArea', () => {
+    const expectedResult = [{ lduCode: 'ABC' }, { lduCode: 'ABC123' }, { lduCode: 'ABC987' }]
+    test('should return list of cross-matching (ie the active ones) ldus', async () => {
+      db.query.mockReturnValue({ rows: expectedResult })
+      const result = await activeLduClient.allActiveLdusInArea(probationAreaCode)
+      expect(result).toEqual(expectedResult)
+
+      const { text, values } = db.query.mock.calls[0][0]
+      expect(text).toContain('SELECT ldu_code "code" FROM active_local_delivery_units WHERE probation_area_code=$1')
+      expect(values).toStrictEqual([probationAreaCode])
+    })
+  })
+
+  describe('Transaction to delete and insert LDUs in active_local_delivery_units table', () => {
+    describe('updateActiveLdu', () => {
+      test('should return undefined if transaction successful', async () => {
+        db.inTransaction = callback => callback(db)
+        const result = await activeLduClient.updateActiveLdu(probationAreaCode, activeLduCodes)
+        expect(result).toBeUndefined()
+        const { text, values } = db.query.mock.calls[0][0]
+        expect(text).toContain('DELETE FROM active_local_delivery_units WHERE probation_area_code = $1')
+        expect(values).toStrictEqual(['N02'])
+
+        const { text: t } = db.query.mock.calls[1][0]
+        expect(t).toContain(
+          "INSERT INTO active_local_delivery_units (probation_area_code, ldu_code) VALUES ('N02', 'ABCDE'), ('N02', 'terry'), ('N02', '1234')"
+        )
+      })
     })
   })
 })

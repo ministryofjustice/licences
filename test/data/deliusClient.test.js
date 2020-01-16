@@ -96,4 +96,26 @@ describe('deliusClient', () => {
       return expect(deliusClient.getAllOffenderManagers('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
   })
+
+  describe('getAllProbationAreas', () => {
+    test('should return list of all probation areas', () => {
+      fakeDelius.get(`/probationAreas`).reply(200, [{ code: 'some code', description: 'some description' }])
+
+      return expect(deliusClient.getAllProbationAreas()).resolves.toStrictEqual([
+        { code: 'some code', description: 'some description' },
+      ])
+    })
+  })
+
+  describe('getAllLdusForProbationArea', () => {
+    test('should return list of all probation codes', () => {
+      fakeDelius
+        .get(`/probationAreas/code/N02/localDeliveryUnits`)
+        .reply(200, [{ code: 'some code', description: 'some description' }])
+
+      return expect(deliusClient.getAllLdusForProbationArea('N02')).resolves.toStrictEqual([
+        { code: 'some code', description: 'some description' },
+      ])
+    })
+  })
 })

@@ -1,4 +1,4 @@
-import { StaffDetails } from './delius'
+import { StaffDetails, Ldu, ProbationArea } from './delius'
 
 interface ResponsibleOfficer {
   deliusId: string
@@ -92,5 +92,27 @@ export interface WarningClient {
   raiseWarning: (bookingId: number, code: string, messsage: string) => Promise<void>
   acknowledgeWarnings: (errorIds: number[]) => Promise<number>
   getOutstandingWarnings: () => Promise<List<Warning>>
-  getAcknowledgedWarnings: () => Promise<List<Warning>>
+  getAcknowledgedWarnings: () => Promise<List<Warning>> 
+}
+
+interface ActiveLdu {
+  code: string
+}
+
+interface LduStatus {
+  code: string
+  description: string
+  active: boolean
+}
+
+export interface LduService {
+  getAllProbationAreas: () => Promise<Array<ProbationArea>>
+  getLdusForProbationArea: (code: string) => Promise<Array<LduStatus>>
+  updateActiveLdus: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
+}
+
+export interface ActiveLduClient {
+  isLduPresent: (lduCode: string, probationAreaCode: string)=> Promise<boolean>
+  allActiveLdusInArea: (probationAreaCode: string)=> Promise<ActiveLdu[]>
+  updateActiveLdu: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
 }
