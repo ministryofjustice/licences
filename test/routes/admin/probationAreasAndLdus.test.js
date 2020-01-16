@@ -25,11 +25,8 @@ describe('/locations', () => {
     { code: 'LDU-3', description: 'ldu-desc-3', active: true },
   ]
 
-  const activeLdusFromUi = [
-    { code: 'LDU-1', description: 'ldu-desc-1' },
-    { code: 'LDU-2', description: 'ldu-desc-2' },
-    { code: 'LDU-3', description: 'ldu-desc-3' },
-  ]
+  const probationAreaCode = 'N02'
+  const activeLdus = ['LDU-1', 'LDU-3']
 
   let lduService
 
@@ -68,7 +65,7 @@ describe('/locations', () => {
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(() => {
-          expect(lduService.getLdusForProbationArea).toHaveBeenCalled()
+          expect(lduService.getLdusForProbationArea).toHaveBeenCalledWith(probationAreaCode)
         })
     })
 
@@ -83,19 +80,21 @@ describe('/locations', () => {
   describe('POST active LDUs', () => {
     test('Audits the acknowledge activating LDU', () => {
       const app = createApp('batchUser')
+
       return request(app)
-        .post('/admin/locations/probation-areas/N01/local-delivery-units/active')
-        .send(activeLdusFromUi)
+        .post('/admin/locations/probation-areas/N02/local-delivery-units/active')
+        .send({ activeLdus })
         .expect(302)
+        .expect('Location', '/admin/locations/probation-areas/N02/local-delivery-units/active')
         .expect(() => {
-          expect(lduService.updateActiveLdus).toHaveBeenCalled()
+          expect(lduService.updateActiveLdus).toHaveBeenCalledWith(probationAreaCode, activeLdus)
         })
     })
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
       return request(app)
         .post('/admin/locations/probation-areas/N01/local-delivery-units/active')
-        .send(activeLdusFromUi)
+        .send({ activeLdus })
         .expect(403)
     })
   })
