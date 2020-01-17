@@ -96,12 +96,13 @@ const roNotificationHandler = createRoNotificationHandler(
 )
 
 const notificationService = createNotificationService(
-  roNotificationSender,
   caAndDmNotificationSender,
   audit,
+  licenceService,
   prisonerService,
   roNotificationHandler
 )
+
 const reminderService = createReminderService(
   roContactDetailsService,
   prisonerService,
