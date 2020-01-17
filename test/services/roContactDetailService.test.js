@@ -122,6 +122,7 @@ describe('roContactDetailsService', () => {
 
       expect(result).toEqual({
         deliusId: 'delius-1',
+        username: 'user-1',
         email: 'ro@ro.email.com',
         functionalMailbox: 'ro-org@email.com',
         lduDescription: 'Sheffield',
@@ -147,6 +148,7 @@ describe('roContactDetailsService', () => {
 
       expect(result).toEqual({
         deliusId: 'delius-1',
+        username: 'user-1',
         email: 'ro@ro.email.com',
         functionalMailbox: 'ro-org@email.com',
         lduDescription: 'Sheffield',

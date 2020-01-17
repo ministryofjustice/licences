@@ -18,9 +18,9 @@ module.exports = signInService => {
   }
 
   const agentOptions = {
-    maxSockets: config.nomis.agent.maxSockets,
-    maxFreeSockets: config.nomis.agent.maxFreeSockets,
-    freeSocketTimeout: config.nomis.agent.freeSocketTimeout,
+    maxSockets: config.delius.agent.maxSockets,
+    maxFreeSockets: config.delius.agent.maxFreeSockets,
+    freeSocketTimeout: config.delius.agent.freeSocketTimeout,
   }
 
   const apiUrl = `${config.delius.apiUrl}${config.delius.apiPrefix}`
@@ -50,6 +50,10 @@ module.exports = signInService => {
     getAllLdusForProbationArea(probationAreaCode) {
       return get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits`)
     },
+
+    addResponsibleOfficerRole(username) {
+      return put(`${apiUrl}/users/${username}/roles/${config.delius.responsibleOfficerRoleId}`)
+    },
   }
 
   async function get(path) {
@@ -76,6 +80,28 @@ module.exports = signInService => {
       const message = error && error.response && error.response.text
       logger.error(`Error calling delius: ${path}, message: '${message}'`, error.stack)
       throw error
+    }
+  }
+
+  async function put(path) {
+    const token = await signInService.getAnonymousClientCredentialsTokens('delius')
+    if (!token) {
+      throw Error(`Failed to get token when attempting to call delius: ${path}`)
+    }
+
+    try {
+      logger.debug(`PUT ${path}`)
+      const result = await superagent
+        .put(path)
+        .agent(keepaliveAgent)
+        .set('Authorization', `Bearer ${token.token}`)
+        .timeout(timeoutSpec)
+      logger.debug(`PUT ${path} -> ${result.status}`)
+
+      return result.body
+    } catch (error) {
+      const message = error && error.response && error.response.text
+      logger.warn(`Failed to call delius: ${path}, status: '${error.status}', message: '${message}'`, error.stack)
     }
   }
 }

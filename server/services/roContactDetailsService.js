@@ -48,6 +48,7 @@ module.exports = function createRoContactDetailsService(
     return {
       ...deliusRo,
       isUnlinkedAccount: false,
+      username: undefined,
       email,
       functionalMailbox: orgEmail,
       organisation,
@@ -55,8 +56,9 @@ module.exports = function createRoContactDetailsService(
   }
 
   /**
-   * @typedef Mailboxes
+   * @typedef DeliusContactDetails
    * @property {string} email
+   * @property {string} username
    * @property {string} functionalMailbox
    * @property {boolean} isUnlinkedAccount
    *
@@ -64,13 +66,14 @@ module.exports = function createRoContactDetailsService(
    * @param {string} probationAreaCode
    * @param {string} lduCode
    * @param {string} teamCode
-   * @returns {Promise<Error| Mailboxes>}
+   * @returns {Promise<Error| DeliusContactDetails>}
    */
-  async function getMailboxes(deliusId, probationAreaCode, lduCode, teamCode) {
+  async function getContactDetailsFromDelius(deliusId, probationAreaCode, lduCode, teamCode) {
     if (!preventCaToRoHandoverOnInactiveLdusFlag) {
       logger.info(`Looking up contact details from delius for: ${deliusId} is currently disabled`)
       return {
         isUnlinkedAccount: false,
+        username: undefined,
         email: undefined,
         functionalMailbox: undefined,
       }
@@ -88,6 +91,7 @@ module.exports = function createRoContactDetailsService(
     )
     return {
       isUnlinkedAccount: staff.username === undefined,
+      username: staff.username,
       email: staff.email,
       functionalMailbox,
     }
@@ -101,14 +105,19 @@ module.exports = function createRoContactDetailsService(
         return error
       }
 
-      const localDetails = await getLocallyStoredContactDetails(deliusRo)
+      const localContactDetails = await getLocallyStoredContactDetails(deliusRo)
 
-      if (localDetails) {
-        return localDetails
+      if (localContactDetails) {
+        return localContactDetails
       }
 
-      const [mailboxes, staffLookupError] = unwrapResult(
-        await getMailboxes(deliusRo.deliusId, deliusRo.probationAreaCode, deliusRo.lduCode, deliusRo.teamCode)
+      const [deliusContactDetails, staffLookupError] = unwrapResult(
+        await getContactDetailsFromDelius(
+          deliusRo.deliusId,
+          deliusRo.probationAreaCode,
+          deliusRo.lduCode,
+          deliusRo.teamCode
+        )
       )
 
       if (staffLookupError) {
@@ -117,9 +126,10 @@ module.exports = function createRoContactDetailsService(
 
       return {
         ...deliusRo,
-        isUnlinkedAccount: mailboxes.isUnlinkedAccount,
-        email: mailboxes.email,
-        functionalMailbox: mailboxes.functionalMailbox,
+        isUnlinkedAccount: deliusContactDetails.isUnlinkedAccount,
+        email: deliusContactDetails.email,
+        username: deliusContactDetails.username,
+        functionalMailbox: deliusContactDetails.functionalMailbox,
         organisation: `${deliusRo.lduDescription} (${deliusRo.lduCode})`,
       }
     },

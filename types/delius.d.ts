@@ -63,8 +63,8 @@ export interface CommunityOrPrisonOffenderManager {
 }
 
 interface StaffDetails {
-  username: string;
-  email: string;
+  username?: string;
+  email?: string;
   staffCode: string;
   staff: Human;
   teams: Team[];
@@ -87,5 +87,6 @@ export interface DeliusClient {
   getAllOffenderManagers: (offenderNumber: string) =>  Promise<Array<CommunityOrPrisonOffenderManager>>
   getAllProbationAreas: ()=> Promise<Array<ProbationArea>>
   getAllLdusForProbationArea: (probationAreaCode: string)=> Promise<Array<Ldu>>
+  addResponsibleOfficerRole: (username: string) => Promise<void>
 }
 

@@ -29,6 +29,7 @@ const createNotificationSender = require('./services/notifications/notificationS
 const createRoNotificationSender = require('./services/notifications/roNotificationSender')
 const createCaAndDmNotificationSender = require('./services/notifications/caAndDmNotificationSender')
 const createNotificationService = require('./services/notifications/notificationService')
+const createRoNotificationHandler = require('./services/notifications/roNotificationHandler')
 
 const createRoContactDetailsService = require('./services/roContactDetailsService')
 const createReminderService = require('./services/reminderService')
@@ -84,15 +85,24 @@ const caAndDmNotificationSender = createCaAndDmNotificationSender(
   config
 )
 
-const notificationService = createNotificationService(
+const roNotificationHandler = createRoNotificationHandler(
   roNotificationSender,
-  caAndDmNotificationSender,
   audit,
   licenceService,
   prisonerService,
   roContactDetailsService,
-  warningClient
+  warningClient,
+  deliusClient
 )
+
+const notificationService = createNotificationService(
+  caAndDmNotificationSender,
+  audit,
+  licenceService,
+  prisonerService,
+  roNotificationHandler
+)
+
 const reminderService = createReminderService(
   roContactDetailsService,
   prisonerService,
