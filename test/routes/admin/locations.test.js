@@ -19,11 +19,14 @@ describe('/locations', () => {
     { code: 'N03', description: 'desc-3' },
   ]
 
-  const activeLdusInProbationArea = [
-    { code: 'LDU-1', description: 'ldu-desc-1', active: true },
-    { code: 'LDU-2', description: 'ldu-desc-2', active: false },
-    { code: 'LDU-3', description: 'ldu-desc-3', active: true },
-  ]
+  const ldusInProbationArea = {
+    probationAreaDescription: 'London',
+    allLdusIncludingStatus: [
+      { code: 'LDU-1', description: 'ldu-desc-1', active: true },
+      { code: 'LDU-2', description: 'ldu-desc-2', active: false },
+      { code: 'LDU-3', description: 'ldu-desc-3', active: true },
+    ],
+  }
 
   const probationAreaCode = 'N02'
   const activeLdus = ['LDU-1', 'LDU-3']
@@ -33,7 +36,7 @@ describe('/locations', () => {
   beforeEach(() => {
     lduService = createLduServiceStub()
     lduService.getAllProbationAreas = jest.fn().mockReturnValue(probationAreas)
-    lduService.getLdusForProbationArea = jest.fn().mockReturnValue(activeLdusInProbationArea)
+    lduService.getLdusForProbationArea = jest.fn().mockReturnValue(ldusInProbationArea)
     lduService.updateActiveLdus = jest.fn()
   })
 
@@ -43,7 +46,7 @@ describe('/locations', () => {
       return request(app)
         .get('/admin/locations/probation-areas')
         .expect(200)
-        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect('Content-Type', 'text/html; charset=utf-8')
         .expect(() => {
           expect(lduService.getAllProbationAreas).toHaveBeenCalled()
         })
@@ -63,7 +66,7 @@ describe('/locations', () => {
       return request(app)
         .get('/admin/locations/probation-areas/N02/local-delivery-units')
         .expect(200)
-        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect('Content-Type', 'text/html; charset=utf-8')
         .expect(() => {
           expect(lduService.getLdusForProbationArea).toHaveBeenCalledWith(probationAreaCode)
         })

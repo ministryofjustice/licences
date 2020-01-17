@@ -110,7 +110,7 @@ interface LduStatus {
 
 export interface LduService {
   getAllProbationAreas: () => Promise<Array<ProbationArea>>
-  getLdusForProbationArea: (code: string) => Promise<Array<LduStatus>>
+  getLdusForProbationArea: (code: string) => Promise<{ probationAreaDescription: string, allLdusIncludingStatus: Array<LduStatus>}> 
   updateActiveLdus: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
 }
 

@@ -16,6 +16,10 @@ let lduService
 describe('lduService', () => {
   beforeEach(async () => {
     lduService = await createLduService(deliusClient, activeLduClient)
+    deliusClient.getAllProbationAreas.mockResolvedValue([
+      { code: 'ABC123', description: 'desc-1' },
+      { code: 'DEF345', description: 'desc-2' },
+    ])
   })
 
   afterEach(() => {
@@ -24,35 +28,44 @@ describe('lduService', () => {
 
   describe('getAllProbationAreas', () => {
     it('Should return an array of Probation areas', async () => {
-      deliusClient.getAllProbationAreas.mockResolvedValue([
-        { code: 'ABC123', description: 'desc-1' },
-        { code: 'DEF345', description: 'desc-2' },
-      ])
-
-      const result = await lduService.getAllProbationAreas()
-
-      expect(result).toEqual([{ code: 'ABC123', description: 'desc-1' }, { code: 'DEF345', description: 'desc-2' }])
-
+      await lduService.getAllProbationAreas()
       expect(deliusClient.getAllProbationAreas).toHaveBeenCalled()
+    })
+
+    it('Should sort probation areas by description in alpha order', async () => {
+      const result = await lduService.getAllProbationAreas()
+      expect(result).toEqual([{ code: 'ABC123', description: 'desc-1' }, { code: 'DEF345', description: 'desc-2' }])
+      expect(result).not.toEqual([{ code: 'DEF345', description: 'desc-2' }, { code: 'ABC123', description: 'desc-1' }])
     })
   })
 
   describe('getLdusForProbationArea', () => {
-    it('Should return an array of only the active LDUs', async () => {
+    it(`Should return all the LDUs from Delius for London and cross match with those in active_local_delivery_units table in DB. 
+    Those that cross-matchs will have a 'active = true' status`, async () => {
       deliusClient.getAllLdusForProbationArea.mockResolvedValue([
-        { code: 'ABC123', description: 'desc-1' },
-        { code: 'DEF345', description: 'desc-2' },
-        { code: 'GHI678', description: 'desc-3' },
+        {
+          code: 'Lon',
+          description: 'London',
+          teams: [
+            { code: 'ham', description: 'Hampstead' },
+            { code: 'wtl', description: 'Waterloo' },
+            { code: 'pic', description: 'Picadilly' },
+          ],
+        },
       ])
 
-      activeLduClient.allActiveLdusInArea.mockResolvedValue([{ code: 'ABC123' }, { code: 'GHI678' }])
+      activeLduClient.allActiveLdusInArea.mockResolvedValue([{ code: 'ham' }, { code: 'pic' }])
 
-      const result = await lduService.getLdusForProbationArea(probationAreaCode)
-      expect(result).toEqual([
-        { code: 'ABC123', description: 'desc-1', active: true },
-        { code: 'DEF345', description: 'desc-2', active: false },
-        { code: 'GHI678', description: 'desc-3', active: true },
-      ])
+      const result = await lduService.getLdusForProbationArea('Lon')
+
+      expect(result).toEqual({
+        allLdusIncludingStatus: [
+          { code: 'ham', description: 'Hampstead', active: true },
+          { code: 'wtl', description: 'Waterloo', active: false },
+          { code: 'pic', description: 'Picadilly', active: true },
+        ],
+        probationAreaDescription: 'London',
+      })
     })
   })
 
