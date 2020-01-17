@@ -118,4 +118,18 @@ describe('deliusClient', () => {
       ])
     })
   })
+
+  describe('addResponsbileOfficerRole', () => {
+    test('should return data from api', () => {
+      fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(200, {})
+
+      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toStrictEqual({})
+    })
+
+    test('should ignore errors', () => {
+      fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(500)
+
+      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toStrictEqual(undefined)
+    })
+  })
 })

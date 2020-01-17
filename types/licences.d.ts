@@ -16,7 +16,10 @@ interface ResponsibleOfficer {
 interface ResponsibleOfficerAndContactDetails extends ResponsibleOfficer {
   /** This officer's user and staff record are not linked in delius, false if unknown */
   isUnlinkedAccount: boolean,
+  /** email and delius username, will be null if unlinked account and not stored locally */
   email?: string
+  /** Will be null when contact details are stored locally  */
+  username?: string
   organisation?: string
   functionalMailbox?: string
 }
