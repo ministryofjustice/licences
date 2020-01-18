@@ -1,6 +1,4 @@
 const logger = require('../../log')
-const { getIn } = require('../utils/functionalHelpers')
-const { sortObjArrayAsc } = require('../utils/sort')
 
 /**
  * @typedef {import("../../types/licences").LduService} LduService
@@ -16,25 +14,33 @@ const { sortObjArrayAsc } = require('../utils/sort')
 module.exports = function createLduService(deliusClient, activeLduClient) {
   return {
     async getAllProbationAreas() {
-      const probationAreas = await deliusClient.getAllProbationAreas()
-      sortObjArrayAsc(probationAreas)
+      const { content: probationAreas } = await deliusClient.getAllProbationAreas()
+      probationAreas.sort((a, b) => a.description.localeCompare(b.description, 'en', { ignorePunctuation: true }))
       return probationAreas
     },
 
-    async getLdusForProbationArea(probationAreaCode) {
-      const allLdus = await deliusClient.getAllLdusForProbationArea(probationAreaCode)
+    async getProbationArea(probationAreaCode) {
+      const { content: probationAreas } = await deliusClient.getAllProbationAreas()
+      const probationAreaDescription = probationAreas.find(area => probationAreaCode === area.code).description
+
       const activeLdus = await activeLduClient.allActiveLdusInArea(probationAreaCode)
       const activeLdusCodes = activeLdus.map(ldu => ldu.code)
-      const probationAreaDescription = getIn(allLdus, [0, 'description'])
-      const teams = getIn(allLdus, [0, 'teams']) || []
 
-      const allLdusIncludingStatus = teams.map(team => ({
-        code: team.code,
-        description: team.description,
-        active: activeLdusCodes.includes(team.code),
+      const { content: ldus = [] } = await deliusClient.getAllLdusForProbationArea(probationAreaCode)
+
+      const allLdus = ldus.map(ldu => ({
+        code: ldu.code,
+        description: ldu.description,
+        active: activeLdusCodes.includes(ldu.code),
       }))
 
-      return { probationAreaDescription, allLdusIncludingStatus }
+      const probationArea = {
+        code: probationAreaCode,
+        description: probationAreaDescription,
+        ldus: allLdus,
+      }
+
+      return probationArea
     },
 
     async updateActiveLdus(probationAreaCode, activeLdus) {

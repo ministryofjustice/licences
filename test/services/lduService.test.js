@@ -16,10 +16,9 @@ let lduService
 describe('lduService', () => {
   beforeEach(async () => {
     lduService = await createLduService(deliusClient, activeLduClient)
-    deliusClient.getAllProbationAreas.mockResolvedValue([
-      { code: 'ABC123', description: 'desc-1' },
-      { code: 'DEF345', description: 'desc-2' },
-    ])
+    deliusClient.getAllProbationAreas.mockResolvedValue({
+      content: [{ code: 'ABC123', description: 'desc-1' }, { code: 'DEF345', description: 'desc-2' }],
+    })
   })
 
   afterEach(() => {
@@ -39,32 +38,30 @@ describe('lduService', () => {
     })
   })
 
-  describe('getLdusForProbationArea', () => {
+  describe('getProbationArea', () => {
     it(`Should return all the LDUs from Delius for London and cross match with those in active_local_delivery_units table in DB. 
     Those that cross-matchs will have a 'active = true' status`, async () => {
-      deliusClient.getAllLdusForProbationArea.mockResolvedValue([
-        {
-          code: 'Lon',
-          description: 'London',
-          teams: [
-            { code: 'ham', description: 'Hampstead' },
-            { code: 'wtl', description: 'Waterloo' },
-            { code: 'pic', description: 'Picadilly' },
-          ],
-        },
-      ])
+      deliusClient.getAllLdusForProbationArea.mockResolvedValue({
+        content: [
+          { code: 'ham', description: 'Hampstead' },
+          { code: 'wtl', description: 'Waterloo' },
+          { code: 'pic', description: 'Picadilly' },
+        ],
+      })
 
+      deliusClient.getAllProbationAreas.mockResolvedValue({ content: [{ code: 'Lon', description: 'London' }] })
       activeLduClient.allActiveLdusInArea.mockResolvedValue([{ code: 'ham' }, { code: 'pic' }])
 
-      const result = await lduService.getLdusForProbationArea('Lon')
+      const result = await lduService.getProbationArea('Lon')
 
       expect(result).toEqual({
-        allLdusIncludingStatus: [
+        code: 'Lon',
+        description: 'London',
+        ldus: [
           { code: 'ham', description: 'Hampstead', active: true },
           { code: 'wtl', description: 'Waterloo', active: false },
           { code: 'pic', description: 'Picadilly', active: true },
         ],
-        probationAreaDescription: 'London',
       })
     })
   })

@@ -20,8 +20,8 @@ module.exports = lduService => (router, audited) => {
   router.get(
     '/probation-areas/:probationAreaCode/local-delivery-units',
     asyncMiddleware(async (req, res) => {
-      const ldus = (await lduService.getLdusForProbationArea(req.params.probationAreaCode)) || {}
-      res.render('admin/locations/ldus', { ldus })
+      const probationArea = (await lduService.getProbationArea(req.params.probationAreaCode)) || {}
+      res.render('admin/locations/ldus', { probationArea, msg: req.flash('success') })
     })
   )
 
@@ -29,9 +29,10 @@ module.exports = lduService => (router, audited) => {
     '/probation-areas/:probationAreaCode/local-delivery-units',
     audited,
     asyncMiddleware(async (req, res) => {
-      const activeLdus = req.body.activeLdus || []
+      const { activeLdus = [] } = req.body
       const { probationAreaCode } = req.params
       await lduService.updateActiveLdus(probationAreaCode, activeLdus)
+      req.flash('success', 'Update successful')
       res.redirect(`/admin/locations/probation-areas/${probationAreaCode}/local-delivery-units`)
     })
   )

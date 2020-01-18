@@ -5,10 +5,11 @@ block content
   div.back-link-container.smallPaddingTop
     a#back.link-back(href="/admin/locations/probation-areas") Back
 
-  h1.heading-large Local delivery units for #{ldus.probationAreaDescription}
-
-  if !ldus.allLdusIncludingStatus[0]
-    h2.heading-medium No local delivery units currently assigned to #{ldus.probationAreaDescription}
+  h1.heading-large Local delivery units for #{probationArea.description}
+  h2.heading-small #{msg}
+  
+  if !probationArea.ldus[0]
+    h2.heading-medium No local delivery units currently assigned to #{probationArea.description}
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)
@@ -16,12 +17,12 @@ block content
       div.form-group.pure-u-1.pure-u-sm-10-24
         div.govuk-fieldset
           
-          each ldu, index in ldus.allLdusIncludingStatus
+          each ldu, index in probationArea.ldus
             div.multiple-choice
-              input(id=ldu.code type="checkbox" name='activeLdus['+index+']' checked=ldu.active value=ldu.code)
+              input(id=ldu.code type="checkbox" name=`activeLdus[${index}]` checked=ldu.active value=ldu.code)
               label(for=ldu.code) #{ldu.description}
               
 
-    if ldus.allLdusIncludingStatus[0]
+    if probationArea.ldus[0]
       div.pure-u-1.inlineButtons
         input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save")
