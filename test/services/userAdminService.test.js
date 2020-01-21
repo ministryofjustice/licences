@@ -5,8 +5,6 @@ const createUserService = require('../../server/services/userAdminService')
 describe('userAdminService', () => {
   let userClient
   let nomisClient
-  let signInService
-  let prisonerService
   let service
 
   const user1 = {
@@ -40,17 +38,9 @@ describe('userAdminService', () => {
       getBooking: jest.fn().mockReturnValue({}),
     }
 
-    signInService = {
-      getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-token' }),
-    }
-
-    prisonerService = {
-      getResponsibleOfficer: jest.fn().mockReturnValue({}),
-    }
-
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
 
-    service = createUserService(nomisClientBuilder, userClient, signInService, prisonerService)
+    service = createUserService(nomisClientBuilder, userClient)
   })
 
   afterEach(() => {
@@ -165,117 +155,6 @@ describe('userAdminService', () => {
 
       expect(nomisClient.getUserInfo).toHaveBeenCalled()
       expect(nomisClient.getUserInfo).toHaveBeenCalledWith('userName')
-    })
-  })
-
-  describe('getIncompleteRoUsers', () => {
-    test('should call user client but not proceed if no bookingIds', async () => {
-      userClient.getCasesRequiringRo = jest.fn().mockReturnValue([])
-
-      const result = await service.getIncompleteRoUsers()
-
-      expect(userClient.getCasesRequiringRo).toHaveBeenCalled()
-      expect(userClient.getCasesRequiringRo).toHaveBeenCalledWith()
-      expect(prisonerService.getResponsibleOfficer).not.toHaveBeenCalled()
-      expect(result).toEqual([])
-    })
-
-    test('should call getResponsibleOfficer for each booking ID', async () => {
-      userClient.getCasesRequiringRo.mockReturnValue([1, 2])
-
-      await service.getIncompleteRoUsers()
-
-      expect(prisonerService.getResponsibleOfficer).toHaveBeenCalledTimes(2)
-      expect(prisonerService.getResponsibleOfficer).toHaveBeenCalledWith(1, 'system-token')
-      expect(prisonerService.getResponsibleOfficer).toHaveBeenCalledWith(2, 'system-token')
-    })
-
-    test('should not lookup staff records if none required', async () => {
-      userClient.getCasesRequiringRo = jest.fn().mockReturnValue([1, 2])
-      prisonerService.getResponsibleOfficer = jest.fn().mockReturnValue({})
-
-      await service.getIncompleteRoUsers()
-
-      expect(userClient.getRoUserByDeliusId).not.toHaveBeenCalled()
-    })
-
-    test('should lookup staff record for each unique assignedId', async () => {
-      userClient.getCasesRequiringRo.mockReturnValue([1, 2, 3])
-      prisonerService.getResponsibleOfficer
-        .mockReturnValueOnce({ deliusId: 'delius0', name: 'deliusName0' })
-        .mockReturnValueOnce({ deliusId: 'delius1', name: 'deliusName1' })
-        .mockReturnValueOnce({ deliusId: 'delius1', name: 'deliusName2' })
-
-      await service.getIncompleteRoUsers()
-
-      expect(userClient.getRoUserByDeliusId).toHaveBeenCalledTimes(2)
-      expect(userClient.getRoUserByDeliusId).toHaveBeenCalledWith('delius0')
-      expect(userClient.getRoUserByDeliusId).toHaveBeenCalledWith('delius1')
-    })
-
-    test('should add offender nomis for each incomplete', async () => {
-      userClient.getCasesRequiringRo.mockReturnValue([1, 2, 3])
-      prisonerService.getResponsibleOfficer
-        .mockReturnValueOnce({ deliusId: 'delius0', name: 'deliusName0' })
-        .mockReturnValueOnce({ deliusId: 'delius1', name: 'deliusName1' })
-        .mockReturnValueOnce({ deliusId: 'delius2', name: 'deliusName2' })
-      userClient.getRoUserByDeliusId.mockReturnValue(null)
-
-      await service.getIncompleteRoUsers()
-
-      expect(nomisClient.getBooking).toHaveBeenCalledTimes(3)
-      expect(nomisClient.getBooking).toHaveBeenCalledWith(1)
-      expect(nomisClient.getBooking).toHaveBeenCalledWith(2)
-      expect(nomisClient.getBooking).toHaveBeenCalledWith(3)
-    })
-
-    test('should not return if present and onboarded', async () => {
-      userClient.getCasesRequiringRo = jest.fn().mockReturnValue([1])
-      prisonerService.getResponsibleOfficer = jest.fn().mockReturnValue({ deliusId: 'delius1', name: 'deliusName1' })
-      userClient.getRoUserByDeliusId = jest.fn().mockReturnValue({ onboarded: true })
-
-      const result = await service.getIncompleteRoUsers()
-
-      expect(result).toEqual([])
-    })
-
-    test('should return mapped if present but not onboarded', async () => {
-      userClient.getCasesRequiringRo = jest.fn().mockReturnValue([1])
-      prisonerService.getResponsibleOfficer = jest.fn().mockReturnValue({ deliusId: 'delius1', name: 'deliusName1' })
-      userClient.getRoUserByDeliusId = jest.fn().mockReturnValue({ onboarded: false })
-      nomisClient.getBooking = jest.fn().mockReturnValue({ offenderNo: 'off1' })
-
-      const result = await service.getIncompleteRoUsers()
-
-      expect(result).toEqual([
-        {
-          assignedId: 'delius1',
-          assignedName: 'deliusName1',
-          bookingId: 1,
-          mapped: true,
-          offenderNo: 'off1',
-          onboarded: false,
-        },
-      ])
-    })
-
-    test('should return unmapped if not present', async () => {
-      userClient.getCasesRequiringRo = jest.fn().mockReturnValue([1])
-      prisonerService.getResponsibleOfficer = jest.fn().mockReturnValue({ deliusId: 'delius1', name: 'deliusName1' })
-      userClient.getRoUserByDeliusId = jest.fn().mockReturnValue(null)
-      nomisClient.getBooking = jest.fn().mockReturnValue({ offenderNo: 'off1' })
-
-      const result = await service.getIncompleteRoUsers()
-
-      expect(result).toEqual([
-        {
-          assignedId: 'delius1',
-          assignedName: 'deliusName1',
-          bookingId: 1,
-          mapped: false,
-          offenderNo: 'off1',
-        },
-      ])
     })
   })
 })

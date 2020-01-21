@@ -111,10 +111,6 @@ function createPrisonerService(nomisClientBuilder, roService) {
       }
     },
 
-    async getResponsibleOfficer(bookingId, token) {
-      return roService.findResponsibleOfficer(bookingId, token)
-    },
-
     getPrisonerImage(imageId, token) {
       logger.info(`getPrisonerImage: ${imageId}`)
 
@@ -144,7 +140,7 @@ function createPrisonerService(nomisClientBuilder, roService) {
 
     async getOrganisationContactDetails(role, bookingId, token) {
       if (role.toUpperCase() === 'RO') {
-        return this.getResponsibleOfficer(bookingId, token)
+        return roService.findResponsibleOfficer(bookingId, token)
       }
 
       if (role.toUpperCase() === 'CA') {
