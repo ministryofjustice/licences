@@ -36,9 +36,12 @@ const activeLduClient = {
       })
 
       const rows = activeLduCodes.map(code => [probationAreaCode, code])
-      await client.query({
-        text: format(`INSERT INTO active_local_delivery_units (probation_area_code, ldu_code) VALUES %L`, rows),
-      })
+
+      if (rows.length > 0) {
+        await client.query({
+          text: format(`INSERT INTO active_local_delivery_units (probation_area_code, ldu_code) VALUES %L`, rows),
+        })
+      }
     })
   },
 }

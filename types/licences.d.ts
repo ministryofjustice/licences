@@ -1,4 +1,4 @@
-import { StaffDetails, Ldu, ProbationArea } from './delius'
+import { StaffDetails, Ldu, ProbationAreaSummary } from './delius'
 
 interface ResponsibleOfficer {
   deliusId: string
@@ -102,6 +102,12 @@ interface ActiveLdu {
   code: string
 }
 
+interface ProbationArea {
+  code: string
+  description: string
+  ldus: Array<LduStatus>
+}
+
 interface LduStatus {
   code: string
   description: string
@@ -109,8 +115,8 @@ interface LduStatus {
 }
 
 export interface LduService {
-  getAllProbationAreas: () => Promise<Array<ProbationArea>>
-  getLdusForProbationArea: (code: string) => Promise<Array<LduStatus>>
+  getAllProbationAreas: () => Promise<Array<ProbationAreaSummary>>
+  getProbationArea: (probationAreaCode: string) => Promise<ProbationArea> 
   updateActiveLdus: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
 }
 

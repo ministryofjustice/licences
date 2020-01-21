@@ -1,0 +1,16 @@
+extends ../../layout
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/") Back
+
+
+  h1.heading-large Probation Areas
+
+  div.pure-g.form-group.smallPaddingTop
+    div.form-group.pure-u-1.pure-u-sm-10-24
+      ul
+        each probationArea in probationAreas     
+          li 
+            a(href="/admin/locations/probation-areas/"+probationArea.code+"/local-delivery-units") #{probationArea.description}
