@@ -167,15 +167,6 @@ describe('prisonerDetailsService', () => {
     })
   })
 
-  describe('getResponsibleOfficer', () => {
-    test('should call the ro service with the nomis id', async () => {
-      await service.getResponsibleOfficer('123', 'username')
-
-      expect(roService.findResponsibleOfficer).toHaveBeenCalled()
-      expect(roService.findResponsibleOfficer).toHaveBeenCalledWith('123', 'username')
-    })
-  })
-
   describe('getOrganisationContactDetails', () => {
     test('should get COM for RO', async () => {
       await service.getOrganisationContactDetails('RO', '123', 'token')

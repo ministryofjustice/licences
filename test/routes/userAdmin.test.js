@@ -26,30 +26,6 @@ const user2 = {
   last: 'l2',
 }
 
-const incomplete1 = {
-  first: 1,
-  last: 1,
-  mapped: false,
-  onboarded: 1,
-  nomisId: 1,
-  sent: 1,
-  bookingId: 1,
-  assignedId: 'INCOMPLETE USER 1',
-  assignedName: 1,
-}
-
-const incomplete2 = {
-  first: 2,
-  last: 2,
-  mapped: 2,
-  onboarded: false,
-  nomisId: 2,
-  sent: 2,
-  bookingId: 2,
-  assignedId: 'INCOMPLETE USER 2',
-  assignedName: 2,
-}
-
 describe('/admin', () => {
   let userAdminService
 
@@ -61,10 +37,8 @@ describe('/admin', () => {
     userAdminService.findRoUsers.mockReset()
     userAdminService.getRoUsers.mockReset()
     userAdminService.getRoUser.mockReset()
-    userAdminService.getIncompleteRoUsers.mockReset()
 
     userAdminService.getRoUsers.mockResolvedValue([user1, user2])
-    userAdminService.getIncompleteRoUsers.mockResolvedValue([incomplete1, incomplete2])
     userAdminService.findRoUsers.mockResolvedValue([user1])
     userAdminService.getRoUser.mockResolvedValue(user1)
 
@@ -278,19 +252,6 @@ describe('/admin', () => {
     })
   })
 
-  describe('GET /admin/roUsers/add', () => {
-    const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
-    test('shows add user form', () => {
-      return request(app)
-        .get('/admin/roUsers/add/')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain('Add RO user')
-        })
-    })
-  })
-
   describe('POST /admin/roUsers/add', () => {
     describe('Invalid inputs', () => {
       const examples = [
@@ -403,57 +364,6 @@ describe('/admin', () => {
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(403)
-    })
-  })
-
-  describe('GET /admin/roUsers/incomplete', () => {
-    test('calls user service and renders HTML output', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
-      return request(app)
-        .get('/admin/roUsers/incomplete')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(() => {
-          expect(userAdminService.getIncompleteRoUsers).toHaveBeenCalled()
-        })
-    })
-
-    test('should display the incomplete user details', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
-      return request(app)
-        .get('/admin/roUsers/incomplete')
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain('INCOMPLETE USER 1')
-          expect(res.text).toContain('INCOMPLETE USER 2')
-        })
-    })
-
-    test('should throw if submitted by non-authorised user', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'roUser')
-      return request(app)
-        .get('/admin/roUsers/incomplete')
-        .expect(403)
-    })
-  })
-
-  describe('POST /admin/roUsers/incomplete/add', () => {
-    test('redirects to add user', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
-      return request(app)
-        .post('/admin/roUsers/incomplete/add')
-        .send({ assignedId: 'STAFF CODE', assignedName: 'FIRST LAST LAST2' })
-        .expect(302)
-        .expect('Location', '/admin/roUsers/add')
-    })
-
-    test('redirects even if missing data', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
-      return request(app)
-        .post('/admin/roUsers/incomplete/add')
-        .send({ missing: 'error' })
-        .expect(302)
-        .expect('Location', '/admin/roUsers/add')
     })
   })
 })

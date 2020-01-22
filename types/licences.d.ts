@@ -71,7 +71,6 @@ export interface RoNotificationSender {
 
 export interface PrisonerService {
   getPrisonerDetails: (bookingId: number, token: string) => Promise<any>
-  getResponsibleOfficer: (bookingId: number, token: string) => Promise<Result<ResponsibleOfficer>>
   getEstablishmentForPrisoner: (bookingId: number, token: string) => Promise<any>
   getEstablishment: (locationId: number, token: string) => Promise<any>
   getPrisonerImage: (imageId: number, token: string) => Promise<any>

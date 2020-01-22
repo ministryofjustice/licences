@@ -82,7 +82,6 @@ const createFormServiceStub = () => ({
 
 const createUserAdminServiceStub = () => ({
   getRoUsers: jest.fn().mockReturnValue(),
-  getIncompleteRoUsers: jest.fn().mockReturnValue(),
   getRoUser: jest.fn().mockReturnValue(),
   getRoUserByDeliusId: jest.fn().mockReturnValue({}),
   updateRoUser: jest.fn().mockReturnValue(),
