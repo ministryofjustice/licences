@@ -73,6 +73,7 @@ module.exports = function createRoNotificationHandler(
         We know that the delius RO user handling this case requires the RO role to be able to access licences
         Attempt the idemptotent operation to add it now. 
       */
+      logger.info(`Assigning responsible officer role to ${responsibleOfficer.username} for booking id: ${bookingId}`)
       await deliusClient.addResponsibleOfficerRole(responsibleOfficer.username)
     }
   }
