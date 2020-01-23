@@ -29,23 +29,21 @@ module.exports = function createLduService(deliusClient, activeLduClient) {
 
       const { content: ldus = [] } = await deliusClient.getAllLdusForProbationArea(probationAreaCode)
 
-      const allLdus = ldus
-        .map(ldu => ({
-          code: ldu.code,
-          description: ldu.description,
-          active: activeLdusCodes.includes(ldu.code),
-        }))
-        .sort((a, b) => a.description.localeCompare(b.description, 'en', { ignorePunctuation: true }))
+      const allLdus = ldus.map(ldu => ({
+        code: ldu.code,
+        description: ldu.description,
+        active: activeLdusCodes.includes(ldu.code),
+      }))
 
-      const uniqueLdus = Object.entries(R.groupBy(ldu => ldu.code, allLdus)).map(ldu => ldu[1][0])
+      const uniqueLdus = [...Object.entries(R.groupBy(R.prop('code'), allLdus))]
+        .sort(([lduCode1], [lduCode2]) => lduCode1.localeCompare(lduCode2))
+        .map(([_, ldu]) => ldu.sort((ldu1, ldu2) => ldu1.description.localeCompare(ldu2.description))[0])
 
-      const probationArea = {
+      return {
         code: probationAreaCode,
         description: probationAreaDescription,
         ldus: uniqueLdus,
       }
-
-      return probationArea
     },
 
     async updateActiveLdus(probationAreaCode, activeLdus) {
