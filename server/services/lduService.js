@@ -1,3 +1,4 @@
+const R = require('ramda')
 const logger = require('../../log')
 
 /**
@@ -34,13 +35,15 @@ module.exports = function createLduService(deliusClient, activeLduClient) {
         active: activeLdusCodes.includes(ldu.code),
       }))
 
-      const probationArea = {
+      const uniqueLdus = [...Object.entries(R.groupBy(R.prop('code'), allLdus))]
+        .sort(([lduCode1], [lduCode2]) => lduCode1.localeCompare(lduCode2))
+        .map(([_, ldu]) => ldu.sort((ldu1, ldu2) => ldu1.description.localeCompare(ldu2.description))[0])
+
+      return {
         code: probationAreaCode,
         description: probationAreaDescription,
-        ldus: allLdus,
+        ldus: uniqueLdus,
       }
-
-      return probationArea
     },
 
     async updateActiveLdus(probationAreaCode, activeLdus) {

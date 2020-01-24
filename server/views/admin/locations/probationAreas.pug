@@ -13,4 +13,4 @@ block content
       ul
         each probationArea in probationAreas     
           li 
-            a(href="/admin/locations/probation-areas/"+probationArea.code+"/local-delivery-units") #{probationArea.description}
+            a(href="/admin/locations/probation-areas/"+probationArea.code+"/local-delivery-units") #{probationArea.description} (#{probationArea.code})

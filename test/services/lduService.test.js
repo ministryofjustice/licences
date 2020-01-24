@@ -59,8 +59,39 @@ describe('lduService', () => {
         description: 'London',
         ldus: [
           { code: 'ham', description: 'Hampstead', active: true },
-          { code: 'wtl', description: 'Waterloo', active: false },
           { code: 'pic', description: 'Picadilly', active: true },
+          { code: 'wtl', description: 'Waterloo', active: false },
+        ],
+      })
+    })
+
+    it('Should remove duplicate ldus and only show the first description', async () => {
+      deliusClient.getAllLdusForProbationArea.mockResolvedValue({
+        content: [
+          { code: 'ham', description: 'Hampstead' },
+          { code: 'pic', description: 'Picadilly' },
+          { code: 'ham', description: 'Hampstead2' },
+          { code: 'pic', description: 'Picadilly2' },
+          { code: 'wtl', description: 'Waterloo2' },
+          { code: 'pic', description: 'Picadilly' },
+          { code: 'ham', description: 'Hampstead2' },
+          { code: 'pic', description: 'Picadilly2' },
+          { code: 'wtl', description: 'Waterloo' },
+        ],
+      })
+
+      deliusClient.getAllProbationAreas.mockResolvedValue({ content: [{ code: 'Lon', description: 'London' }] })
+      activeLduClient.allActiveLdusInArea.mockResolvedValue([{ code: 'ham' }, { code: 'pic' }])
+
+      const result = await lduService.getProbationArea('Lon')
+
+      expect(result).toEqual({
+        code: 'Lon',
+        description: 'London',
+        ldus: [
+          { code: 'ham', description: 'Hampstead', active: true },
+          { code: 'pic', description: 'Picadilly', active: true },
+          { code: 'wtl', description: 'Waterloo', active: false },
         ],
       })
     })
