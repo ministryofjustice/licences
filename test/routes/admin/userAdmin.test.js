@@ -7,10 +7,10 @@ const {
   createLicenceServiceStub,
   appSetup,
   createSignInServiceStub,
-} = require('../supertestSetup')
+} = require('../../supertestSetup')
 
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createAdminRoute = require('../../server/routes/admin/users')
+const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
+const createAdminRoute = require('../../../server/routes/admin/users')
 
 const user1 = {
   nomisId: 'user1',

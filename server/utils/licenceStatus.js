@@ -752,14 +752,14 @@ function getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason) {
 
 function getBassState(licence) {
   const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted'])
-  const bassOffer = getBassOfferState(licence, bassAccepted)
+  const bassOffer = getBassOfferState(bassAccepted)
   const { bassWithdrawn, bassWithdrawalReason } = getBassWithdrawalState(licence)
   const bassAddress = getBassAddressState(licence)
 
   return { bassAccepted, bassOffer, bassWithdrawn, bassWithdrawalReason, bassAddress }
 }
 
-function getBassOfferState(licence, bassAccepted) {
+function getBassOfferState(bassAccepted) {
   if (!bassAccepted) {
     return taskStates.UNSTARTED
   }
