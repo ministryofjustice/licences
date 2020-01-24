@@ -21,7 +21,13 @@ module.exports = signInService => {
     async getFunctionalMailbox(probationAreaCode, lduCode, teamCode) {
       const ldu = await get(`${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}`)
       const teamAddress = R.path(['probationTeams', teamCode, 'functionalMailbox'], ldu)
-      return teamAddress || (ldu && ldu.functionalMailbox)
+      const functionalMailbox = teamAddress || (ldu && ldu.functionalMailbox)
+      if (!functionalMailbox) {
+        logger.info(
+          `Could not find functional mailbox for the probation area code ${probationAreaCode} having an ldu code: ${lduCode} or team code: ${teamCode}`
+        )
+      }
+      return functionalMailbox
     },
   }
 
