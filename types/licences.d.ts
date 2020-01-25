@@ -119,6 +119,12 @@ export interface LduService {
   updateActiveLdus: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
 }
 
+
+export interface LicenceSearchService {
+  findForId: (username: string, id: string) => Promise<number | undefined>
+}
+
+
 export interface ActiveLduClient {
   isLduPresent: (lduCode: string, probationAreaCode: string)=> Promise<boolean>
   allActiveLdusInArea: (probationAreaCode: string)=> Promise<ActiveLdu[]>
