@@ -15,7 +15,7 @@ module.exports = licenceSearchService => (router, audited) => {
     '/',
     asyncMiddleware(async (req, res) => {
       const errors = firstItem(req.flash('errors')) || {}
-      return res.render('admin/licenceSearch', { errors })
+      return res.render('admin/licences/search', { errors })
     })
   )
 

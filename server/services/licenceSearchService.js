@@ -18,7 +18,7 @@ module.exports = function createLicenceSearchService(licenceClient, signInServic
 
   const findByOffenderNumber = async (username, offenderIdentifier) => {
     const systemToken = await signInService.getClientCredentialsTokens(username)
-    const client = nomisClientBuilder(systemToken)
+    const client = nomisClientBuilder(systemToken.token)
 
     try {
       const { bookingId } = await client.getBookingByOffenderNumber(offenderIdentifier)

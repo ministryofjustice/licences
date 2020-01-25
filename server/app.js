@@ -34,6 +34,7 @@ const deliusAdminRouter = require('../server/routes/admin/delius')
 const locationsRouter = require('../server/routes/admin/locations')
 const warningsRouter = require('../server/routes/admin/warnings')
 const licenceSearchRouter = require('../server/routes/admin/licenceSearch')
+const licenceRouter = require('../server/routes/admin/licence')
 const apiRouter = require('../server/routes/api')
 
 const caseListRouter = require('../server/routes/caseList')
@@ -364,6 +365,7 @@ module.exports = function createApp({
   app.use('/admin/warnings/', secureRoute(warningsRouter(warningClient), { auditKey: 'WARNINGS' }))
   app.use('/admin/locations/', secureRoute(locationsRouter(lduService), { auditKey: 'WARNINGS' }))
   app.use('/admin/licenceSearch/', secureRoute(licenceSearchRouter(licenceSearchService)))
+  app.use('/admin/licences/', secureRoute(licenceRouter(licenceService, signInService, prisonerService)))
 
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService)))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
