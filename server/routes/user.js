@@ -7,7 +7,7 @@ module.exports = ({ userService }) => router => {
     '/',
     asyncMiddleware(async (req, res) => {
       const [allRoles, allCaseLoads] = await Promise.all([
-        userService.getAllRoles(res.locals.token),
+        userService.getAllRoles(req.user.token),
         userService.getAllCaseLoads(req.user, res.locals.token),
       ])
 
