@@ -34,6 +34,38 @@ describe('Audit', () => {
     })
   })
 
+  describe('getEventForBooking', () => {
+    beforeEach(() => {
+      db.query.mockResolvedValue({ rows: [{ id: 1 }] })
+    })
+
+    test('should make the query', async () => {
+      const result = await audit.getEventsForBooking(1)
+      expect(result).toEqual([{ id: 1 }])
+
+      const { values, text } = db.query.mock.calls[0][0]
+      expect(values).toEqual([1])
+      expect(text).toEqual(
+        `select id, "timestamp", "user", action, details from audit where details::jsonb ->> 'bookingId' = $1 order by timestamp desc;`
+      )
+    })
+  })
+
+  describe('getEvent', () => {
+    beforeEach(() => {
+      db.query.mockResolvedValue({ rows: [{ id: 1 }] })
+    })
+
+    test('should make the query', async () => {
+      const result = await audit.getEvent(1)
+      expect(result).toEqual({ id: 1 })
+
+      const { values, text } = db.query.mock.calls[0][0]
+      expect(values).toEqual([1])
+      expect(text).toEqual(`select id, "timestamp", "user", action, details from audit where id = $1;`)
+    })
+  })
+
   describe('getEvents', () => {
     beforeEach(() => {
       db.query.mockReturnValue([])

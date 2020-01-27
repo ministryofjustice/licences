@@ -39,6 +39,9 @@ module.exports = {
     const { rows } = await db.query(query)
     return rows
   },
+
+  getEvent,
+  getEventsForBooking,
 }
 
 function addItem(key, user, data) {
@@ -48,6 +51,22 @@ function addItem(key, user, data) {
   }
 
   return db.query(query)
+}
+
+async function getEventsForBooking(bookingId) {
+  const { rows } = await db.query({
+    text: `select id, "timestamp", "user", action, details from audit where details::jsonb ->> 'bookingId' = $1 order by timestamp desc;`,
+    values: [bookingId],
+  })
+  return rows
+}
+
+async function getEvent(eventId) {
+  const { rows } = await db.query({
+    text: `select id, "timestamp", "user", action, details from audit where id = $1;`,
+    values: [eventId],
+  })
+  return rows[0]
 }
 
 function getEventQuery(action, filters, optionalQueries) {

@@ -20,7 +20,7 @@ block content
           each ldu, index in probationArea.ldus
             div.multiple-choice
               input(id=ldu.code type="checkbox" name=`activeLdus[${index}]` checked=ldu.active value=ldu.code)
-              label(for=ldu.code) #{ldu.description}
+              label(for=ldu.code) #{ldu.description} (#{ldu.code})
               
 
     if probationArea.ldus[0]

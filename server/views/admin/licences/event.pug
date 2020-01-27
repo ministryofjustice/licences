@@ -1,0 +1,33 @@
+//- Read only licence view eg from caselist when case is with a different role
+extends ../../layout
+
+block content
+
+  include ../../includes/back
+
+  h1.heading-large Event details
+  
+  div.pure-g.paddingBottom
+    div.pure-u-1.pure-u-md-3-24.padRight15
+      div.midMarginBottom
+        span.bold Id
+        span.block #{event.id}
+    div.pure-u-1.pure-u-md-8-24.padRight15
+      div.midMarginBottom
+        span.bold Timestamp
+        span.block #{event.timestamp}
+    div.pure-u-1.pure-u-md-5-24.padRight15
+      div.midMarginBottom
+        span.bold User
+        span.block #{event.user}    
+    div.pure-u-1.pure-u-md-5-24.padRight15
+      div.midMarginBottom
+        span.bold Action
+        span.block #{event.action}    
+
+  div.pure-g.paddingBottom
+    div.pure-u-1
+      div.midMarginBottom
+        span.bold Details:
+        pre.paddingTop
+          code !{event.detailsJson}

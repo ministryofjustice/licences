@@ -1,0 +1,79 @@
+mixin detail(type, details)
+  case type
+    when 'SEND'
+        + send(details)
+    when 'UPDATE_SECTION'
+        + updateSection(details)
+    when 'NOTIFY'
+        + notify(details)
+    default
+        | &nbsp;   
+
+mixin defaultType(type, details)
+    | #{type} #{details}
+
+
+mixin send(details)
+    case details.transitionType
+      when 'caToRo'
+          | Sent from CA → RO
+      when 'roToCa'
+          | Sent from RO → CA
+      when 'caToDm'
+          | Sent from CA → DM
+      when 'dmToCa'
+          | Sent from DM → CA
+      default
+          | #{transitionType}
+
+mixin updateSection(details)
+    | Provided details for '#{details.path.replace(/\/hdc\/(.*?)\/[\d]+/, "$1")}'
+
+mixin notify(details)
+    | #{details.notifications.length} notifications sent of type: '#{details.notificationType}'
+
+mixin assignedTo(val)
+  case val
+    when 'PROCESSING_RO'
+    when 'VARY'
+       | Responsible Officer
+    when 'APPROVAL'
+    when 'MODIFIED_APPROVAL'
+       | Decision Maker
+    default
+       | Prison Case Admin 
+
+div.borderBottom.paddingBottom
+  
+  h2.heading-medium Activity
+
+  p
+    span.bold Current stage:&nbsp;
+    span #{licence.stage}
+  p
+    span.bold Currently Assigned to:&nbsp;
+    span 
+      + assignedTo(licence.stage)
+    
+    
+  table.largeMarginBottom
+    thead
+        tr
+        th Timestamp
+        th User
+        th Action
+        th Details
+    tbody
+        each event in events
+          tr.hdcEligible
+          td.link
+              a(id='event-'+ event.id  href='/admin/licences/events/' + event.id + '/raw') #{event.timestamp}
+          td.user
+              | #{event.user}
+          td.action
+              | #{event.action}
+          td.details
+              + detail(event.type, event.details)
+
+
+

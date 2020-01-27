@@ -217,7 +217,6 @@ const setup = {
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(prefix, route)
-
     return app
   },
 }

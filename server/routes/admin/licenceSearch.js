@@ -29,7 +29,7 @@ module.exports = licenceSearchService => (router, audited) => {
       if (licenceId) {
         return res.redirect(`/admin/licences/${licenceId}`)
       }
-      req.flash('errors', { id: `Could not find licences with identifier: '${id || ''}'` })
+      req.flash('errors', { id: `Could not find licence with identifier: '${id || ''}'` })
       return res.redirect('/admin/licenceSearch')
     })
   )
