@@ -14,6 +14,7 @@ const createRoute = require('../../server/routes/user')
 
 describe('/user', () => {
   let userService
+  let signInService
 
   beforeEach(() => {
     userService = {
@@ -24,12 +25,15 @@ describe('/user', () => {
       setRole: jest.fn().mockReturnValue(),
       setActiveCaseLoad: jest.fn().mockReturnValue(),
     }
+    signInService = {
+      getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-token' }),
+    }
     auditStub.record.mockReset()
   })
 
   describe('user page get', () => {
     test(`renders the /user page`, () => {
-      const app = createApp({ userService }, 'caUser')
+      const app = createApp('caUser')
       return request(app)
         .get('/')
         .expect(200)
@@ -40,7 +44,7 @@ describe('/user', () => {
     })
 
     test(`renders the role dropdown if user has multiple roles`, () => {
-      const app = createApp({ userService }, 'caUser')
+      const app = createApp('caUser')
       return request(app)
         .get('/')
         .expect(200)
@@ -51,8 +55,21 @@ describe('/user', () => {
         })
     })
 
+    test(`renders the role dropdown if user has multiple roles for RO`, () => {
+      const app = createApp('roUser')
+      return request(app)
+        .get('/')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('<option value="CA"')
+          expect(res.text).toContain('<option value="RO"')
+          expect(userService.getAllRoles).toHaveBeenCalledWith('token')
+        })
+    })
+
     test(`renders the case load dropdown if user has multiple case loads`, () => {
-      const app = createApp({ userService }, 'caUser')
+      const app = createApp('caUser')
       return request(app)
         .get('/')
         .expect(200)
@@ -64,7 +81,7 @@ describe('/user', () => {
     })
 
     test(`does not render the case load dropdown if user is admin role`, () => {
-      const app = createApp({ userService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .get('/')
         .expect(200)
@@ -78,7 +95,7 @@ describe('/user', () => {
 
   describe('user page post', () => {
     test(`calls setRole if role is different to that on user`, () => {
-      const app = createApp({ userService }, 'caUser')
+      const app = createApp('caUser')
       return request(app)
         .post('/')
         .send({ role: 'RO' })
@@ -90,7 +107,7 @@ describe('/user', () => {
     })
 
     test(`does not call setRole if role is the same as that on user`, () => {
-      const app = createApp({ userService }, 'caUser')
+      const app = createApp('caUser')
       return request(app)
         .post('/')
         .send({ role: 'CA' })
@@ -101,7 +118,7 @@ describe('/user', () => {
     })
 
     test(`calls setActiveCaseload if caseLoad is different to that on user`, () => {
-      const app = createApp({ userService }, 'caUser')
+      const app = createApp('caUser')
       return request(app)
         .post('/')
         .send({ caseLoadId: 'caseLoadId2' })
@@ -113,7 +130,7 @@ describe('/user', () => {
     })
 
     test(`does not call setActiveCaseload if caseLoad is the same as that on user`, () => {
-      const app = createApp({ userService }, 'caUser')
+      const app = createApp('caUser')
       return request(app)
         .post('/')
         .send({ caseLoadId: 'caseLoadId' })
@@ -124,7 +141,7 @@ describe('/user', () => {
     })
 
     test(`does not call setActiveCaseload if caseLoadId is missing`, () => {
-      const app = createApp({ userService }, 'caUser')
+      const app = createApp('caUser')
       return request(app)
         .post('/')
         .send({ someOtherId: 'caseLoadId' })
@@ -135,7 +152,7 @@ describe('/user', () => {
     })
 
     test(`redirects to the /user page`, () => {
-      const app = createApp({ userService }, 'caUser')
+      const app = createApp('caUser')
       return request(app)
         .post('/')
         .send({ role: 'RO' })
@@ -143,14 +160,20 @@ describe('/user', () => {
         .expect('Location', '/user')
     })
   })
+
+  function createApp(user) {
+    const prisonerService = createPrisonerServiceStub()
+    const licenceService = createLicenceServiceStub()
+
+    const baseRouter = standardRouter({
+      licenceService,
+      signInService,
+      prisonerService,
+      authenticationMiddleware,
+      audit: auditStub,
+    })
+    const route = baseRouter(createRoute({ userService }))
+
+    return appSetup(route, user)
+  }
 })
-
-function createApp({ userService }, user) {
-  const prisonerService = createPrisonerServiceStub()
-  const licenceService = createLicenceServiceStub()
-
-  const baseRouter = standardRouter({ licenceService, prisonerService, authenticationMiddleware, audit: auditStub })
-  const route = baseRouter(createRoute({ userService }))
-
-  return appSetup(route, user)
-}
