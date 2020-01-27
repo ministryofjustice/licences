@@ -1,0 +1,26 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/") Back
+
+    +errorBannerWithDetail(errors, [{ field: 'id' }])
+
+  div.pure-g
+    div.pure-u-1.largeMarginTop
+      h2.heading-medium Search for licence
+
+      form(method='POST' action='/admin/licenceSearch')
+        input(type="hidden" name="_csrf" value=csrfToken)
+
+        div.pure-u-2-3.midPaddingBottom
+          div.pure-g.u-paddingBottom
+            div.pure-u-1
+              label.form-label(for="id") Offender Identifier (Offender number or Booking ID)
+            div.pure-u-sm-5-12
+              input.form-control(id="id" type="text" name="id")
+            div.pure-u-sm-1-6.sm-PadLeftRight15
+              input.requiredButton.button(type="submit" value="Search")
+            div.pure-u-sm-5-12

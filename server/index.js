@@ -43,6 +43,7 @@ const createProbationTeamsClient = require('./data/probationTeamsClient')
 const createRoService = require('./services/roService')
 const createCaService = require('./services/caService')
 const createLduService = require('./services/lduService')
+const createLicenceSearchService = require('./services/licenceSearchService')
 
 const signInService = createSignInService()
 const licenceService = createLicenceService(licenceClient)
@@ -107,6 +108,7 @@ const nomisPushService = createNomisPushService(nomisClientBuilder, signInServic
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 const lduService = createLduService(deliusClient, activeLduClient)
+const licenceSearchService = createLicenceSearchService(licenceClient, signInService, nomisClientBuilder)
 
 const app = createApp({
   signInService,
@@ -123,6 +125,7 @@ const app = createApp({
   nomisPushService,
   configClient,
   jobSchedulerService,
+  licenceSearchService,
   roService,
   audit,
   caService,

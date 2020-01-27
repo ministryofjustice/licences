@@ -52,6 +52,25 @@ describe('nomisClient', () => {
     })
   })
 
+  describe('getBookingByOffenderNumber', () => {
+    test('should return data from api', () => {
+      fakeNomis.get(`/bookings/offenderNo/ABC123D`).reply(200, { key: 'value' })
+
+      return expect(nomisClient.getBookingByOffenderNumber('ABC123D')).resolves.toEqual({ key: 'value' })
+    })
+
+    test('should reject if api fails', () => {
+      fakeNomis
+        .get(`/bookings/offenderNo/ABC123D`)
+        .thrice()
+        .reply(500)
+
+      return expect(nomisClient.getBookingByOffenderNumber('ABC123D')).rejects.toStrictEqual(
+        Error('Internal Server Error')
+      )
+    })
+  })
+
   describe('getImageInfo', () => {
     test('should return data from api', () => {
       fakeNomis.get(`/images/1`).reply(200, { key: 'value' })
