@@ -365,7 +365,7 @@ module.exports = function createApp({
   app.use('/admin/warnings/', secureRoute(warningsRouter(warningClient), { auditKey: 'WARNINGS' }))
   app.use('/admin/locations/', secureRoute(locationsRouter(lduService), { auditKey: 'WARNINGS' }))
   app.use('/admin/licenceSearch/', secureRoute(licenceSearchRouter(licenceSearchService)))
-  app.use('/admin/licences/', secureRoute(licenceRouter(licenceService, signInService, prisonerService)))
+  app.use('/admin/licences/', secureRoute(licenceRouter(licenceService, signInService, prisonerService, audit)))
 
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService)))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
