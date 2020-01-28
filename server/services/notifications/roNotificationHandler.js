@@ -14,7 +14,7 @@
 const { sendingUserName } = require('../../utils/userProfile')
 const logger = require('../../../log.js')
 const { isEmpty, unwrapResult } = require('../../utils/functionalHelpers')
-const { STAFF_NOT_LINKED } = require('../serviceErrors')
+const { STAFF_NOT_LINKED, MISSING_PRISON } = require('../serviceErrors')
 
 /**
  * @param {RoContactDetailsService} roContactDetailsService
@@ -32,52 +32,6 @@ module.exports = function createRoNotificationHandler(
   warningClient,
   deliusClient
 ) {
-  async function sendRo({ transition, bookingId, token, user }) {
-    /** @type {[{premise: string}, Result<ResponsibleOfficerAndContactDetails>]} */
-    const [establishment, result] = await Promise.all([
-      prisonerService.getEstablishmentForPrisoner(bookingId, token),
-      roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
-    ])
-
-    const [responsibleOfficer, error] = unwrapResult(result)
-
-    if (error) {
-      logger.error(`Problem retrieving contact details: ${error.message}`)
-      return
-    }
-
-    const { premise: prison } = establishment || {}
-    if (isEmpty(prison)) {
-      logger.error(`Missing prison for bookingId: ${bookingId}`)
-      return
-    }
-
-    if (responsibleOfficer.isUnlinkedAccount) {
-      await raiseUnlinkedAccountWarning(bookingId, responsibleOfficer)
-    }
-
-    await licenceService.markForHandover(bookingId, transition.type)
-
-    auditEvent(user.username, bookingId, transition.type, responsibleOfficer)
-
-    await roNotificationSender.sendNotifications({
-      bookingId,
-      responsibleOfficer,
-      prison,
-      notificationType: transition.notificationType,
-      sendingUserName: sendingUserName(user),
-    })
-
-    if (responsibleOfficer.username) {
-      /* 
-        We know that the delius RO user handling this case requires the RO role to be able to access licences
-        Attempt the idemptotent operation to add it now. 
-      */
-      logger.info(`Assigning responsible officer role to ${responsibleOfficer.username} for booking id: ${bookingId}`)
-      await deliusClient.addResponsibleOfficerRole(responsibleOfficer.username)
-    }
-  }
-
   /** Need to alert staff to link the records manually otherwise we won't be able to access the RO's email address from their user record and so won't be able to notify them  */
   async function raiseUnlinkedAccountWarning(bookingId, { deliusId, name, nomsNumber }) {
     logger.info(`Staff and user records not linked in delius: ${deliusId}`)
@@ -96,7 +50,101 @@ module.exports = function createRoNotificationHandler(
     })
   }
 
+  /**
+   *  We know that the RO user handling this case requires the Delius RO role to be able to access licences
+   *  Attempt the idemptotent operation to add it now.
+   * @param {string} bookingId
+   * @param {ResponsibleOfficerAndContactDetails} responsibleOfficer
+   * @return {Promise<void>}
+   */
+  async function assignDeliusRoRole(bookingId, responsibleOfficer) {
+    if (responsibleOfficer.username) {
+      logger.info(`Assigning responsible officer role to ${responsibleOfficer.username} for booking id: ${bookingId}`)
+      await deliusClient.addResponsibleOfficerRole(responsibleOfficer.username)
+    }
+  }
+
+  /**
+   * @typedef {{ prison: string, responsibleOfficer: ResponsibleOfficerAndContactDetails }} RoAndPrison
+   * @return {Promise<Result<RoAndPrison>>}
+   */
+  async function loadResponsibleOfficer(bookingId, token) {
+    /** @type {[{premise: string}, Result<ResponsibleOfficerAndContactDetails>]} */
+    const [establishment, result] = await Promise.all([
+      prisonerService.getEstablishmentForPrisoner(bookingId, token),
+      roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
+    ])
+
+    const [responsibleOfficer, error] = unwrapResult(result)
+
+    if (error) {
+      return error
+    }
+
+    const { premise: prison } = establishment || {}
+    if (isEmpty(prison)) {
+      logger.error(`Missing prison for bookingId: ${bookingId}`)
+      return { message: `Missing prison for bookingId: ${bookingId}`, code: MISSING_PRISON }
+    }
+    return { prison, responsibleOfficer }
+  }
+
   return {
-    sendRo,
+    async sendRo({ transition, bookingId, token, user }) {
+      const [responsibleOfficerAndPrison, error] = unwrapResult(await loadResponsibleOfficer(bookingId, token))
+
+      if (error) {
+        logger.error(`Problem retrieving contact details: ${error.message}`)
+        return
+      }
+
+      const { prison, responsibleOfficer } = responsibleOfficerAndPrison
+
+      if (responsibleOfficer.isUnlinkedAccount) {
+        await raiseUnlinkedAccountWarning(bookingId, responsibleOfficer)
+      }
+
+      await licenceService.markForHandover(bookingId, transition.type)
+
+      auditEvent(user.username, bookingId, transition.type, responsibleOfficer)
+
+      await roNotificationSender.sendNotifications({
+        bookingId,
+        responsibleOfficer,
+        prison,
+        notificationType: transition.notificationType,
+        sendingUserName: sendingUserName(user),
+      })
+
+      await assignDeliusRoRole(bookingId, responsibleOfficer)
+    },
+
+    /**
+     * Once an unlinked account has been linked, this provides a mechanism to re-send the RO email.
+     */
+    async sendRoEmail({ transition, bookingId, token, user }) {
+      const [responsibleOfficerAndPrison, error] = unwrapResult(await loadResponsibleOfficer(bookingId, token))
+
+      if (error) {
+        return error
+      }
+
+      const { prison, responsibleOfficer } = responsibleOfficerAndPrison
+
+      if (responsibleOfficer.isUnlinkedAccount) {
+        return { code: STAFF_NOT_LINKED, message: `User is not linked for bookingId: ${bookingId}` }
+      }
+
+      await roNotificationSender.sendNotifications({
+        bookingId,
+        responsibleOfficer,
+        prison,
+        notificationType: transition.notificationType,
+        sendingUserName: sendingUserName(user),
+      })
+
+      await assignDeliusRoRole(bookingId, responsibleOfficer)
+      return responsibleOfficer
+    },
   }
 }

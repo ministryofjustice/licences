@@ -63,8 +63,8 @@ describe('roNotificationHandler', () => {
     )
   })
 
-  describe('Get send/:destination/:bookingId', () => {
-    test('handles caToRo when addressReview is destination', async () => {
+  describe('send Ro', () => {
+    test('handles caToRo', async () => {
       const responsibleOfficer = {
         name: 'Jo Smith',
         deliusId: 'delius1',
@@ -79,44 +79,6 @@ describe('roNotificationHandler', () => {
 
       await roNotificationHandler.sendRo({
         transition: transitionForDestinations.addressReview,
-        bookingId,
-        token,
-        licence,
-        prisoner,
-        user,
-      })
-
-      expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
-        bookingId,
-        responsibleOfficer,
-        prison: 'HMP Blah',
-        notificationType: 'RO_NEW',
-        sendingUserName: username,
-      })
-      expect(audit.record).toHaveBeenCalledWith('SEND', username, {
-        bookingId,
-        submissionTarget: responsibleOfficer,
-        transitionType: 'caToRo',
-      })
-      expect(licenceService.markForHandover).toHaveBeenCalledWith(bookingId, 'caToRo')
-      expect(licenceService.removeDecision).not.toHaveBeenCalled()
-    })
-
-    test('handles caToRo when bassReview is destination', async () => {
-      const responsibleOfficer = {
-        name: 'Jo Smith',
-        deliusId: 'delius1',
-        email: 'ro@user.com',
-        lduCode: 'code-1',
-        lduDescription: 'lduDescription-1',
-        nomsNumber: 'AAAA12',
-        probationAreaCode: 'prob-code-1',
-        probationAreaDescription: 'prob-desc-1',
-      }
-      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
-
-      await roNotificationHandler.sendRo({
-        transition: transitionForDestinations.bassReview,
         bookingId,
         token,
         licence,
@@ -286,5 +248,147 @@ describe('roNotificationHandler', () => {
     })
 
     expect(deliusClient.addResponsibleOfficerRole).not.toHaveBeenCalled()
+  })
+
+  describe('sendRoEmail', () => {
+    const responsibleOfficer = {
+      name: 'Jo Smith',
+      deliusId: 'delius1',
+      email: 'ro@user.com',
+      lduCode: 'code-1',
+      lduDescription: 'lduDescription-1',
+      nomsNumber: 'AAAA12',
+      probationAreaCode: 'prob-code-1',
+      probationAreaDescription: 'prob-desc-1',
+    }
+
+    test('handles caToRo', async () => {
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
+
+      const result = await roNotificationHandler.sendRoEmail({
+        transition: transitionForDestinations.addressReview,
+        bookingId,
+        token,
+        licence,
+        prisoner,
+        user,
+      })
+
+      expect(result).toStrictEqual(responsibleOfficer)
+
+      expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
+        bookingId,
+        responsibleOfficer,
+        prison: 'HMP Blah',
+        notificationType: 'RO_NEW',
+        sendingUserName: username,
+      })
+      expect(audit.record).not.toHaveBeenCalled()
+      expect(licenceService.markForHandover).not.toHaveBeenCalled()
+      expect(licenceService.removeDecision).not.toHaveBeenCalled()
+    })
+
+    test('caToRo when cannot get RO contact details', async () => {
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
+        message: 'failed to find RO',
+      })
+
+      const result = await roNotificationHandler.sendRoEmail({
+        transition: transitionForDestinations.bassReview,
+        bookingId,
+        token,
+        licence,
+        prisoner,
+        user,
+      })
+
+      expect(result).toStrictEqual({ message: 'failed to find RO' })
+
+      expect(roNotificationSender.sendNotifications).not.toHaveBeenCalled()
+      expect(audit.record).not.toHaveBeenCalled()
+      expect(licenceService.markForHandover).not.toHaveBeenCalled()
+      expect(licenceService.removeDecision).not.toHaveBeenCalled()
+    })
+
+    test('caToRo when cannot get prison', async () => {
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
+      prisonerService.getEstablishmentForPrisoner.mockResolvedValue(null)
+
+      const result = await roNotificationHandler.sendRoEmail({
+        transition: transitionForDestinations.bassReview,
+        bookingId,
+        token,
+        licence,
+        prisoner,
+        user,
+      })
+
+      expect(result).toStrictEqual({ code: 'MISSING_PRISON', message: 'Missing prison for bookingId: -1' })
+
+      expect(roNotificationSender.sendNotifications).not.toHaveBeenCalled()
+      expect(audit.record).not.toHaveBeenCalled()
+      expect(licenceService.markForHandover).not.toHaveBeenCalled()
+      expect(licenceService.removeDecision).not.toHaveBeenCalled()
+    })
+
+    test('caToRo when delius staff records are not linked to user', async () => {
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
+        ...responsibleOfficer,
+        isUnlinkedAccount: true,
+      })
+
+      const result = await roNotificationHandler.sendRoEmail({
+        transition: transitionForDestinations.bassReview,
+        bookingId,
+        token,
+        licence,
+        prisoner,
+        user,
+      })
+
+      expect(result).toStrictEqual({ code: 'STAFF_NOT_LINKED', message: 'User is not linked for bookingId: -1' })
+
+      expect(warningClient.raiseWarning).not.toHaveBeenCalled()
+      expect(roNotificationSender.sendNotifications).not.toHaveBeenCalled()
+      expect(audit.record).not.toHaveBeenCalled()
+      expect(licenceService.markForHandover).not.toHaveBeenCalled()
+      expect(licenceService.removeDecision).not.toHaveBeenCalled()
+    })
+
+    test('caToRo adds RO role in delius if have access to delius username', async () => {
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
+        ...responsibleOfficer,
+        username: 'userBob',
+      })
+
+      await roNotificationHandler.sendRoEmail({
+        transition: transitionForDestinations.bassReview,
+        bookingId,
+        token,
+        licence,
+        prisoner,
+        user,
+      })
+
+      expect(deliusClient.addResponsibleOfficerRole).toHaveBeenCalledWith('userBob')
+    })
+
+    test('caToRo does not RO role in delius if delius username is not present', async () => {
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
+        ...responsibleOfficer,
+        username: undefined,
+      })
+
+      await roNotificationHandler.sendRoEmail({
+        transition: transitionForDestinations.bassReview,
+        bookingId,
+        token,
+        licence,
+        prisoner,
+        user,
+      })
+
+      expect(deliusClient.addResponsibleOfficerRole).not.toHaveBeenCalled()
+    })
   })
 })
