@@ -318,6 +318,27 @@ module.exports = {
         },
       },
       {
+        ATTENDDEPENDENCYINDRUGSSECTION: {
+          contains: [
+            {
+              appointmentDateInDrugsSection: {
+                validationMessage: 'Enter appointment date',
+              },
+            },
+            {
+              appointmentTimeInDrugsSection: {
+                validationMessage: 'Enter appointment time',
+              },
+            },
+            {
+              appointmentAddressInDrugsSection: {
+                validationMessage: 'Enter appointment name and address',
+              },
+            },
+          ],
+        },
+      },
+      {
         ATTENDSAMPLE: {
           contains: [
             {

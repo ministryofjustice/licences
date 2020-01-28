@@ -1,6 +1,5 @@
 const { merge } = require('../../utils/functionalHelpers')
 
-const DATE_FIELD = 'appointmentDate'
 const ALWAYS_REQUIRED = ['additionalConditions', 'bookingId']
 
 module.exports = { formatConditionsInput }
@@ -32,10 +31,26 @@ function getSelectedFieldNamesReducer(array, condition) {
 }
 
 function combineDatesIn(conditionsFieldsRequired, inputObject) {
-  if (!conditionsFieldsRequired.includes(DATE_FIELD)) {
+  const DATE_FIELD = 'appointmentDate'
+  const DATE_FIELD_IN_DRUGS_SECTION = 'appointmentDateInDrugsSection'
+
+  if (
+    !conditionsFieldsRequired.includes(DATE_FIELD) &&
+    !conditionsFieldsRequired.includes(DATE_FIELD_IN_DRUGS_SECTION)
+  ) {
     return inputObject
   }
 
   const [day, month, year] = ['appointmentDay', 'appointmentMonth', 'appointmentYear']
-  return merge(inputObject, { [DATE_FIELD]: `${inputObject[day]}/${inputObject[month]}/${inputObject[year]}` })
+  const [dayInDrugsSection, monthInDrugsSection, yearInDrugsSection] = [
+    'appointmentDayInDrugsSection',
+    'appointmentMonthInDrugsSection',
+    'appointmentYearInDrugsSection',
+  ]
+  return merge(inputObject, {
+    [DATE_FIELD]: `${inputObject[day]}/${inputObject[month]}/${inputObject[year]}`,
+    [DATE_FIELD_IN_DRUGS_SECTION]: `${inputObject[dayInDrugsSection]}/${inputObject[monthInDrugsSection]}/${
+      inputObject[yearInDrugsSection]
+    }`,
+  })
 }
