@@ -11,6 +11,8 @@ const keys = [
   'USER_MANAGEMENT',
   'VARY_NOMIS_LICENCE_CREATED',
   'WARNINGS',
+  'LICENCE_SEARCH',
+  'LOCATIONS',
 ]
 
 module.exports = {
