@@ -54,16 +54,20 @@ mixin assignedTo(val)
 div.borderBottom.paddingBottom
   
   h2.heading-medium Activity
+  div.pure-g
+    div.pure-u-1.pure-u-md-1-2
+      p
+        span.bold Current stage:&nbsp;
+        span #{licence.stage}
+      p
+        span.bold Currently Assigned to:&nbsp;
+        span 
+          + assignedTo(licence.stage)
+    if licence && licence.stage === 'PROCESSING_RO'      
+      div.pure-u-1.pure-u-md-1-2
+        div.alignRight
+          a.button(href='/admin/licences/' + bookingId + '/notifyRo') Notify RO of case handover
 
-  p
-    span.bold Current stage:&nbsp;
-    span #{licence.stage}
-  p
-    span.bold Currently Assigned to:&nbsp;
-    span 
-      + assignedTo(licence.stage)
-    
-    
   table.largeMarginBottom
     thead
         tr

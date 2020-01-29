@@ -1,0 +1,20 @@
+//- Read only licence view eg from caselist when case is with a different role
+extends ../../layout
+
+block content
+
+  include ../../includes/back
+
+  h1.heading-large Notify Responsible officer
+  include ../../taskList/prisonerDetails
+  div.borderBottom.paddingBottom
+    h2.heading-medium Notify
+    div
+      p Notify the RO that they have been sent the offender's case.
+      p Pressing the button below will send an email to 
+        a(href="/hdc/contact/" + bookingId) #{prisonerInfo.com.name}
+        |, their functional mailbox and the clearing office.
+      form(method='POST' action='/admin/licences/' + bookingId + '/notifyRo')
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input.requiredButton.button(type="submit" value="Send emails")
+      
