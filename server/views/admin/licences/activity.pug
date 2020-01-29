@@ -19,10 +19,18 @@ mixin send(details)
           | Sent from CA → RO
       when 'roToCa'
           | Sent from RO → CA
+      when 'roToCaAddressRejected'
+          | Sent from RO → CA (Address rejected)
+      when 'roToCaOptedOut'
+          | Sent from RO → CA (Opted out)
       when 'caToDm'
           | Sent from CA → DM
+      when 'caToDmRefusal'
+          | Sent from CA → DM (Refusal)
       when 'dmToCa'
           | Sent from DM → CA
+      when 'dmToCaReturn'
+          | Sent from DM → CA (Return)
       default
           | #{transitionType}
 
@@ -65,7 +73,7 @@ div.borderBottom.paddingBottom
         th Details
     tbody
         each event in events
-          tr.hdcEligible
+          tr
           td.link
               a(id='event-'+ event.id  href='/admin/licences/events/' + event.id + '/raw') #{event.timestamp}
           td.user
