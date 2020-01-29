@@ -1,9 +1,14 @@
 //- Read only licence view eg from caselist when case is with a different role
 extends ../../layout
+include ../../includes/errorBannerWithDetail
 
 block content
 
   include ../../includes/back
+
+  +errorBannerWithDetail(errors, [
+    { field: 'notifyError' },
+  ])
 
   h1.heading-large Licence details
   include ../../taskList/prisonerDetails
