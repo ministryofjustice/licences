@@ -8,13 +8,22 @@ module.exports = function createConditionsService({ use2019Conditions }) {
 
   function getFullTextForApprovedConditions(licence) {
     const standardConditionsText = standardConditions.map(it => it.text.replace(/\.+$/, ''))
-    const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No'
+
+    // could be undefined, 'No' or 'Yes'
+    const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) !== 'Yes'
 
     if (standardOnly) {
       return { standardConditions: standardConditionsText, additionalConditions: [] }
     }
 
     const conditions = populateLicenceWithApprovedConditions(licence).licenceConditions
+
+    // conditions can be either the original licenceConditions object or an array of objects if
+    // populateLicenceWithApprovedConditions did its thing.
+    // This is really ugly, but seems like the lowest risk way to fix a bug (DCS-321).
+    if (!Array.isArray(conditions)) {
+      return { standardConditions: standardConditionsText, additionalConditions: [] }
+    }
 
     const additionalConditionsText = isEmpty(conditions)
       ? []
@@ -61,13 +70,15 @@ module.exports = function createConditionsService({ use2019Conditions }) {
   }
 
   function populateLicenceWithConditions(licence, errors = {}, approvedOnly = false) {
-    if (getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No') {
+    // could be undefined, 'No' or 'Yes'
+    if (getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) !== 'Yes') {
       return licence
     }
 
     const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional'])
     const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || []
     const conditionsOnLicence = !isEmpty(licenceAdditionalConditions) || bespokeConditions.length > 0
+
     if (!conditionsOnLicence) {
       return licence
     }

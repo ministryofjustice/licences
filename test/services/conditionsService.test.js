@@ -62,14 +62,13 @@ describe('conditionsService', () => {
     test('should return licence if no additional conditions', () => {
       const licence = { licenceConditions: {} }
 
-      return expect(service.populateLicenceWithConditions(licence)).toEqual({
-        licenceConditions: {},
-      })
+      return expect(service.populateLicenceWithConditions(licence)).toEqual(licence)
     })
 
     test('should return licence with additional conditions', () => {
       const licence = {
         licenceConditions: {
+          standard: { additionalConditionsRequired: 'Yes' },
           additional: { ATTENDDEPENDENCY: { appointmentDate: '12/03/1985' } },
           conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
@@ -102,6 +101,7 @@ describe('conditionsService', () => {
     test('should return licence with bespoke conditions', () => {
       const licence = {
         licenceConditions: {
+          standard: { additionalConditionsRequired: 'Yes' },
           additional: {},
           bespoke: [{ text: 'approved text', approved: 'Yes' }, { text: 'unapproved text', approved: 'No' }],
         },
@@ -141,6 +141,7 @@ describe('conditionsService', () => {
     test('should return licence with only approved bespoke conditions', () => {
       const licence = {
         licenceConditions: {
+          standard: { additionalConditionsRequired: 'Yes' },
           additional: {},
           bespoke: [
             { text: 'approved text', approved: 'Yes' },
@@ -1090,7 +1091,9 @@ describe('conditionsService', () => {
 
     test('should always return standard conditions even for empty licence', () => {
       const licence = {
-        licenceConditions: {},
+        licenceConditions: {
+          standard: {},
+        },
       }
 
       return expect(service.getFullTextForApprovedConditions(licence)).toEqual({
@@ -1113,6 +1116,7 @@ describe('conditionsService', () => {
     test('should return additional conditions as text', () => {
       const licence = {
         licenceConditions: {
+          standard: { additionalConditionsRequired: 'Yes' },
           additional: { ATTENDDEPENDENCY: { appointmentDate: '12/03/1985' } },
         },
       }
@@ -1128,6 +1132,7 @@ describe('conditionsService', () => {
     test('should return only approved bespoke conditions', () => {
       const licence = {
         licenceConditions: {
+          standard: { additionalConditionsRequired: 'Yes' },
           additional: {},
           bespoke: [
             { text: 'approved text', approved: 'Yes' },
