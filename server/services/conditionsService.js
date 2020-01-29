@@ -72,11 +72,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
   function populateLicenceWithConditions(licence, errors = {}, approvedOnly = false) {
     // could be undefined, 'No' or 'Yes'
     if (getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) !== 'Yes') {
-      return {
-        ...licence,
-        licenceConditions: [],
-        additionalConditionsJustification: '',
-      }
+      return licence
     }
 
     const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional'])
@@ -84,11 +80,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     const conditionsOnLicence = !isEmpty(licenceAdditionalConditions) || bespokeConditions.length > 0
 
     if (!conditionsOnLicence) {
-      return {
-        ...licence,
-        licenceConditions: [],
-        additionalConditionsJustification: '',
-      }
+      return licence
     }
 
     const conditionIdsSelected = Object.keys(licenceAdditionalConditions)

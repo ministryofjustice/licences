@@ -56,19 +56,13 @@ describe('conditionsService', () => {
         },
       }
 
-      return expect(service.populateLicenceWithConditions(licence)).toEqual({
-        additionalConditionsJustification: '',
-        licenceConditions: [],
-      })
+      return expect(service.populateLicenceWithConditions(licence)).toEqual(licence)
     })
 
     test('should return licence if no additional conditions', () => {
       const licence = { licenceConditions: {} }
 
-      return expect(service.populateLicenceWithConditions(licence)).toEqual({
-        additionalConditionsJustification: '',
-        licenceConditions: [],
-      })
+      return expect(service.populateLicenceWithConditions(licence)).toEqual(licence)
     })
 
     test('should return licence with additional conditions', () => {
