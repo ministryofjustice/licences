@@ -131,6 +131,7 @@ const app = createApp({
   caService,
   warningClient,
   lduService,
+  roNotificationHandler,
 })
 
 module.exports = app
