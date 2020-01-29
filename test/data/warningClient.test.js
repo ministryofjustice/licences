@@ -8,6 +8,15 @@ afterEach(() => {
 })
 
 describe('warningClient', () => {
+  describe('deleteAll', () => {
+    test('should pass in the correct sql', async () => {
+      await warningClient.deleteAll()
+
+      const arg = db.query.mock.calls[0][0]
+      expect(arg).toEqual('delete from warnings')
+    })
+  })
+
   describe('raiseWarning', () => {
     test('should pass in the correct sql', async () => {
       const expectedInsert = `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false) 
