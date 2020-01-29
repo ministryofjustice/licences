@@ -156,7 +156,7 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
 
     and: 'I select some conditions'
-    $("form").additionalConditions = ['COMPLYREQUIREMENTS']
+    $("form")['additionalConditions[]'] = ['COMPLYREQUIREMENTS']
 
     and: 'I select violent behaviour and anger from Drugs, health and behaviour'
     $("form").abuseAndBehaviours = ['violent behaviour', 'anger']
