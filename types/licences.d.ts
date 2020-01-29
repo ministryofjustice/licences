@@ -91,6 +91,7 @@ export interface Warning {
 }
 
 export interface WarningClient {
+  deleteAll: () => Promise<void>
   raiseWarning: (bookingId: number, code: string, messsage: string) => Promise<void>
   acknowledgeWarnings: (errorIds: number[]) => Promise<number>
   getOutstandingWarnings: () => Promise<List<Warning>>

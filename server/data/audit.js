@@ -16,6 +16,10 @@ const keys = [
 ]
 
 module.exports = {
+  deleteAll() {
+    return db.query(`delete from audit`)
+  },
+
   record(key, user, data) {
     if (!keys.includes(key)) {
       throw new Error(`Unknown audit key: ${key}`)
