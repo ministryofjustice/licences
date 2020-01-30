@@ -85,6 +85,7 @@ module.exports = function createApp({
   caService,
   warningClient,
   lduService,
+  roNotificationHandler,
 }) {
   const app = express()
 
@@ -368,7 +369,10 @@ module.exports = function createApp({
     '/admin/licenceSearch/',
     secureRoute(licenceSearchRouter(licenceSearchService), { auditKey: 'LICENCE_SEARCH' })
   )
-  app.use('/admin/licences/', secureRoute(licenceRouter(licenceService, signInService, prisonerService, audit)))
+  app.use(
+    '/admin/licences/',
+    secureRoute(licenceRouter(licenceService, signInService, prisonerService, audit, roNotificationHandler))
+  )
 
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService)))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
