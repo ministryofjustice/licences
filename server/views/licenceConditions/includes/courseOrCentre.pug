@@ -10,6 +10,10 @@ div.govuk-fieldset
   div.multiple-choice
     input(id='alcoholAbuse' type='checkbox' name='abuseAndBehaviours' value='alcohol abuse' checked=behaviours.includes('alcohol abuse'))
     label(for='alcoholAbuse') alcohol abuse
+  
+  div.multiple-choice
+    input(id='drugAbuse' type='checkbox' name='abuseAndBehaviours' value='drug abuse' checked=behaviours.includes('drug abuse'))
+    label(for='drugAbuse') drug abuse
 
   div.multiple-choice
     input(id='sexualAbuse' type='checkbox' name='abuseAndBehaviours' value='sexual abuse' checked=behaviours.includes('sexual abuse'))

@@ -415,6 +415,39 @@ describe('pdfFormatter', () => {
       'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your anger, debt, offending behaviour problems at the NHS Clinic;'
     )
   })
+
+  test('should contain single selection from  abuseAndBehaviours', () => {
+    const content = [
+      {
+        text:
+          'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
+      },
+      { variable: ['drug abuse'] },
+      { text: ' problems at the Misuse Support Services' },
+    ]
+    const terminator = ';'
+
+    const conditionText = getConditionText(content, terminator)
+    expect(conditionText).toBe(
+      'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your drug abuse problems at the Misuse Support Services;'
+    )
+  })
+  test('should contain multiple selection from abuseAndBehaviours', () => {
+    const content = [
+      {
+        text:
+          'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
+      },
+      { variable: ['alcohol abuse', 'drug abuse'] },
+      { text: ' problems at the Misuse Support Services' },
+    ]
+    const terminator = ';'
+
+    const conditionText = getConditionText(content, terminator)
+    expect(conditionText).toBe(
+      'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your alcohol abuse, drug abuse problems at the Misuse Support Services;'
+    )
+  })
 })
 
 const allValuesEmpty = {
