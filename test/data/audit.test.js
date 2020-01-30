@@ -10,6 +10,15 @@ afterEach(() => {
 })
 
 describe('Audit', () => {
+  describe('deleteAll', () => {
+    test('should pass in the correct sql', async () => {
+      await audit.deleteAll()
+
+      const arg = db.query.mock.calls[0][0]
+      expect(arg).toEqual('delete from audit')
+    })
+  })
+
   describe('record', () => {
     beforeEach(() => {
       db.query.mockResolvedValue({})
