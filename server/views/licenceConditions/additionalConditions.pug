@@ -35,7 +35,7 @@ block content
                       div.multiple-choice(data-target=condition.user_input + '_form')
                         p.namedAnchor
                           a.namedAnchor(name=conditionId)
-                        input(type="checkbox" id="check-" + conditionId value=condition.id name="additionalConditions" checked=condition.selected)
+                        input(type="checkbox" id="check-" + conditionId value=condition.id name='additionalConditions[]' checked=condition.selected)
                         label(for="check-" + conditionId) !{condition.text}
 
                     if condition.user_input
@@ -54,4 +54,3 @@ block content
 
 block append scripts
   script(src="/public/javascripts/bespokeConditionsClient.js?" + version)
-

@@ -18,10 +18,10 @@ class LicenceConditionsAdditionalPage extends Page {
 
     header { module(HeaderModule) }
 
-    conditions(required: false) { $(name: "additionalConditions") }
+    conditions(required: false) { $(name: "additionalConditions[]") }
 
     conditionsItem { conditionValue ->
-      $("input", value: conditionValue, name: "additionalConditions").module(Checkbox)
+      $("input", value: conditionValue, name: "additionalConditions[]").module(Checkbox)
     }
 
     abuseAndBehaviours { conditionValue ->

@@ -31,7 +31,7 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
     const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || []
     const conditions = conditionsService.getAdditionalConditions(licence)
     let behaviours =
-      getIn(conditions, ['Drugs, health and behaviour', 'base', 0, 'user_submission', 'abuseAndBehaviours']) || []
+      getIn(conditions, ['Drugs, health and behaviour', 'base', 1, 'user_submission', 'abuseAndBehaviours']) || []
 
     if (typeof behaviours === 'string') {
       behaviours = [behaviours]

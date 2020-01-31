@@ -1,0 +1,24 @@
+div.pure-g
+  div.pure-u-1
+    //label(for='appointmentDateInDrugsSection') Date
+    //input(type='text' name='appointmentDateInDrugsSection' id='appointmentDateInDrugsSection' class='form-control' value=condition.user_submission && condition.user_submission.appointmentDateInDrugsSection aria-label="Appointment date")
+    div.form-date
+      div.form-group.form-group-day
+        label.form-label(for="appointmentDayInDrugsSection") Day
+        input.form-control#appointmentDayInDrugsSection(name="appointmentDayInDrugsSection" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.appointmentDayInDrugsSection)
+
+      div.form-group.form-group-month
+        label.form-label(for="appointmentMonthInDrugsSection") Month
+        input.form-control#appointmentMonthInDrugsSection(name="appointmentMonthInDrugsSection" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.appointmentMonthInDrugsSection)
+
+      div.form-group.form-group-year
+        label.form-label(for="appointmentYearInDrugsSection") Year
+        input.form-control#appointmentYearInDrugsSection(name="appointmentYearInDrugsSection" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.appointmentYearInDrugsSection)
+  div.pure-u-1-2
+    label(for='appointmentTimeInDrugsSection') Time
+    input.pure-u-1-2(type='text' name='appointmentTimeInDrugsSection' id='appointmentTimeInDrugsSection' class='form-control' value=condition.user_submission && condition.user_submission.appointmentTimeInDrugsSection aria-label="Appointment time")
+  div.pure-u-1
+    label(for='appointmentAddressInDrugsSection') Address
+      textarea(name='appointmentAddressInDrugsSection' id='appointmentAddressInDrugsSection' class='form-control' rows='2' aria-label="Appointment address")
+        if condition.user_submission && condition.user_submission.appointmentAddressInDrugsSection
+          | #{condition.user_submission.appointmentAddressInDrugsSection}

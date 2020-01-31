@@ -319,5 +319,18 @@ function getSubmissionForCondition(conditionId, inputtedConditions) {
     }
   }
 
+  if (conditionId === 'ATTENDDEPENDENCYINDRUGSSECTION') {
+    const appointmentDateInDrugsSection = moment(
+      inputtedConditions[conditionId].appointmentDateInDrugsSection,
+      'DD/MM/YYYY'
+    )
+    return {
+      ...inputtedConditions[conditionId],
+      appointmentDayInDrugsSection: appointmentDateInDrugsSection.format('DD'),
+      appointmentMonthInDrugsSection: appointmentDateInDrugsSection.format('MM'),
+      appointmentYearInDrugsSection: appointmentDateInDrugsSection.format('YYYY'),
+    }
+  }
+
   return inputtedConditions[conditionId]
 }

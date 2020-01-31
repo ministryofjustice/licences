@@ -164,6 +164,20 @@ module.exports = {
         subgroup_name: 'Victims',
       },
       {
+        id: 'ATTENDDEPENDENCYINDRUGSSECTION',
+        text:
+          'Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.',
+        user_input: 'appointmentDetailsInDrugsSection',
+        active: !use2019Conditions,
+        field_position: {
+          appointmentDateInDrugsSection: 0,
+          appointmentTimeInDrugsSection: 1,
+          appointmentAddressInDrugsSection: 2,
+        },
+        group_name: 'Drugs, health and behaviour',
+        subgroup_name: null,
+      },
+      {
         id: 'COMPLYREQUIREMENTS',
         text:
           'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your [alcohol abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour/ offending behaviour] problems at the [NAME OF COURSE / CENTRE].',
@@ -962,6 +976,10 @@ module.exports = {
   multiFields: {
     appointmentDetails: {
       fields: ['appointmentAddress', 'appointmentDate', 'appointmentTime'],
+      joining: [' on ', ' at '],
+    },
+    appointmentDetailsInDrugsSection: {
+      fields: ['appointmentAddressInDrugsSection', 'appointmentDateInDrugsSection', 'appointmentTimeInDrugsSection'],
       joining: [' on ', ' at '],
     },
     attendSampleDetails: {
