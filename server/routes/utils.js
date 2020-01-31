@@ -3,6 +3,8 @@ const logger = require('../../log')
 
 const { asyncMiddleware } = require('../utils/middleware')
 const licenceClient = require('../data/licenceClient')
+const auditClient = require('../data/audit')
+const warningClient = require('../data/warningClient')
 
 module.exports = () => {
   const router = express.Router()
@@ -12,6 +14,10 @@ module.exports = () => {
     asyncMiddleware(async (req, res) => {
       logger.info('Deleting licence records')
       await licenceClient.deleteAll()
+      logger.info('Deleting audit records')
+      await auditClient.deleteAll()
+      logger.info('Deleting warning records')
+      warningClient.deleteAll()
       return res.redirect('/')
     })
   )
