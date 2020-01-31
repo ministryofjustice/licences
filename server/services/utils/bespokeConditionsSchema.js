@@ -103,6 +103,15 @@ module.exports = joi.object({
     appointmentTime: joi.string().required(),
     appointmentAddress: joi.string().required(),
   }),
+  ATTENDDEPENDENCYINDRUGSSECTION: joi.object({
+    appointmentDateInDrugsSection: joi
+      .date()
+      .format('DD/MM/YYYY')
+      .min(today)
+      .required(),
+    appointmentTimeInDrugsSection: joi.string().required(),
+    appointmentAddressInDrugsSection: joi.string().required(),
+  }),
   ATTENDSAMPLE: joi.object({
     attendSampleDetailsName: joi.string().required(),
     attendSampleDetailsAddress: joi.string().required(),

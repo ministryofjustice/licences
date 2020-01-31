@@ -87,7 +87,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     conditions.every { !it.value() }
 
     and: 'I see the right number of conditions'
-    conditions.size() == 33
+    conditions.size() == 34
   }
 
   def 'Select a condition reveals the input form'() {
@@ -99,7 +99,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     !$("#groupsOrOrganisation").isDisplayed()
 
     when: 'I select a condition requiring additional input'
-    $("form").additionalConditions = 'NOCONTACTASSOCIATE'
+    $("form")['additionalConditions[]'] = 'NOCONTACTASSOCIATE'
 
     then: 'The input form is shown'
     $("#groupsOrOrganisation").isDisplayed()
@@ -112,7 +112,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     at LicenceConditionsAdditionalPage
 
     and: 'I select some conditions'
-    $("form").additionalConditions = ['NOCONTACTPRISONER', 'NOCONTACTASSOCIATE', 'NORESIDE']
+    $("form")['additionalConditions[]'] = ['NOCONTACTPRISONER', 'NOCONTACTASSOCIATE', 'NORESIDE']
 
     and: 'I choose return to tasklist'
     find('#backBtn').click()
@@ -131,7 +131,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     at LicenceConditionsAdditionalPage
 
     and: 'I select some conditions'
-    $("form").additionalConditions = ['NOCONTACTPRISONER', 'NOCONTACTASSOCIATE']
+    $("form")['additionalConditions[]'] = ['NOCONTACTPRISONER', 'NOCONTACTASSOCIATE']
     $("#groupsOrOrganisation") << 'sample input'
 
     and: 'I save and continue'
@@ -152,7 +152,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     at LicenceConditionsAdditionalPage
 
     and: 'I select some conditions'
-    $("form").additionalConditions = ['COMPLYREQUIREMENTS']
+    $("form")['additionalConditions[]'] = ['COMPLYREQUIREMENTS']
 
     and: 'I select alcohol and abuse from Drugs, health and behaviour'
     $("form").abuseAndBehaviours = ['alcohol abuse']
