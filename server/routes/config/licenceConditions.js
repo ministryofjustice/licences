@@ -146,7 +146,7 @@ module.exports = {
             {
               abuseAndBehaviours: {
                 validationMessage:
-                  'Select at least one option from the alcohol abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour / offending behaviour',
+                  'Select at least one option from the alcohol abuse / drug abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour / offending behaviour',
               },
             },
           ],
