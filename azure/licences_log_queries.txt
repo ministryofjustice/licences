@@ -1,0 +1,48 @@
+// Blocked bookings - LDU not active
+traces
+| where cloud_RoleName == "licences"
+| where message startswith "Blocking case for booking:"
+| where message !contains "staff"
+| project Blocked=extract('Ldu:.*$', 0, message)
+| distinct Blocked
+| sort by Blocked asc
+
+// Blocked bookings - Staff not allocated
+
+traces
+| where cloud_RoleName == "licences"
+| where message startswith "Blocking case for booking:"
+| where message contains "staff"
+| project NotAllocated=extract('staff:.*$', 0, message)
+| distinct NotAllocated
+| sort by NotAllocated asc
+
+// Offender not present in Delius
+traces
+| where cloud_RoleName == 'licences'
+| where message startswith "Offender not present in delius"
+| project message
+| distinct message
+
+// Staff member not found in Delius
+traces
+| where cloud_RoleName == 'licences'
+| where message startswith "Staff member not found in delius"
+| project message
+| distinct message
+
+// Notifications per day, grouped by Kind
+traces
+| where cloud_RoleName == 'licences'
+| where message == "AUDIT"
+| where customDimensions.key == 'NOTIFY'
+| summarize count() by NotifyTime=bin(timestamp, 1d),Kind=extract('^POST /hdc/send/([a-zA-Z]+)/.*$', 1, operation_Name )
+| project NotifyTime , Notifications=count_, Kind
+| order by NotifyTime
+
+// RO role assignments
+traces
+| where cloud_RoleName == "licences"
+| where message contains "Role"
+| project message, timestamp
+| order by timestamp
