@@ -57,6 +57,17 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, { p
       const { enterAlternative, bookingId } = req.body
       const { licence } = res.locals.licence
 
+      const errorObject =
+        licenceService.validateForm({
+          formResponse: req.body,
+          pageConfig: formConfig.rejected,
+        }) || {}
+
+      if (errorObject.enterAlternative) {
+        req.flash('errors', errorObject)
+        return res.redirect(`/hdc/proposedAddress/rejected/${bookingId}`)
+      }
+
       if (enterAlternative === 'Yes') {
         await licenceService.rejectProposedAddress(licence, bookingId)
       }

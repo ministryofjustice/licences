@@ -104,7 +104,17 @@ module.exports = {
   },
   rejected: {
     pageDataMap: ['licence'],
-    fields: [{ enterAlternative: {} }],
+    licenceSection: 'rejected',
+
+    validate: true,
+    fields: [
+      {
+        enterAlternative: {
+          responseType: 'requiredYesNo',
+          validationMessage: 'Select yes or no',
+        },
+      },
+    ],
     nextPath: {
       decisions: {
         discriminator: 'enterAlternative',
