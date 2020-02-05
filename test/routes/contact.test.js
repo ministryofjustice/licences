@@ -16,6 +16,7 @@ let app
 describe('/contact', () => {
   let userAdminService
   let roService
+  let signInService
 
   beforeEach(() => {
     roService = {
@@ -52,7 +53,9 @@ describe('/contact', () => {
       getFunctionalMailbox: jest.fn().mockReturnValue('abc@def.com'),
     }
 
-    app = createApp({ userAdminService, roService }, 'caUser')
+    signInService = createSignInServiceStub()
+
+    app = createApp({ userAdminService, roService, signInService }, 'caUser')
   })
 
   describe('GET /contact/:bookingId', () => {
@@ -63,7 +66,7 @@ describe('/contact', () => {
         .expect('Content-Type', /html/)
         .expect(() => {
           expect(roService.findResponsibleOfficer).toHaveBeenCalled()
-          expect(roService.findResponsibleOfficer).toHaveBeenCalledWith('123456', 'token')
+          expect(roService.findResponsibleOfficer).toHaveBeenCalledWith('123456', 'system-token')
           expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalled()
           expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('DELIUS_ID')
           expect(userAdminService.getFunctionalMailbox).toHaveBeenCalledWith('PA_CODE', 'ABC123', 'TEAM_CODE')
@@ -121,13 +124,12 @@ describe('/contact', () => {
   })
 })
 
-function createApp({ userAdminService, roService }, user) {
+function createApp({ userAdminService, roService, signInService }, user) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
-  const signInService = createSignInServiceStub()
 
   const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
-  const route = baseRouter(createContactRoute(userAdminService, roService))
+  const route = baseRouter(createContactRoute(userAdminService, roService, signInService))
 
   return appSetup(route, user, '/contact/')
 }

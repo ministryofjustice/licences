@@ -217,6 +217,14 @@ const setup = {
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: false }))
     app.use(prefix, route)
+    app.use((error, req, res, next) => {
+      if (error.status !== 403) {
+        // eslint-disable-next-line no-console
+        console.log('an error occurred:', error)
+      }
+      next(error)
+    })
+
     return app
   },
 }

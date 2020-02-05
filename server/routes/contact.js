@@ -11,13 +11,14 @@ const { unwrapResult } = require('../utils/functionalHelpers')
  * @param {RoService} roService
  * @returns {function(*): *}
  */
-module.exports = (userAdminService, roService) => router => {
+module.exports = (userAdminService, roService, signInService) => router => {
   router.get(
     '/:theBookingId',
     asyncMiddleware(async (req, res) => {
       // because 'bookingId' is treated specially - see standardRouter.js
       const { theBookingId } = req.params
-      const [ro] = unwrapResult(await roService.findResponsibleOfficer(theBookingId, res.locals.token))
+      const token = await signInService.getClientCredentialsTokens(req.user.username)
+      const [ro] = unwrapResult(await roService.findResponsibleOfficer(theBookingId, token.token))
 
       const contact = ro && ro.deliusId && (await userAdminService.getRoUserByDeliusId(ro.deliusId))
       if (contact) {
