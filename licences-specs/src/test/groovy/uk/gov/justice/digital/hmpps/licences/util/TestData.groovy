@@ -19,6 +19,10 @@ class TestData {
     licences.deleteAll()
   }
 
+  def enableLdu(probationArea, ldu) {
+    licences.enableLdu(probationArea, ldu)
+  }
+
   def loadLicence(filename, bookingId = markAndrewsBookingId) {
     deleteLicences()
     addLicence(filename, bookingId)
