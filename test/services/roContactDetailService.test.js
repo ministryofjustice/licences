@@ -26,7 +26,7 @@ describe('roContactDetailsService', () => {
       getFunctionalMailbox: jest.fn(),
     }
 
-    service = createRoContactDetailsService(userAdminService, roService, probationTeamsService, true)
+    service = createRoContactDetailsService(userAdminService, roService, probationTeamsService)
   })
 
   describe('getFunctionalMailBox', () => {
@@ -56,20 +56,6 @@ describe('roContactDetailsService', () => {
       expect(result).toBe('ro-org@email.com')
       expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
       expect(roService.getStaffByCode).toHaveBeenCalledWith('delius-1')
-    })
-
-    test('local data not stored, retrieve from external service is disabled', async () => {
-      service = createRoContactDetailsService(userAdminService, roService, probationTeamsService, false)
-
-      userAdminService.getRoUserByDeliusId = jest.fn().mockReturnValue(null)
-
-      const result = await service.getFunctionalMailBox('delius-1')
-
-      expect(result).toBe(undefined)
-      expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
-      expect(probationTeamsService.getFunctionalMailbox).not.toHaveBeenCalled()
-      expect(roService.findResponsibleOfficer).toHaveBeenCalled()
-      expect(roService.getStaffByCode).not.toHaveBeenCalled()
     })
   })
 
@@ -164,31 +150,6 @@ describe('roContactDetailsService', () => {
       expect(roService.getStaffByCode).toHaveBeenCalledWith('delius-1')
     })
 
-    it('no staff record local, looking up details in delius is disabled', async () => {
-      service = createRoContactDetailsService(userAdminService, roService, probationTeamsService, false)
-
-      userAdminService.getRoUserByDeliusId.mockResolvedValue(null)
-      probationTeamsService.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
-      roService.getStaffByCode.mockResolvedValue({})
-
-      const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
-
-      expect(result).toEqual({
-        deliusId: 'delius-1',
-        email: undefined,
-        functionalMailbox: undefined,
-        lduDescription: 'Sheffield',
-        isUnlinkedAccount: false,
-        lduCode: 'SHF-1',
-        organisation: 'Sheffield (SHF-1)',
-        probationAreaCode: 'PA1',
-        probationAreaDescription: 'Probation Area 1',
-        teamCode: 'TEAM_CODE',
-        teamDescription: 'The Team',
-      })
-      expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
-      expect(roService.getStaffByCode).not.toHaveBeenCalled()
-    })
     it('no staff record local, un-linked user found in delius', async () => {
       userAdminService.getRoUserByDeliusId.mockResolvedValue(null)
 

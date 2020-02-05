@@ -52,7 +52,7 @@ const deliusClient = createDeliusClient(signInService)
 const probationTeamsClient = createProbationTeamsClient(signInService)
 
 const roService = createRoService(deliusClient, nomisClientBuilder)
-const caService = createCaService(roService, activeLduClient, config.preventCaToRoHandoverOnInactiveLdusFlag)
+const caService = createCaService(roService, activeLduClient)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
 const caseListFormatter = createCaseListFormatter(logger, licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
@@ -62,12 +62,7 @@ const reportingService = createReportingService(audit)
 const userAdminService = createUserAdminService(nomisClientBuilder, userClient, probationTeamsClient)
 const userService = createUserService(nomisClientBuilder)
 const deadlineService = createDeadlineService(licenceClient)
-const roContactDetailsService = createRoContactDetailsService(
-  userAdminService,
-  roService,
-  probationTeamsClient,
-  config.preventCaToRoHandoverOnInactiveLdusFlag
-)
+const roContactDetailsService = createRoContactDetailsService(userAdminService, roService, probationTeamsClient)
 
 const notificationSender = createNotificationSender(notifyClient, audit, config)
 const roNotificationSender = createRoNotificationSender(notificationSender, config)

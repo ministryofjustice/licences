@@ -20,15 +20,9 @@ const logIfMissing = (val, message) => {
  * @param {any} userAdminService
  * @param {RoService} roService
  * @param {ProbationTeamsClient} probationTeamsClient
- * @param {boolean} preventCaToRoHandoverOnInactiveLdusFlag
  * @return {RoContactDetailsService}
  */
-module.exports = function createRoContactDetailsService(
-  userAdminService,
-  roService,
-  probationTeamsClient,
-  preventCaToRoHandoverOnInactiveLdusFlag
-) {
+module.exports = function createRoContactDetailsService(userAdminService, roService, probationTeamsClient) {
   /**
    * @param {ResponsibleOfficer} deliusRo
    * @return {Promise<ResponsibleOfficerAndContactDetails>}
@@ -69,16 +63,6 @@ module.exports = function createRoContactDetailsService(
    * @returns {Promise<Error| DeliusContactDetails>}
    */
   async function getContactDetailsFromDelius(deliusId, probationAreaCode, lduCode, teamCode) {
-    if (!preventCaToRoHandoverOnInactiveLdusFlag) {
-      logger.info(`Looking up contact details from delius for: ${deliusId} is currently disabled`)
-      return {
-        isUnlinkedAccount: false,
-        username: undefined,
-        email: undefined,
-        functionalMailbox: undefined,
-      }
-    }
-
     logger.info(`looking up staff by code: ${deliusId}`)
     const [staff, error] = unwrapResult(await roService.getStaffByCode(deliusId))
     if (error) {
