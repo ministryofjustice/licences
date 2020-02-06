@@ -14,7 +14,7 @@ describe('caService', () => {
     caService = createCaService(roService, lduActiveClient, false)
 
     describe('getReasonForNotContinuing', () => {
-      it('Should return []', async () => {
+      it('Should return null', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(true)
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
         expect(result).toEqual(null)
@@ -24,8 +24,7 @@ describe('caService', () => {
 
   describe('Prevent CA from proceeding to RO', () => {
     beforeEach(() => {
-      const config = { preventCaToRoHandoverOnInactiveLdusFlag: true }
-      caService = createCaService(roService, lduActiveClient, config)
+      caService = createCaService(roService, lduActiveClient)
     })
 
     describe('getReasonForNotContinuing', () => {

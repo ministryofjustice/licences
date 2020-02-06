@@ -3,6 +3,8 @@ const logger = require('../../log')
 
 const { asyncMiddleware } = require('../utils/middleware')
 const licenceClient = require('../data/licenceClient')
+const activeLduClient = require('../data/activeLduClient')
+
 const auditClient = require('../data/audit')
 const warningClient = require('../data/warningClient')
 
@@ -56,6 +58,24 @@ module.exports = () => {
         return res.status(201).send({})
       } catch (error) {
         logger.error('Error during create licence', error.stack)
+        return res.status(500).send({})
+      }
+    })
+  )
+
+  router.post(
+    '/enable-ldu/:probationAreaCode/:lduCode',
+    asyncMiddleware(async (req, res) => {
+      logger.info('Enabling LDU')
+
+      const { probationAreaCode, lduCode } = req.params
+
+      try {
+        await activeLduClient.updateActiveLdu(probationAreaCode, [lduCode])
+        logger.info(`Enabled LDU: ${probationAreaCode}/${lduCode}`)
+        return res.status(201).send({})
+      } catch (error) {
+        logger.error('Error during enabling LDU', error.stack)
         return res.status(500).send({})
       }
     })

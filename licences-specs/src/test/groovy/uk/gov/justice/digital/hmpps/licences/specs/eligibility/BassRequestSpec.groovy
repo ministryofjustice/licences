@@ -85,6 +85,7 @@ class BassRequestSpec extends GebReportingSpec {
   def 'I can submit a BASS request to the RO'() {
 
     given: 'A BASS request'
+    testData.enableLdu("ABC", "ABC124")
     testData.loadLicence('eligibility/bassRequest-specificArea')
 
     when: 'I view the task list page'

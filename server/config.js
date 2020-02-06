@@ -165,5 +165,4 @@ module.exports = {
     autostart: get('SCHEDULED_JOBS_AUTOSTART', 'no') === 'yes',
     overlapTimeout: get('SCHEDULED_JOBS_OVERLAP', 5000),
   },
-  preventCaToRoHandoverOnInactiveLdusFlag: get('CONTINUE_CA_TO_RO_FEATURE_FLAG', 'no') === 'yes',
 }

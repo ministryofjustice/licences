@@ -16,17 +16,11 @@ const { NO_OFFENDER_NUMBER, LDU_INACTIVE, NO_COM_ASSIGNED, COM_NOT_ALLOCATED } =
 /**
  * @param {RoService} roService
  * @param {ActiveLduClient} activeLduClient
- * @param {boolean} preventCaToRoHandoverOnInactiveLdusFlag
  * @returns {CaService} caService
  */
-module.exports = function createCaService(roService, activeLduClient, preventCaToRoHandoverOnInactiveLdusFlag) {
+module.exports = function createCaService(roService, activeLduClient) {
   return {
     async getReasonForNotContinuing(bookingId, token) {
-      if (!preventCaToRoHandoverOnInactiveLdusFlag) {
-        return null
-        // When this feature is disabled, we never block the CA from continuing the case
-      }
-
       const [ro, error] = unwrapResult(await roService.findResponsibleOfficer(bookingId, token))
 
       if (error) {

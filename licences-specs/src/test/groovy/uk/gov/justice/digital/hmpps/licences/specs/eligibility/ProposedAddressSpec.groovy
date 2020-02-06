@@ -127,6 +127,7 @@ class ProposedAddressSpec extends GebReportingSpec {
 
     given: 'I am on the proposed curfew address page'
     to ProposedAddressCurfewAddressPage, testData.markAndrewsBookingId
+    testData.enableLdu("ABC", "ABC124")
 
     when: 'I click to add another resident'
     addResidentLink.click()

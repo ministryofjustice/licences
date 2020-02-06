@@ -155,6 +155,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
   def 'Address check task is shown when elgibile'() {
 
     when: 'Viewing the tasklist'
+    testData.enableLdu("ABC", "ABC124")
     testData.loadLicence("eligibility/eligible")
     to TaskListPage, testData.markAndrewsBookingId
 
