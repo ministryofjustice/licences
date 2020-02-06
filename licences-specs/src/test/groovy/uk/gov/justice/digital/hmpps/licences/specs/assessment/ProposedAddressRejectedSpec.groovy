@@ -34,7 +34,7 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
         to ProposedAddressRejectedPage, testData.markAndrewsBookingId
 
         when: 'I select the continue button'
-        find('#continueBtn').click()
+        proposedAddressRejectedButton.click()
 
         then: 'I am redirected to the same page and error messages are displayed'
         at ProposedAddressRejectedPage
