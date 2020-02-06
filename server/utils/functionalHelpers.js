@@ -84,6 +84,10 @@ function getFieldName(fieldConfig) {
   )(fieldConfig)
 }
 
+function omit(keys, obj) {
+  return R.omit(keys, obj)
+}
+
 /**
  * @template T
  * @type  {(result: Result<T>) => [T?, Error?]}
@@ -129,4 +133,5 @@ module.exports = {
   mapObject: R.mapObjIndexed,
   intersection: R.intersection,
   unwrapResult,
+  omit,
 }

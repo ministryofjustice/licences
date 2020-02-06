@@ -53,7 +53,7 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
         alternativeAddressRadios.value('Yes')
 
         and : 'I select the continue button'
-        find('#continueBtn').click()
+        proposedAddressRejectedButton.click()
 
         then: 'I am taken to the curfew address page'
         at ProposedAddressCurfewAddressPage
@@ -68,7 +68,7 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
         alternativeAddressRadios.value('No')
 
         and : 'I select the continue button'
-        find('#continueBtn').click()
+        proposedAddressRejectedButton.click()
 
         then: 'I am taken to the curfew address page'
         at ProposedAddressCurfewAddressChoicePage

@@ -1,3 +1,12 @@
+mixin errorMessageOrBlock(errorMessage, errorId)
+  if errorMessage && typeof(errorMessage) === 'string'
+    +alert(errorMessage, errorId)
+  else
+    block
+mixin alert(text, id)
+  p.alert.bold(id=id) #{text}
+
+
 mixin alternativeForm(label)
   form(id="enterAlternativeForm" method="post")
     div.form-group
@@ -7,8 +16,8 @@ mixin alternativeForm(label)
       div(class=errorMessage ? "form-group form-group-error" : "form-group")
         div.error.smallPaddingBottom #{errorMessage}
         div.multiple-choice(data-target="enterAlternative")
-          input#enterAlternativeYes(type="radio" name="enterAlternative" value="Yes" checked=savedData === "Yes")
-          label(for="enterAlternativeYes") Yes
+          input#enterAlternative(type="radio" name="enterAlternative" value="Yes" checked=savedData === "Yes")
+          label(for="enterAlternative") Yes
         div.multiple-choice
           input#enterAlternativeNo(type="radio" name="enterAlternative" value="No" checked=savedData === "No")
           label(for="enterAlternativeNo") No
