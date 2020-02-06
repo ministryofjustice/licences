@@ -29,7 +29,6 @@ env:
   DELIUS_API_URL: "https://community-api-secure.probation.service.justice.gov.uk"
   DELIUS_API_PREFIX: "/secure"
   PROBATION_TEAMS_API_URL: "https://probation-teams.prison.service.justice.gov.uk"
-  CONTINUE_CA_TO_RO_FEATURE_FLAG: "yes"
 
 whitelist:
   office: "217.33.148.210/32"

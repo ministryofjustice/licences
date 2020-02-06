@@ -117,9 +117,6 @@ env:
 
   - name: PROBATION_TEAMS_API_URL
     value: {{ .Values.env.PROBATION_TEAMS_API_URL | quote }}
-  
-  - name: CONTINUE_CA_TO_RO_FEATURE_FLAG
-    value: {{ .Values.env.CONTINUE_CA_TO_RO_FEATURE_FLAG | quote }}
 
   - name: NODE_ENV
     value: production
