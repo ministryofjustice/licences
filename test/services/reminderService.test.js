@@ -31,10 +31,36 @@ describe('reminderService', () => {
       sendNotifications: jest.fn(),
     }
 
-    service = createReminderService(roContactDetailsService, prisonerService, deadlineService, roNotificationSender)
+    service = createReminderService(roContactDetailsService, prisonerService, deadlineService, roNotificationSender, [
+      'RO_OVERDUE',
+      'RO_DUE',
+      'RO_TWO_DAYS',
+    ])
   })
 
   describe('notifyRoReminders', () => {
+    test('should not send notifications if disabled', async () => {
+      service = createReminderService(
+        roContactDetailsService,
+        prisonerService,
+        deadlineService,
+        roNotificationSender,
+        []
+      )
+
+      const result = await service.notifyRoReminders('token')
+      expect(result).toEqual({ overdue: 0, due: 0, soon: 0 })
+    })
+
+    test('allows selective disabling of notifications', async () => {
+      service = createReminderService(roContactDetailsService, prisonerService, deadlineService, roNotificationSender, [
+        'RO_TWO_DAYS',
+      ])
+
+      const result = await service.notifyRoReminders('token')
+      expect(result).toEqual({ overdue: 0, due: 0, soon: 1 })
+    })
+
     test('should get notifiable booking IDs from deadline service', async () => {
       await service.notifyRoReminders('token')
       expect(deadlineService.getOverdue).toHaveBeenCalled()

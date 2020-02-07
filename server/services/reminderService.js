@@ -16,12 +16,14 @@ const { NOTIFICATION_DATA_NOT_FOUND } = require('./serviceErrors')
  * @param {RoContactDetailsService} roContactDetailsService
  * @param {PrisonerService} prisonerService
  * @param {RoNotificationSender} roNotificationSender
+ * @param {string[]} activeNotificationTypes
  */
 module.exports = function createReminderService(
   roContactDetailsService,
   prisonerService,
   deadlineService,
-  roNotificationSender
+  roNotificationSender,
+  activeNotificationTypes
 ) {
   async function notifyRoReminders(token) {
     const overdue = await notifyCases(token, () => deadlineService.getOverdue('RO'), 'RO_OVERDUE')
@@ -33,6 +35,10 @@ module.exports = function createReminderService(
 
   async function notifyCases(token, caseFinderMethod, notificationType) {
     try {
+      if (!activeNotificationTypes.includes(notificationType)) {
+        logger.info(`notifying is disabled for notification type: ${notificationType}`)
+        return 0
+      }
       const cases = await caseFinderMethod()
       if (!isEmpty(cases)) {
         await sendReminders(token, cases, notificationType)

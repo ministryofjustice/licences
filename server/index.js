@@ -97,7 +97,8 @@ const reminderService = createReminderService(
   roContactDetailsService,
   prisonerService,
   deadlineService,
-  roNotificationSender
+  roNotificationSender,
+  config.notifications.activeNotificationTypes
 )
 const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
 const notificationJobs = createNotificationJobs(reminderService, signInService)
