@@ -19,6 +19,6 @@ class ProposedAddressRejectedPage extends Page {
     errorSummaryLinkMessage ( required: false ) { $('.error-summary-list').$('li') }
     inlineErrorMessage (required: false) {$('#enterAlternativeForm')}
     alternativeAddressRadios { $(name: "enterAlternative").module(RadioButtons) }
-    proposedAddressRejectedButton { $('#continueBtn')}
+    continueButton { $('#continueBtn')}
   }
 }

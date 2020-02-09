@@ -34,7 +34,7 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
         to ProposedAddressRejectedPage, testData.markAndrewsBookingId
 
         when: 'I select the continue button'
-        proposedAddressRejectedButton.click()
+        continueButton.click()
 
         then: 'I am redirected to the same page and error messages are displayed'
         at ProposedAddressRejectedPage
@@ -53,7 +53,7 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
         alternativeAddressRadios.value('Yes')
 
         and : 'I select the continue button'
-        proposedAddressRejectedButton.click()
+        continueButton.click()
 
         then: 'I am taken to the curfew address page'
         at ProposedAddressCurfewAddressPage
@@ -68,7 +68,7 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
         alternativeAddressRadios.value('No')
 
         and : 'I select the continue button'
-        proposedAddressRejectedButton.click()
+        continueButton.click()
 
         then: 'I am taken to the curfew address page'
         at ProposedAddressCurfewAddressChoicePage

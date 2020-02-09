@@ -61,8 +61,9 @@ const createConditionsServiceStub = () => ({
 })
 
 const createPrisonerServiceStub = () => ({
-  getEstablishmentForPrisoner: jest.fn().mockReturnValue(),
-  getResponsibleOfficer: jest.fn().mockReturnValue(),
+  getOrganisationContactDetails: jest.fn(),
+  getEstablishment: jest.fn(),
+  getEstablishmentForPrisoner: jest.fn().mockReturnValue(''),
   getPrisonerDetails: jest.fn().mockReturnValue({}),
   getPrisonerImage: jest.fn().mockReturnValue({ image: 'image' }),
   getPrisonerPersonalDetails: jest.fn().mockReturnValue({ firstName: 'fn', lastName: 'ln', dateOfBirth: '1980-01-01' }),
