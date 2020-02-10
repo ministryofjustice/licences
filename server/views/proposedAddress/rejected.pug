@@ -1,5 +1,6 @@
 extends ../layout
 include ../includes/alternativeForm
+include ../includes/errorBannerWithDetailObject
 
 block content
 
@@ -7,12 +8,14 @@ block content
   -var addressReview = data.curfew && data.curfew.curfewAddressReview || {}
   -var risk = data.risk && data.risk.riskManagement || {}
   -var savedData = data.proposedAddress && data.proposedAddress.rejected && data.proposedAddress.rejected.enterAlternative || {}
+  -var errorMessage = errorObject.enterAlternative
 
   div.pure-g.pure-u-1
     include ../includes/back
 
     h2.heading-large Curfew address rejected
     p The following address has been returned by the Responsible Officer:
+      +errorBannerWithDetail(errorObject, [{ field: 'enterAlternative' }])
 
     div.pure-g.borderBottomLight
       div.pure-u-1.pure-u-md-1-2

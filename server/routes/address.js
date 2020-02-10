@@ -1,6 +1,6 @@
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
-const { getIn, mergeWithRight } = require('../utils/functionalHelpers')
+const { getIn, mergeWithRight, omit, isEmpty } = require('../utils/functionalHelpers')
 const formConfig = require('./config/proposedAddress')
 
 module.exports = ({ licenceService, nomisPushService }) => (router, audited, { pushToNomis }) => {
@@ -56,6 +56,19 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, { p
     asyncMiddleware(async (req, res) => {
       const { enterAlternative, bookingId } = req.body
       const { licence } = res.locals.licence
+
+      const validationErrors =
+        licenceService.validateForm({
+          formResponse: req.body,
+          pageConfig: formConfig.rejected,
+        }) || {}
+
+      const errorObject = omit(['_csrf', 'bookingId'], validationErrors)
+
+      if (!isEmpty(errorObject)) {
+        req.flash('errors', errorObject)
+        return res.redirect(`/hdc/proposedAddress/rejected/${bookingId}`)
+      }
 
       if (enterAlternative === 'Yes') {
         await licenceService.rejectProposedAddress(licence, bookingId)
