@@ -110,7 +110,7 @@
     "joi": "^13.7.0",
     "joi-date-extensions": "^1.2.0",
     "joi-postcode": "^3.0.0",
-    "jquery": "^1.12.4",
+    "jquery": "^3.4.0",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.2",
     "knex-migrate": "^1.7.4",
