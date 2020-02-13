@@ -5,6 +5,7 @@ const {
   getWhereKeyLike,
   interleave,
   isEmpty,
+  sortKeys,
 } = require('../../server/utils/functionalHelpers')
 
 describe('functionalHelpers', () => {
@@ -140,6 +141,29 @@ describe('functionalHelpers', () => {
 
     test('should return true for undefined', () => {
       expect(isEmpty(undefined)).toBe(true)
+    })
+  })
+  describe('sortKeys', () => {
+    test('should handle empty object', () => {
+      expect(sortKeys({})).toStrictEqual({})
+    })
+    test('should handle null object', () => {
+      expect(sortKeys(null)).toStrictEqual({})
+    })
+
+    test('should handle simple sorted object', () => {
+      const input = { a: 1, c: 3, b: 2 }
+      const result = sortKeys(input)
+      expect(result).toStrictEqual(input)
+      expect(Object.keys(result)).toStrictEqual(['a', 'b', 'c'])
+    })
+
+    test('should sort top level of an object only', () => {
+      const input = { b: 1, a: { a2: 1, c2: 3, b2: 2 } }
+      const result = sortKeys(input)
+      expect(result).toStrictEqual(input)
+      expect(Object.keys(result)).toStrictEqual(['a', 'b'])
+      expect(Object.keys(result.a)).toStrictEqual(['a2', 'c2', 'b2'])
     })
   })
 })

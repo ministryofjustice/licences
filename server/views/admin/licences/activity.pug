@@ -63,6 +63,9 @@ div.borderBottom.paddingBottom
         span.bold Currently Assigned to:&nbsp;
         span 
           + assignedTo(licence.stage)
+      p
+        span
+          a(href='/admin/licences/' + bookingId + '/raw') View raw
     if licence && licence.stage === 'PROCESSING_RO'      
       div.pure-u-1.pure-u-md-1-2
         div.alignRight
