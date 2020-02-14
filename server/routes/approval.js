@@ -34,6 +34,8 @@ module.exports = ({ licenceService, prisonerService, nomisPushService }) => (rou
 
       const { nextPath, pageDataMap } = formConfig[formName]
       const dataPath = pageDataMap || ['licence', 'approval', 'release']
+
+      res.locals.licence.licence.approval = await licenceService.removePreviousApprovals()
       const data = firstItem(req.flash('userInput')) || getIn(res.locals.licence, dataPath) || {}
       const errorObject = firstItem(req.flash('errors')) || {}
 

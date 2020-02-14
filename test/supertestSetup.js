@@ -45,6 +45,7 @@ const createLicenceServiceStub = () => ({
   reinstateProposedAddress: jest.fn().mockReturnValue({}),
   createLicenceFromFlatInput: jest.fn().mockReturnValue({}),
   addCurfewHoursInput: jest.fn().mockReturnValue({}),
+  removePreviousApprovals: jest.fn().mockReturnValue({}),
 })
 
 const createLduServiceStub = () => ({

@@ -64,16 +64,16 @@ class ApprovalSpec extends GebReportingSpec {
     reasons.size() == 4
   }
 
-  def 'Shows previously saved values'() {
+  def 'Does Not Show previously saved values'() {
 
-    given: 'Approval already done'
+    given: 'a new approval is sought'
     testData.loadLicence('decision/approved')
 
     when: 'I view the approval page'
     to ApprovalReleasePage, testData.markAndrewsBookingId
 
-    then: 'I see the previous values'
-    releaseRadios.checked == 'Yes'
+    then: 'I do not see the previous decision values'
+    releaseRadios.checked == null
   }
 
   def 'When sent for refusal, shows reason chosen by CA - insufficient time'() {

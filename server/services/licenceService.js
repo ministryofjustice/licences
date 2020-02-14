@@ -477,6 +477,10 @@ module.exports = function createLicenceService(licenceClient) {
     }, input)
   }
 
+  function removePreviousApprovals() {
+    return {}
+  }
+
   return {
     reset,
     getLicence,
@@ -498,5 +502,6 @@ module.exports = function createLicenceService(licenceClient) {
     reinstateBass,
     addCurfewHoursInput,
     createLicenceFromFlatInput,
+    removePreviousApprovals,
   }
 }
