@@ -20,13 +20,12 @@ services:
       - DB_SERVER=licence-db
       - DB_NAME=licences
       - DB_SSL_ENABLED=no
-      - NOMIS_API_URL=http://licences-nomis-mocks:9090/elite2api/api
-      - NOMIS_AUTH_URL=http://nomis-oauth2-server:8080/auth
-      - NOMIS_AUTH_EXTERNAL_URL=http://localhost:8080/auth
-      - DELIUS_API_URL=http://licences-nomis-mocks:9090/communityapi
-      - PROBATION_TEAMS_API_URL=http://licences-nomis-mocks:9090/probationteams
+      - NOMIS_API_URL=http://licences-nomis-mocks:8080/elite2api/api
+      - NOMIS_AUTH_URL=http://nomis-oauth2-server:9090/auth
+      - NOMIS_AUTH_EXTERNAL_URL=http://localhost:9090/auth
+      - DELIUS_API_URL=http://licences-nomis-mocks:8080/communityapi
+      - PROBATION_TEAMS_API_URL=http://licences-nomis-mocks:8080/probationteams
       - HOST=licences.hmpps.dsd.test
-      - PDF_SERVICE_HOST=http://hdc-pdfgenerator:8080
       - GLOBAL_SEARCH_URL=http://localhost:3002/global-search
       - ENABLE_TEST_UTILS=true
 
@@ -36,7 +35,7 @@ services:
       - hmpps
     container_name: licences-nomis-mocks
     ports:
-      - '9090:9090'
+      - '8080:9090'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:9090/elite2api/health']
 
@@ -59,7 +58,7 @@ services:
       - hmpps
     container_name: nomis-oauth2-server
     ports:
-      - '8080:8080'
+      - '9090:8080'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
     environment:
@@ -80,9 +79,9 @@ services:
       - PORT=3002
       - NODE_ENV=development
       - REMOTE_AUTH_STRATEGY=true
-      - OAUTH_ENDPOINT_URL=http://nomis-oauth2-server:8080/auth/
-      - OAUTH_ENDPOINT_UI_URL=http://localhost:8080/auth/
-      - API_ENDPOINT_URL=http://licences-nomis-mocks:9090/elite2api/
+      - OAUTH_ENDPOINT_URL=http://nomis-oauth2-server:9090/auth/
+      - OAUTH_ENDPOINT_UI_URL=http://localhost:9090/auth/
+      - API_ENDPOINT_URL=http://licences-nomis-mocks:8080/elite2api/
       - NN_ENDPOINT_URL=http://localhost:3007/
       - LICENCES_URL=http://localhost:3000/
 
