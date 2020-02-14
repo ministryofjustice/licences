@@ -74,6 +74,28 @@ describe('/licences/', () => {
     })
   })
 
+  describe('GET raw licence info', () => {
+    test('Renders HTML output', () => {
+      const app = createApp('batchUser')
+      return request(app)
+        .get('/admin/licences/1/raw')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Status:')
+          expect(res.text).toContain(`"exclusion": "UNSTARTED"`)
+          expect(res.text).toContain('Record:')
+        })
+    })
+
+    test('should throw if submitted by non-authorised user', () => {
+      const app = createApp('roUser')
+      return request(app)
+        .get('/admin/licences/1/raw')
+        .expect(403)
+    })
+  })
+
   describe('GET event', () => {
     test('Renders HTML output', () => {
       const app = createApp('batchUser')

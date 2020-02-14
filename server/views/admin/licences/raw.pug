@@ -1,0 +1,26 @@
+//- Read only licence view eg from caselist when case is with a different role
+extends ../../layout
+
+block content
+
+  include ../../includes/back
+
+  h1.heading-large Raw licence
+  div.pure-g.paddingBottom
+    div.pure-u-1.pure-u-md-3-24.padRight15
+      div.midMarginBottom
+        span.bold Booking Id
+        span.block #{bookingId}
+
+  div.pure-g.paddingBottom
+    div.pure-u-1
+      div.midMarginBottom
+        span.bold Status:
+        pre.paddingTop
+          code !{status}  
+  div.pure-g.paddingBottom
+    div.pure-u-1
+      div.midMarginBottom
+        span.bold Record:
+        pre.paddingTop
+          code !{licence}

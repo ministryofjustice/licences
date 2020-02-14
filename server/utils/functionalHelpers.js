@@ -99,6 +99,16 @@ function unwrapResult(result) {
   return [!isError ? success : undefined, isError ? error : undefined]
 }
 
+function sortKeys(o) {
+  return Object.keys(o || {})
+    .sort()
+    .reduce((r, k) => {
+      const result = r
+      result[k] = o[k]
+      return result
+    }, {})
+}
+
 module.exports = {
   getIn,
   isEmpty,
@@ -134,4 +144,5 @@ module.exports = {
   intersection: R.intersection,
   unwrapResult,
   omit,
+  sortKeys,
 }

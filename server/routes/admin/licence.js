@@ -1,7 +1,8 @@
 const moment = require('moment')
 const setCase = require('case')
-const { unwrapResult, firstItem } = require('../../utils/functionalHelpers')
+const { unwrapResult, firstItem, sortKeys } = require('../../utils/functionalHelpers')
 const transitionsForDestinations = require('../../services/notifications/transitionsForDestinations')
+const { getLicenceStatus } = require('../../utils/licenceStatus')
 
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 
@@ -33,6 +34,21 @@ module.exports = (licenceService, signInService, prisonerService, audit, roNotif
         prisonerInfo,
         events: events.map(formatEvent),
         errors,
+      })
+    })
+  )
+
+  router.get(
+    '/:abookingId/raw',
+    asyncMiddleware(async (req, res) => {
+      const { abookingId: bookingId } = req.params
+      const licence = await licenceService.getLicence(bookingId)
+      const status = getLicenceStatus(licence)
+
+      return res.render('admin/licences/raw', {
+        bookingId,
+        licence: JSON.stringify(sortKeys(licence), null, 4),
+        status: JSON.stringify(sortKeys(status), null, 4),
       })
     })
   )
