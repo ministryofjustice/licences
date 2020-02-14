@@ -51,8 +51,8 @@ docker-compose up
 The following environment variables are used and values should be supplied for correct operation but have defaults.
 The easiest way to supply them is to create a .env file in the project root.
 
-- NOMIS_API_URL - url for nomis elite2 api entry point eg http://localhost:9090/elite2api
-- NOMIS_AUTH_URL - url for nomis oauth server eg http://localhost:8080/auth
+- NOMIS_API_URL - url for nomis elite2 api entry point eg http://localhost:8080/elite2api
+- NOMIS_AUTH_URL - url for nomis oauth server eg http://localhost:9090/auth
 - AUTH_STRATEGY - local if running locally else oauth
 - DOMAIN - domain where the app is running eg http://localhost:3000
 
@@ -70,10 +70,6 @@ For the database:
 - DB_SERVER - DB server host
 - DB_NAME - DB name
 - DB_SSL_ENABLED - set to false for local
-
-For the PDF generator service
-
-- PDF_SERVICE_HOST - Root of PDF generator service eg 'http://localhost:8081' or 'http://localhost:9090' if using wiremock
 
 Other
 
