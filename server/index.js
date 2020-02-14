@@ -1,4 +1,5 @@
 const { NotifyClient } = require('notifications-node-client')
+const appInsights = require('../azure-appinsights')
 const createApp = require('./app')
 const logger = require('../log')
 const config = require('./config')
@@ -30,6 +31,7 @@ const createRoNotificationSender = require('./services/notifications/roNotificat
 const createCaAndDmNotificationSender = require('./services/notifications/caAndDmNotificationSender')
 const createNotificationService = require('./services/notifications/notificationService')
 const createRoNotificationHandler = require('./services/notifications/roNotificationHandler')
+const EventPublisher = require('./services/notifications/eventPublisher')
 
 const createRoContactDetailsService = require('./services/roContactDetailsService')
 const createReminderService = require('./services/reminderService')
@@ -75,22 +77,24 @@ const caAndDmNotificationSender = createCaAndDmNotificationSender(
   config
 )
 
+const eventPublisher = new EventPublisher(audit, appInsights)
+
 const roNotificationHandler = createRoNotificationHandler(
   roNotificationSender,
-  audit,
   licenceService,
   prisonerService,
   roContactDetailsService,
   warningClient,
-  deliusClient
+  deliusClient,
+  eventPublisher
 )
 
 const notificationService = createNotificationService(
   caAndDmNotificationSender,
-  audit,
   licenceService,
   prisonerService,
-  roNotificationHandler
+  roNotificationHandler,
+  eventPublisher
 )
 
 const reminderService = createReminderService(
