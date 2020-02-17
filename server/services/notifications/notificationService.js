@@ -5,13 +5,14 @@ const { sendingUserName } = require('../../utils/userProfile')
 
 /**
  * @param {PrisonerService} prisonerService
+ * @param {import('./EventPublisher')} eventPublisher
  */
 module.exports = function createNotificationService(
   caAndDmNotificationSender,
-  audit,
   licenceService,
   prisonerService,
-  roNotificationHandler
+  roNotificationHandler,
+  eventPublisher
 ) {
   const receiverToSender = {
     RO: roNotificationHandler.sendRo,
@@ -24,7 +25,12 @@ module.exports = function createNotificationService(
   }
 
   async function sendCaOrDm({ transition, bookingId, token, licence, prisoner, user }) {
-    const submissionTarget = await prisonerService.getOrganisationContactDetails(transition.receiver, bookingId, token)
+    const { submissionTarget, source, target } = await prisonerService.getDestinations(
+      transition.sender,
+      transition.receiver,
+      bookingId,
+      token
+    )
 
     await licenceService.markForHandover(bookingId, transition.type)
 
@@ -32,7 +38,14 @@ module.exports = function createNotificationService(
       await licenceService.removeDecision(bookingId, licence)
     }
 
-    auditEvent(user.username, bookingId, transition.type, submissionTarget)
+    await eventPublisher.raiseCaseHandover({
+      username: user.username,
+      bookingId,
+      transitionType: transition.type,
+      submissionTarget,
+      source,
+      target,
+    })
 
     caAndDmNotificationSender.sendNotifications({
       bookingId,
@@ -41,14 +54,6 @@ module.exports = function createNotificationService(
       submissionTarget,
       sendingUserName: sendingUserName(user),
       token,
-    })
-  }
-
-  function auditEvent(user, bookingId, transitionType, submissionTarget) {
-    audit.record('SEND', user, {
-      bookingId,
-      transitionType,
-      submissionTarget,
     })
   }
 

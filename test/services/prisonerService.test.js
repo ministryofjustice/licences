@@ -11,7 +11,7 @@ describe('prisonerDetailsService', () => {
   const mainOffenceResponse = [{ offenceDescription: 'Robbery, conspiracy to rob' }]
   const imageInfoResponse = { imageId: 'imgId', captureDate: '1971-11-23' }
   const imageDataResponse = Buffer.from('image')
-  const establishmentResponse = { premise: 'HMP Licence Test Prison' }
+  const establishmentResponse = { agencyId: 'AGY-1', premise: 'HMP Licence Test Prison' }
   const prisonerInfoResponse = {
     bookingId: 1,
     facialImageId: 2,
@@ -30,6 +30,11 @@ describe('prisonerDetailsService', () => {
     middleName: 'Middle',
   }
   const recentMovementsResponse = [{ movementType: 'REL', fromAgency: 'RELEASING AGENCY' }]
+  const responsibleOfficerResponse = {
+    deliusId: 'delius1',
+    name: 'Comfirst Comlast',
+    message: null,
+  }
 
   beforeEach(() => {
     nomisClientMock = {
@@ -44,11 +49,7 @@ describe('prisonerDetailsService', () => {
     }
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClientMock)
     roService = {
-      findResponsibleOfficer: jest.fn().mockReturnValue({
-        deliusId: 'delius1',
-        name: 'Comfirst Comlast',
-        message: null,
-      }),
+      findResponsibleOfficer: jest.fn().mockReturnValue(responsibleOfficerResponse),
     }
     service = createPrisonerService(nomisClientBuilder, roService)
   })
@@ -170,18 +171,97 @@ describe('prisonerDetailsService', () => {
   describe('getOrganisationContactDetails', () => {
     test('should get COM for RO', async () => {
       await service.getOrganisationContactDetails('RO', '123', 'token')
+      expect(nomisClientMock.getEstablishment).not.toHaveBeenCalled()
       expect(roService.findResponsibleOfficer).toHaveBeenCalled()
     })
 
     test('should get establishment for CA', async () => {
       await service.getOrganisationContactDetails('CA', '123', 'token')
       expect(nomisClientMock.getEstablishment).toHaveBeenCalled()
+      expect(roService.findResponsibleOfficer).not.toHaveBeenCalled()
     })
 
     test('should not call anything for DM', async () => {
       await service.getOrganisationContactDetails('DM', '123', 'token')
-      expect(nomisClientMock.getEstablishment).not.toHaveBeenCalled()
+      expect(nomisClientMock.getEstablishment).toHaveBeenCalled()
       expect(roService.findResponsibleOfficer).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('getDestinations', () => {
+    const responsibleOfficer = {
+      deliusId: 'delius1',
+      probationAreaCode: 'N01',
+      lduCode: 'N01LDU1',
+      name: 'Comfirst Comlast',
+      message: null,
+    }
+
+    beforeEach(() => {
+      roService.findResponsibleOfficer.mockReturnValue(responsibleOfficer)
+    })
+
+    test('for CA -> RO', async () => {
+      const destinations = await service.getDestinations('CA', 'RO', '123', 'token')
+      expect(destinations).toStrictEqual({
+        submissionTarget: responsibleOfficer,
+        source: {
+          agencyId: 'AGY-1',
+          type: 'prison',
+        },
+
+        target: {
+          lduCode: 'N01LDU1',
+          probationAreaCode: 'N01',
+          type: 'probation',
+        },
+      })
+    })
+
+    test('for RO -> CA', async () => {
+      const destinations = await service.getDestinations('RO', 'CA', '123', 'token')
+      expect(destinations).toStrictEqual({
+        submissionTarget: establishmentResponse,
+        source: {
+          lduCode: 'N01LDU1',
+          probationAreaCode: 'N01',
+          type: 'probation',
+        },
+        target: {
+          agencyId: 'AGY-1',
+          type: 'prison',
+        },
+      })
+    })
+
+    test('for CA -> DM', async () => {
+      const destinations = await service.getDestinations('CA', 'DM', '123', 'token')
+      expect(destinations).toStrictEqual({
+        submissionTarget: establishmentResponse,
+        source: {
+          agencyId: 'AGY-1',
+          type: 'prison',
+        },
+        target: {
+          agencyId: 'AGY-1',
+          type: 'prison',
+        },
+      })
+    })
+  })
+
+  test('for DM -> CA', async () => {
+    const destinations = await service.getDestinations('DM', 'CA', '123', 'token')
+    expect(destinations).toStrictEqual({
+      submissionTarget: establishmentResponse,
+      source: {
+        agencyId: 'AGY-1',
+        type: 'prison',
+      },
+      target: {
+        agencyId: 'AGY-1',
+        type: 'prison',
+      },
     })
   })
 })
