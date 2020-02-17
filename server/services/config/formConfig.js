@@ -1,3 +1,5 @@
+const config = require('../../config')
+
 const headerFields = ['OFF_NAME', 'OFF_NOMS', 'EST_PREMISE', 'CREATION_DATE']
 
 const noAddress = 'there is no suitable address for you to live at'
@@ -38,6 +40,8 @@ module.exports = {
     hdcCurfewConditions: 'you broke home detention curfew conditions and were recalled to prison',
     servingRecall: 'you were recalled from early release on compassionate grounds',
     deportation: 'the court recommended you should be deported from the UK',
+    cja2003_SZA:
+      'you were convicted of terrorism related offences listed in schedule ZA of the Criminal Justice Act 2003',
   },
 
   unsuitableReasonlabels: {
