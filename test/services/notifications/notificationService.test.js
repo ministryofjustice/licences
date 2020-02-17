@@ -3,7 +3,7 @@ const transitionForDestinations = require('../../../server/services/notification
 
 describe('NotificationService', () => {
   let caAndDmNotificationSender
-  let audit
+  let eventPublisher
   let licenceService
   let prisonerService
   let notificationService
@@ -16,6 +16,8 @@ describe('NotificationService', () => {
   const licence = {}
   const username = 'bob'
   const user = { username }
+  const source = { type: 'probation', probationAreaCode: 'N01', lduCode: 'N02LDU01' }
+  const target = { type: 'prison', agencyId: 'LT1' }
 
   beforeEach(() => {
     licenceService = {
@@ -28,7 +30,12 @@ describe('NotificationService', () => {
     }
 
     prisonerService = {
-      getEstablishmentForPrisoner: jest.fn().mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' }),
+      getDestinations: jest.fn().mockReturnValue({
+        submissionTarget,
+        source,
+        target,
+      }),
+
       getOrganisationContactDetails: jest.fn().mockReturnValue(submissionTarget),
       getPrisonerPersonalDetails: jest.fn().mockReturnValue(prisoner),
     }
@@ -37,16 +44,16 @@ describe('NotificationService', () => {
       sendNotifications: jest.fn().mockReturnValue({}),
     }
 
-    audit = {
-      record: jest.fn(),
+    eventPublisher = {
+      raiseCaseHandover: jest.fn(),
     }
 
     notificationService = createNotificationService(
       caAndDmNotificationSender,
-      audit,
       licenceService,
       prisonerService,
-      roNotificationHandler
+      roNotificationHandler,
+      eventPublisher
     )
   })
 
@@ -89,10 +96,13 @@ describe('NotificationService', () => {
         submissionTarget,
         token,
       })
-      expect(audit.record).toHaveBeenCalledWith('SEND', username, {
-        bookingId: -1,
-        submissionTarget,
+      expect(eventPublisher.raiseCaseHandover).toHaveBeenCalledWith({
+        username,
+        bookingId,
         transitionType: 'roToCa',
+        submissionTarget,
+        source,
+        target,
       })
       expect(licenceService.markForHandover).toHaveBeenCalledWith(bookingId, 'roToCa')
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
@@ -116,10 +126,14 @@ describe('NotificationService', () => {
         submissionTarget,
         token,
       })
-      expect(audit.record).toHaveBeenCalledWith('SEND', username, {
+
+      expect(eventPublisher.raiseCaseHandover).toHaveBeenCalledWith({
+        username,
         bookingId,
-        submissionTarget,
         transitionType: 'caToDm',
+        submissionTarget,
+        source,
+        target,
       })
       expect(licenceService.markForHandover).toHaveBeenCalledWith(bookingId, 'caToDm')
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
@@ -143,10 +157,13 @@ describe('NotificationService', () => {
         submissionTarget,
         token,
       })
-      expect(audit.record).toHaveBeenCalledWith('SEND', username, {
+      expect(eventPublisher.raiseCaseHandover).toHaveBeenCalledWith({
+        username,
         bookingId,
-        submissionTarget,
         transitionType: 'dmToCa',
+        submissionTarget,
+        source,
+        target,
       })
       expect(licenceService.markForHandover).toHaveBeenCalledWith(bookingId, 'dmToCa')
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
@@ -170,10 +187,13 @@ describe('NotificationService', () => {
         submissionTarget,
         token,
       })
-      expect(audit.record).toHaveBeenCalledWith('SEND', username, {
-        bookingId: -1,
-        submissionTarget,
+      expect(eventPublisher.raiseCaseHandover).toHaveBeenCalledWith({
+        username,
+        bookingId,
         transitionType: 'caToDmRefusal',
+        submissionTarget,
+        source,
+        target,
       })
       expect(licenceService.markForHandover).toHaveBeenCalledWith(bookingId, 'caToDmRefusal')
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
@@ -197,10 +217,13 @@ describe('NotificationService', () => {
         submissionTarget,
         token,
       })
-      expect(audit.record).toHaveBeenCalledWith('SEND', username, {
+      expect(eventPublisher.raiseCaseHandover).toHaveBeenCalledWith({
+        username,
         bookingId,
-        submissionTarget,
         transitionType: 'dmToCaReturn',
+        submissionTarget,
+        source,
+        target,
       })
       expect(licenceService.markForHandover).toHaveBeenCalledWith(bookingId, 'dmToCaReturn')
       expect(licenceService.removeDecision).toHaveBeenCalledWith(bookingId, {})

@@ -22,15 +22,16 @@ const { STAFF_NOT_LINKED, MISSING_PRISON } = require('../serviceErrors')
  * @param {PrisonerService} prisonerService
  * @param {WarningClient} warningClient
  * @param {DeliusClient} deliusClient
+ * @param {import('./eventPublisher')} eventPublisher
  */
 module.exports = function createRoNotificationHandler(
   roNotificationSender,
-  audit,
   licenceService,
   prisonerService,
   roContactDetailsService,
   warningClient,
-  deliusClient
+  deliusClient,
+  eventPublisher
 ) {
   /** Need to alert staff to link the records manually otherwise we won't be able to access the RO's email address from their user record and so won't be able to notify them  */
   async function raiseUnlinkedAccountWarning(bookingId, { deliusId, name, nomsNumber }) {
@@ -40,14 +41,6 @@ module.exports = function createRoNotificationHandler(
       STAFF_NOT_LINKED,
       `RO with delius staff code: '${deliusId}' and name: '${name}', responsible for managing: '${nomsNumber}', has unlinked staff record in delius`
     )
-  }
-
-  function auditEvent(user, bookingId, transitionType, submissionTarget) {
-    audit.record('SEND', user, {
-      bookingId,
-      transitionType,
-      submissionTarget,
-    })
   }
 
   /**
@@ -65,11 +58,11 @@ module.exports = function createRoNotificationHandler(
   }
 
   /**
-   * @typedef {{ prison: string, responsibleOfficer: ResponsibleOfficerAndContactDetails }} RoAndPrison
+   * @typedef {{ prison: string, agencyId: string, responsibleOfficer: ResponsibleOfficerAndContactDetails }} RoAndPrison
    * @return {Promise<Result<RoAndPrison>>}
    */
   async function loadResponsibleOfficer(bookingId, token) {
-    /** @type {[{premise: string}, Result<ResponsibleOfficerAndContactDetails>]} */
+    /** @type {[{premise: string, agencyId: string}, Result<ResponsibleOfficerAndContactDetails>]} */
     const [establishment, result] = await Promise.all([
       prisonerService.getEstablishmentForPrisoner(bookingId, token),
       roContactDetailsService.getResponsibleOfficerWithContactDetails(bookingId, token),
@@ -81,12 +74,12 @@ module.exports = function createRoNotificationHandler(
       return error
     }
 
-    const { premise: prison } = establishment || {}
+    const { premise: prison, agencyId } = establishment || {}
     if (isEmpty(prison)) {
       logger.error(`Missing prison for bookingId: ${bookingId}`)
       return { message: `Missing prison for bookingId: ${bookingId}`, code: MISSING_PRISON }
     }
-    return { prison, responsibleOfficer }
+    return { prison, agencyId, responsibleOfficer }
   }
 
   return {
@@ -98,7 +91,7 @@ module.exports = function createRoNotificationHandler(
         return
       }
 
-      const { prison, responsibleOfficer } = responsibleOfficerAndPrison
+      const { prison, agencyId, responsibleOfficer } = responsibleOfficerAndPrison
 
       if (responsibleOfficer.isUnlinkedAccount) {
         await raiseUnlinkedAccountWarning(bookingId, responsibleOfficer)
@@ -106,7 +99,21 @@ module.exports = function createRoNotificationHandler(
 
       await licenceService.markForHandover(bookingId, transition.type)
 
-      auditEvent(user.username, bookingId, transition.type, responsibleOfficer)
+      await eventPublisher.raiseCaseHandover({
+        username: user.username,
+        bookingId,
+        transitionType: transition.type,
+        submissionTarget: responsibleOfficer,
+        source: {
+          type: 'prison',
+          agencyId,
+        },
+        target: {
+          type: 'probation',
+          probationAreaCode: responsibleOfficer.probationAreaCode,
+          lduCode: responsibleOfficer.lduCode,
+        },
+      })
 
       await roNotificationSender.sendNotifications({
         bookingId,

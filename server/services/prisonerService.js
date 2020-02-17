@@ -1,10 +1,11 @@
 /**
  * @typedef {import("./roService").RoService} RoService
  * @typedef {import("../../types/licences").PrisonerService} PrisonerService
+ * @typedef {import('../../types/licences').Destination} Destination
  */
 const logger = require('../../log.js')
 const { formatObjectForView } = require('./utils/formatForView')
-const { getIn } = require('../utils/functionalHelpers')
+const { getIn, unwrapResultOrThrow } = require('../utils/functionalHelpers')
 
 module.exports = { createPrisonerService }
 
@@ -139,15 +140,50 @@ function createPrisonerService(nomisClientBuilder, roService) {
     },
 
     async getOrganisationContactDetails(role, bookingId, token) {
+      const destination = await this.getDestinationForRole(role, bookingId, token)
+      return destination.submissionTarget
+    },
+
+    async getDestinationForRole(role, bookingId, token) {
       if (role.toUpperCase() === 'RO') {
-        return roService.findResponsibleOfficer(bookingId, token)
+        const responsibleOfficer = unwrapResultOrThrow(
+          await roService.findResponsibleOfficer(bookingId, token),
+          error => `${error.code}: ${error.message}`
+        )
+
+        return {
+          destination: {
+            type: 'probation',
+            probationAreaCode: responsibleOfficer.probationAreaCode,
+            lduCode: responsibleOfficer.lduCode,
+          },
+          submissionTarget: responsibleOfficer,
+        }
       }
 
-      if (role.toUpperCase() === 'CA') {
-        return this.getEstablishmentForPrisoner(bookingId, token)
+      if (['CA', 'DM'].includes(role.toUpperCase())) {
+        const establishment = await this.getEstablishmentForPrisoner(bookingId, token)
+        const { agencyId } = establishment || {}
+        return {
+          destination: {
+            type: 'prison',
+            agencyId,
+          },
+          submissionTarget: establishment,
+        }
       }
 
-      return null
+      throw new Error(`Could not handle role: ${role} for booking: ${bookingId}`)
+    },
+
+    async getDestinations(senderRole, receiverRole, bookingId, token) {
+      const sender = await this.getDestinationForRole(senderRole, bookingId, token)
+      const receiver = await this.getDestinationForRole(receiverRole, bookingId, token)
+      return {
+        source: sender.destination,
+        target: receiver.destination,
+        submissionTarget: receiver.submissionTarget,
+      }
     },
   }
 }

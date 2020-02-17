@@ -4,9 +4,9 @@ const { STAFF_NOT_LINKED } = require('../../../server/services/serviceErrors')
 
 describe('roNotificationHandler', () => {
   let roNotificationSender
-  let audit
   let licenceService
   let prisonerService
+  let eventPublisher
   let warningClient
   let deliusClient
   let roNotificationHandler
@@ -48,18 +48,18 @@ describe('roNotificationHandler', () => {
       sendNotifications: jest.fn().mockReturnValue({}),
     }
 
-    audit = {
-      record: jest.fn(),
+    eventPublisher = {
+      raiseCaseHandover: jest.fn(),
     }
 
     roNotificationHandler = createRoNotificationHandler(
       roNotificationSender,
-      audit,
       licenceService,
       prisonerService,
       roContactDetailsService,
       warningClient,
-      deliusClient
+      deliusClient,
+      eventPublisher
     )
   })
 
@@ -93,10 +93,20 @@ describe('roNotificationHandler', () => {
         notificationType: 'RO_NEW',
         sendingUserName: username,
       })
-      expect(audit.record).toHaveBeenCalledWith('SEND', username, {
+      expect(eventPublisher.raiseCaseHandover).toHaveBeenCalledWith({
+        username,
         bookingId,
-        submissionTarget: responsibleOfficer,
         transitionType: 'caToRo',
+        submissionTarget: responsibleOfficer,
+        source: {
+          agencyId: 'LT1',
+          type: 'prison',
+        },
+        target: {
+          lduCode: 'code-1',
+          probationAreaCode: 'prob-code-1',
+          type: 'probation',
+        },
       })
       expect(licenceService.markForHandover).toHaveBeenCalledWith(bookingId, 'caToRo')
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
@@ -117,7 +127,7 @@ describe('roNotificationHandler', () => {
       })
 
       expect(roNotificationSender.sendNotifications).not.toHaveBeenCalled()
-      expect(audit.record).not.toHaveBeenCalled()
+      expect(eventPublisher.raiseCaseHandover).not.toHaveBeenCalled()
       expect(licenceService.markForHandover).not.toHaveBeenCalled()
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
     })
@@ -146,7 +156,7 @@ describe('roNotificationHandler', () => {
       })
 
       expect(roNotificationSender.sendNotifications).not.toHaveBeenCalled()
-      expect(audit.record).not.toHaveBeenCalled()
+      expect(eventPublisher.raiseCaseHandover).not.toHaveBeenCalled()
       expect(licenceService.markForHandover).not.toHaveBeenCalled()
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
     })
@@ -187,10 +197,20 @@ describe('roNotificationHandler', () => {
         notificationType: 'RO_NEW',
         sendingUserName: username,
       })
-      expect(audit.record).toHaveBeenCalledWith('SEND', username, {
+      expect(eventPublisher.raiseCaseHandover).toHaveBeenCalledWith({
+        username,
         bookingId,
-        submissionTarget: responsibleOfficer,
         transitionType: 'caToRo',
+        submissionTarget: responsibleOfficer,
+        source: {
+          agencyId: 'LT1',
+          type: 'prison',
+        },
+        target: {
+          lduCode: 'code-1',
+          probationAreaCode: 'prob-code-1',
+          type: 'probation',
+        },
       })
       expect(licenceService.markForHandover).toHaveBeenCalledWith(bookingId, 'caToRo')
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
@@ -283,7 +303,7 @@ describe('roNotificationHandler', () => {
         notificationType: 'RO_NEW',
         sendingUserName: username,
       })
-      expect(audit.record).not.toHaveBeenCalled()
+      expect(eventPublisher.raiseCaseHandover).not.toHaveBeenCalled()
       expect(licenceService.markForHandover).not.toHaveBeenCalled()
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
     })
@@ -305,7 +325,7 @@ describe('roNotificationHandler', () => {
       expect(result).toStrictEqual({ message: 'failed to find RO' })
 
       expect(roNotificationSender.sendNotifications).not.toHaveBeenCalled()
-      expect(audit.record).not.toHaveBeenCalled()
+      expect(eventPublisher.raiseCaseHandover).not.toHaveBeenCalled()
       expect(licenceService.markForHandover).not.toHaveBeenCalled()
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
     })
@@ -326,7 +346,7 @@ describe('roNotificationHandler', () => {
       expect(result).toStrictEqual({ code: 'MISSING_PRISON', message: 'Missing prison for bookingId: -1' })
 
       expect(roNotificationSender.sendNotifications).not.toHaveBeenCalled()
-      expect(audit.record).not.toHaveBeenCalled()
+      expect(eventPublisher.raiseCaseHandover).not.toHaveBeenCalled()
       expect(licenceService.markForHandover).not.toHaveBeenCalled()
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
     })
@@ -350,7 +370,7 @@ describe('roNotificationHandler', () => {
 
       expect(warningClient.raiseWarning).not.toHaveBeenCalled()
       expect(roNotificationSender.sendNotifications).not.toHaveBeenCalled()
-      expect(audit.record).not.toHaveBeenCalled()
+      expect(eventPublisher.raiseCaseHandover).not.toHaveBeenCalled()
       expect(licenceService.markForHandover).not.toHaveBeenCalled()
       expect(licenceService.removeDecision).not.toHaveBeenCalled()
     })

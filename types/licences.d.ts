@@ -15,7 +15,7 @@ interface ResponsibleOfficer {
 
 interface ResponsibleOfficerAndContactDetails extends ResponsibleOfficer {
   /** This officer's user and staff record are not linked in delius, false if unknown */
-  isUnlinkedAccount: boolean,
+  isUnlinkedAccount: boolean
   /** email and delius username, will be null if unlinked account and not stored locally */
   email?: string
   /** Will be null when contact details are stored locally  */
@@ -76,6 +76,17 @@ export interface PrisonerService {
   getPrisonerImage: (imageId: number, token: string) => Promise<any>
   getPrisonerPersonalDetails: (bookingId: number, token: string) => Promise<any>
   getOrganisationContactDetails: (role: string, bookingId: number, token: string) => Promise<any>
+  getDestinationForRole: (
+    role: string,
+    bookingId: number,
+    token: string
+  ) => Promise<{ destination: Destination; submissionTarget: any }>
+  getDestinations: (
+    senderRole,
+    receiverRole,
+    bookingId,
+    token
+  ) => Promise<{ submissionTarget: any; source: Destination; target: Destination }>
 }
 
 export interface CaService {
@@ -95,7 +106,7 @@ export interface WarningClient {
   raiseWarning: (bookingId: number, code: string, messsage: string) => Promise<void>
   acknowledgeWarnings: (errorIds: number[]) => Promise<number>
   getOutstandingWarnings: () => Promise<List<Warning>>
-  getAcknowledgedWarnings: () => Promise<List<Warning>> 
+  getAcknowledgedWarnings: () => Promise<List<Warning>>
 }
 
 interface ActiveLdu {
@@ -116,18 +127,29 @@ interface LduStatus {
 
 export interface LduService {
   getAllProbationAreas: () => Promise<Array<ProbationAreaSummary>>
-  getProbationArea: (probationAreaCode: string) => Promise<ProbationArea> 
+  getProbationArea: (probationAreaCode: string) => Promise<ProbationArea>
   updateActiveLdus: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
 }
-
 
 export interface LicenceSearchService {
   findForId: (username: string, id: string) => Promise<number | undefined>
 }
 
-
 export interface ActiveLduClient {
-  isLduPresent: (lduCode: string, probationAreaCode: string)=> Promise<boolean>
-  allActiveLdusInArea: (probationAreaCode: string)=> Promise<ActiveLdu[]>
+  isLduPresent: (lduCode: string, probationAreaCode: string) => Promise<boolean>
+  allActiveLdusInArea: (probationAreaCode: string) => Promise<ActiveLdu[]>
   updateActiveLdu: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
 }
+
+export type PrisonDestination = {
+  type: string
+  agencyId: string
+}
+
+export type ProbationDestination = {
+  type: string
+  probationAreaCode: string
+  lduCode: string
+}
+
+export type Destination = PrisonDestination | ProbationDestination

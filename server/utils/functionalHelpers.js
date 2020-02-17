@@ -98,6 +98,23 @@ function unwrapResult(result) {
   const isError = Boolean(error && error.message)
   return [!isError ? success : undefined, isError ? error : undefined]
 }
+/**
+ * @typedef {(error: Error) => string} ErrorMessageBuilder
+ */
+
+/**
+ * @template T
+ * @type  {(result: Result<T>, errorMessageBuilder: ErrorMessageBuilder) => T}
+ */
+function unwrapResultOrThrow(result, errorMessageBuilder) {
+  const error = /** @type { Error } */ (result)
+  const success = /** @type { T } */ (result)
+  const isError = Boolean(error && error.message)
+  if (isError) {
+    throw new Error(errorMessageBuilder(error))
+  }
+  return success
+}
 
 function sortKeys(o) {
   return Object.keys(o || {})
@@ -143,6 +160,7 @@ module.exports = {
   mapObject: R.mapObjIndexed,
   intersection: R.intersection,
   unwrapResult,
+  unwrapResultOrThrow,
   omit,
   sortKeys,
 }

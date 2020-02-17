@@ -6,6 +6,7 @@ const {
   interleave,
   isEmpty,
   sortKeys,
+  unwrapResultOrThrow,
 } = require('../../server/utils/functionalHelpers')
 
 describe('functionalHelpers', () => {
@@ -164,6 +165,29 @@ describe('functionalHelpers', () => {
       expect(result).toStrictEqual(input)
       expect(Object.keys(result)).toStrictEqual(['a', 'b'])
       expect(Object.keys(result.a)).toStrictEqual(['a2', 'c2', 'b2'])
+    })
+  })
+
+  describe('unwrapResultOrThrow', () => {
+    test('should handle empty object', () => {
+      expect(unwrapResultOrThrow({})).toStrictEqual({})
+    })
+    test('should handle null object', () => {
+      expect(unwrapResultOrThrow(null)).toStrictEqual(null)
+    })
+
+    test('should handle simple success', () => {
+      expect(unwrapResultOrThrow(true)).toStrictEqual(true)
+    })
+
+    test('should handle simple success object', () => {
+      expect(unwrapResultOrThrow({ a: 1 })).toStrictEqual({ a: 1 })
+    })
+
+    test('should handle error', () => {
+      expect(() =>
+        unwrapResultOrThrow({ code: '1', message: 'some problem' }, error => `${error.message} ${error.code}`)
+      ).toThrow(Error('some problem 1'))
     })
   })
 })
