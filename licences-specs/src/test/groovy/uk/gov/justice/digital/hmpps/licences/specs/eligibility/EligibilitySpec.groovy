@@ -1,19 +1,20 @@
 package uk.gov.justice.digital.hmpps.licences.specs.eligibility
 
 import geb.spock.GebReportingSpec
-import spock.lang.PendingFeature
 import spock.lang.Shared
 import spock.lang.Stepwise
+import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilityExceptionalCircumstancesPage
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilityExclusionPage
-import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilityTimeCheckPage
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilitySuitabilityPage
-import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
+import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilityTimeCheckPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
 class EligibilitySpec extends GebReportingSpec {
+  // Will be 10 when cja2003Sza is enabled. See Jira DCS-361
+  private static final int EXCLUDED_REASON_COUNT = 9
 
   @Shared
   TestData testData = new TestData()
@@ -57,7 +58,7 @@ class EligibilitySpec extends GebReportingSpec {
 
     then: 'I see 8 reason options'
     excludedReasonsForm.isDisplayed()
-    excludedReasons.size() == 9
+    excludedReasons.size() == EXCLUDED_REASON_COUNT
   }
 
   def 'Shows previously saved values'() {
@@ -81,12 +82,12 @@ class EligibilitySpec extends GebReportingSpec {
     excludedRadios.checked = 'Yes'
     excludedReasonsItem(0).check()
     excludedReasonsItem(1).check()
-    excludedReasonsItem(4).check()
+    excludedReasonsItem(EXCLUDED_REASON_COUNT-1).check()
 
     then: 'Those options are selected'
     excludedReasonsItem(0).checked
     excludedReasonsItem(1).checked
-    excludedReasonsItem(4).checked
+    excludedReasonsItem(EXCLUDED_REASON_COUNT-1).checked
 
     when: 'I choose return to tasklist'
     find('#backBtn').click()
@@ -99,7 +100,7 @@ class EligibilitySpec extends GebReportingSpec {
     excludedRadios.checked == 'No'
     excludedReasonsItem(0).unchecked
     excludedReasonsItem(1).unchecked
-    excludedReasonsItem(4).unchecked
+    excludedReasonsItem(EXCLUDED_REASON_COUNT-1).unchecked
   }
 
   def 'All selections are saved and shown on the task list'() {
@@ -154,7 +155,7 @@ class EligibilitySpec extends GebReportingSpec {
     given: 'On the eligibility checks page'
     to EligibilityExclusionPage, testData.markAndrewsBookingId
 
-    when: 'I choose not exlcuded'
+    when: 'I choose not excluded'
     excludedRadios.checked = 'No'
     find('#continueBtn').click()
 

@@ -46,6 +46,7 @@ module.exports = {
         hdcCurfewConditions: { approvalStatus: 'INELIGIBLE', refusedReason: 'HDC_RECALL' },
         servingRecall: { approvalStatus: 'INELIGIBLE', refusedReason: 'LRCOMP' },
         deportation: { approvalStatus: 'INELIGIBLE', refusedReason: 'FNP' },
+        cja2003_SZA: { approvalStatus: 'INELIGIBLE', refusedReason: 'CJA2003_SZA' },
       },
     },
     exceptionalCircumstances: {

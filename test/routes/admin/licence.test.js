@@ -151,7 +151,7 @@ describe('/licences/', () => {
           expect(roNotificationHandler.sendRoEmail).toHaveBeenCalledWith({
             bookingId: '1',
             token: 'system-token',
-            transition: { notificationType: 'RO_NEW', receiver: 'RO', type: 'caToRo' },
+            transition: { notificationType: 'RO_NEW', sender: 'CA', receiver: 'RO', type: 'caToRo' },
             user: { name: 'nb last', role: 'BATCHLOAD', token: 'token', username: 'NOMIS_BATCHLOAD' },
           })
         })
