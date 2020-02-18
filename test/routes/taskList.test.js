@@ -528,6 +528,36 @@ describe('GET /taskList/:prisonNumber', () => {
             expect(res.text).toContain('/hdc/vary/evidence/')
           })
       })
+
+      test('should not contain "Home detention curfew refused" at head of page', () => {
+        const app = createApp(
+          { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+          'dmUser'
+        )
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).not.toContain('Home detention curfew refused')
+          })
+      })
+
+      test('should not contain " Address unsuitable" content in the final decision task', () => {
+        const app = createApp(
+          { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+          'dmUser'
+        )
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).not.toContain('Address unsuitable')
+          })
+      })
     })
   })
 })

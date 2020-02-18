@@ -122,8 +122,9 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, { p
   function addressWithdrawalPosts(formName) {
     return async (req, res) => {
       const { action, bookingId } = req.params
-      const { licence, stage } = res.locals.licence
+      await licenceService.removeDecision(bookingId, res.locals.licence)
 
+      const { licence, stage } = await licenceService.getLicence(bookingId)
       await licenceService.rejectProposedAddress(licence, bookingId, formName)
 
       const modify = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
