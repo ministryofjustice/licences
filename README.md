@@ -1,7 +1,8 @@
 # Licences Application UI.
 
 [![CircleCI](https://circleci.com/gh/ministryofjustice/licences/tree/master.svg?style=svg)](https://circleci.com/gh/ministryofjustice/licences)
-[![Known Vulnerabilities](https://snyk.io/test/github/noms-digital-studio/licences/badge.svg)](https://snyk.io/test/github/noms-digital-studio/licences)
+[![Known Vulnerabilities](https://snyk.io/test/github/ministryofjustice/licences/badge.svg)](https://snyk.io/test/github/ministryofjustice/licences)
+
 
 # Get Started
 
