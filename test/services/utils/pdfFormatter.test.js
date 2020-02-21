@@ -94,13 +94,14 @@ describe('pdfFormatter', () => {
           buildingAndStreet2: '',
           townOrCity: 'town',
           postcode: 'post',
+          telephone: '123456',
         },
       },
     }
 
     const data = formatWith({ licence })
 
-    expect(data.values.REPORTING_ADDRESS).toBe('first\ntown\npost')
+    expect(data.values.REPORTING_ADDRESS).toBe('first\ntown\npost\n123456')
     expect(data.missing).not.toHaveProperty('REPORTING_ADDRESS')
   })
 

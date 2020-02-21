@@ -141,6 +141,7 @@ const REPORTING_ADDRESS = {
     ['licence', 'reporting', 'reportingInstructions', 'buildingAndStreet2'],
     ['licence', 'reporting', 'reportingInstructions', 'townOrCity'],
     ['licence', 'reporting', 'reportingInstructions', 'postcode'],
+    ['licence', 'reporting', 'reportingInstructions', 'telephone'],
   ],
   separator: '\n',
   displayName: 'Reporting address',
