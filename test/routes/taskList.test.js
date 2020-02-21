@@ -32,6 +32,20 @@ const prisonerInfoResponse = {
   },
 }
 
+const dmAddressRefusal = {
+  stage: 'DECIDED',
+  licence: {
+    approval: {
+      release: {
+        reason: 'addressUnsuitable',
+        decision: 'No',
+        decisionMaker: 'Diane Matthews',
+        reasonForDecision: '',
+      },
+    },
+  },
+}
+
 const licenceWithEligibilityComplete = {
   eligibility: {
     excluded: {
@@ -526,6 +540,38 @@ describe('GET /taskList/:prisonNumber', () => {
           .expect('Content-Type', /html/)
           .expect(res => {
             expect(res.text).toContain('/hdc/vary/evidence/')
+          })
+      })
+      test('should not contain "Home detention curfew refused" at head of page', () => {
+        licenceService.getLicence.mockResolvedValue(dmAddressRefusal)
+
+        const app = createApp(
+          { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+          'dmUser'
+        )
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).not.toContain('Home detention curfew refused')
+          })
+      })
+
+      test('should not contain "Address unsuitable" content in the final decision task', () => {
+        licenceService.getLicence.mockResolvedValue(dmAddressRefusal)
+        const app = createApp(
+          { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+          'dmUser'
+        )
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).not.toContain('Address unsuitable')
           })
       })
     })
