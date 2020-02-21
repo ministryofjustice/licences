@@ -51,11 +51,7 @@ executors:
     working_directory: ~/app
   builder:
     docker:
-      - image: circleci/node:10-browsers
-    working_directory: ~/app
-  test:
-    docker:
-      - image: circleci/node:10-browsers
+      - image: circleci/node:10-buster-browsers
     working_directory: ~/app
 
 orbs:
@@ -103,7 +99,7 @@ jobs:
             - assets/stylesheets
 
   integration_tests:
-    executor: test
+    executor: builder
     steps:
       - checkout
       - restore_cache:
