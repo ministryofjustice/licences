@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
 class EligibilitySpec extends GebReportingSpec {
-  // Will be 10 when cja2003Sza is enabled. See Jira DCS-361
+  // Will be 10 when cja2003s19za is enabled. See Jira: DCS-361, DCS-381
   private static final int EXCLUDED_REASON_COUNT = 9
 
   @Shared
