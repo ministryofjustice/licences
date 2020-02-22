@@ -8,6 +8,8 @@ const superagent = require('superagent')
 const logger = require('../../log')
 const config = require('../config')
 
+const { getIn } = require('../utils/functionalHelpers')
+
 /**
  * @return { DeliusClient }
  */
@@ -77,8 +79,10 @@ module.exports = signInService => {
 
       return result.body
     } catch (error) {
-      const message = error && error.response && error.response.text
-      logger.error(`Error calling delius: ${path}, message: '${message}'`, error.stack)
+      logger.warn(
+        `Error calling delius, path: '${path}', verb: 'GET', response: '${getIn(error, ['response', 'text'])}'`,
+        error.stack
+      )
       throw error
     }
   }
@@ -100,8 +104,10 @@ module.exports = signInService => {
 
       return result.body
     } catch (error) {
-      const message = error && error.response && error.response.text
-      logger.warn(`Failed to call delius: ${path}, status: '${error.status}', message: '${message}'`, error.stack)
+      logger.warn(
+        `Error calling delius, path: '${path}', verb: 'PUT', response: '${getIn(error, ['response', 'text'])}'`,
+        error.stack
+      )
     }
   }
 }

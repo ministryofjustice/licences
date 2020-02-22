@@ -50,6 +50,12 @@ describe('nomisClient', () => {
 
       return expect(nomisClient.getBooking('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
+
+    test('handling 400', () => {
+      fakeNomis.get(`/bookings/1`).reply(400, { error: 'some-reason' })
+
+      return expect(nomisClient.getBooking('1')).rejects.toStrictEqual(Error('Bad Request'))
+    })
   })
 
   describe('getBookingByOffenderNumber', () => {
