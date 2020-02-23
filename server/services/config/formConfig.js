@@ -40,8 +40,8 @@ module.exports = {
     hdcCurfewConditions: 'you broke home detention curfew conditions and were recalled to prison',
     servingRecall: 'you were recalled from early release on compassionate grounds',
     deportation: 'the court recommended you should be deported from the UK',
-    cja2003_SZA:
-      'you were convicted of terrorism related offences listed in schedule ZA of the Criminal Justice Act 2003',
+    cja2003_19ZA:
+      'you are currently serving for a terrorism or terrorism-related offence in schedule 19ZA of the Criminal Justice Act 2003',
   },
 
   unsuitableReasonlabels: {
@@ -50,5 +50,6 @@ module.exports = {
     immigrationStatusUnclear: 'your immigration status is not clear',
     recalled: 'you were recalled to prison for poor behaviour during your previous early release',
     sentenceCategory: 'of the type of offence you were convicted of',
+    historyOfTerrorism: 'you have a history of terrorism or terrorism-related offending',
   },
 }
