@@ -1,5 +1,3 @@
-const config = require('../../config')
-
 const headerFields = ['OFF_NAME', 'OFF_NOMS', 'EST_PREMISE', 'CREATION_DATE']
 
 const noAddress = 'there is no suitable address for you to live at'
