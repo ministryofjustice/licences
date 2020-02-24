@@ -197,10 +197,10 @@ function nomisGetBuilder(token) {
       return result.body
     } catch (error) {
       logger.warn(
-        `Error calling nomis, path: '${path}', verb: 'GET', query: '${query}', response: '${getIn(error, [
-          'response',
-          'text',
-        ])}'`,
+        `Error calling nomis, path: '${path}', verb: 'GET', query: '${JSON.stringify(query)}', response: '${getIn(
+          error,
+          ['response', 'text']
+        )}'`,
         error.stack
       )
       throw error
