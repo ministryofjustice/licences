@@ -3,7 +3,6 @@
 [![CircleCI](https://circleci.com/gh/ministryofjustice/licences/tree/master.svg?style=svg)](https://circleci.com/gh/ministryofjustice/licences)
 [![Known Vulnerabilities](https://snyk.io/test/github/ministryofjustice/licences/badge.svg)](https://snyk.io/test/github/ministryofjustice/licences)
 
-
 # Get Started
 
 0. Install node and npm (check package.json for required versions)
@@ -115,3 +114,16 @@ npm run db:seed
 # Feature specs
 
 Feature specs are in /licences-specs which has its own README
+
+# Snyk
+
+To explicitly ignore a dependency, first authenticate: `npx snyk auth`
+This will open a browser and allow authenticating against snyk account (using github as auth provider)
+
+To ignore a dependency:
+
+```
+npx snyk ignore --id='npm:jquery:1.12.4' --expiry='2020-04-01' --reason='Required for legacy browser support'
+```
+
+And then commit generated file.

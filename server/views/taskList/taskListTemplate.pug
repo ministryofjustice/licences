@@ -23,7 +23,7 @@ block content
   else if licenceStatus.decisions.unsuitableResult
     div.error-banner.marginTopMedium
       strong.bold The offender is presumed unsuitable for HDC release
-  else if licenceStatus.decisions.refused
+  else if user.role != 'DM' && licenceStatus.decisions.refused
     div.error-banner.marginTopMedium
       strong.bold Home detention curfew refused - #{licenceStatus.decisions.refusalReason}
   else if licenceStatus.decisions.optedOut
