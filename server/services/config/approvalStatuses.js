@@ -46,7 +46,7 @@ module.exports = {
         hdcCurfewConditions: { approvalStatus: 'INELIGIBLE', refusedReason: 'HDC_RECALL' },
         servingRecall: { approvalStatus: 'INELIGIBLE', refusedReason: 'LRCOMP' },
         deportation: { approvalStatus: 'INELIGIBLE', refusedReason: 'FNP' },
-        cja2003_SZA: { approvalStatus: 'INELIGIBLE', refusedReason: 'CJA2003_SZA' },
+        cja2003_19ZA: { approvalStatus: 'INELIGIBLE', refusedReason: 'CJA2003_19ZA' },
       },
     },
     exceptionalCircumstances: {
@@ -56,6 +56,7 @@ module.exports = {
         immigrationStatusUnclear: { approvalStatus: 'PRES UNSUIT', refusedReason: 'DEPORT' },
         recalled: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CUR' },
         sentenceCategory: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_OFF' },
+        historyOfTerrorism: { approvalStatus: 'PRES UNSUIT', refusedReason: 'HIST_TERROR' },
       },
     },
   },
