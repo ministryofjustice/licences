@@ -175,6 +175,23 @@ describe('formService', () => {
       expect(data).toEqual(expectedData)
     })
 
+    test('should map excluded reason cja2003_19ZA', async () => {
+      const prisoner = {}
+      const licence = { eligibility: { excluded: { reason: 'cja2003_19ZA' } } }
+
+      const expectedData = {
+        CREATION_DATE: creationDate,
+        EST_PREMISE: '',
+        OFF_NAME: '',
+        OFF_NOMS: '',
+        INELIGIBLE_REASON:
+          'you are currently serving for a terrorism or terrorism-related offence in schedule 19ZA of the Criminal Justice Act 2003',
+      }
+
+      const data = await service.getTemplateData('ineligible', licence, prisoner)
+      expect(data).toEqual(expectedData)
+    })
+
     test('should map first excluded reason when multiple', async () => {
       const prisoner = {}
       const licence = { eligibility: { excluded: { reason: ['sexOffenderRegister', 'other', 'other'] } } }
@@ -201,6 +218,22 @@ describe('formService', () => {
         OFF_NAME: '',
         OFF_NOMS: '',
         UNSUITABLE_REASON: 'you are likely to be deported',
+      }
+
+      const data = await service.getTemplateData('unsuitable', licence, prisoner)
+      expect(data).toEqual(expectedData)
+    })
+
+    test('should map unsuitable reason historyOfTerrorism', async () => {
+      const prisoner = {}
+      const licence = { eligibility: { suitability: { reason: 'historyOfTerrorism' } } }
+
+      const expectedData = {
+        CREATION_DATE: creationDate,
+        EST_PREMISE: '',
+        OFF_NAME: '',
+        OFF_NOMS: '',
+        UNSUITABLE_REASON: 'you have a history of terrorism or terrorism-related offending',
       }
 
       const data = await service.getTemplateData('unsuitable', licence, prisoner)

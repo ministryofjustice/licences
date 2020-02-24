@@ -2,7 +2,7 @@ const formConfig = require('./config/eligibility')
 const { asyncMiddleware } = require('../utils/middleware')
 const { getIn, firstItem } = require('../utils/functionalHelpers')
 const createStandardRoutes = require('./routeWorkers/standard')
-const { cja2003Sza } = require('../config')
+const { cja2003s19za } = require('../config')
 
 module.exports = ({ licenceService, nomisPushService }) => (router, audited, config) => {
   const standard = createStandardRoutes({
@@ -25,31 +25,22 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, con
 
   /**
    * Copy of standard.js get.
-   * Passes in config.cja2003_SZA So that rendering the
-   * 'schedule ZA of the Criminal Justice Act 2003' checkbox is configurable
-   * Remove when config.cja2003_SZA is enabled everywhere
+   * Passes in config.cja2003_SZA So that rendering pre/post CJA 2003 schedule 19ZA options is configurable using a feature flag
    */
   function get(req, res) {
-    const { bookingId, action } = req.params
-    const { licenceSection, nextPath, pageDataMap } = formConfig.excluded
-    const dataPath = pageDataMap || ['licence', 'eligibility', licenceSection]
+    const sectionName = 'eligibility'
+    const { formName, bookingId, action } = req.params
+    const { licenceSection, nextPath, pageDataMap } = formConfig[formName]
+    const dataPath = pageDataMap || ['licence', sectionName, licenceSection]
 
     const rawData = getIn(res.locals.licence, dataPath) || {}
     const data =
-      firstItem(req.flash('userInput')) || licenceService.addSplitDateFields(rawData, formConfig.excluded.fields)
+      firstItem(req.flash('userInput')) || licenceService.addSplitDateFields(rawData, formConfig[formName].fields)
     const errorObject = firstItem(req.flash('errors')) || {}
 
-    const viewData = {
-      cja2003Sza,
-      bookingId,
-      data,
-      nextPath,
-      errorObject,
-      action,
-      sectionName: 'eligibility',
-      formName: 'excluded',
-    }
-    return res.render('eligibility/excluded', viewData)
+    const viewData = { cja2003s19za, bookingId, data, nextPath, errorObject, action, sectionName, formName }
+
+    res.render(`${sectionName}/${formName}`, viewData)
   }
 
   router.post(
@@ -58,9 +49,7 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, con
     asyncMiddleware(standard.callbackPost('suitability', checksPassedCallback))
   )
 
-  router.get('/excluded/:bookingId', asyncMiddleware(get))
-
-  router.get('/:formName/:bookingId', asyncMiddleware(standard.get))
+  router.get('/:formName/:bookingId', asyncMiddleware(get))
   router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post))
 
   return router

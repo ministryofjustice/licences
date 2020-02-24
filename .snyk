@@ -1,76 +1,9 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.7.1
+version: v1.13.5
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  'npm:jquery:20150627':
-    - jquery:
-        reason: None given
-        expires: '2018-09-28T09:43:59.168Z'
-  'npm:minimatch:20160620':
-    - gulp-nodemon > gulp > vinyl-fs > glob-watcher > gaze > globule > glob > minimatch:
-        reason: None given
-        expires: '2017-10-18T07:32:37.853Z'
-    - gulp > vinyl-fs > glob-stream > minimatch:
-        reason: None given
-        expires: '2017-10-18T07:32:37.853Z'
-    - gulp > vinyl-fs > glob-stream > glob > minimatch:
-        reason: None given
-        expires: '2017-10-18T07:32:37.854Z'
-    - gulp-nodemon > gulp > vinyl-fs > glob-stream > glob > minimatch:
-        reason: None given
-        expires: '2017-10-18T07:32:37.855Z'
-    - gulp > vinyl-fs > glob-watcher > gaze > globule > minimatch:
-        reason: None given
-        expires: '2017-10-18T07:32:37.855Z'
-    - gulp-nodemon > gulp > vinyl-fs > glob-watcher > gaze > globule > minimatch:
-        reason: None given
-        expires: '2017-10-18T07:32:37.856Z'
-    - gulp > vinyl-fs > glob-watcher > gaze > globule > glob > minimatch:
-        reason: None given
-        expires: '2017-10-18T07:32:37.857Z'
-    - gulp-nodemon > gulp > vinyl-fs > glob-stream > minimatch:
-        reason: None given
-        expires: '2017-10-18T07:32:37.857Z'
-  'npm:uglify-js:20151024':
-    - jade > transformers > uglify-js:
-        reason: None given
-        expires: '2017-10-18T07:32:37.858Z'
-  'npm:uglify-js:20150824':
-    - jade > transformers > uglify-js:
-        reason: None given
-        expires: '2017-10-18T07:32:37.858Z'
-  'npm:extend:20180424':
-    - knex > liftoff > extend:
-        reason: None given
-        expires: '2018-09-28T09:43:59.168Z'
-# patches apply the minimum changes required to fix a vulnerability
-patch:
-  'npm:minimatch:20160620':
-    - gulp-nodemon > gulp > vinyl-fs > glob-stream > minimatch:
-        patched: '2017-09-18T07:24:19.657Z'
-    - gulp-nodemon > gulp > vinyl-fs > glob-stream > glob > minimatch:
-        patched: '2017-09-18T07:24:19.657Z'
-    - gulp > vinyl-fs > glob-stream > glob > minimatch:
-        patched: '2017-09-18T07:24:19.657Z'
-    - gulp > vinyl-fs > glob-stream > minimatch:
-        patched: '2017-09-18T07:24:19.657Z'
-    - gulp > vinyl-fs > glob-watcher > gaze > globule > glob > minimatch:
-        patched: '2017-09-18T07:24:19.657Z'
-    - gulp-nodemon > gulp > vinyl-fs > glob-watcher > gaze > globule > minimatch:
-        patched: '2017-09-18T07:24:19.657Z'
-    - gulp-nodemon > gulp > vinyl-fs > glob-watcher > gaze > globule > glob > minimatch:
-        patched: '2017-09-18T07:24:19.657Z'
-    - gulp > vinyl-fs > glob-watcher > gaze > globule > minimatch:
-        patched: '2017-09-18T07:24:19.657Z'
-  'npm:ms:20170412':
-    - gulp-sourcemaps > debug-fabulous > debug > ms:
-        patched: '2017-09-18T07:31:35.260Z'
-  'npm:uglify-js:20150824':
-    - jade > transformers > uglify-js:
-        patched: '2017-09-18T07:24:19.657Z'
-  'npm:uglify-js:20151024':
-    - jade > transformers > uglify-js:
-        patched: '2017-09-18T07:24:19.657Z'
-  'npm:debug:20170905':
-    - cookie-session > debug:
-        patched: '2017-10-05T08:50:05.005Z'
+  'npm:jquery:1.12.4':
+    - '*':
+        reason: Required for legacy browser support
+        expires: 2020-04-01T00:00:00.000Z
+patch: {}

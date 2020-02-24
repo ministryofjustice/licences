@@ -159,7 +159,7 @@ module.exports = {
 
   pushToNomis: get('PUSH_TO_NOMIS', 'no') === 'yes',
   use2019Conditions: get('NEW_CONDITIONS', 'no') === 'yes',
-  cja2003Sza: get('CJA2003_SZA', 'no') === 'yes',
+  cja2003s19za: get('CJA2003_SZA', 'no') === 'yes',
 
   jobs: {
     systemUser: get('REMINDERS_SYSTEM_USER', ''),

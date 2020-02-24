@@ -213,7 +213,7 @@ function getDecisionLabel(licenceStatus) {
   } = licenceStatus
 
   if (refused && refusalReason) {
-    return `${statusLabel} : ${refusalReason}`
+    return `${statusLabel}`
   }
   return statusLabel
 }
