@@ -46,3 +46,11 @@ traces
 | where message contains "Role"
 | project message, timestamp
 | order by timestamp
+
+// delius users who are accessing the system but don't have the required roles
+traces
+| where cloud_RoleName == 'licences'
+| where message  contains 'no acceptable role'
+| where severityLevel  > 1 
+| project username=extract('Sign in error for user: \'(.*)\' Error: Login error - no acceptable role', 1, message)
+| distinct username

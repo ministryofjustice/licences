@@ -196,7 +196,13 @@ function nomisGetBuilder(token) {
       logger.debug(`GET ${path} -> ${result.status}`)
       return result.body
     } catch (error) {
-      logger.warn('Error calling nomis', path, error.stack)
+      logger.warn(
+        `Error calling nomis, path: '${path}', verb: 'GET', query: '${query}', response: '${getIn(error, [
+          'response',
+          'text',
+        ])}'`,
+        error.stack
+      )
       throw error
     }
   }
@@ -219,8 +225,10 @@ function nomisPushBuilder(verb, token) {
       logger.debug(`${verb} ${path} -> ${result.status}`)
       return result.body
     } catch (error) {
-      logger.error('Error calling nomis', path, error.stack)
-      logger.error(getIn(error, ['response', 'text']))
+      logger.warn(
+        `Error calling nomis, path: '${path}', verb: '${verb}', response: '${getIn(error, ['response', 'text'])}'`,
+        error.stack
+      )
       throw error
     }
   }
