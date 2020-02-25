@@ -112,7 +112,7 @@
     "joi-postcode": "^3.0.0",
     "jquery": "^1.12.4",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.20.2",
+    "knex": "^0.20.8",
     "knex-migrate": "^1.7.4",
     "moment": "^2.24.0",
     "moment-business-days": "^1.1.3",
