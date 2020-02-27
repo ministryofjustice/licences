@@ -58,6 +58,14 @@ describe('nomisClient', () => {
     })
   })
 
+  describe('getOffenderSentencesByNomisId', () => {
+    test('should return data from api', () => {
+      fakeNomis.get(`/offender-sentences?offenderNo=1&offenderNo=2`).reply(200, [])
+
+      return expect(nomisClient.getOffenderSentencesByNomisId(['1', '2'])).resolves.toStrictEqual([])
+    })
+  })
+
   describe('getBookingByOffenderNumber', () => {
     test('should return data from api', () => {
       fakeNomis.get(`/bookings/offenderNo/ABC123D`).reply(200, { key: 'value' })

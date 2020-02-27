@@ -61,8 +61,8 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
     async getROPrisoners(staffCode, token) {
       const nomisClient = nomisClientBuilder(token)
       const requiredPrisoners = await getROPrisonersFromDelius(staffCode)
-      if (!isEmpty(requiredPrisoners)) {
-        const requiredIDs = requiredPrisoners.map(prisoner => prisoner.nomsNumber)
+      const requiredIDs = requiredPrisoners.filter(prisoner => prisoner.nomsNumber).map(prisoner => prisoner.nomsNumber)
+      if (!isEmpty(requiredIDs)) {
         return nomisClient.getOffenderSentencesByNomisId(requiredIDs)
       }
 
