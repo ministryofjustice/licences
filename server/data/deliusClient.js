@@ -46,7 +46,7 @@ module.exports = signInService => {
     },
 
     getAllProbationAreas() {
-      return get(`${apiUrl}/probationAreas`)
+      return get(`${apiUrl}/probationAreas?excludeEstablishments=true&active=true`)
     },
 
     getAllLdusForProbationArea(probationAreaCode) {
