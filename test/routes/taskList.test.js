@@ -33,7 +33,7 @@ const prisonerInfoResponse = {
 }
 
 const dmAddressRefusal = {
-  stage: 'DECIDED',
+  stage: 'APPROVAL',
   licence: {
     approval: {
       release: {
@@ -491,7 +491,7 @@ describe('GET /taskList/:prisonNumber', () => {
 
   describe('User is RO', () => {
     test('should pass the client credential token not the user one', () => {
-      licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: {} })
+      licenceService.getLicence.mockResolvedValue({ stage: 'PROCESSING_RO', licence: {} })
       const app = createApp(
         { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
         'roUser'
@@ -542,6 +542,7 @@ describe('GET /taskList/:prisonNumber', () => {
             expect(res.text).toContain('/hdc/vary/evidence/')
           })
       })
+
       test('should not contain "Home detention curfew refused" at head of page', () => {
         licenceService.getLicence.mockResolvedValue(dmAddressRefusal)
 
