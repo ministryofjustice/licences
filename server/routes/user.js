@@ -29,7 +29,7 @@ module.exports = ({ userService }) => router => {
         await userService.setActiveCaseLoad(caseLoadId, req.user, res.locals.token)
       }
 
-      res.redirect('/user')
+      res.redirect('/')
     })
   )
 
