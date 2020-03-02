@@ -11,7 +11,7 @@ const moment = require('moment')
 const superagent = require('superagent')
 const logger = require('../../log')
 const config = require('../config')
-const { merge, pipe, getIn } = require('../utils/functionalHelpers')
+const { merge, pipe, getIn, splitEvery, isEmpty } = require('../utils/functionalHelpers')
 const { unauthorisedError } = require('../utils/errors')
 
 const timeoutSpec = {
@@ -29,6 +29,17 @@ const agentOptions = {
 }
 
 const keepaliveAgent = apiUrl.startsWith('https') ? new HttpsAgent(agentOptions) : new Agent(agentOptions)
+
+const batchRequests = async (args, batchSize, call) => {
+  const batches = splitEvery(batchSize, args)
+  const requests = batches.map((batch, i) => call(batch).then(result => [i, result]))
+  const results = await Promise.all(requests)
+
+  return results
+    .sort(([i, _1], [j, _2]) => i - j)
+    .map(([_, result]) => result)
+    .reduce((acc, val) => acc.concat(val), [])
+}
 
 module.exports = token => {
   const nomisGet = nomisGetBuilder(token)
@@ -80,12 +91,17 @@ module.exports = token => {
       return prisoners.map(addReleaseDatesToPrisoner)
     },
 
-    async getOffenderSentencesByNomisId(nomisIds) {
+    async getOffenderSentencesByNomisId(nomisIds, batchSize = 50) {
       const path = `${apiUrl}/offender-sentences`
-      const query = { offenderNo: nomisIds }
-      const headers = { 'Page-Limit': 10000 }
+      if (isEmpty(nomisIds)) {
+        return []
+      }
 
-      const prisoners = await nomisGet({ path, query, headers })
+      const prisoners = await batchRequests(nomisIds, batchSize, batch => {
+        const query = { offenderNo: batch }
+        return nomisGet({ path, query, headers: { 'Page-Limit': batchSize } })
+      })
+
       return prisoners.map(addReleaseDatesToPrisoner)
     },
 

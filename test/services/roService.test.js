@@ -81,14 +81,14 @@ describe('roService', () => {
       deliusClient.getROPrisoners.mockResolvedValue([])
       await service.getROPrisoners(123, 'token')
       expect(deliusClient.getROPrisoners).toHaveBeenCalled()
-      expect(nomisClient.getOffenderSentencesByNomisId).not.toHaveBeenCalled()
+      expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalled()
     })
 
     test('should not call getOffenderSentencesByNomisId when no offender numbers are returned from getROPrisoners', async () => {
       deliusClient.getROPrisoners.mockResolvedValue([{}, {}, {}])
       await service.getROPrisoners(123, 'token')
       expect(deliusClient.getROPrisoners).toHaveBeenCalled()
-      expect(nomisClient.getOffenderSentencesByNomisId).not.toHaveBeenCalled()
+      expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalledWith([])
     })
 
     test('should return empty array and explanation message if no eligible releases found', async () => {

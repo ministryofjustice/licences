@@ -59,10 +59,39 @@ describe('nomisClient', () => {
   })
 
   describe('getOffenderSentencesByNomisId', () => {
-    test('should return data from api', () => {
-      fakeNomis.get(`/offender-sentences?offenderNo=1&offenderNo=2`).reply(200, [])
+    const record = id => ({ id, sentenceDetail: {} })
 
-      return expect(nomisClient.getOffenderSentencesByNomisId(['1', '2'])).resolves.toStrictEqual([])
+    test(`Doesn't call api if no offender numbers`, async () => {
+      const result = await nomisClient.getOffenderSentencesByNomisId([])
+      expect(result).toStrictEqual([])
+    })
+
+    test('should return data from api', async () => {
+      fakeNomis.get(`/offender-sentences?offenderNo=1&offenderNo=2`).reply(200, [record(1), record(2)])
+
+      const result = await nomisClient.getOffenderSentencesByNomisId(['1', '2'])
+      const ids = result.map(({ id }) => id)
+      expect(ids).toStrictEqual([1, 2])
+    })
+
+    test('should batch data from api', async () => {
+      const batchSize = 3
+
+      fakeNomis
+        .get(`/offender-sentences?offenderNo=1&offenderNo=2&offenderNo=3`)
+        .reply(200, [record(1), record(2), record(3)])
+      fakeNomis
+        .get(`/offender-sentences?offenderNo=4&offenderNo=5&offenderNo=6`)
+        .reply(200, [record(4), record(5), record(6)])
+      fakeNomis.get(`/offender-sentences?offenderNo=7&offenderNo=8`).reply(200, [record(7), record(8)])
+
+      const result = await nomisClient.getOffenderSentencesByNomisId(
+        ['1', '2', '3', '4', '5', '6', '7', '8'],
+        batchSize
+      )
+
+      const ids = result.map(({ id }) => id)
+      expect(ids).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8])
     })
   })
 

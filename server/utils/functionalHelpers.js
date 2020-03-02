@@ -163,4 +163,5 @@ module.exports = {
   unwrapResultOrThrow,
   omit,
   sortKeys,
+  splitEvery: R.splitEvery,
 }
