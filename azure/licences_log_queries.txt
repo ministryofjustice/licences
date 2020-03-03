@@ -8,7 +8,6 @@ traces
 | sort by Blocked asc
 
 // Blocked bookings - Staff not allocated
-
 traces
 | where cloud_RoleName == "licences"
 | where message startswith "Blocking case for booking:"
@@ -137,3 +136,25 @@ customEvents
 | where customDimensions.source_probationAreaCode in ('N01', 'C02', 'C06', 'C07')
 | summarize count() by ldu = tostring(strcat_delim(' - ', customDimensions.source_probationAreaCode, customDimensions.source_lduCode))
 | project ldu, target=count_;
+
+// New LDUS this week:
+let lastweek = customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.target_type == 'probation'
+| where customDimensions.target_probationAreaCode in ('N01', 'C02', 'C06', 'C07', 'N24')
+| where timestamp > startofday(datetime("2020-02-24")) and timestamp < endofday(datetime("2020-02-28"))
+| summarize count() by ldu = tostring(strcat_delim(' - ', customDimensions.target_probationAreaCode, customDimensions.target_lduCode))
+| project ldu, target=count_;
+
+let thisweek = customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.target_type == 'probation'
+| where customDimensions.target_probationAreaCode in ('N01', 'C02', 'C06', 'C07', 'N24')
+| where timestamp > startofday(datetime("2020-03-02"))
+| summarize count() by ldu = tostring(strcat_delim(' - ', customDimensions.target_probationAreaCode, customDimensions.target_lduCode))
+| project ldu, target=count_;
+
+
+lastweek | join kind=rightanti thisweek on ldu;
