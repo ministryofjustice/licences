@@ -81,6 +81,7 @@ describe('/contact', () => {
           expect(res.text).toContain('ABC123')
           expect(res.text).toContain('LDU Description')
           expect(res.text).toContain('Ro Name')
+          expect(res.text).toContain('DELIUS_ID')
           expect(res.text).toContain('PA Description')
           expect(res.text).toContain('PA_CODE')
           expect(res.text).toContain('abc@def.com')
