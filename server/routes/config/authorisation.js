@@ -12,7 +12,7 @@ module.exports = {
     authorised: [{ role: 'RO' }],
   },
   '/hdc/forms/': {
-    authorised: [{ role: 'CA' }],
+    authorised: [{ role: 'CA' }, { role: 'RO' }],
   },
   '/hdc/proposedAddress/curfewAddressChoice/': {
     authorised: [{ role: 'CA' }, { role: 'RO', stage: ['VARY'] }],

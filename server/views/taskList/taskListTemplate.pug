@@ -12,7 +12,7 @@ include ./includes/utils
 
 block content
 
-  if user.role === 'CA' && licenceVersion !== 0
+  if licenceVersion !== 0 && (user.role === 'RO' || user.role === 'CA')
     include ../includes/back-caselist-and-forms
   else
     include ../includes/backToCaseList
