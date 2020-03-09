@@ -577,6 +577,7 @@ describe('GET /taskList/:prisonNumber', () => {
       })
 
       test('should display the Forms link', () => {
+        licenceService.getLicence.mockResolvedValue({ stage: 'PROCESSING_RO', licence: {} })
         const app = createApp(
           { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
           'roUser'
