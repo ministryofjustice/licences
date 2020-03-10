@@ -6,6 +6,7 @@ import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.pdf.LicenceTaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.pdf.LicenceTemplatePage
+import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewLicencePage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -32,10 +33,12 @@ class PdfSpec extends GebReportingSpec {
 
     when: 'I log in and view the tasklist'
     actions.logIn(user)
-    to TaskListPage, testData.markAndrewsBookingId
+    via TaskListPage, testData.markAndrewsBookingId
+    at ReviewLicencePage
 
     then: 'There is no option to create PDF'
-    !taskListAction('Create licence').isDisplayed()
+    at ReviewLicencePage
+
     actions.logOut()
 
     where:

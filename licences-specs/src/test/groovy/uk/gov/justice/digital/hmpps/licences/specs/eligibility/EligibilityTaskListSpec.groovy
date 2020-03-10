@@ -29,6 +29,9 @@ class EligibilityTaskListSpec extends GebReportingSpec {
 
   def 'Shows details of the prisoner (from nomis)'() {
 
+    given: 'No licences'
+    testData.deleteLicences()
+
     when: 'I view the task list page'
     to TaskListPage, testData.markAndrewsBookingId
 
