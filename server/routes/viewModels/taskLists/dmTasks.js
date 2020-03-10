@@ -67,6 +67,7 @@ module.exports = licenceStatus => {
     decisions: {
       addressWithdrawn,
       approvedPremisesRequired,
+      bassAccepted,
       bassReferralNeeded,
       confiscationOrder,
       curfewAddressRejected,
@@ -89,7 +90,7 @@ module.exports = licenceStatus => {
     ]
   }
 
-  if (addressWithdrawn || curfewAddressRejected) {
+  if (bassAccepted !== 'Yes' && (addressWithdrawn || curfewAddressRejected)) {
     return rejectedAddressTaskList(licenceStatus)
   }
 

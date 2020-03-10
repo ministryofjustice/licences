@@ -99,7 +99,9 @@ describe('deliusClient', () => {
 
   describe('getAllProbationAreas', () => {
     test('should return list of all probation areas', () => {
-      fakeDelius.get(`/probationAreas`).reply(200, [{ code: 'some code', description: 'some description' }])
+      fakeDelius
+        .get(`/probationAreas?excludeEstablishments=true&active=true`)
+        .reply(200, [{ code: 'some code', description: 'some description' }])
 
       return expect(deliusClient.getAllProbationAreas()).resolves.toStrictEqual([
         { code: 'some code', description: 'some description' },

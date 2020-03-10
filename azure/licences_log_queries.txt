@@ -8,7 +8,6 @@ traces
 | sort by Blocked asc
 
 // Blocked bookings - Staff not allocated
-
 traces
 | where cloud_RoleName == "licences"
 | where message startswith "Blocking case for booking:"
@@ -54,3 +53,108 @@ traces
 | where severityLevel  > 1 
 | project username=extract('Sign in error for user: \'(.*)\' Error: Login error - no acceptable role', 1, message)
 | distinct username
+
+// Prison to Prison
+customEvents
+| where cloud_RoleName == 'licences' 
+| where customDimensions.source_type == 'prison' and customDimensions.target_type == 'prison'
+| where name == 'CaseHandover'
+| project timestamp=format_datetime(timestamp, 'dd/MM/yyyy HH:mm') , bookingId=customDimensions.bookingId, source=customDimensions.source_agencyId, target=customDimensions.target_agencyId, type= customDimensions.transitionType
+| order by timestamp asc
+
+// Prison to Probation
+customEvents
+| where cloud_RoleName == 'licences' 
+| where customDimensions.source_type == 'prison' and customDimensions.target_type == 'probation'
+| where name == 'CaseHandover'
+| project timestamp=format_datetime(timestamp, 'dd/MM/yyyy HH:mm') , bookingId=customDimensions.bookingId, sourcePrison=customDimensions.source_agencyId, targetProbationArea=customDimensions.target_probationAreaCode, type= customDimensions.transitionType
+| order by timestamp asc
+
+
+// Probation area to prison area
+customEvents
+| where cloud_RoleName == 'licences' 
+| where customDimensions.source_type == 'probation' and customDimensions.target_type == 'prison'
+| where name == 'CaseHandover'
+| project timestamp=format_datetime(timestamp, 'dd/MM/yyyy HH:mm') , bookingId=customDimensions.bookingId, sourceProbationArea=customDimensions.source_probationAreaCode, sourceLdu=customDimensions.source_lduCode, targetPrison=customDimensions.target_agencyId,type= customDimensions.transitionType
+| order by timestamp asc
+
+
+// Prison sent/received
+let target_agencies = customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.target_type == 'prison'
+| summarize count() by agency = tostring(customDimensions.target_agencyId)
+| project agency, target=count_;
+
+let source_agencies = customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.source_type == 'prison'
+| summarize count() by agency = tostring(customDimensions.source_agencyId)
+| project agency, source=count_;
+
+target_agencies 
+| join kind=fullouter source_agencies on agency
+| project agency=coalesce(agency, agency1) , sent=source, received=target;
+
+// Probation areas sent/received
+let target = customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.target_type == 'probation'
+| summarize count() by ldu = tostring(strcat_delim(' - ', customDimensions.target_probationAreaCode, customDimensions.target_lduCode))
+| project ldu, target=count_;
+
+let source = customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.source_type == 'probation'
+| summarize count() by ldu = tostring(strcat_delim(' - ', customDimensions.source_probationAreaCode, customDimensions.source_lduCode))
+| project ldu, source=count_;
+
+target 
+| join kind=fullouter source on ldu
+| project ldu=coalesce(ldu, ldu1) , sent=source, received=target;
+
+// Prisons sent to the north west
+customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.source_type == 'prison'
+| where customDimensions.target_type == 'probation'
+| where customDimensions.target_probationAreaCode in ('N01', 'C02', 'C06', 'C07')
+| summarize count() by agency = tostring(customDimensions.source_agencyId)
+| project agency, count=count_;
+
+// LDUs sending cases in the north west
+customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.source_type == 'probation'
+| where customDimensions.source_probationAreaCode in ('N01', 'C02', 'C06', 'C07')
+| summarize count() by ldu = tostring(strcat_delim(' - ', customDimensions.source_probationAreaCode, customDimensions.source_lduCode))
+| project ldu, target=count_;
+
+// New LDUS this week:
+let lastweek = customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.target_type == 'probation'
+| where customDimensions.target_probationAreaCode in ('N01', 'C02', 'C06', 'C07', 'N24')
+| where timestamp > startofday(datetime("2020-02-24")) and timestamp < endofday(datetime("2020-02-28"))
+| summarize count() by ldu = tostring(strcat_delim(' - ', customDimensions.target_probationAreaCode, customDimensions.target_lduCode))
+| project ldu, target=count_;
+
+let thisweek = customEvents
+| where cloud_RoleName == 'licences' 
+| where name == 'CaseHandover'
+| where customDimensions.target_type == 'probation'
+| where customDimensions.target_probationAreaCode in ('N01', 'C02', 'C06', 'C07', 'N24')
+| where timestamp > startofday(datetime("2020-03-02"))
+| summarize count() by ldu = tostring(strcat_delim(' - ', customDimensions.target_probationAreaCode, customDimensions.target_lduCode))
+| project ldu, target=count_;
+
+
+lastweek | join kind=rightanti thisweek on ldu;

@@ -157,7 +157,7 @@ describe('/user', () => {
         .post('/')
         .send({ role: 'RO' })
         .expect(302)
-        .expect('Location', '/user')
+        .expect('Location', '/')
     })
   })
 

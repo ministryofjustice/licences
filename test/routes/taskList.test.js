@@ -574,6 +574,20 @@ describe('GET /taskList/:prisonNumber', () => {
             expect(res.text).not.toContain('Address unsuitable')
           })
       })
+
+      test('should display the Forms link', () => {
+        const app = createApp(
+          { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+          'roUser'
+        )
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('Forms')
+          })
+      })
     })
   })
 })
