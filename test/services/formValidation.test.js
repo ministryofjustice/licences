@@ -1,4 +1,5 @@
 /* eslint-disable global-require */
+const moment = require('moment')
 const createLicenceService = require('../../server/services/licenceService')
 
 describe('validation', () => {
@@ -836,7 +837,9 @@ describe('validation', () => {
           {
             formResponse: {
               ATTENDDEPENDENCY: {
-                appointmentDate: '12/03/2020',
+                appointmentDate: moment()
+                  .add(1, 'day')
+                  .format('DD/MM/YYYY'),
                 appointmentTime: 'a',
                 appointmentAddress: 'b',
               },
