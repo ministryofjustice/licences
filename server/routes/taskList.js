@@ -11,6 +11,71 @@ const { isEmpty } = require('../utils/functionalHelpers')
 const getTaskListModel = require('./viewModels/taskListModels')
 const logger = require('../../log')
 const { getTasksForBlocked } = require('./viewModels/taskLists/caTasks')
+const {
+  licenceStages: { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO },
+} = require('../services/config/licenceStages')
+
+const READ_WRITE = 'RW'
+const READ_ONLY = 'R'
+const NONE = 'NONE'
+
+const determineAccessLevel = (licence, postRelease, role) => {
+  const stage = licence && licence.stage
+
+  if (postRelease) {
+    return role === 'RO' ? READ_WRITE : NONE
+  }
+
+  switch (role) {
+    case 'DM':
+      switch (stage) {
+        case APPROVAL:
+          return READ_WRITE
+
+        case DECIDED:
+        case MODIFIED:
+        case MODIFIED_APPROVAL:
+          return READ_ONLY
+
+        default:
+          return NONE
+      }
+
+    case 'CA':
+      if (isEmpty(licence)) return READ_WRITE
+      switch (stage) {
+        case ELIGIBILITY:
+        case PROCESSING_CA:
+        case DECIDED:
+        case MODIFIED:
+        case MODIFIED_APPROVAL:
+          return READ_WRITE
+
+        default:
+          return READ_ONLY
+      }
+
+    case 'RO':
+      if (isEmpty(licence)) return NONE
+      switch (stage) {
+        case PROCESSING_RO:
+          return READ_WRITE
+
+        case PROCESSING_CA:
+        case APPROVAL:
+        case DECIDED:
+        case MODIFIED:
+        case MODIFIED_APPROVAL:
+          return READ_ONLY
+
+        default:
+          return NONE
+      }
+
+    default:
+      return NONE
+  }
+}
 
 /**
  * @param {object} args
@@ -19,7 +84,6 @@ const { getTasksForBlocked } = require('./viewModels/taskLists/caTasks')
  * @param {any} args.audit
  * @param {CaService} args.caService
  */
-
 module.exports = ({ prisonerService, licenceService, audit, caService }) => router => {
   router.get(
     '/:bookingId',
@@ -33,6 +97,18 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => rout
 
       const postRelease = prisonerInfo.agencyLocationId ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT' : false
       const licence = await licenceService.getLicence(bookingId)
+
+      const access = determineAccessLevel(licence, postRelease, req.user.role)
+
+      if (access === NONE) {
+        res.redirect('/caseList/active')
+        return
+      }
+
+      if (access === READ_ONLY) {
+        res.redirect(`/hdc/review/licence/${bookingId}`)
+        return
+      }
 
       const licenceStatus = getLicenceStatus(licence)
       const allowedTransition = getAllowedTransition(licenceStatus, req.user.role)

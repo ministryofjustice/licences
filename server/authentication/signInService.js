@@ -11,7 +11,7 @@ const timeoutSpec = {
 }
 
 const signInService = () => {
-  const getRefreshTokens = async (username, role, refreshToken, service) => {
+  const getRefreshTokens = async (refreshToken, service) => {
     const oauthClientToken = generateOauthClientToken()
     const oauthRequest = { grant_type: 'refresh_token', refresh_token: refreshToken }
 
@@ -22,12 +22,7 @@ const signInService = () => {
     async getRefreshedToken(user, service = 'nomis') {
       logger.info(`Refreshing token for : ${user.username}`)
 
-      const { token, refreshToken, expiresIn } = await getRefreshTokens(
-        user.username,
-        user.role,
-        user.refreshToken,
-        service
-      )
+      const { token, refreshToken, expiresIn } = await getRefreshTokens(user.refreshToken, service)
 
       const refreshTime = fiveMinutesBefore(expiresIn)
 

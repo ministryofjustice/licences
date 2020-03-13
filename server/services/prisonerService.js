@@ -83,8 +83,8 @@ function createPrisonerService(nomisClientBuilder, roService) {
           return getIn(release, ['fromAgency'])
         }
 
-        const locationId =
-          prisoner.agencyLocationId === 'OUT' ? await getReleaseEstablishment() : prisoner.agencyLocationId
+        const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
+        const locationId = postRelease ? await getReleaseEstablishment() : prisoner.agencyLocationId
 
         return this.getEstablishment(locationId, token)
       } catch (error) {
