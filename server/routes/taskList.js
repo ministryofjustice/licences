@@ -43,6 +43,7 @@ const determineAccessLevel = (licence, postRelease, role) => {
 
     case 'CA':
       if (isEmpty(licence)) return READ_WRITE
+
       switch (stage) {
         case ELIGIBILITY:
         case PROCESSING_CA:
@@ -56,11 +57,13 @@ const determineAccessLevel = (licence, postRelease, role) => {
       }
 
     case 'RO':
-      if (isEmpty(licence)) return NONE
+      if (isEmpty(licence)) return READ_WRITE
+
       switch (stage) {
         case PROCESSING_RO:
           return READ_WRITE
 
+        case ELIGIBILITY:
         case PROCESSING_CA:
         case APPROVAL:
         case DECIDED:

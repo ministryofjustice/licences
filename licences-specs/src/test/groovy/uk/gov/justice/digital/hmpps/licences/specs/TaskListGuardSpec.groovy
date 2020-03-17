@@ -38,7 +38,7 @@ class TaskListGuardSpec extends GebReportingSpec {
     where:
     role || expectedPage
     'CA' || TaskListPage
-    'RO' || CaselistPage
+    'RO' || TaskListPage
     'DM' || CaselistPage
   }
 
@@ -57,7 +57,7 @@ class TaskListGuardSpec extends GebReportingSpec {
     where:
     role | licenceDataFilename              || expectedPage
     'CA' | 'eligibility/unstarted'          || TaskListPage
-    'RO' | 'eligibility/unstarted'          || CaselistPage
+    'RO' | 'eligibility/unstarted'          || ReviewLicencePage
     'DM' | 'eligibility/unstarted'          || CaselistPage
 
     'CA' | 'assessment/unstarted'           || ReviewLicencePage
