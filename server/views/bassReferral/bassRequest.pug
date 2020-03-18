@@ -27,3 +27,9 @@ block formItems
     div.form-group
       label(for='proposedCounty') Proposed county or borough:
       input(type='text' name='proposedCounty' id='proposedCounty' class='form-control' value=bassRequest.proposedCounty aria-label="Proposed county or borough")
+
+  div.form-group.pure-u-1.pure-u-md-2-3
+    label(for='additionalInformation') Additional information
+      textarea(name='additionalInformation' id='additionalInformation' class='form-control' rows='5' aria-label="Additional information")
+        if bassRequest.additionalInformation
+          | #{bassRequest.additionalInformation} 

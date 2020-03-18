@@ -21,6 +21,12 @@ mixin addressForm(errorObject)
           div.form-group.pure-u-sm-1.pure-u-md-3-4
             label.form-label(for="telephone") Telephone
             input.form-control(id="telephone" name="telephone" value=data.telephone aria-label="Telephone" class=errorObject.telephone ? "form-control form-control-error" : "form-control")
+          
+          div.form-group
+            label(for='additionalInformation') Additional information
+            textarea(name='additionalInformation' id='additionalInformation' class='form-control' rows='5' aria-label="Additional information")
+              if data.additionalInformation
+                | #{data.additionalInformation}
 
     div.form-group.pure-u-1.pure-u-md-1-2
       fieldset.paddingBottom

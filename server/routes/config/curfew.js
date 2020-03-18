@@ -59,6 +59,11 @@ module.exports = {
           validationMessage: 'Enter a telephone number in the right format',
         },
       },
+      {
+        additionlInformation: {
+          responseType: 'optionalString',
+        },
+      },
     ],
     nextPath: {
       path: '/hdc/taskList/',
