@@ -86,13 +86,15 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         prisonerService.getPrisonerPersonalDetails(bookingId, token),
         pdfService.getPdfLicenceData(bookingId, licence, token),
       ])
+
       const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
 
-      const incompleteGroupsVary = Object.keys(missing).filter(group => missing[group].mandatoryPostRelease)
-      const incompleteGroupsMandatory = Object.keys(missing).filter(group => missing[group].mandatory)
-      const incompleteGroups = postRelease
-        ? incompleteGroupsVary.concat(incompleteGroupsMandatory)
-        : incompleteGroupsMandatory
+      const incompleteGroupsFilter = postRelease
+        ? group => missing[group].mandatory || missing[group].mandatoryPostRelease
+        : group => missing[group].mandatory || missing[group].mandatoryPreRelease
+
+      const incompleteGroups = Object.keys(missing).filter(incompleteGroupsFilter)
+
       const incompletePreferredGroups = Object.keys(missing).filter(group => missing[group].preferred)
 
       const canPrint = !incompleteGroups || isEmpty(incompleteGroups)

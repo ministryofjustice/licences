@@ -180,13 +180,13 @@ const CURFEW_FIRST_FROM = {
   paths: [['licence', 'curfew', 'firstNight', 'firstNightFrom']],
   displayName: 'Curfew first night from',
   group: 'firstNight',
-  required: 'optional',
+  required: 'mandatoryPreRelease',
 }
 const CURFEW_FIRST_UNTIL = {
   paths: [['licence', 'curfew', 'firstNight', 'firstNightUntil']],
   displayName: 'Curfew first night until',
   group: 'firstNight',
-  required: 'optional',
+  required: 'mandatoryPreRelease',
 }
 const CURFEW_MON_FROM = {
   paths: [['licence', 'curfew', 'curfewHours', 'mondayFrom']],

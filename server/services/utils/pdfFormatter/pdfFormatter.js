@@ -1,12 +1,15 @@
+const R = require('ramda')
 const moment = require('moment')
 const romanise = require('romannumerals')
-const { getIn, isEmpty, mergeWithRight } = require('../../../utils/functionalHelpers')
+const { isEmpty, mergeWithRight } = require('../../../utils/functionalHelpers')
 const pdfData = require('../../config/pdfData')
 const config = require('../../../config')
 
 const DEFAULT_PLACEHOLDER = 'N/A'
 
 module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress, getConditionText }
+
+const selectPathsFrom = R.flip(R.path)
 
 function formatPdfData(
   templateName,
@@ -15,11 +18,12 @@ function formatPdfData(
   approvedVersionDetails,
   placeholder = DEFAULT_PLACEHOLDER
 ) {
-  const conditions = getConditionsForConfig(licence, templateName, 'CONDITIONS')
-  const pssconditions = getConditionsForConfig(licence, templateName, 'PSSCONDITIONS')
+  const licencePathSelector = selectPathsFrom(licence)
+  const conditions = getConditionsForConfig(licencePathSelector, templateName, 'CONDITIONS')
+  const pssconditions = getConditionsForConfig(licencePathSelector, templateName, 'PSSCONDITIONS')
   const photo = image ? image.toString('base64') : null
   const taggingCompany = { telephone: config.pdf.licences.taggingCompanyTelephone }
-  const curfewAddress = pickCurfewAddress(licence)
+  const curfewAddress = pickCurfewAddress(licencePathSelector)
 
   const allData = {
     licence,
@@ -32,76 +36,73 @@ function formatPdfData(
     taggingCompany,
     approvedVersionDetails,
   }
-  return valueOrPlaceholder(allData, placeholder, templateName)
+  return valueOrPlaceholder(selectPathsFrom(allData), placeholder, templateName)
 }
 
-function valueOrPlaceholder(allData, placeholder, templateName) {
+function valueOrPlaceholder(dataSelector, placeholder, templateName) {
   const dateNow = moment().format('DD/MM/YYYY')
+  const pdfDataEntries = Object.entries(pdfData[templateName])
+  return pdfDataEntries.reduce(
+    (summary, [key, spec]) => {
+      const value = spec.paths
+        .map(dataSelector)
+        .filter(R.identity)
+        .join(spec.separator)
 
-  return Object.entries(pdfData[templateName]).reduce(readValuesReducer(allData, placeholder), {
-    values: { CREATION_DATE: dateNow },
-    missing: {},
-  })
-}
+      const newObject = value
+        ? {
+            values: { [key]: value },
+          }
+        : {
+            values: { [key]: spec.noPlaceholder ? '' : placeholder },
+            missing: {
+              [spec.group]: {
+                [spec.required]: {
+                  [key]: spec.displayName,
+                },
+              },
+            },
+          }
 
-const readValuesReducer = (allData, placeholder) => (summary, [key, spec]) => {
-  const value = readEntry(allData, spec)
-
-  if (value) {
-    return mergeWithRight(summary, {
-      values: { [key]: value },
-    })
-  }
-
-  return mergeWithRight(summary, {
-    values: { [key]: spec.noPlaceholder ? '' : placeholder },
-    missing: {
-      [spec.group]: {
-        [spec.required]: {
-          [key]: spec.displayName,
-        },
-      },
+      return mergeWithRight(summary, newObject)
     },
-  })
+    {
+      values: { CREATION_DATE: dateNow },
+      missing: {},
+    }
+  )
 }
 
-function readEntry(data, spec) {
-  return spec.paths
-    .map(path => getIn(data, path))
-    .filter(x => x)
-    .join(spec.separator)
-}
-
-function pickCurfewAddress(licence) {
+function pickCurfewAddress(licencePathSelector) {
   const approvedPremisesRequired =
-    getIn(licence, ['curfew', 'approvedPremises', 'required']) ||
-    getIn(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo'])
+    licencePathSelector(['curfew', 'approvedPremises', 'required']) ||
+    licencePathSelector(['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo'])
 
   if (approvedPremisesRequired === 'Yes') {
     return (
-      getIn(licence, ['curfew', 'approvedPremisesAddress']) ||
-      getIn(licence, ['bassReferral', 'approvedPremisesAddress'])
+      licencePathSelector(['curfew', 'approvedPremisesAddress']) ||
+      licencePathSelector(['bassReferral', 'approvedPremisesAddress'])
     )
   }
 
-  const bassRequested = getIn(licence, ['bassReferral', 'bassRequest', 'bassRequested'])
-  const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted'])
+  const bassRequested = licencePathSelector(['bassReferral', 'bassRequest', 'bassRequested'])
+  const bassAccepted = licencePathSelector(['bassReferral', 'bassOffer', 'bassAccepted'])
 
   if (bassRequested === 'Yes' && bassAccepted === 'Yes') {
-    return getIn(licence, ['bassReferral', 'bassOffer'])
+    return licencePathSelector(['bassReferral', 'bassOffer'])
   }
 
-  return getIn(licence, ['proposedAddress', 'curfewAddress'])
+  return licencePathSelector(['proposedAddress', 'curfewAddress'])
 }
 
-function getConditionsForConfig(licence, templateName, configName) {
+function getConditionsForConfig(licencePathSelector, templateName, configName) {
   const conditionsConfig = pdfData[templateName][configName]
-  return isEmpty(conditionsConfig) ? {} : getAdditionalConditionsText(licence, conditionsConfig)
+  return isEmpty(conditionsConfig) ? {} : getAdditionalConditionsText(licencePathSelector, conditionsConfig)
 }
 
-function getAdditionalConditionsText(licence, conditionsConfig) {
-  const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No'
-  const conditions = getIn(licence, ['licenceConditions'])
+function getAdditionalConditionsText(licencePathSelector, conditionsConfig) {
+  const standardOnly = licencePathSelector(['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No'
+  const conditions = licencePathSelector(['licenceConditions'])
   // if additionalConditionsRequired === Yes but no conditions selected then licenceConditions not replaced with array
   // TODO fix conditionsService to not overwrite licenceConditions section of licence
   if (standardOnly || isEmpty(conditions) || !Array.isArray(conditions)) {
@@ -110,10 +111,10 @@ function getAdditionalConditionsText(licence, conditionsConfig) {
 
   const start = conditionsConfig.startIndex
   const itemDivider = conditionsConfig.divider
-  const filter = conditionsConfig.filter ? conditionsConfig.filter(conditionsConfig.filtered) : condition => condition
+  const filter = conditionsConfig.filter ? conditionsConfig.filter(conditionsConfig.filtered) : R.identity
 
   return conditions
-    .filter(condition => filter(condition))
+    .filter(filter)
     .map(
       (condition, index) =>
         `${listCounter(start, index)}${getConditionText(condition.content, conditionsConfig.terminator)}`
