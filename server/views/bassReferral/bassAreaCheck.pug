@@ -6,6 +6,7 @@ block content
 
   -var bassRequest = data && data.bassRequest || {}
   -var bassAreaCheck = data && data.bassAreaCheck || {}
+  -var additionalInformation = data && data.bassRequest && data.bassRequest.additionalInformation || ''
 
   div.pure-g.pure-u-1
     include ../includes/back
@@ -29,7 +30,10 @@ block content
         div.pure-u-1-2
         div#noSpecificAreaMessage Offender does not have a preferred BASS area
 
-
+    if  additionalInformation 
+     div.pure-u-1.pure-u-md-2-3.smallPaddingTop
+      | Additional information
+      p.bold #{additionalInformation}  
 
     form(method="post")
       input(type="hidden" name="_csrf" value=csrfToken)

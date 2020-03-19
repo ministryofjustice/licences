@@ -19,6 +19,10 @@ mixin addressDetail(type, address, review)
         if address.telephone
           p.bold(id="telephone-" + type) #{address.telephone}
 
+      if address.additionalInformation
+        div.pure-u-md-2-3.mediumPaddingBottom
+          | Additional information
+          p.bold #{address.additionalInformation}
 
     div.pure-u-1.pure-u-md-1-2
       div.borderBottomLight.smallPaddingBottom

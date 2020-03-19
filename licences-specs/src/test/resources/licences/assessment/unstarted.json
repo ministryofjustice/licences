@@ -25,6 +25,7 @@
         "addressTown": "Town",
         "postCode": "AB1 1AB",
         "telephone": "0123 456789",
+        "additionalInformation": "",
         "occupier": {
           "name": "Main Occupier",
           "age": "21",
