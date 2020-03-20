@@ -531,7 +531,7 @@ const displayNames = {
     },
   },
   firstNight: {
-    optional: {
+    mandatoryPreRelease: {
       CURFEW_FIRST_FROM: 'Curfew first night from',
       CURFEW_FIRST_UNTIL: 'Curfew first night until',
     },
