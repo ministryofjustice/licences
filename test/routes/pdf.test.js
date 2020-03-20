@@ -18,10 +18,19 @@ const valuesWithMissing = {
     OFF_NAME: 'FIRST LAST',
   },
   missing: {
-    firstNight: { mandatory: { CURFEW_FIRST_FROM: 'Curfew first night from' } },
+    firstNight: { mandatoryPreRelease: { CURFEW_FIRST_FROM: 'Curfew first night from' } },
     reporting: { mandatory: { REPORTING_AT: 'reporting date' } },
     sentence: { mandatory: { OFF_NOMS: 'noms id' } },
     varyApproval: { mandatoryPostRelease: { VARY_APPROVER: 'Name of approver' } },
+  },
+}
+
+const valuesWithCurfewFirstNightMissing = {
+  values: {
+    OFF_NAME: 'FIRST LAST',
+  },
+  missing: {
+    firstNight: { mandatoryPreRelease: { CURFEW_FIRST_FROM: 'Curfew first night from' } },
   },
 }
 
@@ -177,6 +186,25 @@ describe('PDF:', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).not.toContain('Ready to create')
+          expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
+          expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith(
+            '1233',
+            { licence: { key: 'value', document: { template: { decision: 'hdc_ap_pss' } } } },
+            'token'
+          )
+        })
+    })
+
+    test('Allows print when missing values  are pre-release only for vary', () => {
+      prisonerServiceStub.getPrisonerPersonalDetails.mockResolvedValue({ agencyLocationId: 'OUT' })
+      pdfServiceStub.getPdfLicenceData.mockResolvedValue(valuesWithCurfewFirstNightMissing)
+
+      return request(app)
+        .get('/hdc/pdf/taskList/1233')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Ready to print')
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith(
             '1233',
