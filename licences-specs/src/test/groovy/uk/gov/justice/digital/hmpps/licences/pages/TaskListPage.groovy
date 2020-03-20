@@ -45,5 +45,6 @@ class TaskListPage extends Page {
     warnings(required: false) { find('.warning')*.text() }
 
     formsLink(required: false) { $('a.forms-link') }
+
   }
 }

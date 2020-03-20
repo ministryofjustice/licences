@@ -30,10 +30,10 @@ block content
         div.pure-u-1-2
         div#noSpecificAreaMessage Offender does not have a preferred BASS area
 
-    if  additionalInformation 
+    if  additionalInformation
      div.pure-u-1.pure-u-md-2-3.smallPaddingTop
       | Additional information
-      p.bold #{additionalInformation}  
+      p.bold #{additionalInformation}
 
     form(method="post")
       input(type="hidden" name="_csrf" value=csrfToken)

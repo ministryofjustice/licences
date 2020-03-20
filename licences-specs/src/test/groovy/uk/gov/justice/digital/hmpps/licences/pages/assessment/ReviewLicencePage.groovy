@@ -1,0 +1,16 @@
+package uk.gov.justice.digital.hmpps.licences.pages.assessment
+import geb.Page
+
+class ReviewLicencePage extends Page {
+
+  static url = '/hdc/review/licence'
+
+  static at = {
+    browser.currentUrl.contains(url)
+  }
+  static content = {
+
+    saveAndContinue(required: false){ $('#continueBtn')}
+    backLink {$('.link-back')}
+  }
+}

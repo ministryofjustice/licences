@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.licences.pages.assessment
 import geb.Page
+import geb.module.RadioButtons
 
 class ProposedAddressCurfewAddressChoicePage extends Page {
 
@@ -8,5 +9,8 @@ class ProposedAddressCurfewAddressChoicePage extends Page {
   static at = {
     browser.currentUrl.contains(url)
   }
-    static content = {}
+    static content = {
+      bass { $("#bass").module(RadioButtons) }
+      saveAndContinue { $("#continueBtn")}
+    }
 }

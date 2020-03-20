@@ -103,6 +103,90 @@ describe('/hdc/bassReferral', () => {
       })
     })
 
+    describe('GET /hdc/bassReferral/bassRequest/1', () => {
+      const licenceService = createLicenceServiceStub()
+      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+      test(`Additional Information text box to be present`, () => {
+        return request(app)
+          .get('/hdc/bassReferral/bassRequest/1')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('Additional information')
+            expect(res.text).toContain('textarea')
+          })
+      })
+    })
+
+    test(`bassReferral/bassRequest/1 renders "Additional information" text content`, () => {
+      const licenceService = createLicenceServiceStub()
+
+      licenceService.getLicence.mockResolvedValue({
+        licence: {
+          bassReferral: {
+            bassRequest: {
+              additionalInformation: 'info about Bass address',
+            },
+          },
+        },
+      })
+
+      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+      return request(app)
+        .get('/hdc/bassReferral/bassRequest/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('info about Bass address')
+        })
+    })
+
+    describe('GET /hdc/bassReferral/bassAreaCheck/1', () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+        licence: {
+          bassReferral: {
+            bassRequest: {},
+          },
+        },
+      })
+
+      const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+      test(`Additional Information section heading should not be displayed`, () => {
+        return request(app)
+          .get('/hdc/bassReferral/bassAreaCheck/1')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).not.toContain('Additional information')
+          })
+      })
+    })
+
+    describe('GET /hdc/bassReferral/bassAreaCheck/1', () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+        licence: {
+          bassReferral: {
+            bassRequest: {
+              additionalInformation: 'info about Bass address',
+            },
+          },
+        },
+      })
+
+      const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+      test(`Additional Information text to be present as a view only`, () => {
+        return request(app)
+          .get('/hdc/bassReferral/bassAreaCheck/1')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('Additional information')
+          })
+      })
+    })
+
     describe('POST /hdc/bassReferral/rejected/:bookingId', () => {
       test('rejects the bass request', () => {
         const licenceService = createLicenceServiceStub()
