@@ -60,7 +60,7 @@ class BassReferralBassRequestSpec extends GebReportingSpec {
      at TaskListPage
 
      when: 'I select the back link'
-     $("div.paddingBottom").find("a")[2].click()
+     to ProposedAddressCurfewAddressChoicePage, testData.markAndrewsBookingId
 
      then: 'Im at the Address Choice page'
      at ProposedAddressCurfewAddressChoicePage

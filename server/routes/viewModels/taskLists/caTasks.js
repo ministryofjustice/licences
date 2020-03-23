@@ -16,20 +16,26 @@ const hdcRefusal = require('./tasks/hdcRefusal')
 const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
 
+const eligibilityTask = {
+  task: 'eligibilityTask',
+  visible: true,
+}
+
+const informOffenderTask = {
+  title: 'Inform the offender',
+  label: 'You should now tell the offender using the relevant HDC form from NOMIS',
+  action: {
+    type: 'btn-secondary',
+    href: '/caseList/active',
+    text: 'Back to case list',
+  },
+  visible: true,
+}
+
 module.exports = {
   getTasksForBlocked: errorCode => [
-    {
-      task: 'eligibilityTask',
-    },
-    {
-      title: 'Inform the offender',
-      label: 'You should now tell the offender using the relevant HDC form from NOMIS',
-      action: {
-        type: 'btn-secondary',
-        href: '/caseList/active',
-        text: 'Back to case list',
-      },
-    },
+    eligibilityTask,
+    informOffenderTask,
     {
       task: 'caBlockedTask',
       errorCode,
@@ -45,18 +51,9 @@ module.exports = {
     const optOutRefused = optOut === 'DONE' && !optedOut
 
     return [
+      eligibilityTask,
       {
-        task: 'eligibilityTask',
-        visible: true,
-      },
-      {
-        title: 'Inform the offender',
-        label: 'You should now tell the offender using the relevant HDC form from NOMIS',
-        action: {
-          type: 'btn-secondary',
-          href: '/caseList/active',
-          text: 'Back to case list',
-        },
+        ...informOffenderTask,
         visible: eligibilityDone && optOutUnstarted && !optedOut,
       },
       {
@@ -106,6 +103,7 @@ module.exports = {
       bassWithdrawn,
       curfewAddressApproved,
       optedOut,
+      eligible,
     } = decisions
 
     const { bassAreaCheck } = tasks
@@ -147,7 +145,12 @@ module.exports = {
       return [proposedAddressTask, curfewAddressTask, bassTask, refusalTask].filter(task => task.visible)
     }
 
+    if (!eligible) {
+      return [eligibilityTask, informOffenderTask]
+    }
+
     return [
+      eligibilityTask,
       proposedAddressTask,
       curfewAddressTask,
       bassTask,
@@ -268,13 +271,13 @@ module.exports = {
       visible: validAddress,
     }
 
-    const informOffenderTask = {
+    const invisibleInformOffenderTask = {
       task: 'informOffenderTask',
       visible: true,
     }
 
     if (!eligible) {
-      return [eligibilitySummaryTask, informOffenderTask].filter(task => task.visible)
+      return [eligibilitySummaryTask, invisibleInformOffenderTask].filter(task => task.visible)
     }
 
     return [

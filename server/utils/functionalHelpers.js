@@ -54,20 +54,22 @@ function getWhereKeyLike(string, object) {
 
   return R.pipe(
     R.pickBy(stringIncludesKey),
-    R.values
-  )(object)[0]
+    R.values,
+    R.head
+  )(object)
 }
 
-function pickKey(predicate, object) {
-  return R.pipe(
+const pickKey = predicate =>
+  R.pipe(
     R.pickBy(predicate),
-    R.keys
-  )(object)[0]
-}
+    R.keys,
+    R.head
+  )
 
-function firstKey(object) {
-  return R.keys(object)[0]
-}
+const firstKey = R.pipe(
+  R.keys,
+  R.head
+)
 
 function getFieldDetail(fieldPath, fieldConfig) {
   return R.pipe(
@@ -77,12 +79,7 @@ function getFieldDetail(fieldPath, fieldConfig) {
   )(fieldConfig)
 }
 
-function getFieldName(fieldConfig) {
-  return R.pipe(
-    R.keys,
-    R.head
-  )(fieldConfig)
-}
+const getFieldName = firstKey
 
 function omit(keys, obj) {
   return R.omit(keys, obj)

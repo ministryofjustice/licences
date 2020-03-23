@@ -13,6 +13,7 @@ import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsS
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.VictimLiaisonPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.ReportingInstructionsPage
+import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilityExclusionPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.ApprovedPremisesChoicePage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.BassOfferPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksSeriousOffencePage
@@ -51,6 +52,8 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
   }
 
   def 'Shows details of the prisoner (from nomis)'() {
+    given: 'An licence ready for final checks'
+    testData.loadLicence('finalchecks/final-checks')
 
     when: 'I view the task list page'
     to TaskListPage, testData.markAndrewsBookingId
@@ -90,10 +93,10 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see 9 task buttons'
-    taskListActions.size() == 9
+    taskListActions.size() == 10
 
     and: 'The tasks for reviewing RO input have View buttons'
-    taskListActions.take(6)*.text() == ['Change', 'View/Edit', 'View/Edit', 'View/Edit', 'View/Edit', 'View/Edit']
+    taskListActions.take(7)*.text() == ['Change', 'Change', 'View/Edit', 'View/Edit', 'View/Edit', 'View/Edit', 'View/Edit']
 
     and: 'The final checks task has a Start button'
     taskListAction(tasks.final).text() == 'Start now'
@@ -111,16 +114,53 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see 10 task buttons'
-    taskListActions.size() == 10
+    taskListActions.size() == 11
 
     and: 'The submit task has a Continue button'
     taskListAction(tasks.submit).text() == 'Continue'
   }
 
+  def 'Eligibility button links to Eligibility page'() {
+
+    given: 'Viewing task list'
+    to TaskListPage, testData.markAndrewsBookingId
+
+    when: 'I start the task'
+    eligibilityTaskListAction().click()
+
+    then: 'I see the journey page'
+    at EligibilityExclusionPage
+
+    when: 'I click back'
+    find('#backBtn').click()
+
+    then: 'I return to the tasklist'
+    at TaskListPage
+  }
+
+  def 'Making offender ineligible shows eligibility tasks only'() {
+
+    given: 'Viewing task list'
+    to EligibilityExclusionPage, testData.markAndrewsBookingId
+
+    when:
+    excludedRadios.checked = 'Yes'
+    excludedReasonsItem(0).check()
+    find('#continueBtn').click()
+
+    then:
+    at TaskListPage
+    taskListActions.size() == 2
+    taskListActions.take(2)*.text() == ['Change', 'Back to case list']
+
+  }
+
+
   @Unroll
   def '#label button links to #page'() {
 
     given: 'Viewing task list'
+    testData.loadLicence('finalchecks/final-checks-done')
     to TaskListPage, testData.markAndrewsBookingId
 
     when: 'I start the task'
@@ -180,7 +220,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see only address, submit'
-    taskListActions.size() == 3
+    taskListActions.size() == 4
   }
 
   def 'BASS task button links to bass offer page'() {
@@ -210,7 +250,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see only bass, refuse, submit'
-    taskListActions.size() == 3
+    taskListActions.size() == 4
 
     and: 'I can only submit for refusal'
     $('h2', text: contains('Submit to decision maker')).closest('div').text().contains('Ready to submit for refusal')
@@ -225,7 +265,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'The risk task is not shown'
-    taskListActions.size() == 8
+    taskListActions.size() == 9
 
     when: 'I view the curfew address task'
     taskListAction(tasks.address).click()
