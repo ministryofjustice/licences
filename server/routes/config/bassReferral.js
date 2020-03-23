@@ -17,6 +17,11 @@ module.exports = {
         },
       },
       {
+        additionalInformation: {
+          responseType: 'optionalString',
+        },
+      },
+      {
         proposedTown: {
           dependentOn: 'specificArea',
           predicate: 'Yes',

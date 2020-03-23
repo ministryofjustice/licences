@@ -41,6 +41,37 @@ describe('/hdc/proposedAddress/', () => {
           expect(res.text).toContain('Proposed curfew address')
         })
     })
+    test(`curfewAddress/1 renders "Additional information" text area`, () => {
+      return request(app)
+        .get('/hdc/proposedAddress/curfewAddress/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Additional information')
+          expect(res.text).toContain('additionalInformation')
+          expect(res.text).toContain('textarea')
+        })
+    })
+    test(`curfewAddress/1 renders "Additional information" text content`, () => {
+      licenceService.getLicence.mockResolvedValue({
+        licence: {
+          proposedAddress: {
+            curfewAddress: {
+              additionalInformation: 'info about address',
+            },
+          },
+        },
+      })
+
+      return request(app)
+        .get('/hdc/proposedAddress/curfewAddress/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('info about address')
+        })
+    })
+
     test(`curfewAddressChoice/1 renders the "Curfew address choice" page`, () => {
       return request(app)
         .get('/hdc/proposedAddress/curfewAddressChoice/1')

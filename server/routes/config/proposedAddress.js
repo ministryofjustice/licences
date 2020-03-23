@@ -40,6 +40,11 @@ module.exports = {
         },
       },
       {
+        additionalInformation: {
+          responseType: 'optionalString',
+        },
+      },
+      {
         occupier: {
           contains: [
             {

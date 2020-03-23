@@ -565,6 +565,47 @@ describe('/hdc/curfew', () => {
         .send({ withdrawAddress: 'No', withdrawConsent: 'No' })
         .expect(403)
     })
+
+    describe('GET /hdc/curfew/approvedPremises/1', () => {
+      const licenceService = createLicenceServiceStub()
+
+      const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+      test(`Additional Information section heading should not be displayed`, () => {
+        return request(app)
+          .get('/hdc/curfew/approvedPremises/1')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).not.toContain('Additional information')
+          })
+      })
+    })
+
+    describe('GET /hdc/curfew/approvedPremises/1', () => {
+      const licenceService = createLicenceServiceStub()
+
+      licenceService.getLicence.mockResolvedValue({
+        licence: {
+          proposedAddress: {
+            curfewAddress: {
+              additionalInformation: 'info about curfew address',
+            },
+          },
+        },
+      })
+
+      const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+      test(`Additional Information text to be present as a view only`, () => {
+        return request(app)
+          .get('/hdc/curfew/approvedPremises/1')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect(res => {
+            expect(res.text).toContain('Additional information')
+            expect(res.text).toContain('info about curfew address')
+          })
+      })
+    })
   })
 })
 

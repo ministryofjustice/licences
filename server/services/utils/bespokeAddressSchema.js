@@ -27,6 +27,10 @@ module.exports = {
           .allow('')
           .optional(),
       }),
+      additionalInformation: joi
+        .string()
+        .allow('')
+        .optional(),
       residents: joi.array().items(
         joi.object().keys({
           name: joi.string().required(),
