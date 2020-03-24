@@ -34,5 +34,9 @@ class ReviewLicencePage extends Page {
     bass { module(BassRequestModule) }
 
     createLicenceControl(required: false) { $('#createPdf') }
+
+    saveAndContinue(required: false){ $('#continueBtn')}
+    
+    backLink {$('.link-back')}
   }
 }
