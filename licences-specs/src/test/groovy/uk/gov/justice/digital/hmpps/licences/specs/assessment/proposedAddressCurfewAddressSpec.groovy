@@ -4,7 +4,7 @@ import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.ProposedAddressCurfewAddressPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.ReviewLicencePage
+import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewLicencePage
 
 
 import uk.gov.justice.digital.hmpps.licences.util.Actions
