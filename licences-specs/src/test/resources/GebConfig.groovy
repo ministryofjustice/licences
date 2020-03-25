@@ -24,8 +24,8 @@ environments {
 // Default if geb.env is not set to one of 'chrome', or 'chromeHeadless'
 driver = {
   ChromeOptions options = new ChromeOptions()
-//  options.addArguments('headless')
-  options.addArguments('chrome')
+  options.addArguments('headless')
+//  options.addArguments('chrome')
   new ChromeDriver(options)
 }
 

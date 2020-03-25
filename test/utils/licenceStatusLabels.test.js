@@ -307,24 +307,28 @@ describe('getStatusLabel', () => {
     describe('PROCESSING_CA stage', () => {
       const examples = [
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {} },
+          status: { stage: licenceStages.PROCESSING_CA, decisions: { eligible: true }, tasks: {} },
           label: 'With prison',
         },
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: { excluded: true }, tasks: {} },
+          status: { stage: licenceStages.PROCESSING_CA, decisions: { eligible: true, excluded: true }, tasks: {} },
           label: 'With prison',
         },
         {
           status: {
             stage: licenceStages.PROCESSING_CA,
-            decisions: { curfewAddressApproved: 'rejected' },
+            decisions: { curfewAddressApproved: 'rejected', eligible: true },
             tasks: {},
           },
           label: 'With prison',
         },
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: { postponed: true }, tasks: {} },
+          status: { stage: licenceStages.PROCESSING_CA, decisions: { postponed: true, eligible: true }, tasks: {} },
           label: 'Postponed',
+        },
+        {
+          status: { stage: licenceStages.PROCESSING_CA, decisions: { eligible: false }, tasks: {} },
+          label: 'Not eligible',
         },
       ]
 
