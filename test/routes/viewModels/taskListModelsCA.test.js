@@ -445,6 +445,7 @@ describe('TaskList models', () => {
               bassWithdrawn: false,
               bassAccepted: null,
               optedOut: false,
+              eligible: true,
             },
             tasks: {
               bassAreaCheck: 'UNSTARTED',
@@ -455,6 +456,7 @@ describe('TaskList models', () => {
           null
         )
       ).toEqual([
+        eligibility,
         proposedCurfewAddress,
         riskManagement,
         victimLiasion,
@@ -481,6 +483,7 @@ describe('TaskList models', () => {
               bassAccepted: null,
               optedOut: false,
               addressUnsuitable: false,
+              eligible: true,
             },
             tasks: {
               bassAreaCheck: 'UNSTARTED',
@@ -490,7 +493,7 @@ describe('TaskList models', () => {
           {},
           'caToDmRefusal'
         )
-      ).toEqual([proposedCurfewAddress, refuse, submitDecisionMakerRefusal])
+      ).toEqual([eligibility, proposedCurfewAddress, refuse, submitDecisionMakerRefusal])
     })
 
     test('should show risk if address unsuitable', () => {
@@ -506,6 +509,7 @@ describe('TaskList models', () => {
               bassAccepted: null,
               optedOut: false,
               addressUnsuitable: true,
+              eligible: true,
             },
             tasks: {},
             stage: 'PROCESSING_CA',
@@ -513,7 +517,13 @@ describe('TaskList models', () => {
           {},
           'caToDmRefusal'
         )
-      ).toEqual([proposedCurfewAddress, riskManagementAddressUnsuitable, refuse, submitDecisionMakerRefusal])
+      ).toEqual([
+        eligibility,
+        proposedCurfewAddress,
+        riskManagementAddressUnsuitable,
+        refuse,
+        submitDecisionMakerRefusal,
+      ])
     })
 
     test('should return bass specific list of tasks', () => {
@@ -528,6 +538,7 @@ describe('TaskList models', () => {
               bassWithdrawn: false,
               bassAccepted: null,
               optedOut: false,
+              eligible: true,
             },
             tasks: {
               bassAreaCheck: 'DONE',
@@ -537,6 +548,7 @@ describe('TaskList models', () => {
           'caToDm'
         )
       ).toEqual([
+        eligibility,
         bassAddress,
         riskManagement,
         victimLiasion,
@@ -581,6 +593,7 @@ describe('TaskList models', () => {
               bassWithdrawn: false,
               bassAccepted: null,
               optedOut: false,
+              eligible: true,
             },
             tasks: {
               bassAreaCheck: 'UNFINISHED',
@@ -590,7 +603,7 @@ describe('TaskList models', () => {
           {},
           'caToDmRefusal'
         )
-      ).toEqual([bassAddressRejected, refuse, submitDecisionMakerRefusal])
+      ).toEqual([eligibility, bassAddressRejected, refuse, submitDecisionMakerRefusal])
     })
 
     test('should return limited bass specific list of tasks when bass excluded', () => {
@@ -605,6 +618,7 @@ describe('TaskList models', () => {
               bassWithdrawn: false,
               bassAccepted: 'Unsuitable',
               optedOut: false,
+              eligible: true,
             },
             tasks: {
               bassAreaCheck: 'DONE',
@@ -614,7 +628,7 @@ describe('TaskList models', () => {
           {},
           'caToDmRefusal'
         )
-      ).toEqual([bassAddress, refuse, submitDecisionMakerRefusal])
+      ).toEqual([eligibility, bassAddress, refuse, submitDecisionMakerRefusal])
     })
 
     test('should show proposed address task if caToRo transition (new address added)', () => {
@@ -625,6 +639,7 @@ describe('TaskList models', () => {
           {
             decisions: {
               bassReferralNeeded: false,
+              eligible: true,
             },
             tasks: {},
             stage: 'PROCESSING_CA',
@@ -632,7 +647,7 @@ describe('TaskList models', () => {
           {},
           'caToRo'
         )
-      ).toEqual([curfewAddress, refuse, submitCurfewAddress])
+      ).toEqual([eligibility, curfewAddress, refuse, submitCurfewAddress])
     })
 
     test('should show  Bass Address task with Approved Premises label and View/Edit button if AP input)', () => {
@@ -644,6 +659,7 @@ describe('TaskList models', () => {
             decisions: {
               bassReferralNeeded: true,
               approvedPremisesRequired: true,
+              eligible: true,
             },
             tasks: {
               approvedPremisesAddress: 'DONE',
@@ -655,6 +671,7 @@ describe('TaskList models', () => {
           'null'
         )
       ).toEqual([
+        eligibility,
         bassAddressWithApprovedAddress,
         victimLiasion,
         curfewHours,
@@ -665,6 +682,31 @@ describe('TaskList models', () => {
         refuse,
         submitDecisionMaker,
       ])
+    })
+
+    test('Should show the eligiblity task list if Offender is made ineligible at the PROCESSING_CA stage', () => {
+      expect(
+        taskListModel(
+          'CA',
+          false,
+          {
+            decisions: {
+              bassReferralNeeded: false,
+              curfewAddressApproved: true,
+              bassWithdrawn: false,
+              bassAccepted: null,
+              optedOut: false,
+              eligible: false,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+            },
+            stage: 'PROCESSING_CA',
+          },
+          {},
+          null
+        )
+      ).toEqual([eligibility, informOffender])
     })
   })
 

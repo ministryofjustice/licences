@@ -2,9 +2,11 @@ const {
   addPaths,
   allValuesEmpty,
   equals,
+  firstKey,
   getWhereKeyLike,
   interleave,
   isEmpty,
+  pickKey,
   sortKeys,
   unwrapResultOrThrow,
 } = require('../../server/utils/functionalHelpers')
@@ -188,6 +190,34 @@ describe('functionalHelpers', () => {
       expect(() =>
         unwrapResultOrThrow({ code: '1', message: 'some problem' }, error => `${error.message} ${error.code}`)
       ).toThrow(Error('some problem 1'))
+    })
+  })
+
+  describe('pickKey', () => {
+    test('picks single matching key', () => {
+      expect(pickKey((val, key) => key.includes('y'))({ ax: 1, ay: 2, az: 3 })).toEqual('ay')
+    })
+
+    test('picks single matching value', () => {
+      expect(pickKey(val => val === 3)({ ax: 1, ay: 2, az: 3 })).toEqual('az')
+    })
+
+    test('fails gracefully', () => {
+      expect(pickKey((val, key) => key === 'a')({ ax: 1, ay: 2, az: 3 })).toBeUndefined()
+    })
+  })
+
+  describe('firstKey', () => {
+    test('handles no keys gracefully', () => {
+      expect(firstKey({})).toBeUndefined()
+    })
+
+    test('picks single key', () => {
+      expect(firstKey({ x: 1 })).toEqual('x')
+    })
+
+    test('picks a single arbitrary key when there is more than one', () => {
+      expect(firstKey({ x: 1, y: 2 })).toMatch(/x|y/)
     })
   })
 })

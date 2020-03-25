@@ -39,6 +39,10 @@ class TaskListPage extends Page {
       $('h2', text: contains(taskName)).closest('div').next().find('.taskListAction')
     }
 
+    eligibilityTaskListAction(required: false) {
+      $('h2', text: contains('Check eligibility')).closest('div').find('.taskListAction')
+    }
+
     errorSummary(required: false) { $('#error-summary-heading') }
     errorBanner(required: false) { $('.error-banner') }
 

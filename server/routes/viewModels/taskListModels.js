@@ -39,26 +39,36 @@ module.exports = (
 ) => {
   const taskListName = getTaskListName(role, stage, postRelease)
 
-  const getTaskListTasksMethod = {
-    dmTasks: getDmTasks,
-    roTasks: getRoTasks,
-    roTasksPostApproval: getRoTasksPostApproval,
-    caTasksEligibility: getCaTasksEligibility,
-    caTasksFinalChecks: getCaTasksFinalChecks,
-    caTasksPostApproval: getCaTasksPostApproval(stage),
-    vary: getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence }),
-  }
+  switch (taskListName) {
+    case 'dmTasks':
+      return getDmTasks({ decisions, tasks, stage, allowedTransition })
 
-  if (!getTaskListTasksMethod[taskListName]) {
-    return [
-      {
-        title: 'No active licence',
-        action: { type: 'link', text: 'Return to case list', href: '/caseList/' },
-      },
-    ]
-  }
+    case 'roTasks':
+      return getRoTasks({ decisions, tasks, allowedTransition })
 
-  return getTaskListTasksMethod[taskListName]({ decisions, tasks, stage, allowedTransition })
+    case 'roTasksPostApproval':
+      return getRoTasksPostApproval({ decisions, tasks })
+
+    case 'caTasksEligibility':
+      return getCaTasksEligibility({ decisions, tasks, allowedTransition })
+
+    case 'caTasksFinalChecks':
+      return getCaTasksFinalChecks({ decisions, tasks, allowedTransition })
+
+    case 'caTasksPostApproval':
+      return getCaTasksPostApproval(stage)({ decisions, tasks, allowedTransition })
+
+    case 'vary':
+      return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence })({ stage })
+
+    default:
+      return [
+        {
+          title: 'No active licence',
+          action: { type: 'link', text: 'Return to case list', href: '/caseList/' },
+        },
+      ]
+  }
 }
 
 function getTaskListName(role, stage, postRelease) {
@@ -66,15 +76,8 @@ function getTaskListName(role, stage, postRelease) {
     return 'vary'
   }
 
-  function roleAndStageMatch(view) {
-    if (view.role !== role) {
-      return false
-    }
-    if (!view.stages) {
-      return true
-    }
-    return view.stages.includes(stage)
-  }
-
-  return pickKey(roleAndStageMatch, taskListsConfig) || 'noTaskList'
+  return (
+    pickKey(view => view.role === role && (!view.stages || view.stages.includes(stage)))(taskListsConfig) ||
+    'noTaskList'
+  )
 }

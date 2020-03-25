@@ -137,8 +137,8 @@ function caProcessingLabel(licenceStatus) {
 }
 
 function caProcessingRoLabel(licenceStatus) {
+  if (licenceStatus && licenceStatus.decisions && !licenceStatus.decisions.eligible) return status.notEligible
   const labels = [{ decision: 'postponed', label: status.postponed }]
-
   return getLabel(labels, licenceStatus) || status.withPrison
 }
 
