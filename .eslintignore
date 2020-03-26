@@ -10,3 +10,4 @@ jsconfig.json
 tsconfig.json
 *.md
 licences-specs/src/test/resources/licences/
+.project

@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.licences.pages.pdf
 
 import geb.Page
-import geb.module.Select
+import geb.module.RadioButtons
 
 class LicenceTaskListPage extends Page {
 
@@ -12,6 +12,8 @@ class LicenceTaskListPage extends Page {
   }
 
   static content = {
-
+    backToDm {$('#backToDm')}
   }
 }
+
+

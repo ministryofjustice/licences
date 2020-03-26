@@ -11,6 +11,7 @@ const transitionsForDestinations = require('../services/notifications/transition
  */
 module.exports = ({ prisonerService, notificationService }) => router => {
   router.get('/:destination/:bookingId', async (req, res) => {
+    const { licence } = res.locals
     const { destination, bookingId } = req.params
     const transition = transitionsForDestinations[destination]
     const submissionTarget = await prisonerService.getOrganisationContactDetails(
@@ -19,7 +20,13 @@ module.exports = ({ prisonerService, notificationService }) => router => {
       res.locals.token
     )
 
-    res.render(`send/${transition.type}`, { bookingId, submissionTarget })
+    let reReferralToDm = false
+
+    if (transition.type === 'caToDm' && (licence.stage === 'DECIDED' || licence.stage === 'MODIFIED')) {
+      reReferralToDm = true
+    }
+
+    res.render(`send/${transition.type}`, { bookingId, submissionTarget, reReferralToDm })
   })
 
   router.post(
