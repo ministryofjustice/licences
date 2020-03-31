@@ -1,4 +1,5 @@
 const createFormService = require('../../server/services/formService')
+const { pickCurfewAddress } = require('../../server/services/utils/pdfFormatter')
 
 describe('formService', () => {
   let service
@@ -20,7 +21,7 @@ describe('formService', () => {
 
   beforeEach(() => {
     pdfFormatter = {
-      pickCurfewAddress: jest.fn().mockReturnValue(address),
+      pickCurfewAddress,
     }
     conditionsService = {
       getFullTextForApprovedConditions: jest.fn().mockReturnValue({}),
@@ -43,7 +44,7 @@ describe('formService', () => {
 
   describe('getTemplateData', () => {
     test('should call pdf service with template name and expected data', async () => {
-      const licence = {}
+      const licence = { proposedAddress: { curfewAddress: address } }
       const prisoner = {
         offenderNo: 123,
         agencyLocationDesc: 'location',
@@ -61,7 +62,6 @@ describe('formService', () => {
       }
 
       const data = await service.getTemplateData('approved', licence, prisoner)
-      expect(pdfFormatter.pickCurfewAddress).toHaveBeenCalled()
 
       expect(data).toEqual(expectedData)
     })

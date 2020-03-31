@@ -15,6 +15,9 @@ function getIn(object, pathArray) {
   return R.path(pathArray, object)
 }
 
+// Curried version of 'getIn' above
+const selectPathsFrom = R.flip(R.path)
+
 const allValuesEmpty = R.pipe(
   R.values,
   R.all(isEmpty)
@@ -125,6 +128,7 @@ function sortKeys(o) {
 
 module.exports = {
   getIn,
+  selectPathsFrom,
   isEmpty,
   flatten: R.flatten,
   notAllValuesEmpty,
