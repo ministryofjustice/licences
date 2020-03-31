@@ -7,6 +7,7 @@ const {
   interleave,
   isEmpty,
   pickKey,
+  selectPathsFrom,
   sortKeys,
   unwrapResultOrThrow,
 } = require('../../server/utils/functionalHelpers')
@@ -218,6 +219,18 @@ describe('functionalHelpers', () => {
 
     test('picks a single arbitrary key when there is more than one', () => {
       expect(firstKey({ x: 1, y: 2 })).toMatch(/x|y/)
+    })
+  })
+
+  describe('selectPathsFrom', () => {
+    test('select paths', () => {
+      const data = { a: { b: { c: 1 }, d: 'a' } }
+
+      const selector = selectPathsFrom(data)
+
+      expect(selector(['a', 'b', 'c'])).toEqual(1)
+      expect(selector(['a', 'd'])).toEqual('a')
+      expect(selector(['a', 'b', 'x'])).toBeUndefined()
     })
   })
 })
