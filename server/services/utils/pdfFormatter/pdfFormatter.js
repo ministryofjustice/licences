@@ -1,15 +1,13 @@
 const R = require('ramda')
 const moment = require('moment')
 const romanise = require('romannumerals')
-const { isEmpty, mergeWithRight } = require('../../../utils/functionalHelpers')
+const { isEmpty, mergeWithRight, selectPathsFrom } = require('../../../utils/functionalHelpers')
 const pdfData = require('../../config/pdfData')
 const config = require('../../../config')
 
 const DEFAULT_PLACEHOLDER = 'N/A'
 
 module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress, getConditionText }
-
-const selectPathsFrom = R.flip(R.path)
 
 function formatPdfData(
   templateName,
