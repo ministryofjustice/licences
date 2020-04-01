@@ -7,7 +7,6 @@ import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.pdf.LicenceTaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.pdf.LicenceTemplatePage
 import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewLicencePage
-import uk.gov.justice.digital.hmpps.licences.pages.SendApprovalPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -104,26 +103,5 @@ class PdfSpec extends GebReportingSpec {
 
     then: 'Reporting and tagging company details are not complete'
     !driver.getPageSource().contains('Not complete')
-  }
-
-  def 'Resubmit to DM button navigates to /hdc/send/approval and Return to print navigates back to tasklist page'() {
-
-    given: 'An approved licence'
-    testData.loadLicence('decision/approved')
-
-    when: 'I am at the pdf tasklist page'
-    to LicenceTaskListPage, testData.markAndrewsBookingId
-
-    then: 'I select the Resubmit to DM button'
-    backToDm.click()
-
-    and: 'I will be at the hdc/send/approval page '
-    at SendApprovalPage
-
-    when: 'I select the Return to printing licence button'
-    backToPrint.click()
-
-    then: 'I am back at the /hdc/pdf/tasklist page'
-    at LicenceTaskListPage
   }
 }

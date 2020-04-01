@@ -5,6 +5,7 @@ import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Unroll
 import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
+import uk.gov.justice.digital.hmpps.licences.pages.SendApprovalPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.*
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilityExclusionPage
@@ -37,6 +38,7 @@ class CaTaskListSpec extends GebReportingSpec {
     finalChecks : 'Review case',
     postponement: 'Postponement',
     create      : 'Create licence',
+    resubmitToDm: 'Resubmit to DM',
     submit      : 'Submit to prison case admin'
   ]
 
@@ -63,13 +65,13 @@ class CaTaskListSpec extends GebReportingSpec {
     at CaselistPage
   }
 
-  def 'Shows correct button labels for tasks'() {
+  def 'Shows correct button labels for tasks when DM previously approved HDC'() {
 
     when: 'I view the task list'
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see the task buttons and the submit button'
-    taskListActions.size() == 11
+    taskListActions.size() == 12
 
     and: 'All editable tasks have View/Edit buttons'
     taskListActions.take(7).every { it.text() == 'View/Edit' }
@@ -79,6 +81,21 @@ class CaTaskListSpec extends GebReportingSpec {
 
     and: 'create licence is available'
     taskListAction(tasks.create).text() == 'Continue'
+
+    and: 'Resubmit to DM is available'
+    taskListAction(tasks.resubmitToDm).text() == 'Resubmit'
+  }
+
+  def 'Shows Send Approval page'() {
+
+    when: 'I view the task list'
+    to TaskListPage, testData.markAndrewsBookingId
+
+    then: 'I click the Resubmit button'
+    taskListActions[10].click()
+
+    then: 'I am taken to Send page'
+    at SendApprovalPage
   }
 
   @Unroll
@@ -103,6 +120,7 @@ class CaTaskListSpec extends GebReportingSpec {
     tasks.conditions  | LicenceConditionsStandardPage
     tasks.reporting   | ReportingInstructionsPage
     tasks.finalChecks | FinalChecksSeriousOffencePage
+    tasks.resubmitToDm| SendApprovalPage
     tasks.create      | LicenceTemplatePage
   }
 
@@ -132,7 +150,7 @@ class CaTaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see the full tasklist and the create licence task'
-    taskListActions.size() == 11
+    taskListActions.size() == 12
     taskListAction(tasks.create).text() == 'Continue'
   }
 
@@ -165,4 +183,37 @@ class CaTaskListSpec extends GebReportingSpec {
     then: 'I see the BASS offer page'
     at BassOfferPage
   }
+
+  def 'Shows correct button labels for tasks when DM previously refused HDC'() {
+    given: 'A refused licence'
+    testData.loadLicence('decision/refused')
+
+    when: 'I view the task list'
+    to TaskListPage, testData.markAndrewsBookingId
+
+    then: 'I see the task buttons and the submit button'
+    taskListActions.size() == 9
+
+    and: 'All editable tasks have View/Edit buttons'
+    taskListActions.take(7).every { it.text() == 'View/Edit' }
+
+    and: 'Final checks task is view only'
+    taskListAction(tasks.finalChecks).text() == 'Change'
+
+    and: 'Resubmit to DM is available'
+    taskListAction(tasks.resubmitToDm).text() == 'Resubmit'
+  }
+
+  def 'Shows the correct button labels for tasks when DM previously refused HDC'() {
+
+    when: 'at the task list'
+    at TaskListPage
+
+    then: 'I click the Resubmit button'
+    taskListActions[8].click()
+
+    then: 'I am taken to Send page'
+    at SendApprovalPage
+  }
+
 }

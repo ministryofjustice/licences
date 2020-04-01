@@ -93,6 +93,59 @@ describe('GET sent', () => {
       .get('/hdc/sent/CA/foobar/123')
       .expect(500)
   })
+  describe('GET sent/DM/caToDM', () => {
+    test('Displays correct page title when DM previously approved HDC', () => {
+      const licence = {
+        approval: {
+          release: {
+            decision: 'Yes',
+          },
+        },
+      }
+      app = createAppForDmRereferral({ prisonerServiceStub: prisonerService }, 'caUser', 'APPROVAL', licence)
+
+      return request(app)
+        .get('/hdc/sent/DM/caToDm/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Submitted for reconsideration')
+        })
+    })
+
+    test('Displays correct page title when DM previously refused HDC', () => {
+      const licence = {
+        approval: {
+          release: {
+            decision: 'No',
+          },
+        },
+      }
+      app = createAppForDmRereferral({ prisonerServiceStub: prisonerService }, 'caUser', 'APPROVAL', licence)
+
+      return request(app)
+        .get('/hdc/sent/DM/caToDm/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Submitted for reconsideration')
+        })
+    })
+
+    test('Displays correct page title when DM not yet made a decision', () => {
+      const licence = { approval: undefined }
+
+      app = createAppForDmRereferral({ prisonerServiceStub: prisonerService }, 'caUser', 'APPROVAL', licence)
+
+      return request(app)
+        .get('/hdc/sent/DM/caToDm/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Submitted for approval')
+        })
+    })
+  })
 })
 
 function createApp({ licenceServiceStub, prisonerServiceStub }, user) {
@@ -102,6 +155,31 @@ function createApp({ licenceServiceStub, prisonerServiceStub }, user) {
 
   const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
   const route = baseRouter(createRoute({ licenceService, prisonerService }), 'USER_MANAGEMENT')
+
+  return appSetup(route, user, '/hdc/sent/')
+}
+
+function createAppForDmRereferral({ prisonerServiceStub }, user, stage, licence) {
+  const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
+  const licenceService = createLicenceServiceStub()
+  const signInService = createSignInServiceStub()
+
+  licenceService.getLicence.mockResolvedValue({
+    versionDetails: { version: 1 },
+    approvedVersionDetails: { template: 'hdc_ap' },
+    stage,
+    licence,
+  })
+
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
+  const route = baseRouter(
+    createRoute({
+      licenceService,
+      prisonerService,
+      audit: auditStub,
+    }),
+    'USER_MANAGEMENT'
+  )
 
   return appSetup(route, user, '/hdc/sent/')
 }

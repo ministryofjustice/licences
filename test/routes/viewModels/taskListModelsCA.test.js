@@ -267,6 +267,16 @@ describe('TaskList models', () => {
     visible: true,
   }
 
+  const resubmit = {
+    title: 'Resubmit to DM',
+    label: 'Submit back to the DM if a reconsideration is required',
+    action: {
+      href: '/hdc/send/approval/',
+      text: 'Resubmit',
+      type: 'btn-secondary',
+    },
+    visible: true,
+  }
   describe('caEligibility', () => {
     test('should initially show just eligibility task', () => {
       expect(
@@ -748,6 +758,7 @@ describe('TaskList models', () => {
         reviewCase,
         postponeOrRefuse,
         refuse,
+        resubmit,
         createLicence,
       ])
     })
@@ -789,6 +800,7 @@ describe('TaskList models', () => {
         reviewCase,
         postponeOrRefuse,
         refuse,
+        resubmit,
         createLicence,
       ])
     })
@@ -909,8 +921,131 @@ describe('TaskList models', () => {
         reviewCase,
         postponeOrRefuse,
         refuse,
+        resubmit,
         createLicence,
       ])
     })
+
+    test('should return list of tasks for standard route excluding resubmit to DM', () => {
+      expect(
+        taskListModel(
+          'CA',
+          false,
+          {
+            decisions: {
+              eligible: true,
+              curfewAddressApproved: true,
+              bassReferralNeeded: false,
+              bassWithdrawn: false,
+              bassExcluded: false,
+              bassAccepted: null,
+              optedOut: false,
+              dmRefused: undefined,
+              excluded: false,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+              bassOffer: 'UNSTARTED',
+            },
+            stage: 'DECIDED',
+          },
+          {},
+          null
+        )
+      ).toEqual([
+        eligibilitySummary,
+        proposedCurfewAddressEdit,
+        riskManagement,
+        victimLiasion,
+        curfewHours,
+        additionalConditionsEdit,
+        reportingInstructions,
+        reviewCase,
+        postponeOrRefuse,
+        refuse,
+        createLicence,
+      ])
+    })
+
+    test('should return list of tasks for standard route INCLUDING resubmit but not Postpone or Refuse', () => {
+      expect(
+        taskListModel(
+          'CA',
+          false,
+          {
+            decisions: {
+              eligible: true,
+              curfewAddressApproved: true,
+              bassReferralNeeded: false,
+              bassWithdrawn: false,
+              bassExcluded: false,
+              bassAccepted: null,
+              optedOut: false,
+              dmRefused: true,
+              excluded: false,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+              bassOffer: 'UNSTARTED',
+            },
+            stage: 'DECIDED',
+          },
+          {},
+          null
+        )
+      ).toEqual([
+        eligibilitySummary,
+        proposedCurfewAddressEdit,
+        riskManagement,
+        victimLiasion,
+        curfewHours,
+        additionalConditionsEdit,
+        reportingInstructions,
+        reviewCase,
+        resubmit,
+      ])
+    })
+  })
+
+  test('should return list of tasks for standard route INCLUDING resubmit AND Postpone or Refuse', () => {
+    expect(
+      taskListModel(
+        'CA',
+        false,
+        {
+          decisions: {
+            eligible: true,
+            curfewAddressApproved: true,
+            bassReferralNeeded: false,
+            bassWithdrawn: false,
+            bassExcluded: false,
+            bassAccepted: null,
+            optedOut: false,
+            dmRefused: false,
+            excluded: false,
+          },
+          tasks: {
+            bassAreaCheck: 'UNSTARTED',
+            bassOffer: 'UNSTARTED',
+          },
+          stage: 'DECIDED',
+        },
+        {},
+        null
+      )
+    ).toEqual([
+      eligibilitySummary,
+      proposedCurfewAddressEdit,
+      riskManagement,
+      victimLiasion,
+      curfewHours,
+      additionalConditionsEdit,
+      reportingInstructions,
+      reviewCase,
+      postponeOrRefuse,
+      refuse,
+      resubmit,
+      createLicence,
+    ])
   })
 })

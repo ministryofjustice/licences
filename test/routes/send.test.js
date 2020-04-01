@@ -68,17 +68,6 @@ describe('send', () => {
         })
     })
 
-    test('renders caToDm form when approval is destination', () => {
-      const app = createApp({ prisonerServiceStub: prisonerService }, 'caUser')
-      return request(app)
-        .get('/hdc/send/approval/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain('<input type="hidden" name="transitionType" value="caToDm">')
-        })
-    })
-
     test('renders dmToCa form when decided is destination', () => {
       const app = createApp({ prisonerServiceStub: prisonerService }, 'dmUser')
       return request(app)
@@ -90,28 +79,6 @@ describe('send', () => {
         })
     })
 
-    test('renders caToDmRefusal form when refusal is destination', () => {
-      const app = createApp({ prisonerServiceStub: prisonerService }, 'caUser')
-      return request(app)
-        .get('/hdc/send/refusal/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain('<input type="hidden" name="transitionType" value="caToDmRefusal">')
-        })
-    })
-
-    test('renders dmToCaReturn form when return is destination', () => {
-      const app = createApp({ prisonerServiceStub: prisonerService }, 'dmUser')
-      return request(app)
-        .get('/hdc/send/return/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain('<input type="hidden" name="transitionType" value="dmToCaReturn">')
-        })
-    })
-
     test('gets a submission target for caToRo', () => {
       const app = createApp({ prisonerServiceStub: prisonerService }, 'caUser')
       return request(app)
@@ -120,6 +87,18 @@ describe('send', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(res.text).toContain('name="submissionTarget" value="Something"')
+        })
+    })
+
+    test('Should display correct page title', () => {
+      const app = createApp({ prisonerServiceStub: prisonerService }, 'caUser')
+      return request(app)
+        .get('/hdc/send/approval/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Submit for approval')
+          expect(res.text).toContain('The case is ready to be submitted for approval by the decision maker.')
         })
     })
 
@@ -140,37 +119,6 @@ describe('send', () => {
         .get('/hdc/send/refusal/123')
         .expect(403)
     })
-    test('Shows Return to print licence page button  when stage is DECIDED', () => {
-      const app = createAppForDmRereferral({ prisonerServiceStub: prisonerService }, 'caUser', 'DECIDED')
-      return request(app)
-        .get('/hdc/send/approval/1232')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          expect(res.text).toContain('Return to printing licence')
-        })
-    })
-  })
-  test('Shows Return to print licence page button  when stage is MODIFIED', () => {
-    const app = createAppForDmRereferral({ prisonerServiceStub: prisonerService }, 'caUser', 'MODIFIED')
-    return request(app)
-      .get('/hdc/send/approval/1232')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Return to printing licence')
-      })
-  })
-
-  test('Shows Return to print licence page button  when stage is PROCESSING_CA', () => {
-    const app = createAppForDmRereferral({ prisonerServiceStub: prisonerService }, 'caUser', 'PROCESSING_CA')
-    return request(app)
-      .get('/hdc/send/approval/1232')
-      .expect(200)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Return to task list')
-      })
   })
 
   describe('POST send/:destination/:bookingId', () => {
@@ -247,7 +195,92 @@ describe('send', () => {
       })
     })
   })
+  describe('Get send/approval/:bookingId', () => {
+    test('Displays correct page title when HDC refused', () => {
+      const licence = {
+        approval: {
+          release: {
+            reason: 'addressUnsuitable',
+            decision: 'No',
+            decisionMaker: 'Diane Matthews',
+            reasonForDecision: '',
+          },
+        },
+      }
+      const app = createAppForDmRereferral(
+        {
+          prisonerServiceStub: prisonerService,
+          notificationServiceStub: notificationService,
+        },
+        'caUser',
+        'DECIDED',
+        licence
+      )
+
+      return request(app)
+        .get('/hdc/send/approval/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Submit for reconsideration')
+          expect(res.text).toContain('submitted for reconsideration by the decision maker.')
+        })
+    })
+
+    test('Displays correct page title when HDC approved', () => {
+      const licence = {
+        approval: {
+          release: {
+            reason: 'addressUnsuitable',
+            decision: 'Yes',
+            decisionMaker: 'Diane Matthews',
+            reasonForDecision: '',
+          },
+        },
+      }
+      const app = createAppForDmRereferral(
+        {
+          prisonerServiceStub: prisonerService,
+          notificationServiceStub: notificationService,
+        },
+        'caUser',
+        'DECIDED',
+        licence
+      )
+
+      return request(app)
+        .get('/hdc/send/approval/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Submit for reconsideration')
+          expect(res.text).toContain('submitted for reconsideration by the decision maker.')
+        })
+    })
+
+    test('Displays correct page title when not DM not yet made a decision', () => {
+      const licence = { approval: undefined }
+      const app = createAppForDmRereferral(
+        {
+          prisonerServiceStub: prisonerService,
+          notificationServiceStub: notificationService,
+        },
+        'caUser',
+        'DECIDED',
+        licence
+      )
+
+      return request(app)
+        .get('/hdc/send/approval/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Submit for approval')
+        })
+    })
+  })
 })
+
 function createApp({ prisonerServiceStub, notificationServiceStub }, user) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
@@ -267,7 +300,7 @@ function createApp({ prisonerServiceStub, notificationServiceStub }, user) {
   return appSetup(route, user, '/hdc/send/')
 }
 
-function createAppForDmRereferral({ prisonerServiceStub, notificationServiceStub }, user, stage) {
+function createAppForDmRereferral({ prisonerServiceStub, notificationServiceStub }, user, stage, licence) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -276,14 +309,7 @@ function createAppForDmRereferral({ prisonerServiceStub, notificationServiceStub
     versionDetails: { version: 1 },
     approvedVersionDetails: { template: 'hdc_ap' },
     stage,
-    licence: {
-      document: {
-        template: {
-          decision: 'hdc_ap',
-          offenceCommittedBeforeFeb2015: 'No',
-        },
-      },
-    },
+    licence,
   })
 
   const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })

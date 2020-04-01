@@ -7,10 +7,16 @@ block content
       include ../includes/back
       include ../includes/personalDetailsSummary
 
-  div.pure-g.largePaddingBottom
-    div.pure-u-1.pure-u-2-3
-      h2.heading-large.midPaddingBottom Submit for approval
-      p.lede The case is ready to be submitted for approval by the decision maker.
+  if reReferToDm
+    div.pure-g.largePaddingBottom
+      div.pure-u-1.pure-u-2-3
+        h2.heading-large.midPaddingBottom Submit for reconsideration
+        p.lede The case is ready to be submitted for reconsideration by the decision maker.
+  else
+    div.pure-g.largePaddingBottom
+      div.pure-u-1.pure-u-2-3
+        h2.heading-large.midPaddingBottom Submit for approval
+        p.lede The case is ready to be submitted for approval by the decision maker.
 
   div#continueBtns.pure-g.paddingBottom
     div.pure-u-1

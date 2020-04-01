@@ -109,7 +109,6 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
         canPrint,
         postRelease,
         versionInfo: versionInfo(licence),
-        reSubmitToDm: licence.stage === 'DECIDED' || licence.stage === 'MODIFIED',
       })
     })
   )

@@ -14,6 +14,7 @@ const caSubmitBassReview = require('./tasks/caSubmitBassReview')
 const caSubmitApproval = require('./tasks/caSubmitApproval')
 const hdcRefusal = require('./tasks/hdcRefusal')
 const createLicence = require('./tasks/createLicence')
+const caRereferDm = require('./tasks/caRereferDm')
 const finalChecks = require('./tasks/finalChecks')
 
 const eligibilityTask = {
@@ -360,7 +361,7 @@ module.exports = {
         title: 'Postpone or refuse',
         label: postponement.getLabel({ decisions }),
         action: postponement.getAction({ decisions }),
-        visible: validAddress,
+        visible: validAddress && dmRefused !== true,
       },
       {
         title: null,
@@ -393,9 +394,16 @@ module.exports = {
         visible: !bassReferralNeeded && allowedTransition === 'caToRo',
       },
       {
+        title: 'Resubmit to DM',
+        label: caRereferDm.getLabel(),
+        action: caRereferDm.getCaAction(),
+        visible: !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined,
+      },
+      {
         title: 'Create licence',
         action: createLicence.getCaAction({ decisions, tasks, stage }),
-        visible: validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition),
+        visible:
+          validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== true,
       },
     ].filter(task => task.visible)
   },

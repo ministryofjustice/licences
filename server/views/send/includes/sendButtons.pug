@@ -1,6 +1,3 @@
 div.pure-u-1.inlineButtons.paddingBottom
   input#continueBtn.requiredButton.button.button-start.midMarginBottom(type="submit" value="Submit")
-  if reReferralToDm
-    a#backToPrint.requiredButton.button.button-secondary.button-start-height(href="/hdc/pdf/taskList/" + bookingId role="button") Return to printing licence
-  else 
-    a#backBtn.requiredButton.button.button-secondary.button-start-height(href="/hdc/taskList/" + bookingId role="button") Return to task list
+  a#backBtn.requiredButton.button.button-secondary.button-start-height(href="/hdc/taskList/" + bookingId role="button") Return to task list

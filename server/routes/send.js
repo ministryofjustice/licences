@@ -3,7 +3,7 @@
  */
 const { asyncMiddleware } = require('../utils/middleware')
 const transitionsForDestinations = require('../services/notifications/transitionsForDestinations')
-
+const { getIn } = require('../utils/functionalHelpers')
 /**
  * @param {object} args
  * @param {PrisonerService} args.prisonerService
@@ -11,7 +11,6 @@ const transitionsForDestinations = require('../services/notifications/transition
  */
 module.exports = ({ prisonerService, notificationService }) => router => {
   router.get('/:destination/:bookingId', async (req, res) => {
-    const { licence } = res.locals
     const { destination, bookingId } = req.params
     const transition = transitionsForDestinations[destination]
     const submissionTarget = await prisonerService.getOrganisationContactDetails(
@@ -20,13 +19,14 @@ module.exports = ({ prisonerService, notificationService }) => router => {
       res.locals.token
     )
 
-    let reReferralToDm = false
+    let reReferToDm = false
+    const dmAlreadyDecided = getIn(res.locals.licence, ['licence', 'approval', 'release', 'decision'])
 
-    if (transition.type === 'caToDm' && (licence.stage === 'DECIDED' || licence.stage === 'MODIFIED')) {
-      reReferralToDm = true
+    if (transition.type === 'caToDm' && dmAlreadyDecided) {
+      reReferToDm = true
     }
 
-    res.render(`send/${transition.type}`, { bookingId, submissionTarget, reReferralToDm })
+    res.render(`send/${transition.type}`, { bookingId, submissionTarget, reReferToDm })
   })
 
   router.post(

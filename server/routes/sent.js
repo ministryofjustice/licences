@@ -2,6 +2,7 @@
  * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
  */
 const { asyncMiddleware } = require('../utils/middleware')
+const { getIn } = require('../utils/functionalHelpers')
 
 /**
  * @param {object} args
@@ -17,8 +18,14 @@ module.exports = ({ prisonerService }) => router => {
         bookingId,
         res.locals.token
       )
+      const dmAlreadyDecided = getIn(res.locals.licence, ['licence', 'approval', 'release', 'decision'])
+      let reReferToDm = false
 
-      res.render(`sent/${type}`, { submissionTarget })
+      if (type === 'caToDm' && dmAlreadyDecided) {
+        reReferToDm = true
+      }
+
+      res.render(`sent/${type}`, { submissionTarget, reReferToDm })
     })
   )
 
