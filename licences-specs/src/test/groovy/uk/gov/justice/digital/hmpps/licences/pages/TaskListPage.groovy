@@ -50,5 +50,11 @@ class TaskListPage extends Page {
 
     formsLink(required: false) { $('a.forms-link') }
 
+    postpone(required: false) {$("a[data-qa='postpone']")}
+
+    resubmit(required: false) {$("a[data-qa='resubmit']")}
+
+    createLicence(required: false) {$("a[data-qa='continue']")}
+
   }
 }

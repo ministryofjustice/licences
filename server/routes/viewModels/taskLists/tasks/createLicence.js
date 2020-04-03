@@ -10,13 +10,13 @@ module.exports = {
     }
 
     if (approvedPremisesRequired) {
-      return approvedPremisesAddress === 'DONE' ? continueBtn('/hdc/pdf/selectLicenceType/') : null
+      return approvedPremisesAddress === 'DONE' ? continueBtn('/hdc/pdf/selectLicenceType/', 'continue') : null
     }
 
     if (bassReferralNeeded) {
-      return bassAddress === 'DONE' ? continueBtn('/hdc/pdf/selectLicenceType/') : null
+      return bassAddress === 'DONE' ? continueBtn('/hdc/pdf/selectLicenceType/', 'continue') : null
     }
 
-    return addressWithdrawn ? null : continueBtn('/hdc/pdf/selectLicenceType/')
+    return addressWithdrawn ? null : continueBtn('/hdc/pdf/selectLicenceType/', 'continue')
   },
 }

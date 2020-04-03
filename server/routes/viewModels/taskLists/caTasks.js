@@ -70,6 +70,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/risk/riskManagement/',
           text: 'View/Edit',
+          dataQa: 'risk-management',
         },
         visible: addressUnsuitable,
       },
@@ -117,21 +118,21 @@ module.exports = {
     const proposedAddressTask = {
       title: 'Proposed curfew address',
       label: curfewAddress.getLabel({ decisions, tasks }),
-      action: curfewAddress.getCaProcessingAction({ decisions, tasks }),
+      action: curfewAddress.getCaProcessingAction({ decisions, tasks }, 'proposed-curfew-address'),
       visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
     }
 
     const curfewAddressTask = {
       title: 'Curfew address',
       label: proposedAddress.getLabel({ decisions, tasks }),
-      action: proposedAddress.getCaAction({ decisions, tasks }),
+      action: proposedAddress.getCaAction({ decisions, tasks }, 'curfew-address'),
       visible: !bassReferralNeeded && allowedTransition === 'caToRo',
     }
 
     const bassTask = {
       title: 'BASS address',
       label: bassOfferTask.getLabel({ decisions, tasks }),
-      action: bassOfferTask.getAction({ decisions, tasks }),
+      action: bassOfferTask.getAction({ decisions, tasks }, 'bass-address'),
       visible: bassReferralNeeded,
     }
 
@@ -162,6 +163,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/risk/riskManagement/',
           text: 'View/Edit',
+          dataQa: 'risk-management',
         },
         visible:
           (!approvedPremisesRequired && curfewAddressApproved) ||
@@ -175,6 +177,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/victim/victimLiaison/',
           text: 'View/Edit',
+          dataQa: 'victim-liaison',
         },
         visible: validAddress,
       },
@@ -185,6 +188,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/curfew/curfewHours/',
           text: 'View/Edit',
+          dataQa: 'curfew-hours',
         },
         visible: validAddress,
       },
@@ -195,6 +199,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/licenceConditions/standard/',
           text: 'View/Edit',
+          dataQa: 'additional-conditions',
         },
         visible: validAddress,
       },
@@ -205,6 +210,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/reporting/reportingInstructions/',
           text: 'View/Edit',
+          dataQa: 'reporting-instructions',
         },
         visible: validAddress,
       },
@@ -217,7 +223,7 @@ module.exports = {
       {
         title: 'Postpone or refuse',
         label: postponement.getLabel({ decisions }),
-        action: postponement.getAction({ decisions }),
+        action: postponement.getAction({ decisions }, 'postpone'),
         visible: validAddress,
       },
       refusalTask,
@@ -286,19 +292,19 @@ module.exports = {
       {
         title: 'Curfew address',
         label: proposedAddress.getLabel({ decisions, tasks }),
-        action: proposedAddress.getCaAction({ decisions, tasks }),
+        action: proposedAddress.getCaAction({ decisions, tasks }, 'curfew-address'),
         visible: allowedTransition === 'caToRo',
       },
       {
         title: 'BASS address',
         label: bassAddress.getLabel({ decisions, tasks }),
-        action: bassAddress.getCaAction({ tasks }),
+        action: bassAddress.getCaAction({ tasks }, 'bass-address'),
         visible: bassReferralNeeded && allowedTransition !== 'caToRo',
       },
       {
         title: 'Proposed curfew address',
         label: curfewAddress.getLabel({ decisions, tasks }),
-        action: curfewAddress.getCaPostApprovalAction({ decisions }),
+        action: curfewAddress.getCaPostApprovalAction({ decisions }, 'proposed-curfew-address'),
         visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
       },
       {
@@ -308,6 +314,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/risk/riskManagement/',
           text: 'View/Edit',
+          dataQa: 'risk-management',
         },
         visible: !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
       },
@@ -318,6 +325,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/victim/victimLiaison/',
           text: 'View/Edit',
+          dataQa: 'victim-liaison',
         },
         visible: validAddress,
       },
@@ -328,6 +336,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/curfew/curfewHours/',
           text: 'View/Edit',
+          dataQa: 'curfew-hours',
         },
         visible: validAddress,
       },
@@ -338,6 +347,7 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/licenceConditions/standard/',
           text: 'View/Edit',
+          dataQa: 'additional-conditions',
         },
         visible: validAddress,
       },
@@ -348,19 +358,20 @@ module.exports = {
           type: 'btn-secondary',
           href: '/hdc/reporting/reportingInstructions/',
           text: 'View/Edit',
+          dataQa: 'reporting-instructions',
         },
         visible: validAddress,
       },
       {
         title: 'Review case',
         label: finalChecks.getLabel({ decisions, tasks }),
-        action: finalChecks.getCaProcessingAction({ tasks }),
+        action: finalChecks.getCaProcessingAction({ tasks }, 'review-case'),
         visible: validAddress,
       },
       {
         title: 'Postpone or refuse',
         label: postponement.getLabel({ decisions }),
-        action: postponement.getAction({ decisions }),
+        action: postponement.getAction({ decisions }, 'postpone'),
         visible: validAddress && !dmRefused,
       },
       {

@@ -7,6 +7,7 @@ import spock.lang.Unroll
 import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.*
+import uk.gov.justice.digital.hmpps.licences.pages.SendResubmitPage
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilityExclusionPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.BassOfferPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksSeriousOffencePage
@@ -37,7 +38,8 @@ class CaTaskListSpec extends GebReportingSpec {
     finalChecks : 'Review case',
     postponement: 'Postponement',
     create      : 'Create licence',
-    submit      : 'Submit to prison case admin'
+    submit      : 'Submit to prison case admin',
+    resubmit    : 'Resubmit to DM'
   ]
 
   def setupSpec() {
@@ -63,19 +65,22 @@ class CaTaskListSpec extends GebReportingSpec {
     at CaselistPage
   }
 
-  def 'Shows correct button labels for tasks'() {
+  def 'Shows correct button labels for tasks when HDC APPROVED'() {
 
     when: 'I view the task list'
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see the task buttons and the submit button'
-    taskListActions.size() == 11
+    taskListActions.size() == 12
 
     and: 'All editable tasks have View/Edit buttons'
     taskListActions.take(7).every { it.text() == 'View/Edit' }
 
     and: 'Final checks task is view only'
     taskListAction(tasks.finalChecks).text() == 'Change'
+
+    and: 'Resubmit to Dm is availablee'
+    taskListAction(tasks.resubmit).text() == 'Resubmit'
 
     and: 'create licence is available'
     taskListAction(tasks.create).text() == 'Continue'
@@ -132,7 +137,7 @@ class CaTaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'I see the full tasklist and the create licence task'
-    taskListActions.size() == 11
+    taskListActions.size() == 12
     taskListAction(tasks.create).text() == 'Continue'
   }
 
@@ -164,5 +169,60 @@ class CaTaskListSpec extends GebReportingSpec {
 
     then: 'I see the BASS offer page'
     at BassOfferPage
+  }
+
+
+
+  def 'Shows correct button labels for tasks when HDC REFUSED'() {
+    given: 'An refused licence'
+    testData.loadLicence('decision/refused')
+
+    when: 'I view the task list'
+    to TaskListPage, testData.markAndrewsBookingId
+
+    then: 'I see the task buttons and the submit button'
+    taskListActions.size() == 9
+
+    and: 'All editable tasks have View/Edit buttons'
+    taskListActions.take(7).every { it.text() == 'View/Edit' }
+
+    and: 'Final checks task is view only'
+    taskListAction(tasks.finalChecks).text() == 'Change'
+
+    and: 'Resubmit to Dm is available'
+    taskListAction(tasks.resubmit).text() == 'Resubmit'
+
+    and: 'Postpone/Refuse button is not displayed'
+    !postpone.displayed
+
+    and: 'Create Licence is not displayed'
+    !createLicence.displayed
+
+
+  }
+
+  @Unroll
+  def '#task button links to page'() {
+
+    given: 'Viewing task list'
+    to TaskListPage, testData.markAndrewsBookingId
+
+    when: 'I start the task'
+    taskListAction(task).click()
+
+    then: 'I see the journey page'
+    at page
+
+    where:
+    task              | page
+    tasks.eligibility | EligibilityExclusionPage
+    tasks.address     | ReviewAddressPage
+    tasks.risk        | RiskManagementPage
+    tasks.victim      | VictimLiaisonPage
+    tasks.curfew      | CurfewHoursPage
+    tasks.conditions  | LicenceConditionsStandardPage
+    tasks.reporting   | ReportingInstructionsPage
+    tasks.finalChecks | FinalChecksSeriousOffencePage
+    tasks.resubmit    | SendResubmitPage
   }
 }

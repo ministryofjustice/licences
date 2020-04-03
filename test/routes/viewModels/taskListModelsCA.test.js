@@ -74,12 +74,18 @@ describe('TaskList models', () => {
     title: 'Submit to decision maker',
     visible: true,
   }
-
+  const submitDmPreDecision = {
+    action: { text: 'Continue', type: 'btn', href: '/hdc/send/approval/', dataQa: undefined },
+    label: 'Ready to submit',
+    title: 'Submit to decision maker',
+    visible: true,
+  }
   const proposedCurfewAddress = {
     action: {
       href: '/hdc/review/address/',
       text: 'Change',
       type: 'link',
+      dataQa: 'proposed-curfew-address',
     },
     label: 'Not completed',
     title: 'Proposed curfew address',
@@ -92,6 +98,7 @@ describe('TaskList models', () => {
       href: '/hdc/proposedAddress/curfewAddressChoice/',
       text: 'Change',
       type: 'link',
+      dataQa: 'proposed-curfew-address',
     },
     visible: true,
   }
@@ -100,6 +107,7 @@ describe('TaskList models', () => {
       href: '/hdc/review/address/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'proposed-curfew-address',
     },
     label: 'Not completed',
     title: 'Proposed curfew address',
@@ -110,6 +118,7 @@ describe('TaskList models', () => {
       href: '/hdc/curfew/approvedPremisesChoice/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'proposed-curfew-address',
     },
     label: 'Approved premises required',
     title: 'Proposed curfew address',
@@ -133,6 +142,7 @@ describe('TaskList models', () => {
       href: '/hdc/proposedAddress/curfewAddressChoice/',
       text: 'Continue',
       type: 'btn',
+      dataQa: 'bass-address',
     },
     visible: true,
   }
@@ -153,6 +163,7 @@ describe('TaskList models', () => {
       href: '/hdc/risk/riskManagement/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'risk-management',
     },
     label: 'Not completed',
     title: 'Risk management',
@@ -163,6 +174,7 @@ describe('TaskList models', () => {
       href: '/hdc/risk/riskManagement/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'risk-management',
     },
     label: 'Address unsuitable',
     title: 'Risk management',
@@ -174,6 +186,7 @@ describe('TaskList models', () => {
       href: '/hdc/victim/victimLiaison/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'victim-liaison',
     },
     label: 'Not completed',
     title: 'Victim liaison',
@@ -185,6 +198,7 @@ describe('TaskList models', () => {
       href: '/hdc/curfew/curfewHours/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'curfew-hours',
     },
     label: 'Not completed',
     title: 'Curfew hours',
@@ -196,6 +210,7 @@ describe('TaskList models', () => {
       href: '/hdc/licenceConditions/standard/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'additional-conditions',
     },
     label: 'Not completed',
     title: 'Additional conditions',
@@ -207,16 +222,19 @@ describe('TaskList models', () => {
       href: '/hdc/reporting/reportingInstructions/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'reporting-instructions',
     },
     label: 'Not completed',
     title: 'Reporting instructions',
     visible: true,
   }
+
   const reportingInstructions = {
     action: {
       href: '/hdc/reporting/reportingInstructions/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'reporting-instructions',
     },
     label: 'Not completed',
     title: 'Reporting instructions',
@@ -237,12 +255,12 @@ describe('TaskList models', () => {
   const postponeOrRefuse = {
     label: "Postpone the case if you're waiting for information on risk management",
     title: 'Postpone or refuse',
-    action: { type: 'btn', text: 'Postpone', href: '/hdc/finalChecks/postpone/' },
+    action: { type: 'btn', text: 'Postpone', href: '/hdc/finalChecks/postpone/', dataQa: 'postpone' },
     visible: true,
   }
 
   const resubmit = {
-    action: { href: '/hdc/send/resubmit/', text: 'Resubmit', type: 'btn-secondary' },
+    action: { href: '/hdc/send/resubmit/', text: 'Resubmit', type: 'btn-secondary', dataQa: 'resubmit' },
     label: 'Resubmit to the DM if a reconsideration is required',
     title: 'Resubmit to DM',
     visible: true,
@@ -251,7 +269,7 @@ describe('TaskList models', () => {
   const refuse = {
     label: 'Refuse the case if there is no available address or not enough time',
     title: null,
-    action: { type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/' },
+    action: { type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/', dataQa: 'refuse' },
     visible: true,
   }
 
@@ -922,5 +940,126 @@ describe('TaskList models', () => {
         createLicence,
       ])
     })
+    test('should return list of tasks for standard route excluding resubmit to DM', () => {
+      expect(
+        taskListModel(
+          'CA',
+          false,
+          {
+            decisions: {
+              eligible: true,
+              curfewAddressApproved: true,
+              bassReferralNeeded: false,
+              bassWithdrawn: false,
+              bassExcluded: false,
+              bassAccepted: null,
+              optedOut: false,
+              dmRefused: undefined,
+              excluded: false,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+              bassOffer: 'UNSTARTED',
+            },
+            stage: 'PROCESSING_CA',
+          },
+          {},
+          'caToDm'
+        )
+      ).toEqual([
+        eligibility,
+        proposedCurfewAddress,
+        riskManagement,
+        victimLiasion,
+        curfewHours,
+        additionalConditionsEdit,
+        reportingInstructions,
+        reviewCase,
+        postponeOrRefuse,
+        refuse,
+        submitDmPreDecision,
+      ])
+    })
+
+    test('should return list of tasks for standard route INCLUDING resubmit BUT EXCLUDING Postpone or Refuse', () => {
+      expect(
+        taskListModel(
+          'CA',
+          false,
+          {
+            decisions: {
+              eligible: true,
+              curfewAddressApproved: true,
+              bassReferralNeeded: false,
+              bassWithdrawn: false,
+              bassExcluded: false,
+              bassAccepted: null,
+              optedOut: false,
+              dmRefused: true,
+              excluded: false,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+              bassOffer: 'UNSTARTED',
+            },
+            stage: 'DECIDED',
+          },
+          {},
+          null
+        )
+      ).toEqual([
+        eligibilitySummary,
+        proposedCurfewAddressEdit,
+        riskManagement,
+        victimLiasion,
+        curfewHours,
+        additionalConditionsEdit,
+        reportingInstructions,
+        reviewCase,
+        resubmit,
+      ])
+    })
+  })
+
+  test('should return list of tasks for standard route INCLUDING resubmit AND Postpone or Refuse', () => {
+    expect(
+      taskListModel(
+        'CA',
+        false,
+        {
+          decisions: {
+            eligible: true,
+            curfewAddressApproved: true,
+            bassReferralNeeded: false,
+            bassWithdrawn: false,
+            bassExcluded: false,
+            bassAccepted: null,
+            optedOut: false,
+            dmRefused: false,
+            excluded: false,
+          },
+          tasks: {
+            bassAreaCheck: 'UNSTARTED',
+            bassOffer: 'UNSTARTED',
+          },
+          stage: 'DECIDED',
+        },
+        {},
+        null
+      )
+    ).toEqual([
+      eligibilitySummary,
+      proposedCurfewAddressEdit,
+      riskManagement,
+      victimLiasion,
+      curfewHours,
+      additionalConditionsEdit,
+      reportingInstructions,
+      reviewCase,
+      postponeOrRefuse,
+      refuse,
+      resubmit,
+      createLicence,
+    ])
   })
 })

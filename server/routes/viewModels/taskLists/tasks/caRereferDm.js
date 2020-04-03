@@ -6,6 +6,6 @@ module.exports = {
   },
 
   getCaAction: () => {
-    return taskBtn('/hdc/send/resubmit/', 'Resubmit', true)
+    return taskBtn('/hdc/send/resubmit/', 'Resubmit', true, 'resubmit')
   },
 }

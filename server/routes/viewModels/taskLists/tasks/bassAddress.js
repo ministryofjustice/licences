@@ -33,11 +33,11 @@ module.exports = {
     return 'Not completed'
   },
 
-  getCaAction: ({ tasks }) => {
+  getCaAction: ({ tasks }, dataQa) => {
     const { bassAddress, approvedPremisesAddress } = tasks
     if (approvedPremisesAddress === 'DONE') {
-      return viewEdit('/hdc/bassReferral/approvedPremisesChoice/')
+      return viewEdit('/hdc/bassReferral/approvedPremisesChoice/', dataQa)
     }
-    return standardAction(bassAddress, '/hdc/bassReferral/bassOffer/')
+    return standardAction(bassAddress, '/hdc/bassReferral/bassOffer/', dataQa)
   },
 }

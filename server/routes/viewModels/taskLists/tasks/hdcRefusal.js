@@ -9,7 +9,7 @@ module.exports = {
   getCaAction: ({ decisions }) => {
     const { refused } = decisions
     return refused
-      ? taskBtn('/hdc/finalChecks/refuse/', 'Update refusal')
-      : taskBtn('/hdc/finalChecks/refuse/', 'Refuse HDC', true)
+      ? taskBtn('/hdc/finalChecks/refuse/', 'Update refusal', false, 'refuse')
+      : taskBtn('/hdc/finalChecks/refuse/', 'Refuse HDC', true, 'refuse')
   },
 }
