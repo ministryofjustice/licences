@@ -14,6 +14,7 @@ const licenceStages = {
 const transitions = {
   caToRo: licenceStages.PROCESSING_RO,
   caToDm: licenceStages.APPROVAL,
+  caToDmResubmit: licenceStages.APPROVAL,
   roToCa: licenceStages.PROCESSING_CA,
   dmToCa: licenceStages.DECIDED,
   dmToCaReturn: licenceStages.PROCESSING_CA,

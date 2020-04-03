@@ -241,6 +241,13 @@ describe('TaskList models', () => {
     visible: true,
   }
 
+  const resubmit = {
+    action: { href: '/hdc/send/resubmit/', text: 'Resubmit', type: 'btn-secondary' },
+    label: 'Resubmit to the DM if a reconsideration is required',
+    title: 'Resubmit to DM',
+    visible: true,
+  }
+
   const refuse = {
     label: 'Refuse the case if there is no available address or not enough time',
     title: null,
@@ -748,6 +755,7 @@ describe('TaskList models', () => {
         reviewCase,
         postponeOrRefuse,
         refuse,
+        resubmit,
         createLicence,
       ])
     })
@@ -789,6 +797,7 @@ describe('TaskList models', () => {
         reviewCase,
         postponeOrRefuse,
         refuse,
+        resubmit,
         createLicence,
       ])
     })
@@ -909,6 +918,7 @@ describe('TaskList models', () => {
         reviewCase,
         postponeOrRefuse,
         refuse,
+        resubmit,
         createLicence,
       ])
     })
