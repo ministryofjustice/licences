@@ -1,5 +1,4 @@
-assets/javascripts/details.polyfill.js
-assets/javascripts/jquery.tablesorter.min.js
+assets/javascripts/
 public/
 govuk_modules/
 seeds/

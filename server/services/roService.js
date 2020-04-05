@@ -7,7 +7,6 @@
  */
 const setCase = require('case')
 const logger = require('../../log.js')
-const { isEmpty } = require('../utils/functionalHelpers')
 const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, STAFF_NOT_PRESENT } = require('./serviceErrors')
 
 /**
@@ -61,7 +60,9 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
     async getROPrisoners(staffCode, token) {
       const nomisClient = nomisClientBuilder(token)
       const requiredPrisoners = await getROPrisonersFromDelius(staffCode)
-      const requiredIDs = requiredPrisoners.filter(prisoner => prisoner.nomsNumber).map(prisoner => prisoner.nomsNumber)
+      const requiredIDs = requiredPrisoners
+        .filter((prisoner) => prisoner.nomsNumber)
+        .map((prisoner) => prisoner.nomsNumber)
       return nomisClient.getOffenderSentencesByNomisId(requiredIDs)
     },
 
@@ -95,7 +96,7 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
  * @returns {ResponsibleOfficerResult}
  */
 function extractCommunityOffenderManager(offenderNumber, offenderManagers) {
-  const responsibleOfficer = offenderManagers.find(manager => !manager.isPrisonOffenderManager)
+  const responsibleOfficer = offenderManagers.find((manager) => !manager.isPrisonOffenderManager)
   return !responsibleOfficer
     ? { code: NO_COM_ASSIGNED, message: `Offender has not been assigned a COM: ${offenderNumber}` }
     : toResponsibleOfficer(offenderNumber, responsibleOfficer)
@@ -114,12 +115,7 @@ function toResponsibleOfficer(offenderNumber, offenderManager) {
     team: { localDeliveryUnit, code, description },
     probationArea,
   } = offenderManager
-  const name = setCase.capital(
-    [forenames, surname]
-      .join(' ')
-      .trim()
-      .toLowerCase()
-  )
+  const name = setCase.capital([forenames, surname].join(' ').trim().toLowerCase())
   return {
     name,
     isAllocated: !isUnallocated,

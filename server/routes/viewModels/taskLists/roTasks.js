@@ -73,7 +73,7 @@ module.exports = {
         action: roSubmit.getRoAction({ decisions }),
         visible: true,
       },
-    ].filter(task => task.visible)
+    ].filter((task) => task.visible)
   },
 
   getRoTasksPostApproval: ({ decisions, tasks }) => {
@@ -111,7 +111,7 @@ module.exports = {
         visible: true,
       },
       curfewAddressFormTask,
-    ].filter(task => task.visible)
+    ].filter((task) => task.visible)
   },
 }
 

@@ -13,7 +13,7 @@ const { getIn } = require('../utils/functionalHelpers')
 /**
  * @return { DeliusClient }
  */
-module.exports = signInService => {
+module.exports = (signInService) => {
   const timeoutSpec = {
     response: config.delius.timeout.response,
     deadline: config.delius.timeout.deadline,
@@ -70,7 +70,7 @@ module.exports = signInService => {
         .get(path)
         .agent(keepaliveAgent)
         .set('Authorization', `Bearer ${token.token}`)
-        .retry(2, err => {
+        .retry(2, (err) => {
           if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
         })

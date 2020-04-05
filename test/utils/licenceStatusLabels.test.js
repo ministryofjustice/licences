@@ -12,7 +12,7 @@ describe('getStatusLabel', () => {
       { status: { stage: licenceStages.ELIGIBILITY, decisions: {} }, reason: 'missing tasks' },
     ]
 
-    examples.forEach(example => {
+    examples.forEach((example) => {
       test(`should give default label when licence is ${example.reason}`, () => {
         expect(getStatusLabel(example.status, 'CA').statusLabel).toEqual(defaultLabel)
       })
@@ -404,7 +404,7 @@ describe('getStatusLabel', () => {
   })
 
   function assertLabels(examples, role) {
-    examples.forEach(example => {
+    examples.forEach((example) => {
       test(`should give ${example.label}`, () => {
         expect(getStatusLabel(example.status, role).statusLabel).toEqual(example.label)
       })

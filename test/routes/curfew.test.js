@@ -131,7 +131,7 @@ describe('/hdc/curfew', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence = jest.fn().mockReturnValue({
@@ -147,7 +147,7 @@ describe('/hdc/curfew', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.updateSection).toHaveBeenCalledTimes(2)
             expect(licenceService.updateSection).toHaveBeenCalledWith('proposedAddress', '1', route.addressContent)
             expect(licenceService.updateSection).toHaveBeenCalledWith('curfew', '1', route.curfewContent)
@@ -159,10 +159,7 @@ describe('/hdc/curfew', () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceServiceStub: licenceService }, 'dmUser')
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
     })
   })
@@ -189,7 +186,7 @@ describe('/hdc/curfew', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`should show ${route.answer} selected`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({ licence: route.licence, stage: 'PROCESSING_CA' })
@@ -199,11 +196,11 @@ describe('/hdc/curfew', () => {
           .get('/hdc/curfew/approvedPremisesChoice/1')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
-            route.yes.forEach(content => {
+          .expect((res) => {
+            route.yes.forEach((content) => {
               expect(res.text).toContain(content)
             })
-            route.no.forEach(content => {
+            route.no.forEach((content) => {
               expect(res.text).toEqual(expect.not.arrayContaining([content]))
             })
           })
@@ -305,7 +302,7 @@ describe('/hdc/curfew', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.update.mockResolvedValue({ curfew: { firstNight: {} } })
@@ -316,7 +313,7 @@ describe('/hdc/curfew', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -382,7 +379,7 @@ describe('/hdc/curfew', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
@@ -390,7 +387,7 @@ describe('/hdc/curfew', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -419,7 +416,7 @@ describe('/hdc/curfew', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -448,10 +445,7 @@ describe('/hdc/curfew', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence = jest.fn().mockReturnValue(licence)
         const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
     })
 
@@ -472,7 +466,7 @@ describe('/hdc/curfew', () => {
         return request(app)
           .get('/hdc/curfew/curfewAddressReview/1')
           .expect(200)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain('Does the main occupier consent to HDC?')
             expect(res.text).toContain('Is there an electricity supply?')
             expect(res.text).toContain('Did you do a home visit?')
@@ -497,7 +491,7 @@ describe('/hdc/curfew', () => {
         return request(app)
           .get('/hdc/curfew/curfewAddressReview/1')
           .expect(200)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toEqual(expect.not.arrayContaining(['Does the main occupier consent to HDC?']))
             expect(res.text).toContain('Is there an electricity supply?')
             expect(res.text).toContain('Did you do a home visit?')
@@ -523,7 +517,7 @@ describe('/hdc/curfew', () => {
         .post('/hdc/curfew/withdrawAddress/1')
         .send({ withdrawAddress: 'Yes' })
         .expect(302)
-        .expect(res => {
+        .expect((res) => {
           expect(licenceService.rejectProposedAddress).toHaveBeenCalled()
           expect(licenceService.rejectProposedAddress).toHaveBeenCalledWith(licence.licence, '1', 'withdrawAddress')
 
@@ -539,7 +533,7 @@ describe('/hdc/curfew', () => {
         .post('/hdc/curfew/reinstateAddress/1')
         .send({ withdrawAddress: 'No', withdrawConsent: 'No' })
         .expect(302)
-        .expect(res => {
+        .expect((res) => {
           expect(licenceService.reinstateProposedAddress).toHaveBeenCalled()
           expect(licenceService.reinstateProposedAddress).toHaveBeenCalledWith(licence.licence, '1')
 
@@ -575,7 +569,7 @@ describe('/hdc/curfew', () => {
           .get('/hdc/curfew/approvedPremises/1')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).not.toContain('Additional information')
           })
       })
@@ -600,7 +594,7 @@ describe('/hdc/curfew', () => {
           .get('/hdc/curfew/approvedPremises/1')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain('Additional information')
             expect(res.text).toContain('info about curfew address')
           })

@@ -66,7 +66,7 @@ describe('/admin', () => {
       return request(app)
         .get('/admin/roUsers')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('user1')
           expect(res.text).toContain('user2')
         })
@@ -74,9 +74,7 @@ describe('/admin', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp({ userAdminServiceStub: userAdminService }, 'roUser')
-      return request(app)
-        .get('/admin/roUsers')
-        .expect(403)
+      return request(app).get('/admin/roUsers').expect(403)
     })
   })
 
@@ -84,7 +82,7 @@ describe('/admin', () => {
     describe('Invalid inputs', () => {
       const examples = ['', ' ', '            ', null]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test('redirects back to page and does not call user service when no search term', () => {
           const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
           return request(app)
@@ -101,7 +99,7 @@ describe('/admin', () => {
     describe('Invalid inputs', () => {
       const examples = ['a valid query', ';DROP TABLE LICENCES', '*', '%', '22', '----------']
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test('calls user service and renders HTML output', () => {
           const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
           return request(app)
@@ -109,7 +107,7 @@ describe('/admin', () => {
             .send({ searchTerm: example })
             .expect(200)
             .expect('Content-Type', /html/)
-            .expect(res => {
+            .expect((res) => {
               expect(userAdminService.findRoUsers).toHaveBeenCalled()
               expect(userAdminService.findRoUsers).toHaveBeenCalledWith(example)
               expect(res.text).toContain('user1')
@@ -127,7 +125,7 @@ describe('/admin', () => {
         .get('/admin/roUsers/edit/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(userAdminService.getRoUser).toHaveBeenCalled()
           expect(userAdminService.getRoUser).toHaveBeenCalledWith('1')
           expect(res.text).toContain('value="user1"')
@@ -147,7 +145,7 @@ describe('/admin', () => {
         },
       ]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test(`redirects back to page and does not call user service when ${example.reason}`, () => {
           const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
           return request(app)
@@ -169,7 +167,7 @@ describe('/admin', () => {
         { nomisId: 'nid', deliusId: 'did' },
       ]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test('calls user service and redirects to user list', () => {
           const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
           return request(app)
@@ -210,7 +208,7 @@ describe('/admin', () => {
         .get('/admin/roUsers/delete/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(userAdminService.getRoUser).toHaveBeenCalled()
           expect(userAdminService.getRoUser).toHaveBeenCalledWith('1')
           expect(res.text).toContain('nomisId">user1')
@@ -269,7 +267,7 @@ describe('/admin', () => {
         },
       ]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test(`redirects back to page and does not call user service when ${example.reason}`, () => {
           const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
           return request(app)
@@ -291,7 +289,7 @@ describe('/admin', () => {
         { nomisId: '&%^%', deliusId: '2222', first: '@@@@', last: 'l        %' },
       ]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test('calls user service and redirects to user list', () => {
           const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
           return request(app)
@@ -343,7 +341,7 @@ describe('/admin', () => {
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.body.username).toContain('nomisUser')
           expect(res.body.firstName).toContain('nomisFirst')
           expect(res.body.lastName).toContain('nomisLast')
@@ -361,9 +359,7 @@ describe('/admin', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp({ userAdminServiceStub: userAdminService }, 'roUser')
-      return request(app)
-        .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
-        .expect(403)
+      return request(app).get('/admin/roUsers/verify?nomisUserName=USER_NAME').expect(403)
     })
   })
 })

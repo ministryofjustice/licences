@@ -37,7 +37,7 @@ describe('/hdc/eligibility', () => {
         .get('/hdc/eligibility/excluded/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input id="excludedYes" type="radio" name="decision" value="Yes">')
           expect(res.text).not.toContain('<input id="excludedYes" type="radio" checked name="decision" value="Yes">')
         })
@@ -61,7 +61,7 @@ describe('/hdc/eligibility', () => {
         .get('/hdc/eligibility/excluded/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('value="sexOffenderRegister" checked')
           expect(res.text).toContain('value="convictedSexOffences" checked')
         })
@@ -128,7 +128,7 @@ describe('/hdc/eligibility', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.update.mockResolvedValue({ eligibility: { [route.section]: {} } })
@@ -157,20 +157,14 @@ describe('/hdc/eligibility', () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceServiceStub: licenceService }, 'dmUser')
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
 
       test('throws an error if logged in as ro', () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
     })
 
@@ -241,7 +235,7 @@ describe('/hdc/eligibility', () => {
       },
     ]
 
-    specs.forEach(spec => {
+    specs.forEach((spec) => {
       test(`should push ${spec.type} status to nomis`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.update.mockResolvedValue(spec.data)
@@ -339,7 +333,7 @@ describe('/hdc/eligibility', () => {
       },
     ]
 
-    checksFailedExamples.forEach(example => {
+    checksFailedExamples.forEach((example) => {
       test(`should NOT send to nomisPushService when  ${example.type}`, async () => {
         const nomisPushService = createNomisPushServiceStub()
         const licenceService = createLicenceServiceStub()

@@ -46,26 +46,26 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
     const staffCodeFromDb = await getStaffCodeFromDb(username)
     const staffCode = await staffCodeFromDb.orRecoverAsync(() => getStaffCodeFromDelius(username))
     const offendersForStaffCode = await staffCode.mapAsync(getOffendersForStaffCode(token))
-    return offendersForStaffCode.match(R.identity, message => ({ hdcEligible: [], message }))
+    return offendersForStaffCode.match(R.identity, (message) => ({ hdcEligible: [], message }))
   }
 
   /**
    * @param {string} username
    * @returns {Promise<Result<string, string>>}
    */
-  const getStaffCodeFromDb = async username => {
+  const getStaffCodeFromDb = async (username) => {
     const deliusIds = await licenceClient.getDeliusUserName(username)
 
     return validateDeliusIds(deliusIds)
       .flatMap(getDeliusId)
-      .map(id => id.staff_id.toUpperCase())
+      .map((id) => id.staff_id.toUpperCase())
   }
 
   /**
    * @param {string} username
    * @returns {Promise<Result<string, string>>}
    */
-  const getStaffCodeFromDelius = async username => {
+  const getStaffCodeFromDelius = async (username) => {
     const staffDetailsResult = await getStaffDetailsFromDelius(username)
 
     return staffDetailsResult.flatMap(({ staffCode }) =>
@@ -77,7 +77,7 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
    * @param {string} username
    * @returns {Promise<Result<StaffDetails, string>>}
    */
-  const getStaffDetailsFromDelius = async username => {
+  const getStaffDetailsFromDelius = async (username) => {
     const staffDetails = await roService.getStaffByUsername(username)
 
     return isEmpty(staffDetails)
@@ -89,7 +89,7 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
    * @param {DeliusId[]} deliusIds
    * @returns {Result<DeliusId[], string>}
    */
-  const validateDeliusIds = deliusIds =>
+  const validateDeliusIds = (deliusIds) =>
     !Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staff_id)
       ? Fail('Delius username not found for current user')
       : Success(deliusIds)
@@ -98,13 +98,13 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
    * @param {DeliusId[]} deliusIds
    * @returns {Result<DeliusId, string>}
    */
-  const getDeliusId = deliusIds =>
+  const getDeliusId = (deliusIds) =>
     deliusIds.length > 1 ? Fail('Multiple Delius usernames found for current user') : Success(deliusIds[0])
 
   /**
    * @type {(token: string) => (staffCode: string) => Promise<{hdcEligible : any[]}>}
    */
-  const getOffendersForStaffCode = token => async staffCode => {
+  const getOffendersForStaffCode = (token) => async (staffCode) => {
     const offenders = await roService.getROPrisoners(staffCode, token)
     const hdcEligible = offenders.filter(R.path(['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
     return { hdcEligible }
@@ -127,7 +127,7 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
       return true
     }
 
-    const includedStage = interestedStatuses[role].find(config => prisoner.stage === config.stage)
+    const includedStage = interestedStatuses[role].find((config) => prisoner.stage === config.stage)
 
     if (!includedStage) {
       return false
@@ -151,7 +151,7 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
 
       const formattedCaseList = await caseListFormatter.formatCaseList(hdcEligible, role)
       const formatted = formattedCaseList.filter(
-        prisoner => neededForRole(prisoner, role) && prisoner.activeCase === (tab === 'active')
+        (prisoner) => neededForRole(prisoner, role) && prisoner.activeCase === (tab === 'active')
       )
 
       return { hdcEligible: formatted }

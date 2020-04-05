@@ -32,7 +32,7 @@ const keepaliveAgent = apiUrl.startsWith('https') ? new HttpsAgent(agentOptions)
 
 const batchRequests = async (args, batchSize, call) => {
   const batches = splitEvery(batchSize, args)
-  const requests = batches.map((batch, i) => call(batch).then(result => [i, result]))
+  const requests = batches.map((batch, i) => call(batch).then((result) => [i, result]))
   const results = await Promise.all(requests)
 
   return results
@@ -41,7 +41,7 @@ const batchRequests = async (args, batchSize, call) => {
     .reduce((acc, val) => acc.concat(val), [])
 }
 
-module.exports = token => {
+module.exports = (token) => {
   const nomisGet = nomisGetBuilder(token)
   const nomisPost = nomisPushBuilder('post', token)
   const nomisPut = nomisPushBuilder('put', token)
@@ -97,7 +97,7 @@ module.exports = token => {
         return []
       }
 
-      const prisoners = await batchRequests(nomisIds, batchSize, batch => {
+      const prisoners = await batchRequests(nomisIds, batchSize, (batch) => {
         const query = { offenderNo: batch }
         return nomisGet({ path, query, headers: { 'Page-Limit': batchSize } })
       })
@@ -202,7 +202,7 @@ function nomisGetBuilder(token) {
         .query(query)
         .set('Authorization', `Bearer ${token}`)
         .set(headers)
-        .retry(2, err => {
+        .retry(2, (err) => {
           if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
         })
@@ -273,7 +273,7 @@ async function put(token, path, body, headers, responseType) {
 }
 
 function findFirstValid(datesList) {
-  return datesList.find(date => date && date !== invalidDate) || null
+  return datesList.find((date) => date && date !== invalidDate) || null
 }
 
 function addEffectiveConditionalReleaseDate(prisoner) {

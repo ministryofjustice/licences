@@ -69,7 +69,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/selectLicenceType/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input id="hdc_ap" type="radio" name="licenceTypeRadio" value="hdc_ap">')
           expect(res.text).toContain('<input id="hdc_ap_pss" type="radio" name="licenceTypeRadio" value="hdc_ap_pss">')
           expect(res.text).toContain('<input id="hdc_yn" type="radio" name="licenceTypeRadio" value="hdc_yn">')
@@ -87,7 +87,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/selectLicenceType/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input id="hdc_ap" type="radio" name="licenceTypeRadio" value="hdc_ap" checked>')
           expect(res.text).toContain('<input id="hdc_ap_pss" type="radio" name="licenceTypeRadio" value="hdc_ap_pss">')
           expect(res.text).toContain('<input id="hdc_yn" type="radio" name="licenceTypeRadio" value="hdc_yn">')
@@ -100,9 +100,7 @@ describe('PDF:', () => {
 
       licenceServiceStub.getLicence.mockResolvedValue({ approvedVersionDetails: { template: 'hdc_ap' } })
 
-      return request(app)
-        .get('/hdc/pdf/selectLicenceType/123')
-        .expect(403)
+      return request(app).get('/hdc/pdf/selectLicenceType/123').expect(403)
     })
   })
 
@@ -126,10 +124,7 @@ describe('PDF:', () => {
     test('should throw if a non ca or ro tries to post to the route', () => {
       app = createApp({}, 'dmUser')
 
-      return request(app)
-        .post('/hdc/pdf/selectLicenceType/123')
-        .send({ decision: '' })
-        .expect(403)
+      return request(app).post('/hdc/pdf/selectLicenceType/123').send({ decision: '' }).expect(403)
     })
   })
 
@@ -141,7 +136,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/taskList/1231')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('id="firstNightTaskStatus">Not complete')
           expect(res.text).toContain('id="reportingTaskStatus">Not complete')
           expect(res.text).toContain('id="sentenceTaskStatus">Not complete')
@@ -163,7 +158,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/taskList/1232')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).not.toContain('id="firstNightTaskStatus">Not complete')
           expect(res.text).not.toContain('id="reportingTaskStatus">Not complete')
           expect(res.text).toContain('id="sentenceTaskStatus">Not complete')
@@ -184,7 +179,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/taskList/1233')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).not.toContain('Ready to create')
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith(
@@ -203,7 +198,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/taskList/1233')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Ready to print')
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith(
@@ -227,7 +222,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/taskList/1234')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Ready to print')
           expect(res.text).toContain('11/12/13')
           expect(res.text).toContain('Basic licence')
@@ -249,7 +244,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/taskList/1235')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Ready to print new version')
           expect(res.text).toContain('Basic licence with top-up supervision')
           expect(res.text).toContain('11/12/13')
@@ -272,7 +267,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/taskList/1236')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Ready to print new version')
           expect(res.text).toContain('11/12/13')
           expect(res.text).toContain('Basic licence')
@@ -290,9 +285,7 @@ describe('PDF:', () => {
         approvedVersionDetails: { template: 'hdc_ap', version: 1, timestamp: '11/12/13' },
       })
 
-      return request(app)
-        .get('/hdc/pdf/taskList/1237')
-        .expect(403)
+      return request(app).get('/hdc/pdf/taskList/1237').expect(403)
     })
   })
 
@@ -310,10 +303,7 @@ describe('PDF:', () => {
         values: { OFF_NAME: 'NAME', OFF_NOMS: 'NOMS', OFF_DOB: 'DOB' },
       })
       pdfServiceStub.checkAndTakeSnapshot.mockResolvedValue(rawLicence)
-      const res = await request(app)
-        .get('/hdc/pdf/create/123')
-        .expect(200)
-        .expect('Content-Type', 'application/pdf')
+      const res = await request(app).get('/hdc/pdf/create/123').expect(200).expect('Content-Type', 'application/pdf')
 
       expect(Buffer.isBuffer(res.body)).toBe(true)
       expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
@@ -336,7 +326,7 @@ describe('PDF:', () => {
         .get('/hdc/pdf/create/123')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
-        .expect(res => {
+        .expect((res) => {
           expect(res.body.toString()).toContain('%PDF-1.4')
         })
     })
@@ -361,9 +351,7 @@ describe('PDF:', () => {
     test('should throw if a non ca or ro tries to create the pdf', () => {
       app = createApp({}, 'dmUser')
 
-      return request(app)
-        .get('/hdc/pdf/create/123')
-        .expect(403)
+      return request(app).get('/hdc/pdf/create/123').expect(403)
     })
   })
 })

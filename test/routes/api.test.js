@@ -18,7 +18,7 @@ describe('/api/', () => {
         .get('/api/addressSubmission/')
         .expect('Content-Type', /json/)
         .expect(200)
-        .then(response => {
+        .then((response) => {
           expect(response.body.msg).toBe('hello')
         })
     })
@@ -31,7 +31,7 @@ describe('/api/', () => {
         .get('/api/assessmentComplete/')
         .expect('Content-Type', /json/)
         .expect(200)
-        .then(response => {
+        .then((response) => {
           expect(response.body.assessment).toBe('complete')
         })
     })
@@ -44,7 +44,7 @@ describe('/api/', () => {
         .get('/api/finalChecksComplete/')
         .expect('Content-Type', /json/)
         .expect(200)
-        .then(response => {
+        .then((response) => {
           expect(response.body.finalChecks).toBe('complete')
         })
     })
@@ -57,7 +57,7 @@ describe('/api/', () => {
         .get('/api/decisionMade/')
         .expect('Content-Type', /json/)
         .expect(200)
-        .then(response => {
+        .then((response) => {
           expect(response.body.approval).toBe('complete')
         })
     })
@@ -83,7 +83,7 @@ describe('/api/', () => {
         .get('/api/decisionMade?start=22-13-2017&end=04-09-2018')
         .expect('Content-Type', /json/)
         .expect(400)
-        .then(response => {
+        .then((response) => {
           expect(response.body.message).toBe('Invalid date format')
         })
     })
@@ -92,10 +92,7 @@ describe('/api/', () => {
   describe('unknown report', () => {
     test('returns 404', () => {
       const app = createApp(reportingService)
-      return request(app)
-        .get('/api/somethingElse/')
-        .expect('Content-Type', /json/)
-        .expect(404)
+      return request(app).get('/api/somethingElse/').expect('Content-Type', /json/).expect(404)
     })
   })
 })

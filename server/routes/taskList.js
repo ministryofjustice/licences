@@ -87,7 +87,7 @@ const determineAccessLevel = (licence, postRelease, role) => {
  * @param {any} args.audit
  * @param {CaService} args.caService
  */
-module.exports = ({ prisonerService, licenceService, audit, caService }) => router => {
+module.exports = ({ prisonerService, licenceService, audit, caService }) => (router) => {
   router.get(
     '/:bookingId',
     asyncMiddleware(async (req, res) => {

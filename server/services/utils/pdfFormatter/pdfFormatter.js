@@ -42,10 +42,7 @@ function valueOrPlaceholder(dataSelector, placeholder, templateName) {
   const pdfDataEntries = Object.entries(pdfData[templateName])
   return pdfDataEntries.reduce(
     (summary, [key, spec]) => {
-      const value = spec.paths
-        .map(dataSelector)
-        .filter(R.identity)
-        .join(spec.separator)
+      const value = spec.paths.map(dataSelector).filter(R.identity).join(spec.separator)
 
       const newObject = value
         ? {
@@ -127,7 +124,7 @@ function listCounter(start, index) {
     .toLowerCase()
 }
 
-const joinIfArray = value => (Array.isArray(value) ? value.map(val => val.trim()).join(', ') : value)
+const joinIfArray = (value) => (Array.isArray(value) ? value.map((val) => val.trim()).join(', ') : value)
 
 function getConditionText(content, terminator) {
   return content

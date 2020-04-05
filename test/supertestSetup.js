@@ -37,7 +37,7 @@ const createLicenceServiceStub = () => ({
   updateAddresses: jest.fn().mockReturnValue(),
   getEligibilityErrors: jest.fn().mockReturnValue(),
   addAddress: jest.fn().mockReturnValue(),
-  addSplitDateFields: jest.fn(arg => arg),
+  addSplitDateFields: jest.fn((arg) => arg),
   removeDecision: jest.fn().mockReturnValue({}),
   validateForm: jest.fn().mockReturnValue({}),
   validateFormGroup: jest.fn().mockReturnValue({}),
@@ -119,13 +119,13 @@ const createCaServiceStub = {
 
 function testFormPageGets(app, routes, licenceServiceStub) {
   describe('licence exists for bookingId', () => {
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the ${route.url} page`, () => {
         return request(app)
           .get(route.url)
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain(route.content)
           })
       })
@@ -136,12 +136,12 @@ function testFormPageGets(app, routes, licenceServiceStub) {
     beforeEach(() => {
       licenceServiceStub.getLicence.mockResolvedValue(null)
     })
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the ${route.url} page`, () => {
         return request(app)
           .get(route.url)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(res.header.location).toBe('/')
           })
       })

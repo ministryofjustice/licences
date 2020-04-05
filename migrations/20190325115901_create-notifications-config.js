@@ -1,6 +1,6 @@
-exports.up = knex =>
+exports.up = (knex) =>
   Promise.all([
-    knex.schema.createTable('notifications_config', table => {
+    knex.schema.createTable('notifications_config', (table) => {
       table.increments('id').primary('pk_notifications')
       table.string('email').notNullable()
       table.string('establishment').notNullable()
@@ -12,4 +12,4 @@ exports.up = knex =>
     }),
   ])
 
-exports.down = knex => knex.schema.dropTable('notifications_config')
+exports.down = (knex) => knex.schema.dropTable('notifications_config')

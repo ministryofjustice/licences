@@ -12,40 +12,42 @@ const flash = require('connect-flash')
 const pdfRenderer = require('@ministryofjustice/express-template-to-pdf')
 
 const helmet = require('helmet')
+const noCache = require('nocache')
+
 const csurf = require('csurf')
 const compression = require('compression')
 const sassMiddleware = require('node-sass-middleware')
 const passport = require('passport')
 const ensureHttps = require('./utils/ensureHttps')
 
-const config = require('../server/config')
+const config = require('./config')
 const healthFactory = require('./services/healthcheck')
 
 const logger = require('../log.js')
 const auth = require('./authentication/auth')
 
-const defaultRouter = require('../server/routes/default')
+const defaultRouter = require('./routes/default')
 
-const adminRouter = require('../server/routes/admin/admin')
-const userAdminRouter = require('../server/routes/admin/users')
-const mailboxesAdminRouter = require('../server/routes/admin/mailboxes')
-const jobsAdminRouter = require('../server/routes/admin/jobs')
-const deliusAdminRouter = require('../server/routes/admin/delius')
-const locationsRouter = require('../server/routes/admin/locations')
-const warningsRouter = require('../server/routes/admin/warnings')
-const licenceSearchRouter = require('../server/routes/admin/licenceSearch')
-const licenceRouter = require('../server/routes/admin/licence')
-const apiRouter = require('../server/routes/api')
+const adminRouter = require('./routes/admin/admin')
+const userAdminRouter = require('./routes/admin/users')
+const mailboxesAdminRouter = require('./routes/admin/mailboxes')
+const jobsAdminRouter = require('./routes/admin/jobs')
+const deliusAdminRouter = require('./routes/admin/delius')
+const locationsRouter = require('./routes/admin/locations')
+const warningsRouter = require('./routes/admin/warnings')
+const licenceSearchRouter = require('./routes/admin/licenceSearch')
+const licenceRouter = require('./routes/admin/licence')
+const apiRouter = require('./routes/api')
 
-const caseListRouter = require('../server/routes/caseList')
-const contactRouter = require('../server/routes/contact')
-const pdfRouter = require('../server/routes/pdf')
-const formsRouter = require('../server/routes/forms')
-const sendRouter = require('../server/routes/send')
-const sentRouter = require('../server/routes/sent')
+const caseListRouter = require('./routes/caseList')
+const contactRouter = require('./routes/contact')
+const pdfRouter = require('./routes/pdf')
+const formsRouter = require('./routes/forms')
+const sendRouter = require('./routes/send')
+const sentRouter = require('./routes/sent')
 const taskListRouter = require('./routes/taskList')
-const utilsRouter = require('../server/routes/utils')
-const userRouter = require('../server/routes/user')
+const utilsRouter = require('./routes/utils')
+const userRouter = require('./routes/user')
 
 const standardRouter = require('./routes/routeWorkers/standardRouter')
 const addressRouter = require('./routes/address')
@@ -98,7 +100,7 @@ module.exports = function createApp({
   app.set('trust proxy', true)
 
   // View Engine Configuration
-  app.set('views', path.join(__dirname, '../server/views'))
+  app.set('views', path.join(__dirname, './views'))
   app.set('view engine', 'pug')
   app.use(pdfRenderer())
 
@@ -190,10 +192,10 @@ module.exports = function createApp({
     '../assets/stylesheets',
     '../node_modules/govuk_template_jinja/assets',
     '../node_modules/govuk_frontend_toolkit',
-  ].forEach(dir => {
+  ].forEach((dir) => {
     app.use('/public', express.static(path.join(__dirname, dir), cacheControl))
   })
-  ;['../node_modules/govuk_frontend_toolkit/images'].forEach(dir => {
+  ;['../node_modules/govuk_frontend_toolkit/images'].forEach((dir) => {
     app.use('/public/images/icons', express.static(path.join(__dirname, dir), cacheControl))
   })
 
@@ -208,7 +210,7 @@ module.exports = function createApp({
   app.use(addTemplateVariables)
 
   // Don't cache dynamic resources
-  app.use(helmet.noCache())
+  app.use(noCache())
 
   // Request logging
   app.use(
@@ -304,9 +306,7 @@ module.exports = function createApp({
     return res.render('notfound')
   })
 
-  const authLogoutUrl = `${config.nomis.authExternalUrl}/logout?client_id=${config.nomis.apiClientId}&redirect_uri=${
-    config.domain
-  }`
+  const authLogoutUrl = `${config.nomis.authExternalUrl}/logout?client_id=${config.nomis.apiClientId}&redirect_uri=${config.domain}`
 
   app.get('/autherror', (req, res) => {
     res.status(401)
@@ -331,7 +331,7 @@ module.exports = function createApp({
         logger.info(`Auth failure due to ${JSON.stringify(info)}`)
         return res.redirect('/autherror')
       }
-      req.logIn(user, err2 => {
+      req.logIn(user, (err2) => {
         if (err2) {
           return next(err2)
         }

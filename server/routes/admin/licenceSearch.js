@@ -8,7 +8,7 @@ const { firstItem } = require('../../utils/functionalHelpers')
 /**
  *  @param {LicenceSearchService} licenceSearchService
  */
-module.exports = licenceSearchService => (router, audited) => {
+module.exports = (licenceSearchService) => (router, audited) => {
   router.use(authorisationMiddleware)
 
   router.get(

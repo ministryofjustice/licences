@@ -69,7 +69,7 @@ describe('/hdc/approval', () => {
         .get('/hdc/approval/release/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('23/12/1971')
         })
     })
@@ -78,7 +78,7 @@ describe('/hdc/approval', () => {
         .get('/hdc/approval/refuseReason/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('23/12/1971')
         })
     })
@@ -86,17 +86,13 @@ describe('/hdc/approval', () => {
     test('release should throw if requested by non-DM user', () => {
       const caApp = createApp({ licenceServiceStub }, 'caUser')
 
-      return request(caApp)
-        .get('/hdc/approval/release/1')
-        .expect(403)
+      return request(caApp).get('/hdc/approval/release/1').expect(403)
     })
 
     test('refuseReason should throw if requested by non-DM user', () => {
       const caApp = createApp({ licenceServiceStub }, 'caUser')
 
-      return request(caApp)
-        .get('/hdc/approval/refuseReason/1')
-        .expect(403)
+      return request(caApp).get('/hdc/approval/refuseReason/1').expect(403)
     })
   })
 
@@ -125,13 +121,13 @@ describe('/hdc/approval', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         return request(app)
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceServiceStub.update).toHaveBeenCalled()
             expect(licenceServiceStub.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -150,20 +146,13 @@ describe('/hdc/approval', () => {
       test('should redirect to same page if errors on input', () => {
         licenceServiceStub.validateForm.mockReturnValue({ decision: 'Error 1' })
 
-        return request(app)
-          .post(route.url)
-          .send({})
-          .expect(302)
-          .expect('Location', route.url)
+        return request(app).post(route.url).send({}).expect(302).expect('Location', route.url)
       })
 
       test('should throw if submitted by non-DM user', () => {
         const caApp = createApp({ licenceServiceStub }, 'caUser')
 
-        return request(caApp)
-          .post(route.url)
-          .send({ decision: 'Yes' })
-          .expect(403)
+        return request(caApp).post(route.url).send({ decision: 'Yes' }).expect(403)
       })
 
       test('should push the decision to nomis if config variable is true', () => {
@@ -203,10 +192,7 @@ describe('/hdc/approval', () => {
     test('should throw if submitted by non-DM user case insensitively', () => {
       const caApp = createApp({ licenceServiceStub }, 'caUser')
 
-      return request(caApp)
-        .post('/hdc/Approval/refuseReason/1')
-        .send({ decision: 'Yes' })
-        .expect(403)
+      return request(caApp).post('/hdc/Approval/refuseReason/1').send({ decision: 'Yes' }).expect(403)
     })
   })
 })

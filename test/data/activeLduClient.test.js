@@ -53,7 +53,7 @@ describe('Persist and check exitence of LDUs in active_local_delivery_units tabl
   describe('Transaction to delete and insert LDUs in active_local_delivery_units table', () => {
     describe('updateActiveLdu', () => {
       test('should send correct SQLl', async () => {
-        db.inTransaction = callback => callback(db)
+        db.inTransaction = (callback) => callback(db)
         await activeLduClient.updateActiveLdu(probationAreaCode, activeLduCodes)
         const { text, values } = db.query.mock.calls[0][0]
         expect(text).toContain('DELETE FROM active_local_delivery_units WHERE probation_area_code = $1')

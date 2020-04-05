@@ -5,9 +5,7 @@ const postcodeExtend = require('joi-postcode')
 const joi = baseJoi.extend(dateExtend).extend(postcodeExtend)
 const moment = require('moment')
 
-const today = moment()
-  .startOf('day')
-  .format('MM-DD-YYYY')
+const today = moment().startOf('day').format('MM-DD-YYYY')
 
 module.exports = joi.object({
   NOCONTACTASSOCIATE: joi.object({
@@ -62,10 +60,7 @@ module.exports = joi.object({
   }),
   REPORTTO: joi.object({
     reportingAddress: joi.string().required(),
-    reportingTime: joi
-      .string()
-      .allow('')
-      .optional(),
+    reportingTime: joi.string().allow('').optional(),
     reportingDaily: joi.when('reportingTime', {
       is: '',
       then: joi.string().required(),
@@ -95,20 +90,12 @@ module.exports = joi.object({
   SURRENDERPASSPORT: joi.object({}),
   NOTIFYPASSPORT: joi.object({}),
   ATTENDDEPENDENCY: joi.object({
-    appointmentDate: joi
-      .date()
-      .format('DD/MM/YYYY')
-      .min(today)
-      .required(),
+    appointmentDate: joi.date().format('DD/MM/YYYY').min(today).required(),
     appointmentTime: joi.string().required(),
     appointmentAddress: joi.string().required(),
   }),
   ATTENDDEPENDENCYINDRUGSSECTION: joi.object({
-    appointmentDateInDrugsSection: joi
-      .date()
-      .format('DD/MM/YYYY')
-      .min(today)
-      .required(),
+    appointmentDateInDrugsSection: joi.date().format('DD/MM/YYYY').min(today).required(),
     appointmentTimeInDrugsSection: joi.string().required(),
     appointmentAddressInDrugsSection: joi.string().required(),
   }),

@@ -44,7 +44,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
   function combine(data, paths, separator) {
     return (
       paths
-        .map(path => getIn(data, path))
+        .map((path) => getIn(data, path))
         .filter(Boolean)
         .join(separator) || ''
     )

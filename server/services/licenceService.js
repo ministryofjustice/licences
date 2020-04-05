@@ -127,7 +127,7 @@ module.exports = function createLicenceService(licenceClient) {
 
     const elementToRemove = oldConditions.bespoke[indexToRemove]
 
-    const theRest = oldConditions.bespoke.filter(e => e !== elementToRemove)
+    const theRest = oldConditions.bespoke.filter((e) => e !== elementToRemove)
 
     return { ...oldConditions, bespoke: theRest }
   }
@@ -210,7 +210,7 @@ module.exports = function createLicenceService(licenceClient) {
 
       if (inputIsList) {
         const arrayOfInputs = userInput[fieldName]
-          .map(item => getFormResponse(field[fieldName].contains, item))
+          .map((item) => getFormResponse(field[fieldName].contains, item))
           .filter(notAllValuesEmpty)
 
         return { ...answersAccumulator, [fieldName]: arrayOfInputs }
@@ -238,7 +238,7 @@ module.exports = function createLicenceService(licenceClient) {
   function getCombinedDate(dateConfig, userInput) {
     const { day, month, year } = dateConfig.splitDate
 
-    if ([day, month, year].every(item => userInput[item].length === 0)) return ''
+    if ([day, month, year].every((item) => userInput[item].length === 0)) return ''
 
     return `${userInput[day]}/${userInput[month]}/${userInput[year]}`
   }
@@ -350,7 +350,7 @@ module.exports = function createLicenceService(licenceClient) {
       ? pick(['proposedAddressSuitable', 'unsuitableReason'], riskManagementInputs)
       : null
 
-    const addressToStore = pickBy(val => val, { address, addressReview, riskManagement, withdrawalReason })
+    const addressToStore = pickBy((val) => val, { address, addressReview, riskManagement, withdrawalReason })
 
     const addressRejections = recordList({ licence, path: ['proposedAddress', 'rejections'], allowEmpty: true })
     const licenceWithAddressRejection = addressRejections.add({ record: addressToStore })
@@ -384,7 +384,7 @@ module.exports = function createLicenceService(licenceClient) {
         [['risk', 'riskManagement', 'proposedAddressSuitable'], getIn(riskManagement, ['proposedAddressSuitable'])],
         [['risk', 'riskManagement', 'unsuitableReason'], getIn(riskManagement, ['unsuitableReason'])],
         [['curfew', 'curfewAddressReview'], curfewAddressReview],
-      ].filter(argument => argument[1]),
+      ].filter((argument) => argument[1]),
       licenceAfterRemoval
     )
 
@@ -392,6 +392,7 @@ module.exports = function createLicenceService(licenceClient) {
     return updatedLicence
   }
 
+  /** @param {any} licenceState */
   function validateFormGroup({ licence, stage, decisions = {}, tasks = {} }) {
     const {
       addressUnsuitable,

@@ -5,5 +5,5 @@ module.exports = {
    * The name property appears to be a single string like '<firstname> <lastName>'.
    * So, if 'name' is a string use that, otherwise fall back to using username.
    */
-  sendingUserName: user => (typeof user.name === 'string' && user.name) || user.username,
+  sendingUserName: (user) => (typeof user.name === 'string' && user.name) || user.username,
 }

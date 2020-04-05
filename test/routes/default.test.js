@@ -14,19 +14,13 @@ describe('GET /', () => {
   test('redirects to caselist for normal users', () => {
     const app = createApp('caUser')
 
-    return request(app)
-      .get('/')
-      .expect(302)
-      .expect('Location', '/caseList/active')
+    return request(app).get('/').expect(302).expect('Location', '/caseList/active')
   })
 
   test('redirects to admin for admin users', () => {
     const app = createApp('batchUser')
 
-    return request(app)
-      .get('/')
-      .expect(302)
-      .expect('Location', '/admin/')
+    return request(app).get('/').expect(302).expect('Location', '/admin/')
   })
 })
 

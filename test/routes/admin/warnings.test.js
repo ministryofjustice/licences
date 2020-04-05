@@ -16,7 +16,7 @@ describe('/warnings', () => {
   let warningsClient
 
   beforeEach(() => {
-    const createWarning = id => ({
+    const createWarning = (id) => ({
       id,
       bookingId: id * 10,
       timestamp: new Date(),
@@ -45,7 +45,7 @@ describe('/warnings', () => {
       return request(app)
         .get('/admin/warnings/outstanding')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('code-1')
           expect(res.text).toContain('code-2')
         })
@@ -53,9 +53,7 @@ describe('/warnings', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/warnings/outstanding')
-        .expect(403)
+      return request(app).get('/admin/warnings/outstanding').expect(403)
     })
   })
 
@@ -76,7 +74,7 @@ describe('/warnings', () => {
       return request(app)
         .get('/admin/warnings/acknowledged')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('code-3')
           expect(res.text).toContain('code-4')
         })
@@ -84,9 +82,7 @@ describe('/warnings', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/warnings/acknowledged')
-        .expect(403)
+      return request(app).get('/admin/warnings/acknowledged').expect(403)
     })
   })
 

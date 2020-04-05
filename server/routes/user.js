@@ -2,7 +2,7 @@ const { asyncMiddleware } = require('../utils/middleware')
 const { getIn } = require('../utils/functionalHelpers')
 const { roles } = require('../config')
 
-module.exports = ({ userService }) => router => {
+module.exports = ({ userService }) => (router) => {
   router.get(
     '/',
     asyncMiddleware(async (req, res) => {

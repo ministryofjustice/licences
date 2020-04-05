@@ -152,7 +152,7 @@ describe('/review/', () => {
         .get('/hdc/review/curfewAddress/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('The case is ready to send to the responsible officer for address checks')
           expect(res.text).not.toContain('class="error-summary"')
         })
@@ -165,7 +165,7 @@ describe('/review/', () => {
         .get('/hdc/review/curfewAddress/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toEqual(expect.not.arrayContaining(['href="/hdc/send/']))
           expect(res.text).toContain('errors before continuing')
           expect(res.text).toContain('class="error-summary"')
@@ -193,7 +193,7 @@ describe('/review/', () => {
         .get('/hdc/review/licenceDetails/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('/hdc/send/optedOut/1')
         })
     })
@@ -211,7 +211,7 @@ describe('/review/', () => {
         .get('/hdc/review/licenceDetails/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('/hdc/send/addressRejected/1')
         })
     })
@@ -232,7 +232,7 @@ describe('/review/', () => {
         .get('/hdc/review/licenceDetails/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('/hdc/send/finalChecks/1')
         })
     })
@@ -259,7 +259,7 @@ describe('/review/', () => {
         .get('/hdc/review/address/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('id="withdrawAddress"')
         })
     })
@@ -280,7 +280,7 @@ describe('/review/', () => {
         .get('/hdc/review/address/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toEqual(expect.not.arrayContaining(['id="withdrawAddress"']))
         })
     })

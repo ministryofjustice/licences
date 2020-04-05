@@ -21,10 +21,10 @@ const versionTrigger = `
     execute procedure version_update_function()
 `
 
-exports.up = knex =>
+exports.up = (knex) =>
   Promise.all([
     knex.raw('drop trigger version_update_trigger on licences;'),
     knex.raw('drop function version_update_function'),
   ])
 
-exports.down = knex => Promise.all([knex.raw(versionFunction), knex.raw(versionTrigger)])
+exports.down = (knex) => Promise.all([knex.raw(versionFunction), knex.raw(versionTrigger)])

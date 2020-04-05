@@ -12,7 +12,7 @@ const logger = require('../../log')
  * @param {any} args.conditionsService
  * @param {PrisonerService} args.prisonerService
  */
-module.exports = ({ licenceService, conditionsService, prisonerService }) => router => {
+module.exports = ({ licenceService, conditionsService, prisonerService }) => (router) => {
   router.get(
     '/:sectionName/:bookingId',
     asyncMiddleware(async (req, res) => {

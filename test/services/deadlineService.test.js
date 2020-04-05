@@ -9,18 +9,14 @@ describe('deadlineService', () => {
 
   beforeEach(() => {
     licenceClient = {
-      getLicencesInStageBeforeDate: jest
-        .fn()
-        .mockResolvedValue([
-          { booking_id: 1, transition_date: transitionDate },
-          { booking_id: 2, transition_date: transitionDate },
-        ]),
-      getLicencesInStageBetweenDates: jest
-        .fn()
-        .mockResolvedValue([
-          { booking_id: 3, transition_date: transitionDate },
-          { booking_id: 4, transition_date: transitionDate },
-        ]),
+      getLicencesInStageBeforeDate: jest.fn().mockResolvedValue([
+        { booking_id: 1, transition_date: transitionDate },
+        { booking_id: 2, transition_date: transitionDate },
+      ]),
+      getLicencesInStageBetweenDates: jest.fn().mockResolvedValue([
+        { booking_id: 3, transition_date: transitionDate },
+        { booking_id: 4, transition_date: transitionDate },
+      ]),
     }
     service = createDeadlineService(licenceClient)
     const time = new Date('April 25, 2019 01:00:00')

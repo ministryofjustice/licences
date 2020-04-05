@@ -6,8 +6,14 @@ describe('prisonerDetailsService', () => {
   let service
 
   const hdcPrisonersResponse = [{ bookingId: 1, facialImageId: 2, agencyLocationId: 'ABC', middleName: 'Middle' }]
-  const identifiersResponse = [{ type: 'PNC', value: 'PNC001' }, { type: 'CRO', value: 'CRO001' }]
-  const aliasesResponse = [{ firstName: 'ALIAS', lastName: 'One' }, { firstName: 'AKA', lastName: 'Two' }]
+  const identifiersResponse = [
+    { type: 'PNC', value: 'PNC001' },
+    { type: 'CRO', value: 'CRO001' },
+  ]
+  const aliasesResponse = [
+    { firstName: 'ALIAS', lastName: 'One' },
+    { firstName: 'AKA', lastName: 'Two' },
+  ]
   const mainOffenceResponse = [{ offenceDescription: 'Robbery, conspiracy to rob' }]
   const imageInfoResponse = { imageId: 'imgId', captureDate: '1971-11-23' }
   const imageDataResponse = Buffer.from('image')

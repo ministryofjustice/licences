@@ -31,7 +31,7 @@ module.exports = {
     },
   ],
 
-  getAdditionalConditionsConfig: use2019Conditions =>
+  getAdditionalConditionsConfig: (use2019Conditions) =>
     [
       {
         id: 'NOCONTACTPRISONER',
@@ -971,7 +971,7 @@ module.exports = {
         group_name: 'Extremism',
         subgroup_name: null,
       },
-    ].filter(condition => condition.active),
+    ].filter((condition) => condition.active),
 
   multiFields: {
     appointmentDetails: {

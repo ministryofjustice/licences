@@ -103,7 +103,10 @@ describe('conditionsService', () => {
         licenceConditions: {
           standard: { additionalConditionsRequired: 'Yes' },
           additional: {},
-          bespoke: [{ text: 'approved text', approved: 'Yes' }, { text: 'unapproved text', approved: 'No' }],
+          bespoke: [
+            { text: 'approved text', approved: 'Yes' },
+            { text: 'unapproved text', approved: 'No' },
+          ],
         },
       }
 
@@ -239,7 +242,10 @@ describe('conditionsService', () => {
       const rawLicence = {
         licenceConditions: {
           additional: { 1: {} },
-          bespoke: [{ text: 'bespoke1', approved: 'Yes' }, { text: 'bespoke2', approved: 'No' }],
+          bespoke: [
+            { text: 'bespoke1', approved: 'Yes' },
+            { text: 'bespoke2', approved: 'No' },
+          ],
           conditionsSummary: { additionalConditionsJustification: 'Justification of additional conditions' },
         },
       }
@@ -838,7 +844,7 @@ describe('conditionsService', () => {
           },
         }
         const selectedConditions = [
-          getAdditionalConditionsConfig(true).find(cond => cond.id === 'NO_UNSUPERVISED_CONTACT'),
+          getAdditionalConditionsConfig(true).find((cond) => cond.id === 'NO_UNSUPERVISED_CONTACT'),
         ]
         const errors = {}
 
@@ -882,7 +888,7 @@ describe('conditionsService', () => {
           },
         }
         const selectedConditions = [
-          getAdditionalConditionsConfig(true).find(cond => cond.id === 'NO_UNSUPERVISED_CONTACT'),
+          getAdditionalConditionsConfig(true).find((cond) => cond.id === 'NO_UNSUPERVISED_CONTACT'),
         ]
         const errors = {}
 
@@ -926,7 +932,7 @@ describe('conditionsService', () => {
           },
         }
         const selectedConditions = [
-          getAdditionalConditionsConfig(true).find(cond => cond.id === 'NO_UNSUPERVISED_CONTACT'),
+          getAdditionalConditionsConfig(true).find((cond) => cond.id === 'NO_UNSUPERVISED_CONTACT'),
         ]
         const errors = { NO_UNSUPERVISED_CONTACT: { do_not_unsupervised_social_services_dept_name: 'MASSIVE ERROR' } }
 
@@ -959,7 +965,9 @@ describe('conditionsService', () => {
 
     describe('DO_NOT_CONTACT_VICTIM', () => {
       const service2019 = createConditionsService({ use2019Conditions: true })
-      const selectedConditions = [getAdditionalConditionsConfig(true).find(cond => cond.id === 'DO_NOT_CONTACT_VICTIM')]
+      const selectedConditions = [
+        getAdditionalConditionsConfig(true).find((cond) => cond.id === 'DO_NOT_CONTACT_VICTIM'),
+      ]
 
       test('should do nothing with last two inputs if social service dept !== yes', () => {
         const rawLicence = {
@@ -1087,7 +1095,7 @@ describe('conditionsService', () => {
   })
 
   describe('getFullTextForApprovedConditions', () => {
-    const standardConditionsText = standardConditions.map(it => it.text.replace(/\.+$/, ''))
+    const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
 
     test('should always return standard conditions even for empty licence', () => {
       const licence = {

@@ -141,7 +141,7 @@ describe('nomisPushService', () => {
         },
       ]
 
-      specs.forEach(spec => {
+      specs.forEach((spec) => {
         test(`should call nomisClient.putApprovalStatus for ${spec.example} with the correct values`, async () => {
           await service.pushStatus({ bookingId, data: spec.data, username })
           expect(nomisClientBuilder).toHaveBeenCalled()

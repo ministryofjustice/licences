@@ -36,12 +36,10 @@ describe('sendCaAndDmNotifications', () => {
       getFunctionalMailBox: jest.fn().mockReturnValue('admin@ro.email'),
     }
     configClient = {
-      getMailboxes: jest
-        .fn()
-        .mockResolvedValue([
-          { email: 'test1@email.address', name: 'Name One' },
-          { email: 'test2@email.address', name: 'Name Two' },
-        ]),
+      getMailboxes: jest.fn().mockResolvedValue([
+        { email: 'test1@email.address', name: 'Name One' },
+        { email: 'test2@email.address', name: 'Name Two' },
+      ]),
     }
     notificationSender = {
       notify: jest.fn().mockReturnValue({}),

@@ -17,7 +17,10 @@ describe('lduService', () => {
   beforeEach(async () => {
     lduService = await createLduService(deliusClient, activeLduClient)
     deliusClient.getAllProbationAreas.mockResolvedValue({
-      content: [{ code: 'ABC123', description: 'desc-1' }, { code: 'DEF345', description: 'desc-2' }],
+      content: [
+        { code: 'ABC123', description: 'desc-1' },
+        { code: 'DEF345', description: 'desc-2' },
+      ],
     })
   })
 
@@ -33,8 +36,14 @@ describe('lduService', () => {
 
     it('Should sort probation areas by description in alpha order', async () => {
       const result = await lduService.getAllProbationAreas()
-      expect(result).toEqual([{ code: 'ABC123', description: 'desc-1' }, { code: 'DEF345', description: 'desc-2' }])
-      expect(result).not.toEqual([{ code: 'DEF345', description: 'desc-2' }, { code: 'ABC123', description: 'desc-1' }])
+      expect(result).toEqual([
+        { code: 'ABC123', description: 'desc-1' },
+        { code: 'DEF345', description: 'desc-2' },
+      ])
+      expect(result).not.toEqual([
+        { code: 'DEF345', description: 'desc-2' },
+        { code: 'ABC123', description: 'desc-1' },
+      ])
     })
   })
 

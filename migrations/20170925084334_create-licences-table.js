@@ -1,6 +1,6 @@
-exports.up = knex =>
+exports.up = (knex) =>
   Promise.all([
-    knex.schema.createTable('licences', table => {
+    knex.schema.createTable('licences', (table) => {
       table.increments('id').primary('pk_licence')
       table.jsonb('licence').nullable()
       table.integer('booking_id').notNullable()
@@ -11,4 +11,4 @@ exports.up = knex =>
     }),
   ])
 
-exports.down = knex => knex.schema.dropTable('licences')
+exports.down = (knex) => knex.schema.dropTable('licences')

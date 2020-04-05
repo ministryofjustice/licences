@@ -31,7 +31,7 @@ module.exports = {
       .then(() => {
         logger.info('Audit item inserted')
       })
-      .catch(error => {
+      .catch((error) => {
         logger.error('Error during audit insertion ', error.stack)
       })
   },

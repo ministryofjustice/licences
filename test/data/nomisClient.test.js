@@ -43,10 +43,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .get(`/bookings/1`)
-        .thrice()
-        .reply(500)
+      fakeNomis.get(`/bookings/1`).thrice().reply(500)
 
       return expect(nomisClient.getBooking('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -59,7 +56,7 @@ describe('nomisClient', () => {
   })
 
   describe('getOffenderSentencesByNomisId', () => {
-    const record = id => ({ id, sentenceDetail: {} })
+    const record = (id) => ({ id, sentenceDetail: {} })
 
     test(`Doesn't call api if no offender numbers`, async () => {
       const result = await nomisClient.getOffenderSentencesByNomisId([])
@@ -103,10 +100,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .get(`/bookings/offenderNo/ABC123D`)
-        .thrice()
-        .reply(500)
+      fakeNomis.get(`/bookings/offenderNo/ABC123D`).thrice().reply(500)
 
       return expect(nomisClient.getBookingByOffenderNumber('ABC123D')).rejects.toStrictEqual(
         Error('Internal Server Error')
@@ -122,10 +116,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .get(`/images/1`)
-        .thrice()
-        .reply(500)
+      fakeNomis.get(`/images/1`).thrice().reply(500)
 
       return expect(nomisClient.getImageInfo('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -145,10 +136,7 @@ describe('nomisClient', () => {
     })
 
     test('should throw if api fails', () => {
-      fakeNomis
-        .get(`/images/1/data`)
-        .thrice()
-        .reply(500)
+      fakeNomis.get(`/images/1/data`).thrice().reply(500)
 
       return expect(nomisClient.getImageData('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -179,10 +167,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .get(url)
-        .thrice()
-        .reply(500)
+      fakeNomis.get(url).thrice().reply(500)
 
       return expect(nomisClient.getHdcEligiblePrisoners()).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -342,10 +327,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .get(`/bookings/1/aliases`)
-        .thrice()
-        .reply(500)
+      fakeNomis.get(`/bookings/1/aliases`).thrice().reply(500)
 
       return expect(nomisClient.getAliases('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -359,10 +341,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .get(`/bookings/1/identifiers`)
-        .thrice()
-        .reply(500)
+      fakeNomis.get(`/bookings/1/identifiers`).thrice().reply(500)
 
       return expect(nomisClient.getIdentifiers('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -376,10 +355,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .get(`/bookings/1/mainOffence`)
-        .thrice()
-        .reply(500)
+      fakeNomis.get(`/bookings/1/mainOffence`).thrice().reply(500)
 
       return expect(nomisClient.getMainOffence('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -393,10 +369,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .get(`/agencies/prison/1`)
-        .thrice()
-        .reply(500)
+      fakeNomis.get(`/agencies/prison/1`).thrice().reply(500)
 
       return expect(nomisClient.getEstablishment('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -416,11 +389,7 @@ describe('nomisClient', () => {
     })
 
     test('should not try to refresh twice in a row', () => {
-      fakeNomis
-        .get(`/agencies/prison/1`)
-        .reply(401)
-        .get(`/agencies/prison/1`)
-        .reply(401, { response: 'this' })
+      fakeNomis.get(`/agencies/prison/1`).reply(401).get(`/agencies/prison/1`).reply(401, { response: 'this' })
 
       return expect(nomisClient.getEstablishment('1')).rejects.toStrictEqual(Error('Unauthorized'))
     })
@@ -475,10 +444,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeAuth
-        .get('/api/user/userName')
-        .thrice()
-        .reply(500)
+      fakeAuth.get('/api/user/userName').thrice().reply(500)
 
       return expect(nomisClient.getUserInfo('userName')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -492,10 +458,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeAuth
-        .get('/api/user/me')
-        .thrice()
-        .reply(500)
+      fakeAuth.get('/api/user/me').thrice().reply(500)
 
       return expect(nomisClient.getLoggedInUserInfo()).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -509,10 +472,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeAuth
-        .get('/api/user/me/roles')
-        .thrice()
-        .reply(500)
+      fakeAuth.get('/api/user/me/roles').thrice().reply(500)
 
       return expect(nomisClient.getUserRoles()).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -526,10 +486,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .get('/users/me/caseLoads')
-        .thrice()
-        .reply(500)
+      fakeNomis.get('/users/me/caseLoads').thrice().reply(500)
 
       return expect(nomisClient.getUserCaseLoads()).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -543,10 +500,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis
-        .put('/users/me/activeCaseLoad')
-        .thrice()
-        .reply(500)
+      fakeNomis.put('/users/me/activeCaseLoad').thrice().reply(500)
 
       return expect(nomisClient.putActiveCaseLoad('id')).rejects.toStrictEqual(Error('Internal Server Error'))
     })

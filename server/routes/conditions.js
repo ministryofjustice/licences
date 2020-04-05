@@ -55,7 +55,7 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
     const { action } = req.params
     const destination = action ? `${action}/${bookingId}` : bookingId
 
-    const bespoke = (bespokeDecision === 'Yes' && bespokeConditions.filter(condition => condition.text)) || []
+    const bespoke = (bespokeDecision === 'Yes' && bespokeConditions.filter((condition) => condition.text)) || []
     const additional = additionalConditions ? conditionsService.formatConditionInputs(req.body) : {}
     const newConditionsObject = conditionsService.createConditionsObjectForLicence(additional, bespoke)
 

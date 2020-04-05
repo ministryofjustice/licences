@@ -64,7 +64,7 @@ describe('/forms/', () => {
         .get('/hdc/forms/eligible/1')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
-        .expect(res => {
+        .expect((res) => {
           expect(Buffer.isBuffer(res.body)).toBe(true)
         })
         .expect(() => {
@@ -76,17 +76,13 @@ describe('/forms/', () => {
     test('should throw if a non CA tries to access the page', () => {
       app = createApp('dmUser')
 
-      return request(app)
-        .get('/hdc/forms/eligible/1')
-        .expect(403)
+      return request(app).get('/hdc/forms/eligible/1').expect(403)
     })
 
     test('should throw if unknown form template name', () => {
       app = createApp('caUser')
 
-      return request(app)
-        .get('/hdc/forms/unknown/1')
-        .expect(500)
+      return request(app).get('/hdc/forms/unknown/1').expect(500)
     })
 
     test('Generates a PDF - hard to verify exactly but can at least check that some values appear in the output', async () => {
@@ -110,9 +106,7 @@ describe('/forms/', () => {
     test('should throw if a non CA tries to access the page', () => {
       app = createApp('dmUser')
 
-      return request(app)
-        .get('/hdc/forms/1')
-        .expect(403)
+      return request(app).get('/hdc/forms/1').expect(403)
     })
 
     test('should list all forms with bookingId', () => {
@@ -121,7 +115,7 @@ describe('/forms/', () => {
       return request(app)
         .get('/hdc/forms/1')
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('href="/hdc/forms/eligible/1')
           expect(res.text).toContain('href="/hdc/forms/approved/1')
           expect(res.text).toContain('href="/hdc/forms/refused/1')
@@ -137,7 +131,7 @@ describe('/forms/', () => {
         .get('/hdc/forms/curfewAddress/1')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
-        .expect(res => {
+        .expect((res) => {
           expect(Buffer.isBuffer(res.body)).toBe(true)
         })
         .expect(() => {
@@ -168,7 +162,7 @@ describe('/forms/', () => {
         .get('/hdc/forms/curfewAddress/1')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
-        .expect(res => {
+        .expect((res) => {
           expect(Buffer.isBuffer(res.body)).toBe(true)
         })
         .expect(() => {
@@ -193,7 +187,7 @@ describe('/forms/', () => {
         .get('/hdc/forms/curfewAddress/1')
         .expect(200)
         .expect('Content-Type', 'application/pdf')
-        .expect(res => {
+        .expect((res) => {
           expect(Buffer.isBuffer(res.body)).toBe(true)
         })
         .expect(() => {
@@ -212,9 +206,7 @@ describe('/forms/', () => {
     test('should throw if a non RO tries to access the page', () => {
       app = createApp('caUser')
 
-      return request(app)
-        .get('/hdc/forms/curfewAddress/1')
-        .expect(403)
+      return request(app).get('/hdc/forms/curfewAddress/1').expect(403)
     })
 
     test('Generates a PDF - hard to verify exactly but can at least check that some values appear in the output', async () => {

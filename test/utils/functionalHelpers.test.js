@@ -100,7 +100,15 @@ describe('functionalHelpers', () => {
         },
       }
 
-      expect(addPaths([[['fifth'], 'value3'], [['third', 'fourth', 'answer2'], 'b']], object)).toEqual({
+      expect(
+        addPaths(
+          [
+            [['fifth'], 'value3'],
+            [['third', 'fourth', 'answer2'], 'b'],
+          ],
+          object
+        )
+      ).toEqual({
         first: 'value1',
         second: 'value2',
         third: {
@@ -189,7 +197,7 @@ describe('functionalHelpers', () => {
 
     test('should handle error', () => {
       expect(() =>
-        unwrapResultOrThrow({ code: '1', message: 'some problem' }, error => `${error.message} ${error.code}`)
+        unwrapResultOrThrow({ code: '1', message: 'some problem' }, (error) => `${error.message} ${error.code}`)
       ).toThrow(Error('some problem 1'))
     })
   })
@@ -200,7 +208,7 @@ describe('functionalHelpers', () => {
     })
 
     test('picks single matching value', () => {
-      expect(pickKey(val => val === 3)({ ax: 1, ay: 2, az: 3 })).toEqual('az')
+      expect(pickKey((val) => val === 3)({ ax: 1, ay: 2, az: 3 })).toEqual('az')
     })
 
     test('fails gracefully', () => {

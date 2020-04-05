@@ -20,7 +20,7 @@ describe('/hdc/reporting', () => {
       { url: '/hdc/reporting/reportingDate/1', content: 'Enter reporting date and time' },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the ${route.url} page`, () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
@@ -29,7 +29,7 @@ describe('/hdc/reporting', () => {
           .get(route.url)
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain(route.content)
           })
       })
@@ -54,7 +54,7 @@ describe('/hdc/reporting', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.update.mockResolvedValue({ reporting: { [route.section]: {} } })
@@ -64,7 +64,7 @@ describe('/hdc/reporting', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -90,7 +90,7 @@ describe('/hdc/reporting', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -111,10 +111,7 @@ describe('/hdc/reporting', () => {
         licenceService.getLicence.mockResolvedValue({ stage: 'PROCESSING_RO', licence: { key: 'value' } })
         const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
     })
   })

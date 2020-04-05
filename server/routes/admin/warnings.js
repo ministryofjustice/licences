@@ -8,14 +8,14 @@ const logger = require('../../../log')
 /**
  *  @param {WarningClient} warningsClient
  */
-module.exports = warningsClient => (router, audited) => {
+module.exports = (warningsClient) => (router, audited) => {
   router.use(authorisationMiddleware)
 
   router.get(
     '/outstanding',
     asyncMiddleware(async (req, res) => {
       const results = await warningsClient.getOutstandingWarnings()
-      const warnings = results.map(warning => ({
+      const warnings = results.map((warning) => ({
         ...warning,
         timestamp: moment(warning.timestamp).format('dddd Do MMMM HH:mm:ss'),
       }))
@@ -39,7 +39,7 @@ module.exports = warningsClient => (router, audited) => {
     '/acknowledged',
     asyncMiddleware(async (req, res) => {
       const results = await warningsClient.getAcknowledgedWarnings()
-      const warnings = results.map(warning => ({
+      const warnings = results.map((warning) => ({
         ...warning,
         timestamp: moment(warning.timestamp).format('dddd Do MMMM HH:mm:ss'),
       }))

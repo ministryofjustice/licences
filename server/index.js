@@ -66,7 +66,7 @@ const userService = createUserService(nomisClientBuilder)
 const deadlineService = createDeadlineService(licenceClient)
 const roContactDetailsService = createRoContactDetailsService(userAdminService, roService, probationTeamsClient)
 
-const notificationSender = createNotificationSender(notifyClient, audit, config)
+const notificationSender = createNotificationSender(notifyClient, audit, config.notifications.notifyKey)
 const roNotificationSender = createRoNotificationSender(notificationSender, config)
 const caAndDmNotificationSender = createCaAndDmNotificationSender(
   prisonerService,

@@ -13,6 +13,6 @@ knex({ ...knexfile })
       logger.info(`Licences server listening on port ${app.get('port')}`)
     })
   })
-  .catch(err => {
+  .catch((err) => {
     logger.error('Knex migration failed', err)
   })

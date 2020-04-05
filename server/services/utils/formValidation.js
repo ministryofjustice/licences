@@ -3,9 +3,7 @@ const dateExtend = require('joi-date-extensions')
 const postcodeExtend = require('joi-postcode')
 const moment = require('moment')
 
-const today = moment()
-  .startOf('day')
-  .format('MM-DD-YYYY')
+const today = moment().startOf('day').format('MM-DD-YYYY')
 const {
   curfewAddressSchema,
   addressReviewSchema,
@@ -34,35 +32,16 @@ const joi = baseJoi.extend(dateExtend).extend(postcodeExtend)
 
 const fieldOptions = {
   requiredString: joi.string().required(),
-  optionalString: joi
-    .string()
-    .allow('')
-    .optional(),
+  optionalString: joi.string().allow('').optional(),
   requiredYesNo: joi.valid(['Yes', 'No']).required(),
   optionalYesNo: joi.valid(['Yes', 'No']).optional(),
-  selection: joi
-    .alternatives()
-    .try(joi.string(), joi.array().min(1))
-    .required(),
-  requiredTime: joi
-    .date()
-    .format('HH:mm')
-    .required(),
-  optionalTime: joi
-    .date()
-    .format('HH:mm')
-    .optional(),
-  requiredDate: joi
-    .date()
-    .format('DD/MM/YYYY')
-    .min(today)
-    .required(),
+  selection: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
+  requiredTime: joi.date().format('HH:mm').required(),
+  optionalTime: joi.date().format('HH:mm').optional(),
+  requiredDate: joi.date().format('DD/MM/YYYY').min(today).required(),
   optionalList: joi.array().optional(),
   requiredPostcode: joi.postcode().required(),
-  optionalPostcode: joi
-    .postcode()
-    .allow('')
-    .optional(),
+  optionalPostcode: joi.postcode().allow('').optional(),
   requiredPhone: joi
     .string()
     .regex(/^[0-9+\s]+$/)
@@ -72,19 +51,11 @@ const fieldOptions = {
     .regex(/^[0-9+\s]+$/)
     .allow('')
     .optional(),
-  optionalAge: joi
-    .number()
-    .min(0)
-    .max(110)
-    .allow('')
-    .optional(),
+  optionalAge: joi.number().min(0).max(110).allow('').optional(),
   requiredSelectionIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
     joi.when(requiredItem, {
       is: requiredAnswer,
-      then: joi
-        .alternatives()
-        .try(joi.string(), joi.array().min(1))
-        .required(),
+      then: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
       otherwise: joi.any().optional(),
     }),
   requiredYesNoIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
@@ -102,10 +73,7 @@ const fieldOptions = {
   optionalStringIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
     joi.when(requiredItem, {
       is: requiredAnswer,
-      then: joi
-        .string()
-        .allow('')
-        .optional(),
+      then: joi.string().allow('').optional(),
       otherwise: joi.any().optional(),
     }),
   requiredPostcodeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
@@ -117,27 +85,24 @@ const fieldOptions = {
   requiredTimeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
     joi.when(requiredItem, {
       is: requiredAnswer,
-      then: joi
-        .date()
-        .format('HH:mm')
-        .required(),
+      then: joi.date().format('HH:mm').required(),
       otherwise: joi.any().optional(),
     }),
 }
 
 const defaultErrorMessages = {
-  requiredPhone: errorType =>
+  requiredPhone: (errorType) =>
     errorType === 'string.regex.base'
       ? 'Enter a telephone number, like 01632 960 001 or 07700 900 982'
       : 'Enter a telephone number',
 
-  requiredDate: errorType => {
+  requiredDate: (errorType) => {
     if (errorType === 'date.min') return 'The reporting date must be today or in the future'
     if (errorType === 'date.format') return 'Enter a valid date'
     return 'Enter a date'
   },
 
-  requiredTime: errorType => (errorType === 'date.format' ? 'Enter a valid time' : 'Enter a time'),
+  requiredTime: (errorType) => (errorType === 'date.format' ? 'Enter a valid time' : 'Enter a time'),
 }
 
 const validationProcedures = {
@@ -155,7 +120,7 @@ const validationProcedures = {
       }
 
       const innerFieldName = lastItem(errorPath)
-      const innerFieldConfig = fieldConfig[fieldName].contains.find(item => getFieldName(item) === innerFieldName)
+      const innerFieldConfig = fieldConfig[fieldName].contains.find((item) => getFieldName(item) === innerFieldName)
       return innerFieldConfig[innerFieldName].validationMessage
     },
   },
@@ -173,7 +138,7 @@ const validationProcedures = {
     getErrorMessage: (fieldConfig, errorPath) => {
       const fieldName = getFieldName(fieldConfig)
       const innerFieldName = lastItem(errorPath)
-      const innerFieldConfig = fieldConfig[fieldName].contains.find(item => getFieldName(item) === innerFieldName)
+      const innerFieldConfig = fieldConfig[fieldName].contains.find((item) => getFieldName(item) === innerFieldName)
       return innerFieldConfig[innerFieldName].validationMessage
     },
   },
@@ -196,7 +161,7 @@ function validate({ formResponse, pageConfig, formType = 'standard', bespokeCond
 
   return joiErrors.error.details.reduce((errors, error) => {
     // joi returns map to error in path field
-    const fieldConfig = fieldsConfig.find(field => getFieldName(field) === error.path[0])
+    const fieldConfig = fieldsConfig.find((field) => getFieldName(field) === error.path[0])
     const errorMessage = getErrorMessage(fieldConfig, error, procedure.getErrorMessage)
 
     // empty telephone regex test will fail for multiple reasons, don't want to overwrite the first

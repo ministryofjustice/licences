@@ -16,7 +16,10 @@ describe('/admin', () => {
 
   beforeEach(() => {
     configClient = {
-      getAllMailboxes: jest.fn().mockReturnValue([{ id: '1', email: 'email1' }, { id: '2', email: 'email2' }]),
+      getAllMailboxes: jest.fn().mockReturnValue([
+        { id: '1', email: 'email1' },
+        { id: '2', email: 'email2' },
+      ]),
       getMailbox: jest
         .fn()
         .mockResolvedValue({ id: '1', email: 'email1', establishment: 'establishment1', role: 'role1', name: 'name1' }),
@@ -43,7 +46,7 @@ describe('/admin', () => {
       return request(app)
         .get('/admin/mailboxes')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('email1')
           expect(res.text).toContain('email2')
         })
@@ -51,9 +54,7 @@ describe('/admin', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp(configClient, 'roUser')
-      return request(app)
-        .get('/admin/mailboxes')
-        .expect(403)
+      return request(app).get('/admin/mailboxes').expect(403)
     })
   })
 
@@ -64,7 +65,7 @@ describe('/admin', () => {
         .get('/admin/mailboxes/edit/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(configClient.getMailbox).toHaveBeenCalled()
           expect(configClient.getMailbox).toHaveBeenCalledWith('1')
           expect(res.text).toContain('value="establishment1"')
@@ -93,7 +94,7 @@ describe('/admin', () => {
         },
       ]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test(`redirects back to page and does not call config client when ${example.reason}`, () => {
           const app = createApp(configClient, 'batchUser')
           return request(app)
@@ -114,7 +115,7 @@ describe('/admin', () => {
         { establishment: '*^^*', email: 'NOT_AN_EMAIL^%$$', role: 'CA', name: '22' },
       ]
 
-      examples.forEach(exampleValidInput => {
+      examples.forEach((exampleValidInput) => {
         test('calls config client and redirects to mailbox list', () => {
           const app = createApp(configClient, 'batchUser')
           return request(app)
@@ -138,7 +139,7 @@ describe('/admin', () => {
         .get('/admin/mailboxes/delete/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(configClient.getMailbox).toHaveBeenCalled()
           expect(configClient.getMailbox).toHaveBeenCalledWith('1')
           expect(res.text).toContain('<td>establishment1')
@@ -171,7 +172,7 @@ describe('/admin', () => {
         .get('/admin/mailboxes/add/')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Add Mailbox')
         })
     })
@@ -195,7 +196,7 @@ describe('/admin', () => {
         },
       ]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test(`redirects back to page and does not call config client when ${example.reason}`, () => {
           const app = createApp(configClient, 'batchUser')
           return request(app)
@@ -216,7 +217,7 @@ describe('/admin', () => {
         { establishment: '*^^*', email: 'NOT_AN_EMAIL^%$$', role: 'CA', name: ';DROP TABLE LICENCES' },
       ]
 
-      examples.forEach(exampleValidInput => {
+      examples.forEach((exampleValidInput) => {
         test('calls config client and redirects to mailbox list', () => {
           const app = createApp(configClient, 'batchUser')
           return request(app)

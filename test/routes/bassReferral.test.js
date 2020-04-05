@@ -54,7 +54,7 @@ describe('/hdc/bassReferral', () => {
         },
       ]
 
-      routes.forEach(route => {
+      routes.forEach((route) => {
         test(`renders the correct path '${route.nextPath}' page`, () => {
           const licenceService = createLicenceServiceStub()
           const app = createApp({ licenceServiceStub: licenceService }, route.user)
@@ -65,7 +65,7 @@ describe('/hdc/bassReferral', () => {
             .post(route.url)
             .send(route.body)
             .expect(302)
-            .expect(res => {
+            .expect((res) => {
               expect(licenceService.update).toHaveBeenCalled()
               expect(licenceService.update).toHaveBeenCalledWith({
                 bookingId: '1',
@@ -85,20 +85,14 @@ describe('/hdc/bassReferral', () => {
           const licenceService = createLicenceServiceStub()
           const app = createApp({ licenceServiceStub: licenceService }, 'dmUser')
 
-          return request(app)
-            .post(route.url)
-            .send(route.body)
-            .expect(403)
+          return request(app).post(route.url).send(route.body).expect(403)
         })
 
         test('throws an error if logged in as ro', () => {
           const licenceService = createLicenceServiceStub()
           const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
-          return request(app)
-            .post(route.url)
-            .send(route.body)
-            .expect(403)
+          return request(app).post(route.url).send(route.body).expect(403)
         })
       })
     })
@@ -111,7 +105,7 @@ describe('/hdc/bassReferral', () => {
           .get('/hdc/bassReferral/bassRequest/1')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain('Additional information')
             expect(res.text).toContain('textarea')
           })
@@ -136,7 +130,7 @@ describe('/hdc/bassReferral', () => {
         .get('/hdc/bassReferral/bassRequest/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('info about Bass address')
         })
     })
@@ -157,7 +151,7 @@ describe('/hdc/bassReferral', () => {
           .get('/hdc/bassReferral/bassAreaCheck/1')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).not.toContain('Additional information')
           })
       })
@@ -181,7 +175,7 @@ describe('/hdc/bassReferral', () => {
           .get('/hdc/bassReferral/bassAreaCheck/1')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain('Additional information')
           })
       })
@@ -198,7 +192,7 @@ describe('/hdc/bassReferral', () => {
           .post('/hdc/bassReferral/rejected/1')
           .send({ enterAlternative: 'Yes' })
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.rejectBass).toHaveBeenCalled()
             expect(licenceService.rejectBass).toHaveBeenCalledWith({ key: 'value' }, '1', 'Yes', 'area')
 
@@ -218,7 +212,7 @@ describe('/hdc/bassReferral', () => {
           .post('/hdc/bassReferral/unsuitable/1')
           .send({ enterAlternative: 'Yes' })
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.rejectBass).toHaveBeenCalled()
             expect(licenceService.rejectBass).toHaveBeenCalledWith({ key: 'value' }, '1', 'Yes', 'offender')
 
@@ -238,7 +232,7 @@ describe('/hdc/bassReferral', () => {
           .post('/hdc/bassReferral/bassOffer/withdraw/1')
           .send({ withdrawalType: 'Offer' })
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.withdrawBass).toHaveBeenCalled()
             expect(licenceService.withdrawBass).toHaveBeenCalledWith({ key: 'value' }, '1', 'Offer')
 
@@ -257,7 +251,7 @@ describe('/hdc/bassReferral', () => {
         return request(app)
           .post('/hdc/bassReferral/bassOffer/reinstate/1')
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.reinstateBass).toHaveBeenCalled()
             expect(licenceService.reinstateBass).toHaveBeenCalledWith({ key: 'value' }, '1')
 
@@ -293,7 +287,7 @@ describe('/hdc/bassReferral', () => {
         },
       ]
 
-      routes.forEach(route => {
+      routes.forEach((route) => {
         test(`renders the correct path '${route.nextPath}' page`, () => {
           const licenceService = createLicenceServiceStub()
           licenceService.update = jest.fn().mockReturnValue({
@@ -304,7 +298,7 @@ describe('/hdc/bassReferral', () => {
             .post(route.url)
             .send(route.body)
             .expect(302)
-            .expect(res => {
+            .expect((res) => {
               expect(licenceService.update).toHaveBeenCalled()
               expect(licenceService.update).toHaveBeenCalledWith({
                 bookingId: '1',
@@ -324,20 +318,14 @@ describe('/hdc/bassReferral', () => {
           const licenceService = createLicenceServiceStub()
           const app = createApp({ licenceServiceStub: licenceService }, 'dmUser')
 
-          return request(app)
-            .post(route.url)
-            .send(route.body)
-            .expect(403)
+          return request(app).post(route.url).send(route.body).expect(403)
         })
 
         test('throws an error if logged in as ca', () => {
           const licenceService = createLicenceServiceStub()
           const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
 
-          return request(app)
-            .post(route.url)
-            .send(route.body)
-            .expect(403)
+          return request(app).post(route.url).send(route.body).expect(403)
         })
       })
     })

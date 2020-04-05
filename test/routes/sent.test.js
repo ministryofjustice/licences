@@ -31,7 +31,7 @@ describe('GET sent', () => {
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalled()
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalledWith('RO', '123', 'token')
       })
-      .expect(res => {
+      .expect((res) => {
         expect(res.text).toContain('Case sent')
       })
   })
@@ -44,7 +44,7 @@ describe('GET sent', () => {
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalled()
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalledWith('DM', '123', 'token')
       })
-      .expect(res => {
+      .expect((res) => {
         expect(res.text).toContain('Submitted for approval')
       })
   })
@@ -57,7 +57,7 @@ describe('GET sent', () => {
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalled()
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalledWith('CA', '123', 'token')
       })
-      .expect(res => {
+      .expect((res) => {
         expect(res.text).toContain('Case sent')
       })
   })
@@ -70,7 +70,7 @@ describe('GET sent', () => {
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalled()
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalledWith('CA', '123', 'token')
       })
-      .expect(res => {
+      .expect((res) => {
         expect(res.text).toContain('Submitted to prison case admin')
       })
   })
@@ -83,15 +83,13 @@ describe('GET sent', () => {
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalled()
         expect(prisonerService.getOrganisationContactDetails).toHaveBeenCalledWith('DM', '123', 'token')
       })
-      .expect(res => {
+      .expect((res) => {
         expect(res.text).toContain('Submitted for refusal')
       })
   })
 
   test('errors when an invalid transition type is provided', () => {
-    return request(app)
-      .get('/hdc/sent/CA/foobar/123')
-      .expect(500)
+    return request(app).get('/hdc/sent/CA/foobar/123').expect(500)
   })
 })
 

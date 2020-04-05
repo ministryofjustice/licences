@@ -3,9 +3,9 @@
  */
 const logger = require('../../log.js')
 const authorisationConfig = require('../routes/config/authorisation')
-const { getWhereKeyLike, isEmpty } = require('../utils/functionalHelpers')
-const { unauthorisedError } = require('../utils/errors')
-const { merge } = require('../utils/functionalHelpers')
+const { getWhereKeyLike, isEmpty } = require('./functionalHelpers')
+const { unauthorisedError } = require('./errors')
+const { merge } = require('./functionalHelpers')
 const { getLicenceStatus } = require('./licenceStatus')
 
 module.exports = {
@@ -58,7 +58,7 @@ function authorisationMiddleware(req, res, next) {
     return next()
   }
 
-  const authorisedRole = config.authorised.find(role => req.user.role === role.role)
+  const authorisedRole = config.authorised.find((role) => req.user.role === role.role)
   if (!authorisedRole) {
     return next(unauthorisedError())
   }
@@ -83,7 +83,7 @@ function auditMiddleware(audit, key) {
 
   function userInputFrom(data) {
     const nonEmptyKeys = Object.keys(data).filter(
-      inputKey => data[inputKey] && !['bookingId', '_csrf', 'anchor'].includes(inputKey)
+      (inputKey) => data[inputKey] && !['bookingId', '_csrf', 'anchor'].includes(inputKey)
     )
 
     return nonEmptyKeys.reduce((object, inputKey) => {

@@ -48,7 +48,7 @@ describe('curfewAddressCheckFormFileName', () => {
     },
   ]
 
-  examples.forEach(example => {
+  examples.forEach((example) => {
     test('generates filename using prisoner details, omitting empties', () => {
       expect(curfewAddressCheckFormFileName(example.prisoner)).toEqual(example.filename)
     })

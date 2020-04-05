@@ -22,7 +22,7 @@ module.exports = {
                    where booking_id = l.booking_id
                    order by version desc limit 1
                    )
-                   where l.booking_id in (${bookingIds.map(id => `'${id}'`).join(',')})`,
+                   where l.booking_id in (${bookingIds.map((id) => `'${id}'`).join(',')})`,
     }
 
     const { rows } = await db.query(query)

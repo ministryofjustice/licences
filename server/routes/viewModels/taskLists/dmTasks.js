@@ -9,7 +9,7 @@ const reportingInstructions = require('./tasks/reportingInstructions')
 const finalChecks = require('./tasks/finalChecks')
 const { getStatusLabel } = require('../../../utils/licenceStatusLabels')
 
-const rejectedAddressTaskList = licenceStatus => {
+const rejectedAddressTaskList = (licenceStatus) => {
   const {
     decisions: { addressWithdrawn, addressReviewFailed },
   } = licenceStatus
@@ -62,7 +62,7 @@ const rejectedAddressTaskList = licenceStatus => {
   return taskList
 }
 
-module.exports = licenceStatus => {
+module.exports = (licenceStatus) => {
   const {
     decisions: {
       addressWithdrawn,
@@ -185,7 +185,7 @@ module.exports = licenceStatus => {
         text: 'Continue',
       },
     },
-  ].filter(task => {
+  ].filter((task) => {
     if (task.title === 'BASS address') {
       return bassReferralNeeded
     }

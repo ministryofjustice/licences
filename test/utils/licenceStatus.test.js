@@ -41,7 +41,7 @@ describe('getLicenceStatus', () => {
       },
     ]
 
-    examples.forEach(example => {
+    examples.forEach((example) => {
       test('should show licence stage', () => {
         expect(getLicenceStatus(example.licence).stage).toEqual(example.licence.stage)
       })
@@ -1695,7 +1695,7 @@ describe('getLicenceStatus', () => {
         },
       ]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test(`should show bassRequest ${example.outcome} when ${example.description}`, () => {
           const licence = {
             stage: 'PROCESSING_CA',
@@ -1769,7 +1769,7 @@ describe('getLicenceStatus', () => {
         },
       ]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test(`should show bassWithdrawn ${example.outcome} when ${example.description}`, () => {
           const licence = {
             stage: 'PROCESSING_CA',

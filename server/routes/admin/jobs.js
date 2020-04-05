@@ -1,6 +1,6 @@
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 
-module.exports = ({ jobSchedulerService }) => router => {
+module.exports = ({ jobSchedulerService }) => (router) => {
   router.use(authorisationMiddleware)
 
   router.get(

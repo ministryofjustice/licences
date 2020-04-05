@@ -214,7 +214,7 @@ describe('userClient', () => {
 
       const { text, values } = db.query.mock.calls[0][0]
       expect(text).toContain(expectedSelectClause)
-      expectedWhereClauses.forEach(clause => expect(text).toContain(clause))
+      expectedWhereClauses.forEach((clause) => expect(text).toContain(clause))
       expect(text).toContain(expectedOrderByClause)
       expect(values).toEqual(['%searchTerm%'])
     })

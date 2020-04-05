@@ -44,9 +44,7 @@ describe('/hdc/vary', () => {
       })
 
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
-      return request(app)
-        .get('/hdc/vary/licenceDetails/1')
-        .expect(200)
+      return request(app).get('/hdc/vary/licenceDetails/1').expect(200)
     })
 
     test('redirects to tasklist if licence exists', () => {
@@ -61,10 +59,7 @@ describe('/hdc/vary', () => {
       })
 
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
-      return request(app)
-        .get('/hdc/vary/licenceDetails/1')
-        .expect(302)
-        .expect('Location', '/hdc/taskList/1')
+      return request(app).get('/hdc/vary/licenceDetails/1').expect(302).expect('Location', '/hdc/taskList/1')
     })
   })
 
@@ -78,7 +73,7 @@ describe('/hdc/vary', () => {
         .post('/hdc/vary/evidence/1')
         .send({ bookingId: 1, evidence: 'a' })
         .expect(302)
-        .expect(res => {
+        .expect((res) => {
           expect(licenceService.update).toHaveBeenCalled()
           expect(licenceService.update).toHaveBeenCalledWith({
             bookingId: '1',
@@ -118,7 +113,7 @@ describe('/hdc/vary', () => {
         .post('/hdc/vary/licenceDetails/1')
         .send({ bookingId: 1, additionalConditions: 'Yes' })
         .expect(302)
-        .expect(res => {
+        .expect((res) => {
           expect(licenceService.createLicenceFromFlatInput).toHaveBeenCalled()
           expect(licenceService.createLicenceFromFlatInput).toHaveBeenCalledWith(
             { bookingId: 1, additionalConditions: 'Yes' },
@@ -139,7 +134,7 @@ describe('/hdc/vary', () => {
         .post('/hdc/vary/licenceDetails/1')
         .send({ bookingId: 1, additionalConditions: 'No' })
         .expect(302)
-        .expect(res => {
+        .expect((res) => {
           expect(licenceService.createLicenceFromFlatInput).toHaveBeenCalled()
           expect(licenceService.createLicenceFromFlatInput).toHaveBeenCalledWith(
             { bookingId: 1, additionalConditions: 'No' },
@@ -189,7 +184,7 @@ describe('/hdc/vary', () => {
         .post('/hdc/vary/address/1')
         .send({ bookingId: 1, addressLine1: 'this' })
         .expect(302)
-        .expect(res => {
+        .expect((res) => {
           expect(licenceService.createLicenceFromFlatInput).toHaveBeenCalled()
           expect(licenceService.createLicenceFromFlatInput).toHaveBeenCalledWith(
             { bookingId: 1, addressLine1: 'this' },
@@ -223,7 +218,7 @@ describe('/hdc/vary', () => {
         .post('/hdc/vary/reportingAddress/1')
         .send({ bookingId: 1, addressLine1: 'this' })
         .expect(302)
-        .expect(res => {
+        .expect((res) => {
           expect(licenceService.createLicenceFromFlatInput).toHaveBeenCalled()
           expect(licenceService.createLicenceFromFlatInput).toHaveBeenCalledWith(
             { bookingId: 1, addressLine1: 'this' },
@@ -259,7 +254,7 @@ describe('POST /hdc/vary/', () => {
     '/hdc/vary/approval/hdc_ap_pss/1',
   ]
 
-  routes.forEach(route => {
+  routes.forEach((route) => {
     test(`calls audit for ${route}`, () => {
       const licenceService = createLicenceServiceStub()
       licenceService.update.mockResolvedValue({ vary: { evidence: {} } })

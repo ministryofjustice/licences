@@ -34,7 +34,7 @@ describe('notificationSender', () => {
       record: jest.fn().mockReturnValue({}),
     }
 
-    service = createNotificationSender(notifyClient, audit, config)
+    service = createNotificationSender(notifyClient, audit, config.notifications.notifyKey)
   })
 
   describe('notify', () => {

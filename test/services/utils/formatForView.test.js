@@ -121,7 +121,11 @@ describe('formatForView', () => {
   describe('agency phone number', () => {
     test('should take first BUS phone', () => {
       const object = {
-        phones: [{ type: 'FAX', number: '111' }, { type: 'BUS', number: '222' }, { type: 'BUS', number: '333' }],
+        phones: [
+          { type: 'FAX', number: '111' },
+          { type: 'BUS', number: '222' },
+          { type: 'BUS', number: '333' },
+        ],
       }
       const expectedOutput = { phones: { type: 'BUS', number: '222' } }
 
@@ -173,7 +177,10 @@ describe('formatForView', () => {
   describe('aliases', () => {
     test('should join all alias names comma separated and capitalized', () => {
       const object = {
-        aliases: [{ firstName: 'one', lastName: 'two' }, { firstName: 'three', lastName: 'four' }],
+        aliases: [
+          { firstName: 'one', lastName: 'two' },
+          { firstName: 'three', lastName: 'four' },
+        ],
       }
       const expectedOutput = { aliases: 'One Two, Three Four' }
 

@@ -214,7 +214,10 @@ function decisionLabel(licenceStatus) {
     }
   }
 
-  const labels = [{ decision: 'approved', label: status.approved }, { decision: 'refused', label: status.refused }]
+  const labels = [
+    { decision: 'approved', label: status.approved },
+    { decision: 'refused', label: status.refused },
+  ]
 
   return getLabel(labels, licenceStatus) || status.notComplete
 }
@@ -226,7 +229,7 @@ function postApprovalLabel(licenceStatus) {
 }
 
 function getLabel(labels, licenceStatus) {
-  const found = labels.find(label => {
+  const found = labels.find((label) => {
     const value = label.value || true
     return licenceStatus.decisions[label.decision] === value
   })
@@ -235,7 +238,7 @@ function getLabel(labels, licenceStatus) {
 }
 
 function anyStarted(tasks) {
-  return tasks.some(task => {
+  return tasks.some((task) => {
     return [taskStates.STARTED, taskStates.DONE].includes(task)
   })
 }

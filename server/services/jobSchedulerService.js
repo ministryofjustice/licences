@@ -51,7 +51,7 @@ module.exports = function createJobSchedulerService(
 
   async function listJobs() {
     return Promise.all(
-      jobs.map(async job => {
+      jobs.map(async (job) => {
         const spec = await configClient.getJobSpec(job.name)
         return {
           name: job.name,
@@ -64,7 +64,7 @@ module.exports = function createJobSchedulerService(
   }
 
   function cancelJob(jobName) {
-    const job = jobs.find(j => j.name === jobName)
+    const job = jobs.find((j) => j.name === jobName)
     if (job) {
       logger.info(`Cancelling job: ${job.name}`)
       const execution = executions[job.name]
@@ -75,7 +75,7 @@ module.exports = function createJobSchedulerService(
   }
 
   function cancelAllJobs() {
-    jobs.forEach(job => {
+    jobs.forEach((job) => {
       logger.info(`Cancelling job: ${job.name}`)
       executions[job.name].cancel()
     })
@@ -83,14 +83,14 @@ module.exports = function createJobSchedulerService(
 
   function startAllJobs() {
     return Promise.all(
-      jobs.map(job => {
+      jobs.map((job) => {
         return activate(job)
       })
     )
   }
 
   function startJob(jobName) {
-    const job = jobs.find(j => j.name === jobName)
+    const job = jobs.find((j) => j.name === jobName)
     if (job) {
       try {
         return activate(job)
@@ -111,7 +111,7 @@ module.exports = function createJobSchedulerService(
   }
 
   async function updateJob(jobName, newSchedule) {
-    const job = jobs.find(j => j.name === jobName)
+    const job = jobs.find((j) => j.name === jobName)
     if (job) {
       cancelJob(jobName)
       await configClient.setJobSpec(job.name, newSchedule)

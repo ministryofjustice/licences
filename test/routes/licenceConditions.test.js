@@ -67,7 +67,7 @@ describe('/hdc/licenceConditions', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceService, conditionsService }, 'roUser')
@@ -76,7 +76,7 @@ describe('/hdc/licenceConditions', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -101,7 +101,7 @@ describe('/hdc/licenceConditions', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -122,10 +122,7 @@ describe('/hdc/licenceConditions', () => {
         licenceService.getLicence.mockResolvedValue({ stage: 'PROCESSING_RO', licence: { key: 'value' } })
         const app = createApp({ licenceService, conditionsService }, 'caUser')
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
     })
 
@@ -168,7 +165,7 @@ describe('/hdc/licenceConditions', () => {
         .post('/hdc/licenceConditions/additionalConditions/123/delete/ABC')
         .send(formResponse)
         .expect(302)
-        .expect(res => {
+        .expect((res) => {
           expect(licenceService.deleteLicenceCondition).toHaveBeenCalledWith(
             '123',
             { licence: { key: 'value' } },

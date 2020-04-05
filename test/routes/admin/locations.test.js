@@ -55,9 +55,7 @@ describe('/locations', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/locations/probation-areas')
-        .expect(403)
+      return request(app).get('/admin/locations/probation-areas').expect(403)
     })
   })
 
@@ -75,9 +73,7 @@ describe('/locations', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/locations/probation-areas/N02/local-delivery-units')
-        .expect(403)
+      return request(app).get('/admin/locations/probation-areas/N02/local-delivery-units').expect(403)
     })
   })
 

@@ -4,7 +4,7 @@ const strategies = require('./authInit')
 const config = require('../config')
 const { generateOauthClientToken } = require('./oauth')
 
-const authenticationMiddleware = signInService => {
+const authenticationMiddleware = (signInService) => {
   return async (req, res, next) => {
     if (req.isAuthenticated()) {
       const { role, username, token } = req.user

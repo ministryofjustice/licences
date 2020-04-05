@@ -208,7 +208,7 @@ describe('formPost', () => {
         },
       ]
 
-      examples.forEach(example => {
+      examples.forEach((example) => {
         test(example.label, async () => {
           const nomisPush = {
             status: ['statusProperty'],

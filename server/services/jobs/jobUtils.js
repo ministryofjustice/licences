@@ -34,7 +34,7 @@ module.exports = function createJobUtils(dbLockingClient) {
   }
 
   async function delay(ms) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(resolve, ms)
     })
   }

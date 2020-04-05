@@ -20,6 +20,6 @@ module.exports = ({ version, versionDetails, approvedVersionDetails, licence }) 
 }
 
 function getTemplateLabel(templateName) {
-  const templateConfig = templates.find(template => template.id === templateName) || {}
+  const templateConfig = templates.find((template) => template.id === templateName) || {}
   return getIn(templateConfig, ['label'])
 }

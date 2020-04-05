@@ -41,7 +41,7 @@ function formatAgencyLocationDesc(agencyLocationDesc) {
 
 function formatAgencyBusinessPhone(phones) {
   if (phones && phones.length > 0) {
-    return phones.find(phone => phone.type === 'BUS') || ''
+    return phones.find((phone) => phone.type === 'BUS') || ''
   }
   return ''
 }
@@ -53,7 +53,7 @@ function formatOffences(offences) {
 function formatAliases(aliasesList) {
   return aliasesList && aliasesList[0]
     ? aliasesList
-        .map(alias => {
+        .map((alias) => {
           const name = [alias.firstName, alias.lastName].join(' ')
           return setCase.capital(name.toLowerCase())
         })

@@ -24,7 +24,7 @@ module.exports = {
   },
 
   standardActionMulti: (tasksArray, href) => {
-    if (tasksArray.every(task => task === 'UNSTARTED')) {
+    if (tasksArray.every((task) => task === 'UNSTARTED')) {
       return {
         text: 'Start now',
         type: 'btn',
@@ -32,7 +32,7 @@ module.exports = {
       }
     }
 
-    if (tasksArray.every(task => task === 'DONE')) {
+    if (tasksArray.every((task) => task === 'DONE')) {
       return {
         text: 'Change',
         type: 'link',
@@ -47,7 +47,7 @@ module.exports = {
     }
   },
 
-  viewEdit: href => {
+  viewEdit: (href) => {
     return {
       text: 'View/Edit',
       type: 'btn-secondary',
@@ -55,7 +55,7 @@ module.exports = {
     }
   },
 
-  view: href => {
+  view: (href) => {
     return {
       text: 'View',
       type: 'btn-secondary',
@@ -63,7 +63,7 @@ module.exports = {
     }
   },
 
-  change: href => {
+  change: (href) => {
     return {
       text: 'Change',
       type: 'link',
@@ -71,7 +71,7 @@ module.exports = {
     }
   },
 
-  continueBtn: href => {
+  continueBtn: (href) => {
     return {
       text: 'Continue',
       type: 'btn',

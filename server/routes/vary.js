@@ -100,11 +100,11 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
     getVaryForm('varyReportingAddress', ['reporting', 'reportingInstructions'])
   )
 
-  const postVaryForm = formName => async (req, res) => {
+  const postVaryForm = (formName) => async (req, res) => {
     const { bookingId } = req.body
     const expectedFields = expectedFieldsForForm[formName]
     const inputForExpectedFields = pickBy((val, key) => expectedFields.includes(key), req.body)
-    const expectedFieldsConfig = formConfig.licenceDetails.fields.filter(field =>
+    const expectedFieldsConfig = formConfig.licenceDetails.fields.filter((field) =>
       expectedFields.includes(getFieldName(field))
     )
 
@@ -147,7 +147,7 @@ function renameKeysForForm(licenceObject, formName) {
     return licenceObject
   }
   return expectedFieldsForForm.reportingAddress.reduce((userInput, uiKey) => {
-    const formFieldConfig = formConfig.licenceDetails.fields.find(field => getFieldName(field) === uiKey)
+    const formFieldConfig = formConfig.licenceDetails.fields.find((field) => getFieldName(field) === uiKey)
     const licenceFieldName = lastItem(formFieldConfig[uiKey].licencePosition)
 
     return {

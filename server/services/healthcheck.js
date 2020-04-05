@@ -4,11 +4,11 @@ const service = (name, url) => {
   const check = serviceCheckFactory(name, url)
   return () =>
     check()
-      .then(result => ({ name, status: 'UP', message: result }))
-      .catch(err => ({ name, status: 'ERROR', message: err }))
+      .then((result) => ({ name, status: 'UP', message: result }))
+      .catch((err) => ({ name, status: 'ERROR', message: err }))
 }
 
-const gatherCheckInfo = (total, currentValue) => Object.assign({}, total, { [currentValue.name]: currentValue.message })
+const gatherCheckInfo = (total, currentValue) => ({ ...total, [currentValue.name]: currentValue.message })
 
 const getBuild = () => {
   try {
@@ -20,7 +20,7 @@ const getBuild = () => {
   }
 }
 
-const addAppInfo = result => {
+const addAppInfo = (result) => {
   const buildInformation = getBuild()
   const buildInfo = {
     uptime: process.uptime(),
@@ -28,15 +28,15 @@ const addAppInfo = result => {
     version: (buildInformation && buildInformation.buildNumber) || 'Not available',
   }
 
-  return Object.assign({}, result, buildInfo)
+  return { ...result, ...buildInfo }
 }
 
 module.exports = function healthcheckFactory(services) {
   const checks = Object.entries(services).map(([name, url]) => service(name, url))
 
-  return callback =>
-    Promise.all(checks.map(fn => fn())).then(checkResults => {
-      const allOk = checkResults.every(item => item.status === 'UP') ? 'UP' : 'DOWN'
+  return (callback) =>
+    Promise.all(checks.map((fn) => fn())).then((checkResults) => {
+      const allOk = checkResults.every((item) => item.status === 'UP') ? 'UP' : 'DOWN'
       const result = {
         name: 'Licences',
         status: allOk,

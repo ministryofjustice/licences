@@ -11,7 +11,7 @@ const { getRoCaseDueDate, getRoNewCaseDueDate } = require('../../utils/dueDates'
  */
 module.exports = function createRoNotificationSender(
   notificationSender,
-  { notifications: { activeNotificationTypes, clearingOfficeEmail, clearingOfficeEmailEnabled }, domain }
+  { notifications: { activeNotificationTypes, clearingOfficeEmail, clearingOfficeEmailEnabled, ...rest }, domain }
 ) {
   const clearingOfficeEmailDisabled = clearingOfficeEmailEnabled.toUpperCase().trim() !== 'YES'
 

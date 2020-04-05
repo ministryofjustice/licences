@@ -77,7 +77,7 @@ function getTaskListName(role, stage, postRelease) {
   }
 
   return (
-    pickKey(view => view.role === role && (!view.stages || view.stages.includes(stage)))(taskListsConfig) ||
+    pickKey((view) => view.role === role && (!view.stages || view.stages.includes(stage)))(taskListsConfig) ||
     'noTaskList'
   )
 }

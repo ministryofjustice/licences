@@ -47,7 +47,7 @@ describe('/hdc/proposedAddress', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.update.mockResolvedValue({ proposedAddress: { curfewAddress: { addresses: [{}] } } })
@@ -56,7 +56,7 @@ describe('/hdc/proposedAddress', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -77,10 +77,7 @@ describe('/hdc/proposedAddress', () => {
         licenceService.update.mockResolvedValue({ proposedAddress: { curfewAddress: { addresses: [{}] } } })
         const app = createApp({ licenceServiceStub: licenceService }, 'dmUser')
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
 
       test('throws an error if logged in as ro except for curfew address', () => {
@@ -89,16 +86,10 @@ describe('/hdc/proposedAddress', () => {
         const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
         if (route.url === '/hdc/proposedAddress/curfewAddress/1') {
-          return request(app)
-            .post(route.url)
-            .send(route.body)
-            .expect(302)
+          return request(app).post(route.url).send(route.body).expect(302)
         }
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
     })
   })
@@ -143,7 +134,7 @@ describe('/hdc/proposedAddress', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence = jest.fn().mockReturnValue({
@@ -160,7 +151,7 @@ describe('/hdc/proposedAddress', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.updateSection).toHaveBeenCalledTimes(2)
             expect(licenceService.updateSection).toHaveBeenCalledWith('proposedAddress', '1', route.addressContent)
             expect(licenceService.updateSection).toHaveBeenCalledWith('bassReferral', '1', route.bassContent)
@@ -172,20 +163,14 @@ describe('/hdc/proposedAddress', () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceServiceStub: licenceService }, 'dmUser')
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
 
       test('throws an error if logged in as ro', () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
     })
   })
@@ -222,7 +207,7 @@ describe('/hdc/proposedAddress', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`should show ${route.answer} selected`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({ licence: route.licence })
@@ -232,11 +217,11 @@ describe('/hdc/proposedAddress', () => {
           .get('/hdc/proposedAddress/curfewAddressChoice/1')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
-            route.yes.forEach(content => {
+          .expect((res) => {
+            route.yes.forEach((content) => {
               expect(res.text).toContain(content)
             })
-            route.no.forEach(content => {
+            route.no.forEach((content) => {
               expect(res.text).toEqual(expect.not.arrayContaining([content]))
             })
           })
@@ -302,7 +287,7 @@ describe('/hdc/proposedAddress', () => {
         .get('/hdc/proposedAddress/rejected/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('id="rejectedLine1">address1</p>')
         })
     })
@@ -321,7 +306,7 @@ describe('/hdc/proposedAddress', () => {
         .get('/hdc/proposedAddress/rejected/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<form id="enterAlternativeForm" method="post">')
         })
     })

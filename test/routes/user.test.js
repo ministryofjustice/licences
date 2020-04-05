@@ -19,9 +19,10 @@ describe('/user', () => {
   beforeEach(() => {
     userService = {
       getAllRoles: jest.fn().mockReturnValue(['CA', 'RO']),
-      getAllCaseLoads: jest
-        .fn()
-        .mockResolvedValue([{ caseLoadId: '1', description: 'a' }, { caseLoadId: '2', description: 'b' }]),
+      getAllCaseLoads: jest.fn().mockResolvedValue([
+        { caseLoadId: '1', description: 'a' },
+        { caseLoadId: '2', description: 'b' },
+      ]),
       setRole: jest.fn().mockReturnValue(),
       setActiveCaseLoad: jest.fn().mockReturnValue(),
     }
@@ -38,7 +39,7 @@ describe('/user', () => {
         .get('/')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Select role')
         })
     })
@@ -49,7 +50,7 @@ describe('/user', () => {
         .get('/')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<option value="CA"')
           expect(res.text).toContain('<option value="RO"')
         })
@@ -61,7 +62,7 @@ describe('/user', () => {
         .get('/')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<option value="CA"')
           expect(res.text).toContain('<option value="RO"')
           expect(userService.getAllRoles).toHaveBeenCalledWith('token')
@@ -74,7 +75,7 @@ describe('/user', () => {
         .get('/')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<option value="1"')
           expect(res.text).toContain('<option value="2"')
         })
@@ -86,7 +87,7 @@ describe('/user', () => {
         .get('/')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).not.toContain('<option value="1"')
           expect(res.text).not.toContain('<option value="2"')
         })
@@ -153,11 +154,7 @@ describe('/user', () => {
 
     test(`redirects to the /user page`, () => {
       const app = createApp('caUser')
-      return request(app)
-        .post('/')
-        .send({ role: 'RO' })
-        .expect(302)
-        .expect('Location', '/')
+      return request(app).post('/').send({ role: 'RO' }).expect(302).expect('Location', '/')
     })
   })
 
